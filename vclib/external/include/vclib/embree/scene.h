@@ -174,6 +174,85 @@ public:
             segment.p0(), segment.direction(), 0.f, segment.length());
     }
 
+    template<Range R>
+    std::vector<HitResult> firstFaceIntersectedByRays(
+        R&&   origins,
+        R&&   directions,
+        float near = 0.f,
+        float far  = std::numeric_limits<float>::infinity()) const
+        requires Point3Concept<std::ranges::range_value_t<R>>
+    {
+        using PointType  = std::ranges::range_value_t<R>;
+        using ScalarType = typename PointType::ScalarType;
+
+        assert(std::ranges::size(origins) == std::ranges::size(directions) &&
+               "Origins and directions ranges must have the same size.");
+
+        std::size_t sz = std::ranges::size(origins);
+
+        std::vector<HitResult> results(sz);
+
+        std::size_t chunks = sz / 16;
+        std::size_t rem    = sz % 16;
+
+        if (rem != 0) {
+            ++chunks;
+        }
+
+        auto computeChunk = [&] (uint chunk) {
+
+            std::vector<int> validMask(16, -1);
+
+            RTCRayHit16 rayHits;
+
+            std::size_t first = chunk * 16;
+            std::size_t last  = first + 16;
+            if (last > sz) {
+                for (std::size_t i = sz % 16; i < 16; ++i) {
+                    validMask[i] = 0;
+                }
+                last = sz;
+            }
+
+
+            for (std::size_t i = first; i < last; ++i) {
+
+                std::size_t idx = i - first;
+                initRayHitsValues(
+                    rayHits,
+                    idx,
+                    origins[i],
+                    directions[i],
+                    near,
+                    far);
+            }
+
+            rtcIntersect16(validMask.data(), mScene, &rayHits);
+
+            for (std::size_t i = first; i < last; ++i) {
+                std::size_t idx = i - first;
+                if (rayHits.hit.geomID[idx] != RTC_INVALID_GEOMETRY_ID) {
+                    uint    fID = mIndexMap.polygon(rayHits.hit.primID[idx]);
+                    float   w   = 1.f - rayHits.hit.u[idx] - rayHits.hit.v[idx];
+                    Point3f barycentricCoords(
+                        w, rayHits.hit.u[idx], rayHits.hit.v[idx]);
+                    uint triID =
+                        rayHits.hit.primID[idx] - mIndexMap.triangleBegin(fID);
+                    results[i] = std::make_tuple(fID, barycentricCoords, triID);
+                }
+                else {
+                    results[i] = std::make_tuple(UINT_NULL, Point3f(), uint(0));
+                }
+            }
+        };
+
+        for (std::size_t c = 0; c < chunks; ++c) {
+            computeChunk(c);
+        }
+
+        return results;
+    }
+
 private:
     template<Point3Concept PointType>
     static inline RTCRayHit initRayHitValues(
@@ -183,19 +262,42 @@ private:
         float            tfar = std::numeric_limits<float>::infinity())
     {
         RTCRayHit rayhit;
-        rayhit.ray.org_x = origin.x();
-        rayhit.ray.org_y = origin.y();
-        rayhit.ray.org_z = origin.z();
-        rayhit.ray.dir_x = direction.x();
-        rayhit.ray.dir_y = direction.y();
-        rayhit.ray.dir_z = direction.z();
-        rayhit.ray.tnear = tnear;
-        rayhit.ray.tfar  = tfar;
-        rayhit.ray.mask   = -1;
-        rayhit.ray.flags = 0;
-        rayhit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
+        rayhit.ray.org_x     = origin.x();
+        rayhit.ray.org_y     = origin.y();
+        rayhit.ray.org_z     = origin.z();
+        rayhit.ray.dir_x     = direction.x();
+        rayhit.ray.dir_y     = direction.y();
+        rayhit.ray.dir_z     = direction.z();
+        rayhit.ray.tnear     = tnear;
+        rayhit.ray.tfar      = tfar;
+        rayhit.ray.mask      = -1;
+        rayhit.ray.flags     = 0;
+        rayhit.hit.geomID    = RTC_INVALID_GEOMETRY_ID;
         rayhit.hit.instID[0] = RTC_INVALID_GEOMETRY_ID;
         return rayhit;
+    }
+
+    template<Point3Concept PointType>
+    static inline void initRayHitsValues(
+        RTCRayHit16&     rayhits,
+        uint i,
+        const PointType& origin,
+        const PointType& direction,
+        float            tnear = 0.f,
+        float            tfar = std::numeric_limits<float>::infinity())
+    {
+        rayhits.ray.org_x[i]     = origin.x();
+        rayhits.ray.org_y[i]     = origin.y();
+        rayhits.ray.org_z[i]     = origin.z();
+        rayhits.ray.dir_x[i]     = direction.x();
+        rayhits.ray.dir_y[i]     = direction.y();
+        rayhits.ray.dir_z[i]     = direction.z();
+        rayhits.ray.tnear[i]     = tnear;
+        rayhits.ray.tfar[i]      = tfar;
+        rayhits.ray.mask[i]      = -1;
+        rayhits.ray.flags[i]     = 0;
+        rayhits.hit.geomID[i]    = RTC_INVALID_GEOMETRY_ID;
+        rayhits.hit.instID[0][i] = RTC_INVALID_GEOMETRY_ID;
     }
 };
 
