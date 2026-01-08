@@ -358,9 +358,11 @@ void Environment::generateTextures(const uint viewId)
             // and checks for out-of-bounds internally
             const uint32_t threadGroups = (mipSize < 8) ? 1 : CEIL_DIV(mipSize, 8);
 
-            mCubeMapTexture->bind(
+            mCubeMapTexture->bindForCompute(
                 0,
-                mEnvCubeSamplerUniform.handle()
+                mip - 1,
+                bgfx::Access::ReadWrite,
+                bgfx::TextureFormat::RGBA32F
             );
 
             mCubeMapTexture->bindForCompute(
@@ -369,8 +371,6 @@ void Environment::generateTextures(const uint viewId)
                 bgfx::Access::ReadWrite,
                 bgfx::TextureFormat::RGBA32F
             );
-
-            bindDataUniform(float(mip - 1));
 
             bgfx::dispatch(
                 viewId,

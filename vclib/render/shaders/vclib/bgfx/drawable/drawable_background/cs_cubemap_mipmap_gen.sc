@@ -22,11 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
 
-SAMPLERCUBE(s_env0, 0);
+IMAGE2D_ARRAY_RW(u_prevMip, rgba32f, 0);
 IMAGE2D_ARRAY_RW(u_nextMip, rgba32f, 1);
-
-uniform vec4 u_dataPack;
-#define prevMip u_dataPack.x
 
 NUM_THREADS(8, 8, 1)
 void main()
@@ -48,7 +45,7 @@ void main()
 
     ivec2 prevCoord = pixel * 2;
 
-    float invPrevSize = 1.0 / (size * 2.0);
+    float invPrevSize = 1.0 / imageSize(u_prevMip).x;
 
     vec4 newColor = vec4_splat(0.0);
 
@@ -60,13 +57,9 @@ void main()
 
         vec2 uv = vec2(prev.xy) * vec2_splat(invPrevSize) * vec2(2.0, 2.0) - vec2(1.0, 1.0);
 
-        vec2 uvCenter = (vec2(prev.xy) + vec2(0.5, 0.5)) * vec2_splat(invPrevSize) * vec2(2.0, 2.0) - vec2(1.0, 1.0);
-
         float weight = solidAngle(uv, invPrevSize * 2.0);
 
-        vec3 dir = faceDirection(face, uvCenter, false);
-
-        newColor += textureCubeLod(s_env0, leftHand(dir), prevMip) * vec4_splat(weight);
+        newColor += imageLoad(u_prevMip, prev) * vec4_splat(weight);
 
         totalWeight += weight;
     }
