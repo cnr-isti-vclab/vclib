@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,8 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
 #include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+#include <vclib/bgfx/uniform.h>
 
 #include <vclib/mesh.h>
 
@@ -36,7 +36,7 @@ class MaterialUniforms
 
     std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
-    // metallic, roughness and occlusion are stored in the B, G and R channels 
+    // metallic, roughness and occlusion are stored in the B, G and R channels
     // respectively for consistency with textures
     std::array<float, 4> mFactorsPack = {
         1.0, // occlusion strength
@@ -45,8 +45,8 @@ class MaterialUniforms
         1.0  // normal scale
     };
 
-    // emissive color factor stored in RGB channels, alpha channel is unused so it can be
-    // used to store the alpha cutoff when needed
+    // emissive color factor stored in RGB channels, alpha channel is unused so
+    // it can be used to store the alpha cutoff when needed
     std::array<float, 4> mEmissiveAlphaCutoffPack = {0.0, 0.0, 0.0, 0.5};
 
     // settings packed in a vec4
@@ -70,25 +70,31 @@ public:
 
     const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
 
-    const std::array<float, 4>& currentFactorsPack() const { return mFactorsPack; }
+    const std::array<float, 4>& currentFactorsPack() const
+    {
+        return mFactorsPack;
+    }
 
-    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const { return mEmissiveAlphaCutoffPack; }
+    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const
+    {
+        return mEmissiveAlphaCutoffPack;
+    }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
     void update(
-        const Material&                    m,
-        bool                               vertexColorAvailable,
+        const Material&                     m,
+        bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                               vertexTangentAvailable,
-        bool                               ibl)
+        bool                                vertexTangentAvailable,
+        bool                                ibl)
     {
         uint pbrSettings = 0;
 
         if (vertexColorAvailable) // per-vertex color available
             pbrSettings |= 1 << VCL_PBR_VERTEX_COLOR;
 
-        if(vertexTangentAvailable) // per-vertex tangent available
+        if (vertexTangentAvailable) // per-vertex tangent available
             pbrSettings |= 1 << VCL_PBR_VERTEX_TANGENT;
 
         if (m.alphaMode() ==

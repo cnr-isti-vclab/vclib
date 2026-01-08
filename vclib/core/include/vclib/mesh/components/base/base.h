@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -81,26 +81,16 @@ struct CompId
  * @ingroup base
  */
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
-    "BitFlags",
-    "Position",
-    "Normal",
-    "Color",
-    "Quality",
-    "Mark",
-    "MaterialIndex",
-    "PrincipalCurvature",
-    "Tangent",
-    "TexCoord",
-    "VertexPointers",
-    "AdjacentEdges",
-    "AdjacentFaces",
-    "AdjacentVertices",
-    "WedgeColors",
-    "WedgeTexCoords",
-    "BoundingBox",
-    "Name",
-    "Materials",
-    "TransformMatrix",
+    "BitFlags",         "Position",
+    "Normal",           "Color",
+    "Quality",          "Mark",
+    "MaterialIndex",    "PrincipalCurvature",
+    "Tangent",          "TexCoord",
+    "VertexPointers",   "AdjacentEdges",
+    "AdjacentFaces",    "AdjacentVertices",
+    "WedgeColors",      "WedgeTexCoords",
+    "BoundingBox",      "Name",
+    "Materials",        "TransformMatrix",
     "CustomComponents",
 };
 

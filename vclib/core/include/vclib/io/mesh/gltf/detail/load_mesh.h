@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -36,13 +36,16 @@
 
 namespace vcl::detail {
 
-enum class GltfAttrType { POSITION, NORMAL, COLOR_0, TEXCOORD_0, TANGENT, INDICES };
-inline const std::array<std::string, 5> GLTF_ATTR_STR {
-    "POSITION",
-    "NORMAL",
-    "COLOR_0",
-    "TEXCOORD_0",
-    "TANGENT"};
+enum class GltfAttrType {
+    POSITION,
+    NORMAL,
+    COLOR_0,
+    TEXCOORD_0,
+    TANGENT,
+    INDICES
+};
+inline const std::array<std::string, 5>
+    GLTF_ATTR_STR {"POSITION", "NORMAL", "COLOR_0", "TEXCOORD_0", "TANGENT"};
 
 template<MeshConcept MeshType>
 int loadGltfPrimitiveMaterial(
@@ -120,61 +123,63 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // function to load a texture in a material
-        auto loadTextureInMaterial =
-            [&](Material& mat, int textureId, Material::TextureType type) {
-                if (textureId != -1) {
-                    const tinygltf::Image& img =
-                        model.images[model.textures[textureId].source];
-                    // add the path of the texture to the mesh
-                    std::string uri = img.uri;
-                    uri = std::regex_replace(uri, std::regex("\\%20"), " ");
-                    if (uri.empty()) {
-                        uri = "texture_" + std::to_string(textureId);
-                    }
-
-                    vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
-
-                    texture.path() = uri;
-
-                    // set sampler parameters
-                    int samplerId = model.textures[textureId].sampler;
-                    if (samplerId >= 0) {
-                        const tinygltf::Sampler& sampler =
-                            model.samplers[samplerId];
-                        texture.minFilter() =
-                            static_cast<TextureDescriptor::MinificationFilter>(
-                                sampler.minFilter);
-                        texture.magFilter() =
-                            static_cast<TextureDescriptor::MagnificationFilter>(
-                                sampler.magFilter);
-                        texture.wrapU() =
-                            static_cast<TextureDescriptor::WrapMode>(sampler.wrapS);
-                        texture.wrapV() =
-                            static_cast<TextureDescriptor::WrapMode>(sampler.wrapT);
-                    }
-                    else {
-                        assert(samplerId == -1);
-                        assert(
-                            texture.minFilter() ==
-                            TextureDescriptor::MinificationFilter::NONE);
-                        assert(
-                            texture.magFilter() ==
-                            TextureDescriptor::MagnificationFilter::NONE);
-                        assert(texture.wrapU() == TextureDescriptor::WrapMode::REPEAT);
-                        assert(texture.wrapV() == TextureDescriptor::WrapMode::REPEAT);
-                    }
-
-                    // if the image is valid, load it to the texture
-                    if (img.image.size() > 0 &&
-                        (img.bits == 8 || img.component == 4)) {
-                        Image timg(img.image.data(), img.width, img.height);
-                        timg.colorSpace() =
-                            Material::textureTypeToColorSpace(type);
-
-                        m.pushTextureImage(uri, std::move(timg));
-                    }
+        auto loadTextureInMaterial = [&](Material&             mat,
+                                         int                   textureId,
+                                         Material::TextureType type) {
+            if (textureId != -1) {
+                const tinygltf::Image& img =
+                    model.images[model.textures[textureId].source];
+                // add the path of the texture to the mesh
+                std::string uri = img.uri;
+                uri = std::regex_replace(uri, std::regex("\\%20"), " ");
+                if (uri.empty()) {
+                    uri = "texture_" + std::to_string(textureId);
                 }
-            };
+
+                vcl::TextureDescriptor& texture = mat.textureDescriptor(type);
+
+                texture.path() = uri;
+
+                // set sampler parameters
+                int samplerId = model.textures[textureId].sampler;
+                if (samplerId >= 0) {
+                    const tinygltf::Sampler& sampler =
+                        model.samplers[samplerId];
+                    texture.minFilter() =
+                        static_cast<TextureDescriptor::MinificationFilter>(
+                            sampler.minFilter);
+                    texture.magFilter() =
+                        static_cast<TextureDescriptor::MagnificationFilter>(
+                            sampler.magFilter);
+                    texture.wrapU() =
+                        static_cast<TextureDescriptor::WrapMode>(sampler.wrapS);
+                    texture.wrapV() =
+                        static_cast<TextureDescriptor::WrapMode>(sampler.wrapT);
+                }
+                else {
+                    assert(samplerId == -1);
+                    assert(
+                        texture.minFilter() ==
+                        TextureDescriptor::MinificationFilter::NONE);
+                    assert(
+                        texture.magFilter() ==
+                        TextureDescriptor::MagnificationFilter::NONE);
+                    assert(
+                        texture.wrapU() == TextureDescriptor::WrapMode::REPEAT);
+                    assert(
+                        texture.wrapV() == TextureDescriptor::WrapMode::REPEAT);
+                }
+
+                // if the image is valid, load it to the texture
+                if (img.image.size() > 0 &&
+                    (img.bits == 8 || img.component == 4)) {
+                    Image timg(img.image.data(), img.width, img.height);
+                    timg.colorSpace() = Material::textureTypeToColorSpace(type);
+
+                    m.pushTextureImage(uri, std::move(timg));
+                }
+            }
+        };
 
         /* Put the data in the mesh */
 
@@ -468,20 +473,10 @@ bool populateGltfAttr(
             colorWithAlpha);
     case TEXCOORD_0:
         return populateGltfVTextCoords(
-            m,
-            firstVertex,
-            enableOptionalComponents,
-            array,
-            stride,
-            number);
+            m, firstVertex, enableOptionalComponents, array, stride, number);
     case TANGENT:
         return populateGltfVTangents(
-            m, 
-            firstVertex, 
-            enableOptionalComponents, 
-            array, 
-            stride, 
-            number);
+            m, firstVertex, enableOptionalComponents, array, stride, number);
     case INDICES:
         return populateGltfTriangles(m, firstVertex, array, number / 3);
     default: return false;
@@ -749,7 +744,7 @@ void loadGltfMeshPrimitive(
 
     if constexpr (HasFaces<MeshType>) {
         uint firstFace = m.faceNumber();
-        bool lti = loadGltfAttribute(
+        bool lti       = loadGltfAttribute(
             m,
             firstVertex,
             settings.enableOptionalComponents,

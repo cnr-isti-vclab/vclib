@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -26,6 +26,7 @@
 #include "space/array.h"
 #include "space/bit_set.h"
 #include "space/box.h"
+#include "space/camera.h"
 #include "space/color.h"
 #include "space/image.h"
 #include "space/material.h"
@@ -46,6 +47,7 @@ void spaceStaticAsserts()
     arrayStaticAsserts();
     bitSetStaticAsserts();
     boxStaticAsserts();
+    cameraStaticAsserts();
     colorStaticAsserts();
     imageStaticAsserts();
     materialStaticAsserts();

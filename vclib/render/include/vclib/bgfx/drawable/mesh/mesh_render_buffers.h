@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -79,8 +79,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    mutable DrawableMeshUniforms mMeshUniforms;
-    mutable MaterialUniforms mMaterialUniforms;
+    mutable DrawableMeshUniforms         mMeshUniforms;
+    mutable MaterialUniforms             mMaterialUniforms;
     std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
 
 public:
@@ -279,8 +279,7 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
-                ibl
-            );
+                ibl);
         }
         else {
             using enum Material::AlphaMode;
@@ -294,8 +293,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    ibl
-                );
+                    ibl);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -306,7 +304,7 @@ public:
                         m.material(materialId).textureDescriptor(j);
                     const std::string& path = td.path();
                     if (!path.empty()) {
-                        const Texture& tex = mMaterialTextures.at(path);
+                        const Texture& tex  = mMaterialTextures.at(path);
                         textureAvailable[j] = tex.isValid();
                     }
                 }
@@ -316,8 +314,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    ibl
-                );
+                    ibl);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
@@ -665,7 +662,7 @@ private:
 
         auto loadImageAndSetTexture =
             [&](const std::pair<std::string, uint>& pathPair) {
-                const std::string& path        = pathPair.first;
+                const std::string& path = pathPair.first;
 
                 uint materialId  = pathPair.second / N_TEXTURE_TYPES;
                 uint textureType = pathPair.second % N_TEXTURE_TYPES;
@@ -694,7 +691,8 @@ private:
                             .textureDescriptor(textureType);
                     using enum TextureDescriptor::MinificationFilter;
 
-                    TextureDescriptor::MinificationFilter minFilter = tex.minFilter();
+                    TextureDescriptor::MinificationFilter minFilter =
+                        tex.minFilter();
 
                     bool hasMips =
                         minFilter >= NEAREST_MIPMAP_NEAREST ||

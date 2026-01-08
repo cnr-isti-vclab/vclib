@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -307,15 +307,9 @@ protected:
     template<typename Element>
     void importFrom(const Element& e, bool = true);
 
-    void serialize(std::ostream& os) const
-    {
-        texCoords().serialize(os);
-    }
+    void serialize(std::ostream& os) const { texCoords().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        texCoords().deserialize(is);
-    }
+    void deserialize(std::istream& is) { texCoords().deserialize(is); }
 
     // ContainerComponent interface functions
     void resize(uint n) requires (N < 0) { texCoords().resize(n); }

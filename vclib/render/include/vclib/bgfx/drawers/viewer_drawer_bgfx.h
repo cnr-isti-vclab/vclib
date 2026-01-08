@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -66,10 +66,7 @@ public:
 
         settings.environment = &mPanorama;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
@@ -86,10 +83,7 @@ public:
         settings.objectId = ParentViewer::id();
         settings.viewId   = viewId;
 
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        setViewTransform(viewId);
 
         ParentViewer::drawableObjectVector().drawId(settings);
     }
@@ -128,6 +122,17 @@ public:
     void setPanorama(const std::string& panorama)
     {
         mPanorama = Environment(panorama);
+    } 
+
+private:
+    void setViewTransform(uint viewId)
+    {
+        // need to store the matrices
+        // parent viewer returns by value
+        Matrix44f vm = ParentViewer::viewMatrix();
+        Matrix44f pm = ParentViewer::projectionMatrix();
+
+        bgfx::setViewTransform(viewId, vm.data(), pm.data());
     }
 };
 

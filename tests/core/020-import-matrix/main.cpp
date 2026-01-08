@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -1026,8 +1026,7 @@ TEST_CASE("Import mesh - error handling")
             0, 1}; // size 2, should be 1
 
         REQUIRE_THROWS_AS(
-            vcl::faceMaterialIndicesFromRange(
-                mesh, wrongFaceMaterialIndices),
+            vcl::faceMaterialIndicesFromRange(mesh, wrongFaceMaterialIndices),
             vcl::WrongSizeException);
     }
 

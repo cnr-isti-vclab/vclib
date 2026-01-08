@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -84,8 +84,9 @@ void setPerVertexColorFromElemColor(MeshType& m)
 template<uint ELEM_ID, MeshConcept MeshType>
 void setPerElemColorFromMaterial(MeshType& m)
 {
-    static_assert(HasMaterials<MeshType>,
-                  "The input Mesh must have the Materials component.");
+    static_assert(
+        HasMaterials<MeshType>,
+        "The input Mesh must have the Materials component.");
     requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
     requirePerElementComponent<ELEM_ID, CompId::MATERIAL_INDEX>(m);
 

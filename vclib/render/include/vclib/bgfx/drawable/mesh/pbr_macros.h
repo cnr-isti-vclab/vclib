@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,11 +27,13 @@
  * These macros are used both on the library and on the shader side.
  */
 
+// bit positions used to tell which features are enabled at shader level
 #define VCL_PBR_VERTEX_COLOR         0
 #define VCL_PBR_VERTEX_TANGENT       1
 #define VCL_PBR_IS_ALPHA_MODE_MASK   2
 #define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
+// bit positions used to tell which textures are available at shader level
 #define VCL_PBR_TEXTURE_BASE_COLOR         0
 #define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS 1
 #define VCL_PBR_TEXTURE_NORMAL             2

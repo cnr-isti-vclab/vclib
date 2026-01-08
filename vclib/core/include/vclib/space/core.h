@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -26,6 +26,7 @@
 #include "core/array.h"
 #include "core/bit_set.h"
 #include "core/box.h"
+#include "core/camera.h"
 #include "core/color.h"
 #include "core/distribution.h"
 #include "core/histogram.h"
@@ -38,6 +39,7 @@
 #include "core/polygon.h"
 #include "core/principal_curvature.h"
 #include "core/quaternion.h"
+#include "core/ray.h"
 #include "core/segment.h"
 #include "core/sphere.h"
 #include "core/tex_coord.h"

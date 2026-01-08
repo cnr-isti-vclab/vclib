@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -76,6 +76,7 @@ set(HEADERS
     space/array.h
     space/bit_set.h
     space/box.h
+    space/camera.h
     space/color.h
     space/image.h
     space/material.h

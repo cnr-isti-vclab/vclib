@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,13 +35,15 @@ void textureDescriptorStaticAsserts()
         "TextureDescriptor does not satisfy the TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<const TextureDescriptor>,
-        "const TextureDescriptor does not satisfy the TextureDescriptorConcept");
+        "const TextureDescriptor does not satisfy the "
+        "TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<TextureDescriptor&>,
         "TextureDescriptor& does not satisfy the TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<const TextureDescriptor&>,
-        "const TextureDescriptor& does not satisfy the TextureDescriptorConcept");
+        "const TextureDescriptor& does not satisfy the "
+        "TextureDescriptorConcept");
     static_assert(
         TextureDescriptorConcept<TextureDescriptor&&>,
         "TextureDescriptor&& does not satisfy the TextureDescriptorConcept");

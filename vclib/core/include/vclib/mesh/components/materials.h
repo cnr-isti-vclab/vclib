@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -34,9 +34,9 @@ namespace detail {
 struct MData
 {
     // The base path of the mesh, used to resolve relative texture paths.
-    std::string                  meshPath;
+    std::string meshPath;
     // A vector containing all the materials defined for the mesh.
-    std::vector<Material>        materials;
+    std::vector<Material> materials;
     // A map where keys are texture paths and values are the loaded Image data.
     std::map<std::string, Image> textureImages;
 };
@@ -84,11 +84,11 @@ public:
     // iterators
 
     /// @brief Iterator for the vector of materials.
-    using MaterialIterator      = std::vector<Material>::iterator;
+    using MaterialIterator = std::vector<Material>::iterator;
     /// @brief Const iterator for the vector of materials.
     using ConstMaterialIterator = std::vector<Material>::const_iterator;
     /// @brief Iterator for the map of texture images
-    using TextureImageIterator  = std::map<std::string, Image>::iterator;
+    using TextureImageIterator = std::map<std::string, Image>::iterator;
     /// @brief Const iterator for the map of texture images.
     using ConstTextureImageIterator =
         std::map<std::string, Image>::const_iterator;
@@ -188,9 +188,7 @@ public:
      * @param[in] texturePath: The path of the texture.
      * @param[in] img: The image to add.
      */
-    void pushTextureImage(
-        const std::string& texturePath,
-        const Image&       img)
+    void pushTextureImage(const std::string& texturePath, const Image& img)
     {
         txtImgs()[texturePath] = img;
     }
@@ -204,9 +202,7 @@ public:
      * @param[in] texturePath: The path of the texture.
      * @param[in] img: The image to add.
      */
-    void pushTextureImage(
-        const std::string& texturePath,
-        Image&&            img)
+    void pushTextureImage(const std::string& texturePath, Image&& img)
     {
         txtImgs()[texturePath] = std::move(img);
     }
@@ -399,8 +395,7 @@ private:
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMaterials =
-    std::derived_from<std::remove_cvref_t<T>, Materials>;
+concept HasMaterials = std::derived_from<std::remove_cvref_t<T>, Materials>;
 
 /* imoportFrom function */
 

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,7 +23,6 @@
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/render/viewer/matrix.h>
 
 namespace vcl {
 

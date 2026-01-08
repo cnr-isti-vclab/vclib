@@ -71,7 +71,7 @@ void initUpdateAlgorithms(pybind11::module& m)
 
             m.def(
                 "set_per_vertex_color_from_material",
-                [](MeshType& m){
+                [](MeshType& m) {
                     return setPerVertexColorFromMaterial(m);
                 },
                 "mesh"_a);
@@ -352,7 +352,7 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "set_per_face_color_from_material",
-            [](MeshType& m){
+            [](MeshType& m) {
                 return setPerFaceColorFromMaterial(m);
             },
             "mesh"_a);

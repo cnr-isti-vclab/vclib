@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -217,7 +217,7 @@ public:
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
-                uint64_t surfaceState = state;
+                uint64_t surfaceState  = state;
                 uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this, settings.environment->canDraw());
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);

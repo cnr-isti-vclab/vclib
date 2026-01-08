@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -119,7 +119,10 @@ MeshViewer::MeshViewer(QWidget* parent) :
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
 
-    connect(mUI->renderModeComboBox, SIGNAL(currentIndexChanged(int)), this,
+    connect(
+        mUI->renderModeComboBox,
+        SIGNAL(currentIndexChanged(int)),
+        this,
         SLOT(renderModeComboBoxCurrentIndexChanged(int)));
 }
 
@@ -193,7 +196,7 @@ void MeshViewer::setPBR(bool enable)
 {
     using enum RenderMode;
     mUI->renderModeComboBox->setCurrentIndex(
-        enable ?  toUnderlying(PBR) : toUnderlying(CLASSIC));
+        enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
     updateGUI();
 }
 

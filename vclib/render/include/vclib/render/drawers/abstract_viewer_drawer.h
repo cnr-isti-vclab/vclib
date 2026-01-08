@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -195,8 +195,8 @@ protected:
 
             // unproject the point
             const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            auto          unproj =
-                unproject(p2d, MatrixType(proj * view), vp, homogeneousNDC);
+            auto          unproj = unprojectScreenPosition(
+                p2d, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();

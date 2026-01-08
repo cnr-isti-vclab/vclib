@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,15 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_IO_CAMERA_LOAD_H
-#define VCL_RENDER_IO_CAMERA_LOAD_H
+#ifndef VCL_IO_CAMERA_LOAD_H
+#define VCL_IO_CAMERA_LOAD_H
 
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/load.h"
 #endif
 
 #include <vclib/io/file_format.h>
+
+#ifdef VCLIB_WITH_TINYGLTF
 #include <vclib/io/mesh/gltf/capability.h>
+#endif
+
+#include <vclib/space/core.h>
 
 #include <set>
 #include <string>
@@ -56,7 +61,7 @@ inline std::set<FileFormat> loadCameraFormats()
 }
 
 template<CameraConcept CameraType = Camera<float>>
-inline std::vector<CameraType> loadCameras(const std::string& filename)
+std::vector<CameraType> loadCameras(const std::string& filename)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 #ifdef VCLIB_WITH_TINYGLTF
@@ -68,7 +73,7 @@ inline std::vector<CameraType> loadCameras(const std::string& filename)
 }
 
 template<CameraConcept CameraType = Camera<float>>
-inline CameraType loadCamera(const std::string& filename)
+CameraType loadCamera(const std::string& filename)
 {
     auto cams = loadCameras<CameraType>(filename);
     if (cams.empty())
@@ -78,4 +83,4 @@ inline CameraType loadCamera(const std::string& filename)
 
 } // namespace vcl
 
-#endif // VCL_RENDER_IO_CAMERA_LOAD_H
+#endif // VCL_IO_CAMERA_LOAD_H

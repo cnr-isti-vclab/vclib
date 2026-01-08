@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -334,7 +334,8 @@ public:
      * @brief Generates BGFX sampler flags based on the texture's filtering
      * and wrapping modes.
      *
-     * @param[in] tex: The TextureDescriptor object to derive sampler flags from.
+     * @param[in] tex: The TextureDescriptor object to derive sampler flags
+     * from.
      * @return The generated BGFX sampler flags.
      */
     static uint samplerFlagsFromTexture(const TextureDescriptor& tex)

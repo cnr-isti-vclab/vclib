@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -120,20 +120,22 @@ auto meshTextureAndTexCoords()
     }
 
     // Example 3: Working with materials and texture images
-    std::cout << "\n3. Working with materials and texture images..." << std::endl;
+    std::cout << "\n3. Working with materials and texture images..."
+              << std::endl;
     std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
               << " materials" << std::endl;
 
     for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
         // access to the baseColor texture descriptor
-        const auto& texture = meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
+        const auto& texture =
+            meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
         std::cout << "     Base Color Texture " << i << ": " << texture.path()
                   << std::endl;
         // if the images are not loaded, they will be empty
         // (width and height will be 0)
         const auto& image = meshWedgeTexCoords.textureImage(texture.path());
-        std::cout << "       Size: " << image.width() << "x"
-                  << image.height() << std::endl;
+        std::cout << "       Size: " << image.width() << "x" << image.height()
+                  << std::endl;
     }
 
     // Example 4: Creating mesh with texture coordinates
@@ -175,6 +177,12 @@ auto meshTextureAndTexCoords()
     // mesh file path when saving)
     customMesh.material(0).baseColorTextureDescriptor().path() =
         "custom_texture_path.png"; // just an example path
+
+    // add also the image of the texture to the mesh
+    const auto& image = meshWedgeTexCoords.textureImage(
+        meshWedgeTexCoords.material(0).baseColorTextureDescriptor().path());
+
+    customMesh.pushTextureImage("custom_texture_path.png", image);
 
     std::cout << "   Created custom mesh with " << customMesh.vertexNumber()
               << " vertices and " << customMesh.faceNumber() << " faces"

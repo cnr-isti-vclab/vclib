@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -86,9 +86,9 @@ public:
     };
 
 private:
-    std::string         mPath;      ///< The file path to the texture source.
-    MinificationFilter  mMinFilter =
-        MinificationFilter::NONE;   ///< The minification filter mode.
+    std::string        mPath; ///< The file path to the texture source.
+    MinificationFilter mMinFilter =
+        MinificationFilter::NONE; ///< The minification filter mode.
     MagnificationFilter mMagFilter =
         MagnificationFilter::NONE; ///< The magnification filter mode.
     WrapMode mWrapU =
