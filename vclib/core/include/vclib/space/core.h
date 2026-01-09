@@ -31,6 +31,7 @@
 #include "core/distribution.h"
 #include "core/histogram.h"
 #include "core/image.h"
+#include "core/line.h"
 #include "core/material.h"
 #include "core/matrix.h"
 #include "core/parallel_vector_tuple.h"
