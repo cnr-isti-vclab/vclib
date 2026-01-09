@@ -108,14 +108,11 @@ public:
     }
 
     // delete copy constructor and copy assignment operator
-    Scene(const Scene&) = delete;
+    Scene(const Scene&)            = delete;
     Scene& operator=(const Scene&) = delete;
 
     // move constructor
-    Scene(Scene&& other) noexcept
-    {
-        swap(other);
-    }
+    Scene(Scene&& other) noexcept { swap(other); }
 
     // move assignment operator
     Scene& operator=(Scene&& other) noexcept
@@ -137,7 +134,7 @@ public:
     HitResult firstFaceIntersectedByRay(
         const Point3<ScalarType>& origin,
         const Point3<ScalarType>& direction,
-        float near = 0.f,
+        float                     near = 0.f,
         float far = std::numeric_limits<float>::infinity()) const
     {
         RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
@@ -159,7 +156,7 @@ public:
     template<typename ScalarType>
     HitResult firstFaceIntersectedByRay(
         const Ray3<ScalarType>& ray,
-        float near = 0.f,
+        float                   near = 0.f,
         float far = std::numeric_limits<float>::infinity()) const
     {
         return firstFaceIntersectedByRay(
@@ -174,19 +171,21 @@ public:
             segment.p0(), segment.direction(), 0.f, segment.length());
     }
 
-    template<Range R>
+    template<Range R1, Range R2>
     std::vector<HitResult> firstFaceIntersectedByRays(
-        R&&   origins,
-        R&&   directions,
+        R1&&  origins,
+        R2&&  directions,
         float near = 0.f,
         float far  = std::numeric_limits<float>::infinity()) const
-        requires Point3Concept<std::ranges::range_value_t<R>>
+        requires Point3Concept<std::ranges::range_value_t<R1>> &&
+                 Point3Concept<std::ranges::range_value_t<R2>>
     {
-        using PointType  = std::ranges::range_value_t<R>;
+        using PointType  = std::ranges::range_value_t<R1>;
         using ScalarType = typename PointType::ScalarType;
 
-        assert(std::ranges::size(origins) == std::ranges::size(directions) &&
-               "Origins and directions ranges must have the same size.");
+        assert(
+            std::ranges::size(origins) == std::ranges::size(directions) &&
+            "Origins and directions ranges must have the same size.");
 
         std::size_t sz = std::ranges::size(origins);
 
@@ -214,17 +213,10 @@ public:
                 last = sz;
             }
 
-
             for (std::size_t i = first; i < last; ++i) {
-
                 std::size_t idx = i - first;
                 initRayHitsValues(
-                    rayHits,
-                    idx,
-                    origins[i],
-                    directions[i],
-                    near,
-                    far);
+                    rayHits, idx, origins[i], directions[i], near, far);
             }
 
             rtcIntersect16(validMask.data(), mScene, &rayHits);
@@ -254,13 +246,34 @@ public:
         return results;
     }
 
+    template<Range R>
+    std::vector<HitResult> firstFaceIntersectedByRays(
+        R&&   rays,
+        float near = 0.f,
+        float far  = std::numeric_limits<float>::infinity()) const
+        requires Ray3Concept<std::ranges::range_value_t<R>>
+    {
+        auto getOriginView = [](const auto& r) {
+            return r.origin();
+        };
+
+        auto getDirectionView = [](const auto& r) {
+            return r.direction();
+        };
+
+        auto origins    = rays | std::views::transform(getOriginView);
+        auto directions = rays | std::views::transform(getDirectionView);
+
+        return firstFaceIntersectedByRays(origins, directions, near, far);
+    }
+
 private:
     template<Point3Concept PointType>
     static inline RTCRayHit initRayHitValues(
         const PointType& origin,
         const PointType& direction,
         float            tnear = 0.f,
-        float            tfar = std::numeric_limits<float>::infinity())
+        float            tfar  = std::numeric_limits<float>::infinity())
     {
         RTCRayHit rayhit;
         rayhit.ray.org_x     = origin.x();
@@ -281,11 +294,11 @@ private:
     template<Point3Concept PointType>
     static inline void initRayHitsValues(
         RTCRayHit16&     rayhits,
-        uint i,
+        uint             i,
         const PointType& origin,
         const PointType& direction,
         float            tnear = 0.f,
-        float            tfar = std::numeric_limits<float>::infinity())
+        float            tfar  = std::numeric_limits<float>::infinity())
     {
         rayhits.ray.org_x[i]     = origin.x();
         rayhits.ray.org_y[i]     = origin.y();

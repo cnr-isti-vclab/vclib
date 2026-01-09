@@ -207,10 +207,13 @@ TEMPLATE_TEST_CASE(
         uint embreeMisses     = 0;
         uint bruteForceMisses = 0;
 
-        for (const auto& ray : rays) {
+        // here use firstFaceIntersectedByRays
+
+        auto embreeResults = scene.firstFaceIntersectedByRays(rays);
+
+        for (uint i = 0; const auto& ray : rays) {
             // Embree intersection
-            auto embreeResult = scene.firstFaceIntersectedByRay(ray);
-            uint embreeFaceID = std::get<0>(embreeResult);
+            uint embreeFaceID = std::get<0>(embreeResults[i]);
 
             // Brute force intersection
             auto [bruteFaceID, brutePoint] = bruteForceRayIntersection(pm, ray);
@@ -229,8 +232,8 @@ TEMPLATE_TEST_CASE(
                 }
                 else {
                     // Could be at boundary, check distance
-                    vcl::Point3f baryCoords = std::get<1>(embreeResult);
-                    uint         triID      = std::get<2>(embreeResult);
+                    vcl::Point3f baryCoords = std::get<1>(embreeResults[i]);
+                    uint         triID      = std::get<2>(embreeResults[i]);
 
                     auto& face = pm.face(embreeFaceID);
                     auto  tris = vcl::earCut(face);
@@ -256,6 +259,7 @@ TEMPLATE_TEST_CASE(
                     bruteForceMisses++;
                 }
             }
+            ++i;
         }
 
         std::cerr << "PolyMesh - Matches: " << matches << "/" << N_RAYS_TEST
