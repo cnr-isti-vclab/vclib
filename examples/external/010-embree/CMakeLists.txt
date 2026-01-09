@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 01-embree)
+set(EXAMPLE_NAME 010-embree)
 project(vclib-external-example-${EXAMPLE_NAME})
 
 ### Build settings
