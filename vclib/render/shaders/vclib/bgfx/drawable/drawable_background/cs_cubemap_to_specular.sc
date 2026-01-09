@@ -80,9 +80,8 @@ void main()
 
         if(NoL > 0.0)
         {
-            // mip level 0 is too high
             if(roughness == 0.0) 
-                mipLevel = 0.6;
+                mipLevel = 0.0;
 
             vec3 sampleColor = textureCubeLod(s_env0, leftHand(L), mipLevel).rgb;
             prefilteredColor += sampleColor * NoL;

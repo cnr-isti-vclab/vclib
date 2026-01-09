@@ -155,6 +155,10 @@ void main()
         // view direction
         vec3 V = normalize(-v_position); // camera is at the origin
 
+        vec3 reflection = normalize(reflect(-V, normal));
+
+        reflection = normalize(mul(u_invView, vec4(reflection, 0.0)).xyz);
+
         // convert from camera to world space
         normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
         V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
@@ -169,7 +173,7 @@ void main()
 
         // specular light
         float specularMipLevel = roughness * (specularMipCount - 1.0);
-        vec3 reflection = normalize(reflect(-V, normal));
+        
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
 
         // Fresnel
