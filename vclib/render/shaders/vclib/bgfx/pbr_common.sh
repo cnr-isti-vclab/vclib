@@ -65,10 +65,11 @@
 #define DISTRIBUTION_LAMBERTIAN                     0u
 #define DISTRIBUTION_GGX                            1u
 
-#define TONEMAP_BASIC               0u
-#define TONEMAP_ACES_NARKOWICZ      1u
-#define TONEMAP_ACES_HILL           2u
-#define TONEMAP_KHRONOS_PBR_NEUTRAL 3u
+#define TONEMAP_NONE                0
+#define TONEMAP_BASIC               1
+#define TONEMAP_ACES_HILL           2
+#define TONEMAP_ACES_NARKOWICZ      3
+#define TONEMAP_KHRONOS_PBR_NEUTRAL 4
 
 float solidAngle00ToUv(vec2 uv)
 {
@@ -167,13 +168,13 @@ vec3 toneMapBasic(vec3 color)
     return color / (color + 1.0); // Reinhard operator
 }
 
-vec3 toneMap(vec3 color, uint mapping)
+vec3 toneMap(vec3 color, int mapping)
 {
     switch(mapping)
     {
         case TONEMAP_BASIC:               return toneMapBasic(color);
-        case TONEMAP_ACES_NARKOWICZ:      return toneMapACES_Narkowicz(color);
         case TONEMAP_ACES_HILL:           return toneMapACES_Hill(color);
+        case TONEMAP_ACES_NARKOWICZ:      return toneMapACES_Narkowicz(color);
         case TONEMAP_KHRONOS_PBR_NEUTRAL: return toneMap_KhronosPbrNeutral(color);
         default:                          return color;
     }
@@ -652,7 +653,8 @@ vec4 pbrColorLights(
     vec3 normal,
     float metallic,
     float roughness,
-    vec3 emissive)
+    vec3 emissive,
+    int toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = vec3_splat(0.04);
@@ -708,7 +710,7 @@ vec4 pbrColorLights(
     finalColor += emissive;
 
     // tone mapping 
-    finalColor = toneMap(finalColor, TONEMAP_ACES_HILL);
+    finalColor = toneMap(finalColor, toneMapping);
 
     // gamma correction
     finalColor = gammaCorrect(finalColor);
@@ -724,7 +726,8 @@ vec4 pbrColorIbl(
     vec3 dielectricFresnel,
     float metallic,
     float occlusion,
-    vec3 emissive)
+    vec3 emissive,
+    int toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
 
@@ -743,7 +746,7 @@ vec4 pbrColorIbl(
 
     finalColor += emissive;
 
-    finalColor = toneMap(finalColor, TONEMAP_ACES_HILL);
+    finalColor = toneMap(finalColor, toneMapping);
 
     finalColor = gammaCorrect(finalColor);
 

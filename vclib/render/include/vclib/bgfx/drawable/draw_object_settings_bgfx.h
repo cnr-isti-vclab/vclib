@@ -44,6 +44,9 @@ struct DrawObjectSettingsBGFX
      */
     bool pbrMode = false;
 
+    /**< @brief The tone mapping operator to use in PBR mode. */
+    int toneMapping = 2;
+
     const Environment* environment = nullptr;
 };
 

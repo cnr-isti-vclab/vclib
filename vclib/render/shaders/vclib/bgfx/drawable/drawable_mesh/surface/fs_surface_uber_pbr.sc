@@ -197,7 +197,8 @@ void main()
             dielectricFresnel,
             metallic,
             occlusion,
-            emissiveColor
+            emissiveColor,
+            u_tone_mapping
         );
     }
     else
@@ -227,7 +228,8 @@ void main()
             normal,
             metallic,
             roughness,
-            emissiveColor
+            emissiveColor,
+            u_tone_mapping
         );
     }
 }

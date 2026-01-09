@@ -69,6 +69,16 @@ public:
             ImGui::EndChild();
         }
 
+        // drawable mesh info and settings for selected mesh
+        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+            auto drawable =
+                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
+                    Base::mDrawList->at(mMeshIndex));
+            if (drawable) {
+                drawMeshSettings(*drawable);
+            }
+        }
+
         // combo box for pbr mode
         ImGui::Separator();
         ImGui::Text("Render Mode:");
@@ -90,13 +100,32 @@ public:
             ImGui::EndCombo();
         }
 
-        // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
-            auto drawable =
-                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
-            if (drawable) {
-                drawMeshSettings(*drawable);
+        if(pbrMode) 
+        {
+            ImGui::Separator();
+            ImGui::Text("Tone mapping:");
+            ImGui::SameLine();
+            const char* toneMappingNames[] = {
+                "None",
+                "Basic", 
+                "ACES Hill", 
+                "ACES Narkowicz", 
+                "Khronos PBR Neutral"
+            };
+            int toneMapping = static_cast<int>(Base::getToneMapping());
+            ImGui::SetNextItemWidth(80);
+            if(ImGui::BeginCombo(
+                    "##ComboToneMapping",
+                    toneMappingNames[toneMapping])) {
+                for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
+                    bool isSelected = toneMapping == n;
+                    if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                        Base::setToneMapping(static_cast<Base::ToneMapping>(n));
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
             }
         }
 

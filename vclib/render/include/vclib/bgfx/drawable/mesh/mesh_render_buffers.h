@@ -264,6 +264,7 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m,
+        int                       toneMapping,
         bool                      ibl = false) const
     {
         static const Material DEFAULT_MATERIAL;
@@ -279,6 +280,7 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
+                toneMapping,
                 ibl);
         }
         else {
@@ -293,6 +295,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
+                    toneMapping,
                     ibl);
             }
             else {
@@ -314,6 +317,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
+                    toneMapping,
                     ibl);
 
                 // set the state according to the material
