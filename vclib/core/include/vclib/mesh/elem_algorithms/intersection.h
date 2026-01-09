@@ -198,6 +198,119 @@ bool intersect(const Sphere<SScalar>& sphere, const FaceType& f)
     return intersect(f, sphere);
 }
 
+/**
+ * @brief Computes the intersection point between a ray and a face, if it
+ * exists.
+ *
+ * If the face is a triangle, the function will use the intersection function
+ * between a ray and a triangle. If the face is polygonal, the face is first
+ * triangulated using an earcut algorithm, and then for each triangle, the
+ * ray-triangle intersection is computed.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to compute the
+ * intersection point between a ray and a face. If an intersection exists,
+ * the function returns the intersection point as an optional value. If no
+ * intersection exists, the function returns an empty optional.
+ *
+ * @tparam RayType: A type that satisfies the Ray3Concept concept.
+ * @tparam FaceType: A type that satisfies the FaceConcept.
+ *
+ * @param[in] ray: The ray to compute the intersection with.
+ * @param[in] face: The face to compute the intersection with.
+ * @param[out] t: An optional reference to store the parameter value along the
+ * ray at which the intersection occurs.
+ * @return An optional point that represents the intersection point between the
+ * ray and the face, if it exists.
+ *
+ * @ingroup core_intersection
+ */
+template<Ray3Concept RayType, FaceConcept FaceType>
+std::optional<typename RayType::PointType> intersection(
+    const RayType&                                                      ray,
+    const FaceType&                                                     face,
+    std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {})
+    requires std::same_as<
+        typename RayType::ScalarType,
+        typename FaceType::VertexType::PositionType::ScalarType>
+{
+    using PointType  = typename RayType::PointType;
+    using ScalarType = typename PointType::ScalarType;
+
+    auto triangleIntersection = [](const FaceType& f,
+                                   const RayType&  r,
+                                   auto t) -> std::optional<PointType> {
+        return intersection(
+            r,
+            TriangleWrapper(
+                f.vertex(0)->position(),
+                f.vertex(1)->position(),
+                f.vertex(2)->position()),
+            t);
+    };
+
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return triangleIntersection(face, ray, t);
+    }
+    else {
+        if (face.vertexNumber() == 3) {
+            return triangleIntersection(face, ray, t);
+        }
+        else {
+            std::vector<uint> tris = earCut(face);
+            for (uint i = 0; i < tris.size(); i += 3) {
+                std::optional<PointType> res = intersection(
+                    ray,
+                    TriangleWrapper(
+                        face.vertex(tris[i])->position(),
+                        face.vertex(tris[i + 1])->position(),
+                        face.vertex(tris[i + 2])->position()),
+                     t);
+                if (res.has_value())
+                    return res;
+            }
+            return std::nullopt;
+        }
+    }
+}
+
+/**
+ * @brief Checks if a ray intersects with a face.
+ *
+ * If the face is a triangle, the function will use the intersection function
+ * between a ray and a triangle. If the face is polygonal, the face is first
+ * triangulated using an earcut algorithm, and then for each triangle, the
+ * ray-triangle intersection is computed.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to check if a
+ * ray intersects with a face. If an intersection exists, the function
+ * returns true. If no intersection exists, the function returns false.
+ *
+ * @tparam RayType: A type that satisfies the Ray3Concept concept.
+ * @tparam FaceType: A type that satisfies the FaceConcept.
+ *
+ * @param[in] ray: The ray to check for intersection.
+ * @param[in] face: The face to check for intersection.
+ * @return True if the ray intersects with the face, false otherwise.
+ *
+ * @ingroup core_intersection
+ */
+template<Ray3Concept RayType, FaceConcept FaceType>
+bool intersect(const RayType& ray, const FaceType& face)
+{
+    return intersection(ray, face).has_value();
+}
+
+/**
+ * @copydoc vcl::intersect(const RayType&, const FaceType&)
+ *
+ * @ingroup core_intersection
+ */
+template<FaceConcept FaceType, Ray3Concept RayType>
+bool intersect(const FaceType& face, const RayType& ray)
+{
+    return intersect(ray, face);
+}
+
 } // namespace vcl
 
 #endif // VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
