@@ -199,9 +199,9 @@ public:
             ++chunks;
         }
 
-        auto computeChunk = [&] (uint chunk) {
-
-            std::vector<int> validMask(16, -1);
+        auto computeChunk = [&](uint chunk) {
+            std::array<int, 16> validMask;
+            std::ranges::fill(validMask, -1);
 
             RTCRayHit16 rayHits;
 
@@ -246,9 +246,10 @@ public:
             }
         };
 
-        for (std::size_t c = 0; c < chunks; ++c) {
-            computeChunk(c);
-        }
+        std::vector<std::size_t> chunkIndices(chunks);
+        std::iota(chunkIndices.begin(), chunkIndices.end(), 0);
+
+        vcl::parallelFor(chunkIndices, computeChunk);
 
         return results;
     }
