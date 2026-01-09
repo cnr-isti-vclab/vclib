@@ -236,8 +236,9 @@ std::optional<typename RayType::PointType> intersection(
     using PointType  = typename RayType::PointType;
     using ScalarType = typename PointType::ScalarType;
 
-    auto triangleIntersection =
-        [](const FaceType& f, const RayType& r, auto t) -> bool {
+    auto triangleIntersection = [](const FaceType& f,
+                                   const RayType&  r,
+                                   auto t) -> std::optional<PointType> {
         return intersection(
             r,
             TriangleWrapper(
@@ -252,7 +253,7 @@ std::optional<typename RayType::PointType> intersection(
     }
     else {
         if (face.vertexNumber() == 3) {
-            return triangleIntersection(face, ray);
+            return triangleIntersection(face, ray, t);
         }
         else {
             std::vector<uint> tris = earCut(face);
