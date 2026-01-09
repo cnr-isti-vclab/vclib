@@ -104,7 +104,23 @@ public:
      */
     const PointT& direction() const { return mDirection; }
 
+    /**
+     * @brief Returns the normalized direction of the line.
+     *
+     * @return The normalized direction of the line.
+     */
     PointT normalizedDirection() const { return mDirection.normalized(); }
+
+    /**
+     * @brief Returns the point at parameter t along the line.
+     *
+     * @param[in] t: The parameter value.
+     * @return The point at parameter t along the line.
+     */
+    PointT pointAtParameter(ScalarType t) const
+    {
+        return mOrigin + mDirection * t;
+    }
 
     bool operator==(const Line<PointT>& s) const = default;
 
