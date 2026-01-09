@@ -264,6 +264,7 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m,
+        float                     exposure,
         int                       toneMapping,
         bool                      ibl = false) const
     {
@@ -280,6 +281,7 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
+                exposure,
                 toneMapping,
                 ibl);
         }
@@ -295,6 +297,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
+                    exposure,
                     toneMapping,
                     ibl);
             }
@@ -317,6 +320,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
+                    exposure,
                     toneMapping,
                     ibl);
 

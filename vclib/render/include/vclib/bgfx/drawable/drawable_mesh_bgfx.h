@@ -221,7 +221,8 @@ public:
                 uint64_t materialState = mMRB.bindMaterials(
                     mMRS, 
                     i, 
-                    *this, 
+                    *this,
+                    settings.exposure, 
                     settings.toneMapping,
                     settings.environment->canDraw()
                 );

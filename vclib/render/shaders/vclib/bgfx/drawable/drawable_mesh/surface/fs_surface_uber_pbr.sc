@@ -198,6 +198,7 @@ void main()
             metallic,
             occlusion,
             emissiveColor,
+            u_exposure,
             u_tone_mapping
         );
     }
@@ -229,6 +230,7 @@ void main()
             metallic,
             roughness,
             emissiveColor,
+            u_exposure,
             u_tone_mapping
         );
     }

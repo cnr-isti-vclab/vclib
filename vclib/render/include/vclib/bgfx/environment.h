@@ -172,7 +172,7 @@ class Environment
         BRDF_LUT
     };
 
-    void drawBackground(const uint viewId, const int toneMapping);
+    void drawBackground(const uint viewId, const int toneMapping, const float exposure);
 
     void bindTexture(TextureType type, uint stage, uint samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 

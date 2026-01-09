@@ -37,7 +37,7 @@
 
 namespace vcl {
 
-void Environment::drawBackground(const uint viewId, const int toneMapping)
+void Environment::drawBackground(const uint viewId, const int toneMapping, const float exposure)
 {
     prepareBackground(viewId);
 
@@ -50,7 +50,7 @@ void Environment::drawBackground(const uint viewId, const int toneMapping)
     using enum TextureType;
     bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-    bindDataUniform(float(toneMapping));
+    bindDataUniform(float(toneMapping), exposure);
 
     mVertexBuffer.bindVertex(0);
 

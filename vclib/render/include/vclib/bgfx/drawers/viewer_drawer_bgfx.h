@@ -64,6 +64,8 @@ public:
 
         settings.pbrMode = ParentViewer::isPBREnabled();
 
+        settings.exposure = ParentViewer::getExposure();
+
         settings.toneMapping = toUnderlying(ParentViewer::getToneMapping());
 
         settings.environment = &mPanorama;
@@ -74,7 +76,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         if(settings.pbrMode)
-            mPanorama.drawBackground(settings.viewId, settings.toneMapping);
+            mPanorama.drawBackground(settings.viewId, settings.toneMapping, settings.exposure);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }

@@ -654,6 +654,7 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float exposure,
     int toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
@@ -709,6 +710,8 @@ vec4 pbrColorLights(
     // add emissive component
     finalColor += emissive;
 
+    finalColor *= exposure;
+
     // tone mapping 
     finalColor = toneMap(finalColor, toneMapping);
 
@@ -727,6 +730,7 @@ vec4 pbrColorIbl(
     float metallic,
     float occlusion,
     vec3 emissive,
+    float exposure,
     int toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
@@ -745,6 +749,8 @@ vec4 pbrColorIbl(
     finalColor *= occlusion;
 
     finalColor += emissive;
+
+    finalColor *= exposure;
 
     finalColor = toneMap(finalColor, toneMapping);
 

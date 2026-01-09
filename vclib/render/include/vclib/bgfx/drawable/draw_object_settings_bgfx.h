@@ -44,6 +44,9 @@ struct DrawObjectSettingsBGFX
      */
     bool pbrMode = false;
 
+    /**< @brief The exposure value to use in PBR mode. */
+    float exposure = 1.0f;
+
     /**< @brief The tone mapping operator to use in PBR mode. */
     int toneMapping = 2;
 

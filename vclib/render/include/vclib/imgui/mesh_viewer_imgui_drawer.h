@@ -102,6 +102,15 @@ public:
 
         if(pbrMode) 
         {
+            // exposure slider
+            ImGui::Separator();
+            ImGui::Text("Exposure:");
+            ImGui::SameLine();
+            float exposure = Base::getExposure();
+            if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                Base::setExposure(exposure);
+
+            // tone mapping combo box
             ImGui::Separator();
             ImGui::Text("Tone mapping:");
             ImGui::SameLine();
@@ -113,7 +122,6 @@ public:
                 "Khronos PBR Neutral"
             };
             int toneMapping = static_cast<int>(Base::getToneMapping());
-            ImGui::SetNextItemWidth(80);
             if(ImGui::BeginCombo(
                     "##ComboToneMapping",
                     toneMappingNames[toneMapping])) {
