@@ -65,11 +65,12 @@
 #define DISTRIBUTION_LAMBERTIAN                     0u
 #define DISTRIBUTION_GGX                            1u
 
-#define TONEMAP_NONE                0
-#define TONEMAP_BASIC               1
-#define TONEMAP_ACES_HILL           2
-#define TONEMAP_ACES_NARKOWICZ      3
-#define TONEMAP_KHRONOS_PBR_NEUTRAL 4
+#define TONEMAP_NONE                     0
+#define TONEMAP_BASIC                    1
+#define TONEMAP_ACES_HILL                2
+#define TONEMAP_ACES_HILL_EXPOSURE_BOOST 3
+#define TONEMAP_ACES_NARKOWICZ           4
+#define TONEMAP_KHRONOS_PBR_NEUTRAL      5
 
 float solidAngle00ToUv(vec2 uv)
 {
@@ -172,11 +173,12 @@ vec3 toneMap(vec3 color, int mapping)
 {
     switch(mapping)
     {
-        case TONEMAP_BASIC:               return toneMapBasic(color);
-        case TONEMAP_ACES_HILL:           return toneMapACES_Hill(color);
-        case TONEMAP_ACES_NARKOWICZ:      return toneMapACES_Narkowicz(color);
-        case TONEMAP_KHRONOS_PBR_NEUTRAL: return toneMap_KhronosPbrNeutral(color);
-        default:                          return color;
+        case TONEMAP_BASIC:                    return toneMapBasic(color);
+        case TONEMAP_ACES_HILL:                return toneMapACES_Hill(color);
+        case TONEMAP_ACES_HILL_EXPOSURE_BOOST: return toneMapACES_Hill(color / 0.6); // boost exposure by 0.6
+        case TONEMAP_ACES_NARKOWICZ:           return toneMapACES_Narkowicz(color);
+        case TONEMAP_KHRONOS_PBR_NEUTRAL:      return toneMap_KhronosPbrNeutral(color);
+        default:                               return color;
     }
 }
 

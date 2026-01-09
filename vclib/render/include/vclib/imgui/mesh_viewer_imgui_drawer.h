@@ -118,6 +118,7 @@ public:
                 "None",
                 "Basic", 
                 "ACES Hill", 
+                "ACES Hill Exposure Boost",
                 "ACES Narkowicz", 
                 "Khronos PBR Neutral"
             };

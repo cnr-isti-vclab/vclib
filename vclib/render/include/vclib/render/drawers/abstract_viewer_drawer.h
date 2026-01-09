@@ -57,6 +57,7 @@ public:
         NONE,
         BASIC,
         ACES_HILL,
+        ACES_HILL_EXPOSURE_BOOST,
         ACES_NARKOWICZ,
         KHRONOS_PBR_NEUTRAL
     };
