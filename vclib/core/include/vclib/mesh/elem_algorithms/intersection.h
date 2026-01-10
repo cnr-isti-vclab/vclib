@@ -264,7 +264,7 @@ std::optional<typename RayType::PointType> intersection(
                         face.vertex(tris[i])->position(),
                         face.vertex(tris[i + 1])->position(),
                         face.vertex(tris[i + 2])->position()),
-                     t);
+                    t);
                 if (res.has_value())
                     return res;
             }
