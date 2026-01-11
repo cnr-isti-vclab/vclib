@@ -30,7 +30,8 @@ void main()
     vec4 position = vec4(a_position.x, a_position.y, a_position.z, 1.0);
     
     // get the outward view direction in world space back from clip space
-    vec3 worldViewDir = mul(u_invViewProj, position).xyz;
+    vec3 viewDir = mul(u_invProj, position).xyz;
+    vec3 worldViewDir = mul(mat3(u_invView), viewDir); // keep just the rotation part
 
     // cubemaps are left-handed, so invert the Z coordinate 
     // to adapt to our right-handed system
