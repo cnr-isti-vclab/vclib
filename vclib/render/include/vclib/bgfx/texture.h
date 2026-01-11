@@ -131,6 +131,16 @@ public:
     bool isValid() const { return bgfx::isValid(mTextureHandle); }
 
 
+    /**
+     * @brief Creates a texture from a bgfx::ImageContainer.
+     *
+     * @param[in] image: Pointer to a bgfx::ImageContainer containing the
+     * texture data.
+     * @param[in] hasMips: Indicates if the texture will have mipmaps.
+     * If the container already has mipmaps, they will be used, otherwise the space
+     * for mipmaps will be allocated but not filled.
+     * @param[in] flags: BGFX texture and sampler creation flags.
+     */
     void set(
         bimg::ImageContainer *image,
         bool                  hasMips,
