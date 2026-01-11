@@ -72,11 +72,24 @@
 #define TONEMAP_ACES_NARKOWICZ           4
 #define TONEMAP_KHRONOS_PBR_NEUTRAL      5
 
+/**
+ * @brief Computes the solid angle covered by the rectangle starting from (0,0) to some given (u,v) projected onto a unit sphere.
+ * Supposedly used for cubemap texel solid angle computation. 
+ * @param[in] uv: The UV coordinates.
+ * @return The solid angle covered by the rectangle starting from (0,0) to some given (u,v).
+ */
 float solidAngle00ToUv(vec2 uv)
 {
     return atan2(uv.x * uv.y, sqrt(uv.x * uv.x + uv.y * uv.y + 1.0));
 }
 
+/**
+ * @brief Computes the solid angle covered by a texel in UV space projected onto a unit sphere.
+ * Supposedly used for cubemap texel solid angle computation. 
+ * @param[in] uv: The top-left UV coordinates of the texel.
+ * @param[in] invSize: The inverted size of the cube needed to compute the other angle coordinates of the texel.
+ * @return The solid angle covered by the texel.
+ */
 float solidAngle(vec2 uv, float invSize)
 {
     vec2 A = vec2(uv.x,           uv.y + invSize);
@@ -90,8 +103,13 @@ float solidAngle(vec2 uv, float invSize)
         solidAngle00ToUv(D);
 }
 
-// ACES tone map (faster approximation)
-// see: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+/**
+ * @brief Applies tone mapping to the given color using the ACES tone mapping modified by Narkowicz.
+ * see: https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
+ * @param[in] color: The color to tone map.
+ * @param[in] mapping: The tone mapping operator to use.
+ * @return The tone mapped color.
+ */
 vec3 toneMapACES_Narkowicz(vec3 color)
 {
     const float A = 2.51;
@@ -109,8 +127,12 @@ vec3 RRTAndODTFit(vec3 color)
     return a / b;
 }
 
-// ACES filmic tone map approximation
-// see https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
+/**
+ * @brief Applies tone mapping to the given color using the ACES filmic tone map approximation.
+ * see https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl
+ * @param[in] color: The color to tone map.
+ * @return The tone mapped color.
+ */
 vec3 toneMapACES_Hill(vec3 color)
 {
 
@@ -143,7 +165,11 @@ vec3 toneMapACES_Hill(vec3 color)
     return color;
 }
 
-// Khronos PBR neutral tone mapping
+/**
+ * @brief Applies tone mapping to the given color using Khronos PBR neutral tone mapping.
+ * @param[in] color: The color to tone map.
+ * @return The tone mapped color.
+ */
 vec3 toneMap_KhronosPbrNeutral(vec3 color)
 {
     const float startCompression = 0.8 - 0.04;
@@ -164,11 +190,22 @@ vec3 toneMap_KhronosPbrNeutral(vec3 color)
     return mix(color, newPeak * vec3_splat(1.0), g);
 }
 
+/**
+ * @brief Applies tone mapping to the given color using the Reinhard operator.
+ * @param[in] color: The color to tone map.
+ * @return The tone mapped color.
+ */
 vec3 toneMapBasic(vec3 color)
 {
-    return color / (color + 1.0); // Reinhard operator
+    return color / (color + 1.0);
 }
 
+/**
+ * @brief Applies tone mapping to the given color using the specified tone mapping operator.
+ * @param[in] color: The color to tone map.
+ * @param[in] mapping: The tone mapping operator to use.
+ * @return The tone mapped color.
+ */
 vec3 toneMap(vec3 color, int mapping)
 {
     switch(mapping)
@@ -198,6 +235,11 @@ float D_GGX(
     return alpha2 / (PI * denom * denom);
 }
 
+/**
+ * @brief Computes the radical inverse of a number using the Van der Corput sequence.
+ * @param[in] bits: The input number.
+ * @return The radical inverse of the input number.
+ */
 float radicalInverse_VdC(uint bits) 
 {
     bits = (bits << 16u) | (bits >> 16u);
@@ -208,13 +250,22 @@ float radicalInverse_VdC(uint bits)
     return float(bits) * 2.3283064365386963e-10; // / 0x100000000
 }
 
+/**
+ * @brief Computes the Hammersley point set for a given index and total number of samples.
+ * @param[in] i: The sample index.
+ * @param[in] N: The total number of samples.
+ * @return The Hammersley point set.
+ */
 vec2 hammersley(uint i, uint N)
 {
     return vec2(float(i)/float(N), radicalInverse_VdC(i));
 }  
 
-// TBN generates a tangent bitangent normal coordinate frame from the normal
-// (the normal must be normalized)
+/**
+ * @brief Generates a Tangent-Bitangent-Normal (TBN) matrix given a normal vector.
+ * @param[in] normal: The normal vector (must be normalized).
+ * @return The TBN matrix.
+ */
 mat3 generateTBN(vec3 normal)
 {
     vec3 bitangent = vec3(0.0, 1.0, 0.0);
@@ -240,6 +291,9 @@ mat3 generateTBN(vec3 normal)
     return mat3(tangent, bitangent, normal);
 }
 
+/**
+ * @brief Structure representing a sample from a microfacet distribution.
+ */
 struct MicrofacetDistributionSample
 {
     float pdf;
@@ -248,6 +302,11 @@ struct MicrofacetDistributionSample
     float phi;
 };
 
+/**
+ * @brief Generates a sample from the hemisphere following the Lambertian distribution weighted by the cosine of the angle.
+ * @param[in] xi: The random sample in [0,1]^2.
+ * @return The Lambertian microfacet distribution sample.
+ */
 MicrofacetDistributionSample Lambertian(vec2 xi)
 {
     MicrofacetDistributionSample lambertian;
@@ -264,6 +323,12 @@ MicrofacetDistributionSample Lambertian(vec2 xi)
     return lambertian;
 }
 
+/**
+ * @brief Generates a sample from the hemisphere following the GGX microfacet distribution.
+ * @param[in] xi: The random sample in [0,1]^2.
+ * @param[in] roughness: The surface roughness.
+ * @return The GGX microfacet distribution sample.
+ */
 MicrofacetDistributionSample GGX(vec2 xi, float roughness)
 {
     MicrofacetDistributionSample ggx;
@@ -290,6 +355,15 @@ MicrofacetDistributionSample GGX(vec2 xi, float roughness)
     return ggx;
 }
 
+/**
+ * @brief Generates a sample vector from the hemisphere according to the specified microfacet distribution.
+ * @param[in] sampleIndex: The index of the sample.
+ * @param[in] sampleCount: The total number of samples.
+ * @param[in] N: The normal vector.
+ * @param[in] distributionType: The type of microfacet distribution to use.
+ * @param[in] roughness: The surface roughness (used only for the distributions which require it).
+ * @return The sampled vector and its pdf.
+ */
 vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distributionType, float roughness)
 {
     vec2 Xi = hammersley(sampleIndex, sampleCount);
@@ -318,12 +392,19 @@ vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distri
     return vec4(sampleVec.x, sampleVec.y, sampleVec.z, sample.pdf);
 }
 
+/**
+ * @brief Computes the appropriate mip level to sample from a cubemap given the PDF of the sample,
+ * the cubemap width and the number of samples taken.
+ * Approximation used to reduce the number of texture lookups.
+ * See: https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
+ * and  https://cgg.mff.cuni.cz/~jaroslav/papers/2007-sketch-fis/Final_sap_0073.pdf
+ * @param[in] pdf: The probability density function value of the sample.
+ * @param[in] width: The width of the cubemap.
+ * @param[in] sampleCount: The number of samples taken.
+ * @return The appropriate mip level to sample from.
+ */
 float computeLod(float pdf, float width, float sampleCount)
 {
-    // Mipmap Filtered Samples
-    // https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-20-gpu-based-importance-sampling
-    // https://cgg.mff.cuni.cz/~jaroslav/papers/2007-sketch-fis/Final_sap_0073.pdf
-
     // Solid angle of current sample -- bigger for less likely samples
 
     // float omegaS = 1.0 / (sampleCount * pdf);
@@ -340,64 +421,55 @@ float computeLod(float pdf, float width, float sampleCount)
     return 0.5 * log2( (6.0 * width * width) / (sampleCount * pdf));
 }
 
-vec3 importanceSampleGGX(vec2 Xi, vec3 N, float roughness)
-{
-    float a = roughness*roughness;
-	
-    float phi = 2.0 * PI * Xi.x;
-    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));
-    float sinTheta = sqrt(1.0 - cosTheta*cosTheta);
-	
-    // from spherical coordinates to cartesian coordinates
-    vec3 H;
-    H.x = cos(phi) * sinTheta;
-    H.y = sin(phi) * sinTheta;
-    H.z = cosTheta;
-	
-    // from tangent-space vector to world-space sample vector
-    vec3 up        = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
-    vec3 tangent   = normalize(cross(up, N));
-    vec3 bitangent = cross(N, tangent);
-	
-    vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
-    return normalize(sampleVec);
-}  
-
+/**
+ * @brief Converts a right-handed coordinate system vector to a left-handed coordinate system vector.
+ * @param[in] rightHand: The right-handed coordinate system vector.
+ * @return The left-handed coordinate system vector.
+ */
 vec3 leftHand(vec3 rightHand)
 {
     return vec3(rightHand.x, rightHand.y, -rightHand.z);
 }
 
-// Cubemap face directions
-// uv in range [-1,1]
+/**
+ * @brief Computes the direction vector for a given cubemap face and UV coordinates.
+ * @param[in] face: The cubemap face index (0-5).
+ * @param[in] uv: The UV coordinates in the range [-1,1].
+ * @param[in] fromHdr: Whether the cubemap is from an HDR source (flipped for writing the cubemap).
+ * @return The direction vector corresponding to the given face and UV coordinates.
+ */
 vec3 faceDirection(int face, vec2 uv, bool fromHdr)
 {
-    if(fromHdr) // flip Y
+    if(fromHdr) // flipped for writing
     {
         switch(face)
         {
-            case 0: return normalize(vec3(-uv.x, uv.y,   1.0));  // +Z
-            case 1: return normalize(vec3( uv.x, uv.y,  -1.0));  // -Z
-            case 2: return normalize(vec3( uv.y, -1.0,  uv.x));  // +Y
-            case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));  // -Y
-            case 4: return normalize(vec3(  1.0, uv.y,  uv.x));  // +X
-            case 5: return normalize(vec3( -1.0, uv.y, -uv.x));  // -X
+            case 0: return normalize(vec3(-uv.x, uv.y,   1.0));
+            case 1: return normalize(vec3( uv.x, uv.y,  -1.0));
+            case 2: return normalize(vec3( uv.y, -1.0,  uv.x));
+            case 3: return normalize(vec3(-uv.y,  1.0,  uv.x));
+            case 4: return normalize(vec3(  1.0, uv.y,  uv.x));
+            case 5: return normalize(vec3( -1.0, uv.y, -uv.x));
             default: return vec3_splat(0.0);
         }
     }
     else switch(face)
     {
-        case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));  // +X
-        case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));  // -X
-        case 2: return normalize(vec3( uv.x,   1.0, -uv.y));  // +Y
-        case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));  // -Y
-        case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));  // +Z
-        case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));  // -Z
+        case 0: return normalize(vec3(  1.0, -uv.y,  uv.x));
+        case 1: return normalize(vec3( -1.0, -uv.y, -uv.x));
+        case 2: return normalize(vec3( uv.x,   1.0, -uv.y));
+        case 3: return normalize(vec3( uv.x,  -1.0,  uv.y));
+        case 4: return normalize(vec3( uv.x, -uv.y,  -1.0));
+        case 5: return normalize(vec3(-uv.x, -uv.y,   1.0));
         default: return vec3_splat(0.0);
     }
 }
 
-// Converts direction -> equirectangular UV
+/**
+ * @brief Converts a direction vector to equirectangular UV coordinates.
+ * @param[in] dir: The direction vector.
+ * @return The equirectangular UV coordinates.
+ */
 vec2 dirToEquirectUV(vec3 dir)
 {
    float phi   = atan2(dir.z, dir.x);       // [-pi..pi]
@@ -597,6 +669,17 @@ float pbrSpecular(
     return V_GGX(NoV, NoL, alpha2) * D_GGX(NoH, alpha2);
 }
 
+/**
+ * @brief Computes the Image Based Lighting (IBL) Fresnel term using the GGX specular BRDF.
+ * It accounts for both single and multiple scattering.
+ * @param[in] brdf: The precomputed BRDF lookup values.
+ * @param[in] NoV: Cosine of the angle between the fragment normal and the view direction.
+ * @param[in] roughness: The roughness of the fragment's material, 
+ * ranges from 0 (optically flat) to 1 (very irregular surface that will make reflections more blurry).
+ * @param[in] F0: the surface's response at normal incidence (aka base reflectivity),
+ *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
+ * @return The IBL Fresnel term.
+ */
 vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
 {
     float specularWeight = 1.0; // related to some extension, for now use a neutral value
@@ -614,6 +697,11 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
     return FssEss + FmsEms;
 }
 
+/**
+ * @brief Applies gamma correction to the given color.
+ * @param[in] color: The color to gamma correct.
+ * @return The gamma corrected color.
+ */
 vec3 gammaCorrect(vec3 color)
 {
     float oneOverGamma = 1.0 / GAMMA;
@@ -643,6 +731,8 @@ vec3 gammaCorrect(vec3 color)
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] exposure: The exposure factor.
+ * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
 vec4 pbrColorLights(
@@ -723,6 +813,31 @@ vec4 pbrColorLights(
     return vec4(finalColor.r, finalColor.g, finalColor.b, color.a);
 }
 
+/**
+ * @brief Computes the color for Physically Based Rendering (PBR) using Image Based Lighting (IBL).
+ * The incoming light colors are altered by:
+ *  the Cook-Torrance BRDF (Bidirectional Reflective Distribution Function)
+ *  which depends on the material properties of the lit fragment.
+ * and
+ *  the cosine of the angle between the fragment's normal and the light's direction;
+ *  the cosine is given as the dot product of the two.
+ *
+ * The Cook-Torrance BRDF consists of two parts a diffuse and a specular one:
+ *  Specular: light that gets reflected immediately after contact with the surface.
+ *  Diffuse: escaped light that got refracted.
+ *
+ * @param[in] diffuseLight: The incoming diffuse light color (RGB).
+ * @param[in] color: The fragment color or albedo (RGBA).
+ * @param[in] radiance: The incoming specular light color (RGB).
+ * @param[in] metalFresnel: The Fresnel factor for metallic surfaces (RGB).
+ * @param[in] dielectricFresnel: The Fresnel factor for dielectric surfaces (RGB).
+ * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
+ * @param[in] occlusion: The ambient occlusion factor, ranges from 0 (fully occluded) to 1 (not occluded).
+ * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] exposure: The exposure factor.
+ * @param[in] toneMapping: The tone mapping operator to use.
+ * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
+ */
 vec4 pbrColorIbl(
     vec3 diffuseLight,
     vec4 color,
