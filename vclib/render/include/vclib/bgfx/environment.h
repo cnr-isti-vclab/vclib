@@ -32,6 +32,10 @@
 
 namespace vcl {
 
+/** @brief A class representing an environment for PBR rendering.
+ * It manages the loading and setup of environment maps, including
+ * HDR images, cubemaps, irradiance maps, specular maps, and BRDF LUTs.
+ */
 class Environment
 {
 
@@ -164,6 +168,7 @@ class Environment
         first.swap(second);
     }
 
+    /** @brief Types of environment textures managed by the Environment class. */
     enum class TextureType
     {
         RAW_CUBE,
@@ -172,28 +177,67 @@ class Environment
         BRDF_LUT
     };
 
+    /** @brief Draws the environment in the background.
+    * @param[in] viewId: The view ID to draw the background in.
+    * @param[in] toneMapping: The tone mapping operator to use.
+    * @param[in] exposure: The exposure factor.
+    */
     void drawBackground(const uint viewId, const int toneMapping, const float exposure);
 
+    /** @brief Binds the specified environment texture to the given texture stage.
+    * @param[in] type: The type of texture to bind (RAW_CUBE, IRRADIANCE, SPECULAR, BRDF_LUT).
+    * @param[in] stage: The texture stage to bind the texture to.
+    * @param[in] samplerFlags: The sampler flags to use when binding the texture.
+    */
     void bindTexture(TextureType type, uint stage, uint samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 
+    /** @brief Binds the provided data to the helper uniform (a vec4) handled by the Environment class. 
+     * @param[in] d0: The first float data to bind. Default is 0.0f.
+     * @param[in] d1: The second float data to bind. Default is 0.0f.
+     * @param[in] d2: The third float data to bind. Default is 0.0f.
+     * @param[in] d3: The fourth float data to bind. Default is 0.0f.
+    */
     void bindDataUniform(const float d0 = 0.0f, const float d1 = 0.0f, const float d2 = 0.0f, const float d3 = 0.0f) const;
 
+    /** @brief Checks if the environment is ready to be drawn.
+     * @return true if the environment can be drawn, false otherwise.
+    */
     bool canDraw() const { return mCanDraw; }
 
+    /** @brief Gets the number of mipmap levels in the specular environment map.
+     * @return The number of mipmap levels in the specular environment map.
+    */
     uint8_t specularMips() const { return mSpecularMips; }
 
     private:
 
+    /** @brief Prepares the background environment by loading the panorama image and generating necessary textures.
+     * @param[in] viewId: The view ID to use for texture generation.
+    */
     void prepareBackground(const uint viewId);
 
+    /** @brief Determines the file format of the given image based on its extension.
+     * @param[in] imagePath: The path to the image file.
+     * @return The determined file format.
+     * Recognized formats are HDR, EXR, KTX, DDS otherwise the format is marked as UNKNOWN.
+    */
     FileFormat getFileFormat(const std::string& imagePath);
 
+    /** @brief Loads the image from the specified file path.
+     * @param[in] imagePath: The path to the image file.
+     * @return A pointer to the loaded ImageContainer, can be nullptr.
+    */
     bimg::ImageContainer* loadImage(std::string imagePath);
 
+    /** @brief Sets up the environment textures based on the loaded image.*/
     void setTextures();
 
+    /** @brief Renders a full-screen triangle for background drawing.*/
     void fullScreenTriangle();
 
+    /** @brief Generates the necessary environment textures (cubemap, irradiance map, specular map, BRDF LUT).
+     * @param[in] viewId: The view ID to use for texture generation.
+    */
     void generateTextures(const uint viewId);
 
     template<typename T>
