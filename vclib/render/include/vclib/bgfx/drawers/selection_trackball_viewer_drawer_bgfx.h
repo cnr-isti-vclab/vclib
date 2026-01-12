@@ -102,7 +102,7 @@ public:
                 0u,
                 1.0f,
                 (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::RGBA16);
+                bgfx::TextureFormat::Enum::RGBA8);
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
         bgfx::setViewClear(
             mVisibleSelectionViewIds[1],
@@ -174,7 +174,11 @@ public:
             }
             SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
             if (ParentViewer::selectionMode().isVisibleSelection()) {
-                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
+                //setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
+                //CHANGE TO REMOVE
+                bgfx::setViewTransform(mVisibleSelectionViewIds[0], TED::viewMatrix().data(), TED::projectionMatrix().data());
+                bgfx::setViewTransform(mVisibleSelectionViewIds[1], TED::viewMatrix().data(), TED::projectionMatrix().data());
+                //END OF CHANGE TO REMOVE
             }
             SelectionParameters params = SelectionParameters{
                 viewId,

@@ -32,12 +32,5 @@ void main() {
         discard;
     }
     uint priId = uint(gl_PrimitiveID);
-    uint shft = uint(16);
-    uint mask = uint(0xFFFF);
-    gl_FragColor = vec4(
-        uintBitsToFloat((meshId >> shft) & mask),
-        uintBitsToFloat(meshId & mask),
-        uintBitsToFloat((priId >> shft) & mask),
-        uintBitsToFloat(priId & mask)
-    );
+    gl_FragColor = uintABGRToVec4Color(priId);
 }
