@@ -221,7 +221,7 @@ using Cameraf = Camera<float>;
  * @ingroup space_core
  */
 template<typename T>
-concept GenericCameraConcept = requires(T&& c) {
+concept GenericCameraConcept = requires (T&& c) {
     { c.viewMatrix() } -> Matrix44Concept;
     { c.projectionMatrix() } -> Matrix44Concept;
 };
