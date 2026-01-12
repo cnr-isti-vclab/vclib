@@ -142,13 +142,7 @@ void projectionMatrix(
     Handedness handedness = RIGHT_HAND)
 {
     detail::projectionMatrix(
-        res,
-        fov,
-        aspect,
-        nearPlane,
-        farPlane,
-        homogeneousNDC,
-        handedness);
+        res, fov, aspect, nearPlane, farPlane, homogeneousNDC, handedness);
 }
 
 template<MatrixConcept Matrix44, typename Scalar>

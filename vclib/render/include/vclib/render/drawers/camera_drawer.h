@@ -54,10 +54,7 @@ public:
 
     MatrixType viewMatrix() const { return mCamera.viewMatrix(); }
 
-    MatrixType projectionMatrix() const
-    {
-        return mCamera.projectionMatrix();
-    }
+    MatrixType projectionMatrix() const { return mCamera.projectionMatrix(); }
 
     const CameraType& camera() const { return mCamera; }
 

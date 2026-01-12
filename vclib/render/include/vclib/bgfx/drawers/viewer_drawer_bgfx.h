@@ -121,10 +121,7 @@ private:
         Matrix44f vm = ParentViewer::viewMatrix();
         Matrix44f pm = ParentViewer::projectionMatrix();
 
-        bgfx::setViewTransform(
-            viewId,
-            vm.data(),
-            pm.data());
+        bgfx::setViewTransform(viewId, vm.data(), pm.data());
     }
 };
 
