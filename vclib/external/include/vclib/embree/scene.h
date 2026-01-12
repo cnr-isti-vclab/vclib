@@ -191,6 +191,18 @@ public:
 
         std::vector<HitResult> results(sz);
 
+        // some cpus fail to guarantee thread safety for rtcIntersect16
+#ifndef VCL_EMBREE_FORCE_CHUNK_16
+        auto computeRay = [&](uint i){
+            results[i] = firstFaceIntersectedByRay(
+                origins[i], directions[i], near, far);
+        };
+
+        std::vector<std::size_t> rayIndices(sz);
+        std::iota(rayIndices.begin(), rayIndices.end(), 0);
+
+        vcl::parallelFor(rayIndices, computeRay);
+#else
         std::size_t chunks = sz / 16;
         std::size_t rem    = sz % 16;
 
@@ -242,6 +254,7 @@ public:
         std::iota(chunkIndices.begin(), chunkIndices.end(), 0);
 
         vcl::parallelFor(chunkIndices, computeChunk);
+#endif
 
         return results;
     }

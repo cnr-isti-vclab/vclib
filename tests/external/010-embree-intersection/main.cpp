@@ -43,7 +43,7 @@ auto randomRays(
 
     ScalarType ext = bbox.diagonal() * 0.1;
 
-    std::cerr << "Random seed: " << seed << std::endl;
+    std::cout << "Random seed: " << seed << std::endl;
 
     std::mt19937 gen(seed);
     DistrType    disX(bbox.min().x() - ext, bbox.max().x() + ext);
@@ -105,7 +105,7 @@ TEMPLATE_TEST_CASE(
 
     using namespace vcl;
 
-    SECTION("TriMesh")
+    SECTION(vcl::meshTypeName<TriMesh>().c_str())
     {
         using PointType  = TriMesh::VertexType::PositionType;
         using ScalarType = PointType::ScalarType;
@@ -128,13 +128,27 @@ TEMPLATE_TEST_CASE(
         uint embreeMisses     = 0;
         uint bruteForceMisses = 0;
 
-        for (const auto& ray : rays) {
+        vcl::Timer tEmbree("Embree intersection rays");
+        auto embreeResults = scene.firstFaceIntersectedByRays(rays);
+        tEmbree.stopAndPrint();
+
+        std::vector<uint> indices(N_RAYS_TEST);
+        std::vector<std::pair<uint, PointType>> bruteResults(N_RAYS_TEST);
+
+        std::iota(indices.begin(), indices.end(), 0);
+
+        vcl::Timer tBrute("Brute force intersection rays");
+        vcl::parallelFor(indices, [&](uint i){
+            bruteResults[i] = bruteForceRayIntersection(tm, rays[i]);
+        });
+        tBrute.stopAndPrint();
+
+        for (uint i = 0; i < N_RAYS_TEST; i++) {
             // Embree intersection
-            auto embreeResult = scene.firstFaceIntersectedByRay(ray);
-            uint embreeFaceID = std::get<0>(embreeResult);
+            uint embreeFaceID = std::get<0>(embreeResults[i]);
 
             // Brute force intersection
-            auto [bruteFaceID, brutePoint] = bruteForceRayIntersection(tm, ray);
+            auto [bruteFaceID, brutePoint] = bruteResults[i];
 
             if (embreeFaceID == vcl::UINT_NULL &&
                 bruteFaceID == vcl::UINT_NULL) {
@@ -150,8 +164,8 @@ TEMPLATE_TEST_CASE(
                 else {
                     // Even if face IDs differ, check if the hit points are
                     // close (could happen at face boundaries)
-                    vcl::Point3f baryCoords = std::get<1>(embreeResult);
-                    uint         triID      = std::get<2>(embreeResult);
+                    vcl::Point3f baryCoords = std::get<1>(embreeResults[i]);
+                    uint         triID      = std::get<2>(embreeResults[i]);
 
                     auto&                   face = tm.face(embreeFaceID);
                     vcl::Point3<ScalarType> embreePoint =
@@ -175,15 +189,15 @@ TEMPLATE_TEST_CASE(
             }
         }
 
-        std::cerr << "TriMesh - Matches: " << matches << "/" << N_RAYS_TEST
-                  << " (Embree misses: " << embreeMisses
+        std::cout << vcl::meshTypeName<TriMesh>() << " - Matches: " << matches
+                  << "/" << N_RAYS_TEST << " (Embree misses: " << embreeMisses
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
         REQUIRE(matches == N_RAYS_TEST);
     }
 
-    SECTION("PolyMesh")
+    SECTION(vcl::meshTypeName<PolyMesh>().c_str())
     {
         using PointType  = PolyMesh::VertexType::PositionType;
         using ScalarType = PointType::ScalarType;
@@ -208,15 +222,27 @@ TEMPLATE_TEST_CASE(
         uint bruteForceMisses = 0;
 
         // here use firstFaceIntersectedByRays
-
+        vcl::Timer tEmbree("Embree intersection rays");
         auto embreeResults = scene.firstFaceIntersectedByRays(rays);
+        tEmbree.stopAndPrint();
 
-        for (uint i = 0; const auto& ray : rays) {
+        std::vector<uint> indices(N_RAYS_TEST);
+        std::vector<std::pair<uint, PointType>> bruteResults(N_RAYS_TEST);
+
+        std::iota(indices.begin(), indices.end(), 0);
+
+        vcl::Timer tBrute("Brute force intersection rays");
+        vcl::parallelFor(indices, [&](uint i){
+            bruteResults[i] = bruteForceRayIntersection(pm, rays[i]);
+        });
+        tBrute.stopAndPrint();
+
+        for (uint i = 0; i < N_RAYS_TEST; i++) {
             // Embree intersection
             uint embreeFaceID = std::get<0>(embreeResults[i]);
 
             // Brute force intersection
-            auto [bruteFaceID, brutePoint] = bruteForceRayIntersection(pm, ray);
+            auto [bruteFaceID, brutePoint] = bruteResults[i];
 
             if (embreeFaceID == vcl::UINT_NULL &&
                 bruteFaceID == vcl::UINT_NULL) {
@@ -259,11 +285,10 @@ TEMPLATE_TEST_CASE(
                     bruteForceMisses++;
                 }
             }
-            ++i;
         }
 
-        std::cerr << "PolyMesh - Matches: " << matches << "/" << N_RAYS_TEST
-                  << " (Embree misses: " << embreeMisses
+        std::cout << vcl::meshTypeName<PolyMesh>() << " - Matches: " << matches
+                  << "/" << N_RAYS_TEST << " (Embree misses: " << embreeMisses
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
