@@ -31,6 +31,24 @@
 
 namespace vcl::embree {
 
+/**
+ * @brief Wrapper around an Embree scene for mesh intersection queries.
+ *
+ * This class manages an internal Embree ::RTCDevice and ::RTCScene and
+ * exposes a high-level interface to perform ray–mesh intersection queries
+ * on VCLib meshes. A scene is typically constructed from a mesh object
+ * satisfying the @ref FaceMeshConcept and then queried using
+ * @ref firstFaceIntersectedByRay or @ref firstFaceIntersectedByRays to
+ * obtain the first intersected face, barycentric coordinates of the hit
+ * point, and the local triangle index within polygonal faces.
+ *
+ * All rays passed to the intersection methods are assumed to be expressed
+ * in the same coordinate system and units as the mesh used to build the
+ * scene. The mapping between Embree's internal triangle indices and the
+ * original mesh faces is handled internally via @ref TriPolyIndexBiMap.
+ *
+ * A Scene object is non-copyable but movable.
+ */
 class Scene
 {
     RTCDevice mDevice = nullptr;
@@ -70,6 +88,25 @@ public:
             rtcReleaseDevice(mDevice);
     }
 
+    /**
+     * @brief Constructs an Embree scene from a mesh.
+     *
+     * This constructor initializes an Embree device and scene, creates a
+     * triangle geometry from the vertices and faces of the given mesh, and
+     * attaches it to the internal Embree scene. The mesh is internally
+     * triangulated, and a mapping between triangulated faces and the original
+     * polygonal faces is stored in the index map.
+     *
+     * @tparam MeshType: A mesh type that satisfies the @ref FaceMeshConcept
+     * and provides vertex positions and face connectivity compatibl with the
+     * functions used to fill the Embree buffers.
+     *
+     * @param[in] m: The input mesh whose geometry is used to build the Embree
+     * acceleration structure.
+     *
+     * @throws std::runtime_error if the Embree device, scene, or geometry
+     * cannot be created or initialized.
+     */
     template<FaceMeshConcept MeshType>
     Scene(const MeshType& m)
     {
@@ -149,6 +186,27 @@ public:
 
     friend void swap(Scene& a, Scene& b) { a.swap(b); }
 
+    /**
+     * @brief Finds the first face intersected by a ray.
+     *
+     * This member function casts a ray from the given origin in the specified
+     * direction and returns the first face of the scene that is intersected
+     * within the given near and far distances.
+     *
+     * @tparam ScalarType: Scalar type used by the point coordinates
+     * (for example, float or double).
+     *
+     * @param[in] origin: The origin point of the ray in world space.
+     * @param[in] direction: The direction vector of the ray in world space.
+     * @param[in] near: The minimum distance from the origin to consider for
+     * intersections (default is 0).
+     * @param[in] far: The maximum distance from the origin to consider for
+     * intersections (default is infinity).
+     *
+     * @return A HitResult describing the first intersected face along the
+     * ray. If no face is intersected, the first element of the returned tuple
+     * is UINT_NULL.
+     */
     template<typename ScalarType>
     HitResult firstFaceIntersectedByRay(
         const Point3<ScalarType>& origin,
@@ -173,6 +231,25 @@ public:
         return std::make_tuple(UINT_NULL, Point3f(), uint(0));
     }
 
+    /**
+     * @brief Finds the first face intersected by a ray.
+     *
+     * This member function casts the given ray and returns the first face of
+     * the scene that is intersected within the given near and far distances.
+     *
+     * @tparam ScalarType: Scalar type used by the ray coordinates
+     * (for example, float or double).
+     *
+     * @param[in] ray: The ray in world space used as query.
+     * @param[in] near: The minimum distance from the ray origin to consider
+     * for intersections (default is 0).
+     * @param[in] far: The maximum distance from the ray origin to consider
+     * for intersections (default is infinity).
+     *
+     * @return A HitResult describing the first intersected face along the
+     * ray. If no face is intersected, the first element of the returned tuple
+     * is UINT_NULL.
+     */
     template<typename ScalarType>
     HitResult firstFaceIntersectedByRay(
         const Ray3<ScalarType>& ray,
@@ -183,6 +260,24 @@ public:
             ray.origin(), ray.direction(), near, far);
     }
 
+    /**
+     * @brief Finds the first face intersected by a segment.
+     *
+     * This member function casts a ray along the given segment and returns the
+     * first face of the scene that is intersected within the finite extent of
+     * the segment, i.e. between its two endpoints.
+     *
+     * @tparam ScalarType: Scalar type used by the segment coordinates
+     * (for example, float or double).
+     *
+     * @param[in] segment: The segment in world space used as query; only
+     * intersections occurring between segment.p0() and segment.p1() are
+     * considered.
+     *
+     * @return A HitResult describing the first intersected face along the
+     * segment (closest to segment.p0()). If no face is intersected, the first
+     * element of the returned tuple is UINT_NULL.
+     */
     template<typename ScalarType>
     HitResult firstFaceIntersectedBySegment(
         const Segment3<ScalarType>& segment) const
@@ -191,6 +286,34 @@ public:
             segment.p0(), segment.direction(), 0.f, segment.length());
     }
 
+    /**
+     * @brief Finds the first faces intersected by multiple rays.
+     *
+     * This member function casts multiple rays defined by the given origins and
+     * directions, and returns for each ray the first face of the scene that
+     * is intersected within the given near and far distances.
+     *
+     * This function performs ray intersection tests in parallel to improve
+     * performance when dealing with a large number of rays.
+     *
+     * @tparam R1: A random access range type whose elements satisfy the
+     * @ref Point3Concept, representing the ray origins.
+     * @tparam R2: A random access range type whose elements satisfy the
+     * @ref Point3Concept, representing the ray directions.
+     *
+     * @param[in] origins: A range of points representing the origins of the
+     * rays in world space.
+     * @param[in] directions: A range of vectors representing the directions
+     * of the rays in world space.
+     * @param[in] near: The minimum distance from each ray origin to consider
+     * for intersections (default is 0).
+     * @param[in] far: The maximum distance from each ray origin to consider
+     * for intersections (default is infinity).
+     *
+     * @return A vector of HitResult tuples, one for each ray, describing the
+     * first intersected face along each ray. If a ray does not intersect any
+     * face, the first element of the corresponding tuple is UINT_NULL.
+     */
     template<RandomAccessRange R1, RandomAccessRange R2>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R1&&  origins,
@@ -289,6 +412,29 @@ public:
         return results;
     }
 
+    /**
+     * @brief Finds the first faces intersected by multiple rays.
+     *
+     * This member function casts multiple rays and returns for each ray the
+     * first face of the scene that is intersected within the given near and
+     * far distances.
+     *
+     * This function performs ray intersection tests in parallel to improve
+     * performance when dealing with a large number of rays.
+     *
+     * @tparam R: A random access range type whose elements satisfy the
+     * @ref Ray3Concept, representing the rays to be tested.
+     *
+     * @param[in] rays: A range of rays in world space used as queries.
+     * @param[in] near: The minimum distance from each ray origin to consider
+     * for intersections (default is 0).
+     * @param[in] far: The maximum distance from each ray origin to consider
+     * for intersections (default is infinity).
+     *
+     * @return A vector of HitResult tuples, one for each ray, describing the
+     * first intersected face along each ray. If a ray does not intersect any
+     * face, the first element of the corresponding tuple is UINT_NULL.
+     */
     template<RandomAccessRange R>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R&&   rays,
