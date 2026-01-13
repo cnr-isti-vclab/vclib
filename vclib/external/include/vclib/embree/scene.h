@@ -33,8 +33,8 @@ namespace vcl::embree {
 
 class Scene
 {
-    RTCDevice mDevice = rtcNewDevice(nullptr);
-    RTCScene  mScene  = rtcNewScene(mDevice);
+    RTCDevice mDevice = nullptr;
+    RTCScene  mScene  = nullptr;
 
     TriPolyIndexBiMap mIndexMap;
 
@@ -52,7 +52,7 @@ public:
      * If no face is hit, the first element of the tuple is UINT_NULL.
      *
      * If the Mesh in the scene is triangulated, the third element can be
-     * ignored. If the Mesh in the scene is polygonal, the baricentric coords
+     * ignored. If the Mesh in the scene is polygonal, the barycentric coords
      * refer to the triangle within the polygon that has been hit, so the third
      * element is needed to identify the exact triangle within the polygon.
      * The list of triangles within each polygon is defined by the triangulation
@@ -64,13 +64,18 @@ public:
 
     ~Scene()
     {
-        rtcReleaseScene(mScene);
-        rtcReleaseDevice(mDevice);
+        if (mScene)
+            rtcReleaseScene(mScene);
+        if (mDevice)
+            rtcReleaseDevice(mDevice);
     }
 
     template<FaceMeshConcept MeshType>
     Scene(const MeshType& m)
     {
+        mDevice = rtcNewDevice(nullptr);
+        mScene  = rtcNewScene(mDevice);
+
         RTCGeometry geometry =
             rtcNewGeometry(mDevice, RTC_GEOMETRY_TYPE_TRIANGLE);
 
@@ -124,6 +129,7 @@ public:
         using std::swap;
         swap(mDevice, other.mDevice);
         swap(mScene, other.mScene);
+        swap(mIndexMap, other.mIndexMap);
     }
 
     friend void swap(Scene& a, Scene& b) { a.swap(b); }
@@ -135,20 +141,21 @@ public:
         float                     near = 0.f,
         float far = std::numeric_limits<float>::infinity()) const
     {
-        RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
+        if (mScene) {
+            RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
 
-        rtcIntersect1(mScene, &rayhit);
+            rtcIntersect1(mScene, &rayhit);
 
-        if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
-            uint    fID = mIndexMap.polygon(rayhit.hit.primID);
-            float   w   = 1.f - rayhit.hit.u - rayhit.hit.v;
-            Point3f barycentricCoords(w, rayhit.hit.u, rayhit.hit.v);
-            uint    triID = rayhit.hit.primID - mIndexMap.triangleBegin(fID);
-            return std::make_tuple(fID, barycentricCoords, triID);
+            if (rayhit.hit.geomID != RTC_INVALID_GEOMETRY_ID) {
+                uint    fID = mIndexMap.polygon(rayhit.hit.primID);
+                float   w   = 1.f - rayhit.hit.u - rayhit.hit.v;
+                Point3f barycentricCoords(w, rayhit.hit.u, rayhit.hit.v);
+                uint triID = rayhit.hit.primID - mIndexMap.triangleBegin(fID);
+                return std::make_tuple(fID, barycentricCoords, triID);
+            }
         }
-        else {
-            return std::make_tuple(UINT_NULL, Point3f(), uint(0));
-        }
+
+        return std::make_tuple(UINT_NULL, Point3f(), uint(0));
     }
 
     template<typename ScalarType>
@@ -189,70 +196,80 @@ public:
 
         std::vector<HitResult> results(sz);
 
-        // some cpus fail to guarantee thread safety for rtcIntersect16
+        if (mScene) {
+            // some cpus fail to guarantee thread safety for rtcIntersect16
 #ifndef VCL_EMBREE_FORCE_CHUNK_16
-        auto computeRay = [&](uint i){
-            results[i] = firstFaceIntersectedByRay(
-                origins[i], directions[i], near, far);
-        };
+            auto computeRay = [&](uint i) {
+                results[i] = firstFaceIntersectedByRay(
+                    origins[i], directions[i], near, far);
+            };
 
-        std::vector<std::size_t> rayIndices(sz);
-        std::iota(rayIndices.begin(), rayIndices.end(), 0);
+            std::vector<std::size_t> rayIndices(sz);
+            std::iota(rayIndices.begin(), rayIndices.end(), 0);
 
-        vcl::parallelFor(rayIndices, computeRay);
+            vcl::parallelFor(rayIndices, computeRay);
 #else
-        std::size_t chunks = sz / 16;
-        std::size_t rem    = sz % 16;
+            std::size_t chunks = sz / 16;
+            std::size_t rem    = sz % 16;
 
-        if (rem != 0) {
-            ++chunks;
-        }
-
-        auto computeChunk = [&](uint chunk) {
-            std::array<int, 16> validMask;
-            std::ranges::fill(validMask, -1);
-
-            RTCRayHit16 rayHits;
-
-            std::size_t first = chunk * 16;
-            std::size_t last  = first + 16;
-            if (last > sz) {
-                for (std::size_t i = sz % 16; i < 16; ++i) {
-                    validMask[i] = 0;
-                }
-                last = sz;
+            if (rem != 0) {
+                ++chunks;
             }
 
-            for (std::size_t i = first; i < last; ++i) {
-                std::size_t idx = i - first;
-                initRayHitsValues(
-                    rayHits, idx, origins[i], directions[i], near, far);
-            }
+            auto computeChunk = [&](uint chunk) {
+                std::array<int, 16> validMask;
+                std::ranges::fill(validMask, -1);
 
-            rtcIntersect16(validMask.data(), mScene, &rayHits);
+                RTCRayHit16 rayHits;
 
-            for (std::size_t i = first; i < last; ++i) {
-                std::size_t idx = i - first;
-                if (rayHits.hit.geomID[idx] != RTC_INVALID_GEOMETRY_ID) {
-                    uint    fID = mIndexMap.polygon(rayHits.hit.primID[idx]);
-                    float   w   = 1.f - rayHits.hit.u[idx] - rayHits.hit.v[idx];
-                    Point3f barycentricCoords(
-                        w, rayHits.hit.u[idx], rayHits.hit.v[idx]);
-                    uint triID =
-                        rayHits.hit.primID[idx] - mIndexMap.triangleBegin(fID);
-                    results[i] = std::make_tuple(fID, barycentricCoords, triID);
+                std::size_t first = chunk * 16;
+                std::size_t last  = first + 16;
+                if (last > sz) {
+                    for (std::size_t i = sz % 16; i < 16; ++i) {
+                        validMask[i] = 0;
+                    }
+                    last = sz;
                 }
-                else {
-                    results[i] = std::make_tuple(UINT_NULL, Point3f(), uint(0));
+
+                for (std::size_t i = first; i < last; ++i) {
+                    std::size_t idx = i - first;
+                    initRayHitsValues(
+                        rayHits, idx, origins[i], directions[i], near, far);
                 }
-            }
-        };
 
-        std::vector<std::size_t> chunkIndices(chunks);
-        std::iota(chunkIndices.begin(), chunkIndices.end(), 0);
+                rtcIntersect16(validMask.data(), mScene, &rayHits);
 
-        vcl::parallelFor(chunkIndices, computeChunk);
+                for (std::size_t i = first; i < last; ++i) {
+                    std::size_t idx = i - first;
+                    if (rayHits.hit.geomID[idx] != RTC_INVALID_GEOMETRY_ID) {
+                        uint  fID = mIndexMap.polygon(rayHits.hit.primID[idx]);
+                        float w = 1.f - rayHits.hit.u[idx] - rayHits.hit.v[idx];
+                        Point3f barycentricCoords(
+                            w, rayHits.hit.u[idx], rayHits.hit.v[idx]);
+                        uint triID = rayHits.hit.primID[idx] -
+                                     mIndexMap.triangleBegin(fID);
+                        results[i] =
+                            std::make_tuple(fID, barycentricCoords, triID);
+                    }
+                    else {
+                        results[i] =
+                            std::make_tuple(UINT_NULL, Point3f(), uint(0));
+                    }
+                }
+            };
+
+            std::vector<std::size_t> chunkIndices(chunks);
+            std::iota(chunkIndices.begin(), chunkIndices.end(), 0);
+
+            vcl::parallelFor(chunkIndices, computeChunk);
 #endif
+        }
+        else {
+            std::fill(
+                results.begin(),
+                results.end(),
+                std::make_tuple(UINT_NULL, Point3f(), uint(0)));
+        }
 
         return results;
     }
