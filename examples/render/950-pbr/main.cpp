@@ -36,6 +36,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        COMPARE_EMISSIVE_STRENGTH,
         COUNT
     };
 
@@ -44,9 +45,11 @@ int main(int argc, char** argv)
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
-        "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
+        "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"
+    };
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = COMPARE_EMISSIVE_STRENGTH;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
