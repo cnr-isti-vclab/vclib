@@ -90,7 +90,7 @@ using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
-static const vcl::uint N_RAYS_TEST = 100;
+static const vcl::uint N_RAYS_TEST = 10000;
 
 TEMPLATE_TEST_CASE(
     "Embree ray-triangle intersection vs brute force",
