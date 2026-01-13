@@ -71,8 +71,6 @@ public:
     template<FaceMeshConcept MeshType>
     Scene(const MeshType& m)
     {
-        // TODO: manage RAII here
-
         RTCGeometry geometry =
             rtcNewGeometry(mDevice, RTC_GEOMETRY_TYPE_TRIANGLE);
 
