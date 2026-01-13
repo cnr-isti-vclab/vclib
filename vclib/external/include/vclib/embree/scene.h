@@ -176,7 +176,7 @@ public:
             segment.p0(), segment.direction(), 0.f, segment.length());
     }
 
-    template<Range R1, Range R2>
+    template<RandomAccessRange R1, RandomAccessRange R2>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R1&&  origins,
         R2&&  directions,
@@ -274,7 +274,7 @@ public:
         return results;
     }
 
-    template<Range R>
+    template<RandomAccessRange R>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R&&   rays,
         float near = 0.f,
