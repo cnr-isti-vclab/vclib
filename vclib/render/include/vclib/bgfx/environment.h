@@ -181,14 +181,8 @@ class Environment
     * @param[in] viewId: The view ID to draw the background in.
     * @param[in] toneMapping: The tone mapping operator to use.
     * @param[in] exposure: The exposure factor.
-    * @param[in] invView: The inverse view matrix to use for rendering.
     */
-    void drawBackground(
-        const uint viewId, 
-        const int toneMapping, 
-        const float exposure,
-        const void *invView
-    );
+    void drawBackground(const uint viewId, const int toneMapping, const float exposure);
 
     /** @brief Binds the specified environment texture to the given texture stage.
     * @param[in] type: The type of texture to bind (RAW_CUBE, IRRADIANCE, SPECULAR, BRDF_LUT).
