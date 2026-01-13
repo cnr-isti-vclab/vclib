@@ -1,0 +1,11 @@
+Model Information:
+* title:	Shoe with ClearCoat
+* source:	https://sketchfab.com/3d-models/shoe-with-clearcoat-0c91407e7cb54d3c9c4235fb868e9eae
+* author:	Makovetkyi Volodymyr (https://sketchfab.com/pbr-scans)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Shoe with ClearCoat" (https://sketchfab.com/3d-models/shoe-with-clearcoat-0c91407e7cb54d3c9c4235fb868e9eae) by Makovetkyi Volodymyr (https://sketchfab.com/pbr-scans) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
