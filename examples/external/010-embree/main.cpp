@@ -30,8 +30,6 @@ int main()
 
     PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    Segment<Point3d> s({0, -0.1, 0}, {2, -0.1, 0});
-
     std::vector<Point3d> origins = { {0, -0.1, 0}, {0, 0.1, 0}, {0, 2, 0.1} };
     std::vector<Point3d> directions = { {1, 0, 0}, {-1, 0, 0}, {0, -1, 0} };
 
@@ -45,7 +43,7 @@ int main()
         std::string fString =
             faceId == UINT_NULL ? "No face hit" : std::to_string(faceId);
 
-        std::cout << "First face intersected by segment: " << fString << "\n";
+        std::cout << "First face intersected by ray: " << fString << "\n";
 
         if (faceId != UINT_NULL) { // should never be UINT_NULL here
             std::cout << "Barycentric coordinates of the intersection point: "
