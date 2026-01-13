@@ -36,6 +36,8 @@
 
 #include <bitset>
 
+#include <fstream>
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -63,6 +65,10 @@ private:
     bgfx::ProgramHandle faceSelDrawProg = vcl::loadProgram("shaders_face/vs_selection", "shaders_face/fs_selection");
 
     mutable uint mBufToTexRemainingFrames = 255;
+
+    bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
+    std::vector<uint8_t> mTexReadBackVec;
+    mutable uint mVisSelTexRBFrames = 255;
 
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
@@ -118,6 +124,11 @@ public:
     using AbstractDrawableMesh::boundingBox;
 
     void calculateSelection(const SelectionParameters& params) override {
+        if (!bgfx::isValid(mBlitTex)) {
+            mBlitTex = bgfx::createTexture2D(4096, 4096, false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+            mTexReadBackVec = std::vector<uint8_t>();
+            mTexReadBackVec.resize(4096 * 4096 * 4, 0);
+        }
         if (params.mode.isFaceSelection()) {
             if (!(params.mode.isVisibleSelection() ? faceSelectionVisible(params) : faceSelection(params))) {
                 return;
@@ -257,6 +268,26 @@ public:
                     break;
                 default:
                     mBufToTexRemainingFrames--;
+            }
+        }
+
+        {
+            if (mVisSelTexRBFrames == 0) {
+                mVisSelTexRBFrames = 255;
+                std::fstream file;
+                file.open("output.ppm", std::ios::binary | std::ios::out);
+                file << "P6\n4096 4096\n255\n";
+                size_t index = 0;
+                for (const uint8_t& val: mTexReadBackVec) {
+                    ++index;
+                    if (index%4 == 0) {
+                        continue;
+                    }
+                    file.write(reinterpret_cast<const char*>(&val), 1);
+                }
+                file.close();
+            } else if (mVisSelTexRBFrames != 255) {
+                mVisSelTexRBFrames--;
             }
         }
 
@@ -494,7 +525,13 @@ protected:
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
         }
-        return mMRB.faceSelectionVisible(params, model);
+        bool ret = mMRB.faceSelectionVisible(params, model);
+        if (!params.isTemporary) {
+            bgfx::blit(100, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, 4096, 4096);
+            bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
+            mVisSelTexRBFrames = 3;
+        }
+        return ret;
     }
 
     void bindUniforms() const

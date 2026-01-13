@@ -102,7 +102,9 @@ public:
                 0u,
                 1.0f,
                 (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::RGBA8);
+                bgfx::TextureFormat::Enum::RGBA8,
+                Context::instance().DEFAULT_DEPTH_FORMAT
+            );
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
         bgfx::setViewClear(
             mVisibleSelectionViewIds[1],
@@ -110,8 +112,8 @@ public:
             0u,
             1.0f,
             0u);
-        bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, 1024, 768);
-        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1024, 768);
+        bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, 4096, 4096);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 4096, 4096);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();

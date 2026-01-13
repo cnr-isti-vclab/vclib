@@ -262,15 +262,17 @@ public:
             Uniform::uintBitsToFloat(workGroupSize[1]),
             0.f
         };
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LEQUAL;
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_ALWAYS;
         bgfx::setState(state);
         mVisibleFacesVertFragUniform.bind(temp);
         mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
         mTriangleIndexBuffer.bind();
+        bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
         mVisibleFacesComputeUniform.bind(temp);
         bgfx::setImage(0, params.colorAttachmentTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        bgfx::setTransform(model.data());
         bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
         return true;
     }

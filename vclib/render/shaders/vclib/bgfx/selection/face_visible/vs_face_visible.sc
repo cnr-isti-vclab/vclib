@@ -26,5 +26,5 @@ $input a_position
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 void main() {
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 0));
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1));
 }

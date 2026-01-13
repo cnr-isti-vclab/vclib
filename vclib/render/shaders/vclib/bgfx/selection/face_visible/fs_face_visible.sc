@@ -25,6 +25,8 @@
 
 uniform vec4 u_meshId;
 
+#define V4RGBA(x) uintABGRToVec4Color(x).wzyx
+
 void main() {
     uint meshId = floatBitsToUint(u_meshId.x);
     // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
@@ -32,5 +34,5 @@ void main() {
         discard;
     }
     uint priId = uint(gl_PrimitiveID);
-    gl_FragColor = uintABGRToVec4Color(priId);
+    gl_FragColor = V4RGBA(gl_PrimitiveID);
 }
