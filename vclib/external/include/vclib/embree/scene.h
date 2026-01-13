@@ -74,10 +74,25 @@ public:
     Scene(const MeshType& m)
     {
         mDevice = rtcNewDevice(nullptr);
+
+        if (!mDevice)
+            throw std::runtime_error("Error creating Embree device.");
+
         mScene  = rtcNewScene(mDevice);
+
+        if (!mScene) {
+            rtcReleaseDevice(mDevice);
+            throw std::runtime_error("Error creating Embree scene.");
+        }
 
         RTCGeometry geometry =
             rtcNewGeometry(mDevice, RTC_GEOMETRY_TYPE_TRIANGLE);
+
+        if (!geometry) {
+            rtcReleaseScene(mScene);
+            rtcReleaseDevice(mDevice);
+            throw std::runtime_error("Error creating Embree geometry.");
+        }
 
         float* vb = (float*) rtcSetNewGeometryBuffer(
             geometry,
