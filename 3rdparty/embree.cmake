@@ -21,8 +21,9 @@
 #****************************************************************************/
 
 set(EMBREE_MAJOR 4)
-set(EMBREE_MINOR 3.3)
-set(EMBREE_VER "${EMBREE_MAJOR}.${EMBREE_MINOR}")
+set(EMBREE_MINOR 3)
+set(EMBREE_PATCH 3)
+set(EMBREE_VER "${EMBREE_MAJOR}.${EMBREE_MINOR}.${EMBREE_PATCH}")
 
 find_package(embree ${EMBREE_MAJOR} QUIET)
 
