@@ -42,34 +42,39 @@ int main()
     for (uint i = 0; const auto& [faceId, barCoords, tId] : hits) {
         std::cout << "Ray " << i++ << ":\n";
 
-        std::cout << "First face intersected by segment: " << faceId << "\n";
+        std::string fString =
+            faceId == UINT_NULL ? "No face hit" : std::to_string(faceId);
 
-        std::cout << "Barycentric coordinates of the intersection point: "
-                  << barCoords << "\n";
+        std::cout << "First face intersected by segment: " << fString << "\n";
 
-        std::cout << "Triangle ID within the face: " << tId << "\n";
+        if (faceId != UINT_NULL) { // should never be UINT_NULL here
+            std::cout << "Barycentric coordinates of the intersection point: "
+                      << barCoords << "\n";
 
-        std::vector<uint> triangulation = earCut(m.face(faceId));
+            std::cout << "Triangle ID within the face: " << tId << "\n";
 
-        std::cout << "Vertices of the hit triangle:\n";
+            std::vector<uint> triangulation = earCut(m.face(faceId));
 
-        uint        base = tId * 3;
-        const auto& v0   = *m.face(faceId).vertex(triangulation[base + 0]);
-        const auto& v1   = *m.face(faceId).vertex(triangulation[base + 1]);
-        const auto& v2   = *m.face(faceId).vertex(triangulation[base + 2]);
+            std::cout << "Vertices of the hit triangle:\n";
 
-        std::cout << " - Vertex " << v0.index() << ": " << v0.position()
-                  << "\n";
-        std::cout << " - Vertex " << v1.index() << ": " << v1.position()
-                  << "\n";
-        std::cout << " - Vertex " << v2.index() << ": " << v2.position()
-                  << "\n";
+            uint        base = tId * 3;
+            const auto& v0   = *m.face(faceId).vertex(triangulation[base + 0]);
+            const auto& v1   = *m.face(faceId).vertex(triangulation[base + 1]);
+            const auto& v2   = *m.face(faceId).vertex(triangulation[base + 2]);
 
-        Point3d hitPos = v0.position() * barCoords.x() +
-                         v1.position() * barCoords.y() +
-                         v2.position() * barCoords.z();
+            std::cout << " - Vertex " << v0.index() << ": " << v0.position()
+                      << "\n";
+            std::cout << " - Vertex " << v1.index() << ": " << v1.position()
+                      << "\n";
+            std::cout << " - Vertex " << v2.index() << ": " << v2.position()
+                      << "\n";
 
-        std::cout << "Hit point position: " << hitPos << "\n\n";
+            Point3d hitPos = v0.position() * barCoords.x() +
+                             v1.position() * barCoords.y() +
+                             v2.position() * barCoords.z();
+
+            std::cout << "Hit point position: " << hitPos << "\n\n";
+        }
     }
 
     return 0;
