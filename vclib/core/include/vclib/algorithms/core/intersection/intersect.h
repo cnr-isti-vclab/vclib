@@ -814,7 +814,7 @@ std::optional<typename LineType::PointType> intersection(
     using PointType  = typename LineType::PointType;
     using ScalarType = typename PointType::ScalarType;
 
-    static const ScalarType EPSIL = 0.000001;
+    static const ScalarType EPSIL = std::numeric_limits<ScalarType>::epsilon();
 
     ScalarType tt = 0, uu = 0, vv = 0;
 
