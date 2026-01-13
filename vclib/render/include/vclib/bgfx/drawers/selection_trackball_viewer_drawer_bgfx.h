@@ -105,13 +105,8 @@ public:
                 bgfx::TextureFormat::Enum::RGBA8,
                 Context::instance().DEFAULT_DEPTH_FORMAT
             );
+        bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
-        bgfx::setViewClear(
-            mVisibleSelectionViewIds[1],
-            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
-            0u,
-            1.0f,
-            0u);
         bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, 4096, 4096);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 4096, 4096);
         mAxis.init();

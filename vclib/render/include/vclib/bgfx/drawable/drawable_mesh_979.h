@@ -527,7 +527,7 @@ protected:
         }
         bool ret = mMRB.faceSelectionVisible(params, model);
         if (!params.isTemporary) {
-            bgfx::blit(100, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, 4096, 4096);
+            bgfx::blit(202, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, 4096, 4096);
             bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
             mVisSelTexRBFrames = 3;
         }
