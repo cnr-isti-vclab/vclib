@@ -35,16 +35,6 @@ int main()
     std::vector<Point3d> origins = { {0, -0.1, 0}, {0, 0.1, 0}, {0, 2, 0.1} };
     std::vector<Point3d> directions = { {1, 0, 0}, {-1, 0, 0}, {0, -1, 0} };
 
-    // duplicate rays to have more than 16 (24 at the end)
-    origins.insert(origins.end(), origins.begin(), origins.end());
-    directions.insert(directions.end(), directions.begin(), directions.end());
-
-    origins.insert(origins.end(), origins.begin(), origins.end());
-    directions.insert(directions.end(), directions.begin(), directions.end());
-
-    origins.insert(origins.end(), origins.begin(), origins.end());
-    directions.insert(directions.end(), directions.begin(), directions.end());
-
     embree::Scene scene(m);
 
     auto hits = scene.firstFaceIntersectedByRays(origins, directions);
