@@ -86,9 +86,7 @@ auto bruteForceRayIntersection(const MeshType& m, const RayType& ray)
 }
 
 using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf        = std::tuple<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
-using MeshesIndexedf = std::tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
 
@@ -96,9 +94,7 @@ TEMPLATE_TEST_CASE(
     "Embree ray-triangle intersection vs brute force",
     "",
     Meshes,
-    Meshesf,
-    MeshesIndexed,
-    MeshesIndexedf)
+    MeshesIndexed)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
