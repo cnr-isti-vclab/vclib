@@ -74,9 +74,17 @@ public:
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
-
+        
         if(settings.pbrMode)
-            mPanorama.drawBackground(settings.viewId, settings.toneMapping, settings.exposure);
+        {
+            Matrix44f backgroundInvView = ParentViewer::gizmoMatrix().inverse();
+            mPanorama.drawBackground(
+                settings.viewId, 
+                settings.toneMapping, 
+                settings.exposure,
+                backgroundInvView.data()
+            );
+        }
 
         ParentViewer::drawableObjectVector().draw(settings);
     }

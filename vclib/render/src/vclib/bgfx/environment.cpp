@@ -37,7 +37,11 @@
 
 namespace vcl {
 
-void Environment::drawBackground(const uint viewId, const int toneMapping, const float exposure)
+void Environment::drawBackground(
+    const uint viewId, 
+    const int toneMapping, 
+    const float exposure, 
+    const void *invView)
 {
     prepareBackground(viewId);
 
@@ -54,12 +58,16 @@ void Environment::drawBackground(const uint viewId, const int toneMapping, const
 
     mVertexBuffer.bindVertex(0);
 
+    bgfx::setTransform(invView);
+
     bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
     bgfx::submit(
         viewId, 
         pm.getProgram<DRAWABLE_BACKGROUND_PBR>()
     );
+
+    bgfx::setTransform(nullptr);
 }
 
 void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) const

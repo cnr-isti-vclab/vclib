@@ -32,9 +32,9 @@ void main()
     // get the outward view direction in world space back from clip space
     vec3 viewDir = mul(u_invProj, position).xyz;
     mat3 invViewRotOnly = mat3(
-        normalize(u_invView[0].xyz),
-        normalize(u_invView[1].xyz),
-        normalize(u_invView[2].xyz)
+        normalize(u_model[0][0].xyz),
+        normalize(u_model[0][1].xyz),
+        normalize(u_model[0][2].xyz)
     );
     vec3 worldViewDir = mul(invViewRotOnly, viewDir); // keep just the rotation part
 
