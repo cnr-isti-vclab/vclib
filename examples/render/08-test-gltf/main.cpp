@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     QApplication application(argc, argv);
 #endif
 
-    auto viewer = defaultViewer();
+    vcl::Viewer viewer;
 
     enum GLTFExamples {
         CAMERAS = 0,

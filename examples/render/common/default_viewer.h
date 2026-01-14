@@ -23,29 +23,13 @@
 #ifndef VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 #define VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh.h>
 #include <vclib/render/concepts/drawable_object.h>
-
-#ifdef VCLIB_WITH_IMGUI
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
-#endif
-
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
-#include <vclib/qt/mesh_viewer.h>
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-#include <vclib/glfw/viewer_window.h>
-#endif
-
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/viewer.h>
 
-#if defined(VCLIB_RENDER_EXAMPLES_WITH_GLFW) && defined(VCLIB_WITH_IMGUI)
-using ImguiMeshViewer = vcl::RenderApp<
-    vcl::glfw::WindowManager,
-    vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui>;
+#ifdef VCLIB_WITH_QT
+#include <QApplication>
 #endif
 
 template<vcl::MeshConcept MeshType>
@@ -59,19 +43,6 @@ void pushMeshOnVector(
         using DrawableMesh = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
         vector->pushBack(DrawableMesh(std::forward<MeshType>(mesh)));
     }
-}
-
-auto defaultViewer()
-{
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-    return vcl::qt::MeshViewer();
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-#ifdef VCLIB_WITH_IMGUI
-    return ImguiMeshViewer();
-#else  // VCLIB_WITH_IMGUI
-    return vcl::glfw::ViewerWindow();
-#endif // VCLIB_WITH_IMGUI
-#endif
 }
 
 template<vcl::MeshConcept... MeshTypes>
@@ -127,7 +98,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
     QApplication application(argc, argv);
 #endif
 
-    auto viewer = defaultViewer();
+    vcl::Viewer viewer;
 
     showMeshesOnViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
@@ -152,7 +123,7 @@ int showMeshesOnDefaultViewer(
     QApplication application(argc, argv);
 #endif
 
-    auto viewer = defaultViewer();
+    vcl::Viewer viewer;
 
     showMeshesOnViewer(argc, argv, viewer, std::move(meshes), pbrMode);
 
