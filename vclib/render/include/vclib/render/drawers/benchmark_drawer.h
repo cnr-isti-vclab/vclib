@@ -28,17 +28,12 @@
 #include <vclib/render/automation/metrics/null_benchmark_metric.h>
 #include <vclib/render/automation/printers/stdout_benchmark_printer.h>
 #include <vclib/render/drawers/event_drawer.h>
-#include <vclib/render/viewer/camera.h>
 #include <vclib/render/viewer/lights/directional_light.h>
 
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
-#include <chrono>
-#include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
 #define VCL_BENCHMARK_DRAWER_REPEAT_FOREVER 0
 
