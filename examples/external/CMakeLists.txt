@@ -21,16 +21,10 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-external-tests)
+project(vclib-external-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (TARGET vclib-3rd-vcg)
-    add_subdirectory(000-mesh-import-vcg)
-endif()
-
 if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree-intersection)
+    add_subdirectory(010-embree)
 endif()
-
-
