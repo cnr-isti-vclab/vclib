@@ -50,8 +50,7 @@ class CMakeBuild(build_ext):
         os.makedirs(build_temp, exist_ok=True)
 
         cmake_args = [
-            f"--preset=vclib-python-wheel",
-            "-DPYTHON_EXECUTABLE=" + sys.executable,
+            f"--preset=vclib-python-wheel"
         ]
 
         build_args = ["--target", "install"]
