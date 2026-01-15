@@ -115,7 +115,7 @@ public:
         if (!mDevice)
             throw std::runtime_error("Error creating Embree device.");
 
-        mScene  = rtcNewScene(mDevice);
+        mScene = rtcNewScene(mDevice);
 
         if (!mScene) {
             rtcReleaseDevice(mDevice);

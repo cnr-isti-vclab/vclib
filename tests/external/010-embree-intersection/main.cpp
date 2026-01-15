@@ -85,8 +85,8 @@ auto bruteForceRayIntersection(const MeshType& m, const RayType& ray)
     return std::make_pair(closestFace, closestPoint);
 }
 
-using Meshes         = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using MeshesIndexed  = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using Meshes        = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
+using MeshesIndexed = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
 
@@ -125,16 +125,16 @@ TEMPLATE_TEST_CASE(
         uint bruteForceMisses = 0;
 
         vcl::Timer tEmbree("Embree intersection rays");
-        auto embreeResults = scene.firstFaceIntersectedByRays(rays);
+        auto       embreeResults = scene.firstFaceIntersectedByRays(rays);
         tEmbree.stopAndPrint();
 
-        std::vector<uint> indices(N_RAYS_TEST);
+        std::vector<uint>                       indices(N_RAYS_TEST);
         std::vector<std::pair<uint, PointType>> bruteResults(N_RAYS_TEST);
 
         std::iota(indices.begin(), indices.end(), 0);
 
         vcl::Timer tBrute("Brute force intersection rays");
-        vcl::parallelFor(indices, [&](uint i){
+        vcl::parallelFor(indices, [&](uint i) {
             bruteResults[i] = bruteForceRayIntersection(tm, rays[i]);
         });
         tBrute.stopAndPrint();
@@ -219,16 +219,16 @@ TEMPLATE_TEST_CASE(
 
         // here use firstFaceIntersectedByRays
         vcl::Timer tEmbree("Embree intersection rays");
-        auto embreeResults = scene.firstFaceIntersectedByRays(rays);
+        auto       embreeResults = scene.firstFaceIntersectedByRays(rays);
         tEmbree.stopAndPrint();
 
-        std::vector<uint> indices(N_RAYS_TEST);
+        std::vector<uint>                       indices(N_RAYS_TEST);
         std::vector<std::pair<uint, PointType>> bruteResults(N_RAYS_TEST);
 
         std::iota(indices.begin(), indices.end(), 0);
 
         vcl::Timer tBrute("Brute force intersection rays");
-        vcl::parallelFor(indices, [&](uint i){
+        vcl::parallelFor(indices, [&](uint i) {
             bruteResults[i] = bruteForceRayIntersection(pm, rays[i]);
         });
         tBrute.stopAndPrint();
