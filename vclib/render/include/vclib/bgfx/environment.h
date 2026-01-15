@@ -38,16 +38,9 @@ namespace vcl {
  */
 class Environment
 {
-
     std::string mImagePath;
 
     vcl::VertexBuffer mVertexBuffer;
-    static const uint mVertexNumber = 3;
-    inline static const float mVertices[mVertexNumber * 3] {
-        -3, -1,  1,
-         1, -1,  1,
-         1,  3,  1
-    };
 
     bool
         mBackgroundReady = false,

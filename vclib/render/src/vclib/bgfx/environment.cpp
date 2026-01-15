@@ -35,6 +35,12 @@
 // needed for non power of two textures
 #define CEIL_DIV(x, d) ((x) / (d) + ((x) % (d) != 0))
 
+static const float VERTICES[9] {
+    -3, -1,  1,
+    1, -1,  1,
+    1,  3,  1
+};
+
 class AlignedAllocator : public bx::AllocatorI
 {
     inline static bx::DefaultAllocator bxDefaultAllocator;
@@ -326,19 +332,13 @@ void Environment::setTextures()
 
 void Environment::fullScreenTriangle()
 {
-    auto [vertices, releaseFn] =
-        Context::getAllocatedBufferAndReleaseFn<float>(mVertexNumber * 3);
-
-    std::copy(mVertices, mVertices + mVertexNumber * 3, vertices);
-
     mVertexBuffer.create(
-        vertices,
-        mVertexNumber,
+        VERTICES,
+        3,
         bgfx::Attrib::Enum::Position,
-        3,           // attributes per vertex
+        3, // attributes per vertex
         vcl::PrimitiveType::FLOAT,
-        false,       // data is normalized
-        releaseFn
+        false // data is normalized
     );
 }
 
