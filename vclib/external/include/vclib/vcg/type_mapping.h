@@ -25,7 +25,7 @@
 
 #include "concepts.h"
 
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 #include <vcg/space/point2.h>
 #include <vcg/space/point3.h>

@@ -21,16 +21,15 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-external-tests)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-test-${TEST_NAME})
 
-if (TARGET vclib-3rd-vcg)
-    add_subdirectory(000-mesh-import-vcg)
-endif()
+set(SOURCES
+    main.cpp)
 
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree-intersection)
-endif()
-
-
+vclib_add_test(
+    ${TEST_NAME}
+    VCLIB_MODULE external
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
