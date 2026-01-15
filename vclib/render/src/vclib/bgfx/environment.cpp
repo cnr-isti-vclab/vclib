@@ -327,7 +327,7 @@ void Environment::setTextures()
 void Environment::fullScreenTriangle()
 {
     auto [vertices, releaseFn] =
-        getAllocatedBufferAndReleaseFn<float>(mVertexNumber * 3);
+        Context::getAllocatedBufferAndReleaseFn<float>(mVertexNumber * 3);
 
     std::copy(mVertices, mVertices + mVertexNumber * 3, vertices);
 

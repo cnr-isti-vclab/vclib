@@ -209,16 +209,6 @@ class Environment
      * @param[in] viewId: The view ID to use for texture generation.
     */
     void generateTextures(const uint viewId);
-
-    template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
-    {
-        T* buffer = new T[size];
-
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
-    }
 };
 
 } // namespace vcl
