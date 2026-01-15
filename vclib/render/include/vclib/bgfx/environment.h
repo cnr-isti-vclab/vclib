@@ -98,6 +98,8 @@ class Environment
 
     ~Environment() = default;
 
+    Environment& operator=(const Environment& other) = delete;
+
     Environment& operator=(Environment&& other)
     {
         swap(other);
