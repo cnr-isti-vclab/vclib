@@ -35,6 +35,35 @@
 // needed for non power of two textures
 #define CEIL_DIV(x, d) ((x) / (d) + ((x) % (d) != 0))
 
+class AlignedAllocator : public bx::AllocatorI
+{
+    inline static bx::DefaultAllocator bxDefaultAllocator;
+public:
+    AlignedAllocator(size_t _minAlignment)
+            : m_allocator(&bxDefaultAllocator)
+              , m_minAlignment(_minAlignment)
+    {
+    }
+
+    virtual void* realloc(
+        void* _ptr
+        , size_t _size
+        , size_t _align
+        , const char* _file
+        , uint32_t _line
+        )
+    {
+        return m_allocator->realloc(_ptr, _size, bx::max(_align, m_minAlignment), _file, _line);
+    }
+
+    bx::AllocatorI* m_allocator;
+    size_t m_minAlignment;
+};
+
+// Allocator references are stored in image containers
+// so they have to remain visible somehow.
+static AlignedAllocator bxAlignedAllocator = AlignedAllocator(16);
+
 namespace vcl {
 
 void Environment::drawBackground(const uint viewId, const int toneMapping, const float exposure)
@@ -57,7 +86,7 @@ void Environment::drawBackground(const uint viewId, const int toneMapping, const
     bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
     bgfx::submit(
-        viewId, 
+        viewId,
         pm.getProgram<DRAWABLE_BACKGROUND_PBR>()
     );
 }
@@ -93,7 +122,7 @@ void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) c
                 samplerFlags
             );
             break;
-        }    
+        }
         case BRDF_LUT:
         {
             mBrdfLuTexture->bind(
@@ -114,7 +143,7 @@ void Environment::bindDataUniform(const float d0, const float d1, const float d2
 
 void Environment::prepareBackground(const uint viewId)
 {
-    if(mBackgroundReady) 
+    if(mBackgroundReady)
         return;
 
     mImage = loadImage(mImagePath);
@@ -130,7 +159,7 @@ void Environment::prepareBackground(const uint viewId)
     generateTextures(viewId);
 
     fullScreenTriangle();
-    
+
     mBackgroundReady = true;
     mCanDraw = true;
 }
@@ -156,44 +185,44 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     using enum Environment::FileFormat;
     mSourceFormat = getFileFormat(mImagePath);
 
-    if(mSourceFormat == UNKNOWN) 
+    if(mSourceFormat == UNKNOWN)
         return nullptr;
 
-	bx::Error err;
+    bx::Error err;
     bx::FileReader reader;
 
-	// open the file
+    // open the file
 
     if(!bx::open(&reader, imagePath.c_str(), &err))
         return nullptr;
 
-	// read file size and allocate memory
+    // read file size and allocate memory
 
     uint32_t inputSize = (uint32_t)bx::getSize(&reader);
 
     if(inputSize == 0)
-		return nullptr;
+        return nullptr;
 
-	uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
+    uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
 
-	// read the file and put it raw in inputData
+    // read the file and put it raw in inputData
 
-	bx::read(&reader, inputData, inputSize, &err);
-	bx::close(&reader);
+    bx::read(&reader, inputData, inputSize, &err);
+    bx::close(&reader);
 
-	// copy the data in the final container reading its characteristics
+    // copy the data in the final container reading its characteristics
 
     using enum bimg::TextureFormat::Enum;
 
-	bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err); 
+    bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err);
 
-	bx::free(&bxAlignedAllocator, inputData);
+    bx::free(&bxAlignedAllocator, inputData);
 
     if(
-        !err.isOk() || 
+        !err.isOk() ||
         (
             !output->m_cubeMap   &&
-            mSourceFormat != HDR && 
+            mSourceFormat != HDR &&
             mSourceFormat != EXR
         )
     ) // file is neither a cubemap nor an equirectangular map
@@ -201,7 +230,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
         return nullptr;
     }
 
-	return output;
+    return output;
 }
 
 void Environment::setTextures()
@@ -234,11 +263,11 @@ void Environment::setTextures()
         mHdrTexture = std::move(hdrTexture);
     }
 
-    const bool cubemapHasAlreadyMips = 
-        mImage->m_cubeMap && 
+    const bool cubemapHasAlreadyMips =
+        mImage->m_cubeMap &&
         mImage->m_numMips > 1;
-        
-    const uint64_t cubemapTextureFlags = 
+
+    const uint64_t cubemapTextureFlags =
         cubemapHasAlreadyMips?
         // has already mips, no work to do
         BGFX_TEXTURE_NONE :
@@ -246,7 +275,7 @@ void Environment::setTextures()
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT;
 
     auto cubemapTexture = std::make_unique<Texture>();
-    mImage->m_cubeMap? 
+    mImage->m_cubeMap?
         cubemapTexture->set(
             mImage,
             true,   // has mips
@@ -303,7 +332,7 @@ void Environment::fullScreenTriangle()
     std::copy(mVertices, mVertices + mVertexNumber * 3, vertices);
 
     mVertexBuffer.create(
-        vertices, 
+        vertices,
         mVertexNumber,
         bgfx::Attrib::Enum::Position,
         3,           // attributes per vertex
@@ -326,7 +355,7 @@ void Environment::generateTextures(const uint viewId)
             0,
             mHdrSamplerUniform.handle()
         );
-        
+
         mCubeMapTexture->bindForCompute(
             1,
             0,
@@ -343,7 +372,7 @@ void Environment::generateTextures(const uint viewId)
         );
     }
 
-    const bool generateCubeMips = 
+    const bool generateCubeMips =
         !mImage->m_cubeMap ||
         (mImage->m_cubeMap && mImage->m_numMips <= 1);
 
@@ -411,7 +440,7 @@ void Environment::generateTextures(const uint viewId)
 
     // create specular map from cubemap
 
-    for(uint8_t mip = 0; mip < mSpecularMips; ++mip) 
+    for(uint8_t mip = 0; mip < mSpecularMips; ++mip)
     {
         const uint32_t mipSize = CEIL_DIV(mSpecularCubeSide, 1 << mip);
         const float roughness = static_cast<float>(mip) / static_cast<float>(mSpecularMips - 1);

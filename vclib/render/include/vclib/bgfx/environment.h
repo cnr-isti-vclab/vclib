@@ -49,21 +49,21 @@ class Environment
          1,  3,  1
     };
 
-    bool 
+    bool
         mBackgroundReady = false,
         mCanDraw         = false;
 
-    uint32_t 
+    uint32_t
         mCubeSide           = 0,
         mIrradianceCubeSide = 0,
         mSpecularCubeSide   = 0,
         mBrdfLutSize        = 1024;
 
-    uint8_t 
+    uint8_t
         mCubeMips     = 0,
         mSpecularMips = 0;
 
-    vcl::Uniform 
+    vcl::Uniform
         mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
         mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
         mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
@@ -71,9 +71,9 @@ class Environment
         mBrdfLutSamplerUniform        = Uniform("s_brdf_lut", bgfx::UniformType::Sampler),
         mDataUniform                  = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
-    std::unique_ptr<Texture> 
-        mHdrTexture, 
-        mCubeMapTexture, 
+    std::unique_ptr<Texture>
+        mHdrTexture,
+        mCubeMapTexture,
         mIrradianceTexture,
         mSpecularTexture,
         mBrdfLuTexture;
@@ -88,36 +88,6 @@ class Environment
     };
 
     FileFormat mSourceFormat = FileFormat::UNKNOWN;
-
-    class AlignedAllocator : public bx::AllocatorI
-    {
-    public:
-    	AlignedAllocator(bx::AllocatorI* _allocator, size_t _minAlignment)
-    		: m_allocator(_allocator)
-    		, m_minAlignment(_minAlignment)
-    	{
-    	}
-
-    	virtual void* realloc(
-    			void* _ptr
-    		, size_t _size
-    		, size_t _align
-    		, const char* _file
-    		, uint32_t _line
-    		)
-    	{
-    		return m_allocator->realloc(_ptr, _size, bx::max(_align, m_minAlignment), _file, _line);
-    	}
-
-    	bx::AllocatorI* m_allocator;
-    	size_t m_minAlignment;
-    };
-
-    // Allocator references are stored in image containers
-    // so they have to remain visible somehow.
-    // TODO: find a better way to do so.
-    inline static bx::DefaultAllocator bxDefaultAllocator;
-    inline static AlignedAllocator bxAlignedAllocator = AlignedAllocator(&bxDefaultAllocator, 16);
 
     bimg::ImageContainer* mImage = nullptr;
 
@@ -191,7 +161,7 @@ class Environment
     */
     void bindTexture(TextureType type, uint stage, uint samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 
-    /** @brief Binds the provided data to the helper uniform (a vec4) handled by the Environment class. 
+    /** @brief Binds the provided data to the helper uniform (a vec4) handled by the Environment class.
      * @param[in] d0: The first float data to bind. Default is 0.0f.
      * @param[in] d1: The second float data to bind. Default is 0.0f.
      * @param[in] d2: The third float data to bind. Default is 0.0f.
