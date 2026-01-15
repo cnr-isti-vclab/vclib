@@ -380,7 +380,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexPositions(mesh, buffer);
 
@@ -429,7 +429,7 @@ private:
         const uint totalIndices = mesh.vertexNumber() * 6;
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(totalIndices);
+            Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
@@ -444,7 +444,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexNormals(mesh, buffer);
 
@@ -463,7 +463,8 @@ private:
     {
         uint nv = Base::numVerts();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nv);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
@@ -483,7 +484,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillVertexTexCoords(mesh, buffer);
 
@@ -502,7 +503,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 4);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 4);
 
         Base::fillVertexTangents(mesh, buffer);
 
@@ -521,7 +522,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillWedgeTexCoords(mesh, buffer);
 
@@ -539,7 +540,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt * 3);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt * 3);
 
         Base::fillTriangleIndices(mesh, buffer);
 
@@ -551,7 +553,7 @@ private:
         uint nt = Base::numTris();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nt * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nt * 3);
 
         Base::fillTriangleNormals(mesh, buffer);
 
@@ -567,7 +569,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt);
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
@@ -610,7 +613,7 @@ private:
                     bimg::TextureFormat::RGBA8, img.width(), img.height());
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
+                Context::getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
             const uint* tdata = reinterpret_cast<const uint*>(img.data());
 
@@ -829,16 +832,6 @@ private:
                 Material::TEXTURE_TYPE_NAMES[i].c_str(),
                 bgfx::UniformType::Sampler);
         }
-    }
-
-    template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
-    {
-        T* buffer = new T[size];
-
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
     }
 };
 

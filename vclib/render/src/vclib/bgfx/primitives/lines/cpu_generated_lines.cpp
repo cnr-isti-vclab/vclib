@@ -119,16 +119,19 @@ void CPUGeneratedLines::setPoints(
         uint bufferIndsSize = (nPoints / 2) * 6;
 
         auto [vCoords, vCoordsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertCoordsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertCoordsSize);
 
         auto [vColors, vColorsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertColorsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertColorsSize);
 
         auto [vNormals, vNormalsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertNormalsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertNormalsSize);
 
         auto [indices, iReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
         uint viCoords  = 0;
         uint viColors  = 0;
