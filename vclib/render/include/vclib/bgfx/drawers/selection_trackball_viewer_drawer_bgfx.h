@@ -107,8 +107,8 @@ public:
             );
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
-        bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, 4096, 4096);
-        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 4096, 4096);
+        bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();

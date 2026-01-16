@@ -68,6 +68,7 @@ private:
 
     bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
     std::vector<uint8_t> mTexReadBackVec;
+    std::array<uint, 2> mColAttSize;
     mutable uint mVisSelTexRBFrames = 255;
 
 protected:
@@ -125,9 +126,10 @@ public:
 
     void calculateSelection(const SelectionParameters& params) override {
         if (!bgfx::isValid(mBlitTex)) {
-            mBlitTex = bgfx::createTexture2D(4096, 4096, false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+            mBlitTex = bgfx::createTexture2D(params.colorAttachmentSize[0], params.colorAttachmentSize[1], false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
             mTexReadBackVec = std::vector<uint8_t>();
-            mTexReadBackVec.resize(4096 * 4096 * 4, 0);
+            mTexReadBackVec.resize(params.colorAttachmentSize[0] * params.colorAttachmentSize[1] * 4, 0);
+            mColAttSize = params.colorAttachmentSize;
         }
         if (params.mode.isFaceSelection()) {
             if (!(params.mode.isVisibleSelection() ? faceSelectionVisible(params) : faceSelection(params))) {
@@ -276,7 +278,7 @@ public:
                 mVisSelTexRBFrames = 255;
                 std::fstream file;
                 file.open("output.ppm", std::ios::binary | std::ios::out);
-                file << "P6\n4096 4096\n255\n";
+                file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
                 size_t index = 0;
                 for (const uint8_t& val: mTexReadBackVec) {
                     ++index;
@@ -527,7 +529,7 @@ protected:
         }
         bool ret = mMRB.faceSelectionVisible(params, model);
         if (!params.isTemporary) {
-            bgfx::blit(202, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, 4096, 4096);
+            bgfx::blit(202, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, params.colorAttachmentSize[0], params.colorAttachmentSize[1]);
             bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
             mVisSelTexRBFrames = 3;
         }
