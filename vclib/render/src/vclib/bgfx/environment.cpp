@@ -47,11 +47,12 @@ namespace vcl {
 
 Environment::Environment(const std::string& imagePath)
 {
-    mImage = loadImage(imagePath);
-    if (mImage) {
-        setTextures();
-        generateTextures();
+    bimg::ImageContainer* image = loadImage(imagePath);
+    if (image) {
+        setTextures(*image);
+        generateTextures(*image);
         fullScreenTriangle();
+        bimg::imageFree(image);
     }
 }
 
@@ -200,10 +201,10 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     return output;
 }
 
-void Environment::setTextures()
+void Environment::setTextures(const bimg::ImageContainer& image)
 {
     // if it's not a cubemap it's equirectangular
-    mCubeSide = mImage->m_cubeMap? mImage->m_width : CEIL_DIV(mImage->m_width, 4);
+    mCubeSide = image.m_cubeMap? image.m_width : CEIL_DIV(image.m_width, 4);
     mCubeMips = bimg::imageGetNumMips(
         bimg::TextureFormat::RGBA32F,
         mCubeSide,
@@ -219,11 +220,11 @@ void Environment::setTextures()
         mSpecularCubeSide
     ) / 2; // ignore too low mips
 
-    if(!mImage->m_cubeMap) // equirect
+    if(!image.m_cubeMap) // equirect
     {
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
-            *mImage,
+            image,
             false,      // has mips
             BGFX_TEXTURE_NONE
         );
@@ -231,8 +232,8 @@ void Environment::setTextures()
     }
 
     const bool cubemapHasAlreadyMips =
-        mImage->m_cubeMap &&
-        mImage->m_numMips > 1;
+        image.m_cubeMap &&
+        image.m_numMips > 1;
 
     const uint64_t cubemapTextureFlags =
         cubemapHasAlreadyMips?
@@ -242,9 +243,9 @@ void Environment::setTextures()
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT;
 
     auto cubemapTexture = std::make_unique<Texture>();
-    mImage->m_cubeMap?
+    image.m_cubeMap?
         cubemapTexture->set(
-            *mImage,
+            image,
             true,   // has mips
             cubemapTextureFlags
         ):
@@ -303,14 +304,14 @@ void Environment::fullScreenTriangle()
     );
 }
 
-void Environment::generateTextures()
+void Environment::generateTextures(const bimg::ImageContainer& image)
 {
     using enum ComputeProgram;
     ProgramManager& pm = Context::instance().programManager();
 
     uint viewId = Context::instance().requestViewId();
 
-    if(!mImage->m_cubeMap)
+    if(!image.m_cubeMap)
     {
         // convert hdr equirectangular to cubemap
 
@@ -336,8 +337,8 @@ void Environment::generateTextures()
     }
 
     const bool generateCubeMips =
-        !mImage->m_cubeMap ||
-        (mImage->m_cubeMap && mImage->m_numMips <= 1);
+        !image.m_cubeMap ||
+        (image.m_cubeMap && image.m_numMips <= 1);
 
     if(generateCubeMips)
     {

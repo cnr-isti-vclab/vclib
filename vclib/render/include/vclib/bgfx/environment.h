@@ -47,8 +47,6 @@ class Environment
         DDS
     };
 
-    bimg::ImageContainer* mImage = nullptr;
-
     vcl::VertexBuffer mVertexBuffer;
 
     uint32_t mCubeSide           = 0;
@@ -94,10 +92,7 @@ public:
 
     Environment(Environment&& other) { swap(other); }
 
-    ~Environment() {
-        if (mImage)
-            bimg::imageFree(mImage);
-    }
+    ~Environment() = default;
 
     Environment& operator=(const Environment& other) = delete;
 
@@ -116,7 +111,6 @@ public:
         swap(mBrdfLutSize, other.mBrdfLutSize);
         swap(mCubeMips, other.mCubeMips);
         swap(mSpecularMips, other.mSpecularMips);
-        swap(mImage, other.mImage);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
         swap(mIrradianceTexture, other.mIrradianceTexture);
@@ -178,12 +172,12 @@ private:
     bimg::ImageContainer* loadImage(std::string imagePath);
 
     /** @brief Sets up the environment textures based on the loaded image.*/
-    void setTextures();
+    void setTextures(const bimg::ImageContainer& image);
 
     /** @brief Generates the necessary environment textures (cubemap, irradiance map, specular map, BRDF LUT).
      * @param[in] viewId: The view ID to use for texture generation.
      */
-    void generateTextures();
+    void generateTextures(const bimg::ImageContainer& image);
 
     /** @brief Sets the buffer for the full-screen triangle for background
      * drawing.*/
