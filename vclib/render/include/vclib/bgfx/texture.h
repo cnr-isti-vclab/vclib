@@ -26,6 +26,8 @@
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
+#include <vclib/bgfx/context.h>
+
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
@@ -384,22 +386,11 @@ public:
         return flags;
     }
 
-    private:
-
-    template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
+private:
+    static const bgfx::Memory* bgfxMemory(const uint8_t* data, uint32_t size)
     {
-        T* buffer = new T[size];
-
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
-    }
-
-    const bgfx::Memory* bgfxMemory(const uint8_t* data, uint32_t size)
-    {
-        auto [buffer, releaseFn] = 
-            getAllocatedBufferAndReleaseFn<uint8_t>(size);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint8_t>(size);
 
         std::copy(data, data + size, buffer);
 
