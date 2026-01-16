@@ -72,7 +72,15 @@ static AlignedAllocator bxAlignedAllocator = AlignedAllocator(16);
 
 namespace vcl {
 
-void Environment::drawBackground(const uint viewId, const int toneMapping, const float exposure)
+Environment::Environment(const std::string& imagePath) : mImagePath(imagePath)
+{
+    mImage = loadImage(mImagePath);
+}
+
+void Environment::drawBackground(
+    const uint  viewId,
+    const int   toneMapping,
+    const float exposure)
 {
     prepareBackground(viewId);
 
@@ -149,25 +157,18 @@ void Environment::bindDataUniform(const float d0, const float d1, const float d2
 
 void Environment::prepareBackground(const uint viewId)
 {
-    if(mBackgroundReady)
+    if(mCanDraw)
         return;
 
-    mImage = loadImage(mImagePath);
-    if(mImage == nullptr)
-    {
-        mBackgroundReady = true;
-        mCanDraw = false;
-        return;
+    if (mImage) {
+        setTextures();
+
+        generateTextures(viewId);
+
+        fullScreenTriangle();
+
+        mCanDraw = true;
     }
-
-    setTextures();
-
-    generateTextures(viewId);
-
-    fullScreenTriangle();
-
-    mBackgroundReady = true;
-    mCanDraw = true;
 }
 
 Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)

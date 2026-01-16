@@ -42,9 +42,7 @@ class Environment
 
     vcl::VertexBuffer mVertexBuffer;
 
-    bool
-        mBackgroundReady = false,
-        mCanDraw         = false;
+    bool mCanDraw = false;
 
     uint32_t
         mCubeSide           = 0,
@@ -88,9 +86,7 @@ class Environment
 
     Environment() = default;
 
-    Environment(const std::string& imagePath):
-        mImagePath(imagePath)
-    {}
+    Environment(const std::string& imagePath);
 
     Environment(const Environment& other) = delete;
 
@@ -109,7 +105,6 @@ class Environment
     void swap(Environment& other)
     {
         using std::swap;
-        swap(mBackgroundReady, other.mBackgroundReady);
         swap(mCanDraw, other.mCanDraw);
         swap(mCubeSide, other.mCubeSide);
         swap(mIrradianceCubeSide, other.mIrradianceCubeSide);
