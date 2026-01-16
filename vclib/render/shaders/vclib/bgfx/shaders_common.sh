@@ -30,6 +30,7 @@
 
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
+// inverse transposed of the model view (without translation)
 
 // bgfx defines front facing as clockwise
 // N.B. use this macro only in main functions of shaders

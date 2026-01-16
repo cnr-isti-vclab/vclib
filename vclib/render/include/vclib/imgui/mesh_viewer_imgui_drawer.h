@@ -69,6 +69,16 @@ public:
             ImGui::EndChild();
         }
 
+        // drawable mesh info and settings for selected mesh
+        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+            auto drawable =
+                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
+                    Base::mDrawList->at(mMeshIndex));
+            if (drawable) {
+                drawMeshSettings(*drawable);
+            }
+        }
+
         // combo box for pbr mode
         ImGui::Separator();
         ImGui::Text("Render Mode:");
@@ -90,13 +100,41 @@ public:
             ImGui::EndCombo();
         }
 
-        // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
-            auto drawable =
-                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
-            if (drawable) {
-                drawMeshSettings(*drawable);
+        if(pbrMode) 
+        {
+            // exposure slider
+            ImGui::Separator();
+            ImGui::Text("Exposure:");
+            ImGui::SameLine();
+            float exposure = Base::getExposure();
+            if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                Base::setExposure(exposure);
+
+            // tone mapping combo box
+            ImGui::Separator();
+            ImGui::Text("Tone mapping:");
+            ImGui::SameLine();
+            const char* toneMappingNames[] = {
+                "None",
+                "Basic", 
+                "ACES Hill", 
+                "ACES Hill Exposure Boost",
+                "ACES Narkowicz", 
+                "Khronos PBR Neutral"
+            };
+            int toneMapping = static_cast<int>(Base::getToneMapping());
+            if(ImGui::BeginCombo(
+                    "##ComboToneMapping",
+                    toneMappingNames[toneMapping])) {
+                for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
+                    bool isSelected = toneMapping == n;
+                    if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                        Base::setToneMapping(static_cast<Base::ToneMapping>(n));
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
             }
         }
 

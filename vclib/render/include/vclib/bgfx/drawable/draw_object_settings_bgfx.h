@@ -24,6 +24,7 @@
 #define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
 
 #include <vclib/base.h>
+#include <vclib/bgfx/environment.h>
 
 namespace vcl {
 
@@ -42,6 +43,14 @@ struct DrawObjectSettingsBGFX
     /**< @brief Option that tells whether the object must be drawn in PBR mode.
      */
     bool pbrMode = false;
+
+    /**< @brief The exposure value to use in PBR mode. */
+    float exposure = 1.0f;
+
+    /**< @brief The tone mapping operator to use in PBR mode. */
+    int toneMapping = 2;
+
+    const Environment* environment = nullptr;
 };
 
 } // namespace vcl

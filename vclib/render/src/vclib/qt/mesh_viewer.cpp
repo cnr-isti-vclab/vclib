@@ -210,6 +210,10 @@ void MeshViewer::disablePBR()
     setPBR(false);
 }
 
+void MeshViewer::setPanorama(const std::string& panorama) {
+    mUI->viewer->setPanorama(panorama);
+}
+
 void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S

@@ -26,8 +26,8 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
-#include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 namespace vcl {
 
@@ -37,6 +37,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
     DirectionalLightUniforms mDirectionalLightUniforms;
+
+    Environment mPanorama = Environment("");
 
     // flags
     bool mStatsEnabled = false;
@@ -59,14 +61,23 @@ public:
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
-        settings.viewId = viewId;
+        settings.viewId = viewId; 
 
         settings.pbrMode = ParentViewer::isPBREnabled();
+
+        settings.exposure = ParentViewer::getExposure();
+
+        settings.toneMapping = toUnderlying(ParentViewer::getToneMapping());
+
+        settings.environment = &mPanorama;
 
         setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
+
+        if(settings.pbrMode)
+            mPanorama.drawBackground(settings.viewId, settings.toneMapping, settings.exposure);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -112,6 +123,11 @@ public:
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
     }
+
+    void setPanorama(const std::string& panorama)
+    {
+        mPanorama = Environment(panorama);
+    } 
 
 private:
     void setViewTransform(uint viewId)

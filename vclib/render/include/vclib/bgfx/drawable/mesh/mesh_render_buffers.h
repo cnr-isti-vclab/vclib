@@ -264,7 +264,10 @@ public:
     uint64_t bindMaterials(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
-        const MeshType&           m) const
+        const MeshType&           m,
+        float                     exposure,
+        int                       toneMapping,
+        bool                      ibl = false) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -278,7 +281,10 @@ public:
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(m),
                 textureAvailable,
-                isPerVertexTangentAvailable(m));
+                isPerVertexTangentAvailable(m),
+                exposure,
+                toneMapping,
+                ibl);
         }
         else {
             using enum Material::AlphaMode;
@@ -291,7 +297,10 @@ public:
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m));
+                    isPerVertexTangentAvailable(m),
+                    exposure,
+                    toneMapping,
+                    ibl);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -311,7 +320,10 @@ public:
                     m.material(materialId),
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m));
+                    isPerVertexTangentAvailable(m),
+                    exposure,
+                    toneMapping,
+                    ibl);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
@@ -652,6 +664,8 @@ private:
                 vcl::Point2i(img.width(), img.height()),
                 generateMips,
                 flags,
+                bgfx::TextureFormat::RGBA8,
+                false,
                 releaseFn);
 
             // at() does not insert if already present, thus safe in parallel

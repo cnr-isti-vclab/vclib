@@ -218,13 +218,33 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
-                uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
+                uint64_t materialState = mMRB.bindMaterials(
+                    mMRS, 
+                    i, 
+                    *this,
+                    settings.exposure, 
+                    settings.toneMapping,
+                    settings.environment->canDraw()
+                );
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
+                if(settings.pbrMode && settings.environment->canDraw())
+                {
+                    using enum Environment::TextureType;
+                    settings.environment->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    settings.environment->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
+                    settings.environment->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
+                }
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
 
                 bindUniforms();
+                if(settings.pbrMode && settings.environment->canDraw())
+                {
+                    settings.environment->bindDataUniform(
+                        float(settings.environment->specularMips())
+                    );
+                }
 
                 if (settings.pbrMode) {
                     surfaceState |= materialState;

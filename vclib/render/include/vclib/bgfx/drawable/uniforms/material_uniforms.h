@@ -52,7 +52,9 @@ class MaterialUniforms
     // settings packed in a vec4
     // .x : pbr settings
     // .y : texture settings
-    std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
+    // .z : tone mapping operator
+    // .w : exposure
+    std::array<float, 4> mSettings = {0.0, 0.0, 2.0, 1.0};
 
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
@@ -86,7 +88,10 @@ public:
         const Material&                     m,
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                                vertexTangentAvailable)
+        bool                                vertexTangentAvailable,
+        float                               exposure,
+        int                                 toneMapping,
+        bool                                ibl)
     {
         uint pbrSettings = 0;
 
@@ -102,6 +107,9 @@ public:
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
+        if(ibl)
+            pbrSettings |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+
         mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
 
         uint textureSettings = 0;
@@ -114,6 +122,8 @@ public:
         }
 
         mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
+        mSettings[2] = static_cast<float>(toneMapping);
+        mSettings[3] = exposure;
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

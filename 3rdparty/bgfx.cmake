@@ -29,7 +29,7 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
-    target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg)
+    target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg bgfx::bimg_decode bgfx::bimg_encode)
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include)
     target_include_directories(vclib-3rd-bgfx
@@ -87,6 +87,9 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         GIT_TAG        v1.135.9062-501
         EXCLUDE_FROM_ALL)
 
+    set(BIMG_DECODE ON CACHE BOOL "" FORCE)
+    set(BIMG_CUBEMAP ON CACHE BOOL "" FORCE)
+
     FetchContent_MakeAvailable(bgfx)
 
     add_library(vclib-3rd-bgfx INTERFACE)
@@ -94,7 +97,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     # there are three warnings on gcc that we need to ignore
     set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
-    target_link_libraries(vclib-3rd-bgfx INTERFACE bx bgfx bimg)
+    target_link_libraries(vclib-3rd-bgfx INTERFACE bx bgfx bimg bimg_decode bimg_encode)
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
 
