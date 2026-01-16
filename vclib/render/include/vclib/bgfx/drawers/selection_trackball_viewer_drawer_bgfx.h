@@ -56,7 +56,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     DrawableTrackBall           mDrawTrackBall;
     DrawableDirectionalLight    mDrawableDirectionalLight;
     SelectionBox                mBoxToDraw;
-    static const uint           sVisibleFaceFramebufferSize = 4096u;
+    static const uint           sVisibleFaceFramebufferSize = 10000u;
 
 public:
     using ParentViewer::ParentViewer;
@@ -164,26 +164,25 @@ public:
             1.f - float(box.get1().value().y()) / float(win_h) * 2.f,
             0.f,
             1.f);
-        Matrix44f invProj      = TED::projectionMatrix().inverse();
-        Point4f   minViewSpace = invProj * minNDC;
-        Point4f   maxViewSpace = invProj * maxNDC;
-        minViewSpace /= minViewSpace.w();
-        maxViewSpace /= maxViewSpace.w();
-        float l = minViewSpace.x();
-        float r = maxViewSpace.x();
-        float b = minViewSpace.y();
-        float t = maxViewSpace.y();
-        float n = TED::camera().nearPlane();
-        float f = TED::camera().farPlane();
-        float proj[16];
-        if (TED::camera().projectionMode() == PM::ORTHO) {
-            bx::mtxOrtho(proj, l, r, b, t, n, f, 0.f, false);
-        }
-        else {
-            bx::mtxProj(proj, t, b, l, r, n, f, false);
-        }
+        float w = maxNDC.x() - minNDC.x();
+        float h = maxNDC.y() - minNDC.y();
+        Matrix44f trns
+            {
+                {1.f, 0.f, 0.f, -(minNDC.x() + 0.5f * w)},
+                {0.f, 1.f, 0.f, -(minNDC.y() + 0.5f * h)},
+                {0.f, 0.f, 1.f, 0.f},
+                {0.f, 0.f, 0.f, 1.f}
+            };
+        Matrix44f scl
+            {
+                {2.f/w, 0.f, 0.f, 0.f},
+                {0.f, 2.f/h, 0.f, 0.f},
+                {0.f, 0.f, 1.f, 0.f},
+                {0.f, 0.f, 0.f, 1.f}
+            };
+        Matrix44f newProj = scl * trns * TED::projectionMatrix();
         float* view = TED::viewMatrix().data();
-        bgfx::setViewTransform(mVisibleSelectionViewIds[0], view, proj);
+        bgfx::setViewTransform(mVisibleSelectionViewIds[0], view, newProj.data());
     }
 
     void onDraw(uint viewId) override
@@ -200,11 +199,7 @@ public:
             }
             SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
             if (ParentViewer::selectionMode().isVisibleSelection()) {
-                //setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
-                //CHANGE TO REMOVE
-                bgfx::setViewTransform(mVisibleSelectionViewIds[0], TED::viewMatrix().data(), TED::projectionMatrix().data());
-                //bgfx::setViewTransform(mVisibleSelectionViewIds[1], TED::viewMatrix().data(), TED::projectionMatrix().data());
-                //END OF CHANGE TO REMOVE
+                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
             }
             SelectionParameters params = SelectionParameters{
                 viewId,
