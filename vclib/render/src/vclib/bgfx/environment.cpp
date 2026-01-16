@@ -206,20 +206,21 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 void Environment::setTextures(const bimg::ImageContainer& image)
 {
     // if it's not a cubemap it's equirectangular
-    mCubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
+    uint cubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
+
     mCubeMips = bimg::imageGetNumMips(
         bimg::TextureFormat::RGBA32F,
-        mCubeSide,
-        mCubeSide
+        cubeSide,
+        cubeSide
     );
 
-    mIrradianceCubeSide = ceilDiv(mCubeSide, 4);
+    // cube side for irradiance and specular
+    uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
 
-    mSpecularCubeSide = ceilDiv(mCubeSide, 4);
     mSpecularMips = bimg::imageGetNumMips(
         bimg::TextureFormat::RGBA32F,
-        mSpecularCubeSide,
-        mSpecularCubeSide
+        irrSpecCubeSide,
+        irrSpecCubeSide
     ) / 2; // ignore too low mips
 
     if(!image.m_cubeMap) // equirect
@@ -253,7 +254,7 @@ void Environment::setTextures(const bimg::ImageContainer& image)
         ):
         cubemapTexture->set(
             nullptr,
-            Point2i(mCubeSide, mCubeSide),
+            Point2i(cubeSide, cubeSide),
             true,   // has mips
             cubemapTextureFlags,
             bgfx::TextureFormat::RGBA32F,
@@ -264,7 +265,7 @@ void Environment::setTextures(const bimg::ImageContainer& image)
     auto irradianceTexture = std::make_unique<Texture>();
     irradianceTexture->set(
         nullptr,
-        Point2i(mIrradianceCubeSide, mIrradianceCubeSide),
+        Point2i(irrSpecCubeSide, irrSpecCubeSide),
         false, // has mips
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F,
@@ -275,7 +276,7 @@ void Environment::setTextures(const bimg::ImageContainer& image)
     auto specularTexture = std::make_unique<Texture>();
     specularTexture->set(
         nullptr,
-        Point2i(mSpecularCubeSide, mSpecularCubeSide),
+        Point2i(irrSpecCubeSide, irrSpecCubeSide),
         true, // has mips
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F,
@@ -286,7 +287,7 @@ void Environment::setTextures(const bimg::ImageContainer& image)
     auto brdfLuTexture = std::make_unique<Texture>();
     brdfLuTexture->set(
         nullptr,
-        Point2i(mBrdfLutSize, mBrdfLutSize),
+        Point2i(BRDF_LU_TEXTURE_SIZE, BRDF_LU_TEXTURE_SIZE),
         false,
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F
@@ -311,6 +312,9 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     using enum ComputeProgram;
     ProgramManager& pm = Context::instance().programManager();
 
+    // if it's not a cubemap it's equirectangular
+    uint cubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
+
     uint viewId = Context::instance().requestViewId();
 
     if(!image.m_cubeMap)
@@ -332,8 +336,8 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
-            ceilDiv(mCubeSide, 8),
-            ceilDiv(mCubeSide, 8),
+            ceilDiv(cubeSide, 8),
+            ceilDiv(cubeSide, 8),
             6
         );
     }
@@ -348,7 +352,7 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
 
         for(uint8_t mip = 1; mip < mCubeMips; mip++)
         {
-            const uint32_t mipSize = ceilDiv(mCubeSide, 1 << mip);
+            const uint32_t mipSize = ceilDiv(cubeSide, 1 << mip);
 
             // ensure at least 1 threadgroup is dispatched for small mips
             // assuming the compute shader uses 8x8 threads per group
@@ -394,13 +398,16 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
         bgfx::TextureFormat::RGBA32F
     );
 
-    bindDataUniform(float(mCubeSide));
+    bindDataUniform(float(cubeSide));
+
+    // cube side for irradiance and specular
+    uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
 
     bgfx::dispatch(
         viewId,
         pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),
-        ceilDiv(mIrradianceCubeSide, 8),
-        ceilDiv(mIrradianceCubeSide, 8),
+        ceilDiv(irrSpecCubeSide, 8),
+        ceilDiv(irrSpecCubeSide, 8),
         6
     );
 
@@ -408,7 +415,7 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
 
     for(uint8_t mip = 0; mip < mSpecularMips; ++mip)
     {
-        const uint32_t mipSize = ceilDiv(mSpecularCubeSide, 1 << mip);
+        const uint32_t mipSize = ceilDiv(irrSpecCubeSide, 1 << mip);
         const float roughness = static_cast<float>(mip) / static_cast<float>(mSpecularMips - 1);
 
         // ensure at least 1 threadgroup is dispatched for small mips
@@ -429,7 +436,7 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
             bgfx::TextureFormat::RGBA32F
         );
 
-        bindDataUniform(roughness, float(mCubeSide));
+        bindDataUniform(roughness, float(cubeSide));
 
         bgfx::dispatch(
             viewId,
@@ -453,8 +460,8 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     bgfx::dispatch(
         viewId,
         pm.getComputeProgram<IBL_LOOKUP_TEXTURE_GEN>(),
-        ceilDiv(mBrdfLutSize, 8),
-        ceilDiv(mBrdfLutSize, 8)
+        ceilDiv(BRDF_LU_TEXTURE_SIZE, 8),
+        ceilDiv(BRDF_LU_TEXTURE_SIZE, 8)
     );
 
     Context::instance().releaseViewId(viewId);

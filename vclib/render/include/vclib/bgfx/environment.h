@@ -47,12 +47,9 @@ class Environment
         DDS
     };
 
-    vcl::VertexBuffer mVertexBuffer;
+    static const uint BRDF_LU_TEXTURE_SIZE = 1024;
 
-    uint32_t mCubeSide           = 0;
-    uint32_t mIrradianceCubeSide = 0;
-    uint32_t mSpecularCubeSide   = 0;
-    uint32_t mBrdfLutSize        = 1024;
+    vcl::VertexBuffer mVertexBuffer;
 
     uint8_t mCubeMips     = 0;
     uint8_t mSpecularMips = 0;
@@ -105,10 +102,6 @@ public:
     void swap(Environment& other)
     {
         using std::swap;
-        swap(mCubeSide, other.mCubeSide);
-        swap(mIrradianceCubeSide, other.mIrradianceCubeSide);
-        swap(mSpecularCubeSide, other.mSpecularCubeSide);
-        swap(mBrdfLutSize, other.mBrdfLutSize);
         swap(mCubeMips, other.mCubeMips);
         swap(mSpecularMips, other.mSpecularMips);
         swap(mHdrTexture, other.mHdrTexture);
