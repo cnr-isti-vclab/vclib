@@ -168,12 +168,7 @@ public:
     */
     uint8_t specularMips() const { return mSpecularMips; }
 
-    private:
-
-    /** @brief Prepares the background environment by loading the panorama image and generating necessary textures.
-     * @param[in] viewId: The view ID to use for texture generation.
-    */
-    void prepareBackground(const uint viewId);
+private:
 
     /** @brief Determines the file format of the given image based on its extension.
      * @param[in] imagePath: The path to the image file.
@@ -182,7 +177,6 @@ public:
     */
     FileFormat getFileFormat(const std::string& imagePath);
 
-private:
     /** @brief Loads the image from the specified file path.
      * @param[in] imagePath: The path to the image file.
      * @return A pointer to the loaded ImageContainer, can be nullptr.

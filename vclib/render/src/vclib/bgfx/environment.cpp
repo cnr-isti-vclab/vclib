@@ -78,6 +78,10 @@ Environment::Environment(const std::string& imagePath) : mImagePath(imagePath)
     if (mImage) {
         setTextures();
         fullScreenTriangle();
+        uint viewId = Context::instance().requestViewId();
+        generateTextures(viewId);
+        Context::instance().releaseViewId(viewId);
+        mCanDraw = true;
     }
 }
 
@@ -86,8 +90,6 @@ void Environment::drawBackground(
     const int   toneMapping,
     const float exposure)
 {
-    prepareBackground(viewId);
-
     if(!mCanDraw)
         return;
 
@@ -157,17 +159,6 @@ void Environment::bindDataUniform(const float d0, const float d1, const float d2
 {
     std::array<float, 4> data = {d0, d1, d2, d3};
     mDataUniform.bind(&data);
-}
-
-void Environment::prepareBackground(const uint viewId)
-{
-    if(mCanDraw)
-        return;
-
-    if (mImage) {
-        generateTextures(viewId);
-        mCanDraw = true;
-    }
 }
 
 Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
