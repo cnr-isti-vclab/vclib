@@ -94,7 +94,10 @@ public:
 
     Environment(Environment&& other) { swap(other); }
 
-    ~Environment() = default;
+    ~Environment() {
+        if (mImage)
+            bimg::imageFree(mImage);
+    }
 
     Environment& operator=(const Environment& other) = delete;
 
