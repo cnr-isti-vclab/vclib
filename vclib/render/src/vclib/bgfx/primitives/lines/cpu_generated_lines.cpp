@@ -80,9 +80,19 @@ void CPUGeneratedLines::setPoints(
 
 void CPUGeneratedLines::draw(uint viewId) const
 {
-    mVertexCoords.bind(0);
-    mVertexColors.bind(1);
-    mVertexNormals.bind(2);
+    assert(mVertexCoords.isValid());
+    uint stream = 0;
+
+    // streams MUST be consecutive starting from 0
+    // otherwise on metal it won't work
+    mVertexCoords.bind(stream++);
+
+    if (mVertexColors.isValid())
+        mVertexColors.bind(stream++);
+
+    if (mVertexNormals.isValid())
+        mVertexNormals.bind(stream++);
+
     mLineColors.bind(0);
     mIndices.bind();
     bgfx::setState(linesDrawState());
