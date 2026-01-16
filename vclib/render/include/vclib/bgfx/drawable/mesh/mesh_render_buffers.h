@@ -169,6 +169,7 @@ public:
         uint stream = 0;
 
         // streams MUST be consecutive starting from 0
+        // otherwise on metal it won't work
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
