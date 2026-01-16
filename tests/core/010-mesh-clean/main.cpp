@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -121,7 +121,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.vertexNumber() == 7);
         REQUIRE(tm.faceNumber() == 9);
 
-        unsigned int nr = vcl::removeDuplicatedFaces(tm);
+        unsigned int nr = vcl::removeDuplicateFaces(tm);
         REQUIRE(nr == 5);
         REQUIRE(tm.vertexNumber() == 7);
         REQUIRE(tm.faceNumber() == 4);
@@ -136,7 +136,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.vertexNumber() == 7);
         REQUIRE(pm.faceNumber() == 9);
 
-        unsigned int nr = vcl::removeDuplicatedFaces(pm);
+        unsigned int nr = vcl::removeDuplicateFaces(pm);
         REQUIRE(nr == 5);
         REQUIRE(pm.vertexNumber() == 7);
         REQUIRE(pm.faceNumber() == 4);
@@ -151,7 +151,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.vertexNumber() == 5);
         REQUIRE(pm.faceNumber() == 6);
 
-        unsigned int nr = vcl::removeDuplicatedFaces(pm);
+        unsigned int nr = vcl::removeDuplicateFaces(pm);
 
         REQUIRE(nr == 3);
         REQUIRE(pm.vertexNumber() == 5);
@@ -208,7 +208,7 @@ TEMPLATE_TEST_CASE(
 
     REQUIRE(tm.face(5).vertex(1) == &tm.vertex(4));
 
-    unsigned int nv = vcl::removeDuplicatedVertices(tm);
+    unsigned int nv = vcl::removeDuplicateVertices(tm);
 
     REQUIRE(nv == 1);
 
@@ -255,7 +255,7 @@ TEMPLATE_TEST_CASE(
 
     TriMesh t = vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
-    unsigned int nv = vcl::removeDuplicatedVertices(t);
+    unsigned int nv = vcl::removeDuplicateVertices(t);
 
     SECTION("Test number duplicated vertices")
     {

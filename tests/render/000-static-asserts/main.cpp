@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,7 +22,6 @@
 
 #include "drawers.h"
 
-#include "camera.h"
 #include "canvas.h"
 #include "directional_light.h"
 #include "drawable_object.h"
@@ -32,7 +31,6 @@
 
 int main()
 {
-    cameraStaticAsserts();
     canvasStaticAsserts();
     directionalLightStaticAsserts();
     drawableObjectStaticAsserts();

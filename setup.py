@@ -50,8 +50,7 @@ class CMakeBuild(build_ext):
         os.makedirs(build_temp, exist_ok=True)
 
         cmake_args = [
-            f"--preset=vclib-python-wheel",
-            "-DPYTHON_EXECUTABLE=" + sys.executable,
+            f"--preset=vclib-python-wheel"
         ]
 
         build_args = ["--target", "install"]
@@ -89,13 +88,9 @@ class CustomBDistWheel(bdist_wheel):
 
 inst_req = [
     "numpy>=2.0",
-    "pyqt6==6.8"
+    "pyqt6==6.8",
+    "msvc-runtime ; platform_system == 'Windows'",
 ]
-
-# if on windows, add msvc-runtime as dependency
-osused = platform.system()
-if osused == 'Windows':
-    inst_req.append('msvc-runtime')
 
 setup(
     name="vclib",

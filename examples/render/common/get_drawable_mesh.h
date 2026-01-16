@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -42,22 +42,8 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     MeshType m = vcl::loadMesh<MeshType>(filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
-    // enable the vertex color of the mesh and set it to gray
-    if (!m.isPerVertexColorEnabled()) {
-        m.enablePerVertexColor();
-        vcl::setPerVertexColor(m, vcl::Color::Gray);
-    }
-
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
-
     // create a DrawableMesh object from the mesh
     vcl::DrawableMesh<MeshType> drawable(m);
-
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
 
     return drawable;
 }

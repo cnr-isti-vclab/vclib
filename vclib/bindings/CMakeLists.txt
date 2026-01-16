@@ -25,10 +25,6 @@ project(vclib-bindings)
 
 set(MODULE_NAME vclib_bindings)
 
-# 3rdparty libraries
-message(STATUS "VCLib-Bindings: 3rd party libraries")
-add_subdirectory(3rdparty)
-
 set(VCLIB_BINDINGS_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(VCLIB_MODULE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/vclib)
@@ -51,6 +47,7 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets/__init__.py"
 foreach(MODULE ${PYTHON_MODULES})
     file(GLOB_RECURSE MODULE_HEADERS CONFIGURE_DEPENDS "include/vclib/bindings/${MODULE}/*.h")
     file(GLOB_RECURSE MODULE_SOURCES CONFIGURE_DEPENDS "src/vclib/bindings/${MODULE}/*.cpp")
+    list(APPEND MODULE_HEADERS "include/vclib/bindings/utils.h")
     list(APPEND MODULE_SOURCES "src/vclib/bindings/${MODULE}.cpp")
 
     pybind11_add_module(${MODULE} ${MODULE_HEADERS} ${MODULE_SOURCES})

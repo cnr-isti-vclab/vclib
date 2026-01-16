@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -59,13 +59,13 @@ auto meshClean()
               << std::endl;
 
     // Remove duplicated vertices
-    vcl::uint removedDupVerts = vcl::removeDuplicatedVertices(mesh);
-    std::cout << "Removed " << removedDupVerts << " duplicated vertices"
+    vcl::uint removedDupVerts = vcl::removeDuplicateVertices(mesh);
+    std::cout << "Removed " << removedDupVerts << " duplicate vertices"
               << std::endl;
 
     // Remove duplicated faces
-    vcl::uint removedDupFaces = vcl::removeDuplicatedFaces(mesh);
-    std::cout << "Removed " << removedDupFaces << " duplicated faces"
+    vcl::uint removedDupFaces = vcl::removeDuplicateFaces(mesh);
+    std::cout << "Removed " << removedDupFaces << " duplicate faces"
               << std::endl;
 
     // Remove degenerate faces
@@ -106,7 +106,7 @@ auto meshClean()
               << std::endl;
 
     // Remove degenerate vertices and associated faces
-    vcl::uint removedDegVerts = vcl::removeDegeneratedVertices(testMesh, true);
+    vcl::uint removedDegVerts = vcl::removeDegenerateVertices(testMesh, true);
     std::cout << "Removed " << removedDegVerts << " degenerate vertices"
               << std::endl;
 

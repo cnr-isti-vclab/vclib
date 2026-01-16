@@ -20,7 +20,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Mesh Viewer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -64,6 +64,43 @@
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree"/>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="renderModeLayout">
+         <item>
+          <widget class="QLabel" name="renderModeLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Render Mode:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="renderModeComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>Classic</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>PBR</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="vcl::qt::MeshRenderSettingsFrame" name="renderSettingsFrame">

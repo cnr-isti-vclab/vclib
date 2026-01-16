@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -30,7 +30,7 @@
 #include "complex/mesh_inertia.h"
 #include "complex/mesh_info.h"
 #include "complex/mesh_pos.h"
-#include "complex/sampler.h"
+#include "complex/point_sampler.h"
 #include "complex/tri_poly_index_bimap.h"
 
 #endif // VCL_SPACE_COMPLEX_H

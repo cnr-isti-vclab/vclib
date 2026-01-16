@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -486,26 +486,27 @@ void testVertexTexCoords()
     // Test vertexTexCoordsFromMatrix
     vcl::vertexTexCoordsFromMatrix(mesh, texCoords);
 
-    // Create texture coordinate indices vector
-    std::vector<vcl::uint> texCoordIndices = {10, 20, 30};
+    // Create material indices vector
+    std::vector<vcl::uint> materialIndices = {10, 20, 30};
 
-    // Test vertexTexCoordIndicesFromRange
-    vcl::vertexTexCoordIndicesFromRange(mesh, texCoordIndices);
+    // Test vertexMaterialIndicesFromRange
+    vcl::vertexMaterialIndicesFromRange(mesh, materialIndices);
 
-    // Verify texture coordinate and indices
+    // Verify texture coordinate and material indices
     vcl::uint c = 0;
     REQUIRE(mesh.isPerVertexTexCoordEnabled());
+    REQUIRE(mesh.isPerVertexMaterialIndexEnabled());
     REQUIRE(mesh.vertex(0).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(0).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(0).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(0).materialIndex() == materialIndices[c]);
     c++;
     REQUIRE(mesh.vertex(1).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(1).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(1).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(1).materialIndex() == materialIndices[c]);
     c++;
     REQUIRE(mesh.vertex(3).texCoord().u() == texCoords(c, 0));
     REQUIRE(mesh.vertex(3).texCoord().v() == texCoords(c, 1));
-    REQUIRE(mesh.vertex(3).texCoord().index() == texCoordIndices[c]);
+    REQUIRE(mesh.vertex(3).materialIndex() == materialIndices[c]);
 }
 
 template<typename MeshType, typename TMatrix>
@@ -530,14 +531,15 @@ void testFaceWedgeTexCoords()
         // Test faceWedgeTexCoordsFromMatrix
         vcl::faceWedgeTexCoordsFromMatrix(mesh, wedgeTexCoords);
 
-        // Create wedge texture coordinate indices
+        // Create face material indices
         // For triangle meshes: 2 faces = 2 indices
-        std::vector<vcl::uint> wedgeTexCoordIndices = {0, 1};
+        std::vector<vcl::uint> faceMaterialIndices = {0, 1};
 
-        // Test faceWedgeTexCoordIndicesFromRange
-        vcl::faceWedgeTexCoordIndicesFromRange(mesh, wedgeTexCoordIndices);
+        // Test faceMaterialIndicesFromRange
+        vcl::faceMaterialIndicesFromRange(mesh, faceMaterialIndices);
 
-        // Verify wedge texture coordinates and indices
+        // Verify wedge texture coordinates and face material indices
+        REQUIRE(mesh.isPerFaceMaterialIndexEnabled());
         REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
 
         for (vcl::uint i = 0; const auto& f : mesh.faces()) {
@@ -545,7 +547,7 @@ void testFaceWedgeTexCoords()
                 REQUIRE(w.u() == wedgeTexCoords(i, j++));
                 REQUIRE(w.v() == wedgeTexCoords(i, j++));
             }
-            REQUIRE(f.textureIndex() == wedgeTexCoordIndices[i++]);
+            REQUIRE(f.materialIndex() == faceMaterialIndices[i++]);
         }
     }
 }
@@ -597,13 +599,14 @@ void testPolyFaceWedgeTexCoords()
         // Test faceWedgeTexCoordsFromMatrix
         vcl::faceWedgeTexCoordsFromMatrix(mesh, wedgeTexCoords);
 
-        // Create wedge texture coordinate indices
-        std::vector<vcl::uint> wedgeTexCoordIndices = {0, 1};
+        // Create face material indices
+        std::vector<vcl::uint> faceMaterialIndices = {0, 1};
 
-        // Test faceWedgeTexCoordIndicesFromRange
-        vcl::faceWedgeTexCoordIndicesFromRange(mesh, wedgeTexCoordIndices);
+        // Test faceMaterialIndicesFromRange
+        vcl::faceMaterialIndicesFromRange(mesh, faceMaterialIndices);
 
         // Verify wedge texture coordinates and indices
+        REQUIRE(mesh.isPerFaceMaterialIndexEnabled());
         REQUIRE(mesh.isPerFaceWedgeTexCoordsEnabled());
 
         for (vcl::uint i = 0; const auto& f : mesh.faces()) {
@@ -611,7 +614,7 @@ void testPolyFaceWedgeTexCoords()
                 REQUIRE(w.u() == wedgeTexCoords(i, j++));
                 REQUIRE(w.v() == wedgeTexCoords(i, j++));
             }
-            REQUIRE(f.textureIndex() == wedgeTexCoordIndices[i++]);
+            REQUIRE(f.materialIndex() == faceMaterialIndices[i++]);
         }
     }
 }
@@ -990,14 +993,14 @@ TEST_CASE("Import mesh - error handling")
             vcl::WrongSizeException);
     }
 
-    SECTION("Wrong texture coordinate indices range size")
+    SECTION("Wrong vertex material indices range size")
     {
         mesh.addVertices(3);
-        std::vector<vcl::uint> wrongTexCoordIndices = {
+        std::vector<vcl::uint> wrongMaterialIndices = {
             0, 1}; // size 2, should be 3
 
         REQUIRE_THROWS_AS(
-            vcl::vertexTexCoordIndicesFromRange(mesh, wrongTexCoordIndices),
+            vcl::vertexMaterialIndicesFromRange(mesh, wrongMaterialIndices),
             vcl::WrongSizeException);
     }
 
@@ -1015,16 +1018,15 @@ TEST_CASE("Import mesh - error handling")
             vcl::WrongSizeException);
     }
 
-    SECTION("Wrong face wedge texture coordinate indices range size")
+    SECTION("Wrong face material indices range size")
     {
         mesh.addVertices(3);
         mesh.addFace(0, 1, 2); // 1 triangular face, needs 3 indices
-        std::vector<vcl::uint> wrongWedgeTexCoordIndices = {
+        std::vector<vcl::uint> wrongFaceMaterialIndices = {
             0, 1}; // size 2, should be 1
 
         REQUIRE_THROWS_AS(
-            vcl::faceWedgeTexCoordIndicesFromRange(
-                mesh, wrongWedgeTexCoordIndices),
+            vcl::faceMaterialIndicesFromRange(mesh, wrongFaceMaterialIndices),
             vcl::WrongSizeException);
     }
 

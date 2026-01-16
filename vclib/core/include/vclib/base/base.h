@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -46,6 +46,18 @@ using ushort = uint16_t;
  * @ingroup base
  */
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
+
+/**
+ * @brief The USHORT_NULL value represent a null value of ushort that is the
+ * maximum value that can be represented with unsigned short.
+ *
+ * Allows to fully use all the possible values (except one) that can be
+ * represented in an unsigned short, but with the possibility to flag whether
+ * the value is not initialized or is set to null.
+ *
+ * @ingroup base
+ */
+constexpr uint USHORT_NULL = std::numeric_limits<ushort>::max();
 
 /**
  * @brief A simple type that enumerates the main primitive types.

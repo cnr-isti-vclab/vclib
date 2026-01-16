@@ -76,6 +76,10 @@ void initContainer(
     if (namePlural.empty())
         namePlural = name + "s";
 
+    c.def("index", [](MeshType& t, const Element& e) -> uint {
+        return t.index(e);
+    });
+
     c.def(
         name.c_str(),
         [](MeshType& t, uint i) -> Element& {
@@ -146,6 +150,9 @@ void initContainer(
 
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::COLOR>(
         c, name, "color");
+
+    detail::addOptionalComponentFunctions<ELEM_ID, CompId::MATERIAL_INDEX>(
+        c, name, "material_index");
 
     detail::addOptionalComponentFunctions<ELEM_ID, CompId::NORMAL>(
         c, name, "normal");

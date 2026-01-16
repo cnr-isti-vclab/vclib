@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -26,38 +26,42 @@
 #include "space/array.h"
 #include "space/bit_set.h"
 #include "space/box.h"
+#include "space/camera.h"
 #include "space/color.h"
 #include "space/image.h"
+#include "space/material.h"
 #include "space/matrix.h"
 #include "space/plane.h"
 #include "space/point.h"
+#include "space/point_sampler.h"
 #include "space/polygon.h"
 #include "space/principal_curvature.h"
-#include "space/sampler.h"
 #include "space/segment.h"
 #include "space/sphere.h"
 #include "space/tex_coord.h"
 #include "space/tex_coord_indexed.h"
-#include "space/texture.h"
+#include "space/texture_descriptor.h"
 
 void spaceStaticAsserts()
 {
     arrayStaticAsserts();
     bitSetStaticAsserts();
     boxStaticAsserts();
+    cameraStaticAsserts();
     colorStaticAsserts();
     imageStaticAsserts();
+    materialStaticAsserts();
     matrixStaticAsserts();
     planeStaticAsserts();
     pointStaticAsserts();
+    pointSamplerStaticAsserts();
     polygonStaticAsserts();
     principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
     segmentStaticAsserts();
     sphereStaticAsserts();
     texCoordStaticAsserts();
     texCoordIndexedStaticAsserts();
-    textureStaticAsserts();
+    textureDescriptorStaticAsserts();
 
     using namespace vcl;
 

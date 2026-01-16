@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -48,8 +48,8 @@ enum HausdorffSamplingMethod {
 namespace detail {
 
 template<
-    MeshConcept    MeshType,
-    SamplerConcept SamplerType,
+    MeshConcept         MeshType,
+    PointSamplerConcept SamplerType,
     typename GridType,
     LoggerConcept LogType>
 HausdorffDistResult hausdorffDist(
@@ -114,9 +114,9 @@ HausdorffDistResult hausdorffDist(
 }
 
 template<
-    MeshConcept    MeshType,
-    SamplerConcept SamplerType,
-    LoggerConcept  LogType>
+    MeshConcept         MeshType,
+    PointSamplerConcept SamplerType,
+    LoggerConcept       LogType>
 HausdorffDistResult samplerMeshHausdorff(
     const MeshType&    m,
     const SamplerType& s,
@@ -140,9 +140,9 @@ HausdorffDistResult samplerMeshHausdorff(
 }
 
 template<
-    FaceMeshConcept MeshType,
-    SamplerConcept  SamplerType,
-    LoggerConcept   LogType>
+    FaceMeshConcept     MeshType,
+    PointSamplerConcept SamplerType,
+    LoggerConcept       LogType>
 HausdorffDistResult samplerMeshHausdorff(
     const MeshType&    m,
     const SamplerType& s,
@@ -181,11 +181,11 @@ HausdorffDistResult samplerMeshHausdorff(
 }
 
 template<
-    uint           METHOD,
-    MeshConcept    MeshType1,
-    MeshConcept    MeshType2,
-    SamplerConcept SamplerType,
-    LoggerConcept  LogType>
+    uint                METHOD,
+    MeshConcept         MeshType1,
+    MeshConcept         MeshType2,
+    PointSamplerConcept SamplerType,
+    LoggerConcept       LogType>
 HausdorffDistResult hausdorffDistance(
     const MeshType1&    m1,
     const MeshType2&    m2,
@@ -210,15 +210,13 @@ HausdorffDistResult hausdorffDistance(
             " samples...");
 
     if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
-        sampler = vertexUniformPointSampling<SamplerType>(
-            m2, nSamples, birth, false, seed);
+        sampler = vertexUniformPointSampling(m2, nSamples, birth, false, seed);
     }
     else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
         // todo
     }
     else {
-        sampler =
-            montecarloPointSampling<SamplerType>(m2, nSamples, birth, seed);
+        sampler = montecarloPointSampling(m2, nSamples, birth, seed);
     }
 
     log.log(5, meshName2 + " sampled.");
@@ -253,7 +251,7 @@ HausdorffDistResult hausdorffDistance(
 
     switch (sampMethod) {
     case HAUSDORFF_VERTEX_UNIFORM: {
-        ConstVertexSampler<typename MeshType2::VertexType> sampler;
+        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
             m1, m2, nSamples, seed, sampler, birth, log);
@@ -264,10 +262,17 @@ HausdorffDistResult hausdorffDistance(
         return HausdorffDistResult();
     }
     case HAUSDORFF_MONTECARLO: {
-        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
+        if constexpr (FaceMeshConcept<MeshType2>) {
+            PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
-        return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
-            m1, m2, nSamples, seed, sampler, birth, log);
+            return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
+                m1, m2, nSamples, seed, sampler, birth, log);
+        }
+        else {
+            throw std::runtime_error(
+                "Monte Carlo sampling requires a FaceMeshConcept for the "
+                "second mesh.");
+        }
     }
     default: assert(0); return HausdorffDistResult();
     }

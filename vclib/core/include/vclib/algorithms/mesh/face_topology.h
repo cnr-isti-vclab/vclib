@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -223,7 +223,7 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
             "Face has no Adjacent Faces component.");
     }
 
-    return f->adjFace(edge) == nullptr;
+    return f.adjFace(edge) == nullptr;
 }
 
 /**

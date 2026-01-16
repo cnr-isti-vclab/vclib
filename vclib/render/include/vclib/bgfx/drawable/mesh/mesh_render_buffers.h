@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -29,14 +29,16 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
+#include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
-#include <vclib/bgfx/texture_unit.h>
+#include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
+#include <bimg/bimg.h>
 
 namespace vcl {
 
@@ -49,11 +51,15 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     friend Base;
 
+    inline static const uint N_TEXTURE_TYPES =
+        toUnderlying(Material::TextureType::COUNT);
+
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
+    VertexBuffer mVertexTangentsBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -69,9 +75,13 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
-    std::vector<std::unique_ptr<TextureUnit>> mTextureUnits;
+    // map of textures
+    // for each texture path of each material, store its texture
+    std::map<std::string, Texture> mMaterialTextures;
 
-    mutable DrawableMeshUniforms mMeshUniforms;
+    mutable DrawableMeshUniforms         mMeshUniforms;
+    mutable MaterialUniforms             mMaterialUniforms;
+    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -105,6 +115,7 @@ public:
         swap(mVertexColorsBuffer, other.mVertexColorsBuffer);
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
+        swap(mVertexTangentsBuffer, other.mVertexTangentsBuffer);
         swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
         swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
         swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
@@ -113,17 +124,13 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
-        swap(mTextureUnits, other.mTextureUnits);
+        swap(mMaterialTextures, other.mMaterialTextures);
         swap(mMeshUniforms, other.mMeshUniforms);
+        swap(mMaterialUniforms, other.mMaterialUniforms);
+        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
-
-    bool mustDrawUsingChunks(const MeshRenderSettings& mrs) const
-    {
-        return mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX) ||
-               mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
-    }
 
     uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
@@ -159,16 +166,29 @@ public:
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
-        // bgfx allows a maximum number of 4 vertex streams...
-        mVertexPositionsBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexNormalsBuffer.bindVertex(VCL_MRB_VERTEX_NORMAL_STREAM);
-        mVertexColorsBuffer.bindVertex(VCL_MRB_VERTEX_COLOR_STREAM);
+        uint stream = 0;
 
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            mVertexUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+        // streams MUST be consecutive starting from 0
+        mVertexPositionsBuffer.bindVertex(stream++);
+
+        if (mVertexNormalsBuffer.isValid()) {
+            mVertexNormalsBuffer.bindVertex(stream++);
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            mVertexWedgeUVBuffer.bind(VCL_MRB_VERTEX_TEXCOORD_STREAM);
+
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindVertex(stream++);
+        }
+
+        if (mVertexUVBuffer.isValid()) {
+            mVertexUVBuffer.bind(stream++);
+        }
+
+        if (mVertexWedgeUVBuffer.isValid()) {
+            mVertexWedgeUVBuffer.bind(stream++);
+        }
+
+        if (mVertexTangentsBuffer.isValid()) {
+            mVertexTangentsBuffer.bind(stream++);
         }
     }
 
@@ -205,17 +225,106 @@ public:
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(const MeshRenderSettings& mrs, uint chunkNumber) const
+    void bindTextures(
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m) const
     {
-        uint textureId = 0;
-        if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_VERTEX_TEX)) {
-            textureId = Base::mMaterialChunks[chunkNumber].vertMaterialId;
+        uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+        if (materialId != UINT_NULL) {
+            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                const auto& td = m.material(materialId).textureDescriptor(j);
+                const std::string& path = td.path();
+                if (!path.empty()) {
+                    const Texture& tex = mMaterialTextures.at(path);
+                    if (tex.isValid()) {
+                        uint flags = Texture::samplerFlagsFromTexture(td);
+                        tex.bind(
+                            VCL_MRB_TEXTURE0 + j,
+                            mTextureSamplerUniforms[j].handle(),
+                            flags);
+                    }
+                }
+            }
         }
-        else if (mrs.isSurface(MeshRenderInfo::Surface::COLOR_WEDGE_TEX)) {
-            textureId = Base::mMaterialChunks[chunkNumber].wedgeMaterialId;
+    }
+
+    /**
+     * @brief Sets and binds the material uniforms for the given triangle chunk,
+     * and returns the render state associated to the material that must be set
+     * for the draw call.
+     *
+     * @param mrs
+     * @param chunkNumber
+     * @param m
+     * @return the render state associated to the material
+     */
+    uint64_t bindMaterials(
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m) const
+    {
+        static const Material DEFAULT_MATERIAL;
+
+        uint64_t state = BGFX_STATE_NONE;
+
+        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
+
+        if constexpr (!HasMaterials<MeshType>) {
+            // fallback to default material
+            mMaterialUniforms.update(
+                DEFAULT_MATERIAL,
+                isPerVertexColorAvailable(m),
+                textureAvailable,
+                isPerVertexTangentAvailable(m));
+        }
+        else {
+            using enum Material::AlphaMode;
+
+            uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+            if (materialId == UINT_NULL) {
+                // fallback to default material
+                mMaterialUniforms.update(
+                    DEFAULT_MATERIAL,
+                    isPerVertexColorAvailable(m),
+                    textureAvailable,
+                    isPerVertexTangentAvailable(m));
+            }
+            else {
+                assert(materialId < m.materialsNumber());
+                const Material& mat = m.material(materialId);
+
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const auto& td =
+                        m.material(materialId).textureDescriptor(j);
+                    const std::string& path = td.path();
+                    if (!path.empty()) {
+                        const Texture& tex  = mMaterialTextures.at(path);
+                        textureAvailable[j] = tex.isValid();
+                    }
+                }
+
+                mMaterialUniforms.update(
+                    m.material(materialId),
+                    isPerVertexColorAvailable(m),
+                    textureAvailable,
+                    isPerVertexTangentAvailable(m));
+
+                // set the state according to the material
+                if (!m.material(materialId).doubleSided()) {
+                    // backface culling
+                    state |= BGFX_STATE_CULL_CW;
+                }
+                if (m.material(materialId).alphaMode() == ALPHA_BLEND) {
+                    state |= BGFX_STATE_BLEND_ALPHA;
+                }
+            }
         }
 
-        mTextureUnits[textureId]->bind(VCL_MRB_TEXTURE0);
+        mMaterialUniforms.bind();
+        return state;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -271,7 +380,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexPositions(mesh, buffer);
 
@@ -320,7 +429,7 @@ private:
         const uint totalIndices = mesh.vertexNumber() * 6;
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(totalIndices);
+            Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
@@ -335,7 +444,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexNormals(mesh, buffer);
 
@@ -354,7 +463,8 @@ private:
     {
         uint nv = Base::numVerts();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nv);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
@@ -374,7 +484,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillVertexTexCoords(mesh, buffer);
 
@@ -388,12 +498,31 @@ private:
             releaseFn);
     }
 
+    void setVertexTangentsBuffer(const MeshType& mesh) // override
+    {
+        uint nv = Base::numVerts();
+
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 4);
+
+        Base::fillVertexTangents(mesh, buffer);
+
+        mVertexTangentsBuffer.create(
+            buffer,
+            nv,
+            bgfx::Attrib::Tangent,
+            4,
+            PrimitiveType::FLOAT,
+            false,
+            releaseFn);
+    }
+
     void setWedgeTexCoordsBuffer(const MeshType& mesh) // override
     {
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillWedgeTexCoords(mesh, buffer);
 
@@ -411,7 +540,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt * 3);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt * 3);
 
         Base::fillTriangleIndices(mesh, buffer);
 
@@ -423,7 +553,7 @@ private:
         uint nt = Base::numTris();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nt * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nt * 3);
 
         Base::fillTriangleNormals(mesh, buffer);
 
@@ -439,7 +569,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt);
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
@@ -457,54 +588,152 @@ private:
         computeWireframeLines(mesh);
     }
 
-    void setTextureUnits(const MeshType& mesh) // override
+    void setTextures(const MeshType& mesh) // override
     {
-        // lambda that pushes a texture unit
-        auto pushTextureUnit = [&](vcl::Image& txt, uint i) {
-            txt.mirror();
-
-            const uint size = txt.width() * txt.height();
+        // lambda that sets a texture
+        auto setTexture = [&](const Image&       img,
+                              const std::string& path,
+                              bool               generateMips) {
+            const uint size = img.width() * img.height();
             assert(size > 0);
 
+            uint sizeWithMips = bimg::imageGetSize(
+                                    nullptr,
+                                    img.width(),
+                                    img.height(),
+                                    1,
+                                    false,
+                                    generateMips,
+                                    1,
+                                    bimg::TextureFormat::RGBA8) /
+                                4; // in uints
+            uint numMips = 1;
+            if (generateMips)
+                numMips = bimg::imageGetNumMips(
+                    bimg::TextureFormat::RGBA8, img.width(), img.height());
+
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(size);
+                Context::getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
-            const uint* tdata = reinterpret_cast<const uint*>(txt.data());
+            const uint* tdata = reinterpret_cast<const uint*>(img.data());
 
-            std::copy(tdata, tdata + size, buffer);
+            std::copy(tdata, tdata + size, buffer); // mip level 0
 
-            auto tu = std::make_unique<TextureUnit>();
-            tu->set(
+            if (numMips > 1) {
+                uint* source = buffer;
+                uint* dest;
+                uint  offset = size;
+                for (uint mip = 1; mip < numMips; mip++) {
+                    dest         = source + offset;
+                    uint mipSize = (img.width() >> mip) * (img.height() >> mip);
+                    bimg::imageRgba8Downsample2x2(
+                        dest,                      // output location
+                        img.width() >> (mip - 1),  // input width
+                        img.height() >> (mip - 1), // input height
+                        1, // depth, always 1 for 2D textures
+                        (img.width() >> (mip - 1)) * 4, // input pitch
+                        (img.width() >> mip) * 4,       // output pitch
+                        source                          // input location
+                    );
+                    source = dest;
+                    offset = mipSize;
+                }
+            }
+
+            uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+
+            if (img.colorSpace() == Image::ColorSpace::SRGB)
+                flags |= BGFX_TEXTURE_SRGB;
+
+            Texture tex;
+            tex.set(
                 buffer,
-                vcl::Point2i(txt.width(), txt.height()),
-                "s_tex" + std::to_string(i),
-                false,
+                vcl::Point2i(img.width(), img.height()),
+                generateMips,
+                flags,
                 releaseFn);
 
-            mTextureUnits.push_back(std::move(tu));
+            // at() does not insert if already present, thus safe in parallel
+            mMaterialTextures.at(path) = std::move(tex);
         };
 
-        mTextureUnits.clear();
-        mTextureUnits.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
+        auto loadImageAndSetTexture =
+            [&](const std::pair<std::string, uint>& pathPair) {
+                const std::string& path = pathPair.first;
+
+                uint materialId  = pathPair.second / N_TEXTURE_TYPES;
+                uint textureType = pathPair.second % N_TEXTURE_TYPES;
+                // copy the image because it could be not loaded,
+                // and at the end it needs to be mirrored.
+                vcl::Image txtImg = mesh.textureImage(path);
+                if (txtImg.isNull()) { // try to load it just for rendering
+                    try {
+                        txtImg = vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg.colorSpace() = Material::textureTypeToColorSpace(
+                            static_cast<Material::TextureType>(textureType));
+                    }
+                    catch (...) {
+                        // do nothing
+                    }
+                    if (txtImg.isNull()) {
+                        // still null, use a dummy texture
+                        txtImg = createCheckBoardImage(512);
+                    }
                 }
-                else {
-                    txt = mesh.texture(i).image();
+
+                // if loading succeeded (or dummy texture has been created)
+                if (!txtImg.isNull()) {
+                    const TextureDescriptor& tex =
+                        mesh.material(materialId)
+                            .textureDescriptor(textureType);
+                    using enum TextureDescriptor::MinificationFilter;
+
+                    TextureDescriptor::MinificationFilter minFilter =
+                        tex.minFilter();
+
+                    bool hasMips =
+                        minFilter >= NEAREST_MIPMAP_NEAREST ||
+                        minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+
+                    txtImg.mirror();
+                    setTexture(txtImg, path, hasMips);
                 }
-            }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
+            };
+
+        mMaterialTextures.clear();
+
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            // textures could be missing from the textureImages of the mesh
+            // setting the texture paths in a map - key is the path and value is
+            // an uint where materialIndex and textureType are encoded
+            // map is used to avoid duplicates, then is moved to a vector for
+            // parallel processing
+            std::map<std::string, uint> texturePaths;
+            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                    const vcl::TextureDescriptor& td =
+                        mesh.material(i).textureDescriptor(j);
+                    if (!td.path().empty()) {
+                        texturePaths[td.path()] = i * N_TEXTURE_TYPES + j;
+
+                        // create a null texture in the map
+                        // this is crucial to avoid insertions during the
+                        // actual creation, that is done in parallel
+                        mMaterialTextures[td.path()] = Texture();
+                    }
+                }
             }
 
-            pushTextureUnit(txt, 0);
+            // move to vector for parallel processing
+            std::vector<std::pair<std::string, uint>> texturePathVec;
+            texturePathVec.reserve(texturePaths.size());
+            for (const auto& tp : texturePaths) {
+                texturePathVec.push_back(tp);
+            }
+
+            parallelFor(texturePathVec, loadImageAndSetTexture);
+
+            createTextureSamplerUniforms();
         }
     }
 
@@ -596,14 +825,13 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
+    void createTextureSamplerUniforms()
     {
-        T* buffer = new T[size];
-
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
+        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
+            mTextureSamplerUniforms[i] = Uniform(
+                Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                bgfx::UniformType::Sampler);
+        }
     }
 };
 

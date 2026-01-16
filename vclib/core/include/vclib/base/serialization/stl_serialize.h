@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,12 +27,25 @@
 
 #include <any>
 #include <array>
+#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace vcl {
 
 /// STL Serialize specializations ///
+
+/*
+ * std::string
+ */
+
+inline void serialize(std::ostream& os, const std::string& s)
+{
+    std::size_t size = s.size();
+    serialize(os, size);
+    serializeN(os, s.data(), size);
+}
 
 /*
  * std::array
@@ -54,14 +67,53 @@ void serialize(std::ostream& os, const std::array<T, N>& a)
 }
 
 /*
- * std::string
+ * std::map
  */
 
-inline void serialize(std::ostream& os, const std::string& s)
+template<typename K, typename V>
+void serialize(std::ostream& os, const std::map<K, V>& m)
 {
-    std::size_t size = s.size();
+    std::size_t size = m.size();
     serialize(os, size);
-    serializeN(os, s.data(), size);
+    for (const auto& [key, value] : m) {
+        if constexpr (Serializable<K>) {
+            key.serialize(os);
+        }
+        else {
+            serialize(os, key);
+        }
+        if constexpr (Serializable<V>) {
+            value.serialize(os);
+        }
+        else {
+            serialize(os, value);
+        }
+    }
+}
+
+/*
+ * std::unordered_map
+ */
+
+template<typename K, typename V>
+void serialize(std::ostream& os, const std::unordered_map<K, V>& m)
+{
+    std::size_t size = m.size();
+    serialize(os, size);
+    for (const auto& [key, value] : m) {
+        if constexpr (Serializable<K>) {
+            key.serialize(os);
+        }
+        else {
+            serialize(os, key);
+        }
+        if constexpr (Serializable<V>) {
+            value.serialize(os);
+        }
+        else {
+            serialize(os, value);
+        }
+    }
 }
 
 /*

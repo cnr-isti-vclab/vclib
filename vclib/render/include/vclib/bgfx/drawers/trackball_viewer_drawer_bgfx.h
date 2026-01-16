@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -56,6 +56,9 @@ public:
 
     void onDraw(uint viewId) override
     {
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
+
         ParentViewer::onDraw(viewId);
 
         setDirectionalLightVisibility(
@@ -63,15 +66,15 @@ public:
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
         if (mAxis.isVisible()) {
-            mAxis.draw(viewId);
+            mAxis.draw(settings);
         }
 
         if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.draw(viewId);
+            mDrawTrackBall.draw(settings);
         }
 
         if (mDrawableDirectionalLight.isVisible()) {
-            mDrawableDirectionalLight.draw(viewId);
+            mDrawableDirectionalLight.draw(settings);
         }
     }
 

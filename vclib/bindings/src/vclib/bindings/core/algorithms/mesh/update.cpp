@@ -70,6 +70,13 @@ void initUpdateAlgorithms(pybind11::module& m)
                 "max_quality"_a = 0);
 
             m.def(
+                "set_per_vertex_color_from_material",
+                [](MeshType& m) {
+                    return setPerVertexColorFromMaterial(m);
+                },
+                "mesh"_a);
+
+            m.def(
                 "set_per_vertex_color_perlin_noise",
                 [](MeshType& m,
                    Point3d&  period,
@@ -344,6 +351,13 @@ void initUpdateAlgorithms(pybind11::module& m)
             "max_quality"_a = 0);
 
         m.def(
+            "set_per_face_color_from_material",
+            [](MeshType& m) {
+                return setPerFaceColorFromMaterial(m);
+            },
+            "mesh"_a);
+
+        m.def(
             "set_per_vertex_color_from_face_border_flag",
             [](MeshType& m,
                Color     borderColor   = Color::Blue,
@@ -389,14 +403,25 @@ void initUpdateAlgorithms(pybind11::module& m)
         m.def(
             "update_per_vertex_principal_curvature",
             [](MeshType&                   m,
-               PrincipalCurvatureAlgorithm alg =
-                   PrincipalCurvatureAlgorithm::TAUBIN95,
-               AbstractLogger& log = nullLogger) {
-                return vcl::updatePrincipalCurvature(m, alg, log);
+               PrincipalCurvatureAlgorithm alg,
+               double                      radius,
+               bool                        montecarloSampling,
+               AbstractLogger&             log) {
+                using enum PrincipalCurvatureAlgorithm;
+                switch (alg) {
+                case TAUBIN95: updatePrincipalCurvatureTaubin95(m, log); break;
+                case PCA:
+                    if (radius <= 0)
+                        radius = boundingBox(m).diagonal() * 0.1;
+                    updatePrincipalCurvaturePCA(
+                        m, radius, montecarloSampling, log);
+                }
             },
             "mesh"_a,
-            "algorithm"_a = PrincipalCurvatureAlgorithm::TAUBIN95,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "algorithm"_a           = PrincipalCurvatureAlgorithm::TAUBIN95,
+            "radius"_a              = -1.0,
+            "montecarlo_sampling"_a = true,
+            "log"_a                 = py::cast(vcl::nullLogger));
 
         // normal.h
 

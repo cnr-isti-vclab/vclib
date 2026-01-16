@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -38,7 +38,7 @@
 #if __has_include(<poolstl/poolstl.hpp>)
 #include <poolstl/poolstl.hpp>
 #else
-#include "../../../external/poolSTL-0.3.5/include/poolstl/poolstl.hpp"
+#include "../../../../../3rdparty/poolSTL-0.3.5/include/poolstl/poolstl.hpp"
 #endif
 
 // Restore the definition of "emit" if it was defined before

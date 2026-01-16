@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,6 +23,8 @@
 #ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 #define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 
+#include "draw_object_settings.h"
+
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>
 
@@ -37,7 +39,7 @@ namespace vcl {
  *
  * A class that inherits from DrawableObject must implement the following member
  * functions:
- * - draw(uint viewId);
+ * - draw(DrawObjectSettings settings);
  * - center();
  * - radius();
  * - clone();
@@ -74,21 +76,18 @@ public:
      * @brief This member function must draw the object.
      * It will be called at every frame.
      *
-     * @param viewId The ID of the view to draw. It may be used depending on the
-     * rendering engine.
+     * @param[in] settings: The settings to use to draw the object.
      */
-    virtual void draw(uint viewId = 0) const = 0;
+    virtual void draw(const DrawObjectSettings& settings = {}) const = 0;
 
     /**
      * @brief This member function should draw the object.
      * It will be called on request when the renderer needs to draw the ID of
      * the object.
      *
-     * @param viewId The ID of the view to draw. It may be used depending on the
-     * rendering engine.
-     * @param id The ID of the object.
+     * @param[in] settings: The settings to use to draw the object.
      */
-    virtual void drawId(uint viewId, uint id) const {};
+    virtual void drawId(const DrawObjectSettings& settings) const {};
 
     /**
      * @brief This member function is used to find a good camera position

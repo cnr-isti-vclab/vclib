@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -215,7 +215,8 @@ public:
         if (bgfx::isValid(mHandle))
             bgfx::destroy(mHandle);
 
-        mHandle  = bgfx::createVertexBuffer(data, layout, flags);
+        mHandle = bgfx::createVertexBuffer(data, layout, flags);
+        assert(bgfx::isValid(mHandle));
         mCompute = compute;
     }
 

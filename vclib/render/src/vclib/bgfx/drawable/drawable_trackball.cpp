@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -112,8 +112,7 @@ DrawableTrackBall::DrawableTrackBall()
 }
 
 DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
-        mVisible(other.mVisible), mUniforms(other.mUniforms),
-        mTransform(other.mTransform)
+        mVisible(other.mVisible), mTransform(other.mTransform)
 {
     // copy all the members that can be copied, and then re-create the
     // buffers
@@ -151,7 +150,7 @@ DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
     return *this;
 }
 
-void DrawableTrackBall::draw(uint viewId) const
+void DrawableTrackBall::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
 
@@ -170,7 +169,7 @@ void DrawableTrackBall::draw(uint viewId) const
 
         mUniforms.bind();
 
-        bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
+        bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
     }
 }
 

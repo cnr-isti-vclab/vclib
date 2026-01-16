@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,7 +23,6 @@
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/render/viewer/matrix.h>
 
 namespace vcl {
 
@@ -63,9 +62,10 @@ DrawableDirectionalLight::DrawableDirectionalLight(
     const DrawableDirectionalLight& other) :
         DrawableObject(other), mVisible(other.mVisible),
         mTransform(other.mTransform), mVertices(other.mVertices),
-        mColor(other.mColor), mUniform(other.mUniform)
+        mColor(other.mColor)
 {
     createVertexBuffer();
+    mUniform.setColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
@@ -107,7 +107,7 @@ void DrawableDirectionalLight::setLinesColor(const Color& c)
     mUniform.setColor(mColor);
 }
 
-void DrawableDirectionalLight::draw(uint viewId) const
+void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
 
@@ -124,7 +124,8 @@ void DrawableDirectionalLight::draw(uint viewId) const
 
         mVertexPosBuffer.bind(0);
 
-        bgfx::submit(viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
+        bgfx::submit(
+            settings.viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
     }
 }
 

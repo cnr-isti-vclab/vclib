@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -71,6 +71,27 @@ auto halfSpaceDeterminant(const TriangleType& triangle, const PointType& point)
 {
     return halfSpaceDeterminant(
         triangle.point(0), triangle.point(1), triangle.point(2), point);
+}
+
+/**
+ * @brief Checks if 3 points are collinear.
+ *
+ * @tparam PointType: The type of the points.
+ * @param[in] p0: First point to test.
+ * @param[in] p1: Second point to test.
+ * @param[in] p2: Third point to test.
+ * @return True if the points are collinear, false otherwise.
+ *
+ * @ingroup algorithms_core
+ */
+template<Point3Concept PointType>
+bool arePointsCollinear(
+    const PointType& p0,
+    const PointType& p1,
+    const PointType& p2)
+{
+    PointType c = (p1 - p0).cross(p2 - p0);
+    return c.squaredNorm() == 0;
 }
 
 /**

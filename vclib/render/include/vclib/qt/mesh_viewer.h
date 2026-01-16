@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -49,6 +49,8 @@ class MeshViewer : public QWidget
 {
     Q_OBJECT
 
+    enum class RenderMode { CLASSIC = 0, PBR = 1 };
+
     Ui::MeshViewer* mUI;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
@@ -84,6 +86,16 @@ public:
 
     void setCamera(const Camera<float>& c);
 
+    void showRenderModeSelector(bool show);
+
+    bool isPBREnabled() const;
+
+    void setPBR(bool enable);
+
+    void enablePBR();
+
+    void disablePBR();
+
 public slots:
     void visibilityDrawableObjectChanged();
 
@@ -96,6 +108,9 @@ public slots:
     void fitView();
 
     void updateGUI();
+
+private slots:
+    void renderModeComboBoxCurrentIndexChanged(int index);
 };
 
 } // namespace vcl::qt

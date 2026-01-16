@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -25,7 +25,7 @@
 
 #include "concepts.h"
 
-#include <vclib/space/core/point.h>
+#include <vclib/space/core.h>
 
 #include <vcg/space/point2.h>
 #include <vcg/space/point3.h>

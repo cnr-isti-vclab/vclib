@@ -23,14 +23,19 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-external)
 
-# 3rd party libraries
-message(STATUS "VCLib-External: 3rd party libraries")
-add_subdirectory(3rdparty)
-
 ### vclib-external target
 set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
+if (TARGET vclib-3rd-vcg)
+    file(GLOB_RECURSE HEADERS_VCG CONFIGURE_DEPENDS "include/vclib/vcg/*.h")
+    list(APPEND HEADERS ${HEADERS_VCG})
+endif()
+
+if (TARGET vclib-3rd-embree)
+    file(GLOB_RECURSE HEADERS_EMBREE CONFIGURE_DEPENDS
+        "include/vclib/embree/*.h")
+    list(APPEND HEADERS ${HEADERS_EMBREE})
+endif()
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::external ALIAS ${PROJECT_NAME})

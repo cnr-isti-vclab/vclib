@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,49 +27,114 @@
 
 namespace vcl::detail {
 
-struct ObjMaterial
+/**
+ * @brief Represents a material loaded from an OBJ file.
+ *
+ * This class stores the properties of a material as defined in an OBJ file,
+ * including ambient, diffuse, and specular colors, alpha value, illumination
+ * model, shininess, and texture map.
+ */
+class ObjMaterial
 {
-    Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
-    Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
-    Point3f Ks = Point3f(1.0f, 1.0f, 1.0f); // specular
+    inline static const Point3f Ka_DEFAULT = {0.2f, 0.2f, 0.2f}; // ambient;
+    inline static const Point3f Kd_DEFAULT = {1.0f, 1.0f, 1.0f}; // diffuse;
+    inline static const Point3f Ks_DEFAULT = {1.0f, 1.0f, 1.0f}; // specular;
+    inline static const Point3f Ke_DEFAULT = {0.0f, 0.0f, 0.0f}; // emissive;
 
-    float d = 1.0f; // alpha
+    inline static const float d_DEFAULT     = 1.0f; // alpha
+    inline static const int   illum_DEFAULT = 2;    // specular illumination
+    inline static const float Ns_DEFAULT    = 0.f;
 
-    int   illum = 2; // specular illumination
-    float Ns    = 0.f;
+public:
+    // id of the material in the mesh, used when loading materials
+    uint        matId = UINT_NULL;
+    std::string matName;
 
-    std::string map_Kd; // filename texture
+    Point3f Ka = Ka_DEFAULT; // ambient
+    Point3f Kd = Kd_DEFAULT; // diffuse
+    Point3f Ks = Ks_DEFAULT; // specular
+    Point3f Ke = Ke_DEFAULT; // emissive
 
-    // id of the texture in the mesh, used when loading materials
-    uint mapId;
+    float d = d_DEFAULT; // alpha
 
-    bool hasColor   = false;
-    bool hasTexture = false;
+    int   illum = illum_DEFAULT; // specular illumination
+    float Ns    = Ns_DEFAULT;
+
+    std::string map_Kd;   // filename texture
+    std::string map_Ke;   // filename emissive map
+    std::string map_bump; // filename bump map
 
     ObjMaterial() = default;
 
-    ObjMaterial(const Color& c) : hasColor(true)
+    ObjMaterial(const Material& mat, uint id)
     {
-        Kd.x() = c.redF();
-        Kd.y() = c.greenF();
-        Kd.z() = c.blueF();
-        d      = c.alphaF();
+        using enum Material::TextureType;
+
+        matId   = id;
+        matName = mat.name();
+
+        Kd.x() = mat.baseColor().redF();
+        Kd.y() = mat.baseColor().greenF();
+        Kd.z() = mat.baseColor().blueF();
+        Ns     = std::pow(1.0f - mat.roughness(), 2) * 1000.f;
+        if (mat.alphaMode() == Material::AlphaMode::ALPHA_BLEND) {
+            d = mat.baseColor().alphaF();
+        }
+
+        Ke.x() = mat.emissiveColor().redF();
+        Ke.y() = mat.emissiveColor().greenF();
+        Ke.z() = mat.emissiveColor().blueF();
+
+        map_Kd = mat.baseColorTextureDescriptor().path();
+        map_Ke = mat.textureDescriptor(EMISSIVE).path();
+        // map_bump = mat.textureDescriptor(NORMAL).path();
     }
 
-    ObjMaterial(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
+    /**
+     * @brief Converts the OBJ material to a vcl::Material object.
+     *
+     * This function creates a vcl::Material from the OBJ material data,
+     * converting the color values and setting the appropriate properties
+     * such as roughness, alpha mode, and texture path.
+     *
+     * @return Material The converted material object.
+     */
+    Material toMaterial()
     {
+        using enum Material::TextureType;
+
+        Material m;
+        m.name() = matName;
+        m.baseColor() =
+            vcl::Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, 255);
+
+        float ns      = std::clamp(Ns, 0.f, 1000.f);
+        m.roughness() = 1.0f - std::sqrt(ns) / std::sqrt(1000.f);
+
+        if (d < 1.0) {
+            m.baseColor().alpha() = d * 255;
+            m.alphaMode()         = Material::AlphaMode::ALPHA_BLEND;
+        }
+
+        m.metallic() = 0.0f; // obj materials are non-metallic;
+
+        m.emissiveColor() =
+            vcl::Color(Ke.x() * 255, Ke.y() * 255, Ke.z() * 255, 255);
+
+        if (!map_Kd.empty()) {
+            m.baseColorTextureDescriptor().path() = map_Kd;
+        }
+        if (!map_Ke.empty()) {
+            m.textureDescriptor(EMISSIVE).path() = map_Ke;
+        }
+        // if (!map_bump.empty()) {
+        //     m.textureDescriptor(NORMAL).path() = map_bump;
+        // }
+
+        return m;
     }
 
-    ObjMaterial(const Color& c, const std::string& txtName) :
-            map_Kd(txtName), hasColor(true), hasTexture(true)
-    {
-        Kd.x() = c.redF();
-        Kd.y() = c.greenF();
-        Kd.z() = c.blueF();
-        d      = c.alphaF();
-    }
-
-    bool isEmpty() const { return !hasColor && !hasTexture; }
+    bool isValid() const { return matId != UINT_NULL; }
 
     Color color() const
     {
@@ -78,64 +143,54 @@ struct ObjMaterial
 
     const std::string& texture() const { return map_Kd; }
 
-    uint textureId() const { return mapId; }
+    uint textureId() const { return matId; }
 
-    /**
-     * @brief Operator that allows to sort materials
-     * first we sort trough color
-     * - if a material has no color, is < than one that has a color
-     * - if both materials have color, order by color: if same, check texture
-     *   sort trough texture
-     * - if a material has no texture, is < than one that has texture
-     * - if both materials have texture, order by texture name
-     */
-    bool operator<(const ObjMaterial& m) const
-    {
-        if (hasColor) {
-            if (!m.hasColor) // color > no color
-                return false;
-            if (Kd != m.Kd)
-                return Kd < m.Kd;
-            if (d != m.d)
-                return d < m.d;
-        }
-        else if (m.hasColor) { // no color < color
-            return true;
-        }
-        // will arrive here only if:
-        // - this Material and m have both no color
-        // - this Material has the same color of m
-        if (hasTexture) {
-            if (!m.hasTexture) // texture > no texture
-                return false;
-            return map_Kd < m.map_Kd;
-        }
-        else if (m.hasTexture) { // no texture < texture
-            return true;
-        }
-        else { // no color and texture in both materials
-            return false;
-        }
-    }
+    bool operator==(const ObjMaterial& m) const = default;
 
-    bool operator==(const ObjMaterial& m) const
-    {
-        return !(*this < m) && !(m < *this);
-    }
-
-    bool operator!=(const ObjMaterial& m) const { return !(*this == m); }
+    friend inline std::ostream& operator<<(
+        std::ostream&      out,
+        const ObjMaterial& m);
 };
 
 inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 {
-    if (m.hasColor) {
+    if (m.Ka != m.Ka_DEFAULT)
+        out << "Ka " << m.Ka.x() << " " << m.Ka.y() << " " << m.Ka.z()
+            << std::endl;
+
+    if (m.Kd != m.Kd_DEFAULT)
         out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
             << std::endl;
+
+    if (m.Ks != m.Ks_DEFAULT)
+        out << "Ks " << m.Ks.x() << " " << m.Ks.y() << " " << m.Ks.z()
+            << std::endl;
+
+    if (m.Ke != m.Ke_DEFAULT)
+        out << "Ke " << m.Ke.x() << " " << m.Ke.y() << " " << m.Ke.z()
+            << std::endl;
+
+    if (m.d != m.d_DEFAULT)
         out << "d " << m.d << std::endl;
-    }
-    if (m.hasTexture) {
+
+    if (m.illum != m.illum_DEFAULT)
+        out << "illum " << m.illum << std::endl;
+
+    if (m.Ns != m.Ns_DEFAULT)
+        out << "Ns " << m.Ns << std::endl;
+
+    if (!m.map_Kd.empty()) {
         out << "map_Kd " << m.map_Kd << std::endl;
     }
+
+    if (m.map_Ke.empty()) {
+        out << "map_Ke " << m.map_Ke << std::endl;
+    }
+
+    // if (m.map_bump.empty()) {
+    //     out << "map_bump " << m.map_bump << std::endl;
+    // }
+
     return out;
 }
 

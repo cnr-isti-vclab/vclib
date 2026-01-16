@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -30,6 +30,10 @@
 
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
+
+// bgfx defines front facing as clockwise
+// N.B. use this macro only in main functions of shaders
+#define vcl_FrontFacing (!gl_FrontFacing)
 
 /**
  * @brief Convert an uint color in ABGR format to a vec4 float color.

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -42,15 +42,23 @@ public:
     DrawableObjectVector() = default;
 
     // DrawableObject interface
-    void                            init();
-    void                            draw(uint viewId) const;
-    void                            drawId(uint viewId, uint id) const;
-    Box3d                           boundingBox() const;
-    Point3d                         center() const;
+    void init();
+
+    void draw(const DrawObjectSettings& settings) const;
+
+    void drawId(const DrawObjectSettings& settings) const;
+
+    Box3d boundingBox() const;
+
+    Point3d center() const;
+
     std::shared_ptr<DrawableObject> clone() const&;
+
     std::shared_ptr<DrawableObject> clone() &&;
-    bool                            isVisible() const;
-    void                            setVisibility(bool vis);
+
+    bool isVisible() const;
+
+    void setVisibility(bool vis);
 
 private:
     uint firstVisibleObject() const;

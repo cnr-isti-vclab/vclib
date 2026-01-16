@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -31,24 +31,28 @@ void DrawableObjectVector::init()
     }
 }
 
-void DrawableObjectVector::draw(uint viewId) const
+void DrawableObjectVector::draw(const DrawObjectSettings& settings) const
 {
     if (isVisible()) {
         for (const auto& p : *this) {
             if (p->isVisible())
-                p->draw(viewId);
+                p->draw(settings);
         }
     }
 }
 
-void DrawableObjectVector::drawId(uint viewId, uint id) const
+void DrawableObjectVector::drawId(const DrawObjectSettings& settings) const
 {
+    DrawObjectSettings sts = settings;
     if (isVisible()) {
         for (size_t idx = 0; idx < Base::size(); idx++) {
+            // TODO: combine idx with the content of settings.objectId
+            sts.objectId = idx;
+
             const auto& p = Base::at(idx);
 
             if (p->isVisible())
-                p->drawId(viewId, id + uint(idx));
+                p->drawId(sts);
         }
     }
 }

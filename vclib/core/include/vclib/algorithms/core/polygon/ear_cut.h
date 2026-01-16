@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -32,7 +32,7 @@
 #else
 // inclusion for usage of vclib without CMake - not ideal but necessary for
 // header only
-#include "../../../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
+#include "../../../../../../../3rdparty/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
 #endif
 
 /* Structs to make working the mapbox earcut algorithm on vcl::Point2 */

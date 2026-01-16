@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -44,13 +44,14 @@ inline MeshInfo plyFormatCapability()
     info.setFaces();
     info.setEdges();
 
-    info.setTextures();
+    info.setMaterials();
 
     info.setPerVertexPosition();
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexQuality();
     info.setPerVertexTexCoord();
+    info.setPerVertexMaterialIndex();
     info.setPerVertexCustomComponents();
 
     info.setPerFaceVertexReferences();
@@ -58,6 +59,7 @@ inline MeshInfo plyFormatCapability()
     info.setPerFaceNormal();
     info.setPerFaceQuality();
     info.setPerFaceWedgeTexCoords();
+    info.setPerFaceMaterialIndex();
     info.setPerFaceCustomComponents();
 
     info.setPerEdgeVertexReferences();

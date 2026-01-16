@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -29,7 +29,7 @@
 #else
 // inclusion for usage of vclib without CMake - not ideal but necessary for
 // header only
-#include "../../../external/zip-views-1.0/zip_view.hpp"
+#include "../../../../../../3rdparty/zip-views-1.0/zip_view.hpp"
 #endif
 #undef ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
 

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -309,6 +309,51 @@ TEST_CASE("Array serialization")
         for (unsigned int j = 0; j < array3D1.size(1); j++)
             for (unsigned int k = 0; k < array3D1.size(2); k++)
                 REQUIRE(array3D1(i, j, k) == array3D2(i, j, k));
+}
+
+TEST_CASE("std map and unordered map serialization")
+{
+    // Create and populate std::map
+    std::map<std::string, vcl::Point3f> map1;
+    map1["p1"] = randomPoint<float, 3>();
+    map1["p2"] = randomPoint<float, 3>();
+    map1["p3"] = randomPoint<float, 3>();
+
+    // Create and populate std::unordered_map
+    std::unordered_map<std::string, vcl::Color> umap1;
+    umap1["c1"] = randomColor();
+    umap1["c2"] = randomColor();
+    umap1["c3"] = randomColor();
+
+    // Serialize
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
+    vcl::serialize(fo, map1);
+    vcl::serialize(fo, umap1);
+    fo.close();
+
+    // Deserialize
+    std::map<std::string, vcl::Point3f>         map2;
+    std::unordered_map<std::string, vcl::Color> umap2;
+    std::ifstream                               fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
+    vcl::deserialize(fi, map2);
+    vcl::deserialize(fi, umap2);
+    fi.close();
+
+    // Verify std::map
+    REQUIRE(map1.size() == map2.size());
+    for (const auto& [key, value] : map1) {
+        REQUIRE(map2.count(key) == 1);
+        REQUIRE(map2.at(key) == value);
+    }
+
+    // Verify std::unordered_map
+    REQUIRE(umap1.size() == umap2.size());
+    for (const auto& [key, value] : umap1) {
+        REQUIRE(umap2.count(key) == 1);
+        REQUIRE(umap2.at(key) == value);
+    }
 }
 
 TEST_CASE("std vector of strings serialization")

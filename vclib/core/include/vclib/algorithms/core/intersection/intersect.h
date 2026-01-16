@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -773,6 +773,225 @@ template<SphereConcept SphereType, Triangle3Concept TriangleType>
 bool intersect(const SphereType& sphere, const TriangleType& t)
 {
     return intersect(t, sphere);
+}
+
+/**
+ * @brief Computes the intersection point between a line and a triangle, if it
+ * exists.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to compute the
+ * intersection point between a line and a triangle. If an intersection exists,
+ * the function returns the intersection point as an optional value. If no
+ * intersection exists, the function returns an empty optional.
+ *
+ * @tparam LineType: A type that satisfies the Line3Concept concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
+ *
+ * @param[in] line: The line to compute the intersection with.
+ * @param[in] triangle: The triangle to compute the intersection with.
+ * @param[out] t: An optional reference to store the parameter value along the
+ * line at which the intersection occurs.
+ * @param[out] u: An optional reference to store the barycentric coordinate u of
+ * the intersection point.
+ * @param[out] v: An optional reference to store the barycentric coordinate v of
+ * the intersection point.
+ * @return An optional point that represents the intersection point between the
+ * line and the triangle, if it exists.
+ *
+ * @ingroup core_intersection
+ */
+template<Line3Concept LineType, Triangle3Concept TriangleType>
+std::optional<typename LineType::PointType> intersection(
+    const LineType&     line,
+    const TriangleType& triangle,
+    std::optional<std::reference_wrapper<typename LineType::ScalarType>> t = {},
+    std::optional<std::reference_wrapper<typename LineType::ScalarType>> u = {},
+    std::optional<std::reference_wrapper<typename LineType::ScalarType>> v = {})
+    requires std::same_as<
+        typename LineType::ScalarType,
+        typename TriangleType::ScalarType>
+{
+    using PointType  = typename LineType::PointType;
+    using ScalarType = typename PointType::ScalarType;
+
+    static const ScalarType EPSIL = std::numeric_limits<ScalarType>::epsilon();
+
+    ScalarType tt = 0, uu = 0, vv = 0;
+
+    // find vectors for two edges sharing point0
+    PointType edge1 = triangle.point1() - triangle.point0();
+    PointType edge2 = triangle.point2() - triangle.point0();
+
+    // begin calculating determinant - also used to calculate U parameter
+    PointType pvec = line.direction().cross(edge2);
+
+    // if determinant is near zero, line lies in plane of triangle
+    ScalarType det = edge1 * pvec;
+
+    // calculate distance from vert0 to line origin
+    PointType  tvec   = line.origin() - triangle.point0();
+    ScalarType invDet = 1.0 / det;
+
+    PointType qvec = tvec.cross(edge1);
+
+    if (det > EPSIL) {
+        // calculate U parameter and test bounds
+        uu = tvec * pvec;
+        if (uu < 0.0 || uu > det)
+            return std::nullopt;
+
+        // calculate V parameter and test bounds
+        vv = line.direction() * qvec;
+        if (vv < 0.0 || uu + vv > det)
+            return std::nullopt;
+    }
+    else if (det < -EPSIL) {
+        // calculate U parameter and test bounds
+        uu = tvec * pvec;
+        if (uu > 0.0 || uu < det)
+            return std::nullopt;
+
+        // calculate V parameter and test bounds
+        vv = line.direction() * qvec;
+        if (vv > 0.0 || uu + vv < det)
+            return std::nullopt;
+    }
+    else
+        return std::nullopt; // line is parallell to the plane of the triangle
+
+    tt = edge2 * qvec * invDet;
+
+    if (t.has_value()) {
+        t.value().get() = tt;
+    }
+    if (u.has_value()) {
+        u.value().get() = uu * invDet;
+    }
+    if (v.has_value()) {
+        v.value().get() = vv * invDet;
+    }
+
+    return line.pointAtParameter(tt);
+}
+
+/**
+ * @brief Checks if a line intersects with a triangle.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to check if a
+ * line intersects with a triangle. If an intersection exists, the function
+ * returns true. If no intersection exists, the function returns false.
+ *
+ * @tparam LineType: A type that satisfies the Line3Concept concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
+ *
+ * @param[in] line: The line to check for intersection.
+ * @param[in] triangle: The triangle to check for intersection.
+ * @return True if the line intersects with the triangle, false otherwise.
+ *
+ * @ingroup core_intersection
+ */
+template<Line3Concept LineType, Triangle3Concept TriangleType>
+bool intersect(const LineType& line, const TriangleType& triangle)
+{
+    return intersection(line, triangle).has_value();
+}
+
+/**
+ * @copydoc vcl::intersect(const LineType&, const TriangleType&)
+ *
+ * @ingroup core_intersection
+ */
+template<Triangle3Concept TriangleType, Line3Concept LineType>
+bool intersect(const TriangleType& triangle, const LineType& line)
+{
+    return intersect(line, triangle);
+}
+
+/**
+ * @brief Computes the intersection point between a ray and a triangle, if it
+ * exists.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to compute the
+ * intersection point between a ray and a triangle. If an intersection exists,
+ * the function returns the intersection point as an optional value. If no
+ * intersection exists, the function returns an empty optional.
+ *
+ * @tparam RayType: A type that satisfies the Ray3Concept concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
+ *
+ * @param[in] ray: The ray to compute the intersection with.
+ * @param[in] triangle: The triangle to compute the intersection with.
+ * @param[out] t: An optional reference to store the parameter value along the
+ * ray at which the intersection occurs.
+ * @param[out] u: An optional reference to store the barycentric coordinate u of
+ * the intersection point.
+ * @param[out] v: An optional reference to store the barycentric coordinate v of
+ * the intersection point.
+ * @return An optional point that represents the intersection point between the
+ * ray and the triangle, if it exists.
+ *
+ * @ingroup core_intersection
+ */
+template<Ray3Concept RayType, Triangle3Concept TriangleType>
+std::optional<typename RayType::PointType> intersection(
+    const RayType&      ray,
+    const TriangleType& triangle,
+    std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {},
+    std::optional<std::reference_wrapper<typename RayType::ScalarType>> u = {},
+    std::optional<std::reference_wrapper<typename RayType::ScalarType>> v = {})
+    requires std::
+        same_as<typename RayType::ScalarType, typename TriangleType::ScalarType>
+{
+    using PointType  = typename RayType::PointType;
+    using ScalarType = typename PointType::ScalarType;
+
+    Line<PointType> l(ray.origin(), ray.direction());
+
+    ScalarType tt;
+
+    auto res = intersection(l, triangle, tt, u, v);
+
+    if (res.has_value()) {
+        if (tt < ScalarType(0))
+            return std::nullopt;
+        if (t.has_value()) {
+            t.value().get() = tt;
+        }
+    }
+    return res;
+}
+
+/**
+ * @brief Checks if a ray intersects with a triangle.
+ *
+ * The function uses the Möller–Trumbore intersection algorithm to check if a
+ * ray intersects with a triangle. If an intersection exists, the function
+ * returns true. If no intersection exists, the function returns false.
+ *
+ * @tparam RayType: A type that satisfies the Ray3Concept concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
+ *
+ * @param[in] ray: The ray to check for intersection.
+ * @param[in] triangle: The triangle to check for intersection.
+ * @return True if the ray intersects with the triangle, false otherwise.
+ *
+ * @ingroup core_intersection
+ */
+template<Ray3Concept RayType, Triangle3Concept TriangleType>
+bool intersect(const RayType& ray, const TriangleType& triangle)
+{
+    return intersection(ray, triangle).has_value();
+}
+
+/**
+ * @copydoc vcl::intersect(const RayType&, const TriangleType&)
+ *
+ * @ingroup core_intersection
+ */
+template<Triangle3Concept TriangleType, Ray3Concept RayType>
+bool intersect(const TriangleType& triangle, const RayType& ray)
+{
+    return intersect(ray, triangle);
 }
 
 } // namespace vcl

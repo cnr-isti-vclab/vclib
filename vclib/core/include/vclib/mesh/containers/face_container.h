@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -712,6 +712,46 @@ public:
     void disablePerFaceMark() requires face::HasOptionalMark<T>
     {
         Base::template disableOptionalComponent<typename T::Mark>();
+    }
+
+    // MaterialIndex
+
+    /**
+     * @brief Checks if the Face Optional MaterialIndex is enabled.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     *
+     * @return true if the Optional MaterialIndex is enabled, false otherwise.
+     */
+    bool isPerFaceMaterialIndexEnabled() const
+        requires face::HasOptionalMaterialIndex<T>
+    {
+        return Base::template isOptionalComponentEnabled<
+            typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Enable the Optional MaterialIndex of the Face.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void enablePerFaceMaterialIndex() requires face::HasOptionalMaterialIndex<T>
+    {
+        Base::template enableOptionalComponent<typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Disables the Optional MaterialIndex of the Face.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void disablePerFaceMaterialIndex()
+        requires face::HasOptionalMaterialIndex<T>
+    {
+        Base::template disableOptionalComponent<typename T::MaterialIndex>();
     }
 
     // Normal

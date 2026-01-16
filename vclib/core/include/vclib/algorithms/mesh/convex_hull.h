@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -72,7 +72,7 @@ void firstTetOptimization(R&& points)
     });
 
     // swap the first points with the closest points to the box corners
-    for (uint i = 0; i < 6; ++i) {
+    for (uint i = 0; i < 6 && i < points.size(); ++i) {
         std::iter_swap(std::ranges::begin(points) + i, distances[i].second);
     }
 }
@@ -95,21 +95,42 @@ void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
     firstTetOptimization(points);
 
     auto itP0 = std::ranges::begin(points);
+    auto itP  = std::next(itP0);
+
+    // make sure that the first two points are not coincident
+    while (itP != std::ranges::end(points) && *itP0 == *itP) {
+        itP = std::next(itP);
+    }
+    if (itP == std::ranges::end(points)) {
+        throw std::runtime_error("All points are coincident.");
+    }
     auto itP1 = std::next(itP0);
+    std::iter_swap(itP, itP1);
+
+    itP = std::next(itP);
+
+    // make sure that the first three points are not collinear
+    while (itP != std::ranges::end(points) &&
+           arePointsCollinear(*itP0, *itP1, *itP)) {
+        itP = std::next(itP);
+    }
+    if (itP == std::ranges::end(points)) {
+        throw std::runtime_error("All points are collinear.");
+    }
     auto itP2 = std::next(itP1);
-    auto itP3 = std::next(itP2);
-    auto itP  = std::next(itP2);
+    std::iter_swap(itP, itP2);
+
+    itP = std::next(itP);
 
     auto rEnd = std::ranges::end(points);
 
     while (itP != rEnd && arePointsCoplanar(*itP0, *itP1, *itP2, *itP)) {
         itP = std::next(itP);
     }
-
     if (itP == rEnd) {
         throw std::runtime_error("All points are coplanar.");
     }
-
+    auto itP3 = std::next(itP2);
     std::iter_swap(itP, itP3);
 }
 
@@ -323,18 +344,18 @@ std::vector<uint> addNewFaces(
             firstFace = f;
         }
 
-        convexHull.face(f).setAdjFace(0, lastFace);
+        convexHull.face(f).setAdjFace(0u, lastFace);
         if (lastFace != UINT_NULL)
-            convexHull.face(lastFace).setAdjFace(2, f);
+            convexHull.face(lastFace).setAdjFace(2u, f);
 
-        convexHull.face(f).setAdjFace(1, faceIndex);
+        convexHull.face(f).setAdjFace(1u, faceIndex);
         convexHull.face(faceIndex).setAdjFace(edgeIndex, f);
 
         lastFace = f;
     }
 
-    convexHull.face(firstFace).setAdjFace(0, lastFace);
-    convexHull.face(lastFace).setAdjFace(2, firstFace);
+    convexHull.face(firstFace).setAdjFace(0u, lastFace);
+    convexHull.face(lastFace).setAdjFace(2u, firstFace);
 
     return newFaces;
 }

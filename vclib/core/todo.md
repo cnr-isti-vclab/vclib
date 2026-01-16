@@ -64,11 +64,13 @@
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
+    - [ ] allow to pass a function that computes the sample starting from a face or an edge (requires implementation on PointSampler class)
 - Space:
   - [ ] MeshEdgeUtil class should NOT rely on comparing pointers - it leds to non-deterministic behavior
   - [ ] add assert(!isNull()) on Box member functions like volume()
   - [ ] get rid of TriangleWrapper data structure
   - [ ] improve documentation for Grid data structures
+  - [ ] allow to set custom sample function from a face or an edge in PointSampler class
 - External:
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
   - [ ] look for a json header only library that is compatible with c++20 modules

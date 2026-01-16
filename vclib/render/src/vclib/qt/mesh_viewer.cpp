@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -118,6 +118,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
+
+    connect(
+        mUI->renderModeComboBox,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
 }
 
 MeshViewer::~MeshViewer()
@@ -175,15 +181,44 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
+void MeshViewer::showRenderModeSelector(bool show)
+{
+    mUI->renderModeComboBox->setVisible(show);
+    mUI->renderModeLabel->setVisible(show);
+}
+
+bool MeshViewer::isPBREnabled() const
+{
+    return mUI->viewer->isPBREnabled();
+}
+
+void MeshViewer::setPBR(bool enable)
+{
+    using enum RenderMode;
+    mUI->renderModeComboBox->setCurrentIndex(
+        enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+    updateGUI();
+}
+
+void MeshViewer::enablePBR()
+{
+    setPBR(true);
+}
+
+void MeshViewer::disablePBR()
+{
+    setPBR(false);
+}
+
 void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S
     if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
         vcl::qt::ScreenShotDialog dialog(this);
         if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+            auto sf = dialog.selectedFiles();
             mUI->viewer->screenshot(
-                dialog.selectedFiles()[0].toStdString(),
-                dialog.screenMultiplierValue());
+                sf[0].toStdString(), dialog.screenMultiplierValue());
         }
     }
     else {
@@ -294,6 +329,17 @@ void MeshViewer::updateGUI()
     }
     else {
         mUI->renderSettingsFrame->setEnabled(false);
+    }
+    mUI->viewer->update();
+}
+
+void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
+{
+    if (index == toUnderlying(RenderMode::PBR)) {
+        mUI->viewer->enablePBR();
+    }
+    else {
+        mUI->viewer->disablePBR();
     }
     mUI->viewer->update();
 }

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -777,19 +777,22 @@ protected:
     template<typename C>
     void enableOptionalComponent()
     {
-        mVerticalCompVecTuple.template enableComponent<C>();
-        // first call init on all the just enabled components
-        if constexpr (comp::HasInitMemberFunction<C>) {
-            for (auto& e : elements()) {
-                e.C::init();
-            }
-        }
-        // then resize the component containers with tied size to vertex number
-        if constexpr (comp::IsTiedToVertexNumber<C>) {
-            static const int N = T::VERTEX_NUMBER;
-            if constexpr (N < 0) {
+        if (!isOptionalComponentEnabled<C>()) {
+            mVerticalCompVecTuple.template enableComponent<C>();
+            // first call init on all the just enabled components
+            if constexpr (comp::HasInitMemberFunction<C>) {
                 for (auto& e : elements()) {
-                    e.C::resize(e.vertexNumber());
+                    e.C::init();
+                }
+            }
+            // then resize the component containers with tied size to vertex
+            // number
+            if constexpr (comp::IsTiedToVertexNumber<C>) {
+                static const int N = T::VERTEX_NUMBER;
+                if constexpr (N < 0) {
+                    for (auto& e : elements()) {
+                        e.C::resize(e.vertexNumber());
+                    }
                 }
             }
         }

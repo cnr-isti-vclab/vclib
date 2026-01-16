@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -58,25 +58,28 @@ public:
 
     void onDrawContent(uint viewId) override
     {
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
+
+        settings.pbrMode = ParentViewer::isPBREnabled();
+
+        setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        ParentViewer::drawableObjectVector().draw(viewId);
+        ParentViewer::drawableObjectVector().draw(settings);
     }
 
     void onDrawId(uint viewId) override
     {
-        bgfx::setViewTransform(
-            viewId,
-            ParentViewer::viewMatrix().data(),
-            ParentViewer::projectionMatrix().data());
+        DrawObjectSettings settings;
+        settings.objectId = ParentViewer::id();
+        settings.viewId   = viewId;
 
-        ParentViewer::drawableObjectVector().drawId(viewId, ParentViewer::id());
+        setViewTransform(viewId);
+
+        ParentViewer::drawableObjectVector().drawId(settings);
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
@@ -108,6 +111,17 @@ public:
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+    }
+
+private:
+    void setViewTransform(uint viewId)
+    {
+        // need to store the matrices
+        // parent viewer returns by value
+        Matrix44f vm = ParentViewer::viewMatrix();
+        Matrix44f pm = ParentViewer::projectionMatrix();
+
+        bgfx::setViewTransform(viewId, vm.data(), pm.data());
     }
 };
 

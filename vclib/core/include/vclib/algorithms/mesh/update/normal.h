@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -222,7 +222,9 @@ void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
         if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto& e : mesh.template elements<Elem::ELEMENT_ID>()) {
                 for (auto* v : e.vertices()) {
-                    v->normal().setZero();
+                    // normal().setZero() does not compile on gcc (Release) with
+                    // Eigen 5.0.1
+                    v->normal() = {0., 0., 0.};
                 }
             }
         }

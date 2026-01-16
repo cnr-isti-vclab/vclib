@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -24,8 +24,11 @@
 #define VCL_RENDER_DRAWERS_CAMERA_DRAWER_H
 
 #include "event_drawer.h"
-#include <vclib/render/viewer/camera.h>
+
 #include <vclib/render/viewer/lights.h>
+
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 template<typename Scalar, typename DerivedRenderApp>

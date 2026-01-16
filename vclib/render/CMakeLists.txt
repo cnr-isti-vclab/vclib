@@ -23,14 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render)
 
-# Options
-set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
-set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
-
-# external libraries
-message(STATUS "VCLib-Render: 3rdparty libraries")
-add_subdirectory(3rdparty)
-
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/render/*.h")
@@ -102,6 +94,12 @@ if (TARGET vclib-3rd-glfw)
             "src/vclib/glfw_imgui/*.cpp")
         list(APPEND SOURCES ${SOURCES_GLFW_IMGUI})
     endif()
+endif()
+
+if (TARGET vclib-3rd-imgui)
+    file(GLOB_RECURSE HEADERS_IMGUI CONFIGURE_DEPENDS
+        "include/vclib/imgui/*.h")
+    list(APPEND HEADERS ${HEADERS_IMGUI})
 endif()
 
 if (TARGET vclib-3rd-qt)

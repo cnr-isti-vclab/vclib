@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -172,6 +172,22 @@ concept HasPerFaceCustomComponents =
 template<typename MeshType>
 concept HasPerFaceMark =
     HasFaces<MeshType> && face::HasMark<typename RemoveRef<MeshType>::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face MaterialIndex
+ * component.
+ *
+ * Evaluates to true if MaterialIndex is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceMaterialIndex =
+    HasFaces<MeshType> &&
+    face::HasMaterialIndex<typename RemoveRef<MeshType>::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face Normal
@@ -558,6 +574,67 @@ template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
     return enableIfPerElementComponentOptional<ElemId::FACE, CompId::MARK>(m);
+}
+
+// Face MaterialIndex
+
+/**
+ * @brief Returns true if the MaterialIndex component is available (enabled) in
+ * the Face element of the input mesh m.
+ *
+ * This function returns `true` when the MaterialIndex component can be used on
+ * the element, whether the component is horizontal, vertical or optional.
+ *
+ * These are the following cases:
+ * - if the Face Element does not have a MaterialIndex Component, the
+ *   function returns `false`;
+ * - if the Face Element has a non-optional MaterialIndex Component, the
+ *   function returns `true`;
+ * - if the Face Element has an optional MaterialIndex Component, the function
+ *   returns `true` if the MaterialIndex component is enabled, false otherwise
+ *   (this check is the only one that is made at runtime);
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] m: the mesh on which check the availability of the MaterialIndex
+ * Component in the Face Element.
+ * @return `true` if the MaterialIndex Component is available in the Face
+ * Element of the given Mesh.
+ *
+ * @ingroup face_requirements
+ */
+template<FaceMeshConcept MeshType>
+bool isPerFaceMaterialIndexAvailable(const MeshType& m)
+{
+    return isPerElementComponentAvailable<ElemId::FACE, CompId::MATERIAL_INDEX>(
+        m);
+}
+
+/**
+ * @brief If the input mesh has a FaceContainer, and the Face
+ * Element has a MaterialIndex Component, this function enables the Component in
+ * the Element if the component needs to be enabled (meaning that it is
+ * optional).
+ * Returns `true` if, after the call of this function, the MaterialIndex
+ * component will be available in the Face Element of the mesh.
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] m: the mesh on which enable the MaterialIndex component in the
+ * Face Element.
+ * @return `true` if the MaterialIndex Component is available in the FaceElement
+ * after the call of this funciton.
+ *
+ * @ingroup face_requirements
+ */
+template<FaceMeshConcept MeshType>
+bool enableIfPerFaceMaterialIndexOptional(MeshType& m)
+{
+    return enableIfPerElementComponentOptional<
+        ElemId::FACE,
+        CompId::MATERIAL_INDEX>(m);
 }
 
 // Face Normal
@@ -1031,6 +1108,42 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m) requires HasPerFaceMark<MeshType>
 {
     requirePerElementComponent<ElemId::FACE, CompId::MARK>(m);
+}
+
+// Face MaterialIndex
+
+/**
+ * @brief This function asserts that a Mesh has a FaceContainer,
+ * the Face has a MaterialIndex Component, and that the MaterialIndex Component
+ * is enabled and available at runtime.
+ *
+ * If the Mesh:
+ * - has not a Container of the given ElementEnumType;
+ * - has the Container but the Element has not a Component of the given
+ *   ComponentEnumType;
+ * a build error will be generated.
+ *
+ * If the Mesh:
+ * - has the Face Container, the Face has the MaterialIndex Component,
+ * but the Component is not enabled, a vcl::MissingComponentException will be
+ * thrown.
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @throws vcl::MissingComponentException if the MaterialIndex Component is not
+ * enabled in the FaceContainer of the Mesh.
+ *
+ * @param[in] m: the mesh on which check the availability of the MaterialIndex
+ * Component in the Face.
+ *
+ * @ingroup face_requirements
+ */
+template<FaceMeshConcept MeshType>
+void requirePerFaceMaterialIndex(const MeshType& m)
+    requires HasPerFaceMaterialIndex<MeshType>
+{
+    requirePerElementComponent<ElemId::FACE, CompId::MATERIAL_INDEX>(m);
 }
 
 // Face Normal

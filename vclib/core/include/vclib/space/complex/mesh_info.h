@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -101,9 +101,10 @@ public:
         COLOR,
         QUALITY,
         TEXCOORD,
+        MATERIAL_INDEX,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
-        TEXTURES,
+        MATERIALS,
         NUM_COMPONENTS
     };
 
@@ -195,6 +196,11 @@ public:
                         typename Mesh::VertexType::TexCoordType::ScalarType>());
             }
         }
+        if constexpr (HasPerVertexMaterialIndex<Mesh>) {
+            if (isPerVertexMaterialIndexAvailable(m)) {
+                setPerVertexMaterialIndex(true, PrimitiveType::UINT);
+            }
+        }
         if constexpr (HasPerVertexCustomComponents<Mesh>) {
             auto names = m.perVertexCustomComponentNames();
             for (auto& name : names) {
@@ -244,6 +250,11 @@ public:
                                     ScalarType>());
                 }
             }
+            if constexpr (HasPerFaceMaterialIndex<Mesh>) {
+                if (isPerFaceMaterialIndexAvailable(m)) {
+                    setPerFaceMaterialIndex(true, PrimitiveType::UINT);
+                }
+            }
             if constexpr (HasPerFaceCustomComponents<Mesh>) {
                 auto names = m.perFaceCustomComponentNames();
                 for (auto& name : names) {
@@ -263,9 +274,9 @@ public:
             //         setEdgeColors(true, UCHAR);
         }
 
-        if constexpr (HasTexturePaths<Mesh>) {
-            if (m.textureNumber() > 0) {
-                setTextures(true);
+        if constexpr (HasMaterials<Mesh>) {
+            if (m.materialsNumber() > 0) {
+                setMaterials(true);
             }
         }
     }
@@ -385,6 +396,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Material Index.
+     * @return true if the current object has Vertex Material Index.
+     */
+    bool hasPerVertexMaterialIndex() const
+    {
+        return hasPerElementComponent(VERTEX, MATERIAL_INDEX);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Custom Components.
      * @return true if the current object has Vertex Custom Components.
      */
@@ -425,6 +445,15 @@ public:
         return hasPerElementComponent(FACE, WEDGE_TEXCOORDS);
     }
 
+    /**
+     * @brief Returns true if the current object has Face Material Index.
+     * @return true if the current object has Face Material Index.
+     */
+    bool hasPerFaceMaterialIndex() const
+    {
+        return hasPerElementComponent(FACE, MATERIAL_INDEX);
+    }
+
     bool hasPerFaceCustomComponents() const
     {
         return hasPerElementComponent(FACE, CUSTOM_COMPONENTS);
@@ -458,7 +487,10 @@ public:
         return hasPerElementComponent(EDGE, CUSTOM_COMPONENTS);
     }
 
-    bool hasTextures() const { return hasPerElementComponent(MESH, TEXTURES); }
+    bool hasMaterials() const
+    {
+        return hasPerElementComponent(MESH, MATERIALS);
+    }
 
     /*
      * Setter functions: they are used by the load functions to tell which
@@ -532,6 +564,13 @@ public:
         setPerElementComponent(VERTEX, TEXCOORD, b, t);
     }
 
+    void setPerVertexMaterialIndex(
+        bool     b = true,
+        DataType t = PrimitiveType::USHORT)
+    {
+        setPerElementComponent(VERTEX, MATERIAL_INDEX, b, t);
+    }
+
     void setPerVertexCustomComponents(bool b = true)
     {
         setPerElementComponent(
@@ -567,6 +606,13 @@ public:
         setPerElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
     }
 
+    void setPerFaceMaterialIndex(
+        bool     b = true,
+        DataType t = PrimitiveType::USHORT)
+    {
+        setPerElementComponent(FACE, MATERIAL_INDEX, b, t);
+    }
+
     void setPerFaceCustomComponents(bool b = true)
     {
         setPerElementComponent(FACE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
@@ -599,9 +645,9 @@ public:
         setPerElementComponent(EDGE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
-    void setTextures(bool b = true)
+    void setMaterials(bool b = true)
     {
-        setPerElementComponent(MESH, TEXTURES, b, PrimitiveType::NONE);
+        setPerElementComponent(MESH, MATERIALS, b, PrimitiveType::NONE);
     }
 
     void addPerElementCustomComponent(
@@ -686,6 +732,11 @@ public:
         return perElementComponentType(VERTEX, TEXCOORD);
     }
 
+    DataType perVertexMaterialIndexType() const
+    {
+        return perElementComponentType(VERTEX, MATERIAL_INDEX);
+    }
+
     DataType perFaceNormalType() const
     {
         return perElementComponentType(FACE, NORMAL);
@@ -704,6 +755,11 @@ public:
     DataType perFaceWedgeTexCoordsType() const
     {
         return perElementComponentType(FACE, WEDGE_TEXCOORDS);
+    }
+
+    DataType perFaceMaterialIndexType() const
+    {
+        return perElementComponentType(FACE, MATERIAL_INDEX);
     }
 
     DataType perEdgeNormalType() const
@@ -927,6 +983,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
                 info.setPerVertexTexCoord(false);
             }
         }
+        if (info.hasPerVertexMaterialIndex()) {
+            if (!enableIfPerVertexMaterialIndexOptional(m)) {
+                info.setPerVertexMaterialIndex(false);
+            }
+        }
         if (info.hasPerVertexCustomComponents()) {
             if constexpr (HasPerVertexCustomComponents<MeshType>) {
                 for (const auto& cc : info.perVertexCustomComponents()) {
@@ -962,6 +1023,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
             if (info.hasPerFaceWedgeTexCoords()) {
                 if (!enableIfPerFaceWedgeTexCoordsOptional(m)) {
                     info.setPerFaceWedgeTexCoords(false);
+                }
+            }
+            if (info.hasPerFaceMaterialIndex()) {
+                if (!enableIfPerFaceMaterialIndexOptional(m)) {
+                    info.setPerFaceMaterialIndex(false);
                 }
             }
             if (info.hasPerFaceCustomComponents()) {
