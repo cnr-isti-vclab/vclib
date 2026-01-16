@@ -41,34 +41,7 @@ static const float VERTICES[9] {
     1,  3,  1
 };
 
-class AlignedAllocator : public bx::AllocatorI
-{
-    inline static bx::DefaultAllocator bxDefaultAllocator;
-public:
-    AlignedAllocator(size_t _minAlignment)
-            : m_allocator(&bxDefaultAllocator)
-              , m_minAlignment(_minAlignment)
-    {
-    }
-
-    virtual void* realloc(
-        void* _ptr
-        , size_t _size
-        , size_t _align
-        , const char* _file
-        , uint32_t _line
-        )
-    {
-        return m_allocator->realloc(_ptr, _size, bx::max(_align, m_minAlignment), _file, _line);
-    }
-
-    bx::AllocatorI* m_allocator;
-    size_t m_minAlignment;
-};
-
-// Allocator references are stored in image containers
-// so they have to remain visible somehow.
-static AlignedAllocator bxAlignedAllocator = AlignedAllocator(16);
+static bx::DefaultAllocator bxAllocator;
 
 namespace vcl {
 
@@ -197,7 +170,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     if(inputSize == 0)
         return nullptr;
 
-    uint8_t* inputData = (uint8_t*)bx::alloc(&bxAlignedAllocator, inputSize);
+    uint8_t* inputData = (uint8_t*)bx::alloc(&bxAllocator, inputSize);
 
     // read the file and put it raw in inputData
 
@@ -208,9 +181,9 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 
     using enum bimg::TextureFormat::Enum;
 
-    bimg::ImageContainer* output  = bimg::imageParse(&bxAlignedAllocator, inputData, inputSize, RGBA32F, &err);
+    bimg::ImageContainer* output  = bimg::imageParse(&bxAllocator, inputData, inputSize, RGBA32F, &err);
 
-    bx::free(&bxAlignedAllocator, inputData);
+    bx::free(&bxAllocator, inputData);
 
     if(
         !err.isOk() ||
