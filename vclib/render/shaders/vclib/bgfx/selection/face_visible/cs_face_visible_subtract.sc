@@ -42,7 +42,7 @@ void main() {
         + uint(gl_WorkGroupID.z) * dispatchSize.x * dispatchSize.y;
     uvec2 imSz = imageSize(s_ids).xy;
     ivec2 tex2DCoord = ivec2(int(tex1DCoord) % imSz.x, int(tex1DCoord) / imSz.x);
-    vec4 pixel = imageLoad(s_ids, tex2DCoord);
+    uvec4 pixel = imageLoad(s_ids, tex2DCoord);
     uint texPrimId = 
         (uint(pixel.x) << uint(24))
         | (uint(pixel.y) << uint(16))  
