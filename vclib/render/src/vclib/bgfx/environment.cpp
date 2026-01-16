@@ -32,8 +32,12 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+namespace vcl {
+
 // needed for non power of two textures
-#define CEIL_DIV(x, d) ((x) / (d) + ((x) % (d) != 0))
+constexpr uint ceilDiv(uint x, uint d) {
+    return x / d + (x % d != 0);
+}
 
 static const float VERTICES[9] {
     -3, -1,  1,
@@ -42,8 +46,6 @@ static const float VERTICES[9] {
 };
 
 static bx::DefaultAllocator bxAllocator;
-
-namespace vcl {
 
 Environment::Environment(const std::string& imagePath)
 {
@@ -204,16 +206,16 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 void Environment::setTextures(const bimg::ImageContainer& image)
 {
     // if it's not a cubemap it's equirectangular
-    mCubeSide = image.m_cubeMap? image.m_width : CEIL_DIV(image.m_width, 4);
+    mCubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
     mCubeMips = bimg::imageGetNumMips(
         bimg::TextureFormat::RGBA32F,
         mCubeSide,
         mCubeSide
     );
 
-    mIrradianceCubeSide = CEIL_DIV(mCubeSide, 4);
+    mIrradianceCubeSide = ceilDiv(mCubeSide, 4);
 
-    mSpecularCubeSide = CEIL_DIV(mCubeSide, 4);
+    mSpecularCubeSide = ceilDiv(mCubeSide, 4);
     mSpecularMips = bimg::imageGetNumMips(
         bimg::TextureFormat::RGBA32F,
         mSpecularCubeSide,
@@ -330,8 +332,8 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<HDR_EQUIRECT_TO_CUBEMAP>(),
-            CEIL_DIV(mCubeSide, 8),
-            CEIL_DIV(mCubeSide, 8),
+            ceilDiv(mCubeSide, 8),
+            ceilDiv(mCubeSide, 8),
             6
         );
     }
@@ -346,12 +348,12 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
 
         for(uint8_t mip = 1; mip < mCubeMips; mip++)
         {
-            const uint32_t mipSize = CEIL_DIV(mCubeSide, 1 << mip);
+            const uint32_t mipSize = ceilDiv(mCubeSide, 1 << mip);
 
             // ensure at least 1 threadgroup is dispatched for small mips
             // assuming the compute shader uses 8x8 threads per group
             // and checks for out-of-bounds internally
-            const uint32_t threadGroups = (mipSize < 8) ? 1 : CEIL_DIV(mipSize, 8);
+            const uint32_t threadGroups = (mipSize < 8) ? 1 : ceilDiv(mipSize, 8);
 
             mCubeMapTexture->bindForCompute(
                 0,
@@ -397,8 +399,8 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     bgfx::dispatch(
         viewId,
         pm.getComputeProgram<CUBEMAP_TO_IRRADIANCE>(),
-        CEIL_DIV(mIrradianceCubeSide, 8),
-        CEIL_DIV(mIrradianceCubeSide, 8),
+        ceilDiv(mIrradianceCubeSide, 8),
+        ceilDiv(mIrradianceCubeSide, 8),
         6
     );
 
@@ -406,13 +408,13 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
 
     for(uint8_t mip = 0; mip < mSpecularMips; ++mip)
     {
-        const uint32_t mipSize = CEIL_DIV(mSpecularCubeSide, 1 << mip);
+        const uint32_t mipSize = ceilDiv(mSpecularCubeSide, 1 << mip);
         const float roughness = static_cast<float>(mip) / static_cast<float>(mSpecularMips - 1);
 
         // ensure at least 1 threadgroup is dispatched for small mips
         // assuming the compute shader uses 8x8 threads per group
         // and checks for out-of-bounds internally
-        const uint32_t threadGroups = (mipSize < 8) ? 1 : CEIL_DIV(mipSize, 8);
+        const uint32_t threadGroups = (mipSize < 8) ? 1 : ceilDiv(mipSize, 8);
 
         mCubeMapTexture->bind(
             0,
@@ -451,8 +453,8 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     bgfx::dispatch(
         viewId,
         pm.getComputeProgram<IBL_LOOKUP_TEXTURE_GEN>(),
-        CEIL_DIV(mBrdfLutSize, 8),
-        CEIL_DIV(mBrdfLutSize, 8)
+        ceilDiv(mBrdfLutSize, 8),
+        ceilDiv(mBrdfLutSize, 8)
     );
 
     Context::instance().releaseViewId(viewId);
