@@ -77,10 +77,8 @@ Environment::Environment(const std::string& imagePath)
     mImage = loadImage(imagePath);
     if (mImage) {
         setTextures();
+        generateTextures();
         fullScreenTriangle();
-        uint viewId = Context::instance().requestViewId();
-        generateTextures(viewId);
-        Context::instance().releaseViewId(viewId);
     }
 }
 
@@ -332,10 +330,12 @@ void Environment::fullScreenTriangle()
     );
 }
 
-void Environment::generateTextures(const uint viewId)
+void Environment::generateTextures()
 {
     using enum ComputeProgram;
     ProgramManager& pm = Context::instance().programManager();
+
+    uint viewId = Context::instance().requestViewId();
 
     if(!mImage->m_cubeMap)
     {
@@ -480,6 +480,8 @@ void Environment::generateTextures(const uint viewId)
         CEIL_DIV(mBrdfLutSize, 8),
         CEIL_DIV(mBrdfLutSize, 8)
     );
+
+    Context::instance().releaseViewId(viewId);
 }
 
 } // namespace vcl

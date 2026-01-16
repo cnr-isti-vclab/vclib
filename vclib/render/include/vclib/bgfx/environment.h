@@ -77,6 +77,15 @@ class Environment
     std::unique_ptr<Texture> mBrdfLuTexture;
 
 public:
+    /** @brief Types of environment textures managed by the Environment class. */
+    enum class TextureType
+    {
+        RAW_CUBE,
+        IRRADIANCE,
+        SPECULAR,
+        BRDF_LUT
+    };
+
     Environment() = default;
 
     Environment(const std::string& imagePath);
@@ -117,15 +126,6 @@ public:
     {
         first.swap(second);
     }
-
-    /** @brief Types of environment textures managed by the Environment class. */
-    enum class TextureType
-    {
-        RAW_CUBE,
-        IRRADIANCE,
-        SPECULAR,
-        BRDF_LUT
-    };
 
     /** @brief Draws the environment in the background.
     * @param[in] viewId: The view ID to draw the background in.
@@ -177,13 +177,16 @@ private:
     /** @brief Sets up the environment textures based on the loaded image.*/
     void setTextures();
 
-    /** @brief Renders a full-screen triangle for background drawing.*/
-    void fullScreenTriangle();
-
     /** @brief Generates the necessary environment textures (cubemap, irradiance map, specular map, BRDF LUT).
      * @param[in] viewId: The view ID to use for texture generation.
-    */
-    void generateTextures(const uint viewId);
+     */
+    void generateTextures();
+
+    /** @brief Sets the buffer for the full-screen triangle for background
+     * drawing.*/
+    void fullScreenTriangle();
+
+
 };
 
 } // namespace vcl
