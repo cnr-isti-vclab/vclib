@@ -25,6 +25,7 @@
 
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 

@@ -72,16 +72,15 @@ static AlignedAllocator bxAlignedAllocator = AlignedAllocator(16);
 
 namespace vcl {
 
-Environment::Environment(const std::string& imagePath) : mImagePath(imagePath)
+Environment::Environment(const std::string& imagePath)
 {
-    mImage = loadImage(mImagePath);
+    mImage = loadImage(imagePath);
     if (mImage) {
         setTextures();
         fullScreenTriangle();
         uint viewId = Context::instance().requestViewId();
         generateTextures(viewId);
         Context::instance().releaseViewId(viewId);
-        mCanDraw = true;
     }
 }
 
@@ -90,7 +89,7 @@ void Environment::drawBackground(
     const int   toneMapping,
     const float exposure)
 {
-    if(!mCanDraw)
+    if(!canDraw())
         return;
 
     using enum VertFragProgram;
@@ -180,7 +179,7 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     /* Code from bimg texturec */
 
     using enum Environment::FileFormat;
-    mSourceFormat = getFileFormat(mImagePath);
+    mSourceFormat = getFileFormat(imagePath);
 
     if(mSourceFormat == UNKNOWN)
         return nullptr;

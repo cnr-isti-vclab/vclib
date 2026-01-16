@@ -38,11 +38,7 @@ namespace vcl {
  */
 class Environment
 {
-    std::string mImagePath;
-
     vcl::VertexBuffer mVertexBuffer;
-
-    bool mCanDraw = false;
 
     uint32_t
         mCubeSide           = 0,
@@ -104,7 +100,6 @@ public:
     void swap(Environment& other)
     {
         using std::swap;
-        swap(mCanDraw, other.mCanDraw);
         swap(mCubeSide, other.mCubeSide);
         swap(mIrradianceCubeSide, other.mIrradianceCubeSide);
         swap(mSpecularCubeSide, other.mSpecularCubeSide);
@@ -118,7 +113,6 @@ public:
         swap(mIrradianceTexture, other.mIrradianceTexture);
         swap(mSpecularTexture, other.mSpecularTexture);
         swap(mBrdfLuTexture, other.mBrdfLuTexture);
-        mImagePath.swap(other.mImagePath);
         mVertexBuffer.swap(other.mVertexBuffer);
     }
 
@@ -161,7 +155,7 @@ public:
     /** @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.
     */
-    bool canDraw() const { return mCanDraw; }
+    bool canDraw() const { return mImage != nullptr; }
 
     /** @brief Gets the number of mipmap levels in the specular environment map.
      * @return The number of mipmap levels in the specular environment map.
