@@ -47,6 +47,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     using TED = TrackBallEventDrawer<DerivedRenderApp>;
 
     bgfx::FrameBufferHandle     mVisibleSelectionFrameBuffer;
+    bgfx::FrameBufferHandle     mUselessFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds;
     bgfx::VertexLayout          mVertexLayout;
     VertexBuffer                mPosBuffer;
@@ -92,23 +93,52 @@ public:
     {
         ParentViewer::onInit(viewId);
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
-        mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
-        mVisibleSelectionFrameBuffer =
-            Context::instance().createOffscreenFramebufferAndInitView(
-                mVisibleSelectionViewIds[0],
-                uint16_t(sVisibleFaceFramebufferSize),
-                uint16_t(sVisibleFaceFramebufferSize),
-                true,
-                0u,
-                1.0f,
-                (uint8_t) 0U,
-                bgfx::TextureFormat::Enum::RGBA8,
-                Context::instance().DEFAULT_DEPTH_FORMAT
-            );
-        bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mVisibleSelectionFrameBuffer);
+        bgfx::TextureHandle texHandles[2];
+        texHandles[0] = bgfx::createTexture2D(
+            uint16_t(sVisibleFaceFramebufferSize),
+            uint16_t(sVisibleFaceFramebufferSize),
+            false,
+            1,
+            bgfx::TextureFormat::RGBA8,
+            BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE
+        );
+        texHandles[1] = bgfx::createTexture2D(
+            uint16_t(sVisibleFaceFramebufferSize),
+            uint16_t(sVisibleFaceFramebufferSize),
+            false,
+            1,
+            Context::instance().DEFAULT_DEPTH_FORMAT,
+            BGFX_TEXTURE_RT
+        );
+        mVisibleSelectionFrameBuffer = bgfx::createFrameBuffer(2, texHandles, true);
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer);
+        bgfx::setViewClear(mVisibleSelectionViewIds[0], BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0u);
         bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize);
-        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize);
+        bgfx::touch(mVisibleSelectionViewIds[0]);
+
+        mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
+        bgfx::TextureHandle uselessTexs[2];
+        uselessTexs[0] = bgfx::createTexture2D(
+            uint16_t(1),
+            uint16_t(1),
+            false,
+            1,
+            Context::instance().DEFAULT_COLOR_FORMAT,
+            BGFX_TEXTURE_RT
+        );
+        uselessTexs[1] = bgfx::createTexture2D(
+            uint16_t(1),
+            uint16_t(1),
+            false,
+            1,
+            Context::instance().DEFAULT_DEPTH_FORMAT,
+            BGFX_TEXTURE_RT
+        );
+        mUselessFB = bgfx::createFrameBuffer(2, uselessTexs, true);
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB);
+        bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
+        bgfx::touch(mVisibleSelectionViewIds[1]);
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -154,7 +184,6 @@ public:
         }
         float* view = TED::viewMatrix().data();
         bgfx::setViewTransform(mVisibleSelectionViewIds[0], view, proj);
-        bgfx::setViewTransform(mVisibleSelectionViewIds[1], view, proj);
     }
 
     void onDraw(uint viewId) override
@@ -174,7 +203,7 @@ public:
                 //setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
                 //CHANGE TO REMOVE
                 bgfx::setViewTransform(mVisibleSelectionViewIds[0], TED::viewMatrix().data(), TED::projectionMatrix().data());
-                bgfx::setViewTransform(mVisibleSelectionViewIds[1], TED::viewMatrix().data(), TED::projectionMatrix().data());
+                //bgfx::setViewTransform(mVisibleSelectionViewIds[1], TED::viewMatrix().data(), TED::projectionMatrix().data());
                 //END OF CHANGE TO REMOVE
             }
             SelectionParameters params = SelectionParameters{

@@ -271,11 +271,11 @@ public:
         bgfx::submit(params.pass1ViewId, passProgram);
         
         // THESE DO NOT WORK RIGHT NOW
-        mVisibleFacesComputeUniform.bind(temp);
-        bgfx::setImage(0, params.colorAttachmentTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
-        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
-        bgfx::setTransform(model.data());
-        bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
+        //mVisibleFacesComputeUniform.bind(temp);
+        //bgfx::setImage(7, params.colorAttachmentTex, 0, bgfx::Access::ReadWrite, bgfx::TextureFormat::RGBA8U);
+        //mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        //bgfx::setTransform(model.data());
+        //bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
         return true;
     }
 
@@ -516,6 +516,40 @@ public:
     }
 
     void bindUniforms() const { mMeshUniforms.bind(); }
+
+    void updateFaceSelectionBufferFromColorAttachment(const std::vector<uint8_t>& bytes) const {
+        auto* non_const_this = const_cast<MeshRenderBuffers979<MeshType>*>(this);
+        const uint selectionBufferSize =
+            uint(ceil(double(Base::numTris()) / 32.0));
+        auto [buffer, releaseFn] = non_const_this->getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+
+        for (size_t i = 0; i < selectionBufferSize; i++) {
+            buffer[i] = 0;
+        }
+
+        for (size_t i = 0; i < bytes.size()/4; i++) {
+            uint val = 
+                (uint(bytes[4*i]) << 24) 
+                | (uint(bytes[4*i + 1]) << 16) 
+                | (uint(bytes[4*i + 2]) << 8) 
+                | (uint(bytes[4*i + 3]));
+            uint bufInd = val/32;
+            if (bufInd >= selectionBufferSize) {
+                continue;
+            }
+            uint bitOff = 31 - (val%32);
+            uint bitMask = 0x1 << bitOff;
+            buffer[bufInd] = buffer[bufInd] | bitMask;
+        }
+
+        non_const_this->mSelectedFacesBuffer = std::make_optional(IndexBuffer());
+        non_const_this->mSelectedFacesBuffer->createForCompute(
+            buffer,
+            selectionBufferSize,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::ReadWrite,
+            releaseFn);
+    }
 
 private:
     void bindSelectionBox(const SelectionBox& box)

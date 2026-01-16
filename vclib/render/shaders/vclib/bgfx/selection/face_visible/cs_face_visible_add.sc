@@ -23,7 +23,7 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-UIMAGE2D_RO(s_ids, rgba8, 0);
+UIMAGE2D_RO(s_ids, rgba8, 7);
 BUFFER_RW(face_selected, uint, 6);
 
 uniform vec4 u_meshIdAndDispatchSizeXY;
@@ -44,10 +44,10 @@ void main() {
     ivec2 tex2DCoord = ivec2(int(tex1DCoord) % imSz.x, int(tex1DCoord) / imSz.x);
     uvec4 pixel = imageLoad(s_ids, tex2DCoord);
     uint texPrimId = 
-        (uint(pixel.x) << uint(24))
-        | (uint(pixel.y) << uint(16))  
-        | (uint(pixel.z) << uint(8)) 
-        | uint(pixel.w);
+        ((uint(pixel.r) & 0xff) << uint(24))
+        | ((uint(pixel.g) & 0xff) << uint(16))  
+        | ((uint(pixel.b) & 0xff) << uint(8)) 
+        | (uint(pixel.a) & 0xff);
     uint bufferIndex = texPrimId/32;
     uint bitOffset = 31-(texPrimId%32);
     uint bitMask = 0x1 << bitOffset;

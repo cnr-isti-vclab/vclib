@@ -276,18 +276,22 @@ public:
         {
             if (mVisSelTexRBFrames == 0) {
                 mVisSelTexRBFrames = 255;
-                std::fstream file;
-                file.open("output.ppm", std::ios::binary | std::ios::out);
-                file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
-                size_t index = 0;
-                for (const uint8_t& val: mTexReadBackVec) {
-                    ++index;
-                    if (index%4 == 0) {
-                        continue;
-                    }
-                    file.write(reinterpret_cast<const char*>(&val), 1);
-                }
-                file.close();
+                //std::fstream file;
+                //file.open("output.ppm", std::ios::binary | std::ios::out);
+                //file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
+                //size_t index = 0;
+                //for (const uint8_t& val: mTexReadBackVec) {
+                //    ++index;
+                //    if (index%4 == 0) {
+                //        continue;
+                //    }
+                //    file.write(reinterpret_cast<const char*>(&val), 1);
+                //}
+                //file.close();
+                Timer timer;
+                timer.start();
+                mMRB.updateFaceSelectionBufferFromColorAttachment(mTexReadBackVec);
+                timer.stopAndPrint();
             } else if (mVisSelTexRBFrames != 255) {
                 mVisSelTexRBFrames--;
             }
