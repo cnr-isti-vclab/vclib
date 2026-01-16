@@ -179,9 +179,9 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     /* Code from bimg texturec */
 
     using enum Environment::FileFormat;
-    mSourceFormat = getFileFormat(imagePath);
+    FileFormat sourceFormat = getFileFormat(imagePath);
 
-    if(mSourceFormat == UNKNOWN)
+    if(sourceFormat == UNKNOWN)
         return nullptr;
 
     bx::Error err;
@@ -218,8 +218,8 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
         !err.isOk() ||
         (
             !output->m_cubeMap   &&
-            mSourceFormat != HDR &&
-            mSourceFormat != EXR
+            sourceFormat != HDR &&
+            sourceFormat != EXR
         )
     ) // file is neither a cubemap nor an equirectangular map
     {

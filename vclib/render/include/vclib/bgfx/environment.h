@@ -38,33 +38,6 @@ namespace vcl {
  */
 class Environment
 {
-    vcl::VertexBuffer mVertexBuffer;
-
-    uint32_t
-        mCubeSide           = 0,
-        mIrradianceCubeSide = 0,
-        mSpecularCubeSide   = 0,
-        mBrdfLutSize        = 1024;
-
-    uint8_t
-        mCubeMips     = 0,
-        mSpecularMips = 0;
-
-    vcl::Uniform
-        mHdrSamplerUniform            = Uniform("s_hdr", bgfx::UniformType::Sampler),
-        mEnvCubeSamplerUniform        = Uniform("s_env0", bgfx::UniformType::Sampler),
-        mIrradianceCubeSamplerUniform = Uniform("s_irradiance", bgfx::UniformType::Sampler),
-        mSpecularCubeSamplerUniform   = Uniform("s_specular", bgfx::UniformType::Sampler),
-        mBrdfLutSamplerUniform        = Uniform("s_brdf_lut", bgfx::UniformType::Sampler),
-        mDataUniform                  = Uniform("u_dataPack", bgfx::UniformType::Vec4);
-
-    std::unique_ptr<Texture>
-        mHdrTexture,
-        mCubeMapTexture,
-        mIrradianceTexture,
-        mSpecularTexture,
-        mBrdfLuTexture;
-
     enum class FileFormat
     {
         UNKNOWN,
@@ -74,9 +47,34 @@ class Environment
         DDS
     };
 
-    FileFormat mSourceFormat = FileFormat::UNKNOWN;
-
     bimg::ImageContainer* mImage = nullptr;
+
+    vcl::VertexBuffer mVertexBuffer;
+
+    uint32_t mCubeSide           = 0;
+    uint32_t mIrradianceCubeSide = 0;
+    uint32_t mSpecularCubeSide   = 0;
+    uint32_t mBrdfLutSize        = 1024;
+
+    uint8_t mCubeMips     = 0;
+    uint8_t mSpecularMips = 0;
+
+    Uniform mHdrSamplerUniform = Uniform("s_hdr", bgfx::UniformType::Sampler);
+    Uniform mEnvCubeSamplerUniform =
+        Uniform("s_env0", bgfx::UniformType::Sampler);
+    Uniform mIrradianceCubeSamplerUniform =
+        Uniform("s_irradiance", bgfx::UniformType::Sampler);
+    Uniform mSpecularCubeSamplerUniform =
+        Uniform("s_specular", bgfx::UniformType::Sampler);
+    Uniform mBrdfLutSamplerUniform =
+        Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
+    Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
+
+    std::unique_ptr<Texture> mHdrTexture;
+    std::unique_ptr<Texture> mCubeMapTexture;
+    std::unique_ptr<Texture> mIrradianceTexture;
+    std::unique_ptr<Texture> mSpecularTexture;
+    std::unique_ptr<Texture> mBrdfLuTexture;
 
 public:
     Environment() = default;
@@ -106,7 +104,6 @@ public:
         swap(mBrdfLutSize, other.mBrdfLutSize);
         swap(mCubeMips, other.mCubeMips);
         swap(mSpecularMips, other.mSpecularMips);
-        swap(mSourceFormat, other.mSourceFormat);
         swap(mImage, other.mImage);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
