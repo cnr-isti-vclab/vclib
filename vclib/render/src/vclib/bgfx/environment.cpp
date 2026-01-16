@@ -75,6 +75,10 @@ namespace vcl {
 Environment::Environment(const std::string& imagePath) : mImagePath(imagePath)
 {
     mImage = loadImage(mImagePath);
+    if (mImage) {
+        setTextures();
+        fullScreenTriangle();
+    }
 }
 
 void Environment::drawBackground(
@@ -161,12 +165,7 @@ void Environment::prepareBackground(const uint viewId)
         return;
 
     if (mImage) {
-        setTextures();
-
         generateTextures(viewId);
-
-        fullScreenTriangle();
-
         mCanDraw = true;
     }
 }

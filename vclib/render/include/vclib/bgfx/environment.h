@@ -82,8 +82,7 @@ class Environment
 
     bimg::ImageContainer* mImage = nullptr;
 
-    public:
-
+public:
     Environment() = default;
 
     Environment(const std::string& imagePath);
@@ -183,6 +182,7 @@ class Environment
     */
     FileFormat getFileFormat(const std::string& imagePath);
 
+private:
     /** @brief Loads the image from the specified file path.
      * @param[in] imagePath: The path to the image file.
      * @return A pointer to the loaded ImageContainer, can be nullptr.
