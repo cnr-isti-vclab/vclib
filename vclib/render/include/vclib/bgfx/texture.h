@@ -132,7 +132,6 @@ public:
      */
     bool isValid() const { return bgfx::isValid(mTextureHandle); }
 
-
     /**
      * @brief Creates a texture from a bgfx::ImageContainer.
      *
@@ -143,77 +142,64 @@ public:
      * for mipmaps will be allocated but not filled.
      * @param[in] flags: BGFX texture and sampler creation flags.
      */
-    void set(
-        bimg::ImageContainer *image,
-        bool                  hasMips,
-        uint64_t              flags)
+    void set(const bimg::ImageContainer& image, bool hasMips, uint64_t flags)
     {
+        const bool imageHasAlreadyMips = image.m_numMips > 1;
+        const bool passDataDirectly =
+            !hasMips || (hasMips && imageHasAlreadyMips);
 
-        const bool imageHasAlreadyMips = image->m_numMips > 1;
-        const bool passDataDirectly = !hasMips || (hasMips && imageHasAlreadyMips);
-
-        if(bgfx::isValid(mTextureHandle))
+        if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
 
-        if(passDataDirectly)
-        {
-            const uint8_t* imageData = (uint8_t*) image->m_data;
+        if (passDataDirectly) {
+            const uint8_t* imageData = (uint8_t*) image.m_data;
 
-            if(image->m_cubeMap)
-            {
+            if (image.m_cubeMap) {
                 mTextureHandle = bgfx::createTextureCube(
-                    image->m_width,
+                    image.m_width,
                     hasMips,
-                    image->m_numLayers,
-                    bgfx::TextureFormat::Enum(image->m_format),
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
                     flags,
-                    bgfxMemory(imageData, image->m_size)
-                );
+                    bgfxCopyMemory(imageData, image.m_size));
             }
-            else
-            {
+            else {
                 mTextureHandle = bgfx::createTexture2D(
-                    image->m_width,
-                    image->m_height,
+                    image.m_width,
+                    image.m_height,
                     hasMips,
-                    image->m_numLayers,
-                    bgfx::TextureFormat::Enum(image->m_format),
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
                     flags,
-                    bgfxMemory(imageData, image->m_size)
-                );
+                    bgfxCopyMemory(imageData, image.m_size));
             }
         }
-        else
-        {
-            // Image has not mips but we still want to allocate the related memory.
-            // For this we need to actually create an empty texture and update it
-            // manually to avoid undefined behavior.
+        else {
+            // Image has not mips but we still want to allocate the related
+            // memory. For this we need to actually create an empty texture and
+            // update it manually to avoid undefined behavior.
 
-            if(image->m_cubeMap)
-            {
+            if (image.m_cubeMap) {
                 mTextureHandle = bgfx::createTextureCube(
-                    image->m_width,
+                    image.m_width,
                     hasMips,
-                    image->m_numLayers,
-                    bgfx::TextureFormat::Enum(image->m_format),
-                    flags
-                );
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags);
 
-                for(uint8_t face = 0; face < 6; face++)
-                    copyMip0ToTexture(*image, face);
+                for (uint8_t face = 0; face < 6; face++)
+                    copyMip0ToTexture(image, face);
             }
-            else
-            {
+            else {
                 mTextureHandle = bgfx::createTexture2D(
-                    image->m_width,
-                    image->m_height,
+                    image.m_width,
+                    image.m_height,
                     hasMips,
-                    image->m_numLayers,
-                    bgfx::TextureFormat::Enum(image->m_format),
-                    flags
-                );
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags);
 
-                copyMip0ToTexture(*image);
+                copyMip0ToTexture(image);
             }
         }
     }
@@ -387,34 +373,12 @@ public:
     }
 
 private:
-    static const bgfx::Memory* bgfxMemory(const uint8_t* data, uint32_t size)
-    {
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint8_t>(size);
-
-        std::copy(data, data + size, buffer);
-
-        return bgfx::makeRef(
-            buffer,
-            size,
-            releaseFn
-        );
-    }
-
-    void copyMip0ToTexture(bimg::ImageContainer image, uint8_t face = 0)
+    void copyMip0ToTexture(const bimg::ImageContainer& image, uint8_t face = 0)
     {
         bimg::ImageMip mip;
-        bimg::imageGetRawData(
-            image,
-            face,
-            0,
-            image.m_data,
-            image.m_size,
-            mip
-        );
+        bimg::imageGetRawData(image, face, 0, image.m_data, image.m_size, mip);
 
-        if(image.m_cubeMap)
-        {
+        if (image.m_cubeMap) {
             bgfx::updateTextureCube(
                 mTextureHandle,
                 0,
@@ -424,11 +388,9 @@ private:
                 0,
                 mip.m_width,
                 mip.m_height,
-                bgfxMemory(mip.m_data, mip.m_size)
-            );
+                bgfxCopyMemory(mip.m_data, mip.m_size));
         }
-        else
-        {
+        else {
             bgfx::updateTexture2D(
                 mTextureHandle,
                 0,
@@ -437,9 +399,20 @@ private:
                 0,
                 mip.m_width,
                 mip.m_height,
-                bgfxMemory(mip.m_data, mip.m_size)
-            );
+                bgfxCopyMemory(mip.m_data, mip.m_size));
         }
+    }
+
+    static const bgfx::Memory* bgfxCopyMemory(
+        const uint8_t* data,
+        uint32_t       size)
+    {
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint8_t>(size);
+
+        std::copy(data, data + size, buffer);
+
+        return bgfx::makeRef(buffer, size, releaseFn);
     }
 };
 

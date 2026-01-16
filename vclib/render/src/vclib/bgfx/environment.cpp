@@ -223,7 +223,7 @@ void Environment::setTextures()
     {
         auto hdrTexture = std::make_unique<Texture>();
         hdrTexture->set(
-            mImage,
+            *mImage,
             false,      // has mips
             BGFX_TEXTURE_NONE
         );
@@ -244,7 +244,7 @@ void Environment::setTextures()
     auto cubemapTexture = std::make_unique<Texture>();
     mImage->m_cubeMap?
         cubemapTexture->set(
-            mImage,
+            *mImage,
             true,   // has mips
             cubemapTextureFlags
         ):
