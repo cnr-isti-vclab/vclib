@@ -155,7 +155,7 @@ public:
     /** @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.
     */
-    bool canDraw() const { return mImage != nullptr; }
+    bool canDraw() const { return mCubeMapTexture != nullptr; }
 
     /** @brief Gets the number of mipmap levels in the specular environment map.
      * @return The number of mipmap levels in the specular environment map.
