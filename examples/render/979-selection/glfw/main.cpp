@@ -79,7 +79,7 @@ int main(void)
     
     RA tw("Selection", 1024, 768);
 
-    tw.pushDrawableObject(getDrawableMesh979<vcl::TriMesh>("C:/Users/Giacomo/Documents/vclib/ESTE_PRINT.ply", false));
+    tw.pushDrawableObject(getDrawableMesh979<vcl::TriMesh>());
 
     tw.fitScene();
 
