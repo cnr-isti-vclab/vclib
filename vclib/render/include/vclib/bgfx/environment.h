@@ -27,8 +27,8 @@
 #include <bx/allocator.h>
 #include <vclib/base.h>
 #include <vclib/bgfx/buffers.h>
-#include <vclib/bgfx/uniform.h>
 #include <vclib/bgfx/texture.h>
+#include <vclib/bgfx/uniform.h>
 
 namespace vcl {
 
@@ -38,14 +38,7 @@ namespace vcl {
  */
 class Environment
 {
-    enum class FileFormat
-    {
-        UNKNOWN,
-        HDR,
-        EXR,
-        KTX,
-        DDS
-    };
+    enum class FileFormat { UNKNOWN, HDR, EXR, KTX, DDS };
 
     static const uint BRDF_LU_TEXTURE_SIZE = 1024;
 
@@ -72,14 +65,10 @@ class Environment
     const vcl::VertexBuffer mVertexBuffer = fullScreenTriangle();
 
 public:
-    /** @brief Types of environment textures managed by the Environment class. */
-    enum class TextureType
-    {
-        RAW_CUBE,
-        IRRADIANCE,
-        SPECULAR,
-        BRDF_LUT
-    };
+    /**
+     * @brief Types of environment textures managed by the Environment class.
+     */
+    enum class TextureType { RAW_CUBE, IRRADIANCE, SPECULAR, BRDF_LUT };
 
     Environment() = default;
 
@@ -115,36 +104,32 @@ public:
         first.swap(second);
     }
 
-    /** @brief Draws the environment in the background.
-    * @param[in] viewId: The view ID to draw the background in.
-    * @param[in] toneMapping: The tone mapping operator to use.
-    * @param[in] exposure: The exposure factor.
-    */
-    void drawBackground(const uint viewId, const int toneMapping, const float exposure);
+    void drawBackground(
+        const uint  viewId,
+        const int   toneMapping,
+        const float exposure);
 
-    /** @brief Binds the specified environment texture to the given texture stage.
-    * @param[in] type: The type of texture to bind (RAW_CUBE, IRRADIANCE, SPECULAR, BRDF_LUT).
-    * @param[in] stage: The texture stage to bind the texture to.
-    * @param[in] samplerFlags: The sampler flags to use when binding the texture.
-    */
-    void bindTexture(TextureType type, uint stage, uint samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
+    void bindTexture(
+        TextureType type,
+        uint        stage,
+        uint        samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 
-    /** @brief Binds the provided data to the helper uniform (a vec4) handled by the Environment class.
-     * @param[in] d0: The first float data to bind. Default is 0.0f.
-     * @param[in] d1: The second float data to bind. Default is 0.0f.
-     * @param[in] d2: The third float data to bind. Default is 0.0f.
-     * @param[in] d3: The fourth float data to bind. Default is 0.0f.
-    */
-    void bindDataUniform(const float d0 = 0.0f, const float d1 = 0.0f, const float d2 = 0.0f, const float d3 = 0.0f) const;
+    void bindDataUniform(
+        const float d0 = 0.0f,
+        const float d1 = 0.0f,
+        const float d2 = 0.0f,
+        const float d3 = 0.0f) const;
 
-    /** @brief Checks if the environment is ready to be drawn.
+    /**
+     * @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.
-    */
+     */
     bool canDraw() const { return mCubeMapTexture.isValid(); }
 
-    /** @brief Gets the number of mipmap levels in the specular environment map.
+    /**
+     * @brief Gets the number of mipmap levels in the specular environment map.
      * @return The number of mipmap levels in the specular environment map.
-    */
+     */
     uint8_t specularMips() const { return mSpecularMips; }
 
 private:
@@ -152,8 +137,7 @@ private:
 
     bimg::ImageContainer* loadImage(std::string imagePath);
 
-    void setAndGenerateTextures(
-        const bimg::ImageContainer& image);
+    void setAndGenerateTextures(const bimg::ImageContainer& image);
 
     void generateTextures(
         const bimg::ImageContainer& image,
