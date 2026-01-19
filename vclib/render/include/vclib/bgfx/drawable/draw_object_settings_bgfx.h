@@ -28,6 +28,21 @@
 
 namespace vcl {
 
+struct PBRSettings
+{
+    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+     */
+    bool pbrMode = false;
+
+    /**< @brief The exposure value to use in PBR mode. */
+    float exposure = 1.0f;
+
+    /**< @brief The tone mapping operator to use in PBR mode. */
+    int toneMapping = 2;
+
+    const Environment* environment = nullptr;
+};
+
 /**
  * @brief A simple struct containing the settings to draw a drawable object
  * in a bgfx canvas.
@@ -40,17 +55,7 @@ struct DrawObjectSettingsBGFX
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
 
-    /**< @brief Option that tells whether the object must be drawn in PBR mode.
-     */
-    bool pbrMode = false;
-
-    /**< @brief The exposure value to use in PBR mode. */
-    float exposure = 1.0f;
-
-    /**< @brief The tone mapping operator to use in PBR mode. */
-    int toneMapping = 2;
-
-    const Environment* environment = nullptr;
+    PBRSettings pbrSettings;
 };
 
 } // namespace vcl

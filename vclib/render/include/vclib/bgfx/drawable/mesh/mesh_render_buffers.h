@@ -28,6 +28,7 @@
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
@@ -265,9 +266,7 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m,
-        float                     exposure,
-        int                       toneMapping,
-        bool                      ibl = false) const
+        const PBRSettings&        pbrSettings) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -282,9 +281,7 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
-                exposure,
-                toneMapping,
-                ibl);
+                pbrSettings);
         }
         else {
             using enum Material::AlphaMode;
@@ -298,9 +295,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    exposure,
-                    toneMapping,
-                    ibl);
+                    pbrSettings);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -321,9 +316,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    exposure,
-                    toneMapping,
-                    ibl);
+                    pbrSettings);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {

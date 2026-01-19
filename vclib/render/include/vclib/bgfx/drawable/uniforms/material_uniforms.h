@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
+#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
 #include <vclib/bgfx/drawable/mesh/pbr_macros.h>
 #include <vclib/bgfx/uniform.h>
 
@@ -89,28 +90,28 @@ public:
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
         bool                                vertexTangentAvailable,
-        float                               exposure,
-        int                                 toneMapping,
-        bool                                ibl)
+        const PBRSettings&                  pbrSettings)
     {
-        uint pbrSettings = 0;
+        uint pbrSettingBits = 0;
 
         if (vertexColorAvailable) // per-vertex color available
-            pbrSettings |= 1 << VCL_PBR_VERTEX_COLOR;
+            pbrSettingBits |= 1 << VCL_PBR_VERTEX_COLOR;
 
         if (vertexTangentAvailable) // per-vertex tangent available
-            pbrSettings |= 1 << VCL_PBR_VERTEX_TANGENT;
+            pbrSettingBits |= 1 << VCL_PBR_VERTEX_TANGENT;
 
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            pbrSettings |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
+            pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
-        if(ibl)
-            pbrSettings |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        if (pbrSettings.environment != nullptr &&
+            pbrSettings.environment->canDraw()) {
+            pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        }
 
-        mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
+        mSettings[0] = Uniform::uintBitsToFloat(pbrSettingBits);
 
         uint textureSettings = 0;
 
@@ -122,8 +123,8 @@ public:
         }
 
         mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
-        mSettings[2] = static_cast<float>(toneMapping);
-        mSettings[3] = exposure;
+        mSettings[2] = static_cast<float>(pbrSettings.toneMapping);
+        mSettings[3] = pbrSettings.exposure;
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

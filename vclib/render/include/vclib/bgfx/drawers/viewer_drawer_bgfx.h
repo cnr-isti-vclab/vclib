@@ -61,23 +61,27 @@ public:
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
-        settings.viewId = viewId; 
+        settings.viewId = viewId;
 
-        settings.pbrMode = ParentViewer::isPBREnabled();
+        settings.pbrSettings.pbrMode = ParentViewer::isPBREnabled();
 
-        settings.exposure = ParentViewer::getExposure();
+        settings.pbrSettings.exposure = ParentViewer::getExposure();
 
-        settings.toneMapping = toUnderlying(ParentViewer::getToneMapping());
+        settings.pbrSettings.toneMapping =
+            toUnderlying(ParentViewer::getToneMapping());
 
-        settings.environment = &mPanorama;
+        settings.pbrSettings.environment = &mPanorama;
 
         setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        if(settings.pbrMode)
-            mPanorama.drawBackground(settings.viewId, settings.toneMapping, settings.exposure);
+        if(settings.pbrSettings.pbrMode)
+            mPanorama.drawBackground(
+                settings.viewId,
+                settings.pbrSettings.toneMapping,
+                settings.pbrSettings.exposure);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
