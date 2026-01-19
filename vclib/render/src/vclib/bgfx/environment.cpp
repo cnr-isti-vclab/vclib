@@ -51,8 +51,7 @@ Environment::Environment(const std::string& imagePath)
 {
     bimg::ImageContainer* image = loadImage(imagePath);
     if (image) {
-        setTextures(*image);
-        generateTextures(*image);
+        setAndGenerateTextures(*image);
         fullScreenTriangle();
         bimg::imageFree(image);
     }
@@ -134,6 +133,11 @@ void Environment::bindDataUniform(const float d0, const float d1, const float d2
     mDataUniform.bind(&data);
 }
 
+/** @brief Determines the file format of the given image based on its extension.
+ * @param[in] imagePath: The path to the image file.
+ * @return The determined file format.
+ * Recognized formats are HDR, EXR, KTX, DDS otherwise the format is marked as UNKNOWN.
+ */
 Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
 {
     using enum Environment::FileFormat;
@@ -148,6 +152,11 @@ Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
     return UNKNOWN;
 }
 
+/**
+ * @brief Loads the image from the specified file path.
+ * @param[in] imagePath: The path to the image file.
+ * @return A pointer to the loaded ImageContainer, can be nullptr.
+ */
 bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 {
     /* Code from bimg texturec */
@@ -203,16 +212,20 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
     return output;
 }
 
-void Environment::setTextures(const bimg::ImageContainer& image)
+/**
+ * @brief Sets up the environment textures based on the given image.
+ *
+ * This function is called in the constructor after loading the image.
+ *
+ * @param[in] image: The image container holding the environment map data.
+ */
+void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
 {
     // if it's not a cubemap it's equirectangular
     uint cubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
 
-    mCubeMips = bimg::imageGetNumMips(
-        bimg::TextureFormat::RGBA32F,
-        cubeSide,
-        cubeSide
-    );
+    uint8_t cubeMips =
+        bimg::imageGetNumMips(bimg::TextureFormat::RGBA32F, cubeSide, cubeSide);
 
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
@@ -293,27 +306,25 @@ void Environment::setTextures(const bimg::ImageContainer& image)
         bgfx::TextureFormat::RGBA32F
     );
     mBrdfLuTexture = std::move(brdfLuTexture);
+
+    generateTextures(image, cubeSide, cubeMips);
 }
 
-void Environment::fullScreenTriangle()
-{
-    mVertexBuffer.create(
-        VERTICES,
-        3,
-        bgfx::Attrib::Enum::Position,
-        3, // attributes per vertex
-        vcl::PrimitiveType::FLOAT,
-        false // data is normalized
-    );
-}
-
-void Environment::generateTextures(const bimg::ImageContainer& image)
+/**
+ * @brief Generates the necessary environment textures (cubemap, irradiance
+ * map, specular map, BRDF LUT).
+ *  * This function is called by setAndGenerateTextures after setting up the
+ * initial textures.
+ */
+void Environment::generateTextures(
+    const bimg::ImageContainer& image,
+    uint                        cubeSide,
+    uint8_t                     cubeMips)
 {
     using enum ComputeProgram;
     ProgramManager& pm = Context::instance().programManager();
 
     // if it's not a cubemap it's equirectangular
-    uint cubeSide = image.m_cubeMap? image.m_width : ceilDiv(image.m_width, 4);
 
     uint viewId = Context::instance().requestViewId();
 
@@ -350,7 +361,7 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     {
         // generate mipmaps for cubemap
 
-        for(uint8_t mip = 1; mip < mCubeMips; mip++)
+        for(uint8_t mip = 1; mip < cubeMips; mip++)
         {
             const uint32_t mipSize = ceilDiv(cubeSide, 1 << mip);
 
@@ -465,6 +476,23 @@ void Environment::generateTextures(const bimg::ImageContainer& image)
     );
 
     Context::instance().releaseViewId(viewId);
+}
+
+/**
+ * @brief Sets and returns the buffer for the full-screen triangle for
+ * background drawing.
+ */
+vcl::VertexBuffer Environment::fullScreenTriangle()
+{
+    vcl::VertexBuffer vb;
+    vb.create(
+        VERTICES,
+        3,
+        bgfx::Attrib::Enum::Position,
+        3,
+        vcl::PrimitiveType::FLOAT,
+        false);
+    return std::move(vb);
 }
 
 } // namespace vcl

@@ -49,27 +49,27 @@ class Environment
 
     static const uint BRDF_LU_TEXTURE_SIZE = 1024;
 
-    vcl::VertexBuffer mVertexBuffer;
-
-    uint8_t mCubeMips     = 0;
     uint8_t mSpecularMips = 0;
 
-    Uniform mHdrSamplerUniform = Uniform("s_hdr", bgfx::UniformType::Sampler);
-    Uniform mEnvCubeSamplerUniform =
+    const Uniform mHdrSamplerUniform =
+        Uniform("s_hdr", bgfx::UniformType::Sampler);
+    const Uniform mEnvCubeSamplerUniform =
         Uniform("s_env0", bgfx::UniformType::Sampler);
-    Uniform mIrradianceCubeSamplerUniform =
+    const Uniform mIrradianceCubeSamplerUniform =
         Uniform("s_irradiance", bgfx::UniformType::Sampler);
-    Uniform mSpecularCubeSamplerUniform =
+    const Uniform mSpecularCubeSamplerUniform =
         Uniform("s_specular", bgfx::UniformType::Sampler);
-    Uniform mBrdfLutSamplerUniform =
+    const Uniform mBrdfLutSamplerUniform =
         Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
-    Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
+    const Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
     std::unique_ptr<Texture> mHdrTexture;
     std::unique_ptr<Texture> mCubeMapTexture;
     std::unique_ptr<Texture> mIrradianceTexture;
     std::unique_ptr<Texture> mSpecularTexture;
     std::unique_ptr<Texture> mBrdfLuTexture;
+
+    const vcl::VertexBuffer mVertexBuffer = fullScreenTriangle();
 
 public:
     /** @brief Types of environment textures managed by the Environment class. */
@@ -102,14 +102,12 @@ public:
     void swap(Environment& other)
     {
         using std::swap;
-        swap(mCubeMips, other.mCubeMips);
         swap(mSpecularMips, other.mSpecularMips);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
         swap(mIrradianceTexture, other.mIrradianceTexture);
         swap(mSpecularTexture, other.mSpecularTexture);
         swap(mBrdfLuTexture, other.mBrdfLuTexture);
-        mVertexBuffer.swap(other.mVertexBuffer);
     }
 
     friend void swap(Environment& first, Environment& second)
@@ -150,33 +148,19 @@ public:
     uint8_t specularMips() const { return mSpecularMips; }
 
 private:
-
-    /** @brief Determines the file format of the given image based on its extension.
-     * @param[in] imagePath: The path to the image file.
-     * @return The determined file format.
-     * Recognized formats are HDR, EXR, KTX, DDS otherwise the format is marked as UNKNOWN.
-    */
     FileFormat getFileFormat(const std::string& imagePath);
 
-    /** @brief Loads the image from the specified file path.
-     * @param[in] imagePath: The path to the image file.
-     * @return A pointer to the loaded ImageContainer, can be nullptr.
-    */
     bimg::ImageContainer* loadImage(std::string imagePath);
 
-    /** @brief Sets up the environment textures based on the loaded image.*/
-    void setTextures(const bimg::ImageContainer& image);
+    void setAndGenerateTextures(
+        const bimg::ImageContainer& image);
 
-    /** @brief Generates the necessary environment textures (cubemap, irradiance map, specular map, BRDF LUT).
-     * @param[in] viewId: The view ID to use for texture generation.
-     */
-    void generateTextures(const bimg::ImageContainer& image);
+    void generateTextures(
+        const bimg::ImageContainer& image,
+        uint                        cubeSide,
+        uint8_t                     cubeMips);
 
-    /** @brief Sets the buffer for the full-screen triangle for background
-     * drawing.*/
-    void fullScreenTriangle();
-
-
+    static vcl::VertexBuffer fullScreenTriangle();
 };
 
 } // namespace vcl
