@@ -56,7 +56,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     DrawableTrackBall           mDrawTrackBall;
     DrawableDirectionalLight    mDrawableDirectionalLight;
     SelectionBox                mBoxToDraw;
-    static const uint           sVisibleFaceFramebufferSize = 10000u;
+    static const uint           sVisibleFaceFramebufferSize = 4096u;
 
 public:
     using ParentViewer::ParentViewer;
@@ -100,7 +100,7 @@ public:
             false,
             1,
             bgfx::TextureFormat::RGBA8,
-            BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE
+            BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_UVW_CLAMP
         );
         texHandles[1] = bgfx::createTexture2D(
             uint16_t(sVisibleFaceFramebufferSize),

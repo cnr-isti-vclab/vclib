@@ -270,12 +270,11 @@ public:
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
         
-        // THESE DO NOT WORK RIGHT NOW
-        //mVisibleFacesComputeUniform.bind(temp);
-        //bgfx::setImage(7, params.colorAttachmentTex, 0, bgfx::Access::ReadWrite, bgfx::TextureFormat::RGBA8U);
-        //mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
-        //bgfx::setTransform(model.data());
-        //bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
+        mVisibleFacesComputeUniform.bind(temp);
+        bgfx::setImage(0, params.colorAttachmentTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
+        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        bgfx::setTransform(model.data());
+        bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
         return true;
     }
 
