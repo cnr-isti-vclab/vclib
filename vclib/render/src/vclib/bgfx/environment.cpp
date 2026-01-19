@@ -83,47 +83,27 @@ void Environment::drawBackground(
     );
 }
 
-void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags) const
+void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags)
+    const
 {
     using enum TextureType;
-    switch(type)
-    {
-        case RAW_CUBE:
-        {
-            mCubeMapTexture->bind(
-                stage,
-                mEnvCubeSamplerUniform.handle(),
-                samplerFlags
-            );
-            break;
-        }
-        case IRRADIANCE:
-        {
-            mIrradianceTexture->bind(
-                stage,
-                mIrradianceCubeSamplerUniform.handle(),
-                samplerFlags
-            );
-            break;
-        }
-        case SPECULAR:
-        {
-            mSpecularTexture->bind(
-                stage,
-                mSpecularCubeSamplerUniform.handle(),
-                samplerFlags
-            );
-            break;
-        }
-        case BRDF_LUT:
-        {
-            mBrdfLuTexture->bind(
-                stage,
-                mBrdfLutSamplerUniform.handle(),
-                samplerFlags
-            );
-            break;
-        }
+    switch (type) {
+    case RAW_CUBE:
+        mCubeMapTexture.bind(
+            stage, mEnvCubeSamplerUniform.handle(), samplerFlags);
+        break;
+    case IRRADIANCE:
+        mIrradianceTexture.bind(
+            stage, mIrradianceCubeSamplerUniform.handle(), samplerFlags);
+        break;
+    case SPECULAR:
+        mSpecularTexture.bind(
+            stage, mSpecularCubeSamplerUniform.handle(), samplerFlags);
+        break;
+    case BRDF_LUT:
+        mBrdfLuTexture.bind(
+            stage, mBrdfLutSamplerUniform.handle(), samplerFlags);
+        break;
     }
 }
 
@@ -236,15 +216,11 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
         irrSpecCubeSide
     ) / 2; // ignore too low mips
 
-    if(!image.m_cubeMap) // equirect
-    {
-        auto hdrTexture = std::make_unique<Texture>();
-        hdrTexture->set(
+    if (!image.m_cubeMap) { // equirect
+        mHdrTexture.set(
             image,
-            false,      // has mips
-            BGFX_TEXTURE_NONE
-        );
-        mHdrTexture = std::move(hdrTexture);
+            false, // has mips
+            BGFX_TEXTURE_NONE);
     }
 
     const bool cubemapHasAlreadyMips =
@@ -258,25 +234,25 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
         // otherwise generate mips
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT;
 
-    auto cubemapTexture = std::make_unique<Texture>();
-    image.m_cubeMap?
-        cubemapTexture->set(
+    if (image.m_cubeMap) {
+        mCubeMapTexture.set(
             image,
             true,   // has mips
             cubemapTextureFlags
-        ):
-        cubemapTexture->set(
+            );
+    }
+    else {
+        mCubeMapTexture.set(
             nullptr,
             Point2i(cubeSide, cubeSide),
             true,   // has mips
             cubemapTextureFlags,
             bgfx::TextureFormat::RGBA32F,
             true    // is cubemap
-        );
-    mCubeMapTexture = std::move(cubemapTexture);
+            );
+    }
 
-    auto irradianceTexture = std::make_unique<Texture>();
-    irradianceTexture->set(
+    mIrradianceTexture.set(
         nullptr,
         Point2i(irrSpecCubeSide, irrSpecCubeSide),
         false, // has mips
@@ -284,10 +260,8 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
         bgfx::TextureFormat::RGBA32F,
         true // is cubemap
     );
-    mIrradianceTexture = std::move(irradianceTexture);
 
-    auto specularTexture = std::make_unique<Texture>();
-    specularTexture->set(
+    mSpecularTexture.set(
         nullptr,
         Point2i(irrSpecCubeSide, irrSpecCubeSide),
         true, // has mips
@@ -295,17 +269,14 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
         bgfx::TextureFormat::RGBA32F,
         true // is cubemap
     );
-    mSpecularTexture = std::move(specularTexture);
 
-    auto brdfLuTexture = std::make_unique<Texture>();
-    brdfLuTexture->set(
+    mBrdfLuTexture.set(
         nullptr,
         Point2i(BRDF_LU_TEXTURE_SIZE, BRDF_LU_TEXTURE_SIZE),
         false,
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F
     );
-    mBrdfLuTexture = std::move(brdfLuTexture);
 
     generateTextures(image, cubeSide, cubeMips);
 }
@@ -332,12 +303,12 @@ void Environment::generateTextures(
     {
         // convert hdr equirectangular to cubemap
 
-        mHdrTexture->bind(
+        mHdrTexture.bind(
             0,
             mHdrSamplerUniform.handle()
         );
 
-        mCubeMapTexture->bindForCompute(
+        mCubeMapTexture.bindForCompute(
             1,
             0,
             bgfx::Access::Write,
@@ -370,14 +341,14 @@ void Environment::generateTextures(
             // and checks for out-of-bounds internally
             const uint32_t threadGroups = (mipSize < 8) ? 1 : ceilDiv(mipSize, 8);
 
-            mCubeMapTexture->bindForCompute(
+            mCubeMapTexture.bindForCompute(
                 0,
                 mip - 1,
                 bgfx::Access::ReadWrite,
                 bgfx::TextureFormat::RGBA32F
             );
 
-            mCubeMapTexture->bindForCompute(
+            mCubeMapTexture.bindForCompute(
                 1,
                 mip,
                 bgfx::Access::ReadWrite,
@@ -396,13 +367,13 @@ void Environment::generateTextures(
 
     // create irradiance map from cubemap
 
-    mCubeMapTexture->bind(
+    mCubeMapTexture.bind(
         0,
         mEnvCubeSamplerUniform.handle(),
         BGFX_SAMPLER_UVW_CLAMP
     );
 
-    mIrradianceTexture->bindForCompute(
+    mIrradianceTexture.bindForCompute(
         1,
         0,
         bgfx::Access::Write,
@@ -434,13 +405,13 @@ void Environment::generateTextures(
         // and checks for out-of-bounds internally
         const uint32_t threadGroups = (mipSize < 8) ? 1 : ceilDiv(mipSize, 8);
 
-        mCubeMapTexture->bind(
+        mCubeMapTexture.bind(
             0,
             mEnvCubeSamplerUniform.handle(),
             BGFX_SAMPLER_UVW_CLAMP
         );
 
-        mSpecularTexture->bindForCompute(
+        mSpecularTexture.bindForCompute(
             1,
             mip,
             bgfx::Access::Write,
@@ -461,7 +432,7 @@ void Environment::generateTextures(
 
     // generate BRDF lookup texture
 
-    mBrdfLuTexture->bindForCompute(
+    mBrdfLuTexture.bindForCompute(
         0,
         0,
         bgfx::Access::Write,

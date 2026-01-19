@@ -63,11 +63,11 @@ class Environment
         Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
     const Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
-    std::unique_ptr<Texture> mHdrTexture;
-    std::unique_ptr<Texture> mCubeMapTexture;
-    std::unique_ptr<Texture> mIrradianceTexture;
-    std::unique_ptr<Texture> mSpecularTexture;
-    std::unique_ptr<Texture> mBrdfLuTexture;
+    Texture mHdrTexture;
+    Texture mCubeMapTexture;
+    Texture mIrradianceTexture;
+    Texture mSpecularTexture;
+    Texture mBrdfLuTexture;
 
     const vcl::VertexBuffer mVertexBuffer = fullScreenTriangle();
 
@@ -140,7 +140,7 @@ public:
     /** @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.
     */
-    bool canDraw() const { return mCubeMapTexture != nullptr; }
+    bool canDraw() const { return mCubeMapTexture.isValid(); }
 
     /** @brief Gets the number of mipmap levels in the specular environment map.
      * @return The number of mipmap levels in the specular environment map.
