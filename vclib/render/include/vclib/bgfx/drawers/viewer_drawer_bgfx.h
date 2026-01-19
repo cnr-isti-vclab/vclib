@@ -130,7 +130,7 @@ public:
 
     void setPanorama(const std::string& panorama)
     {
-        mPanorama = Environment(panorama);
+        mPanorama = Environment(panorama, ParentViewer::canvasViewId());
     } 
 
 private:

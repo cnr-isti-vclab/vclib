@@ -44,11 +44,11 @@ static const float VERTICES[9] {-3, -1, 1, 1, -1, 1, 1, 3, 1};
 
 static bx::DefaultAllocator bxAllocator;
 
-Environment::Environment(const std::string& imagePath)
+Environment::Environment(const std::string& imagePath, uint viewId)
 {
     bimg::ImageContainer* image = loadImage(imagePath);
     if (image) {
-        setAndGenerateTextures(*image);
+        setAndGenerateTextures(*image, viewId);
         fullScreenTriangle();
         bimg::imageFree(image);
     }
@@ -220,7 +220,9 @@ bimg::ImageContainer* Environment::loadImage(std::string imagePath)
  *
  * @param[in] image: The image container holding the environment map data.
  */
-void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
+void Environment::setAndGenerateTextures(
+    const bimg::ImageContainer& image,
+    uint                        viewId)
 {
     // if it's not a cubemap it's equirectangular
     uint cubeSide = image.m_cubeMap ? image.m_width : ceilDiv(image.m_width, 4);
@@ -295,7 +297,7 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F);
 
-    generateTextures(image, cubeSide, cubeMips);
+    generateTextures(image, cubeSide, cubeMips, viewId);
 }
 
 /**
@@ -307,14 +309,19 @@ void Environment::setAndGenerateTextures(const bimg::ImageContainer& image)
 void Environment::generateTextures(
     const bimg::ImageContainer& image,
     uint                        cubeSide,
-    uint8_t                     cubeMips)
+    uint8_t                     cubeMips,
+    uint                        viewId)
 {
     using enum ComputeProgram;
     ProgramManager& pm = Context::instance().programManager();
 
     // if it's not a cubemap it's equirectangular
 
-    uint viewId = Context::instance().requestViewId();
+    bool shouldReleaseViewId = false;
+    if (viewId == UINT_NULL) {
+        viewId = Context::instance().requestViewId();
+        shouldReleaseViewId = true;
+    }
 
     if (!image.m_cubeMap) {
         // convert hdr equirectangular to cubemap
@@ -424,7 +431,8 @@ void Environment::generateTextures(
         ceilDiv(BRDF_LU_TEXTURE_SIZE, 8),
         ceilDiv(BRDF_LU_TEXTURE_SIZE, 8));
 
-    Context::instance().releaseViewId(viewId);
+    if (shouldReleaseViewId)
+        Context::instance().releaseViewId(viewId);
 }
 
 /**

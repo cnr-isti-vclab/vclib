@@ -72,7 +72,7 @@ public:
 
     Environment() = default;
 
-    Environment(const std::string& imagePath);
+    Environment(const std::string& imagePath, uint viewId = UINT_NULL);
 
     Environment(const Environment& other) = delete;
 
@@ -137,12 +137,15 @@ private:
 
     bimg::ImageContainer* loadImage(std::string imagePath);
 
-    void setAndGenerateTextures(const bimg::ImageContainer& image);
+    void setAndGenerateTextures(
+        const bimg::ImageContainer& image,
+        uint                        viewId);
 
     void generateTextures(
         const bimg::ImageContainer& image,
         uint                        cubeSide,
-        uint8_t                     cubeMips);
+        uint8_t                     cubeMips,
+        uint                        viewId);
 
     static vcl::VertexBuffer fullScreenTriangle();
 };
