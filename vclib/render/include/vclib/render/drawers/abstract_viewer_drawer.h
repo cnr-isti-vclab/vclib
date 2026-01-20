@@ -48,7 +48,6 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
     using DRA  = ViewProjEventDrawer::DRA;
 
     bool mReadRequested = false;
-    bool mPBRMode       = false;
 
     PBRSettings::ToneMapping mToneMapping = PBRSettings::ToneMapping::ACES_HILL;
 
@@ -123,14 +122,6 @@ public:
 
         Base::fitScene(sceneCenter, sceneRadius);
     }
-
-    bool isPBREnabled() const { return mPBRMode; }
-
-    void setPBR(bool enable) { mPBRMode = enable; }
-
-    void enablePBR() { setPBR(true); }
-
-    void disablePBR() { setPBR(false); }
 
     void fitView()
     {

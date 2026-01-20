@@ -23,9 +23,9 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
-#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
 #include <vclib/bgfx/drawable/mesh/pbr_macros.h>
 #include <vclib/bgfx/uniform.h>
+#include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/mesh.h>
 

@@ -24,11 +24,11 @@
 #define VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
+#include <vclib/bgfx/settings/draw_object_settings_bgfx.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawable/draw_object_settings_opengl2.h>
+#include <vclib/opengl2/settings/draw_object_settings_opengl2.h>
 #endif
 
 namespace vcl {

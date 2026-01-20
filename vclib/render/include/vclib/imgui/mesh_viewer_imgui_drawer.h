@@ -25,6 +25,7 @@
 
 #include "imgui_helpers.h"
 
+#include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 
@@ -79,63 +80,65 @@ public:
             }
         }
 
-        // combo box for pbr mode
-        ImGui::Separator();
-        ImGui::Text("Render Mode:");
-        ImGui::SameLine();
-        const char* renderModeNames[] = {"Classic", "PBR"};
-        bool        pbrMode           = Base::isPBREnabled();
-        ImGui::SetNextItemWidth(80);
-        if (ImGui::BeginCombo(
-                "##ComboRenderMode",
-                pbrMode ? renderModeNames[1] : renderModeNames[0])) {
-            for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
-                if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                    Base::setPBR(n == 1);
-                }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        if(pbrMode) 
-        {
-            // exposure slider
+        if constexpr (PBRViewerConcept<Base>) {
+            // combo box for pbr mode
             ImGui::Separator();
-            ImGui::Text("Exposure:");
+            ImGui::Text("Render Mode:");
             ImGui::SameLine();
-            float exposure = Base::getExposure();
-            if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
-                Base::setExposure(exposure);
-
-            // tone mapping combo box
-            ImGui::Separator();
-            ImGui::Text("Tone mapping:");
-            ImGui::SameLine();
-            const char* toneMappingNames[] = {
-                "None",
-                "Basic", 
-                "ACES Hill", 
-                "ACES Hill Exposure Boost",
-                "ACES Narkowicz", 
-                "Khronos PBR Neutral"
-            };
-            int toneMapping = static_cast<int>(Base::getToneMapping());
-            if(ImGui::BeginCombo(
-                    "##ComboToneMapping",
-                    toneMappingNames[toneMapping])) {
-                for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
-                    bool isSelected = toneMapping == n;
-                    if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
-                        Base::setToneMapping(
-                            static_cast<PBRSettings::ToneMapping>(n));
+            const char* renderModeNames[] = {"Classic", "PBR"};
+            bool        pbrMode           = Base::isPBREnabled();
+            ImGui::SetNextItemWidth(80);
+            if (ImGui::BeginCombo(
+                    "##ComboRenderMode",
+                    pbrMode ? renderModeNames[1] : renderModeNames[0])) {
+                for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
+                    bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
+                    if (ImGui::Selectable(renderModeNames[n], isSelected)) {
+                        Base::setPBR(n == 1);
                     }
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
+                    ImGui::EndCombo();
                 }
-                ImGui::EndCombo();
+            }
+
+            if(pbrMode)
+            {
+                // exposure slider
+                ImGui::Separator();
+                ImGui::Text("Exposure:");
+                ImGui::SameLine();
+                float exposure = Base::getExposure();
+                if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                    Base::setExposure(exposure);
+
+                // tone mapping combo box
+                ImGui::Separator();
+                ImGui::Text("Tone mapping:");
+                ImGui::SameLine();
+                const char* toneMappingNames[] = {
+                    "None",
+                    "Basic",
+                    "ACES Hill",
+                    "ACES Hill Exposure Boost",
+                    "ACES Narkowicz",
+                    "Khronos PBR Neutral"
+                };
+                int toneMapping = static_cast<int>(Base::getToneMapping());
+                if(ImGui::BeginCombo(
+                        "##ComboToneMapping",
+                        toneMappingNames[toneMapping])) {
+                    for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
+                        bool isSelected = toneMapping == n;
+                        if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                            Base::setToneMapping(
+                                static_cast<PBRSettings::ToneMapping>(n));
+                        }
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
             }
         }
 
