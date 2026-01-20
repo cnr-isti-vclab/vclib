@@ -41,6 +41,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
     // flags
     bool mStatsEnabled = false;
 
+    bool mPBRMode       = false;
+
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
@@ -56,12 +58,20 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
+    bool isPBREnabled() const { return mPBRMode; }
+
+    void setPBR(bool enable) { mPBRMode = enable; }
+
+    void enablePBR() { setPBR(true); }
+
+    void disablePBR() { setPBR(false); }
+
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
-        settings.pbrMode = ParentViewer::isPBREnabled();
+        settings.pbrMode = isPBREnabled();
 
         setViewTransform(viewId);
 

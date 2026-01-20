@@ -25,6 +25,7 @@
 
 #include "imgui_helpers.h"
 
+#include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 
@@ -69,25 +70,27 @@ public:
             ImGui::EndChild();
         }
 
-        // combo box for pbr mode
-        ImGui::Separator();
-        ImGui::Text("Render Mode:");
-        ImGui::SameLine();
-        const char* renderModeNames[] = {"Classic", "PBR"};
-        bool        pbrMode           = Base::isPBREnabled();
-        ImGui::SetNextItemWidth(80);
-        if (ImGui::BeginCombo(
-                "##ComboRenderMode",
-                pbrMode ? renderModeNames[1] : renderModeNames[0])) {
-            for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
-                if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                    Base::setPBR(n == 1);
+        if constexpr (PBRViewerConcept<Base>) {
+            // combo box for pbr mode
+            ImGui::Separator();
+            ImGui::Text("Render Mode:");
+            ImGui::SameLine();
+            const char* renderModeNames[] = {"Classic", "PBR"};
+            bool        pbrMode           = Base::isPBREnabled();
+            ImGui::SetNextItemWidth(80);
+            if (ImGui::BeginCombo(
+                    "##ComboRenderMode",
+                    pbrMode ? renderModeNames[1] : renderModeNames[0])) {
+                for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
+                    bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
+                    if (ImGui::Selectable(renderModeNames[n], isSelected)) {
+                        Base::setPBR(n == 1);
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
                 }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
+                ImGui::EndCombo();
             }
-            ImGui::EndCombo();
         }
 
         // drawable mesh info and settings for selected mesh
