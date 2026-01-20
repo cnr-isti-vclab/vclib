@@ -188,10 +188,11 @@ static ImGuiKey ImGui_ImplQt_KeyToImGuiKey(int keycode)
 static void ImGui_ImplQt_UpdateKeyboardModifiers(Qt::KeyboardModifiers mods)
 {
     ImGuiIO& io = ImGui::GetIO();
-    io.AddKeyEvent(ImGuiKey_ModCtrl, mods.testFlag(Qt::ControlModifier));
-    io.AddKeyEvent(ImGuiKey_ModShift, mods.testFlag(Qt::ShiftModifier));
-    io.AddKeyEvent(ImGuiKey_ModAlt, mods.testFlag(Qt::AltModifier));
-    io.AddKeyEvent(ImGuiKey_ModSuper, mods.testFlag(Qt::MetaModifier));
+    io.AddKeyEvent(ImGuiKey_LeftCtrl, mods.testFlag(Qt::ControlModifier));
+    io.AddKeyEvent(ImGuiKey_LeftShift, mods.testFlag(Qt::ShiftModifier));
+    io.AddKeyEvent(ImGuiKey_LeftAlt, mods.testFlag(Qt::AltModifier));
+    io.AddKeyEvent(ImGuiKey_LeftSuper, mods.testFlag(Qt::MetaModifier));
+    // TODO handle right side modifiers
 }
 
 static void ImGui_ImplQt_UpdateFocusEvent(bool focused)
