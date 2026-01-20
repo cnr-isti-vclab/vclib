@@ -679,10 +679,7 @@ public: // TODO - remove this when C++26 is supported
      *
      * @return The viewId of the canvas.
      */
-    static uint canvasViewId(const RenderApp* r)
-    {
-        return r->dCanvasViewId();
-    }
+    static uint canvasViewId(const RenderApp* r) { return r->dCanvasViewId(); }
 
     /**
      * @brief A Drawer object can request the size of the canvas. This function
