@@ -46,7 +46,7 @@
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
-// This allows selection for a maximum of 1024^3 = 134_217_728 vertices/faces per
+// This allows selection for a maximum of 512^3 = 134_217_728 vertices/faces per
 // mesh. Still likely enough.
 #define MAX_COMPUTE_WORKGROUP_SIZE uint(512)
 

@@ -121,10 +121,18 @@ class SelectionTrackBallEventDrawerT :
                 mSelectionCalcRequired = true;
                 mCurrentSelectionMode = SelectionMode::FACE_INVERT;
              }},
-             {{Key::P, {KeyModifier::CONTROL}}, [&]{
+             {{Key::R, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
                 setPrevModIfNonAtomic();
                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_REGULAR;
-             }}
+             }},
+             {{Key::A, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_ADD;
+             }},
+             {{Key::S, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
+                setPrevModIfNonAtomic();
+                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_SUBTRACT;
+             }},
     };
 
     std::map<std::pair<Key::Enum, KeyModifiers>, bool> mPressActionExecuted =
@@ -141,8 +149,6 @@ protected:
     }
 
     // To signal to this class that the selection has been calculated
-    // If the selection was calculated while the selection box was still being chosen (= while the LMB was still held down)
-    // then we only NULL the second point
     void selectionCalculated()
     {
         mSelectionCalcRequired = false;
@@ -171,7 +177,7 @@ public:
     // area (dragging the mouse with LMB held down)
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (key == Key::S && modifiers[KeyModifier::ALT] && !mRMBHeld &&
+        if (key == Key::S && modifiers == KeyModifiers{KeyModifier::ALT} && !mRMBHeld &&
             !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
             mCurrentToolset =
                 (mCurrentToolset == ToolSets::DEFAULT ? ToolSets::SELECTION :
