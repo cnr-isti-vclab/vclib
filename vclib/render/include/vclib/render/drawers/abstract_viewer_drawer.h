@@ -156,6 +156,8 @@ public:
     }
 
 protected:
+    uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
+
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;
