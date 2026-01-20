@@ -249,6 +249,7 @@ public:
     {
         if(params.mode == SelectionMode::FACE_VISIBLE_REGULAR) {
             SelectionParameters params2(params);
+            params2.drawViewId = params2.pass1ViewId;
             params2.mode = SelectionMode::FACE_NONE;
             faceSelectionAtomic(params2);
         }
