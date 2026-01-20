@@ -30,6 +30,16 @@ namespace vcl {
 
 struct PBRSettings
 {
+    enum class ToneMapping
+    {
+        NONE,
+        BASIC,
+        ACES_HILL,
+        ACES_HILL_EXPOSURE_BOOST,
+        ACES_NARKOWICZ,
+        KHRONOS_PBR_NEUTRAL
+    };
+
     /**< @brief Option that tells whether the object must be drawn in PBR mode.
      */
     bool pbrMode = false;

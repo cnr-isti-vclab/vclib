@@ -129,7 +129,8 @@ public:
                 for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
                     bool isSelected = toneMapping == n;
                     if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
-                        Base::setToneMapping(static_cast<Base::ToneMapping>(n));
+                        Base::setToneMapping(
+                            static_cast<PBRSettings::ToneMapping>(n));
                     }
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
