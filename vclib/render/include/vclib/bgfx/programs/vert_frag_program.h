@@ -103,6 +103,8 @@ enum class VertFragProgram {
     CUSTOM_CPU_LINES, // TODO: change this name to a more meaningful one
 
     SELECTION_FACE_VISIBLE_RENDER_PASS,
+    DRAWABLE_SELECTION_VERT,
+    DRAWABLE_SELECTION_FACE,
 
     COUNT
 };

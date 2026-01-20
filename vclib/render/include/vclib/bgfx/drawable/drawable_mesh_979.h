@@ -61,9 +61,6 @@ private:
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
-    bgfx::ProgramHandle selDrawProg = vcl::loadProgram("shaders/vs_selection", "shaders/fs_selection");
-    bgfx::ProgramHandle faceSelDrawProg = vcl::loadProgram("shaders_face/vs_selection", "shaders_face/fs_selection");
-
     mutable uint mBufToTexRemainingFrames = 255;
 
     // VISIBLE FACES SELECTION DEBUGGING
@@ -375,7 +372,7 @@ public:
         bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
         bgfx::setTransform(model.data());
 
-        bgfx::submit(settings.viewId, selDrawProg);
+        bgfx::submit(settings.viewId, pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
 
         mMRB.bindVertexBuffers(mMRS);
         mMRB.bindIndexBuffers(mMRS);
@@ -385,7 +382,7 @@ public:
         bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
         bgfx::setTransform(model.data());
 
-        bgfx::submit(settings.viewId, faceSelDrawProg);
+        bgfx::submit(settings.viewId, pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
     }
 
     void drawId(const DrawObjectSettings& settings) const override
