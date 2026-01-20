@@ -52,6 +52,6 @@ void main()
         return;
     }
 
-    ivec2 txCoord = ivec2((int)bufferIndex%texXSize, (int)(bufferIndex/texXSize));
+    ivec2 txCoord = ivec2(int(bufferIndex%texXSize), int(bufferIndex/texXSize));
     imageStore(s_tex, txCoord, uintRGBAToVec4Color(buf[bufferIndex]));
 }

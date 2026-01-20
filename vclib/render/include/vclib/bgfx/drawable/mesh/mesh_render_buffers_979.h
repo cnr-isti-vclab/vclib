@@ -520,7 +520,7 @@ public:
         auto* non_const_this = const_cast<MeshRenderBuffers979<MeshType>*>(this);
         const uint selectionBufferSize =
             uint(ceil(double(Base::numTris()) / 32.0));
-        auto [buffer, releaseFn] = non_const_this->getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+        auto [buffer, releaseFn] = non_const_this->template getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
 
         for (size_t i = 0; i < selectionBufferSize; i++) {
             buffer[i] = 0;
