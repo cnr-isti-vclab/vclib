@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 #define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 
-#include "draw_object_settings.h"
+#include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>
