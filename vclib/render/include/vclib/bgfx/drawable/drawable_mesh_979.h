@@ -66,10 +66,11 @@ private:
 
     mutable uint mBufToTexRemainingFrames = 255;
 
-    bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
-    std::vector<uint8_t> mTexReadBackVec;
-    std::array<uint, 2> mColAttSize;
-    mutable uint mVisSelTexRBFrames = 255;
+    // VISIBLE FACES SELECTION DEBUGGING
+    //bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
+    //std::vector<uint8_t> mTexReadBackVec;
+    //std::array<uint, 2> mColAttSize;
+    //mutable uint mVisSelTexRBFrames = 255;
 
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
@@ -125,12 +126,13 @@ public:
     using AbstractDrawableMesh::boundingBox;
 
     void calculateSelection(const SelectionParameters& params) override {
-        if (!bgfx::isValid(mBlitTex)) {
-            mBlitTex = bgfx::createTexture2D(params.colorAttachmentSize[0], params.colorAttachmentSize[1], false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
-            mTexReadBackVec = std::vector<uint8_t>();
-            mTexReadBackVec.resize(params.colorAttachmentSize[0] * params.colorAttachmentSize[1] * 4, 0);
-            mColAttSize = params.colorAttachmentSize;
-        }
+        // VISIBLE FACES SELECTION DEBUGGING
+        //if (!bgfx::isValid(mBlitTex)) {
+        //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0], params.texAttachmentsSize[1], false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
+        //    mTexReadBackVec = std::vector<uint8_t>();
+        //    mTexReadBackVec.resize(params.texAttachmentsSize[0] * params.texAttachmentsSize[1] * 4, 0);
+        //    mColAttSize = params.texAttachmentsSize;
+        //}
         if (params.mode.isFaceSelection()) {
             if (!(params.mode.isVisibleSelection() ? faceSelectionVisible(params) : faceSelection(params))) {
                 return;
@@ -273,29 +275,27 @@ public:
             }
         }
 
-        {
-            if (mVisSelTexRBFrames == 0) {
-                mVisSelTexRBFrames = 255;
-                std::fstream file;
-                file.open("output.ppm", std::ios::binary | std::ios::out);
-                file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
-                size_t index = 0;
-                for (const uint8_t& val: mTexReadBackVec) {
-                    ++index;
-                    if (index%4 == 0) {
-                        continue;
-                    }
-                    file.write(reinterpret_cast<const char*>(&val), 1);
-                }
-                file.close();
-                //Timer timer;
-                //timer.start();
-                //mMRB.updateFaceSelectionBufferFromColorAttachment(mTexReadBackVec);
-                //timer.stopAndPrint();
-            } else if (mVisSelTexRBFrames != 255) {
-                mVisSelTexRBFrames--;
-            }
-        }
+        // VISIBLE FACES SELECTION DEBUGGING
+        //{
+        //    if (mVisSelTexRBFrames == 0) {
+        //        mVisSelTexRBFrames = 255;
+        //        std::fstream file;
+        //        file.open("output.ppm", std::ios::binary | std::ios::out);
+        //        file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
+        //        size_t index = 0;
+        //        for (const uint8_t& val: mTexReadBackVec) {
+        //            ++index;
+        //            if (index%4 == 1) {
+        //                continue;
+        //            }
+        //            uint8_t newval = val * 128;
+        //            file.write(reinterpret_cast<const char*>(&newval), 1);
+        //        }
+        //        file.close();
+        //    } else if (mVisSelTexRBFrames != 255) {
+        //        mVisSelTexRBFrames--;
+        //    }
+        //}
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
@@ -532,8 +532,9 @@ protected:
             model = MeshType::transformMatrix().template cast<float>();
         }
         bool ret = mMRB.faceSelectionVisible(params, model);
+        // VISIBLE FACE SELECTION ATTACHMENT DEBUGGING (BLIT)
         //if (!params.isTemporary) {
-        //    bgfx::blit(202, mBlitTex, 0, 0, params.colorAttachmentTex, 0, 0, params.colorAttachmentSize[0], params.colorAttachmentSize[1]);
+        //    bgfx::blit(202, mBlitTex, 0, 0, params.meshIdTex, 0, 0, params.texAttachmentsSize[0], params.texAttachmentsSize[1]);
         //    bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
         //    mVisSelTexRBFrames = 3;
         //}

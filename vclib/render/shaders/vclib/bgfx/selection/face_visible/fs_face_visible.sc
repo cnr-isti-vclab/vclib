@@ -34,5 +34,6 @@ void main() {
         discard;
     }
     uint priId = uint(gl_PrimitiveID);
-    gl_FragColor = V4RGBA(gl_PrimitiveID);
+    gl_FragData[0] = V4RGBA(gl_PrimitiveID);
+    gl_FragData[1] = V4RGBA(meshId);
 }

@@ -93,7 +93,7 @@ public:
     {
         ParentViewer::onInit(viewId);
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
-        bgfx::TextureHandle texHandles[2];
+        bgfx::TextureHandle texHandles[3];
         texHandles[0] = bgfx::createTexture2D(
             uint16_t(sVisibleFaceFramebufferSize),
             uint16_t(sVisibleFaceFramebufferSize),
@@ -107,10 +107,18 @@ public:
             uint16_t(sVisibleFaceFramebufferSize),
             false,
             1,
+            bgfx::TextureFormat::RGBA8,
+            BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_UVW_CLAMP
+        );
+        texHandles[2] = bgfx::createTexture2D(
+            uint16_t(sVisibleFaceFramebufferSize),
+            uint16_t(sVisibleFaceFramebufferSize),
+            false,
+            1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT
         );
-        mVisibleSelectionFrameBuffer = bgfx::createFrameBuffer(2, texHandles, true);
+        mVisibleSelectionFrameBuffer = bgfx::createFrameBuffer(3, texHandles, true);
         bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer);
         bgfx::setViewClear(mVisibleSelectionViewIds[0], BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0u);
         bgfx::setViewRect(mVisibleSelectionViewIds[0], 0, 0, sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize);
@@ -216,6 +224,7 @@ public:
                 ParentViewer::selectionMode(),
                 ParentViewer::isSelectionTemporary(),
                 bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
                 std::array<uint, 2>{sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
                 0
             };

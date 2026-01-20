@@ -39,8 +39,9 @@ struct SelectionParameters
     SelectionBox        box;
     SelectionMode       mode;
     bool                isTemporary;
-    bgfx::TextureHandle colorAttachmentTex;
-    std::array<uint, 2> colorAttachmentSize;
+    bgfx::TextureHandle primIdTex;
+    bgfx::TextureHandle meshIdTex;
+    std::array<uint, 2> texAttachmentsSize;
     uint                meshId;
 };
 } // namespace vcl

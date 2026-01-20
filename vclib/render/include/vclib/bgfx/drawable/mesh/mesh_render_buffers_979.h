@@ -255,7 +255,7 @@ public:
         ProgramManager& pm = Context::instance().programManager();
         bgfx::ProgramHandle passProgram = pm.getProgram<VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>();
         bgfx::ProgramHandle computeProg = getComputeProgramFromSelectionMode(pm, params.mode);
-        std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(params.colorAttachmentSize[0] * params.colorAttachmentSize[1]);
+        std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(params.texAttachmentsSize[0] * params.texAttachmentsSize[1]);
         float temp[4] = {
             Uniform::uintBitsToFloat(params.meshId),
             Uniform::uintBitsToFloat(workGroupSize[0]),
@@ -271,7 +271,8 @@ public:
         bgfx::submit(params.pass1ViewId, passProgram);
         
         mVisibleFacesComputeUniform.bind(temp);
-        bgfx::setImage(0, params.colorAttachmentTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
+        bgfx::setImage(0, params.primIdTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
+        bgfx::setImage(1, params.meshIdTex, 0, bgfx::Access::Read, bgfx::TextureFormat::RGBA8);
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
         bgfx::setTransform(model.data());
         bgfx::dispatch(params.pass2ViewId, computeProg, workGroupSize[0], workGroupSize[1], workGroupSize[2]);
