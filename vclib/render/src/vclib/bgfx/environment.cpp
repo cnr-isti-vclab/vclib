@@ -57,13 +57,11 @@ Environment::Environment(const std::string& imagePath, uint viewId)
 /**
  * @brief Draws the environment in the background.
  * @param[in] viewId: The view ID to draw the background in.
- * @param[in] toneMapping: The tone mapping operator to use.
+ * @param[in] settings: The tone mapping operator to use.
  * @param[in] exposure: The exposure factor.
  */
-void Environment::drawBackground(
-    uint                           viewId,
-    PBRViewerSettings::ToneMapping toneMapping,
-    float                          exposure)
+void Environment::drawBackground(uint viewId, const PBRViewerSettings& settings)
+    const
 {
     if (!canDraw())
         return;
@@ -74,7 +72,7 @@ void Environment::drawBackground(
     using enum TextureType;
     bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-    bindDataUniform(float(toneMapping), exposure);
+    bindDataUniform(float(settings.toneMapping), settings.exposure);
 
     mVertexBuffer.bindVertex(0);
 
@@ -319,7 +317,7 @@ void Environment::generateTextures(
 
     bool shouldReleaseViewId = false;
     if (viewId == UINT_NULL) {
-        viewId = Context::instance().requestViewId();
+        viewId              = Context::instance().requestViewId();
         shouldReleaseViewId = true;
     }
 

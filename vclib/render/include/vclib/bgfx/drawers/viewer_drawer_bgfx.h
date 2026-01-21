@@ -26,8 +26,8 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
+#include <vclib/bgfx/environment.h>
 
 namespace vcl {
 
@@ -91,11 +91,8 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        if(settings.pbrSettings.pbrMode)
-            mPanorama.drawBackground(
-                settings.viewId,
-                settings.pbrSettings.toneMapping,
-                settings.pbrSettings.exposure);
+        if (settings.pbrSettings.pbrMode)
+            mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
