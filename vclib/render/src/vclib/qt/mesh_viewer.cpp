@@ -232,8 +232,16 @@ void MeshViewer::disablePBR()
     setPBR(false);
 }
 
+template<typename V>
+void setPanoramaf(V* v, const std::string& panorama)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        return v->setPanorama(panorama);
+    }
+}
+
 void MeshViewer::setPanorama(const std::string& panorama) {
-    mUI->viewer->setPanorama(panorama);
+    setPanoramaf(mUI->viewer, panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)
