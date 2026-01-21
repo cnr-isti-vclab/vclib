@@ -28,12 +28,12 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/settings/pbr_settings.h>
 
 #include <imgui.h>
 
 #include <algorithm>
 #include <iterator>
-#include <numeric>
 
 namespace vcl::imgui {
 

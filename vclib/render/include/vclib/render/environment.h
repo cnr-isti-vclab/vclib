@@ -20,30 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
-#define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#ifndef VCL_RENDER_ENVIRONMENT_H
+#define VCL_RENDER_ENVIRONMENT_H
 
-#include <vclib/base.h>
-
-#include <vclib/render/settings/pbr_settings.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/environment.h>
+#endif
 
 namespace vcl {
 
-/**
- * @brief A simple struct containing the settings to draw a drawable object
- * in a bgfx canvas.
- */
-struct DrawObjectSettingsBGFX
-{
-    /**< @brief The object ID to assign to the object. */
-    uint objectId = 0;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+using Environment = EnvironmentBGFX;
+#endif
 
-    /**< @brief The view ID on which to draw the object. */
-    uint viewId = 0;
-
-    PBRSettings pbrSettings;
-};
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+class Environment {}; // Placeholder for OpenGL2 backend
+#endif
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#endif // VCL_RENDER_ENVIRONMENT_H

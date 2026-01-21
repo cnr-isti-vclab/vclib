@@ -49,10 +49,6 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
 
     bool mReadRequested = false;
 
-    PBRSettings::ToneMapping mToneMapping = PBRSettings::ToneMapping::ACES_HILL;
-
-    float mExposure = 1.0f;
-
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
@@ -129,19 +125,6 @@ public:
 
         Base::fitView(sceneCenter);
     }
-
-    void setPanorama(const std::string& panorama)
-    {
-        // to be implemented by derived classes if needed
-    }
-
-    PBRSettings::ToneMapping getToneMapping() const { return mToneMapping; }
-
-    void setToneMapping(PBRSettings::ToneMapping tm) { mToneMapping = tm; }
-
-    float getExposure() const { return mExposure; }
-
-    void setExposure(float exposure) { mExposure = exposure; }
 
     // events
     void onInit(uint) override

@@ -36,7 +36,7 @@ namespace vcl {
  * It manages the loading and setup of environment maps, including
  * HDR images, cubemaps, irradiance maps, specular maps, and BRDF LUTs.
  */
-class Environment
+class EnvironmentBGFX
 {
     enum class FileFormat { UNKNOWN, HDR, EXR, KTX, DDS };
 
@@ -66,29 +66,29 @@ class Environment
 
 public:
     /**
-     * @brief Types of environment textures managed by the Environment class.
+     * @brief Types of environment textures managed by the EnvironmentBGFX class.
      */
     enum class TextureType { RAW_CUBE, IRRADIANCE, SPECULAR, BRDF_LUT };
 
-    Environment() = default;
+    EnvironmentBGFX() = default;
 
-    Environment(const std::string& imagePath, uint viewId = UINT_NULL);
+    EnvironmentBGFX(const std::string& imagePath, uint viewId = UINT_NULL);
 
-    Environment(const Environment& other) = delete;
+    EnvironmentBGFX(const EnvironmentBGFX& other) = delete;
 
-    Environment(Environment&& other) { swap(other); }
+    EnvironmentBGFX(EnvironmentBGFX&& other) { swap(other); }
 
-    ~Environment() = default;
+    ~EnvironmentBGFX() = default;
 
-    Environment& operator=(const Environment& other) = delete;
+    EnvironmentBGFX& operator=(const EnvironmentBGFX& other) = delete;
 
-    Environment& operator=(Environment&& other)
+    EnvironmentBGFX& operator=(EnvironmentBGFX&& other)
     {
         swap(other);
         return *this;
     }
 
-    void swap(Environment& other)
+    void swap(EnvironmentBGFX& other)
     {
         using std::swap;
         swap(mSpecularMips, other.mSpecularMips);
@@ -99,7 +99,7 @@ public:
         swap(mBrdfLuTexture, other.mBrdfLuTexture);
     }
 
-    friend void swap(Environment& first, Environment& second)
+    friend void swap(EnvironmentBGFX& first, EnvironmentBGFX& second)
     {
         first.swap(second);
     }

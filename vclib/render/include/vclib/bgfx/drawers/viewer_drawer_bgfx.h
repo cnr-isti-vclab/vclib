@@ -38,12 +38,18 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     DirectionalLightUniforms mDirectionalLightUniforms;
 
-    Environment mPanorama = Environment("");
-
     // flags
     bool mStatsEnabled = false;
 
     bool mPBRMode       = false;
+
+    PBRSettings mPBRSettings;
+
+    PBRSettings::ToneMapping mToneMapping = PBRSettings::ToneMapping::ACES_HILL;
+
+    float mExposure = 1.0f;
+
+    Environment mPanorama = Environment("");
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
@@ -68,6 +74,19 @@ public:
 
     void disablePBR() { setPBR(false); }
 
+    PBRSettings::ToneMapping getToneMapping() const { return mToneMapping; }
+
+    void setToneMapping(PBRSettings::ToneMapping tm) { mToneMapping = tm; }
+
+    float getExposure() const { return mExposure; }
+
+    void setExposure(float exposure) { mExposure = exposure; }
+
+    void setPanorama(const std::string& panorama)
+    {
+        mPanorama = Environment(panorama, ParentViewer::canvasViewId());
+    }
+
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
@@ -75,10 +94,10 @@ public:
 
         settings.pbrSettings.pbrMode = isPBREnabled();
 
-        settings.pbrSettings.exposure = ParentViewer::getExposure();
+        settings.pbrSettings.exposure = getExposure();
 
         settings.pbrSettings.toneMapping =
-            toUnderlying(ParentViewer::getToneMapping());
+            toUnderlying(getToneMapping());
 
         settings.pbrSettings.environment = &mPanorama;
 
@@ -137,11 +156,6 @@ public:
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
     }
-
-    void setPanorama(const std::string& panorama)
-    {
-        mPanorama = Environment(panorama, ParentViewer::canvasViewId());
-    } 
 
 private:
     void setViewTransform(uint viewId)

@@ -20,30 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
-#define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#ifndef VCL_RENDER_SETTINGS_PBR_SETTINGS_H
+#define VCL_RENDER_SETTINGS_PBR_SETTINGS_H
 
-#include <vclib/base.h>
-
-#include <vclib/render/settings/pbr_settings.h>
+#include <vclib/render/environment.h>
 
 namespace vcl {
 
-/**
- * @brief A simple struct containing the settings to draw a drawable object
- * in a bgfx canvas.
- */
-struct DrawObjectSettingsBGFX
+struct PBRSettings
 {
-    /**< @brief The object ID to assign to the object. */
-    uint objectId = 0;
+    enum class ToneMapping
+    {
+        NONE,
+        BASIC,
+        ACES_HILL,
+        ACES_HILL_EXPOSURE_BOOST,
+        ACES_NARKOWICZ,
+        KHRONOS_PBR_NEUTRAL
+    };
 
-    /**< @brief The view ID on which to draw the object. */
-    uint viewId = 0;
+    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+     */
+    bool pbrMode = false;
 
-    PBRSettings pbrSettings;
+    /**< @brief The exposure value to use in PBR mode. */
+    float exposure = 1.0f;
+
+    /**< @brief The tone mapping operator to use in PBR mode. */
+    int toneMapping = 2;
+
+    const Environment* environment = nullptr;
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#endif // VCL_RENDER_SETTINGS_PBR_SETTINGS_H
