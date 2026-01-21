@@ -52,7 +52,7 @@ void main()
     // To make the LUT independant from the material's F0, which is part of the Fresnel term
     // when substituted by Schlick's approximation, we factor it out of the integral,
     // yielding to the form: F0 * I1 + I2
-    // I1 and I2 are slighlty different in the Fresnel term, but both only depend on
+    // I1 and I2 are slightly different in the Fresnel term, but both only depend on
     // NoL and roughness, so they are both numerically integrated and written into two channels.
     float I1 = 0.0;
     float I2 = 0.0;
