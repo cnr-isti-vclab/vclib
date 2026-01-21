@@ -38,7 +38,7 @@ uniform vec4 u_settings;
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
 #define u_pbr_texture_settings floatBitsToUint(u_settings.y)
-#define u_tone_mapping int(u_settings.z)
+#define u_tone_mapping floatBitsToUint(u_settings.z)
 #define u_exposure u_settings.w
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
