@@ -41,7 +41,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
     // flags
     bool mStatsEnabled = false;
 
-    bool mPBRMode       = false;
+    bool mPBRMode = false;
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :

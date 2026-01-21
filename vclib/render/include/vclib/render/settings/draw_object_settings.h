@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
-#define VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
+#ifndef VCL_RENDER_SETTINGS_DRAW_OBJECT_SETTINGS_H
+#define VCL_RENDER_SETTINGS_DRAW_OBJECT_SETTINGS_H
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 #include <vclib/bgfx/settings/draw_object_settings_bgfx.h>
@@ -43,4 +43,4 @@ using DrawObjectSettings = DrawObjectSettingsOpenGL2;
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
+#endif // VCL_RENDER_SETTINGS_DRAW_OBJECT_SETTINGS_H

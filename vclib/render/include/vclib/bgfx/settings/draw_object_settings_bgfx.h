@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
-#define VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#ifndef VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
+#define VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
 
 #include <vclib/base.h>
 
@@ -46,4 +46,4 @@ struct DrawObjectSettingsBGFX
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAW_OBJECT_SETTINGS_BGFX_H
+#endif // VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
