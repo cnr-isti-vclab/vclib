@@ -216,12 +216,12 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            const Environment* env = settings.pbrSettings.environment;
+            const Environment* env = settings.environment;
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
-                uint64_t materialState =
-                    mMRB.bindMaterials(mMRS, i, *this, settings.pbrSettings);
+                uint64_t materialState = mMRB.bindMaterials(
+                    mMRS, i, *this, settings.pbrSettings, env);
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
                 if (settings.pbrSettings.pbrMode) {

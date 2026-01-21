@@ -23,8 +23,6 @@
 #ifndef VCL_RENDER_SETTINGS_PBR_SETTINGS_H
 #define VCL_RENDER_SETTINGS_PBR_SETTINGS_H
 
-#include <vclib/render/environment.h>
-
 namespace vcl {
 
 struct PBRSettings
@@ -48,8 +46,6 @@ struct PBRSettings
 
     /**< @brief The tone mapping operator to use in PBR mode. */
     int toneMapping = 2;
-
-    const Environment* environment = nullptr;
 };
 
 } // namespace vcl

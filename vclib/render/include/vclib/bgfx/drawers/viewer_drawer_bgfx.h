@@ -99,7 +99,7 @@ public:
         settings.pbrSettings.toneMapping =
             toUnderlying(getToneMapping());
 
-        settings.pbrSettings.environment = &mPanorama;
+        settings.environment = &mPanorama;
 
         setViewTransform(viewId);
 

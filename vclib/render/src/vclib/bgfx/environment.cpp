@@ -44,7 +44,7 @@ static const float VERTICES[9] {-3, -1, 1, 1, -1, 1, 1, 3, 1};
 
 static bx::DefaultAllocator bxAllocator;
 
-EnvironmentBGFX::EnvironmentBGFX(const std::string& imagePath, uint viewId)
+Environment::Environment(const std::string& imagePath, uint viewId)
 {
     bimg::ImageContainer* image = loadImage(imagePath);
     if (image) {
@@ -60,7 +60,7 @@ EnvironmentBGFX::EnvironmentBGFX(const std::string& imagePath, uint viewId)
  * @param[in] toneMapping: The tone mapping operator to use.
  * @param[in] exposure: The exposure factor.
  */
-void EnvironmentBGFX::drawBackground(
+void Environment::drawBackground(
     const uint  viewId,
     const int   toneMapping,
     const float exposure)
@@ -90,7 +90,7 @@ void EnvironmentBGFX::drawBackground(
  * @param[in] stage: The texture stage to bind the texture to.
  * @param[in] samplerFlags: The sampler flags to use when binding the texture.
  */
-void EnvironmentBGFX::bindTexture(TextureType type, uint stage, uint samplerFlags)
+void Environment::bindTexture(TextureType type, uint stage, uint samplerFlags)
     const
 {
     using enum TextureType;
@@ -123,7 +123,7 @@ void EnvironmentBGFX::bindTexture(TextureType type, uint stage, uint samplerFlag
  * @param[in] d2: The third float data to bind. Default is 0.0f.
  * @param[in] d3: The fourth float data to bind. Default is 0.0f.
  */
-void EnvironmentBGFX::bindDataUniform(
+void Environment::bindDataUniform(
     const float d0,
     const float d1,
     const float d2,
@@ -142,9 +142,9 @@ void EnvironmentBGFX::bindDataUniform(
  * @param[in] imagePath: The path to the image file.
  * @return The determined file format.
  */
-EnvironmentBGFX::FileFormat EnvironmentBGFX::getFileFormat(const std::string& imagePath)
+Environment::FileFormat Environment::getFileFormat(const std::string& imagePath)
 {
-    using enum EnvironmentBGFX::FileFormat;
+    using enum Environment::FileFormat;
     if (imagePath.find(".hdr", imagePath.length() - 4) != std::string::npos)
         return HDR;
     if (imagePath.find(".exr", imagePath.length() - 4) != std::string::npos)
@@ -161,11 +161,11 @@ EnvironmentBGFX::FileFormat EnvironmentBGFX::getFileFormat(const std::string& im
  * @param[in] imagePath: The path to the image file.
  * @return A pointer to the loaded ImageContainer, can be nullptr.
  */
-bimg::ImageContainer* EnvironmentBGFX::loadImage(std::string imagePath)
+bimg::ImageContainer* Environment::loadImage(std::string imagePath)
 {
     /* Code from bimg texturec */
 
-    using enum EnvironmentBGFX::FileFormat;
+    using enum Environment::FileFormat;
     FileFormat sourceFormat = getFileFormat(imagePath);
 
     if (sourceFormat == UNKNOWN)
@@ -220,7 +220,7 @@ bimg::ImageContainer* EnvironmentBGFX::loadImage(std::string imagePath)
  *
  * @param[in] image: The image container holding the environment map data.
  */
-void EnvironmentBGFX::setAndGenerateTextures(
+void Environment::setAndGenerateTextures(
     const bimg::ImageContainer& image,
     uint                        viewId)
 {
@@ -306,7 +306,7 @@ void EnvironmentBGFX::setAndGenerateTextures(
  *  * This function is called by setAndGenerateTextures after setting up the
  * initial textures.
  */
-void EnvironmentBGFX::generateTextures(
+void Environment::generateTextures(
     const bimg::ImageContainer& image,
     uint                        cubeSide,
     uint8_t                     cubeMips,
@@ -439,7 +439,7 @@ void EnvironmentBGFX::generateTextures(
  * @brief Sets and returns the buffer for the full-screen triangle for
  * background drawing.
  */
-vcl::VertexBuffer EnvironmentBGFX::fullScreenTriangle()
+vcl::VertexBuffer Environment::fullScreenTriangle()
 {
     vcl::VertexBuffer vb;
     vb.create(

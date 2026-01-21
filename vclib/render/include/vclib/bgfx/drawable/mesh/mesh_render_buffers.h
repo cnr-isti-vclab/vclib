@@ -266,7 +266,8 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m,
-        const PBRSettings&        pbrSettings) const
+        const PBRSettings&        pbrSettings,
+        const Environment*        environment) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -281,7 +282,8 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
-                pbrSettings);
+                pbrSettings,
+                environment);
         }
         else {
             using enum Material::AlphaMode;
@@ -295,7 +297,8 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    pbrSettings);
+                    pbrSettings,
+                    environment);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -316,7 +319,8 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    pbrSettings);
+                    pbrSettings,
+                    environment);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {

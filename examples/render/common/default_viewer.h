@@ -107,16 +107,20 @@ void showMeshesOnViewer(
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    if(!panorama.empty()) {
-        viewer.setPanorama(panorama);
-    }
+
 
     for (auto&& mesh : meshes)
         (pushMeshOnVector(vector, std::move(mesh)));
 
     viewer.setDrawableObjectVector(vector);
 
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+    if(!panorama.empty()) {
+        viewer.setPanorama(panorama);
+    }
+
     viewer.setPBR(pbrMode);
+#endif
 
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
