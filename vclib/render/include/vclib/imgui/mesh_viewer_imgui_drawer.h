@@ -127,15 +127,15 @@ public:
                     "ACES Narkowicz",
                     "Khronos PBR Neutral"
                 };
-                int toneMapping = static_cast<int>(pbrSettings.toneMapping);
+                uint toneMapping = toUnderlying(pbrSettings.toneMapping);
                 if(ImGui::BeginCombo(
                         "##ComboToneMapping",
                         toneMappingNames[toneMapping])) {
-                    for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
+                    for (uint n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
                         bool isSelected = toneMapping == n;
                         if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
-                            //pbrSettings.toneMapping = static_cast<PBRSettings::ToneMapping>(n);
-                            pbrSettings.toneMapping = n;
+                            pbrSettings.toneMapping =
+                                static_cast<PBRViewerSettings::ToneMapping>(n);
                         }
                         if (isSelected)
                             ImGui::SetItemDefaultFocus();

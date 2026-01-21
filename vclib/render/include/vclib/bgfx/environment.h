@@ -29,6 +29,7 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 namespace vcl {
 
@@ -105,9 +106,9 @@ public:
     }
 
     void drawBackground(
-        const uint  viewId,
-        const int   toneMapping,
-        const float exposure);
+        uint                           viewId,
+        PBRViewerSettings::ToneMapping toneMapping,
+        float                          exposure);
 
     void bindTexture(
         TextureType type,

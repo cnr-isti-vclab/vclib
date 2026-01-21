@@ -61,9 +61,9 @@ Environment::Environment(const std::string& imagePath, uint viewId)
  * @param[in] exposure: The exposure factor.
  */
 void Environment::drawBackground(
-    const uint  viewId,
-    const int   toneMapping,
-    const float exposure)
+    uint                           viewId,
+    PBRViewerSettings::ToneMapping toneMapping,
+    float                          exposure)
 {
     if (!canDraw())
         return;

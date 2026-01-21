@@ -50,7 +50,7 @@ struct PBRViewerSettings
     /**
      * @brief The tone mapping operator to use in PBR mode.
      */
-    int toneMapping = 2;
+    ToneMapping toneMapping = ToneMapping::ACES_HILL;
 };
 
 } // namespace vcl
