@@ -29,13 +29,11 @@ namespace vcl {
 
 template<typename T>
 concept PBRViewerConcept = requires (T&& obj) {
-        { obj.isPBREnabled() } -> std::same_as<bool>;
+    { obj.isPBREnabled() } -> std::same_as<bool>;
 
-        // non const requirements
-        requires IsConst<T> || requires {
-            obj.setPBR(bool());
-        };
-    };
-}
+    // non const requirements
+    requires IsConst<T> || requires { obj.setPBR(bool()); };
+};
+} // namespace vcl
 
 #endif // VCL_RENDER_CONCEPTS_PBR_VIEWER_H

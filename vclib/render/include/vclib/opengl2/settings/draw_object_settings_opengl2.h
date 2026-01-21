@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
-#define VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#ifndef VCL_OPENGL2_SETTINGS_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#define VCL_OPENGL2_SETTINGS_DRAW_OBJECT_SETTINGS_OPENGL2_H
 
 #include <vclib/base.h>
 
@@ -39,4 +39,4 @@ struct DrawObjectSettingsOpenGL2
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#endif // VCL_OPENGL2_SETTINGS_DRAW_OBJECT_SETTINGS_OPENGL2_H

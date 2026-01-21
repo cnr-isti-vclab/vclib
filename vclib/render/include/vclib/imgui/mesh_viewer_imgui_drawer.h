@@ -92,7 +92,8 @@ public:
                     "##ComboRenderMode",
                     pbrMode ? renderModeNames[1] : renderModeNames[0])) {
                 for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                    bool isSelected = (pbrMode && n == 1) || (!pbrMode && n == 0);
+                    bool isSelected =
+                        (pbrMode && n == 1) || (!pbrMode && n == 0);
                     if (ImGui::Selectable(renderModeNames[n], isSelected)) {
                         Base::setPBR(n == 1);
                     }
