@@ -90,7 +90,7 @@ public:
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
         bool                                vertexTangentAvailable,
-        const PBRSettings&                  pbrSettings,
+        const PBRViewerSettings&                  pbrSettings,
         const Environment*                  environment)
     {
         uint pbrSettingBits = 0;

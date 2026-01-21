@@ -266,7 +266,7 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m,
-        const PBRSettings&        pbrSettings,
+        const PBRViewerSettings&        pbrSettings,
         const Environment*        environment) const
     {
         static const Material DEFAULT_MATERIAL;

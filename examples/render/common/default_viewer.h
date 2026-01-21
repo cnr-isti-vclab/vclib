@@ -107,8 +107,6 @@ void showMeshesOnViewer(
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-
-
     for (auto&& mesh : meshes)
         (pushMeshOnVector(vector, std::move(mesh)));
 

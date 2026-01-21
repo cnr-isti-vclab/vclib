@@ -20,12 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_SETTINGS_PBR_SETTINGS_H
-#define VCL_RENDER_SETTINGS_PBR_SETTINGS_H
+#ifndef VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
+#define VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
 
 namespace vcl {
 
-struct PBRSettings
+struct PBRViewerSettings
 {
     enum class ToneMapping
     {
@@ -37,17 +37,22 @@ struct PBRSettings
         KHRONOS_PBR_NEUTRAL
     };
 
-    /**< @brief Option that tells whether the object must be drawn in PBR mode.
+    /**
+     * @brief Option that tells whether the viewer be set in PBR mode or not.
      */
     bool pbrMode = false;
 
-    /**< @brief The exposure value to use in PBR mode. */
+    /**
+     * @brief The exposure value to use in PBR mode.
+     */
     float exposure = 1.0f;
 
-    /**< @brief The tone mapping operator to use in PBR mode. */
+    /**
+     * @brief The tone mapping operator to use in PBR mode.
+     */
     int toneMapping = 2;
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_SETTINGS_PBR_SETTINGS_H
+#endif // VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H

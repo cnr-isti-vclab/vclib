@@ -28,7 +28,7 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/settings/pbr_settings.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
 
@@ -99,19 +99,21 @@ public:
                     }
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
-                    ImGui::EndCombo();
                 }
+                ImGui::EndCombo();
             }
 
             if(pbrMode)
             {
+                PBRViewerSettings& pbrSettings = Base::pbrViewerSettings();
+
                 // exposure slider
                 ImGui::Separator();
                 ImGui::Text("Exposure:");
                 ImGui::SameLine();
-                float exposure = Base::getExposure();
+                float exposure = pbrSettings.exposure;
                 if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
-                    Base::setExposure(exposure);
+                    pbrSettings.exposure = exposure;
 
                 // tone mapping combo box
                 ImGui::Separator();
@@ -125,15 +127,15 @@ public:
                     "ACES Narkowicz",
                     "Khronos PBR Neutral"
                 };
-                int toneMapping = static_cast<int>(Base::getToneMapping());
+                int toneMapping = static_cast<int>(pbrSettings.toneMapping);
                 if(ImGui::BeginCombo(
                         "##ComboToneMapping",
                         toneMappingNames[toneMapping])) {
                     for (int n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
                         bool isSelected = toneMapping == n;
                         if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
-                            Base::setToneMapping(
-                                static_cast<PBRSettings::ToneMapping>(n));
+                            //pbrSettings.toneMapping = static_cast<PBRSettings::ToneMapping>(n);
+                            pbrSettings.toneMapping = n;
                         }
                         if (isSelected)
                             ImGui::SetItemDefaultFocus();

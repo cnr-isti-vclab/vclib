@@ -26,7 +26,7 @@
 #include <vclib/base.h>
 
 #include <vclib/bgfx/environment.h>
-#include <vclib/render/settings/pbr_settings.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 namespace vcl {
 
@@ -42,7 +42,7 @@ struct DrawObjectSettingsBGFX
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
 
-    PBRSettings pbrSettings;
+    PBRViewerSettings pbrSettings;
 
     const Environment* environment = nullptr;
 };
