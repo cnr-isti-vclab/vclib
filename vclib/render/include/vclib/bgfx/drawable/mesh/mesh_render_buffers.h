@@ -263,11 +263,11 @@ public:
      * @return the render state associated to the material
      */
     uint64_t bindMaterials(
-        const MeshRenderSettings& mrs,
-        uint                      chunkNumber,
-        const MeshType&           m,
-        const PBRViewerSettings&  pbrSettings,
-        const Environment*        environment) const
+        const MeshRenderSettings&  mrs,
+        uint                       chunkNumber,
+        const MeshType&            m,
+        const PBRViewerSettings&   pbrSettings,
+        const DrawableEnvironment* environment) const
     {
         static const Material DEFAULT_MATERIAL;
 

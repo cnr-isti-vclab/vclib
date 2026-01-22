@@ -26,8 +26,8 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
-#include <vclib/bgfx/environment.h>
 
 namespace vcl {
 
@@ -43,7 +43,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     PBRViewerSettings mPBRSettings;
 
-    Environment mPanorama = Environment("");
+    DrawableEnvironment mPanorama = DrawableEnvironment("");
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
@@ -74,7 +74,7 @@ public:
 
     void setPanorama(const std::string& panorama)
     {
-        mPanorama = Environment(panorama, ParentViewer::canvasViewId());
+        mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
     }
 
     void onDrawContent(uint viewId) override

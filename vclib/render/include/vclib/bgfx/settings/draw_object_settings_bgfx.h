@@ -25,10 +25,12 @@
 
 #include <vclib/base.h>
 
-#include <vclib/bgfx/environment.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 namespace vcl {
+
+// Forward declaration of DrawableEnvironment
+class DrawableEnvironment;
 
 /**
  * @brief A simple struct containing the settings to draw a drawable object
@@ -44,7 +46,7 @@ struct DrawObjectSettingsBGFX
 
     PBRViewerSettings pbrSettings;
 
-    const Environment* environment = nullptr;
+    const DrawableEnvironment* environment = nullptr;
 };
 
 } // namespace vcl
