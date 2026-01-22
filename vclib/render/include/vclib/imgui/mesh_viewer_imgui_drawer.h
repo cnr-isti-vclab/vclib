@@ -103,8 +103,7 @@ public:
                 ImGui::EndCombo();
             }
 
-            if(pbrMode)
-            {
+            if (pbrMode) {
                 PBRViewerSettings& pbrSettings = Base::pbrViewerSettings();
 
                 // exposure slider
@@ -112,28 +111,26 @@ public:
                 ImGui::Text("Exposure:");
                 ImGui::SameLine();
                 float exposure = pbrSettings.exposure;
-                if(ImGui::SliderFloat("##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                if (ImGui::SliderFloat(
+                        "##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
                     pbrSettings.exposure = exposure;
 
                 // tone mapping combo box
                 ImGui::Separator();
                 ImGui::Text("Tone mapping:");
                 ImGui::SameLine();
-                const char* toneMappingNames[] = {
-                    "None",
-                    "Basic",
-                    "ACES Hill",
-                    "ACES Hill Exposure Boost",
-                    "ACES Narkowicz",
-                    "Khronos PBR Neutral"
-                };
                 uint toneMapping = toUnderlying(pbrSettings.toneMapping);
-                if(ImGui::BeginCombo(
-                        "##ComboToneMapping",
-                        toneMappingNames[toneMapping])) {
-                    for (uint n = 0; n < IM_ARRAYSIZE(toneMappingNames); n++) {
+
+                const auto* toneMappingNames =
+                    PBRViewerSettings::TONE_MAPPING_STRINGS;
+                if (ImGui::BeginCombo(
+                        "##ComboToneMapping", toneMappingNames[toneMapping])) {
+                    const uint CNT =
+                        toUnderlying(PBRViewerSettings::ToneMapping::COUNT);
+                    for (uint n = 0; n < CNT; n++) {
                         bool isSelected = toneMapping == n;
-                        if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                        if (ImGui::Selectable(
+                                toneMappingNames[n], isSelected)) {
                             pbrSettings.toneMapping =
                                 static_cast<PBRViewerSettings::ToneMapping>(n);
                         }

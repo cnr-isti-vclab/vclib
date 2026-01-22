@@ -23,6 +23,8 @@
 #ifndef VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
 #define VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
 
+#include <vclib/base.h>
+
 namespace vcl {
 
 struct PBRViewerSettings
@@ -34,8 +36,18 @@ struct PBRViewerSettings
         ACES_HILL,
         ACES_HILL_EXPOSURE_BOOST,
         ACES_NARKOWICZ,
-        KHRONOS_PBR_NEUTRAL
+        KHRONOS_PBR_NEUTRAL,
+        COUNT
     };
+
+    static constexpr const char*
+        TONE_MAPPING_STRINGS[toUnderlying(ToneMapping::COUNT)] = {
+            "None",
+            "Basic",
+            "ACES Hill",
+            "ACES Hill Exposure Boost",
+            "ACES Narkowicz",
+            "Khronos PBR Neutral"};
 
     /**
      * @brief Option that tells whether the viewer be set in PBR mode or not.
