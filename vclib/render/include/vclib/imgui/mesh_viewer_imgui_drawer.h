@@ -142,6 +142,17 @@ public:
                     }
                     ImGui::EndCombo();
                 }
+
+                // draw background checkbox
+                ImGui::Separator();
+                ImGui::Checkbox(
+                    "Render Background",
+                    [&]() {
+                        return pbrSettings.renderBackground;
+                    },
+                    [&](bool renderBg) {
+                        pbrSettings.renderBackground = renderBg;
+                    });
             }
         }
 

@@ -63,22 +63,21 @@ Environment::Environment(const std::string& imagePath, uint viewId)
 void Environment::drawBackground(uint viewId, const PBRViewerSettings& settings)
     const
 {
-    if (!canDraw())
-        return;
+    if (settings.pbrMode && settings.renderBackground && canDraw()) {
+        using enum VertFragProgram;
+        ProgramManager& pm = Context::instance().programManager();
 
-    using enum VertFragProgram;
-    ProgramManager& pm = Context::instance().programManager();
+        using enum TextureType;
+        bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-    using enum TextureType;
-    bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
+        bindDataUniform(float(settings.toneMapping), settings.exposure);
 
-    bindDataUniform(float(settings.toneMapping), settings.exposure);
+        mVertexBuffer.bindVertex(0);
 
-    mVertexBuffer.bindVertex(0);
+        bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
-    bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
-
-    bgfx::submit(viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
+        bgfx::submit(viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
+    }
 }
 
 /**

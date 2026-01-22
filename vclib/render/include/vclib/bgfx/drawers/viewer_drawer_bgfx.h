@@ -91,8 +91,8 @@ public:
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
 
-        if (settings.pbrSettings.pbrMode)
-            mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
+        // background will be drawn only if settings allow it
+        mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }

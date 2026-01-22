@@ -39,8 +39,16 @@ struct PBRViewerSettings
 
     /**
      * @brief Option that tells whether the viewer be set in PBR mode or not.
+     *
+     * All the options below are used only if this flag is set to true.
      */
     bool pbrMode = false;
+
+    /**
+     * @brief Option that tells whether to render the background panorama or
+     * not.
+     */
+    bool renderBackground = true;
 
     /**
      * @brief The exposure value to use in PBR mode.
