@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 ****************************************************************************/
 
-#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
 IMAGE2D_ARRAY_RW(u_prevMip, rgba32f, 0);
 IMAGE2D_ARRAY_RW(u_nextMip, rgba32f, 1);

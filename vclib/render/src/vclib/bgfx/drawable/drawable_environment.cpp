@@ -131,8 +131,8 @@ void DrawableEnvironment::bindDataUniform(
     const float d2,
     const float d3) const
 {
-    std::array<float, 4> data = {d0, d1, d2, d3};
-    mDataUniform.bind(&data);
+    mDataUniforms.update(d0, d1, d2, d3);
+    mDataUniforms.bind();
 }
 
 /**
@@ -306,7 +306,8 @@ void DrawableEnvironment::setAndGenerateTextures(
 /**
  * @brief Generates the necessary environment textures (cubemap, irradiance
  * map, specular map, BRDF LUT).
- *  * This function is called by setAndGenerateTextures after setting up the
+ *
+ * This function is called by setAndGenerateTextures after setting up the
  * initial textures.
  */
 void DrawableEnvironment::generateTextures(

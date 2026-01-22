@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 ****************************************************************************/
 
-#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
 SAMPLER2D(s_hdr, 0);                     // bound with setTexture()
 IMAGE2D_ARRAY_WO(u_cubemap, rgba32f, 1); // bound with setImage() as RW

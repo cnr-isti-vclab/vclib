@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 ****************************************************************************/
 
-#include <vclib/bgfx/drawable/drawable_background/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(u_specular, rgba32f, 1);

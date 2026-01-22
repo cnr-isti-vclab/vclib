@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_ENVIRONMENT_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_ENVIRONMENT_H
 
+#include "uniforms/drawable_environment_uniforms.h"
+
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
@@ -42,7 +44,7 @@ namespace vcl {
  * It manages the loading and setup of environment maps, including
  * HDR images, cubemaps, irradiance maps, specular maps, and BRDF LUTs.
  */
-class DrawableEnvironment// : public DrawableObject
+class DrawableEnvironment
 {
     enum class FileFormat { UNKNOWN, HDR, EXR, KTX, DDS };
 
@@ -60,7 +62,8 @@ class DrawableEnvironment// : public DrawableObject
         Uniform("s_specular", bgfx::UniformType::Sampler);
     const Uniform mBrdfLutSamplerUniform =
         Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
-    const Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
+
+    DrawableEnvironmentUniforms mDataUniforms;
 
     Texture mHdrTexture;
     Texture mCubeMapTexture;

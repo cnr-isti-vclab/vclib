@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,28 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
-$output v_texcoord0
+#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
+#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
 
-#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+#include <vclib/bgfx/uniform.h>
 
-void main()
+namespace vcl {
+
+class DrawableEnvironmentUniforms
 {
-    vec4 position = vec4(a_position.x, a_position.y, a_position.z, 1.0);
-    
-    // get the outward view direction in world space back from clip space
-    vec3 viewDir = mul(u_invProj, position).xyz;
-    mat3 invViewRotOnly = mat3(
-        normalize(u_invView[0].xyz),
-        normalize(u_invView[1].xyz),
-        normalize(u_invView[2].xyz)
-    );
-    vec3 worldViewDir = mul(invViewRotOnly, viewDir); // keep just the rotation part
+    mutable std::array<float, 4> mData = {
+        0.0, // exposure
+        0.0, // 16 bits tone mapping, 16 bits specular mip levels
+        0.0, // roughness
+        0.0  // cube side
+    };
 
-    // cubemaps are left-handed, so invert the Z coordinate 
-    // to adapt to our right-handed system
-    v_texcoord0 = leftHand(worldViewDir);
+    // todo: change name of the uniform to something more meaningful
+    Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
 
-    // draw the triangle in screen space
-    gl_Position = position;
-}
+public:
+    DrawableEnvironmentUniforms() = default;
+
+    void update(float a, float b, float c, float d) const
+    {
+        mData[0] = a;
+        mData[1] = b;
+        mData[2] = c;
+        mData[3] = d;
+    }
+
+    void bind() const
+    {
+        mDataUniform.bind(mData.data());
+    }
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
