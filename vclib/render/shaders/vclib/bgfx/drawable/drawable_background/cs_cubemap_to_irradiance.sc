@@ -23,7 +23,7 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
 SAMPLERCUBE(s_env0, 0);
-IMAGE2D_ARRAY_WO(u_irradiance, rgba32f, 1);
+IMAGE2D_ARRAY_WO(i_irradiance, rgba32f, 1);
 
 uniform vec4 u_dataPack;
 #define sourceResolution u_dataPack.x
@@ -39,7 +39,7 @@ void main()
     ivec2 pixel = gid.xy;
     int face    = gid.z;
 
-    ivec3 dims  = imageSize(u_irradiance);
+    ivec3 dims  = imageSize(i_irradiance);
     int size    = dims.x;  // cube is size×size×6
 
     // in case of an out of bounds thread
@@ -83,5 +83,5 @@ void main()
     }
     irradiance /= float(SAMPLE_COUNT);
 
-    imageStore(u_irradiance, ivec3(pixel.x, pixel.y, face), vec4(irradiance, 1.0));
+    imageStore(i_irradiance, ivec3(pixel.x, pixel.y, face), vec4(irradiance, 1.0));
 }

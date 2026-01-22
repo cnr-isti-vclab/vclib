@@ -22,8 +22,8 @@
 
 #include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
-IMAGE2D_ARRAY_RW(u_prevMip, rgba32f, 0);
-IMAGE2D_ARRAY_RW(u_nextMip, rgba32f, 1);
+IMAGE2D_ARRAY_RW(i_prevMip, rgba32f, 0);
+IMAGE2D_ARRAY_RW(i_nextMip, rgba32f, 1);
 
 NUM_THREADS(8, 8, 1)
 void main()
@@ -36,7 +36,7 @@ void main()
     ivec2 pixel = gid.xy;
     int face    = gid.z;
 
-    ivec3 dims  = imageSize(u_nextMip);
+    ivec3 dims  = imageSize(i_nextMip);
     int size    = dims.x;  // cube is size×size×6
 
     // in case of an out of bounds thread
@@ -45,7 +45,7 @@ void main()
 
     ivec2 prevCoord = pixel * 2;
 
-    float invPrevSize = 1.0 / imageSize(u_prevMip).x;
+    float invPrevSize = 1.0 / imageSize(i_prevMip).x;
 
     vec4 newColor = vec4_splat(0.0);
 
@@ -59,12 +59,12 @@ void main()
 
         float weight = solidAngle(uv, invPrevSize * 2.0);
 
-        newColor += imageLoad(u_prevMip, prev) * vec4_splat(weight);
+        newColor += imageLoad(i_prevMip, prev) * vec4_splat(weight);
 
         totalWeight += weight;
     }
 
     newColor /= vec4_splat(totalWeight);
 
-    imageStore(u_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
+    imageStore(i_nextMip, ivec3(pixel.x, pixel.y, face), newColor);
 }

@@ -22,14 +22,14 @@
 
 #include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
-IMAGE2D_WO(u_lut, rgba32f, 0);
+IMAGE2D_WO(i_lut, rgba32f, 0);
 
 NUM_THREADS(8, 8, 1)
 void main()
 {
     ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
 
-    ivec2 dims = imageSize(u_lut);
+    ivec2 dims = imageSize(i_lut);
     float size = dims.x; // texture is square
 
     // in case of an out of bounds thread
@@ -95,5 +95,5 @@ void main()
     vec3 brdf = vec3(I1, I2, 0.0) * vec3_splat(4.0);
     brdf /= vec3_splat(SAMPLE_COUNT);
 
-    imageStore(u_lut, pixel, vec4(brdf, 1.0));
+    imageStore(i_lut, pixel, vec4(brdf, 1.0));
 }
