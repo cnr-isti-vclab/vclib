@@ -25,8 +25,6 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(i_irradiance, rgba32f, 1);
 
-#define sourceResolution u_dataPack.w
-
 NUM_THREADS(8, 8, 1)
 void main()
 {
@@ -69,7 +67,7 @@ void main()
         vec3 H = sample.xyz;
         float pdf = sample.w;
 
-        float mipLevel = computeLod(pdf, sourceResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
+        float mipLevel = computeLod(pdf, u_cubeSideResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
 
         vec3 lambertian = textureCubeLod(s_env0, leftHand(H), mipLevel).rgb;
 

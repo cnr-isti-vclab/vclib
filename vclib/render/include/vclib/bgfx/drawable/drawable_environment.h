@@ -123,9 +123,7 @@ public:
 
     void bindUniforms() const { mDataUniforms.bind(); }
 
-    void bindDataUniform(
-        const float d1 = 0.0f,
-        const float d3 = 0.0f) const;
+    void bindDataUniform(const float d1 = 0.0f) const;
 
     /**
      * @brief Checks if the environment is ready to be drawn.

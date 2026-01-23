@@ -122,11 +122,10 @@ void DrawableEnvironment::bindTexture(
  * Environment class.
  *
  * @param[in] d1: tone mapping or specular mip levels
- * @param[in] d3: cube side
  */
-void DrawableEnvironment::bindDataUniform(const float d1, const float d3) const
+void DrawableEnvironment::bindDataUniform(const float d1) const
 {
-    mDataUniforms.update(d1, d3);
+    mDataUniforms.update(d1);
     bindUniforms();
 }
 
@@ -379,7 +378,8 @@ void DrawableEnvironment::generateTextures(
     mIrradianceTexture.bindForCompute(
         1, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-    bindDataUniform(0, float(cubeSide));
+    mDataUniforms.updateCubeSideResolution(cubeSide);
+    mDataUniforms.bind();
 
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
@@ -410,7 +410,8 @@ void DrawableEnvironment::generateTextures(
             1, mip, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
         mDataUniforms.updateRoughness(roughness);
-        bindDataUniform(0, float(cubeSide));
+        mDataUniforms.updateCubeSideResolution(cubeSide);
+        mDataUniforms.bind();
 
         bgfx::dispatch(
             viewId,

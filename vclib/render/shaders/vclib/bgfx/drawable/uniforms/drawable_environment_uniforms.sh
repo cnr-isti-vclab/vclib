@@ -30,7 +30,7 @@ uniform vec4 u_dataPack;
 
 #define u_exposure u_dataPack.x
 #define u_roughness u_dataPack.z
-//#define u_cubeSideResolution u_dataPack.w
+#define u_cubeSideResolution u_dataPack.w
 
 // most 16 significant bits of floatBitsToUint(u_dataPack.y)
 //#define u_toneMapping uint ((floatBitsToUint(u_dataPack.y) >> 16) & 0x0000FFFFu)
