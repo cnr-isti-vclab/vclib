@@ -37,8 +37,8 @@ class DrawableEnvironmentUniforms
         0.0  // cube side
     };
 
-    // todo: change name of the uniform to something more meaningful
-    Uniform mDataUniform = Uniform("u_dataPack", bgfx::UniformType::Vec4);
+    Uniform mDataUniform =
+        Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
 
 public:
     DrawableEnvironmentUniforms() = default;
@@ -47,35 +47,26 @@ public:
 
     void updateToneMapping(PBRViewerSettings::ToneMapping tm) const
     {
-        uint toneMapping = toUnderlying(tm);
         // shift to the higher 16 bits
-        toneMapping = toneMapping << 16;
+        uint toneMapping = toUnderlying(tm) << 16;
 
         uint dt = Uniform::floatToUintBits(mData[1]);
         dt = (dt & 0x0000FFFF) | toneMapping;
         mData[1] = Uniform::uintBitsToFloat(dt);
     }
 
-    void updateSpecularMipsLevels(uint8_t specMips) const
+    void updateSpecularMipsLevels(uint8_t specMips)
     {
         uint dt = Uniform::floatToUintBits(mData[1]);
         dt = (dt & 0xFFFF0000) | specMips;
         mData[1] = Uniform::uintBitsToFloat(dt);
     }
 
-    void updateRoughness(float roughness) const { mData[2] = roughness; }
+    void updateRoughness(float roughness) { mData[2] = roughness; }
 
-    void updateCubeSideResolution(float cubeSide) const { mData[3] = cubeSide; }
+    void updateCubeSideResolution(float cubeSide) { mData[3] = cubeSide; }
 
-    // void update(float b) const
-    // {
-    //     mData[1] = b;
-    // }
-
-    void bind() const
-    {
-        mDataUniform.bind(mData.data());
-    }
+    void bind() const { mDataUniform.bind(mData.data()); }
 };
 
 } // namespace vcl
