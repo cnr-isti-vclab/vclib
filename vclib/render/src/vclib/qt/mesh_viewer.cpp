@@ -25,6 +25,7 @@
 
 #include "ui_mesh_viewer.h"
 
+#include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 namespace vcl::qt {
@@ -124,6 +125,13 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(currentIndexChanged(int)),
         this,
         SLOT(renderModeComboBoxCurrentIndexChanged(int)));
+
+    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
+
+    if constexpr (!PBRViewerConcept<ViewerType>) {
+        mUI->renderModeLabel->setEnabled(false);
+        mUI->renderModeComboBox->setEnabled(false);
+    }
 }
 
 MeshViewer::~MeshViewer()
@@ -187,17 +195,31 @@ void MeshViewer::showRenderModeSelector(bool show)
     mUI->renderModeLabel->setVisible(show);
 }
 
+template<typename V>
+bool isPBREnabledF(const V* v)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        return v->isPBREnabled();
+    }
+    else {
+        return false;
+    }
+}
+
 bool MeshViewer::isPBREnabled() const
 {
-    return mUI->viewer->isPBREnabled();
+    return isPBREnabledF(mUI->viewer);
 }
 
 void MeshViewer::setPBR(bool enable)
 {
-    using enum RenderMode;
-    mUI->renderModeComboBox->setCurrentIndex(
-        enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
-    updateGUI();
+    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
+    if constexpr (PBRViewerConcept<ViewerType>) {
+        using enum RenderMode;
+        mUI->renderModeComboBox->setCurrentIndex(
+            enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+        updateGUI();
+    }
 }
 
 void MeshViewer::enablePBR()
@@ -333,13 +355,21 @@ void MeshViewer::updateGUI()
     mUI->viewer->update();
 }
 
+template<typename V>
+void setPBRModef(V* v, bool b)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        return v->setPBR(b);
+    }
+}
+
 void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
 {
     if (index == toUnderlying(RenderMode::PBR)) {
-        mUI->viewer->enablePBR();
+        setPBRModef(mUI->viewer, true);
     }
     else {
-        mUI->viewer->disablePBR();
+        setPBRModef(mUI->viewer, false);
     }
     mUI->viewer->update();
 }
