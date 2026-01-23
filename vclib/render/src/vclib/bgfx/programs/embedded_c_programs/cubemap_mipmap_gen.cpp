@@ -22,16 +22,16 @@
 
 #include <vclib/bgfx/programs/embedded_c_programs/cubemap_mipmap_gen.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_cubemap_mipmap_gen.sc.400.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_cubemap_mipmap_gen.sc.400.bin.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_cubemap_mipmap_gen.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_cubemap_mipmap_gen.sc.essl.bin.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_cubemap_mipmap_gen.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_cubemap_mipmap_gen.sc.spv.bin.h>
 #ifdef _WIN32
-#include <vclib/shaders/drawable/drawable_background/cs_cubemap_mipmap_gen.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_cubemap_mipmap_gen.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/drawable/drawable_background/cs_cubemap_mipmap_gen.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_cubemap_mipmap_gen.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

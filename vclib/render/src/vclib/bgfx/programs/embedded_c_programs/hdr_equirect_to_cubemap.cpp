@@ -22,16 +22,16 @@
 
 #include <vclib/bgfx/programs/embedded_c_programs/hdr_equirect_to_cubemap.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_hdr_equirect_to_cubemap.sc.400.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_hdr_equirect_to_cubemap.sc.400.bin.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_hdr_equirect_to_cubemap.sc.essl.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_hdr_equirect_to_cubemap.sc.essl.bin.h>
 
-#include <vclib/shaders/drawable/drawable_background/cs_hdr_equirect_to_cubemap.sc.spv.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_hdr_equirect_to_cubemap.sc.spv.bin.h>
 #ifdef _WIN32
-#include <vclib/shaders/drawable/drawable_background/cs_hdr_equirect_to_cubemap.sc.dx11.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_hdr_equirect_to_cubemap.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/drawable/drawable_background/cs_hdr_equirect_to_cubemap.sc.mtl.bin.h>
+#include <vclib/shaders/drawable/drawable_environment/cs_hdr_equirect_to_cubemap.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl {

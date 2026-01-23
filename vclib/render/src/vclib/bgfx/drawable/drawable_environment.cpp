@@ -79,7 +79,7 @@ void DrawableEnvironment::drawBackground(
 
         bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
-        bgfx::submit(viewId, pm.getProgram<DRAWABLE_BACKGROUND_PBR>());
+        bgfx::submit(viewId, pm.getProgram<DRAWABLE_ENVIRONMENT_PBR>());
     }
 }
 
