@@ -73,7 +73,8 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        bindDataUniform(settings.exposure, float(settings.toneMapping));
+        bindDataUniform(float(settings.toneMapping));
+        mDataUniforms.updateExposure(settings.exposure);
 
         mVertexBuffer.bindVertex(0);
 
@@ -126,13 +127,12 @@ void DrawableEnvironment::bindTexture(
  * @param[in] d3: The fourth float data to bind. Default is 0.0f.
  */
 void DrawableEnvironment::bindDataUniform(
-    const float d0,
     const float d1,
     const float d2,
     const float d3) const
 {
-    mDataUniforms.update(d0, d1, d2, d3);
-    mDataUniforms.bind();
+    mDataUniforms.update(d1, d2, d3);
+    bindUniforms();
 }
 
 /**
@@ -384,7 +384,7 @@ void DrawableEnvironment::generateTextures(
     mIrradianceTexture.bindForCompute(
         1, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-    bindDataUniform(0,0,0, float(cubeSide));
+    bindDataUniform(0,0, float(cubeSide));
 
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
@@ -414,7 +414,7 @@ void DrawableEnvironment::generateTextures(
         mSpecularTexture.bindForCompute(
             1, mip, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-        bindDataUniform(0,0,roughness, float(cubeSide));
+        bindDataUniform(0,roughness, float(cubeSide));
 
         bgfx::dispatch(
             viewId,

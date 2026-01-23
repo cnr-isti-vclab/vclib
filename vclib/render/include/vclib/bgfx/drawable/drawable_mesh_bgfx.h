@@ -226,7 +226,7 @@ public:
                 bindUniforms();
                 if (settings.pbrSettings.pbrMode && env != nullptr &&
                     env->canDraw()) {
-                    env->bindDataUniform(0.0, float(env->specularMips()));
+                    env->bindDataUniform(float(env->specularMips()));
                 }
 
                 // Bind textures before vertex buffers!!

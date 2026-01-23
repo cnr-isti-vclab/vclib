@@ -29,13 +29,12 @@ $input v_texcoord0
 // textures
 SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 
-#define exposure u_dataPack.x
 #define toneMapping int(u_dataPack.y)
 
 void main()
 {
     vec3 color = textureCube(s_env0, normalize(v_texcoord0)).rgb;
-    color *= exposure;
+    color *= u_exposure;
     color = toneMap(color, toneMapping);
     color = gammaCorrect(color);
     gl_FragColor = vec4(color.r, color.g, color.b, 1.0);

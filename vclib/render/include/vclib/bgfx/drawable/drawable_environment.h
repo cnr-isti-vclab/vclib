@@ -121,8 +121,9 @@ public:
         uint        stage,
         uint        samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 
+    void bindUniforms() const { mDataUniforms.bind(); }
+
     void bindDataUniform(
-        const float d0 = 0.0f,
         const float d1 = 0.0f,
         const float d2 = 0.0f,
         const float d3 = 0.0f) const;

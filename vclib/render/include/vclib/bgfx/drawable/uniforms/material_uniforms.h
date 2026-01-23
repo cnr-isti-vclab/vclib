@@ -129,7 +129,6 @@ public:
         mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
         mSettings[2] =
             Uniform::uintBitsToFloat(toUnderlying(pbrSettings.toneMapping));
-        mSettings[3] = pbrSettings.exposure;
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

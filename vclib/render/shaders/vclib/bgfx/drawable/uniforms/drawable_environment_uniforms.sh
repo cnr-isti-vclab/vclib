@@ -28,7 +28,7 @@
 
 uniform vec4 u_dataPack;
 
-//#define u_exposure u_dataPack.x
+#define u_exposure u_dataPack.x
 //#define u_roughness u_dataPack.z
 //#define u_cubeSideResolution u_dataPack.w
 
