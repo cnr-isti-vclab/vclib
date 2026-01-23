@@ -50,8 +50,6 @@ class DrawableEnvironment
 
     static const uint BRDF_LU_TEXTURE_SIZE = 1024;
 
-    uint8_t mSpecularMips = 0;
-
     const Uniform mHdrSamplerUniform =
         Uniform("s_hdr", bgfx::UniformType::Sampler);
     const Uniform mEnvCubeSamplerUniform =
@@ -101,7 +99,7 @@ public:
     void swap(DrawableEnvironment& other)
     {
         using std::swap;
-        swap(mSpecularMips, other.mSpecularMips);
+        swap(mDataUniforms, other.mDataUniforms);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
         swap(mIrradianceTexture, other.mIrradianceTexture);
@@ -123,19 +121,11 @@ public:
 
     void bindUniforms() const { mDataUniforms.bind(); }
 
-    void bindDataUniform(const float d1 = 0.0f) const;
-
     /**
      * @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.
      */
     bool canDraw() const { return mCubeMapTexture.isValid(); }
-
-    /**
-     * @brief Gets the number of mipmap levels in the specular environment map.
-     * @return The number of mipmap levels in the specular environment map.
-     */
-    uint8_t specularMips() const { return mSpecularMips; }
 
 private:
     FileFormat getFileFormat(const std::string& imagePath);
@@ -148,6 +138,7 @@ private:
         const bimg::ImageContainer& image,
         uint                        cubeSide,
         uint8_t                     cubeMips,
+        uint8_t                     specularMips,
         uint                        viewId);
 
     static vcl::VertexBuffer fullScreenTriangle();

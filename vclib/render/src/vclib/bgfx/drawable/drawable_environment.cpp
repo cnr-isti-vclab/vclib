@@ -73,7 +73,7 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        bindDataUniform(float(settings.toneMapping));
+        mDataUniforms.updateToneMapping(settings.toneMapping);
         mDataUniforms.updateExposure(settings.exposure);
 
         mVertexBuffer.bindVertex(0);
@@ -115,18 +115,6 @@ void DrawableEnvironment::bindTexture(
             stage, mBrdfLutSamplerUniform.handle(), samplerFlags);
         break;
     }
-}
-
-/**
- * @brief Binds the provided data to the helper uniform (a vec4) handled by the
- * Environment class.
- *
- * @param[in] d1: tone mapping or specular mip levels
- */
-void DrawableEnvironment::bindDataUniform(const float d1) const
-{
-    mDataUniforms.update(d1);
-    bindUniforms();
 }
 
 /**
@@ -230,11 +218,13 @@ void DrawableEnvironment::setAndGenerateTextures(
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
 
-    mSpecularMips = bimg::imageGetNumMips(
+    uint8_t specularMips = bimg::imageGetNumMips(
                         bimg::TextureFormat::RGBA32F,
                         irrSpecCubeSide,
                         irrSpecCubeSide) /
                     2; // ignore too low mips
+
+    mDataUniforms.updateSpecularMipsLevels(specularMips);
 
     if (!image.m_cubeMap) { // equirect
         mHdrTexture.set(
@@ -294,7 +284,7 @@ void DrawableEnvironment::setAndGenerateTextures(
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F);
 
-    generateTextures(image, cubeSide, cubeMips, viewId);
+    generateTextures(image, cubeSide, cubeMips, specularMips, viewId);
 }
 
 /**
@@ -308,6 +298,7 @@ void DrawableEnvironment::generateTextures(
     const bimg::ImageContainer& image,
     uint                        cubeSide,
     uint8_t                     cubeMips,
+    uint8_t                     specularMips,
     uint                        viewId)
 {
     using enum ComputeProgram;
@@ -393,10 +384,10 @@ void DrawableEnvironment::generateTextures(
 
     // create specular map from cubemap
 
-    for (uint8_t mip = 0; mip < mSpecularMips; ++mip) {
+    for (uint8_t mip = 0; mip < specularMips; ++mip) {
         const uint32_t mipSize = ceilDiv(irrSpecCubeSide, 1 << mip);
         const float    roughness =
-            static_cast<float>(mip) / static_cast<float>(mSpecularMips - 1);
+            static_cast<float>(mip) / static_cast<float>(specularMips - 1);
 
         // ensure at least 1 threadgroup is dispatched for small mips
         // assuming the compute shader uses 8x8 threads per group

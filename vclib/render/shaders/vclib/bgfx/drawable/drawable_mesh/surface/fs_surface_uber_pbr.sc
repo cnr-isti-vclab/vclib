@@ -45,8 +45,6 @@ SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
-#define specularMipCount u_dataPack.y
-
 void main()
 {
     // texcoord to use
@@ -173,7 +171,7 @@ void main()
         vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
 
         // specular light
-        float specularMipLevel = roughness * (specularMipCount - 1.0);
+        float specularMipLevel = roughness * (u_specularMipLevels - 1.0);
         
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
 
