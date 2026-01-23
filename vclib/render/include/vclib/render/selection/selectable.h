@@ -25,7 +25,6 @@
 
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
-#include <vclib/render/drawable/draw_object_settings.h>
 #include "selection_parameters.h"
 
 namespace vcl {

@@ -24,7 +24,6 @@
 #define VCL_SELECTION_PARAMETERS_BGFX_H
 
 #include <bgfx/bgfx.h>
-#include <vclib/render/drawable/draw_object_settings.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 

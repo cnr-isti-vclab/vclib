@@ -22,7 +22,6 @@
 
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #include <vclib/imgui/imgui_drawer.h>
-#include "../imgui_texture_getter_979.h"
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
