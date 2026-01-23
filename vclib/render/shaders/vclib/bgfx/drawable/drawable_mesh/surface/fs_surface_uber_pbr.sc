@@ -198,7 +198,7 @@ void main()
             occlusion,
             emissiveColor,
             u_exposure,
-            u_tone_mapping
+            u_toneMapping
         );
     }
     else
@@ -230,7 +230,7 @@ void main()
             roughness,
             emissiveColor,
             u_exposure,
-            u_tone_mapping
+            u_toneMapping
         );
     }
 }

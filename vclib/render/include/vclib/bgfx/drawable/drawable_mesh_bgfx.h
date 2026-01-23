@@ -220,8 +220,8 @@ public:
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
-                uint64_t materialState = mMRB.bindMaterials(
-                    mMRS, i, *this, settings.pbrSettings, env);
+                uint64_t materialState =
+                    mMRB.bindMaterials(mMRS, i, *this, env);
 
                 bindUniforms();
                 if (settings.pbrSettings.pbrMode && env != nullptr &&

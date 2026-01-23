@@ -266,7 +266,6 @@ public:
         const MeshRenderSettings&  mrs,
         uint                       chunkNumber,
         const MeshType&            m,
-        const PBRViewerSettings&   pbrSettings,
         const DrawableEnvironment* environment) const
     {
         static const Material DEFAULT_MATERIAL;
@@ -282,7 +281,6 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
-                pbrSettings,
                 environment);
         }
         else {
@@ -297,7 +295,6 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    pbrSettings,
                     environment);
             }
             else {
@@ -319,7 +316,6 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    pbrSettings,
                     environment);
 
                 // set the state according to the material

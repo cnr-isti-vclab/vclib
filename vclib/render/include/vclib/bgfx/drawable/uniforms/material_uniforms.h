@@ -57,9 +57,7 @@ class MaterialUniforms
     // settings packed in a vec4
     // .x : pbr settings
     // .y : texture settings
-    // .z : tone mapping operator
-    // .w : exposure
-    std::array<float, 4> mSettings = {0.0, 0.0, 2.0, 1.0};
+    std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
@@ -94,7 +92,6 @@ public:
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
         bool                                vertexTangentAvailable,
-        const PBRViewerSettings&            pbrSettings,
         const DrawableEnvironment*          environment)
     {
         uint pbrSettingBits = 0;
@@ -127,8 +124,6 @@ public:
         }
 
         mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
-        mSettings[2] =
-            Uniform::uintBitsToFloat(toUnderlying(pbrSettings.toneMapping));
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();
