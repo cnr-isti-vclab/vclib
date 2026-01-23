@@ -44,7 +44,7 @@ SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
 uniform vec4 u_dataPack;
-#define specularMipCount u_dataPack.x
+#define specularMipCount u_dataPack.y
 
 void main()
 {

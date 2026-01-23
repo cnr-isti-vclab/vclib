@@ -26,4 +26,16 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
+//uniform vec4 u_dataPack;
+
+//#define u_exposure u_dataPack.x
+//#define u_roughness u_dataPack.z
+//#define u_cubeSideResolution u_dataPack.w
+
+// most 16 significant bits of floatBitsToUint(u_dataPack.y)
+//#define u_toneMapping uint ((floatBitsToUint(u_dataPack.y) >> 16) & 0x0000FFFFu)
+
+// less 16 significant bits of floatBitsToUint(u_dataPack.y)
+//#define u_specularMipLevels uint (floatBitsToUint(u_dataPack.y) & 0x0000FFFFu)
+
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH

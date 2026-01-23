@@ -30,8 +30,8 @@ $input v_texcoord0
 SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 
 uniform vec4 u_dataPack;
-#define toneMapping int(u_dataPack.x)
-#define exposure u_dataPack.y
+#define exposure u_dataPack.x
+#define toneMapping int(u_dataPack.y)
 
 void main()
 {

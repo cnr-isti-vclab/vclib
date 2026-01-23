@@ -73,7 +73,7 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        bindDataUniform(float(settings.toneMapping), settings.exposure);
+        bindDataUniform(settings.exposure, float(settings.toneMapping));
 
         mVertexBuffer.bindVertex(0);
 
@@ -384,7 +384,7 @@ void DrawableEnvironment::generateTextures(
     mIrradianceTexture.bindForCompute(
         1, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-    bindDataUniform(float(cubeSide));
+    bindDataUniform(0,0,0, float(cubeSide));
 
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
@@ -414,7 +414,7 @@ void DrawableEnvironment::generateTextures(
         mSpecularTexture.bindForCompute(
             1, mip, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-        bindDataUniform(roughness, float(cubeSide));
+        bindDataUniform(0,0,roughness, float(cubeSide));
 
         bgfx::dispatch(
             viewId,

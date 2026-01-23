@@ -24,6 +24,7 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 namespace vcl {
 
@@ -41,6 +42,30 @@ class DrawableEnvironmentUniforms
 
 public:
     DrawableEnvironmentUniforms() = default;
+
+    void updateExposure(float exposure) const { mData[0] = exposure; }
+
+    void updateToneMapping(PBRViewerSettings::ToneMapping tm) const
+    {
+        uint toneMapping = toUnderlying(tm);
+        // shift to the higher 16 bits
+        toneMapping = toneMapping << 16;
+
+        uint dt = Uniform::floatToUintBits(mData[1]);
+        dt = (dt & 0x0000FFFF) | toneMapping;
+        mData[1] = Uniform::uintBitsToFloat(dt);
+    }
+
+    void updateSpecularMipsLevels(uint8_t specMips) const
+    {
+        uint dt = Uniform::floatToUintBits(mData[1]);
+        dt = (dt & 0xFFFF0000) | specMips;
+        mData[1] = Uniform::uintBitsToFloat(dt);
+    }
+
+    void updateRoughness(float roughness) const { mData[2] = roughness; }
+
+    void updateCubeSideResolution(float cubeSide) const { mData[3] = cubeSide; }
 
     void update(float a, float b, float c, float d) const
     {
