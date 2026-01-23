@@ -125,7 +125,6 @@ public:
 
     void bindDataUniform(
         const float d1 = 0.0f,
-        const float d2 = 0.0f,
         const float d3 = 0.0f) const;
 
     /**

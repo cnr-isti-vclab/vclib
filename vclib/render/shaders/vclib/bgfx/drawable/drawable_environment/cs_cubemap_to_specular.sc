@@ -25,7 +25,6 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(i_specular, rgba32f, 1);
 
-#define roughness u_dataPack.z
 #define sourceResolution u_dataPack.w
 
 NUM_THREADS(8, 8, 1)
@@ -66,7 +65,7 @@ void main()
             SAMPLE_COUNT, 
             N, 
             DISTRIBUTION_GGX,
-            roughness
+            u_roughness
         );
 
         vec3 H = sample.xyz;
@@ -79,7 +78,7 @@ void main()
 
         if(NoL > 0.0)
         {
-            if(roughness == 0.0) 
+            if(u_roughness == 0.0)
                 mipLevel = 0.0;
 
             vec3 sampleColor = textureCubeLod(s_env0, leftHand(L), mipLevel).rgb;

@@ -67,10 +67,9 @@ public:
 
     void updateCubeSideResolution(float cubeSide) const { mData[3] = cubeSide; }
 
-    void update(float b, float c, float d) const
+    void update(float b, float d) const
     {
         mData[1] = b;
-        mData[2] = c;
         mData[3] = d;
     }
 
