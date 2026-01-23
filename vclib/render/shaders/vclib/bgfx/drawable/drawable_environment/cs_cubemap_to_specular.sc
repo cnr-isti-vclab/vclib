@@ -25,7 +25,6 @@
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(i_specular, rgba32f, 1);
 
-uniform vec4 u_dataPack;
 #define roughness u_dataPack.z
 #define sourceResolution u_dataPack.w
 

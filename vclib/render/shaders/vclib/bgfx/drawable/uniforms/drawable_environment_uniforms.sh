@@ -26,7 +26,7 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
-//uniform vec4 u_dataPack;
+uniform vec4 u_dataPack;
 
 //#define u_exposure u_dataPack.x
 //#define u_roughness u_dataPack.z

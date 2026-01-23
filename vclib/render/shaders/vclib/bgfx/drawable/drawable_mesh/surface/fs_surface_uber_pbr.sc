@@ -25,6 +25,8 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
+#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -43,7 +45,6 @@ SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
-uniform vec4 u_dataPack;
 #define specularMipCount u_dataPack.y
 
 void main()

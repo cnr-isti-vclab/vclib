@@ -29,7 +29,6 @@ $input v_texcoord0
 // textures
 SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 
-uniform vec4 u_dataPack;
 #define exposure u_dataPack.x
 #define toneMapping int(u_dataPack.y)
 
