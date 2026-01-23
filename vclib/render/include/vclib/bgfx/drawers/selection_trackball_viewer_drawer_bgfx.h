@@ -310,6 +310,66 @@ public:
     }
 
 private:
+    SelectionBox calculateWindowSpaceMeshBB() {
+        Box3d totalBB;
+        for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+            auto el = ParentViewer::mDrawList->at(i);
+            if (!dynamic_cast<Selectable*>(el.get())) {
+                continue;
+            }
+            Box3d bb = el->boundingBox();
+            if (bb.isNull()) {
+                continue;
+            }
+            Point4d center{0.0, 0.0, 0.0, 1.0};
+            {
+                Point3d temp = bb.center();
+                center.x() = temp.x();
+                center.y() = temp.y();
+                center.x() = temp.z();
+            }
+            center = TED::projectionMatrix() * TED::viewMatrix() * center;
+            center /= center.w();
+            if (
+                abs(center.x()) > 1
+                || abs(center.y()) > 1
+                || abs(center.z()) > 1
+            ) {
+                continue;
+            }
+            totalBB.add(bb);
+        }
+        SelectionBox box{std::nullopt, std::nullopt};
+        if (totalBB.isNull()) {
+            return box;
+        }
+        // The view transformation preserves lengths, so we don't need to do anything to the "sphere's radius"
+        double radius = totalBB.diagonal();
+        Point4d camSpaceCenter = TED::viewMatrix() * totalBB.center();
+        auto viewFrame = TED::viewMatrix().inverse();
+        auto xAx = viewFrame.col(0);
+        auto yAx = viewFrame.col(1);
+        auto zAx = viewFrame.col(2);
+        // We find the points of the front face of the sphere's bounding box aligned with the camera's axis
+        // Since the camera "looks" towards -Z, higher Z = closer to the camera (which is why we do +zAx)
+        Point4d boxPts[2] = {
+            TED::projectionMatrix() * (camSpaceCenter + (+xAx -yAx +zAx) * radius),
+            TED::projectionMatrix() * (camSpaceCenter + (-xAx +yAx +zAx) * radius)
+        };
+        for (Point4d& p: boxPts) {
+            p /= p.w();
+        }
+        uint width = ((DerivedRenderApp*) this)->width();
+        uint height = ((DerivedRenderApp*) this)->height();
+        Point2d sSpace[2];
+        for (size_t i = 0; i < 2; i++) {
+            sSpace[i] =  Point2d{(boxPts[i].x() + 1)/2 * double(width), (1 - boxPts[i].y())/2 * double(height)};
+        }
+        box.set1(sSpace[0]);
+        box.set2(sSpace[1]);
+        return box.toMinAndMax();
+    }
+
     void updateDrawableTrackball()
     {
         auto v = ParentViewer::gizmoMatrix();

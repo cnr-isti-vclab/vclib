@@ -35,13 +35,36 @@ class SelectionBox
     using ArrayType = std::array<std::optional<Point2d>, 2>;
     std::array<std::optional<Point2d>, 2> mPoints = {std::nullopt, std::nullopt};
 
+    bool xIntersectionExists(const SelectionBox& box) const& {
+        return
+            // xMin of first box is before xMax of second box and xMax of first box is after xMin of second box
+            (get1().value().x() <= box.get2().value().x() && get2().value().x() >= box.get1().value().x())
+            // OR (xMin of second box is before xMax of first box and xMax of second box is after xMin of first box)
+            || (box.get1().value().x() <= get2().value().x() && box.get2().value().x() >= get1().value().x());
+    }
+
+    bool yIntersectionExists(const SelectionBox& box) const& {
+        return
+            // yMin of first box is before yMax of second box and yMax of first box is after yMin of second box
+            (get1().value().y() <= box.get2().value().y() && get2().value().y() >= box.get1().value().y())
+            // OR (yMin of second box is before yMax of first box and yMax of second box is after yMin of first box)
+            || (box.get1().value().y() <= get2().value().y() && box.get2().value().y() >= get1().value().y());
+    }
+
+    bool intersectionExists(const SelectionBox& box) const& {
+        if (anyNull() || box.anyNull()) {
+            return false;
+        }
+        // Boxes intersect if their coordinates interect both in the X and Y axis
+        return xIntersectionExists(box) && yIntersectionExists(box);
+    }
 public:
     SelectionBox() {}
 
     SelectionBox(ArrayType arr) { mPoints = arr; }
 
     SelectionBox toMinAndMax() const {
-        if (!mPoints[0].has_value() || !mPoints[1].has_value()) {
+        if (anyNull()) {
             return *this;
         }
         Point2d p1 = mPoints[0].value();
@@ -49,6 +72,21 @@ public:
         Point2d newp1 = {min(p1.x(), p2.x()), min(p1.y(), p2.y())};
         Point2d newp2 = {max(p1.x(), p2.x()), max(p1.y(), p2.y())};
         return SelectionBox(ArrayType{std::make_optional(newp1), std::make_optional(newp2)});
+    }
+
+    SelectionBox intersect(const SelectionBox& other) const& {
+        SelectionBox b1 = toMinAndMax();
+        SelectionBox b2 = other.toMinAndMax();
+        SelectionBox ret;
+        if (!b1.intersectionExists(b2)) {
+            return ret;
+        }
+        // We exclude the case of NO INTERSECTION, therefore:
+        //     - minimum point of the intersection is comprised of the biggest coordinates of the two boxes' minimum points
+        //     - maximum point of the intersection is comprised of the smallest coordinates of the two boxes' maximum points
+        ret.set1(Point2d{std::max(b1.get1().value().x(), b2.get1().value().x()), std::max(b1.get1().value().y(), b2.get1().value().y())});
+        ret.set2(Point2d{std::min(b1.get2().value().x(), b2.get2().value().x()), std::min(b1.get2().value().y(), b2.get2().value().y())});
+        return ret;
     }
 
     std::optional<Point2d> get1() const {
