@@ -20,15 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_SH
+#define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
-uniform vec4 u_environmentSettingsPack;
+uniform vec4 u_viewerSettingsPack;
 
-#define u_roughness u_environmentSettingsPack.x
-#define u_cubeSideResolution u_environmentSettingsPack.y
+#define u_exposure u_viewerSettingsPack.x
+#define u_toneMapping floatBitsToUint(u_viewerSettingsPack.y)
+#define u_specularMipLevels floatBitsToUint(u_viewerSettingsPack.z)
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_SH

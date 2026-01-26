@@ -22,7 +22,8 @@
 
 $input v_texcoord0
 
-#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
+//#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 

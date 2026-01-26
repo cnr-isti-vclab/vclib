@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,15 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
+#define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
 
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/pbr_common.sh>
+#include <vclib/bgfx/uniform.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
-uniform vec4 u_environmentSettingsPack;
+namespace vcl {
 
-#define u_roughness u_environmentSettingsPack.x
-#define u_cubeSideResolution u_environmentSettingsPack.y
+class ViewerDrawerUniforms
+{
+    mutable std::array<float, 4> mData = {
+        0.0, // exposure
+        0.0, // tone mapping
+        0.0, // specular mip levels
+        0.0  // unused
+    };
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+    Uniform mDataUniform =
+        Uniform("u_viewerSettingsPack", bgfx::UniformType::Vec4);
+
+public:
+    ViewerDrawerUniforms() = default;
+
+    void updateExposure(float exposure) const { mData[0] = exposure; }
+
+    void updateToneMapping(PBRViewerSettings::ToneMapping tm) const
+    {
+        mData[1] = Uniform::uintBitsToFloat(toUnderlying(tm));
+    }
+
+    void updateSpecularMipsLevels(uint8_t specMips)
+    {
+        mData[2] = Uniform::uintBitsToFloat(uint(specMips));
+    }
+
+    void bind() const { mDataUniform.bind(mData.data()); }
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H

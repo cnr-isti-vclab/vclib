@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 
+#include "uniforms/viewer_drawer_uniforms.h"
+
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
@@ -37,6 +39,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
     DirectionalLightUniforms mDirectionalLightUniforms;
+    ViewerDrawerUniforms     mViewerDrawerUniforms;
 
     // flags
     bool mStatsEnabled = false;
@@ -79,12 +82,18 @@ public:
 
     void onDrawContent(uint viewId) override
     {
+        mViewerDrawerUniforms.updateExposure(mPBRSettings.exposure);
+        mViewerDrawerUniforms.updateToneMapping(mPBRSettings.toneMapping);
+        mViewerDrawerUniforms.updateSpecularMipsLevels(
+            mPanorama.specularMipLevels());
+
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
         settings.pbrSettings = mPBRSettings;
 
         settings.environment = &mPanorama;
+        settings.viewerUniforms = &mViewerDrawerUniforms;
 
         setViewTransform(viewId);
 
@@ -92,6 +101,7 @@ public:
         mDirectionalLightUniforms.bind();
 
         // background will be drawn only if settings allow it
+        mViewerDrawerUniforms.bind();
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);

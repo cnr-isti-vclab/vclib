@@ -73,9 +73,6 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        mDataUniforms.updateToneMapping(settings.toneMapping);
-        mDataUniforms.updateExposure(settings.exposure);
-
         mVertexBuffer.bindVertex(0);
 
         bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
@@ -218,13 +215,11 @@ void DrawableEnvironment::setAndGenerateTextures(
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
 
-    uint8_t specularMips = bimg::imageGetNumMips(
-                        bimg::TextureFormat::RGBA32F,
-                        irrSpecCubeSide,
-                        irrSpecCubeSide) /
-                    2; // ignore too low mips
-
-    mDataUniforms.updateSpecularMipsLevels(specularMips);
+    mSpecularMipLevels = bimg::imageGetNumMips(
+                             bimg::TextureFormat::RGBA32F,
+                             irrSpecCubeSide,
+                             irrSpecCubeSide) /
+                         2; // ignore too low mips
 
     if (!image.m_cubeMap) { // equirect
         mHdrTexture.set(
@@ -284,7 +279,7 @@ void DrawableEnvironment::setAndGenerateTextures(
         BGFX_TEXTURE_COMPUTE_WRITE | BGFX_TEXTURE_RT,
         bgfx::TextureFormat::RGBA32F);
 
-    generateTextures(image, cubeSide, cubeMips, specularMips, viewId);
+    generateTextures(image, cubeSide, cubeMips, viewId);
 }
 
 /**
@@ -298,7 +293,6 @@ void DrawableEnvironment::generateTextures(
     const bimg::ImageContainer& image,
     uint                        cubeSide,
     uint8_t                     cubeMips,
-    uint8_t                     specularMips,
     uint                        viewId)
 {
     using enum ComputeProgram;
@@ -384,10 +378,10 @@ void DrawableEnvironment::generateTextures(
 
     // create specular map from cubemap
 
-    for (uint8_t mip = 0; mip < specularMips; ++mip) {
+    for (uint8_t mip = 0; mip < mSpecularMipLevels; ++mip) {
         const uint32_t mipSize = ceilDiv(irrSpecCubeSide, 1 << mip);
         const float    roughness =
-            static_cast<float>(mip) / static_cast<float>(specularMips - 1);
+            static_cast<float>(mip) / static_cast<float>(mSpecularMipLevels - 1);
 
         // ensure at least 1 threadgroup is dispatched for small mips
         // assuming the compute shader uses 8x8 threads per group

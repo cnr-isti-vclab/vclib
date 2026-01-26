@@ -61,6 +61,8 @@ class DrawableEnvironment
     const Uniform mBrdfLutSamplerUniform =
         Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
 
+    uint8_t mSpecularMipLevels = 0;
+
     DrawableEnvironmentUniforms mDataUniforms;
 
     Texture mHdrTexture;
@@ -99,6 +101,7 @@ public:
     void swap(DrawableEnvironment& other)
     {
         using std::swap;
+        swap(mSpecularMipLevels, other.mSpecularMipLevels);
         swap(mDataUniforms, other.mDataUniforms);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
@@ -111,6 +114,8 @@ public:
     {
         first.swap(second);
     }
+
+    uint8_t specularMipLevels() const { return mSpecularMipLevels; }
 
     void drawBackground(uint viewId, const PBRViewerSettings& settings) const;
 
@@ -138,7 +143,6 @@ private:
         const bimg::ImageContainer& image,
         uint                        cubeSide,
         uint8_t                     cubeMips,
-        uint8_t                     specularMips,
         uint                        viewId);
 
     static vcl::VertexBuffer fullScreenTriangle();

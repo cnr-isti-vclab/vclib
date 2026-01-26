@@ -31,6 +31,7 @@ namespace vcl {
 
 // Forward declaration of DrawableEnvironment
 class DrawableEnvironment;
+class ViewerDrawerUniforms;
 
 /**
  * @brief A simple struct containing the settings to draw a drawable object
@@ -47,6 +48,8 @@ struct DrawObjectSettingsBGFX
     PBRViewerSettings pbrSettings;
 
     const DrawableEnvironment* environment = nullptr;
+
+    const ViewerDrawerUniforms* viewerUniforms = nullptr;
 };
 
 } // namespace vcl

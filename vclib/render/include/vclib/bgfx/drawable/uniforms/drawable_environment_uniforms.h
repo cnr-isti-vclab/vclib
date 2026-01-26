@@ -31,10 +31,10 @@ namespace vcl {
 class DrawableEnvironmentUniforms
 {
     mutable std::array<float, 4> mData = {
-        0.0, // exposure
-        0.0, // 16 bits tone mapping, 16 bits specular mip levels
         0.0, // roughness
-        0.0  // cube side
+        0.0, // cube side
+        0.0,
+        0.0
     };
 
     Uniform mDataUniform =
@@ -43,28 +43,9 @@ class DrawableEnvironmentUniforms
 public:
     DrawableEnvironmentUniforms() = default;
 
-    void updateExposure(float exposure) const { mData[0] = exposure; }
+    void updateRoughness(float roughness) { mData[0] = roughness; }
 
-    void updateToneMapping(PBRViewerSettings::ToneMapping tm) const
-    {
-        // shift to the higher 16 bits
-        uint toneMapping = toUnderlying(tm) << 16;
-
-        uint dt = Uniform::floatToUintBits(mData[1]);
-        dt = (dt & 0x0000FFFF) | toneMapping;
-        mData[1] = Uniform::uintBitsToFloat(dt);
-    }
-
-    void updateSpecularMipsLevels(uint8_t specMips)
-    {
-        uint dt = Uniform::floatToUintBits(mData[1]);
-        dt = (dt & 0xFFFF0000) | specMips;
-        mData[1] = Uniform::uintBitsToFloat(dt);
-    }
-
-    void updateRoughness(float roughness) { mData[2] = roughness; }
-
-    void updateCubeSideResolution(float cubeSide) { mData[3] = cubeSide; }
+    void updateCubeSideResolution(float cubeSide) { mData[1] = cubeSide; }
 
     void bind() const { mDataUniform.bind(mData.data()); }
 };

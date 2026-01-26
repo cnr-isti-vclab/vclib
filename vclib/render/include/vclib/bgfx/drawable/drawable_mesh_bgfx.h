@@ -29,6 +29,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
 
 #include <bgfx/bgfx.h>
 
@@ -217,6 +218,7 @@ public:
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const DrawableEnvironment* env = settings.environment;
+            const ViewerDrawerUniforms* vdu = settings.viewerUniforms;
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
@@ -224,9 +226,8 @@ public:
                     mMRB.bindMaterials(mMRS, i, *this, env);
 
                 bindUniforms();
-                if (settings.pbrSettings.pbrMode && env != nullptr &&
-                    env->canDraw()) {
-                    env->bindUniforms();
+                if (settings.pbrSettings.pbrMode && vdu != nullptr) {
+                    vdu->bind();
                 }
 
                 // Bind textures before vertex buffers!!
