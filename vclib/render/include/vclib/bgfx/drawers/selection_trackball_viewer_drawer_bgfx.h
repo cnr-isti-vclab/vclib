@@ -377,6 +377,36 @@ private:
         return box.toMinAndMax();
     }
 
+    void ___temp() {
+        // We calculate the near plane
+        Point4d camCenter;
+        camCenter << TED::camera().center().cast <double>(), 1.0;
+        Point4d camEye;
+        camEye << TED::camera().eye().cast <double>(), 1.0;
+        Point4d nearNormal = (camEye - camCenter).normalized();
+        Point4d camCenterOnNear = camCenter + nearNormal * double(TED::camera().nearPlane());
+
+        Point4d sphereCenter;
+        sphereCenter << totalBB.center(), 1.0;
+        
+        Point4d dVec = sphereCenter - camCenter;
+        double d = dVec.norm();
+        dVec.normalize();
+
+        double denom = nearNormal.dot(dVec);
+        double t;
+        if (abs(denom) > 0.00001f) {
+            t = (sphereCenter - camCenter).dot(nearNormal) / denom;
+        } else {
+            return box;
+        }
+        Point4d sphereCenterOnNear = camCenter * (1.0 - t) + sphereCenter * t;
+        double radius = totalBB.diagonal();
+        double sinTeta = radius / d;
+        double delta = sinTeta * (sphereCenterOnNear - sphereCenter).norm();
+    }
+
+
     void updateDrawableTrackball()
     {
         auto v = ParentViewer::gizmoMatrix();
