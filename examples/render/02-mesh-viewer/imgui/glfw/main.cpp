@@ -62,5 +62,7 @@ int main(int argc, char** argv)
 
     tw.show();
 
+    vcl::glfw::GLFWApplication::instance().executeMainLoop();
+
     return 0;
 }

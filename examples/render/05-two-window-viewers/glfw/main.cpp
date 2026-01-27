@@ -61,5 +61,5 @@ int main(int argc, char** argv)
 
     viewer2.show();
 
-    return vcl::glfw::GLFWApplication::instance().exec();
+    return vcl::glfw::GLFWApplication::exec();
 }

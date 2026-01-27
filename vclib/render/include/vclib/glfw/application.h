@@ -51,7 +51,10 @@ public:
     void unregisterWindow(WindowManagerBase* win);
 
     // Main event/render loop
-    int exec();
+    int executeMainLoop();
+
+    // Static version of executeMainLoop()
+    static int exec();
 
     // Number of open windows
     size_t windowCount() const;

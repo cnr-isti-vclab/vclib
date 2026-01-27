@@ -37,5 +37,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return vcl::glfw::GLFWApplication::exec();
 }

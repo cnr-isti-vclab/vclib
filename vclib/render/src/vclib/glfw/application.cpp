@@ -110,6 +110,10 @@ size_t GLFWApplication::windowCount() const {
 }
 
 int GLFWApplication::exec() {
+    return instance().executeMainLoop();
+}
+
+int GLFWApplication::executeMainLoop() {
     while (!mWindows.empty()) {
         glfwPollEvents();
         std::erase_if(mWindows, [](WindowManagerBase* win) {
