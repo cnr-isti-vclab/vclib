@@ -41,24 +41,15 @@
 #define GLFW_EXPOSE_NATIVE_COCOA
 #endif
 
-#include <GLFW/glfw3.h>
+#include <vclib/glfw/application.h>
 #include <GLFW/glfw3native.h>
 
 #include <iostream>
 
 namespace vcl::glfw {
 
-namespace detail {
-
-inline void glfwErrorCallback(int error, const char* description)
-{
-    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
-}
-
-} // namespace detail
-
 template<typename DerivedRenderApp>
-class WindowManager
+class WindowManager : public WindowManagerBase
 {
     std::string mTitle;
 
@@ -108,11 +99,8 @@ public:
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
-        glfwSetErrorCallback(detail::glfwErrorCallback);
-        if (!glfwInit()) {
-            std::cerr << "Failed to initialize GLFW" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        // Register with GLFWApplication
+        auto & glfwApp = GLFWApplication::instance();
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -132,7 +120,6 @@ public:
             width, height, windowTitle.c_str(), nullptr, nullptr);
         if (!mWindow) {
             std::cerr << "Failed to create GLFW window" << std::endl;
-            glfwTerminate();
             exit(EXIT_FAILURE);
         }
 
@@ -142,12 +129,18 @@ public:
 
         // get content scale (e.g. for macOS retina displays)
         glfwGetWindowContentScale(mWindow, &mScaleX, &mScaleY);
+        
+        // Register with GLFWApplication
+        glfwApp.registerWindow(this);
 
-        glfwSetWindowUserPointer(mWindow, this);
-        setCallbacks();
+        DerivedRenderApp::WM::init(derived());
     }
 
-    virtual ~WindowManager() { cleanup(); }
+    virtual ~WindowManager() {
+        // Unregister from GLFWApplication
+        GLFWApplication::instance().unregisterWindow(this);
+        cleanup();
+    }
 
     const std::string& windowTitle() const { return mTitle; }
 
@@ -178,16 +171,7 @@ public:
 
     void show()
     {
-        DerivedRenderApp::WM::init(derived());
-        while (!glfwWindowShouldClose(mWindow)) {
-            glfwPollEvents();
-            DerivedRenderApp::WM::paint(derived());
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-            glfwSwapBuffers(mWindow);
-#endif
-        }
-        // Window was closed by user, clean up
-        cleanup();
+        glfwShowWindow(mWindow);
     }
 
     /**
@@ -202,8 +186,8 @@ public:
 
     // required by the WindowManagerConcept
     // because when the Canvas draws, then it requires the WindowManger to
-    // update. Here is empty because the show() method does and manages
-    // internally the loop.
+    // update. Here is empty because the GLFWApplication manages the drawing
+    // loop.
     void update() {}
 
     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
@@ -238,6 +222,47 @@ public:
 #endif
 #endif
         return ndt;
+    }
+
+    // WindowManagerBase interface implementation
+    void paint() override {
+        DerivedRenderApp::WM::paint(derived());
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        glfwSwapBuffers(mWindow);
+#endif
+    }
+
+    bool shouldClose() const override {
+        return glfwWindowShouldClose(mWindow);
+    }
+
+    GLFWwindow* glfwWindow() const override {
+        return mWindow;
+    }
+
+    // WindowManagerBase GLFW callback interface implementation
+    void onGlfwFramebufferSize(int width, int height) override {
+        glfwFramebufferSizeCallback(mWindow, width, height);
+    }
+
+    void onGlfwContentScale(float xscale, float yscale) override {
+        glfwContentScaleCallback(mWindow, xscale, yscale);
+    }
+
+    void onGlfwKey(int key, int scancode, int action, int mods) override {
+        glfwKeyCallback(mWindow, key, scancode, action, mods);
+    }
+
+    void onGlfwMouseButton(int button, int action, int mods) override {
+        glfwMouseButtonCallback(mWindow, button, action, mods);
+    }
+
+    void onGlfwCursorPos(double xpos, double ypos) override {
+        glfwCursorPosCallback(mWindow, xpos, ypos);
+    }
+
+    void onGlfwScroll(double xoffset, double yoffset) override {
+        glfwScrollCallback(mWindow, xoffset, yoffset);
     }
 
 protected:
@@ -302,6 +327,7 @@ protected:
 
         Point2d pos;
         Point2f scale;
+        assert(mWindow == win);
         glfwGetCursorPos(win, &pos.x(), &pos.y());
 #ifdef __APPLE__
         // only macOS has coherent coordinates with content scale
@@ -366,62 +392,6 @@ private:
             glfwDestroyWindow(mWindow);
             mWindow = nullptr;
         }
-    }
-
-    void setCallbacks()
-    {
-        // framebuffer size callback
-        glfwSetFramebufferSizeCallback(
-            mWindow, [](GLFWwindow* window, int width, int height) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwFramebufferSizeCallback(window, width, height);
-            });
-
-        // content scale callback
-        glfwSetWindowContentScaleCallback(
-            mWindow, [](GLFWwindow* window, float xscale, float yscale) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwContentScaleCallback(window, xscale, yscale);
-            });
-
-        // key callback
-        glfwSetKeyCallback(
-            mWindow,
-            [](GLFWwindow* window,
-               int         key,
-               int         scancode,
-               int         action,
-               int         mods) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwKeyCallback(window, key, scancode, action, mods);
-            });
-
-        // mouse position callback
-        glfwSetCursorPosCallback(
-            mWindow, [](GLFWwindow* window, double xpos, double ypos) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwCursorPosCallback(window, xpos, ypos);
-            });
-
-        // mouse button callback
-        glfwSetMouseButtonCallback(
-            mWindow, [](GLFWwindow* window, int button, int action, int mods) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwMouseButtonCallback(window, button, action, mods);
-            });
-
-        // scroll callback
-        glfwSetScrollCallback(
-            mWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
-                auto* self = static_cast<WindowManager*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwScrollCallback(window, xoffset, yoffset);
-            });
     }
 
     auto* derived() { return static_cast<DerivedRenderApp*>(this); }
