@@ -220,10 +220,12 @@ public:
             const DrawableEnvironment* env = settings.environment;
             const ViewerDrawerUniforms* vdu = settings.viewerUniforms;
 
+            bool iblEnabled = env != nullptr && env->canDraw();
+
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
                 uint64_t materialState =
-                    mMRB.bindMaterials(mMRS, i, *this, env);
+                    mMRB.bindMaterials(mMRS, i, *this, iblEnabled);
 
                 bindUniforms();
                 if (settings.pbrSettings.pbrMode && vdu != nullptr) {
@@ -232,13 +234,11 @@ public:
 
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
-                if (settings.pbrSettings.pbrMode) {
-                    if (env !=  nullptr && env->canDraw()) {
-                        using enum DrawableEnvironment::TextureType;
-                        env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
-                        env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
-                        env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
-                    }
+                if (settings.pbrSettings.pbrMode && iblEnabled) {
+                    using enum DrawableEnvironment::TextureType;
+                    env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
+                    env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
                 }
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);

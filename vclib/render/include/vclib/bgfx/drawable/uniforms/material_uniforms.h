@@ -92,7 +92,7 @@ public:
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
         bool                                vertexTangentAvailable,
-        const DrawableEnvironment*          environment)
+        bool                                imageBasedLighting)
     {
         uint pbrSettingBits = 0;
 
@@ -108,7 +108,7 @@ public:
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
-        if (environment != nullptr && environment->canDraw()) {
+        if (imageBasedLighting) {
             pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
         }
 

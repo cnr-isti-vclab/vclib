@@ -263,10 +263,10 @@ public:
      * @return the render state associated to the material
      */
     uint64_t bindMaterials(
-        const MeshRenderSettings&  mrs,
-        uint                       chunkNumber,
-        const MeshType&            m,
-        const DrawableEnvironment* environment) const
+        const MeshRenderSettings& mrs,
+        uint                      chunkNumber,
+        const MeshType&           m,
+        bool                      imageBasedLighting) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -281,7 +281,7 @@ public:
                 isPerVertexColorAvailable(m),
                 textureAvailable,
                 isPerVertexTangentAvailable(m),
-                environment);
+                imageBasedLighting);
         }
         else {
             using enum Material::AlphaMode;
@@ -295,7 +295,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    environment);
+                    imageBasedLighting);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -316,7 +316,7 @@ public:
                     isPerVertexColorAvailable(m),
                     textureAvailable,
                     isPerVertexTangentAvailable(m),
-                    environment);
+                    imageBasedLighting);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
