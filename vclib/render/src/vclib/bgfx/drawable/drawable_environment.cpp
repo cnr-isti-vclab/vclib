@@ -65,7 +65,7 @@ void DrawableEnvironment::drawBackground(
     uint                     viewId,
     const PBRViewerSettings& settings) const
 {
-    if (settings.pbrMode && settings.renderBackground && canDraw()) {
+    if (settings.pbrMode && settings.renderBackgroundPanorama && canDraw()) {
         using enum VertFragProgram;
         ProgramManager& pm = Context::instance().programManager();
 

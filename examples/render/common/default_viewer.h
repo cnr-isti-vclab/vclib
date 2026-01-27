@@ -117,7 +117,8 @@ void showMeshesOnViewer(
 
     if(!panorama.empty()) {
         viewer.setPanorama(panorama);
-        sts.renderBackground = true;
+        sts.imageBasedLighting       = true;
+        sts.renderBackgroundPanorama = true;
     }
     sts.pbrMode = pbrMode;
     viewer.setPbrSettings(sts);

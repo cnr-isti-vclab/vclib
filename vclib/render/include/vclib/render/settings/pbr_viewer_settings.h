@@ -57,10 +57,18 @@ struct PBRViewerSettings
     bool pbrMode = false;
 
     /**
+     * @brief Option that tells whether to use image based lighting (IBL)
+     * or not.
+     *
+     * @note this option is ignored if no panorame (environment map) is set.
+     */
+    bool imageBasedLighting = false;
+
+    /**
      * @brief Option that tells whether to render the background panorama or
      * not.
      */
-    bool renderBackground = false;
+    bool renderBackgroundPanorama = false;
 
     /**
      * @brief The exposure value to use in PBR mode.

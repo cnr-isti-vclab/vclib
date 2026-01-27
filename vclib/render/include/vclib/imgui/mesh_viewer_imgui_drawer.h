@@ -141,15 +141,26 @@ public:
                     ImGui::EndCombo();
                 }
 
+                // image based lighting
+                ImGui::Separator();
+                ImGui::Checkbox(
+                    "Image Based Lighting",
+                    [&]() {
+                        return pbrSettings.imageBasedLighting;
+                    },
+                    [&](bool ibl) {
+                        pbrSettings.imageBasedLighting = ibl;
+                    });
+
                 // draw background checkbox
                 ImGui::Separator();
                 ImGui::Checkbox(
-                    "Render Background",
+                    "Render Background Panorama",
                     [&]() {
-                        return pbrSettings.renderBackground;
+                        return pbrSettings.renderBackgroundPanorama;
                     },
                     [&](bool renderBg) {
-                        pbrSettings.renderBackground = renderBg;
+                        pbrSettings.renderBackgroundPanorama = renderBg;
                     });
             }
             Base::setPbrSettings(pbrSettings);
