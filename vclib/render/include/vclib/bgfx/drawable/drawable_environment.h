@@ -28,7 +28,6 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <vclib/base.h>

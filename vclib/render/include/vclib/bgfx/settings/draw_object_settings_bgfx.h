@@ -25,13 +25,11 @@
 
 #include <vclib/base.h>
 
+#include <vclib/bgfx/drawable/drawable_environment.h>
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 namespace vcl {
-
-// Forward declaration of DrawableEnvironment
-class DrawableEnvironment;
-class ViewerDrawerUniforms;
 
 /**
  * @brief A simple struct containing the settings to draw a drawable object
