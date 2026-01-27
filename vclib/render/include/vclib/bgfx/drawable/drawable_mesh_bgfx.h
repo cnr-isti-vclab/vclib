@@ -27,6 +27,7 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>

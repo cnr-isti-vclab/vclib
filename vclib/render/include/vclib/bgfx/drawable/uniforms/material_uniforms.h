@@ -23,10 +23,6 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
-// TODO: remove this include and add option for Image Based Lighting on
-// PBRSettings
-#include <vclib/bgfx/drawable/drawable_environment.h>
-
 #include <vclib/bgfx/drawable/mesh/pbr_macros.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
