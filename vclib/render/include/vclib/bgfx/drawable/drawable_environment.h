@@ -124,8 +124,6 @@ public:
         uint        stage,
         uint        samplerFlags = BGFX_SAMPLER_UVW_CLAMP) const;
 
-    void bindUniforms() const { mDataUniforms.bind(); }
-
     /**
      * @brief Checks if the environment is ready to be drawn.
      * @return true if the environment can be drawn, false otherwise.

@@ -60,7 +60,6 @@ DrawableEnvironment::DrawableEnvironment(
  * @brief Draws the environment in the background.
  * @param[in] viewId: The view ID to draw the background in.
  * @param[in] settings: The tone mapping operator to use.
- * @param[in] exposure: The exposure factor.
  */
 void DrawableEnvironment::drawBackground(
     uint                     viewId,
