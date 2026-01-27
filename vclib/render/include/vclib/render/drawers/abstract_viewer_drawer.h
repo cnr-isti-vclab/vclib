@@ -48,7 +48,6 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
     using DRA  = ViewProjEventDrawer::DRA;
 
     bool mReadRequested = false;
-    bool mPBRMode       = false;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -119,14 +118,6 @@ public:
 
         Base::fitScene(sceneCenter, sceneRadius);
     }
-
-    bool isPBREnabled() const { return mPBRMode; }
-
-    void setPBR(bool enable) { mPBRMode = enable; }
-
-    void enablePBR() { setPBR(true); }
-
-    void disablePBR() { setPBR(false); }
 
     void fitView()
     {
