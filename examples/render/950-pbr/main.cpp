@@ -34,20 +34,42 @@ int main(int argc, char** argv)
         METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
         METAL_ROUGH_SPHERES,
         NORMAL_TENGENT_MIRROR_TEST,
+        COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
-        COUNT
+        COUNT_EXAMPLES
     };
 
-    static const std::string GLTFExampleFilenames[COUNT] = {
+    static const std::string gltfExampleFilenames[COUNT_EXAMPLES] = {
         "/gltf/MetalRoughSpheresNoTextures/MetalRoughSpheresNoTextures.gltf",
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
+        "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
 
-    uint selectedExample = NORMAL_TENGENT_MIRROR_TEST;
+    uint selectedExample = METAL_ROUGH_SPHERES;
+
+    enum PanoramasExamples {
+        COLOSSEUM_HDR,
+        EARTH_CUBEMAP_DDS,
+        PISA_HDR,
+        UFFIZI_EXR,
+        UFFIZI_HDR,
+        UFFIZI_KTX,
+        COUNT_PANORAMAS
+    };
+
+    static const std::string panoramaExampleFilenames[COUNT_PANORAMAS] = {
+        "/panoramas/colosseum_4k.hdr",
+        "/panoramas/earth-cubemap.dds",
+        "/panoramas/pisa.hdr",
+        "/panoramas/uffizi.exr",
+        "/panoramas/uffizi.hdr",
+        "/panoramas/uffizi.ktx"};
+
+    uint selectedPanorama = UFFIZI_KTX;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
+        VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
 
     auto printTextureInfo = [&](const Material&       mat,
                                 Material::TextureType type) {
@@ -108,5 +130,10 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(argc, argv, std::move(meshes), true);
+    return showMeshesOnDefaultViewer(
+        argc,
+        argv,
+        std::move(meshes),
+        true,
+        VCLIB_ASSETS_PATH + panoramaExampleFilenames[selectedPanorama]);
 }

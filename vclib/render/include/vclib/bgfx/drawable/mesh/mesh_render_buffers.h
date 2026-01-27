@@ -35,6 +35,7 @@
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
@@ -264,7 +265,8 @@ public:
     uint64_t bindMaterials(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
-        const MeshType&           m) const
+        const MeshType&           m,
+        bool                      imageBasedLighting) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -278,7 +280,8 @@ public:
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(m),
                 textureAvailable,
-                isPerVertexTangentAvailable(m));
+                isPerVertexTangentAvailable(m),
+                imageBasedLighting);
         }
         else {
             using enum Material::AlphaMode;
@@ -291,7 +294,8 @@ public:
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m));
+                    isPerVertexTangentAvailable(m),
+                    imageBasedLighting);
             }
             else {
                 assert(materialId < m.materialsNumber());
@@ -311,7 +315,8 @@ public:
                     m.material(materialId),
                     isPerVertexColorAvailable(m),
                     textureAvailable,
-                    isPerVertexTangentAvailable(m));
+                    isPerVertexTangentAvailable(m),
+                    imageBasedLighting);
 
                 // set the state according to the material
                 if (!m.material(materialId).doubleSided()) {
@@ -652,6 +657,8 @@ private:
                 vcl::Point2i(img.width(), img.height()),
                 generateMips,
                 flags,
+                bgfx::TextureFormat::RGBA8,
+                false,
                 releaseFn);
 
             // at() does not insert if already present, thus safe in parallel

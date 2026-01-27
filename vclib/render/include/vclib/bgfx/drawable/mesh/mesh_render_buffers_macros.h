@@ -33,6 +33,9 @@
 
 #define VCL_MRB_PRIMITIVE_COLOR_BUFFER  0
 #define VCL_MRB_PRIMITIVE_NORMAL_BUFFER 1
+#define VCL_MRB_CUBEMAP0                2
+#define VCL_MRB_CUBEMAP1                3
+#define VCL_MRB_CUBEMAP2                4
 
 #define VCL_MRB_TEXTURE0 8
 #define VCL_MRB_TEXTURE1 9
