@@ -161,10 +161,11 @@ public:
     //   don't even bother drawing the object (not sure about how useful this would be given that clipping is already a thing)
     // - Might be worth to calculate the window space box that contains all of the valid objects and intersect it with the selection box, to further
     //   reduce the "rendering area" (and therefore have a more accurate result even at greater distances)
-    void setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
+    bool setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
     {
-        using PM = Camera<float>::ProjectionMode;
-
+        if (box.anyNull()) {
+            return false;
+        }
         // We limit the projection to the selection box so that the pass itself
         // does the selection for us
         uint    win_w  = ((DerivedRenderApp*) this)->width();
@@ -196,8 +197,8 @@ public:
                 {0.f, 0.f, 0.f, 1.f}
             };
         Matrix44f newProj = scl * trns * TED::projectionMatrix();
-        float* view = TED::viewMatrix().data();
-        bgfx::setViewTransform(mVisibleSelectionViewIds[0], view, newProj.data());
+        bgfx::setViewTransform(mVisibleSelectionViewIds[0], TED::viewMatrix().data(), newProj.data());
+        return true;
     }
 
     void onDraw(uint viewId) override
@@ -212,27 +213,30 @@ public:
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
             }
+            bool skipSelection = false;
             SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
             if (ParentViewer::selectionMode().isVisibleSelection()) {
-                setVisibleTrisSelectionProjViewMatrix(mBoxToDraw.toMinAndMax());
+                skipSelection = !setVisibleTrisSelectionProjViewMatrix(calculateWindowSpaceMeshBB().intersect(mBoxToDraw.toMinAndMax()));
             }
-            SelectionParameters params = SelectionParameters{
-                viewId,
-                mVisibleSelectionViewIds[0],
-                mVisibleSelectionViewIds[1],
-                minMaxBox,
-                ParentViewer::selectionMode(),
-                ParentViewer::isSelectionTemporary(),
-                bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-                bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                std::array<uint, 2>{sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
-                0
-            };
-            for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-                params.meshId = uint(i+1);
-                auto el = ParentViewer::mDrawList->at(i);
-                if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                    p->calculateSelection(params);
+            if (!skipSelection) {
+                SelectionParameters params = SelectionParameters{
+                    viewId,
+                    mVisibleSelectionViewIds[0],
+                    mVisibleSelectionViewIds[1],
+                    minMaxBox,
+                    ParentViewer::selectionMode(),
+                    ParentViewer::isSelectionTemporary(),
+                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
+                    std::array<uint, 2>{sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                    0
+                };
+                for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+                    params.meshId = uint(i+1);
+                    auto el = ParentViewer::mDrawList->at(i);
+                    if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                        p->calculateSelection(params);
+                    }
                 }
             }
             ParentViewer::selectionCalculated();
@@ -311,9 +315,11 @@ public:
 
 private:
     SelectionBox calculateWindowSpaceMeshBB() {
+        Matrix44d vMat = TED::viewMatrix().cast <double>();
+        Matrix44d pMat = TED::projectionMatrix().cast <double>();
         Box3d totalBB;
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-            auto el = ParentViewer::mDrawList->at(i);
+            std::shared_ptr<DrawableObject> el = ParentViewer::mDrawList->at(i);
             if (!dynamic_cast<Selectable*>(el.get())) {
                 continue;
             }
@@ -326,9 +332,9 @@ private:
                 Point3d temp = bb.center();
                 center.x() = temp.x();
                 center.y() = temp.y();
-                center.x() = temp.z();
+                center.z() = temp.z();
             }
-            center = TED::projectionMatrix() * TED::viewMatrix() * center;
+            center = pMat * vMat * center;
             center /= center.w();
             if (
                 abs(center.x()) > 1
@@ -339,22 +345,23 @@ private:
             }
             totalBB.add(bb);
         }
-        SelectionBox box{std::nullopt, std::nullopt};
+        SelectionBox box;
         if (totalBB.isNull()) {
             return box;
         }
-        // The view transformation preserves lengths, so we don't need to do anything to the "sphere's radius"
+        Point4d center4;
+        center4 << totalBB.center(), 1.0;
+        //camSpaceCenter = vMat * camSpaceCenter;
         double radius = totalBB.diagonal();
-        Point4d camSpaceCenter = TED::viewMatrix() * totalBB.center();
-        auto viewFrame = TED::viewMatrix().inverse();
-        auto xAx = viewFrame.col(0);
-        auto yAx = viewFrame.col(1);
-        auto zAx = viewFrame.col(2);
+        Matrix44d viewFrame = vMat.inverse();
+        Point4d xAx = viewFrame.col(0);
+        Point4d yAx = viewFrame.col(1);
+        Point4d zAx = viewFrame.col(2);
         // We find the points of the front face of the sphere's bounding box aligned with the camera's axis
         // Since the camera "looks" towards -Z, higher Z = closer to the camera (which is why we do +zAx)
         Point4d boxPts[2] = {
-            TED::projectionMatrix() * (camSpaceCenter + (+xAx -yAx +zAx) * radius),
-            TED::projectionMatrix() * (camSpaceCenter + (-xAx +yAx +zAx) * radius)
+            pMat * vMat * (center4 + (xAx -yAx +zAx).normalized() * radius),
+            pMat * vMat * (center4 + (-xAx +yAx +zAx).normalized() * radius)
         };
         for (Point4d& p: boxPts) {
             p /= p.w();
