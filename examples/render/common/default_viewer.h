@@ -113,11 +113,14 @@ void showMeshesOnViewer(
     viewer.setDrawableObjectVector(vector);
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
+    auto sts = viewer.pbrSettings();
+
     if(!panorama.empty()) {
         viewer.setPanorama(panorama);
+        sts.renderBackground = true;
     }
-
-    viewer.setPBR(pbrMode);
+    sts.pbrMode = pbrMode;
+    viewer.setPbrSettings(sts);
 #endif
 
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW

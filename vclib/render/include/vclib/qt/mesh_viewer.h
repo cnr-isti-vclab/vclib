@@ -28,6 +28,7 @@
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <QWidget>
 
@@ -88,13 +89,9 @@ public:
 
     void showRenderModeSelector(bool show);
 
-    bool isPBREnabled() const;
+    void setPbrSettings(const PBRViewerSettings& settings);
 
-    void setPBR(bool enable);
-
-    void enablePBR();
-
-    void disablePBR();
+    const PBRViewerSettings& pbrSettings() const;
 
     void setPanorama(const std::string& panorama);
 

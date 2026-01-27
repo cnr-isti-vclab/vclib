@@ -85,8 +85,11 @@ public:
             ImGui::Separator();
             ImGui::Text("Render Mode:");
             ImGui::SameLine();
+
+            PBRViewerSettings pbrSettings = Base::pbrSettings();
+
             const char* renderModeNames[] = {"Classic", "PBR"};
-            bool        pbrMode           = Base::isPBREnabled();
+            bool        pbrMode           = pbrSettings.pbrMode;
             ImGui::SetNextItemWidth(80);
             if (ImGui::BeginCombo(
                     "##ComboRenderMode",
@@ -95,7 +98,7 @@ public:
                     bool isSelected =
                         (pbrMode && n == 1) || (!pbrMode && n == 0);
                     if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                        Base::setPBR(n == 1);
+                        pbrSettings.pbrMode = (n == 1);
                     }
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
@@ -104,8 +107,6 @@ public:
             }
 
             if (pbrMode) {
-                PBRViewerSettings& pbrSettings = Base::pbrViewerSettings();
-
                 // exposure slider
                 ImGui::Separator();
                 ImGui::Text("Exposure:");
@@ -151,6 +152,7 @@ public:
                         pbrSettings.renderBackground = renderBg;
                     });
             }
+            Base::setPbrSettings(pbrSettings);
         }
 
         ImGui::End();

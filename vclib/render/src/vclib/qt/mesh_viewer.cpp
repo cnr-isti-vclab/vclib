@@ -196,40 +196,40 @@ void MeshViewer::showRenderModeSelector(bool show)
 }
 
 template<typename V>
-bool isPBREnabledF(const V* v)
+void setPbrSettingsF(V* v, const PBRViewerSettings& settings)
 {
     if constexpr (PBRViewerConcept<V>) {
-        return v->isPBREnabled();
-    }
-    else {
-        return false;
+        return v->setPbrSettings(settings);
     }
 }
 
-bool MeshViewer::isPBREnabled() const
-{
-    return isPBREnabledF(mUI->viewer);
-}
-
-void MeshViewer::setPBR(bool enable)
+void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
 {
     using ViewerType = RemovePtr<decltype(mUI->viewer)>;
     if constexpr (PBRViewerConcept<ViewerType>) {
         using enum RenderMode;
         mUI->renderModeComboBox->setCurrentIndex(
-            enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+            settings.pbrMode ? toUnderlying(PBR) : toUnderlying(CLASSIC));
         updateGUI();
+    }
+    setPbrSettingsF(mUI->viewer, settings);
+}
+
+template<typename V>
+const PBRViewerSettings& pbrSettingsF(const V* v)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        return v->pbrSettings();
+    }
+    else {
+        static vcl::PBRViewerSettings sts;
+        return sts;
     }
 }
 
-void MeshViewer::enablePBR()
+const PBRViewerSettings& MeshViewer::pbrSettings() const
 {
-    setPBR(true);
-}
-
-void MeshViewer::disablePBR()
-{
-    setPBR(false);
+    return pbrSettingsF(mUI->viewer);
 }
 
 template<typename V>
@@ -371,7 +371,9 @@ template<typename V>
 void setPBRModef(V* v, bool b)
 {
     if constexpr (PBRViewerConcept<V>) {
-        return v->setPBR(b);
+        auto s = v->pbrSettings();
+        s.pbrMode = b;
+        return v->setPbrSettings(s);
     }
 }
 

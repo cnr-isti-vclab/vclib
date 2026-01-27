@@ -63,17 +63,12 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
-    PBRViewerSettings& pbrViewerSettings() { return mPBRSettings; }
+    const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
 
-    const PBRViewerSettings& pbrViewerSettings() const { return mPBRSettings; }
-
-    bool isPBREnabled() const { return mPBRSettings.pbrMode; }
-
-    void setPBR(bool enable) { mPBRSettings.pbrMode = enable; }
-
-    void enablePBR() { setPBR(true); }
-
-    void disablePBR() { setPBR(false); }
+    void setPbrSettings(const PBRViewerSettings& settings)
+    {
+        mPBRSettings = settings;
+    }
 
     void setPanorama(const std::string& panorama)
     {

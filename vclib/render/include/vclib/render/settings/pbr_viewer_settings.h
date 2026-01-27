@@ -60,7 +60,7 @@ struct PBRViewerSettings
      * @brief Option that tells whether to render the background panorama or
      * not.
      */
-    bool renderBackground = true;
+    bool renderBackground = false;
 
     /**
      * @brief The exposure value to use in PBR mode.
