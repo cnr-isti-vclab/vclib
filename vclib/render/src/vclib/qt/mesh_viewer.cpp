@@ -97,7 +97,7 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
     connect(
-        mUI->renderSettingsFrame,
+        mUI->meshRenderSettingsFrame,
         SIGNAL(settingsUpdated()),
         this,
         SLOT(renderSettingsUpdated()));
@@ -125,6 +125,9 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(currentIndexChanged(int)),
         this,
         SLOT(renderModeComboBoxCurrentIndexChanged(int)));
+
+    // by default, render settings is classic, and PBR settings frame is hidden
+    mUI->pbrSettingsFrame->setVisible(false);
 
     using ViewerType = RemovePtr<decltype(mUI->viewer)>;
 
@@ -210,6 +213,10 @@ void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
         using enum RenderMode;
         mUI->renderModeComboBox->setCurrentIndex(
             settings.pbrMode ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+        mUI->exposureSpinBox->setValue(settings.exposure);
+        mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
+        mUI->drawBackgroundPanoramaCheckBox->setChecked(
+            settings.renderBackgroundPanorama);
         updateGUI();
     }
     setPbrSettingsF(mUI->viewer, settings);
@@ -240,7 +247,8 @@ void setPanoramaf(V* v, const std::string& panorama)
     }
 }
 
-void MeshViewer::setPanorama(const std::string& panorama) {
+void MeshViewer::setPanorama(const std::string& panorama)
+{
     setPanoramaf(mUI->viewer, panorama);
 }
 
@@ -275,7 +283,7 @@ void MeshViewer::visibilityDrawableObjectChanged()
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings());
         }
         mUI->viewer->update();
@@ -296,13 +304,14 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
     if (m) {
         // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
-        mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
-        mUI->renderSettingsFrame->setEnabled(true);
+        mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+            m->renderSettings());
+        mUI->meshRenderSettingsFrame->setEnabled(true);
     }
     else {
         // it is not a AbstractDrawableMesh, RenderSettingsFrame must be
         // disabled
-        mUI->renderSettingsFrame->setEnabled(false);
+        mUI->meshRenderSettingsFrame->setEnabled(false);
     }
 }
 
@@ -326,7 +335,8 @@ void MeshViewer::renderSettingsUpdated()
             mListedDrawableObjects->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // AbstractDrawableMesh
-        m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
+        m->setRenderSettings(
+            mUI->meshRenderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
 }
@@ -353,16 +363,16 @@ void MeshViewer::updateGUI()
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mListedDrawableObjects->at(selected));
         if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);
-            mUI->renderSettingsFrame->setEnabled(true);
+            mUI->meshRenderSettingsFrame->setEnabled(true);
         }
         else {
-            mUI->renderSettingsFrame->setEnabled(false);
+            mUI->meshRenderSettingsFrame->setEnabled(false);
         }
     }
     else {
-        mUI->renderSettingsFrame->setEnabled(false);
+        mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
 }
@@ -371,7 +381,7 @@ template<typename V>
 void setPBRModef(V* v, bool b)
 {
     if constexpr (PBRViewerConcept<V>) {
-        auto s = v->pbrSettings();
+        auto s    = v->pbrSettings();
         s.pbrMode = b;
         return v->setPbrSettings(s);
     }
@@ -379,12 +389,11 @@ void setPBRModef(V* v, bool b)
 
 void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
 {
-    if (index == toUnderlying(RenderMode::PBR)) {
-        setPBRModef(mUI->viewer, true);
-    }
-    else {
-        setPBRModef(mUI->viewer, false);
-    }
+    bool pbr = index == toUnderlying(RenderMode::PBR);
+
+    setPBRModef(mUI->viewer, pbr);
+    mUI->pbrSettingsFrame->setVisible(pbr);
+
     mUI->viewer->update();
 }
 
