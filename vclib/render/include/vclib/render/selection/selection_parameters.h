@@ -28,7 +28,7 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-//NOT IMPLEMENTED
+// NOT IMPLEMENTED
 #endif
 
 #endif

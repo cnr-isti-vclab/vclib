@@ -66,72 +66,82 @@ class SelectionTrackBallEventDrawerT :
              [&]() {
                  setPrevModIfNonAtomic();
                  mCurrentSelectionMode = SelectionMode::VERTEX_ADD;
-             }                                                  },
+             }},
             {{Key::A, {KeyModifier::SHIFT}},
              [&]() {
                  setPrevModIfNonAtomic();
                  mSelectionCalcRequired = true;
                  mCurrentSelectionMode  = SelectionMode::VERTEX_ALL;
-             }                                                  },
+             }},
             {{Key::D, {KeyModifier::NO_MODIFIER}},
              [&]() {
                  setPrevModIfNonAtomic();
                  mSelectionCalcRequired = true;
                  mCurrentSelectionMode  = SelectionMode::VERTEX_NONE;
-             }                                                  },
+             }},
             {{Key::S, {KeyModifier::NO_MODIFIER}},
              [&]() {
                  setPrevModIfNonAtomic();
                  mCurrentSelectionMode = SelectionMode::VERTEX_SUBTRACT;
-             }                                                  },
+             }},
             {{Key::I, {KeyModifier::NO_MODIFIER}},
              [&]() {
                  setPrevModIfNonAtomic();
                  mSelectionCalcRequired = true;
                  mCurrentSelectionMode  = SelectionMode::VERTEX_INVERT;
-             }                                                  },
-            {{Key::R, {KeyModifier::NO_MODIFIER}}, [&]() {
+             }},
+            {{Key::R, {KeyModifier::NO_MODIFIER}},
+             [&]() {
                  setPrevModIfNonAtomic();
                  mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
              }},
-             {{Key::R, {KeyModifier::CONTROL}}, [&]() {
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_REGULAR;
+            {{Key::R, {KeyModifier::CONTROL}},
+             [&]() {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_REGULAR;
              }},
-             {{Key::A, {KeyModifier::CONTROL}}, [&]{
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_ADD;
+            {{Key::A, {KeyModifier::CONTROL}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_ADD;
              }},
-             {{Key::A, {KeyModifier::CONTROL, KeyModifier::SHIFT}}, [&]{
-                setPrevModIfNonAtomic();
-                mSelectionCalcRequired = true;
-                mCurrentSelectionMode = SelectionMode::FACE_ALL;
+            {{Key::A, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mSelectionCalcRequired = true;
+                 mCurrentSelectionMode  = SelectionMode::FACE_ALL;
              }},
-             {{Key::D, {KeyModifier::CONTROL}}, [&]{
-                setPrevModIfNonAtomic();
-                mSelectionCalcRequired = true;
-                mCurrentSelectionMode = SelectionMode::FACE_NONE;
+            {{Key::D, {KeyModifier::CONTROL}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mSelectionCalcRequired = true;
+                 mCurrentSelectionMode  = SelectionMode::FACE_NONE;
              }},
-             {{Key::S, {KeyModifier::CONTROL}}, [&]{
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_SUBTRACT;
+            {{Key::S, {KeyModifier::CONTROL}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_SUBTRACT;
              }},
-             {{Key::I, {KeyModifier::CONTROL}}, [&]{
-                setPrevModIfNonAtomic();
-                mSelectionCalcRequired = true;
-                mCurrentSelectionMode = SelectionMode::FACE_INVERT;
+            {{Key::I, {KeyModifier::CONTROL}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mSelectionCalcRequired = true;
+                 mCurrentSelectionMode  = SelectionMode::FACE_INVERT;
              }},
-             {{Key::R, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_REGULAR;
+            {{Key::R, {KeyModifier::CONTROL, KeyModifier::ALT}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_REGULAR;
              }},
-             {{Key::A, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_ADD;
+            {{Key::A, {KeyModifier::CONTROL, KeyModifier::ALT}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_ADD;
              }},
-             {{Key::S, {KeyModifier::CONTROL, KeyModifier::ALT}}, [&]{
-                setPrevModIfNonAtomic();
-                mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_SUBTRACT;
+            {{Key::S, {KeyModifier::CONTROL, KeyModifier::ALT}},
+             [&] {
+                 setPrevModIfNonAtomic();
+                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_SUBTRACT;
              }},
     };
 
@@ -177,8 +187,8 @@ public:
     // area (dragging the mouse with LMB held down)
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (key == Key::S && modifiers == KeyModifiers{KeyModifier::ALT} && !mRMBHeld &&
-            !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
+        if (key == Key::S && modifiers == KeyModifiers {KeyModifier::ALT} &&
+            !mRMBHeld && !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
             mCurrentToolset =
                 (mCurrentToolset == ToolSets::DEFAULT ? ToolSets::SELECTION :
                                                         ToolSets::DEFAULT);
@@ -251,7 +261,8 @@ public:
         }
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override {
+    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    {
         if (mCurrentToolset == ToolSets::DEFAULT) {
             Base::onMouseMove(x, y, modifiers);
             return;

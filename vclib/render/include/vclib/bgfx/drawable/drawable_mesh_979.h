@@ -26,11 +26,11 @@
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
+#include "mesh/mesh_render_buffers_979.h"
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
-#include "mesh/mesh_render_buffers_979.h"
-#include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selectable.h>
+#include <vclib/render/selection/selection_box.h>
 
 #include <bgfx/bgfx.h>
 
@@ -41,7 +41,10 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMeshBGFX979 : public AbstractDrawableMesh, public MeshType, public Selectable
+class DrawableMeshBGFX979 :
+        public AbstractDrawableMesh,
+        public MeshType,
+        public Selectable
 {
 public:
     // TODO: to be removed after shader benchmarks
@@ -64,10 +67,10 @@ private:
     mutable uint mBufToTexRemainingFrames = 255;
 
     // VISIBLE FACES SELECTION DEBUGGING
-    //bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
-    //std::vector<uint8_t> mTexReadBackVec;
-    //std::array<uint, 2> mColAttSize;
-    //mutable uint mVisSelTexRBFrames = 255;
+    // bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
+    // std::vector<uint8_t> mTexReadBackVec;
+    // std::array<uint, 2> mColAttSize;
+    // mutable uint mVisSelTexRBFrames = 255;
 
 protected:
     MeshRenderBuffers979<MeshType> mMRB;
@@ -98,7 +101,10 @@ public:
         updateBuffers();
     }
 
-    DrawableMeshBGFX979(DrawableMeshBGFX979&& drawableMesh) { swap(drawableMesh); }
+    DrawableMeshBGFX979(DrawableMeshBGFX979&& drawableMesh)
+    {
+        swap(drawableMesh);
+    }
 
     ~DrawableMeshBGFX979() = default;
 
@@ -118,23 +124,33 @@ public:
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
     }
 
-    friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b) { a.swap(b); }
+    friend void swap(DrawableMeshBGFX979& a, DrawableMeshBGFX979& b)
+    {
+        a.swap(b);
+    }
 
     using AbstractDrawableMesh::boundingBox;
 
-    void calculateSelection(const SelectionParameters& params) override {
+    void calculateSelection(const SelectionParameters& params) override
+    {
         // VISIBLE FACES SELECTION DEBUGGING
-        //if (!bgfx::isValid(mBlitTex)) {
-        //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0], params.texAttachmentsSize[1], false, 0, bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK);
-        //    mTexReadBackVec = std::vector<uint8_t>();
-        //    mTexReadBackVec.resize(params.texAttachmentsSize[0] * params.texAttachmentsSize[1] * 4, 0);
-        //    mColAttSize = params.texAttachmentsSize;
+        // if (!bgfx::isValid(mBlitTex)) {
+        //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0],
+        //    params.texAttachmentsSize[1], false, 0,
+        //    bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST |
+        //    BGFX_TEXTURE_READ_BACK); mTexReadBackVec = std::vector<uint8_t>();
+        //    mTexReadBackVec.resize(params.texAttachmentsSize[0] *
+        //    params.texAttachmentsSize[1] * 4, 0); mColAttSize =
+        //    params.texAttachmentsSize;
         //}
         if (params.mode.isFaceSelection()) {
-            if (!(params.mode.isVisibleSelection() ? faceSelectionVisible(params) : faceSelection(params))) {
+            if (!(params.mode.isVisibleSelection() ?
+                      faceSelectionVisible(params) :
+                      faceSelection(params))) {
                 return;
             }
-        } else if (params.mode.isVertexSelection()) {
+        }
+        else if (params.mode.isVertexSelection()) {
             if (!vertexSelection(params)) {
                 return;
             }
@@ -142,7 +158,8 @@ public:
         if (mBufToTexRemainingFrames != 255 || params.isTemporary) {
             return;
         }
-        mBufToTexRemainingFrames = mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
+        mBufToTexRemainingFrames =
+            mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
     }
 
     // TODO: to be removed after shader benchmarks
@@ -255,20 +272,18 @@ public:
 
         if constexpr (HasFaces<MeshType>) {
             std::vector<uint8_t> vec;
-            uint count = 0;
+            uint                 count = 0;
             switch (mBufToTexRemainingFrames) {
-                case 0:
-                    mBufToTexRemainingFrames = 255;
-                    vec = mMRB.getSelectionBufferCopy();
-                    for (size_t index = 0; index < vec.size(); index++) {
-                        count += uint(std::bitset<8>(vec[index]).count());
-                    }
-                    std::cout << "Selected count: " << count << std::endl;
-                    break;
-                case 255:
-                    break;
-                default:
-                    mBufToTexRemainingFrames--;
+            case 0:
+                mBufToTexRemainingFrames = 255;
+                vec                      = mMRB.getSelectionBufferCopy();
+                for (size_t index = 0; index < vec.size(); index++) {
+                    count += uint(std::bitset<8>(vec[index]).count());
+                }
+                std::cout << "Selected count: " << count << std::endl;
+                break;
+            case 255: break;
+            default: mBufToTexRemainingFrames--;
             }
         }
 
@@ -278,9 +293,9 @@ public:
         //        mVisSelTexRBFrames = 255;
         //        std::fstream file;
         //        file.open("output.ppm", std::ios::binary | std::ios::out);
-        //        file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1] <<"\n255\n";
-        //        size_t index = 0;
-        //        for (const uint8_t& val: mTexReadBackVec) {
+        //        file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1]
+        //        <<"\n255\n"; size_t index = 0; for (const uint8_t& val:
+        //        mTexReadBackVec) {
         //            ++index;
         //            if (index%4 == 1) {
         //                continue;
@@ -346,7 +361,8 @@ public:
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
 
-                bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+                bgfx::submit(
+                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
             else {
                 // generate splats (quads) lazy
@@ -360,7 +376,8 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+                    settings.viewId,
+                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
 
@@ -372,7 +389,9 @@ public:
         bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
         bgfx::setTransform(model.data());
 
-        bgfx::submit(settings.viewId, pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
+        bgfx::submit(
+            settings.viewId,
+            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
 
         mMRB.bindVertexBuffers(mMRS);
         mMRB.bindIndexBuffers(mMRS);
@@ -382,7 +401,9 @@ public:
         bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
         bgfx::setTransform(model.data());
 
-        bgfx::submit(settings.viewId, pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
+        bgfx::submit(
+            settings.viewId,
+            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
     }
 
     void drawId(const DrawObjectSettings& settings) const override
@@ -493,17 +514,14 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
-
     bool vertexSelection(const SelectionParameters& params)
     {
         if constexpr (!HasVertices<MeshType>) {
             return false;
         }
-        return (params.mode.isAtomicMode() ? 
-            mMRB.vertexSelectionAtomic(params) 
-            : 
-            mMRB.vertexSelection(params)
-        );
+        return (
+            params.mode.isAtomicMode() ? mMRB.vertexSelectionAtomic(params) :
+                                         mMRB.vertexSelection(params));
         return true;
     }
 
@@ -512,11 +530,9 @@ protected:
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
-        return (params.mode.isAtomicMode() ? 
-            mMRB.faceSelectionAtomic(params) 
-            : 
-            mMRB.faceSelection(params)
-        );
+        return (
+            params.mode.isAtomicMode() ? mMRB.faceSelectionAtomic(params) :
+                                         mMRB.faceSelection(params));
     }
 
     bool faceSelectionVisible(const SelectionParameters& params)
@@ -530,8 +546,9 @@ protected:
         }
         bool ret = mMRB.faceSelectionVisible(params, model);
         // VISIBLE FACE SELECTION ATTACHMENT DEBUGGING (BLIT)
-        //if (!params.isTemporary) {
-        //    bgfx::blit(202, mBlitTex, 0, 0, params.meshIdTex, 0, 0, params.texAttachmentsSize[0], params.texAttachmentsSize[1]);
+        // if (!params.isTemporary) {
+        //    bgfx::blit(202, mBlitTex, 0, 0, params.meshIdTex, 0, 0,
+        //    params.texAttachmentsSize[0], params.texAttachmentsSize[1]);
         //    bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
         //    mVisSelTexRBFrames = 3;
         //}
