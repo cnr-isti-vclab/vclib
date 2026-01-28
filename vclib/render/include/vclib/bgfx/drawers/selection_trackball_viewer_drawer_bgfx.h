@@ -26,7 +26,6 @@
 #include "viewer_drawer_bgfx.h"
 
 // #include "../../examples/render/979-selection/drawable_mesh_979.h"
-
 #include <bx/math.h>
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
@@ -209,6 +208,7 @@ public:
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
+        SelectionBox debugBox = calculateWindowSpaceMeshBB();
         if (ParentViewer::selectionCalculationRequired()) {
             if (ParentViewer::selectionBox().allValue()) {
                 mBoxToDraw = ParentViewer::selectionBox();
@@ -259,21 +259,8 @@ public:
             }
         }
 
-        if (mBoxToDraw.allValue()) {
-            std::array<float, 8> temp = mBoxToDraw.vertexPositions();
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
-            mTriIndexBuf.bind();
-            mPosBuffer.create(
-                bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
-            mPosBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
-            bgfx::submit(
-                viewId,
-                Context::instance()
-                    .programManager()
-                    .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
-        }
+        drawSelectionBox(viewId, mBoxToDraw);
+        drawSelectionBox(viewId, debugBox);
 
         if (!ParentViewer::isSelectionTemporary()) {
             mBoxToDraw.nullAll();
@@ -315,8 +302,12 @@ public:
 
 private:
     SelectionBox calculateWindowSpaceMeshBB() {
-        Matrix44d vMat = TED::viewMatrix().cast <double>();
-        Matrix44d pMat = TED::projectionMatrix().cast <double>();
+        Matrix44d vMat = TED::viewMatrix().template cast<double>();
+        Matrix44d pMat = TED::projectionMatrix().template cast<double>();
+        Box3d frustumNDC;
+        frustumNDC.add(Point3d{-1.0, -1.0, -1.0});
+        frustumNDC.add(Point3d{1.0, 1.0, 1.0});
+        // In NDC space
         Box3d totalBB;
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
             std::shared_ptr<DrawableObject> el = ParentViewer::mDrawList->at(i);
@@ -327,47 +318,42 @@ private:
             if (bb.isNull()) {
                 continue;
             }
+            Point3d maxBB = bb.max();
+            Point3d minBB = bb.min();
+            Point4d boxPoints[8] = {
+                Point4d{minBB.x(), minBB.y(), minBB.z(), 1.0},
+                Point4d{maxBB.x(), minBB.y(), minBB.z(), 1.0},
+                Point4d{minBB.x(), maxBB.y(), minBB.z(), 1.0},
+                Point4d{maxBB.x(), maxBB.y(), minBB.z(), 1.0},
+                Point4d{minBB.x(), minBB.y(), maxBB.z(), 1.0},
+                Point4d{minBB.x(), maxBB.y(), maxBB.z(), 1.0},
+                Point4d{maxBB.x(), minBB.y(), maxBB.z(), 1.0},
+                Point4d{maxBB.x(), maxBB.y(), maxBB.z(), 1.0}
+            };
+            Box3d tempBox;
             Point4d center{0.0, 0.0, 0.0, 1.0};
-            {
-                Point3d temp = bb.center();
-                center.x() = temp.x();
-                center.y() = temp.y();
-                center.z() = temp.z();
+            for (const Point4d& p: boxPoints) {
+                Point4d pNDC = pMat * vMat * p;
+                pNDC /= pNDC.w();
+                tempBox.add(pNDC.head<3>());
             }
-            center = pMat * vMat * center;
-            center /= center.w();
-            if (
-                abs(center.x()) > 1
-                || abs(center.y()) > 1
-                || abs(center.z()) > 1
-            ) {
+            Box3d inters = tempBox.intersection(frustumNDC);
+            if (inters.isNull()) {
                 continue;
             }
-            totalBB.add(bb);
+            totalBB.add(inters);
         }
         SelectionBox box;
         if (totalBB.isNull()) {
             return box;
         }
-        Point4d center4;
-        center4 << totalBB.center(), 1.0;
-        //camSpaceCenter = vMat * camSpaceCenter;
-        double radius = totalBB.diagonal();
-        Matrix44d viewFrame = vMat.inverse();
-        Point4d xAx = viewFrame.col(0);
-        Point4d yAx = viewFrame.col(1);
-        Point4d zAx = viewFrame.col(2);
-        // We find the points of the front face of the sphere's bounding box aligned with the camera's axis
-        // Since the camera "looks" towards -Z, higher Z = closer to the camera (which is why we do +zAx)
-        Point4d boxPts[2] = {
-            pMat * vMat * (center4 + (xAx -yAx +zAx).normalized() * radius),
-            pMat * vMat * (center4 + (-xAx +yAx +zAx).normalized() * radius)
-        };
-        for (Point4d& p: boxPts) {
-            p /= p.w();
-        }
+        // We calculate the near plane
         uint width = ((DerivedRenderApp*) this)->width();
         uint height = ((DerivedRenderApp*) this)->height();
+        Point3d boxPts[2] = {
+            totalBB.min(),
+            totalBB.max()
+        };
         Point2d sSpace[2];
         for (size_t i = 0; i < 2; i++) {
             sSpace[i] =  Point2d{(boxPts[i].x() + 1)/2 * double(width), (1 - boxPts[i].y())/2 * double(height)};
@@ -377,35 +363,25 @@ private:
         return box.toMinAndMax();
     }
 
-    void ___temp() {
-        // We calculate the near plane
-        Point4d camCenter;
-        camCenter << TED::camera().center().cast <double>(), 1.0;
-        Point4d camEye;
-        camEye << TED::camera().eye().cast <double>(), 1.0;
-        Point4d nearNormal = (camEye - camCenter).normalized();
-        Point4d camCenterOnNear = camCenter + nearNormal * double(TED::camera().nearPlane());
-
-        Point4d sphereCenter;
-        sphereCenter << totalBB.center(), 1.0;
-        
-        Point4d dVec = sphereCenter - camCenter;
-        double d = dVec.norm();
-        dVec.normalize();
-
-        double denom = nearNormal.dot(dVec);
-        double t;
-        if (abs(denom) > 0.00001f) {
-            t = (sphereCenter - camCenter).dot(nearNormal) / denom;
-        } else {
-            return box;
+    void drawSelectionBox(uint viewId, const SelectionBox& box) {
+        if (box.anyNull()) {
+            return;
         }
-        Point4d sphereCenterOnNear = camCenter * (1.0 - t) + sphereCenter * t;
-        double radius = totalBB.diagonal();
-        double sinTeta = radius / d;
-        double delta = sinTeta * (sphereCenterOnNear - sphereCenter).norm();
+        std::array<float, 8> temp = box.vertexPositions();
+        bgfx::setState(
+            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+            BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
+        mTriIndexBuf.bind();
+        mPosBuffer.create(
+            bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
+        mPosBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        bgfx::submit(
+            viewId,
+            Context::instance()
+                .programManager()
+                .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
+        
     }
-
 
     void updateDrawableTrackball()
     {
