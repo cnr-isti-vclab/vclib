@@ -226,6 +226,9 @@ public:
 
     // WindowManagerBase interface implementation
     void paint() override {
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+        glfwMakeContextCurrent(mWindow);
+#endif
         DerivedRenderApp::WM::paint(derived());
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
         glfwSwapBuffers(mWindow);
