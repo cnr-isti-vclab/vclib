@@ -99,7 +99,7 @@ public:
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
-        // Register with GLFWApplication
+        // force GLFWApplication allocation
         auto & glfwApp = GLFWApplication::instance();
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
@@ -130,7 +130,7 @@ public:
         // get content scale (e.g. for macOS retina displays)
         glfwGetWindowContentScale(mWindow, &mScaleX, &mScaleY);
         
-        // Register with GLFWApplication
+        // register with GLFWApplication
         glfwApp.registerWindow(this);
 
         DerivedRenderApp::WM::init(derived());
@@ -172,6 +172,11 @@ public:
     void show()
     {
         glfwShowWindow(mWindow);
+    }
+
+    void hide()
+    {
+        glfwHideWindow(mWindow);
     }
 
     /**
