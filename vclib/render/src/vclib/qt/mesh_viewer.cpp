@@ -94,6 +94,8 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
+    mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
     connect(
@@ -119,22 +121,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
-
-    connect(
-        mUI->renderModeComboBox,
-        SIGNAL(currentIndexChanged(int)),
-        this,
-        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
-
-    // by default, render settings is classic, and PBR settings frame is hidden
-    mUI->pbrSettingsFrame->setVisible(false);
-
-    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
-
-    if constexpr (!PBRViewerConcept<ViewerType>) {
-        mUI->renderModeLabel->setEnabled(false);
-        mUI->renderModeComboBox->setEnabled(false);
-    }
 }
 
 MeshViewer::~MeshViewer()
@@ -192,11 +178,9 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
-void MeshViewer::showRenderModeSelector(bool show)
-{
-    mUI->renderModeComboBox->setVisible(show);
-    mUI->renderModeLabel->setVisible(show);
-}
+// void MeshViewer::showRenderModeSelector(bool show)
+// {
+// }
 
 template<typename V>
 void setPbrSettingsF(V* v, const PBRViewerSettings& settings)
@@ -208,35 +192,12 @@ void setPbrSettingsF(V* v, const PBRViewerSettings& settings)
 
 void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
 {
-    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
-    if constexpr (PBRViewerConcept<ViewerType>) {
-        using enum RenderMode;
-        mUI->renderModeComboBox->setCurrentIndex(
-            settings.pbrMode ? toUnderlying(PBR) : toUnderlying(CLASSIC));
-        mUI->exposureSpinBox->setValue(settings.exposure);
-        mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
-        mUI->drawBackgroundPanoramaCheckBox->setChecked(
-            settings.renderBackgroundPanorama);
-        updateGUI();
-    }
-    setPbrSettingsF(mUI->viewer, settings);
-}
-
-template<typename V>
-const PBRViewerSettings& pbrSettingsF(const V* v)
-{
-    if constexpr (PBRViewerConcept<V>) {
-        return v->pbrSettings();
-    }
-    else {
-        static vcl::PBRViewerSettings sts;
-        return sts;
-    }
+    mUI->viewerRenderSettingsFrame->setPbrSettings(settings);
 }
 
 const PBRViewerSettings& MeshViewer::pbrSettings() const
 {
-    return pbrSettingsF(mUI->viewer);
+    return mUI->viewerRenderSettingsFrame->pbrSettings();
 }
 
 template<typename V>
@@ -385,16 +346,6 @@ void setPBRModef(V* v, bool b)
         s.pbrMode = b;
         return v->setPbrSettings(s);
     }
-}
-
-void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
-{
-    bool pbr = index == toUnderlying(RenderMode::PBR);
-
-    setPBRModef(mUI->viewer, pbr);
-    mUI->pbrSettingsFrame->setVisible(pbr);
-
-    mUI->viewer->update();
 }
 
 } // namespace vcl::qt

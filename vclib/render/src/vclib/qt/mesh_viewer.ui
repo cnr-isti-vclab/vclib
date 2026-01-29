@@ -82,130 +82,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="viewerRenderSettingsFrame">
+        <widget class="vcl::qt::ViewerRenderSettingsFrame" name="viewerRenderSettingsFrame">
          <property name="frameShape">
           <enum>QFrame::Shape::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Shadow::Plain</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="renderModeComboBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <item>
-             <property name="text">
-              <string>Classic</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>PBR</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="renderModeLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Render Mode:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QFrame" name="pbrSettingsFrame">
-            <property name="frameShape">
-             <enum>QFrame::Shape::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Plain</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_3">
-             <item row="1" column="0">
-              <widget class="QLabel" name="toneMappingLabel">
-               <property name="text">
-                <string>Tone Mapping:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QCheckBox" name="iblCheckBox">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QComboBox" name="toneMappingComboBox"/>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="exposureLabel">
-               <property name="text">
-                <string>Exposure:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="iblLabel">
-               <property name="text">
-                <string>Image Based Lighting:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QCheckBox" name="drawBackgroundPanoramaCheckBox">
-               <property name="text">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="drawBackgroundPanoramaLabel">
-               <property name="text">
-                <string>Draw Background Panorama:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <widget class="QDoubleSpinBox" name="exposureSpinBox">
-               <property name="maximum">
-                <double>64.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.010000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
        <item>
@@ -253,6 +136,12 @@
    <class>vcl::qt::DrawableObjectVectorTree</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/drawable_object_vector_tree.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::ViewerRenderSettingsFrame</class>
+   <extends>QFrame</extends>
+   <header>vclib/qt/gui/viewer_render_settings_frame.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

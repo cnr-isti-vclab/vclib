@@ -20,95 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_MESH_VIEWER_H
-#define VCL_QT_MESH_VIEWER_H
+#ifndef VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
 
-#include "gui/drawable_object_vector_tree.h"
-
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/qt/mesh_viewer_render_app.h>
-#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/qt/mesh_viewer_render_app.h>
 
-#include <QWidget>
+#include <QFrame>
+
+class QPushButton;
 
 namespace vcl::qt {
 
 namespace Ui {
-class MeshViewer;
+class ViewerRenderSettingsFrame;
 } // namespace Ui
 
-class KeyFilter : public QObject
-{
-    using QObject::QObject;
-
-protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-};
-
-class MeshViewer : public QWidget
+class ViewerRenderSettingsFrame : public QFrame
 {
     Q_OBJECT
 
     enum class RenderMode { CLASSIC = 0, PBR = 1 };
 
-    Ui::MeshViewer* mUI;
+    Ui::ViewerRenderSettingsFrame* mUI;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
-
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
-
-protected:
-    MeshViewerRenderApp& viewer() const;
-
-    DrawableObjectVectorTree& drawableObjectVectorTree() const;
-
-    void keyPressEvent(QKeyEvent* event) override;
+    MeshViewerRenderApp* mViewer;
 
 public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
+    explicit ViewerRenderSettingsFrame(QWidget* parent = nullptr);
+    ~ViewerRenderSettingsFrame();
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    uint selectedDrawableObject() const;
-
-    TextEditLogger& logger();
-
-    void setDrawVectorIconFunction(
-        const DrawableObjectVectorTree::IconFunction& f);
-
-    Camera<float> camera() const;
-
-    void setCamera(const Camera<float>& c);
-
-    //void showRenderModeSelector(bool show);
+    void setViewer(MeshViewerRenderApp* viewer);
 
     void setPbrSettings(const PBRViewerSettings& settings);
 
     const PBRViewerSettings& pbrSettings() const;
 
-    void setPanorama(const std::string& panorama);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void fitScene();
-
-    void fitView();
-
-    void updateGUI();
+private slots:
+    void renderModeComboBoxCurrentIndexChanged(int index);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_MESH_VIEWER_H
+#endif // VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
