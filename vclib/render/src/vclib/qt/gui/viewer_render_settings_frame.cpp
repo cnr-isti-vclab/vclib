@@ -53,7 +53,7 @@ void setPbrSettings(V* v, const PBRViewerSettings& settings)
     }
 }
 
-}
+} // namespace detail
 
 ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
         QFrame(parent), mUI(new Ui::ViewerRenderSettingsFrame)
@@ -66,11 +66,30 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
     mUI->renderModeLabel->setEnabled(false);
     mUI->renderModeComboBox->setEnabled(false);
 
+    using enum PBRViewerSettings::ToneMapping;
+
+    for (uint i = 0; i < toUnderlying(COUNT); ++i) {
+        mUI->toneMappingComboBox->addItem(
+            PBRViewerSettings::TONE_MAPPING_STRINGS[i]);
+    }
+
     connect(
         mUI->renderModeComboBox,
         SIGNAL(currentIndexChanged(int)),
         this,
         SLOT(renderModeComboBoxCurrentIndexChanged(int)));
+
+    connect(
+        mUI->exposureSpinBox,
+        SIGNAL(valueChanged(double)),
+        this,
+        SLOT(exposureSpinBoxValueChanged(double)));
+
+    connect(
+        mUI->toneMappingComboBox,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(toneMappingComboBoxCurrentIndexChanged(int)));
 }
 
 ViewerRenderSettingsFrame::~ViewerRenderSettingsFrame()
@@ -98,6 +117,9 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
         mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
         mUI->drawBackgroundPanoramaCheckBox->setChecked(
             settings.renderBackgroundPanorama);
+
+        mUI->toneMappingComboBox->setCurrentIndex(
+            toUnderlying(settings.toneMapping));
     }
 }
 
@@ -115,8 +137,6 @@ void ViewerRenderSettingsFrame::setPbrSettings(
         detail::setPbrSettings(mViewer, settings);
     }
 }
-
-
 
 const PBRViewerSettings& ViewerRenderSettingsFrame::pbrSettings() const
 {
@@ -140,6 +160,27 @@ void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
     setPBRModef(mViewer, pbr);
     mUI->pbrSettingsFrame->setVisible(pbr);
 
+    mViewer->update();
+}
+
+void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
+{
+    auto sts = detail::pbrSettings(mViewer);
+
+    sts.exposure = static_cast<float>(value);
+
+    detail::setPbrSettings(mViewer, sts);
+    mViewer->update();
+}
+
+void ViewerRenderSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
+    int index)
+{
+    auto sts = detail::pbrSettings(mViewer);
+
+    sts.toneMapping = static_cast<PBRViewerSettings::ToneMapping>(index);
+
+    detail::setPbrSettings(mViewer, sts);
     mViewer->update();
 }
 

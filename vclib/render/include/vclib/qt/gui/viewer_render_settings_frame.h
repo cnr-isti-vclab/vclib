@@ -58,6 +58,10 @@ public:
 
 private slots:
     void renderModeComboBoxCurrentIndexChanged(int index);
+
+    void exposureSpinBoxValueChanged(double value);
+
+    void toneMappingComboBoxCurrentIndexChanged(int index);
 };
 
 } // namespace vcl::qt
