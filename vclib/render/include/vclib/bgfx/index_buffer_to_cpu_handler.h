@@ -43,6 +43,10 @@ namespace vcl {
 // The only difference would be in the used compute shader, since (at least D3D, don't know about the other backends)
 // complains in debug mode if you attempt to interpret a float buffer as an uint buffer 
 // in the shader (even though it shouldn't matter at all since memory is just memory)
+
+/**
+ * @brief Class which handles the copying of IndexBuffers to CPU
+ */
 class IndexBufferToCpuHandler
 {
     vcl::Uniform mBufferToTexUnif = vcl::Uniform(
@@ -58,6 +62,11 @@ class IndexBufferToCpuHandler
 public:
     IndexBufferToCpuHandler() = default;
 
+    /**
+     * @brief Constructs an object capable of handling the copy of buffers up to a certain size
+     * 
+     * @param[in] requiredByteSize: The maximum byte size that the handler will be able to copy
+     */
     IndexBufferToCpuHandler(uint requiredByteSize)
     {
         uint requiredTexArea = uint(ceil(double(requiredByteSize) / 4.0));
@@ -109,6 +118,14 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Attempts perform a copy of size (bufferElementCount * elementBitSize)/8 (approximated by excess) bytes from the buffer buf
+     * 
+     * @param[in] buf: The buffer to copy from
+     * @param[in] bufferElementCount: The number of buffer elements to be copied
+     * @param[in] elementBitSize: The bit size of each element
+     * @return: The number of frames after which the result will be ready
+     */
     uint copyFromGPU(
         const IndexBuffer& buf,
         uint               bufferElementCount,
@@ -177,6 +194,10 @@ public:
         return 2;
     }
 
+
+    /**
+     * @return: A copy of the result of the buffer copy (resized to fit the requested size)
+     */
     std::vector<uint8_t> getResultsCopy() const
     {
         std::vector<uint8_t> newObj(mReadResults);

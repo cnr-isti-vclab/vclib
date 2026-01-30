@@ -203,6 +203,11 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
+    /**
+     *  @brief Attempts to calculate a non atomic vertex selection
+     * 
+     *  @param[in] params: The selection parameters
+     */
     bool vertexSelection(const SelectionParameters& params)
     {
         if (params.box.anyNull()) {
@@ -219,6 +224,11 @@ public:
         return true;
     }
 
+    /**
+     *  @brief Attempts to calculate an atomic vertex selection
+     * 
+     *  @param[in] params: The selection parameters
+     */
     bool vertexSelectionAtomic(const SelectionParameters& params)
     {
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
@@ -229,6 +239,11 @@ public:
         return true;
     }
 
+    /**
+     *  @brief Attempts to calculate a non atomic face selection
+     * 
+     *  @param[in] params: The selection parameters
+     */
     bool faceSelection(const SelectionParameters& params)
     {
         if (params.box.anyNull()) {
@@ -246,6 +261,11 @@ public:
         return true;
     }
 
+    /**
+     *  @brief Attempts to calculate an atomic face selection
+     *
+     *  @param[in] params: The selection parameters
+     */
     bool faceSelectionAtomic(const SelectionParameters& params)
     {
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
@@ -256,6 +276,20 @@ public:
         return true;
     }
 
+    /**
+     *  @brief Attempts to calculate visible face selection
+     * 
+     * This is done in two/three steps (using 2 different views):
+     *   -# If it is a Regular selection (add what's inside the box; remove what's outside the box)
+     *    we first need to clear the current face selection buffer (we do a FACE_SELECTION_NONE) (first view)
+     *   -# We run a Vertex + Fragment program that writes primitiveIds in one color attachment and meshIds in another
+     *    color attachment. MeshId 0 is considered to be "this fragment did not pass" (first view)
+     *   -# We run a Compute Shader the size of the two previous color attachments that uses those two textures
+     *    to update the face selection buffer accordingly
+     *
+     *  @param[in] params: The selection parameters
+     *  @param[in] model: The mesh's model matrix
+     */
     bool faceSelectionVisible(
         const SelectionParameters& params,
         const Matrix44f&           model)
@@ -311,6 +345,12 @@ public:
         return true;
     }
 
+    /**
+     *  @brief Copies a selection buffer to a CPU buffer (the parameter determines which)
+     *
+     *  @param[in] mode: The selection mode
+     *  @return: The number frames that the caller needs to wait before the result is ready
+     */
     uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
     {
         uint         elementBitSize = 1;
@@ -688,6 +728,12 @@ private:
         }
     }
 
+    /**
+     *  @brief Calculates a non-minimal {x,y,z} size for a compute shader dispatch
+     *  given a one dimensional size value
+     *
+     *  @param[in] size: the one dimensional size value to transform in a {x,y,z} set of sizes
+     */
     static std::array<uint, 3> workGroupSizesFrom1DSize(uint size)
     {
         std::array<uint, 3> sizes;
@@ -822,6 +868,13 @@ private:
         calculateVertexSelectionWorkgroupSize();
     }
 
+    /**
+     *  @brief The function allocates and fills a GPU index buffer which is a
+     * bitmap for face selection (i.e. bit is 1 if corresponding face is
+     * selected, otherwise 0). Initialized to all zeroes.
+     *
+     *  @param[in] mesh: the input mesh from which to get the data
+     */
     void setFaceSelectionBuffer(const MeshType& mesh)
     {
         if (Base::numTris() == 0) {
