@@ -133,6 +133,9 @@ public:
 
     void calculateSelection(const SelectionParameters& params) override
     {
+        if (!isVisible()) {
+            return;
+        }
         // VISIBLE FACES SELECTION DEBUGGING
         // if (!bgfx::isValid(mBlitTex)) {
         //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0],

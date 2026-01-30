@@ -320,7 +320,7 @@ private:
         Box3d totalBB;
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
             std::shared_ptr<DrawableObject> el = ParentViewer::mDrawList->at(i);
-            if (!dynamic_cast<Selectable*>(el.get())) {
+            if (!el->isVisible() || !dynamic_cast<Selectable*>(el.get())) {
                 continue;
             }
             Box3d bb = el->boundingBox();
