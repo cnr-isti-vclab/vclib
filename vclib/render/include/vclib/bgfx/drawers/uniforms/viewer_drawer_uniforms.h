@@ -30,11 +30,12 @@ namespace vcl {
 
 class ViewerDrawerUniforms
 {
-    mutable std::array<float, 4> mData = {
-        0.0, // exposure
-        0.0, // tone mapping
-        0.0, // specular mip levels
-        0.0  // unused
+    std::array<float, 4> mData = {
+        1.0, // exposure
+        Uniform::uintBitsToFloat(toUnderlying(
+            PBRViewerSettings::ToneMapping::ACES_HILL)), // tone mapping
+        0.0,                                             // specular mip levels
+        0.0                                              // unused
     };
 
     Uniform mDataUniform =
@@ -43,9 +44,9 @@ class ViewerDrawerUniforms
 public:
     ViewerDrawerUniforms() = default;
 
-    void updateExposure(float exposure) const { mData[0] = exposure; }
+    void updateExposure(float exposure) { mData[0] = exposure; }
 
-    void updateToneMapping(PBRViewerSettings::ToneMapping tm) const
+    void updateToneMapping(PBRViewerSettings::ToneMapping tm)
     {
         mData[1] = Uniform::uintBitsToFloat(toUnderlying(tm));
     }

@@ -68,6 +68,9 @@ public:
     void setPbrSettings(const PBRViewerSettings& settings)
     {
         mPBRSettings = settings;
+
+        mViewerDrawerUniforms.updateExposure(mPBRSettings.exposure);
+        mViewerDrawerUniforms.updateToneMapping(mPBRSettings.toneMapping);
     }
 
     std::string panoramaFileName() const { return mPanorama.imageFileName(); }
@@ -75,15 +78,13 @@ public:
     void setPanorama(const std::string& panorama)
     {
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
+
+        mViewerDrawerUniforms.updateSpecularMipsLevels(
+            mPanorama.specularMipLevels());
     }
 
     void onDrawContent(uint viewId) override
     {
-        mViewerDrawerUniforms.updateExposure(mPBRSettings.exposure);
-        mViewerDrawerUniforms.updateToneMapping(mPBRSettings.toneMapping);
-        mViewerDrawerUniforms.updateSpecularMipsLevels(
-            mPanorama.specularMipLevels());
-
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
