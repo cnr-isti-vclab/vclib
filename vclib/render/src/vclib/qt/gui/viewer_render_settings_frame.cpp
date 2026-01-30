@@ -27,6 +27,7 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 
 #include <QColorDialog>
+#include <QFileDialog>
 #include <QStandardItemModel>
 
 #define checkPtr(p) \
@@ -57,7 +58,26 @@ template<typename V>
 void setPbrSettings(V* v, const PBRViewerSettings& settings)
 {
     if constexpr (PBRViewerConcept<V>) {
-        return v->setPbrSettings(settings);
+        v->setPbrSettings(settings);
+    }
+}
+
+template<typename V>
+std::string panoramaFileName(V* v)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        return v->panoramaFileName();
+    }
+    else {
+        return std::string();
+    }
+}
+
+template<typename V>
+void setPanorama(V* v, const std::string& panorama)
+{
+    if constexpr (PBRViewerConcept<V>) {
+        v->setPanorama(panorama);
     }
 }
 
@@ -107,6 +127,12 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
         SIGNAL(checkStateChanged(Qt::CheckState)),
         this,
         SLOT(drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState)));
+
+    connect(
+        mUI->loadPanoramaPushButton,
+        SIGNAL(clicked()),
+        this,
+        SLOT(loadPanoramaPushButtonClicked()));
 }
 
 ViewerRenderSettingsFrame::~ViewerRenderSettingsFrame()
@@ -142,6 +168,8 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 
         mUI->toneMappingComboBox->setCurrentIndex(
             toUnderlying(settings.toneMapping));
+
+        updatePanormaLabel();
     }
 }
 
@@ -162,6 +190,15 @@ void ViewerRenderSettingsFrame::setPbrSettings(
     }
 }
 
+void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
+{
+    checkPtr(mViewer);
+
+    detail::setPanorama(mViewer, panorama);
+
+    updatePanormaLabel();
+}
+
 const PBRViewerSettings& ViewerRenderSettingsFrame::pbrSettings() const
 {
     return detail::pbrSettings(mViewer);
@@ -174,6 +211,20 @@ void ViewerRenderSettingsFrame::disableForm()
     mUI->renderModeLabel->setEnabled(false);
     mUI->renderModeComboBox->setCurrentIndex(0);
     mUI->renderModeComboBox->setEnabled(false);
+}
+
+void ViewerRenderSettingsFrame::updatePanormaLabel()
+{
+    checkPtr(mViewer);
+
+    std::string panoramaFileName = detail::panoramaFileName(mViewer);
+    if (!panoramaFileName.empty()) {
+        mUI->panormalaLabel->setText(
+            QString("Panorma: ") + panoramaFileName.c_str());
+    }
+    else {
+        mUI->panormalaLabel->setText("Panorma: None");
+    }
 }
 
 void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
@@ -240,6 +291,20 @@ void ViewerRenderSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
 
     detail::setPbrSettings(mViewer, sts);
     mViewer->update();
+}
+
+void ViewerRenderSettingsFrame::loadPanoramaPushButtonClicked()
+{
+    // open a file dialog asking for a *.hdr file
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        tr("Load Panorama"),
+        "",
+        tr("HDR Images (*.hdr *.exr *.ktx *.dds)"));
+
+    if (!fileName.isEmpty()) {
+        setPanorama(fileName.toStdString());
+    }
 }
 
 } // namespace vcl::qt

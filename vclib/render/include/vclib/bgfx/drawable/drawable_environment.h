@@ -31,6 +31,7 @@
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <vclib/base.h>
+#include <vclib/io.h>
 
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
@@ -59,6 +60,8 @@ class DrawableEnvironment
         Uniform("s_specular", bgfx::UniformType::Sampler);
     const Uniform mBrdfLutSamplerUniform =
         Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
+
+    std::string mImagePath;
 
     uint8_t mSpecularMipLevels = 0;
 
@@ -100,6 +103,7 @@ public:
     void swap(DrawableEnvironment& other)
     {
         using std::swap;
+        swap(mImagePath, other.mImagePath);
         swap(mSpecularMipLevels, other.mSpecularMipLevels);
         swap(mDataUniforms, other.mDataUniforms);
         swap(mHdrTexture, other.mHdrTexture);
@@ -112,6 +116,13 @@ public:
     friend void swap(DrawableEnvironment& first, DrawableEnvironment& second)
     {
         first.swap(second);
+    }
+
+    const std::string& imagePath() const { return mImagePath; }
+
+    std::string imageFileName() const
+    {
+        return FileInfo::fileNameWithExtension(mImagePath);
     }
 
     uint8_t specularMipLevels() const { return mSpecularMipLevels; }

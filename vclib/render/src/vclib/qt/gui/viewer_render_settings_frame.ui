@@ -62,39 +62,8 @@
       <enum>QFrame::Shadow::Plain</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0">
-       <widget class="QLabel" name="toneMappingLabel">
-        <property name="text">
-         <string>Tone Mapping:</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="2">
        <widget class="QCheckBox" name="iblCheckBox">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QComboBox" name="toneMappingComboBox"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="exposureLabel">
-        <property name="text">
-         <string>Exposure:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="iblLabel">
-        <property name="text">
-         <string>Image Based Lighting:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QCheckBox" name="drawBackgroundPanoramaCheckBox">
         <property name="text">
          <string/>
         </property>
@@ -107,6 +76,30 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="toneMappingLabel">
+        <property name="text">
+         <string>Tone Mapping:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="iblLabel">
+        <property name="text">
+         <string>Image Based Lighting:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="exposureLabel">
+        <property name="text">
+         <string>Exposure:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="toneMappingComboBox"/>
+      </item>
       <item row="0" column="2">
        <widget class="QDoubleSpinBox" name="exposureSpinBox">
         <property name="maximum">
@@ -117,6 +110,30 @@
         </property>
         <property name="value">
          <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QCheckBox" name="drawBackgroundPanoramaCheckBox">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="panormalaLabel">
+        <property name="text">
+         <string>Panorama: None</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QPushButton" name="loadPanoramaPushButton">
+        <property name="text">
+         <string>Load Panorama</string>
+        </property>
+        <property name="icon">
+         <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
         </property>
        </widget>
       </item>

@@ -50,6 +50,7 @@ DrawableEnvironment::DrawableEnvironment(
 {
     bimg::ImageContainer* image = loadImage(imagePath);
     if (image) {
+        mImagePath = imagePath;
         setAndGenerateTextures(*image, viewId);
         fullScreenTriangle();
         bimg::imageFree(image);

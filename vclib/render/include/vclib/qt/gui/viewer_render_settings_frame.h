@@ -54,10 +54,14 @@ public:
 
     void setPbrSettings(const PBRViewerSettings& settings);
 
+    void setPanorama(const std::string& panorama);
+
     const PBRViewerSettings& pbrSettings() const;
 
 private:
     void disableForm();
+
+    void updatePanormaLabel();
 
 private slots:
     void renderModeComboBoxCurrentIndexChanged(int index);
@@ -69,6 +73,8 @@ private slots:
     void iblCheckBoxCheckStateChanged(Qt::CheckState state);
 
     void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
+
+    void loadPanoramaPushButtonClicked();
 };
 
 } // namespace vcl::qt

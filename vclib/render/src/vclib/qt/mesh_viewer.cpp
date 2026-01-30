@@ -200,17 +200,9 @@ const PBRViewerSettings& MeshViewer::pbrSettings() const
     return mUI->viewerRenderSettingsFrame->pbrSettings();
 }
 
-template<typename V>
-void setPanoramaf(V* v, const std::string& panorama)
-{
-    if constexpr (PBRViewerConcept<V>) {
-        return v->setPanorama(panorama);
-    }
-}
-
 void MeshViewer::setPanorama(const std::string& panorama)
 {
-    setPanoramaf(mUI->viewer, panorama);
+    mUI->viewerRenderSettingsFrame->setPanorama(panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)

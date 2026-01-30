@@ -70,6 +70,8 @@ public:
         mPBRSettings = settings;
     }
 
+    std::string panoramaFileName() const { return mPanorama.imageFileName(); }
+
     void setPanorama(const std::string& panorama)
     {
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
