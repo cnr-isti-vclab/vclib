@@ -182,14 +182,6 @@ void MeshViewer::setCamera(const Camera<float>& c)
 // {
 // }
 
-template<typename V>
-void setPbrSettingsF(V* v, const PBRViewerSettings& settings)
-{
-    if constexpr (PBRViewerConcept<V>) {
-        return v->setPbrSettings(settings);
-    }
-}
-
 void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
 {
     mUI->viewerRenderSettingsFrame->setPbrSettings(settings);

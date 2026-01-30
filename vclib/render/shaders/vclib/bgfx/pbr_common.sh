@@ -74,7 +74,7 @@
 
 /**
  * @brief Computes the solid angle covered by the rectangle starting from (0,0) to some given (u,v) projected onto a unit sphere.
- * Supposedly used for cubemap texel solid angle computation. 
+ * Presumably used for cubemap texel solid angle computation.
  * @param[in] uv: The UV coordinates.
  * @return The solid angle covered by the rectangle starting from (0,0) to some given (u,v).
  */
@@ -85,7 +85,7 @@ float solidAngle00ToUv(vec2 uv)
 
 /**
  * @brief Computes the solid angle covered by a texel in UV space projected onto a unit sphere.
- * Supposedly used for cubemap texel solid angle computation. 
+ * Presumably used for cubemap texel solid angle computation.
  * @param[in] uv: The top-left UV coordinates of the texel.
  * @param[in] invSize: The inverted size of the cube needed to compute the other angle coordinates of the texel.
  * @return The solid angle covered by the texel.

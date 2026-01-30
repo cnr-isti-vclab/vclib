@@ -127,13 +127,15 @@ DrawableEnvironment::FileFormat DrawableEnvironment::getFileFormat(
     const std::string& imagePath)
 {
     using enum DrawableEnvironment::FileFormat;
-    if (imagePath.find(".hdr", imagePath.length() - 4) != std::string::npos)
+    std::string fmt = vcl::toLower(FileInfo::extension(imagePath));
+
+    if (fmt == ".hdr")
         return HDR;
-    if (imagePath.find(".exr", imagePath.length() - 4) != std::string::npos)
+    if (fmt == ".exr")
         return EXR;
-    if (imagePath.find(".ktx", imagePath.length() - 4) != std::string::npos)
+    if (fmt == ".ktx")
         return KTX;
-    if (imagePath.find(".dds", imagePath.length() - 4) != std::string::npos)
+    if (fmt == ".dds")
         return DDS;
     return UNKNOWN;
 }
@@ -172,8 +174,13 @@ bimg::ImageContainer* DrawableEnvironment::loadImage(std::string imagePath)
 
     // read the file and put it raw in inputData
 
-    bx::read(&reader, inputData, inputSize, &err);
+    uint rd = bx::read(&reader, inputData, inputSize, &err);
     bx::close(&reader);
+
+    if (!err.isOk() || rd != inputSize) {
+        bx::free(&bxAllocator, inputData);
+        return nullptr;
+    }
 
     // copy the data in the final container reading its characteristics
 
@@ -435,7 +442,7 @@ vcl::VertexBuffer DrawableEnvironment::fullScreenTriangle()
         3,
         vcl::PrimitiveType::FLOAT,
         false);
-    return std::move(vb);
+    return vb;
 }
 
 } // namespace vcl
