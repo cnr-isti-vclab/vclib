@@ -25,6 +25,8 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -38,24 +40,13 @@ SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
 SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
 SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
 SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
+SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
+
+SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
+SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
 void main()
 {
-    #ifndef VIEWER_LIGHTS
-
-    // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
-    vec3 lightDirections[2] = {LIGHT_KEY_DIR_VIEW, LIGHT_FILL_DIR_VIEW};
-    vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
-    float lightIntensities[2] = {1.0, 0.5};
-
-    #else
-
-    vec3 lightDirections[1] = {-u_lightDir};
-    vec3 lightColors[1] = {u_lightColor};
-    float lightIntensities[1] = {1.0};
-
-    #endif // VIEWER_LIGHTS
-
     // texcoord to use
     bool useTexture =
         bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||
@@ -158,16 +149,88 @@ void main()
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
-    gl_FragColor = pbrColor(
-        v_position.xyz,
-        vec3_splat(0.0), // camera position
-        lightDirections,
-        lightColors,
-        lightIntensities,
-        baseColor,
-        normal,
-        metallic,
-        roughness,
-        emissiveColor
-    );
+    if(useImageBasedLighting(u_pbr_settings))
+    {
+        // view direction
+        vec3 V = normalize(-v_position); // camera is at the origin
+
+        vec3 reflection = normalize(reflect(-V, normal));
+
+        reflection = normalize(mul(u_invView, vec4(reflection, 0.0)).xyz);
+
+        // convert from camera to world space
+        normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
+        V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
+
+        float NoV = clampedDot(normal, V);
+
+        vec3 f0_dielectric = vec3_splat(0.04);
+        vec3 f90 = vec3_splat(1.0);
+
+        // diffuse light
+        vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
+
+        // specular light
+        float specularMipLevel = roughness * (u_specularMipLevels - 1.0);
+        
+        vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
+
+        // Fresnel
+        vec2 brdf = texture2D(s_brdf_lut, vec2(NoV, roughness)).rg;
+        vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
+        vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
+
+        // occlusion
+        float occlusion = 1.0;
+        if(useTexture && isOcclusionTextureAvailable(u_pbr_texture_settings))
+        {
+            occlusion = texture2D(occlusionTex, texcoord).r;
+        }
+        occlusion = 1.0 + u_occlusionStrength * (occlusion - 1.0);
+
+        gl_FragColor = pbrColorIbl(
+            diffuseLight,
+            baseColor,
+            specularLight,
+            metalFresnel,
+            dielectricFresnel,
+            metallic,
+            occlusion,
+            emissiveColor,
+            u_exposure,
+            u_toneMapping
+        );
+    }
+    else
+    {
+        #ifndef VIEWER_LIGHTS
+
+        // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
+        vec3 lightDirections[2] = {LIGHT_KEY_DIR_VIEW, LIGHT_FILL_DIR_VIEW};
+        vec3 lightColors[2] = {vec3_splat(1.0), vec3_splat(1.0)};
+        float lightIntensities[2] = {1.0, 0.5};
+
+        #else
+
+        vec3 lightDirections[1] = {-u_lightDir};
+        vec3 lightColors[1] = {u_lightColor};
+        float lightIntensities[1] = {1.0};
+
+        #endif // VIEWER_LIGHTS
+
+        gl_FragColor = pbrColorLights(
+            v_position.xyz,
+            vec3_splat(0.0), // camera position
+            lightDirections,
+            lightColors,
+            lightIntensities,
+            baseColor,
+            normal,
+            metallic,
+            roughness,
+            emissiveColor,
+            u_exposure,
+            u_toneMapping
+        );
+    }
 }

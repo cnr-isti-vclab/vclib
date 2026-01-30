@@ -25,6 +25,7 @@
 
 #include <vclib/bgfx/drawable/mesh/pbr_macros.h>
 #include <vclib/bgfx/uniform.h>
+#include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/mesh.h>
 
@@ -86,23 +87,28 @@ public:
         const Material&                     m,
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                                vertexTangentAvailable)
+        bool                                vertexTangentAvailable,
+        bool                                imageBasedLighting)
     {
-        uint pbrSettings = 0;
+        uint pbrSettingBits = 0;
 
         if (vertexColorAvailable) // per-vertex color available
-            pbrSettings |= 1 << VCL_PBR_VERTEX_COLOR;
+            pbrSettingBits |= 1 << VCL_PBR_VERTEX_COLOR;
 
         if (vertexTangentAvailable) // per-vertex tangent available
-            pbrSettings |= 1 << VCL_PBR_VERTEX_TANGENT;
+            pbrSettingBits |= 1 << VCL_PBR_VERTEX_TANGENT;
 
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            pbrSettings |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
+            pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
-        mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
+        if (imageBasedLighting) {
+            pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        }
+
+        mSettings[0] = Uniform::uintBitsToFloat(pbrSettingBits);
 
         uint textureSettings = 0;
 

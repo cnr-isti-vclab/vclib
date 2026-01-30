@@ -28,9 +28,10 @@
  */
 
 // bit positions used to tell which features are enabled at shader level
-#define VCL_PBR_VERTEX_COLOR       0
-#define VCL_PBR_VERTEX_TANGENT     1
-#define VCL_PBR_IS_ALPHA_MODE_MASK 2
+#define VCL_PBR_VERTEX_COLOR         0
+#define VCL_PBR_VERTEX_TANGENT       1
+#define VCL_PBR_IS_ALPHA_MODE_MASK   2
+#define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
 // bit positions used to tell which textures are available at shader level
 #define VCL_PBR_TEXTURE_BASE_COLOR         0

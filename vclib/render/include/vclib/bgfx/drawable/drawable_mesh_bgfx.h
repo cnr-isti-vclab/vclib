@@ -27,8 +27,10 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
 
 #include <bgfx/bgfx.h>
 
@@ -216,26 +218,42 @@ public:
         }
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+            const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
+            const DrawableEnvironment*  env         = settings.environment;
+            const ViewerDrawerUniforms* vdu         = settings.viewerUniforms;
+
+            bool iblEnabled = pbrSettings.imageBasedLighting &&
+                              env != nullptr && env->canDraw();
+
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
-                uint64_t surfaceState  = state;
-                uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
+                uint64_t surfaceState = state;
+                uint64_t materialState =
+                    mMRB.bindMaterials(mMRS, i, *this, iblEnabled);
+
+                bindUniforms();
+                if (pbrSettings.pbrMode && vdu != nullptr) {
+                    vdu->bind();
+                }
+
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
+                if (pbrSettings.pbrMode && iblEnabled) {
+                    using enum DrawableEnvironment::TextureType;
+                    env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
+                    env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
+                }
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
 
-                bindUniforms();
-
-                if (settings.pbrMode) {
+                if (pbrSettings.pbrMode) {
                     surfaceState |= materialState;
                 }
 
                 bgfx::setState(surfaceState);
                 bgfx::setTransform(model.data());
 
-                if (settings.pbrMode) {
-                    ProgramManager& pm = Context::instance().programManager();
-
+                if (pbrSettings.pbrMode) {
                     bgfx::submit(
                         settings.viewId,
                         pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
