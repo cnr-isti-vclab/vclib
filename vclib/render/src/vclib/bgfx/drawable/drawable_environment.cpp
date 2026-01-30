@@ -52,7 +52,6 @@ DrawableEnvironment::DrawableEnvironment(
     if (image) {
         mImagePath = imagePath;
         setAndGenerateTextures(*image, viewId);
-        fullScreenTriangle();
         bimg::imageFree(image);
     }
 }
