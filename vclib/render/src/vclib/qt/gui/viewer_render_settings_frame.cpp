@@ -29,6 +29,11 @@
 #include <QColorDialog>
 #include <QStandardItemModel>
 
+#define checkPtr(p) \
+    if (!(p)) {        \
+        return;        \
+    }
+
 namespace vcl::qt {
 
 namespace detail {
@@ -36,11 +41,14 @@ namespace detail {
 template<typename V>
 const PBRViewerSettings& pbrSettings(const V* v)
 {
+    static vcl::PBRViewerSettings sts;
     if constexpr (PBRViewerConcept<V>) {
-        return v->pbrSettings();
+        if (v)
+            return v->pbrSettings();
+        else
+            return sts;
     }
     else {
-        static vcl::PBRViewerSettings sts;
         return sts;
     }
 }
@@ -61,10 +69,7 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
     mUI->setupUi(this);
 
     // by default, render settings is classic, and PBR settings frame is hidden
-    mUI->pbrSettingsFrame->setVisible(false);
-
-    mUI->renderModeLabel->setEnabled(false);
-    mUI->renderModeComboBox->setEnabled(false);
+    disableForm();
 
     using enum PBRViewerSettings::ToneMapping;
 
@@ -90,6 +95,18 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
         SIGNAL(currentIndexChanged(int)),
         this,
         SLOT(toneMappingComboBoxCurrentIndexChanged(int)));
+
+    connect(
+        mUI->iblCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(iblCheckBoxCheckStateChanged(Qt::CheckState)));
+
+    connect(
+        mUI->drawBackgroundPanoramaCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState)));
 }
 
 ViewerRenderSettingsFrame::~ViewerRenderSettingsFrame()
@@ -100,6 +117,11 @@ ViewerRenderSettingsFrame::~ViewerRenderSettingsFrame()
 void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 {
     mViewer = viewer;
+
+    if (!mViewer) {
+        disableForm();
+        return;
+    }
 
     if constexpr (PBRViewerConcept<MeshViewerRenderApp>) {
         using enum RenderMode;
@@ -126,6 +148,8 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 void ViewerRenderSettingsFrame::setPbrSettings(
     const PBRViewerSettings& settings)
 {
+    checkPtr(mViewer);
+
     if constexpr (PBRViewerConcept<MeshViewerRenderApp>) {
         using enum RenderMode;
         mUI->renderModeComboBox->setCurrentIndex(
@@ -143,21 +167,25 @@ const PBRViewerSettings& ViewerRenderSettingsFrame::pbrSettings() const
     return detail::pbrSettings(mViewer);
 }
 
-template<typename V>
-void setPBRModef(V* v, bool b)
+void ViewerRenderSettingsFrame::disableForm()
 {
-    if constexpr (PBRViewerConcept<V>) {
-        auto s    = v->pbrSettings();
-        s.pbrMode = b;
-        return v->setPbrSettings(s);
-    }
+    mUI->pbrSettingsFrame->setVisible(false);
+
+    mUI->renderModeLabel->setEnabled(false);
+    mUI->renderModeComboBox->setCurrentIndex(0);
+    mUI->renderModeComboBox->setEnabled(false);
 }
 
 void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
 {
+    checkPtr(mViewer);
+
     bool pbr = index == toUnderlying(RenderMode::PBR);
 
-    setPBRModef(mViewer, pbr);
+    auto sts = detail::pbrSettings(mViewer);
+    sts.pbrMode = pbr;
+    detail::setPbrSettings(mViewer, sts);
+
     mUI->pbrSettingsFrame->setVisible(pbr);
 
     mViewer->update();
@@ -165,6 +193,8 @@ void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
 
 void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
+    checkPtr(mViewer);
+
     auto sts = detail::pbrSettings(mViewer);
 
     sts.exposure = static_cast<float>(value);
@@ -176,9 +206,37 @@ void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
 void ViewerRenderSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
     int index)
 {
+    checkPtr(mViewer);
+
     auto sts = detail::pbrSettings(mViewer);
 
     sts.toneMapping = static_cast<PBRViewerSettings::ToneMapping>(index);
+
+    detail::setPbrSettings(mViewer, sts);
+    mViewer->update();
+}
+
+void ViewerRenderSettingsFrame::iblCheckBoxCheckStateChanged(
+    Qt::CheckState state)
+{
+    checkPtr(mViewer);
+
+    auto sts = detail::pbrSettings(mViewer);
+
+    sts.imageBasedLighting = (state == Qt::Checked);
+
+    detail::setPbrSettings(mViewer, sts);
+    mViewer->update();
+}
+
+void ViewerRenderSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
+    Qt::CheckState state)
+{
+    checkPtr(mViewer);
+
+    auto sts = detail::pbrSettings(mViewer);
+
+    sts.renderBackgroundPanorama = (state == Qt::Checked);
 
     detail::setPbrSettings(mViewer, sts);
     mViewer->update();

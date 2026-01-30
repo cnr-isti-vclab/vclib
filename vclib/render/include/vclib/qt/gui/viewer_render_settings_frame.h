@@ -56,12 +56,19 @@ public:
 
     const PBRViewerSettings& pbrSettings() const;
 
+private:
+    void disableForm();
+
 private slots:
     void renderModeComboBoxCurrentIndexChanged(int index);
 
     void exposureSpinBoxValueChanged(double value);
 
     void toneMappingComboBoxCurrentIndexChanged(int index);
+
+    void iblCheckBoxCheckStateChanged(Qt::CheckState state);
+
+    void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
 };
 
 } // namespace vcl::qt
