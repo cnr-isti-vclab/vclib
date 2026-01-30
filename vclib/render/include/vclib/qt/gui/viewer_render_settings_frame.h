@@ -61,7 +61,7 @@ public:
 private:
     void disableForm();
 
-    void updatePanormaLabel();
+    void updatePanoramaLabel();
 
 private slots:
     void renderModeComboBoxCurrentIndexChanged(int index);

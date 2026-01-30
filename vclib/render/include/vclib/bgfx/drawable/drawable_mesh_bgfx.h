@@ -254,8 +254,6 @@ public:
                 bgfx::setTransform(model.data());
 
                 if (pbrSettings.pbrMode) {
-                    ProgramManager& pm = Context::instance().programManager();
-
                     bgfx::submit(
                         settings.viewId,
                         pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());

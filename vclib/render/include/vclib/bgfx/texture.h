@@ -235,8 +235,8 @@ public:
             1, 
             isCubemap, 
             hasMips, 
-            1, 
-            // there is correspondance between bimg and bgfx texture formats
+            1,
+            // there is correspondence between bimg and bgfx texture formats
             static_cast<bimg::TextureFormat::Enum>(toUnderlying(format))
         );
         set(bgfx::makeRef(data, sz, releaseFn),

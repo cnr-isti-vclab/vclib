@@ -169,7 +169,7 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
         mUI->toneMappingComboBox->setCurrentIndex(
             toUnderlying(settings.toneMapping));
 
-        updatePanormaLabel();
+        updatePanoramaLabel();
     }
 }
 
@@ -196,7 +196,7 @@ void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
 
     detail::setPanorama(mViewer, panorama);
 
-    updatePanormaLabel();
+    updatePanoramaLabel();
 }
 
 const PBRViewerSettings& ViewerRenderSettingsFrame::pbrSettings() const
@@ -213,17 +213,17 @@ void ViewerRenderSettingsFrame::disableForm()
     mUI->renderModeComboBox->setEnabled(false);
 }
 
-void ViewerRenderSettingsFrame::updatePanormaLabel()
+void ViewerRenderSettingsFrame::updatePanoramaLabel()
 {
     checkPtr(mViewer);
 
     std::string panoramaFileName = detail::panoramaFileName(mViewer);
     if (!panoramaFileName.empty()) {
-        mUI->panormalaLabel->setText(
-            QString("Panorma: ") + panoramaFileName.c_str());
+        mUI->panoramaLabel->setText(
+            QString("Panorama: ") + panoramaFileName.c_str());
     }
     else {
-        mUI->panormalaLabel->setText("Panorma: None");
+        mUI->panoramaLabel->setText("Panorama: None");
     }
 }
 

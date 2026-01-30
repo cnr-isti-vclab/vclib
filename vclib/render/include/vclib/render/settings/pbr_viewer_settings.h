@@ -60,7 +60,7 @@ struct PBRViewerSettings
      * @brief Option that tells whether to use image based lighting (IBL)
      * or not.
      *
-     * @note this option is ignored if no panorame (environment map) is set.
+     * @note this option is ignored if no panorama (environment map) is set.
      */
     bool imageBasedLighting = false;
 

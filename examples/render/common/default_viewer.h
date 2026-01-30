@@ -115,7 +115,7 @@ void showMeshesOnViewer(
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     auto sts = viewer.pbrSettings();
 
-    if(!panorama.empty()) {
+    if (!panorama.empty()) {
         viewer.setPanorama(panorama);
         sts.imageBasedLighting       = true;
         sts.renderBackgroundPanorama = true;

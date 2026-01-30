@@ -191,11 +191,14 @@ bimg::ImageContainer* DrawableEnvironment::loadImage(std::string imagePath)
 
     bx::free(&bxAllocator, inputData);
 
+    if (!output) {
+        return nullptr;
+    }
+
     if (!err.isOk() ||
-        (!output->m_cubeMap && sourceFormat != HDR &&
-         sourceFormat !=
-             EXR)) // file is neither a cubemap nor an equirectangular map
-    {
+        (!output->m_cubeMap && sourceFormat != HDR && sourceFormat != EXR)) {
+        // file is neither a cubemap nor an equirectangular map
+        bimg::imageFree(output);
         return nullptr;
     }
 
