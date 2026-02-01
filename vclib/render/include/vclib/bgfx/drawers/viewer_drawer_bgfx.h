@@ -99,7 +99,10 @@ public:
         mDirectionalLightUniforms.bind();
 
         // background will be drawn only if settings allow it
-        mViewerDrawerUniforms.bind();
+        if(settings.pbrSettings.pbrMode && 
+           settings.pbrSettings.renderBackgroundPanorama &&
+           mPanorama.canDraw())
+            mViewerDrawerUniforms.bind();
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
