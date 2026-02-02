@@ -29,6 +29,10 @@
 
 namespace vcl {
 
+/**
+ * @brief This interface should be implemented by any DrawableObject that wishes to interact with the
+ * face/vertex selection system
+ */
 class Selectable
 {
 public:

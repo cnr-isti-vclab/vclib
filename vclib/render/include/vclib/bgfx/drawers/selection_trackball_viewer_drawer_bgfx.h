@@ -213,42 +213,7 @@ public:
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
 
-        SelectionBox debugBox = calculateWindowSpaceMeshBB();
-        if (ParentViewer::selectionCalculationRequired()) {
-            if (ParentViewer::selectionBox().allValue()) {
-                mBoxToDraw = ParentViewer::selectionBox();
-            }
-            bool         skipSelection = false;
-            SelectionBox minMaxBox = ParentViewer::selectionBox().toMinAndMax();
-            if (ParentViewer::selectionMode().isVisibleSelection()) {
-                skipSelection = !setVisibleTrisSelectionProjViewMatrix(
-                    calculateWindowSpaceMeshBB().intersect(
-                        mBoxToDraw.toMinAndMax()));
-            }
-            if (!skipSelection) {
-                SelectionParameters params = SelectionParameters {
-                    viewId,
-                    mVisibleSelectionViewIds[0],
-                    mVisibleSelectionViewIds[1],
-                    minMaxBox,
-                    ParentViewer::selectionMode(),
-                    ParentViewer::isSelectionTemporary(),
-                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                    std::array<uint, 2> {
-                                         sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
-                    0
-                };
-                for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-                    params.meshId = uint(i + 1);
-                    auto el       = ParentViewer::mDrawList->at(i);
-                    if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                        p->calculateSelection(params);
-                    }
-                }
-            }
-            ParentViewer::selectionCalculated();
-        }
+        calculateSelections(viewId);
 
         {
             DrawObjectSettings settings;
@@ -267,8 +232,8 @@ public:
             }
         }
 
+        drawSelectionBox(viewId, calculateWindowSpaceMeshBB());
         drawSelectionBox(viewId, mBoxToDraw);
-        drawSelectionBox(viewId, debugBox);
 
         if (!ParentViewer::isSelectionTemporary()) {
             mBoxToDraw.nullAll();
@@ -309,6 +274,49 @@ public:
     }
 
 private:
+    void calculateSelections(uint viewId)
+    {
+        if (!ParentViewer::selectionCalculationRequired()) {
+            return;
+        }
+        if (ParentViewer::selectionBox().allValue()) {
+            mBoxToDraw = ParentViewer::selectionBox();
+        }
+        bool         skipSelection = false;
+        SelectionBox minMaxBox     = ParentViewer::selectionBox().toMinAndMax();
+        if (ParentViewer::selectionMode().isVisibleSelection()) {
+            skipSelection = !setVisibleTrisSelectionProjViewMatrix(
+                calculateWindowSpaceMeshBB().intersect(
+                    mBoxToDraw.toMinAndMax()));
+        }
+        if (skipSelection) {
+            return;
+        }
+        SelectionParameters params = SelectionParameters {
+            viewId,
+            mVisibleSelectionViewIds[0],
+            mVisibleSelectionViewIds[1],
+            minMaxBox,
+            ParentViewer::selectionMode(),
+            ParentViewer::isSelectionTemporary(),
+            bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+            bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
+            std::array<uint, 2> {
+                                 sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+            0
+        };
+        // Call calculateSelection method on all the DrawableObjects which implement the Selectable interface
+        // REMINDER: in this context objectId 0 is reserved to indicate a fragment which did NOT pass in face visible selection
+        for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+            params.meshId = uint(i + 1);
+            auto el       = ParentViewer::mDrawList->at(i);
+            if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                p->calculateSelection(params);
+            }
+        }
+        ParentViewer::selectionCalculated();
+    }
+
     SelectionBox calculateWindowSpaceMeshBB()
     {
         Matrix44d vMat = TED::viewMatrix().template cast<double>();
