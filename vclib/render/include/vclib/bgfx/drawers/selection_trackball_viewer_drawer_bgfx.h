@@ -91,6 +91,8 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
+
+        // Set up the views for visible face selection
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
         bgfx::TextureHandle texHandles[3];
         texHandles[0] = bgfx::createTexture2D(
@@ -133,6 +135,11 @@ public:
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
         mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
+        // These other framebuffer is not actually necessary (i could assign to
+        // the second view the same framebuffer as the first or keep the default
+        // one) but i prefer to do it this way in case some draw is erroneously
+        // called on this view (if that happens the window's framebuffer or the
+        // first view's framebuffer would get modified otherwise)
         bgfx::TextureHandle uselessTexs[2];
         uselessTexs[0] = bgfx::createTexture2D(
             uint16_t(1),
@@ -153,13 +160,25 @@ public:
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
+
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
     }
 
-    // Box is a parameter so that if we want to subdivide the selection
-    // and do multiple passes for it we can do so
+    /**
+     * @brief Sets the frustum of the first pass of the visible
+     * selection to a sub-frustum that corresponds to the portion of the
+     * frustum obtained by unprojecting the selection box
+     *
+     * @important: Currently {(0,0),(window_w, window_h)} is used for
+     * calculations, however what should be used is instead {(viewport_x,
+     * viewport_y),(viewport_w, viewport_h)} to account for cases in which the
+     * viewport is not the entire window
+     *
+     * @param[in] box: The selection box to derive the sub-frustum from
+     * @return: true if the operation was successful, false otherwise
+     */
     bool setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
     {
         if (box.anyNull()) {
@@ -174,8 +193,8 @@ public:
         uint    win_w  = ((DerivedRenderApp*) this)->width();
         uint    win_h  = ((DerivedRenderApp*) this)->height();
         Point4f minNDC = Point4f(
-            float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
-            1.f - float(box.get2().value().y()) / float(win_h) * 2.f,
+            float(box.get1().value().x() - 0) / float(win_w) * 2.f - 1.f,
+            1.f - float(box.get2().value().y() - 0) / float(win_h) * 2.f,
             0.f,
             1.f);
         Point4f maxNDC = Point4f(
@@ -274,6 +293,12 @@ public:
     }
 
 private:
+    /**
+     * @brief "Enqueues" the selection request on all the valid DrawableObjects
+     * in the drawList
+     *
+     * @param[in] viewId: The draw viewId
+     */
     void calculateSelections(uint viewId)
     {
         if (!ParentViewer::selectionCalculationRequired()) {
@@ -305,8 +330,10 @@ private:
                                  sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
             0
         };
-        // Call calculateSelection method on all the DrawableObjects which implement the Selectable interface
-        // REMINDER: in this context objectId 0 is reserved to indicate a fragment which did NOT pass in face visible selection
+        // Call calculateSelection method on all the DrawableObjects which
+        // implement the Selectable interface REMINDER: in this context objectId
+        // 0 is reserved to indicate a fragment which did NOT pass in face
+        // visible selection
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
             params.meshId = uint(i + 1);
             auto el       = ParentViewer::mDrawList->at(i);
@@ -317,6 +344,19 @@ private:
         ParentViewer::selectionCalculated();
     }
 
+    /**
+     * @brief Calculates the union of the bounding boxes of all meshes that are
+     * eligible for selection and that are NOT entirely out of the frustum and
+     * then returns its projection on the screen
+     *
+     * @important: Currently {(0,0),(window_w, window_h)} is used for
+     * calculations, however what should be used is instead {(viewport_x,
+     * viewport_y),(viewport_w, viewport_h)} to account for cases in which the
+     * viewport is not the entire window
+     * 
+     * @return: The projection (in screen space) of the union of the bounding
+     * boxes
+     */
     SelectionBox calculateWindowSpaceMeshBB()
     {
         Matrix44d vMat = TED::viewMatrix().template cast<double>();
@@ -364,18 +404,14 @@ private:
         if (totalBB.isNull()) {
             return box;
         }
-        // WARNING: here the viewport should be used instead of width and height
-        // of the window but there is no way to obtain it currently (this is to
-        // account for cases in which the viewport is NOT (0,0)->(width, height)
-        // but something different)
         uint    width     = ((DerivedRenderApp*) this)->width();
         uint    height    = ((DerivedRenderApp*) this)->height();
         Point3d boxPts[2] = {totalBB.min(), totalBB.max()};
         Point2d sSpace[2];
         for (size_t i = 0; i < 2; i++) {
             sSpace[i] = Point2d {
-                (boxPts[i].x() + 1) / 2 * double(width),
-                (1 - boxPts[i].y()) / 2 * double(height)};
+                (boxPts[i].x() - 0 + 1) / 2 * double(width),
+                (1 - boxPts[i].y() - 0) / 2 * double(height)};
         }
         box.set1(sSpace[0]);
         box.set2(sSpace[1]);
