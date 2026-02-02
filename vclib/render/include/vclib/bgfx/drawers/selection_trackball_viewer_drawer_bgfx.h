@@ -353,7 +353,7 @@ private:
      * calculations, however what should be used is instead {(viewport_x,
      * viewport_y),(viewport_w, viewport_h)} to account for cases in which the
      * viewport is not the entire window
-     * 
+     *
      * @return: The projection (in screen space) of the union of the bounding
      * boxes
      */
@@ -361,7 +361,9 @@ private:
     {
         Matrix44d vMat = TED::viewMatrix().template cast<double>();
         Matrix44d pMat = TED::projectionMatrix().template cast<double>();
-        Box3d     frustumNDC;
+        // In NDC the frustum is an AABB with min point {-1,-1,-1} and max point
+        // {1,1,1}
+        Box3d frustumNDC;
         frustumNDC.add(Point3d {-1.0, -1.0, -1.0});
         frustumNDC.add(Point3d {1.0, 1.0, 1.0});
         // In NDC space
@@ -387,6 +389,7 @@ private:
                 Point4d {maxBB.x(), minBB.y(), maxBB.z(), 1.0},
                 Point4d {maxBB.x(), maxBB.y(), maxBB.z(), 1.0}
             };
+            // We recalculate the AABB in NDC space
             Box3d   tempBox;
             Point4d center {0.0, 0.0, 0.0, 1.0};
             for (const Point4d& p : boxPoints) {
@@ -395,6 +398,8 @@ private:
                 tempBox.add(pNDC.head<3>());
             }
             Box3d inters = tempBox.intersection(frustumNDC);
+            // If the box does not intersect the frustum then that object is not
+            // eligible for visible selection (since it is not visible)
             if (inters.isNull()) {
                 continue;
             }
