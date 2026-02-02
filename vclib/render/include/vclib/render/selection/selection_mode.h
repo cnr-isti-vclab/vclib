@@ -25,6 +25,20 @@
 
 namespace vcl {
 
+/**
+ * You can select:
+ *   - Vertices
+ *   - Faces
+ *   - Visible faces
+ * Of each you can do:
+ *   - Regular (add in box, subtract outside box)
+ *   - Add
+ *   - Subtract
+ * Furthermore there are some atomic modes (modes which ignore the selection box):
+ *   - Invert selected faces/vertices
+ *   - Select all faces/vertices
+ *   - Deselect all (NONE) faces/vertices
+ */
 class SelectionMode
 {
 public:
