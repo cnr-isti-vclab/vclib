@@ -59,7 +59,7 @@ public:
 
     void updateFirstChunkIndex(uint firstChunkIndex)
     {
-        mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
+        mMeshData[0] = std::bit_cast<float>(firstChunkIndex);
     }
 
     void bind() const

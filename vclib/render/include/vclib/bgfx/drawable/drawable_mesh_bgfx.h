@@ -325,7 +325,7 @@ public:
         }
 
         const std::array<float, 4> idFloat = {
-            Uniform::uintBitsToFloat(settings.objectId), 0.0f, 0.0f, 0.0f};
+            std::bit_cast<float>(settings.objectId), 0.0f, 0.0f, 0.0f};
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);

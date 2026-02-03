@@ -30,12 +30,13 @@ namespace vcl {
 
 class ViewerDrawerUniforms
 {
+    using enum PBRViewerSettings::ToneMapping;
+
     std::array<float, 4> mData = {
-        1.0, // exposure
-        Uniform::uintBitsToFloat(toUnderlying(
-            PBRViewerSettings::ToneMapping::ACES_HILL)), // tone mapping
-        0.0,                                             // specular mip levels
-        0.0                                              // unused
+        1.0,                             // exposure
+        std::bit_cast<float>(ACES_HILL), // tone mapping
+        0.0,                             // specular mip levels
+        0.0                              // unused
     };
 
     Uniform mDataUniform =
@@ -48,12 +49,12 @@ public:
 
     void updateToneMapping(PBRViewerSettings::ToneMapping tm)
     {
-        mData[1] = Uniform::uintBitsToFloat(toUnderlying(tm));
+        mData[1] = std::bit_cast<float>(tm);
     }
 
     void updateSpecularMipsLevels(uint8_t specMips)
     {
-        mData[2] = Uniform::uintBitsToFloat(uint(specMips));
+        mData[2] = std::bit_cast<float>(uint(specMips));
     }
 
     void bind() const { mDataUniform.bind(mData.data()); }

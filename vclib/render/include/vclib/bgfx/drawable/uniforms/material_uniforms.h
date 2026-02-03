@@ -108,7 +108,7 @@ public:
             pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
         }
 
-        mSettings[0] = Uniform::uintBitsToFloat(pbrSettingBits);
+        mSettings[0] = std::bit_cast<float>(pbrSettingBits);
 
         uint textureSettings = 0;
 
@@ -119,7 +119,7 @@ public:
             }
         }
 
-        mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
+        mSettings[1] = std::bit_cast<float>(textureSettings);
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

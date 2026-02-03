@@ -145,42 +145,6 @@ public:
     {
         bgfx::setUniform(mUniformHandle, data);
     }
-
-    /**
-     * @brief Utility function to reinterpret the bits of an unsigned integer as
-     * a float.
-     * @param[in] bits: The unsigned integer to convert.
-     * @return The float value with the same bit representation.
-     */
-    static float uintBitsToFloat(uint bits)
-    {
-        union
-        {
-            uint  i;
-            float f;
-        } u;
-
-        u.i = bits;
-        return u.f;
-    }
-
-    /**
-     * @brief Utility function to reinterpret the bits of a float as an unsigned
-     * integer.
-     * @param[in] f: The float to convert.
-     * @return The unsigned integer with the same bit representation.
-     */
-    static uint floatToUintBits(float f)
-    {
-        union
-        {
-            uint  i;
-            float f;
-        } u;
-
-        u.f = f;
-        return u.i;
-    }
 };
 
 } // namespace vcl
