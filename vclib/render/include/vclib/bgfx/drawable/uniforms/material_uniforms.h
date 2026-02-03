@@ -102,7 +102,7 @@ public:
             mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
-        mSettings[0] = Uniform::uintBitsToFloat(pbrSettings);
+        mSettings[0] = std::bit_cast<float>(pbrSettings);
 
         uint textureSettings = 0;
 
@@ -113,7 +113,7 @@ public:
             }
         }
 
-        mSettings[1] = Uniform::uintBitsToFloat(textureSettings);
+        mSettings[1] = std::bit_cast<float>(textureSettings);
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();
