@@ -30,6 +30,19 @@
 #include <array>
 
 namespace vcl {
+/**
+ * The parameters are as follows:
+ *   - The view id on which you draw
+ *   - The view id of the visible selection's first pass
+ *   - The view id of the visible selection's compute pass
+ *   - The selection box
+ *   - The selection mode
+ *   - Whether the selection is requested while still deciding on the final selection box
+ *   - The texture handle for the texture that will contain the primitive ids when doing visible selection
+ *   - The texture handle for the texture that will contain the mesh ids when doing visible selection
+ *   - The XY sizes of the previous 2 textures (yes, it should be the same for both)
+ *   - The Id of the mesh (useful only for visible selection; should start from 1)
+ */
 struct SelectionParameters
 {
     uint                drawViewId;
