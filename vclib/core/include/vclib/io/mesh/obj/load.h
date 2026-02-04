@@ -360,8 +360,7 @@ void readObjFace(
                 for (uint i = 0; i < nids.size(); ++i) {
                     if (nids[i] >= normals.size()) {
                         throw MalformedFileException(
-                            "Bad normal index for face " +
-                            std::to_string(fid));
+                            "Bad normal index for face " + std::to_string(fid));
                     }
                     m.vertex(vids[i]).normal() = normals[nids[i]].cast<NST>();
                 }

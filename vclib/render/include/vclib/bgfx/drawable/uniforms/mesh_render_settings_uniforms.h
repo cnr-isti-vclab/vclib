@@ -68,21 +68,19 @@ public:
         uint d1 = mri.wireframe().underlying();
         d1 |= mri.edges().underlying() << 16;
 
-        mDrawPack[0] = Uniform::uintBitsToFloat(d0);
-        mDrawPack[1] = Uniform::uintBitsToFloat(d1);
+        mDrawPack[0] = std::bit_cast<float>(d0);
+        mDrawPack[1] = std::bit_cast<float>(d1);
 
         mWidthPack[0] = settings.pointWidth();
         mWidthPack[1] = settings.wireframeWidth();
         mWidthPack[2] = settings.edgesWidth();
 
-        mColorPack[0] =
-            Uniform::uintBitsToFloat(settings.pointUserColor().abgr());
+        mColorPack[0] = std::bit_cast<float>(settings.pointUserColor().abgr());
         mColorPack[1] =
-            Uniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
+            std::bit_cast<float>(settings.surfaceUserColor().abgr());
         mColorPack[2] =
-            Uniform::uintBitsToFloat(settings.wireframeUserColor().abgr());
-        mColorPack[3] =
-            Uniform::uintBitsToFloat(settings.edgesUserColor().abgr());
+            std::bit_cast<float>(settings.wireframeUserColor().abgr());
+        mColorPack[3] = std::bit_cast<float>(settings.edgesUserColor().abgr());
     }
 
     void bind() const
