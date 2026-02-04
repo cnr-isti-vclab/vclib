@@ -25,14 +25,14 @@
 
 #include "viewer_drawer_bgfx.h"
 
-// #include "../../examples/render/979-selection/drawable_mesh_979.h"
 #include <bx/math.h>
 #include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
-#include <vclib/bgfx/drawable/drawable_mesh_979.h>
+#include <vclib/bgfx/drawable/drawable_mesh_bgfx.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/selection_trackball_event_drawer.h>
 #include <vclib/render/selection/selectable.h>
+#include <vclib/render/selection/selection_box.h>
 
 namespace vcl {
 

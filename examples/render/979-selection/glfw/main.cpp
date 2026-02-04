@@ -26,7 +26,7 @@
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
-#include <vclib/bgfx/drawable/drawable_mesh_979.h>
+#include <vclib/bgfx/drawable/drawable_mesh_bgfx.h>
 #include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
@@ -34,38 +34,7 @@
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-
-template <typename MeshType>
-vcl::DrawableMeshBGFX979<MeshType> getDrawableMesh979(
-    std::string filename              = "bimba.obj",
-    bool        fromVCLibExamplesPath = true)
-{
-    if (fromVCLibExamplesPath) {
-        filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
-    }
-
-    MeshType m = vcl::loadMesh<MeshType>(filename);
-    vcl::updatePerVertexAndFaceNormals(m);
-
-    // enable the vertex color of the mesh and set it to gray
-    if (!m.isPerVertexColorEnabled()) {
-        m.enablePerVertexColor();
-        vcl::setPerVertexColor(m, vcl::Color::Gray);
-    }
-
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
-
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMeshBGFX979<MeshType> drawable(m);
-
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
-
-    return drawable;
-}
+#include "../../common/get_drawable_mesh.h"
 
 int main(void)
 {
@@ -78,7 +47,7 @@ int main(void)
     
     RA tw("Selection", 1024, 768);
 
-    tw.pushDrawableObject(getDrawableMesh979<vcl::TriMesh>());
+    tw.pushDrawableObject(getDrawableMesh<vcl::TriMesh>());
 
     tw.fitScene();
 

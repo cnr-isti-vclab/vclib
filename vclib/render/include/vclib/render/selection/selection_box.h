@@ -75,8 +75,6 @@ class SelectionBox
         return xIntersectionExists(box) && yIntersectionExists(box);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const SelectionBox& box);
-
 public:
     SelectionBox() {}
 
@@ -190,30 +188,6 @@ public:
         return std::array<uint, 6> {2, 3, 0, 3, 1, 0};
     }
 };
-
-std::ostream& operator<<(std::ostream& os, const SelectionBox& box)
-{
-    std::stringstream ss;
-    auto              p1 = box.get1();
-    auto              p2 = box.get2();
-    ss << "{";
-    if (p1.has_value()) {
-        ss << "[" << p1.value().x() << ", " << p1.value().y() << "]";
-    }
-    else {
-        ss << "null";
-    }
-    ss << ", ";
-    if (p2.has_value()) {
-        ss << "[" << p2.value().x() << ", " << p2.value().y() << "]";
-    }
-    else {
-        ss << "null";
-    }
-    ss << "}";
-    std::string str = ss.str();
-    return (os << str);
-}
 
 } // namespace vcl
 
