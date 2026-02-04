@@ -46,6 +46,8 @@
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
+#include <bit>
+
 // This allows selection for a maximum of 512^3 = 134_217_728 vertices/faces per
 // mesh. Still likely enough.
 #define MAX_COMPUTE_WORKGROUP_SIZE uint(512)
@@ -308,9 +310,9 @@ public:
         std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(
             params.texAttachmentsSize[0] * params.texAttachmentsSize[1]);
         float temp[4] = {
-            Uniform::uintBitsToFloat(params.meshId),
-            Uniform::uintBitsToFloat(workGroupSize[0]),
-            Uniform::uintBitsToFloat(workGroupSize[1]),
+            std::bit_cast<float>(params.meshId),
+            std::bit_cast<float>(workGroupSize[0]),
+            std::bit_cast<float>(workGroupSize[1]),
             0.f};
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
@@ -645,10 +647,10 @@ private:
     void bindVertexWGroupSizeAndCount()
     {
         std::array<float, 4> temp = {
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[0]),
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[1]),
-            vcl::Uniform::uintBitsToFloat(mVertexSelectionWorkgroupSize[2]),
-            vcl::Uniform::uintBitsToFloat(Base::numVerts())};
+            std::bit_cast<float>(mVertexSelectionWorkgroupSize[0]),
+            std::bit_cast<float>(mVertexSelectionWorkgroupSize[1]),
+            std::bit_cast<float>(mVertexSelectionWorkgroupSize[2]),
+            std::bit_cast<float>(Base::numVerts())};
         mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
             (void*) temp.data());
     }
@@ -656,10 +658,10 @@ private:
     void bindFaceWGroupSizeAndCount()
     {
         std::array<float, 4> temp = {
-            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[0]),
-            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[1]),
-            vcl::Uniform::uintBitsToFloat(mFaceSelectionWorkgroupSize[2]),
-            vcl::Uniform::uintBitsToFloat(Base::numTris())};
+            std::bit_cast<float>(mFaceSelectionWorkgroupSize[0]),
+            std::bit_cast<float>(mFaceSelectionWorkgroupSize[1]),
+            std::bit_cast<float>(mFaceSelectionWorkgroupSize[2]),
+            std::bit_cast<float>(Base::numTris())};
         mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
             (void*) temp.data());
     }

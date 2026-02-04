@@ -29,6 +29,8 @@
 
 #include <bgfx/bgfx.h>
 
+#include <bit>
+
 // Again, i was not really able to figure out what the max size for compute workgroup size is
 // except for D3D which i remeber being close to 2^14 per axis (x, y, z) (this may be device dependend though)
 // Vulkan has a function that tells you how high it is
@@ -159,10 +161,10 @@ public:
             double(uintBufferElementCount) /
             double(workgroupSize[0] * workgroupSize[1])));
         std::array<float, 4> temp = {
-            Uniform::uintBitsToFloat(workgroupSize[0]),
-            Uniform::uintBitsToFloat(workgroupSize[1]),
-            Uniform::uintBitsToFloat(mTextureSize[0]),
-            Uniform::uintBitsToFloat(uintBufferElementCount)};
+            std::bit_cast<float>(workgroupSize[0]),
+            std::bit_cast<float>(workgroupSize[1]),
+            std::bit_cast<float>(mTextureSize[0]),
+            std::bit_cast<float>(uintBufferElementCount)};
         auto& pm = vcl::Context::instance().programManager();
         bgfx::setImage(
             4,

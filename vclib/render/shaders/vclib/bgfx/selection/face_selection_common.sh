@@ -95,7 +95,7 @@ bool triangleSegmentsIntersectAABB(vec3 minBoxPoint, vec3 maxBoxPoint, mat3 trng
 
 mat4 planeFromTriangle(mat3 tri) {
     vec3 n = cross(tri[1] - tri[0], tri[2] - tri[0]);
-    float d = -mul(n, tri[0]);
+    float d = -dot(n, tri[0]);
     return mat4(vec4(tri[0], 1), vec4(n.x, n.y, n.z, d), vec4_splat(0), vec4_splat(0));
 }
 
@@ -112,7 +112,7 @@ vec3 barycentricCoords(mat3 tri, vec2 p) {
 
 mat3 mat3Inv(mat3 A) {
     vec3 A1crossA2 = cross(A[1], A[2]);
-    float det = mul(A[0], A1crossA2);
+    float det = dot(A[0], A1crossA2);
     return (1/(det == 0 ? 1 : det)) * mtxFromRows(A1crossA2, cross(A[2], A[0]), cross(A[0], A[1]));
 }
 
@@ -127,11 +127,11 @@ vec4 segmentPlaneIntersection(mat4 plane, vec3 p0, vec3 p1) {
     vec3 o = p0;
     vec3 d = p1-p0;
     vec3 n = plane[1].xyz;
-    float den = mul(n, d);
+    float den = dot(n, d);
     if (den <= EPSILON) {
         return vec4(0, 0, 0, 0);
     }
-    float t = mul((plane[0].xyz - o), n) / den;
+    float t = dot((plane[0].xyz - o), n) / den;
     if (t < 0 || t > 1) {
         return vec4(0, 0, 0, 0);
     }
