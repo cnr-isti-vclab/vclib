@@ -46,8 +46,6 @@ struct DrawObjectSettingsBGFX
     PBRViewerSettings pbrSettings;
 
     const DrawableEnvironment* environment = nullptr;
-
-    const ViewerDrawerUniforms* viewerUniforms = nullptr;
 };
 
 } // namespace vcl

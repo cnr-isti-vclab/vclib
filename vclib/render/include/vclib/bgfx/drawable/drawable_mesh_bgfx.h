@@ -220,7 +220,6 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
             const DrawableEnvironment*  env         = settings.environment;
-            const ViewerDrawerUniforms* vdu         = settings.viewerUniforms;
 
             bool iblEnabled = pbrSettings.imageBasedLighting &&
                               env != nullptr && env->canDraw();
@@ -231,9 +230,6 @@ public:
                     mMRB.bindMaterials(mMRS, i, *this, iblEnabled);
 
                 bindUniforms();
-                if (pbrSettings.pbrMode && vdu != nullptr) {
-                    vdu->bind();
-                }
 
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);

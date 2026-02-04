@@ -91,18 +91,14 @@ public:
         settings.pbrSettings = mPBRSettings;
 
         settings.environment = &mPanorama;
-        settings.viewerUniforms = &mViewerDrawerUniforms;
 
         setViewTransform(viewId);
 
         mDirectionalLightUniforms.updateLight(ParentViewer::light());
         mDirectionalLightUniforms.bind();
+        mViewerDrawerUniforms.bind();
 
         // background will be drawn only if settings allow it
-        if(settings.pbrSettings.pbrMode && 
-           settings.pbrSettings.renderBackgroundPanorama &&
-           mPanorama.canDraw())
-            mViewerDrawerUniforms.bind();
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
