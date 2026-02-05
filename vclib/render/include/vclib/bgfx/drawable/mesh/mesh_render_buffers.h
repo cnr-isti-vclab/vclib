@@ -35,7 +35,6 @@
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
