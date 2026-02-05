@@ -48,6 +48,7 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
+    mutable DrawableMeshUniforms       mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
@@ -99,8 +100,11 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mMRB, other.mMRB);
+        swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
+        swap(mIdUniform, other.mIdUniform);
+        swap(mSurfaceProgramType, other.mSurfaceProgramType);
+        swap(mMRB, other.mMRB);
     }
 
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
@@ -215,6 +219,8 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        mMeshUniforms.update(*this);
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
@@ -223,6 +229,9 @@ public:
                 mMRB.bindTextures(mMRS, i, *this);
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+
+                mMeshUniforms.updateFirstChunkIndex(
+                    mMRB.triangleChunk(i).startIndex);
 
                 bindUniforms();
 
@@ -313,6 +322,7 @@ public:
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);
+            mMeshUniforms.updateFirstChunkIndex(0);
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());
@@ -398,8 +408,8 @@ public:
 protected:
     void bindUniforms() const
     {
+        mMeshUniforms.bind();
         mMeshRenderSettingsUniforms.bind();
-        mMRB.bindUniforms();
     }
 
     // TODO: change this function implementation after shader benchmarks

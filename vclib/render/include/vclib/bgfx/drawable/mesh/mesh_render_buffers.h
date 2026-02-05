@@ -79,7 +79,6 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    mutable DrawableMeshUniforms         mMeshUniforms;
     mutable MaterialUniforms             mMaterialUniforms;
     std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
 
@@ -125,7 +124,6 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextures, other.mMaterialTextures);
-        swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
@@ -206,11 +204,9 @@ public:
 
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
-            mMeshUniforms.updateFirstChunkIndex(0);
         }
         else {
             const auto& chunk = Base::triangleChunk(chunkToBind);
-            mMeshUniforms.updateFirstChunkIndex(chunk.startIndex);
             mTriangleIndexBuffer.bind(
                 chunk.startIndex * 3, chunk.indexCount * 3);
         }
@@ -370,8 +366,6 @@ public:
             mWireframeLines.setColorToUse(PER_VERTEX);
         }
     }
-
-    void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
@@ -738,7 +732,6 @@ private:
 
     void setMeshAdditionalData(const MeshType& mesh) // override
     {
-        mMeshUniforms.update(mesh);
         if constexpr (HasColor<MeshType>) {
             mMeshColor = mesh.color();
         }
