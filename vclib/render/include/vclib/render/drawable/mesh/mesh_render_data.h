@@ -79,6 +79,15 @@ namespace vcl {
 template<typename MeshRenderDerived>
 class MeshRenderData
 {
+public:
+    struct TriangleMaterialChunk
+    {
+        uint startIndex     = 0; // start index in the triangle index buffer
+        uint indexCount     = 0; // num indices in the triangle index buffer
+        uint vertMaterialId = 0; // material id associated to the vertices
+        uint faceMaterialId = 0; // material id associated to the faces
+    };
+
 private:
     using MRI = MeshRenderInfo;
 
@@ -117,15 +126,6 @@ private:
     // function, since the user may want to update only a subset of the buffers
     MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
 
-protected:
-    struct TriangleMaterialChunk
-    {
-        uint startIndex     = 0; // start index in the triangle index buffer
-        uint indexCount     = 0; // num indices in the triangle index buffer
-        uint vertMaterialId = 0; // material id associated to the vertices
-        uint faceMaterialId = 0; // material id associated to the faces
-    };
-
     std::vector<TriangleMaterialChunk> mMaterialChunks;
 
 public:
@@ -161,6 +161,28 @@ public:
 
         // set data for textures
         updateTextureData(mesh, btu);
+    }
+
+    /**
+     * @brief Returns the number of triangle chunks.
+     *
+     * Each chunk corresponds to a set of triangles associated that can be
+     * rendered with the same material.
+     *
+     * @return The number of triangle chunks.
+     */
+    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
+
+    /**
+     * @brief Returns the triangle material chunk at the given index.
+     *
+     * @param[in] chunkIndex: The index of the triangle material chunk to
+     * retrieve. Must be less than `triangleChunksNumber()`.
+     * @return The triangle material chunk at the given index.
+     */
+    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
+    {
+        return mMaterialChunks[chunkIndex];
     }
 
 protected:

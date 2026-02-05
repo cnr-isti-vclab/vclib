@@ -132,8 +132,6 @@ public:
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
-    uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
-
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,
@@ -211,7 +209,7 @@ public:
             mMeshUniforms.updateFirstChunkIndex(0);
         }
         else {
-            const auto& chunk = Base::mMaterialChunks[chunkToBind];
+            const auto& chunk = Base::triangleChunk(chunkToBind);
             mMeshUniforms.updateFirstChunkIndex(chunk.startIndex);
             mTriangleIndexBuffer.bind(
                 chunk.startIndex * 3, chunk.indexCount * 3);
