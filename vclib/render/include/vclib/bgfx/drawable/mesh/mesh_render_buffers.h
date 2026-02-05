@@ -589,6 +589,8 @@ private:
                 vcl::Point2i(img.width(), img.height()),
                 generateMips,
                 flags,
+                bgfx::TextureFormat::RGBA8,
+                false,
                 releaseFn);
 
             // at() does not insert if already present, thus safe in parallel

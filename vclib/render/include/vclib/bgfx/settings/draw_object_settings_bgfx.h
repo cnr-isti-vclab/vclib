@@ -25,6 +25,10 @@
 
 #include <vclib/base.h>
 
+#include <vclib/bgfx/drawable/drawable_environment.h>
+#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
+
 namespace vcl {
 
 /**
@@ -39,9 +43,9 @@ struct DrawObjectSettingsBGFX
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
 
-    /**< @brief Option that tells whether the object must be drawn in PBR mode.
-     */
-    bool pbrMode = false;
+    PBRViewerSettings pbrSettings;
+
+    const DrawableEnvironment* environment = nullptr;
 };
 
 } // namespace vcl
