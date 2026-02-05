@@ -185,6 +185,24 @@ public:
         return mMaterialChunks[chunkIndex];
     }
 
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
+
 protected:
     MeshRenderData() = default;
 
@@ -314,24 +332,6 @@ protected:
      * mesh.
      */
     uint numWireframeLines() const { return nWireframeLines; }
-
-    /**
-     * @brief Returns the material index for the given triangle chunk,
-     * according to the current render settings.
-     *
-     * @param[in] mrs: the mesh render settings
-     * @param[in] chunkNumber: the triangle chunk number
-     * @return the material index for the given triangle chunk
-     */
-    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
-    {
-        using enum MeshRenderInfo::Surface;
-
-        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].faceMaterialId;
-        else
-            return mMaterialChunks[chunkNumber].vertMaterialId;
-    }
 
     // utility functions to fill the buffers
 
