@@ -235,16 +235,9 @@ public:
                               env != nullptr && env->canDraw();
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
-                uint64_t surfaceState = state;
-                uint64_t materialState =
-                    updateAndBindMaterialUniforms(i, iblEnabled);
-
-                mMeshUniforms.updateFirstChunkIndex(
-                    mMRB.triangleChunk(i).startIndex);
-
-                bindUniforms();
-
                 // Bind textures before vertex buffers!!
+
+                /* TEXTURES */
                 mMRB.bindTextures(mMRS, i, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
@@ -252,16 +245,30 @@ public:
                     env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
                     env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
                 }
+
+                /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
 
+                /* UNIFORMS */
+                mMeshUniforms.updateFirstChunkIndex(
+                    mMRB.triangleChunk(i).startIndex);
+                uint64_t materialState =
+                    updateAndBindMaterialUniforms(i, iblEnabled);
+
+                bindUniforms();
+
+                bgfx::setTransform(model.data());
+
+                /* STATE */
+                uint64_t surfaceState = state;
                 if (pbrSettings.pbrMode) {
                     surfaceState |= materialState;
                 }
 
                 bgfx::setState(surfaceState);
-                bgfx::setTransform(model.data());
 
+                /* SUBMIT */
                 if (pbrSettings.pbrMode) {
                     bgfx::submit(
                         settings.viewId,
