@@ -389,7 +389,7 @@ private:
         }
     }
 
-    void setMeshUniforms(const MeshType& m) // override
+    void setMeshAdditionalData(const MeshType& m) // override
     {
         if constexpr (vcl::HasColor<MeshType>) {
             mMeshColor[0] = m.color().redF();

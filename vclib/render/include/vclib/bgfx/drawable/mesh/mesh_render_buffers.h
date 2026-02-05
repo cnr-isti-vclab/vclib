@@ -738,7 +738,7 @@ private:
         }
     }
 
-    void setMeshUniforms(const MeshType& mesh) // override
+    void setMeshAdditionalData(const MeshType& mesh) // override
     {
         mMeshUniforms.update(mesh);
         if constexpr (HasColor<MeshType>) {

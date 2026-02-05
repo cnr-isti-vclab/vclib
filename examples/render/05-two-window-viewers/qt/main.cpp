@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     using enum vcl::MeshRenderInfo::Buffers;
     drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({MESH_UNIFORMS});
+    drawable.updateBuffers({MESH_ADDITIONAL_DATA});
 
     auto mrs = drawable.renderSettings();
     mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);

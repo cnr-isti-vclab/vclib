@@ -80,7 +80,7 @@ public:
 
         TEXTURES,
 
-        MESH_UNIFORMS,
+        MESH_ADDITIONAL_DATA,
 
         COUNT,
     };
