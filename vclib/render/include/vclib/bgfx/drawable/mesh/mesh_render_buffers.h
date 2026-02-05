@@ -256,8 +256,7 @@ public:
             const Material& mat = m.material(materialId);
 
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& td =
-                    m.material(materialId).textureDescriptor(j);
+                const auto& td = m.material(materialId).textureDescriptor(j);
                 const std::string& path = td.path();
                 if (!path.empty()) {
                     const Texture& tex  = mMaterialTextures.at(path);

@@ -464,7 +464,7 @@ protected:
                     textureAvailable,
                     isPerVertexTangentAvailable(*this));
 
-                       // set the state according to the material
+                // set the state according to the material
                 if (!MeshType::material(materialId).doubleSided()) {
                     // backface culling
                     state |= BGFX_STATE_CULL_CW;
