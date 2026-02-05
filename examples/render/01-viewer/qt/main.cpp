@@ -36,7 +36,8 @@ int main(int argc, char** argv)
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
     drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers({vcl::MeshRenderInfo::Buffers::MESH_ADDITIONAL_DATA});
+    drawable.updateBuffers(
+        {vcl::MeshRenderInfo::Buffers::MESH_ADDITIONAL_DATA});
 
     auto mrs = drawable.renderSettings();
     mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
