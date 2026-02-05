@@ -227,12 +227,24 @@ public:
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(
+    /**
+     * @brief Binds the textures associated to the material of the given triangle
+     * chunk. Returns the number of bound textures.
+     *
+     * @param[in] mrs: the mesh render settings, needed to identify the material
+     * index to use (per vertex or per face)
+     * @param[in] chunkNumber: the triangle chunk number
+     * @param[in] m: the mesh
+     * @return the number of bound textures
+     */
+    uint bindTextures(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+        uint boundTextures = 0;
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
@@ -246,10 +258,12 @@ public:
                             VCL_MRB_TEXTURE0 + j,
                             mTextureSamplerUniforms[j].handle(),
                             flags);
+                        boundTextures++;
                     }
                 }
             }
         }
+        return boundTextures;
     }
 
     /**

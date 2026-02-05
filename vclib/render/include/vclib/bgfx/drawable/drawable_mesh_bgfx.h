@@ -229,8 +229,6 @@ public:
                 uint64_t materialState =
                     mMRB.bindMaterials(mMRS, i, *this, iblEnabled);
 
-                bindUniforms();
-
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
@@ -241,6 +239,8 @@ public:
                 }
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+
+                bindUniforms();
 
                 if (pbrSettings.pbrMode) {
                     surfaceState |= materialState;
