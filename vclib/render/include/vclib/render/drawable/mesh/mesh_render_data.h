@@ -156,8 +156,8 @@ public:
         // set data for edges
         updateEdgesData(mesh, btu);
 
-        // set data for mesh
-        updateMeshData(mesh, btu);
+        // set additional data for mesh
+        updateMeshAdditionalData(mesh, btu);
 
         // set data for textures
         updateTextureData(mesh, btu);
@@ -911,14 +911,14 @@ protected:
     void setTextures(const MeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the mesh uniforms from the mesh.
+     * @brief Function that sets the mesh additional data from the mesh.
      *
-     * The function should set the uniforms of the mesh (e.g., mesh color,
-     * transform) and prepare them to be bound to the shader program.
+     * The function should set the additional data of the mesh (e.g., mesh
+     * color, transform) and prepare them to be bound to the shader program.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setMeshUniforms(const MeshConcept auto&) {}
+    void setMeshAdditionalData(const MeshConcept auto&) {}
 
 private:
     MeshRenderDerived& derived()
@@ -1119,15 +1119,15 @@ private:
         }
     }
 
-    void updateMeshData(
+    void updateMeshAdditionalData(
         const MeshConcept auto&       mesh,
         MeshRenderInfo::BuffersBitSet btu)
     {
         using enum MRI::Buffers;
 
-        if (btu[toUnderlying(MESH_UNIFORMS)]) {
-            // mesh uniforms
-            derived().setMeshUniforms(mesh);
+        if (btu[toUnderlying(MESH_ADDITIONAL_DATA)]) {
+            // mesh additional data
+            derived().setMeshAdditionalData(mesh);
         }
     }
 
