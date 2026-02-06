@@ -59,7 +59,7 @@ class DrawableEnvironment
     const Uniform mSpecularCubeSamplerUniform =
         Uniform("s_specular", bgfx::UniformType::Sampler);
     const Uniform mBrdfLutSamplerUniform =
-        Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
+        Uniform("s_tex5", bgfx::UniformType::Sampler);
 
     std::string mImagePath;
 

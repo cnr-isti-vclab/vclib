@@ -83,10 +83,10 @@ void main()
         color = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = texture2D(baseColorTex, v_texcoord0);
+        color = baseColorTex(v_texcoord0);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
-        color = texture2D(baseColorTex, v_texcoord1);
+        color = baseColorTex(v_texcoord1);
     }
 
     gl_FragColor = light * color + vec4(specular, 0);

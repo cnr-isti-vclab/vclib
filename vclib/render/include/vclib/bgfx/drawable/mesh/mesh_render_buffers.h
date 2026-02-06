@@ -782,7 +782,7 @@ private:
     {
         for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
             mTextureSamplerUniforms[i] = Uniform(
-                Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                ("s_tex" + std::to_string(i)).c_str(),
                 bgfx::UniformType::Sampler);
         }
     }

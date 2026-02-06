@@ -72,7 +72,7 @@ void main()
 
     if (useTexture && isBaseColorTextureAvailable(u_pbr_texture_settings)) {
         // base color texture available
-        textureBaseColor = texture2D(baseColorTex, texcoord);
+        textureBaseColor = baseColorTex(texcoord);
     }
 
     // multiply vertex color with material base color
@@ -88,7 +88,7 @@ void main()
 
     if (useTexture && isMetallicRoughnessTextureAvailable(u_pbr_texture_settings)) {
         // metallic-roughness texture available
-        metallicRoughnessTexture = texture2D(metallicRoughnessTex, texcoord);
+        metallicRoughnessTexture = metallicRoughnessTex(texcoord);
     }
 
     float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
@@ -98,7 +98,7 @@ void main()
     vec3 normal;
 
     if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
-        vec3 normalTexture = texture2D(normalTex, texcoord).xyz;
+        vec3 normalTexture = normalTex(texcoord).xyz;
 
         // remapping normals
         // from [0,1] to [-1,1] for x and y (red and green)
@@ -137,7 +137,7 @@ void main()
 
     if (useTexture && isEmissiveTextureAvailable(u_pbr_texture_settings)) {
         // emissive texture available
-        emissiveTexture = texture2D(emissiveTex, texcoord).rgb;
+        emissiveTexture = emissiveTex(texcoord).rgb;
     }
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
@@ -169,7 +169,7 @@ void main()
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
 
         // Fresnel
-        vec2 brdf = texture2D(s_brdf_lut, vec2(NoV, roughness)).rg;
+        vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
         vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
         vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
 
@@ -177,7 +177,7 @@ void main()
         float occlusion = 1.0;
         if(useTexture && isOcclusionTextureAvailable(u_pbr_texture_settings))
         {
-            occlusion = texture2D(occlusionTex, texcoord).r;
+            occlusion = occlusionTex(texcoord).r;
         }
         occlusion = 1.0 + u_occlusionStrength * (occlusion - 1.0);
 

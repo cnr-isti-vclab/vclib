@@ -3,4 +3,4 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
-#define COLORING vec4 color = texture2D(baseColorTex, v_texcoord0);
+#define COLORING vec4 color = baseColorTex(v_texcoord0);
