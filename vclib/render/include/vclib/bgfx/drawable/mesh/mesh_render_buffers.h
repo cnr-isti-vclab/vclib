@@ -231,11 +231,15 @@ public:
     uint bindTextures(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
+        DrawableMeshUniforms&     meshUniforms,
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
 
         uint boundTextures = 0;
+
+        DrawableMeshUniforms::TextureType tt =
+            DrawableMeshUniforms::TextureType::BASE_COLOR;
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
@@ -249,6 +253,9 @@ public:
                             VCL_MRB_TEXTURE0 + j,
                             mTextureSamplerUniforms[j].handle(),
                             flags);
+
+                        tt = static_cast<DrawableMeshUniforms::TextureType>(j);
+                        meshUniforms.setTextureStage(tt, j); // todo: change j with boundTextures
                         boundTextures++;
                     }
                 }

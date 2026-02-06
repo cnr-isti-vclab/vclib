@@ -46,6 +46,16 @@ class DrawableMeshUniforms
     Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
 
 public:
+    enum class TextureType {
+        BASE_COLOR,
+        METALLIC_ROUGHNESS,
+        NORMAL,
+        OCCLUSION,
+        EMISSIVE,
+        BRDF_LUT,
+        COUNT
+    };
+
     DrawableMeshUniforms() = default;
 
     template<MeshConcept MeshType>
@@ -64,10 +74,19 @@ public:
         mMeshData[0] = std::bit_cast<float>(firstChunkIndex);
     }
 
-    void setBaseColorTextureStage(uint8_t stage)
+    void resetTextureStages()
     {
-        // base color is the first texture stage
-        setTextureStage(0, stage);
+        // 8 texture stages with 4 bit each, all set to 15 (not used)
+        mMeshData[1] = std::bit_cast<float>(0xFFFFFFFF);
+    }
+
+    void setTextureStage(TextureType type, uint8_t stage)
+    {
+        assert(toUnderlying(type) < toUnderlying(TextureType::COUNT));
+
+        if (toUnderlying(type) < 8) { // use y
+            setYTextureStage(toUnderlying(type), stage);
+        }
     }
 
     void bind() const
@@ -77,7 +96,7 @@ public:
     }
 
 private:
-    void setTextureStage(uint8_t pos, uint8_t stage)
+    void setYTextureStage(uint8_t pos, uint8_t stage)
     {
         uint value = std::bit_cast<uint>(mMeshData[1]);
 
@@ -85,7 +104,6 @@ private:
 
         mMeshData[1] = std::bit_cast<float>(value);
     }
-
 
     static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)
     {

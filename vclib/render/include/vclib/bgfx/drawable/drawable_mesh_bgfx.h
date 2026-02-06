@@ -226,6 +226,7 @@ public:
         }
 
         mMeshUniforms.setMeshColor(*this);
+        mMeshUniforms.resetTextureStages();
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
@@ -238,10 +239,16 @@ public:
                 // Bind textures before vertex buffers!!
 
                 /* TEXTURES */
-                mMRB.bindTextures(mMRS, i, *this);
+                mMRB.bindTextures(mMRS, i, mMeshUniforms, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
                     env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+
+                    // todo: change to the returned value by bindTextures, that
+                    // is the actual number of bound textures
+                    mMeshUniforms.setTextureStage(
+                        DrawableMeshUniforms::TextureType::BRDF_LUT, 5);
+
                     env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
                     env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
                 }
