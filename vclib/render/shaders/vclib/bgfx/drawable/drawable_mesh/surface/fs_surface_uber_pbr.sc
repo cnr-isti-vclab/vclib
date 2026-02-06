@@ -23,6 +23,7 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
@@ -33,14 +34,6 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
-
-// textures
-SAMPLER2D(baseColorTex, VCL_MRB_TEXTURE0);
-SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
-SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
-SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
-SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
-SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
