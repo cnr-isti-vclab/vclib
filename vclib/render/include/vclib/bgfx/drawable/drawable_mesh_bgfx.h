@@ -225,7 +225,7 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        mMeshUniforms.update(*this);
+        mMeshUniforms.setMeshColor(*this);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
@@ -251,7 +251,7 @@ public:
                 mMRB.bindIndexBuffers(mMRS, i);
 
                 /* UNIFORMS */
-                mMeshUniforms.updateFirstChunkIndex(
+                mMeshUniforms.setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
                 uint64_t materialState =
                     updateAndBindMaterialUniforms(i, iblEnabled);
@@ -347,7 +347,7 @@ public:
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mIdUniform.bind(&idFloat);
-            mMeshUniforms.updateFirstChunkIndex(0);
+            mMeshUniforms.setFirstChunkIndex(0);
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());

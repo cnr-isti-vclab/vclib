@@ -32,9 +32,13 @@ class DrawableMeshUniforms
 {
     float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
+    // x component: first chunk primitive id drawn (as uint)
+    // y component: 8 texture stages with 4 bit each, to specify if texture is
+    //    used (value != 15) and which stage is used for each texture (as uint):
+    //    none|none|brdfLut|emissive|occlusion|normal|metallRough|baseColor
     float mMeshData[4] = {
         0.0, // as uint: first chunk primitive id drawn
-        0.0,
+        std::bit_cast<float>(0xFFFFFFFF), // 8 texture stages with 4 bit each
         0.0,
         0.0};
 
@@ -44,10 +48,8 @@ class DrawableMeshUniforms
 public:
     DrawableMeshUniforms() = default;
 
-    const float* currentMeshColor() const { return mMeshColor; }
-
     template<MeshConcept MeshType>
-    void update(const MeshType& m)
+    void setMeshColor(const MeshType& m)
     {
         if constexpr (HasColor<MeshType>) {
             mMeshColor[0] = m.color().redF();
@@ -57,15 +59,48 @@ public:
         }
     }
 
-    void updateFirstChunkIndex(uint firstChunkIndex)
+    void setFirstChunkIndex(uint firstChunkIndex)
     {
         mMeshData[0] = std::bit_cast<float>(firstChunkIndex);
+    }
+
+    void setBaseColorTextureStage(uint8_t stage)
+    {
+        // base color is the first texture stage
+        setTextureStage(0, stage);
     }
 
     void bind() const
     {
         mMeshColorUniform.bind(mMeshColor);
         mMeshDataUniform.bind(mMeshData);
+    }
+
+private:
+    void setTextureStage(uint8_t pos, uint8_t stage)
+    {
+        uint value = std::bit_cast<uint>(mMeshData[1]);
+
+        set4BitStageValue(value, pos, stage);
+
+        mMeshData[1] = std::bit_cast<float>(value);
+    }
+
+
+    static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)
+    {
+        // value is a uint where 8 stages with 4 bit each are encoded
+        // pos is a value between 0 and 8 to specify the bit positions to set
+        // stage is a value between 0 and 15 to specify the stage to set
+        // only the 4 bits corresponding to pos are set to stage, the others are
+        // left unchanged
+
+        assert(pos < 8);
+        assert(stage < 16);
+
+        uint mask = 0xF << (pos * 4); // mask to clear the bits at pos
+        // clear bits at pos and set new stage
+        value = (value & ~mask) | (uint(stage) << (pos * 4));
     }
 };
 
