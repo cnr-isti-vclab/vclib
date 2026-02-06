@@ -239,15 +239,15 @@ public:
                 // Bind textures before vertex buffers!!
 
                 /* TEXTURES */
-                mMRB.bindTextures(mMRS, i, mMeshUniforms, *this);
+                // tStage is the first stage from which we can bind new 2D
+                // textures
+                uint tStage = mMRB.bindTextures(mMRS, i, mMeshUniforms, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
-                    env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    env->bindTexture(BRDF_LUT, tStage);
 
-                    // todo: change to the returned value by bindTextures, that
-                    // is the actual number of bound textures
                     mMeshUniforms.setTextureStage(
-                        DrawableMeshUniforms::TextureType::BRDF_LUT, 5);
+                        DrawableMeshUniforms::TextureType::BRDF_LUT, tStage);
 
                     env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
                     env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);

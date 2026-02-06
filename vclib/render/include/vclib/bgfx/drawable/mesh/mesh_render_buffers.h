@@ -250,12 +250,12 @@ public:
                     if (tex.isValid()) {
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
-                            VCL_MRB_TEXTURE0 + j,
+                            boundTextures,
                             mTextureSamplerUniforms[j].handle(),
                             flags);
 
                         tt = static_cast<DrawableMeshUniforms::TextureType>(j);
-                        meshUniforms.setTextureStage(tt, j); // todo: change j with boundTextures
+                        meshUniforms.setTextureStage(tt, boundTextures);
                         boundTextures++;
                     }
                 }
