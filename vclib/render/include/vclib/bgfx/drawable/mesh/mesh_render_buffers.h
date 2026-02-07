@@ -264,30 +264,6 @@ public:
         return boundTextures;
     }
 
-    std::array<bool, N_TEXTURE_TYPES> textureAvailableArray(
-        const MeshType& m,
-        uint            materialId) const
-    {
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-        if (materialId == UINT_NULL) {
-            return textureAvailable;
-        }
-        else {
-            assert(materialId < m.materialsNumber());
-            const Material& mat = m.material(materialId);
-
-            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& td = m.material(materialId).textureDescriptor(j);
-                const std::string& path = td.path();
-                if (!path.empty()) {
-                    const Texture& tex  = mMaterialTextures.at(path);
-                    textureAvailable[j] = tex.isValid();
-                }
-            }
-        }
-        return textureAvailable;
-    }
-
     void updateEdgeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Edges;

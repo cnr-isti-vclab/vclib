@@ -53,9 +53,19 @@ vec4 textureStage(uint stage, vec2 texcoord)
 //
 // to get the actual stage index: textureStageBitField(u_textureStagesY, pos)
 
+bool isBaseColorTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 0) != 0xF;
+}
+
 vec4 baseColorTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesY, 0), texcoord);
+}
+
+bool isMetallicRoughnessTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 1) != 0xF;
 }
 
 vec4 metallicRoughnessTex(vec2 texcoord)
@@ -63,9 +73,19 @@ vec4 metallicRoughnessTex(vec2 texcoord)
     return textureStage(textureStageBitField(u_textureStagesY, 1), texcoord);
 }
 
+bool isNormalTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 2) != 0xF;
+}
+
 vec4 normalTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesY, 2), texcoord);
+}
+
+bool isOcclusionTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 3) != 0xF;
 }
 
 vec4 occlusionTex(vec2 texcoord)
@@ -73,9 +93,19 @@ vec4 occlusionTex(vec2 texcoord)
     return textureStage(textureStageBitField(u_textureStagesY, 3), texcoord);
 }
 
+bool isEmissiveTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 4) != 0xF;
+}
+
 vec4 emissiveTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesY, 4), texcoord);
+}
+
+bool isBrdfLutTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesY, 5) != 0xF;
 }
 
 vec4 brdfLutTex(vec2 texcoord)

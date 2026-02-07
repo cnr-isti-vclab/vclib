@@ -52,7 +52,6 @@ class MaterialUniforms
 
     // settings packed in a vec4
     // .x : pbr settings
-    // .y : texture settings
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
@@ -84,11 +83,10 @@ public:
     const std::array<float, 4>& currentSettings() const { return mSettings; }
 
     void update(
-        const Material&                     m,
-        bool                                vertexColorAvailable,
-        const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                                vertexTangentAvailable,
-        bool                                imageBasedLighting)
+        const Material& m,
+        bool            vertexColorAvailable,
+        bool            vertexTangentAvailable,
+        bool            imageBasedLighting)
     {
         uint pbrSettingBits = 0;
 
@@ -109,17 +107,6 @@ public:
         }
 
         mSettings[0] = std::bit_cast<float>(pbrSettingBits);
-
-        uint textureSettings = 0;
-
-        for (int i = 0; i < N_TEXTURES; ++i) {
-            if (textureAvailable[i]) {
-                // texture available, uses settings from 0 to N_TEXTURES
-                textureSettings |= 1 << (VCL_PBR_TEXTURE_BASE_COLOR + i);
-            }
-        }
-
-        mSettings[1] = std::bit_cast<float>(textureSettings);
 
         mBaseColor[0] = m.baseColor().redF();
         mBaseColor[1] = m.baseColor().greenF();

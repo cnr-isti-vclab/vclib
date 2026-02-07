@@ -460,14 +460,11 @@ protected:
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
             mMaterialUniforms.update(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(*this),
-                textureAvailable,
                 isPerVertexTangentAvailable(*this),
                 imageBasedLighting);
         }
@@ -481,18 +478,13 @@ protected:
                 mMaterialUniforms.update(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(*this),
-                    textureAvailable,
                     isPerVertexTangentAvailable(*this),
                     imageBasedLighting);
             }
             else {
-                textureAvailable =
-                    mMRB.textureAvailableArray(*this, materialId);
-
                 mMaterialUniforms.update(
                     MeshType::material(materialId),
                     isPerVertexColorAvailable(*this),
-                    textureAvailable,
                     isPerVertexTangentAvailable(*this),
                     imageBasedLighting);
 
