@@ -55,6 +55,12 @@ class MaterialUniforms
     // .y : texture settings
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
 
+    std::array<float, 4> mClearcoatPack = {
+        0.0, // clearcoat factor
+        0.0, // clearcoat roughness factor
+        1.0, // clearcoat normal scale
+        0.0};
+
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
 
@@ -65,6 +71,9 @@ class MaterialUniforms
         Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
 
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+
+    Uniform mClearcoatPackUniform =
+        Uniform("u_clearcoatPack", bgfx::UniformType::Vec4);
 
 public:
     MaterialUniforms() = default;
@@ -82,6 +91,11 @@ public:
     }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
+
+    const std::array<float, 4>& currentClearcoatPack() const
+    {
+        return mClearcoatPack;
+    }
 
     void update(
         const Material&                     m,
@@ -136,6 +150,10 @@ public:
         mEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
         mEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         mEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+
+        mClearcoatPack[0] = m.clearcoat();
+        mClearcoatPack[1] = m.clearcoatRoughness();
+        mClearcoatPack[2] = m.clearcoatNormalScale();
     }
 
     void bind() const
@@ -144,6 +162,7 @@ public:
         mFactorsPackUniform.bind(&mFactorsPack);
         mEmissiveAlphaCutoffPackUniform.bind(&mEmissiveAlphaCutoffPack);
         mSettingsUniform.bind(&mSettings);
+        mClearcoatPackUniform.bind(&mClearcoatPack);
     }
 };
 

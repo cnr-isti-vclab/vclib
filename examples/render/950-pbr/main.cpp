@@ -36,6 +36,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        CLEARCOAT_TEST,
         COUNT_EXAMPLES
     };
 
@@ -44,9 +45,10 @@ int main(int argc, char** argv)
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
-        "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
+        "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/ClearCoatTest/ClearCoatTest.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = CLEARCOAT_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -88,6 +90,15 @@ int main(int argc, char** argv)
         else if (type == EMISSIVE) {
             typeName = "emissive";
         }
+        else if (type == CLEARCOAT) {
+            typeName = "clearcoat";
+        }
+        else if (type == CLEARCOAT_ROUGHNESS) {
+            typeName = "clearcoatRoughness";
+        }
+        else if (type == CLEARCOAT_NORMAL) {
+            typeName = "clearcoatNormal";
+        }
 
         std::cout << "  " << typeName << "Texture: ";
         if (!texture.isNull()) {
@@ -120,11 +131,19 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  clearcoat: " << mat.clearcoat() << std::endl;
+            std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
+                      << std::endl;
+            std::cout << "  clearcoatNormalScale: " << mat.clearcoatNormalScale()
+                      << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, CLEARCOAT);
+            printTextureInfo(mat, CLEARCOAT_ROUGHNESS);
+            printTextureInfo(mat, CLEARCOAT_NORMAL);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;

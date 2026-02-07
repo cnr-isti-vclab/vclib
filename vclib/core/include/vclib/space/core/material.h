@@ -68,6 +68,9 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
+        CLEARCOAT,
+        CLEARCOAT_ROUGHNESS,
+        CLEARCOAT_NORMAL,
         COUNT      ///< Utility value to get the number of texture types.
     };
 
@@ -78,7 +81,10 @@ public:
                 "metallicRoughnessTex",
                 "normalTex",
                 "occlusionTex",
-                "emissiveTex"};
+                "emissiveTex",
+                "clearcoatTex",
+                "clearcoatRoughnessTex",
+                "clearcoatNormalTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =
@@ -107,6 +113,12 @@ private:
     std::array<TextureDescriptor, N_TEXTURE_TYPE> mTextureDescriptors;
 
     bool mDoubleSided = false;
+
+    float mClearcoat = 0.0f;
+
+    float mClearcoatRoughness = 0.0f;
+
+    float mClearcoatNormalScale = 1.0f;
 
 public:
     /**
@@ -254,6 +266,42 @@ public:
     float& occlusionStrength() { return mOcclusionStrength; }
 
     /**
+     * @brief Gets the clearcoat value.
+     * @return The clearcoat value, in the range [0.0, 1.0].
+     */
+    float clearcoat() const { return mClearcoat; }
+
+    /**
+     * @brief Gets a mutable reference to the clearcoat value.
+     * @return A reference to the clearcoat value.
+     */
+    float& clearcoat() { return mClearcoat; }
+
+    /**
+     * @brief Gets the clearcoat roughness value.
+     * @return The clearcoat roughness value, in the range [0.0, 1.0].
+     */
+    float clearcoatRoughness() const { return mClearcoatRoughness; }
+
+    /**
+     * @brief Gets a mutable reference to the clearcoat roughness value.
+     * @return A reference to the clearcoat roughness value.
+     */
+    float& clearcoatRoughness() { return mClearcoatRoughness; }
+
+    /**
+     * @brief Gets the clearcoat normal scale value.
+     * @return The clearcoat normal scale value, in the range [0.0, 1.0].
+     */
+    float clearcoatNormalScale() const { return mClearcoatNormalScale; }
+
+    /**
+     * @brief Gets a mutable reference to the clearcoat normal scale value.
+     * @return A reference to the clearcoat normal scale value.
+     */
+    float& clearcoatNormalScale() { return mClearcoatNormalScale; }
+
+    /**
      * @brief Gets the texture descriptor for the base color texture.
      * @return A const reference to the base color texture descriptor.
      */
@@ -335,6 +383,9 @@ public:
         vcl::serialize(os, mOcclusionStrength);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
+        vcl::serialize(os, mClearcoat);
+        vcl::serialize(os, mClearcoatRoughness);
+        vcl::serialize(os, mClearcoatNormalScale);
     }
 
     /**
@@ -352,6 +403,9 @@ public:
         vcl::deserialize(is, mOcclusionStrength);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
+        vcl::deserialize(is, mClearcoat);
+        vcl::deserialize(is, mClearcoatRoughness);
+        vcl::deserialize(is, mClearcoatNormalScale);
     }
 
     /**
@@ -380,6 +434,9 @@ public:
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
+        case TextureType::CLEARCOAT:
+        case TextureType::CLEARCOAT_ROUGHNESS:
+        case TextureType::CLEARCOAT_NORMAL:
         default: return Image::ColorSpace::LINEAR;
         }
     }
