@@ -12,12 +12,12 @@
 #define u_textureStagesY floatBitsToUint(u_meshData.y)
 
 // textures
-SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
-SAMPLER2D(s_tex1, VCL_MRB_TEXTURE1);
-SAMPLER2D(s_tex2, VCL_MRB_TEXTURE2);
-SAMPLER2D(s_tex3, VCL_MRB_TEXTURE3);
-SAMPLER2D(s_tex4, VCL_MRB_TEXTURE4);
-SAMPLER2D(s_tex5, VCL_MRB_TEXTURE5);
+SAMPLER2D(s_tex0, 0);
+SAMPLER2D(s_tex1, 1);
+SAMPLER2D(s_tex2, 2);
+SAMPLER2D(s_tex3, 3);
+SAMPLER2D(s_tex4, 4);
+SAMPLER2D(s_tex5, 5);
 
 vec4 textureStage(uint stage, vec2 texcoord)
 {

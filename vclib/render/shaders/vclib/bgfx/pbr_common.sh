@@ -26,12 +26,12 @@
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 // Constants
 
-#define PI                                            3.141592653589793
-#define GAMMA                                         2.2
+#define PI    3.141592653589793
+#define GAMMA 2.2
 
 // Settings
 
@@ -51,13 +51,13 @@
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 
-#define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
-#define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
-#define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
-#define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
+#define LIGHT_KEY_DIR       vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
+#define LIGHT_FILL_DIR      vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
+#define LIGHT_KEY_DIR_VIEW  mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
+#define LIGHT_FILL_DIR_VIEW mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
 
-#define DISTRIBUTION_LAMBERTIAN                     0u
-#define DISTRIBUTION_GGX                            1u
+#define DISTRIBUTION_LAMBERTIAN 0u
+#define DISTRIBUTION_GGX        1u
 
 #define TONEMAP_NONE                     0
 #define TONEMAP_BASIC                    1

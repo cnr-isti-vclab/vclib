@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
-#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
 
@@ -33,8 +33,6 @@ namespace vcl {
 
 class MaterialUniforms
 {
-    static const uint N_TEXTURES = toUnderlying(Material::TextureType::COUNT);
-
     std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
 
     // metallic, roughness and occlusion are stored in the B, G and R channels
@@ -67,20 +65,6 @@ class MaterialUniforms
 
 public:
     MaterialUniforms() = default;
-
-    const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
-
-    const std::array<float, 4>& currentFactorsPack() const
-    {
-        return mFactorsPack;
-    }
-
-    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const
-    {
-        return mEmissiveAlphaCutoffPack;
-    }
-
-    const std::array<float, 4>& currentSettings() const { return mSettings; }
 
     void update(
         const Material& m,
