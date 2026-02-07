@@ -47,13 +47,16 @@ class MaterialUniforms
     };
 
     // emissive color factor stored in RGB channels, alpha channel is unused so
-    // it can be used to store the alpha cutoff when needed
-    std::array<float, 4> mEmissiveAlphaCutoffPack = {0.0, 0.0, 0.0, 0.5};
+    // it can be used to store the emissive strength
+    std::array<float, 4> mEmissivePack = {0.0, 0.0, 0.0, 1.0};
 
     // settings packed in a vec4
     // .x : pbr settings
     // .y : texture settings
     std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
+
+    // alpha cutoff and maybe other alpha related settings can be stored here
+    std::array<float, 4> mAlphaPack = {0.5, 0.0, 0.0, 0.0};
 
     Uniform mBaseColorUniform =
         Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
@@ -61,10 +64,13 @@ class MaterialUniforms
     Uniform mFactorsPackUniform =
         Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
 
-    Uniform mEmissiveAlphaCutoffPackUniform =
-        Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
+    Uniform mEmissivePackUniform =
+        Uniform("u_emissivePack", bgfx::UniformType::Vec4);
 
     Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+
+    Uniform mAlphaPackUniform =
+        Uniform("u_alphaPack", bgfx::UniformType::Vec4);
 
 public:
     MaterialUniforms() = default;
@@ -76,9 +82,9 @@ public:
         return mFactorsPack;
     }
 
-    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const
+    const std::array<float, 4>& currentEmissivePack() const
     {
-        return mEmissiveAlphaCutoffPack;
+        return mEmissivePack;
     }
 
     const std::array<float, 4>& currentSettings() const { return mSettings; }
@@ -101,7 +107,7 @@ public:
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
             pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
-            mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
+            mAlphaPack[0] = m.alphaCutoff();
         }
 
         if (imageBasedLighting) {
@@ -133,17 +139,19 @@ public:
         mFactorsPack[2] = m.metallic();
         mFactorsPack[3] = m.normalScale();
 
-        mEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
-        mEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
-        mEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+        mEmissivePack[0] = m.emissiveColor().redF();
+        mEmissivePack[1] = m.emissiveColor().greenF();
+        mEmissivePack[2] = m.emissiveColor().blueF();
+        mEmissivePack[3] = m.emissiveStrength();
     }
 
     void bind() const
     {
         mBaseColorUniform.bind(&mBaseColor);
         mFactorsPackUniform.bind(&mFactorsPack);
-        mEmissiveAlphaCutoffPackUniform.bind(&mEmissiveAlphaCutoffPack);
+        mEmissivePackUniform.bind(&mEmissivePack);
         mSettingsUniform.bind(&mSettings);
+        mAlphaPackUniform.bind(&mAlphaPack);
     }
 };
 

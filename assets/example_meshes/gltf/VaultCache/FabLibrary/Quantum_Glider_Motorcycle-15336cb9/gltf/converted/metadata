@@ -1,0 +1,107 @@
+{
+	"assetNamespace": "fab",
+	"listing":
+	{
+		"averageRating": 0,
+		"createdAt": "",
+		"description": "<p>Quantum Glider Motorcycle model to download.</p><p>Made in Blender.</p>",
+		"isAiForbidden": false,
+		"isAiGenerated": false,
+		"lastUpdatedAt": "2025-02-24T12:40:44.772484Z",
+		"listingType": "3d-model",
+		"media": "https://media.fab.com/image_previews/gallery_images/bcab39bd-7ebe-4b06-9b1e-58d684b0d226/b9ef5916-f1b1-4157-9f06-80c4c04af52d.jpeg",
+		"publishedAt": "2024-10-22T20:53:36.344828Z",
+		"reviewCount": 0,
+		"thumbnail": "https://media.fab.com/image_previews/gallery_images/73b4a74f-0964-4eb4-b43d-d147aface920/c551d0f4-6f40-4b23-998a-c09e0eaa1b7a.jpeg",
+		"title": "Quantum Glider Motorcycle",
+		"uid": "15336cb9-fbbe-432b-afde-6118a579e5f4",
+		"updatedAt": "",
+		"user":
+		{
+			"coverImageUrl": "https://cdn1.epicgames.com/fab/seller/o-ss7cqst8rw6tauu72fed9mngbgywvj/backgroundImage/blob-1920x540-bc46d38a56c1b46b5e1e5b0a995f57f2.jpg",
+			"profileImageUrl": "https://cdn1.epicgames.com/fab/seller/o-ss7cqst8rw6tauu72fed9mngbgywvj/profileImage/blob-500x500-849d1bfe17ff09dd928b02e02b34ff19.jpg",
+			"sellerName": "Pixol3d",
+			"uid": "98918b3d-5cf3-402f-83d0-c0ee20870fba"
+		},
+		"tags": [
+			{
+				"name": "Pbr",
+				"slug": "pbr",
+				"uid": "080edd3b-d10a-4f32-ace2-30f5baa480dc"
+			},
+			{
+				"name": "Quantum",
+				"slug": "quantum",
+				"uid": "0f433baa-170e-4b6f-ac91-7bfce343d087"
+			},
+			{
+				"name": "Motorcycle",
+				"slug": "motorcycle",
+				"uid": "4af7c992-1f8a-49d6-9741-9baef24139c2"
+			},
+			{
+				"name": "Glider",
+				"slug": "glider",
+				"uid": "4e2da1dc-7b52-4e1c-b1c7-c418b6215457"
+			},
+			{
+				"name": "Texture",
+				"slug": "texture",
+				"uid": "5b593e6b-86a7-405d-9f92-91ebd6f2a472"
+			}
+		],
+		"category":
+		{
+			"name": "Veicoli e trasporti",
+			"path": "vehicles-transportation",
+			"slug": "vehicles-transportation",
+			"uid": "0bb33d40-c52f-4f88-86df-eeff7fcf7ba9"
+		},
+		"assetFormats": [
+			{
+				"assetFormatType":
+				{
+					"name": "Blender",
+					"groupName": "Formati DCC 3D",
+					"code": "blender",
+					"icon": "blender",
+					"extensions": [
+						"blend"
+					]
+				}
+			},
+			{
+				"assetFormatType":
+				{
+					"name": "File convertiti",
+					"groupName": "",
+					"code": "converted-files",
+					"icon": "cube",
+					"extensions": [
+						"gltf",
+						"glb",
+						"usdz"
+					]
+				}
+			}
+		],
+		"_PluginMetas":
+		{
+			"apiDataVersion": "0.0.1",
+			"entitlementUid": "d33652fa-6376-4822-b75a-a440f3e0e90a",
+			"cacheSize": 0,
+			"downloaded": []
+		}
+	},
+	"target": "",
+	"quality": "",
+	"format": "gltf",
+	"fileId": "b1e94c30-b1a8-435f-855a-75b0556c2144",
+	"platformIncluded": "",
+	"distributionPointBaseUrls": [],
+	"distributionMethod": "",
+	"entitlementUid": "d33652fa-6376-4822-b75a-a440f3e0e90a",
+	"invertedNormal": false,
+	"isConverted": true,
+	"isQuixel": false
+}

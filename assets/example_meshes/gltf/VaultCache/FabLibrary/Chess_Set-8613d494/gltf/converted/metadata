@@ -1,0 +1,152 @@
+{
+	"assetNamespace": "fab",
+	"listing":
+	{
+		"averageRating": 0,
+		"createdAt": "",
+		"description": "<p>Chess Set</p>\n<p>*Technical Details- Polygons: 548,464 Vertices: 276,820</p>\n<p>Texture Map Resolution = 8k DIFFUSE METALNESS ROUGHNESS NORMALS SHEEN</p>\n<p>*Tip- The Model is intended to get Highest Possible Quality with 8K Textures. Yowu might want to compress the Texture considering the requirements of your Projects.</p>\n<p>for any quiries <a target=\"_blank\" rel=\"noopener noreferrer nofollow\">misamalirizvi1994@gmail.com</a>\"&gt;<a target=\"_self\" rel=\"noopener noreferrer nofollow\">misamalirizvi1994@gmail.com</a></p>\n<p>*if you desire, I can modify the Model based on the criteria of your Ideas, please feel free to contact me.</p>\n<p>Appreciate your Purchase, Happy Playing</p>",
+		"isAiForbidden": false,
+		"isAiGenerated": false,
+		"lastUpdatedAt": "2025-02-24T12:24:38.130218Z",
+		"listingType": "3d-model",
+		"media": "https://media.fab.com/image_previews/gallery_images/c953dddf-7251-432d-b856-6b2037e948c5/0446b92e-ad15-4ff5-98ae-c7e01f8f4146.jpeg",
+		"publishedAt": "2024-10-14T17:33:39.713787Z",
+		"reviewCount": 0,
+		"thumbnail": "https://media.fab.com/image_previews/gallery_images/29a36a47-4a8b-40ed-a8ec-8e908e16ad40/0ab11c11-3807-4e05-9fe2-66aaacb2f784.jpeg",
+		"title": "Chess Set",
+		"uid": "8613d494-7b4e-4652-909c-c8f29c078e74",
+		"updatedAt": "",
+		"user":
+		{
+			"coverImageUrl": "https://cdn1.epicgames.com/fab/seller/o-q2uwzntjb6t4s5kuystjr7x4bbpnpr/backgroundImage/blob-1920x540-89099fb6c9f701095bd78f743cbc2798.jpg",
+			"profileImageUrl": "https://cdn1.epicgames.com/fab/seller/o-q2uwzntjb6t4s5kuystjr7x4bbpnpr/profileImage/blob-500x500-a8e40199076771dc5fd94de313266a31.jpg",
+			"sellerName": "MisamRizvi",
+			"uid": "8dd708d6-e74d-4d9e-a16d-88834a131948"
+		},
+		"tags": [
+			{
+				"name": "Pbr",
+				"slug": "pbr",
+				"uid": "080edd3b-d10a-4f32-ace2-30f5baa480dc"
+			},
+			{
+				"name": "Design",
+				"slug": "design",
+				"uid": "08fa1bc1-2eb0-4438-9a93-9c2cdd4608cd"
+			},
+			{
+				"name": "Pawn",
+				"slug": "pawn",
+				"uid": "24d6b90c-4be9-4228-b278-25f4d13801e1"
+			},
+			{
+				"name": "Play",
+				"slug": "play",
+				"uid": "275e76d6-f7f9-41f4-adb0-2e30b716e72b"
+			},
+			{
+				"name": "Brown",
+				"slug": "brown",
+				"uid": "46a6c557-ab50-4a88-adef-444cf625e8e2"
+			},
+			{
+				"name": "Rook",
+				"slug": "rook",
+				"uid": "56e9f2e4-397e-43d8-af0a-dacf26bd13b1"
+			},
+			{
+				"name": "Realistic",
+				"slug": "realistic",
+				"uid": "93b0d3f1-a96c-4d68-9d44-69a313519e32"
+			},
+			{
+				"name": "Knight",
+				"slug": "knight",
+				"uid": "9768cedc-1ebc-4916-ab44-f16b796f215c"
+			},
+			{
+				"name": "Wooden",
+				"slug": "wooden",
+				"uid": "9f55f27e-d3d7-4892-abbd-0a73b7ff3663"
+			},
+			{
+				"name": "Board",
+				"slug": "board",
+				"uid": "b2a8a909-bd3d-4d2b-860c-3c16482584e6"
+			},
+			{
+				"name": "Shiny",
+				"slug": "shiny",
+				"uid": "bbc21ca0-3ae1-484a-b849-5b0fac49d79a"
+			},
+			{
+				"name": "Bishop",
+				"slug": "bishop",
+				"uid": "d0f2be4d-2052-404f-ab9b-f6258a07dbf4"
+			},
+			{
+				"name": "Metallic",
+				"slug": "metallic",
+				"uid": "d5b82134-c49f-443e-8b37-7847c2bd3605"
+			},
+			{
+				"name": "Chess",
+				"slug": "chess",
+				"uid": "f1fef2a0-8e50-43c5-8a5f-a0198f4c0b2f"
+			}
+		],
+		"category":
+		{
+			"name": "Strumenti, oggetti e decorazioni",
+			"path": "objects-decor",
+			"slug": "objects-decor",
+			"uid": "d22d8b61-3aa8-4558-a6d1-c2a18543e0fd"
+		},
+		"assetFormats": [
+			{
+				"assetFormatType":
+				{
+					"name": "FBX",
+					"groupName": "Formati di scambio 3D",
+					"code": "fbx",
+					"icon": "cube",
+					"extensions": [
+						"fbx"
+					]
+				}
+			},
+			{
+				"assetFormatType":
+				{
+					"name": "File convertiti",
+					"groupName": "",
+					"code": "converted-files",
+					"icon": "cube",
+					"extensions": [
+						"gltf",
+						"glb",
+						"usdz"
+					]
+				}
+			}
+		],
+		"_PluginMetas":
+		{
+			"apiDataVersion": "0.0.1",
+			"entitlementUid": "21a639f1-59c8-4f3a-83d5-c18447bc11d2",
+			"cacheSize": 0,
+			"downloaded": []
+		}
+	},
+	"target": "",
+	"quality": "",
+	"format": "gltf",
+	"fileId": "c762950a-df99-4cbe-8ecf-ca2a8bc4767f",
+	"platformIncluded": "",
+	"distributionPointBaseUrls": [],
+	"distributionMethod": "",
+	"entitlementUid": "21a639f1-59c8-4f3a-83d5-c18447bc11d2",
+	"invertedNormal": false,
+	"isConverted": true,
+	"isQuixel": false
+}
