@@ -94,9 +94,19 @@ void main()
     float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
     float roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
+    // tangent frame for normal mapping
+    mat3 tangentFrame;
+    if (isPerVertexTangentAvailable(u_pbr_settings)) {
+        vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
+        tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
+    }
+    else {
+        // construct tangent frame using vertex normals
+        tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+    }
+
     // normal
     vec3 normal;
-
     if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
         vec3 normalTexture = normalTex(texcoord).xyz;
 
@@ -108,17 +118,6 @@ void main()
 
         // scale normal's x and y as requested by gltf 2.0 specification
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
-
-        mat3 tangentFrame;
-
-        if (isPerVertexTangentAvailable(u_pbr_settings)) {
-            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
-            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
-        }
-        else {
-            // construct tangent frame using vertex normals
-            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
-        }
 
         // change the basis of the normal provided by the texture
         // from tangent space to the space used for computations
@@ -142,31 +141,76 @@ void main()
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
+    // clearcoat
+    float clearcoat = u_clearcoatFactor;
+    if (useTexture && isClearcoatTextureAvailable(u_pbr_texture_settings)) {
+        // clearcoat texture available
+        clearcoat *= clearcoatTex(texcoord).r; // clearcoat is stored in R channel
+    }
+
+    float clearcoatRoughness = u_clearcoatRoughnessFactor;
+    if (useTexture && isClearcoatRoughnessTextureAvailable(u_pbr_texture_settings)) {
+        // clearcoat roughness texture available
+        clearcoatRoughness *= clearcoatRoughnessTex(texcoord).g; // clearcoat roughness is stored in G channel
+    }
+
+    vec3 clearcoatNormal;
+    if(useTexture && isClearcoatNormalTextureAvailable(u_pbr_texture_settings)) {
+        // clearcoat normal texture available
+        vec3 clearcoatNormalTexture = clearcoatNormalTex(texcoord).xyz;
+
+        // remapping normals
+        // from [0,1] to [-1,1] for x and y (red and green)
+        // from (0.5,1] to (0,1] for z (blue)
+        clearcoatNormalTexture *= 2.0;
+        clearcoatNormalTexture -= 1.0;
+        clearcoatNormalTexture *= vec3(u_clearcoatNormalScale, u_clearcoatNormalScale, 1.0);
+
+        // change the basis of the normal provided by the texture
+        // from tangent space to the space used for computations
+        clearcoatNormal = mul(clearcoatNormalTexture, tangentFrame);
+
+        clearcoatNormal = normalize(clearcoatNormal);
+    } else {
+        clearcoatNormal = normalize(v_normal);
+        if (!vcl_FrontFacing)
+            clearcoatNormal *= -1.0;
+    }
+
     if(useImageBasedLighting(u_pbr_settings))
     {
         // view direction
         vec3 V = normalize(-v_position); // camera is at the origin
 
         vec3 reflection = normalize(reflect(-V, normal));
+        vec3 clearcoatReflection = normalize(reflect(-V, clearcoatNormal));
 
         reflection = normalize(mul(u_invView, vec4(reflection, 0.0)).xyz);
+        clearcoatReflection = normalize(mul(u_invView, vec4(clearcoatReflection, 0.0)).xyz);
 
         // convert from camera to world space
         normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
         V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
+        clearcoatNormal = normalize(mul(u_invView, vec4(clearcoatNormal, 0.0)).xyz);
 
         float NoV = clampedDot(normal, V);
+        float clearcoatNoV = clampedDot(clearcoatNormal, V);
 
         vec3 f0_dielectric = vec3_splat(0.04);
         vec3 f90 = vec3_splat(1.0);
+
+        // clearcoat contribution is scaled by its Fresnel term
+        vec3 clearcoatFresnel = F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
         // diffuse light
         vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
 
         // specular light
         float specularMipLevel = roughness * (u_specularMipLevels - 1.0);
+        float clearcoatSpecularMipLevel = clearcoatRoughness * (u_specularMipLevels - 1.0);
         
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
+        vec3 clearcoatSpecularLight = textureCubeLod(s_specular, leftHand(clearcoatReflection), clearcoatSpecularMipLevel).rgb;
 
         // Fresnel
         vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
@@ -190,6 +234,9 @@ void main()
             metallic,
             occlusion,
             emissiveColor,
+            clearcoat,
+            clearcoatFresnel,
+            clearcoatSpecularLight,
             u_exposure,
             u_toneMapping
         );

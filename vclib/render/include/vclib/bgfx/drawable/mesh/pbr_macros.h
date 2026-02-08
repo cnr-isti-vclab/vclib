@@ -34,10 +34,13 @@
 #define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
 // bit positions used to tell which textures are available at shader level
-#define VCL_PBR_TEXTURE_BASE_COLOR         0
-#define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS 1
-#define VCL_PBR_TEXTURE_NORMAL             2
-#define VCL_PBR_TEXTURE_OCCLUSION          3
-#define VCL_PBR_TEXTURE_EMISSIVE           4
+#define VCL_PBR_TEXTURE_BASE_COLOR          0
+#define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS  1
+#define VCL_PBR_TEXTURE_NORMAL              2
+#define VCL_PBR_TEXTURE_OCCLUSION           3
+#define VCL_PBR_TEXTURE_EMISSIVE            4
+#define VCL_PBR_TEXTURE_CLEARCOAT           5
+#define VCL_PBR_TEXTURE_CLEARCOAT_ROUGHNESS 6
+#define VCL_PBR_TEXTURE_CLEARCOAT_NORMAL    7
 
 #endif // VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H

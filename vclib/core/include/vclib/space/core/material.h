@@ -83,8 +83,7 @@ public:
                 "occlusionTex",
                 "emissiveTex",
                 "clearcoatTex",
-                "clearcoatRoughnessTex",
-                "clearcoatNormalTex"};
+                "clearcoatRoughnessTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =

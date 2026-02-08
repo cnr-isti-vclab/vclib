@@ -39,7 +39,7 @@ class DrawableMeshUniforms
     float mMeshData[4] = {
         0.0, // as uint: first chunk primitive id drawn
         std::bit_cast<float>(0xFFFFFFFF), // 8 texture stages with 4 bit each
-        0.0,
+        std::bit_cast<float>(0xFFFFFFFF), // 
         0.0};
 
     Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
@@ -52,6 +52,9 @@ public:
         NORMAL,
         OCCLUSION,
         EMISSIVE,
+        CLEARCOAT,
+        CLEARCOAT_ROUGHNESS,
+        CLEARCOAT_NORMAL,
         BRDF_LUT,
         COUNT
     };
@@ -78,15 +81,14 @@ public:
     {
         // 8 texture stages with 4 bit each, all set to 15 (not used)
         mMeshData[1] = std::bit_cast<float>(0xFFFFFFFF);
+        mMeshData[2] = std::bit_cast<float>(0xFFFFFFFF);
     }
 
     void setTextureStage(TextureType type, uint8_t stage)
     {
         assert(toUnderlying(type) < toUnderlying(TextureType::COUNT));
 
-        if (toUnderlying(type) < 8) { // use y
-            setYTextureStage(toUnderlying(type), stage);
-        }
+        setYZTextureStage(toUnderlying(type), stage);
     }
 
     void bind() const
@@ -96,13 +98,14 @@ public:
     }
 
 private:
-    void setYTextureStage(uint8_t pos, uint8_t stage)
+    void setYZTextureStage(uint8_t pos, uint8_t stage)
     {
-        uint value = std::bit_cast<uint>(mMeshData[1]);
+        float& component = pos < 8 ? mMeshData[1] : mMeshData[2];
+        uint value = std::bit_cast<uint>(component);
 
-        set4BitStageValue(value, pos, stage);
+        set4BitStageValue(value, pos % 8, stage);
 
-        mMeshData[1] = std::bit_cast<float>(value);
+        component = std::bit_cast<float>(value);
     }
 
     static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)

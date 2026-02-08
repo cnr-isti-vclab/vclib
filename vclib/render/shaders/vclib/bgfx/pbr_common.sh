@@ -42,11 +42,14 @@
 #define isAlphaModeMask(settings)             checkSetting(settings, VCL_PBR_IS_ALPHA_MODE_MASK)
 #define useImageBasedLighting(settings)       checkSetting(settings, VCL_PBR_IMAGE_BASED_LIGHTING)
 
-#define isBaseColorTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_BASE_COLOR)
-#define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, VCL_PBR_TEXTURE_METALLIC_ROUGHNESS)
-#define isNormalTextureAvailable(settings)            checkSetting(settings, VCL_PBR_TEXTURE_NORMAL)
-#define isOcclusionTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_OCCLUSION)
-#define isEmissiveTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_EMISSIVE)
+#define isBaseColorTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_BASE_COLOR)
+#define isMetallicRoughnessTextureAvailable(settings)  checkSetting(settings, VCL_PBR_TEXTURE_METALLIC_ROUGHNESS)
+#define isNormalTextureAvailable(settings)             checkSetting(settings, VCL_PBR_TEXTURE_NORMAL)
+#define isOcclusionTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_OCCLUSION)
+#define isEmissiveTextureAvailable(settings)           checkSetting(settings, VCL_PBR_TEXTURE_EMISSIVE)
+#define isClearcoatTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_CLEARCOAT)
+#define isClearcoatRoughnessTextureAvailable(settings) checkSetting(settings, VCL_PBR_TEXTURE_CLEARCOAT_ROUGHNESS)
+#define isClearcoatNormalTextureAvailable(settings)    checkSetting(settings, VCL_PBR_TEXTURE_CLEARCOAT_NORMAL)
 
 // Lighting settings, may not be definitive
 
@@ -847,6 +850,9 @@ vec4 pbrColorIbl(
     float metallic,
     float occlusion,
     vec3 emissive,
+    float clearcoat,
+    vec3 clearcoatFresnel,
+    vec3 clearcoatSpecularLight,
     float exposure,
     int toneMapping)
 {
@@ -862,6 +868,8 @@ vec4 pbrColorIbl(
     vec3 f_dielectric_brdf_ibl = mix(f_diffuse, f_specular_dielectric, dielectricFresnel);
 
     finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
+
+    finalColor = mix(finalColor, clearcoatSpecularLight, clearcoat * clearcoatFresnel);
 
     finalColor *= occlusion;
 

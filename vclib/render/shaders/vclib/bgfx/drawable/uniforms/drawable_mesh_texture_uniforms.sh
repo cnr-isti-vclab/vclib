@@ -10,6 +10,7 @@
 #define textureStageBitField(value, pos) uint((value >> (pos * 4)) & 0xF)
 
 #define u_textureStagesY floatBitsToUint(u_meshData.y)
+#define u_textureStagesZ floatBitsToUint(u_meshData.z)
 
 // textures
 SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
@@ -18,6 +19,9 @@ SAMPLER2D(s_tex2, VCL_MRB_TEXTURE2);
 SAMPLER2D(s_tex3, VCL_MRB_TEXTURE3);
 SAMPLER2D(s_tex4, VCL_MRB_TEXTURE4);
 SAMPLER2D(s_tex5, VCL_MRB_TEXTURE5);
+SAMPLER2D(s_tex6, VCL_MRB_TEXTURE6);
+SAMPLER2D(s_tex7, VCL_MRB_TEXTURE7);
+SAMPLER2D(s_tex8, VCL_MRB_TEXTURE8);
 
 vec4 textureStage(uint stage, vec2 texcoord)
 {
@@ -34,6 +38,12 @@ vec4 textureStage(uint stage, vec2 texcoord)
             return texture2D(s_tex4, texcoord);
         case 5u:
             return texture2D(s_tex5, texcoord);
+        case 6u:
+            return texture2D(s_tex6, texcoord);
+        case 7u:
+            return texture2D(s_tex7, texcoord);
+        case 8u:
+            return texture2D(s_tex8, texcoord);
         default:
             // should neve happen, return a magenta color to easily spot the error
             return vec4(1.0, 0.0, 1.0, 1.0);
@@ -49,7 +59,10 @@ vec4 textureStage(uint stage, vec2 texcoord)
 // 2 -> normal
 // 3 -> occlusion
 // 4 -> emissive
-// 5 -> brdf lut
+// 5 -> clearcoat
+// 6 -> clearcoat roughness
+// 7 -> clearcoat normal
+// 8 -> brdf lut
 //
 // to get the actual stage index: textureStageBitField(u_textureStagesY, pos)
 
@@ -78,9 +91,24 @@ vec4 emissiveTex(vec2 texcoord)
     return textureStage(textureStageBitField(u_textureStagesY, 4), texcoord);
 }
 
-vec4 brdfLutTex(vec2 texcoord)
+vec4 clearcoatTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesY, 5), texcoord);
+}
+
+vec4 clearcoatRoughnessTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesY, 6), texcoord);
+}
+
+vec4 clearcoatNormalTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesY, 7), texcoord);
+}
+
+vec4 brdfLutTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesZ, 0), texcoord);
 }
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
