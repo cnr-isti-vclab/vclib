@@ -199,9 +199,6 @@ void main()
         vec3 f0_dielectric = vec3_splat(0.04);
         vec3 f90 = vec3_splat(1.0);
 
-        // clearcoat contribution is scaled by its Fresnel term
-        vec3 clearcoatFresnel = F_Schlick(f0_dielectric, f90, clearcoatNoV);
-
         // diffuse light
         vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
 
@@ -216,6 +213,7 @@ void main()
         vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
         vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
         vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
+        vec3 clearcoatFresnel = clearcoat * F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
         // occlusion
         float occlusion = 1.0;
@@ -234,7 +232,6 @@ void main()
             metallic,
             occlusion,
             emissiveColor,
-            clearcoat,
             clearcoatFresnel,
             clearcoatSpecularLight,
             u_exposure,
@@ -269,6 +266,9 @@ void main()
             metallic,
             roughness,
             emissiveColor,
+            clearcoat,
+            clearcoatRoughness,
+            clearcoatNormal,
             u_exposure,
             u_toneMapping
         );

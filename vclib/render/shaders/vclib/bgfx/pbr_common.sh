@@ -749,6 +749,9 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float clearcoat,
+    float clearcoatRoughness,
+    vec3 clearcoatNormal,
     float exposure,
     int toneMapping)
 {
@@ -760,6 +763,9 @@ vec4 pbrColorLights(
     vec3 V = normalize(cameraEyePos - vPos);
     
     float NoV = clampedDot(normal, V);
+    float clearcoatNoV = clampedDot(clearcoatNormal, V);
+
+    vec3 clearcoatFresnel = clearcoat * F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
     UNROLL
     for(int i = 0; i < LIGHT_COUNT; ++i)
@@ -767,7 +773,9 @@ vec4 pbrColorLights(
         // incoming light direction and contribution
         vec3 lightDir = normalize(-lightDirs[i]);
         float NoL = clampedDot(normal, lightDir);
+        float clearcoatNoL = clampedDot(clearcoatNormal, lightDir);
         vec3 lightIntensity = lightIntensities[i] * lightColors[i] * NoL;
+        vec3 clearcoatLightIntensity = lightIntensities[i] * lightColors[i] * clearcoatNoL;
 
         // halfway vector, same angle with both view direction and incoming light direction
         // corresponds to the normal that one microfacet must have to directly reflect the light into the eye
@@ -775,6 +783,8 @@ vec4 pbrColorLights(
         // related dot products
         float NoH = clampedDot(normal, H);
         float VoH = clampedDot(V, H);
+
+        float clearcoatNoH = clampedDot(clearcoatNormal, H);
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
@@ -795,10 +805,14 @@ vec4 pbrColorLights(
         // dielectric surfaces reflect both diffuse and specular light
         vec3 l_dielectric_brdf = mix(l_diffuse, l_specular_dielectric, dielectric_fresnel);
 
+        vec3 l_clearcoat_brdf = clearcoatLightIntensity * pbrSpecular(clearcoatNoV, clearcoatNoH, clearcoatNoL, clearcoatRoughness);
+
         // final color is a mix of both dielectric and metallic BRDFs based on the metalness of the surface
         // the interpolation is needed as we consider the metallic value as ranged instead of binary
         vec3 l_color = mix(l_dielectric_brdf, l_metal_brdf, metallic);
 
+        l_color = mix(l_color, l_clearcoat_brdf, clearcoatFresnel);
+        
         finalColor += l_color;
     }
 
@@ -850,7 +864,6 @@ vec4 pbrColorIbl(
     float metallic,
     float occlusion,
     vec3 emissive,
-    float clearcoat,
     vec3 clearcoatFresnel,
     vec3 clearcoatSpecularLight,
     float exposure,
@@ -869,7 +882,7 @@ vec4 pbrColorIbl(
 
     finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
 
-    finalColor = mix(finalColor, clearcoatSpecularLight, clearcoat * clearcoatFresnel);
+    finalColor = mix(finalColor, clearcoatSpecularLight, clearcoatFresnel);
 
     finalColor *= occlusion;
 
