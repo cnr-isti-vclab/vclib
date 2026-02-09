@@ -26,7 +26,6 @@
 BUFFER_RO(face_selected, uint, 6);
 
 void main() {
-    gl_FragDepth = gl_FragCoord.z - 0.002;
     uint bufferIndex = uint(gl_PrimitiveID) / 32;
     uint bitMask = 0x1 << (31 - (uint(gl_PrimitiveID) % 32));
     if((face_selected[bufferIndex] & bitMask) != 0) {

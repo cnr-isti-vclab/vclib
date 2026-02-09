@@ -385,16 +385,28 @@ public:
             }
         }
 
+    }
+
+    void drawSelection(bgfx::ViewId viewId) override {
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        ProgramManager& pm = Context::instance().programManager();
         mMRB.bindVertexBuffers(mMRS);
         mMRB.bindIndexBuffers(mMRS);
         bindUniforms();
         mMRB.bindSelectedVerticesBuffer();
 
-        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS);
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS | BGFX_STATE_DEPTH_TEST_LEQUAL);
         bgfx::setTransform(model.data());
 
         bgfx::submit(
-            settings.viewId,
+            viewId,
             pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
 
         mMRB.bindVertexBuffers(mMRS);
@@ -402,11 +414,11 @@ public:
         bindUniforms();
         mMRB.bindSelectedFacesBuffer();
 
-        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL);
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_DEPTH_TEST_LEQUAL);
         bgfx::setTransform(model.data());
 
         bgfx::submit(
-            settings.viewId,
+            viewId,
             pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
     }
 

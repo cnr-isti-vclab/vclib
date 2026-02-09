@@ -48,6 +48,7 @@ class SelectionTrackBallViewerDrawerBGFX :
     bgfx::FrameBufferHandle     mVisibleSelectionFrameBuffer;
     bgfx::FrameBufferHandle     mUselessFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds;
+    bgfx::ViewId                mSelectionDrawingViewId;
     bgfx::VertexLayout          mVertexLayout;
     VertexBuffer                mPosBuffer;
     IndexBuffer                 mTriIndexBuf;
@@ -161,6 +162,15 @@ public:
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
 
+        mSelectionDrawingViewId = Context::instance().requestViewId();
+        auto s = DerivedRenderApp::DRW::canvasSize(derived());
+        uint    width     = s.x();
+        uint    height    = s.y();
+        bgfx::setViewRect(mSelectionDrawingViewId, 0, 0, width, height);
+        bgfx::setViewClear(mSelectionDrawingViewId, BGFX_CLEAR_NONE);
+        bgfx::setViewFrameBuffer(mSelectionDrawingViewId, DerivedRenderApp::DRW::canvasFrameBuffer(derived()));
+        bgfx::setViewTransform(mSelectionDrawingViewId, TED::viewMatrix().data(), TED::projectionMatrix().data());
+
         mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
@@ -253,8 +263,17 @@ public:
             }
         }
 
-        drawSelectionBox(viewId, calculateWindowSpaceMeshBB());
-        drawSelectionBox(viewId, mBoxToDraw);
+        bgfx::setViewTransform(mSelectionDrawingViewId, TED::viewMatrix().data(), TED::projectionMatrix().data());
+
+        for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
+            auto el       = ParentViewer::mDrawList->at(i);
+            if (auto p = dynamic_cast<Selectable*>(el.get())) {
+                p->drawSelection(mSelectionDrawingViewId);
+            }
+        }
+
+        //drawSelectionBox(viewId, calculateWindowSpaceMeshBB());
+        drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
 
         if (!ParentViewer::isSelectionTemporary()) {
             mBoxToDraw.nullAll();
