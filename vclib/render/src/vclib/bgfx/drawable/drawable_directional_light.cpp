@@ -22,6 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 
+#include <vclib/bgfx/drawable/uniforms/drawable_directional_light_uniforms.h>
+
 #include <vclib/algorithms/core.h>
 
 namespace vcl {
@@ -55,7 +57,6 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     }
 
     createVertexBuffer();
-    setLinesColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
@@ -65,7 +66,6 @@ DrawableDirectionalLight::DrawableDirectionalLight(
         mColor(other.mColor)
 {
     createVertexBuffer();
-    mUniform.setColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
@@ -91,7 +91,6 @@ void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
     swap(mVisible, other.mVisible);
     mVertices.swap(other.mVertices);
     swap(mColor, other.mColor);
-    swap(mUniform, other.mUniform);
     swap(mTransform, other.mTransform);
     swap(mVertexPosBuffer, other.mVertexPosBuffer);
 }
@@ -104,7 +103,6 @@ void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)
 void DrawableDirectionalLight::setLinesColor(const Color& c)
 {
     mColor = c;
-    mUniform.setColor(mColor);
 }
 
 void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
@@ -120,7 +118,8 @@ void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
 
         bgfx::setTransform(mTransform.data());
 
-        mUniform.bind();
+        DrawableDirectionalLightUniforms::setColor(mColor);
+        DrawableDirectionalLightUniforms::bind();
 
         mVertexPosBuffer.bind(0);
 
