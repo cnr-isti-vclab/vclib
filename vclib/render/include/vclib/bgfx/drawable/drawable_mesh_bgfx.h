@@ -50,7 +50,6 @@ private:
 
     mutable DrawableMeshUniforms       mMeshUniforms;
     mutable MaterialUniforms           mMaterialUniforms;
-    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
     Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
 
@@ -85,7 +84,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         updateBuffers();
     }
 
@@ -106,7 +104,6 @@ public:
         MeshType::swap(other);
         swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
         swap(mIdUniform, other.mIdUniform);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
@@ -152,7 +149,6 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
     }
@@ -225,6 +221,7 @@ public:
         }
 
         mMeshUniforms.update(*this);
+        MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
@@ -400,12 +397,6 @@ public:
         return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
-    void setVisibility(bool vis) override
-    {
-        AbstractDrawableMesh::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
-
     std::string& name() override { return MeshType::name(); }
 
     const std::string& name() const override { return MeshType::name(); }
@@ -413,8 +404,8 @@ public:
 protected:
     void bindUniforms() const
     {
+        MeshRenderSettingsUniforms::bind();
         mMeshUniforms.bind();
-        mMeshRenderSettingsUniforms.bind();
     }
 
     /**
