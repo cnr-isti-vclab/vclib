@@ -154,7 +154,6 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
-        swap(mMeshUniforms, other.mMeshUniforms);
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
@@ -162,7 +161,6 @@ public:
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
         swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
         swap(mMaterialTextures, other.mMaterialTextures);
-        swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
@@ -531,8 +529,6 @@ public:
             mWireframeLines.setColorToUse(PER_VERTEX);
         }
     }
-
-    void bindUniforms() const { mMeshUniforms.bind(); }
 
     void updateFaceSelectionBufferFromColorAttachment(
         const std::vector<uint8_t>& bytes) const

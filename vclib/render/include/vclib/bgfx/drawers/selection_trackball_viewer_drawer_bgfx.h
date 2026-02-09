@@ -291,17 +291,18 @@ public:
     // events
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        ParentViewer::onKeyPress(key, modifiers);
-
         if (ParentViewer::getCurrentToolset() == ToolSets::SELECTION) {
+            SelectionTrackBallEventDrawer<DerivedRenderApp>::onKeyPress(key, modifiers);
             return;
+        } else {
+            ParentViewer::onKeyPress(key, modifiers);
         }
 
         switch (key) {
         case Key::A: toggleAxisVisibility(); break;
-
+        
         case Key::T: toggleTrackBallVisibility(); break;
-
+        
         default: break;
         }
     }
