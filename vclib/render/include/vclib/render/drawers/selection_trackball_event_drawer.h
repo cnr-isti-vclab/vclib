@@ -35,6 +35,12 @@ namespace vcl {
 
 enum class ToolSets { DEFAULT, SELECTION };
 
+/**
+ * @brief Adds the keybinds to choose selection modes. It is worth noting that
+ * when using the 'Selection Toolset' no key or mouse events are propagated to
+ * the parent class, meaning that while selecting you may not interact with the
+ * TrackBall in ways that would conflict with the controls for the selection
+ */
 template<typename Scalar, typename DerivedRenderApp>
 class SelectionTrackBallEventDrawerT :
         public TrackBallEventDrawerT<Scalar, DerivedRenderApp>
