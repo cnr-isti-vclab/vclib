@@ -190,8 +190,10 @@ public:
         // of the window but there is no way to obtain it currently (this is to
         // account for cases in which the viewport is NOT (0,0)->(width, height)
         // but something different)
-        uint    win_w  = ((DerivedRenderApp*) this)->width();
-        uint    win_h  = ((DerivedRenderApp*) this)->height();
+        auto s = DerivedRenderApp::DRW::canvasSize(derived());
+
+        uint    win_w  = s.x();
+        uint    win_h  = s.y();
         Point4f minNDC = Point4f(
             float(box.get1().value().x() - 0) / float(win_w) * 2.f - 1.f,
             1.f - float(box.get2().value().y() - 0) / float(win_h) * 2.f,
@@ -409,8 +411,10 @@ private:
         if (totalBB.isNull()) {
             return box;
         }
-        uint    width     = ((DerivedRenderApp*) this)->width();
-        uint    height    = ((DerivedRenderApp*) this)->height();
+        auto s = DerivedRenderApp::DRW::canvasSize(derived());
+
+        uint    width     = s.x();
+        uint    height    = s.y();
         Point3d boxPts[2] = {totalBB.min(), totalBB.max()};
         Point2d sSpace[2];
         for (size_t i = 0; i < 2; i++) {
@@ -465,6 +469,10 @@ private:
         auto v = ParentViewer::lightGizmoMatrix();
         mDrawableDirectionalLight.updateRotation(v);
     }
+
+    auto* derived() { return static_cast<DerivedRenderApp*>(this); }
+
+    const auto* derived() const { return static_cast<const DerivedRenderApp*>(this); }
 };
 
 } // namespace vcl
