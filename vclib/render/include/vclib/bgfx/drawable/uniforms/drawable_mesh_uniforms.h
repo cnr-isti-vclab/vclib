@@ -39,7 +39,8 @@ class DrawableMeshUniforms
 {
     inline static std::array<float, 4> sMeshColor = {0.5, 0.5, 0.5, 1.0};
 
-    // sMeshData[0] -> as uint, first chunk primitive id drawn
+    // sMeshData[0] -> as uint, mesh id
+    // sMeshData[1] -> as uint, first chunk primitive id drawn
     inline static std::array<float, 4> sMeshData = {0.0, 0.0, 0.0, 0.0};
 
     inline static Uniform sMeshColorUniform;
@@ -59,9 +60,14 @@ public:
         }
     }
 
+    static void setMeshId(uint meshId)
+    {
+        sMeshData[0] = std::bit_cast<float>(meshId);
+    }
+
     static void setFirstChunkIndex(uint firstChunkIndex)
     {
-        sMeshData[0] = std::bit_cast<float>(firstChunkIndex);
+        sMeshData[1] = std::bit_cast<float>(firstChunkIndex);
     }
 
     static void bind()

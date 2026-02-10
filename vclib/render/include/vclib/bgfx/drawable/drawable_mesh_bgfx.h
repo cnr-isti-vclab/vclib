@@ -50,8 +50,6 @@ private:
 
     mutable MaterialUniforms           mMaterialUniforms;
 
-    Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
-
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
@@ -102,7 +100,6 @@ public:
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
         swap(mMaterialUniforms, other.mMaterialUniforms);
-        swap(mIdUniform, other.mIdUniform);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
@@ -315,14 +312,12 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        const std::array<float, 4> idFloat = {
-            std::bit_cast<float>(settings.objectId), 0.0f, 0.0f, 0.0f};
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
-            mIdUniform.bind(&idFloat);
+            DrawableMeshUniforms::setMeshId(settings.objectId);
             DrawableMeshUniforms::setFirstChunkIndex(0);
+            bindUniforms();
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());
@@ -358,7 +353,9 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
-                mIdUniform.bind(&idFloat);
+
+                DrawableMeshUniforms::setMeshId(settings.objectId);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
@@ -372,8 +369,8 @@ public:
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
+                DrawableMeshUniforms::setMeshId(settings.objectId);
                 bindUniforms();
-                mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state);
                 bgfx::setTransform(model.data());
