@@ -142,6 +142,14 @@ void main()
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
+    float specular = u_specularFactor;
+    if (useTexture && isSpecularTextureAvailable())
+        specular *= specularTex(texcoord).a;
+
+    vec3 specularColor = u_specularColorFactor;
+    if (useTexture && isSpecularColorTextureAvailable())
+        specularColor *= specularColorTex(texcoord).rgb;
+
     if(useImageBasedLighting(u_pbr_settings))
     {
         // view direction
@@ -157,8 +165,7 @@ void main()
 
         float NoV = clampedDot(normal, V);
 
-        vec3 f0_dielectric = vec3_splat(0.04);
-        vec3 f90 = vec3_splat(1.0);
+        vec3 f0_dielectric = min(vec3_splat(0.04) * specularColor, vec3_splat(1.0));
 
         // diffuse light
         vec3 diffuseLight = textureCube(s_irradiance, leftHand(normal)).rgb;
@@ -170,8 +177,8 @@ void main()
 
         // Fresnel
         vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
-        vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
-        vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
+        vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb, 1.0);
+        vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric, specular);
 
         // occlusion
         float occlusion = 1.0;
@@ -222,6 +229,8 @@ void main()
             metallic,
             roughness,
             emissiveColor,
+            specular,
+            specularColor,
             u_exposure,
             u_toneMapping
         );
