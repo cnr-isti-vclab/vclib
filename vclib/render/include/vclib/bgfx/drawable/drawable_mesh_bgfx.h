@@ -58,11 +58,7 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    mutable DrawableMeshUniforms       mMeshUniforms;
     mutable MaterialUniforms           mMaterialUniforms;
-    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
-
-    Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
 
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
@@ -74,6 +70,7 @@ private:
     // std::vector<uint8_t> mTexReadBackVec;
     // std::array<uint, 2> mColAttSize;
     // mutable uint mVisSelTexRBFrames = 255;
+
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
 
@@ -102,7 +99,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         updateBuffers();
     }
 
@@ -124,11 +120,8 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mMeshUniforms, other.mMeshUniforms);
         swap(mMaterialUniforms, other.mMaterialUniforms);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
-        swap(mIdUniform, other.mIdUniform);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
@@ -210,7 +203,6 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
     }
@@ -320,7 +312,9 @@ public:
         //        mVisSelTexRBFrames--;
         //    }
         //}
-        mMeshUniforms.update(*this);
+
+        DrawableMeshUniforms::setColor(*this);
+        MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
@@ -331,7 +325,7 @@ public:
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
 
-                mMeshUniforms.updateFirstChunkIndex(
+                DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
 
                 bindUniforms();
@@ -452,14 +446,12 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        const std::array<float, 4> idFloat = {
-            std::bit_cast<float>(settings.objectId), 0.0f, 0.0f, 0.0f};
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
-            mIdUniform.bind(&idFloat);
-            mMeshUniforms.updateFirstChunkIndex(0);
+            DrawableMeshUniforms::setMeshId(settings.objectId);
+            DrawableMeshUniforms::setFirstChunkIndex(0);
+            bindUniforms();
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());
@@ -495,7 +487,9 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
-                mIdUniform.bind(&idFloat);
+
+                DrawableMeshUniforms::setMeshId(settings.objectId);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
@@ -509,8 +503,8 @@ public:
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
+                DrawableMeshUniforms::setMeshId(settings.objectId);
                 bindUniforms();
-                mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state);
                 bgfx::setTransform(model.data());
@@ -530,12 +524,6 @@ public:
     std::shared_ptr<DrawableObject> clone() && override
     {
         return std::make_shared<DrawableMeshBGFX>(std::move(*this));
-    }
-
-    void setVisibility(bool vis) override
-    {
-        AbstractDrawableMesh::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
     std::string& name() override { return MeshType::name(); }
@@ -586,8 +574,8 @@ protected:
 
     void bindUniforms() const
     {
-        mMeshUniforms.bind();
-        mMeshRenderSettingsUniforms.bind();
+        MeshRenderSettingsUniforms::bind();
+        DrawableMeshUniforms::bind();
     }
 
     /**
