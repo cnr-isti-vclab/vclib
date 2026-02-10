@@ -128,6 +128,7 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
     swap(mVertexPosColorBuffer, other.mVertexPosColorBuffer);
     swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
     swap(mTransform, other.mTransform);
+    swap(mIsDragging, other.mIsDragging);
 }
 
 /**
