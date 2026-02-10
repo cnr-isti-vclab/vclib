@@ -36,6 +36,9 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        ANISOTROPY_DISC_TEST,
+        ANISOTROPY_ROTATION_TEST,
+        ANISOTROPY_STRENGTH_TEST,
         COUNT_EXAMPLES
     };
 
@@ -44,9 +47,12 @@ int main(int argc, char** argv)
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
-        "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
+        "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/AnisotropyDiscTest/AnisotropyDiscTest.gltf",
+        "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
+        "/gltf/AnisotropyStrengthTest/AnisotropyStrengthTest.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = ANISOTROPY_DISC_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
