@@ -48,7 +48,7 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    mutable MaterialUniforms           mMaterialUniforms;
+    mutable MaterialUniforms mMaterialUniforms;
 
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
