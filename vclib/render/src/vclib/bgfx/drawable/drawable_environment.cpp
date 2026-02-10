@@ -24,6 +24,7 @@
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.h>
 
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
@@ -372,8 +373,8 @@ void DrawableEnvironment::generateTextures(
     mIrradianceTexture.bindForCompute(
         1, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-    mDataUniforms.updateCubeSideResolution(cubeSide);
-    mDataUniforms.bind();
+    DrawableEnvironmentUniforms::setCubeSideResolution(cubeSide);
+    DrawableEnvironmentUniforms::bind();
 
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
@@ -403,9 +404,9 @@ void DrawableEnvironment::generateTextures(
         mSpecularTexture.bindForCompute(
             1, mip, bgfx::Access::Write, bgfx::TextureFormat::RGBA32F);
 
-        mDataUniforms.updateRoughness(roughness);
-        mDataUniforms.updateCubeSideResolution(cubeSide);
-        mDataUniforms.bind();
+        DrawableEnvironmentUniforms::setRoughness(roughness);
+        DrawableEnvironmentUniforms::setCubeSideResolution(cubeSide);
+        DrawableEnvironmentUniforms::bind();
 
         bgfx::dispatch(
             viewId,

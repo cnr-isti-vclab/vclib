@@ -28,26 +28,37 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableEnvironmentUniforms class is responsible for managing the
+ * shader uniforms related to a drawable environment.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current environment data and to bind the uniforms to the shader programs.
+ */
 class DrawableEnvironmentUniforms
 {
-    mutable std::array<float, 4> mData = {
+    static inline std::array<float, 4> sData = {
         0.0, // roughness
         0.0, // cube side
         0.0,
         0.0
     };
 
-    Uniform mDataUniform =
-        Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
+    static inline Uniform mDataUniform;
 
 public:
-    DrawableEnvironmentUniforms() = default;
+    DrawableEnvironmentUniforms() = delete;
 
-    void updateRoughness(float roughness) { mData[0] = roughness; }
+    static void setRoughness(float roughness) { sData[0] = roughness; }
 
-    void updateCubeSideResolution(float cubeSide) { mData[1] = cubeSide; }
+    static void setCubeSideResolution(float cubeSide) { sData[1] = cubeSide; }
 
-    void bind() const { mDataUniform.bind(mData.data()); }
+    static void bind() {
+        if (!mDataUniform.isValid())
+            mDataUniform =
+                Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
+        mDataUniform.bind(sData.data());
+    }
 };
 
 } // namespace vcl
