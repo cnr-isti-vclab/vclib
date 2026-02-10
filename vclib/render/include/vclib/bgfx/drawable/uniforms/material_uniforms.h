@@ -60,10 +60,15 @@ class MaterialUniforms
     // .x : pbr settings
     static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
 
+    // specular color (RGB) and specular (A)
+    static inline std::array<float, 4> sSpecularPack = {1.0, 1.0, 1.0, 1.0};
+
     static inline Uniform sBaseColorUniform;
     static inline Uniform sFactorsPackUniform;
     static inline Uniform sEmissiveAlphaCutoffPackUniform ;
     static inline Uniform sSettingsUniform;
+
+    static inline Uniform sSpecularPackUniform;
 
 public:
     MaterialUniforms() = delete;
@@ -109,6 +114,11 @@ public:
         sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
         sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+
+        sSpecularPack[0] = m.specularColor().redF();
+        sSpecularPack[1] = m.specularColor().greenF();
+        sSpecularPack[2] = m.specularColor().blueF();
+        sSpecularPack[3] = m.specular();
     }
 
     static void bind()
@@ -126,10 +136,15 @@ public:
         if (!sSettingsUniform.isValid())
             sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
 
+        if (!sSpecularPackUniform.isValid())
+            sSpecularPackUniform = Uniform("u_specularPack", bgfx::UniformType::Vec4);
+
         sBaseColorUniform.bind(&sBaseColor);
         sFactorsPackUniform.bind(&sFactorsPack);
         sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
         sSettingsUniform.bind(&sSettings);
+
+        sSpecularPackUniform.bind(&sSpecularPack);
     }
 };
 

@@ -27,6 +27,7 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
 uniform vec4 u_emissiveAlphaCutoffPack;
 uniform vec4 u_settings;
+uniform vec4 u_specularPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -37,5 +38,8 @@ uniform vec4 u_settings;
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
+
+#define u_specularColorFactor u_specularPack.rgb
+#define u_specularFactor u_specularPack.a
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH

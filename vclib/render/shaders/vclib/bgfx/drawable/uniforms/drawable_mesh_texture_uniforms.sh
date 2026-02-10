@@ -18,6 +18,8 @@ SAMPLER2D(s_tex2, 2);
 SAMPLER2D(s_tex3, 3);
 SAMPLER2D(s_tex4, 4);
 SAMPLER2D(s_tex5, 5);
+SAMPLER2D(s_tex6, 6);
+SAMPLER2D(s_tex7, 7);
 
 vec4 textureStage(uint stage, vec2 texcoord)
 {
@@ -34,6 +36,10 @@ vec4 textureStage(uint stage, vec2 texcoord)
             return texture2D(s_tex4, texcoord);
         case 5u:
             return texture2D(s_tex5, texcoord);
+        case 6u:
+            return texture2D(s_tex6, texcoord);
+        case 7u:
+            return texture2D(s_tex7, texcoord);
         default:
             // should neve happen, return a magenta color to easily spot the error
             return vec4(1.0, 0.0, 1.0, 1.0);
@@ -49,7 +55,9 @@ vec4 textureStage(uint stage, vec2 texcoord)
 // 2 -> normal
 // 3 -> occlusion
 // 4 -> emissive
-// 5 -> brdf lut
+// 5 -> specular
+// 6 -> specular color
+// 7 -> brdf lut
 //
 // to get the actual stage index: textureStageBitField(u_textureStagesZ, pos)
 
@@ -103,14 +111,34 @@ vec4 emissiveTex(vec2 texcoord)
     return textureStage(textureStageBitField(u_textureStagesZ, 4), texcoord);
 }
 
-bool isBrdfLutTextureAvailable()
+bool isSpecularTextureAvailable()
 {
     return textureStageBitField(u_textureStagesZ, 5) != 0xF;
 }
 
-vec4 brdfLutTex(vec2 texcoord)
+vec4 specularTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesZ, 5), texcoord);
+}
+
+bool isSpecularColorTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 6) != 0xF;
+}
+
+vec4 specularColorTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesZ, 6), texcoord);
+}
+
+bool isBrdfLutTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 7) != 0xF;
+}
+
+vec4 brdfLutTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesZ, 7), texcoord);
 }
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH

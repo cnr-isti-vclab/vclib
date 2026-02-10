@@ -68,6 +68,8 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
+        SPECULAR,
+        SPECULAR_COLOR,
         COUNT      ///< Utility value to get the number of texture types.
     };
 
@@ -78,7 +80,9 @@ public:
                 "metallicRoughnessTex",
                 "normalTex",
                 "occlusionTex",
-                "emissiveTex"};
+                "emissiveTex",
+                "specularTex",
+                "specularColorTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =
@@ -107,6 +111,10 @@ private:
     std::array<TextureDescriptor, N_TEXTURE_TYPE> mTextureDescriptors;
 
     bool mDoubleSided = false;
+
+    float mSpecular = 1.0f;
+
+    Color mSpecularColor = Color::White;
 
 public:
     /**
@@ -254,6 +262,30 @@ public:
     float& occlusionStrength() { return mOcclusionStrength; }
 
     /**
+     * @brief Gets the strength of the specular effect.
+     * @return The spceular strength, in the range [0.0, 1.0].
+     */
+    float specular() const { return mSpecular; }
+
+    /**
+     * @brief Gets a mutable reference to the specular strength.
+     * @return A reference to the specular strength.
+     */
+    float& specular() { return mSpecular; }
+
+    /**
+     * @brief Gets the specular color of the material.
+     * @return A const reference to the specular color.
+     */
+    const Color& specularColor() const { return mSpecularColor; }
+
+    /**
+     * @brief Gets a mutable reference to the specular color of the material.
+     * @return A reference to the specular color.
+     */
+    Color& specularColor() { return mSpecularColor; }
+
+    /**
      * @brief Gets the texture descriptor for the base color texture.
      * @return A const reference to the base color texture descriptor.
      */
@@ -333,6 +365,8 @@ public:
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         vcl::serialize(os, mNormalScale);
         vcl::serialize(os, mOcclusionStrength);
+        vcl::serialize(os, mSpecular);
+        mSpecularColor.serialize(os);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
     }
@@ -350,6 +384,8 @@ public:
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         vcl::deserialize(is, mNormalScale);
         vcl::deserialize(is, mOcclusionStrength);
+        vcl::deserialize(is, mSpecular);
+        mSpecularColor.deserialize(is);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
     }
@@ -376,10 +412,12 @@ public:
     {
         switch (type) {
         case TextureType::BASE_COLOR:
-        case TextureType::EMISSIVE: return Image::ColorSpace::SRGB;
+        case TextureType::EMISSIVE:
+        case TextureType::SPECULAR_COLOR: return Image::ColorSpace::SRGB;
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
+        case TextureType::SPECULAR:
         default: return Image::ColorSpace::LINEAR;
         }
     }

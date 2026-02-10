@@ -57,6 +57,8 @@ public:
         NORMAL,
         OCCLUSION,
         EMISSIVE,
+        SPECULAR,
+        SPECULAR_COLOR,
         BRDF_LUT,
         COUNT
     };
