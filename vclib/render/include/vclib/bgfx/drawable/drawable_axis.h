@@ -24,7 +24,6 @@
 #define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
 
 #include "mesh/mesh_render_buffers.h"
-#include "uniforms/drawable_axis_uniforms.h"
 
 #include <vclib/algorithms/mesh/create.h>
 #include <vclib/meshes/tri_mesh.h>
@@ -56,8 +55,6 @@ class DrawableAxis : public DrawableObject
 
     MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
 
-    mutable DrawableAxisUniforms mUniforms;
-
 public:
     DrawableAxis(double size = 1);
 
@@ -84,7 +81,6 @@ public:
     {
         using std::swap;
         swap(mVisible, other.mVisible);
-        swap(mUniforms, other.mUniforms);
         for (uint i = 0; i < 3; i++) {
             swap(mMatrices[i], other.mMatrices[i]);
         }

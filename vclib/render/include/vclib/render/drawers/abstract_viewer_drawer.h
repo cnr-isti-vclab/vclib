@@ -137,6 +137,7 @@ public:
         Base::onKeyPress(key, modifiers);
 
         switch (key) {
+        case Key::R: fitScene(); break;
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
                 DRA::DRW::screenshot(derived(), "viewer_screenshot.png");

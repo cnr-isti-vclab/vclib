@@ -24,8 +24,6 @@ $input v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
-uniform vec4 u_meshId;
-
 void main()
 {
     // circle mode (if outside of the circle, discard)
@@ -36,7 +34,7 @@ void main()
     }
     
     /***** render ID to color ******/
-    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
+    vec4 color = uintABGRToVec4Color(u_meshId);
 
     gl_FragColor = color;
 }

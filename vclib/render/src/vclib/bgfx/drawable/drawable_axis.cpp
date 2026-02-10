@@ -22,6 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
 
+#include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.h>
+
 #include <vclib/algorithms/mesh/create.h>
 
 namespace vcl {
@@ -51,10 +53,10 @@ void DrawableAxis::draw(const DrawObjectSettings& settings) const
         for (uint i = 0; i < 3; i++) {
             for (uint j = 0; j < 2; j++) {
                 if (j == 0) // cylinders
-                    mUniforms.setColor(AXIS_COLORS[i]);
+                    DrawableAxisUniforms::setColor(AXIS_COLORS[i]);
                 else // rest (cone, spheres...)
-                    mUniforms.setColor(vcl::Color::White);
-                mUniforms.bind();
+                    DrawableAxisUniforms::setColor(vcl::Color::White);
+                DrawableAxisUniforms::bind();
 
                 mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
                 mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
