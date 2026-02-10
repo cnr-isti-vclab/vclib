@@ -36,8 +36,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
-    DirectionalLightUniforms mDirectionalLightUniforms;
-
     // flags
     bool mStatsEnabled = false;
 
@@ -47,7 +45,6 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
     ViewerDrawerBGFX(
@@ -75,8 +72,8 @@ public:
 
         setViewTransform(viewId);
 
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        mDirectionalLightUniforms.bind();
+        DirectionalLightUniforms::setLight(ParentViewer::light());
+        DirectionalLightUniforms::bind();
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
