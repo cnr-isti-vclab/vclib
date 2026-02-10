@@ -22,12 +22,12 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-uniform vec4 u_meshId;
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
 
 void main()
 {
     /***** render ID to color ******/
-    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_meshId.r));
+    vec4 color = uintABGRToVec4Color(u_meshId);
 
     gl_FragColor = color;
 }

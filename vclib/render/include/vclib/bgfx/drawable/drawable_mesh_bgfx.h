@@ -49,12 +49,6 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    mutable DrawableMeshUniforms       mMeshUniforms;
-    mutable MaterialUniforms           mMaterialUniforms;
-    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
-
-    Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
-
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
@@ -86,7 +80,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         updateBuffers();
     }
 
@@ -105,10 +98,6 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mMeshUniforms, other.mMeshUniforms);
-        swap(mMaterialUniforms, other.mMaterialUniforms);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
-        swap(mIdUniform, other.mIdUniform);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
@@ -153,7 +142,6 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
     }
@@ -225,8 +213,9 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        mMeshUniforms.setMeshColor(*this);
-        mMeshUniforms.resetTextureStages();
+        DrawableMeshUniforms::setColor(*this);
+        DrawableMeshUniforms::resetTextureStages();
+        MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
@@ -241,12 +230,12 @@ public:
                 /* TEXTURES */
                 // tStage is the first stage from which we can bind new 2D
                 // textures
-                uint tStage = mMRB.bindTextures(mMRS, i, mMeshUniforms, *this);
+                uint tStage = mMRB.bindTextures(mMRS, i, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
                     env->bindTexture(BRDF_LUT, tStage);
 
-                    mMeshUniforms.setTextureStage(
+                    DrawableMeshUniforms::setTextureStage(
                         DrawableMeshUniforms::TextureType::BRDF_LUT, tStage);
 
                     env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
@@ -258,7 +247,7 @@ public:
                 mMRB.bindIndexBuffers(mMRS, i);
 
                 /* UNIFORMS */
-                mMeshUniforms.setFirstChunkIndex(
+                DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
                 uint64_t materialState =
                     updateAndBindMaterialUniforms(i, iblEnabled);
@@ -347,14 +336,12 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        const std::array<float, 4> idFloat = {
-            std::bit_cast<float>(settings.objectId), 0.0f, 0.0f, 0.0f};
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
-            mIdUniform.bind(&idFloat);
-            mMeshUniforms.setFirstChunkIndex(0);
+            DrawableMeshUniforms::setMeshId(settings.objectId);
+            DrawableMeshUniforms::setFirstChunkIndex(0);
+            bindUniforms();
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());
@@ -390,7 +377,9 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
-                mIdUniform.bind(&idFloat);
+
+                DrawableMeshUniforms::setMeshId(settings.objectId);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
@@ -404,8 +393,8 @@ public:
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
+                DrawableMeshUniforms::setMeshId(settings.objectId);
                 bindUniforms();
-                mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state);
                 bgfx::setTransform(model.data());
@@ -427,12 +416,6 @@ public:
         return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
-    void setVisibility(bool vis) override
-    {
-        AbstractDrawableMesh::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
-
     std::string& name() override { return MeshType::name(); }
 
     const std::string& name() const override { return MeshType::name(); }
@@ -440,8 +423,8 @@ public:
 protected:
     void bindUniforms() const
     {
-        mMeshUniforms.bind();
-        mMeshRenderSettingsUniforms.bind();
+        MeshRenderSettingsUniforms::bind();
+        DrawableMeshUniforms::bind();
     }
 
     /**
@@ -462,7 +445,7 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            mMaterialUniforms.update(
+            MaterialUniforms::set(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(*this),
                 isPerVertexTangentAvailable(*this),
@@ -475,14 +458,14 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(*this),
                     isPerVertexTangentAvailable(*this),
                     imageBasedLighting);
             }
             else {
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     MeshType::material(materialId),
                     isPerVertexColorAvailable(*this),
                     isPerVertexTangentAvailable(*this),
@@ -499,7 +482,7 @@ protected:
             }
         }
 
-        mMaterialUniforms.bind();
+        MaterialUniforms::bind();
         return state;
     }
 

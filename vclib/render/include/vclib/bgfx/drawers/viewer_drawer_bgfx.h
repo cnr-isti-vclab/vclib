@@ -38,9 +38,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
-    DirectionalLightUniforms mDirectionalLightUniforms;
-    ViewerDrawerUniforms     mViewerDrawerUniforms;
-
     // flags
     bool mStatsEnabled = false;
 
@@ -52,7 +49,6 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
     ViewerDrawerBGFX(
@@ -68,9 +64,6 @@ public:
     void setPbrSettings(const PBRViewerSettings& settings)
     {
         mPBRSettings = settings;
-
-        mViewerDrawerUniforms.updateExposure(mPBRSettings.exposure);
-        mViewerDrawerUniforms.updateToneMapping(mPBRSettings.toneMapping);
     }
 
     std::string panoramaFileName() const { return mPanorama.imageFileName(); }
@@ -78,9 +71,6 @@ public:
     void setPanorama(const std::string& panorama)
     {
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
-
-        mViewerDrawerUniforms.updateSpecularMipsLevels(
-            mPanorama.specularMipLevels());
     }
 
     void onDrawContent(uint viewId) override
@@ -94,9 +84,14 @@ public:
 
         setViewTransform(viewId);
 
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        mDirectionalLightUniforms.bind();
-        mViewerDrawerUniforms.bind();
+        DirectionalLightUniforms::setLight(ParentViewer::light());
+        DirectionalLightUniforms::bind();
+
+        ViewerDrawerUniforms::setExposure(mPBRSettings.exposure);
+        ViewerDrawerUniforms::setToneMapping(mPBRSettings.toneMapping);
+        ViewerDrawerUniforms::setSpecularMipsLevels(
+            mPanorama.specularMipLevels());
+        ViewerDrawerUniforms::bind();
 
         // background will be drawn only if settings allow it
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);

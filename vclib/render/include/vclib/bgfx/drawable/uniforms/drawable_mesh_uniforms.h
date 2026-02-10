@@ -28,22 +28,27 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableMeshUniforms class is responsible for managing the
+ * shader uniforms related to a drawable mesh.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current mesh data and to bind the uniforms to the shader programs.
+ */
 class DrawableMeshUniforms
 {
-    float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
+    inline static std::array<float, 4> sMeshColor = {0.5, 0.5, 0.5, 1.0};
 
-    // x component: first chunk primitive id drawn (as uint)
-    // y component: 8 texture stages with 4 bit each, to specify if texture is
+    // sMeshData[0]: as uint, mesh id
+    // sMeshData[1]: as uint, first chunk primitive id drawn
+    // sMeshData[2]: 8 texture stages with 4 bit each, to specify if texture is
     //    used (value != 15) and which stage is used for each texture (as uint):
     //    none|none|brdfLut|emissive|occlusion|normal|metallRough|baseColor
-    float mMeshData[4] = {
-        0.0, // as uint: first chunk primitive id drawn
-        std::bit_cast<float>(0xFFFFFFFF), // 8 texture stages with 4 bit each
-        0.0,
-        0.0};
+    inline static std::array<float, 4> sMeshData =
+        {0.0, 0.0, std::bit_cast<float>(0xFFFFFFFF), 0.0};
 
-    Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
-    Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
+    inline static Uniform sMeshColorUniform;
+    inline static Uniform sMeshDataUniform;
 
 public:
     enum class TextureType {
@@ -56,31 +61,31 @@ public:
         COUNT
     };
 
-    DrawableMeshUniforms() = default;
+    DrawableMeshUniforms() = delete;
 
     template<MeshConcept MeshType>
-    void setMeshColor(const MeshType& m)
+    static void setColor(const MeshType& m)
     {
         if constexpr (HasColor<MeshType>) {
-            mMeshColor[0] = m.color().redF();
-            mMeshColor[1] = m.color().greenF();
-            mMeshColor[2] = m.color().blueF();
-            mMeshColor[3] = m.color().alphaF();
+            sMeshColor[0] = m.color().redF();
+            sMeshColor[1] = m.color().greenF();
+            sMeshColor[2] = m.color().blueF();
+            sMeshColor[3] = m.color().alphaF();
         }
     }
 
-    void setFirstChunkIndex(uint firstChunkIndex)
+    static void setMeshId(uint meshId)
     {
-        mMeshData[0] = std::bit_cast<float>(firstChunkIndex);
+        sMeshData[0] = std::bit_cast<float>(meshId);
     }
 
-    void resetTextureStages()
+    static void resetTextureStages()
     {
         // 8 texture stages with 4 bit each, all set to 15 (not used)
-        mMeshData[1] = std::bit_cast<float>(0xFFFFFFFF);
+        sMeshData[2] = std::bit_cast<float>(0xFFFFFFFF);
     }
 
-    void setTextureStage(TextureType type, uint8_t stage)
+    static void setTextureStage(TextureType type, uint8_t stage)
     {
         assert(toUnderlying(type) < toUnderlying(TextureType::COUNT));
 
@@ -89,20 +94,31 @@ public:
         }
     }
 
-    void bind() const
+    static void setFirstChunkIndex(uint firstChunkIndex)
     {
-        mMeshColorUniform.bind(mMeshColor);
-        mMeshDataUniform.bind(mMeshData);
+        sMeshData[1] = std::bit_cast<float>(firstChunkIndex);
+    }
+
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sMeshColorUniform.isValid())
+            sMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
+        if (!sMeshDataUniform.isValid())
+            sMeshDataUniform = Uniform("u_meshData", bgfx::UniformType::Vec4);
+        sMeshColorUniform.bind(sMeshColor.data());
+        sMeshDataUniform.bind(sMeshData.data());
     }
 
 private:
-    void setYTextureStage(uint8_t pos, uint8_t stage)
+    static void setYTextureStage(uint8_t pos, uint8_t stage)
     {
-        uint value = std::bit_cast<uint>(mMeshData[1]);
+        uint value = std::bit_cast<uint>(sMeshData[2]);
 
         set4BitStageValue(value, pos, stage);
 
-        mMeshData[1] = std::bit_cast<float>(value);
+        sMeshData[2] = std::bit_cast<float>(value);
     }
 
     static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)
