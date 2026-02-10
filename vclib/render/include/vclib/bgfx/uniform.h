@@ -114,6 +114,13 @@ public:
      */
     friend void swap(Uniform& a, Uniform& b) { a.swap(b); }
 
+     /**
+     * @brief Checks if the Uniform is valid (i.e., if it has a valid
+     * bgfx::UniformHandle).
+     * @return true if the Uniform is valid, false otherwise.
+     */
+    bool isValid() const { return bgfx::isValid(mUniformHandle); }
+
     /**
      * @brief Returns the underlying bgfx::UniformHandle.
      * @return The handle to the uniform.

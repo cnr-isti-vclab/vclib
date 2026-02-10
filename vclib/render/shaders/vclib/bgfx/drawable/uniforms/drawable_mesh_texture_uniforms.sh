@@ -9,19 +9,19 @@
 // of the texture stage (each one of 4 bits), returns the value of that stage
 #define textureStageBitField(value, pos) uint((value >> (pos * 4)) & 0xF)
 
-#define u_textureStagesY floatBitsToUint(u_meshData.y)
 #define u_textureStagesZ floatBitsToUint(u_meshData.z)
+#define u_textureStagesW floatBitsToUint(u_meshData.w)
 
 // textures
-SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
-SAMPLER2D(s_tex1, VCL_MRB_TEXTURE1);
-SAMPLER2D(s_tex2, VCL_MRB_TEXTURE2);
-SAMPLER2D(s_tex3, VCL_MRB_TEXTURE3);
-SAMPLER2D(s_tex4, VCL_MRB_TEXTURE4);
-SAMPLER2D(s_tex5, VCL_MRB_TEXTURE5);
-SAMPLER2D(s_tex6, VCL_MRB_TEXTURE6);
-SAMPLER2D(s_tex7, VCL_MRB_TEXTURE7);
-SAMPLER2D(s_tex8, VCL_MRB_TEXTURE8);
+SAMPLER2D(s_tex0, 0);
+SAMPLER2D(s_tex1, 1);
+SAMPLER2D(s_tex2, 2);
+SAMPLER2D(s_tex3, 3);
+SAMPLER2D(s_tex4, 4);
+SAMPLER2D(s_tex5, 5);
+SAMPLER2D(s_tex6, 6);
+SAMPLER2D(s_tex7, 7);
+SAMPLER2D(s_tex8, 8);
 
 vec4 textureStage(uint stage, vec2 texcoord)
 {
@@ -50,7 +50,7 @@ vec4 textureStage(uint stage, vec2 texcoord)
     }
 }
 
-// stages for each texture type are defined in the u_textureStagesY uniform
+// stages for each texture type are defined in the u_textureStagesZ uniform
 // you can view this unifor as an array of 8 uints, each one representing the
 // stage index for a specific texture type (each uint is 4 bits)
 // positions for each texture type:
@@ -64,51 +64,99 @@ vec4 textureStage(uint stage, vec2 texcoord)
 // 7 -> clearcoat normal
 // 8 -> brdf lut
 //
-// to get the actual stage index: textureStageBitField(u_textureStagesY, pos)
+// to get the actual stage index: textureStageBitField(u_textureStagesZ, pos)
+
+bool isBaseColorTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 0) != 0xF;
+}
 
 vec4 baseColorTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 0), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 0), texcoord);
+}
+
+bool isMetallicRoughnessTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 1) != 0xF;
 }
 
 vec4 metallicRoughnessTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 1), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 1), texcoord);
+}
+
+bool isNormalTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 2) != 0xF;
 }
 
 vec4 normalTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 2), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 2), texcoord);
+}
+
+bool isOcclusionTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 3) != 0xF;
 }
 
 vec4 occlusionTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 3), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 3), texcoord);
+}
+
+bool isEmissiveTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 4) != 0xF;
 }
 
 vec4 emissiveTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 4), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 4), texcoord);
 }
+
+bool isClearcoatTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 5) != 0xF;
+}
+
 
 vec4 clearcoatTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 5), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 5), texcoord);
 }
+
+bool isClearcoatRoughnessTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 6) != 0xF;
+}
+
 
 vec4 clearcoatRoughnessTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 6), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 6), texcoord);
 }
+
+bool isClearcoatNormalTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesZ, 7) != 0xF;
+}
+
 
 vec4 clearcoatNormalTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesY, 7), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesZ, 7), texcoord);
+}
+
+bool isBrdfLutTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesW, 0) != 0xF;
 }
 
 vec4 brdfLutTex(vec2 texcoord)
 {
-    return textureStage(textureStageBitField(u_textureStagesZ, 0), texcoord);
+    return textureStage(textureStageBitField(u_textureStagesW, 0), texcoord);
 }
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH

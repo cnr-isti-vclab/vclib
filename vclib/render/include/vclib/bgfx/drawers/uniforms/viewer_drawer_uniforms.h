@@ -28,36 +28,50 @@
 
 namespace vcl {
 
+/**
+ * @brief The ViewerDrawerUniforms class is responsible for managing the
+ * shader uniforms related to a viewer drawer.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current viewer settings and to bind the uniforms to the shader programs.
+ */
 class ViewerDrawerUniforms
 {
     using enum PBRViewerSettings::ToneMapping;
 
-    std::array<float, 4> mData = {
+    static inline std::array<float, 4> sData = {
         1.0,                             // exposure
         std::bit_cast<float>(ACES_HILL), // tone mapping
         0.0,                             // specular mip levels
         0.0                              // unused
     };
 
-    Uniform mDataUniform =
-        Uniform("u_viewerSettingsPack", bgfx::UniformType::Vec4);
+    static inline Uniform sDataUniform;
 
 public:
     ViewerDrawerUniforms() = default;
 
-    void updateExposure(float exposure) { mData[0] = exposure; }
+    static void setExposure(float exposure) { sData[0] = exposure; }
 
-    void updateToneMapping(PBRViewerSettings::ToneMapping tm)
+    static void setToneMapping(PBRViewerSettings::ToneMapping tm)
     {
-        mData[1] = std::bit_cast<float>(tm);
+        sData[1] = std::bit_cast<float>(tm);
     }
 
-    void updateSpecularMipsLevels(uint8_t specMips)
+    static void setSpecularMipsLevels(uint8_t specMips)
     {
-        mData[2] = std::bit_cast<float>(uint(specMips));
+        sData[2] = std::bit_cast<float>(uint(specMips));
     }
 
-    void bind() const { mDataUniform.bind(mData.data()); }
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sDataUniform.isValid())
+            sDataUniform =
+                Uniform("u_viewerSettingsPack", bgfx::UniformType::Vec4);
+        sDataUniform.bind(sData.data());
+    }
 };
 
 } // namespace vcl

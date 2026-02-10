@@ -28,24 +28,38 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableAxisUniforms class is responsible for managing the shader
+ * uniforms related to a drawable axis.
+ *
+ * It provides an interface to set the uniform data based on the current axis
+ * data and to bind the uniforms to the shader programs.
+ */
 class DrawableAxisUniforms
 {
-    float mAxisColor[4] = {1.0, 0.0, 0.0, 1.0};
+    inline static std::array<float, 4> sAxisColor = {1.0, 0.0, 0.0, 1.0};
 
-    Uniform mAxisColorUniform = Uniform("u_axisColor", bgfx::UniformType::Vec4);
+    inline static Uniform sAxisColorUniform;
 
 public:
-    DrawableAxisUniforms() = default;
+    DrawableAxisUniforms() = delete;
 
-    void setColor(const vcl::Color& color)
+    static void setColor(const vcl::Color& color)
     {
-        mAxisColor[0] = color.redF();
-        mAxisColor[1] = color.greenF();
-        mAxisColor[2] = color.blueF();
-        mAxisColor[3] = color.alphaF();
+        sAxisColor[0] = color.redF();
+        sAxisColor[1] = color.greenF();
+        sAxisColor[2] = color.blueF();
+        sAxisColor[3] = color.alphaF();
     }
 
-    void bind() const { mAxisColorUniform.bind(mAxisColor); }
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sAxisColorUniform.isValid())
+            sAxisColorUniform = Uniform("u_axisColor", bgfx::UniformType::Vec4);
+        sAxisColorUniform.bind(sAxisColor.data());
+    }
 };
 
 } // namespace vcl

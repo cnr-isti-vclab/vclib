@@ -79,7 +79,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
+    static inline std::array<Uniform, N_TEXTURE_TYPES> sTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -123,7 +123,6 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextures, other.mMaterialTextures);
-        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -231,7 +230,6 @@ public:
     uint bindTextures(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
-        DrawableMeshUniforms&     meshUniforms,
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
@@ -251,41 +249,17 @@ public:
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
                             boundTextures,
-                            mTextureSamplerUniforms[j].handle(),
+                            sTextureSamplerUniforms[j].handle(),
                             flags);
 
                         tt = static_cast<DrawableMeshUniforms::TextureType>(j);
-                        meshUniforms.setTextureStage(tt, boundTextures);
+                        DrawableMeshUniforms::setTextureStage(tt, boundTextures);
                         boundTextures++;
                     }
                 }
             }
         }
         return boundTextures;
-    }
-
-    std::array<bool, N_TEXTURE_TYPES> textureAvailableArray(
-        const MeshType& m,
-        uint            materialId) const
-    {
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-        if (materialId == UINT_NULL) {
-            return textureAvailable;
-        }
-        else {
-            assert(materialId < m.materialsNumber());
-            const Material& mat = m.material(materialId);
-
-            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& td = m.material(materialId).textureDescriptor(j);
-                const std::string& path = td.path();
-                if (!path.empty()) {
-                    const Texture& tex  = mMaterialTextures.at(path);
-                    textureAvailable[j] = tex.isValid();
-                }
-            }
-        }
-        return textureAvailable;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -785,12 +759,16 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    void createTextureSamplerUniforms()
+    static void createTextureSamplerUniforms()
     {
-        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
-            mTextureSamplerUniforms[i] = Uniform(
-                ("s_tex" + std::to_string(i)).c_str(),
-                bgfx::UniformType::Sampler);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sTextureSamplerUniforms[0].isValid()) {
+            for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
+                sTextureSamplerUniforms[i] = Uniform(
+                    ("s_tex" + std::to_string(i)).c_str(),
+                    bgfx::UniformType::Sampler);
+            }
         }
     }
 };

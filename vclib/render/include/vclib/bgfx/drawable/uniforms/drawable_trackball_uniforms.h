@@ -28,31 +28,40 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableTrackballUniforms class is responsible for managing the
+ * shader uniforms related to a drawable trackball.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current dragging status and to bind the uniforms to the shader programs.
+ */
 class DrawableTrackballUniforms
 {
     static constexpr float DRAGGING_ALPHA     = 0.9f;
     static constexpr float NOT_DRAGGING_ALPHA = 0.5f;
 
     // the only component is alpha
-    std::array<float, 4> mTrackBallSettings;
+    inline static std::array<float, 4> sTrackBallSettings =
+        {NOT_DRAGGING_ALPHA, 0, 0, 0};
 
-    Uniform mTrackballSettingsUniform =
-        Uniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
+    inline static Uniform sTrackballSettingsUniform;
 
 public:
-    DrawableTrackballUniforms()
+    DrawableTrackballUniforms() = delete;
+
+    static void setDragging(bool dragging)
     {
-        mTrackBallSettings[0] = NOT_DRAGGING_ALPHA; // default: not dragging
+        sTrackBallSettings[0] = dragging ? DRAGGING_ALPHA : NOT_DRAGGING_ALPHA;
     }
 
-    void setDragging(bool dragging)
+    static void bind()
     {
-        mTrackBallSettings[0] = dragging ? DRAGGING_ALPHA : NOT_DRAGGING_ALPHA;
-    }
-
-    void bind() const
-    {
-        mTrackballSettingsUniform.bind(mTrackBallSettings.data());
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sTrackballSettingsUniform.isValid())
+            sTrackballSettingsUniform =
+                Uniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
+        sTrackballSettingsUniform.bind(sTrackBallSettings.data());
     }
 };
 

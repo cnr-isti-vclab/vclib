@@ -70,7 +70,7 @@ void main()
             vertexBaseColor = v_color; // per-vertex color available
     }
 
-    if (useTexture && isBaseColorTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isBaseColorTextureAvailable()) {
         // base color texture available
         textureBaseColor = baseColorTex(texcoord);
     }
@@ -86,7 +86,7 @@ void main()
     // metallic-roughness
     vec4 metallicRoughnessTexture = vec4_splat(1.0);
 
-    if (useTexture && isMetallicRoughnessTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isMetallicRoughnessTextureAvailable()) {
         // metallic-roughness texture available
         metallicRoughnessTexture = metallicRoughnessTex(texcoord);
     }
@@ -107,7 +107,8 @@ void main()
 
     // normal
     vec3 normal;
-    if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
+
+    if (useTexture && isNormalTextureAvailable()) {
         vec3 normalTexture = normalTex(texcoord).xyz;
 
         // remapping normals
@@ -134,7 +135,7 @@ void main()
     // emissive
     vec3 emissiveTexture = vec3_splat(1.0);
 
-    if (useTexture && isEmissiveTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isEmissiveTextureAvailable()) {
         // emissive texture available
         emissiveTexture = emissiveTex(texcoord).rgb;
     }
@@ -143,19 +144,19 @@ void main()
 
     // clearcoat
     float clearcoat = u_clearcoatFactor;
-    if (useTexture && isClearcoatTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isClearcoatTextureAvailable()) {
         // clearcoat texture available
         clearcoat *= clearcoatTex(texcoord).r; // clearcoat is stored in R channel
     }
 
     float clearcoatRoughness = u_clearcoatRoughnessFactor;
-    if (useTexture && isClearcoatRoughnessTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isClearcoatRoughnessTextureAvailable()) {
         // clearcoat roughness texture available
         clearcoatRoughness *= clearcoatRoughnessTex(texcoord).g; // clearcoat roughness is stored in G channel
     }
 
     vec3 clearcoatNormal;
-    if(useTexture && isClearcoatNormalTextureAvailable(u_pbr_texture_settings)) {
+    if(useTexture && isClearcoatNormalTextureAvailable()) {
         // clearcoat normal texture available
         vec3 clearcoatNormalTexture = clearcoatNormalTex(texcoord).xyz;
 
@@ -217,7 +218,7 @@ void main()
 
         // occlusion
         float occlusion = 1.0;
-        if(useTexture && isOcclusionTextureAvailable(u_pbr_texture_settings))
+        if(useTexture && isOcclusionTextureAvailable())
         {
             occlusion = occlusionTex(texcoord).r;
         }

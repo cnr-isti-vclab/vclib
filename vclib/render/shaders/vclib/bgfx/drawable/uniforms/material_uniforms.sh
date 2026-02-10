@@ -42,6 +42,5 @@ uniform vec4 u_clearcoatPack;
 #define u_clearcoatNormalScale u_clearcoatPack.b
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
-#define u_pbr_texture_settings floatBitsToUint(u_settings.y)
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH

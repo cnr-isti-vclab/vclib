@@ -91,9 +91,10 @@ private:
 
     ImplementationType mType = ImplementationType::COUNT;
 
-    Uniform mSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
     std::variant<detail::PrimitiveLines, detail::CPUGeneratedLines>
         mLinesImplementation;
+
+    static inline Uniform sSettingUH;
 
 public:
     /**
@@ -502,12 +503,17 @@ private:
 
     void bindSettingsUniform() const
     {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sSettingUH.isValid())
+            sSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
+
         float data[] = {
             mThickness,
             static_cast<float>(mColorToUse),
             std::bit_cast<float>(mGeneralColor.abgr()),
             static_cast<float>(mShadingPerVertex)};
-        mSettingUH.bind(data);
+        sSettingUH.bind(data);
     }
 };
 

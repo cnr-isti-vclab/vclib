@@ -23,8 +23,6 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 
-#include "uniforms/drawable_directional_light_uniforms.h"
-
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/viewer/lights/directional_light.h>
 #include <vclib/space/core/matrix.h>
@@ -46,8 +44,6 @@ class DrawableDirectionalLight : public DrawableObject
     vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
 
     VertexBuffer mVertexPosBuffer;
-
-    DrawableDirectionalLightUniforms mUniform;
 
 public:
     DrawableDirectionalLight();
