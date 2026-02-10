@@ -64,7 +64,7 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         double specular = 1.0;
-        vcl::Color specularColor = Color::White;
+        Point3f specularColor = Point3f(1.0, 1.0, 1.0);
         int specularTextureId = -1;
         int specularColorTextureId = -1;
 
@@ -143,7 +143,7 @@ int loadGltfPrimitiveMaterial(
                     specularColor[i] = specularExt
                         .Get("specularColorFactor")
                         .Get(i)
-                        .GetNumberAsDouble() * 255.0;
+                        .GetNumberAsDouble();
 
             if(specularExt.Has("specularTexture"))
                 specularTextureId = specularExt

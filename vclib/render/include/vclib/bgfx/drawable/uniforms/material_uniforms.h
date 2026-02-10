@@ -115,9 +115,9 @@ public:
         sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
 
-        sSpecularPack[0] = m.specularColor().redF();
-        sSpecularPack[1] = m.specularColor().greenF();
-        sSpecularPack[2] = m.specularColor().blueF();
+        sSpecularPack[0] = m.specularColor()[0];
+        sSpecularPack[1] = m.specularColor()[1];
+        sSpecularPack[2] = m.specularColor()[2];
         sSpecularPack[3] = m.specular();
     }
 

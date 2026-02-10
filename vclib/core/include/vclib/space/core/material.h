@@ -114,7 +114,8 @@ private:
 
     float mSpecular = 1.0f;
 
-    Color mSpecularColor = Color::White;
+    // needs to be HDR
+    Point3f mSpecularColor = Point3f(1.0, 1.0, 1.0);
 
 public:
     /**
@@ -277,13 +278,13 @@ public:
      * @brief Gets the specular color of the material.
      * @return A const reference to the specular color.
      */
-    const Color& specularColor() const { return mSpecularColor; }
+    const Point3f& specularColor() const { return mSpecularColor; }
 
     /**
      * @brief Gets a mutable reference to the specular color of the material.
      * @return A reference to the specular color.
      */
-    Color& specularColor() { return mSpecularColor; }
+    Point3f& specularColor() { return mSpecularColor; }
 
     /**
      * @brief Gets the texture descriptor for the base color texture.
