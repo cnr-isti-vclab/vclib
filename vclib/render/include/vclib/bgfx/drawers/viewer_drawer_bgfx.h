@@ -38,7 +38,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
-    DirectionalLightUniforms mDirectionalLightUniforms;
     ViewerDrawerUniforms     mViewerDrawerUniforms;
 
     // flags
@@ -52,7 +51,6 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
     ViewerDrawerBGFX(
@@ -94,8 +92,8 @@ public:
 
         setViewTransform(viewId);
 
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        mDirectionalLightUniforms.bind();
+        DirectionalLightUniforms::setLight(ParentViewer::light());
+        DirectionalLightUniforms::bind();
         mViewerDrawerUniforms.bind();
 
         // background will be drawn only if settings allow it

@@ -79,7 +79,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
+    static inline std::array<Uniform, N_TEXTURE_TYPES> sTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -123,7 +123,6 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextures, other.mMaterialTextures);
-        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -235,7 +234,7 @@ public:
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
                             VCL_MRB_TEXTURE0 + j,
-                            mTextureSamplerUniforms[j].handle(),
+                            sTextureSamplerUniforms[j].handle(),
                             flags);
                     }
                 }
@@ -764,12 +763,16 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    void createTextureSamplerUniforms()
+    static void createTextureSamplerUniforms()
     {
-        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
-            mTextureSamplerUniforms[i] = Uniform(
-                Material::TEXTURE_TYPE_NAMES[i].c_str(),
-                bgfx::UniformType::Sampler);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sTextureSamplerUniforms[0].isValid()) {
+            for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
+                sTextureSamplerUniforms[i] = Uniform(
+                    Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                    bgfx::UniformType::Sampler);
+            }
         }
     }
 };
