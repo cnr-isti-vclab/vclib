@@ -49,8 +49,6 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    mutable MaterialUniforms           mMaterialUniforms;
-
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
@@ -100,7 +98,6 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
@@ -443,7 +440,7 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            mMaterialUniforms.update(
+            MaterialUniforms::set(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(*this),
                 textureAvailable,
@@ -457,7 +454,7 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(*this),
                     textureAvailable,
@@ -468,7 +465,7 @@ protected:
                 textureAvailable =
                     mMRB.textureAvailableArray(*this, materialId);
 
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     MeshType::material(materialId),
                     isPerVertexColorAvailable(*this),
                     textureAvailable,
@@ -486,7 +483,7 @@ protected:
             }
         }
 
-        mMaterialUniforms.bind();
+        MaterialUniforms::bind();
         return state;
     }
 

@@ -44,7 +44,7 @@ class DrawableEnvironmentUniforms
         0.0
     };
 
-    static inline Uniform mDataUniform;
+    static inline Uniform sDataUniform;
 
 public:
     DrawableEnvironmentUniforms() = delete;
@@ -54,10 +54,10 @@ public:
     static void setCubeSideResolution(float cubeSide) { sData[1] = cubeSide; }
 
     static void bind() {
-        if (!mDataUniform.isValid())
-            mDataUniform =
+        if (!sDataUniform.isValid())
+            sDataUniform =
                 Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
-        mDataUniform.bind(sData.data());
+        sDataUniform.bind(sData.data());
     }
 };
 

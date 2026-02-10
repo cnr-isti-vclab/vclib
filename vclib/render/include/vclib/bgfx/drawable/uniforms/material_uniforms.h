@@ -31,15 +31,22 @@
 
 namespace vcl {
 
+/**
+ * @brief The MaterialUniforms class is responsible for managing the shader
+ * uniforms related to a material.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current material data and to bind the uniforms to the shader programs.
+ */
 class MaterialUniforms
 {
     static const uint N_TEXTURES = toUnderlying(Material::TextureType::COUNT);
 
-    std::array<float, 4> mBaseColor = {1.0, 1.0, 1.0, 1.0};
+    static inline std::array<float, 4> sBaseColor = {1.0, 1.0, 1.0, 1.0};
 
     // metallic, roughness and occlusion are stored in the B, G and R channels
     // respectively for consistency with textures
-    std::array<float, 4> mFactorsPack = {
+    static inline std::array<float, 4> sFactorsPack = {
         1.0, // occlusion strength
         1.0, // roughness
         1.0, // metallic
@@ -48,42 +55,23 @@ class MaterialUniforms
 
     // emissive color factor stored in RGB channels, alpha channel is unused so
     // it can be used to store the alpha cutoff when needed
-    std::array<float, 4> mEmissiveAlphaCutoffPack = {0.0, 0.0, 0.0, 0.5};
+    static inline std::array<float, 4> sEmissiveAlphaCutoffPack =
+        {0.0, 0.0, 0.0, 0.5};
 
     // settings packed in a vec4
     // .x : pbr settings
     // .y : texture settings
-    std::array<float, 4> mSettings = {0.0, 0.0, 0.0, 0.0};
+    static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
 
-    Uniform mBaseColorUniform =
-        Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
-
-    Uniform mFactorsPackUniform =
-        Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
-
-    Uniform mEmissiveAlphaCutoffPackUniform =
-        Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
-
-    Uniform mSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+    static inline Uniform sBaseColorUniform;
+    static inline Uniform sFactorsPackUniform;
+    static inline Uniform sEmissiveAlphaCutoffPackUniform ;
+    static inline Uniform sSettingsUniform;
 
 public:
-    MaterialUniforms() = default;
+    MaterialUniforms() = delete;
 
-    const std::array<float, 4>& currentBaseColor() const { return mBaseColor; }
-
-    const std::array<float, 4>& currentFactorsPack() const
-    {
-        return mFactorsPack;
-    }
-
-    const std::array<float, 4>& currentEmissiveAlphaCutoffPack() const
-    {
-        return mEmissiveAlphaCutoffPack;
-    }
-
-    const std::array<float, 4>& currentSettings() const { return mSettings; }
-
-    void update(
+    static void set(
         const Material&                     m,
         bool                                vertexColorAvailable,
         const std::array<bool, N_TEXTURES>& textureAvailable,
@@ -101,14 +89,14 @@ public:
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
             pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
-            mEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
+            sEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
 
         if (imageBasedLighting) {
             pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
         }
 
-        mSettings[0] = std::bit_cast<float>(pbrSettingBits);
+        sSettings[0] = std::bit_cast<float>(pbrSettingBits);
 
         uint textureSettings = 0;
 
@@ -119,31 +107,44 @@ public:
             }
         }
 
-        mSettings[1] = std::bit_cast<float>(textureSettings);
+        sSettings[1] = std::bit_cast<float>(textureSettings);
 
-        mBaseColor[0] = m.baseColor().redF();
-        mBaseColor[1] = m.baseColor().greenF();
-        mBaseColor[2] = m.baseColor().blueF();
-        mBaseColor[3] = m.baseColor().alphaF();
+        sBaseColor[0] = m.baseColor().redF();
+        sBaseColor[1] = m.baseColor().greenF();
+        sBaseColor[2] = m.baseColor().blueF();
+        sBaseColor[3] = m.baseColor().alphaF();
 
         // metallic, roughness and occlusion are stored in the B, G and R
         // channels respectively for consistency with textures
-        mFactorsPack[0] = m.occlusionStrength();
-        mFactorsPack[1] = m.roughness();
-        mFactorsPack[2] = m.metallic();
-        mFactorsPack[3] = m.normalScale();
+        sFactorsPack[0] = m.occlusionStrength();
+        sFactorsPack[1] = m.roughness();
+        sFactorsPack[2] = m.metallic();
+        sFactorsPack[3] = m.normalScale();
 
-        mEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
-        mEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
-        mEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+        sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
+        sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
+        sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
     }
 
-    void bind() const
+    static void bind()
     {
-        mBaseColorUniform.bind(&mBaseColor);
-        mFactorsPackUniform.bind(&mFactorsPack);
-        mEmissiveAlphaCutoffPackUniform.bind(&mEmissiveAlphaCutoffPack);
-        mSettingsUniform.bind(&mSettings);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sBaseColorUniform.isValid())
+            sBaseColorUniform =
+                Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
+        if (!sFactorsPackUniform.isValid())
+            sFactorsPackUniform = Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
+        if (!sEmissiveAlphaCutoffPackUniform.isValid())
+            sEmissiveAlphaCutoffPackUniform =
+                Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
+        if (!sSettingsUniform.isValid())
+            sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+
+        sBaseColorUniform.bind(&sBaseColor);
+        sFactorsPackUniform.bind(&sFactorsPack);
+        sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
+        sSettingsUniform.bind(&sSettings);
     }
 };
 
