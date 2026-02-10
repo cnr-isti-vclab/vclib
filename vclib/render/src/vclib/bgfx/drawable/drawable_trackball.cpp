@@ -22,6 +22,8 @@
 
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 
+#include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.h>
+
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/context.h>
 
@@ -125,7 +127,6 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
     swap(mVisible, other.mVisible);
     swap(mVertexPosColorBuffer, other.mVertexPosColorBuffer);
     swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
-    swap(mUniforms, other.mUniforms);
     swap(mTransform, other.mTransform);
 }
 
@@ -136,7 +137,7 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
  */
 void DrawableTrackBall::updateDragging(bool isDragging)
 {
-    mUniforms.setDragging(isDragging);
+    mIsDragging = isDragging;
 }
 
 void DrawableTrackBall::setTransform(const vcl::Matrix44f& mtx)
@@ -167,7 +168,8 @@ void DrawableTrackBall::draw(const DrawObjectSettings& settings) const
 
         bgfx::setTransform(mTransform.data());
 
-        mUniforms.bind();
+        DrawableTrackballUniforms::setDragging(mIsDragging);
+        DrawableTrackballUniforms::bind();
 
         bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
     }
