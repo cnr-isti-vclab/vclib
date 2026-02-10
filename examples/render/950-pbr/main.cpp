@@ -94,6 +94,9 @@ int main(int argc, char** argv)
         else if (type == EMISSIVE) {
             typeName = "emissive";
         }
+        else if (type == ANISOTROPY) {
+            typeName = "anisotropy";
+        }
 
         std::cout << "  " << typeName << "Texture: ";
         if (!texture.isNull()) {
@@ -126,11 +129,16 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  anisotropyStrength: " << mat.anisotropyStrength()
+                      << std::endl;
+            std::cout << "  anisotropyRotation: " << mat.anisotropyRotation()
+                      << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, ANISOTROPY);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;

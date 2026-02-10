@@ -62,6 +62,11 @@ int loadGltfPrimitiveMaterial(
         bool   doubleSided;
         int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
             occlusionTextureId, emissiveTextureId;
+
+        double anisotropyStrength = 0.0;
+        double anisotropyRotation = 0.0;
+        int anisotropyTextureId = -1;
+
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -121,6 +126,31 @@ int loadGltfPrimitiveMaterial(
 
         // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
+
+        // anisotropy
+        if (mat.extensions.contains("KHR_materials_anisotropy")) {
+            const auto& anisotropyExt =
+                mat.extensions.at("KHR_materials_anisotropy");
+
+            if (anisotropyExt.Has("anisotropyStrength")) {
+                anisotropyStrength = anisotropyExt
+                    .Get("anisotropyStrength")
+                    .GetNumberAsDouble();
+            }
+
+            if (anisotropyExt.Has("anisotropyRotation")) {
+                anisotropyRotation = anisotropyExt
+                    .Get("anisotropyRotation")
+                    .GetNumberAsDouble();
+            }
+
+            if (anisotropyExt.Has("anisotropyTexture")) {
+                anisotropyTextureId = anisotropyExt
+                    .Get("anisotropyTexture")
+                    .Get("index")
+                    .GetNumberAsInt();
+            }
+        }
 
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material&             mat,
@@ -185,16 +215,18 @@ int loadGltfPrimitiveMaterial(
 
         if constexpr (HasMaterials<MeshType>) {
             Material mat;
-            mat.name()              = matName;
-            mat.baseColor()         = baseColor;
-            mat.metallic()          = metallic;
-            mat.roughness()         = roughness;
-            mat.emissiveColor()     = emissiveColor;
-            mat.alphaMode()         = alphaMode;
-            mat.alphaCutoff()       = alphaCutoff;
-            mat.doubleSided()       = doubleSided;
-            mat.normalScale()       = normalScale;
-            mat.occlusionStrength() = occlusionStrength;
+            mat.name()               = matName;
+            mat.baseColor()          = baseColor;
+            mat.metallic()           = metallic;
+            mat.roughness()          = roughness;
+            mat.emissiveColor()      = emissiveColor;
+            mat.alphaMode()          = alphaMode;
+            mat.alphaCutoff()        = alphaCutoff;
+            mat.doubleSided()        = doubleSided;
+            mat.normalScale()        = normalScale;
+            mat.occlusionStrength()  = occlusionStrength;
+            mat.anisotropyStrength() = anisotropyStrength;
+            mat.anisotropyRotation() = anisotropyRotation;
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
@@ -207,6 +239,8 @@ int loadGltfPrimitiveMaterial(
                 mat, occlusionTextureId, Material::TextureType::OCCLUSION);
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, anisotropyTextureId, Material::TextureType::ANISOTROPY);
             m.pushMaterial(mat);
             idx = m.materialsNumber() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {
