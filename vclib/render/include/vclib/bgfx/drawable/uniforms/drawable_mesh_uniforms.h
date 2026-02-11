@@ -124,7 +124,7 @@ private:
     static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)
     {
         // value is a uint where 8 stages with 4 bit each are encoded
-        // pos is a value between 0 and 8 to specify the bit positions to set
+        // pos is a value between 0 and 7 to specify the bit positions to set
         // stage is a value between 0 and 15 to specify the stage to set
         // only the 4 bits corresponding to pos are set to stage, the others are
         // left unchanged
