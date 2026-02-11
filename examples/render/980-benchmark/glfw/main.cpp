@@ -24,6 +24,7 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
+#include "980_shading_changer_action.h"
 #include "cmd_opt_parser.h"
 
 #include <vclib/render/canvas.h>
@@ -141,7 +142,8 @@ int main(int argc, char** argv)
         {"--force-col-vertex", 0},
         {"--force-col-face",   0},
         {"--force-tex-vertex", 0},
-        {"--force-tex-wedge",  0}
+        {"--force-tex-wedge",  0},
+        {"--on-the-fly",       0}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -177,6 +179,9 @@ int main(int argc, char** argv)
             << "Uses flat shading for all the meshes"
             << "\n\t--split:            "
             << "Uses the \"SPLIT\" shader splitting"
+            << "\n\t--on-the-fly:       "
+            << "Does the first half of repetitions with smooth shading, and "
+               "the other half with flat shading"
             << "\n\t--uber-static-if:   "
             << "Uses the \"UBER_WITH_STATIC_IF\" shader splitting"
             << "\n\t--res:              "
@@ -221,6 +226,12 @@ int main(int argc, char** argv)
             options.contains("--force-tex-vertex") >
         1) {
         std::cerr << "Error: conflicting color forcing options\n";
+        exit(1);
+    }
+
+    if (options.contains("--flat") + options.contains("--on-the-fly") > 1) {
+        std::cerr
+            << "Error: --on-the-fly option incompatible with --flat option\n";
         exit(1);
     }
 
@@ -317,7 +328,9 @@ int main(int argc, char** argv)
 
     BenchmarkViewer tw("Benchmark", width, height);
 
-    tw.resize(vcl::uint(width/tw.dpiScale().x()), vcl::uint(height/tw.dpiScale().y()));
+    tw.resize(
+        vcl::uint(width / tw.dpiScale().x()),
+        vcl::uint(height / tw.dpiScale().y()));
 
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
@@ -338,7 +351,7 @@ int main(int argc, char** argv)
             meshName += path;
         }
         else {
-            meshName += path.substr(path.rfind('/')+1);
+            meshName += path.substr(path.rfind('/') + 1);
         }
         vcl::DrawableMesh<vcl::TriMesh> msh = getMesh(path, userColor);
 
@@ -389,6 +402,15 @@ int main(int argc, char** argv)
 
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
+    if (options.contains("--on-the-fly")) {
+        tw.addAutomation(aaf.createStartCountDelay(
+            aaf.createStartCountLimited(
+                vcl::ShadingChangerAutomationAction<BenchmarDrawerT>(
+                    vcl::MeshRenderInfo::Surface::SHADING_FLAT),
+                1),
+            repetitions / 2));
+    }
+
     // Rotation around Z axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
@@ -414,6 +436,9 @@ int main(int argc, char** argv)
     if (options.contains("--flat")) {
         shadingType = "flat";
     }
+    if (options.contains("--on-the-fly")) {
+        shadingType = "varying";
+    }
 
     std::string splitType = "uber";
     if (options.contains("--split")) {
@@ -429,7 +454,7 @@ int main(int argc, char** argv)
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
-        auto        prntr        = vcl::Benchmark980JsonPrinter(
+        auto                     prntr   = vcl::Benchmark980JsonPrinter(
             optArgs[0],
             device_name,
             meshName,
@@ -456,7 +481,7 @@ int main(int argc, char** argv)
     }
     else {
         auto prntr = vcl::Benchmark980JsonPrinter(
-            "./" + splitType + "_result_" + shadingType + ".json", 
+            "./" + splitType + "_result_" + shadingType + ".json",
             device_name,
             meshName,
             shadingType,
