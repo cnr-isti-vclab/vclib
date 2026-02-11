@@ -28,12 +28,12 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
 
 #include <algorithm>
 #include <iterator>
-#include <numeric>
 
 namespace vcl::imgui {
 
@@ -70,13 +70,26 @@ public:
             ImGui::EndChild();
         }
 
+        // drawable mesh info and settings for selected mesh
+        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+            auto drawable =
+                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
+                    Base::mDrawList->at(mMeshIndex));
+            if (drawable) {
+                drawMeshSettings(*drawable);
+            }
+        }
+
         if constexpr (PBRViewerConcept<Base>) {
             // combo box for pbr mode
             ImGui::Separator();
             ImGui::Text("Render Mode:");
             ImGui::SameLine();
+
+            PBRViewerSettings pbrSettings = Base::pbrSettings();
+
             const char* renderModeNames[] = {"Classic", "PBR"};
-            bool        pbrMode           = Base::isPBREnabled();
+            bool        pbrMode           = pbrSettings.pbrMode;
             ImGui::SetNextItemWidth(80);
             if (ImGui::BeginCombo(
                     "##ComboRenderMode",
@@ -85,22 +98,73 @@ public:
                     bool isSelected =
                         (pbrMode && n == 1) || (!pbrMode && n == 0);
                     if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                        Base::setPBR(n == 1);
+                        pbrSettings.pbrMode = (n == 1);
                     }
                     if (isSelected)
                         ImGui::SetItemDefaultFocus();
                 }
                 ImGui::EndCombo();
             }
-        }
 
-        // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
-            auto drawable =
-                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
-            if (drawable) {
-                drawMeshSettings(*drawable);
+            ImGui::BeginDisabled(!pbrMode);
+            {
+                // exposure slider
+                ImGui::Separator();
+                ImGui::Text("Exposure:");
+                ImGui::SameLine();
+                float exposure = pbrSettings.exposure;
+                if (ImGui::SliderFloat(
+                        "##Exposure", &exposure, 0.001f, 64.0f, "%.3f",
+                        ImGuiSliderFlags_Logarithmic))
+                    pbrSettings.exposure = exposure;
+
+                // tone mapping combo box
+                ImGui::Text("Tone mapping:");
+                ImGui::SameLine();
+                uint toneMapping = toUnderlying(pbrSettings.toneMapping);
+
+                const auto* toneMappingNames =
+                    PBRViewerSettings::TONE_MAPPING_STRINGS;
+                if (ImGui::BeginCombo(
+                        "##ComboToneMapping", toneMappingNames[toneMapping])) {
+                    const uint CNT =
+                        toUnderlying(PBRViewerSettings::ToneMapping::COUNT);
+                    for (uint n = 0; n < CNT; n++) {
+                        bool isSelected = toneMapping == n;
+                        if (ImGui::Selectable(
+                                toneMappingNames[n], isSelected)) {
+                            pbrSettings.toneMapping =
+                                static_cast<PBRViewerSettings::ToneMapping>(n);
+                        }
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                // image based lighting
+                ImGui::Checkbox(
+                    "Image Based Lighting",
+                    [&]() {
+                        return pbrSettings.imageBasedLighting;
+                    },
+                    [&](bool ibl) {
+                        pbrSettings.imageBasedLighting = ibl;
+                    });
+
+                // draw background checkbox
+                ImGui::Checkbox(
+                    "Render Background Panorama",
+                    [&]() {
+                        return pbrSettings.renderBackgroundPanorama;
+                    },
+                    [&](bool renderBg) {
+                        pbrSettings.renderBackgroundPanorama = renderBg;
+                    });
+            }
+            ImGui::EndDisabled();
+            if (pbrSettings.pbrMode) {
+                Base::setPbrSettings(pbrSettings);
             }
         }
 

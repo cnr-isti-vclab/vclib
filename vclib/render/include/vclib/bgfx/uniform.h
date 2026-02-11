@@ -44,6 +44,7 @@ class Uniform
     bgfx::UniformHandle     mUniformHandle = BGFX_INVALID_HANDLE;
     std::string             mUniformName;
     bgfx::UniformType::Enum mUniformType = bgfx::UniformType::Count;
+    uint16_t mArraySize = 1; // for array uniforms, the number of elements
 
 public:
     /**
@@ -56,11 +57,16 @@ public:
      * @param[in] name: The name of the uniform. It must match the name used in
      * the shader.
      * @param[in] type: The data type of the uniform.
+     * @param[in] size: The number of elements for array uniforms (default is 1
+     * for non-array uniforms).
      */
-    Uniform(const std::string& name, bgfx::UniformType::Enum type) :
-            mUniformName(name), mUniformType(type)
+    Uniform(
+        const std::string&      name,
+        bgfx::UniformType::Enum type,
+        uint16_t                size = 1) :
+            mUniformName(name), mUniformType(type), mArraySize(size)
     {
-        mUniformHandle = bgfx::createUniform(name.c_str(), type);
+        mUniformHandle = bgfx::createUniform(name.c_str(), type, size);
     }
 
     // Copying a Uniform is not allowed
@@ -105,6 +111,7 @@ public:
         swap(mUniformHandle, oth.mUniformHandle);
         swap(mUniformName, oth.mUniformName);
         swap(mUniformType, oth.mUniformType);
+        swap(mArraySize, oth.mArraySize);
     }
 
     /**
@@ -113,6 +120,13 @@ public:
      * @param[in] b: The second Uniform.
      */
     friend void swap(Uniform& a, Uniform& b) { a.swap(b); }
+
+    /**
+     * @brief Checks if the Uniform is valid (i.e., if it has a valid
+     * bgfx::UniformHandle).
+     * @return true if the Uniform is valid, false otherwise.
+     */
+    bool isValid() const { return bgfx::isValid(mUniformHandle); }
 
     /**
      * @brief Returns the underlying bgfx::UniformHandle.
@@ -133,6 +147,13 @@ public:
     bgfx::UniformType::Enum type() const { return mUniformType; }
 
     /**
+     * @brief Returns the array size of the uniform (number of elements for
+     * array uniforms, 1 for non-array uniforms).
+     * @return The uniform's array size.
+     */
+    uint16_t arraySize() const { return mArraySize; }
+
+    /**
      * @brief Sets the uniform data for the current shader program.
      *
      * This function should be called after a shader program has been set with
@@ -143,43 +164,26 @@ public:
      */
     void bind(const void* data) const
     {
-        bgfx::setUniform(mUniformHandle, data);
+        bgfx::setUniform(mUniformHandle, data, mArraySize);
     }
 
     /**
-     * @brief Utility function to reinterpret the bits of an unsigned integer as
-     * a float.
-     * @param[in] bits: The unsigned integer to convert.
-     * @return The float value with the same bit representation.
+     * @brief Sets the uniform data for the current shader program, specifying
+     * the number of elements for array uniforms.
+     *
+     * This function should be called after a shader program has been set with
+     * bgfx::submit(). The data pointer must point to a memory block that
+     * matches the uniform's type and size. The numElements parameter specifies
+     * how many elements of the array uniform to set (for non-array uniforms,
+     * this should be 1).
+     *
+     * @param[in] data: A pointer to the uniform data.
+     * @param[in] numElements: The number of elements to set for array uniforms.
      */
-    static float uintBitsToFloat(uint bits)
+    void bind(const void* data, uint16_t numElements) const
     {
-        union
-        {
-            uint  i;
-            float f;
-        } u;
-
-        u.i = bits;
-        return u.f;
-    }
-
-    /**
-     * @brief Utility function to reinterpret the bits of a float as an unsigned
-     * integer.
-     * @param[in] f: The float to convert.
-     * @return The unsigned integer with the same bit representation.
-     */
-    static uint floatToUintBits(float f)
-    {
-        union
-        {
-            uint  i;
-            float f;
-        } u;
-
-        u.f = f;
-        return u.i;
+        assert(numElements <= mArraySize);
+        bgfx::setUniform(mUniformHandle, data, numElements);
     }
 };
 

@@ -79,9 +79,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    mutable DrawableMeshUniforms         mMeshUniforms;
-    mutable MaterialUniforms             mMaterialUniforms;
-    std::array<Uniform, N_TEXTURE_TYPES> mTextureSamplerUniforms;
+    static inline std::array<Uniform, N_TEXTURE_TYPES> sTextureSamplerUniforms;
 
 public:
     MeshRenderBuffers() = default;
@@ -125,14 +123,9 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMaterialTextures, other.mMaterialTextures);
-        swap(mMeshUniforms, other.mMeshUniforms);
-        swap(mMaterialUniforms, other.mMaterialUniforms);
-        swap(mTextureSamplerUniforms, other.mTextureSamplerUniforms);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
-
-    uint triangleChunksNumber() const { return Base::mMaterialChunks.size(); }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -208,11 +201,9 @@ public:
 
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
-            mMeshUniforms.updateFirstChunkIndex(0);
         }
         else {
-            const auto& chunk = Base::mMaterialChunks[chunkToBind];
-            mMeshUniforms.updateFirstChunkIndex(chunk.startIndex);
+            const auto& chunk = Base::triangleChunk(chunkToBind);
             mTriangleIndexBuffer.bind(
                 chunk.startIndex * 3, chunk.indexCount * 3);
         }
@@ -243,7 +234,7 @@ public:
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
                             VCL_MRB_TEXTURE0 + j,
-                            mTextureSamplerUniforms[j].handle(),
+                            sTextureSamplerUniforms[j].handle(),
                             flags);
                     }
                 }
@@ -251,81 +242,28 @@ public:
         }
     }
 
-    /**
-     * @brief Sets and binds the material uniforms for the given triangle chunk,
-     * and returns the render state associated to the material that must be set
-     * for the draw call.
-     *
-     * @param mrs
-     * @param chunkNumber
-     * @param m
-     * @return the render state associated to the material
-     */
-    uint64_t bindMaterials(
-        const MeshRenderSettings& mrs,
-        uint                      chunkNumber,
-        const MeshType&           m) const
+    std::array<bool, N_TEXTURE_TYPES> textureAvailableArray(
+        const MeshType& m,
+        uint            materialId) const
     {
-        static const Material DEFAULT_MATERIAL;
-
-        uint64_t state = BGFX_STATE_NONE;
-
         std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-
-        if constexpr (!HasMaterials<MeshType>) {
-            // fallback to default material
-            mMaterialUniforms.update(
-                DEFAULT_MATERIAL,
-                isPerVertexColorAvailable(m),
-                textureAvailable,
-                isPerVertexTangentAvailable(m));
+        if (materialId == UINT_NULL) {
+            return textureAvailable;
         }
         else {
-            using enum Material::AlphaMode;
+            assert(materialId < m.materialsNumber());
+            const Material& mat = m.material(materialId);
 
-            uint materialId = Base::materialIndex(mrs, chunkNumber);
-
-            if (materialId == UINT_NULL) {
-                // fallback to default material
-                mMaterialUniforms.update(
-                    DEFAULT_MATERIAL,
-                    isPerVertexColorAvailable(m),
-                    textureAvailable,
-                    isPerVertexTangentAvailable(m));
-            }
-            else {
-                assert(materialId < m.materialsNumber());
-                const Material& mat = m.material(materialId);
-
-                for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                    const auto& td =
-                        m.material(materialId).textureDescriptor(j);
-                    const std::string& path = td.path();
-                    if (!path.empty()) {
-                        const Texture& tex  = mMaterialTextures.at(path);
-                        textureAvailable[j] = tex.isValid();
-                    }
-                }
-
-                mMaterialUniforms.update(
-                    m.material(materialId),
-                    isPerVertexColorAvailable(m),
-                    textureAvailable,
-                    isPerVertexTangentAvailable(m));
-
-                // set the state according to the material
-                if (!m.material(materialId).doubleSided()) {
-                    // backface culling
-                    state |= BGFX_STATE_CULL_CW;
-                }
-                if (m.material(materialId).alphaMode() == ALPHA_BLEND) {
-                    state |= BGFX_STATE_BLEND_ALPHA;
+            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
+                const auto& td = m.material(materialId).textureDescriptor(j);
+                const std::string& path = td.path();
+                if (!path.empty()) {
+                    const Texture& tex  = mMaterialTextures.at(path);
+                    textureAvailable[j] = tex.isValid();
                 }
             }
         }
-
-        mMaterialUniforms.bind();
-        return state;
+        return textureAvailable;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -372,8 +310,6 @@ public:
             mWireframeLines.setColorToUse(PER_VERTEX);
         }
     }
-
-    void bindUniforms() const { mMeshUniforms.bind(); }
 
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
@@ -652,6 +588,8 @@ private:
                 vcl::Point2i(img.width(), img.height()),
                 generateMips,
                 flags,
+                bgfx::TextureFormat::RGBA8,
+                false,
                 releaseFn);
 
             // at() does not insert if already present, thus safe in parallel
@@ -738,9 +676,8 @@ private:
         }
     }
 
-    void setMeshUniforms(const MeshType& mesh) // override
+    void setMeshAdditionalData(const MeshType& mesh) // override
     {
-        mMeshUniforms.update(mesh);
         if constexpr (HasColor<MeshType>) {
             mMeshColor = mesh.color();
         }
@@ -826,12 +763,16 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    void createTextureSamplerUniforms()
+    static void createTextureSamplerUniforms()
     {
-        for (uint i = 0; i < mTextureSamplerUniforms.size(); ++i) {
-            mTextureSamplerUniforms[i] = Uniform(
-                Material::TEXTURE_TYPE_NAMES[i].c_str(),
-                bgfx::UniformType::Sampler);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sTextureSamplerUniforms[0].isValid()) {
+            for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
+                sTextureSamplerUniforms[i] = Uniform(
+                    Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                    bgfx::UniformType::Sampler);
+            }
         }
     }
 };
