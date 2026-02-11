@@ -48,7 +48,6 @@ class AbstractViewerDrawer : public ViewProjEventDrawer
     using DRA  = ViewProjEventDrawer::DRA;
 
     bool mReadRequested = false;
-    bool mPBRMode       = false;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -120,14 +119,6 @@ public:
         Base::fitScene(sceneCenter, sceneRadius);
     }
 
-    bool isPBREnabled() const { return mPBRMode; }
-
-    void setPBR(bool enable) { mPBRMode = enable; }
-
-    void enablePBR() { setPBR(true); }
-
-    void disablePBR() { setPBR(false); }
-
     void fitView()
     {
         Point3f sceneCenter = mDrawList->center().cast<float>();
@@ -146,6 +137,7 @@ public:
         Base::onKeyPress(key, modifiers);
 
         switch (key) {
+        case Key::R: fitScene(); break;
         case Key::S:
             if (modifiers[KeyModifier::CONTROL])
                 DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
@@ -156,6 +148,8 @@ public:
     }
 
 protected:
+    uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
+
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;

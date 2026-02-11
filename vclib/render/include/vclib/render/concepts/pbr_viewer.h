@@ -20,23 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
-#define VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#ifndef VCL_RENDER_CONCEPTS_PBR_VIEWER_H
+#define VCL_RENDER_CONCEPTS_PBR_VIEWER_H
 
 #include <vclib/base.h>
 
 namespace vcl {
 
-/**
- * @brief A simple struct containing the settings to draw a drawable object
- * in a opengl2 canvas.
- */
-struct DrawObjectSettingsOpenGL2
-{
-    /**< @brief The object ID to assign to the object. */
-    uint objectId = 0;
-};
+template<typename T>
+concept PBRViewerConcept = requires (T&& obj) {
+    { obj.isPBREnabled() } -> std::same_as<bool>;
 
+    // non const requirements
+    requires IsConst<T> || requires { obj.setPBR(bool()); };
+};
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWABLE_DRAW_OBJECT_SETTINGS_OPENGL2_H
+#endif // VCL_RENDER_CONCEPTS_PBR_VIEWER_H

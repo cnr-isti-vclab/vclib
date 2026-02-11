@@ -39,19 +39,21 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
         filename = VCLIB_EXAMPLE_MESHES_PATH "/" + filename;
     }
 
-    MeshType m = vcl::loadMesh<MeshType>(filename);
-    vcl::updatePerVertexAndFaceNormals(m);
+    vcl::MeshInfo info;
 
-    // create a MeshRenderSettings object, that allows to set the rendering
-    // options of the mesh
-    // default is what we want: color per vertex, smooth shading, no wireframe
-    vcl::MeshRenderSettings settings(m);
+    MeshType m = vcl::loadMesh<MeshType>(filename, info);
+
+    if constexpr (vcl::FaceMeshConcept<MeshType>) {
+        if (!info.hasPerFaceNormal()) {
+            vcl::updatePerFaceNormals(m);
+        }
+        if (!info.hasPerVertexNormal()) {
+            vcl::updatePerVertexNormalsFromFaceNormals(m);
+        }
+    }
 
     // create a DrawableMesh object from the mesh
     vcl::DrawableMesh<MeshType> drawable(m);
-
-    // set the settings to the drawable mesh
-    drawable.setRenderSettings(settings);
 
     return drawable;
 }

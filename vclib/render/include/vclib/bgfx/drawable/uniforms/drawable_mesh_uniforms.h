@@ -28,44 +28,58 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableMeshUniforms class is responsible for managing the
+ * shader uniforms related to a drawable mesh.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current mesh data and to bind the uniforms to the shader programs.
+ */
 class DrawableMeshUniforms
 {
-    float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
+    inline static std::array<float, 4> sMeshColor = {0.5, 0.5, 0.5, 1.0};
 
-    float mMeshData[4] = {
-        0.0, // as uint: first chunk primitive id drawn
-        0.0,
-        0.0,
-        0.0};
+    // sMeshData[0] -> as uint, mesh id
+    // sMeshData[1] -> as uint, first chunk primitive id drawn
+    inline static std::array<float, 4> sMeshData = {0.0, 0.0, 0.0, 0.0};
 
-    Uniform mMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
-    Uniform mMeshDataUniform  = Uniform("u_meshData", bgfx::UniformType::Vec4);
+    inline static Uniform sMeshColorUniform;
+    inline static Uniform sMeshDataUniform;
 
 public:
-    DrawableMeshUniforms() = default;
-
-    const float* currentMeshColor() const { return mMeshColor; }
+    DrawableMeshUniforms() = delete;
 
     template<MeshConcept MeshType>
-    void update(const MeshType& m)
+    static void setColor(const MeshType& m)
     {
         if constexpr (HasColor<MeshType>) {
-            mMeshColor[0] = m.color().redF();
-            mMeshColor[1] = m.color().greenF();
-            mMeshColor[2] = m.color().blueF();
-            mMeshColor[3] = m.color().alphaF();
+            sMeshColor[0] = m.color().redF();
+            sMeshColor[1] = m.color().greenF();
+            sMeshColor[2] = m.color().blueF();
+            sMeshColor[3] = m.color().alphaF();
         }
     }
 
-    void updateFirstChunkIndex(uint firstChunkIndex)
+    static void setMeshId(uint meshId)
     {
-        mMeshData[0] = Uniform::uintBitsToFloat(firstChunkIndex);
+        sMeshData[0] = std::bit_cast<float>(meshId);
     }
 
-    void bind() const
+    static void setFirstChunkIndex(uint firstChunkIndex)
     {
-        mMeshColorUniform.bind(mMeshColor);
-        mMeshDataUniform.bind(mMeshData);
+        sMeshData[1] = std::bit_cast<float>(firstChunkIndex);
+    }
+
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sMeshColorUniform.isValid())
+            sMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
+        if (!sMeshDataUniform.isValid())
+            sMeshDataUniform = Uniform("u_meshData", bgfx::UniformType::Vec4);
+        sMeshColorUniform.bind(sMeshColor.data());
+        sMeshDataUniform.bind(sMeshData.data());
     }
 };
 

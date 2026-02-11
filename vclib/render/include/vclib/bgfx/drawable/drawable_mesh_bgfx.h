@@ -48,12 +48,13 @@ public:
 private:
     using MRI = MeshRenderInfo;
 
-    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
-
-    Uniform mIdUniform = Uniform("u_meshId", bgfx::UniformType::Vec4);
+    mutable MaterialUniforms mMaterialUniforms;
 
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
+
+    inline static const uint N_TEXTURE_TYPES =
+        toUnderlying(Material::TextureType::COUNT);
 
 protected:
     MeshRenderBuffers<MeshType> mMRB;
@@ -80,7 +81,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = drawableMesh.name();
         }
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         updateBuffers();
     }
 
@@ -99,8 +99,9 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
+        swap(mMaterialUniforms, other.mMaterialUniforms);
+        swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
-        swap(mMeshRenderSettingsUniforms, other.mMeshRenderSettingsUniforms);
     }
 
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
@@ -143,7 +144,6 @@ public:
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
-        mMeshRenderSettingsUniforms.updateSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
     }
@@ -215,14 +215,20 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        DrawableMeshUniforms::setColor(*this);
+        MeshRenderSettingsUniforms::set(mMRS);
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 uint64_t surfaceState  = state;
-                uint64_t materialState = mMRB.bindMaterials(mMRS, i, *this);
+                uint64_t materialState = updateAndBindMaterialUniforms(i);
                 // Bind textures before vertex buffers!!
                 mMRB.bindTextures(mMRS, i, *this);
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+
+                DrawableMeshUniforms::setFirstChunkIndex(
+                    mMRB.triangleChunk(i).startIndex);
 
                 bindUniforms();
 
@@ -306,13 +312,12 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
-        const std::array<float, 4> idFloat = {
-            Uniform::uintBitsToFloat(settings.objectId), 0.0f, 0.0f, 0.0f};
-
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
-            mIdUniform.bind(&idFloat);
+            DrawableMeshUniforms::setMeshId(settings.objectId);
+            DrawableMeshUniforms::setFirstChunkIndex(0);
+            bindUniforms();
 
             bgfx::setState(state);
             bgfx::setTransform(model.data());
@@ -348,7 +353,9 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
-                mIdUniform.bind(&idFloat);
+
+                DrawableMeshUniforms::setMeshId(settings.objectId);
+                bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
                 bgfx::setTransform(model.data());
@@ -362,8 +369,8 @@ public:
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
+                DrawableMeshUniforms::setMeshId(settings.objectId);
                 bindUniforms();
-                mIdUniform.bind(&idFloat);
 
                 bgfx::setState(state);
                 bgfx::setTransform(model.data());
@@ -385,12 +392,6 @@ public:
         return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
-    void setVisibility(bool vis) override
-    {
-        AbstractDrawableMesh::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mMRS);
-    }
-
     std::string& name() override { return MeshType::name(); }
 
     const std::string& name() const override { return MeshType::name(); }
@@ -398,8 +399,70 @@ public:
 protected:
     void bindUniforms() const
     {
-        mMeshRenderSettingsUniforms.bind();
-        mMRB.bindUniforms();
+        MeshRenderSettingsUniforms::bind();
+        DrawableMeshUniforms::bind();
+    }
+
+    /**
+     * @brief Sets and binds the material uniforms for the given triangle chunk,
+     * and returns the render state associated to the material that must be set
+     * for the draw call.
+     *
+     * @param chunkNumber
+     * @return the render state associated to the material
+     */
+    uint64_t updateAndBindMaterialUniforms(uint chunkNumber) const
+    {
+        static const Material DEFAULT_MATERIAL;
+
+        uint64_t state = BGFX_STATE_NONE;
+
+        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
+
+        if constexpr (!HasMaterials<MeshType>) {
+            // fallback to default material
+            mMaterialUniforms.update(
+                DEFAULT_MATERIAL,
+                isPerVertexColorAvailable(*this),
+                textureAvailable,
+                isPerVertexTangentAvailable(*this));
+        }
+        else {
+            using enum Material::AlphaMode;
+
+            uint materialId = mMRB.materialIndex(mMRS, chunkNumber);
+
+            if (materialId == UINT_NULL) {
+                // fallback to default material
+                mMaterialUniforms.update(
+                    DEFAULT_MATERIAL,
+                    isPerVertexColorAvailable(*this),
+                    textureAvailable,
+                    isPerVertexTangentAvailable(*this));
+            }
+            else {
+                textureAvailable =
+                    mMRB.textureAvailableArray(*this, materialId);
+
+                mMaterialUniforms.update(
+                    MeshType::material(materialId),
+                    isPerVertexColorAvailable(*this),
+                    textureAvailable,
+                    isPerVertexTangentAvailable(*this));
+
+                // set the state according to the material
+                if (!MeshType::material(materialId).doubleSided()) {
+                    // backface culling
+                    state |= BGFX_STATE_CULL_CW;
+                }
+                if (MeshType::material(materialId).alphaMode() == ALPHA_BLEND) {
+                    state |= BGFX_STATE_BLEND_ALPHA;
+                }
+            }
+        }
+
+        mMaterialUniforms.bind();
+        return state;
     }
 
     // TODO: change this function implementation after shader benchmarks

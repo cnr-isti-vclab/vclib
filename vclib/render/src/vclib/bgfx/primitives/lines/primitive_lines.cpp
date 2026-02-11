@@ -233,10 +233,10 @@ void PrimitiveLines::setPoints(
 
     if (numElements > 1) {
         auto [vNormals, vNormalsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(vertCoords.size());
+            Context::getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
         auto [vColors, vColorsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<uint>(numVertices);
+            Context::getAllocatedBufferAndReleaseFn<uint>(numVertices);
 
         if (!setNormals) {
             for (uint i = 0; i < vertCoords.size(); i++)

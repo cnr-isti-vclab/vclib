@@ -31,11 +31,14 @@
 namespace vcl {
 
 /**
- * @brief The DirectionalLightUniforms class manages the uniforms which describe
- * a directional light that can be used by bgfx shaders.
+ * @brief The DirectionalLightUniforms class is responsible for managing the
+ * uniforms which describe a directional light that can be used by bgfx shaders.
+ *
+ * It provides a static interface to set the uniform data based on the current
+ * directional light data and to bind the uniforms to the shader programs.
  *
  * The uniforms of this class can be used by including the shader header
- * "uniforms/uniforms/directional_light_uniforms.sh" in the shader.
+ * <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh> in the shader.
  *
  * The uniforms are:
  * - u_lightDirPack (vec4): the light direction packed in a vec4
@@ -47,38 +50,47 @@ namespace vcl {
  */
 class DirectionalLightUniforms
 {
-    float mDir[4] = {0.0, 0.0, 1.0, 0.0}; // just first 3 components are used
-    float mCol[4] = {1.0, 1.0, 1.0, 1.0}; // just first 3 components are used
+    // just first 3 components are used
+    inline static std::array<float, 4> sDir = {0.0, 0.0, 1.0, 0.0};
 
-    Uniform mLightDirUniform =
-        Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
-    Uniform mLightColorUniform =
-        Uniform("u_lightColorPack", bgfx::UniformType::Vec4);
+    // just first 3 components are used
+    inline static std::array<float, 4> sCol = {1.0, 1.0, 1.0, 1.0};
+
+    inline static Uniform sLightDirUniform;
+    inline static Uniform sLightColorUniform;
 
 public:
-    DirectionalLightUniforms() {}
+    DirectionalLightUniforms() = delete;
 
     /**
-     * @brief updateLight
+     * @brief setLight
      * @param light
      */
     template<typename S>
-    void updateLight(const vcl::DirectionalLight<S>& light)
+    static void setLight(const vcl::DirectionalLight<S>& light)
     {
-        mDir[0] = light.direction().x();
-        mDir[1] = light.direction().y();
-        mDir[2] = light.direction().z();
+        sDir[0] = light.direction().x();
+        sDir[1] = light.direction().y();
+        sDir[2] = light.direction().z();
 
-        mCol[0] = light.color().redF();
-        mCol[1] = light.color().greenF();
-        mCol[2] = light.color().blueF();
+        sCol[0] = light.color().redF();
+        sCol[1] = light.color().greenF();
+        sCol[2] = light.color().blueF();
         // light color alpha is not used
     }
 
-    void bind() const
+    static void bind()
     {
-        mLightDirUniform.bind(mDir);
-        mLightColorUniform.bind(mCol);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sLightDirUniform.isValid())
+            sLightDirUniform =
+                Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
+        if (!sLightColorUniform.isValid())
+            sLightColorUniform =
+                Uniform("u_lightColorPack", bgfx::UniformType::Vec4);
+        sLightDirUniform.bind(sDir.data());
+        sLightColorUniform.bind(sCol.data());
     }
 };
 
