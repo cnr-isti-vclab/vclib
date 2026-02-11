@@ -260,6 +260,9 @@ void main()
             metallic,
             roughness,
             emissiveColor,
+            anisotropyStrength,
+            anisotropicTangent,
+            anisotropicBitangent,
             u_exposure,
             u_toneMapping
         );
