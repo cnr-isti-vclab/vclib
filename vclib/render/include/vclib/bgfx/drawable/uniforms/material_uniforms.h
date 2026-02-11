@@ -65,7 +65,7 @@ class MaterialUniforms
 
     static inline Uniform sBaseColorUniform;
     static inline Uniform sFactorsPackUniform;
-    static inline Uniform sEmissiveAlphaCutoffPackUniform ;
+    static inline Uniform sEmissiveAlphaCutoffPackUniform;
     static inline Uniform sSettingsUniform;
 
 public:
