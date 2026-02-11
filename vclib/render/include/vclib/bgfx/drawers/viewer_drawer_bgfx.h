@@ -34,7 +34,13 @@ namespace vcl {
 template<typename ViewProjEventDrawer>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
+    inline static const uint N_ADDITIONAL_VIEWS =
+        DrawObjectSettings::N_ADDITIONAL_VIEWS;
+
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
+    using DRA          = ViewProjEventDrawer::DRA;
+
+    std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
     // flags
     bool mStatsEnabled = false;
@@ -45,6 +51,10 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            mAdditionalViewIds[i] = Context::instance().requestViewId();
+        }
+        this->onResize(width, height);
     }
 
     ViewerDrawerBGFX(
@@ -55,6 +65,13 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
+    ~ViewerDrawerBGFX()
+    {
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            Context::instance().releaseViewId(mAdditionalViewIds[i]);
+        }
+    }
+
     bool isPBREnabled() const { return mPBRMode; }
 
     void setPBR(bool enable) { mPBRMode = enable; }
@@ -63,10 +80,28 @@ public:
 
     void disablePBR() { setPBR(false); }
 
+    void onResize(uint width, uint height) override
+    {
+        ParentViewer::onResize(width, height);
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
+            bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+    }
+
     void onDrawContent(uint viewId) override
     {
+        auto fbh = DRA::DRW::canvasFrameBuffer(derived());
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewFrameBuffer(mAdditionalViewIds[i], fbh);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+
         DrawObjectSettings settings;
         settings.viewId = viewId;
+
+        settings.additionalViewIds = mAdditionalViewIds;
 
         settings.pbrMode = isPBREnabled();
 
@@ -129,7 +164,15 @@ private:
         Matrix44f pm = ParentViewer::projectionMatrix();
 
         bgfx::setViewTransform(viewId, vm.data(), pm.data());
+
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
+        }
     }
+
+    auto* derived() { return static_cast<DRA*>(this); }
+
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 };
 
 } // namespace vcl
