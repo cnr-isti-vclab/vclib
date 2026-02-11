@@ -67,6 +67,23 @@
 #define TONEMAP_KHRONOS_PBR_NEUTRAL      5
 
 /**
+ * @brief Computes a bent normal used to modify the reflection direction in order to simulate anisotropic reflections.
+ * @param[in] normal: The original normal vector.
+ * @param[in] anisotropyDirection: The direction of anisotropy (must be normalized).
+ * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
+ * @param[in] roughness: The surface roughness (between 0 and 1).
+ * @return The bent normal vector.
+ */
+vec3 bendNormal(vec3 normal, vec3 view, vec3 anisotropyDirection, float anisotropyStrength, float roughness)
+{
+    float bendFactor = 1.0 - anisotropyStrength * (1.0 - roughness);
+    float bendFactor4 = bendFactor * bendFactor * bendFactor * bendFactor;
+
+    vec3 anisotropicNormal = cross(cross(anisotropyDirection, view), anisotropyDirection);
+    return normalize(mix(anisotropicNormal, normal, bendFactor4));
+}
+
+/**
  * @brief Computes the solid angle covered by the rectangle starting from (0,0) to some given (u,v) projected onto a unit sphere.
  * Presumably used for cubemap texel solid angle computation.
  * @param[in] uv: The UV coordinates.

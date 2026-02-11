@@ -57,6 +57,7 @@ public:
         NORMAL,
         OCCLUSION,
         EMISSIVE,
+        ANISOTROPY,
         BRDF_LUT,
         COUNT
     };
