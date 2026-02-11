@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 
 #endif
 
-    CmdOptionParser optionParser = CmdOptionParser {
+    CmdOptionParser optionParser {
         {"--stdout",           0},
         {"-o",                 1},
         {"--output-dir",       1},
@@ -403,12 +403,14 @@ int main(int argc, char** argv)
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
     if (options.contains("--on-the-fly")) {
-        tw.addAutomation(aaf.createStartCountDelay(
-            aaf.createStartCountLimited(
-                vcl::ShadingChangerAutomationAction<BenchmarDrawerT>(
-                    vcl::MeshRenderInfo::Surface::SHADING_FLAT),
-                1),
-            repetitions / 2));
+        tw.addAutomation(
+            aaf.createStartCountDelay(
+                aaf.createStartCountLimited(
+                    vcl::ShadingChangerAutomationAction<BenchmarDrawerT>(
+                        vcl::MeshRenderInfo::Surface::SHADING_FLAT),
+                    1),
+                repetitions / 2),
+            vcl::NullBenchmarkMetric());
     }
 
     // Rotation around Z axis
