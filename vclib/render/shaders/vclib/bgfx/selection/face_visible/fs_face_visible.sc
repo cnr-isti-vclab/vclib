@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 uniform vec4 u_meshId;
 

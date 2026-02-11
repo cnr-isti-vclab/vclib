@@ -20,9 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "face_selection_common.sh"
+
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include "face_selection_common.sh"
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 BUFFER_RO(indices, uint, 5);

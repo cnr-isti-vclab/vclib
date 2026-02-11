@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SELECTION_MODE_H
-#define VCL_SELECTION_MODE_H
+#ifndef VCL_RENDER_SELECTION_SELECTION_MODE_H
+#define VCL_RENDER_SELECTION_SELECTION_MODE_H
 
 namespace vcl {
 
@@ -171,6 +171,7 @@ public:
 private:
     Enum mEnum;
 };
+
 } // namespace vcl
 
-#endif
+#endif // VCL_RENDER_SELECTION_SELECTION_MODE_H

@@ -24,7 +24,6 @@ $input a_position, a_color0
 $output v_color
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 BUFFER_RO(vertex_selected, uint, 4);
 

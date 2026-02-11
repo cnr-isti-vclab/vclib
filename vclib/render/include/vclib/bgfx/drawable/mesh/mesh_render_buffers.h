@@ -25,9 +25,6 @@
 
 #include "mesh_render_buffers_macros.h"
 
-#include <algorithm>
-#include <vclib/algorithms/core/create.h>
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
@@ -35,22 +32,23 @@
 #include <vclib/bgfx/index_buffer_to_cpu_handler.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
-#include <vclib/io/image/load.h>
+
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 #include <vclib/render/selection/selection_parameters.h>
-#include <vclib/space/core/image.h>
+
+#include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/io.h>
+#include <vclib/space/core.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
+#include <algorithm>
 #include <bit>
-
-// This allows selection for a maximum of 512^3 = 134_217_728 vertices/faces per
-// mesh. Still likely enough.
-#define MAX_COMPUTE_WORKGROUP_SIZE uint(512)
 
 namespace vcl {
 
@@ -65,6 +63,10 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
+
+    // This allows selection for a maximum of 512^3 = 134_217_728 vertices/faces
+    // per mesh. Still likely enough.
+    inline static const uint MAX_COMPUTE_WORKGROUP_SIZE = 512;
 
     VertexBuffer mVertexPositionsBuffer;
     VertexBuffer mVertexNormalsBuffer;
@@ -163,10 +165,7 @@ public:
         swap(mMaterialTextures, other.mMaterialTextures);
     }
 
-    friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b)
-    {
-        a.swap(b);
-    }
+    friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -536,9 +535,9 @@ public:
             const_cast<MeshRenderBuffers<MeshType>*>(this);
         const uint selectionBufferSize =
             uint(ceil(double(Base::numTris()) / 32.0));
+
         auto [buffer, releaseFn] =
-            non_const_this->template getAllocatedBufferAndReleaseFn<uint>(
-                selectionBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
 
         for (size_t i = 0; i < selectionBufferSize; i++) {
             buffer[i] = 0;
@@ -707,7 +706,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexPositions(mesh, buffer);
 
@@ -767,7 +766,7 @@ private:
         const uint totalIndices = mesh.vertexNumber() * 6;
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(totalIndices);
+            Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
@@ -790,7 +789,7 @@ private:
             uint(ceil(double(mesh.vertexNumber()) / 32.0));
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
 
         for (uint i = 0; i < selectionBufferSize; i++) {
             buffer[i] = 0;
@@ -824,7 +823,7 @@ private:
         const uint selectionBufferSize =
             uint(ceil(double(Base::numTris()) / 32.0));
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
         for (uint i = 0; i < selectionBufferSize; i++) {
             buffer[i] = 0;
         }
@@ -845,7 +844,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         Base::fillVertexNormals(mesh, buffer);
 
@@ -864,7 +863,8 @@ private:
     {
         uint nv = Base::numVerts();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nv);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
@@ -884,7 +884,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillVertexTexCoords(mesh, buffer);
 
@@ -903,7 +903,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 4);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 4);
 
         Base::fillVertexTangents(mesh, buffer);
 
@@ -922,7 +922,7 @@ private:
         uint nv = Base::numVerts();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nv * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         Base::fillWedgeTexCoords(mesh, buffer);
 
@@ -940,7 +940,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt * 3);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt * 3);
 
         Base::fillTriangleIndices(mesh, buffer);
 
@@ -958,7 +959,7 @@ private:
         uint nt = Base::numTris();
 
         auto [buffer, releaseFn] =
-            getAllocatedBufferAndReleaseFn<float>(nt * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nt * 3);
 
         Base::fillTriangleNormals(mesh, buffer);
 
@@ -974,7 +975,8 @@ private:
     {
         uint nt = Base::numTris();
 
-        auto [buffer, releaseFn] = getAllocatedBufferAndReleaseFn<uint>(nt);
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nt);
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
@@ -1017,7 +1019,7 @@ private:
                     bimg::TextureFormat::RGBA8, img.width(), img.height());
 
             auto [buffer, releaseFn] =
-                getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
+                Context::getAllocatedBufferAndReleaseFn<uint>(sizeWithMips);
 
             const uint* tdata = reinterpret_cast<const uint*>(img.data());
 
@@ -1239,16 +1241,6 @@ private:
                     bgfx::UniformType::Sampler);
             }
         }
-    }
-
-    template<typename T>
-    std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(uint size)
-    {
-        T* buffer = new T[size];
-
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
     }
 };
 

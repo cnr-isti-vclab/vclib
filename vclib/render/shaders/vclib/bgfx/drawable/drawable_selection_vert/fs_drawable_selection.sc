@@ -23,7 +23,6 @@
 $input v_color
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 void main() {
     gl_FragDepth = gl_FragCoord.z - 0.001;

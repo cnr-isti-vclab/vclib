@@ -26,8 +26,8 @@
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
-#include "mesh/mesh_render_buffers.h"
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 #include <vclib/render/selection/selectable.h>
 #include <vclib/render/selection/selection_box.h>
@@ -35,9 +35,6 @@
 #include <bgfx/bgfx.h>
 
 #include <bitset>
-#include <bit>
-
-#include <fstream>
 
 namespace vcl {
 
@@ -102,10 +99,7 @@ public:
         updateBuffers();
     }
 
-    DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh)
-    {
-        swap(drawableMesh);
-    }
+    DrawableMeshBGFX(DrawableMeshBGFX&& drawableMesh) { swap(drawableMesh); }
 
     ~DrawableMeshBGFX() = default;
 

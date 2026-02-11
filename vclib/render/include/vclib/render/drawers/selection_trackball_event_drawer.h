@@ -24,10 +24,10 @@
 #define VCL_SELECTION_TRACKBALL_EVENT_DRAWER_H
 
 #include "trackball_event_drawer.h"
+
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 
-#include <algorithm>
 #include <functional>
 #include <map>
 

@@ -20,16 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SELECTION_BOX_H
-#define VCL_SELECTION_BOX_H
+#ifndef VCL_RENDER_SELECTION_SELECTION_BOX_H
+#define VCL_RENDER_SELECTION_SELECTION_BOX_H
 
 #include <vclib/space/core/point.h>
 
 #include <array>
-#include <iostream>
 #include <optional>
-#include <sstream>
-#include <utility>
 
 namespace vcl {
 class SelectionBox
@@ -252,4 +249,4 @@ public:
 
 } // namespace vcl
 
-#endif
+#endif // VCL_RENDER_SELECTION_SELECTION_BOX_H

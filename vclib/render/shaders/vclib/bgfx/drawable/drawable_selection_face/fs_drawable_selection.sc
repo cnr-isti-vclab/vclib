@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 BUFFER_RO(face_selected, uint, 6);
 

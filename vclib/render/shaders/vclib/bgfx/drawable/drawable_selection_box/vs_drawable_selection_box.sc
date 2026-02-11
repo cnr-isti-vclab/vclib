@@ -25,7 +25,6 @@ $input a_position
 // a_position vec2 in screen space
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 void main() {
     gl_Position = vec4((a_position[0] - u_viewRect.x) / u_viewRect.z * 2 -1, 1 - (a_position[1] - u_viewRect.y) / u_viewRect.w * 2, 0, 1);

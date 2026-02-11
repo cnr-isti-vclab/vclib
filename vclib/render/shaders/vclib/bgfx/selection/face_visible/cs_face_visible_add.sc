@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 // INFO: the two textures MUST be of the same size
 IMAGE2D_RO(s_primIds, rgba8, 0);

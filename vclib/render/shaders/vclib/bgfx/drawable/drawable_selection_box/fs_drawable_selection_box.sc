@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 void main() {
     gl_FragColor = uintABGRToVec4Color(uint(0x401b78f9));

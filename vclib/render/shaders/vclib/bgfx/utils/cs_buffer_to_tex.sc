@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 IMAGE2D_WO(s_tex, rgba8, 4); // texture to write to
 BUFFER_RO(buf, uint, 5); // interpret as uint buffer

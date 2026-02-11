@@ -31,14 +31,6 @@
 
 #include <bit>
 
-// Again, i was not really able to figure out what the max size for compute workgroup size is
-// except for D3D which i remeber being close to 2^14 per axis (x, y, z) (this may be device dependend though)
-// Vulkan has a function that tells you how high it is
-// No clue for Metal
-//
-// In any case, 1024^3 = 1_073_741_824 which is likely enough for these purposes
-#define IDXBUF_MAX_COMPUTE_WGP_SIZE uint(1024)
-
 namespace vcl {
 
 // May be worth templating this to allow its use with vertex buffers as well.
@@ -51,6 +43,15 @@ namespace vcl {
  */
 class IndexBufferToCpuHandler
 {
+    // Again, i was not really able to figure out what the max size for compute
+    // workgroup size is except for D3D which i remeber being close to 2^14 per
+    // axis (x, y, z) (this may be device dependend though) Vulkan has a
+    // function that tells you how high it is No clue for Metal
+    //
+    // In any case, 1024^3 = 1_073_741_824 which is likely enough for these
+    // purposes
+    inline static const uint IDXBUF_MAX_COMPUTE_WGP_SIZE = 1024;
+
     vcl::Uniform mBufferToTexUnif = vcl::Uniform(
         "u_workGroupSizeXYTexSizeXAndBufSize",
         bgfx::UniformType::Vec4);

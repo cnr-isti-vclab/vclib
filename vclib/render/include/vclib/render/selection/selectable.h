@@ -20,12 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SELECTABLE_H
-#define VCL_SELECTABLE_H
+#ifndef VCL_RENDER_SELECTION_SELECTABLE_H
+#define VCL_RENDER_SELECTION_SELECTABLE_H
+
+#include "selection_parameters.h"
 
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
-#include "selection_parameters.h"
 
 namespace vcl {
 
@@ -41,4 +42,5 @@ public:
 };
 
 } // namespace vcl
-#endif
+
+#endif // VCL_RENDER_SELECTION_SELECTABLE_H
