@@ -506,7 +506,7 @@ private:
         // lazy initialization
         // to avoid creating uniforms before bgfx is initialized
         if (!sSettingUH.isValid())
-            sSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
+            sSettingUH = Uniform("u_linesSettings", bgfx::UniformType::Vec4);
 
         float data[] = {
             mThickness,

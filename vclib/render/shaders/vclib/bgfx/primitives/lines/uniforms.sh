@@ -20,28 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+#ifndef VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
+#define VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/primitives/lines/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh> 
+uniform vec4 u_linesSettings;
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
+#define thickness          u_linesSettings.x
+#define colorToUse         u_linesSettings.y
+#define u_shadingPerVertex bool(u_linesSettings.w)
 
-BUFFER_RO(edgesColors, uint, 0);
+#define generalColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.z))
 
-#define edgeColor    uintABGRToVec4Color(edgesColors[gl_PrimitiveID])
-#define vertexColor  v_color
-
-void main() {
-    vec4 color;
-    if (colorToUse == 0)        color = vertexColor;
-    else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;
-
-    if (u_shadingPerVertex) {
-        color *= computeLight(u_lightDir, u_lightColor, v_normal);
-    }
-    gl_FragColor = color;
-}
+#endif // VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
