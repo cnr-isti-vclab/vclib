@@ -26,8 +26,10 @@
 uniform vec4 u_linesSettings;
 
 #define thickness          u_linesSettings.x
-#define colorToUse         u_linesSettings.y
-#define u_shadingPerVertex bool(u_linesSettings.w)
+#define u_colorShadingPack floatBitsToUint(u_linesSettings.y)
+
+#define colorToUse         uint(u_colorShadingPack & 0x00FFFFFF)
+#define u_shadingPerVertex bool(u_colorShadingPack >> 24u)
 
 #define generalColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.z))
 

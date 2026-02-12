@@ -508,11 +508,16 @@ private:
         if (!sSettingUH.isValid())
             sSettingUH = Uniform("u_linesSettings", bgfx::UniformType::Vec4);
 
+        // most significative bytes used for shading per vertex option, the
+        // bytes store color to use
+        uint colorShadingPack = toUnderlying(mColorToUse) & 0x00FFFFFF;
+        colorShadingPack |= (mShadingPerVertex ? 1 : 0) << 24;
+
         float data[] = {
             mThickness,
-            static_cast<float>(mColorToUse),
+            std::bit_cast<float>(colorShadingPack),
             std::bit_cast<float>(mGeneralColor.abgr()),
-            static_cast<float>(mShadingPerVertex)};
+            0};
         sSettingUH.bind(data);
     }
 };
