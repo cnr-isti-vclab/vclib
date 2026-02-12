@@ -84,7 +84,8 @@ public:
         // lazy initialization
         // to avoid creating uniforms before bgfx is initialized
         if (!sLightDirUniform.isValid())
-            sLightDirUniform = Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
+            sLightDirUniform =
+                Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
         if (!sLightColorUniform.isValid())
             sLightColorUniform =
                 Uniform("u_lightColorPack", bgfx::UniformType::Vec4);

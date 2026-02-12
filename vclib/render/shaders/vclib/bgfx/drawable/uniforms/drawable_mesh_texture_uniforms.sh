@@ -35,13 +35,13 @@ vec4 textureStage(uint stage, vec2 texcoord)
         case 5u:
             return texture2D(s_tex5, texcoord);
         default:
-            // should neve happen, return a magenta color to easily spot the error
+            // should never happen, return a magenta color to easily spot the error
             return vec4(1.0, 0.0, 1.0, 1.0);
     }
 }
 
 // stages for each texture type are defined in the u_textureStagesZ uniform
-// you can view this unifor as an array of 8 uints, each one representing the
+// you can view this uniform as an array of 8 uints, each one representing the
 // stage index for a specific texture type (each uint is 4 bits)
 // positions for each texture type:
 // 0 -> base color
