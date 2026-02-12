@@ -101,7 +101,7 @@ void showMeshesOnViewer(
     char**                   argv,
     auto&                    viewer,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode = false,
+    bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
@@ -157,7 +157,7 @@ int showMeshesOnDefaultViewer(
     int                      argc,
     char**                   argv,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode = false,
+    bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
@@ -166,7 +166,8 @@ int showMeshesOnDefaultViewer(
 
     auto viewer = defaultViewer();
 
-    showMeshesOnViewer(argc, argv, viewer, std::move(meshes), pbrMode, panorama);
+    showMeshesOnViewer(
+        argc, argv, viewer, std::move(meshes), pbrMode, panorama);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();

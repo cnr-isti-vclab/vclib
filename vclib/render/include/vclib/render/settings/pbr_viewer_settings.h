@@ -29,8 +29,7 @@ namespace vcl {
 
 struct PBRViewerSettings
 {
-    enum class ToneMapping
-    {
+    enum class ToneMapping {
         NONE,
         BASIC,
         ACES_HILL,

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -42,46 +42,78 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_ENVIRONMENT_PBR>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::DRAWABLE_ENVIRONMENT_PBR>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_drawable_environment_pbr_essl, sizeof(vs_drawable_environment_pbr_essl)};
+        return {
+            type,
+            vs_drawable_environment_pbr_essl,
+            sizeof(vs_drawable_environment_pbr_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_drawable_environment_pbr_glsl, sizeof(vs_drawable_environment_pbr_glsl)};
+        return {
+            type,
+            vs_drawable_environment_pbr_glsl,
+            sizeof(vs_drawable_environment_pbr_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_drawable_environment_pbr_spv, sizeof(vs_drawable_environment_pbr_spv)};
+        return {
+            type,
+            vs_drawable_environment_pbr_spv,
+            sizeof(vs_drawable_environment_pbr_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_drawable_environment_pbr_dx11, sizeof(vs_drawable_environment_pbr_dx11)};
+        return {
+            type,
+            vs_drawable_environment_pbr_dx11,
+            sizeof(vs_drawable_environment_pbr_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_drawable_environment_pbr_mtl, sizeof(vs_drawable_environment_pbr_mtl)};
+        return {
+            type,
+            vs_drawable_environment_pbr_mtl,
+            sizeof(vs_drawable_environment_pbr_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_ENVIRONMENT_PBR>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_ENVIRONMENT_PBR>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_drawable_environment_pbr_essl, sizeof(fs_drawable_environment_pbr_essl)};
+        return {
+            type,
+            fs_drawable_environment_pbr_essl,
+            sizeof(fs_drawable_environment_pbr_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_drawable_environment_pbr_glsl, sizeof(fs_drawable_environment_pbr_glsl)};
+        return {
+            type,
+            fs_drawable_environment_pbr_glsl,
+            sizeof(fs_drawable_environment_pbr_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_drawable_environment_pbr_spv, sizeof(fs_drawable_environment_pbr_spv)};
+        return {
+            type,
+            fs_drawable_environment_pbr_spv,
+            sizeof(fs_drawable_environment_pbr_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_drawable_environment_pbr_dx11, sizeof(fs_drawable_environment_pbr_dx11)};
+        return {
+            type,
+            fs_drawable_environment_pbr_dx11,
+            sizeof(fs_drawable_environment_pbr_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_drawable_environment_pbr_mtl, sizeof(fs_drawable_environment_pbr_mtl)};
+        return {
+            type,
+            fs_drawable_environment_pbr_mtl,
+            sizeof(fs_drawable_environment_pbr_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

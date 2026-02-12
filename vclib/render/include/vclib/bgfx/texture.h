@@ -138,8 +138,8 @@ public:
      * @param[in] image: Pointer to a bgfx::ImageContainer containing the
      * texture data.
      * @param[in] hasMips: Indicates if the texture will have mipmaps.
-     * If the container already has mipmaps, they will be used, otherwise the space
-     * for mipmaps will be allocated but not filled.
+     * If the container already has mipmaps, they will be used, otherwise the
+     * space for mipmaps will be allocated but not filled.
      * @param[in] flags: BGFX texture and sampler creation flags.
      */
     void set(const bimg::ImageContainer& image, bool hasMips, uint64_t flags)
@@ -222,8 +222,8 @@ public:
     void set(
         const void*               data,
         const vcl::Point2i&       size,
-        bool                      hasMips   = false,
-        uint64_t                  flags     = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+        bool                      hasMips = false,
+        uint64_t                  flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
         bgfx::TextureFormat::Enum format    = bgfx::TextureFormat::RGBA8,
         bool                      isCubemap = false,
         bgfx::ReleaseFn           releaseFn = nullptr)
@@ -232,21 +232,19 @@ public:
             nullptr,
             size.x(),
             size.y(),
-            1, 
-            isCubemap, 
-            hasMips, 
+            1,
+            isCubemap,
+            hasMips,
             1,
             // there is correspondence between bimg and bgfx texture formats
-            static_cast<bimg::TextureFormat::Enum>(toUnderlying(format))
-        );
+            static_cast<bimg::TextureFormat::Enum>(toUnderlying(format)));
         set(bgfx::makeRef(data, sz, releaseFn),
             size,
             hasMips,
             1,
             format,
             isCubemap,
-            flags
-        );
+            flags);
     }
 
     /**
@@ -271,17 +269,17 @@ public:
         const vcl::Point2i&       size,
         bool                      hasMips,
         uint                      nLayers,
-        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
+        bgfx::TextureFormat::Enum format    = bgfx::TextureFormat::RGBA8,
         bool                      isCubemap = false,
         uint64_t                  flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
 
-        if(isCubemap)
+        if (isCubemap)
             mTextureHandle = bgfx::createTextureCube(
                 size.x(), hasMips, nLayers, format, flags, texture);
-        else 
+        else
             mTextureHandle = bgfx::createTexture2D(
                 size.x(), size.y(), hasMips, nLayers, format, flags, texture);
     }
@@ -313,18 +311,17 @@ public:
      * @brief Binds the texture to a texture stage for compute shaders.
      * @param[in] stage: The texture stage (sampler index) to bind to.
      * @param[in] mip: Mip level to bind.
-     * @param[in] access: The type of access to the texture the compute 
+     * @param[in] access: The type of access to the texture the compute
      * shader should have.
      * @param[in] format: The format of the texture.
      */
     void bindForCompute(
-        uint stage,
-        uint mip,
-        bgfx::Access::Enum access,
-        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::Count
-    ) const
+        uint                      stage,
+        uint                      mip,
+        bgfx::Access::Enum        access,
+        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::Count) const
     {
-        if(bgfx::isValid(mTextureHandle))
+        if (bgfx::isValid(mTextureHandle))
             bgfx::setImage(stage, mTextureHandle, mip, access, format);
     }
 

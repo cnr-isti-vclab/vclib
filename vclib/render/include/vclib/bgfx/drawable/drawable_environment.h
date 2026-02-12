@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -73,33 +73,37 @@ class DrawableEnvironment
     // this value is needed by the shader to correctly sample the specular map.
     uint8_t mSpecularMipLevels = 0;
 
-    // The HDR environment map, 
+    // The HDR environment map,
     // this is used if the input file is either in the HDR or EXR format
     // and it is an equirectangular image.
     Texture mHdrTexture;
 
     // The cubemap environment map,
-    // this is either used directly if the input file is in the KTX or DDS format
-    // or contains the cubemap generated from an equirectangular image. 
+    // this is either used directly if the input file is in the KTX or DDS
+    // format or contains the cubemap generated from an equirectangular image.
     // It is used for display in the background and for caluclating the
     // irradiance and specular maps for the image-based lighting.
     Texture mCubeMapTexture;
 
     // The irradiance cubemap, generated from the environment cubemap.
-    // It contains the diffuse part of the image-based lighting and 
-    // it is used in the shader to compute the diffuse contribution of the environment lighting.
+    // It contains the diffuse part of the image-based lighting and
+    // it is used in the shader to compute the diffuse contribution of the
+    // environment lighting.
     Texture mIrradianceTexture;
 
     // The specular cubemap, generated from the environment cubemap.
     // It contains the specular part of the image-based lighting and
-    // it is used in the shader to compute the specular contribution of the environment lighting.
+    // it is used in the shader to compute the specular contribution of the
+    // environment lighting.
     Texture mSpecularTexture;
 
-    // The BRDF lookup texture, generated independently from the environment map.
-    // It is used in the shader to compute the BRDF part of the image-based lighting.
+    // The BRDF lookup texture, generated independently from the environment
+    // map. It is used in the shader to compute the BRDF part of the image-based
+    // lighting.
     Texture mBrdfLuTexture;
 
-    // Vertex buffer for rendering a full-screen triangle, used for drawing the background.
+    // Vertex buffer for rendering a full-screen triangle, used for drawing the
+    // background.
     const vcl::VertexBuffer mVertexBuffer = fullScreenTriangle();
 
 public:

@@ -87,7 +87,7 @@ public:
 
     void setCamera(const Camera<float>& c);
 
-    //void showRenderModeSelector(bool show);
+    // void showRenderModeSelector(bool show);
 
     void setPbrSettings(const PBRViewerSettings& settings);
 

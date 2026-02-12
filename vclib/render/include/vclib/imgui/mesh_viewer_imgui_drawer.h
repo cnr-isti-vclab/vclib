@@ -114,7 +114,11 @@ public:
                 ImGui::SameLine();
                 float exposure = pbrSettings.exposure;
                 if (ImGui::SliderFloat(
-                        "##Exposure", &exposure, 0.001f, 64.0f, "%.3f",
+                        "##Exposure",
+                        &exposure,
+                        0.001f,
+                        64.0f,
+                        "%.3f",
                         ImGuiSliderFlags_Logarithmic))
                     pbrSettings.exposure = exposure;
 

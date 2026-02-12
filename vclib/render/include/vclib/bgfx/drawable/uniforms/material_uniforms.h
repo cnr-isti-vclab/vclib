@@ -134,7 +134,8 @@ public:
             sBaseColorUniform =
                 Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
         if (!sFactorsPackUniform.isValid())
-            sFactorsPackUniform = Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
+            sFactorsPackUniform =
+                Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
         if (!sEmissiveAlphaCutoffPackUniform.isValid())
             sEmissiveAlphaCutoffPackUniform =
                 Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);

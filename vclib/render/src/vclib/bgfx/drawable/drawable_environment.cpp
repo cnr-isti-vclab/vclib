@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -389,9 +389,9 @@ void DrawableEnvironment::generateTextures(
     // create specular map from cubemap
 
     for (uint8_t mip = 0; mip < mSpecularMipLevels; ++mip) {
-        const uint32_t mipSize = ceilDiv(irrSpecCubeSide, 1 << mip);
-        const float    roughness =
-            static_cast<float>(mip) / static_cast<float>(mSpecularMipLevels - 1);
+        const uint32_t mipSize   = ceilDiv(irrSpecCubeSide, 1 << mip);
+        const float    roughness = static_cast<float>(mip) /
+                                static_cast<float>(mSpecularMipLevels - 1);
 
         // ensure at least 1 threadgroup is dispatched for small mips
         // assuming the compute shader uses 8x8 threads per group

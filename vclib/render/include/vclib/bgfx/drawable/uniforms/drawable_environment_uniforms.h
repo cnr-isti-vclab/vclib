@@ -41,8 +41,7 @@ class DrawableEnvironmentUniforms
         0.0, // roughness
         0.0, // cube side
         0.0,
-        0.0
-    };
+        0.0};
 
     static inline Uniform sDataUniform;
 
@@ -53,7 +52,8 @@ public:
 
     static void setCubeSideResolution(float cubeSide) { sData[1] = cubeSide; }
 
-    static void bind() {
+    static void bind()
+    {
         if (!sDataUniform.isValid())
             sDataUniform =
                 Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
