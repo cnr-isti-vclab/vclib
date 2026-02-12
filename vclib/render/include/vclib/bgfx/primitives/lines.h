@@ -78,6 +78,7 @@ public:
 
 private:
     float mThickness = 5.0f;
+    float mDepthOffset = 0.0f;
 
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
     // NONE
@@ -342,6 +343,19 @@ public:
      */
     float& thickness() { return mThickness; }
 
+     /**
+     * @brief Returns the depth offset applied to the lines.
+     * @return The depth offset applied to the lines.
+     */
+    float depthOffset() const { return mDepthOffset; }
+
+    /**
+     * @brief Returns a reference to the depth offset applied to the lines.
+     * This allows to modify the depth offset directly.
+     * @return A reference to the depth offset applied to the lines.
+     */
+    float& depthOffset() { return mDepthOffset; }
+
     /**
      * @brief Returns true if shading is computed per vertex using vertex
      * normals, false if no shading is applied.
@@ -517,7 +531,7 @@ private:
             mThickness,
             std::bit_cast<float>(colorShadingPack),
             std::bit_cast<float>(mGeneralColor.abgr()),
-            0};
+            mDepthOffset};
         sSettingUH.bind(data);
     }
 };

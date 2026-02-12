@@ -33,4 +33,6 @@ uniform vec4 u_linesSettings;
 
 #define generalColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.z))
 
+#define u_depthOffset u_linesSettings.w
+
 #endif // VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
