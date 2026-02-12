@@ -135,26 +135,39 @@ int loadGltfPrimitiveMaterial(
             const auto& clearcoatExt = mat.extensions.at("KHR_materials_clearcoat");
 
             if (clearcoatExt.Has("clearcoatFactor"))
-                clearcoat = clearcoatExt.Get("clearcoatFactor").GetNumberAsDouble();
+                clearcoat = clearcoatExt
+                    .Get("clearcoatFactor")
+                    .GetNumberAsDouble();
 
             if (clearcoatExt.Has("clearcoatRoughnessFactor"))
-                clearcoatRoughness = clearcoatExt.Get("clearcoatRoughnessFactor").GetNumberAsDouble();
+                clearcoatRoughness = clearcoatExt
+                    .Get("clearcoatRoughnessFactor")
+                    .GetNumberAsDouble();
 
             if (clearcoatExt.Has("clearcoatTexture")) {
-                const auto& clearcoatTexture = clearcoatExt.Get("clearcoatTexture");
-                clearcoatTextureId = clearcoatTexture.Get("index").GetNumberAsInt();
+                clearcoatTextureId = clearcoatExt
+                    .Get("clearcoatTexture")
+                    .Get("index")
+                    .GetNumberAsInt();
             }
 
             if (clearcoatExt.Has("clearcoatRoughnessTexture")) {
-                const auto& clearcoatRoughnessTexture = clearcoatExt.Get("clearcoatRoughnessTexture");
-                clearcoatRoughnessTextureId = clearcoatRoughnessTexture.Get("index").GetNumberAsInt();
+                clearcoatRoughnessTextureId = clearcoatExt
+                    .Get("clearcoatRoughnessTexture")
+                    .Get("index")
+                    .GetNumberAsInt();
             }
 
             if (clearcoatExt.Has("clearcoatNormalTexture")) {
-                const auto& clearcoatNormalTexture = clearcoatExt.Get("clearcoatNormalTexture");
-                clearcoatNormalTextureId = clearcoatNormalTexture.Get("index").GetNumberAsInt();
+                const auto& clearcoatNormalTexture = clearcoatExt
+                    .Get("clearcoatNormalTexture");
+                clearcoatNormalTextureId = clearcoatNormalTexture
+                    .Get("index")
+                    .GetNumberAsInt();
                 if(clearcoatNormalTexture.Has("scale"))
-                    clearcoatNormalScale = clearcoatNormalTexture.Get("scale").GetNumberAsDouble();
+                    clearcoatNormalScale = clearcoatNormalTexture
+                        .Get("scale")
+                        .GetNumberAsDouble();
             }
         }
 
