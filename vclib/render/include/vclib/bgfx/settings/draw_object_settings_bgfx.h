@@ -47,7 +47,8 @@ struct DrawObjectSettingsBGFX
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
 
-    std::array<uint, N_ADDITIONAL_VIEWS> additionalViewIds;
+    std::array<uint, N_ADDITIONAL_VIEWS> additionalViewIds =
+        makeArray<uint, N_ADDITIONAL_VIEWS>(BGFX_INVALID_VIEW);
 
     PBRViewerSettings pbrSettings;
 
