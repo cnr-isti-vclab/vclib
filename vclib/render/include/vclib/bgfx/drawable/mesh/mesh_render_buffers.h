@@ -726,6 +726,9 @@ private:
 
         mEdgeLines.setPoints(positions, indices, normals, vcolors, ecolors);
 
+        // to avoid z-fighting with filled triangles
+        mEdgeLines.depthOffset() = 0.001f;
+
         // otherwise, already computed buffers should do the job
     }
 
@@ -759,6 +762,9 @@ private:
         }
 
         mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
+
+        // to avoid z-fighting with filled triangles
+        mWireframeLines.depthOffset() = 0.001f;
 
         // otherwise, already computed buffers should do the job
     }
