@@ -31,6 +31,8 @@
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
+#include <array>
+
 namespace vcl {
 
 template<typename ViewProjEventDrawer>

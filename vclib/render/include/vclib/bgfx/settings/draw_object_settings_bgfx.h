@@ -29,6 +29,8 @@
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
+#include <array>
+
 namespace vcl {
 
 /**
