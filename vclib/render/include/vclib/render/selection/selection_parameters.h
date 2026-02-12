@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#ifndef VCL_RENDER_SELECTION_SELECTION_PARAMETERS_H
+#define VCL_RENDER_SELECTION_SELECTION_PARAMETERS_H
 
-namespace vcl {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/selection/selection_parameters_bgfx.h>
+#endif
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+// NOT IMPLEMENTED
+#endif
 
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#endif // VCL_RENDER_SELECTION_SELECTION_PARAMETERS_H

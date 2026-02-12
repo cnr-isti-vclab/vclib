@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+$input a_position, a_color0
+$output v_color
 
-namespace vcl {
+#include <vclib/bgfx/shaders_common.sh>
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+BUFFER_RO(vertex_selected, uint, 4);
 
-} // namespace vcl
+void main() {
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+    uint pointId = uint(gl_VertexID);
+    uint bufferIndex = pointId/32;
+    uint bitOffset = 31-(pointId%32);
+    uint bitMask = 0x1 << bitOffset;
+    if ((vertex_selected[bufferIndex] & bitMask) == 0) {
+        v_color = uintABGRToVec4Color(uint(0x00000000));
+    } else {
+        v_color = uintABGRToVec4Color(uint(0x330000FF));
+    }
+}

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+$input a_position
 
-namespace vcl {
+// a_position vec2 in screen space
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+#include <vclib/bgfx/shaders_common.sh>
 
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+void main() {
+    gl_Position = vec4((a_position[0] - u_viewRect.x) / u_viewRect.z * 2 -1, 1 - (a_position[1] - u_viewRect.y) / u_viewRect.w * 2, 0, 1);
+}

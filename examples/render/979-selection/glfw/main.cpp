@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
+#include <vclib/imgui/imgui_drawer.h>
 
-namespace vcl {
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/render_app.h>
+#include <vclib/bgfx/drawable/drawable_mesh_bgfx.h>
+#include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+#include <vclib/algorithms/mesh/update/color.h>
+#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/io.h>
+#include <vclib/meshes.h>
+#include "../../common/get_drawable_mesh.h"
 
-} // namespace vcl
+int main(void)
+{
+    using MeshType = vcl::TriMesh;
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+    using RA = vcl::RenderApp<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::SelectionTrackBallViewerDrawer>;
+    
+    RA tw("Selection", 1024, 768);
+
+    tw.pushDrawableObject(getDrawableMesh<vcl::TriMesh>());
+
+    tw.fitScene();
+
+    tw.show();
+
+    return 0;
+}

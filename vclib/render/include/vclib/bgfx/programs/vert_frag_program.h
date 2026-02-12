@@ -89,6 +89,8 @@ enum class VertFragProgram {
 
     DRAWABLE_TRACKBALL,
 
+    DRAWABLE_SELECTION_BOX,
+
     FONT_BASIC,
     FONT_DISTANCE_FIELD,
     FONT_DISTANCE_FIELD_DROP_SHADOW,
@@ -100,6 +102,10 @@ enum class VertFragProgram {
 
     PRIMITIVE_LINES,
     CUSTOM_CPU_LINES, // TODO: change this name to a more meaningful one
+
+    SELECTION_FACE_VISIBLE_RENDER_PASS,
+    DRAWABLE_SELECTION_VERT,
+    DRAWABLE_SELECTION_FACE,
 
     COUNT
 };
