@@ -28,6 +28,7 @@
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <QWidget>
 
@@ -86,15 +87,13 @@ public:
 
     void setCamera(const Camera<float>& c);
 
-    void showRenderModeSelector(bool show);
+    // void showRenderModeSelector(bool show);
 
-    bool isPBREnabled() const;
+    void setPbrSettings(const PBRViewerSettings& settings);
 
-    void setPBR(bool enable);
+    const PBRViewerSettings& pbrSettings() const;
 
-    void enablePBR();
-
-    void disablePBR();
+    void setPanorama(const std::string& panorama);
 
 public slots:
     void visibilityDrawableObjectChanged();
@@ -108,9 +107,6 @@ public slots:
     void fitView();
 
     void updateGUI();
-
-private slots:
-    void renderModeComboBoxCurrentIndexChanged(int index);
 };
 
 } // namespace vcl::qt

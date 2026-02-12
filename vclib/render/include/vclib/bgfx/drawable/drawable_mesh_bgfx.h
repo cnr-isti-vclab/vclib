@@ -27,6 +27,7 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 #include <vclib/render/selection/selectable.h>
@@ -54,8 +55,6 @@ public:
 
 private:
     using MRI = MeshRenderInfo;
-
-    mutable MaterialUniforms           mMaterialUniforms;
 
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
@@ -114,7 +113,6 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
-        swap(mMaterialUniforms, other.mMaterialUniforms);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
@@ -311,29 +309,48 @@ public:
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
+            const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
+            const DrawableEnvironment* env         = settings.environment;
+
+            bool iblEnabled = pbrSettings.imageBasedLighting &&
+                              env != nullptr && env->canDraw();
+
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
-                uint64_t surfaceState  = state;
-                uint64_t materialState = updateAndBindMaterialUniforms(i);
                 // Bind textures before vertex buffers!!
+
+                /* TEXTURES */
                 mMRB.bindTextures(mMRS, i, *this);
+                if (pbrSettings.pbrMode && iblEnabled) {
+                    using enum DrawableEnvironment::TextureType;
+                    env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
+                    env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
+                }
+
+                /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
 
+                /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
+                uint64_t materialState =
+                    updateAndBindMaterialUniforms(i, iblEnabled);
 
                 bindUniforms();
 
-                if (settings.pbrMode) {
+                bgfx::setTransform(model.data());
+
+                /* STATE */
+                uint64_t surfaceState = state;
+                if (pbrSettings.pbrMode) {
                     surfaceState |= materialState;
                 }
 
                 bgfx::setState(surfaceState);
-                bgfx::setTransform(model.data());
 
-                if (settings.pbrMode) {
-                    ProgramManager& pm = Context::instance().programManager();
-
+                /* SUBMIT */
+                if (pbrSettings.pbrMode) {
                     bgfx::submit(
                         settings.viewId,
                         pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
@@ -580,7 +597,9 @@ protected:
      * @param chunkNumber
      * @return the render state associated to the material
      */
-    uint64_t updateAndBindMaterialUniforms(uint chunkNumber) const
+    uint64_t updateAndBindMaterialUniforms(
+        uint chunkNumber,
+        bool imageBasedLighting) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -590,11 +609,12 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            mMaterialUniforms.update(
+            MaterialUniforms::set(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(*this),
                 textureAvailable,
-                isPerVertexTangentAvailable(*this));
+                isPerVertexTangentAvailable(*this),
+                imageBasedLighting);
         }
         else {
             using enum Material::AlphaMode;
@@ -603,21 +623,23 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(*this),
                     textureAvailable,
-                    isPerVertexTangentAvailable(*this));
+                    isPerVertexTangentAvailable(*this),
+                    imageBasedLighting);
             }
             else {
                 textureAvailable =
                     mMRB.textureAvailableArray(*this, materialId);
 
-                mMaterialUniforms.update(
+                MaterialUniforms::set(
                     MeshType::material(materialId),
                     isPerVertexColorAvailable(*this),
                     textureAvailable,
-                    isPerVertexTangentAvailable(*this));
+                    isPerVertexTangentAvailable(*this),
+                    imageBasedLighting);
 
                 // set the state according to the material
                 if (!MeshType::material(materialId).doubleSided()) {
@@ -630,7 +652,7 @@ protected:
             }
         }
 
-        mMaterialUniforms.bind();
+        MaterialUniforms::bind();
         return state;
     }
 

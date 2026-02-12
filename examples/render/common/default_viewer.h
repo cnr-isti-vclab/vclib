@@ -101,7 +101,8 @@ void showMeshesOnViewer(
     char**                   argv,
     auto&                    viewer,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode = false)
+    bool                     pbrMode  = false,
+    const std::string&       panorama = "")
 {
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
@@ -111,7 +112,17 @@ void showMeshesOnViewer(
 
     viewer.setDrawableObjectVector(vector);
 
-    viewer.setPBR(pbrMode);
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+    auto sts = viewer.pbrSettings();
+
+    if (!panorama.empty()) {
+        viewer.setPanorama(panorama);
+        sts.imageBasedLighting       = true;
+        sts.renderBackgroundPanorama = true;
+    }
+    sts.pbrMode = pbrMode;
+    viewer.setPbrSettings(sts);
+#endif
 
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
@@ -146,7 +157,8 @@ int showMeshesOnDefaultViewer(
     int                      argc,
     char**                   argv,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode = false)
+    bool                     pbrMode  = false,
+    const std::string&       panorama = "")
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     QApplication application(argc, argv);
@@ -154,7 +166,8 @@ int showMeshesOnDefaultViewer(
 
     auto viewer = defaultViewer();
 
-    showMeshesOnViewer(argc, argv, viewer, std::move(meshes), pbrMode);
+    showMeshesOnViewer(
+        argc, argv, viewer, std::move(meshes), pbrMode, panorama);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
