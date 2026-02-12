@@ -24,14 +24,12 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
-
-// textures
-SAMPLER2D(baseColorTex, VCL_MRB_TEXTURE0);
 
 void main()
 {
@@ -85,10 +83,10 @@ void main()
         color = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX))) {
-        color = texture2D(baseColorTex, v_texcoord0);
+        color = baseColorTex(v_texcoord0);
     }
     if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
-        color = texture2D(baseColorTex, v_texcoord1);
+        color = baseColorTex(v_texcoord1);
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
