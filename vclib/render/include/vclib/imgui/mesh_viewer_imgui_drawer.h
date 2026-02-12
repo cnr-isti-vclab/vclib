@@ -106,18 +106,23 @@ public:
                 ImGui::EndCombo();
             }
 
-            if (pbrMode) {
+            ImGui::BeginDisabled(!pbrMode);
+            {
                 // exposure slider
                 ImGui::Separator();
                 ImGui::Text("Exposure:");
                 ImGui::SameLine();
                 float exposure = pbrSettings.exposure;
                 if (ImGui::SliderFloat(
-                        "##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                        "##Exposure",
+                        &exposure,
+                        0.001f,
+                        64.0f,
+                        "%.3f",
+                        ImGuiSliderFlags_Logarithmic))
                     pbrSettings.exposure = exposure;
 
                 // tone mapping combo box
-                ImGui::Separator();
                 ImGui::Text("Tone mapping:");
                 ImGui::SameLine();
                 uint toneMapping = toUnderlying(pbrSettings.toneMapping);
@@ -142,7 +147,6 @@ public:
                 }
 
                 // image based lighting
-                ImGui::Separator();
                 ImGui::Checkbox(
                     "Image Based Lighting",
                     [&]() {
@@ -153,7 +157,6 @@ public:
                     });
 
                 // draw background checkbox
-                ImGui::Separator();
                 ImGui::Checkbox(
                     "Render Background Panorama",
                     [&]() {
@@ -163,7 +166,10 @@ public:
                         pbrSettings.renderBackgroundPanorama = renderBg;
                     });
             }
-            Base::setPbrSettings(pbrSettings);
+            ImGui::EndDisabled();
+            if (pbrSettings.pbrMode) {
+                Base::setPbrSettings(pbrSettings);
+            }
         }
 
         ImGui::End();

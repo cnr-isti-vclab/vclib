@@ -31,8 +31,8 @@
 #include <QStandardItemModel>
 
 #define checkPtr(p) \
-    if (!(p)) {        \
-        return;        \
+    if (!(p)) {     \
+        return;     \
     }
 
 namespace vcl::qt {
@@ -233,7 +233,7 @@ void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
 
     bool pbr = index == toUnderlying(RenderMode::PBR);
 
-    auto sts = detail::pbrSettings(mViewer);
+    auto sts    = detail::pbrSettings(mViewer);
     sts.pbrMode = pbr;
     detail::setPbrSettings(mViewer, sts);
 

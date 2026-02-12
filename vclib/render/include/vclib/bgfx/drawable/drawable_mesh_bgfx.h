@@ -218,8 +218,8 @@ public:
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
-            const DrawableEnvironment*  env         = settings.environment;
+            const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
+            const DrawableEnvironment* env         = settings.environment;
 
             bool iblEnabled = pbrSettings.imageBasedLighting &&
                               env != nullptr && env->canDraw();

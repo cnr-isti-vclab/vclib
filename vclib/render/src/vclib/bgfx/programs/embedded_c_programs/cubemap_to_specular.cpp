@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -41,19 +41,34 @@ bgfx::EmbeddedShader::Data ComputeLoader<ComputeProgram::CUBEMAP_TO_SPECULAR>::
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, cs_cubemap_to_specular_essl, sizeof(cs_cubemap_to_specular_essl)};
+        return {
+            type,
+            cs_cubemap_to_specular_essl,
+            sizeof(cs_cubemap_to_specular_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, cs_cubemap_to_specular_400, sizeof(cs_cubemap_to_specular_400)};
+        return {
+            type,
+            cs_cubemap_to_specular_400,
+            sizeof(cs_cubemap_to_specular_400)};
     case bgfx::RendererType::Vulkan:
-        return {type, cs_cubemap_to_specular_spv, sizeof(cs_cubemap_to_specular_spv)};
+        return {
+            type,
+            cs_cubemap_to_specular_spv,
+            sizeof(cs_cubemap_to_specular_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, cs_cubemap_to_specular_dx11, sizeof(cs_cubemap_to_specular_dx11)};
+        return {
+            type,
+            cs_cubemap_to_specular_dx11,
+            sizeof(cs_cubemap_to_specular_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, cs_cubemap_to_specular_mtl, sizeof(cs_cubemap_to_specular_mtl)};
+        return {
+            type,
+            cs_cubemap_to_specular_mtl,
+            sizeof(cs_cubemap_to_specular_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
