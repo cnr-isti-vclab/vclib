@@ -128,10 +128,12 @@ int loadGltfPrimitiveMaterial(
 
         // extensions
         if(mat.extensions.contains("KHR_materials_emissive_strength")) {
-            const tinygltf::Value& ext =
+            const auto& emissiveStrengthExt =
                 mat.extensions.at("KHR_materials_emissive_strength");
-            if(ext.Has("emissiveStrength"))
-                emissiveStrength = ext.Get("emissiveStrength").GetNumberAsDouble();
+            if(emissiveStrengthExt.Has("emissiveStrength"))
+                emissiveStrength = emissiveStrengthExt
+                    .Get("emissiveStrength")
+                    .GetNumberAsDouble();
         }
 
         // function to load a texture in a material
