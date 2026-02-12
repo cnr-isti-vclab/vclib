@@ -26,6 +26,8 @@
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
+#include <vclib/bgfx/context.h>
+
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
@@ -131,6 +133,78 @@ public:
     bool isValid() const { return bgfx::isValid(mTextureHandle); }
 
     /**
+     * @brief Creates a texture from a bgfx::ImageContainer.
+     *
+     * @param[in] image: Pointer to a bgfx::ImageContainer containing the
+     * texture data.
+     * @param[in] hasMips: Indicates if the texture will have mipmaps.
+     * If the container already has mipmaps, they will be used, otherwise the
+     * space for mipmaps will be allocated but not filled.
+     * @param[in] flags: BGFX texture and sampler creation flags.
+     */
+    void set(const bimg::ImageContainer& image, bool hasMips, uint64_t flags)
+    {
+        const bool imageHasAlreadyMips = image.m_numMips > 1;
+        const bool passDataDirectly =
+            !hasMips || (hasMips && imageHasAlreadyMips);
+
+        if (bgfx::isValid(mTextureHandle))
+            bgfx::destroy(mTextureHandle);
+
+        if (passDataDirectly) {
+            const uint8_t* imageData = (uint8_t*) image.m_data;
+
+            if (image.m_cubeMap) {
+                mTextureHandle = bgfx::createTextureCube(
+                    image.m_width,
+                    hasMips,
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags,
+                    bgfxCopyMemory(imageData, image.m_size));
+            }
+            else {
+                mTextureHandle = bgfx::createTexture2D(
+                    image.m_width,
+                    image.m_height,
+                    hasMips,
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags,
+                    bgfxCopyMemory(imageData, image.m_size));
+            }
+        }
+        else {
+            // Image has not mips but we still want to allocate the related
+            // memory. For this we need to actually create an empty texture and
+            // update it manually to avoid undefined behavior.
+
+            if (image.m_cubeMap) {
+                mTextureHandle = bgfx::createTextureCube(
+                    image.m_width,
+                    hasMips,
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags);
+
+                for (uint8_t face = 0; face < 6; face++)
+                    copyMip0ToTexture(image, face);
+            }
+            else {
+                mTextureHandle = bgfx::createTexture2D(
+                    image.m_width,
+                    image.m_height,
+                    hasMips,
+                    image.m_numLayers,
+                    bgfx::TextureFormat::Enum(image.m_format),
+                    flags);
+
+                copyMip0ToTexture(image);
+            }
+        }
+    }
+
+    /**
      * @brief Creates a 2D texture from raw pixel data.
      *
      * This is a convenience method that creates a standard 2D RGBA8 texture.
@@ -140,30 +214,36 @@ public:
      * @param[in] size: The width and height of the texture.
      * @param[in] hasMips: Indicates if the provided data includes mipmaps.
      * @param[in] flags: BGFX texture and sampler creation flags.
+     * @param[in] format: the format of the texture.
+     * @param[in] isCubemap: True if the texture is a cubemap
      * @param[in] releaseFn: Optional callback function to release the data
      * pointer when BGFX is finished with it.
      */
     void set(
-        const void*         data,
-        const vcl::Point2i& size,
-        bool                hasMips   = false,
-        uint64_t            flags     = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
-        bgfx::ReleaseFn     releaseFn = nullptr)
+        const void*               data,
+        const vcl::Point2i&       size,
+        bool                      hasMips = false,
+        uint64_t                  flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE,
+        bgfx::TextureFormat::Enum format    = bgfx::TextureFormat::RGBA8,
+        bool                      isCubemap = false,
+        bgfx::ReleaseFn           releaseFn = nullptr)
     {
         uint32_t sz = bimg::imageGetSize(
             nullptr,
             size.x(),
             size.y(),
             1,
-            false,
+            isCubemap,
             hasMips,
             1,
-            bimg::TextureFormat::RGBA8);
+            // there is correspondence between bimg and bgfx texture formats
+            static_cast<bimg::TextureFormat::Enum>(toUnderlying(format)));
         set(bgfx::makeRef(data, sz, releaseFn),
             size,
             hasMips,
             1,
-            bgfx::TextureFormat::RGBA8,
+            format,
+            isCubemap,
             flags);
     }
 
@@ -181,6 +261,7 @@ public:
      * @param[in] nLayers: The number of layers for a texture array. Use 1 for a
      * standard 2D texture.
      * @param[in] format: The format of the texture data.
+     * @param[in] isCubemap: True if the texture is a cubemap
      * @param[in] flags: BGFX texture and sampler creation flags.
      */
     void set(
@@ -188,14 +269,19 @@ public:
         const vcl::Point2i&       size,
         bool                      hasMips,
         uint                      nLayers,
-        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::RGBA8,
+        bgfx::TextureFormat::Enum format    = bgfx::TextureFormat::RGBA8,
+        bool                      isCubemap = false,
         uint64_t                  flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE)
     {
         if (bgfx::isValid(mTextureHandle))
             bgfx::destroy(mTextureHandle);
 
-        mTextureHandle = bgfx::createTexture2D(
-            size.x(), size.y(), hasMips, nLayers, format, flags, texture);
+        if (isCubemap)
+            mTextureHandle = bgfx::createTextureCube(
+                size.x(), hasMips, nLayers, format, flags, texture);
+        else
+            mTextureHandle = bgfx::createTexture2D(
+                size.x(), size.y(), hasMips, nLayers, format, flags, texture);
     }
 
     /**
@@ -219,6 +305,24 @@ public:
             bgfx::setTexture(
                 stage, samplerHandle, mTextureHandle, samplerFlags);
         }
+    }
+
+    /**
+     * @brief Binds the texture to a texture stage for compute shaders.
+     * @param[in] stage: The texture stage (sampler index) to bind to.
+     * @param[in] mip: Mip level to bind.
+     * @param[in] access: The type of access to the texture the compute
+     * shader should have.
+     * @param[in] format: The format of the texture.
+     */
+    void bindForCompute(
+        uint                      stage,
+        uint                      mip,
+        bgfx::Access::Enum        access,
+        bgfx::TextureFormat::Enum format = bgfx::TextureFormat::Count) const
+    {
+        if (bgfx::isValid(mTextureHandle))
+            bgfx::setImage(stage, mTextureHandle, mip, access, format);
     }
 
     /**
@@ -263,6 +367,49 @@ public:
             flags |= BGFX_SAMPLER_V_MIRROR;
 
         return flags;
+    }
+
+private:
+    void copyMip0ToTexture(const bimg::ImageContainer& image, uint8_t face = 0)
+    {
+        bimg::ImageMip mip;
+        bimg::imageGetRawData(image, face, 0, image.m_data, image.m_size, mip);
+
+        if (image.m_cubeMap) {
+            bgfx::updateTextureCube(
+                mTextureHandle,
+                0,
+                face,
+                0,
+                0,
+                0,
+                mip.m_width,
+                mip.m_height,
+                bgfxCopyMemory(mip.m_data, mip.m_size));
+        }
+        else {
+            bgfx::updateTexture2D(
+                mTextureHandle,
+                0,
+                0,
+                0,
+                0,
+                mip.m_width,
+                mip.m_height,
+                bgfxCopyMemory(mip.m_data, mip.m_size));
+        }
+    }
+
+    static const bgfx::Memory* bgfxCopyMemory(
+        const uint8_t* data,
+        uint32_t       size)
+    {
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint8_t>(size);
+
+        std::copy(data, data + size, buffer);
+
+        return bgfx::makeRef(buffer, size, releaseFn);
     }
 };
 
