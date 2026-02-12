@@ -52,6 +52,10 @@ void main() {
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
 
+    // nudge towards camera to avoid z-fighting with other geometry
+    p0_NDC.z += -u_depthOffset * p0_NDC.w;
+    p1_NDC.z += -u_depthOffset * p1_NDC.w;
+
     vec3 n0_NDC = normalize(mul(u_normalMatrix, normal0));
     vec3 n1_NDC = normalize(mul(u_normalMatrix, normal1));
 
