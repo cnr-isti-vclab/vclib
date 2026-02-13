@@ -86,7 +86,7 @@ def run(executable_name: str, execution: Args, output_file: str = "./test_result
     if not os.path.exists(execution.mesh):
             print(f"{execution.mesh} model not found, skipping", file=sys.stderr);
             return;
-    subprocess.run([executable_name, *execution.asArgList(), "-o", "./test_results.json", "-f", "250", "--scale", "+1", "--device-name", platform.node()]);
+    subprocess.run([executable_name, *execution.asArgList(), "-o", output_file, "-f", "250", "--scale", "+1", "--device-name", platform.node()]);
 
 def main():
     global SMOOTH, FLAT, UBER, SPLIT, UBER_IF, COL_VERT, COL_FACE, TEX_VERT, TEX_WEDGE
@@ -96,7 +96,7 @@ def main():
             repeat = int(sys.argv[1])
         except (TypeError, ValueError):
             repeat = 1
-    varying_mode = len(sys.argv > 2)
+    varying_mode = (len(sys.argv) > 2)
     executable_name = None;
     if os.name == "nt":
         executable_name = "./vclib-render-example-980-benchmark.exe"
