@@ -113,7 +113,8 @@ int main(int argc, char** argv)
         vcl::Canvas,
         vcl::BenchmarkViewerDrawer>;
 
-    using BenchmarDrawerT = vcl::BenchmarkDrawer<BenchmarkViewer>;
+    using BenchmarkDrawerT = vcl::BenchmarkDrawer<BenchmarkViewer>;
+    using BenchmarkViewerDrawerT = vcl::BenchmarkViewerDrawer<BenchmarkViewer>;
 
     using enum vcl::MeshRenderInfo::Buffers;
 #ifdef VCLIB_RENDER_BACKEND_BGFX
@@ -396,7 +397,7 @@ int main(int argc, char** argv)
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<BenchmarDrawerT> aaf;
+    vcl::AutomationActionFactory<BenchmarkDrawerT> aaf;
 
     tw.setRepeatTimes(repetitions);
 
@@ -406,8 +407,8 @@ int main(int argc, char** argv)
         tw.addAutomation(
             aaf.createStartCountDelay(
                 aaf.createStartCountLimited(
-                    vcl::ShadingChangerAutomationAction<BenchmarDrawerT>(
-                        vcl::MeshRenderInfo::Surface::SHADING_FLAT),
+                    vcl::ShadingChangerAutomationAction<BenchmarkDrawerT, BenchmarkViewerDrawerT>(
+                        vcl::MeshRenderInfo::Surface::SHADING_FLAT, &tw),
                     1),
                 repetitions / 2),
             vcl::NullBenchmarkMetric());
@@ -416,19 +417,19 @@ int main(int argc, char** argv)
     // Rotation around Z axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(frames, {0.f, 0.f, 1.f}),
+            BenchmarkDrawerT>::fromFramesPerRotation(frames, {0.f, 0.f, 1.f}),
         frames));
 
     // Rotation around Y axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(frames, {0.f, 1.f, 0.f}),
+            BenchmarkDrawerT>::fromFramesPerRotation(frames, {0.f, 1.f, 0.f}),
         frames));
 
     // Rotation around X axis
     tw.addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
+            BenchmarkDrawerT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
         frames));
 
     // Do nothing

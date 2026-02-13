@@ -50,6 +50,17 @@ public:
         Parent::onDrawContent(viewId);
         BenchmarkDrawer<DerivedRenderApp>::onDrawContent(viewId);
     }
+
+    void setShading(MeshRenderInfo::Surface shad) {
+        for (size_t i = 0; i < Parent::mDrawList->size(); ++i) {
+            auto el = Parent::mDrawList->at(i);
+            if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                MeshRenderSettings mrs(p->renderSettings());
+                mrs.setSurface(shad);
+                p->setRenderSettings(mrs);
+            }
+        }
+    }
 };
 
 } // namespace vcl

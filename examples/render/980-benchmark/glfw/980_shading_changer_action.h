@@ -24,6 +24,7 @@
 #define VCL_980_SHADING_CHANGER_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/drawers/benchmark_viewer_drawer.h>
 
 #include <vclib/space/core/quaternion.h>
 
@@ -38,7 +39,7 @@ namespace vcl {
  * rotation, with the strength of the rotation measured
  * per-frame
  */
-template<typename BmarkDrawer>
+template<typename BmarkDrawer, typename BmarkViewerDrawer>
 class ShadingChangerAutomationAction :
         public AbstractAutomationAction<BmarkDrawer>
 {
@@ -46,9 +47,10 @@ class ShadingChangerAutomationAction :
     using Parent::benchmarkDrawer;
     std::shared_ptr<DrawableObjectVector> mVec;
     MeshRenderInfo::Surface               mShad;
+    BmarkViewerDrawer*                    mViewerDrawer;
 
 public:
-    ShadingChangerAutomationAction(MeshRenderInfo::Surface shad): mShad(shad) {}
+    ShadingChangerAutomationAction(MeshRenderInfo::Surface shad, BmarkViewerDrawer* viewerDrawer): mShad(shad), mViewerDrawer(viewerDrawer) {}
 
     std::string getDescription() override
     {
@@ -97,27 +99,20 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        for (size_t i = 0; i < mVec->size(); i++) {
-            auto el = mVec->at(i);
-            if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
-                MeshRenderSettings mrs(p->renderSettings());
-                mrs.setSurface(mShad);
-                p->setRenderSettings(mrs);
-            }
-        }
+        mViewerDrawer->setShading(mShad);
         Parent::end();
     };
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
         const& override
     {
-        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer, BmarkViewerDrawer>>(
             *this);
     }
 
     std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
     {
-        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer, BmarkViewerDrawer>>(
             std::move(*this));
     }
 };
