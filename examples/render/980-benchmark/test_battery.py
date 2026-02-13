@@ -7,6 +7,7 @@ import platform;
 
 SMOOTH = 0;
 FLAT = 1;
+VARYING = 2;
 
 UBER = 0;
 SPLIT = 1;
@@ -18,9 +19,11 @@ TEX_VERT = 2;
 TEX_WEDGE = 3;
 
 def shadingTypeOpt(enum):
-    global SMOOTH, FLAT
+    global SMOOTH, FLAT, VARYING
     if enum == FLAT:
         return "--flat"
+    elif enum == VARYING:
+        return "--on-the-fly"
     else:
         return None
 
@@ -79,7 +82,7 @@ class Args:
         ret.append(self.mesh)
         return ret
 
-def run(executable_name: str, execution: Args):
+def run(executable_name: str, execution: Args, output_file: str = "./test_results.json"):
     if not os.path.exists(execution.mesh):
             print(f"{execution.mesh} model not found, skipping", file=sys.stderr);
             return;
@@ -93,13 +96,19 @@ def main():
             repeat = int(sys.argv[1])
         except (TypeError, ValueError):
             repeat = 1
+    varying_mode = len(sys.argv > 2)
     executable_name = None;
     if os.name == "nt":
         executable_name = "./vclib-render-example-980-benchmark.exe"
     else:
         executable_name = "./vclib-render-example-980-benchmark"
+    shading = [FLAT, SMOOTH]
+    output_file = "./test_results.json"
+    if varying_mode:
+        shading = [VARYING]
+        output_file = "./test_results_varying.json"
     argsList = [
-        Args.combinatory([FLAT, SMOOTH], [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 960), (1920, 1920)], [
+        Args.combinatory(shading, [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 960), (1920, 1920)], [
                 "./meshes/small/myram.ply",
                 "./meshes/medium/gargoyle500K.ply",
                 "./meshes/big/ESTE_PRINT.ply"
@@ -110,9 +119,9 @@ def main():
         for args in argsList:
             if isinstance(args, types.GeneratorType):
                 for generatedArgs in args:
-                    run(executable_name, generatedArgs);
+                    run(executable_name, generatedArgs, output_file);
             else:
-                run(executable_name, args);
+                run(executable_name, args, output_file);
     return;
 
 def create_all_in_path(path: str):
