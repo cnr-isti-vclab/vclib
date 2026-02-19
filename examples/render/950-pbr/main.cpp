@@ -38,6 +38,7 @@ int main(int argc, char** argv)
         DAMAGED_HELMET,
         CLEARCOAT_TEST,
         CLEARCOAT_WICKER,
+        PORSCHE,
         COUNT_EXAMPLES
     };
 
@@ -48,9 +49,10 @@ int main(int argc, char** argv)
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/ClearCoatTest/ClearCoatTest.gltf",
-        "/gltf/ClearcoatWicker/ClearcoatWicker.gltf"};
+        "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
+        "/gltf/Porsche/Porsche.gltf"};
 
-    uint selectedExample = CLEARCOAT_WICKER;
+    uint selectedExample = PORSCHE;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -59,6 +61,7 @@ int main(int argc, char** argv)
         UFFIZI_EXR,
         UFFIZI_HDR,
         UFFIZI_KTX,
+        ST_PETER_EXR,
         COUNT_PANORAMAS
     };
 
@@ -68,9 +71,10 @@ int main(int argc, char** argv)
         "/panoramas/pisa.hdr",
         "/panoramas/uffizi.exr",
         "/panoramas/uffizi.hdr",
-        "/panoramas/uffizi.ktx"};
+        "/panoramas/uffizi.ktx",
+        "/panoramas/st_peter.exr"};
 
-    uint selectedPanorama = PISA_HDR;
+    uint selectedPanorama = ST_PETER_EXR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
