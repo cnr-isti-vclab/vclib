@@ -94,10 +94,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
+    mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
     connect(
-        mUI->renderSettingsFrame,
+        mUI->meshRenderSettingsFrame,
         SIGNAL(settingsUpdated()),
         this,
         SLOT(renderSettingsUpdated()));
@@ -119,19 +121,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
-
-    connect(
-        mUI->renderModeComboBox,
-        SIGNAL(currentIndexChanged(int)),
-        this,
-        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
-
-    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
-
-    if constexpr (!PBRViewerConcept<ViewerType>) {
-        mUI->renderModeLabel->setEnabled(false);
-        mUI->renderModeComboBox->setEnabled(false);
-    }
 }
 
 MeshViewer::~MeshViewer()
@@ -189,47 +178,23 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
-void MeshViewer::showRenderModeSelector(bool show)
+// void MeshViewer::showRenderModeSelector(bool show)
+// {
+// }
+
+void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
 {
-    mUI->renderModeComboBox->setVisible(show);
-    mUI->renderModeLabel->setVisible(show);
+    mUI->viewerRenderSettingsFrame->setPbrSettings(settings);
 }
 
-template<typename V>
-bool isPBREnabledF(const V* v)
+const PBRViewerSettings& MeshViewer::pbrSettings() const
 {
-    if constexpr (PBRViewerConcept<V>) {
-        return v->isPBREnabled();
-    }
-    else {
-        return false;
-    }
+    return mUI->viewerRenderSettingsFrame->pbrSettings();
 }
 
-bool MeshViewer::isPBREnabled() const
+void MeshViewer::setPanorama(const std::string& panorama)
 {
-    return isPBREnabledF(mUI->viewer);
-}
-
-void MeshViewer::setPBR(bool enable)
-{
-    using ViewerType = RemovePtr<decltype(mUI->viewer)>;
-    if constexpr (PBRViewerConcept<ViewerType>) {
-        using enum RenderMode;
-        mUI->renderModeComboBox->setCurrentIndex(
-            enable ? toUnderlying(PBR) : toUnderlying(CLASSIC));
-        updateGUI();
-    }
-}
-
-void MeshViewer::enablePBR()
-{
-    setPBR(true);
-}
-
-void MeshViewer::disablePBR()
-{
-    setPBR(false);
+    mUI->viewerRenderSettingsFrame->setPanorama(panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)
@@ -263,7 +228,7 @@ void MeshViewer::visibilityDrawableObjectChanged()
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings());
         }
         mUI->viewer->update();
@@ -284,13 +249,14 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
     if (m) {
         // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
-        mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
-        mUI->renderSettingsFrame->setEnabled(true);
+        mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+            m->renderSettings());
+        mUI->meshRenderSettingsFrame->setEnabled(true);
     }
     else {
         // it is not a AbstractDrawableMesh, RenderSettingsFrame must be
         // disabled
-        mUI->renderSettingsFrame->setEnabled(false);
+        mUI->meshRenderSettingsFrame->setEnabled(false);
     }
 }
 
@@ -314,7 +280,8 @@ void MeshViewer::renderSettingsUpdated()
             mListedDrawableObjects->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // AbstractDrawableMesh
-        m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
+        m->setRenderSettings(
+            mUI->meshRenderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
 }
@@ -341,16 +308,16 @@ void MeshViewer::updateGUI()
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mListedDrawableObjects->at(selected));
         if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);
-            mUI->renderSettingsFrame->setEnabled(true);
+            mUI->meshRenderSettingsFrame->setEnabled(true);
         }
         else {
-            mUI->renderSettingsFrame->setEnabled(false);
+            mUI->meshRenderSettingsFrame->setEnabled(false);
         }
     }
     else {
-        mUI->renderSettingsFrame->setEnabled(false);
+        mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
 }
@@ -359,19 +326,10 @@ template<typename V>
 void setPBRModef(V* v, bool b)
 {
     if constexpr (PBRViewerConcept<V>) {
-        return v->setPBR(b);
+        auto s    = v->pbrSettings();
+        s.pbrMode = b;
+        return v->setPbrSettings(s);
     }
-}
-
-void MeshViewer::renderModeComboBoxCurrentIndexChanged(int index)
-{
-    if (index == toUnderlying(RenderMode::PBR)) {
-        setPBRModef(mUI->viewer, true);
-    }
-    else {
-        setPBRModef(mUI->viewer, false);
-    }
-    mUI->viewer->update();
 }
 
 } // namespace vcl::qt

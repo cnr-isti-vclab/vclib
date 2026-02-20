@@ -23,16 +23,19 @@
 #ifndef VCL_RENDER_CONCEPTS_PBR_VIEWER_H
 #define VCL_RENDER_CONCEPTS_PBR_VIEWER_H
 
+#include <vclib/render/settings/pbr_viewer_settings.h>
+
 #include <vclib/base.h>
 
 namespace vcl {
 
 template<typename T>
 concept PBRViewerConcept = requires (T&& obj) {
-    { obj.isPBREnabled() } -> std::same_as<bool>;
+    { obj.pbrSettings() } -> std::same_as<const PBRViewerSettings&>;
 
     // non const requirements
-    requires IsConst<T> || requires { obj.setPBR(bool()); };
+    requires IsConst<T> ||
+                 requires { obj.setPbrSettings(PBRViewerSettings()); };
 };
 } // namespace vcl
 
