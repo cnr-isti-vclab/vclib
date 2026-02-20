@@ -39,6 +39,7 @@ int main(int argc, char** argv)
         ANISOTROPY_DISC_TEST,
         ANISOTROPY_ROTATION_TEST,
         ANISOTROPY_STRENGTH_TEST,
+        CARBON_FIBRE,
         COUNT_EXAMPLES
     };
 
@@ -50,9 +51,10 @@ int main(int argc, char** argv)
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/AnisotropyDiscTest/AnisotropyDiscTest.gltf",
         "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
-        "/gltf/AnisotropyStrengthTest/AnisotropyStrengthTest.gltf"};
+        "/gltf/AnisotropyStrengthTest/AnisotropyStrengthTest.gltf",
+        "/gltf/CarbonFibre/CarbonFibre.gltf"};
 
-    uint selectedExample = ANISOTROPY_DISC_TEST;
+    uint selectedExample = CARBON_FIBRE;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -72,7 +74,7 @@ int main(int argc, char** argv)
         "/panoramas/uffizi.hdr",
         "/panoramas/uffizi.ktx"};
 
-    uint selectedPanorama = UFFIZI_KTX;
+    uint selectedPanorama = COLOSSEUM_HDR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
