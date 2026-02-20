@@ -159,6 +159,14 @@ public:
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
+        // TODO: streams cannot be higher than 4 because of bgfx limitation.
+        // buffers must be bound only if necessary (using MeshRenderSettings)
+        // right now, this is managed only for uvs (per vertex or per wedge, not
+        // both).
+        // We MUST be sure that the bound buffers are not higher than 4.
+
+        using enum MeshRenderInfo::Surface;
+
         uint stream = 0;
 
         // streams MUST be consecutive starting from 0
@@ -169,20 +177,22 @@ public:
             mVertexNormalsBuffer.bindVertex(stream++);
         }
 
+        if (mVertexTangentsBuffer.isValid()) {
+            mVertexTangentsBuffer.bind(stream++);
+        }
+
         if (mVertexColorsBuffer.isValid()) {
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
-        if (mVertexUVBuffer.isValid()) {
+        if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
+            assert(stream < 4); // bgfx limitation
             mVertexUVBuffer.bind(stream++);
         }
 
-        if (mVertexWedgeUVBuffer.isValid()) {
+        if (mVertexWedgeUVBuffer.isValid() && mrs.isSurface(COLOR_WEDGE_TEX)) {
+            assert(stream < 4); // bgfx limitation
             mVertexWedgeUVBuffer.bind(stream++);
-        }
-
-        if (mVertexTangentsBuffer.isValid()) {
-            mVertexTangentsBuffer.bind(stream++);
         }
     }
 
