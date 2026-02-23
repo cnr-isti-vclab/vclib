@@ -96,19 +96,21 @@ def main():
             repeat = int(sys.argv[1])
         except (TypeError, ValueError):
             repeat = 1
-    varying_mode = (len(sys.argv) > 2)
+    old_mode = (len(sys.argv) > 2)
     executable_name = None;
     if os.name == "nt":
         executable_name = "./vclib-render-example-980-benchmark.exe"
     else:
         executable_name = "./vclib-render-example-980-benchmark"
-    shading = [FLAT, SMOOTH]
-    output_file = "./test_results.json"
-    if varying_mode:
-        shading = [VARYING]
-        output_file = "./test_results_varying.json"
+    shading = [VARYING]
+    coloring = [SMOOTH]
+    output_file = "./test_results_varying.json"
+    if old_mode:
+        shading = [FLAT, SMOOTH]
+        coloring = [COL_VERT, COL_FACE, TEX_WEDGE]
+        output_file = "./test_results.json"
     argsList = [
-        Args.combinatory(shading, [UBER, SPLIT, UBER_IF], [COL_VERT, COL_FACE, TEX_WEDGE], [(960, 960), (1920, 1920)], [
+        Args.combinatory(shading, [UBER, SPLIT, UBER_IF], coloring, [(960, 960), (1920, 1920)], [
                 "./meshes/small/myram.ply",
                 "./meshes/medium/gargoyle500K.ply",
                 "./meshes/big/ESTE_PRINT.ply"

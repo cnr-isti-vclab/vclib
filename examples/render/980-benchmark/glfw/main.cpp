@@ -266,6 +266,10 @@ int main(int argc, char** argv)
         }
     }
 
+    if (options.contains("--on-the-fly")) {
+        repetitions = 6;
+    }
+
     // --res option implementation
     vcl::uint   width      = DEFAULT_WINDOW_WIDTH;
     vcl::uint   height     = DEFAULT_WINDOW_HEIGHT;
@@ -404,14 +408,33 @@ int main(int argc, char** argv)
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
     if (options.contains("--on-the-fly")) {
-        tw.addAutomation(
+        std::array<vcl::MeshRenderInfo::Surface, 2> shadTypes = {
+            vcl::MeshRenderInfo::Surface::SHADING_SMOOTH,
+            vcl::MeshRenderInfo::Surface::SHADING_FLAT
+        };
+        std::array<vcl::MeshRenderInfo::Surface, 3> colTypes = {
+            vcl::MeshRenderInfo::Surface::COLOR_VERTEX,
+            vcl::MeshRenderInfo::Surface::COLOR_FACE,
+            vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX
+        };
+        for (size_t i = 0; i < colTypes.size() * 2; ++i) {
+            tw.addAutomation(
             aaf.createStartCountDelay(
                 aaf.createStartCountLimited(
                     vcl::ShadingChangerAutomationAction<BenchmarkDrawerT, BenchmarkViewerDrawerT>(
-                        vcl::MeshRenderInfo::Surface::SHADING_FLAT, &tw),
+                        shadTypes[i%2], &tw),
                     1),
-                repetitions / 2),
+                i),
             vcl::NullBenchmarkMetric());
+            tw.addAutomation(
+            aaf.createStartCountDelay(
+                aaf.createStartCountLimited(
+                    vcl::ShadingChangerAutomationAction<BenchmarkDrawerT, BenchmarkViewerDrawerT>(
+                        colTypes[i/2], &tw),
+                    1),
+                i),
+            vcl::NullBenchmarkMetric());
+        }
     }
 
     // Rotation around Z axis
@@ -441,6 +464,7 @@ int main(int argc, char** argv)
     }
     if (options.contains("--on-the-fly")) {
         shadingType = "varying";
+        meshColoring = "varying";
     }
 
     std::string splitType = "uber";
