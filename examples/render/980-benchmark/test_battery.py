@@ -131,7 +131,7 @@ def main():
     for i in range(repeat):
         for args in argsList:
             if isinstance(args, ArgsGeneratorGenerator):
-                for generatedArgs in args:
+                for generatedArgs in args.getGenerator():
                     run(executable_name, generatedArgs, output_file);
             else:
                 run(executable_name, args, output_file);
