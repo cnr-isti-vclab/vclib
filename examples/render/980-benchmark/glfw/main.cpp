@@ -57,6 +57,11 @@ static const std::string PATH_SEP = "\\";
 static const std::string PATH_SEP = "/";
 #endif
 
+#define VARYING_REPS_IMPL(v, x)           \
+    if (options.contains(x)) {            \
+        v = repArgCast(options, x, 0, 1); \
+    }
+
 static const vcl::uint DEFAULT_WINDOW_WIDTH  = 1440;
 static const vcl::uint DEFAULT_WINDOW_HEIGHT = 1080;
 
@@ -106,6 +111,21 @@ vcl::DrawableMesh<vcl::TriMesh> getMesh(
     return drawable;
 }
 
+vcl::uint repArgCast(
+    std::unordered_map<std::string, std::vector<std::string>>& opt,
+    const std::string&                                         optName,
+    vcl::uint                                                  index,
+    vcl::uint                                                  def)
+{
+    vcl::uint temp = std::strtoul(opt[optName][index].c_str(), nullptr, 10);
+    if (temp == 0) {
+        std::cerr << "Error: invalid value for option " << optName
+                  << " using default value " << def << std::endl;
+        return def;
+    }
+    return temp;
+}
+
 int main(int argc, char** argv)
 {
     using BenchmarkViewer = vcl::RenderApp<
@@ -113,7 +133,7 @@ int main(int argc, char** argv)
         vcl::Canvas,
         vcl::BenchmarkViewerDrawer>;
 
-    using BenchmarkDrawerT = vcl::BenchmarkDrawer<BenchmarkViewer>;
+    using BenchmarkDrawerT       = vcl::BenchmarkDrawer<BenchmarkViewer>;
     using BenchmarkViewerDrawerT = vcl::BenchmarkViewerDrawer<BenchmarkViewer>;
 
     using enum vcl::MeshRenderInfo::Buffers;
@@ -144,7 +164,13 @@ int main(int argc, char** argv)
         {"--force-col-face",   0},
         {"--force-tex-vertex", 0},
         {"--force-tex-wedge",  0},
-        {"--on-the-fly",       0}
+        {"--on-the-fly",       0},
+        {"--svc",              1},
+        {"--fvc",              1},
+        {"--sfc",              1},
+        {"--ffc",              1},
+        {"--swt",              1},
+        {"--fwt",              1}
     };
     auto                     res     = optionParser.parseOptions(argc, argv);
     auto                     options = res.first;
@@ -230,9 +256,17 @@ int main(int argc, char** argv)
         exit(1);
     }
 
+    // Check if both --flat and --on-the-fly are present
     if (options.contains("--flat") + options.contains("--on-the-fly") > 1) {
         std::cerr
             << "Error: --on-the-fly option incompatible with --flat option\n";
+        exit(1);
+    }
+
+    // Check if repetiotions argument and on-the-fly are both present
+    if (options.contains("-r") + options.contains("--on-the-fly") > 1) {
+        std::cerr << "Error: -r option incompatible with --on-the-fly option"
+                  << std::endl;
         exit(1);
     }
 
@@ -257,17 +291,19 @@ int main(int argc, char** argv)
     // -r option implementation
     vcl::uint repetitions = 2;
     if (options.contains("-r")) {
-        repetitions = std::strtoul(options["-r"][0].c_str(), nullptr, 10);
-        if (repetitions == 0) {
-            std::cerr << "Error: invalid repetitions amount (option -r), using "
-                         "default"
-                      << std::endl;
-            repetitions = DEFAULT_REPETITIONS;
-        }
+        repetitions = repArgCast(options, "-r", 0, DEFAULT_REPETITIONS);
     }
 
+    vcl::uint svc = 1, fvc = 1, sfc = 1, ffc = 1, swt = 1, fwt = 1;
+    VARYING_REPS_IMPL(svc, "--svc")
+    VARYING_REPS_IMPL(fvc, "--fvc")
+    VARYING_REPS_IMPL(sfc, "--sfc")
+    VARYING_REPS_IMPL(ffc, "--ffc")
+    VARYING_REPS_IMPL(swt, "--swt")
+    VARYING_REPS_IMPL(fwt, "--fwt")
+
     if (options.contains("--on-the-fly")) {
-        repetitions = 6;
+        repetitions = svc + fvc + sfc + ffc + swt + fwt;
     }
 
     // --res option implementation
@@ -410,30 +446,38 @@ int main(int argc, char** argv)
     if (options.contains("--on-the-fly")) {
         std::array<vcl::MeshRenderInfo::Surface, 2> shadTypes = {
             vcl::MeshRenderInfo::Surface::SHADING_SMOOTH,
-            vcl::MeshRenderInfo::Surface::SHADING_FLAT
-        };
+            vcl::MeshRenderInfo::Surface::SHADING_FLAT};
         std::array<vcl::MeshRenderInfo::Surface, 3> colTypes = {
             vcl::MeshRenderInfo::Surface::COLOR_VERTEX,
             vcl::MeshRenderInfo::Surface::COLOR_FACE,
-            vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX
+            vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX};
+        std::array<vcl::uint, 6> reps = {
+            0,
+            svc,
+            fvc,
+            sfc,
+            ffc,
+            swt
         };
-        for (size_t i = 0; i < colTypes.size() * 2; ++i) {
+        for (size_t i = 0; i < 6; ++i) {
             tw.addAutomation(
-            aaf.createStartCountDelay(
-                aaf.createStartCountLimited(
-                    vcl::ShadingChangerAutomationAction<BenchmarkDrawerT, BenchmarkViewerDrawerT>(
-                        shadTypes[i%2], &tw),
-                    1),
-                i),
-            vcl::NullBenchmarkMetric());
+                aaf.createStartCountDelay(
+                    aaf.createStartCountLimited(
+                        vcl::ShadingChangerAutomationAction<
+                            BenchmarkDrawerT,
+                            BenchmarkViewerDrawerT>(shadTypes[i % 2], &tw),
+                        1),
+                    reps[i]),
+                vcl::NullBenchmarkMetric());
             tw.addAutomation(
-            aaf.createStartCountDelay(
-                aaf.createStartCountLimited(
-                    vcl::ShadingChangerAutomationAction<BenchmarkDrawerT, BenchmarkViewerDrawerT>(
-                        colTypes[i/2], &tw),
-                    1),
-                i),
-            vcl::NullBenchmarkMetric());
+                aaf.createStartCountDelay(
+                    aaf.createStartCountLimited(
+                        vcl::ShadingChangerAutomationAction<
+                            BenchmarkDrawerT,
+                            BenchmarkViewerDrawerT>(colTypes[i / 2], &tw),
+                        1),
+                    reps[i]),
+                vcl::NullBenchmarkMetric());
         }
     }
 
@@ -463,7 +507,7 @@ int main(int argc, char** argv)
         shadingType = "flat";
     }
     if (options.contains("--on-the-fly")) {
-        shadingType = "varying";
+        shadingType  = "varying";
         meshColoring = "varying";
     }
 
@@ -533,3 +577,5 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
+#undef VARYING_REPS_IMPL
