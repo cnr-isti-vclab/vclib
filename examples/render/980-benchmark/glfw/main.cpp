@@ -59,7 +59,7 @@ static const std::string PATH_SEP = "/";
 
 #define VARYING_REPS_IMPL(v, x)           \
     if (options.contains(x)) {            \
-        v = repArgCast(options, x, 0, 0); \
+        v = repArgCast(options, x, 0, 1); \
     }
 
 static const vcl::uint DEFAULT_WINDOW_WIDTH  = 1440;
