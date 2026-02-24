@@ -37,10 +37,13 @@
       <bool>false</bool>
      </property>
      <property name="columnCount">
-      <number>2</number>
+      <number>3</number>
      </property>
      <attribute name="headerVisible">
       <bool>true</bool>
+     </attribute>
+     <attribute name="headerCascadingSectionResizes">
+      <bool>false</bool>
      </attribute>
      <attribute name="headerStretchLastSection">
       <bool>true</bool>
@@ -53,6 +56,14 @@
      <column>
       <property name="text">
        <string/>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="textAlignment">
+       <set>AlignTrailing|AlignVCenter</set>
       </property>
      </column>
     </widget>
