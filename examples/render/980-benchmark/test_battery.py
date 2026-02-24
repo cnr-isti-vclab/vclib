@@ -84,7 +84,7 @@ class Args:
             temp = ["--svc", "--fvc", "--sfc", "--ffc", "--swt", "--fwt"]
             for i in range(6):
                 ret.append(temp[i])
-                ret.append(self.repsLis[i])
+                ret.append(str(self.repsLis[i]))
         ret.append(self.mesh)
         return ret
 
@@ -117,10 +117,14 @@ def main():
     reps = [1,1,1,1,1,1]
     if len(sys.argv) > 2:
         temp = eval(sys.argv[2])
-        if isinstance(temp, list[int]):
+        if isinstance(temp, list):
             if len(temp) != 6:
                 print("Repetions (position 2) argument must be of length 6")
                 exit(1)
+            for el in temp:
+                if not isinstance(el, int):
+                    print("Repetitions (position 2) argument must be an integer list")
+                    exit(1)
             reps = temp
         else:
             print("Repetitions (position 2) argument must be an integer list")
