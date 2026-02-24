@@ -59,7 +59,7 @@ static const std::string PATH_SEP = "/";
 
 #define VARYING_REPS_IMPL(v, x)           \
     if (options.contains(x)) {            \
-        v = repArgCast(options, x, 0, 1); \
+        v = repArgCast(options, x, 0, 0); \
     }
 
 static const vcl::uint DEFAULT_WINDOW_WIDTH  = 1440;
@@ -119,7 +119,7 @@ vcl::uint repArgCast(
 {
     vcl::uint temp = std::strtoul(opt[optName][index].c_str(), nullptr, 10);
     if (temp == 0) {
-        std::cerr << "Error: invalid value for option " << optName
+        std::cerr << "Warning: possibly invalid value for option " << optName
                   << " using default value " << def << std::endl;
         return def;
     }
@@ -452,14 +452,18 @@ int main(int argc, char** argv)
             vcl::MeshRenderInfo::Surface::COLOR_FACE,
             vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX};
         std::array<vcl::uint, 6> reps = {
-            0,
             svc,
             fvc,
             sfc,
             ffc,
-            swt
+            swt,
+            fwt
         };
+        vcl::uint tot = 0;
         for (size_t i = 0; i < 6; ++i) {
+            if (reps[i] == 0) {
+                continue;
+            }
             tw.addAutomation(
                 aaf.createStartCountDelay(
                     aaf.createStartCountLimited(
@@ -467,7 +471,7 @@ int main(int argc, char** argv)
                             BenchmarkDrawerT,
                             BenchmarkViewerDrawerT>(shadTypes[i % 2], &tw),
                         1),
-                    reps[i]),
+                    tot),
                 vcl::NullBenchmarkMetric());
             tw.addAutomation(
                 aaf.createStartCountDelay(
@@ -476,8 +480,10 @@ int main(int argc, char** argv)
                             BenchmarkDrawerT,
                             BenchmarkViewerDrawerT>(colTypes[i / 2], &tw),
                         1),
-                    reps[i]),
+                    tot),
                 vcl::NullBenchmarkMetric());
+
+            tot+=reps[i];
         }
     }
 

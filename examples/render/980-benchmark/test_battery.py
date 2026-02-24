@@ -48,21 +48,22 @@ def coloringOpt(enum):
         return "--force-tex-wedge"
 
 class Args:
-    def __init__(self, shadingType: int, shadingSplitting: int, coloring: int, resolution: tuple[int,int], mesh: str):
+    def __init__(self, shadingType: int, shadingSplitting: int, coloring: int, resolution: tuple[int,int], mesh: str, repsLis: list[int]):
         self.shadingType = shadingType
         self.shadingSplitting = shadingSplitting
         self.coloring = coloring
         self.resolution = resolution
         self.mesh = mesh
+        self.repsLis = repsLis
 
     @staticmethod
-    def combinatory(shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str]):
+    def combinatory(shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str], repsLis: list[int]):
         for mesh in meshList:
             for shadType in shadTypeList:
                 for shadSplit in shadSplitList:
                     for coloring in coloringList:
                         for res in resList:
-                            yield Args(shadType, shadSplit, coloring, res, mesh)
+                            yield Args(shadType, shadSplit, coloring, res, mesh, repsLis)
 
     def asArgList(self):
         ret = list()
@@ -79,19 +80,25 @@ class Args:
             ret.append(str(self.resolution[1]))
         if colOpt is not None:
             ret.append(colOpt)
+        if self.repsLis is not None:
+            temp = ["--svc", "--fvc", "--sfc", "--ffc", "--swt", "--fwt"]
+            for i in range(6):
+                ret.append(temp[i])
+                ret.append(self.repsLis[i])
         ret.append(self.mesh)
         return ret
 
 class ArgsGeneratorGenerator:
-    def __init__(self, shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str]):
+    def __init__(self, shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str], repsLis: list[int]):
         self.shadTypeList = shadTypeList
         self.shadSplitList = shadSplitList
         self.coloringList = coloringList
         self.resList = resList
         self.meshList = meshList
+        self.repsLis = repsLis
 
     def getGenerator(self):
-        return Args.combinatory(self.shadTypeList, self.shadSplitList, self.coloringList, self.resList, self.meshList)
+        return Args.combinatory(self.shadTypeList, self.shadSplitList, self.coloringList, self.resList, self.meshList, self.repsLis)
 
 def run(executable_name: str, execution: Args, output_file: str = "./test_results.json"):
     if not os.path.exists(execution.mesh):
@@ -107,7 +114,17 @@ def main():
             repeat = int(sys.argv[1])
         except (TypeError, ValueError):
             repeat = 1
-    old_mode = (len(sys.argv) > 2)
+    reps = [1,1,1,1,1,1]
+    if len(sys.argv) > 2:
+        temp = eval(sys.argv[2])
+        if isinstance(temp, list[int]):
+            if len(temp) != 6:
+                print("Repetions (position 2) argument must be of length 6")
+                exit(1)
+            reps = temp
+        else:
+            print("Repetitions (position 2) argument must be an integer list")
+            exit(1)
     executable_name = None;
     if os.name == "nt":
         executable_name = "./vclib-render-example-980-benchmark.exe"
@@ -116,19 +133,16 @@ def main():
     shading = [VARYING]
     coloring = [SMOOTH]
     output_file = "./test_results_varying.json"
-    if old_mode:
-        shading = [FLAT, SMOOTH]
-        coloring = [COL_VERT, COL_FACE, TEX_WEDGE]
-        output_file = "./test_results.json"
     argsList = [
         ArgsGeneratorGenerator(shading, [UBER, SPLIT, UBER_IF], coloring, [(960, 960), (1920, 1920)], [
                 "./meshes/small/myram.ply",
                 "./meshes/medium/gargoyle500K.ply",
                 "./meshes/big/ESTE_PRINT.ply"
-            ]
+            ], 
+            reps
         )
     ]
-    for i in range(repeat):
+    for _ in range(repeat):
         for args in argsList:
             if isinstance(args, ArgsGeneratorGenerator):
                 for generatedArgs in args.getGenerator():
