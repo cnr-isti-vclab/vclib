@@ -82,6 +82,17 @@ class Args:
         ret.append(self.mesh)
         return ret
 
+class ArgsGeneratorGenerator:
+    def __init__(self, shadTypeList: list[int], shadSplitList: list[int], coloringList: list[int], resList: list[tuple[int,int]], meshList: list[str]):
+        self.shadTypeList = shadTypeList
+        self.shadSplitList = shadSplitList
+        self.coloringList = coloringList
+        self.resList = resList
+        self.meshList = meshList
+
+    def getGenerator(self):
+        return Args.combinatory(self.shadTypeList, self.shadSplitList, self.coloringList, self.resList, self.meshList)
+
 def run(executable_name: str, execution: Args, output_file: str = "./test_results.json"):
     if not os.path.exists(execution.mesh):
             print(f"{execution.mesh} model not found, skipping", file=sys.stderr);
@@ -110,7 +121,7 @@ def main():
         coloring = [COL_VERT, COL_FACE, TEX_WEDGE]
         output_file = "./test_results.json"
     argsList = [
-        Args.combinatory(shading, [UBER, SPLIT, UBER_IF], coloring, [(960, 960), (1920, 1920)], [
+        ArgsGeneratorGenerator(shading, [UBER, SPLIT, UBER_IF], coloring, [(960, 960), (1920, 1920)], [
                 "./meshes/small/myram.ply",
                 "./meshes/medium/gargoyle500K.ply",
                 "./meshes/big/ESTE_PRINT.ply"
@@ -119,7 +130,7 @@ def main():
     ]
     for i in range(repeat):
         for args in argsList:
-            if isinstance(args, types.GeneratorType):
+            if isinstance(args, ArgsGeneratorGenerator):
                 for generatedArgs in args:
                     run(executable_name, generatedArgs, output_file);
             else:
