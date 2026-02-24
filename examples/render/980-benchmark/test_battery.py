@@ -116,19 +116,11 @@ def main():
             repeat = 1
     reps = [1,1,1,1,1,1]
     if len(sys.argv) > 2:
-        temp = eval(sys.argv[2])
-        if isinstance(temp, list):
-            if len(temp) != 6:
-                print("Repetions (position 2) argument must be of length 6")
-                exit(1)
-            for el in temp:
-                if not isinstance(el, int):
-                    print("Repetitions (position 2) argument must be an integer list")
-                    exit(1)
-            reps = temp
-        else:
-            print("Repetitions (position 2) argument must be an integer list")
-            exit(1)
+        try:
+            temp = int(sys.argv[2])
+            reps = [temp]*6
+        except (TypeError, ValueError):
+            reps = [1]*6
     executable_name = None;
     if os.name == "nt":
         executable_name = "./vclib-render-example-980-benchmark.exe"
