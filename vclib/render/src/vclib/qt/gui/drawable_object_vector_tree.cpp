@@ -36,8 +36,7 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
     mUI->treeWidget->header()->setStretchLastSection(false);
     mUI->treeWidget->header()->setSectionResizeMode(2, QHeaderView::Fixed);
     mUI->treeWidget->setColumnWidth(2, 28);
-    mUI->treeWidget->header()->setSectionResizeMode(
-        1, QHeaderView::Stretch);
+    mUI->treeWidget->header()->setSectionResizeMode(1, QHeaderView::Stretch);
 
     // each time the user selects an item, call the itemSelectionChanged slot
     connect(
