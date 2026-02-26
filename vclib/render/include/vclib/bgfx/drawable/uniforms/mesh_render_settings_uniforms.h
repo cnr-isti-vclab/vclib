@@ -30,37 +30,41 @@
 
 namespace vcl {
 
+/**
+ * @brief The MeshRenderSettingsUniforms class is responsible for managing the
+ * shader uniforms related to mesh render settings.
+ *
+ * It provides a static interface to set the uniform data based on the
+ * current mesh render settings and to bind the uniforms to the shader programs.
+ */
 class MeshRenderSettingsUniforms
 {
-    // mDrawPack[0] -> draw mode0
-    // mDrawPack[1] -> draw mode1
-    // mDrawPack[2] -> unused
-    // mDrawPack[3] -> unused
-    float mDrawPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // sDrawPack[0] -> draw mode0
+    // sDrawPack[1] -> draw mode1
+    // sDrawPack[2] -> unused
+    // sDrawPack[3] -> unused
+    inline static std::array<float, 4> sDrawPack = {0.0, 0.0, 0.0, 0.0};
 
-    // mWidthPack[0] -> point width
-    // mWidthPack[1] -> wireframe width
-    // mWidthPack[2] -> edge width
-    // mWidthPack[3] -> unused
-    float mWidthPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // sWidthPack[0] -> point width
+    // sWidthPack[1] -> wireframe width
+    // sWidthPack[2] -> edge width
+    // sWidthPack[3] -> unused
+    inline static std::array<float, 4> sWidthPack = {0.0, 0.0, 0.0, 0.0};
 
-    // mColorPack[0] -> point user color
-    // mColorPack[1] -> surface user color
-    // mColorPack[2] -> wireframe user color
-    // mColorPack[3] -> edge user color
-    float mColorPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // sColorPack[0] -> point user color
+    // sColorPack[1] -> surface user color
+    // sColorPack[2] -> wireframe user color
+    // sColorPack[3] -> edge user color
+    inline static std::array<float, 4> sColorPack = {0.0, 0.0, 0.0, 0.0};
 
-    Uniform mDrawModeUniform =
-        Uniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
-
-    Uniform mWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
-
-    Uniform mColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4);
+    inline static Uniform sDrawModeUniform;
+    inline static Uniform sWidthUniform;
+    inline static Uniform sColorUniform;
 
 public:
-    MeshRenderSettingsUniforms() {}
+    MeshRenderSettingsUniforms() = delete;
 
-    void updateSettings(const vcl::MeshRenderSettings& settings)
+    static void set(const vcl::MeshRenderSettings& settings)
     {
         auto mri = settings.drawMode();
         uint d0  = mri.points().underlying();
@@ -68,28 +72,35 @@ public:
         uint d1 = mri.wireframe().underlying();
         d1 |= mri.edges().underlying() << 16;
 
-        mDrawPack[0] = Uniform::uintBitsToFloat(d0);
-        mDrawPack[1] = Uniform::uintBitsToFloat(d1);
+        sDrawPack[0] = std::bit_cast<float>(d0);
+        sDrawPack[1] = std::bit_cast<float>(d1);
 
-        mWidthPack[0] = settings.pointWidth();
-        mWidthPack[1] = settings.wireframeWidth();
-        mWidthPack[2] = settings.edgesWidth();
+        sWidthPack[0] = settings.pointWidth();
+        sWidthPack[1] = settings.wireframeWidth();
+        sWidthPack[2] = settings.edgesWidth();
 
-        mColorPack[0] =
-            Uniform::uintBitsToFloat(settings.pointUserColor().abgr());
-        mColorPack[1] =
-            Uniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
-        mColorPack[2] =
-            Uniform::uintBitsToFloat(settings.wireframeUserColor().abgr());
-        mColorPack[3] =
-            Uniform::uintBitsToFloat(settings.edgesUserColor().abgr());
+        sColorPack[0] = std::bit_cast<float>(settings.pointUserColor().abgr());
+        sColorPack[1] =
+            std::bit_cast<float>(settings.surfaceUserColor().abgr());
+        sColorPack[2] =
+            std::bit_cast<float>(settings.wireframeUserColor().abgr());
+        sColorPack[3] = std::bit_cast<float>(settings.edgesUserColor().abgr());
     }
 
-    void bind() const
+    static void bind()
     {
-        mDrawModeUniform.bind(mDrawPack);
-        mWidthUniform.bind(mWidthPack);
-        mColorUniform.bind(mColorPack);
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sDrawModeUniform.isValid())
+            sDrawModeUniform =
+                Uniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
+        if (!sWidthUniform.isValid())
+            sWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
+        if (!sColorUniform.isValid())
+            sColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4);
+        sDrawModeUniform.bind(sDrawPack.data());
+        sWidthUniform.bind(sWidthPack.data());
+        sColorUniform.bind(sColorPack.data());
     }
 };
 

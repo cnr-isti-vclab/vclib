@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
 #define VCL_RENDER_CONCEPTS_DRAWABLE_OBJECT_H
 
-#include <vclib/render/drawable/draw_object_settings.h>
+#include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/space/core.h>
 
 namespace vcl {

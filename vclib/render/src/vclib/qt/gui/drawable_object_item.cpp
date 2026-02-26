@@ -28,7 +28,9 @@ namespace vcl::qt {
 
 DrawableObjectItem::DrawableObjectItem(
     const std::shared_ptr<DrawableObject>& obj,
-    QTreeWidget* parent) : QTreeWidgetItem(parent), mObj(obj)
+    IconFunction                           iconFunction,
+    QTreeWidget*                           parent) :
+        QTreeWidgetItem(parent), mObj(obj), mIconFunction(iconFunction)
 {
     assert(obj);
     if (obj->isVisible())
@@ -65,6 +67,11 @@ void DrawableObjectItem::addMeshItem()
         addMeshInfoItem(*mesh);
         addTransformMatrixItem(*mesh);
         addMaterialsItem(*mesh);
+
+        if (mIconFunction) {
+            std::pair<QIcon, std::string> p = mIconFunction(*mesh);
+            setIcon(2, p.first);
+        }
     }
 }
 

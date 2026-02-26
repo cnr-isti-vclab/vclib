@@ -241,6 +241,7 @@ void readObjFace(
     MeshType&                     m,
     MeshInfo&                     loadedInfo,
     const Tokenizer&              tokens,
+    const std::vector<Point3d>&   normals,
     const std::vector<TexCoordd>& wedgeTexCoords,
     const ObjMaterial&            currentMaterial,
     const LoadSettings&           settings)
@@ -249,6 +250,7 @@ void readObjFace(
 
     std::vector<uint> vids;
     std::vector<uint> wids;
+    std::vector<uint> nids;
 
     loadedInfo.updateMeshType(tokens.size() - 1);
 
@@ -257,6 +259,7 @@ void readObjFace(
     ++token;
     vids.resize(tokens.size() - 1);
     wids.reserve(tokens.size() - 1);
+    nids.reserve(tokens.size() - 1);
     for (uint i = 0; i < tokens.size() - 1; ++i) {
         Tokenizer subt(*token, '/', false);
         auto      t = subt.begin();
@@ -264,6 +267,11 @@ void readObjFace(
         if (subt.size() > 1) {
             if (!t->empty()) {
                 wids.push_back(io::readUInt<uint>(t) - 1);
+            }
+            if (subt.size() > 2) {
+                if (!t->empty()) {
+                    nids.push_back(io::readUInt<uint>(t) - 1);
+                }
             }
         }
         ++token;
@@ -327,8 +335,43 @@ void readObjFace(
         }
     }
 
+    // vertex normals
+    if constexpr (HasPerVertexNormal<MeshType>) {
+        using NormalType = typename MeshType::VertexType::NormalType;
+        using NST        = typename NormalType::ScalarType;
+        // first, need to check if I can store per-vertex normals in the mesh
+        if (fid == 0) {
+            // if the current face has the right number of normals, we assume
+            // that we can load per-vertex normals
+            if (nids.size() == vids.size()) {
+                if (settings.enableOptionalComponents) {
+                    enableIfPerVertexNormalOptional(m);
+                    loadedInfo.setPerVertexNormal();
+                }
+                else {
+                    if (isPerVertexNormalAvailable(m)) {
+                        loadedInfo.setPerVertexNormal();
+                    }
+                }
+            }
+        }
+        if (loadedInfo.hasPerVertexNormal()) {
+            if (nids.size() == vids.size()) {
+                for (uint i = 0; i < nids.size(); ++i) {
+                    if (nids[i] >= normals.size()) {
+                        throw MalformedFileException(
+                            "Bad normal index for face " + std::to_string(fid));
+                    }
+                    m.vertex(vids[i]).normal() = normals[nids[i]].cast<NST>();
+                }
+            }
+        }
+    }
+
     // wedge texcoords
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+        using WedgeTCType = MeshType::FaceType::WedgeTexCoordType;
+        using WTCST       = typename WedgeTCType::ScalarType;
         // first, need to check if I can store wedge texcoords in the mesh
         if (fid == 0) {
             // if the current face has the right number of wedge texcoords, we
@@ -357,9 +400,7 @@ void readObjFace(
                                 std::to_string(fid));
                         }
                         f.wedgeTexCoord(i) =
-                            wedgeTexCoords[wids[i]]
-                                .cast<typename FaceType::WedgeTexCoordType::
-                                          ScalarType>();
+                            wedgeTexCoords[wids[i]].cast<WTCST>();
                     }
                 }
                 else {
@@ -557,6 +598,7 @@ void loadObj(
                         m,
                         loadedInfo,
                         tokens,
+                        normals,
                         texCoords,
                         currentMaterial,
                         settings);
@@ -578,21 +620,24 @@ void loadObj(
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
         using NST        = typename NormalType::ScalarType;
-        if (settings.enableOptionalComponents) {
-            enableIfPerVertexNormalOptional(m);
-            loadedInfo.setPerVertexNormal();
-        }
-        else {
-            if (isPerVertexNormalAvailable(m))
-                loadedInfo.setPerVertexNormal();
-        }
-
-        if (loadedInfo.hasPerVertexNormal()) {
-            for (uint i = 0; const auto& n : normals) {
-                if (i < m.vertexNumber()) {
-                    m.vertex(i).normal() = n.template cast<NST>();
+        // if we have not yet set per-vertex normals, try to set them now
+        if (!loadedInfo.hasPerVertexNormal()) {
+            if (normals.size() == m.vertexNumber()) {
+                if (settings.enableOptionalComponents) {
+                    enableIfPerVertexNormalOptional(m);
+                    loadedInfo.setPerVertexNormal();
                 }
-                ++i;
+                else {
+                    if (isPerVertexNormalAvailable(m))
+                        loadedInfo.setPerVertexNormal();
+                }
+
+                if (loadedInfo.hasPerVertexNormal()) {
+                    for (uint i = 0; const auto& n : normals) {
+                        m.vertex(i).normal() = n.template cast<NST>();
+                        ++i;
+                    }
+                }
             }
         }
     }

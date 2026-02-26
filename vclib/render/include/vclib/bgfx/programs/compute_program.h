@@ -25,7 +25,15 @@
 
 namespace vcl {
 
-enum class ComputeProgram { DRAWABLE_MESH_POINTS, COUNT };
+enum class ComputeProgram {
+    DRAWABLE_MESH_POINTS,
+    HDR_EQUIRECT_TO_CUBEMAP,
+    CUBEMAP_MIPMAP_GEN,
+    CUBEMAP_TO_IRRADIANCE,
+    CUBEMAP_TO_SPECULAR,
+    IBL_LOOKUP_TEXTURE_GEN,
+    COUNT
+};
 
 } // namespace vcl
 

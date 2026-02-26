@@ -20,27 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
-#define VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
+#ifndef VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawable/draw_object_settings_bgfx.h>
-#endif
+#include <vclib/qt/mesh_viewer_render_app.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawable/draw_object_settings_opengl2.h>
-#endif
+#include <QFrame>
 
-namespace vcl {
+class QPushButton;
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using DrawObjectSettings = DrawObjectSettingsBGFX;
-#endif
+namespace vcl::qt {
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using DrawObjectSettings = DrawObjectSettingsOpenGL2;
-#endif
+namespace Ui {
+class ViewerRenderSettingsFrame;
+} // namespace Ui
 
-} // namespace vcl
+class ViewerRenderSettingsFrame : public QFrame
+{
+    Q_OBJECT
 
-#endif // VCL_RENDER_DRAWABLE_DRAW_OBJECT_SETTINGS_H
+    enum class RenderMode { CLASSIC = 0, PBR = 1 };
+
+    Ui::ViewerRenderSettingsFrame* mUI;
+
+    MeshViewerRenderApp* mViewer;
+
+public:
+    explicit ViewerRenderSettingsFrame(QWidget* parent = nullptr);
+    ~ViewerRenderSettingsFrame();
+
+    void setViewer(MeshViewerRenderApp* viewer);
+
+    void setPbrSettings(const PBRViewerSettings& settings);
+
+    void setPanorama(const std::string& panorama);
+
+    const PBRViewerSettings& pbrSettings() const;
+
+private:
+    void disableForm();
+
+    void updatePanoramaLabel();
+
+private slots:
+    void renderModeComboBoxCurrentIndexChanged(int index);
+
+    void exposureSpinBoxValueChanged(double value);
+
+    void toneMappingComboBoxCurrentIndexChanged(int index);
+
+    void iblCheckBoxCheckStateChanged(Qt::CheckState state);
+
+    void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
+
+    void loadPanoramaPushButtonClicked();
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H

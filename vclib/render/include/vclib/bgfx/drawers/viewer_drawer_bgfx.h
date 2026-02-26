@@ -23,11 +23,13 @@
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 
+#include "uniforms/viewer_drawer_uniforms.h"
+
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
-#include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 namespace vcl {
 
@@ -36,16 +38,17 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
 
-    DirectionalLightUniforms mDirectionalLightUniforms;
-
     // flags
     bool mStatsEnabled = false;
+
+    PBRViewerSettings mPBRSettings;
+
+    DrawableEnvironment mPanorama = DrawableEnvironment("");
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
     }
 
     ViewerDrawerBGFX(
@@ -56,17 +59,42 @@ public:
         ParentViewer::setDrawableObjectVector(v);
     }
 
+    const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
+
+    void setPbrSettings(const PBRViewerSettings& settings)
+    {
+        mPBRSettings = settings;
+    }
+
+    std::string panoramaFileName() const { return mPanorama.imageFileName(); }
+
+    void setPanorama(const std::string& panorama)
+    {
+        mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
+    }
+
     void onDrawContent(uint viewId) override
     {
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
-        settings.pbrMode = ParentViewer::isPBREnabled();
+        settings.pbrSettings = mPBRSettings;
+
+        settings.environment = &mPanorama;
 
         setViewTransform(viewId);
 
-        mDirectionalLightUniforms.updateLight(ParentViewer::light());
-        mDirectionalLightUniforms.bind();
+        DirectionalLightUniforms::setLight(ParentViewer::light());
+        DirectionalLightUniforms::bind();
+
+        ViewerDrawerUniforms::setExposure(mPBRSettings.exposure);
+        ViewerDrawerUniforms::setToneMapping(mPBRSettings.toneMapping);
+        ViewerDrawerUniforms::setSpecularMipsLevels(
+            mPanorama.specularMipLevels());
+        ViewerDrawerUniforms::bind();
+
+        // background will be drawn only if settings allow it
+        mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }

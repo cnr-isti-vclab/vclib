@@ -30,8 +30,16 @@ int main()
 
     PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    std::vector<Point3d> origins = { {0, -0.1, 0}, {0, 0.1, 0}, {0, 2, 0.1} };
-    std::vector<Point3d> directions = { {1, 0, 0}, {-1, 0, 0}, {0, -1, 0} };
+    std::vector<Point3d> origins = {
+        {0, -0.1, 0  },
+        {0, 0.1,  0  },
+        {0, 2,    0.1}
+    };
+    std::vector<Point3d> directions = {
+        {1,  0,  0},
+        {-1, 0,  0},
+        {0,  -1, 0}
+    };
 
     embree::Scene scene(m);
 

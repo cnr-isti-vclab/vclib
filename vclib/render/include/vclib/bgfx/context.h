@@ -170,6 +170,27 @@ public:
 
     ProgramManager& programManager();
 
+    /**
+     * @brief Given a template type T, allocate an array of T of given size,
+     * and return a pair containing the pointer to the allocated buffer and
+     * a release function that can be used to free the buffer.
+     *
+     * @tparam T: the type of the elements of the buffer
+     * @param[in] size: the number of elements to allocate
+     * @return a pair containing the pointer to the allocated buffer and
+     * a release function that can be used to free the buffer
+     */
+    template<typename T>
+    static std::pair<T*, bgfx::ReleaseFn> getAllocatedBufferAndReleaseFn(
+        uint size)
+    {
+        T* buffer = new T[size];
+
+        return std::make_pair(buffer, [](void* ptr, void*) {
+            delete[] static_cast<T*>(ptr);
+        });
+    }
+
 private:
     Context(void* windowHandle, void* displayHandle);
 

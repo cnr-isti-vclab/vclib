@@ -79,6 +79,15 @@ namespace vcl {
 template<typename MeshRenderDerived>
 class MeshRenderData
 {
+public:
+    struct TriangleMaterialChunk
+    {
+        uint startIndex     = 0; // start index in the triangle index buffer
+        uint indexCount     = 0; // num indices in the triangle index buffer
+        uint vertMaterialId = 0; // material id associated to the vertices
+        uint faceMaterialId = 0; // material id associated to the faces
+    };
+
 private:
     using MRI = MeshRenderInfo;
 
@@ -117,15 +126,6 @@ private:
     // function, since the user may want to update only a subset of the buffers
     MRI::BuffersBitSet mBuffersToFill = MRI::BUFFERS_ALL;
 
-protected:
-    struct TriangleMaterialChunk
-    {
-        uint startIndex     = 0; // start index in the triangle index buffer
-        uint indexCount     = 0; // num indices in the triangle index buffer
-        uint vertMaterialId = 0; // material id associated to the vertices
-        uint faceMaterialId = 0; // material id associated to the faces
-    };
-
     std::vector<TriangleMaterialChunk> mMaterialChunks;
 
 public:
@@ -156,11 +156,51 @@ public:
         // set data for edges
         updateEdgesData(mesh, btu);
 
-        // set data for mesh
-        updateMeshData(mesh, btu);
+        // set additional data for mesh
+        updateMeshAdditionalData(mesh, btu);
 
         // set data for textures
         updateTextureData(mesh, btu);
+    }
+
+    /**
+     * @brief Returns the number of triangle chunks.
+     *
+     * Each chunk corresponds to a set of triangles associated that can be
+     * rendered with the same material.
+     *
+     * @return The number of triangle chunks.
+     */
+    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
+
+    /**
+     * @brief Returns the triangle material chunk at the given index.
+     *
+     * @param[in] chunkIndex: The index of the triangle material chunk to
+     * retrieve. Must be less than `triangleChunksNumber()`.
+     * @return The triangle material chunk at the given index.
+     */
+    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
+    {
+        return mMaterialChunks[chunkIndex];
+    }
+
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
     }
 
 protected:
@@ -292,24 +332,6 @@ protected:
      * mesh.
      */
     uint numWireframeLines() const { return nWireframeLines; }
-
-    /**
-     * @brief Returns the material index for the given triangle chunk,
-     * according to the current render settings.
-     *
-     * @param[in] mrs: the mesh render settings
-     * @param[in] chunkNumber: the triangle chunk number
-     * @return the material index for the given triangle chunk
-     */
-    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
-    {
-        using enum MeshRenderInfo::Surface;
-
-        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].faceMaterialId;
-        else
-            return mMaterialChunks[chunkNumber].vertMaterialId;
-    }
 
     // utility functions to fill the buffers
 
@@ -911,14 +933,14 @@ protected:
     void setTextures(const MeshConcept auto&) {}
 
     /**
-     * @brief Function that sets the mesh uniforms from the mesh.
+     * @brief Function that sets the mesh additional data from the mesh.
      *
-     * The function should set the uniforms of the mesh (e.g., mesh color,
-     * transform) and prepare them to be bound to the shader program.
+     * The function should set the additional data of the mesh (e.g., mesh
+     * color, transform) and prepare them to be bound to the shader program.
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setMeshUniforms(const MeshConcept auto&) {}
+    void setMeshAdditionalData(const MeshConcept auto&) {}
 
 private:
     MeshRenderDerived& derived()
@@ -1119,15 +1141,15 @@ private:
         }
     }
 
-    void updateMeshData(
+    void updateMeshAdditionalData(
         const MeshConcept auto&       mesh,
         MeshRenderInfo::BuffersBitSet btu)
     {
         using enum MRI::Buffers;
 
-        if (btu[toUnderlying(MESH_UNIFORMS)]) {
-            // mesh uniforms
-            derived().setMeshUniforms(mesh);
+        if (btu[toUnderlying(MESH_ADDITIONAL_DATA)]) {
+            // mesh additional data
+            derived().setMeshAdditionalData(mesh);
         }
     }
 
