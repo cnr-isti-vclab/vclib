@@ -227,12 +227,27 @@ public:
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(
+    /**
+     * @brief Binds the textures associated to the material of the given triangle
+     * chunk. Returns the number of bound textures.
+     *
+     * @param[in] mrs: the mesh render settings, needed to identify the material
+     * index to use (per vertex or per face)
+     * @param[in] chunkNumber: the triangle chunk number
+     * @param[in] m: the mesh
+     * @return the number of bound textures
+     */
+    uint bindTextures(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+        uint boundTextures = 0;
+
+        DrawableMeshUniforms::TextureType tt =
+            DrawableMeshUniforms::TextureType::BASE_COLOR;
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
@@ -243,37 +258,18 @@ public:
                     if (tex.isValid()) {
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
-                            VCL_MRB_TEXTURE0 + j,
+                            boundTextures,
                             sTextureSamplerUniforms[j].handle(),
                             flags);
+
+                        tt = static_cast<DrawableMeshUniforms::TextureType>(j);
+                        DrawableMeshUniforms::setTextureStage(tt, boundTextures);
+                        boundTextures++;
                     }
                 }
             }
         }
-    }
-
-    std::array<bool, N_TEXTURE_TYPES> textureAvailableArray(
-        const MeshType& m,
-        uint            materialId) const
-    {
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-        if (materialId == UINT_NULL) {
-            return textureAvailable;
-        }
-        else {
-            assert(materialId < m.materialsNumber());
-            const Material& mat = m.material(materialId);
-
-            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& td = m.material(materialId).textureDescriptor(j);
-                const std::string& path = td.path();
-                if (!path.empty()) {
-                    const Texture& tex  = mMaterialTextures.at(path);
-                    textureAvailable[j] = tex.isValid();
-                }
-            }
-        }
-        return textureAvailable;
+        return boundTextures;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -780,7 +776,7 @@ private:
         if (!sTextureSamplerUniforms[0].isValid()) {
             for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
                 sTextureSamplerUniforms[i] = Uniform(
-                    Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                    ("s_tex" + std::to_string(i)).c_str(),
                     bgfx::UniformType::Sampler);
             }
         }

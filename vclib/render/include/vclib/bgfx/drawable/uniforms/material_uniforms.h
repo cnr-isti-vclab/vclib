@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
-#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
 
@@ -40,8 +40,6 @@ namespace vcl {
  */
 class MaterialUniforms
 {
-    static const uint N_TEXTURES = toUnderlying(Material::TextureType::COUNT);
-
     static inline std::array<float, 4> sBaseColor = {1.0, 1.0, 1.0, 1.0};
 
     // metallic, roughness and occlusion are stored in the B, G and R channels
@@ -60,7 +58,6 @@ class MaterialUniforms
 
     // settings packed in a vec4
     // .x : pbr settings
-    // .y : texture settings
     static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
 
     static inline Uniform sBaseColorUniform;
@@ -72,11 +69,10 @@ public:
     MaterialUniforms() = delete;
 
     static void set(
-        const Material&                     m,
-        bool                                vertexColorAvailable,
-        const std::array<bool, N_TEXTURES>& textureAvailable,
-        bool                                vertexTangentAvailable,
-        bool                                imageBasedLighting)
+        const Material& m,
+        bool            vertexColorAvailable,
+        bool            vertexTangentAvailable,
+        bool            imageBasedLighting)
     {
         uint pbrSettingBits = 0;
 
@@ -97,17 +93,6 @@ public:
         }
 
         sSettings[0] = std::bit_cast<float>(pbrSettingBits);
-
-        uint textureSettings = 0;
-
-        for (int i = 0; i < N_TEXTURES; ++i) {
-            if (textureAvailable[i]) {
-                // texture available, uses settings from 0 to N_TEXTURES
-                textureSettings |= 1 << (VCL_PBR_TEXTURE_BASE_COLOR + i);
-            }
-        }
-
-        sSettings[1] = std::bit_cast<float>(textureSettings);
 
         sBaseColor[0] = m.baseColor().redF();
         sBaseColor[1] = m.baseColor().greenF();

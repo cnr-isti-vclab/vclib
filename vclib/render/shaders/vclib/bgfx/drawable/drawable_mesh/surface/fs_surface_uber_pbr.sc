@@ -23,6 +23,7 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
@@ -33,14 +34,6 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
-
-// textures
-SAMPLER2D(baseColorTex, VCL_MRB_TEXTURE0);
-SAMPLER2D(metallicRoughnessTex, VCL_MRB_TEXTURE1);
-SAMPLER2D(normalTex, VCL_MRB_TEXTURE2);
-SAMPLER2D(occlusionTex, VCL_MRB_TEXTURE3);
-SAMPLER2D(emissiveTex, VCL_MRB_TEXTURE4);
-SAMPLER2D(s_brdf_lut, VCL_MRB_TEXTURE5);
 
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
@@ -77,9 +70,9 @@ void main()
             vertexBaseColor = v_color; // per-vertex color available
     }
 
-    if (useTexture && isBaseColorTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isBaseColorTextureAvailable()) {
         // base color texture available
-        textureBaseColor = texture2D(baseColorTex, texcoord);
+        textureBaseColor = baseColorTex(texcoord);
     }
 
     // multiply vertex color with material base color
@@ -93,9 +86,9 @@ void main()
     // metallic-roughness
     vec4 metallicRoughnessTexture = vec4_splat(1.0);
 
-    if (useTexture && isMetallicRoughnessTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isMetallicRoughnessTextureAvailable()) {
         // metallic-roughness texture available
-        metallicRoughnessTexture = texture2D(metallicRoughnessTex, texcoord);
+        metallicRoughnessTexture = metallicRoughnessTex(texcoord);
     }
 
     float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
@@ -104,8 +97,8 @@ void main()
     // normal
     vec3 normal;
 
-    if (useTexture && isNormalTextureAvailable(u_pbr_texture_settings)) {
-        vec3 normalTexture = texture2D(normalTex, texcoord).xyz;
+    if (useTexture && isNormalTextureAvailable()) {
+        vec3 normalTexture = normalTex(texcoord).xyz;
 
         // remapping normals
         // from [0,1] to [-1,1] for x and y (red and green)
@@ -142,9 +135,9 @@ void main()
     // emissive
     vec3 emissiveTexture = vec3_splat(1.0);
 
-    if (useTexture && isEmissiveTextureAvailable(u_pbr_texture_settings)) {
+    if (useTexture && isEmissiveTextureAvailable()) {
         // emissive texture available
-        emissiveTexture = texture2D(emissiveTex, texcoord).rgb;
+        emissiveTexture = emissiveTex(texcoord).rgb;
     }
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
@@ -176,15 +169,15 @@ void main()
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
 
         // Fresnel
-        vec2 brdf = texture2D(s_brdf_lut, vec2(NoV, roughness)).rg;
+        vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
         vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
         vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
 
         // occlusion
         float occlusion = 1.0;
-        if(useTexture && isOcclusionTextureAvailable(u_pbr_texture_settings))
+        if(useTexture && isOcclusionTextureAvailable())
         {
-            occlusion = texture2D(occlusionTex, texcoord).r;
+            occlusion = occlusionTex(texcoord).r;
         }
         occlusion = 1.0 + u_occlusionStrength * (occlusion - 1.0);
 

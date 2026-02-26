@@ -64,7 +64,7 @@ class DrawableEnvironment
         Uniform("s_specular", bgfx::UniformType::Sampler);
     // Sampler of mBrdfLuTexture
     const Uniform mBrdfLutSamplerUniform =
-        Uniform("s_brdf_lut", bgfx::UniformType::Sampler);
+        Uniform("s_tex5", bgfx::UniformType::Sampler);
 
     // The path of the environment image file provided as input.
     std::string mImagePath;
