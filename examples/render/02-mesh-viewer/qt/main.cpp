@@ -52,8 +52,14 @@ int main(int argc, char** argv)
 
     using enum vcl::MeshRenderInfo::Buffers;
 
+    // to test the per-vertex and per-face color rendering, we set both of them
+    m.enablePerVertexColor();
     m.enablePerFaceColor();
+
     for (auto& f : m.faces()) {
+        f.vertex(0)->color() = vcl::Color::Red;
+        f.vertex(1)->color() = vcl::Color::Green;
+        f.vertex(2)->color() = vcl::Color::Blue;
         if (f.index() % 3 == 0)
             f.color() = vcl::Color::Red;
         else if (f.index() % 3 == 1)
@@ -61,7 +67,7 @@ int main(int argc, char** argv)
         else
             f.color() = vcl::Color::Blue;
     }
-    m.updateBuffers({TRI_COLORS});
+    m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
     auto v = std::make_shared<vcl::DrawableObjectVector>();
     v->pushBack(std::move(m));

@@ -26,6 +26,7 @@ $output v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 #define p                     a_position
@@ -35,5 +36,7 @@ $output v_color, v_normal
 void main() {
     v_color = color;
     v_normal = normalize(mul(u_normalMatrix, normal));
-    gl_Position = mul(u_modelViewProj, vec4(p, 1.0));
+    vec4 pos = mul(u_modelViewProj, vec4(p, 1.0));
+    pos.z += -u_depthOffset * pos.w;
+    gl_Position = pos;
 }

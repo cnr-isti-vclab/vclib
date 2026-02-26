@@ -26,26 +26,23 @@ $output v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
-
-uniform vec4 u_settings;
 
 #define NEAR_EPSILON 0.001
 #define LENGTH_EPSILON 0.0001
 
-#define thickness             u_settings.x
+#define p0           a_position
+#define p1           a_texcoord0
 
-#define p0                    a_position
-#define p1                    a_texcoord0
+#define color0       a_color0
+#define color1       a_color1
 
-#define color0                a_color0
-#define color1                a_color1
+#define normal0      a_normal
+#define normal1      a_texcoord1
 
-#define normal0               a_normal
-#define normal1               a_texcoord1
-
-#define screenWidth           u_viewRect.z
-#define screenHeight          u_viewRect.w
+#define screenWidth  u_viewRect.z
+#define screenHeight u_viewRect.w
 
 void main() {
     int generalIndex = gl_VertexID % 4;
@@ -54,6 +51,10 @@ void main() {
     // segment points in clip space
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
+
+    // nudge towards camera to avoid z-fighting with other geometry
+    p0_NDC.z += -u_depthOffset * p0_NDC.w;
+    p1_NDC.z += -u_depthOffset * p1_NDC.w;
 
     vec3 n0_NDC = normalize(mul(u_normalMatrix, normal0));
     vec3 n1_NDC = normalize(mul(u_normalMatrix, normal1));
