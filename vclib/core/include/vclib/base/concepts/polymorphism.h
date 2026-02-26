@@ -23,16 +23,29 @@
 #ifndef VCL_BASE_CONCEPTS_POLYMORPHISM_H
 #define VCL_BASE_CONCEPTS_POLYMORPHISM_H
 
+#include "pointers.h"
+
 #include <concepts>
-#include <memory>
 
 namespace vcl {
+
+namespace detail {
+
+// true if T is a shared_ptr, and the type pointed by T is a base of D
+template<typename T, typename D>
+concept IsSharedPtrOfBaseOf =
+    IsSharedPointer<T> &&
+    std::derived_from<D, std::remove_pointer_t<typename T::element_type>>;
+
+} // namespace detail
 
 /**
  * @brief Concept that is evaluated true if T is a cloneable object.
  *
  * A cloneable object is an object that can be cloned by calling the method
- * `clone()`, which returns a shared pointer to the cloned object.
+ * `clone()`, which returns a shared pointer to the cloned object. The type of
+ * the shared pointer returned by `clone()` must be a shared pointer to a base
+ * class of T.
  *
  * Cloneable objects are useful when polymorphism is needed, and the object
  * needs to be copied without knowing the exact type of the object:
@@ -49,32 +62,7 @@ namespace vcl {
  */
 template<typename T>
 concept Cloneable = requires (T&& obj) {
-    // TODO: Right now, this concept can be used only with a base class that has
-    // a clone method, because the concept requires that the return type of the
-    // clone method is a shared pointer to the same class as the object. This is
-    // not always the case, especially when the clone method is overridden in
-    // derived classes. We need to find a way to make this concept work with
-    // overridden clone methods.
-    //
-    // However, we should also consider the consequences of this change for the
-    // class vcl::PolymorphicObjectVector, which relies on this concept to
-    // determine if an object can be cloned, and stores objects of the Base
-    // class in a vector.
-    //
-    // Example:
-    // class Base {
-    // public:
-    //     virtual std::shared_ptr<Base> clone() const = 0;
-    // };
-    //
-    // class Derived : public Base {
-    // public:
-    //     std::shared_ptr<Derived> clone() const { ... }
-    // };
-    //
-    // static_assert(vcl::Cloneable<Base>, ""); // OK
-    // static_assert(vcl::Cloneable<Derived>, ""); // Error, but should work
-    { obj.clone() } -> std::same_as<std::shared_ptr<std::remove_cvref_t<T>>>;
+    { obj.clone() } -> detail::IsSharedPtrOfBaseOf<std::remove_cvref_t<T>>;
 };
 
 } // namespace vcl
