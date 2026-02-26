@@ -2,12 +2,12 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
  * All rights reserved.                                                      *
- *                                                                           *
+*                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
  * it under the terms of the Mozilla Public License Version 2.0 as published *
  * by the Mozilla Foundation; either version 2 of the License, or            *
@@ -20,33 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include <vclib/bgfx/shaders_common.sh>
 
-namespace vcl {
+BUFFER_RO(face_selected, uint, 6);
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+void main() {
+    uint bufferIndex = uint(gl_PrimitiveID) / 32;
+    uint bitMask = 0x1 << (31 - (uint(gl_PrimitiveID) % 32));
+    if((face_selected[bufferIndex] & bitMask) != 0) {
+        gl_FragColor = uintABGRToVec4Color(uint(0x330000FF));
+    } else {
+        discard;
+    }
+}

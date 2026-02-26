@@ -30,13 +30,20 @@
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+#include <vclib/render/selection/selectable.h>
+#include <vclib/render/selection/selection_box.h>
 
 #include <bgfx/bgfx.h>
+
+#include <bitset>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
+class DrawableMeshBGFX :
+        public AbstractDrawableMesh,
+        public MeshType,
+        public Selectable
 {
 public:
     // TODO: to be removed after shader benchmarks
@@ -51,6 +58,14 @@ private:
 
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
+
+    mutable uint mBufToTexRemainingFrames = 255;
+
+    // VISIBLE FACES SELECTION DEBUGGING
+    // bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
+    // std::vector<uint8_t> mTexReadBackVec;
+    // std::array<uint, 2> mColAttSize;
+    // mutable uint mVisSelTexRBFrames = 255;
 
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
@@ -98,13 +113,51 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
+        swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
 
-    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b)
+    {
+        a.swap(b);
+    }
 
     using AbstractDrawableMesh::boundingBox;
+
+    void calculateSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        // VISIBLE FACES SELECTION DEBUGGING
+        // if (!bgfx::isValid(mBlitTex)) {
+        //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0],
+        //    params.texAttachmentsSize[1], false, 0,
+        //    bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST |
+        //    BGFX_TEXTURE_READ_BACK); mTexReadBackVec = std::vector<uint8_t>();
+        //    mTexReadBackVec.resize(params.texAttachmentsSize[0] *
+        //    params.texAttachmentsSize[1] * 4, 0); mColAttSize =
+        //    params.texAttachmentsSize;
+        //}
+        if (params.mode.isFaceSelection()) {
+            if (!(params.mode.isVisibleSelection() ?
+                      faceSelectionVisible(params) :
+                      faceSelection(params))) {
+                return;
+            }
+        }
+        else if (params.mode.isVertexSelection()) {
+            if (!vertexSelection(params)) {
+                return;
+            }
+        }
+        if (mBufToTexRemainingFrames != 255 || params.isTemporary) {
+            return;
+        }
+        mBufToTexRemainingFrames =
+            mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
+    }
 
     // TODO: to be removed after shader benchmarks
     void setSurfaceProgramType(SurfaceProgramsType type)
@@ -213,6 +266,45 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        if constexpr (HasFaces<MeshType>) {
+            std::vector<uint8_t> vec;
+            uint                 count = 0;
+            switch (mBufToTexRemainingFrames) {
+            case 0:
+                mBufToTexRemainingFrames = 255;
+                vec                      = mMRB.getSelectionBufferCopy();
+                for (size_t index = 0; index < vec.size(); index++) {
+                    count += uint(std::bitset<8>(vec[index]).count());
+                }
+                std::cout << "Selected count: " << count << std::endl;
+                break;
+            case 255: break;
+            default: mBufToTexRemainingFrames--;
+            }
+        }
+
+        // VISIBLE FACES SELECTION DEBUGGING
+        //{
+        //    if (mVisSelTexRBFrames == 0) {
+        //        mVisSelTexRBFrames = 255;
+        //        std::fstream file;
+        //        file.open("output.ppm", std::ios::binary | std::ios::out);
+        //        file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1]
+        //        <<"\n255\n"; size_t index = 0; for (const uint8_t& val:
+        //        mTexReadBackVec) {
+        //            ++index;
+        //            if (index%4 == 1) {
+        //                continue;
+        //            }
+        //            uint8_t newval = val * 128;
+        //            file.write(reinterpret_cast<const char*>(&newval), 1);
+        //        }
+        //        file.close();
+        //    } else if (mVisSelTexRBFrames != 255) {
+        //        mVisSelTexRBFrames--;
+        //    }
+        //}
+
         DrawableMeshUniforms::setColor(*this);
         MeshRenderSettingsUniforms::set(mMRS);
 
@@ -309,6 +401,42 @@ public:
                     pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
+
+    }
+
+    void drawSelection(bgfx::ViewId viewId) override {
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+
+        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        ProgramManager& pm = Context::instance().programManager();
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        bindUniforms();
+        mMRB.bindSelectedVerticesBuffer();
+
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS | BGFX_STATE_DEPTH_TEST_LEQUAL);
+        bgfx::setTransform(model.data());
+
+        bgfx::submit(
+            viewId,
+            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
+
+        mMRB.bindVertexBuffers(mMRS);
+        mMRB.bindIndexBuffers(mMRS);
+        bindUniforms();
+        mMRB.bindSelectedFacesBuffer();
+
+        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_DEPTH_TEST_LEQUAL);
+        bgfx::setTransform(model.data());
+
+        bgfx::submit(
+            viewId,
+            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
     }
 
     void drawId(const DrawObjectSettings& settings) const override
@@ -414,6 +542,47 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
+    bool vertexSelection(const SelectionParameters& params)
+    {
+        if constexpr (!HasVertices<MeshType>) {
+            return false;
+        }
+        return (
+            params.mode.isAtomicMode() ? mMRB.vertexSelectionAtomic(params) :
+                                         mMRB.vertexSelection(params));
+        return true;
+    }
+
+    bool faceSelection(const SelectionParameters& params)
+    {
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        return (
+            params.mode.isAtomicMode() ? mMRB.faceSelectionAtomic(params) :
+                                         mMRB.faceSelection(params));
+    }
+
+    bool faceSelectionVisible(const SelectionParameters& params)
+    {
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        Matrix44f model = Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        bool ret = mMRB.faceSelectionVisible(params, model);
+        // VISIBLE FACE SELECTION ATTACHMENT DEBUGGING (BLIT)
+        // if (!params.isTemporary) {
+        //    bgfx::blit(202, mBlitTex, 0, 0, params.meshIdTex, 0, 0,
+        //    params.texAttachmentsSize[0], params.texAttachmentsSize[1]);
+        //    bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
+        //    mVisSelTexRBFrames = 3;
+        //}
+        return ret;
+    }
+
     void bindUniforms() const
     {
         MeshRenderSettingsUniforms::bind();

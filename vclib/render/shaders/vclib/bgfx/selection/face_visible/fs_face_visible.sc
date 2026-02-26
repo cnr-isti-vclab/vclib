@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include <vclib/bgfx/shaders_common.sh>
 
-namespace vcl {
+uniform vec4 u_meshId;
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+#define V4RGBA(x) uintABGRToVec4Color(x).wzyx
 
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+void main() {
+    uint meshId = floatBitsToUint(u_meshId.x);
+    // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
+    if(meshId == uint(0)) {
+        discard;
+    }
+    uint priId = uint(gl_PrimitiveID);
+    gl_FragData[0] = V4RGBA(gl_PrimitiveID);
+    gl_FragData[1] = V4RGBA(meshId);
+}
