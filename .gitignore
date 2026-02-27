@@ -238,3 +238,7 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# Benchnmark example
+examples/render/980-benchmark/vclib-render-example-980-benchmark
+examples/render/980-benchmark/meshes/*
