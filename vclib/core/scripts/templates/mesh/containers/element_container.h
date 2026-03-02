@@ -83,12 +83,12 @@ public:
      * @brief Returns the number of **non-deleted** %EL_UC%s contained in
      * the %EL_UC% container of the Mesh.
      *
-     * If %EL_C%Number() != %EL_C%ContainerSize(), it means that there
+     * If %EL_C%Count() != %EL_C%ContainerSize(), it means that there
      * are some %EL_UC%s that are flagged as deleted.
      *
      * @return the number of non-deleted %EL_UC%s of the Mesh.
      */
-    uint %EL_C%Number() const { return Base::elementCount(); }
+    uint %EL_C%Count() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of %EL_UC%s (also deleted) contained in
@@ -106,11 +106,11 @@ public:
 
     /**
      * @brief Returns the number of deleted %EL_UC%s in the %EL_UC%
-     * container, that is %EL_C%ContainerSize() - %EL_C%Number().
+     * container, that is %EL_C%ContainerSize() - %EL_C%Count().
      *
      * @return The number of deleted %EL_UC%s in the container.
      */
-    uint deleted%EL_UC%Number() const
+    uint deleted%EL_UC%Count() const
     {
         return Base::deletedElementCount();
     }

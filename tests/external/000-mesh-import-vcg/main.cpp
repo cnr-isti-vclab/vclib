@@ -54,7 +54,7 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
 
         for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {
@@ -100,7 +100,7 @@ TEMPLATE_TEST_CASE(
         for (const auto& v : tm.vertices()) {
             REQUIRE(
                 v.template customComponent<float>("perVertex") ==
-                (float) v.index() / tm.vertexNumber());
+                (float) v.index() / tm.vertexCount());
         }
     }
 
@@ -224,14 +224,14 @@ TEMPLATE_TEST_CASE(
 
     PolyMesh pm = vcl::vc::meshFromVCGMesh<PolyMesh>(vcgMesh);
 
-    REQUIRE(pm.vertexNumber() == 8);
+    REQUIRE(pm.vertexCount() == 8);
     REQUIRE(pm.faceNumber() == 12);
 
     for (unsigned int fi = 0; fi < pm.faceNumber(); ++fi) {
         const auto& f    = pm.face(fi);
         const auto& vcgf = vcgMesh.face[fi];
 
-        REQUIRE(f.vertexNumber() == 3);
+        REQUIRE(f.vertexCount() == 3);
         for (unsigned int vi = 0; vi < 3; ++vi) {
             REQUIRE(
                 pm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
@@ -256,7 +256,7 @@ TEMPLATE_TEST_CASE(
         VCGMesh vcgMesh;
         vcl::vc::exportMeshToVCGMesh(tm, vcgMesh);
 
-        REQUIRE(vcgMesh.VN() == tm.vertexNumber());
+        REQUIRE(vcgMesh.VN() == tm.vertexCount());
         REQUIRE(vcgMesh.FN() == tm.faceNumber());
 
         for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {

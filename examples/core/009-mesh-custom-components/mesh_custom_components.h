@@ -47,7 +47,7 @@ auto meshCustomComponents()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
               << mesh.faceNumber() << " faces\n\n";
 
     // ========================================
@@ -242,7 +242,7 @@ auto meshCustomComponents()
     }
 
     // Simple Laplacian smoothing for flagged vertices only
-    std::vector<vcl::Point3d> newPositions(mesh.vertexNumber());
+    std::vector<vcl::Point3d> newPositions(mesh.vertexCount());
 
     // Copy current positions
     for (const auto& vertex : mesh.vertices()) {
@@ -287,7 +287,7 @@ auto meshCustomComponents()
         double displacement = (vertex.position() - originalPos).norm();
         totalDisplacement += displacement;
     }
-    double avgDisplacement = totalDisplacement / mesh.vertexNumber();
+    double avgDisplacement = totalDisplacement / mesh.vertexCount();
 
     std::cout << "Average vertex displacement: " << avgDisplacement << "\n";
     mesh.addCustomComponent<double>("averageDisplacement", avgDisplacement);

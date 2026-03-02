@@ -166,7 +166,7 @@ uint removeUnreferencedVertices(MeshType& m)
 
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
-    if (n < m.vertexNumber()) {
+    if (n < m.vertexCount()) {
         // will store on this vector only the indices of the referenced vertices
         std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
         // Iterate over all vertices in the mesh, and mark any unreferenced
@@ -213,18 +213,18 @@ uint removeDuplicateVertices(MeshType& m)
     using VertexType    = MeshType::VertexType;
     using VertexPointer = MeshType::VertexType*;
 
-    if (m.vertexNumber() == 0)
+    if (m.vertexCount() == 0)
         return 0;
 
     // a map that will be used to keep track of deleted vertices and their
     // corresponding pointers.
-    std::vector<uint> newVertexIndices(m.vertexNumber());
+    std::vector<uint> newVertexIndices(m.vertexCount());
     // assigning each vertex index to itself.
     std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
     uint deleted = 0;
 
-    std::vector<VertexPointer> perm(m.vertexNumber());
+    std::vector<VertexPointer> perm(m.vertexCount());
 
     // put all the vertices into a vector for sorting.
     uint k = 0;
@@ -417,7 +417,7 @@ uint removeDegenerateFaces(MeshType& m)
     // deleted.
     for (FaceType& f : m.faces()) {
         bool deg = false; // flag to check if a face is degenerate
-        for (uint i = 0; i < f.vertexNumber() && !deg; ++i) {
+        for (uint i = 0; i < f.vertexCount() && !deg; ++i) {
             if (f.vertex(i) == f.vertexMod(i + 1)) {
                 deg = true;
                 m.deleteFace(m.index(f));

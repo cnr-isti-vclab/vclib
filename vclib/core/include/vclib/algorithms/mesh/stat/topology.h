@@ -43,7 +43,7 @@ void setReferencedVertices(const auto& mesh, auto& refs, uint& nRefs)
     // check if the Cont container of the Mesh has vertex references
     if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
         // if there are still some vertices non-referenced
-        if (nRefs < mesh.vertexNumber()) {
+        if (nRefs < mesh.vertexCount()) {
             constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
             // for eache element of the Cont container
             for (const auto& el : mesh.template elements<ELEM_ID>()) {
@@ -106,7 +106,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
     // First Loop, count how many faces are incident on a vertex and store it in
     // TD, and flag how many vertices are incident on non manifold edges.
     for (const FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             TD[m.index(f.vertex(i))]++;
             if (!isFaceManifoldOnEdge(f, i)) {
                 nonManifoldInc[m.index(f.vertex(i))]        = true;
@@ -117,7 +117,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 
     std::vector<bool> visited(m.vertexContainerSize(), false);
     for (const FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (!visited[m.index(f.vertex(i))]) {
                 visited[m.index(f.vertex(i))] = true;
                 MeshPos pos(&f, i);
@@ -190,7 +190,7 @@ uint countPerFaceVertexReferences(const FaceMeshConcept auto& mesh)
     }
     else {
         for (const auto& f : mesh.faces()) {
-            nRefs += f.vertexNumber();
+            nRefs += f.vertexCount();
         }
     }
 
@@ -220,7 +220,7 @@ uint largestFaceSize(const FaceMeshConcept auto& mesh)
     }
     else {
         for (const auto& f : mesh.faces()) {
-            maxFaceSize = std::max(maxFaceSize, f.vertexNumber());
+            maxFaceSize = std::max(maxFaceSize, f.vertexCount());
         }
     }
 
@@ -244,7 +244,7 @@ uint countTriangulatedTriangles(const FaceMeshConcept auto& mesh)
     uint nTris = 0;
 
     for (const auto& f : mesh.faces()) {
-        nTris += f.vertexNumber() - 2;
+        nTris += f.vertexCount() - 2;
     }
 
     return nTris;
@@ -500,7 +500,7 @@ uint countVerticesToDuplicateByWedgeTexCoords(
         mesh.vertexContainerSize());
 
     for (const auto& f : mesh.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             uint vi = f.vertexIndex(i);
 
             // check if the i-th wedge texcoord of the face already exists
@@ -622,7 +622,7 @@ Container referencedVertices(
             mesh, refVertices, nRefs, typename MeshType::Containers());
     }
 
-    nUnref = mesh.vertexNumber() - nRefs;
+    nUnref = mesh.vertexCount() - nRefs;
 
     return refVertices;
 }
@@ -825,7 +825,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
                 ccf.insert(m.index(fpt));
 
                 // add the adjacent faces of the current visited in the stack
-                for (uint j = 0; j < fpt->vertexNumber(); ++j) {
+                for (uint j = 0; j < fpt->vertexCount(); ++j) {
                     const FaceType* adjf = fpt->adjFace(j);
                     // if there is an adj face and it has not been visited
                     if (adjf != nullptr && !visitedFaces[m.index(adjf)]) {

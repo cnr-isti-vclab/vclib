@@ -50,12 +50,12 @@ namespace vcl {
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the vertex container of the mesh and then adds a number of vertices
- * that depends on the given `vertexNumber`. In this scenario, all the old
+ * that depends on the given `vertexCount`. In this scenario, all the old
  * vertices with their components stored in the mesh before calling this
  * function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `vertexNumber` is equal to the number of vertices of the mesh. If
+ * the given `vertexCount` is equal to the number of vertices of the mesh. If
  * this is not the case, an exception is thrown. Then, the function sets the
  * positions of the vertices of the mesh from the input buffer. In this
  * scenario, all the components (except the positions) of the vertices stored in
@@ -67,7 +67,7 @@ namespace vcl {
  * std::vector).
  *
  * @throws vcl::WrongSizeException if `clearBeforeSet` is false and
- * `vertexNumber` != mesh.vertexNumber().
+ * `vertexCount` != mesh.vertexCount().
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
@@ -75,7 +75,7 @@ namespace vcl {
  * @param[in/out] mesh: the mesh on which import the input vertices.
  * @param[in] buffer: a contiguous array containing the positions of the
  * vertices of the mesh.
- * @param[in] vertexNumber: the number of vertices contained in the input
+ * @param[in] vertexCount: the number of vertices contained in the input
  * buffer.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the vertices of the mesh before adding the vertices from the input buffer.
@@ -85,7 +85,7 @@ namespace vcl {
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to `vertexCount`.
  *
  * @ingroup import_buffer
  */
@@ -93,28 +93,28 @@ template<MeshConcept MeshType>
 void vertexPositionsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              vertexNumber,
+    uint              vertexCount,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
     uint              numRows        = UINT_NULL)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? vertexNumber : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? vertexCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearVertices();
-        mesh.resizeVertices(vertexNumber);
+        mesh.resizeVertices(vertexCount);
     }
     else {
-        if (vertexNumber != mesh.vertexNumber()) {
+        if (vertexCount != mesh.vertexCount()) {
             throw WrongSizeException(
                 "The input vertex number does not match the number of vertices "
                 "of the mesh\n"
                 "Number of vertices in the mesh: " +
-                std::to_string(mesh.vertexNumber()) +
+                std::to_string(mesh.vertexCount()) +
                 "\nNumber of input vertex number: " +
-                std::to_string(vertexNumber));
+                std::to_string(vertexCount));
         }
     }
 
@@ -218,19 +218,19 @@ void faceIndicesFromBuffer(
     if constexpr (HasPolygons<MeshType>) {
         uint i = 0;
         for (auto& f : mesh.faces()) {
-            uint vertexNumber = 0;
+            uint vertexCount = 0;
 
             // count the number of vertices of the face
-            while (vertexNumber < faceSize &&
-                   at(buffer, i, vertexNumber, NUM_ROWS, faceSize, storage) !=
+            while (vertexCount < faceSize &&
+                   at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
                        -1 &&
-                   at(buffer, i, vertexNumber, NUM_ROWS, faceSize, storage) !=
+                   at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
                        UINT_NULL)
-                vertexNumber++;
+                vertexCount++;
 
-            f.resizeVertices(vertexNumber);
+            f.resizeVertices(vertexCount);
 
-            for (uint j = 0; j < vertexNumber; ++j)
+            for (uint j = 0; j < vertexCount; ++j)
                 f.setVertex(j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
             ++i;
         }
@@ -1098,7 +1098,7 @@ void vertexTexCoordsFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
 
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);

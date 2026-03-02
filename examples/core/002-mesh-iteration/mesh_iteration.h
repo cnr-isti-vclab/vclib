@@ -44,7 +44,7 @@ void meshIteration()
     vcl::TriMesh mesh =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
+    std::cout << "Loaded mesh with " << mesh.vertexCount() << " vertices and "
               << mesh.faceNumber() << " faces" << std::endl;
 
     /****** Basic iteration ******/
@@ -208,25 +208,25 @@ void meshIteration()
     vcl::PolyMesh polyMesh = vcl::loadMesh<vcl::PolyMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    std::cout << "Loaded polygon mesh with " << polyMesh.vertexNumber()
+    std::cout << "Loaded polygon mesh with " << polyMesh.vertexCount()
               << " vertices and " << polyMesh.faceNumber() << " faces"
               << std::endl;
 
     // Iterate over polygon faces (variable number of vertices)
     for (const auto& face : polyMesh.faces()) {
         std::cout << "Polygon face " << face.index() << " has "
-                  << face.vertexNumber() << " vertices: ";
-        for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+                  << face.vertexCount() << " vertices: ";
+        for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
             std::cout << face.vertexIndex(i) << " ";
         }
         std::cout << std::endl;
 
         // Calculate polygon centroid
         vcl::Point3d centroid(0, 0, 0);
-        for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+        for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
             centroid += face.vertex(i)->position();
         }
-        centroid /= face.vertexNumber();
+        centroid /= face.vertexCount();
         std::cout << "  Centroid: " << centroid << std::endl;
     }
 

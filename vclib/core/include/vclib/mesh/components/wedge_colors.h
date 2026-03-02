@@ -151,11 +151,11 @@ public:
      *
      * @code{.cpp}
      * f.wedgeColorMod(-1) = vcl::Color::Red; // the wedge color in position
-     *                                        // vertexNumber() - 1
+     *                                        // vertexCount() - 1
      * @endcode
      *
      * @param[in] i: the position of the required wedge color in the container,
-     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * w.r.t. the position 0; value is modularized on vertexCount().
      * @return A reference to the required wedge color of the element.
      */
     vcl::Color& wedgeColorMod(int i) { return colors().atMod(i); }
@@ -163,7 +163,7 @@ public:
     /**
      * @brief Same of wedgeColorMod(int) but returns a const reference.
      * @param[in] i: the position of the required wedge color in the container,
-     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * w.r.t. the position 0; value is modularized on vertexCount().
      * @return A const reference to the required wedge color of the element.
      */
     const vcl::Color& wedgeColorMod(int i) const { return colors().atMod(i); }
@@ -304,7 +304,7 @@ private:
     template<typename Element>
     void importWedgeColorsFrom(const Element& e)
     {
-        for (uint i = 0; i < e.vertexNumber(); ++i) {
+        for (uint i = 0; i < e.vertexCount(); ++i) {
             wedgeColor(i) = e.wedgeColor(i);
         }
     }
@@ -395,7 +395,7 @@ void WedgeColors<N, ParentElemType, OPT>::importFrom(const Element& e, bool)
                 }
                 // from dynamic to static, but dynamic size == static size
                 else if constexpr (Element::WEDGE_COLOR_NUMBER < 0) {
-                    if (e.vertexNumber() == N) {
+                    if (e.vertexCount() == N) {
                         importWedgeColorsFrom(e);
                     }
                 }
@@ -407,7 +407,7 @@ void WedgeColors<N, ParentElemType, OPT>::importFrom(const Element& e, bool)
             else {
                 // from static/dynamic to dynamic size: need to resize
                 // first, then import
-                resize(e.vertexNumber());
+                resize(e.vertexCount());
                 importWedgeColorsFrom(e);
             }
         }

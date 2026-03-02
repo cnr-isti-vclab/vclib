@@ -52,7 +52,7 @@ auto meshTextureAndTexCoords()
         meshVertexTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_verttexcoords.ply");
 
-    std::cout << "   Loaded " << meshVertexTexCoords.vertexNumber()
+    std::cout << "   Loaded " << meshVertexTexCoords.vertexCount()
               << " vertices, " << meshVertexTexCoords.faceNumber() << " faces"
               << std::endl;
 
@@ -63,7 +63,7 @@ auto meshTextureAndTexCoords()
         // Access first few vertex texture coordinates
         std::cout << "   First 3 vertex texture coordinates:" << std::endl;
         for (vcl::uint i = 0;
-             i < std::min(3u, meshVertexTexCoords.vertexNumber());
+             i < std::min(3u, meshVertexTexCoords.vertexCount());
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
@@ -91,7 +91,7 @@ auto meshTextureAndTexCoords()
         meshWedgeTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply",
         settings);
-    std::cout << "   Loaded " << meshWedgeTexCoords.vertexNumber()
+    std::cout << "   Loaded " << meshWedgeTexCoords.vertexCount()
               << " vertices, " << meshWedgeTexCoords.faceNumber() << " faces"
               << std::endl;
 
@@ -106,7 +106,7 @@ auto meshTextureAndTexCoords()
             if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
                 std::cout << "     material_id " << face.materialIndex();
             }
-            for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+            for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
                 auto& texCoord = face.wedgeTexCoord(i);
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
                           << texCoord.v() << ") ";
@@ -184,7 +184,7 @@ auto meshTextureAndTexCoords()
 
     customMesh.pushTextureImage("custom_texture_path.png", image);
 
-    std::cout << "   Created custom mesh with " << customMesh.vertexNumber()
+    std::cout << "   Created custom mesh with " << customMesh.vertexCount()
               << " vertices and " << customMesh.faceNumber() << " faces"
               << std::endl;
     std::cout << "   ✓ Has vertex texture coordinates: "

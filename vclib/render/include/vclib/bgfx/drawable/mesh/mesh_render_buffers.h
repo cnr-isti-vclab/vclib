@@ -150,7 +150,7 @@ public:
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-            mesh.vertexNumber(),
+            mesh.vertexCount(),
             1,
             1);
 
@@ -363,7 +363,7 @@ private:
 
             // create the dynamic vertex buffer for splatting
             mVertexQuadBuffer.create(
-                mesh.vertexNumber() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
+                mesh.vertexCount() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
 
             // create the index buffer for splatting
             setVertexQuadIndexBuffer(mesh);
@@ -381,7 +381,7 @@ private:
      */
     void setVertexQuadIndexBuffer(const MeshType& mesh)
     {
-        const uint totalIndices = mesh.vertexNumber() * 6;
+        const uint totalIndices = mesh.vertexCount() * 6;
 
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);

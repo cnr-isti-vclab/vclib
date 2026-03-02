@@ -169,12 +169,12 @@ public:
      * auto* next = e.adjVertexMod(k+1); // the adj vertex next to k, that may
      *                                   // also be at pos 0
      * auto* last = e.adjVertexMod(-1); // the adj vertex in position
-     *                                  // adjVertexNumber()-1
+     *                                  // adjVertexCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent vertex in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjVertexNumber().
+     * adjVertexCount().
      * @return The pointer to the required adjacent vertex of the element.
      */
     Vertex* adjVertexMod(int i) { return Base::elementMod(i); }
@@ -184,7 +184,7 @@ public:
      * vertex.
      * @param[in] i: the position of the required adjacent vertex in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjVertexNumber().
+     * adjVertexCount().
      * @return The pointer to the required adjacent vertex of the element.
      */
     const Vertex* adjVertexMod(int i) const { return Base::elementMod(i); }

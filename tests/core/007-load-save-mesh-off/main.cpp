@@ -111,7 +111,7 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = offPolyCube();
         vcl::loadOff(tm, ss, loadedInfo);
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
 
@@ -120,7 +120,7 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = offTriCube();
         vcl::loadOff(tm, ss, loadedInfo);
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
 
@@ -129,7 +129,7 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = offPolyCube();
         vcl::loadOff(pm, ss, loadedInfo);
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 6);
     }
 
@@ -138,7 +138,7 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = offTriCube();
         vcl::loadOff(pm, ss, loadedInfo);
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 12);
     }
 }

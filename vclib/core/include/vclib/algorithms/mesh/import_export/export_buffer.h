@@ -79,7 +79,7 @@ void vertexPositionsToBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
     for (uint i = 0; const auto& p : mesh.vertices() | views::positions) {
         at(buffer, i, 0, NUM_ROWS, 3, storage) = p.x();
         at(buffer, i, 1, NUM_ROWS, 3, storage) = p.y();
@@ -164,8 +164,8 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
 {
     uint sum = 0;
     for (uint i = 0; const auto& f : mesh.faces()) {
-        buffer[i] = f.vertexNumber();
-        sum += f.vertexNumber();
+        buffer[i] = f.vertexCount();
+        sum += f.vertexCount();
         ++i;
     }
     return sum;
@@ -234,7 +234,7 @@ void faceVertexIndicesToBuffer(
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             buffer[i] = vIndex(f, j);
             ++i;
         }
@@ -309,7 +309,7 @@ void faceVertexIndicesToBuffer(
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize; ++j) {
             at(buffer, i, j, NUM_ROWS, largestFaceSize, storage) =
-                j < f.vertexNumber() ? vIndex(f, j) : -1;
+                j < f.vertexCount() ? vIndex(f, j) : -1;
         }
         ++i;
     }
@@ -526,9 +526,9 @@ void wireframeVertexIndicesToBuffer(
         numRows == UINT_NULL ? countPerFaceVertexReferences(mesh) : numRows;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             uint v0 = vIndex(f, j);
-            uint v1 = vIndex(f, (j + 1) % f.vertexNumber());
+            uint v1 = vIndex(f, (j + 1) % f.vertexCount());
 
             at(buffer, i, 0, NUM_ROWS, 2, storage) = v0;
             at(buffer, i, 1, NUM_ROWS, 2, storage) = v1;
@@ -585,7 +585,7 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * Usage example with std::vector<bool>:
  *
  * @code{.cpp}
- * std::vector<bool> vec(myMesh.vertexNumber());
+ * std::vector<bool> vec(myMesh.vertexCount());
  * vcl::vertexSelectionToBuffer(myMesh, vec.data());
  * @endif
  *
@@ -1389,7 +1389,7 @@ void vertexTangentsToBuffer(
 
     requirePerVertexTangent(mesh);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
     const uint NUM_COLS = storeHandednessAsW ? 4 : 3;
 
     for (uint i = 0; const auto& v : mesh.vertices()) {
@@ -1437,7 +1437,7 @@ void vertexTexCoordsToBuffer(
 
     requirePerVertexTexCoord(mesh);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
 
     for (uint i = 0; const auto& t : mesh.vertices() | views::texCoords) {
         at(buffer, i, 0, NUM_ROWS, 2, storage) = t.u();
@@ -1610,7 +1610,7 @@ void faceWedgeTexCoordsToBuffer(
             uint index = i * largestFaceSize * 2 + j;
             if (storage == MatrixStorageType::COLUMN_MAJOR)
                 index = j * NUM_ROWS + i;
-            if (fi < f.vertexNumber()) {
+            if (fi < f.vertexCount()) {
                 const auto& w = f.wedgeTexCoord(fi);
                 if (j % 2 == 0)
                     buffer[index] = w.u();
@@ -1713,7 +1713,7 @@ void triangulatedFaceMaterialIndicesToBuffer(
  * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
+ * std::vector<double> buffer((mesh.vertexCount() + nV) * 2);
  * wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(mesh, vertWedgeMap,
  *     facesToReassign, buffer.data());
  * @endcode
@@ -1750,7 +1750,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
 
     requirePerFaceWedgeTexCoords(mesh);
 
-    const uint NUM_ROWS = mesh.vertexNumber() + facesToReassign.size();
+    const uint NUM_ROWS = mesh.vertexCount() + facesToReassign.size();
 
     // first export the texcoords of the non-duplicated vertices, using the
     // vertWedgeMap to get the texcoord index in the face
@@ -1807,7 +1807,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
+ * std::vector<ushort> buffer(mesh.vertexCount() + nV);
  * faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(mesh,
  *     vertWedgeMap, facesToReassign, buffer.data());
  * @endcode
@@ -1838,7 +1838,7 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
 {
     requirePerFaceMaterialIndex(mesh);
 
-    const uint VERT_NUM = mesh.vertexNumber() + facesToReassign.size();
+    const uint VERT_NUM = mesh.vertexCount() + facesToReassign.size();
 
     // first export the material indices of the non-duplicated vertices, using
     // the vertWedgeMap to get the material index in the face
@@ -1877,7 +1877,7 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerVertexAdjacentVerticesNumber(myMesh);
- * Eigen::MatrixXi vertexAdj(myMesh.vertexNumber(), lva);
+ * Eigen::MatrixXi vertexAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentVerticesToBuffer(
  *    myMesh, vertexAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -1905,7 +1905,7 @@ void vertexAdjacentVerticesToBuffer(
     requireVertexContainerCompactness(mesh);
     requirePerVertexAdjacentVertices(mesh);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
 
     const uint NUM_COLS = largestAdjacentVerticesSize;
 
@@ -1998,7 +1998,7 @@ void elementAdjacentFacesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerVertexAdjacentFacesNumber(myMesh);
- * Eigen::MatrixXi faceAdj(myMesh.vertexNumber(), lva);
+ * Eigen::MatrixXi faceAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentFacesToBuffer(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -2172,7 +2172,7 @@ void elementAdjacentEdgesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerVertexAdjacentEdgesNumber(myMesh);
- * Eigen::MatrixXi edgeAdj(myMesh.vertexNumber(), lva);
+ * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -2212,7 +2212,7 @@ void vertexAdjacentEdgesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerFaceAdjacentEdgesNumber(myMesh);
- * Eigen::MatrixXi edgeAdj(myMesh.vertexNumber(), lva);
+ * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::faceAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -2252,7 +2252,7 @@ void faceAdjacentEdgesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerEdgeAdjacentEdgesNumber(myMesh);
- * Eigen::MatrixXi edgeAdj(myMesh.vertexNumber(), lva);
+ * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::edgeAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode

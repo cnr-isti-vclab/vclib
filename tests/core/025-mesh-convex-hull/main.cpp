@@ -70,7 +70,7 @@ TEMPLATE_TEST_CASE(
         // The convex hull of a cube should have 8 vertices (the corners)
         // and 12 triangular faces (6 quad faces of the cube, each split into 2
         // triangles)
-        REQUIRE(hull.vertexNumber() == 8);
+        REQUIRE(hull.vertexCount() == 8);
         REQUIRE(hull.faceNumber() == 12);
 
         // Verify that the hull is valid and closed
@@ -124,7 +124,7 @@ TEMPLATE_TEST_CASE(
         TriMesh hull = vcl::convexHull<TriMesh>(points, seed);
 
         // The convex hull of a tetrahedron should have 4 vertices and 4 faces
-        REQUIRE(hull.vertexNumber() == 4);
+        REQUIRE(hull.vertexCount() == 4);
         REQUIRE(hull.faceNumber() == 4);
 
         // Verify that the hull is valid and closed

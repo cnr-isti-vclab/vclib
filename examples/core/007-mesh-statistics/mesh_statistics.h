@@ -47,7 +47,7 @@ inline void meshStatistics()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
               << mesh.faceNumber() << " faces\n\n";
 
     // Update bounding box for geometric calculations
@@ -263,7 +263,7 @@ inline void meshStatistics()
     vcl::TriMesh mesh2;
     vcl::loadMesh(mesh2, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Comparison mesh (cube): " << mesh2.vertexNumber()
+    std::cout << "Comparison mesh (cube): " << mesh2.vertexCount()
               << " vertices, " << mesh2.faceNumber() << " faces\n";
 
     double surfaceArea2 = vcl::surfaceArea(mesh2);

@@ -139,7 +139,7 @@ public:
         bindTextures();
     }
 
-    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+    uint vertexCount() const override { return MeshType::vertexCount(); }
 
     uint faceNumber() const override
     {
@@ -270,7 +270,7 @@ public:
 private:
     void renderPass() const
     {
-        uint nv = mMRD.vertexNumber();
+        uint nv = mMRD.vertexCount();
         uint nt = mMRD.triangleNumber();
 
         const float*    positions       = mMRD.vertexBufferData();

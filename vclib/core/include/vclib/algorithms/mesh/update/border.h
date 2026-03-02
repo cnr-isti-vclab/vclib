@@ -49,7 +49,7 @@ void updateBorder(MeshType& m)
     using FaceType   = MeshType::FaceType;
 
     for (FaceType& f : m.faces())
-        for (uint i = 0; i < f.vertexNumber(); ++i)
+        for (uint i = 0; i < f.vertexCount(); ++i)
             f.edgeOnBorder(i) = false;
 
     if (m.faceNumber() == 0)

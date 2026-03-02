@@ -441,7 +441,7 @@ void readOffFaces(
             }
             if (!splitFace) { // classic load, no split needed
                 for (uint i = 0; i < vids.size(); ++i) {
-                    if (vids[i] >= mesh.vertexNumber()) {
+                    if (vids[i] >= mesh.vertexCount()) {
                         throw MalformedFileException(
                             "Bad vertex index for face " + std::to_string(i));
                     }

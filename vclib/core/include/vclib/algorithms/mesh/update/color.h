@@ -52,7 +52,7 @@ void setPerElemColorFromVertexColor(MeshType& m)
         for (const auto* v : e.vertices()) {
             avg += v->color().template cast<uint>();
         }
-        avg /= e.vertexNumber();
+        avg /= e.vertexCount();
         e.color() = avg.template cast<uint8_t>();
     }
 }
@@ -449,7 +449,7 @@ void setPerVertexColorFromFaceBorderFlag(
     setPerVertexColor(m, baseColor);
 
     for (FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeOnBorder(i)) {
                 if (f.vertex(i)->color() == baseColor)
                     f.vertex(i)->color() = borderColor;
@@ -580,7 +580,7 @@ void setPerFaceColorScattering(
         }
         if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
             if (checkFauxEdges && isPerFaceAdjacentFacesAvailable(m)) {
-                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                for (uint i = 0; i < f.vertexCount(); ++i) {
                     if (f.edgeFaux(i)) {
                         assert(f.adjFace(i) != nullptr);
                         f.adjFace(i)->color() = f.color();

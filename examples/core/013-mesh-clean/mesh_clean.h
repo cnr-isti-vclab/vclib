@@ -50,7 +50,7 @@ auto meshClean()
     vcl::TriMesh mesh = originalMesh;
     mesh.name()       = "Cleaned Brain Mesh";
 
-    std::cout << "Original mesh: " << mesh.vertexNumber() << " vertices, "
+    std::cout << "Original mesh: " << mesh.vertexCount() << " vertices, "
               << mesh.faceNumber() << " faces" << std::endl;
 
     // Remove unreferenced vertices
@@ -76,7 +76,7 @@ auto meshClean()
     // Compact the mesh to remove deleted elements
     mesh.compact();
 
-    std::cout << "Cleaned mesh: " << mesh.vertexNumber() << " vertices, "
+    std::cout << "Cleaned mesh: " << mesh.vertexCount() << " vertices, "
               << mesh.faceNumber() << " faces\n"
               << std::endl;
 
@@ -101,7 +101,7 @@ auto meshClean()
     testMesh.addFace(v0, v1, v2);
     testMesh.addFace(v0, v1, v3); // This face will be affected
 
-    std::cout << "Test mesh before cleaning: " << testMesh.vertexNumber()
+    std::cout << "Test mesh before cleaning: " << testMesh.vertexCount()
               << " vertices, " << testMesh.faceNumber() << " faces"
               << std::endl;
 
@@ -111,7 +111,7 @@ auto meshClean()
               << std::endl;
 
     testMesh.compact();
-    std::cout << "Test mesh after cleaning: " << testMesh.vertexNumber()
+    std::cout << "Test mesh after cleaning: " << testMesh.vertexCount()
               << " vertices, " << testMesh.faceNumber() << " faces"
               << std::endl;
 

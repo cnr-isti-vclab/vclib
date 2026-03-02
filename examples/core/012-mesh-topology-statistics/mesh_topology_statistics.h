@@ -42,7 +42,7 @@ void meshTopologyStatistics()
     rangeMesh.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(rangeMesh);
 
-    std::cout << "Range mesh: " << rangeMesh.vertexNumber() << " vertices, "
+    std::cout << "Range mesh: " << rangeMesh.vertexCount() << " vertices, "
               << rangeMesh.faceNumber() << " faces" << std::endl;
 
     // Find connected components

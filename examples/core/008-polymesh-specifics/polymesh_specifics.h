@@ -57,7 +57,7 @@ auto polymeshSpecifics()
         polyMesh.addVertex(vcl::Point3d(x, y, 0.0));
     }
 
-    std::cout << "Added " << polyMesh.vertexNumber() << " vertices\n";
+    std::cout << "Added " << polyMesh.vertexCount() << " vertices\n";
 
     // Create a hexagonal face
     vcl::uint fid     = polyMesh.addFace();
@@ -70,7 +70,7 @@ auto polymeshSpecifics()
         // hexFace.pushVertex(&polyMesh.vertex(i));
     }
 
-    std::cout << "Created hexagonal face with " << hexFace.vertexNumber()
+    std::cout << "Created hexagonal face with " << hexFace.vertexCount()
               << " vertices\n";
 
     // Add a center vertex (shifted on z) and create triangular faces
@@ -93,7 +93,7 @@ auto polymeshSpecifics()
     triMesh.importFrom(polyMesh);
     triMesh.name() = "Hexagon Pyramid TriMesh";
 
-    std::cout << "Converted to TriMesh: " << triMesh.vertexNumber()
+    std::cout << "Converted to TriMesh: " << triMesh.vertexCount()
               << " vertices, " << triMesh.faceNumber() << " faces\n\n";
 
     // ========================================
@@ -111,9 +111,9 @@ auto polymeshSpecifics()
     vcl::loadMesh(polyMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
     vcl::loadMesh(triMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    std::cout << "Loaded cube as PolyMesh: " << polyMeshLoaded.vertexNumber()
+    std::cout << "Loaded cube as PolyMesh: " << polyMeshLoaded.vertexCount()
               << " vertices, " << polyMeshLoaded.faceNumber() << " faces\n";
-    std::cout << "Loaded cube as TriMesh:  " << triMeshLoaded.vertexNumber()
+    std::cout << "Loaded cube as TriMesh:  " << triMeshLoaded.vertexCount()
               << " vertices, " << triMeshLoaded.faceNumber() << " faces\n";
 
     // Analyze face structure
@@ -122,7 +122,7 @@ auto polymeshSpecifics()
     // PolyMesh face analysis
     std::map<int, int> polyFaceSizes;
     for (const auto& face : polyMeshLoaded.faces()) {
-        int size = face.vertexNumber();
+        int size = face.vertexCount();
         polyFaceSizes[size]++;
     }
 
@@ -157,28 +157,28 @@ auto polymeshSpecifics()
     // Create a square face
     vcl::uint sfi        = dynamicMesh.addFace();
     auto&     squareFace = dynamicMesh.face(sfi);
-    std::cout << "Created empty face, vertices: " << squareFace.vertexNumber()
+    std::cout << "Created empty face, vertices: " << squareFace.vertexCount()
               << "\n";
 
     // Add vertices one by one
     squareFace.pushVertex(0u);
-    std::cout << "After adding 1st vertex: " << squareFace.vertexNumber()
+    std::cout << "After adding 1st vertex: " << squareFace.vertexCount()
               << " vertices\n";
 
     squareFace.pushVertex(1u);
     squareFace.pushVertex(3u);
     squareFace.pushVertex(2u);
-    std::cout << "After adding all vertices: " << squareFace.vertexNumber()
+    std::cout << "After adding all vertices: " << squareFace.vertexCount()
               << " vertices\n";
 
     // Clear and reset vertices
     squareFace.clearVertices();
-    std::cout << "After clearing: " << squareFace.vertexNumber()
+    std::cout << "After clearing: " << squareFace.vertexCount()
               << " vertices\n";
 
     // Set multiple vertices at once
     squareFace.setVertices(0u, 1u, 3u, 2u);
-    std::cout << "After setVertices: " << squareFace.vertexNumber()
+    std::cout << "After setVertices: " << squareFace.vertexCount()
               << " vertices\n";
 
     // ========================================
@@ -197,7 +197,7 @@ auto polymeshSpecifics()
     // Check adjacency for first face
     if (polyMeshLoaded.faceNumber() > 0) {
         const auto& face = polyMeshLoaded.face(0);
-        std::cout << "Face 0 has " << face.vertexNumber() << " vertices and "
+        std::cout << "Face 0 has " << face.vertexCount() << " vertices and "
                   << face.adjFacesNumber() << " adjacent faces\n";
 
         std::cout << "Adjacent faces: ";
@@ -214,7 +214,7 @@ auto polymeshSpecifics()
 
         // Show how adjacency corresponds to edges
         std::cout << "Adjacency per edge:\n";
-        for (int i = 0; i < face.vertexNumber(); ++i) {
+        for (int i = 0; i < face.vertexCount(); ++i) {
             const auto* adjFace = face.adjFace(i);
             std::cout << "  Edge " << i << " (v" << face.vertexIndex(i) << "-v"
                       << face.vertexIndexMod(i + 1) << "): ";
@@ -239,9 +239,9 @@ auto polymeshSpecifics()
         const auto& face = polyMeshLoaded.face(0);
 
         std::cout << "Face 0 analysis:\n";
-        std::cout << "  Vertex count: " << face.vertexNumber() << "\n";
+        std::cout << "  Vertex count: " << face.vertexCount() << "\n";
         std::cout << "  Vertices: ";
-        for (int i = 0; i < face.vertexNumber(); ++i) {
+        for (int i = 0; i < face.vertexCount(); ++i) {
             std::cout << face.vertex(i)->index() << " ";
         }
         std::cout << "\n";
@@ -250,10 +250,10 @@ auto polymeshSpecifics()
         // can be computed with:
         // vcl::faceBarycenter(face);
         vcl::Point3d centroid(0, 0, 0);
-        for (int i = 0; i < face.vertexNumber(); ++i) {
+        for (int i = 0; i < face.vertexCount(); ++i) {
             centroid += face.vertex(i)->position();
         }
-        centroid /= face.vertexNumber();
+        centroid /= face.vertexCount();
         std::cout << "  Centroid: (" << centroid.x() << ", " << centroid.y()
                   << ", " << centroid.z() << ")\n";
 
@@ -261,7 +261,7 @@ auto polymeshSpecifics()
         // can be computed exactly with:
         // vcl::faceArea(face);
         double area = 0.0;
-        for (int i = 1; i < face.vertexNumber() - 1; ++i) {
+        for (int i = 1; i < face.vertexCount() - 1; ++i) {
             auto v0 = face.vertex(0)->position();
             auto v1 = face.vertex(i)->position();
             auto v2 = face.vertex(i + 1)->position();
@@ -300,7 +300,7 @@ auto polymeshSpecifics()
         triMeshLoaded.faceNumber() * 3; // 3 vertex indices per face
     size_t polyMeshFaceMemory = 0;
     for (const auto& face : polyMeshLoaded.faces()) {
-        polyMeshFaceMemory += face.vertexNumber();
+        polyMeshFaceMemory += face.vertexCount();
     }
 
     std::cout << "Storage comparison for cube:\n";
@@ -335,7 +335,7 @@ auto polymeshSpecifics()
     std::cout << "   - Adjacency information updates automatically\n\n";
 
     std::cout << "4. POLYMESH-SPECIFIC FEATURES:\n";
-    std::cout << "   - vertexNumber() varies per face\n";
+    std::cout << "   - vertexCount() varies per face\n";
     std::cout << "   - adjFacesNumber() matches vertex count\n";
     std::cout << "   - Face operations work with arbitrary polygon sizes\n\n";
 

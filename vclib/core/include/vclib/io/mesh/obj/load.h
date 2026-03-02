@@ -298,7 +298,7 @@ void readObjFace(
     // create the face in the mesh, for now we manage only vertex indices
     if (!splitFace) { // no need to split face case
         for (uint i = 0; i < vids.size(); ++i) {
-            if (vids[i] >= m.vertexNumber()) {
+            if (vids[i] >= m.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for face " + std::to_string(fid));
             }
@@ -409,7 +409,7 @@ void readObjFace(
                     for (uint ff = fid; ff < m.faceNumber(); ++ff) {
                         FaceType& f = m.face(ff);
                         // for each vertex of the face
-                        for (uint i = 0; i < f.vertexNumber(); ++i) {
+                        for (uint i = 0; i < f.vertexCount(); ++i) {
                             uint vid = m.index(f.vertex(i));
                             // find the position of the vertex in the vids array
                             auto it = std::find(vids.begin(), vids.end(), vid);
@@ -622,7 +622,7 @@ void loadObj(
         using NST        = typename NormalType::ScalarType;
         // if we have not yet set per-vertex normals, try to set them now
         if (!loadedInfo.hasPerVertexNormal()) {
-            if (normals.size() == m.vertexNumber()) {
+            if (normals.size() == m.vertexCount()) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexNormalOptional(m);
                     loadedInfo.setPerVertexNormal();
@@ -644,7 +644,7 @@ void loadObj(
 
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
-            if (texCoords.size() == m.vertexNumber()) {
+            if (texCoords.size() == m.vertexCount()) {
                 // load texcoords into vertices only if there are no wedge
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexTexCoordOptional(m);
@@ -658,7 +658,7 @@ void loadObj(
                     using TexCoordType =
                         typename MeshType::VertexType::TexCoordType;
                     using TCT = typename TexCoordType::ScalarType;
-                    for (uint i = 0; i < m.vertexNumber(); ++i) {
+                    for (uint i = 0; i < m.vertexCount(); ++i) {
                         m.vertex(i).texCoord() =
                             texCoords[i].template cast<TCT>();
                     }
@@ -676,7 +676,7 @@ void loadObj(
                                 loadedInfo.setPerVertexMaterialIndex();
                         }
                         if (loadedInfo.hasPerVertexMaterialIndex()) {
-                            for (uint i = 0; i < m.vertexNumber(); ++i) {
+                            for (uint i = 0; i < m.vertexCount(); ++i) {
                                 // assign the first material to all vertices
                                 m.vertex(i).materialIndex() = 0;
                             }

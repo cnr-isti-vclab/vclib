@@ -80,7 +80,7 @@ uint faceEdgesSelectionNumber(const MeshType& m)
 {
     uint cnt = 0;
     for (const auto& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeSelected(i)) {
                 ++cnt;
             }

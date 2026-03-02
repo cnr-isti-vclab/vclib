@@ -66,7 +66,7 @@ public:
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
-    virtual uint vertexNumber() const = 0;
+    virtual uint vertexCount() const = 0;
 
     virtual uint faceNumber() const = 0;
 

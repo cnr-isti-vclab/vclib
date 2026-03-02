@@ -48,7 +48,7 @@ auto meshPointSampling()
 
     vcl::updatePerVertexAndFaceNormals(originalMesh);
 
-    std::cout << "Loaded mesh with " << originalMesh.vertexNumber()
+    std::cout << "Loaded mesh with " << originalMesh.vertexCount()
               << " vertices and " << originalMesh.faceNumber() << " faces"
               << std::endl;
 
@@ -61,7 +61,7 @@ auto meshPointSampling()
     vcl::PointCloud allVertices = allVerticesSampler.toMesh<vcl::PointCloud>();
     allVertices.name()          = "All Vertices Sampling";
 
-    std::cout << "Sampled " << allVertices.vertexNumber()
+    std::cout << "Sampled " << allVertices.vertexCount()
               << " vertices (all vertices)" << std::endl;
 
     /****** Uniform Face Sampling ******/
@@ -75,7 +75,7 @@ auto meshPointSampling()
     vcl::PointCloud uniform = uniformSampler.toMesh<vcl::PointCloud>();
     uniform.name()          = "Uniform Face Sampling";
 
-    std::cout << "Sampled " << uniform.vertexNumber()
+    std::cout << "Sampled " << uniform.vertexCount()
               << " points using uniform face sampling" << std::endl;
 
     /****** Montecarlo Sampling ******/
@@ -88,7 +88,7 @@ auto meshPointSampling()
         vcl::montecarloPointSampling(originalMesh, numSamples);
     vcl::PointCloud montecarlo = montecarloSampler.toMesh<vcl::PointCloud>();
 
-    std::cout << "Sampled " << montecarlo.vertexNumber()
+    std::cout << "Sampled " << montecarlo.vertexCount()
               << " points using montecarlo sampling" << std::endl;
     montecarlo.name() = "Montecarlo Sampling";
 
@@ -103,22 +103,22 @@ auto meshPointSampling()
     vcl::PointCloud poisson = poissonSampler.toMesh<vcl::PointCloud>();
     poisson.name()          = "Poisson Sampling";
 
-    std::cout << "Sampled " << poisson.vertexNumber()
+    std::cout << "Sampled " << poisson.vertexCount()
               << " points using poisson sampling (approximate)" << std::endl;
 
     /****** Sampling comparison ******/
 
     std::cout << "\n=== Sampling Summary ===" << std::endl;
-    std::cout << "Original mesh: " << originalMesh.vertexNumber()
+    std::cout << "Original mesh: " << originalMesh.vertexCount()
               << " vertices, " << originalMesh.faceNumber() << " faces"
               << std::endl;
-    std::cout << "All vertices:  " << allVertices.vertexNumber() << " points"
+    std::cout << "All vertices:  " << allVertices.vertexCount() << " points"
               << std::endl;
-    std::cout << "Uniform:       " << uniform.vertexNumber() << " points"
+    std::cout << "Uniform:       " << uniform.vertexCount() << " points"
               << std::endl;
-    std::cout << "Montecarlo:    " << montecarlo.vertexNumber() << " points"
+    std::cout << "Montecarlo:    " << montecarlo.vertexCount() << " points"
               << std::endl;
-    std::cout << "Poisson:       " << poisson.vertexNumber() << " points"
+    std::cout << "Poisson:       " << poisson.vertexCount() << " points"
               << std::endl;
 
     return std::make_tuple(

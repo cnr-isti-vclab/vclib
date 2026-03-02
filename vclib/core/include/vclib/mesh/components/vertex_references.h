@@ -52,7 +52,7 @@ namespace vcl::comp {
  * `f`:
  *
  * @code{.cpp}
- * uint n = f.vertexNumber();
+ * uint n = f.vertexCount();
  * auto* v = f.vertex(0);
  * uint vi = f.vertexIndex(0);
  * @endcode
@@ -140,7 +140,7 @@ public:
      * @brief Returns the number of vertices of the element.
      * @return The number of vertices of the element.
      */
-    uint vertexNumber() const { return Base::size(); }
+    uint vertexCount() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th vertex of the element.
@@ -177,11 +177,11 @@ public:
      * k = pos; // some position of a vertex
      * auto* next = e.vertexMod(k+1); // the vertex next to k, that may also
      *                                // be at pos 0
-     * auto* last = e.vertexMod(-1); // the vertex in position vertexNumber()-1
+     * auto* last = e.vertexMod(-1); // the vertex in position vertexCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * w.r.t. the position 0; value is modularized on vertexCount().
      * @return The pointer to the required vertex of the element.
      */
     Vertex* vertexMod(int i) { return Base::elementMod(i); }
@@ -189,7 +189,7 @@ public:
     /**
      * @brief Same of vertexMod, but returns a const pointer to the vertex.
      * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * w.r.t. the position 0; value is modularized on vertexCount().
      * @return The pointer to the required vertex of the element.
      */
     const Vertex* vertexMod(int i) const { return Base::elementMod(i); }
@@ -206,11 +206,11 @@ public:
      * auto idx = e.vertexIndexMod(k+1); // the index of the vertex next to k,
      *                                   // that may also be at pos 0
      * auto lastIdx = e.vertexIndexMod(-1); // the index of the vertex in
-     *                                      // position vertexNumber()-1
+     *                                      // position vertexCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required vertex in this container,
-     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * w.r.t. the position 0; value is modularized on vertexCount().
      * @return The index of the required vertex of the element.
      */
     uint vertexIndexMod(int i) const { return Base::elementIndexMod(i); }
@@ -286,11 +286,11 @@ public:
      * e.setVertexMod(k+1, aVertex); // set the vertex next to k, that may also
      *                               // be at pos 0
      * e.setVertexMod(-1, aVertex); // set the vertex in position
-     *                              // vertexNumber()-1
+     *                              // vertexCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the vertex; value is modularized on vertexNumber().
+     * which set the vertex; value is modularized on vertexCount().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
     void setVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
@@ -306,11 +306,11 @@ public:
      * e.setVertexMod(k+1, aVertInd); // set the vertex next to k, that may also
      *                               // be at pos 0
      * e.setVertexMod(-1, aVertInd); // set the vertex in position
-     *                              // vertexNumber()-1
+     *                              // vertexCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the vertex; value is modularized on vertexNumber().
+     * which set the vertex; value is modularized on vertexCount().
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
     void setVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
@@ -428,7 +428,7 @@ public:
                 return vid;
             }
             else if (vertexMod((int) vid - 1) == v2) {
-                int n = vertexNumber(); // n must be int to avoid unwanted casts
+                int n = vertexCount(); // n must be int to avoid unwanted casts
                 return (((int) vid - 1) % n + n) % n;
             }
             else {
@@ -464,7 +464,7 @@ public:
                 return vid;
             }
             else if (vertexIndexMod((int) vid - 1) == vi2) {
-                int n = vertexNumber(); // n must be int to avoid unwanted casts
+                int n = vertexCount(); // n must be int to avoid unwanted casts
                 return (((int) vid - 1) % n + n) % n;
             }
             else {
@@ -664,9 +664,9 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
         if constexpr (N < 0) {
-            vcl::serialize(os, vertexNumber());
+            vcl::serialize(os, vertexCount());
         }
-        for (uint i = 0; i < vertexNumber(); ++i) {
+        for (uint i = 0; i < vertexCount(); ++i) {
             vcl::serialize(os, vertexIndex(i));
         }
     }
@@ -678,7 +678,7 @@ protected:
             vcl::deserialize(is, n);
             resizeVertices(n);
         }
-        for (uint i = 0; i < vertexNumber(); ++i) {
+        for (uint i = 0; i < vertexCount(); ++i) {
             uint vi;
             vcl::deserialize(is, vi);
             setVertex(i, vi);
@@ -689,7 +689,7 @@ private:
     template<typename Element>
     void importIndicesFrom(const Element& e)
     {
-        for (uint i = 0; i < e.vertexNumber(); ++i) {
+        for (uint i = 0; i < e.vertexCount(); ++i) {
             setVertex(i, e.vertexIndex(i));
         }
     }
@@ -734,7 +734,7 @@ void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
                 // from polygonal to fixed size, but the polygon size == the
                 // fixed face size
                 else if constexpr (Element::VERTEX_NUMBER < 0) {
-                    if (e.vertexNumber() == N) {
+                    if (e.vertexCount() == N) {
                         importIndicesFrom(e);
                     }
                 }
@@ -746,7 +746,7 @@ void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
             else {
                 // from fixed to polygonal size: need to resize first, then
                 // import
-                resizeVertices(e.vertexNumber());
+                resizeVertices(e.vertexCount());
                 importIndicesFrom(e);
             }
         }

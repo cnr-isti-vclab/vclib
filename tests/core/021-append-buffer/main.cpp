@@ -107,7 +107,7 @@ void testPositionsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -144,7 +144,7 @@ void testTriangleMatrix(
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
     using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
-    vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
+    vcl::uint               nVerts = tm.vertexCount() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
     vcl::vertexPositionsToBuffer(tm, verts.data());
     vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
@@ -177,7 +177,7 @@ void testVertexSelectionVector(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     VectorType sel(nRows);
 
     vcl::vertexSelectionToBuffer(tm, sel.data());

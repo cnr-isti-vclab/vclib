@@ -123,7 +123,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
 
     MeshType mesh;
     using ST = MeshType::VertexType::PositionType::ScalarType;
-    mesh.reserveVertices(pmesh.vertexNumber());
+    mesh.reserveVertices(pmesh.vertexCount());
     for (const auto& v : pmesh.vertices()) {
         mesh.addVertex(v.position().cast<ST>());
     }

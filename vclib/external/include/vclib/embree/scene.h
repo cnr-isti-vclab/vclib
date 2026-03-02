@@ -137,7 +137,7 @@ public:
             0,
             RTC_FORMAT_FLOAT3,
             3 * sizeof(float),
-            m.vertexNumber());
+            m.vertexCount());
 
         vertexPositionsToBuffer(m, vb);
 

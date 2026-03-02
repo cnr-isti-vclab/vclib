@@ -45,21 +45,21 @@ auto meshCreation()
     // 1. Tetrahedron - The simplest 3D primitive
     std::cout << "Creating tetrahedron..." << std::endl;
     vcl::TriMesh tetrahedron = vcl::createTetrahedron<vcl::TriMesh>();
-    std::cout << "  Vertices: " << tetrahedron.vertexNumber()
+    std::cout << "  Vertices: " << tetrahedron.vertexCount()
               << ", Faces: " << tetrahedron.faceNumber() << std::endl;
     tetrahedron.name() = "Tetrahedron";
 
     // 2. Hexahedron (Cube) - Box primitive
     std::cout << "Creating hexahedron (cube)..." << std::endl;
     vcl::TriMesh cube = vcl::createHexahedron<vcl::TriMesh>();
-    std::cout << "  Vertices: " << cube.vertexNumber()
+    std::cout << "  Vertices: " << cube.vertexCount()
               << ", Faces: " << cube.faceNumber() << std::endl;
     cube.name() = "Cube";
 
     // 3. Dodecahedron - More complex polyhedron (triangulated)
     std::cout << "Creating dodecahedron (triangulated)..." << std::endl;
     vcl::TriMesh dodecahedron = vcl::createDodecahedron<vcl::TriMesh>();
-    std::cout << "  Vertices: " << dodecahedron.vertexNumber()
+    std::cout << "  Vertices: " << dodecahedron.vertexCount()
               << ", Faces: " << dodecahedron.faceNumber() << std::endl;
     dodecahedron.name() = "Dodecahedron";
 
@@ -72,7 +72,7 @@ auto meshCreation()
     vcl::TriMesh customCube = vcl::createCube<vcl::TriMesh>(
         vcl::Point3d(-2, -2, -2), 4.0); // min corner and edge length
     std::cout << "  Custom cube (4x4x4) - Vertices: "
-              << customCube.vertexNumber()
+              << customCube.vertexCount()
               << ", Faces: " << customCube.faceNumber() << std::endl;
     customCube.name() = "Custom Cube";
 
@@ -85,7 +85,7 @@ auto meshCreation()
     // 1. Hexahedron as quads
     std::cout << "Creating hexahedron (PolyMesh - quads)..." << std::endl;
     vcl::PolyMesh cubeQuads = vcl::createHexahedron<vcl::PolyMesh>();
-    std::cout << "  Cube (quads) - Vertices: " << cubeQuads.vertexNumber()
+    std::cout << "  Cube (quads) - Vertices: " << cubeQuads.vertexCount()
               << ", Faces: " << cubeQuads.faceNumber() << std::endl;
     cubeQuads.name() = "Cube (PolyMesh)";
     // Note: This creates 6 quad faces instead of 12 triangular faces
@@ -94,7 +94,7 @@ auto meshCreation()
     std::cout << "Creating dodecahedron (PolyMesh - pentagons)..." << std::endl;
     vcl::PolyMesh dodecahedronPoly = vcl::createDodecahedron<vcl::PolyMesh>();
     std::cout << "  Dodecahedron (pentagons) - Vertices: "
-              << dodecahedronPoly.vertexNumber()
+              << dodecahedronPoly.vertexCount()
               << ", Faces: " << dodecahedronPoly.faceNumber() << std::endl;
     dodecahedronPoly.name() = "Dodecahedron (PolyMesh)";
     // Note: This creates 12 pentagonal faces instead of many triangular faces
@@ -107,7 +107,7 @@ auto meshCreation()
         sphere.cast<vcl::PolyMesh::ScalarType>();
     vcl::PolyMesh sphereQuads =
         vcl::createSphereSpherifiedCube<vcl::PolyMesh>(spherePoly, 20);
-    std::cout << "  Sphere (quads) - Vertices: " << sphereQuads.vertexNumber()
+    std::cout << "  Sphere (quads) - Vertices: " << sphereQuads.vertexCount()
               << ", Faces: " << sphereQuads.faceNumber() << std::endl;
     sphereQuads.name() = "Sphere (PolyMesh)";
 

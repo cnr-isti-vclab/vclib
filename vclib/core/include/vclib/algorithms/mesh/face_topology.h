@@ -98,7 +98,7 @@ void addTriangleFacesFromPolygon(
     }
 
     // set the first triangle of the loaded polygon
-    for (uint i = 0; i < f.vertexNumber(); ++i) {
+    for (uint i = 0; i < f.vertexCount(); ++i) {
         f.setVertex(i, polygon[tris[i]]);
     }
 
@@ -122,7 +122,7 @@ void addTriangleFacesFromPolygon(
             m.face(ff).resizeVertices(3);
         }
 
-        for (uint j = 0; j < m.face(ff).vertexNumber(); ++j) {
+        for (uint j = 0; j < m.face(ff).vertexCount(); ++j) {
             m.face(ff).setVertex(j, polygon[tris[i + j]]);
         }
 
@@ -271,7 +271,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
 
     using VertexType = FaceType::VertexType;
 
-    if (f.vertexNumber() > 3)
+    if (f.vertexCount() > 3)
         return false;
 
     if (isFaceEdgeOnBorder(f, edge))
@@ -369,7 +369,7 @@ uint faceEdgesOnBorderNumber(const FaceType& f)
     }
 
     uint cnt = 0;
-    for (uint i = 0; i < f.vertexNumber(); ++i)
+    for (uint i = 0; i < f.vertexCount(); ++i)
         if (isFaceEdgeOnBorder(f, i))
             cnt++;
 
@@ -531,7 +531,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 
     using VertexType = FaceType::VertexType;
 
-    for (uint e = 0; e < f.vertexNumber(); ++e) {
+    for (uint e = 0; e < f.vertexCount(); ++e) {
         detachAdjacentFacesOnEdge(f, e);
 
         // if the vertices have adjacent faces

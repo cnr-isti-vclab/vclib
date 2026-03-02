@@ -64,7 +64,7 @@ auto meshMatrixConversion()
     for (auto& f : mesh.faces())
         f.color() = randomColor();
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
               << mesh.faceNumber() << " faces" << std::endl;
 
     // Export basic geometry
@@ -105,7 +105,7 @@ auto meshMatrixConversion()
     vcl::vertexColorsFromMatrix(importedMesh, vertexColors);
     vcl::faceColorsFromMatrix(importedMesh, faceColors);
 
-    std::cout << "Imported mesh: " << importedMesh.vertexNumber()
+    std::cout << "Imported mesh: " << importedMesh.vertexCount()
               << " vertices, " << importedMesh.faceNumber() << " faces"
               << std::endl;
 
@@ -186,7 +186,7 @@ auto meshMatrixConversion()
         vcl::meshFromMatrices<vcl::TriMesh>(cubeVertices, cubeTriangles);
     cubeMesh.name() = "Cube Mesh";
 
-    std::cout << "Created cube mesh: " << cubeMesh.vertexNumber()
+    std::cout << "Created cube mesh: " << cubeMesh.vertexCount()
               << " vertices, " << cubeMesh.faceNumber() << " faces"
               << std::endl;
 

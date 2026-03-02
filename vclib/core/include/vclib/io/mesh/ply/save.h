@@ -53,7 +53,7 @@ void savePly(
 
     PlyHeader header(
         settings.binary ? ply::BINARY_LITTLE_ENDIAN : ply::ASCII, meshInfo);
-    header.setNumberVertices(m.vertexNumber());
+    header.setNumberVertices(m.vertexCount());
 
     if constexpr (HasFaces<MeshType>) {
         if (header.hasFaces()) {

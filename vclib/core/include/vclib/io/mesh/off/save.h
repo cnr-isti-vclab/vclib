@@ -58,7 +58,7 @@ void saveOff(
     uint fn = 0;
     uint en = 0;
     if constexpr (HasVertices<MeshType>) {
-        vn = m.vertexNumber();
+        vn = m.vertexCount();
     }
     if constexpr (HasFaces<MeshType>) {
         fn = m.faceNumber();
@@ -112,7 +112,7 @@ void saveOff(
         std::vector<uint> vIndices = m.vertexCompactIndices();
 
         for (const FaceType& f : m.faces()) {
-            io::writeInt(fp, f.vertexNumber(), false);
+            io::writeInt(fp, f.vertexCount(), false);
             for (const VertexType* v : f.vertices()) {
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }

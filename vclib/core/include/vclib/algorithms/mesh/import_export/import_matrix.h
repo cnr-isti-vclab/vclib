@@ -199,7 +199,7 @@ void meshFromMatrices(
  * std::vector).
  *
  * @throws vcl::WrongSizeException if the sizes of the input matrix are not
- * valid (e.g. columns != 3 or rows != mesh.vertexNumber()).
+ * valid (e.g. columns != 3 or rows != mesh.vertexCount()).
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
@@ -991,7 +991,7 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
         throw WrongSizeException(
             "The input vertex texcoords matrix must have 2 columns");
 
-    if (vertexTexCoords.rows() != mesh.vertexNumber())
+    if (vertexTexCoords.rows() != mesh.vertexCount())
         throw WrongSizeException(
             "The input vertex texcoords must have the same number of rows as "
             "the number of vertices in the mesh");
@@ -1023,7 +1023,7 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
 template<MeshConcept MeshType, Range R>
 void vertexMaterialIndicesFromRange(MeshType& mesh, R&& materialIndices)
 {
-    if (std::ranges::size(materialIndices) != mesh.vertexNumber())
+    if (std::ranges::size(materialIndices) != mesh.vertexCount())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of vertices in the mesh");

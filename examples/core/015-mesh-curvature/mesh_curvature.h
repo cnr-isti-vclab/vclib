@@ -45,7 +45,7 @@ auto meshCurvature()
     originalMesh.name() = "Original Bunny Mesh";
 
     std::cout << "Original mesh loaded:" << std::endl;
-    std::cout << "  Vertices: " << originalMesh.vertexNumber() << std::endl;
+    std::cout << "  Vertices: " << originalMesh.vertexCount() << std::endl;
     std::cout << "  Faces: " << originalMesh.faceNumber() << std::endl;
 
     // Enable required components

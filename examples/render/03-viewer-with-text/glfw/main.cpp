@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
     tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
     tw.appendStaticText(
-        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
+        {5, 5}, "Vertices: " + std::to_string(m.vertexCount()));
     tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
 
     tw.fitScene();

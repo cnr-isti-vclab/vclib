@@ -141,7 +141,7 @@ void saveStl(
                 }
             }
 
-            if (f.vertexNumber() == 3) {
+            if (f.vertexCount() == 3) {
                 detail::writeSTLTriangle(
                     fp,
                     f.vertex(0)->position(),

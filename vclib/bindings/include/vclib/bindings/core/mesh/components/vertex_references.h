@@ -41,7 +41,7 @@ void initVertexReferences(pybind11::class_<ElementType>& c)
 
     static const int N = ElementType::VERTEX_NUMBER;
 
-    c.def("vertex_count", &ElementType::vertexNumber);
+    c.def("vertex_count", &ElementType::vertexCount);
 
     c.def(
         "vertex",

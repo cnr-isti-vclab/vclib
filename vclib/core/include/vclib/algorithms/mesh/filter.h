@@ -118,7 +118,7 @@ OutMeshType perElementMeshFilterWithVRefs(
     for (const auto& [birthF, filter] :
          std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng)) {
         if (filter) {
-            std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
+            std::vector<uint> verts(birthF.vertexCount(), UINT_NULL);
             uint vi = 0; // incremented with vertices of the element
             // set all the vertex indices in the verts vector
             // two cases here:
@@ -604,7 +604,7 @@ OutMeshType perFaceEdgeMeshFilter(
         unorderedEdges;
 
     for (const auto& f : m.faces()) {
-        for (uint ei = 0; ei < f.vertexNumber(); ++ei) {
+        for (uint ei = 0; ei < f.vertexCount(); ++ei) {
             if (faceEdgeFilter(f, ei)) {
                 std::array<uint, 2> verts = {UINT_NULL, UINT_NULL};
                 for (uint i = 0; i < 2; ++i) {

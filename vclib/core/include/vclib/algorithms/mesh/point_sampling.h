@@ -81,7 +81,7 @@ auto allVerticesPointSampling(
     PointSampler<PointType> sampler;
 
     // Determine the number of vertices to sample
-    uint n = onlySelected ? vertexSelectionNumber(m) : m.vertexNumber();
+    uint n = onlySelected ? vertexSelectionNumber(m) : m.vertexCount();
 
     // Reserve space in the sampler and birthVertices vectors
     sampler.reserve(n);
@@ -231,7 +231,7 @@ auto vertexUniformPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint vn = onlySelected ? vertexSelectionNumber(m) : m.vertexNumber();
+    uint vn = onlySelected ? vertexSelectionNumber(m) : m.vertexCount();
 
     if (nSamples >= vn) {
         return allVerticesPointSampling(m, birthVertices, onlySelected);
@@ -424,7 +424,7 @@ auto vertexWeightedPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    if (nSamples >= m.vertexNumber()) {
+    if (nSamples >= m.vertexCount()) {
         return allVerticesPointSampling(m, birthVertices);
     }
 
@@ -796,7 +796,7 @@ auto montecarloPointSampling(
         sampler.add(
             *it->second,
             randomPolygonBarycentricCoordinate<ScalarType>(
-                it->second->vertexNumber(), gen));
+                it->second->vertexCount(), gen));
         birthFaces.push_back(it->second->index());
     }
 
@@ -858,7 +858,7 @@ auto stratifiedMontecarloPointSampling(
             ps.add(
                 f,
                 randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexNumber(), gen));
+                    f.vertexCount(), gen));
         floatSampleNum -= (double) faceSampleNum;
     }
 
@@ -914,7 +914,7 @@ auto montecarloPoissonPointSampling(
             ps.add(
                 f,
                 randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexNumber(), gen));
+                    f.vertexCount(), gen));
     }
 
     return ps;
@@ -936,10 +936,10 @@ auto vertexWeightedMontecarloPointSampling(
                            const MeshType&                m,
                            const std::vector<ScalarType>& r) -> ScalarType {
         ScalarType averageQ = 0;
-        for (uint i = 0; i < f.vertexNumber(); ++i)
+        for (uint i = 0; i < f.vertexCount(); ++i)
             averageQ += r[m.index(f.vertex(i))];
 
-        averageQ /= f.vertexNumber();
+        averageQ /= f.vertexCount();
         return averageQ * averageQ * faceArea(f);
     };
 
@@ -968,7 +968,7 @@ auto vertexWeightedMontecarloPointSampling(
             ps.add(
                 f,
                 randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexNumber(), gen));
+                    f.vertexCount(), gen));
 
         floatSampleNum -= (double) faceSampleNum;
     }

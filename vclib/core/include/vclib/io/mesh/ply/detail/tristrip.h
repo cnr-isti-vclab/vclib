@@ -51,7 +51,7 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
             if constexpr (FaceType::VERTEX_NUMBER < 0) {
                 f.resizeVertices(3);
             }
-            for (uint i = 0; i < f.vertexNumber(); ++i) {
+            for (uint i = 0; i < f.vertexCount(); ++i) {
                 f.setVertex(i, tristrip[k + i]);
             }
 

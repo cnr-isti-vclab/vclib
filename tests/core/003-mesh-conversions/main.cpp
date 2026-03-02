@@ -55,7 +55,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 4 triangles, per face wedge texcoords")
     {
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 3);
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         REQUIRE(tm.hasCustomComponent("cust_comp"));
@@ -79,7 +79,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("The imported PolyMesh has same vertex and face number")
     {
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 3);
     }
 
@@ -93,7 +93,7 @@ TEMPLATE_TEST_CASE(
     THEN("The imported faces have same vertices")
     {
         for (const auto& pf : pm.faces()) {
-            REQUIRE(pf.vertexNumber() == 3);
+            REQUIRE(pf.vertexCount() == 3);
             const auto& tf = tm.face(pf.index());
 
             unsigned int i = 0;
@@ -143,7 +143,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("The loaded TriMesh has 8 vertices and 12 faces")
     {
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
 }
@@ -164,7 +164,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("The loaded PolyMesh has 8 vertices and 6 faces")
     {
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 6);
     }
 
@@ -176,9 +176,9 @@ TEMPLATE_TEST_CASE(
 
         THEN("The imported trimesh has same vertices")
         {
-            REQUIRE(tm.vertexNumber() == pm.vertexNumber());
+            REQUIRE(tm.vertexCount() == pm.vertexCount());
 
-            for (unsigned int i = 0; i < tm.vertexNumber(); ++i) {
+            for (unsigned int i = 0; i < tm.vertexCount(); ++i) {
                 REQUIRE(tm.vertex(i).position() == pm.vertex(i).position());
             }
         }

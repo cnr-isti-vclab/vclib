@@ -162,11 +162,11 @@ public:
      *
      * @code{.cpp}
      * f.wedgeTexCoordMod(-1) = {0.1, 0.2}; // the wedge texcoord in position
-     *                                      // vertexNumber() - 1
+     *                                      // vertexCount() - 1
      * @endcode
      *
      * @param[in] i: the position of the required wedge texcoord in the
-     * container, w.r.t. the position 0; value is modularized on vertexNumber().
+     * container, w.r.t. the position 0; value is modularized on vertexCount().
      * @return A reference to the required wedge texcoord of the element.
      */
     vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i)
@@ -177,7 +177,7 @@ public:
     /**
      * @brief Same of wedgeTexCoordMod(int) but returns a const reference.
      * @param[in] i: the position of the required wedge texcoord in the
-     * container, w.r.t. the position 0; value is modularized on vertexNumber().
+     * container, w.r.t. the position 0; value is modularized on vertexCount().
      * @return A const reference to the required wedge texcoord of the element.
      */
     const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const
@@ -336,7 +336,7 @@ private:
     template<typename Element>
     void importWedgeTexCoordsFrom(const Element& e)
     {
-        for (uint i = 0; i < e.vertexNumber(); ++i) {
+        for (uint i = 0; i < e.vertexCount(); ++i) {
             wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
         }
     }
@@ -434,7 +434,7 @@ void WedgeTexCoords<Scalar, N, ParentElemType, OPT>::importFrom(
                 }
                 // from dynamic to static, but dynamic size == static size
                 else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0) {
-                    if (e.vertexNumber() == N) {
+                    if (e.vertexCount() == N) {
                         importWedgeTexCoordsFrom(e);
                     }
                 }
@@ -446,7 +446,7 @@ void WedgeTexCoords<Scalar, N, ParentElemType, OPT>::importFrom(
             else {
                 // from static/dynamic to dynamic size: need to resize
                 // first, then import
-                resize(e.vertexNumber());
+                resize(e.vertexCount());
                 importWedgeTexCoordsFrom(e);
             }
         }

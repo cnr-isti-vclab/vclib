@@ -78,7 +78,7 @@ public:
      *
      * If the Face size is static, the number of vertices of the input range
      * must be equal to the size of the Face (the value returned by
-     * vertexNumber()). If the Face size is dynamic, it will take care to update
+     * vertexCount()). If the Face size is dynamic, it will take care to update
      * the also the size of the components tied to the vertex number of the
      * face.
      *
@@ -104,7 +104,7 @@ public:
      * @brief Sets a list of Vertices to the face.
      *
      * If the Face size is static, the number of vertices of the list must be
-     * equal to the size of the Face (the value returned by vertexNumber()). If
+     * equal to the size of the Face (the value returned by vertexCount()). If
      * the Face size is dynamic, it will take care to update the also the size
      * of the components tied to the vertex number of the face.
      *
@@ -197,9 +197,9 @@ public:
     void importFrom(const ElType& v, bool importRefs = true)
     {
         if constexpr (comp::HasVertexReferences<ElType> && NV < 0) {
-            VRefs::resizeVertices(v.vertexNumber());
+            VRefs::resizeVertices(v.vertexCount());
             // Now I need to resize all the TTVN components
-            (resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
+            (resizeTTVNComponent<Comps>(v.vertexCount()), ...);
         }
 
         Base::importFrom(v, importRefs);

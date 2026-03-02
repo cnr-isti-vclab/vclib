@@ -42,7 +42,7 @@ namespace vcl::comp {
  * This class also provides 3 flags for faux edges. These flags are added just
  * to make portable all the algorithms that use faux flags also for
  * PolygonMeshes. However, these flags should be used only when the mesh is a
- * Triangle mesh, that is when each face has vertexNumber() == 3.
+ * Triangle mesh, that is when each face has vertexCount() == 3.
  *
  * The bits have the follwing meaning:
  * - 0: deleted: if the current Polygon has been deleted - read only
@@ -307,7 +307,7 @@ public:
      * @note The 'faux' bit is used to just for portability with triangle meshes
      * that are stored in polygonal meshes. However, these flags should be used
      * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexNumber()== 3.
+     * vertexCount()== 3.
      *
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the polygon.
@@ -325,7 +325,7 @@ public:
      * @note The 'faux' bit is used to just for portability with triangle meshes
      * that are stored in polygonal meshes. However, these flags should be used
      * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexNumber()== 3.
+     * vertexCount()== 3.
      *
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return true if the i-th edge of the Polygon is faux, false otherwise.

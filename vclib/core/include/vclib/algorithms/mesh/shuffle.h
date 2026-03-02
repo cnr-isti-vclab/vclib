@@ -39,7 +39,7 @@ template<typename M, typename V>
 std::vector<V*> genericFASVPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<V*> vec;
-    vec.reserve(m.vertexNumber());
+    vec.reserve(m.vertexCount());
 
     for (V& v : m.vertices()) {
         vec.push_back(&v);
@@ -101,7 +101,7 @@ std::vector<uint> fillAndShuffleVertexIndexVector(
     using VertexType = MeshType::VertexType;
 
     std::vector<uint> vec;
-    vec.reserve(m.vertexNumber());
+    vec.reserve(m.vertexCount());
 
     for (const VertexType& v : m.vertices()) {
         vec.push_back(m.index(v));

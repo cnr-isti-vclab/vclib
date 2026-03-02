@@ -99,7 +99,7 @@ public:
         swap(mMeshColor, other.mMeshColor);
     }
 
-    uint vertexNumber() const { return mVerts.size() / 3; }
+    uint vertexCount() const { return mVerts.size() / 3; }
 
     uint triangleNumber() const { return mTris.size() / 3; }
 

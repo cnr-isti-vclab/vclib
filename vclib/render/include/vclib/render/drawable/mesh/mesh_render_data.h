@@ -976,7 +976,7 @@ private:
                 }
             }
 
-            mNumVerts = mesh.vertexNumber() + mVertsToDuplicate.size();
+            mNumVerts = mesh.vertexCount() + mVertsToDuplicate.size();
         }
 
         if constexpr (HasFaces<MeshType>) {

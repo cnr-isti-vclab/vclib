@@ -785,13 +785,13 @@ protected:
                     e.C::init();
                 }
             }
-            // then resize the component containers with tied size to vertex
-            // number
+            // then resize the component containers with tied size to number of
+            // vertices of the element, if needed
             if constexpr (comp::IsTiedToVertexNumber<C>) {
                 static const int N = T::VERTEX_NUMBER;
                 if constexpr (N < 0) {
                     for (auto& e : elements()) {
-                        e.C::resize(e.vertexNumber());
+                        e.C::resize(e.vertexCount());
                     }
                 }
             }

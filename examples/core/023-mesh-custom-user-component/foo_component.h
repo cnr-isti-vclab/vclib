@@ -164,7 +164,7 @@ inline void demonstrateFooComponent()
     // The Foo component will NOT be copied because TriMesh doesn't have it
     // Only common components (position, normal, etc.) are transferred
     standardMesh.importFrom(mesh);
-    std::cout << "TriMesh now has " << standardMesh.vertexNumber()
+    std::cout << "TriMesh now has " << standardMesh.vertexCount()
               << " vertices" << std::endl;
 
     std::cout << "\nImporting back from TriMesh to FooMesh..." << std::endl;

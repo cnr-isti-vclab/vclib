@@ -110,7 +110,7 @@ void testPositionsMatrix(const auto& tm)
 {
     auto verts = vcl::vertexPositionsMatrix<MatrixType>(tm);
 
-    REQUIRE(verts.rows() == tm.vertexNumber());
+    REQUIRE(verts.rows() == tm.vertexCount());
     REQUIRE(verts.cols() == 3);
 
     for (vcl::uint   i = 0;
@@ -146,7 +146,7 @@ void testFaceSizesVector(const auto& pm)
     REQUIRE(sizes.size() == pm.faceNumber());
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
-        REQUIRE(sizes[i] == f.vertexNumber());
+        REQUIRE(sizes[i] == f.vertexCount());
         ++i;
     }
 }
@@ -177,7 +177,7 @@ void testFaceMatrix(const auto& pm)
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
         vcl::uint j = 0;
-        for (j = 0; j < f.vertexNumber(); ++j) {
+        for (j = 0; j < f.vertexCount(); ++j) {
             REQUIRE(faces(i, j) == f.vertexIndex(j));
         }
         for (; j < faces.cols(); ++j) {
@@ -217,7 +217,7 @@ void testVertexSelectionVector(const auto& tm)
 {
     auto sel = vcl::vertexSelectionVector<VectorType>(tm);
 
-    REQUIRE(sel.size() == tm.vertexNumber());
+    REQUIRE(sel.size() == tm.vertexCount());
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         REQUIRE((bool) sel[i] == v.selected());
@@ -243,7 +243,7 @@ void testVertNormalsMatrix(const auto& tm)
 {
     auto vertNormals = vcl::vertexNormalsMatrix<MatrixType>(tm);
 
-    REQUIRE(vertNormals.rows() == tm.vertexNumber());
+    REQUIRE(vertNormals.rows() == tm.vertexCount());
     REQUIRE(vertNormals.cols() == 3);
 
     for (vcl::uint i = 0; const auto& n : tm.vertices() | vcl::views::normals) {
@@ -275,7 +275,7 @@ void testVertColorsMatrix(const auto& tm)
 {
     auto vertColors = vcl::vertexColorsMatrix<MatrixType>(tm);
 
-    REQUIRE(vertColors.rows() == tm.vertexNumber());
+    REQUIRE(vertColors.rows() == tm.vertexCount());
     REQUIRE(vertColors.cols() == 4);
 
     for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::colors) {
@@ -293,7 +293,7 @@ void testVertColorsVector(const auto& tm)
     auto vertColors =
         vcl::vertexColorsVector<VectorType>(tm, vcl::Color::Format::RGBA);
 
-    REQUIRE(vertColors.size() == tm.vertexNumber());
+    REQUIRE(vertColors.size() == tm.vertexCount());
 
     for (vcl::uint i = 0; const auto& c : tm.vertices() | vcl::views::colors) {
         REQUIRE(vertColors[i] == c.rgba());
@@ -337,7 +337,7 @@ void testVertexQualityVector(const auto& tm)
 {
     auto qual = vcl::vertexQualityVector<VectorType>(tm);
 
-    REQUIRE(qual.size() == tm.vertexNumber());
+    REQUIRE(qual.size() == tm.vertexCount());
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         REQUIRE(qual[i] == v.quality());
@@ -363,7 +363,7 @@ void testVertexAdjacentVerticesVectors(const auto& tm)
 {
     auto adjacencies = vcl::vertexAdjacentVerticesVectors<Container, T>(tm);
 
-    REQUIRE(adjacencies.size() == tm.vertexNumber());
+    REQUIRE(adjacencies.size() == tm.vertexCount());
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         const auto& adjList = adjacencies[i];
@@ -385,7 +385,7 @@ void testVertexAdjacentVerticesMatrix(const auto& tm)
 
     vcl::uint lva = vcl::largestPerVertexAdjacentVerticesNumber(tm);
 
-    REQUIRE(adjMatrix.rows() == tm.vertexNumber());
+    REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lva);
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
@@ -407,7 +407,7 @@ void testVertexAdjacentFacesVectors(const auto& tm)
 {
     auto adjacencies = vcl::vertexAdjacentFacesVectors<Container, T>(tm);
 
-    REQUIRE(adjacencies.size() == tm.vertexNumber());
+    REQUIRE(adjacencies.size() == tm.vertexCount());
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         const auto& adjList = adjacencies[i];
@@ -429,7 +429,7 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
 
     vcl::uint lfa = vcl::largestPerVertexAdjacentFacesNumber(tm);
 
-    REQUIRE(adjMatrix.rows() == tm.vertexNumber());
+    REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lfa);
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {

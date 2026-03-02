@@ -42,68 +42,68 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
 
     THEN("Test Face Vertices")
     {
-        REQUIRE(tm.face(0).vertexNumber() == 3);
+        REQUIRE(tm.face(0).vertexCount() == 3);
         REQUIRE(tm.face(0).vertex(0) == &tm.vertex(2));
         REQUIRE(tm.face(0).vertex(1) == &tm.vertex(1));
         REQUIRE(tm.face(0).vertex(2) == &tm.vertex(0));
 
-        REQUIRE(tm.face(1).vertexNumber() == 3);
+        REQUIRE(tm.face(1).vertexCount() == 3);
         REQUIRE(tm.face(1).vertex(0) == &tm.vertex(1));
         REQUIRE(tm.face(1).vertex(1) == &tm.vertex(2));
         REQUIRE(tm.face(1).vertex(2) == &tm.vertex(3));
 
-        REQUIRE(tm.face(2).vertexNumber() == 3);
+        REQUIRE(tm.face(2).vertexCount() == 3);
         REQUIRE(tm.face(2).vertex(0) == &tm.vertex(4));
         REQUIRE(tm.face(2).vertex(1) == &tm.vertex(2));
         REQUIRE(tm.face(2).vertex(2) == &tm.vertex(0));
 
-        REQUIRE(tm.face(3).vertexNumber() == 3);
+        REQUIRE(tm.face(3).vertexCount() == 3);
         REQUIRE(tm.face(3).vertex(0) == &tm.vertex(2));
         REQUIRE(tm.face(3).vertex(1) == &tm.vertex(4));
         REQUIRE(tm.face(3).vertex(2) == &tm.vertex(6));
 
-        REQUIRE(tm.face(4).vertexNumber() == 3);
+        REQUIRE(tm.face(4).vertexCount() == 3);
         REQUIRE(tm.face(4).vertex(0) == &tm.vertex(1));
         REQUIRE(tm.face(4).vertex(1) == &tm.vertex(4));
         REQUIRE(tm.face(4).vertex(2) == &tm.vertex(0));
 
-        REQUIRE(tm.face(5).vertexNumber() == 3);
+        REQUIRE(tm.face(5).vertexCount() == 3);
         REQUIRE(tm.face(5).vertex(0) == &tm.vertex(4));
         REQUIRE(tm.face(5).vertex(1) == &tm.vertex(1));
         REQUIRE(tm.face(5).vertex(2) == &tm.vertex(5));
 
-        REQUIRE(tm.face(6).vertexNumber() == 3);
+        REQUIRE(tm.face(6).vertexCount() == 3);
         REQUIRE(tm.face(6).vertex(0) == &tm.vertex(6));
         REQUIRE(tm.face(6).vertex(1) == &tm.vertex(5));
         REQUIRE(tm.face(6).vertex(2) == &tm.vertex(7));
 
-        REQUIRE(tm.face(7).vertexNumber() == 3);
+        REQUIRE(tm.face(7).vertexCount() == 3);
         REQUIRE(tm.face(7).vertex(0) == &tm.vertex(5));
         REQUIRE(tm.face(7).vertex(1) == &tm.vertex(6));
         REQUIRE(tm.face(7).vertex(2) == &tm.vertex(4));
 
-        REQUIRE(tm.face(8).vertexNumber() == 3);
+        REQUIRE(tm.face(8).vertexCount() == 3);
         REQUIRE(tm.face(8).vertex(0) == &tm.vertex(3));
         REQUIRE(tm.face(8).vertex(1) == &tm.vertex(6));
         REQUIRE(tm.face(8).vertex(2) == &tm.vertex(7));
 
-        REQUIRE(tm.face(9).vertexNumber() == 3);
+        REQUIRE(tm.face(9).vertexCount() == 3);
         REQUIRE(tm.face(9).vertex(0) == &tm.vertex(6));
         REQUIRE(tm.face(9).vertex(1) == &tm.vertex(3));
         REQUIRE(tm.face(9).vertex(2) == &tm.vertex(2));
 
-        REQUIRE(tm.face(10).vertexNumber() == 3);
+        REQUIRE(tm.face(10).vertexCount() == 3);
         REQUIRE(tm.face(10).vertex(0) == &tm.vertex(5));
         REQUIRE(tm.face(10).vertex(1) == &tm.vertex(3));
         REQUIRE(tm.face(10).vertex(2) == &tm.vertex(7));
 
-        REQUIRE(tm.face(11).vertexNumber() == 3);
+        REQUIRE(tm.face(11).vertexCount() == 3);
         REQUIRE(tm.face(11).vertex(0) == &tm.vertex(3));
         REQUIRE(tm.face(11).vertex(1) == &tm.vertex(5));
         REQUIRE(tm.face(11).vertex(2) == &tm.vertex(1));
@@ -305,68 +305,68 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 12);
     }
 
     THEN("Test Face Vertices")
     {
-        REQUIRE(pm.face(0).vertexNumber() == 3);
+        REQUIRE(pm.face(0).vertexCount() == 3);
         REQUIRE(pm.face(0).vertex(0) == &pm.vertex(2));
         REQUIRE(pm.face(0).vertex(1) == &pm.vertex(1));
         REQUIRE(pm.face(0).vertex(2) == &pm.vertex(0));
 
-        REQUIRE(pm.face(1).vertexNumber() == 3);
+        REQUIRE(pm.face(1).vertexCount() == 3);
         REQUIRE(pm.face(1).vertex(0) == &pm.vertex(1));
         REQUIRE(pm.face(1).vertex(1) == &pm.vertex(2));
         REQUIRE(pm.face(1).vertex(2) == &pm.vertex(3));
 
-        REQUIRE(pm.face(2).vertexNumber() == 3);
+        REQUIRE(pm.face(2).vertexCount() == 3);
         REQUIRE(pm.face(2).vertex(0) == &pm.vertex(4));
         REQUIRE(pm.face(2).vertex(1) == &pm.vertex(2));
         REQUIRE(pm.face(2).vertex(2) == &pm.vertex(0));
 
-        REQUIRE(pm.face(3).vertexNumber() == 3);
+        REQUIRE(pm.face(3).vertexCount() == 3);
         REQUIRE(pm.face(3).vertex(0) == &pm.vertex(2));
         REQUIRE(pm.face(3).vertex(1) == &pm.vertex(4));
         REQUIRE(pm.face(3).vertex(2) == &pm.vertex(6));
 
-        REQUIRE(pm.face(4).vertexNumber() == 3);
+        REQUIRE(pm.face(4).vertexCount() == 3);
         REQUIRE(pm.face(4).vertex(0) == &pm.vertex(1));
         REQUIRE(pm.face(4).vertex(1) == &pm.vertex(4));
         REQUIRE(pm.face(4).vertex(2) == &pm.vertex(0));
 
-        REQUIRE(pm.face(5).vertexNumber() == 3);
+        REQUIRE(pm.face(5).vertexCount() == 3);
         REQUIRE(pm.face(5).vertex(0) == &pm.vertex(4));
         REQUIRE(pm.face(5).vertex(1) == &pm.vertex(1));
         REQUIRE(pm.face(5).vertex(2) == &pm.vertex(5));
 
-        REQUIRE(pm.face(6).vertexNumber() == 3);
+        REQUIRE(pm.face(6).vertexCount() == 3);
         REQUIRE(pm.face(6).vertex(0) == &pm.vertex(6));
         REQUIRE(pm.face(6).vertex(1) == &pm.vertex(5));
         REQUIRE(pm.face(6).vertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.face(7).vertexNumber() == 3);
+        REQUIRE(pm.face(7).vertexCount() == 3);
         REQUIRE(pm.face(7).vertex(0) == &pm.vertex(5));
         REQUIRE(pm.face(7).vertex(1) == &pm.vertex(6));
         REQUIRE(pm.face(7).vertex(2) == &pm.vertex(4));
 
-        REQUIRE(pm.face(8).vertexNumber() == 3);
+        REQUIRE(pm.face(8).vertexCount() == 3);
         REQUIRE(pm.face(8).vertex(0) == &pm.vertex(3));
         REQUIRE(pm.face(8).vertex(1) == &pm.vertex(6));
         REQUIRE(pm.face(8).vertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.face(9).vertexNumber() == 3);
+        REQUIRE(pm.face(9).vertexCount() == 3);
         REQUIRE(pm.face(9).vertex(0) == &pm.vertex(6));
         REQUIRE(pm.face(9).vertex(1) == &pm.vertex(3));
         REQUIRE(pm.face(9).vertex(2) == &pm.vertex(2));
 
-        REQUIRE(pm.face(10).vertexNumber() == 3);
+        REQUIRE(pm.face(10).vertexCount() == 3);
         REQUIRE(pm.face(10).vertex(0) == &pm.vertex(5));
         REQUIRE(pm.face(10).vertex(1) == &pm.vertex(3));
         REQUIRE(pm.face(10).vertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.face(11).vertexNumber() == 3);
+        REQUIRE(pm.face(11).vertexCount() == 3);
         REQUIRE(pm.face(11).vertex(0) == &pm.vertex(3));
         REQUIRE(pm.face(11).vertex(1) == &pm.vertex(5));
         REQUIRE(pm.face(11).vertex(2) == &pm.vertex(1));
@@ -570,43 +570,43 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 6 faces")
     {
-        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceNumber() == 6);
     }
 
     THEN("Test Face Vertices")
     {
-        REQUIRE(pm.face(0).vertexNumber() == 4);
+        REQUIRE(pm.face(0).vertexCount() == 4);
         REQUIRE(pm.face(0).vertex(0) == &pm.vertex(2));
         REQUIRE(pm.face(0).vertex(1) == &pm.vertex(3));
         REQUIRE(pm.face(0).vertex(2) == &pm.vertex(1));
         REQUIRE(pm.face(0).vertex(3) == &pm.vertex(0));
 
-        REQUIRE(pm.face(1).vertexNumber() == 4);
+        REQUIRE(pm.face(1).vertexCount() == 4);
         REQUIRE(pm.face(1).vertex(0) == &pm.vertex(4));
         REQUIRE(pm.face(1).vertex(1) == &pm.vertex(6));
         REQUIRE(pm.face(1).vertex(2) == &pm.vertex(2));
         REQUIRE(pm.face(1).vertex(3) == &pm.vertex(0));
 
-        REQUIRE(pm.face(2).vertexNumber() == 4);
+        REQUIRE(pm.face(2).vertexCount() == 4);
         REQUIRE(pm.face(2).vertex(0) == &pm.vertex(1));
         REQUIRE(pm.face(2).vertex(1) == &pm.vertex(5));
         REQUIRE(pm.face(2).vertex(2) == &pm.vertex(4));
         REQUIRE(pm.face(2).vertex(3) == &pm.vertex(0));
 
-        REQUIRE(pm.face(3).vertexNumber() == 4);
+        REQUIRE(pm.face(3).vertexCount() == 4);
         REQUIRE(pm.face(3).vertex(0) == &pm.vertex(6));
         REQUIRE(pm.face(3).vertex(1) == &pm.vertex(4));
         REQUIRE(pm.face(3).vertex(2) == &pm.vertex(5));
         REQUIRE(pm.face(3).vertex(3) == &pm.vertex(7));
 
-        REQUIRE(pm.face(4).vertexNumber() == 4);
+        REQUIRE(pm.face(4).vertexCount() == 4);
         REQUIRE(pm.face(4).vertex(0) == &pm.vertex(3));
         REQUIRE(pm.face(4).vertex(1) == &pm.vertex(2));
         REQUIRE(pm.face(4).vertex(2) == &pm.vertex(6));
         REQUIRE(pm.face(4).vertex(3) == &pm.vertex(7));
 
-        REQUIRE(pm.face(5).vertexNumber() == 4);
+        REQUIRE(pm.face(5).vertexCount() == 4);
         REQUIRE(pm.face(5).vertex(0) == &pm.vertex(5));
         REQUIRE(pm.face(5).vertex(1) == &pm.vertex(1));
         REQUIRE(pm.face(5).vertex(2) == &pm.vertex(3));
@@ -783,9 +783,9 @@ TEMPLATE_TEST_CASE(
         vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
             tm2, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
-        REQUIRE(tm2.vertexNumber() == 10);
+        REQUIRE(tm2.vertexCount() == 10);
         REQUIRE(nV == 8);
-        REQUIRE(vertWedgeMap.size() == tm2.vertexNumber());
+        REQUIRE(vertWedgeMap.size() == tm2.vertexCount());
         REQUIRE(vertsToDuplicate.size() == nV);
         REQUIRE(facesToReassign.size() == nV);
     }
@@ -811,7 +811,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 12 triangles and 4 edges")
     {
-        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceNumber() == 12);
         REQUIRE(tm.edgeNumber() == 4);
     }

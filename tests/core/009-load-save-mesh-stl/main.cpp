@@ -141,7 +141,7 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = stlCube();
         vcl::loadStl(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 36);
+        REQUIRE(tm.vertexCount() == 36);
         REQUIRE(tm.faceNumber() == 12);
     }
 }

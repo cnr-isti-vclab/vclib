@@ -175,7 +175,7 @@ MeshType createSphereUV(
         VertexType* a = &mesh.vertex(i + meridians * (parallels - 2) + 1);
         VertexType* b =
             &mesh.vertex((i + 1) % meridians + meridians * (parallels - 2) + 1);
-        VertexType* v = &mesh.vertex(mesh.vertexNumber() - 1);
+        VertexType* v = &mesh.vertex(mesh.vertexCount() - 1);
         mesh.addFace(v, a, b);
     }
 

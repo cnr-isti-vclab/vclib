@@ -1286,7 +1286,7 @@ protected:
                 // imported from the import pointers function. The import
                 // pointers function does nothing when importing from a face
                 // with at least 4 vertices
-                if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+                if (mf.vertexCount() != FaceType::VERTEX_NUMBER) {
                     // triangulate mf; the first triangle of the triangulation
                     // will be this->face(m.index(mf)); the other triangles will
                     // be added at the end of the container
@@ -1317,7 +1317,7 @@ private:
     void addFaceHelper(T& f, typename T::VertexType* v, V... args)
     {
         // position on which add the vertex
-        const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
         f.setVertex(n, v); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
@@ -1327,7 +1327,7 @@ private:
     void addFaceHelper(T& f, uint vid, V... args)
     {
         // position on which add the vertex
-        const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
         f.setVertex(n, vid); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);

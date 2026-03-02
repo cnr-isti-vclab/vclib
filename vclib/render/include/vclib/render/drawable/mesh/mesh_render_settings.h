@@ -613,7 +613,7 @@ public:
     {
         mCapability.reset();
 
-        if (m.vertexNumber() > 0) {
+        if (m.vertexCount() > 0) {
             mCapability.visible() = true;
 
             // -- Points --

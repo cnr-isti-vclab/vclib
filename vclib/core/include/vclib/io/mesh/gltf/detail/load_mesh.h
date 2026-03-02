@@ -415,7 +415,7 @@ bool populateGltfTriangles(
             }
         }
         else {
-            triNumber = m.vertexNumber() / 3 - firstVertex;
+            triNumber = m.vertexCount() / 3 - firstVertex;
             uint fi   = m.addFaces(triNumber);
             for (uint i = 0; i < triNumber * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
@@ -678,7 +678,7 @@ void loadGltfMeshPrimitive(
 {
     int materialId = loadGltfPrimitiveMaterial(m, model, p);
 
-    uint firstVertex = m.vertexNumber();
+    uint firstVertex = m.vertexCount();
 
     // load vertex position attribute
     loadGltfAttribute(
@@ -734,7 +734,7 @@ void loadGltfMeshPrimitive(
             enableIfPerVertexMaterialIndexOptional(m);
         }
         if (isPerVertexMaterialIndexAvailable(m)) {
-            uint vnum = m.vertexNumber();
+            uint vnum = m.vertexCount();
             for (uint v = firstVertex; v < vnum; ++v) {
                 m.vertex(v).materialIndex() = materialId;
             }

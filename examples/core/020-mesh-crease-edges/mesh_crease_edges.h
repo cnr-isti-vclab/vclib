@@ -51,10 +51,10 @@ auto meshCreaseEdges()
     icosahedron.name()       = "Icosahedron";
     vcl::updatePerVertexAndFaceNormals(icosahedron);
 
-    std::cout << "Created cylinder: " << cylinder.vertexNumber()
+    std::cout << "Created cylinder: " << cylinder.vertexCount()
               << " vertices, " << cylinder.faceNumber() << " faces"
               << std::endl;
-    std::cout << "Created icosahedron: " << icosahedron.vertexNumber()
+    std::cout << "Created icosahedron: " << icosahedron.vertexCount()
               << " vertices, " << icosahedron.faceNumber() << " faces"
               << std::endl;
 
@@ -127,10 +127,10 @@ auto meshCreaseEdges()
     icosaCreaseMesh.name() = "Icosahedron Crease Edge Mesh";
 
     std::cout << "Cylinder crease edge mesh: "
-              << cylinderCreaseMesh.vertexNumber() << " vertices, "
+              << cylinderCreaseMesh.vertexCount() << " vertices, "
               << cylinderCreaseMesh.edgeNumber() << " edges" << std::endl;
     std::cout << "Icosahedron crease edge mesh: "
-              << icosaCreaseMesh.vertexNumber() << " vertices, "
+              << icosaCreaseMesh.vertexCount() << " vertices, "
               << icosaCreaseMesh.edgeNumber() << " edges" << std::endl;
 
     // color edges of cylinderCreaseMesh

@@ -245,7 +245,7 @@ HausdorffDistResult hausdorffDistance(
     std::optional<uint>     seed       = std::nullopt)
 {
     if (nSamples == 0)
-        nSamples = m2.vertexNumber();
+        nSamples = m2.vertexCount();
 
     std::vector<uint> birth;
 

@@ -212,7 +212,7 @@ void meshGridExamples()
     try {
         mesh =
             vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
-        std::cout << "Loaded bone mesh with " << mesh.vertexNumber()
+        std::cout << "Loaded bone mesh with " << mesh.vertexCount()
                   << " vertices" << std::endl;
 
         // Create StaticGrid with mesh vertices

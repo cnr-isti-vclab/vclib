@@ -45,7 +45,7 @@ void readPlyEdgeProperty(
         vids.resize(eSize);
         for (uint i = 0; i < eSize; ++i) {
             vids[i] = io::readPrimitiveType<size_t>(file, p.type, end);
-            if (vids[i] >= mesh.vertexNumber()) {
+            if (vids[i] >= mesh.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for edge " + std::to_string(e.index()));
             }

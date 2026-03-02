@@ -71,7 +71,7 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexPositionsMatrix(const MeshType& mesh)
 {
-    Matrix vM(mesh.vertexNumber(), 3);
+    Matrix vM(mesh.vertexCount(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1008,7 +1008,7 @@ Vect edgeQualityVector(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 {
-    Matrix vTCM(mesh.vertexNumber(), 2);
+    Matrix vTCM(mesh.vertexCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1048,7 +1048,7 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect vTCI(mesh.vertexNumber());
+    Vect vTCI(mesh.vertexCount());
 
     vertexMaterialIndicesToBuffer(mesh, vTCI.data());
 
@@ -1176,7 +1176,7 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
     requireVertexContainerCompactness(mesh);
     requirePerVertexAdjacentVertices(mesh);
 
-    Container<Container<T>> vv(mesh.vertexNumber());
+    Container<Container<T>> vv(mesh.vertexCount());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.vertices()) {
@@ -1230,7 +1230,7 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
 {
     uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
 
-    Matrix vAVM(mesh.vertexNumber(), lva);
+    Matrix vAVM(mesh.vertexCount(), lva);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 

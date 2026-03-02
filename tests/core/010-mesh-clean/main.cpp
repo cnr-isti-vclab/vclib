@@ -118,12 +118,12 @@ TEMPLATE_TEST_CASE(
 
         populateTriMesh(tm);
 
-        REQUIRE(tm.vertexNumber() == 7);
+        REQUIRE(tm.vertexCount() == 7);
         REQUIRE(tm.faceNumber() == 9);
 
         unsigned int nr = vcl::removeDuplicateFaces(tm);
         REQUIRE(nr == 5);
-        REQUIRE(tm.vertexNumber() == 7);
+        REQUIRE(tm.vertexCount() == 7);
         REQUIRE(tm.faceNumber() == 4);
     }
 
@@ -133,12 +133,12 @@ TEMPLATE_TEST_CASE(
 
         populateTriMesh(pm);
 
-        REQUIRE(pm.vertexNumber() == 7);
+        REQUIRE(pm.vertexCount() == 7);
         REQUIRE(pm.faceNumber() == 9);
 
         unsigned int nr = vcl::removeDuplicateFaces(pm);
         REQUIRE(nr == 5);
-        REQUIRE(pm.vertexNumber() == 7);
+        REQUIRE(pm.vertexCount() == 7);
         REQUIRE(pm.faceNumber() == 4);
     }
 
@@ -148,13 +148,13 @@ TEMPLATE_TEST_CASE(
 
         populatePolyMesh(pm);
 
-        REQUIRE(pm.vertexNumber() == 5);
+        REQUIRE(pm.vertexCount() == 5);
         REQUIRE(pm.faceNumber() == 6);
 
         unsigned int nr = vcl::removeDuplicateFaces(pm);
 
         REQUIRE(nr == 3);
-        REQUIRE(pm.vertexNumber() == 5);
+        REQUIRE(pm.vertexCount() == 5);
         REQUIRE(pm.faceNumber() == 3);
     }
 }
@@ -174,7 +174,7 @@ TEMPLATE_TEST_CASE(
         TriMesh t =
             vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
-        REQUIRE(t.vertexNumber() == 18844);
+        REQUIRE(t.vertexCount() == 18844);
         REQUIRE(t.faceNumber() == 36752);
 
         REQUIRE(!vcl::isWaterTight(t));
@@ -185,7 +185,7 @@ TEMPLATE_TEST_CASE(
         vcl::TriMesh t =
             vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
 
-        REQUIRE(t.vertexNumber() == 1872);
+        REQUIRE(t.vertexCount() == 1872);
         REQUIRE(t.faceNumber() == 3022);
 
         REQUIRE(vcl::isWaterTight(t));
@@ -260,18 +260,18 @@ TEMPLATE_TEST_CASE(
     SECTION("Test number duplicated vertices")
     {
         REQUIRE(nv == 453);
-        REQUIRE(t.vertexNumber() == 18844 - nv);
+        REQUIRE(t.vertexCount() == 18844 - nv);
         REQUIRE(t.vertexContainerSize() == 18844);
         REQUIRE(t.faceNumber() == 36752);
     }
 
     SECTION("Test compactness")
     {
-        REQUIRE(t.vertexNumber() != t.vertexContainerSize());
+        REQUIRE(t.vertexCount() != t.vertexContainerSize());
 
         t.compact();
 
-        REQUIRE(t.vertexNumber() == t.vertexContainerSize());
-        REQUIRE(t.vertexNumber() == 18844 - nv);
+        REQUIRE(t.vertexCount() == t.vertexContainerSize());
+        REQUIRE(t.vertexCount() == 18844 - nv);
     }
 }
