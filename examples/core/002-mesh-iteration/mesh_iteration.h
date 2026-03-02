@@ -45,7 +45,7 @@ void meshIteration()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     std::cout << "Loaded mesh with " << mesh.vertexCount() << " vertices and "
-              << mesh.faceNumber() << " faces" << std::endl;
+              << mesh.faceCount() << " faces" << std::endl;
 
     /****** Basic iteration ******/
 
@@ -63,7 +63,7 @@ void meshIteration()
 
     // Iterate with traditional for loop using indices
     std::cout << "\nFirst 3 faces (using indices):" << std::endl;
-    for (vcl::uint i = 0; i < std::min(3u, mesh.faceNumber()); ++i) {
+    for (vcl::uint i = 0; i < std::min(3u, mesh.faceCount()); ++i) {
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << ": vertices [";
         for (int j = 0; j < 3; ++j) {
@@ -209,7 +209,7 @@ void meshIteration()
         VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded polygon mesh with " << polyMesh.vertexCount()
-              << " vertices and " << polyMesh.faceNumber() << " faces"
+              << " vertices and " << polyMesh.faceCount() << " faces"
               << std::endl;
 
     // Iterate over polygon faces (variable number of vertices)
@@ -248,7 +248,7 @@ void meshIteration()
 
     // Compute average edge length
     double    totalEdgeLength = 0.0;
-    vcl::uint edgeCount       = mesh.faceNumber() * 3;
+    vcl::uint edgeCount       = mesh.faceCount() * 3;
 
     for (const auto& face : mesh.faces()) {
         for (int i = 0; i < 3; ++i) {

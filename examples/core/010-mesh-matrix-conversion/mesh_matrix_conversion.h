@@ -65,7 +65,7 @@ auto meshMatrixConversion()
         f.color() = randomColor();
 
     std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
-              << mesh.faceNumber() << " faces" << std::endl;
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Export basic geometry
     Eigen::MatrixXd vertices =
@@ -106,7 +106,7 @@ auto meshMatrixConversion()
     vcl::faceColorsFromMatrix(importedMesh, faceColors);
 
     std::cout << "Imported mesh: " << importedMesh.vertexCount()
-              << " vertices, " << importedMesh.faceNumber() << " faces"
+              << " vertices, " << importedMesh.faceCount() << " faces"
               << std::endl;
 
     // Verify data integrity
@@ -187,7 +187,7 @@ auto meshMatrixConversion()
     cubeMesh.name() = "Cube Mesh";
 
     std::cout << "Created cube mesh: " << cubeMesh.vertexCount()
-              << " vertices, " << cubeMesh.faceNumber() << " faces"
+              << " vertices, " << cubeMesh.faceCount() << " faces"
               << std::endl;
 
     vcl::updatePerVertexAndFaceNormals(cubeMesh);

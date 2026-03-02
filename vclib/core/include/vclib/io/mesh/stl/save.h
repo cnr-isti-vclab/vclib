@@ -120,10 +120,10 @@ void saveStl(
         using FaceType = MeshType::FaceType;
 
         if (settings.binary) {
-            io::writeInt(fp, m.faceNumber());
+            io::writeInt(fp, m.faceCount());
         }
 
-        log.startProgress("Saving STL file", m.faceNumber());
+        log.startProgress("Saving STL file", m.faceCount());
 
         for (const FaceType& f : m.faces()) {
             // For each triangle write the normal, the 3 vert positions and a

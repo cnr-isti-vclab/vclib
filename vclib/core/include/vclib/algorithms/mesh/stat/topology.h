@@ -186,7 +186,7 @@ uint countPerFaceVertexReferences(const FaceMeshConcept auto& mesh)
     uint nRefs = 0;
 
     if constexpr (TriangleMeshConcept<MeshType>) {
-        return mesh.faceNumber() * 3;
+        return mesh.faceCount() * 3;
     }
     else {
         for (const auto& f : mesh.faces()) {

@@ -53,7 +53,7 @@ auto meshTextureAndTexCoords()
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_verttexcoords.ply");
 
     std::cout << "   Loaded " << meshVertexTexCoords.vertexCount()
-              << " vertices, " << meshVertexTexCoords.faceNumber() << " faces"
+              << " vertices, " << meshVertexTexCoords.faceCount() << " faces"
               << std::endl;
 
     // Check if mesh has vertex texture coordinates
@@ -92,7 +92,7 @@ auto meshTextureAndTexCoords()
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply",
         settings);
     std::cout << "   Loaded " << meshWedgeTexCoords.vertexCount()
-              << " vertices, " << meshWedgeTexCoords.faceNumber() << " faces"
+              << " vertices, " << meshWedgeTexCoords.faceCount() << " faces"
               << std::endl;
 
     // Check if mesh has wedge texture coordinates
@@ -101,7 +101,7 @@ auto meshTextureAndTexCoords()
 
         // Access first few face wedge texture coordinates
         std::cout << "   First face wedge texture coordinates:" << std::endl;
-        if (meshWedgeTexCoords.faceNumber() > 0) {
+        if (meshWedgeTexCoords.faceCount() > 0) {
             auto& face = meshWedgeTexCoords.face(0);
             if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
                 std::cout << "     material_id " << face.materialIndex();
@@ -185,7 +185,7 @@ auto meshTextureAndTexCoords()
     customMesh.pushTextureImage("custom_texture_path.png", image);
 
     std::cout << "   Created custom mesh with " << customMesh.vertexCount()
-              << " vertices and " << customMesh.faceNumber() << " faces"
+              << " vertices and " << customMesh.faceCount() << " faces"
               << std::endl;
     std::cout << "   ✓ Has vertex texture coordinates: "
               << customMesh.isPerVertexTexCoordEnabled() << std::endl;

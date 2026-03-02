@@ -142,7 +142,7 @@ TEMPLATE_TEST_CASE(
         auto    ss = stlCube();
         vcl::loadStl(tm, ss, info);
         REQUIRE(tm.vertexCount() == 36);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
     }
 }
 
@@ -166,7 +166,7 @@ TEMPLATE_TEST_CASE(
         std::ostringstream ss;
         vcl::saveStl(tm, ss, settings);
 
-        const unsigned int expectedStlSize = 7 * tm.faceNumber() + 2;
+        const unsigned int expectedStlSize = 7 * tm.faceCount() + 2;
 
         // verify that ss contains 86 lines
         std::istringstream iss(ss.str());

@@ -375,7 +375,7 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
     MeshType mesh = createIcosahedron<MeshType>(true);
 
     for (uint d = 0; d < divisions; d++) {
-        uint nf = mesh.faceNumber();
+        uint nf = mesh.faceCount();
         for (uint f = 0; f < nf; f++) {
             FaceType&   f0   = mesh.face(f);
             VertexType& v0   = *f0.vertex(0);

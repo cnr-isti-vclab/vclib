@@ -1070,7 +1070,7 @@ void faceWedgeTexCoordsFromMatrix(
 {
     MatrixStorageType stg = matrixStorageType<FTMatrix>();
 
-    if (faceWedgeTexCoords.rows() != mesh.faceNumber())
+    if (faceWedgeTexCoords.rows() != mesh.faceCount())
         throw WrongSizeException(
             "The input face wedge texcoords must have the same number of rows "
             "as the number of faces in the mesh");
@@ -1103,7 +1103,7 @@ void faceWedgeTexCoordsFromMatrix(
 template<FaceMeshConcept MeshType, Range R>
 void faceMaterialIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
 {
-    if (std::ranges::size(texCoordIndices) != mesh.faceNumber())
+    if (std::ranges::size(texCoordIndices) != mesh.faceCount())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of faces in the mesh");

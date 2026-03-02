@@ -61,7 +61,7 @@ void saveOff(
         vn = m.vertexCount();
     }
     if constexpr (HasFaces<MeshType>) {
-        fn = m.faceNumber();
+        fn = m.faceCount();
     }
 
     io::writeInt(fp, vn, false);

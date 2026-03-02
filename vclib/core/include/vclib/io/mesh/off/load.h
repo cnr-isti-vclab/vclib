@@ -413,7 +413,7 @@ void readOffFaces(
             Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
             Tokenizer::iterator token  = tokens.begin();
             mesh.addFace();
-            FaceType& f = mesh.face(mesh.faceNumber() - 1);
+            FaceType& f = mesh.face(mesh.faceCount() - 1);
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
@@ -463,7 +463,7 @@ void readOffFaces(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = mesh.index(f); ff < mesh.faceNumber();
+                        for (uint ff = mesh.index(f); ff < mesh.faceCount();
                              ++ff) {
                             mesh.face(ff).color() = f.color();
                         }

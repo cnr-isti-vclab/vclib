@@ -205,12 +205,12 @@ void faceIndicesFromBuffer(
         mesh.resizeFaces(faceCount);
     }
     else {
-        if (faceCount != mesh.faceNumber()) {
+        if (faceCount != mesh.faceCount()) {
             throw WrongSizeException(
                 "The input face count does not match the number of faces of "
                 "the mesh\n"
                 "Number of faces in the mesh: " +
-                std::to_string(mesh.faceNumber()) +
+                std::to_string(mesh.faceCount()) +
                 "\nNumber of input face number: " + std::to_string(faceCount));
         }
     }
@@ -1189,7 +1189,7 @@ void faceWedgeTexCoordsFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceCount() : numRows;
     const uint NUM_COLS = largestFaceSize * 2;
 
     enableIfPerFaceWedgeTexCoordsOptional(mesh);

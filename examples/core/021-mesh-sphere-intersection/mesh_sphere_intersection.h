@@ -46,7 +46,7 @@ auto meshSphereIntersection()
     vcl::updatePerVertexNormals(originalMesh);
 
     std::cout << "Loaded bunny mesh: " << originalMesh.vertexCount()
-              << " vertices, " << originalMesh.faceNumber() << " faces"
+              << " vertices, " << originalMesh.faceCount() << " faces"
               << std::endl;
 
     /****** Define spheres for intersection ******/
@@ -94,13 +94,13 @@ auto meshSphereIntersection()
 
     std::cout << "Center sphere intersection: "
               << centerSphereIntersection.vertexCount() << " vertices, "
-              << centerSphereIntersection.faceNumber() << " faces" << std::endl;
+              << centerSphereIntersection.faceCount() << " faces" << std::endl;
     std::cout << "Ear sphere intersection: "
               << earSphereIntersection.vertexCount() << " vertices, "
-              << earSphereIntersection.faceNumber() << " faces" << std::endl;
+              << earSphereIntersection.faceCount() << " faces" << std::endl;
     std::cout << "Large sphere intersection: "
               << largeSphereIntersection.vertexCount() << " vertices, "
-              << largeSphereIntersection.faceNumber() << " faces" << std::endl;
+              << largeSphereIntersection.faceCount() << " faces" << std::endl;
 
     /****** Optional: Create sphere meshes for visualization ******/
 

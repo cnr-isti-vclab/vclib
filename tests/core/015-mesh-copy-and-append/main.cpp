@@ -58,7 +58,7 @@ TEMPLATE_TEST_CASE(
         THEN("Right number of vertices and faces")
         {
             REQUIRE(m2.vertexCount() == m1.vertexCount());
-            REQUIRE(m2.faceNumber() == m1.faceNumber());
+            REQUIRE(m2.faceCount() == m1.faceCount());
         }
 
         THEN("The mesh is consistent")
@@ -79,7 +79,7 @@ TEMPLATE_TEST_CASE(
 
         THEN("Faces are copied correctly")
         {
-            for (size_t i = 0; i < m1.faceNumber(); ++i) {
+            for (size_t i = 0; i < m1.faceCount(); ++i) {
                 REQUIRE(m1.face(i).vertexCount() == m2.face(i).vertexCount());
                 for (size_t j = 0; j < m1.face(i).vertexCount(); ++j) {
                     REQUIRE(
@@ -107,13 +107,13 @@ TEMPLATE_TEST_CASE(
 
         unsigned int m1vn = m1.vertexCount();
         unsigned int m2vn = m2.vertexCount();
-        unsigned int m1fn = m1.faceNumber();
-        unsigned int m2fn = m2.faceNumber();
+        unsigned int m1fn = m1.faceCount();
+        unsigned int m2fn = m2.faceCount();
 
         THEN("Right number of vertices and faces")
         {
             REQUIRE(m3.vertexCount() == m1vn + m2vn);
-            REQUIRE(m3.faceNumber() == m1fn + m2fn);
+            REQUIRE(m3.faceCount() == m1fn + m2fn);
         }
 
         THEN("The mesh is consistent")

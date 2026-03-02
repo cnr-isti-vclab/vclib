@@ -57,7 +57,7 @@ void savePly(
 
     if constexpr (HasFaces<MeshType>) {
         if (header.hasFaces()) {
-            header.setNumberFaces(m.faceNumber());
+            header.setNumberFaces(m.faceCount());
         }
     }
     if constexpr (HasEdges<MeshType>) {

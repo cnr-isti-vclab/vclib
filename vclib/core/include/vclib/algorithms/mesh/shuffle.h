@@ -60,7 +60,7 @@ template<typename M, typename F>
 std::vector<F*> genericFASFPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<F*> vec;
-    vec.reserve(m.faceNumber());
+    vec.reserve(m.faceCount());
 
     for (F& f : m.faces()) {
         vec.push_back(&f);
@@ -140,7 +140,7 @@ std::vector<uint> fillAndShuffleFaceIndexVector(
     using FaceType = MeshType::FaceType;
 
     std::vector<uint> vec;
-    vec.reserve(m.faceNumber());
+    vec.reserve(m.faceCount());
 
     for (const FaceType& f : m.faces()) {
         vec.push_back(m.index(f));

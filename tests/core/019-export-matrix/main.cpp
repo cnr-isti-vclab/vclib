@@ -127,7 +127,7 @@ void testTrianglesMatrix(const auto& tm)
 {
     auto tris = vcl::faceVertexIndicesMatrix<MatrixType>(tm);
 
-    REQUIRE(tris.rows() == tm.faceNumber());
+    REQUIRE(tris.rows() == tm.faceCount());
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
@@ -143,7 +143,7 @@ void testFaceSizesVector(const auto& pm)
 {
     auto sizes = vcl::faceSizesVector<VectorType>(pm);
 
-    REQUIRE(sizes.size() == pm.faceNumber());
+    REQUIRE(sizes.size() == pm.faceCount());
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
         REQUIRE(sizes[i] == f.vertexCount());
@@ -172,7 +172,7 @@ void testFaceMatrix(const auto& pm)
 {
     auto faces = vcl::faceVertexIndicesMatrix<MatrixType>(pm);
 
-    REQUIRE(faces.rows() == pm.faceNumber());
+    REQUIRE(faces.rows() == pm.faceCount());
     REQUIRE(faces.cols() == vcl::largestFaceSize(pm));
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
@@ -230,7 +230,7 @@ void testFaceSelectionVector(const auto& tm)
 {
     auto sel = vcl::faceSelectionVector<VectorType>(tm);
 
-    REQUIRE(sel.size() == tm.faceNumber());
+    REQUIRE(sel.size() == tm.faceCount());
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         REQUIRE((bool) sel[i] == f.selected());
@@ -259,7 +259,7 @@ void testFaceNormalsMatrix(const auto& tm)
 {
     auto faceNormals = vcl::faceNormalsMatrix<MatrixType>(tm);
 
-    REQUIRE(faceNormals.rows() == tm.faceNumber());
+    REQUIRE(faceNormals.rows() == tm.faceCount());
     REQUIRE(faceNormals.cols() == 3);
 
     for (vcl::uint i = 0; const auto& n : tm.faces() | vcl::views::normals) {
@@ -306,7 +306,7 @@ void testFaceColorsMatrix(const auto& tm)
 {
     auto faceColors = vcl::faceColorsMatrix<MatrixType>(tm);
 
-    REQUIRE(faceColors.rows() == tm.faceNumber());
+    REQUIRE(faceColors.rows() == tm.faceCount());
     REQUIRE(faceColors.cols() == 4);
 
     for (vcl::uint i = 0; const auto& c : tm.faces() | vcl::views::colors) {
@@ -324,7 +324,7 @@ void testFaceColorsVector(const auto& tm)
     auto faceColors =
         vcl::faceColorsVector<VectorType>(tm, vcl::Color::Format::RGBA);
 
-    REQUIRE(faceColors.size() == tm.faceNumber());
+    REQUIRE(faceColors.size() == tm.faceCount());
 
     for (vcl::uint i = 0; const auto& c : tm.faces() | vcl::views::colors) {
         REQUIRE(faceColors[i] == c.rgba());
@@ -350,7 +350,7 @@ void testFaceQualityVector(const auto& tm)
 {
     auto qual = vcl::faceQualityVector<VectorType>(tm);
 
-    REQUIRE(qual.size() == tm.faceNumber());
+    REQUIRE(qual.size() == tm.faceCount());
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         REQUIRE(qual[i] == f.quality());
@@ -451,7 +451,7 @@ void testFaceAdjacentFacesVectors(const auto& tm)
 {
     auto adjacencies = vcl::faceAdjacentFacesVectors<Container, T>(tm);
 
-    REQUIRE(adjacencies.size() == tm.faceNumber());
+    REQUIRE(adjacencies.size() == tm.faceCount());
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         const auto& adjList = adjacencies[i];
@@ -473,7 +473,7 @@ void testFaceAdjacentFacesMatrix(const auto& tm)
 
     vcl::uint lfa = vcl::largestFaceSize(tm);
 
-    REQUIRE(adjMatrix.rows() == tm.faceNumber());
+    REQUIRE(adjMatrix.rows() == tm.faceCount());
     REQUIRE(adjMatrix.cols() == lfa);
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {

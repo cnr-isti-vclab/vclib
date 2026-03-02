@@ -46,7 +46,7 @@ auto meshCurvature()
 
     std::cout << "Original mesh loaded:" << std::endl;
     std::cout << "  Vertices: " << originalMesh.vertexCount() << std::endl;
-    std::cout << "  Faces: " << originalMesh.faceNumber() << std::endl;
+    std::cout << "  Faces: " << originalMesh.faceCount() << std::endl;
 
     // Enable required components
     originalMesh.enablePerVertexAdjacentFaces();

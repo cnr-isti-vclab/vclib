@@ -48,8 +48,8 @@ inline void meshTopology()
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     std::cout << "Loaded triangular mesh: " << mesh.vertexCount()
-              << " vertices, " << mesh.faceNumber() << " faces\n";
-    std::cout << "Expected edges: ~" << (mesh.faceNumber() * 3 / 2)
+              << " vertices, " << mesh.faceCount() << " faces\n";
+    std::cout << "Expected edges: ~" << (mesh.faceCount() * 3 / 2)
               << " (Euler's formula approximation)\n\n";
 
     // ========================================
@@ -153,7 +153,7 @@ inline void meshTopology()
 
     // Show adjacency for first few faces
     std::cout << "Adjacent faces for first 3 faces:\n";
-    for (int i = 0; i < 3 && i < mesh.faceNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.faceCount(); ++i) {
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << " is adjacent to faces: ";
 
@@ -235,7 +235,7 @@ inline void meshTopology()
 
     // Verify Euler's formula: V - E + F = 2 (for a closed surface)
     vcl::uint V = mesh.vertexCount();
-    vcl::uint F = mesh.faceNumber();
+    vcl::uint F = mesh.faceCount();
 
     // Count edges by examining face adjacencies
     vcl::uint E = F * 3; // Each triangle has 3 edges

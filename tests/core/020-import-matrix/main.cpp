@@ -96,7 +96,7 @@ void testMeshFromMatrices()
 
     // Verify faces
     if constexpr (vcl::HasFaces<MeshType>) {
-        REQUIRE(mesh.faceNumber() == 12);
+        REQUIRE(mesh.faceCount() == 12);
         for (vcl::uint i = 0; i < 12; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -163,7 +163,7 @@ void testFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 2);
+        REQUIRE(mesh.faceCount() == 2);
         for (vcl::uint i = 0; i < 2; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -195,7 +195,7 @@ void testPolyFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 3);
+        REQUIRE(mesh.faceCount() == 3);
 
         // Verify faces using loops
         for (vcl::uint i = 0; i < 3; ++i) {

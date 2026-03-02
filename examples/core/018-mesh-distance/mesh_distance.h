@@ -44,7 +44,7 @@ void meshDistance()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     std::cout << "Loaded mesh with " << mesh.vertexCount() << " vertices and "
-              << mesh.faceNumber() << " faces" << std::endl;
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Prepare mesh for distance computation
     vcl::updateBoundingBox(mesh);

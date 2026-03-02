@@ -68,7 +68,7 @@ public:
 
     virtual uint vertexCount() const = 0;
 
-    virtual uint faceNumber() const = 0;
+    virtual uint faceCount() const = 0;
 
     virtual uint edgeNumber() const = 0;
 

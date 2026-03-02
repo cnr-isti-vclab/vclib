@@ -54,7 +54,7 @@ auto meshCopyAndTransform()
 
     std::cout << "Original mesh created: icosahedron with "
               << originalMesh.vertexCount() << " vertices and "
-              << originalMesh.faceNumber() << " faces\n";
+              << originalMesh.faceCount() << " faces\n";
 
     // METHOD 1: Copy via copy constructor
     std::cout << "\n1. Copy via copy constructor:\n";
@@ -240,7 +240,7 @@ auto meshCopyAndTransform()
     // Create a main mesh
     vcl::TriMesh combinedMesh = vcl::createCube<vcl::TriMesh>();
     std::cout << "Main mesh (cube): " << combinedMesh.vertexCount()
-              << " vertices, " << combinedMesh.faceNumber() << " faces\n";
+              << " vertices, " << combinedMesh.faceCount() << " faces\n";
     combinedMesh.name() = "Combined Scene";
 
     // Create different primitives to add
@@ -266,11 +266,11 @@ auto meshCopyAndTransform()
 
     std::cout << "\nPrimitives to add:\n";
     std::cout << "- Icosphere (3 subdivisions): " << sphere1.vertexCount()
-              << " vertices, " << sphere1.faceNumber() << " faces\n";
+              << " vertices, " << sphere1.faceCount() << " faces\n";
     std::cout << "- UV Sphere (16x16): " << sphere2.vertexCount()
-              << " vertices, " << sphere2.faceNumber() << " faces\n";
+              << " vertices, " << sphere2.faceCount() << " faces\n";
     std::cout << "- Tetrahedron: " << tetrahedron.vertexCount()
-              << " vertices, " << tetrahedron.faceNumber() << " faces\n";
+              << " vertices, " << tetrahedron.faceCount() << " faces\n";
 
     // Combine meshes using append
     std::cout << "\nCombination through append:\n";
@@ -294,7 +294,7 @@ auto meshCopyAndTransform()
               << " from tetrahedron)\n";
 
     std::cout << "\nFinal combined mesh: " << combinedMesh.vertexCount()
-              << " vertices, " << combinedMesh.faceNumber() << " faces\n";
+              << " vertices, " << combinedMesh.faceCount() << " faces\n";
 
     vcl::updateBoundingBox(combinedMesh);
     auto bbCombined = combinedMesh.boundingBox();

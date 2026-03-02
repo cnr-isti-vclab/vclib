@@ -43,7 +43,7 @@ TEMPLATE_TEST_CASE(
     THEN("The mesh has 8 vertices, 12 triangles")
     {
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     THEN("Filter vertices")
@@ -56,7 +56,7 @@ TEMPLATE_TEST_CASE(
         THEN("The mesh has been filtered")
         {
             REQUIRE(anotherMesh.vertexCount() == 4);
-            REQUIRE(anotherMesh.faceNumber() == 0);
+            REQUIRE(anotherMesh.faceCount() == 0);
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(
@@ -99,7 +99,7 @@ TEMPLATE_TEST_CASE(
         THEN("The mesh has been filtered")
         {
             REQUIRE(anotherMesh.vertexCount() == 8);
-            REQUIRE(anotherMesh.faceNumber() == 5);
+            REQUIRE(anotherMesh.faceCount() == 5);
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(

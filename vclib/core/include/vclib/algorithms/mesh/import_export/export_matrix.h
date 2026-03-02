@@ -117,7 +117,7 @@ Vect faceSizesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Vect fM(mesh.faceNumber());
+    Vect fM(mesh.faceCount());
 
     faceSizesToBuffer(mesh, fM.data());
 
@@ -210,7 +210,7 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
 
     uint fMaxSize = largestFaceSize(mesh);
 
-    Matrix fM(mesh.faceNumber(), fMaxSize);
+    Matrix fM(mesh.faceCount(), fMaxSize);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1088,7 +1088,7 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 {
     uint lfs = vcl::largestFaceSize(mesh);
 
-    Matrix fTCM(mesh.faceNumber(), lfs * 2);
+    Matrix fTCM(mesh.faceCount(), lfs * 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1128,7 +1128,7 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect fTCI(mesh.faceNumber());
+    Vect fTCI(mesh.faceCount());
 
     faceMaterialIndicesToBuffer(mesh, fTCI.data());
 

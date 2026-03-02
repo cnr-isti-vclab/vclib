@@ -82,9 +82,9 @@ auto polymeshSpecifics()
         polyMesh.addFace(centerVertex, (i + 1) % 6, i);
     }
 
-    std::cout << "Added " << (polyMesh.faceNumber() - 1)
+    std::cout << "Added " << (polyMesh.faceCount() - 1)
               << " triangular faces around the center\n";
-    std::cout << "Total faces: " << polyMesh.faceNumber() << "\n\n";
+    std::cout << "Total faces: " << polyMesh.faceCount() << "\n\n";
 
     // importing a TriMesh from a PolyMesh will automatically triangulate the
     // polygonal faces
@@ -94,7 +94,7 @@ auto polymeshSpecifics()
     triMesh.name() = "Hexagon Pyramid TriMesh";
 
     std::cout << "Converted to TriMesh: " << triMesh.vertexCount()
-              << " vertices, " << triMesh.faceNumber() << " faces\n\n";
+              << " vertices, " << triMesh.faceCount() << " faces\n\n";
 
     // ========================================
     // PART 2: POLYMESH VS TRIMESH COMPARISON
@@ -112,9 +112,9 @@ auto polymeshSpecifics()
     vcl::loadMesh(triMeshLoaded, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded cube as PolyMesh: " << polyMeshLoaded.vertexCount()
-              << " vertices, " << polyMeshLoaded.faceNumber() << " faces\n";
+              << " vertices, " << polyMeshLoaded.faceCount() << " faces\n";
     std::cout << "Loaded cube as TriMesh:  " << triMeshLoaded.vertexCount()
-              << " vertices, " << triMeshLoaded.faceNumber() << " faces\n";
+              << " vertices, " << triMeshLoaded.faceCount() << " faces\n";
 
     // Analyze face structure
     std::cout << "\nFace structure analysis:\n";
@@ -134,7 +134,7 @@ auto polymeshSpecifics()
 
     // TriMesh (all faces are triangles)
     std::cout << "TriMesh face distribution:\n";
-    std::cout << "  " << triMeshLoaded.faceNumber()
+    std::cout << "  " << triMeshLoaded.faceCount()
               << " faces with 3 vertices each\n\n";
 
     // ========================================
@@ -195,7 +195,7 @@ auto polymeshSpecifics()
     std::cout << "Face-face adjacency enabled for PolyMesh\n";
 
     // Check adjacency for first face
-    if (polyMeshLoaded.faceNumber() > 0) {
+    if (polyMeshLoaded.faceCount() > 0) {
         const auto& face = polyMeshLoaded.face(0);
         std::cout << "Face 0 has " << face.vertexCount() << " vertices and "
                   << face.adjFacesNumber() << " adjacent faces\n";
@@ -235,7 +235,7 @@ auto polymeshSpecifics()
     std::cout << "---------------------------------\n";
 
     // Analyze face properties
-    if (polyMeshLoaded.faceNumber() > 0) {
+    if (polyMeshLoaded.faceCount() > 0) {
         const auto& face = polyMeshLoaded.face(0);
 
         std::cout << "Face 0 analysis:\n";
@@ -297,7 +297,7 @@ auto polymeshSpecifics()
 
     // Calculate storage efficiency
     size_t triMeshFaceMemory =
-        triMeshLoaded.faceNumber() * 3; // 3 vertex indices per face
+        triMeshLoaded.faceCount() * 3; // 3 vertex indices per face
     size_t polyMeshFaceMemory = 0;
     for (const auto& face : polyMeshLoaded.faces()) {
         polyMeshFaceMemory += face.vertexCount();

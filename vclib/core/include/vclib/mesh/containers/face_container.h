@@ -98,18 +98,18 @@ public:
      * @brief Returns the number of **non-deleted** Faces contained in the Face
      * container of the Mesh.
      *
-     * If faceNumber() != faceContainerSize(), it means that there are some
+     * If faceCount() != faceContainerSize(), it means that there are some
      * Faces that are flagged as deleted.
      *
      * @return the number of non-deleted Faces of the Mesh.
      */
-    uint faceNumber() const { return Base::elementCount(); }
+    uint faceCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Faces (also deleted) contained in the Face
      * container of the Mesh.
      *
-     * If faceNumber() != faceContainerSize(), it means that there are some
+     * If faceCount() != faceContainerSize(), it means that there are some
      * Faces that are flagged as deleted.
      *
      * @return the number of all the Faces contained in the Mesh.
@@ -118,11 +118,11 @@ public:
 
     /**
      * @brief Returns the number of deleted Faces in the Face container, that is
-     * faceContainerSize() - faceNumber().
+     * faceContainerSize() - faceCount().
      *
      * @return The number of deleted Faces in the container.
      */
-    uint deletedFaceNumber() const { return Base::deletedElementCount(); }
+    uint deletedFaceCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a Face to the container, returning its index.

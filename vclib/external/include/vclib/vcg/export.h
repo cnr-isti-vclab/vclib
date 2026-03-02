@@ -92,7 +92,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
     }
 
     if constexpr (HasFaces<MeshType>) {
-        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceNumber());
+        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceCount());
 
         uint fi = 0;
         for (const auto& f : mesh.faces()) {

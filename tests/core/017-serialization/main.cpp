@@ -432,7 +432,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
     fi.close();
 
     REQUIRE(mesh1.vertexCount() == mesh2.vertexCount());
-    REQUIRE(mesh1.faceNumber() == mesh2.faceNumber());
+    REQUIRE(mesh1.faceCount() == mesh2.faceCount());
     REQUIRE(mesh2.isPerVertexColorEnabled());
 
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
@@ -440,7 +440,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
         REQUIRE(mesh1.vertex(i).color() == mesh2.vertex(i).color());
     }
 
-    for (unsigned int i = 0; i < mesh1.faceNumber(); i++) {
+    for (unsigned int i = 0; i < mesh1.faceCount(); i++) {
         REQUIRE(mesh1.face(i).vertexCount() == mesh2.face(i).vertexCount());
         for (unsigned int j = 0; j < mesh1.face(i).vertexCount(); j++)
             REQUIRE(
@@ -482,7 +482,7 @@ TEMPLATE_TEST_CASE(
         vcl::ElemId::FACE,
         vcl::Color>("rand_color");
 
-    for (unsigned int i = 0; i < mesh1.faceNumber(); i++) {
+    for (unsigned int i = 0; i < mesh1.faceCount(); i++) {
         fh[i] = randomColor();
     }
 

@@ -142,7 +142,7 @@ TEMPLATE_TEST_CASE(
         auto    ss = plyPolyCube();
         vcl::loadPly(tm, ss, info);
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - TriCube")
@@ -151,7 +151,7 @@ TEMPLATE_TEST_CASE(
         auto    ss = plyTriCube();
         vcl::loadPly(tm, ss, info);
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - VertTextureDouble")
@@ -160,7 +160,7 @@ TEMPLATE_TEST_CASE(
         vcl::loadPly(
             tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 4);
+        REQUIRE(tm.faceCount() == 4);
         REQUIRE(tm.materialsNumber() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
         REQUIRE(tm.isPerVertexMaterialIndexEnabled());
@@ -175,7 +175,7 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 4);
+        REQUIRE(tm.faceCount() == 4);
         REQUIRE(tm.materialsNumber() == 2);
         REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
@@ -192,7 +192,7 @@ TEMPLATE_TEST_CASE(
         auto     ss = plyPolyCube();
         vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.faceCount() == 6);
     }
 
     SECTION("PolyMesh - TriCube")
@@ -201,7 +201,7 @@ TEMPLATE_TEST_CASE(
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.faceCount() == 12);
     }
 
     SECTION("EdgeMesh - PolyCube")

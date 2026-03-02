@@ -743,7 +743,7 @@ void loadGltfMeshPrimitive(
     }
 
     if constexpr (HasFaces<MeshType>) {
-        uint firstFace = m.faceNumber();
+        uint firstFace = m.faceCount();
         bool lti       = loadGltfAttribute(
             m,
             firstVertex,

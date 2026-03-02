@@ -52,10 +52,10 @@ auto meshCreaseEdges()
     vcl::updatePerVertexAndFaceNormals(icosahedron);
 
     std::cout << "Created cylinder: " << cylinder.vertexCount()
-              << " vertices, " << cylinder.faceNumber() << " faces"
+              << " vertices, " << cylinder.faceCount() << " faces"
               << std::endl;
     std::cout << "Created icosahedron: " << icosahedron.vertexCount()
-              << " vertices, " << icosahedron.faceNumber() << " faces"
+              << " vertices, " << icosahedron.faceCount() << " faces"
               << std::endl;
 
     /****** Method 1: Crease Edge Selection ******/

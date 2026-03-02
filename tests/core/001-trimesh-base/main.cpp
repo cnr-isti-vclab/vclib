@@ -41,7 +41,7 @@ TEMPLATE_TEST_CASE(
     THEN("The size for each container start at 0")
     {
         REQUIRE(m.vertexCount() == 0);
-        REQUIRE(m.faceNumber() == 0);
+        REQUIRE(m.faceCount() == 0);
     }
 
     THEN("The optional components are all disabled")
@@ -90,7 +90,7 @@ TEMPLATE_TEST_CASE(
         unsigned int vi0 = m.addVertex();
 
         REQUIRE(m.vertexCount() == 1);
-        REQUIRE(m.faceNumber() == 0);
+        REQUIRE(m.faceCount() == 0);
         REQUIRE(m.vertex(0).position() == TriMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
 
@@ -111,14 +111,14 @@ TEMPLATE_TEST_CASE(
     WHEN("Adding and removing vertices and faces")
     {
         REQUIRE(m.vertexCount() == 0);
-        REQUIRE(m.faceNumber() == 0);
+        REQUIRE(m.faceCount() == 0);
         m.addVertices(3);
         REQUIRE(m.vertexCount() == 3);
         unsigned int fi0 = m.addFace();
-        REQUIRE(m.faceNumber() == 1);
+        REQUIRE(m.faceCount() == 1);
         REQUIRE(&m.face(fi0) == &m.face(0));
         m.addFace(0, 1, 2);
-        REQUIRE(m.faceNumber() == 2);
+        REQUIRE(m.faceCount() == 2);
         REQUIRE(m.face(1).vertexIndex(0) == 0);
         REQUIRE(m.face(1).vertexIndex(1) == 1);
         REQUIRE(m.face(1).vertexIndex(2) == 2);
@@ -261,7 +261,7 @@ TEMPLATE_TEST_CASE(
     m.addFace(7, 5, 4);
 
     REQUIRE(m.vertexCount() == 8);
-    REQUIRE(m.faceNumber() == 12);
+    REQUIRE(m.faceCount() == 12);
 
     THEN("Test Vertex References queries")
     {

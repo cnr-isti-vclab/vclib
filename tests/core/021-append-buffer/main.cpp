@@ -155,7 +155,7 @@ void testTriangleMatrix(
     vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
         tm, vtd, ftr, tris.data(), 3, stg);
 
-    REQUIRE(tris.rows() == tm.faceNumber());
+    REQUIRE(tris.rows() == tm.faceCount());
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {

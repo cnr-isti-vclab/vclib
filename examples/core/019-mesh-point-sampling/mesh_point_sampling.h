@@ -49,7 +49,7 @@ auto meshPointSampling()
     vcl::updatePerVertexAndFaceNormals(originalMesh);
 
     std::cout << "Loaded mesh with " << originalMesh.vertexCount()
-              << " vertices and " << originalMesh.faceNumber() << " faces"
+              << " vertices and " << originalMesh.faceCount() << " faces"
               << std::endl;
 
     /****** All Vertices Sampling ******/
@@ -110,7 +110,7 @@ auto meshPointSampling()
 
     std::cout << "\n=== Sampling Summary ===" << std::endl;
     std::cout << "Original mesh: " << originalMesh.vertexCount()
-              << " vertices, " << originalMesh.faceNumber() << " faces"
+              << " vertices, " << originalMesh.faceCount() << " faces"
               << std::endl;
     std::cout << "All vertices:  " << allVertices.vertexCount() << " points"
               << std::endl;

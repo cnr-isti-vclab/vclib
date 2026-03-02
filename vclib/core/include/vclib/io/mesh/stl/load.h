@@ -266,7 +266,7 @@ void readStlAscii(
         } while (fp);
 
         if constexpr (HasFaces<MeshType>) {
-            if (m.faceNumber() > 0)
+            if (m.faceCount() > 0)
                 loadedInfo.setTriangleMesh();
         }
     }

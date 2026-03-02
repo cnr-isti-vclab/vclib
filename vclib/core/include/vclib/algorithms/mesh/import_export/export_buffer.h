@@ -184,14 +184,14 @@ uint faceSizesToBuffer(const MeshType& mesh, auto* buffer)
  * faces and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * std::vector<uint> faceSizes(myMesh.faceNumber());
+ * std::vector<uint> faceSizes(myMesh.faceCount());
  * uint sum = vcl::faceSizesToBuffer(myMesh, sizes.data());
  * std::vector<uint> faceIndices(sum);
  * vcl::faceVertexIndicesToBuffer(myMesh, faceIndices.data());
  *
  * // read indices for each face
  * uint offset = 0;
- * for (uint i = 0; i < myMesh.faceNumber(); ++i) {
+ * for (uint i = 0; i < myMesh.faceCount(); ++i) {
  *     uint size = faceSizes[i];
  *     for (uint j = 0; j < size; ++j) {
  *         uint vIdx = faceIndices[offset + j];
@@ -258,7 +258,7 @@ void faceVertexIndicesToBuffer(
  *
  * @code{.cpp}
  * uint lfs = vcl::largestFaceSize(myMesh);
- * Eigen::MatrixXi faceIndices(myMesh.faceNumber(), lfs);
+ * Eigen::MatrixXi faceIndices(myMesh.faceCount(), lfs);
  * vcl::faceVertexIndicesToBuffer(
  *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -304,7 +304,7 @@ void faceVertexIndicesToBuffer(
     // lambda to get the vertex index of a face (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceCount() : numRows;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize; ++j) {
@@ -380,7 +380,7 @@ void triangulatedFaceVertexIndicesToBuffer(
 
     // there will be at least a triangle for each polygon
     indexMap.clear();
-    indexMap.reserve(mesh.faceNumber(), mesh.faceContainerSize());
+    indexMap.reserve(mesh.faceCount(), mesh.faceContainerSize());
 
     if constexpr (TriangleMeshConcept<MeshType>) {
         // construct the indexMap, which maps each triangle to the face index
@@ -399,7 +399,7 @@ void triangulatedFaceVertexIndicesToBuffer(
         // triangles
         if (numTriangles == UINT_NULL &&
             storage == MatrixStorageType::COLUMN_MAJOR &&
-            mesh.faceNumber() > 0) {
+            mesh.faceCount() > 0) {
             numTriangles = countTriangulatedTriangles(mesh);
         }
         for (uint t = 0; const auto& f : mesh.faces()) {
@@ -616,7 +616,7 @@ void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * Usage example with std::vector<bool>:
  *
  * @code{.cpp}
- * std::vector<bool> vec(myMesh.faceNumber());
+ * std::vector<bool> vec(myMesh.faceCount());
  * vcl::faceSelectionToBuffer(myMesh, vec.data());
  * @endif
  *
@@ -1573,7 +1573,7 @@ void vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
  *
  * @code{.cpp}
  * uint lfs = vcl::largestFaceSize(myMesh);
- * Eigen::MatrixXi faceIndices(myMesh.faceNumber(), lfs * 2);
+ * Eigen::MatrixXi faceIndices(myMesh.faceCount(), lfs * 2);
  * vcl::faceWedgeTexCoordsToBuffer(
  *     myMesh, faceIndices.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -1602,7 +1602,7 @@ void faceWedgeTexCoordsToBuffer(
 {
     requirePerFaceWedgeTexCoords(mesh);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceCount() : numRows;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < largestFaceSize * 2; ++j) {
@@ -2032,7 +2032,7 @@ void vertexAdjacentFacesToBuffer(
  *
  * @code{.cpp}
  * uint lfs = vcl::largestFaceSize(myMesh);
- * Eigen::MatrixXi faceAdj(myMesh.faceNumber(), lfs);
+ * Eigen::MatrixXi faceAdj(myMesh.faceCount(), lfs);
  * vcl::faceAdjacentFacesToBuffer(
  *    myMesh, faceAdj.data(), lfs, MatrixStorageType::COLUMN_MAJOR);
  * @endcode

@@ -43,7 +43,7 @@ TEMPLATE_TEST_CASE(
     THEN("The mesh has 8 vertices, 12 triangles")
     {
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     THEN("Test Face Vertices")
@@ -306,7 +306,7 @@ TEMPLATE_TEST_CASE(
     THEN("The mesh has 8 vertices, 12 triangles")
     {
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.faceCount() == 12);
     }
 
     THEN("Test Face Vertices")
@@ -571,7 +571,7 @@ TEMPLATE_TEST_CASE(
     THEN("The mesh has 8 vertices, 6 faces")
     {
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.faceCount() == 6);
     }
 
     THEN("Test Face Vertices")
@@ -812,7 +812,7 @@ TEMPLATE_TEST_CASE(
     THEN("The mesh has 8 vertices, 12 triangles and 4 edges")
     {
         REQUIRE(tm.vertexCount() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.faceCount() == 12);
         REQUIRE(tm.edgeNumber() == 4);
     }
 

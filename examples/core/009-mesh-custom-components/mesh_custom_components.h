@@ -48,7 +48,7 @@ auto meshCustomComponents()
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
     std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
-              << mesh.faceNumber() << " faces\n\n";
+              << mesh.faceCount() << " faces\n\n";
 
     // ========================================
     // PART 2: VERTEX CUSTOM COMPONENTS
@@ -142,7 +142,7 @@ auto meshCustomComponents()
         mesh.perFaceCustomComponentVectorHandle<double>("area");
     double totalArea =
         std::accumulate(faceAreaHandle.begin(), faceAreaHandle.end(), 0.0);
-    double avgArea = totalArea / mesh.faceNumber();
+    double avgArea = totalArea / mesh.faceCount();
 
     for (auto& face : mesh.faces()) {
         double area       = face.customComponent<double>("area");
@@ -180,7 +180,7 @@ auto meshCustomComponents()
     }
 
     std::cout << "First 3 face labels: ";
-    for (int i = 0; i < 3 && i < mesh.faceNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.faceCount(); ++i) {
         std::cout << "\"" << mesh.face(i).customComponent<std::string>("label")
                   << "\" ";
     }

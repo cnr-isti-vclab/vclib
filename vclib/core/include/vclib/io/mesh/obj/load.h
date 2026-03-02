@@ -327,7 +327,7 @@ void readObjFace(
                 f.materialIndex() = currentMaterial.matId;
             }
             else {
-                for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+                for (uint ff = fid; ff < m.faceCount(); ++ff) {
                     FaceType& f       = m.face(ff);
                     f.materialIndex() = currentMaterial.matId;
                 }
@@ -406,7 +406,7 @@ void readObjFace(
                 else {
                     // take read texcoords and map them in the triangulated
                     // faces for each face of the triangulation of the polygon
-                    for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+                    for (uint ff = fid; ff < m.faceCount(); ++ff) {
                         FaceType& f = m.face(ff);
                         // for each vertex of the face
                         for (uint i = 0; i < f.vertexCount(); ++i) {

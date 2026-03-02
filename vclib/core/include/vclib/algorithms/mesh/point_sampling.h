@@ -159,7 +159,7 @@ auto allFacesPointSampling(
     PointSampler<PointType> sampler;
 
     // Determine the number of vertices to sample
-    uint n = onlySelected ? faceSelectionCount(m) : m.faceNumber();
+    uint n = onlySelected ? faceSelectionCount(m) : m.faceCount();
 
     // Reserve space in the sampler and birthVertices vectors
     sampler.reserve(n);
@@ -325,7 +325,7 @@ auto faceUniformPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint fn = onlySelected ? faceSelectionCount(m) : m.faceNumber();
+    uint fn = onlySelected ? faceSelectionCount(m) : m.faceCount();
 
     if (nSamples >= fn) {
         return allFacesPointSampling(m, birthFaces, onlySelected);
@@ -521,7 +521,7 @@ auto faceWeightedPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    if (nSamples >= m.faceNumber()) {
+    if (nSamples >= m.faceCount()) {
         return allFacesPointSampling(m);
     }
 
@@ -771,7 +771,7 @@ auto montecarloPointSampling(
 
     std::mt19937 gen = randomGenerator(seed);
 
-    std::vector<Interval> intervals(m.faceNumber());
+    std::vector<Interval> intervals(m.faceCount());
     uint                  i    = 0;
     ScalarType            area = 0;
     for (const FaceType& f : m.faces()) {

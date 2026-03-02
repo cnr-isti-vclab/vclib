@@ -88,11 +88,11 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     vertexNumberItem->setText(1, QString::number(mesh.vertexCount()));
     makeItemNotSelectable(vertexNumberItem);
 
-    if (mesh.faceNumber() > 0) {
-        auto faceNumberItem = new QTreeWidgetItem(meshInfoItem);
-        faceNumberItem->setText(0, "# Faces");
-        faceNumberItem->setText(1, QString::number(mesh.faceNumber()));
-        makeItemNotSelectable(faceNumberItem);
+    if (mesh.faceCount() > 0) {
+        auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
+        faceCountItem->setText(0, "# Faces");
+        faceCountItem->setText(1, QString::number(mesh.faceCount()));
+        makeItemNotSelectable(faceCountItem);
     }
 
     if (mesh.edgeNumber() > 0) {

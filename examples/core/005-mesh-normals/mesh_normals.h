@@ -41,7 +41,7 @@ auto meshNormals()
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
     std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
-              << mesh.faceNumber() << " faces\n\n";
+              << mesh.faceCount() << " faces\n\n";
 
     // ========================================
     // PART 1: FACE NORMALS
@@ -53,7 +53,7 @@ auto meshNormals()
     // Calculate face normals
     vcl::updatePerFaceNormals(mesh);
 
-    std::cout << "Face normals calculated for all " << mesh.faceNumber()
+    std::cout << "Face normals calculated for all " << mesh.faceCount()
               << " faces\n";
 
     // Show normals for first few faces
@@ -155,7 +155,7 @@ auto meshNormals()
     vcl::loadMesh(polyMesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     std::cout << "Loaded polygon mesh: " << polyMesh.vertexCount()
-              << " vertices, " << polyMesh.faceNumber() << " faces\n";
+              << " vertices, " << polyMesh.faceCount() << " faces\n";
 
     // Calculate normals for polygon mesh
     vcl::updatePerFaceNormals(polyMesh);

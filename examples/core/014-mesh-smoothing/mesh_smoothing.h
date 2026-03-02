@@ -47,7 +47,7 @@ auto meshSmoothing()
 
     std::cout << "Original mesh loaded:" << std::endl;
     std::cout << "  Vertices: " << originalMesh.vertexCount() << std::endl;
-    std::cout << "  Faces: " << originalMesh.faceNumber() << std::endl;
+    std::cout << "  Faces: " << originalMesh.faceCount() << std::endl;
 
     vcl::updatePerVertexAndFaceNormals(originalMesh);
 
@@ -127,7 +127,7 @@ auto meshSmoothing()
     std::cout << "\n=== Mesh Statistics ===" << std::endl;
     std::cout << "All meshes have:" << std::endl;
     std::cout << "  Vertices: " << originalMesh.vertexCount() << std::endl;
-    std::cout << "  Faces: " << originalMesh.faceNumber() << std::endl;
+    std::cout << "  Faces: " << originalMesh.faceCount() << std::endl;
 
     return std::make_tuple(
         originalMesh, laplacianMesh, cotangentMesh, taubinMesh, normalMesh);

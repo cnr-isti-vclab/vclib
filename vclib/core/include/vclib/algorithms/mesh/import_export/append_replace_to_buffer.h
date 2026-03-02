@@ -147,7 +147,7 @@ void appendDuplicateVertexPositionsToBuffer(
  *     vertsToDuplicate, facesToReassign);
  * uint lfs = vcl::largestFaceSize(mesh);
  *
- * std::vector<uint> buffer(mesh.faceNumber() * lfs);
+ * std::vector<uint> buffer(mesh.faceCount() * lfs);
  * faceVertexIndicesToBuffer(mesh, buffer.data(), lfs);
  * replaceFaceVertexIndicesByVertexDuplicationToBuffer(mesh, vertsToDuplicate,
  *    faceToReassign, buffer.data(), lfs);
@@ -186,7 +186,7 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    const uint NUM_ROWS = mesh.faceNumber();
+    const uint NUM_ROWS = mesh.faceCount();
 
     uint vFirst = mesh.vertexCount();
     uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();

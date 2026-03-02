@@ -163,7 +163,7 @@ void meshGridExamples()
     vcl::TriMesh mesh = vcl::createHexahedron<vcl::TriMesh>();
     using ScalarType  = vcl::TriMesh::ScalarType;
 
-    std::cout << "Created hexahedron mesh with " << mesh.faceNumber()
+    std::cout << "Created hexahedron mesh with " << mesh.faceCount()
               << " faces" << std::endl;
 
     // Create intersection function for faces and bounding boxes

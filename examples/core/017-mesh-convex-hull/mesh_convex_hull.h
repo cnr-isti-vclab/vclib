@@ -40,7 +40,7 @@ auto meshConvexHull()
     inputMesh.name() = "Input Mesh";
 
     std::cout << "Input mesh loaded: " << inputMesh.vertexCount()
-              << " vertices, " << inputMesh.faceNumber() << " faces\n";
+              << " vertices, " << inputMesh.faceCount() << " faces\n";
 
     // Create logger for timing information
     vcl::ConsoleLogger log;
@@ -53,7 +53,7 @@ auto meshConvexHull()
     hullMesh.name() = "Convex Hull";
 
     std::cout << "Convex hull computed: " << hullMesh.vertexCount()
-              << " vertices, " << hullMesh.faceNumber() << " faces\n";
+              << " vertices, " << hullMesh.faceCount() << " faces\n";
 
     // Also demonstrate computing hull from a simple point set
     std::cout << "\nComputing convex hull from point set...\n";
@@ -74,7 +74,7 @@ auto meshConvexHull()
     cubeHull.name()       = "Cube Convex Hull";
 
     std::cout << "Cube convex hull: " << cubeHull.vertexCount()
-              << " vertices, " << cubeHull.faceNumber() << " faces\n";
+              << " vertices, " << cubeHull.faceCount() << " faces\n";
 
     return std::make_tuple(inputMesh, hullMesh, cubeHull);
 }

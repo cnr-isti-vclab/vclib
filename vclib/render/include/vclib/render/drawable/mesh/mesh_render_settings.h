@@ -642,7 +642,7 @@ public:
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
-                if (m.faceNumber() > 0) {
+                if (m.faceCount() > 0) {
                     setSurfaceCapability(MRI::Surface::VISIBLE);
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
