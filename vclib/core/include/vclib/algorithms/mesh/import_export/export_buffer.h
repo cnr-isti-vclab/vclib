@@ -550,7 +550,7 @@ void wireframeVertexIndicesToBuffer(
  * Usage example with std::vector<bool>:
  *
  * @code{.cpp}
- * std::vector<bool> vec(myMesh.elementNumber<ElemId::VERTEX>());
+ * std::vector<bool> vec(myMesh.elementCount<ElemId::VERTEX>());
  * vcl::elementSelectionToBuffer<ElemId::VERTEX>(myMesh, vec.data());
  * @endif
  *
@@ -701,7 +701,7 @@ void elementNormalsToBuffer(
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     for (uint        i = 0;
          const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
@@ -894,7 +894,7 @@ void elementColorsToBuffer(
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     for (uint        i = 0;
          const auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
@@ -1937,7 +1937,7 @@ void vertexAdjacentVerticesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(myMesh);
- * Eigen::MatrixXi faceAdj(myMesh.number<ELEM_ID>(), lva);
+ * Eigen::MatrixXi faceAdj(myMesh.count<ELEM_ID>(), lva);
  * vcl::elementAdjacentFacesToBuffer<ELEM_ID>(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -1966,7 +1966,7 @@ void elementAdjacentFacesToBuffer(
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     const uint NUM_COLS = largestAdjacentFacesSize;
 
@@ -2111,7 +2111,7 @@ void edgeAdjacentFacesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(myMesh);
- * Eigen::MatrixXi edgeAdj(myMesh.number<ELEM_ID>(), lva);
+ * Eigen::MatrixXi edgeAdj(myMesh.count<ELEM_ID>(), lva);
  * vcl::elementAdjacentEdgesToBuffer<ELEM_ID>(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode
@@ -2140,7 +2140,7 @@ void elementAdjacentEdgesToBuffer(
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     const uint NUM_COLS = largestAdjacentEdgesSize;
 

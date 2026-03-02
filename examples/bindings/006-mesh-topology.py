@@ -48,8 +48,8 @@ def mesh_topology():
 
     # Load a simple mesh for topology exploration
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
-    print(f"Loaded triangular mesh: {mesh.vertex_number()} vertices, {mesh.face_number()} faces")
-    print(f"Expected edges: ~{(mesh.face_number() * 3 / 2)} (Euler's formula approximation)\n")
+    print(f"Loaded triangular mesh: {mesh.vertex_count()} vertices, {mesh.face_count()} faces")
+    print(f"Expected edges: ~{(mesh.face_count() * 3 / 2)} (Euler's formula approximation)\n")
 
     # PART 2: VERTEX-FACE ADJACENCY
     print(f"PART 2: Vertex-Face Adjacency\n")
@@ -68,14 +68,14 @@ def mesh_topology():
         print(f"Vertex {i} at {vertex.position()} is adjacent to faces: ", end="")
         for face in vertex.adj_faces():
             print(f"{face.index()} ", end="")
-        print(f"\n(Total: {vertex.adj_faces_number()} faces)\n")
+        print(f"\n(Total: {vertex.adj_faces_count()} faces)\n")
 
     # Find vertex with most adjacent faces
     max_adj_faces = 0
     max_vertex = 0
     for v in mesh.vertices():
-        if v.adj_faces_number() > max_adj_faces:
-            max_adj_faces = v.adj_faces_number()
+        if v.adj_faces_count() > max_adj_faces:
+            max_adj_faces = v.adj_faces_count()
             max_vertex = v.index()
     print(f"Vertex with most adjacent faces: {max_vertex} ({max_adj_faces} faces)\n")
 
@@ -96,18 +96,18 @@ def mesh_topology():
         print(f"Vertex {i} at {vertex.position()} is adjacent to vertices: ", end="")
         for adj_vertex in vertex.adj_vertices():
             print(f"{adj_vertex.index()} ", end="")
-        print(f"\n(Total: {vertex.adj_vertices_number()} vertices)\n")
+        print(f"\n(Total: {vertex.adj_vertices_count()} vertices)\n")
 
     # Analyze vertex degrees (number of adjacent vertices)
     min_degree = float('inf')
     max_degree = 0
     avg_degree = 0.0
     for v in mesh.vertices():
-        degree = v.adj_vertices_number()
+        degree = v.adj_vertices_count()
         min_degree = min(min_degree, degree)
         max_degree = max(max_degree, degree)
         avg_degree += degree
-    avg_degree /= mesh.vertex_number()
+    avg_degree /= mesh.vertex_count()
     print(f"Vertex degree statistics:\n")
     print(f"  Minimum degree: {min_degree}\n")
     print(f"  Maximum degree: {max_degree}\n")
@@ -133,7 +133,7 @@ def mesh_topology():
                 print(f"{adj_face.index()} ", end="")
             else:
                 print("border ", end="")
-        print(f"\n(Total: {face.adj_faces_number()} faces)\n")
+        print(f"\n(Total: {face.adj_faces_count()} faces)\n")
 
     # Count border edges (faces with null adjacent faces)
     border_edges = 0
@@ -148,7 +148,7 @@ def mesh_topology():
     print(f"-----------------------\n")
 
     # Navigate around a vertex using adjacency information
-    if (mesh.vertex_number() > 0):
+    if (mesh.vertex_count() > 0):
         start_vertex = 0
         vertex = mesh.vertex(start_vertex)
 

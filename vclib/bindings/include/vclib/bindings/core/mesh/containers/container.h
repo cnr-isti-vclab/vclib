@@ -87,13 +87,13 @@ void initContainer(
         },
         py::return_value_policy::reference);
 
-    c.def((name + "_number").c_str(), &MeshType::template number<ELEM_ID>);
+    c.def((name + "_count").c_str(), &MeshType::template count<ELEM_ID>);
     c.def(
         (name + "_container_size").c_str(),
         &MeshType::template containerSize<ELEM_ID>);
     c.def(
-        ("deleted_" + name + "_number").c_str(),
-        &MeshType::template deletedNumber<ELEM_ID>);
+        ("deleted_" + name + "_count").c_str(),
+        &MeshType::template deletedCount<ELEM_ID>);
 
     c.def(
         ("add_" + name).c_str(),

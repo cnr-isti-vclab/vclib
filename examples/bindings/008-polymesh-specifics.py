@@ -45,27 +45,27 @@ def polymesh_specifics():
         x = math.cos(angle)
         y = math.sin(angle)
         poly_mesh.add_vertex(vcl.Point3(x, y, 0.0))
-    print(f"Added {poly_mesh.vertex_number()} vertices")
+    print(f"Added {poly_mesh.vertex_count()} vertices")
 
     # Create a hexagonal face
     fid = poly_mesh.add_face()
     hex_face = poly_mesh.face(fid)
     for i in range(6):
         hex_face.push_vertex(i)
-    print(f"Created hexagonal face with {hex_face.vertex_number()} vertices")
+    print(f"Created hexagonal face with {hex_face.vertex_count()} vertices")
 
     # Add a center vertex (shifted on z) and create triangular faces
     center_vertex = poly_mesh.add_vertex(vcl.Point3(0.0, 0.0, -1.0))
     for i in range(6):
         poly_mesh.add_face([center_vertex, (i + 1) % 6, i])
-    print(f"Added {poly_mesh.face_number() - 1} triangular faces around the center")
-    print(f"Total faces: {poly_mesh.face_number()}\n")
+    print(f"Added {poly_mesh.face_count() - 1} triangular faces around the center")
+    print(f"Total faces: {poly_mesh.face_count()}\n")
 
     # Convert to TriMesh (triangulates polygonal faces)
     tri_mesh = vcl.TriMesh()
     tri_mesh.import_from(poly_mesh)
     tri_mesh.set_name("Hexagon Pyramid TriMesh")
-    print(f"Converted to TriMesh: {tri_mesh.vertex_number()} vertices, {tri_mesh.face_number()} faces\n")
+    print(f"Converted to TriMesh: {tri_mesh.vertex_count()} vertices, {tri_mesh.face_count()} faces\n")
 
     # PART 2: POLYMESH VS TRIMESH COMPARISON
     print("PART 2: PolyMesh vs TriMesh Comparison\n--------------------------------------")
@@ -73,20 +73,20 @@ def polymesh_specifics():
     tri_mesh_loaded = vcl.TriMesh()
     vcl.load_mesh(poly_mesh_loaded, VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
     vcl.load_mesh(tri_mesh_loaded, VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
-    print(f"Loaded cube as PolyMesh: {poly_mesh_loaded.vertex_number()} vertices, {poly_mesh_loaded.face_number()} faces")
-    print(f"Loaded cube as TriMesh:  {tri_mesh_loaded.vertex_number()} vertices, {tri_mesh_loaded.face_number()} faces")
+    print(f"Loaded cube as PolyMesh: {poly_mesh_loaded.vertex_count()} vertices, {poly_mesh_loaded.face_count()} faces")
+    print(f"Loaded cube as TriMesh:  {tri_mesh_loaded.vertex_count()} vertices, {tri_mesh_loaded.face_count()} faces")
 
     # Analyze face structure
     poly_face_sizes = {}
     for face in poly_mesh_loaded.faces():
-        size = face.vertex_number()
+        size = face.vertex_count()
         poly_face_sizes[size] = poly_face_sizes.get(size, 0) + 1
     print("\nFace structure analysis:")
     print("PolyMesh face distribution:")
     for size, count in poly_face_sizes.items():
         print(f"  {count} faces with {size} vertices")
     print("TriMesh face distribution:")
-    print(f"  {tri_mesh_loaded.face_number()} faces with 3 vertices each\n")
+    print(f"  {tri_mesh_loaded.face_count()} faces with 3 vertices each\n")
 
     # PART 3: DYNAMIC FACE MANIPULATION
     print("PART 3: Dynamic Face Manipulation\n----------------------------------")
@@ -96,28 +96,28 @@ def polymesh_specifics():
         dynamic_mesh.add_vertex(vcl.Point3(-1.0 if i % 2 == 0 else 1.0, -1.0 if i < 2 else 1.0, 0.0))
     sfi = dynamic_mesh.add_face()
     square_face = dynamic_mesh.face(sfi)
-    print(f"Created empty face, vertices: {square_face.vertex_number()}")
+    print(f"Created empty face, vertices: {square_face.vertex_count()}")
     square_face.push_vertex(0)
-    print(f"After adding 1st vertex: {square_face.vertex_number()} vertices")
+    print(f"After adding 1st vertex: {square_face.vertex_count()} vertices")
     square_face.push_vertex(1)
     square_face.push_vertex(3)
     square_face.push_vertex(2)
-    print(f"After adding all vertices: {square_face.vertex_number()} vertices")
+    print(f"After adding all vertices: {square_face.vertex_count()} vertices")
     square_face.clear_vertices()
-    print(f"After clearing: {square_face.vertex_number()} vertices")
+    print(f"After clearing: {square_face.vertex_count()} vertices")
     square_face.set_vertices([0, 1, 3, 2])
-    print(f"After set_vertices: {square_face.vertex_number()} vertices")
+    print(f"After set_vertices: {square_face.vertex_count()} vertices")
 
     # PART 4: ADJACENCY IN POLYMESH
     print("\n\nPART 4: Adjacency in PolyMesh\n-----------------------------")
     poly_mesh_loaded.enable_per_face_adjacent_faces()
     vcl.update_per_face_adjacent_faces(poly_mesh_loaded)
     print("Face-face adjacency enabled for PolyMesh")
-    if poly_mesh_loaded.face_number() > 0:
+    if poly_mesh_loaded.face_count() > 0:
         face = poly_mesh_loaded.face(0)
-        print(f"Face 0 has {face.vertex_number()} vertices and {face.adj_faces_number()} adjacent faces")
+        print(f"Face 0 has {face.vertex_count()} vertices and {face.adj_faces_count()} adjacent faces")
         print("Adjacent faces: ", end="")
-        for i in range(face.adj_faces_number()):
+        for i in range(face.adj_faces_count()):
             adj_face = face.adj_face(i)
             if adj_face is not None:
                 print(f"{adj_face.index()} ", end="")
@@ -125,7 +125,7 @@ def polymesh_specifics():
                 print("border ", end="")
         print("")
         print("Adjacency per edge:")
-        for i in range(face.vertex_number()):
+        for i in range(face.vertex_count()):
             adj_face = face.adj_face(i)
             print(f"  Edge {i} (v{face.vertex(i).index()}-v{face.vertex_mod(i + 1).index()}): ", end="")
             if adj_face is not None:
@@ -135,21 +135,21 @@ def polymesh_specifics():
 
     # PART 5: POLYGONAL FACE OPERATIONS
     print("\n\nPART 5: Polygonal Face Operations\n---------------------------------")
-    if poly_mesh_loaded.face_number() > 0:
+    if poly_mesh_loaded.face_count() > 0:
         face = poly_mesh_loaded.face(0)
         print("Face 0 analysis:")
-        print(f"  Vertex count: {face.vertex_number()}")
+        print(f"  Vertex count: {face.vertex_count()}")
         print("  Vertices: ", end="")
-        for i in range(face.vertex_number()):
+        for i in range(face.vertex_count()):
             print(f"{face.vertex(i).index()} ", end="")
         print("")
         centroid = vcl.Point3(0, 0, 0)
-        for i in range(face.vertex_number()):
+        for i in range(face.vertex_count()):
             centroid += face.vertex(i).position()
-        centroid /= face.vertex_number()
+        centroid /= face.vertex_count()
         print(f"  Centroid: ({centroid.x()}, {centroid.y()}, {centroid.z()})")
         area = 0.0
-        for i in range(1, face.vertex_number() - 1):
+        for i in range(1, face.vertex_count() - 1):
             v0 = face.vertex(0).position()
             v1 = face.vertex(i).position()
             v2 = face.vertex(i + 1).position()
@@ -171,8 +171,8 @@ def polymesh_specifics():
     print("  - Dynamic memory allocation")
     print("  - Preserves original face structure")
     print("  - Better for CAD and architectural models\n")
-    tri_mesh_face_memory = tri_mesh_loaded.face_number() * 3
-    poly_mesh_face_memory = sum(face.vertex_number() for face in poly_mesh_loaded.faces())
+    tri_mesh_face_memory = tri_mesh_loaded.face_count() * 3
+    poly_mesh_face_memory = sum(face.vertex_count() for face in poly_mesh_loaded.faces())
     print("Storage comparison for cube:")
     print(f"  TriMesh face indices: {tri_mesh_face_memory}")
     print(f"  PolyMesh face indices: {poly_mesh_face_memory}")
@@ -194,8 +194,8 @@ def polymesh_specifics():
     print("   - Vertices can be added/removed dynamically")
     print("   - Adjacency information updates automatically\n")
     print("4. POLYMESH-SPECIFIC FEATURES:")
-    print("   - vertex_number() varies per face")
-    print("   - adj_faces_number() matches vertex count")
+    print("   - vertex_count() varies per face")
+    print("   - adj_faces_count() matches vertex count")
     print("   - Face operations work with arbitrary polygon sizes\n")
     print("PolyMesh is ideal for:")
     print("- CAD and architectural models")

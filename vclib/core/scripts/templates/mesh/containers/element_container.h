@@ -88,7 +88,7 @@ public:
      *
      * @return the number of non-deleted %EL_UC%s of the Mesh.
      */
-    uint %EL_C%Number() const { return Base::elementNumber(); }
+    uint %EL_C%Number() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of %EL_UC%s (also deleted) contained in
@@ -112,7 +112,7 @@ public:
      */
     uint deleted%EL_UC%Number() const
     {
-        return Base::deletedElementNumber();
+        return Base::deletedElementCount();
     }
 
     /**

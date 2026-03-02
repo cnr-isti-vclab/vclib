@@ -103,7 +103,7 @@ public:
      *
      * @return the number of non-deleted Edges of the Mesh.
      */
-    uint edgeNumber() const { return Base::elementNumber(); }
+    uint edgeNumber() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Edges (also deleted) contained in the
@@ -122,7 +122,7 @@ public:
      *
      * @return The number of deleted Edges in the container.
      */
-    uint deletedEdgeNumber() const { return Base::deletedElementNumber(); }
+    uint deletedEdgeNumber() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add an Edge to the container, returning its index.

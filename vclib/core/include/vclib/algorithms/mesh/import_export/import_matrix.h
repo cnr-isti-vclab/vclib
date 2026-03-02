@@ -363,7 +363,7 @@ void edgeIndicesFromMatrix(
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
 void elementSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(selection) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input selection range must have the same number of elements "
             "as the number of " +
@@ -472,7 +472,7 @@ void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
             "The input " + elementEnumString<ELEM_ID>() +
             " normal matrix must have 3 columns");
 
-    if (normals.rows() != mesh.template number<ELEM_ID>())
+    if (normals.rows() != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input normal matrix must have the same number of rows as the "
             "number of " +
@@ -596,7 +596,7 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
                                      Color::Representation::INT_0_255 :
                                      Color::Representation::FLOAT_0_1;
 
-    if (colors.rows() != mesh.template number<ELEM_ID>())
+    if (colors.rows() != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input colors matrix must have the same number of rows as the "
             "number of " +
@@ -637,7 +637,7 @@ void elementColorsFromRange(
     R&&           colors,
     Color::Format colorFormat)
 {
-    if (std::ranges::size(colors) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(colors) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input color range must have the same number of elements "
             "as the number of " +
@@ -871,7 +871,7 @@ void edgeColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
 void elementQualityFromRange(MeshType& mesh, R&& quality)
 {
-    if (std::ranges::size(quality) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(quality) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of " +

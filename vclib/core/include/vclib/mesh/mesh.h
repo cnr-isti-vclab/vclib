@@ -683,11 +683,11 @@ public:
      * @return the number of elements of the given type in this mesh.
      */
     template<uint ELEM_ID>
-    uint number() const requires (hasContainerOf<ELEM_ID>())
+    uint count() const requires (hasContainerOf<ELEM_ID>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::elementNumber();
+        return Cont::elementCount();
     }
 
     /**
@@ -723,11 +723,11 @@ public:
      * @return the number of deleted elements of the given type in this mesh.
      */
     template<uint ELEM_ID>
-    uint deletedNumber() const requires (hasContainerOf<ELEM_ID>())
+    uint deletedCount() const requires (hasContainerOf<ELEM_ID>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::deletedElementNumber();
+        return Cont::deletedElementCount();
     }
 
     /**
@@ -1636,7 +1636,7 @@ protected:
     bool isContainerCompact() const
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            return Cont::elementNumber() == Cont::elementContainerSize();
+            return Cont::elementCount() == Cont::elementContainerSize();
         }
         else {
             return true; // does not count as a container
@@ -1656,7 +1656,7 @@ protected:
     void compactContainer()
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            if (Cont::elementNumber() != Cont::elementContainerSize()) {
+            if (Cont::elementCount() != Cont::elementContainerSize()) {
                 Cont::compactElements();
             }
         }

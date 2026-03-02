@@ -103,7 +103,7 @@ public:
      *
      * @return the number of non-deleted Faces of the Mesh.
      */
-    uint faceNumber() const { return Base::elementNumber(); }
+    uint faceNumber() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Faces (also deleted) contained in the Face
@@ -122,7 +122,7 @@ public:
      *
      * @return The number of deleted Faces in the container.
      */
-    uint deletedFaceNumber() const { return Base::deletedElementNumber(); }
+    uint deletedFaceNumber() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a Face to the container, returning its index.

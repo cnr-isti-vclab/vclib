@@ -464,7 +464,7 @@ void elementNormalsFromBuffer(
     using namespace detail;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
@@ -645,7 +645,7 @@ void elementColorsFromBuffer(
     using namespace detail;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     if (channelsNumber != 3 && channelsNumber != 4)
         throw WrongSizeException(

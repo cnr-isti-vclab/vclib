@@ -101,7 +101,7 @@ public:
      *
      * @return The number of non-deleted vertices of the Mesh.
      */
-    uint vertexNumber() const { return Base::elementNumber(); }
+    uint vertexNumber() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of vertices (also deleted) contained in the
@@ -120,7 +120,7 @@ public:
      *
      * @return The number of deleted vertices in the container.
      */
-    uint deletedVertexNumber() const { return Base::deletedElementNumber(); }
+    uint deletedVertexNumber() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a new vertex into the vertex container, returning the index of

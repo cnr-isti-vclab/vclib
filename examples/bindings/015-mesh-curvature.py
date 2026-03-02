@@ -50,8 +50,8 @@ def mesh_curvature():
     original_mesh.set_name("Original Bunny Mesh")
 
     print("Original mesh loaded:")
-    print(f"  Vertices: {original_mesh.vertex_number()}")
-    print(f"  Faces: {original_mesh.face_number()}")
+    print(f"  Vertices: {original_mesh.vertex_count()}")
+    print(f"  Faces: {original_mesh.face_count()}")
 
     # Enable required components
     original_mesh.enable_per_vertex_adjacent_faces()

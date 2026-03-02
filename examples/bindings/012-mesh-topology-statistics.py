@@ -53,8 +53,8 @@ def mesh_topology_statistics():
     range_mesh.enable_per_face_adjacent_faces()
     vcl.update_per_face_adjacent_faces(range_mesh)
 
-    print(f"Range mesh: {range_mesh.vertex_number()} vertices, "
-          f"{range_mesh.face_number()} faces")
+    print(f"Range mesh: {range_mesh.vertex_count()} vertices, "
+          f"{range_mesh.face_count()} faces")
 
     # Find connected components
     components = vcl.connected_components(range_mesh)

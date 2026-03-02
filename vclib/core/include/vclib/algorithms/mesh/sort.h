@@ -128,7 +128,7 @@ std::vector<uint> sortElemIndicesByFunction(
     std::vector<uint> indices;
 
     // Initialize indices with sequential values
-    indices.resize(mesh.template number<ELEM_ID>());
+    indices.resize(mesh.template count<ELEM_ID>());
     std::iota(indices.begin(), indices.end(), 0u);
 
     std::sort(indices.begin(), indices.end(), [&](uint a, uint b) {

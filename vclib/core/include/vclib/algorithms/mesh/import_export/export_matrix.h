@@ -341,7 +341,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-    Vect sV(mesh.template number<ELEM_ID>());
+    Vect sV(mesh.template count<ELEM_ID>());
 
     vcl::elementSelectionToBuffer<ELEM_ID>(mesh, sV.data());
     return sV;
@@ -480,7 +480,7 @@ Vect edgeSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-    Matrix eNM(mesh.template number<ELEM_ID>(), 3);
+    Matrix eNM(mesh.template count<ELEM_ID>(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -585,7 +585,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-    Matrix eCM(mesh.template number<ELEM_ID>(), 4);
+    Matrix eCM(mesh.template count<ELEM_ID>(), 4);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -629,7 +629,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
-    Vect eCV(mesh.template number<ELEM_ID>());
+    Vect eCV(mesh.template count<ELEM_ID>());
 
     elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
 
@@ -873,7 +873,7 @@ Vect edgeColorsVector(const MeshType& mesh, Color::Format colorFormat)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-    Vect eQV(mesh.template number<ELEM_ID>());
+    Vect eQV(mesh.template count<ELEM_ID>());
 
     elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
 
@@ -1289,7 +1289,7 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
     requireFaceContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
@@ -1350,7 +1350,7 @@ Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
 {
     uint lfa = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(mesh);
 
-    Matrix eAFM(mesh.template number<ELEM_ID>(), lfa);
+    Matrix eAFM(mesh.template count<ELEM_ID>(), lfa);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1665,7 +1665,7 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
     requireEdgeContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
@@ -1726,7 +1726,7 @@ Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
 {
     uint lea = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(mesh);
 
-    Matrix eAEM(mesh.template number<ELEM_ID>(), lea);
+    Matrix eAEM(mesh.template count<ELEM_ID>(), lea);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
