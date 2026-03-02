@@ -103,9 +103,9 @@ public:
 
     uint triangleNumber() const { return mTris.size() / 3; }
 
-    uint edgeNumber() const { return mEdges.size() / 2; }
+    uint edgeCount() const { return mEdges.size() / 2; }
 
-    uint wireframeEdgeNumber() const { return mWireframe.size() / 2; }
+    uint wireframeEdgeCount() const { return mWireframe.size() / 2; }
 
     uint textureNumber() const { return mTextures.size(); }
 

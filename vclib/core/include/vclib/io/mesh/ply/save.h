@@ -62,7 +62,7 @@ void savePly(
     }
     if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
-            header.setNumberEdges(m.edgeNumber());
+            header.setNumberEdges(m.edgeCount());
         }
     }
     if constexpr (HasMaterials<MeshType>) {

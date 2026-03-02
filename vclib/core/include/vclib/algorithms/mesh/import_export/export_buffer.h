@@ -467,7 +467,7 @@ void edgeVertexIndicesToBuffer(
     // lambda to get the vertex index of a edge (considering compact indices)
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.edgeNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.edgeCount() : numRows;
 
     for (uint i = 0; const auto& e : mesh.edges()) {
         at(buffer, i, 0, NUM_ROWS, 2, storage) = vIndex(e, 0);
@@ -647,7 +647,7 @@ void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * Usage example with std::vector<bool>:
  *
  * @code{.cpp}
- * std::vector<bool> vec(myMesh.edgeNumber());
+ * std::vector<bool> vec(myMesh.edgeCount());
  * vcl::edgeSelectionToBuffer(myMesh, vec.data());
  * @endif
  *
@@ -2071,7 +2071,7 @@ void faceAdjacentFacesToBuffer(
  *
  * @code{.cpp}
  * uint lva = vcl::largestPerEdgeAdjacentFacesNumber(myMesh);
- * Eigen::MatrixXi faceAdj(myMesh.edgeNumber(), lva);
+ * Eigen::MatrixXi faceAdj(myMesh.edgeCount(), lva);
  * vcl::edgeAdjacentFacesToBuffer(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
  * @endcode

@@ -128,10 +128,10 @@ auto meshCreaseEdges()
 
     std::cout << "Cylinder crease edge mesh: "
               << cylinderCreaseMesh.vertexCount() << " vertices, "
-              << cylinderCreaseMesh.edgeNumber() << " edges" << std::endl;
+              << cylinderCreaseMesh.edgeCount() << " edges" << std::endl;
     std::cout << "Icosahedron crease edge mesh: "
               << icosaCreaseMesh.vertexCount() << " vertices, "
-              << icosaCreaseMesh.edgeNumber() << " edges" << std::endl;
+              << icosaCreaseMesh.edgeCount() << " edges" << std::endl;
 
     // color edges of cylinderCreaseMesh
 
@@ -162,7 +162,7 @@ auto meshCreaseEdges()
         vcl::perFaceEdgeMeshFilter<vcl::EdgeMesh>(cylinder, sharpEdgeFilter);
     sharpEdgesMesh.name() = "Sharp Edges Mesh";
 
-    std::cout << "Sharp edges only (>75°): " << sharpEdgesMesh.edgeNumber()
+    std::cout << "Sharp edges only (>75°): " << sharpEdgesMesh.edgeCount()
               << " edges" << std::endl;
 
     /****** Method 5: Different Angle Thresholds ******/

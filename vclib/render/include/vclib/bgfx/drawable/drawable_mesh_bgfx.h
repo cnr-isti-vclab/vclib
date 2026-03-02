@@ -156,10 +156,10 @@ public:
             return 0;
     }
 
-    uint edgeNumber() const override
+    uint edgeCount() const override
     {
         if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeNumber();
+            return MeshType::edgeCount();
         else
             return 0;
     }

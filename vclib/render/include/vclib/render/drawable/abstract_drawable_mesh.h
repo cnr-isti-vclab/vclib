@@ -70,7 +70,7 @@ public:
 
     virtual uint faceCount() const = 0;
 
-    virtual uint edgeNumber() const = 0;
+    virtual uint edgeCount() const = 0;
 
     virtual vcl::Matrix44d transformMatrix() const = 0;
 

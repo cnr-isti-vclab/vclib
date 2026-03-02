@@ -321,12 +321,12 @@ void edgeIndicesFromBuffer(
         mesh.resizeEdges(edgeNumber);
     }
     else {
-        if (edgeNumber != mesh.edgeNumber()) {
+        if (edgeNumber != mesh.edgeCount()) {
             throw WrongSizeException(
                 "The input edge number does not match the number of edges "
                 "of the mesh\n"
                 "Number of edges in the mesh: " +
-                std::to_string(mesh.edgeNumber()) +
+                std::to_string(mesh.edgeCount()) +
                 "\nNumber of input edge number: " + std::to_string(edgeNumber));
         }
     }

@@ -813,7 +813,7 @@ TEMPLATE_TEST_CASE(
     {
         REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceCount() == 12);
-        REQUIRE(tm.edgeNumber() == 4);
+        REQUIRE(tm.edgeCount() == 4);
     }
 
     THEN("Test Per Vertex Adjacent Edges")

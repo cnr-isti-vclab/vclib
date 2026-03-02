@@ -247,7 +247,7 @@ TEMPLATE_TEST_CASE(
         auto     ss = objPolyCube();
         vcl::loadObj(em, ss, {}, info);
         REQUIRE(em.vertexCount() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -262,7 +262,7 @@ TEMPLATE_TEST_CASE(
         auto     ss = objTriCube();
         vcl::loadObj(pm, ss, {}, info);
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());

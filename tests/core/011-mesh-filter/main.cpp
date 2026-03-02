@@ -176,6 +176,6 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 36 * 2 crease edges")
     {
-        REQUIRE(creaseEdges.edgeNumber() == 36 * 2);
+        REQUIRE(creaseEdges.edgeCount() == 36 * 2);
     }
 }

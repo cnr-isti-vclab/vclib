@@ -83,10 +83,10 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     makeItemNotSelectable(meshInfoItem);
 
     // vertex number item
-    auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
-    vertexNumberItem->setText(0, "# Vertices");
-    vertexNumberItem->setText(1, QString::number(mesh.vertexCount()));
-    makeItemNotSelectable(vertexNumberItem);
+    auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
+    vertexCountItem->setText(0, "# Vertices");
+    vertexCountItem->setText(1, QString::number(mesh.vertexCount()));
+    makeItemNotSelectable(vertexCountItem);
 
     if (mesh.faceCount() > 0) {
         auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
@@ -95,11 +95,11 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
         makeItemNotSelectable(faceCountItem);
     }
 
-    if (mesh.edgeNumber() > 0) {
-        auto edgeNumberItem = new QTreeWidgetItem(meshInfoItem);
-        edgeNumberItem->setText(0, "# Edges");
-        edgeNumberItem->setText(1, QString::number(mesh.edgeNumber()));
-        makeItemNotSelectable(edgeNumberItem);
+    if (mesh.edgeCount() > 0) {
+        auto edgeCountItem = new QTreeWidgetItem(meshInfoItem);
+        edgeCountItem->setText(0, "# Edges");
+        edgeCountItem->setText(1, QString::number(mesh.edgeCount()));
+        makeItemNotSelectable(edgeCountItem);
     }
 }
 

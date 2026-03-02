@@ -210,7 +210,7 @@ TEMPLATE_TEST_CASE(
         auto     ss = plyPolyCube();
         vcl::loadPly(em, ss, info);
         REQUIRE(em.vertexCount() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.edgeCount() == 4);
     }
 
     SECTION("EdgeMesh - TriCube")
@@ -219,6 +219,6 @@ TEMPLATE_TEST_CASE(
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexCount() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.edgeCount() == 4);
     }
 }

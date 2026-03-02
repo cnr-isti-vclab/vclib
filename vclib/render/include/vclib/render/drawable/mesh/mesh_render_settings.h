@@ -703,7 +703,7 @@ public:
 
             // -- Edges --
             if constexpr (vcl::HasEdges<MeshType>) {
-                if (m.edgeNumber() > 0) {
+                if (m.edgeCount() > 0) {
                     setEdgesCapability(MRI::Edges::VISIBLE);
                     setEdgesCapability(MRI::Edges::SHADING_NONE);
                     setEdgesCapability(MRI::Edges::COLOR_USER);

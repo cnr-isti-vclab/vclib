@@ -988,7 +988,7 @@ private:
 
         if constexpr (HasEdges<MeshType>) {
             if (btu[toUnderlying(EDGES)])
-                mNumEdges = mesh.edgeNumber();
+                mNumEdges = mesh.edgeCount();
         }
     }
 

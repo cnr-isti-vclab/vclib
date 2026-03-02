@@ -300,7 +300,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix eM(mesh.edgeNumber(), 2);
+    Matrix eM(mesh.edgeCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
