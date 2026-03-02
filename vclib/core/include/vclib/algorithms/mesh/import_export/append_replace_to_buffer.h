@@ -111,14 +111,14 @@ void appendDuplicateVertexPositionsToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& pos = mesh.vertex(v).position();
 
-        at(buffer, i, 0, ROW_NUM, 3, storage) = pos.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = pos.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = pos.z();
+        at(buffer, i, 0, NUM_ROWS, 3, storage) = pos.x();
+        at(buffer, i, 1, NUM_ROWS, 3, storage) = pos.y();
+        at(buffer, i, 2, NUM_ROWS, 3, storage) = pos.z();
 
         ++i;
     }
@@ -186,13 +186,13 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    const uint ROW_NUM = mesh.faceNumber();
+    const uint NUM_ROWS = mesh.faceNumber();
 
     uint vFirst = mesh.vertexNumber();
     uint vLast  = mesh.vertexNumber() + vertsToDuplicate.size();
     for (uint vi = vFirst; const auto& faces : facesToReassign) {
         for (const auto& f : faces) {
-            at(buffer, f.first, f.second, ROW_NUM, largestFaceSize, storage) =
+            at(buffer, f.first, f.second, NUM_ROWS, largestFaceSize, storage) =
                 vi;
         }
         ++vi;
@@ -266,7 +266,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
     uint vFirst = mesh.vertexNumber();
     uint vLast  = mesh.vertexNumber() + vertsToDuplicate.size();
 
-    const uint ROW_NUM = indexMap.triangleNumber();
+    const uint NUM_ROWS = indexMap.triangleNumber();
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -286,7 +286,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
             uint tEnd   = tBegin + indexMap.triangleNumber(f.first);
             for (uint t = tBegin; t < tEnd; ++t) { // look into the triangles
                 for (uint j = 0; j < 3; ++j) { // for each vertex of triangle
-                    auto& triVert = at(buffer, t, j, ROW_NUM, 3, storage);
+                    auto& triVert = at(buffer, t, j, NUM_ROWS, 3, storage);
                     if (triVert == vert) {
                         triVert = vi;
                     }
@@ -402,13 +402,13 @@ void appendDuplicateVertexNormalsToBuffer(
 
     requirePerVertexNormal(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& normal                    = mesh.vertex(v).normal();
-        at(buffer, i, 0, ROW_NUM, 3, storage) = normal.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = normal.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = normal.z();
+        const auto& normal                     = mesh.vertex(v).normal();
+        at(buffer, i, 0, NUM_ROWS, 3, storage) = normal.x();
+        at(buffer, i, 1, NUM_ROWS, 3, storage) = normal.y();
+        at(buffer, i, 2, NUM_ROWS, 3, storage) = normal.z();
 
         ++i;
     }
@@ -468,15 +468,15 @@ void appendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    const bool R_INT   = representation == Color::Representation::INT_0_255;
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const bool R_INT    = representation == Color::Representation::INT_0_255;
+    const uint NUM_ROWS = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& c                         = mesh.vertex(v).color();
-        at(buffer, i, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
-        at(buffer, i, 1, ROW_NUM, 4, storage) = R_INT ? c.green() : c.greenF();
-        at(buffer, i, 2, ROW_NUM, 4, storage) = R_INT ? c.blue() : c.blueF();
-        at(buffer, i, 3, ROW_NUM, 4, storage) = R_INT ? c.alpha() : c.alphaF();
+        const auto& c                          = mesh.vertex(v).color();
+        at(buffer, i, 0, NUM_ROWS, 4, storage) = R_INT ? c.red() : c.redF();
+        at(buffer, i, 1, NUM_ROWS, 4, storage) = R_INT ? c.green() : c.greenF();
+        at(buffer, i, 2, NUM_ROWS, 4, storage) = R_INT ? c.blue() : c.blueF();
+        at(buffer, i, 3, NUM_ROWS, 4, storage) = R_INT ? c.alpha() : c.alphaF();
 
         ++i;
     }
@@ -657,12 +657,12 @@ void appendDuplicateVertexTexCoordsToBuffer(
 
     requirePerVertexTexCoord(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexNumber() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& t                         = mesh.vertex(v).texCoord();
-        at(buffer, i, 0, ROW_NUM, 2, storage) = t.u();
-        at(buffer, i, 1, ROW_NUM, 2, storage) = t.v();
+        const auto& t                          = mesh.vertex(v).texCoord();
+        at(buffer, i, 0, NUM_ROWS, 2, storage) = t.u();
+        at(buffer, i, 1, NUM_ROWS, 2, storage) = t.v();
 
         ++i;
     }
@@ -731,17 +731,17 @@ void appendDuplicateVertexTangentsToBuffer(
 
     requirePerVertexTangent(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
-    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
+    const uint NUM_ROWS = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_COLS = storeHandednessAsW ? 4 : 3;
 
     for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
         const auto& t = mesh.vertex(v).tangent();
 
-        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = t.z();
+        at(buffer, i, 0, NUM_ROWS, NUM_COLS, storage) = t.x();
+        at(buffer, i, 1, NUM_ROWS, NUM_COLS, storage) = t.y();
+        at(buffer, i, 2, NUM_ROWS, NUM_COLS, storage) = t.z();
         if (storeHandednessAsW) {
-            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+            at(buffer, i, 3, NUM_ROWS, NUM_COLS, storage) =
                 mesh.vertex(v).tangentRightHanded() ? 1.0 : -1.0;
         }
 
