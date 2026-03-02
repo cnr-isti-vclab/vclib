@@ -43,7 +43,7 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
     namespace py = pybind11;
 
     static const int  N    = ElementType::ADJ_FACE_NUMBER;
-    static const bool TTVN = CompType::TIED_TO_VERTEX_NUMBER;
+    static const bool TTVC = CompType::TIED_TO_VERTEX_COUNT;
 
     c.def("adj_faces_count", &ElementType::adjFacesNumber);
 
@@ -97,7 +97,7 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
         "index_of_adj_face",
         py::overload_cast<uint>(&ElementType::indexOfAdjFace, py::const_));
 
-    if constexpr (N < 0 && !TTVN) {
+    if constexpr (N < 0 && !TTVC) {
         c.def("resize_adj_faces", &ElementType::resizeAdjFaces);
         c.def(
             "push_adj_face",

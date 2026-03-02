@@ -55,7 +55,7 @@ void clearPerElementAdjacentFaces(MeshType& mesh)
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
-        if constexpr (comp::IsTiedToVertexNumber<AdjacentFacesType>) {
+        if constexpr (comp::IsTiedToVertexCount<AdjacentFacesType>) {
             for (uint i = 0; i < e.adjFacesNumber(); ++i) {
                 e.setAdjFace(i, nullptr);
             }
@@ -91,7 +91,7 @@ void clearPerElementAdjacentEdges(MeshType& mesh)
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
-        if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
+        if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
             for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
                 e.setAdjEdges(i, nullptr);
             }
@@ -456,7 +456,7 @@ void updatePerFaceAdjacentEdges(MeshType& mesh)
 
         while (it != vec.end() && *it == meu) {
             auto* f = it->f; // the face adjacent to the edge e
-            if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
+            if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
                 f->setAdjEdges(it->e, &e);
             }
             else {

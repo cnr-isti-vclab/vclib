@@ -692,7 +692,7 @@ concept HasOptionalAdjacentFaces =
  * @brief HasRightNumberOfAdjacentFaces concept
  *
  * This concept is designed to be used with Face components, where the number of
- * adjacent faces, if tied to the vertex number, must be consisted w.r.t. the
+ * adjacent faces, if tied to the vertex count, must be consisted w.r.t. the
  * number of vertices of the face.
  *
  * This concept is satisfied only if static number of adjacent faces is the same
@@ -700,7 +700,7 @@ concept HasOptionalAdjacentFaces =
  */
 template<typename T>
 concept HasRightNumberOfAdjacentFaces =
-    !comp::IsTiedToVertexNumber<typename RemoveRef<T>::AdjacentFaces> ||
+    !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentFaces> ||
     RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_FACE_NUMBER;
 
 /**

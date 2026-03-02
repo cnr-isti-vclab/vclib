@@ -208,12 +208,12 @@ public:
 private:
     /**
      * Calls the resize(n) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
     void resizeTTVNComponent(uint n)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::resize(n);
         }
@@ -221,12 +221,12 @@ private:
 
     /**
      * Calls the pushBack() on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
     void pushBackTTVNComponent()
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::pushBack();
         }
@@ -234,12 +234,12 @@ private:
 
     /**
      * Calls the insert(i) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
     void insertTTVNComponent(uint i)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::insert(i);
         }
@@ -247,12 +247,12 @@ private:
 
     /**
      * Calls the erase(i) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
     void eraseTTVNComponent(uint i)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::erase(i);
         }
@@ -260,12 +260,12 @@ private:
 
     /**
      * Calls the clear() on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
     void clearTTVNComponent()
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::clear();
         }

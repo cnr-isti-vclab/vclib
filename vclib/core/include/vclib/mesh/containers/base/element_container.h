@@ -787,7 +787,7 @@ protected:
             }
             // then resize the component containers with tied size to number of
             // vertices of the element, if needed
-            if constexpr (comp::IsTiedToVertexNumber<C>) {
+            if constexpr (comp::IsTiedToVertexCount<C>) {
                 static const int N = T::VERTEX_NUMBER;
                 if constexpr (N < 0) {
                     for (auto& e : elements()) {
