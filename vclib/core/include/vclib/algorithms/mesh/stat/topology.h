@@ -215,8 +215,8 @@ uint largestFaceSize(const FaceMeshConcept auto& mesh)
 
     uint maxFaceSize = 0;
 
-    if constexpr (FaceType::VERTEX_NUMBER > 0) {
-        return FaceType::VERTEX_NUMBER;
+    if constexpr (FaceType::VERTEX_COUNT > 0) {
+        return FaceType::VERTEX_COUNT;
     }
     else {
         for (const auto& f : mesh.faces()) {

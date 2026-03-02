@@ -511,7 +511,7 @@ public:
             //
             // Generally speaking, Polygon meshes can import from any other type
             // of mesh. We need to take care when this mesh has static vertex
-            // references number in the face container (VERTEX_NUMBER >= 3).
+            // references number in the face container (VERTEX_COUNT >= 3).
             //
             // The follwing case don't need to be managed:
             // - import polygon mesh from triangle mesh
@@ -521,7 +521,7 @@ public:
             //
             // I cannot manage the follwing cases:
             // - import static non-triangle mesh from polygon mesh or from a
-            //   mesh with different VERTEX_NUMBER
+            //   mesh with different VERTEX_COUNT
 
             // in case of import from poly to triangle mesh, I need to manage
             // triangulation of polygons and create additional triangle faces

@@ -303,7 +303,7 @@ uint removeDuplicateFaces(MeshType& m)
     std::vector<detail::SortedIndexContainer<
         VertexType*,
         FaceType*,
-        FaceType::VERTEX_NUMBER>>
+        FaceType::VERTEX_COUNT>>
         fvec;
 
     for (FaceType& f : m.faces()) {

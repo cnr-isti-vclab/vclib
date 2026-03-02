@@ -121,7 +121,7 @@ public:
     using ConstVertexIndexIterator = Base::ConstIndexIterator;
 
     static const bool INDEXED       = STORE_INDICES;
-    static const int  VERTEX_NUMBER = Base::SIZE;
+    static const int  VERTEX_COUNT = Base::SIZE;
 
     /* Constructors */
 
@@ -728,12 +728,12 @@ void VertexReferences<STORE_INDICES, Vertex, N, ParentElemType, VERT>::
         if constexpr (HasVertexReferences<Element>) {
             if constexpr (N > 0) {
                 // same size non-polygonal faces
-                if constexpr (N == Element::VERTEX_NUMBER) {
+                if constexpr (N == Element::VERTEX_COUNT) {
                     importIndicesFrom(e);
                 }
                 // from polygonal to fixed size, but the polygon size == the
                 // fixed face size
-                else if constexpr (Element::VERTEX_NUMBER < 0) {
+                else if constexpr (Element::VERTEX_COUNT < 0) {
                     if (e.vertexCount() == N) {
                         importIndicesFrom(e);
                     }

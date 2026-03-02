@@ -51,7 +51,7 @@ class Face : public Element<ElemId::FACE, MeshType, Comps...>
     // VertexPointers or VertexIndices component of the Face
     using VRefs = typename Face::VertexReferences;
 
-    static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
+    static const int NV = VRefs::VERTEX_COUNT; // If dynamic, NV will be -1
 
 public:
     using VertexType = typename VRefs::VertexType;
@@ -304,14 +304,14 @@ concept FaceConcept =
     IsDerivedFromSpecializationOfV<T, Face> &&
     RemoveRef<T>::ELEMENT_ID == ElemId::FACE && face::HasBitFlags<T> &&
     face::HasVertexReferences<T> &&
-    (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
-    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
+    (RemoveRef<T>::VERTEX_COUNT < 0 || RemoveRef<T>::VERTEX_COUNT >= 3) &&
+    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_COUNT == 3) &&
     comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
     comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
 concept TriangleFaceConcept =
-    RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
+    RemoveRef<T>::VERTEX_COUNT == 3 && FaceConcept<T>;
 
 /**
  * @brief A concpet that checks whether a class has (inherits from) a
@@ -323,7 +323,7 @@ concept TriangleFaceConcept =
  * @ingroup face_concepts
  */
 template<typename T>
-concept PolygonFaceConcept = RemoveRef<T>::VERTEX_NUMBER < 0 && FaceConcept<T>;
+concept PolygonFaceConcept = RemoveRef<T>::VERTEX_COUNT < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

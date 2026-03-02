@@ -93,7 +93,7 @@ void addTriangleFacesFromPolygon(
     for (uint i = 0; i < polygon.size(); ++i)
         unorderedEdges.emplace(i, (i + 1) % (uint) polygon.size());
 
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         f.resizeVertices(3);
     }
 
@@ -118,7 +118,7 @@ void addTriangleFacesFromPolygon(
     for (uint i = 3; i < tris.size(); i += 3) {
         uint ff = m.addFace();
 
-        if constexpr (FaceType::VERTEX_NUMBER < 0) {
+        if constexpr (FaceType::VERTEX_COUNT < 0) {
             m.face(ff).resizeVertices(3);
         }
 

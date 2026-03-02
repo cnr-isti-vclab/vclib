@@ -156,7 +156,7 @@ OutMeshType perElementMeshFilterWithVRefs(
             // import all the components from the input mesh
             res.template element<ELEM_ID>(f).importFrom(birthF, false);
 
-            if constexpr (OutElemType::VERTEX_NUMBER < 0) {
+            if constexpr (OutElemType::VERTEX_COUNT < 0) {
                 res.template element<ELEM_ID>(f).resizeVertices(verts.size());
             }
 

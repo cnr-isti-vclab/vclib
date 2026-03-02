@@ -697,7 +697,7 @@ concept HasOptionalAdjacentEdges =
 template<typename T>
 concept HasRightNumberOfAdjacentEdges =
     !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentEdges> ||
-    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_EDGE_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_EDGE_NUMBER;
 
 /**
  * @private

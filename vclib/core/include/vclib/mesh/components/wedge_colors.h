@@ -362,7 +362,7 @@ concept HasOptionalWedgeColors =
  * of the static number of vertices.
  */
 template<typename T>
-concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
+concept HasRightNumberOfWedgeColors = T::VERTEX_COUNT == T::WEDGE_COLOR_NUMBER;
 
 /**
  * @private

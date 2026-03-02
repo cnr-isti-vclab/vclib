@@ -429,11 +429,11 @@ void readOffFaces(
             // load vertex indices into face
             bool splitFace = false;
             // we have a polygonal mesh
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize to the right number of verts
                 f.resizeVertices(vids.size());
             }
-            else if (FaceType::VERTEX_NUMBER != vids.size()) {
+            else if (FaceType::VERTEX_COUNT != vids.size()) {
                 // we have faces with static sizes (triangles), but we are
                 // loading faces with number of verts > 3. Need to split the
                 // face we are loading in n faces!

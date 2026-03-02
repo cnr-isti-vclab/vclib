@@ -281,7 +281,7 @@ void importMeshFromVCGMesh(
 
                 auto& face = mesh.face(fi);
 
-                if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                if constexpr (FaceType::VERTEX_COUNT < 0) {
                     face.resizeVertices(3);
                 }
                 for (uint j = 0; j < 3; ++j) {

@@ -284,11 +284,11 @@ void readObjFace(
     // check if we need to split the face we read into triangles
     bool splitFace = false;
     // we have a polygonal mesh, no need to split
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         // need to resize to the right number of verts
         f.resizeVertices(tokens.size() - 1);
     }
-    else if (FaceType::VERTEX_NUMBER != tokens.size() - 1) {
+    else if (FaceType::VERTEX_COUNT != tokens.size() - 1) {
         // we have faces with static sizes (triangles), but we are loading faces
         // with number of verts > 3. Need to split the face we are loading in n
         // faces!

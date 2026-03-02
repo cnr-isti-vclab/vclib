@@ -238,11 +238,11 @@ void faceIndicesFromBuffer(
     else { // the vertex number of mesh faces is fixed
         using FaceType = MeshType::FaceType;
 
-        constexpr int VN = FaceType::VERTEX_NUMBER;
-        if (faceSize == VN) { // faces of matrix and mesh have same size
+        constexpr int VC = FaceType::VERTEX_COUNT;
+        if (faceSize == VC) { // faces of matrix and mesh have same size
             uint i = 0;
             for (auto& f : mesh.faces()) {
-                for (uint j = 0; j < VN; ++j)
+                for (uint j = 0; j < VC; ++j)
                     f.setVertex(
                         j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
                 ++i;
@@ -253,9 +253,9 @@ void faceIndicesFromBuffer(
             // buffer is different w.r.t. face size of the mesh
             throw WrongSizeException(
                 "The input face buffer has a different face size "
-                "than the vertex number of the faces of the mesh.\n"
-                "Vertex number of faces in the mesh: " +
-                std::to_string(VN) +
+                "than the vertex count of the faces of the mesh.\n"
+                "Faces vertex count in the mesh: " +
+                std::to_string(VC) +
                 "\nNumber of columns in the input face buffer: " +
                 std::to_string(faceSize));
         }

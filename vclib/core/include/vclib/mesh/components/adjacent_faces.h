@@ -701,7 +701,7 @@ concept HasOptionalAdjacentFaces =
 template<typename T>
 concept HasRightNumberOfAdjacentFaces =
     !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentFaces> ||
-    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_FACE_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_FACE_NUMBER;
 
 /**
  * @private

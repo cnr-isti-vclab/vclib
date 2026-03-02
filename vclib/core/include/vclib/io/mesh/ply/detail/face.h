@@ -57,11 +57,11 @@ void setPlyFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 {
     bool splitFace = false;
     // we have a polygonal mesh
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         // need to resize the face to the right number of verts
         f.resizeVertices(vids.size());
     }
-    else if (FaceType::VERTEX_NUMBER != vids.size()) {
+    else if (FaceType::VERTEX_COUNT != vids.size()) {
         // we have faces with static sizes (triangles), but we are loading faces
         // with number of verts > 3. Need to split the face we are loading in n
         // faces!
@@ -91,7 +91,7 @@ void setPlyFaceWedgeTexCoords(
     const std::vector<std::pair<Scalar, Scalar>>& wedges)
 {
     bool splitFace = false;
-    if (FaceType::VERTEX_NUMBER > 0 && FaceType::VERTEX_NUMBER != wedges.size())
+    if (FaceType::VERTEX_COUNT > 0 && FaceType::VERTEX_COUNT != wedges.size())
         splitFace = true;
     if (!splitFace) {
         for (uint i = 0; i < wedges.size(); ++i) {

@@ -399,7 +399,7 @@ concept HasOptionalWedgeTexCoords =
  */
 template<typename T>
 concept HasRightNumberOfWedgeTexCoords =
-    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
 
 /**
  * @private

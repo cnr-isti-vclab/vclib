@@ -143,12 +143,12 @@ public:
 
         constexpr uint n = sizeof...(args);
 
-        if constexpr (T::VERTEX_NUMBER < 0) {
+        if constexpr (T::VERTEX_COUNT < 0) {
             f.resizeVertices(n);
         }
         else {
             static_assert(
-                n == T::VERTEX_NUMBER,
+                n == T::VERTEX_COUNT,
                 "Wrong number of vertices in Mesh::addFace.");
         }
 
@@ -173,13 +173,13 @@ public:
         if (n < 3)
             return UINT_NULL;
 
-        if constexpr (T::VERTEX_NUMBER < 0) {
+        if constexpr (T::VERTEX_COUNT < 0) {
             fid = addFace();
             face(fid).resizeVertices(n);
         }
         else {
-            assert(n == T::VERTEX_NUMBER);
-            if (n == T::VERTEX_NUMBER)
+            assert(n == T::VERTEX_COUNT);
+            if (n == T::VERTEX_COUNT)
                 fid = addFace();
         }
 
@@ -1266,8 +1266,8 @@ protected:
         // we don't know how to convert a polygon mesh into a quad mesh, or
         // convert a quad mesh into a pentagonal mesh...)
         static_assert(
-            !(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-              FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+            !(FaceType::VERTEX_COUNT != 3 && FaceType::VERTEX_COUNT > 0 &&
+              FaceType::VERTEX_COUNT != MFaceType::VERTEX_COUNT),
             "Cannot import from that type of Mesh. Don't know how to "
             "convert faces.");
 
@@ -1275,8 +1275,8 @@ protected:
         // (e.g. quads) to triangle meshes. In this case, we triangulate the
         // polygon using the earcut algorithm.
         if constexpr (
-            FaceType::VERTEX_NUMBER == 3 &&
-            (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+            FaceType::VERTEX_COUNT == 3 &&
+            (MFaceType::VERTEX_COUNT > 3 || MFaceType::VERTEX_COUNT < 0)) {
             VertexType*        base   = &Base::mParentMesh->vertex(0);
             const MVertexType* mvbase = &m.vertex(0);
 
@@ -1286,7 +1286,7 @@ protected:
                 // imported from the import pointers function. The import
                 // pointers function does nothing when importing from a face
                 // with at least 4 vertices
-                if (mf.vertexCount() != FaceType::VERTEX_NUMBER) {
+                if (mf.vertexCount() != FaceType::VERTEX_COUNT) {
                     // triangulate mf; the first triangle of the triangulation
                     // will be this->face(m.index(mf)); the other triangles will
                     // be added at the end of the container
