@@ -225,7 +225,7 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  *
  * uint numTris = vcl::countTriangulatedTriangles(myMesh);
  *
- * std::vector<uint> buffer(mesh.faceNumber() * numTris);
+ * std::vector<uint> buffer(numTris * 3);
  * triangulatedFaceVertexIndicesToBuffer(mesh, buffer.data(), indexMap);
  * replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(mesh,
  *    vertsToDuplicate, faceToReassign, indexMap, buffer.data());

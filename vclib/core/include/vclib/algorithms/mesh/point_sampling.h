@@ -81,7 +81,7 @@ auto allVerticesPointSampling(
     PointSampler<PointType> sampler;
 
     // Determine the number of vertices to sample
-    uint n = onlySelected ? vertexSelectionNumber(m) : m.vertexCount();
+    uint n = onlySelected ? vertexSelectionCount(m) : m.vertexCount();
 
     // Reserve space in the sampler and birthVertices vectors
     sampler.reserve(n);
@@ -159,7 +159,7 @@ auto allFacesPointSampling(
     PointSampler<PointType> sampler;
 
     // Determine the number of vertices to sample
-    uint n = onlySelected ? faceSelectionNumber(m) : m.faceNumber();
+    uint n = onlySelected ? faceSelectionCount(m) : m.faceNumber();
 
     // Reserve space in the sampler and birthVertices vectors
     sampler.reserve(n);
@@ -231,7 +231,7 @@ auto vertexUniformPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint vn = onlySelected ? vertexSelectionNumber(m) : m.vertexCount();
+    uint vn = onlySelected ? vertexSelectionCount(m) : m.vertexCount();
 
     if (nSamples >= vn) {
         return allVerticesPointSampling(m, birthVertices, onlySelected);
@@ -325,7 +325,7 @@ auto faceUniformPointSampling(
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint fn = onlySelected ? faceSelectionNumber(m) : m.faceNumber();
+    uint fn = onlySelected ? faceSelectionCount(m) : m.faceNumber();
 
     if (nSamples >= fn) {
         return allFacesPointSampling(m, birthFaces, onlySelected);

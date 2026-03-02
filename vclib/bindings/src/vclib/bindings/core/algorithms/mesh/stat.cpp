@@ -94,8 +94,8 @@ void initStatAlgorithms(pybind11::module& m)
 
         // selection.h
 
-        m.def("vertex_selection_number", [](const MeshType& m) {
-            return vcl::vertexSelectionNumber(m);
+        m.def("vertex_selection_count", [](const MeshType& m) {
+            return vcl::vertexSelectionCount(m);
         });
 
         // topology.h
@@ -182,12 +182,12 @@ void initStatAlgorithms(pybind11::module& m)
 
         // selection.h
 
-        m.def("face_selection_number", [](const MeshType& m) {
-            return vcl::faceSelectionNumber(m);
+        m.def("face_selection_count", [](const MeshType& m) {
+            return vcl::faceSelectionCount(m);
         });
 
-        m.def("face_edges_selection_number", [](const MeshType& m) {
-            return vcl::faceEdgesSelectionNumber(m);
+        m.def("face_edges_selection_count", [](const MeshType& m) {
+            return vcl::faceEdgesSelectionCount(m);
         });
 
         // topology.h

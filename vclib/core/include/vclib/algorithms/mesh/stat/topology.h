@@ -132,7 +132,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 }
 
 template<FaceMeshConcept MeshType>
-uint numberEdges(
+uint edgeCount(
     const MeshType& m,
     uint&           numBoundaryEdges,
     uint&           numNonManifoldEdges)
@@ -707,7 +707,7 @@ template<FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m)
 {
     uint numEdgeBorder, numNonManifoldEdges;
-    detail::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
+    detail::edgeCount(m, numEdgeBorder, numNonManifoldEdges);
     return numEdgeBorder == 0 && numNonManifoldEdges == 0;
 }
 

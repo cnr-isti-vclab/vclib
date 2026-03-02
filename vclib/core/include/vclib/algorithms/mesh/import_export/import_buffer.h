@@ -147,12 +147,12 @@ void vertexPositionsFromBuffer(
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
- * that depends on the given `faceNumber`. In this scenario, all the old faces
+ * that depends on the given `faceCount`. In this scenario, all the old faces
  * with their components stored in the mesh before calling this function are
  * lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `faceNumber` is equal to the number of faces of the mesh. If this
+ * the given `faceCount` is equal to the number of faces of the mesh. If this
  * is not the case, an exception is thrown. Then, the function sets the indices
  * of the faces of the mesh from the input buffer. In this scenario, all
  * the components (except the indices) of the faces stored in the mesh before
@@ -169,7 +169,7 @@ void vertexPositionsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input faces.
  * @param[in] buffer: a contiguous array of \#F*faceSize values containing the
  * indices of the vertices of the faces of the mesh.
- * @param[in] faceNumber: the number of faces contained in the input buffer.
+ * @param[in] faceCount: the number of faces contained in the input buffer.
  * @param[in] faceSize: the number of vertex indices per face contained in the
  * input buffer. If the MeshType is not a polygonal mesh (e.g. a triangle
  * mesh), this parameter must be equal to the number of vertices of each face of
@@ -182,7 +182,7 @@ void vertexPositionsFromBuffer(
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `faceNumber`.
+ * (default), it is assumed to be equal to `faceCount`.
  *
  * @ingroup import_buffer
  */
@@ -190,7 +190,7 @@ template<FaceMeshConcept MeshType>
 void faceIndicesFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              faceNumber,
+    uint              faceCount,
     uint              faceSize       = 3,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
@@ -198,20 +198,20 @@ void faceIndicesFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? faceNumber : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? faceCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearFaces();
-        mesh.resizeFaces(faceNumber);
+        mesh.resizeFaces(faceCount);
     }
     else {
-        if (faceNumber != mesh.faceNumber()) {
+        if (faceCount != mesh.faceNumber()) {
             throw WrongSizeException(
-                "The input face number does not match the number of faces "
-                "of the mesh\n"
+                "The input face count does not match the number of faces of "
+                "the mesh\n"
                 "Number of faces in the mesh: " +
                 std::to_string(mesh.faceNumber()) +
-                "\nNumber of input face number: " + std::to_string(faceNumber));
+                "\nNumber of input face number: " + std::to_string(faceCount));
         }
     }
 

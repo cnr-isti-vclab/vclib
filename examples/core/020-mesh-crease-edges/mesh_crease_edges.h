@@ -71,12 +71,12 @@ auto meshCreaseEdges()
 
     // Select crease edges with different angle thresholds
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(60.0), vcl::toRad(60.0));
-    vcl::uint cylinderCreaseEdges = vcl::faceEdgesSelectionNumber(cylinder);
+    vcl::uint cylinderCreaseEdges = vcl::faceEdgesSelectionCount(cylinder);
 
     vcl::selectCreaseFaceEdges(
         icosahedron, -vcl::toRad(30.0), vcl::toRad(30.0));
     vcl::uint icosahedronCreaseEdges =
-        vcl::faceEdgesSelectionNumber(icosahedron);
+        vcl::faceEdgesSelectionCount(icosahedron);
 
     std::cout << "Cylinder crease edges (±60°): " << cylinderCreaseEdges
               << std::endl;
@@ -176,7 +176,7 @@ auto meshCreaseEdges()
     for (double thresh : thresholds) {
         vcl::selectCreaseFaceEdges(
             cylinder, -vcl::toRad(thresh), vcl::toRad(thresh));
-        vcl::uint count = vcl::faceEdgesSelectionNumber(cylinder);
+        vcl::uint count = vcl::faceEdgesSelectionCount(cylinder);
         std::cout << "  ±" << thresh << "°: " << count << " edges" << std::endl;
     }
 
