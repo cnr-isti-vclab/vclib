@@ -159,11 +159,11 @@ public:
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
-        // TODO: streams cannot be higher than 4 because of bgfx limitation.
-        // buffers must be bound only if necessary (using MeshRenderSettings)
-        // right now, this is managed only for uvs (per vertex or per wedge, not
-        // both).
-        // We MUST be sure that the bound buffers are not higher than 4.
+        // TODO: streams cannot be higher than
+        // "bgfx::getCaps()->limits.maxVertexStreams". Buffers must be bound
+        // only if necessary (using MeshRenderSettings) right now, this is
+        // managed only for uvs (per vertex or per wedge, not both).
+        // We MUST be sure that the limit is not exceeded.
 
         using enum MeshRenderInfo::Surface;
 
@@ -174,24 +174,32 @@ public:
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexNormalsBuffer.bindVertex(stream++);
         }
 
         if (mVertexTangentsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexTangentsBuffer.bind(stream++);
         }
 
         if (mVertexColorsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
         if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
-            assert(stream < 4); // bgfx limitation
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexUVBuffer.bind(stream++);
         }
 
         if (mVertexWedgeUVBuffer.isValid() && mrs.isSurface(COLOR_WEDGE_TEX)) {
-            assert(stream < 4); // bgfx limitation
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexWedgeUVBuffer.bind(stream++);
         }
     }
