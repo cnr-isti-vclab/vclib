@@ -968,7 +968,7 @@ private:
 
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
-                    countVerticesToDuplicateByWedgeTexCoords(
+                    verticesToDuplicateByWedgeTexCoordsCount(
                         mesh,
                         mVertWedgeMap,
                         mVertsToDuplicate,
@@ -981,9 +981,9 @@ private:
 
         if constexpr (HasFaces<MeshType>) {
             if (btu[toUnderlying(TRIANGLES)])
-                mNumTris = countTriangulatedTriangles(mesh);
+                mNumTris = triangulatedFaceCount(mesh);
             if (btu[toUnderlying(WIREFRAME)])
-                nWireframeLines = countPerFaceVertexReferences(mesh);
+                nWireframeLines = faceVertexReferencesCount(mesh);
         }
 
         if constexpr (HasEdges<MeshType>) {

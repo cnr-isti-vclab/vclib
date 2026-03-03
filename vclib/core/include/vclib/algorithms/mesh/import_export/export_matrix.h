@@ -160,7 +160,7 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    uint nIndices = countPerFaceVertexReferences(mesh);
+    uint nIndices = faceVertexReferencesCount(mesh);
 
     Vect fV(nIndices);
 
@@ -253,7 +253,7 @@ Matrix triangulatedFaceVertexIndicesMatrix(
 {
     requireVertexContainerCompactness(mesh);
 
-    uint tNumber = vcl::countTriangulatedTriangles(mesh);
+    uint tNumber = vcl::triangulatedFaceCount(mesh);
 
     Matrix tM(tNumber, 3);
 
@@ -1228,7 +1228,7 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
 {
-    uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
+    uint lva = vcl::largestPerVertexAdjacentVerticesCount(mesh);
 
     Matrix vAVM(mesh.vertexCount(), lva);
 
@@ -1348,7 +1348,7 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
 {
-    uint lfa = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(mesh);
+    uint lfa = vcl::largestPerElementAdjacentFacesCount<ELEM_ID>(mesh);
 
     Matrix eAFM(mesh.template count<ELEM_ID>(), lfa);
 
@@ -1724,7 +1724,7 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
 {
-    uint lea = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(mesh);
+    uint lea = vcl::largestPerElementAdjacentEdgesCount<ELEM_ID>(mesh);
 
     Matrix eAEM(mesh.template count<ELEM_ID>(), lea);
 

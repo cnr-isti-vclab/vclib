@@ -168,7 +168,7 @@ inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
 } // namespace detail
 
 /**
- * @brief Count the number of references to vertices in the mesh faces.
+ * @brief Count the total number of vertex references in the mesh faces.
  *
  * If the mesh is a TriangleMesh, the number of references is equal to the
  * number of faces times 3. Otherwise, the function counts the number of
@@ -179,7 +179,7 @@ inline std::vector<std::pair<uint, uint>>          dummyVectorOfPairs;
  *
  * @ingroup mesh_stat
  */
-uint countPerFaceVertexReferences(const FaceMeshConcept auto& mesh)
+uint faceVertexReferencesCount(const FaceMeshConcept auto& mesh)
 {
     using MeshType = decltype(mesh);
 
@@ -237,7 +237,7 @@ uint largestFaceSize(const FaceMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint countTriangulatedTriangles(const FaceMeshConcept auto& mesh)
+uint triangulatedFaceCount(const FaceMeshConcept auto& mesh)
 {
     using MeshType = decltype(mesh);
 
@@ -265,7 +265,7 @@ uint countTriangulatedTriangles(const FaceMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentVerticesNumber(const MeshConcept auto& mesh)
+uint largestPerVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
 {
     requirePerVertexAdjacentVertices(mesh);
 
@@ -297,7 +297,7 @@ uint largestPerVertexAdjacentVerticesNumber(const MeshConcept auto& mesh)
  * @ingroup mesh_stat
  */
 template<uint ELEM_ID>
-uint largestPerElementAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
+uint largestPerElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
@@ -324,9 +324,9 @@ uint largestPerElementAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
+uint largestPerVertexAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentFacesNumber<ElemId::VERTEX>(mesh);
+    return largestPerElementAdjacentFacesCount<ElemId::VERTEX>(mesh);
 }
 
 /**
@@ -344,10 +344,10 @@ uint largestPerVertexAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerEdgeAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
+uint largestPerEdgeAdjacentFacesCount(const FaceMeshConcept auto& mesh)
     requires EdgeMeshConcept<decltype(mesh)>
 {
-    return largestPerElementAdjacentFacesNumber<ElemId::EDGE>(mesh);
+    return largestPerElementAdjacentFacesCount<ElemId::EDGE>(mesh);
 }
 
 /**
@@ -369,7 +369,7 @@ uint largestPerEdgeAdjacentFacesNumber(const FaceMeshConcept auto& mesh)
  * @ingroup mesh_stat
  */
 template<uint ELEM_ID>
-uint largestPerElementAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
+uint largestPerElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
@@ -396,9 +396,9 @@ uint largestPerElementAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
+uint largestPerVertexAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentEdgesNumber<ElemId::VERTEX>(mesh);
+    return largestPerElementAdjacentEdgesCount<ElemId::VERTEX>(mesh);
 }
 
 /**
@@ -416,10 +416,10 @@ uint largestPerVertexAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerFaceAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
+uint largestPerFaceAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
     requires FaceMeshConcept<decltype(mesh)>
 {
-    return largestPerElementAdjacentEdgesNumber<ElemId::FACE>(mesh);
+    return largestPerElementAdjacentEdgesCount<ElemId::FACE>(mesh);
 }
 
 /**
@@ -436,9 +436,9 @@ uint largestPerFaceAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
  *
  * @ingroup mesh_stat
  */
-uint largestPerEdgeAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
+uint largestPerEdgeAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentEdgesNumber<ElemId::EDGE>(mesh);
+    return largestPerElementAdjacentEdgesCount<ElemId::EDGE>(mesh);
 }
 
 /**
@@ -468,7 +468,7 @@ uint largestPerEdgeAdjacentEdgesNumber(const EdgeMeshConcept auto& mesh)
  * @ingroup mesh_stat
  */
 template<FaceMeshConcept MeshType>
-uint countVerticesToDuplicateByWedgeTexCoords(
+uint verticesToDuplicateByWedgeTexCoordsCount(
     const MeshType&                     mesh,
     std::vector<std::pair<uint, uint>>& vertWedgeMap =
         detail::dummyVectorOfPairs,
@@ -646,7 +646,7 @@ Container referencedVertices(
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m, bool onlyFaces = false)
+uint unreferencedVertexCount(const MeshType& m, bool onlyFaces = false)
 {
     uint nV = 0;
     // store the number of unref vertices into nV
@@ -675,7 +675,7 @@ uint numberUnreferencedVertices(const MeshType& m, bool onlyFaces = false)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m)
+uint nonManifoldVertexCount(const MeshType& m)
 {
     std::vector<bool> nonManifoldVertices =
         detail::nonManifoldVerticesVectorBool(m);
@@ -731,7 +731,7 @@ bool isWaterTight(const MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m) requires HasPerFaceAdjacentFaces<MeshType>
+uint holeCount(const MeshType& m) requires HasPerFaceAdjacentFaces<MeshType>
 {
     requirePerFaceAdjacentFaces(m);
 
@@ -859,7 +859,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
  * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m)
+uint connectedComponentCount(const MeshType& m)
 {
     return connectedComponents(m).size();
 }

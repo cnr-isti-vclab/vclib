@@ -324,11 +324,11 @@ void faceVertexIndicesToBuffer(
  * the order the faces appear in the mesh. The buffer must be preallocated with
  * the correct size (number of *resulting triangles* times 3).
  *
- * You can use the function @ref vcl::countTriangulatedTriangles to get the
- * number of resulting triangles and allocate the buffer accordingly:
+ * You can use the function @ref vcl::triangulatedFaceCount to get the number of
+ * resulting triangles and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint numTris = vcl::countTriangulatedTriangles(myMesh);
+ * uint numTris = vcl::triangulatedFaceCount(myMesh);
  * Eigen::MatrixXi triIndices(numTris, 3);
  * vcl::TriPolyIndexBiMap indexMap;
  * vcl::triangulatedFaceVertexIndicesToBuffer(
@@ -400,7 +400,7 @@ void triangulatedFaceVertexIndicesToBuffer(
         if (numTriangles == UINT_NULL &&
             storage == MatrixStorageType::COLUMN_MAJOR &&
             mesh.faceCount() > 0) {
-            numTriangles = countTriangulatedTriangles(mesh);
+            numTriangles = triangulatedFaceCount(mesh);
         }
         for (uint t = 0; const auto& f : mesh.faces()) {
             std::vector<uint> vind = vcl::earCut(f);
@@ -485,7 +485,7 @@ void edgeVertexIndicesToBuffer(
  * a buffer. Indices are stored following the order the edges appear in the
  * faces. The buffer must be preallocated with the correct size (number of
  * references to vertices in the mesh faces times 2 - see @ref
- * countPerFaceVertexReferences).
+ * faceVertexReferencesCount).
  *
  * @note As a default behaviour (`getIndicesAsIfContainerCompact == true`) the
  * function stores the vertex indices as if the vertex container of the mesh is
@@ -523,7 +523,7 @@ void wireframeVertexIndicesToBuffer(
     auto vIndex = detail::vIndexLambda(mesh, vertCompIndices);
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? countPerFaceVertexReferences(mesh) : numRows;
+        numRows == UINT_NULL ? faceVertexReferencesCount(mesh) : numRows;
 
     for (uint i = 0; const auto& f : mesh.faces()) {
         for (uint j = 0; j < f.vertexCount(); ++j) {
@@ -786,7 +786,7 @@ void faceNormalsToBuffer(
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
  * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1061,7 +1061,7 @@ void faceColorsToBuffer(
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
  * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1151,7 +1151,7 @@ void faceColorsToBuffer(
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
  * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1666,7 +1666,7 @@ void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
  * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
- * use the function @ref vcl::countTriangulatedTriangles to get the number of
+ * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
  * @param[in] mesh: input mesh
@@ -1702,7 +1702,7 @@ void triangulatedFaceMaterialIndicesToBuffer(
  * duplicate.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function:
+ * verticesToDuplicateByWedgeTexCoordsCount function:
  *
  * @code{.cpp}
  *
@@ -1710,7 +1710,7 @@ void triangulatedFaceMaterialIndicesToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<double> buffer((mesh.vertexCount() + nV) * 2);
@@ -1796,7 +1796,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  * duplicate.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function:
+ * verticesToDuplicateByWedgeTexCoordsCount function:
  *
  * @code{.cpp}
  *
@@ -1804,7 +1804,7 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
  * std::vector<ushort> buffer(mesh.vertexCount() + nV);
@@ -1872,11 +1872,11 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
  * `largestAdjacentVerticesSize`, the remaining entries are filled with
  * `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerVertexAdjacentVerticesNumber to
+ * You can use the function @ref vcl::largestPerVertexAdjacentVerticesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerVertexAdjacentVerticesNumber(myMesh);
+ * uint lva = vcl::largestPerVertexAdjacentVerticesCount(myMesh);
  * Eigen::MatrixXi vertexAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentVerticesToBuffer(
  *    myMesh, vertexAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -1932,11 +1932,11 @@ void vertexAdjacentVerticesToBuffer(
  * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerElementAdjacentFacesNumber to
+ * You can use the function @ref vcl::largestPerElementAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(myMesh);
+ * uint lva = vcl::largestPerElementAdjacentFacesCount<ELEM_ID>(myMesh);
  * Eigen::MatrixXi faceAdj(myMesh.count<ELEM_ID>(), lva);
  * vcl::elementAdjacentFacesToBuffer<ELEM_ID>(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -1993,11 +1993,11 @@ void elementAdjacentFacesToBuffer(
  * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerVertexAdjacentFacesNumber to
+ * You can use the function @ref vcl::largestPerVertexAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerVertexAdjacentFacesNumber(myMesh);
+ * uint lva = vcl::largestPerVertexAdjacentFacesCount(myMesh);
  * Eigen::MatrixXi faceAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentFacesToBuffer(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -2066,11 +2066,11 @@ void faceAdjacentFacesToBuffer(
  * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerEdgeAdjacentFacesNumber to
+ * You can use the function @ref vcl::largestPerEdgeAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerEdgeAdjacentFacesNumber(myMesh);
+ * uint lva = vcl::largestPerEdgeAdjacentFacesCount(myMesh);
  * Eigen::MatrixXi faceAdj(myMesh.edgeCount(), lva);
  * vcl::edgeAdjacentFacesToBuffer(
  *    myMesh, faceAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -2106,11 +2106,11 @@ void edgeAdjacentFacesToBuffer(
  * adjacent faces than `largestAdjacentEdgesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerElementAdjacentEdgesNumber to
+ * You can use the function @ref vcl::largestPerElementAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(myMesh);
+ * uint lva = vcl::largestPerElementAdjacentEdgesCount<ELEM_ID>(myMesh);
  * Eigen::MatrixXi edgeAdj(myMesh.count<ELEM_ID>(), lva);
  * vcl::elementAdjacentEdgesToBuffer<ELEM_ID>(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -2167,11 +2167,11 @@ void elementAdjacentEdgesToBuffer(
  * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerVertexAdjacentEdgesNumber to
+ * You can use the function @ref vcl::largestPerVertexAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerVertexAdjacentEdgesNumber(myMesh);
+ * uint lva = vcl::largestPerVertexAdjacentEdgesCount(myMesh);
  * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::vertexAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -2207,11 +2207,11 @@ void vertexAdjacentEdgesToBuffer(
  * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerFaceAdjacentEdgesNumber to
+ * You can use the function @ref vcl::largestPerFaceAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerFaceAdjacentEdgesNumber(myMesh);
+ * uint lva = vcl::largestPerFaceAdjacentEdgesCount(myMesh);
  * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::faceAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);
@@ -2247,11 +2247,11 @@ void faceAdjacentEdgesToBuffer(
  * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
  * are filled with `UINT_NULL`.
  *
- * You can use the function @ref vcl::largestPerEdgeAdjacentEdgesNumber to
+ * You can use the function @ref vcl::largestPerEdgeAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
  *
  * @code{.cpp}
- * uint lva = vcl::largestPerEdgeAdjacentEdgesNumber(myMesh);
+ * uint lva = vcl::largestPerEdgeAdjacentEdgesCount(myMesh);
  * Eigen::MatrixXi edgeAdj(myMesh.vertexCount(), lva);
  * vcl::edgeAdjacentEdgesToBuffer(
  *    myMesh, edgeAdj.data(), lva, MatrixStorageType::COLUMN_MAJOR);

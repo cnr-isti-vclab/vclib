@@ -156,7 +156,7 @@ void testFaceVector(const auto& pm)
 {
     auto faces = vcl::faceVertexIndicesVector<VectorType>(pm);
 
-    vcl::uint nIndices = countPerFaceVertexReferences(pm);
+    vcl::uint nIndices = faceVertexReferencesCount(pm);
     REQUIRE(faces.size() == nIndices);
 
     for (vcl::uint i = 0; const auto& f : pm.faces()) {
@@ -195,7 +195,7 @@ void testTriangulatedFaceMatrix(const auto& pm)
     auto                   tris =
         vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
 
-    vcl::uint tNumber = countTriangulatedTriangles(pm);
+    vcl::uint tNumber = triangulatedFaceCount(pm);
 
     REQUIRE(tris.rows() == tNumber);
     REQUIRE(tris.cols() == 3);
@@ -383,7 +383,7 @@ void testVertexAdjacentVerticesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
 
-    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesNumber(tm);
+    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lva);
@@ -427,7 +427,7 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentFacesMatrix<MatrixType>(tm);
 
-    vcl::uint lfa = vcl::largestPerVertexAdjacentFacesNumber(tm);
+    vcl::uint lfa = vcl::largestPerVertexAdjacentFacesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lfa);

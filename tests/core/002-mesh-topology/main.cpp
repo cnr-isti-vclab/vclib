@@ -763,7 +763,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Test the number of vertices to duplicate")
     {
-        REQUIRE(vcl::countVerticesToDuplicateByWedgeTexCoords(tm1) == 0);
+        REQUIRE(vcl::verticesToDuplicateByWedgeTexCoordsCount(tm1) == 0);
     }
 
     TriMesh tm2 =
@@ -780,7 +780,7 @@ TEMPLATE_TEST_CASE(
         std::list<vcl::uint>                                  vertsToDuplicate;
         std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
 
-        vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+        vcl::uint nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
             tm2, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
         REQUIRE(tm2.vertexCount() == 10);

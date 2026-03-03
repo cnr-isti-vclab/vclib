@@ -226,7 +226,7 @@ TEMPLATE_TEST_CASE("Unreferenced Vertices", "", Meshes, Meshesf)
 
         populateTriMesh(tm);
 
-        unsigned int nv = vcl::numberUnreferencedVertices(tm);
+        unsigned int nv = vcl::unreferencedVertexCount(tm);
 
         REQUIRE(nv == 1);
     }
@@ -237,7 +237,7 @@ TEMPLATE_TEST_CASE("Unreferenced Vertices", "", Meshes, Meshesf)
 
         populateEdgeMesh(em);
 
-        unsigned int nv = vcl::numberUnreferencedVertices(em);
+        unsigned int nv = vcl::unreferencedVertexCount(em);
 
         REQUIRE(nv == 1);
     }

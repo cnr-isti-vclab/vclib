@@ -141,7 +141,7 @@ public:
 
         vertexPositionsToBuffer(m, vb);
 
-        uint numTris = vcl::countTriangulatedTriangles(m);
+        uint numTris = vcl::triangulatedFaceCount(m);
 
         uint* ib = (uint*) rtcSetNewGeometryBuffer(
             geometry,

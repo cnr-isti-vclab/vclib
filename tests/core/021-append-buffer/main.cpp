@@ -221,7 +221,7 @@ TEMPLATE_TEST_CASE(
     std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
     std::list<vcl::uint>                                  vertsToDuplicate;
     std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
-    vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+    vcl::uint nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
     SECTION("Append duplicated vertex positions...")
