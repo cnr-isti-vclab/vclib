@@ -229,13 +229,13 @@ bool populateGltfVertices(
     MeshType&     m,
     const Scalar* posArray,
     uint          stride,
-    uint          vertNumber)
+    uint          vertCount)
 {
     using PositionType = typename MeshType::VertexType::PositionType;
 
-    uint base = m.addVertices(vertNumber);
+    uint base = m.addVertices(vertCount);
 
-    for (uint i = 0; i < vertNumber; ++i) {
+    for (uint i = 0; i < vertCount; ++i) {
         const Scalar* posBase = reinterpret_cast<const Scalar*>(
             reinterpret_cast<const char*>(posArray) + (i) *stride);
         m.vertex(base + i).position() =
@@ -251,7 +251,7 @@ bool populateGltfVNormals(
     bool          enableOptionalComponents,
     const Scalar* normArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
@@ -260,7 +260,7 @@ bool populateGltfVNormals(
             enableIfPerVertexNormalOptional(m);
 
         if (isPerVertexNormalAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* normBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(normArray) + i * stride);
                 m.vertex(firstVertex + i).normal() =
@@ -284,7 +284,7 @@ bool populateGltfVTangents(
     bool          enableOptionalComponents,
     const Scalar* tangArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexTangent<MeshType>) {
         using TangentType = typename MeshType::VertexType::TangentType;
@@ -293,7 +293,7 @@ bool populateGltfVTangents(
             enableIfPerVertexTangentOptional(m);
 
         if (isPerVertexTangentAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* tangBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(tangArray) + i * stride);
                 m.vertex(firstVertex + i).tangent() =
@@ -319,7 +319,7 @@ bool populateGltfVColors(
     bool          enableOptionalComponents,
     const Scalar* colorArray,
     unsigned int  stride,
-    unsigned int  vertNumber,
+    unsigned int  vertCount,
     bool          colorWithAlpha)
 {
     unsigned int nElemns = colorWithAlpha ? 4 : 3;
@@ -328,7 +328,7 @@ bool populateGltfVColors(
             enableIfPerVertexColorOptional(m);
 
         if (isPerVertexColorAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber * nElemns; i += nElemns) {
+            for (unsigned int i = 0; i < vertCount * nElemns; i += nElemns) {
                 const Scalar* colorBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(colorArray) +
                     (i / nElemns) * stride);
@@ -367,7 +367,7 @@ bool populateGltfVTextCoords(
     bool          enableOptionalComponents,
     const Scalar* textCoordArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using TexCoordType = typename MeshType::VertexType::TexCoordType;
@@ -376,7 +376,7 @@ bool populateGltfVTextCoords(
             enableIfPerVertexTexCoordOptional(m);
 
         if (isPerVertexTexCoordAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(textCoordArray) + i * stride);
 
@@ -399,12 +399,12 @@ bool populateGltfTriangles(
     MeshType&     m,
     uint          firstVertex,
     const Scalar* triArray,
-    uint          triNumber)
+    uint          triCount)
 {
     if constexpr (HasFaces<MeshType>) {
         if (triArray != nullptr) {
-            uint fi = m.addFaces(triNumber);
-            for (unsigned int i = 0; i < triNumber * 3; i += 3, ++fi) {
+            uint fi = m.addFaces(triCount);
+            for (unsigned int i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 if constexpr (HasPolygons<MeshType>) {
                     f.resizeVertices(3);
@@ -415,9 +415,9 @@ bool populateGltfTriangles(
             }
         }
         else {
-            triNumber = m.vertexCount() / 3 - firstVertex;
-            uint fi   = m.addFaces(triNumber);
-            for (uint i = 0; i < triNumber * 3; i += 3, ++fi) {
+            triCount = m.vertexCount() / 3 - firstVertex;
+            uint fi   = m.addFaces(triCount);
+            for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 for (uint j = 0; j < 3; ++j) {
                     f.setVertex(j, firstVertex + i + j);

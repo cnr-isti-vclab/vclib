@@ -301,37 +301,37 @@ public:
 
     bool hasMaterials() const { return mMaterialElemPos != UINT_NULL; }
 
-    uint numberVertices() const
+    uint vertexCount() const
     {
         assert(hasVertices());
-        return mElements[mVertElemPos].numberElements;
+        return mElements[mVertElemPos].elementCount;
     }
 
-    uint numberFaces() const
+    uint faceCount() const
     {
         assert(hasFaces());
-        return mElements[mFaceElemPos].numberElements;
+        return mElements[mFaceElemPos].elementCount;
     }
 
-    uint numberEdges() const
+    uint edgeCount() const
     {
         assert(hasEdges());
-        return mElements[mEdgeElemPos].numberElements;
+        return mElements[mEdgeElemPos].elementCount;
     }
 
-    uint numberTriStrips() const
+    uint triStripCount() const
     {
         assert(hasTriStrips());
-        return mElements[mTriStripElemPos].numberElements;
+        return mElements[mTriStripElemPos].elementCount;
     }
 
-    uint numberMaterials() const
+    uint materialCount() const
     {
         assert(hasMaterials());
-        return mElements[mMaterialElemPos].numberElements;
+        return mElements[mMaterialElemPos].elementCount;
     }
 
-    uint numberTextureFileNames() const { return mTextureFiles.size(); }
+    uint textureFileNameCount() const { return mTextureFiles.size(); }
 
     const std::list<PlyProperty>& vertexProperties() const
     {
@@ -370,28 +370,28 @@ public:
 
     bool errorWhileLoading() const { return !mValid; }
 
-    void setNumberVertices(unsigned long int nV)
+    void setVertexCount(unsigned long int nV)
     {
         assert(hasVertices());
-        mElements[mVertElemPos].numberElements = nV;
+        mElements[mVertElemPos].elementCount = nV;
     }
 
-    void setNumberFaces(unsigned long int nF)
+    void setFaceCount(unsigned long int nF)
     {
         assert(hasFaces());
-        mElements[mFaceElemPos].numberElements = nF;
+        mElements[mFaceElemPos].elementCount = nF;
     }
 
-    void setNumberEdges(unsigned long int nE)
+    void setEdgeCount(unsigned long int nE)
     {
         assert(hasEdges());
-        mElements[mEdgeElemPos].numberElements = nE;
+        mElements[mEdgeElemPos].elementCount = nE;
     }
 
-    void setNumberMaterials(unsigned long int nM)
+    void setMaterialCount(unsigned long int nM)
     {
         assert(hasMaterials());
-        mElements[mMaterialElemPos].numberElements = nM;
+        mElements[mMaterialElemPos].elementCount = nM;
     }
 
     void pushTextureFileName(const std::string& tn)
@@ -679,23 +679,23 @@ public:
             s += "element ";
             switch (e.type) {
             case ply::VERTEX:
-                s += "vertex " + std::to_string(e.numberElements) + "\n";
+                s += "vertex " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::FACE:
-                s += "face " + std::to_string(e.numberElements) + "\n";
+                s += "face " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::EDGE:
-                s += "edge " + std::to_string(e.numberElements) + "\n";
+                s += "edge " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::TRISTRIP:
-                s += "tristrips " + std::to_string(e.numberElements) + "\n";
+                s += "tristrips " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::MATERIAL:
-                s += "material " + std::to_string(e.numberElements) + "\n";
+                s += "material " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::OTHER:
                 s += e.unknownElementType + " " +
-                     std::to_string(e.numberElements) + "\n";
+                     std::to_string(e.elementCount) + "\n";
                 break;
             }
             for (const PlyProperty& p : e.properties) {
@@ -731,27 +731,27 @@ private:
         std::string         s     = *(++token);
         if (s == "vertex") {
             e.type           = ply::VERTEX;
-            e.numberElements = std::stoi(*(++token));
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "face") {
             e.type           = ply::FACE;
-            e.numberElements = std::stoi(*(++token));
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "edge") {
             e.type           = ply::EDGE;
-            e.numberElements = std::stoi(*(++token));
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "tristrips") {
             e.type           = ply::TRISTRIP;
-            e.numberElements = std::stoi(*(++token));
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "material") {
             e.type           = ply::MATERIAL;
-            e.numberElements = std::stoi(*(++token));
+            e.elementCount = std::stoi(*(++token));
         }
         else {
             e.type               = ply::OTHER;
-            e.numberElements     = std::stoi(*(++token));
+            e.elementCount     = std::stoi(*(++token));
             e.unknownElementType = s;
         }
         return e;

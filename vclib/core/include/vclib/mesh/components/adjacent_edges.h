@@ -188,12 +188,12 @@ public:
      * auto* next = e.adjEdgeMod(k+1); // the adj edge next to k, that may also
      *                                 // be at pos 0
      * auto* last = e.adjEdgeMod(-1); // the adj edge in position
-     *                                // adjEdgeNumber()-1
+     *                                // adjEdgeCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent edge in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjEdgeNumber().
+     * adjEdgeCount().
      * @return The pointer to the required adjacent edge of the element.
      */
     Edge* adjEdgeMod(int i) { return Base::elementMod(i); }
@@ -203,7 +203,7 @@ public:
      * edge.
      * @param[in] i: the position of the required adjacent edge in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjEdgeNumber().
+     * adjEdgeCount().
      * @return The pointer to the required adjacent edge of this element.
      */
     const Edge* adjEdgeMod(int i) const { return Base::elementMod(i); }

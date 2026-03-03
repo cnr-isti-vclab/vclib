@@ -371,11 +371,11 @@ void readPlyFaces(
     LogType&         log)
 {
     using FaceType = MeshType::FaceType;
-    mesh.reserveFaces(header.numberFaces());
+    mesh.reserveFaces(header.faceCount());
 
-    log.startProgress("Reading faces", header.numberFaces());
+    log.startProgress("Reading faces", header.faceCount());
 
-    for (uint fid = 0; fid < header.numberFaces(); ++fid) {
+    for (uint fid = 0; fid < header.faceCount(); ++fid) {
         uint      ffid = mesh.addFace();
         FaceType& f    = mesh.face(ffid);
         if (header.format() == ply::ASCII) {
