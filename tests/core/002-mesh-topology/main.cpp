@@ -172,54 +172,54 @@ TEMPLATE_TEST_CASE(
         tm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(tm);
 
-        REQUIRE(tm.vertex(0).adjVerticesNumber() == 3);
+        REQUIRE(tm.vertex(0).adjVertexCount() == 3);
         REQUIRE(tm.vertex(0).adjVertex(0) == &tm.vertex(1));
         REQUIRE(tm.vertex(0).adjVertex(1) == &tm.vertex(2));
         REQUIRE(tm.vertex(0).adjVertex(2) == &tm.vertex(4));
 
-        REQUIRE(tm.vertex(1).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(1).adjVertexCount() == 5);
         REQUIRE(tm.vertex(1).adjVertex(0) == &tm.vertex(0));
         REQUIRE(tm.vertex(1).adjVertex(1) == &tm.vertex(2));
         REQUIRE(tm.vertex(1).adjVertex(2) == &tm.vertex(3));
         REQUIRE(tm.vertex(1).adjVertex(3) == &tm.vertex(4));
         REQUIRE(tm.vertex(1).adjVertex(4) == &tm.vertex(5));
 
-        REQUIRE(tm.vertex(2).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(2).adjVertexCount() == 5);
         REQUIRE(tm.vertex(2).adjVertex(0) == &tm.vertex(0));
         REQUIRE(tm.vertex(2).adjVertex(1) == &tm.vertex(1));
         REQUIRE(tm.vertex(2).adjVertex(2) == &tm.vertex(3));
         REQUIRE(tm.vertex(2).adjVertex(3) == &tm.vertex(4));
         REQUIRE(tm.vertex(2).adjVertex(4) == &tm.vertex(6));
 
-        REQUIRE(tm.vertex(3).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(3).adjVertexCount() == 5);
         REQUIRE(tm.vertex(3).adjVertex(0) == &tm.vertex(1));
         REQUIRE(tm.vertex(3).adjVertex(1) == &tm.vertex(2));
         REQUIRE(tm.vertex(3).adjVertex(2) == &tm.vertex(5));
         REQUIRE(tm.vertex(3).adjVertex(3) == &tm.vertex(6));
         REQUIRE(tm.vertex(3).adjVertex(4) == &tm.vertex(7));
 
-        REQUIRE(tm.vertex(4).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(4).adjVertexCount() == 5);
         REQUIRE(tm.vertex(4).adjVertex(0) == &tm.vertex(0));
         REQUIRE(tm.vertex(4).adjVertex(1) == &tm.vertex(1));
         REQUIRE(tm.vertex(4).adjVertex(2) == &tm.vertex(2));
         REQUIRE(tm.vertex(4).adjVertex(3) == &tm.vertex(5));
         REQUIRE(tm.vertex(4).adjVertex(4) == &tm.vertex(6));
 
-        REQUIRE(tm.vertex(5).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(5).adjVertexCount() == 5);
         REQUIRE(tm.vertex(5).adjVertex(0) == &tm.vertex(1));
         REQUIRE(tm.vertex(5).adjVertex(1) == &tm.vertex(3));
         REQUIRE(tm.vertex(5).adjVertex(2) == &tm.vertex(4));
         REQUIRE(tm.vertex(5).adjVertex(3) == &tm.vertex(6));
         REQUIRE(tm.vertex(5).adjVertex(4) == &tm.vertex(7));
 
-        REQUIRE(tm.vertex(6).adjVerticesNumber() == 5);
+        REQUIRE(tm.vertex(6).adjVertexCount() == 5);
         REQUIRE(tm.vertex(6).adjVertex(0) == &tm.vertex(2));
         REQUIRE(tm.vertex(6).adjVertex(1) == &tm.vertex(3));
         REQUIRE(tm.vertex(6).adjVertex(2) == &tm.vertex(4));
         REQUIRE(tm.vertex(6).adjVertex(3) == &tm.vertex(5));
         REQUIRE(tm.vertex(6).adjVertex(4) == &tm.vertex(7));
 
-        REQUIRE(tm.vertex(7).adjVerticesNumber() == 3);
+        REQUIRE(tm.vertex(7).adjVertexCount() == 3);
         REQUIRE(tm.vertex(7).adjVertex(0) == &tm.vertex(3));
         REQUIRE(tm.vertex(7).adjVertex(1) == &tm.vertex(5));
         REQUIRE(tm.vertex(7).adjVertex(2) == &tm.vertex(6));
@@ -435,54 +435,54 @@ TEMPLATE_TEST_CASE(
         pm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(pm);
 
-        REQUIRE(pm.vertex(0).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(0).adjVertexCount() == 3);
         REQUIRE(pm.vertex(0).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(0).adjVertex(1) == &pm.vertex(2));
         REQUIRE(pm.vertex(0).adjVertex(2) == &pm.vertex(4));
 
-        REQUIRE(pm.vertex(1).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(1).adjVertexCount() == 5);
         REQUIRE(pm.vertex(1).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(1).adjVertex(1) == &pm.vertex(2));
         REQUIRE(pm.vertex(1).adjVertex(2) == &pm.vertex(3));
         REQUIRE(pm.vertex(1).adjVertex(3) == &pm.vertex(4));
         REQUIRE(pm.vertex(1).adjVertex(4) == &pm.vertex(5));
 
-        REQUIRE(pm.vertex(2).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(2).adjVertexCount() == 5);
         REQUIRE(pm.vertex(2).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(2).adjVertex(1) == &pm.vertex(1));
         REQUIRE(pm.vertex(2).adjVertex(2) == &pm.vertex(3));
         REQUIRE(pm.vertex(2).adjVertex(3) == &pm.vertex(4));
         REQUIRE(pm.vertex(2).adjVertex(4) == &pm.vertex(6));
 
-        REQUIRE(pm.vertex(3).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(3).adjVertexCount() == 5);
         REQUIRE(pm.vertex(3).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(3).adjVertex(1) == &pm.vertex(2));
         REQUIRE(pm.vertex(3).adjVertex(2) == &pm.vertex(5));
         REQUIRE(pm.vertex(3).adjVertex(3) == &pm.vertex(6));
         REQUIRE(pm.vertex(3).adjVertex(4) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(4).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(4).adjVertexCount() == 5);
         REQUIRE(pm.vertex(4).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(4).adjVertex(1) == &pm.vertex(1));
         REQUIRE(pm.vertex(4).adjVertex(2) == &pm.vertex(2));
         REQUIRE(pm.vertex(4).adjVertex(3) == &pm.vertex(5));
         REQUIRE(pm.vertex(4).adjVertex(4) == &pm.vertex(6));
 
-        REQUIRE(pm.vertex(5).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(5).adjVertexCount() == 5);
         REQUIRE(pm.vertex(5).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(5).adjVertex(1) == &pm.vertex(3));
         REQUIRE(pm.vertex(5).adjVertex(2) == &pm.vertex(4));
         REQUIRE(pm.vertex(5).adjVertex(3) == &pm.vertex(6));
         REQUIRE(pm.vertex(5).adjVertex(4) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(6).adjVerticesNumber() == 5);
+        REQUIRE(pm.vertex(6).adjVertexCount() == 5);
         REQUIRE(pm.vertex(6).adjVertex(0) == &pm.vertex(2));
         REQUIRE(pm.vertex(6).adjVertex(1) == &pm.vertex(3));
         REQUIRE(pm.vertex(6).adjVertex(2) == &pm.vertex(4));
         REQUIRE(pm.vertex(6).adjVertex(3) == &pm.vertex(5));
         REQUIRE(pm.vertex(6).adjVertex(4) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(7).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(7).adjVertexCount() == 3);
         REQUIRE(pm.vertex(7).adjVertex(0) == &pm.vertex(3));
         REQUIRE(pm.vertex(7).adjVertex(1) == &pm.vertex(5));
         REQUIRE(pm.vertex(7).adjVertex(2) == &pm.vertex(6));
@@ -664,42 +664,42 @@ TEMPLATE_TEST_CASE(
         pm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(pm);
 
-        REQUIRE(pm.vertex(0).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(0).adjVertexCount() == 3);
         REQUIRE(pm.vertex(0).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(0).adjVertex(1) == &pm.vertex(2));
         REQUIRE(pm.vertex(0).adjVertex(2) == &pm.vertex(4));
 
-        REQUIRE(pm.vertex(1).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(1).adjVertexCount() == 3);
         REQUIRE(pm.vertex(1).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(1).adjVertex(1) == &pm.vertex(3));
         REQUIRE(pm.vertex(1).adjVertex(2) == &pm.vertex(5));
 
-        REQUIRE(pm.vertex(2).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(2).adjVertexCount() == 3);
         REQUIRE(pm.vertex(2).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(2).adjVertex(1) == &pm.vertex(3));
         REQUIRE(pm.vertex(2).adjVertex(2) == &pm.vertex(6));
 
-        REQUIRE(pm.vertex(3).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(3).adjVertexCount() == 3);
         REQUIRE(pm.vertex(3).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(3).adjVertex(1) == &pm.vertex(2));
         REQUIRE(pm.vertex(3).adjVertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(4).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(4).adjVertexCount() == 3);
         REQUIRE(pm.vertex(4).adjVertex(0) == &pm.vertex(0));
         REQUIRE(pm.vertex(4).adjVertex(1) == &pm.vertex(5));
         REQUIRE(pm.vertex(4).adjVertex(2) == &pm.vertex(6));
 
-        REQUIRE(pm.vertex(5).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(5).adjVertexCount() == 3);
         REQUIRE(pm.vertex(5).adjVertex(0) == &pm.vertex(1));
         REQUIRE(pm.vertex(5).adjVertex(1) == &pm.vertex(4));
         REQUIRE(pm.vertex(5).adjVertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(6).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(6).adjVertexCount() == 3);
         REQUIRE(pm.vertex(6).adjVertex(0) == &pm.vertex(2));
         REQUIRE(pm.vertex(6).adjVertex(1) == &pm.vertex(4));
         REQUIRE(pm.vertex(6).adjVertex(2) == &pm.vertex(7));
 
-        REQUIRE(pm.vertex(7).adjVerticesNumber() == 3);
+        REQUIRE(pm.vertex(7).adjVertexCount() == 3);
         REQUIRE(pm.vertex(7).adjVertex(0) == &pm.vertex(3));
         REQUIRE(pm.vertex(7).adjVertex(1) == &pm.vertex(5));
         REQUIRE(pm.vertex(7).adjVertex(2) == &pm.vertex(6));

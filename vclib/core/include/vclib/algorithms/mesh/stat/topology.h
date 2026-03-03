@@ -269,13 +269,13 @@ uint largestPerVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
 {
     requirePerVertexAdjacentVertices(mesh);
 
-    uint maxAVN = 0;
+    uint maxAVC = 0;
 
     for (const auto& v : mesh.vertices()) {
-        maxAVN = std::max(maxAVN, v.adjVerticesNumber());
+        maxAVC = std::max(maxAVC, v.adjVertexCount());
     }
 
-    return maxAVN;
+    return maxAVC;
 }
 
 /**

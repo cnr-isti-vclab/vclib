@@ -96,14 +96,14 @@ def mesh_topology():
         print(f"Vertex {i} at {vertex.position()} is adjacent to vertices: ", end="")
         for adj_vertex in vertex.adj_vertices():
             print(f"{adj_vertex.index()} ", end="")
-        print(f"\n(Total: {vertex.adj_vertices_count()} vertices)\n")
+        print(f"\n(Total: {vertex.adj_vertex_count()} vertices)\n")
 
     # Analyze vertex degrees (number of adjacent vertices)
     min_degree = float('inf')
     max_degree = 0
     avg_degree = 0.0
     for v in mesh.vertices():
-        degree = v.adj_vertices_count()
+        degree = v.adj_vertex_count()
         min_degree = min(min_degree, degree)
         max_degree = max(max_degree, degree)
         avg_degree += degree

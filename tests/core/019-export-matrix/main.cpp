@@ -367,7 +367,7 @@ void testVertexAdjacentVerticesVectors(const auto& tm)
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         const auto& adjList = adjacencies[i];
-        REQUIRE(adjList.size() == v.adjVerticesNumber());
+        REQUIRE(adjList.size() == v.adjVertexCount());
 
         vcl::uint j = 0;
         for (const auto* adjV : v.adjVertices()) {

@@ -43,7 +43,7 @@ void initAdjacentVertices(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    c.def("adj_vertices_count", &ElementType::adjVerticesNumber);
+    c.def("adj_vertex_count", &ElementType::adjVertexCount);
 
     c.def(
         "adj_vertex",

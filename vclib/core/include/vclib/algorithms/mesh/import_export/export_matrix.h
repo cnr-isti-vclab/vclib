@@ -1182,7 +1182,7 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
     for (const auto& v : mesh.vertices()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjVerticesNumber());
+        vec.resize(v.adjVertexCount());
         auto vecIt = vec.begin();
         for (const auto* ve : v.adjVertices()) {
             uint idx = ve ? ve->index() : UINT_NULL;

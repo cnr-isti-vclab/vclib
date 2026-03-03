@@ -46,7 +46,7 @@ namespace vcl::comp {
  * `v`:
  *
  * @code{.cpp}
- * v.adjVerticesNumber();
+ * v.adjVertexCount();
  * auto* v = v.adjVertex(0);
  * uint vi = v.adjVertexIndex(0);
  * @endcode
@@ -129,7 +129,7 @@ public:
      * @brief Returns the number of adjacent vertices of the element.
      * @return The number of adjacent vertices of the element.
      */
-    uint adjVerticesNumber() const { return Base::size(); }
+    uint adjVertexCount() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of an element.
@@ -204,12 +204,12 @@ public:
      *                                      // pos 0
      * auto lastIdx = e.adjVertexIndexMod(-1); // the index of the adjacent
      *                                         // vertex in position
-     *                                         // adjVerticesNumber()-1
+     *                                         // adjVertexCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent vertex in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjVerticesNumber().
+     * adjVertexCount().
      * @return The index of the required adjacent vertex of the element.
      */
     uint adjVertexIndexMod(int i) const { return Base::elementIndexMod(i); }
@@ -289,11 +289,11 @@ public:
      * e.setAdjVertexMod(k+1, aVertex); // set the adj vertex next to k, that
      *                                  // may also be at pos 0
      * e.setAdjVertexMod(-1, aVertex); // set the adj vertex in position
-     *                                 // adjVerticesNumber()-1
+     *                                 // adjVertexCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj vertex; value is modularized on adjVerticesNumber().
+     * which set the adj vertex; value is modularized on adjVertexCount().
      * @param[in] v: The pointer to the adj vertex to set to the element.
      */
     void setAdjVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
@@ -310,11 +310,11 @@ public:
      * e.setAdjVertexMod(k+1, aVertInd); // set the adj vertex next to k, that
      *                                   // may also be at pos 0
      * e.setAdjVertexMod(-1, aVertInd); // set the adj vertex in position
-     *                                  // adjVerticesNumber()-1
+     *                                  // adjVertexCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj vertex; value is modularized on adjVerticesNumber().
+     * which set the adj vertex; value is modularized on adjVertexCount().
      * @param[in] vi: The index in the vertex container of the adj vertex to
      * set.
      */
@@ -602,8 +602,8 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
 
-        vcl::serialize(os, adjVerticesNumber());
-        for (uint i = 0; i < adjVerticesNumber(); ++i) {
+        vcl::serialize(os, adjVertexCount());
+        for (uint i = 0; i < adjVertexCount(); ++i) {
             vcl::serialize(os, adjVertexIndex(i));
         }
     }
@@ -614,7 +614,7 @@ protected:
         vcl::deserialize(is, n);
         resizeAdjVertices(n);
 
-        for (uint i = 0; i < adjVerticesNumber(); ++i) {
+        for (uint i = 0; i < adjVertexCount(); ++i) {
             uint aei;
             vcl::deserialize(is, aei);
             setAdjVertex(i, aei);
@@ -625,7 +625,7 @@ private:
     template<typename Element>
     void importIndicesFrom(const Element& e)
     {
-        for (uint i = 0; i < e.adjVerticesNumber(); ++i) {
+        for (uint i = 0; i < e.adjVertexCount(); ++i) {
             setAdjVertex(i, e.adjVertexIndex(i));
         }
     }
@@ -687,7 +687,7 @@ void AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>::
             if (isAdjacentVerticesAvailableOn(e)) {
                 // from static/dynamic to dynamic size: need to resize
                 // first, then import
-                resizeAdjVertices(e.adjVerticesNumber());
+                resizeAdjVertices(e.adjVertexCount());
                 importIndicesFrom(e);
             }
         }
