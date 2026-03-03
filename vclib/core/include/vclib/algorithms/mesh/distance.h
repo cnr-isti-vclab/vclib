@@ -156,7 +156,7 @@ HausdorffDistResult samplerMeshHausdorff(
     if constexpr (HasName<MeshType>) {
         meshName = m.name();
     }
-    if (m.faceNumber() == 0) {
+    if (m.faceCount() == 0) {
         log.log(0, "Building Grid on " + meshName + " vertices...");
 
         StaticGrid3<const VertexType*, ScalarType> grid(
@@ -245,7 +245,7 @@ HausdorffDistResult hausdorffDistance(
     std::optional<uint>     seed       = std::nullopt)
 {
     if (nSamples == 0)
-        nSamples = m2.vertexNumber();
+        nSamples = m2.vertexCount();
 
     std::vector<uint> birth;
 

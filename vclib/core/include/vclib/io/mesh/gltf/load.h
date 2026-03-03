@@ -91,7 +91,7 @@ void loadGltf(
         typename MeshType::TransformMatrixType,
         Matrix44<ScalarType>>;
 
-    uint nMeshes = gltfNumberMeshes(model);
+    uint nMeshes = gltfMeshCount(model);
 
     Matrix44m identityMatrix = Matrix44m::Identity();
 

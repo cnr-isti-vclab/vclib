@@ -50,12 +50,12 @@ namespace vcl {
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the vertex container of the mesh and then adds a number of vertices
- * that depends on the given `vertexNumber`. In this scenario, all the old
+ * that depends on the given `vertexCount`. In this scenario, all the old
  * vertices with their components stored in the mesh before calling this
  * function are lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `vertexNumber` is equal to the number of vertices of the mesh. If
+ * the given `vertexCount` is equal to the number of vertices of the mesh. If
  * this is not the case, an exception is thrown. Then, the function sets the
  * positions of the vertices of the mesh from the input buffer. In this
  * scenario, all the components (except the positions) of the vertices stored in
@@ -67,7 +67,7 @@ namespace vcl {
  * std::vector).
  *
  * @throws vcl::WrongSizeException if `clearBeforeSet` is false and
- * `vertexNumber` != mesh.vertexNumber().
+ * `vertexCount` != mesh.vertexCount().
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
@@ -75,7 +75,7 @@ namespace vcl {
  * @param[in/out] mesh: the mesh on which import the input vertices.
  * @param[in] buffer: a contiguous array containing the positions of the
  * vertices of the mesh.
- * @param[in] vertexNumber: the number of vertices contained in the input
+ * @param[in] vertexCount: the number of vertices contained in the input
  * buffer.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the vertices of the mesh before adding the vertices from the input buffer.
@@ -85,7 +85,7 @@ namespace vcl {
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `vertexNumber`.
+ * (default), it is assumed to be equal to `vertexCount`.
  *
  * @ingroup import_buffer
  */
@@ -93,28 +93,28 @@ template<MeshConcept MeshType>
 void vertexPositionsFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              vertexNumber,
+    uint              vertexCount,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
     uint              numRows        = UINT_NULL)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? vertexNumber : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? vertexCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearVertices();
-        mesh.resizeVertices(vertexNumber);
+        mesh.resizeVertices(vertexCount);
     }
     else {
-        if (vertexNumber != mesh.vertexNumber()) {
+        if (vertexCount != mesh.vertexCount()) {
             throw WrongSizeException(
                 "The input vertex number does not match the number of vertices "
                 "of the mesh\n"
                 "Number of vertices in the mesh: " +
-                std::to_string(mesh.vertexNumber()) +
+                std::to_string(mesh.vertexCount()) +
                 "\nNumber of input vertex number: " +
-                std::to_string(vertexNumber));
+                std::to_string(vertexCount));
         }
     }
 
@@ -147,12 +147,12 @@ void vertexPositionsFromBuffer(
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
- * that depends on the given `faceNumber`. In this scenario, all the old faces
+ * that depends on the given `faceCount`. In this scenario, all the old faces
  * with their components stored in the mesh before calling this function are
  * lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `faceNumber` is equal to the number of faces of the mesh. If this
+ * the given `faceCount` is equal to the number of faces of the mesh. If this
  * is not the case, an exception is thrown. Then, the function sets the indices
  * of the faces of the mesh from the input buffer. In this scenario, all
  * the components (except the indices) of the faces stored in the mesh before
@@ -169,7 +169,7 @@ void vertexPositionsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input faces.
  * @param[in] buffer: a contiguous array of \#F*faceSize values containing the
  * indices of the vertices of the faces of the mesh.
- * @param[in] faceNumber: the number of faces contained in the input buffer.
+ * @param[in] faceCount: the number of faces contained in the input buffer.
  * @param[in] faceSize: the number of vertex indices per face contained in the
  * input buffer. If the MeshType is not a polygonal mesh (e.g. a triangle
  * mesh), this parameter must be equal to the number of vertices of each face of
@@ -182,7 +182,7 @@ void vertexPositionsFromBuffer(
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `faceNumber`.
+ * (default), it is assumed to be equal to `faceCount`.
  *
  * @ingroup import_buffer
  */
@@ -190,7 +190,7 @@ template<FaceMeshConcept MeshType>
 void faceIndicesFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              faceNumber,
+    uint              faceCount,
     uint              faceSize       = 3,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
@@ -198,39 +198,39 @@ void faceIndicesFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? faceNumber : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? faceCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearFaces();
-        mesh.resizeFaces(faceNumber);
+        mesh.resizeFaces(faceCount);
     }
     else {
-        if (faceNumber != mesh.faceNumber()) {
+        if (faceCount != mesh.faceCount()) {
             throw WrongSizeException(
-                "The input face number does not match the number of faces "
-                "of the mesh\n"
+                "The input face count does not match the number of faces of "
+                "the mesh\n"
                 "Number of faces in the mesh: " +
-                std::to_string(mesh.faceNumber()) +
-                "\nNumber of input face number: " + std::to_string(faceNumber));
+                std::to_string(mesh.faceCount()) +
+                "\nNumber of input face count: " + std::to_string(faceCount));
         }
     }
 
     if constexpr (HasPolygons<MeshType>) {
         uint i = 0;
         for (auto& f : mesh.faces()) {
-            uint vertexNumber = 0;
+            uint vertexCount = 0;
 
             // count the number of vertices of the face
-            while (vertexNumber < faceSize &&
-                   at(buffer, i, vertexNumber, NUM_ROWS, faceSize, storage) !=
+            while (vertexCount < faceSize &&
+                   at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
                        -1 &&
-                   at(buffer, i, vertexNumber, NUM_ROWS, faceSize, storage) !=
+                   at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
                        UINT_NULL)
-                vertexNumber++;
+                vertexCount++;
 
-            f.resizeVertices(vertexNumber);
+            f.resizeVertices(vertexCount);
 
-            for (uint j = 0; j < vertexNumber; ++j)
+            for (uint j = 0; j < vertexCount; ++j)
                 f.setVertex(j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
             ++i;
         }
@@ -238,11 +238,11 @@ void faceIndicesFromBuffer(
     else { // the vertex number of mesh faces is fixed
         using FaceType = MeshType::FaceType;
 
-        constexpr int VN = FaceType::VERTEX_NUMBER;
-        if (faceSize == VN) { // faces of matrix and mesh have same size
+        constexpr int VC = FaceType::VERTEX_COUNT;
+        if (faceSize == VC) { // faces of matrix and mesh have same size
             uint i = 0;
             for (auto& f : mesh.faces()) {
-                for (uint j = 0; j < VN; ++j)
+                for (uint j = 0; j < VC; ++j)
                     f.setVertex(
                         j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
                 ++i;
@@ -253,9 +253,9 @@ void faceIndicesFromBuffer(
             // buffer is different w.r.t. face size of the mesh
             throw WrongSizeException(
                 "The input face buffer has a different face size "
-                "than the vertex number of the faces of the mesh.\n"
-                "Vertex number of faces in the mesh: " +
-                std::to_string(VN) +
+                "than the vertex count of the faces of the mesh.\n"
+                "Faces vertex count in the mesh: " +
+                std::to_string(VC) +
                 "\nNumber of columns in the input face buffer: " +
                 std::to_string(faceSize));
         }
@@ -272,12 +272,12 @@ void faceIndicesFromBuffer(
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the edge container of the mesh and then adds a number of edges
- * that depends on the given `edgeNumber`. In this scenario, all the old edges
+ * that depends on the given `edgeCount`. In this scenario, all the old edges
  * with their components stored in the mesh before calling this function are
  * lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `edgeNumber` is equal to the number of edges of the mesh. If this
+ * the given `edgeCount` is equal to the number of edges of the mesh. If this
  * is not the case, an exception is thrown. Then, the function sets the indices
  * of the edges of the mesh from the input edge buffer. In this scenario, all
  * the components (except the indices) of the edges stored in the mesh before
@@ -292,7 +292,7 @@ void faceIndicesFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edges.
  * @param[in] buffer: a contiguous array of \#E*2 values containing the indices
  * of the vertices of the edges of the mesh.
- * @param[in] edgeNumber: the number of edges contained in the input buffer.
+ * @param[in] edgeCount: the number of edges contained in the input buffer.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the edges of the mesh before adding the edges from the input buffer.
  * If `false`, the function sets the indices from the input buffer to the
@@ -301,7 +301,7 @@ void faceIndicesFromBuffer(
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `edgeNumber`.
+ * (default), it is assumed to be equal to `edgeCount`.
  *
  * @ingroup import_buffer
  */
@@ -309,7 +309,7 @@ template<EdgeMeshConcept MeshType>
 void edgeIndicesFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              edgeNumber,
+    uint              edgeCount,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
     uint              numRows        = UINT_NULL)
@@ -318,16 +318,16 @@ void edgeIndicesFromBuffer(
 
     if (clearBeforeSet) {
         mesh.clearEdges();
-        mesh.resizeEdges(edgeNumber);
+        mesh.resizeEdges(edgeCount);
     }
     else {
-        if (edgeNumber != mesh.edgeNumber()) {
+        if (edgeCount != mesh.edgeCount()) {
             throw WrongSizeException(
-                "The input edge number does not match the number of edges "
+                "The input edge count does not match the number of edges "
                 "of the mesh\n"
                 "Number of edges in the mesh: " +
-                std::to_string(mesh.edgeNumber()) +
-                "\nNumber of input edge number: " + std::to_string(edgeNumber));
+                std::to_string(mesh.edgeCount()) +
+                "\nNumber of input edge count: " + std::to_string(edgeCount));
         }
     }
 
@@ -413,8 +413,6 @@ void faceSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  * EdgeMeshConcept.
  * @param[in/out] mesh: the mesh on which import the input edge selection.
  * @param[in] buffer: the input edge selection buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
@@ -464,7 +462,7 @@ void elementNormalsFromBuffer(
     using namespace detail;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
     enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
@@ -607,7 +605,7 @@ void edgeNormalsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -620,7 +618,7 @@ void edgeNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input element colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -637,7 +635,7 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
@@ -645,9 +643,9 @@ void elementColorsFromBuffer(
     using namespace detail;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template number<ELEM_ID>() : numRows;
+        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
-    if (channelsNumber != 3 && channelsNumber != 4)
+    if (channelCount != 3 && channelCount != 4)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " colors must have 3 or 4 channels.");
@@ -658,23 +656,22 @@ void elementColorsFromBuffer(
     for (uint  i = 0;
          auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
         if (representation == Color::Representation::INT_0_255) {
-            c.x() = at(buffer, i, 0, NUM_ROWS, channelsNumber, storage);
-            c.y() = at(buffer, i, 1, NUM_ROWS, channelsNumber, storage);
-            c.z() = at(buffer, i, 2, NUM_ROWS, channelsNumber, storage);
+            c.x() = at(buffer, i, 0, NUM_ROWS, channelCount, storage);
+            c.y() = at(buffer, i, 1, NUM_ROWS, channelCount, storage);
+            c.z() = at(buffer, i, 2, NUM_ROWS, channelCount, storage);
 
-            if (channelsNumber == 4)
-                c.w() = at(buffer, i, 3, NUM_ROWS, channelsNumber, storage);
+            if (channelCount == 4)
+                c.w() = at(buffer, i, 3, NUM_ROWS, channelCount, storage);
             else
                 c.w() = 255;
         }
         else {
-            c.x() = at(buffer, i, 0, NUM_ROWS, channelsNumber, storage) * 255;
-            c.y() = at(buffer, i, 1, NUM_ROWS, channelsNumber, storage) * 255;
-            c.z() = at(buffer, i, 2, NUM_ROWS, channelsNumber, storage) * 255;
+            c.x() = at(buffer, i, 0, NUM_ROWS, channelCount, storage) * 255;
+            c.y() = at(buffer, i, 1, NUM_ROWS, channelCount, storage) * 255;
+            c.z() = at(buffer, i, 2, NUM_ROWS, channelCount, storage) * 255;
 
-            if (channelsNumber == 4)
-                c.w() =
-                    at(buffer, i, 3, NUM_ROWS, channelsNumber, storage) * 255;
+            if (channelCount == 4)
+                c.w() = at(buffer, i, 3, NUM_ROWS, channelCount, storage) * 255;
             else
                 c.w() = 255;
         }
@@ -731,7 +728,7 @@ void elementColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -744,7 +741,7 @@ void elementColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input vertex colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -760,13 +757,13 @@ template<MeshConcept MeshType>
 void vertexColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**
@@ -811,7 +808,7 @@ void vertexColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -824,7 +821,7 @@ void vertexColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input face colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -840,13 +837,13 @@ template<FaceMeshConcept MeshType>
 void faceColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::FACE, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**
@@ -890,7 +887,7 @@ void faceColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -903,7 +900,7 @@ void faceColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edge colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -919,13 +916,13 @@ template<EdgeMeshConcept MeshType>
 void edgeColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::EDGE, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**
@@ -1098,7 +1095,7 @@ void vertexTexCoordsFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
 
     enableIfPerVertexTexCoordOptional(mesh);
     requirePerVertexTexCoord(mesh);
@@ -1189,7 +1186,7 @@ void faceWedgeTexCoordsFromBuffer(
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceNumber() : numRows;
+    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceCount() : numRows;
     const uint NUM_COLS = largestFaceSize * 2;
 
     enableIfPerFaceWedgeTexCoordsOptional(mesh);

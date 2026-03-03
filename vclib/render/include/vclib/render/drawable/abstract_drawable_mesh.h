@@ -66,11 +66,11 @@ public:
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
-    virtual uint vertexNumber() const = 0;
+    virtual uint vertexCount() const = 0;
 
-    virtual uint faceNumber() const = 0;
+    virtual uint faceCount() const = 0;
 
-    virtual uint edgeNumber() const = 0;
+    virtual uint edgeCount() const = 0;
 
     virtual vcl::Matrix44d transformMatrix() const = 0;
 

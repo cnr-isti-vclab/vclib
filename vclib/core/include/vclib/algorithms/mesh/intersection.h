@@ -96,7 +96,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
     for (const FaceType& f : m.faces()) {
         std::vector<PositionType> ptVec;
         std::vector<PositionType> nmVec;
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (qH[m.index(f.vertex(j))] == 0) {
                 ptVec.push_back(f.vertex(j)->position());
                 if constexpr (HasPerVertexNormal<MeshType>) {

@@ -42,7 +42,7 @@ def mesh_normals():
     print(f"=== VCLib Example 005: Mesh Normals ===\n\n")
 
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bimba_simplified.obj")
-    print(f"Loaded mesh with {mesh.vertex_number()} vertices and {mesh.face_number()} faces.")
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and {mesh.face_count()} faces.")
 
     # PART 1: FACE NORMALS
     print("\n\nPART 1: Face Normals")
@@ -138,7 +138,7 @@ def mesh_normals():
     poly_mesh = vcl.PolyMesh()
     vcl.load_mesh(poly_mesh, VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
 
-    print(f"Loaded polygon mesh with {poly_mesh.vertex_number()} vertices and {poly_mesh.face_number()} faces.")
+    print(f"Loaded polygon mesh with {poly_mesh.vertex_count()} vertices and {poly_mesh.face_count()} faces.")
 
     # Calculate normals for polygon mesh
     vcl.update_per_face_normals(poly_mesh)

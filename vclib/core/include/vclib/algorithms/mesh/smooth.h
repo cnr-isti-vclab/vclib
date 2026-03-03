@@ -54,7 +54,7 @@ void accumulateLaplacianInfo(
     ScalarType weight = 1.0f;
 
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (!f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -77,7 +77,7 @@ void accumulateLaplacianInfo(
     }
     // si azzaera i dati per i vertici di bordo
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -93,7 +93,7 @@ void accumulateLaplacianInfo(
 
     // se l'edge j e' di bordo si deve mediare solo con gli adiacenti
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -203,15 +203,15 @@ void taubinSmoothing(
  *
  * @param m
  * @param tree
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
     MeshType&                m,
     const KDTree<PointType>& tree,
-    uint                     neighborNum,
-    uint                     iterNum)
+    uint                     neighborCount,
+    uint                     iterCount)
 {
     requirePerVertexNormal(m);
 
@@ -221,12 +221,12 @@ void smoothPerVertexNormalsPointCloud(
 
     std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0, 0, 0));
 
-    for (uint ii = 0; ii < iterNum; ++ii) {
+    for (uint ii = 0; ii < iterCount; ++ii) {
         for (const VertexType& v : m.vertices()) {
             std::vector<Scalar> distances;
 
             std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
-                v.position(), neighborNum, distances);
+                v.position(), neighborCount, distances);
 
             for (uint nid : neighbors) {
                 if (m.vertex(nid).normal() * v.normal() > 0) {
@@ -252,18 +252,18 @@ void smoothPerVertexNormalsPointCloud(
  *     - Normal
  *
  * @param m
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(
     MeshType& m,
-    uint      neighborNum,
-    uint      iterNum)
+    uint      neighborCount,
+    uint      iterCount)
 {
     using PointType = MeshType::VertexType::PositionType;
     KDTree<PointType> tree(m);
-    smoothPerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
+    smoothPerVertexNormalsPointCloud(m, tree, neighborCount, iterCount);
 }
 
 } // namespace vcl

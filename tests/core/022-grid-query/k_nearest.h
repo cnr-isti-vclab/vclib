@@ -50,7 +50,7 @@ auto bruteForceKNearestFaces(
 
     for (vcl::uint i = 0; const auto& p : points) {
         std::vector<std::pair<vcl::uint, ScalarType>> facesAndDists(
-            mesh.faceNumber());
+            mesh.faceCount());
 
         vcl::uint j = 0;
         for (const auto& f : mesh.faces()) {

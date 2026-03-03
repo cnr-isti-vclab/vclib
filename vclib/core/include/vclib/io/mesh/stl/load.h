@@ -153,7 +153,7 @@ void readStlBin(
             uint      fi = m.addFace();
             FaceType& f  = m.face(fi);
             // we have a polygonal mesh
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize the face to the right number of verts
                 f.resizeVertices(3);
             }
@@ -246,7 +246,7 @@ void readStlAscii(
 
                     FaceType& f = m.face(fi);
                     // we have a polygonal mesh
-                    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                    if constexpr (FaceType::VERTEX_COUNT < 0) {
                         // need to resize the face to the right number of verts
                         f.resizeVertices(3);
                     }
@@ -266,7 +266,7 @@ void readStlAscii(
         } while (fp);
 
         if constexpr (HasFaces<MeshType>) {
-            if (m.faceNumber() > 0)
+            if (m.faceCount() > 0)
                 loadedInfo.setTriangleMesh();
         }
     }
