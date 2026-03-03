@@ -252,18 +252,18 @@ void smoothPerVertexNormalsPointCloud(
  *     - Normal
  *
  * @param m
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(
     MeshType& m,
-    uint      neighborNum,
-    uint      iterNum)
+    uint      neighborCount,
+    uint      iterCount)
 {
     using PointType = MeshType::VertexType::PositionType;
     KDTree<PointType> tree(m);
-    smoothPerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
+    smoothPerVertexNormalsPointCloud(m, tree, neighborCount, iterCount);
 }
 
 } // namespace vcl
