@@ -50,7 +50,7 @@ class TriPolyIndexBiMap
 {
     std::vector<uint> mTriToPoly;
     std::vector<uint> mPolyToTri;
-    std::vector<uint> mPolyToTriNumber;
+    std::vector<uint> mPolyToTriCount;
 
 public:
     /**
@@ -118,7 +118,7 @@ public:
         assert(polygonIndex < mPolyToTriNumber.size());
         assert(mPolyToTri[polygonIndex] != UINT_NULL);
 
-        return mPolyToTriNumber[polygonIndex];
+        return mPolyToTriCount[polygonIndex];
     }
 
     /**
@@ -128,7 +128,7 @@ public:
     {
         mTriToPoly.clear();
         mPolyToTri.clear();
-        mPolyToTriNumber.clear();
+        mPolyToTriCount.clear();
     }
 
     /**
@@ -142,7 +142,7 @@ public:
     {
         mTriToPoly.reserve(nTriangles);
         mPolyToTri.reserve(nPolygons);
-        mPolyToTriNumber.reserve(nPolygons);
+        mPolyToTriCount.reserve(nPolygons);
     }
 
     /**
@@ -167,14 +167,14 @@ public:
         }
         if (polygonIndex >= mPolyToTri.size()) {
             mPolyToTri.resize(polygonIndex + 1, UINT_NULL);
-            mPolyToTriNumber.resize(polygonIndex + 1, 0);
+            mPolyToTriCount.resize(polygonIndex + 1, 0);
         }
 
         // add the index of the polygon associated to the triangle
         mTriToPoly[triangleIndex] = polygonIndex;
 
         // update the number of triangles associated to the polygon
-        mPolyToTriNumber[polygonIndex]++;
+        mPolyToTriCount[polygonIndex]++;
         // add the index of the triangle associated to the polygon,
         // but only if it is the first triangle index of the polygon!
         if (mPolyToTri[polygonIndex] == UINT_NULL ||
