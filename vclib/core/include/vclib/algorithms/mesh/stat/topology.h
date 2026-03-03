@@ -285,7 +285,7 @@ uint largestPerVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
  * The function requires that per-ELEM_ID element adjacent faces have been
  * precomputed for the mesh (see `vcl::updatePer<Element>AdjacentFaces`).
  *
- * @note If the element has Tied To Vertex Number Adjacent Faces, the returned
+ * @note If the element has Tied To Vertex Count Adjacent Faces, the returned
  * value is equal to the number of vertices of the element.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -357,7 +357,7 @@ uint largestPerEdgeAdjacentFacesCount(const FaceMeshConcept auto& mesh)
  * The function requires that per-ELEM_ID element adjacent edges have been
  * precomputed for the mesh (see `vcl::updatePer<Element>AdjacentEdges`).
  *
- * @note If the element has Tied To Vertex Number Adjacent Edges, the returned
+ * @note If the element has Tied To Vertex Count Adjacent Edges, the returned
  * value is equal to the number of vertices of the element.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element

@@ -60,7 +60,7 @@ namespace vcl::comp {
  * @note This component is usually the main component of an Element, and
  * therefore it cannot be optional.
  *
- * @note Several components are *Tied To Vertex Number*: in other words, they
+ * @note Several components are *Tied To Vertex Count*: in other words, they
  * are composed by a container that has the same size of the VertexReferences
  * and, when the VertexReferences container is resized, also the container of
  * these components is resized automatically.

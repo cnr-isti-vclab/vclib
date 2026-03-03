@@ -51,10 +51,10 @@ namespace vcl::comp {
  * uint vi = v.adjFaceIndex(0);
  * @endcode
  *
- * @note This component could be *Tied To Vertex Number*: it means that the size
+ * @note This component could be *Tied To Vertex Count*: it means that the size
  * of the container, if dynamic, will change automatically along the Vertex
- * Number of the Component. Check the `TTVN` template value on the
- * specialization of your component to check if it is tied to the Vertex Number.
+ * Count of the Component. Check the `TTVC` template value on the
+ * specialization of your component to check if it is tied to the Vertex Count.
  * For further details check the documentation of the @ref ContainerComponent
  * class.
  *
@@ -63,7 +63,7 @@ namespace vcl::comp {
  * @tparam Face: The type of the adjacent Face element.
  * @tparam N: The size of the container, that will represent the number of
  * storable adjacent faces. If negative, the container is dynamic.
- * @tparam TTVN: If true, the size of the container will be tied to the Vertex
+ * @tparam TTVC: If true, the size of the container will be tied to the Vertex
  * Number of the component (this is used mostly on Face elements).
  * @tparam ParentElemType: This type is used to get access to the Element that
  * has the component (and, in case, to the Mesh that has the Element). If the
@@ -80,7 +80,7 @@ template<
     bool STORE_INDICES,
     typename Face,
     int  N,
-    bool TTVN,
+    bool TTVC,
     typename ParentElemType = void,
     bool VERT               = false,
     bool OPT                = false>
@@ -91,7 +91,7 @@ class AdjacentFaces :
                 STORE_INDICES,
                 Face,
                 N,
-                TTVN,
+                TTVC,
                 ParentElemType,
                 VERT,
                 OPT>,
@@ -101,18 +101,18 @@ class AdjacentFaces :
             ParentElemType,
             VERT,
             OPT,
-            TTVN>
+            TTVC>
 {
     using Base = ReferenceContainerComponent<
         STORE_INDICES,
-        AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>,
+        AdjacentFaces<STORE_INDICES, Face, N, TTVC, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_FACES,
         Face,
         N,
         ParentElemType,
         VERT,
         OPT,
-        TTVN>;
+        TTVC>;
 
 public:
     /**
@@ -417,7 +417,7 @@ public:
      * Faces is has dynamic size.
      * @param[in] n: The new size of the adjacent faces container.
      */
-    void resizeAdjFaces(uint n) requires (N < 0 && !TTVN) { Base::resize(n); }
+    void resizeAdjFaces(uint n) requires (N < 0 && !TTVC) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent face.
@@ -426,7 +426,7 @@ public:
      * @param[in] f: The pointer to the adjacent face to push in the back of the
      * container.
      */
-    void pushAdjFace(Face* f) requires (N < 0 && !TTVN) { Base::pushBack(f); }
+    void pushAdjFace(Face* f) requires (N < 0 && !TTVC) { Base::pushBack(f); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent face.
@@ -435,7 +435,7 @@ public:
      * @param[in] fi: The index to the adjacent face to push in the back of the
      * container.
      */
-    void pushAdjFace(uint fi) requires (N < 0 && !TTVN) { Base::pushBack(fi); }
+    void pushAdjFace(uint fi) requires (N < 0 && !TTVC) { Base::pushBack(fi); }
 
     /**
      * @brief Inserts the given adjacent face in the container at the given
@@ -447,7 +447,7 @@ public:
      * @param[in] f: The pointer to the adjacent face to insert in the
      * container.
      */
-    void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVN)
+    void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVC)
     {
         Base::insert(i, f);
     }
@@ -461,7 +461,7 @@ public:
      * face.
      * @param[in] fi: The index to the adjacent face to insert in the container.
      */
-    void insertAdjFace(uint i, uint fi) requires (N < 0 && !TTVN)
+    void insertAdjFace(uint i, uint fi) requires (N < 0 && !TTVC)
     {
         Base::insert(i, fi);
     }
@@ -474,14 +474,14 @@ public:
      * @param[in] i: The position of the adjacent face to remove from this
      * container.
      */
-    void eraseAdjFace(uint i) requires (N < 0 && !TTVN) { Base::erase(i); }
+    void eraseAdjFace(uint i) requires (N < 0 && !TTVC) { Base::erase(i); }
 
     /**
      * @brief Clears the container of adjacent faces, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Faces component has dynamic size.
      */
-    void clearAdjFaces() requires (N < 0 && !TTVN) { Base::clear(); }
+    void clearAdjFaces() requires (N < 0 && !TTVC) { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -722,12 +722,12 @@ template<
     bool STORE_INDICES,
     typename Face,
     int  N,
-    bool TTVN,
+    bool TTVC,
     typename ParentElemType,
     bool VERT,
     bool OPT>
 template<typename Element>
-void AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
+void AdjacentFaces<STORE_INDICES, Face, N, TTVC, ParentElemType, VERT, OPT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {

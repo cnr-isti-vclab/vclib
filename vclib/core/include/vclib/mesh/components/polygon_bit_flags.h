@@ -77,8 +77,8 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  *
- * @note This component is *Tied To Vertex Number*: it means that the size of
- * the container, if dynamic, will change automatically along the Vertex Number
+ * @note This component is *Tied To Vertex Count*: it means that the size of
+ * the container, if dynamic, will change automatically along the Vertex Count
  * of the Component. For further details check the documentation of the @ref
  * ContainerComponent class.
  *

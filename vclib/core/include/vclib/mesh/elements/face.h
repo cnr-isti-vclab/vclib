@@ -79,8 +79,7 @@ public:
      * If the Face size is static, the number of vertices of the input range
      * must be equal to the size of the Face (the value returned by
      * vertexCount()). If the Face size is dynamic, it will take care to update
-     * the also the size of the components tied to the vertex number of the
-     * face.
+     * the also the size of the components tied to the vertex count of the face.
      *
      * @tparam Rng: A range of vertex pointers or vertex indices in
      * counterclockwise order.
@@ -94,9 +93,9 @@ public:
     {
         VRefs::setVertices(r);
 
-        // if polygonal, I need to resize all the TTVN components
+        // if polygonal, I need to resize all the TTVC components
         if constexpr (NV < 0) {
-            (resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
+            (resizeTTVCComponent<Comps>(std::ranges::size(r)), ...);
         }
     }
 
@@ -106,7 +105,7 @@ public:
      * If the Face size is static, the number of vertices of the list must be
      * equal to the size of the Face (the value returned by vertexCount()). If
      * the Face size is dynamic, it will take care to update the also the size
-     * of the components tied to the vertex number of the face.
+     * of the components tied to the vertex count of the face.
      *
      * @tparam V: A list of vertex pointers or vertex indices in
      * counterclockwise order.
@@ -141,56 +140,56 @@ public:
     {
         VRefs::resizeVertices(n);
 
-        // Now I need to resize all the TTVN components
-        (resizeTTVNComponent<Comps>(n), ...);
+        // Now I need to resize all the TTVC components
+        (resizeTTVCComponent<Comps>(n), ...);
     }
 
     void pushVertex(VertexType* v) requires (NV < 0)
     {
         VRefs::pushVertex(v);
 
-        // Now I need to pushBack in all the TTVN components
-        (pushBackTTVNComponent<Comps>(), ...);
+        // Now I need to pushBack in all the TTVC components
+        (pushBackTTVCComponent<Comps>(), ...);
     }
 
     void pushVertex(uint vi) requires (NV < 0)
     {
         VRefs::pushVertex(vi);
 
-        // Now I need to pushBack in all the TTVN components
-        (pushBackTTVNComponent<Comps>(), ...);
+        // Now I need to pushBack in all the TTVC components
+        (pushBackTTVCComponent<Comps>(), ...);
     }
 
     void insertVertex(uint i, VertexType* v) requires (NV < 0)
     {
         VRefs::insertVertex(i, v);
 
-        // Now I need to insert in all the TTVN components
-        (insertTTVNComponent<Comps>(i), ...);
+        // Now I need to insert in all the TTVC components
+        (insertTTVCComponent<Comps>(i), ...);
     }
 
     void insertVertex(uint i, uint vi) requires (NV < 0)
     {
         VRefs::insertVertex(i, vi);
 
-        // Now I need to insert in all the TTVN components
-        (insertTTVNComponent<Comps>(i), ...);
+        // Now I need to insert in all the TTVC components
+        (insertTTVCComponent<Comps>(i), ...);
     }
 
     void eraseVertex(uint i) requires (NV < 0)
     {
         VRefs::eraseVertex(i);
 
-        // Now I need to erase in all the TTVN components
-        (eraseTTVNComponent<Comps>(i), ...);
+        // Now I need to erase in all the TTVC components
+        (eraseTTVCComponent<Comps>(i), ...);
     }
 
     void clearVertices() requires (NV < 0)
     {
         VRefs::clearVertices();
 
-        // Now I need to clear all the TTVN components
-        (clearTTVNComponent<Comps>(), ...);
+        // Now I need to clear all the TTVC components
+        (clearTTVCComponent<Comps>(), ...);
     }
 
     template<typename ElType>
@@ -198,8 +197,8 @@ public:
     {
         if constexpr (comp::HasVertexReferences<ElType> && NV < 0) {
             VRefs::resizeVertices(v.vertexCount());
-            // Now I need to resize all the TTVN components
-            (resizeTTVNComponent<Comps>(v.vertexCount()), ...);
+            // Now I need to resize all the TTVC components
+            (resizeTTVCComponent<Comps>(v.vertexCount()), ...);
         }
 
         Base::importFrom(v, importRefs);
@@ -211,7 +210,7 @@ private:
      * vertex count
      */
     template<typename Comp>
-    void resizeTTVNComponent(uint n)
+    void resizeTTVCComponent(uint n)
     {
         if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
@@ -224,7 +223,7 @@ private:
      * vertex count
      */
     template<typename Comp>
-    void pushBackTTVNComponent()
+    void pushBackTTVCComponent()
     {
         if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
@@ -237,7 +236,7 @@ private:
      * vertex count
      */
     template<typename Comp>
-    void insertTTVNComponent(uint i)
+    void insertTTVCComponent(uint i)
     {
         if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
@@ -250,7 +249,7 @@ private:
      * vertex count
      */
     template<typename Comp>
-    void eraseTTVNComponent(uint i)
+    void eraseTTVCComponent(uint i)
     {
         if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
@@ -263,7 +262,7 @@ private:
      * vertex count
      */
     template<typename Comp>
-    void clearTTVNComponent()
+    void clearTTVCComponent()
     {
         if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
@@ -292,8 +291,8 @@ class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
  *    (static size);
  *  - if the Face has the TriangleBitFlags component, the number of vertices
  *    must be 3 (static size);
- *  - all the components tied to the vertex number of the Face are
- *    consistent with the number of vertices;
+ *  - all the components tied to the vertex count of the Face are consistent
+ *    437387with the number of vertices;
  *
  * @tparam T: The type to be tested for conformity to the EdgeConcept.
  *

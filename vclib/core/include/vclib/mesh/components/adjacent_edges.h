@@ -51,10 +51,10 @@ namespace vcl::comp {
  * uint ei = v.adjEdgeIndex(0);
  * @endcode
  *
- * @note This component could be *Tied To Vertex Number*: it means that the size
+ * @note This component could be *Tied To Vertex Count*: it means that the size
  * of the container, if dynamic, will change automatically along the Vertex
- * Number of the Component. Check the `TTVN` template value on the
- * specialization of your component to check if it is tied to the Vertex Number.
+ * Count of the Component. Check the `TTVC` template value on the
+ * specialization of your component to check if it is tied to the Vertex Count.
  * For further details check the documentation of the @ref ContainerComponent
  * class.
  *
@@ -63,7 +63,7 @@ namespace vcl::comp {
  * @tparam Edge: The type of the adjacent Edge element.
  * @tparam N: The size of the container, that will represent the number of
  * storable adjacent edges. If negative, the container is dynamic.
- * @tparam TTVN: If true, the size of the container will be tied to the Vertex
+ * @tparam TTVC: If true, the size of the container will be tied to the Vertex
  * Number of the component (this is used mostly on Face elements).
  * @tparam ParentElemType: This type is used to get access to the Element that
  * has the component (and, in case, to the Mesh that has the Element). If the
@@ -80,7 +80,7 @@ template<
     bool STORE_INDICES,
     typename Edge,
     int  N,
-    bool TTVN,
+    bool TTVC,
     typename ParentElemType = void,
     bool VERT               = false,
     bool OPT                = false>
@@ -91,7 +91,7 @@ class AdjacentEdges :
                 STORE_INDICES,
                 Edge,
                 N,
-                TTVN,
+                TTVC,
                 ParentElemType,
                 VERT,
                 OPT>,
@@ -101,18 +101,18 @@ class AdjacentEdges :
             ParentElemType,
             VERT,
             OPT,
-            TTVN>
+            TTVC>
 {
     using Base = ReferenceContainerComponent<
         STORE_INDICES,
-        AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>,
+        AdjacentEdges<STORE_INDICES, Edge, N, TTVC, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_EDGES,
         Edge,
         N,
         ParentElemType,
         VERT,
         OPT,
-        TTVN>;
+        TTVC>;
 
 public:
     /**
@@ -419,7 +419,7 @@ public:
      * Edges component has dynamic size.
      * @param[in] n: The new size of the adjacent edges container.
      */
-    void resizeAdjEdges(uint n) requires (N < 0 && !TTVN) { Base::resize(n); }
+    void resizeAdjEdges(uint n) requires (N < 0 && !TTVC) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -428,7 +428,7 @@ public:
      * @param[in] e: The pointer to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN) { Base::pushBack(e); }
+    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVC) { Base::pushBack(e); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -437,7 +437,7 @@ public:
      * @param[in] ei: The index to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN) { Base::pushBack(ei); }
+    void pushAdjEdge(uint ei) requires (N < 0 && !TTVC) { Base::pushBack(ei); }
 
     /**
      * @brief Inserts the given adjacent edge in the container at the given
@@ -449,7 +449,7 @@ public:
      * @param[in] e: The pointer to the adjacent edge to insert in the
      * container.
      */
-    void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN)
+    void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVC)
     {
         Base::insert(i, e);
     }
@@ -463,7 +463,7 @@ public:
      * edge.
      * @param[in] ei: The index to the adjacent edge to insert in the container.
      */
-    void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVN)
+    void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVC)
     {
         Base::insert(i, ei);
     }
@@ -476,14 +476,14 @@ public:
      * @param[in] i: The position of the adjacent edge to remove from this
      * container.
      */
-    void eraseAdjEdge(uint i) requires (N < 0 && !TTVN) { Base::erase(i); }
+    void eraseAdjEdge(uint i) requires (N < 0 && !TTVC) { Base::erase(i); }
 
     /**
      * @brief Clears the container of adjacent edges, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Edges component has dynamic size.
      */
-    void clearAdjEdges() requires (N < 0 && !TTVN) { Base::clear(); }
+    void clearAdjEdges() requires (N < 0 && !TTVC) { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -720,12 +720,12 @@ template<
     bool STORE_INDICES,
     typename Edge,
     int  N,
-    bool TTVN,
+    bool TTVC,
     typename ParentElemType,
     bool VERT,
     bool OPT>
 template<typename Element>
-void AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
+void AdjacentEdges<STORE_INDICES, Edge, N, TTVC, ParentElemType, VERT, OPT>::
     importFrom(const Element& e, bool importRefs)
 {
     if (importRefs) {

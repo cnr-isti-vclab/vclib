@@ -51,15 +51,15 @@ namespace vcl::comp {
  * auto t = f.wedgeTexCoord(0);
  * @endcode
  *
- * @note This component is *Tied To Vertex Number*: it means that the size of
- * the container, if dynamic, will change automatically along the Vertex Number
+ * @note This component is *Tied To Vertex Count*: it means that the size of
+ * the container, if dynamic, will change automatically along the Vertex Count
  * of the Component. For further details check the documentation of the @ref
  * ContainerComponent class.
  *
  * @tparam Scalar: The Scalar type used for the texture coordinates.
  * @tparam N: The size of the container, that will represent the number of
  * storable wedge texcoords. If N is negative, the container will be dynamic.
- * In any case, N must be the same of the Vertex Number of the Element that
+ * In any case, N must be the same of the Vertex Count of the Element that
  * will contain this component.
  * @tparam ParentElemType: This template argument must be `void` if the
  * component needs to be stored horizontally, or the type of the parent element
@@ -110,7 +110,7 @@ public:
     using ConstWedgeTexCoordsIterator =
         Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 
-    static const int WEDGE_TEX_COORD_NUMBER = N;
+    static const int WEDGE_TEX_COORD_COUNT = N;
 
     /* Constructors */
 
@@ -399,7 +399,7 @@ concept HasOptionalWedgeTexCoords =
  */
 template<typename T>
 concept HasRightNumberOfWedgeTexCoords =
-    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::WEDGE_TEX_COORD_COUNT;
 
 /**
  * @private
@@ -429,11 +429,11 @@ void WedgeTexCoords<Scalar, N, ParentElemType, OPT>::importFrom(
         if (isWedgeTexCoordsAvailableOn(e)) {
             if constexpr (N > 0) {
                 // same static size
-                if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
+                if constexpr (N == Element::WEDGE_TEX_COORD_COUNT) {
                     importWedgeTexCoordsFrom(e);
                 }
                 // from dynamic to static, but dynamic size == static size
-                else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0) {
+                else if constexpr (Element::WEDGE_TEX_COORD_COUNT < 0) {
                     if (e.vertexCount() == N) {
                         importWedgeTexCoordsFrom(e);
                     }

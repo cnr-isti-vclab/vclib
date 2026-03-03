@@ -56,7 +56,7 @@ namespace vcl::comp {
  * - `N`, because the container of adjacent vertices is always dynamic (there
  *   are no contexts in which it would make sense to have a fixed size container
  *   of adjacent vertices);
- * - `TTVN`, because this argument is used on components that could be part of
+ * - `TTVC`, because this argument is used on components that could be part of
  *   face elements, and this component does not apply to faces.
  *
  * @tparam STORE_INDICES: If true, the component will store indices, otherwise
