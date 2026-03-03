@@ -179,7 +179,7 @@ void loadObjMaterials(
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
             Material m = mat.toMaterial();
-            mat.matId  = mesh.materialsNumber();
+            mat.matId  = mesh.materialCount();
             mesh.pushMaterial(m);
         }
     }
@@ -666,7 +666,7 @@ void loadObj(
 
                 // material index
                 if constexpr (HasMaterials<MeshType>) {
-                    if (m.materialsNumber() > 0) {
+                    if (m.materialCount() > 0) {
                         if (settings.enableOptionalComponents) {
                             enableIfPerVertexMaterialIndexOptional(m);
                             loadedInfo.setPerVertexMaterialIndex();

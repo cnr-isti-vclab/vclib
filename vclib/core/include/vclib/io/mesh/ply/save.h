@@ -67,7 +67,7 @@ void savePly(
     }
     if constexpr (HasMaterials<MeshType>) {
         if (header.hasMaterials()) {
-            header.setNumberMaterials(m.materialsNumber());
+            header.setNumberMaterials(m.materialCount());
         }
     }
 

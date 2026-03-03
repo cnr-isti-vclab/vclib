@@ -122,10 +122,10 @@ auto meshTextureAndTexCoords()
     // Example 3: Working with materials and texture images
     std::cout << "\n3. Working with materials and texture images..."
               << std::endl;
-    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
+    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialCount()
               << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
+    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
         // access to the baseColor texture descriptor
         const auto& texture =
             meshWedgeTexCoords.material(i).baseColorTextureDescriptor();

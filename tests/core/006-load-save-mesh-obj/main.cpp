@@ -153,7 +153,7 @@ TEMPLATE_TEST_CASE(
         vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj", info);
         REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceCount() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {

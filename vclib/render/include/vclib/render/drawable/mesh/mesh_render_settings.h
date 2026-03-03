@@ -685,14 +685,14 @@ public:
                     if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.materialsNumber() > 0)
+                                m.materialCount() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.materialsNumber() > 0) {
+                                m.materialCount() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
                             }

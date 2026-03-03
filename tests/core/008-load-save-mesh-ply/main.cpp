@@ -161,7 +161,7 @@ TEMPLATE_TEST_CASE(
             tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
         REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceCount() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
         REQUIRE(tm.isPerVertexMaterialIndexEnabled());
         for (const auto& v : tm.vertices()) {
@@ -176,7 +176,7 @@ TEMPLATE_TEST_CASE(
         vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
         REQUIRE(tm.vertexCount() == 8);
         REQUIRE(tm.faceCount() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         // TODO

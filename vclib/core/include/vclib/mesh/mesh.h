@@ -442,14 +442,14 @@ public:
         }
 
         if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
-            uint nMaterials = this->materialsNumber();
+            uint nMaterials = this->materialCount();
 
             // mapping from material indices of m to material indices of this
-            std::vector<uint> mapping(m.materialsNumber());
+            std::vector<uint> mapping(m.materialCount());
 
             // for each material of the other mesh, add it to this mesh
             // if it does not exist yet
-            for (uint i = 0; i < m.materialsNumber(); ++i) {
+            for (uint i = 0; i < m.materialCount(); ++i) {
                 auto it = std::find(
                     this->materialBegin(), this->materialEnd(), m.material(i));
 

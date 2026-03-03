@@ -101,7 +101,7 @@ void readPlyMaterialIndexPostProcessing(
     const LoadSettings& settings)
 {
     if constexpr (HasMaterials<MeshType>) {
-        if (mesh.materialsNumber() > 0) {
+        if (mesh.materialCount() > 0) {
             if (loadedInfo.hasPerVertexTexCoord() &&
                 !loadedInfo.hasPerVertexMaterialIndex()) {
                 if constexpr (HasPerVertexMaterialIndex<MeshType>) {

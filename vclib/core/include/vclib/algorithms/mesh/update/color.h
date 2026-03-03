@@ -92,7 +92,7 @@ void setPerElemColorFromMaterial(MeshType& m)
 
     for (auto& e : m.template elements<ELEM_ID>()) {
         uint matIndex = e.materialIndex();
-        if (matIndex < m.materialsNumber()) {
+        if (matIndex < m.materialCount()) {
             e.color() = m.materials()[matIndex].baseColor();
         }
     }

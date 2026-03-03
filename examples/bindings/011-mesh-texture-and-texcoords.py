@@ -99,9 +99,9 @@ def mesh_texture_and_texcoords():
 
     # Example 3: Working with materials and texture images
     print("\n3. Working with materials and texture images...")
-    print(f"   - Mesh has {mesh_wedge_texcoords.materials_count()} materials")
+    print(f"   - Mesh has {mesh_wedge_texcoords.material_count()} materials")
 
-    for i in range(mesh_wedge_texcoords.materials_count()):
+    for i in range(mesh_wedge_texcoords.material_count()):
         # access to the base_color texture descriptor
         texture = mesh_wedge_texcoords.material(i).base_color_texture_descriptor()
         print(f"     Base Color Texture {i}: {texture.path()}")
