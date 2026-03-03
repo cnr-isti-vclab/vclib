@@ -115,7 +115,7 @@ public:
         // be sure that the current polygon index is valid and the polygon
         // has not been deleted in the mesh
         assert(polygonIndex < mPolyToTri.size());
-        assert(polygonIndex < mPolyToTriNumber.size());
+        assert(polygonIndex < mPolyToTriCount.size());
         assert(mPolyToTri[polygonIndex] != UINT_NULL);
 
         return mPolyToTriCount[polygonIndex];

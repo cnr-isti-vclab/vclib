@@ -200,7 +200,7 @@ void initStatAlgorithms(pybind11::module& m)
             return vcl::largestFaceSize(m);
         });
 
-        m.def("count_trinagulated_triangles", [](const MeshType& m) {
+        m.def("triangulated_face_count", [](const MeshType& m) {
             return vcl::triangulatedFaceCount(m);
         });
 

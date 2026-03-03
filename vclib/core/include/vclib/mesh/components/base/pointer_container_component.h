@@ -69,7 +69,7 @@ namespace vcl::comp {
  * component should leave liberty to control the size of the Container to the
  * user, or it should be tied to the vertex count and changed automatically
  * when the number of vertices changes. E.g. a AdjacentFaces component, if part
- * of a Face element, should be tied to the vertex ciybt of the Face, meaning
+ * of a Face element, should be tied to the vertex count of the Face, meaning
  * that the number of face pointers should be always be the same of the number
  * of vertices. Setting this value to true will tie the size of this container
  * to the number of vertices.
