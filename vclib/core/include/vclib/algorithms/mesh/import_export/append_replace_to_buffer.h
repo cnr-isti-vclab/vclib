@@ -266,7 +266,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
     uint vFirst = mesh.vertexCount();
     uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();
 
-    const uint NUM_ROWS = indexMap.triangleNumber();
+    const uint NUM_ROWS = indexMap.triangleCount();
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -283,7 +283,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
         for (const auto& f : faces) {
             // get the triangle indices of the face using the index map
             uint tBegin = indexMap.triangleBegin(f.first);
-            uint tEnd   = tBegin + indexMap.triangleNumber(f.first);
+            uint tEnd   = tBegin + indexMap.triangleCount(f.first);
             for (uint t = tBegin; t < tEnd; ++t) { // look into the triangles
                 for (uint j = 0; j < 3; ++j) { // for each vertex of triangle
                     auto& triVert = at(buffer, t, j, NUM_ROWS, 3, storage);

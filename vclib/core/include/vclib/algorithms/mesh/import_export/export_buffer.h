@@ -811,12 +811,12 @@ void triangulatedFaceNormalsToBuffer(
     requirePerFaceNormal(mesh);
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? indexMap.triangleNumber() : numRows;
+        numRows == UINT_NULL ? indexMap.triangleCount() : numRows;
 
     for (const auto& f : mesh.faces()) {
         const auto& n     = f.normal();
         uint        first = indexMap.triangleBegin(f.index());
-        uint        last  = first + indexMap.triangleNumber(f.index());
+        uint        last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             at(buffer, t, 0, NUM_ROWS, 3, storage) = n.x();
             at(buffer, t, 1, NUM_ROWS, 3, storage) = n.y();
@@ -1091,12 +1091,12 @@ void triangulatedFaceColorsToBuffer(
     const bool R_INT = representation == Color::Representation::INT_0_255;
 
     const uint NUM_ROWS =
-        numRows == UINT_NULL ? indexMap.triangleNumber() : numRows;
+        numRows == UINT_NULL ? indexMap.triangleCount() : numRows;
 
     for (const auto& f : mesh.faces()) {
         const auto& c     = f.color();
         uint        first = indexMap.triangleBegin(f.index());
-        uint        last  = first + indexMap.triangleNumber(f.index());
+        uint        last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             at(buffer, t, 0, NUM_ROWS, 4, storage) = R_INT ? c.red() : c.redF();
             at(buffer, t, 1, NUM_ROWS, 4, storage) =
@@ -1173,7 +1173,7 @@ void triangulatedFaceColorsToBuffer(
     for (const auto& f : mesh.faces()) {
         const auto& c     = f.color();
         uint        first = indexMap.triangleBegin(f.index());
-        uint        last  = first + indexMap.triangleNumber(f.index());
+        uint        last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             switch (colorFormat) {
                 using enum Color::Format;
@@ -1548,7 +1548,7 @@ void vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
     for (const auto& f : mesh.faces()) {
         ushort ti    = f.vertex(0)->materialIndex();
         uint   first = indexMap.triangleBegin(f.index());
-        uint   last  = first + indexMap.triangleNumber(f.index());
+        uint   last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             buffer[t] = ti;
         }
@@ -1685,7 +1685,7 @@ void triangulatedFaceMaterialIndicesToBuffer(
 
     for (const auto& f : mesh.faces()) {
         uint first = indexMap.triangleBegin(f.index());
-        uint last  = first + indexMap.triangleNumber(f.index());
+        uint last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             buffer[t] = f.materialIndex();
         }

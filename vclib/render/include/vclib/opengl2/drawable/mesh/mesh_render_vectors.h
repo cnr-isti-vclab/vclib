@@ -101,7 +101,7 @@ public:
 
     uint vertexCount() const { return mVerts.size() / 3; }
 
-    uint triangleNumber() const { return mTris.size() / 3; }
+    uint triangleCount() const { return mTris.size() / 3; }
 
     uint edgeCount() const { return mEdges.size() / 2; }
 

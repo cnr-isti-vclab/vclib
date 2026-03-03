@@ -271,7 +271,7 @@ private:
     void renderPass() const
     {
         uint nv = mMRD.vertexCount();
-        uint nt = mMRD.triangleNumber();
+        uint nt = mMRD.triangleCount();
 
         const float*    positions       = mMRD.vertexBufferData();
         const uint32_t* triangles       = mMRD.triangleBufferData();

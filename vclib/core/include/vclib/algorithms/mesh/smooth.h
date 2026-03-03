@@ -203,15 +203,15 @@ void taubinSmoothing(
  *
  * @param m
  * @param tree
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
     MeshType&                m,
     const KDTree<PointType>& tree,
-    uint                     neighborNum,
-    uint                     iterNum)
+    uint                     neighborCount,
+    uint                     iterCount)
 {
     requirePerVertexNormal(m);
 
@@ -221,12 +221,12 @@ void smoothPerVertexNormalsPointCloud(
 
     std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0, 0, 0));
 
-    for (uint ii = 0; ii < iterNum; ++ii) {
+    for (uint ii = 0; ii < iterCount; ++ii) {
         for (const VertexType& v : m.vertices()) {
             std::vector<Scalar> distances;
 
             std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
-                v.position(), neighborNum, distances);
+                v.position(), neighborCount, distances);
 
             for (uint nid : neighbors) {
                 if (m.vertex(nid).normal() * v.normal() > 0) {
