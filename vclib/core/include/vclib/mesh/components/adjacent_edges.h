@@ -46,7 +46,7 @@ namespace vcl::comp {
  * `v`:
  *
  * @code{.cpp}
- * v.adjEdgesNumber();
+ * v.adjEdgeCount();
  * auto* e = v.adjEdge(0);
  * uint ei = v.adjEdgeIndex(0);
  * @endcode
@@ -128,10 +128,10 @@ public:
 
     /**
      * @brief Static size of the container. If the container is dynamic, this
-     * value will be negative and you should use the adjEdgesNumber() member
+     * value will be negative and you should use the adjEdgeCount() member
      * function.
      */
-    static const int ADJ_EDGE_NUMBER = Base::SIZE;
+    static const int ADJ_EDGE_COUNT = Base::SIZE;
 
     /* Constructors */
 
@@ -149,7 +149,7 @@ public:
      * @brief Returns the number of adjacent edges of this element.
      * @return The number of adjacent edges of this element.
      */
-    uint adjEdgesNumber() const { return Base::size(); }
+    uint adjEdgeCount() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent edge of the element.
@@ -220,12 +220,12 @@ public:
      * auto idx = e.adjEdgeIndexMod(k+1); // the index of the adjacent edge next
      *                                    // to k, that may also be at pos 0
      * auto lastIdx = e.adjEdgeIndexMod(-1); // the index of the adjacent edge
-     *                                       // in position adjEdgesNumber()-1
+     *                                       // in position adjEdgeCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent edge in this
      * container, w.r.t. the position 0; value is modularized on
-     * adjEdgesNumber().
+     * adjEdgeCount().
      * @return The index of the required adjacent edge of the element.
      */
     uint adjEdgeIndexMod(int i) const { return Base::elementIndexMod(i); }
@@ -303,11 +303,11 @@ public:
      * e.setAdjEdgeMod(k+1, aEdge); // set the adj edge next to k, that may also
      *                               // be at pos 0
      * e.setAdjEdgeMod(-1, aEdge); // set the adj edge in position
-     *                              // adjEdgesNumber()-1
+     *                              // adjEdgeCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj edge; value is modularized on adjEdgesNumber().
+     * which set the adj edge; value is modularized on adjEdgeCount().
      * @param[in] e: The pointer to the adj edge to set to the element.
      */
     void setAdjEdgeMod(int i, Edge* e) { Base::setElementMod(i, e); }
@@ -324,11 +324,11 @@ public:
      * e.setAdjEdgeMod(k+1, aEdgeInd); // set the adj edge next to k, that may
      *                                 // also be at pos 0
      * e.setAdjEdgeMod(-1, aEdgeInd); // set the adj edge in position
-     *                                // adjEdgesNumber()-1
+     *                                // adjEdgeCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj edge; value is modularized on adjEdgesNumber().
+     * which set the adj edge; value is modularized on adjEdgeCount().
      * @param[in] ei: The index in the edge container of the edge to set.
      */
     void setAdjEdgeMod(int i, uint ei) { Base::setElementMod(i, ei); }
@@ -614,9 +614,9 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
         if constexpr (N < 0) {
-            vcl::serialize(os, adjEdgesNumber());
+            vcl::serialize(os, adjEdgeCount());
         }
-        for (uint i = 0; i < adjEdgesNumber(); ++i) {
+        for (uint i = 0; i < adjEdgeCount(); ++i) {
             vcl::serialize(os, adjEdgeIndex(i));
         }
     }
@@ -628,7 +628,7 @@ protected:
             vcl::deserialize(is, n);
             Base::resize(n);
         }
-        for (uint i = 0; i < adjEdgesNumber(); ++i) {
+        for (uint i = 0; i < adjEdgeCount(); ++i) {
             uint aei;
             vcl::deserialize(is, aei);
             setAdjEdge(i, aei);
@@ -639,7 +639,7 @@ private:
     template<typename Element>
     void importIndicesFrom(const Element& e)
     {
-        for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+        for (uint i = 0; i < e.adjEdgeCount(); ++i) {
             setAdjEdge(i, e.adjEdgeIndex(i));
         }
     }
@@ -697,7 +697,7 @@ concept HasOptionalAdjacentEdges =
 template<typename T>
 concept HasRightNumberOfAdjacentEdges =
     !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentEdges> ||
-    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_EDGE_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_EDGE_COUNT;
 
 /**
  * @private
@@ -734,13 +734,13 @@ void AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
             if (isAdjacentEdgesAvailableOn(e)) {
                 if constexpr (N > 0) {
                     // same static size
-                    if constexpr (N == Element::ADJ_EDGE_NUMBER) {
+                    if constexpr (N == Element::ADJ_EDGE_COUNT) {
                         importIndicesFrom(e);
                     }
                     // from dynamic to static, but dynamic size == static
                     // size
-                    else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
-                        if (e.adjEdgesNumber() == N) {
+                    else if constexpr (Element::ADJ_EDGE_COUNT < 0) {
+                        if (e.adjEdgeCount() == N) {
                             importIndicesFrom(e);
                         }
                     }
@@ -752,7 +752,7 @@ void AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
                 else {
                     // from static/dynamic to dynamic size: need to resize
                     // first, then import
-                    Base::resize(e.adjEdgesNumber());
+                    Base::resize(e.adjEdgeCount());
                     importIndicesFrom(e);
                 }
             }

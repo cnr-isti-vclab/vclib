@@ -92,7 +92,7 @@ void clearPerElementAdjacentEdges(MeshType& mesh)
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
         if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
-            for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+            for (uint i = 0; i < e.adjEdgeCount(); ++i) {
                 e.setAdjEdges(i, nullptr);
             }
         }

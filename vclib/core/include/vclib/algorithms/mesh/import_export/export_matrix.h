@@ -1671,7 +1671,7 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjEdgesNumber());
+        vec.resize(v.adjEdgeCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjEdges()) {
             uint idx = fe ? fe->index() : UINT_NULL;

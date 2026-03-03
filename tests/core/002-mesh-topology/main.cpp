@@ -821,20 +821,20 @@ TEMPLATE_TEST_CASE(
         tm.enablePerVertexAdjacentEdges();
         vcl::updatePerVertexAdjacentEdges(tm);
 
-        REQUIRE(tm.vertex(0).adjEdgesNumber() == 0);
-        REQUIRE(tm.vertex(1).adjEdgesNumber() == 0);
-        REQUIRE(tm.vertex(2).adjEdgesNumber() == 0);
-        REQUIRE(tm.vertex(3).adjEdgesNumber() == 0);
-        REQUIRE(tm.vertex(4).adjEdgesNumber() == 2);
+        REQUIRE(tm.vertex(0).adjEdgeCount() == 0);
+        REQUIRE(tm.vertex(1).adjEdgeCount() == 0);
+        REQUIRE(tm.vertex(2).adjEdgeCount() == 0);
+        REQUIRE(tm.vertex(3).adjEdgeCount() == 0);
+        REQUIRE(tm.vertex(4).adjEdgeCount() == 2);
         REQUIRE(tm.vertex(4).adjEdge(0) == &tm.edge(2));
         REQUIRE(tm.vertex(4).adjEdge(1) == &tm.edge(3));
-        REQUIRE(tm.vertex(5).adjEdgesNumber() == 2);
+        REQUIRE(tm.vertex(5).adjEdgeCount() == 2);
         REQUIRE(tm.vertex(5).adjEdge(0) == &tm.edge(1));
         REQUIRE(tm.vertex(5).adjEdge(1) == &tm.edge(2));
-        REQUIRE(tm.vertex(6).adjEdgesNumber() == 2);
+        REQUIRE(tm.vertex(6).adjEdgeCount() == 2);
         REQUIRE(tm.vertex(6).adjEdge(0) == &tm.edge(0));
         REQUIRE(tm.vertex(6).adjEdge(1) == &tm.edge(3));
-        REQUIRE(tm.vertex(7).adjEdgesNumber() == 2);
+        REQUIRE(tm.vertex(7).adjEdgeCount() == 2);
         REQUIRE(tm.vertex(7).adjEdge(0) == &tm.edge(0));
         REQUIRE(tm.vertex(7).adjEdge(1) == &tm.edge(1));
     }
@@ -844,26 +844,26 @@ TEMPLATE_TEST_CASE(
         tm.enablePerFaceAdjacentEdges();
         vcl::updatePerFaceAdjacentEdges(tm);
 
-        REQUIRE(tm.face(0).adjEdgesNumber() == 0);
-        REQUIRE(tm.face(1).adjEdgesNumber() == 0);
-        REQUIRE(tm.face(2).adjEdgesNumber() == 0);
-        REQUIRE(tm.face(3).adjEdgesNumber() == 1);
+        REQUIRE(tm.face(0).adjEdgeCount() == 0);
+        REQUIRE(tm.face(1).adjEdgeCount() == 0);
+        REQUIRE(tm.face(2).adjEdgeCount() == 0);
+        REQUIRE(tm.face(3).adjEdgeCount() == 1);
         REQUIRE(tm.face(3).adjEdge(0) == &tm.edge(3));
-        REQUIRE(tm.face(4).adjEdgesNumber() == 0);
-        REQUIRE(tm.face(5).adjEdgesNumber() == 1);
+        REQUIRE(tm.face(4).adjEdgeCount() == 0);
+        REQUIRE(tm.face(5).adjEdgeCount() == 1);
         REQUIRE(tm.face(5).adjEdge(0) == &tm.edge(2));
-        REQUIRE(tm.face(6).adjEdgesNumber() == 2);
+        REQUIRE(tm.face(6).adjEdgeCount() == 2);
         REQUIRE(tm.face(6).adjEdge(0) == &tm.edge(0));
         REQUIRE(tm.face(6).adjEdge(1) == &tm.edge(1));
-        REQUIRE(tm.face(7).adjEdgesNumber() == 2);
+        REQUIRE(tm.face(7).adjEdgeCount() == 2);
         REQUIRE(tm.face(7).adjEdge(0) == &tm.edge(2));
         REQUIRE(tm.face(7).adjEdge(1) == &tm.edge(3));
-        REQUIRE(tm.face(8).adjEdgesNumber() == 1);
+        REQUIRE(tm.face(8).adjEdgeCount() == 1);
         REQUIRE(tm.face(8).adjEdge(0) == &tm.edge(0));
-        REQUIRE(tm.face(9).adjEdgesNumber() == 0);
-        REQUIRE(tm.face(10).adjEdgesNumber() == 1);
+        REQUIRE(tm.face(9).adjEdgeCount() == 0);
+        REQUIRE(tm.face(10).adjEdgeCount() == 1);
         REQUIRE(tm.face(10).adjEdge(0) == &tm.edge(1));
-        REQUIRE(tm.face(11).adjEdgesNumber() == 0);
+        REQUIRE(tm.face(11).adjEdgeCount() == 0);
     }
 
     THEN("Test Per Edge Adjacent Faces")
@@ -890,16 +890,16 @@ TEMPLATE_TEST_CASE(
         tm.enablePerEdgeAdjacentEdges();
         vcl::updatePerEdgeAdjacentEdges(tm);
 
-        REQUIRE(tm.edge(0).adjEdgesNumber() == 2);
+        REQUIRE(tm.edge(0).adjEdgeCount() == 2);
         REQUIRE(tm.edge(0).containsAdjEdge(&tm.edge(3)));
         REQUIRE(tm.edge(0).containsAdjEdge(&tm.edge(1)));
-        REQUIRE(tm.edge(1).adjEdgesNumber() == 2);
+        REQUIRE(tm.edge(1).adjEdgeCount() == 2);
         REQUIRE(tm.edge(1).containsAdjEdge(&tm.edge(2)));
         REQUIRE(tm.edge(1).containsAdjEdge(&tm.edge(0)));
-        REQUIRE(tm.edge(2).adjEdgesNumber() == 2);
+        REQUIRE(tm.edge(2).adjEdgeCount() == 2);
         REQUIRE(tm.edge(2).containsAdjEdge(&tm.edge(1)));
         REQUIRE(tm.edge(2).containsAdjEdge(&tm.edge(3)));
-        REQUIRE(tm.edge(3).adjEdgesNumber() == 2);
+        REQUIRE(tm.edge(3).adjEdgeCount() == 2);
         REQUIRE(tm.edge(3).containsAdjEdge(&tm.edge(0)));
         REQUIRE(tm.edge(3).containsAdjEdge(&tm.edge(2)));
     }

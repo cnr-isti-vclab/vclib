@@ -373,13 +373,13 @@ uint largestPerElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
-    uint maxAEN = 0;
+    uint maxAEC = 0;
 
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        maxAEN = std::max(maxAEN, e.adjEdgesNumber());
+        maxAEC = std::max(maxAEC, e.adjEdgeCount());
     }
 
-    return maxAEN;
+    return maxAEC;
 }
 
 /**
