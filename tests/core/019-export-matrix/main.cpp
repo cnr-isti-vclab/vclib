@@ -195,9 +195,9 @@ void testTriangulatedFaceMatrix(const auto& pm)
     auto                   tris =
         vcl::triangulatedFaceVertexIndicesMatrix<MatrixType>(pm, indexMap);
 
-    vcl::uint tNumber = triangulatedFaceCount(pm);
+    vcl::uint tCount = triangulatedFaceCount(pm);
 
-    REQUIRE(tris.rows() == tNumber);
+    REQUIRE(tris.rows() == tCount);
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; i < 3; ++i) {

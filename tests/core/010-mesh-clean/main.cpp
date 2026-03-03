@@ -257,7 +257,7 @@ TEMPLATE_TEST_CASE(
 
     unsigned int nv = vcl::removeDuplicateVertices(t);
 
-    SECTION("Test number duplicated vertices")
+    SECTION("Test number of duplicated vertices")
     {
         REQUIRE(nv == 453);
         REQUIRE(t.vertexCount() == 18844 - nv);

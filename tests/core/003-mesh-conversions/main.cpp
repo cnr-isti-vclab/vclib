@@ -77,7 +77,7 @@ TEMPLATE_TEST_CASE(
 
     pm.importFrom(tm);
 
-    THEN("The imported PolyMesh has same vertex and face number")
+    THEN("The imported PolyMesh has same number of vertices and faces")
     {
         REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.faceCount() == 3);

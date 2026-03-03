@@ -27,7 +27,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 TEMPLATE_TEST_CASE(
-    "Compute Crease Edges Number",
+    "Compute Number of Crease Edges",
     "",
     vcl::TriMesh,
     vcl::TriMeshf,

@@ -51,7 +51,7 @@ class FooComponent
 {
 public:
     // Unique component ID: must not conflict with VCLib's built-in components
-    static const unsigned int COMPONENT_ID = vcl::CompId::COMPONENTS_NUMBER + 0;
+    static const unsigned int COMPONENT_ID = vcl::CompId::COMPONENT_COUNT + 0;
 
     // Component data accessors
     int& foo() { return data; }

@@ -67,7 +67,7 @@ template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
     if (p._type == std::type_index(typeid(T))) {
-        if constexpr (ELEM_ID < vcl::ElemId::ELEMENTS_NUMBER) {
+        if constexpr (ELEM_ID < vcl::ElemId::ELEMENT_COUNT) {
             mesh.template addPerElementCustomComponent<
                 ELEM_ID,
                 typename TypeMapping<T>::type>(p._name);
@@ -91,7 +91,7 @@ void addCustomComponentsOfTypeFromVCGMesh(
     switch (ELEM_ID) {
     case ElemId::VERTEX: ps = &vcgMesh.vert_attr; break;
     case ElemId::FACE: ps = &vcgMesh.face_attr; break;
-    case ElemId::ELEMENTS_NUMBER: ps = &vcgMesh.mesh_attr;
+    case ElemId::ELEMENT_COUNT: ps = &vcgMesh.mesh_attr;
     default: break;
     }
 
@@ -145,7 +145,7 @@ void importCustomComponentsOfTypeFromVCGMesh(
     }
 
     // Here el is the mesh!
-    if constexpr (ELEM_ID == ElemId::ELEMENTS_NUMBER) {
+    if constexpr (ELEM_ID == ElemId::ELEMENT_COUNT) {
         for (auto& p : vcgMesh.mesh_attr) {
             if (p._type == std::type_index(typeid(T))) {
                 const auto& h = vcg::tri::Allocator<VCGMeshType>::
@@ -395,14 +395,14 @@ void importMeshFromVCGMesh(
         // custom components of the type T that are in the vcgMesh
         vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
             [&mesh, &vcgMesh]<typename T>() {
-                // ELEMENTS_NUMBER is used here to indicate the custom
+                // ELEMENT_COUNT is used here to indicate the custom
                 // components of the mesh
                 detail::addCustomComponentsOfTypeFromVCGMesh<
-                    ElemId::ELEMENTS_NUMBER,
+                    ElemId::ELEMENT_COUNT,
                     T>(mesh, vcgMesh);
 
                 detail::importCustomComponentsOfTypeFromVCGMesh<
-                    ElemId::ELEMENTS_NUMBER,
+                    ElemId::ELEMENT_COUNT,
                     T>(mesh, vcgMesh, 0);
             });
     }
