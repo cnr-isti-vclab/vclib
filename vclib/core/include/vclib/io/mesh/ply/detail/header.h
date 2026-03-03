@@ -730,28 +730,28 @@ private:
         Tokenizer::iterator token = lineTokenizer.begin();
         std::string         s     = *(++token);
         if (s == "vertex") {
-            e.type           = ply::VERTEX;
+            e.type         = ply::VERTEX;
             e.elementCount = std::stoi(*(++token));
         }
         else if (s == "face") {
-            e.type           = ply::FACE;
+            e.type         = ply::FACE;
             e.elementCount = std::stoi(*(++token));
         }
         else if (s == "edge") {
-            e.type           = ply::EDGE;
+            e.type         = ply::EDGE;
             e.elementCount = std::stoi(*(++token));
         }
         else if (s == "tristrips") {
-            e.type           = ply::TRISTRIP;
+            e.type         = ply::TRISTRIP;
             e.elementCount = std::stoi(*(++token));
         }
         else if (s == "material") {
-            e.type           = ply::MATERIAL;
+            e.type         = ply::MATERIAL;
             e.elementCount = std::stoi(*(++token));
         }
         else {
             e.type               = ply::OTHER;
-            e.elementCount     = std::stoi(*(++token));
+            e.elementCount       = std::stoi(*(++token));
             e.unknownElementType = s;
         }
         return e;

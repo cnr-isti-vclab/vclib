@@ -187,8 +187,7 @@ auto meshMatrixConversion()
     cubeMesh.name() = "Cube Mesh";
 
     std::cout << "Created cube mesh: " << cubeMesh.vertexCount()
-              << " vertices, " << cubeMesh.faceCount() << " faces"
-              << std::endl;
+              << " vertices, " << cubeMesh.faceCount() << " faces" << std::endl;
 
     vcl::updatePerVertexAndFaceNormals(cubeMesh);
 

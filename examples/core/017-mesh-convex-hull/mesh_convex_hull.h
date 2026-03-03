@@ -73,8 +73,8 @@ auto meshConvexHull()
     vcl::TriMesh cubeHull = vcl::convexHull<vcl::TriMesh>(points, log);
     cubeHull.name()       = "Cube Convex Hull";
 
-    std::cout << "Cube convex hull: " << cubeHull.vertexCount()
-              << " vertices, " << cubeHull.faceCount() << " faces\n";
+    std::cout << "Cube convex hull: " << cubeHull.vertexCount() << " vertices, "
+              << cubeHull.faceCount() << " faces\n";
 
     return std::make_tuple(inputMesh, hullMesh, cubeHull);
 }

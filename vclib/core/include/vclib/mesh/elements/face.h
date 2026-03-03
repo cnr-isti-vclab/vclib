@@ -309,8 +309,7 @@ concept FaceConcept =
     comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
-concept TriangleFaceConcept =
-    RemoveRef<T>::VERTEX_COUNT == 3 && FaceConcept<T>;
+concept TriangleFaceConcept = RemoveRef<T>::VERTEX_COUNT == 3 && FaceConcept<T>;
 
 /**
  * @brief A concpet that checks whether a class has (inherits from) a

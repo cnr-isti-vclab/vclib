@@ -269,8 +269,8 @@ auto meshCopyAndTransform()
               << " vertices, " << sphere1.faceCount() << " faces\n";
     std::cout << "- UV Sphere (16x16): " << sphere2.vertexCount()
               << " vertices, " << sphere2.faceCount() << " faces\n";
-    std::cout << "- Tetrahedron: " << tetrahedron.vertexCount()
-              << " vertices, " << tetrahedron.faceCount() << " faces\n";
+    std::cout << "- Tetrahedron: " << tetrahedron.vertexCount() << " vertices, "
+              << tetrahedron.faceCount() << " faces\n";
 
     // Combine meshes using append
     std::cout << "\nCombination through append:\n";

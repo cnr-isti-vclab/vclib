@@ -51,9 +51,8 @@ auto meshCreaseEdges()
     icosahedron.name()       = "Icosahedron";
     vcl::updatePerVertexAndFaceNormals(icosahedron);
 
-    std::cout << "Created cylinder: " << cylinder.vertexCount()
-              << " vertices, " << cylinder.faceCount() << " faces"
-              << std::endl;
+    std::cout << "Created cylinder: " << cylinder.vertexCount() << " vertices, "
+              << cylinder.faceCount() << " faces" << std::endl;
     std::cout << "Created icosahedron: " << icosahedron.vertexCount()
               << " vertices, " << icosahedron.faceCount() << " faces"
               << std::endl;

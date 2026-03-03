@@ -635,7 +635,7 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelCount = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
@@ -757,7 +757,7 @@ template<MeshConcept MeshType>
 void vertexColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelCount = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
@@ -837,7 +837,7 @@ template<FaceMeshConcept MeshType>
 void faceColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelCount = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
@@ -916,7 +916,7 @@ template<EdgeMeshConcept MeshType>
 void edgeColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelCount = 4,
+    uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)

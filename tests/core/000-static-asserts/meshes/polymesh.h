@@ -33,8 +33,7 @@ void polymeshStaticAsserts()
 
     static_assert(HasMaterials<PolyMesh>, "The PolyMesh has no materials.");
 
-    static_assert(
-        comp::IsTiedToVertexCount<PolyMesh::Face::AdjacentFaces>, "");
+    static_assert(comp::IsTiedToVertexCount<PolyMesh::Face::AdjacentFaces>, "");
     static_assert(
         !comp::IsTiedToVertexCount<PolyMesh::Vertex::AdjacentFaces>, "");
 

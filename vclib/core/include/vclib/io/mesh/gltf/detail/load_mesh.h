@@ -416,7 +416,7 @@ bool populateGltfTriangles(
         }
         else {
             triCount = m.vertexCount() / 3 - firstVertex;
-            uint fi   = m.addFaces(triCount);
+            uint fi  = m.addFaces(triCount);
             for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 for (uint j = 0; j < 3; ++j) {

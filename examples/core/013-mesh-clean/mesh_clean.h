@@ -102,8 +102,7 @@ auto meshClean()
     testMesh.addFace(v0, v1, v3); // This face will be affected
 
     std::cout << "Test mesh before cleaning: " << testMesh.vertexCount()
-              << " vertices, " << testMesh.faceCount() << " faces"
-              << std::endl;
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     // Remove degenerate vertices and associated faces
     vcl::uint removedDegVerts = vcl::removeDegenerateVertices(testMesh, true);
@@ -112,8 +111,7 @@ auto meshClean()
 
     testMesh.compact();
     std::cout << "Test mesh after cleaning: " << testMesh.vertexCount()
-              << " vertices, " << testMesh.faceCount() << " faces"
-              << std::endl;
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     std::cout << "Example completed successfully!\n";
 

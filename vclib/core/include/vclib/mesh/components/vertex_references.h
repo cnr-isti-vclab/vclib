@@ -120,7 +120,7 @@ public:
     using ConstVertexIterator      = Base::ConstIterator;
     using ConstVertexIndexIterator = Base::ConstIndexIterator;
 
-    static const bool INDEXED       = STORE_INDICES;
+    static const bool INDEXED      = STORE_INDICES;
     static const int  VERTEX_COUNT = Base::SIZE;
 
     /* Constructors */
