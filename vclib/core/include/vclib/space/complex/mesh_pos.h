@@ -97,7 +97,7 @@ public:
      * - the type of f has AdjacentFaces
      * - e is less than the number of vertices of f (that is the number of edges
      *   of f)
-     * - v is the vertex of f in position e or (e+1)%f->numberVertices()
+     * - v is the vertex of f in position e or (e+1)%f->vertexCount()
      *
      * @param f: a face pointer
      * @param v: a vertex pointer

@@ -327,7 +327,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
  * @return the number of adjacent faces to the given edge of the face \p f
  */
 template<FaceConcept FaceType>
-uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
+uint edgeAdjacentFaceCount(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
     if (!comp::isAdjacentFacesAvailableOn(f)) {
@@ -360,7 +360,7 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
  * @return The number of edges on the border of the face.
  */
 template<FaceConcept FaceType>
-uint faceEdgesOnBorderNumber(const FaceType& f)
+uint faceOnBorderEdgeCount(const FaceType& f)
     requires comp::HasAdjacentFaces<FaceType>
 {
     if (!comp::isAdjacentFacesAvailableOn(f)) {

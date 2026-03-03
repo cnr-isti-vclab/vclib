@@ -87,8 +87,8 @@ auto meshCurvature()
         h.valueAtPercentile(0.9));
 
     std::cout << "Taubin95 curvature computed." << std::endl;
-    std::cout << "  Mean curvature range: " << h.minRangeValue() << " to "
-              << h.maxRangeValue() << std::endl;
+    std::cout << "  Mean curvature range: " << h.rangeValueMin() << " to "
+              << h.rangeValueMax() << std::endl;
 
     /****** Principal Curvature with PCA Method ******/
 
@@ -117,8 +117,8 @@ auto meshCurvature()
 
     std::cout << "PCA curvature computed (radius: " << radius << ")."
               << std::endl;
-    std::cout << "  Gaussian curvature range: " << h2.minRangeValue() << " to "
-              << h2.maxRangeValue() << std::endl;
+    std::cout << "  Gaussian curvature range: " << h2.rangeValueMin() << " to "
+              << h2.rangeValueMax() << std::endl;
 
     /****** General Principal Curvature Function ******/
 
@@ -151,8 +151,8 @@ auto meshCurvature()
         h3.valueAtPercentile(0.9));
 
     std::cout << "General curvature computed." << std::endl;
-    std::cout << "  Maximum curvature range: " << h3.minRangeValue() << " to "
-              << h3.maxRangeValue() << std::endl;
+    std::cout << "  Maximum curvature range: " << h3.rangeValueMin() << " to "
+              << h3.rangeValueMax() << std::endl;
 
     /****** Display statistics ******/
 

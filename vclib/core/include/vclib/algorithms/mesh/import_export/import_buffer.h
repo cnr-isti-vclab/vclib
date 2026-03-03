@@ -211,7 +211,7 @@ void faceIndicesFromBuffer(
                 "the mesh\n"
                 "Number of faces in the mesh: " +
                 std::to_string(mesh.faceCount()) +
-                "\nNumber of input face number: " + std::to_string(faceCount));
+                "\nNumber of input face count: " + std::to_string(faceCount));
         }
     }
 
@@ -272,12 +272,12 @@ void faceIndicesFromBuffer(
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the edge container of the mesh and then adds a number of edges
- * that depends on the given `edgeNumber`. In this scenario, all the old edges
+ * that depends on the given `edgeCount`. In this scenario, all the old edges
  * with their components stored in the mesh before calling this function are
  * lost.
  *
  * If the argument `clearBeforeSet` is set to `false`, the function checks that
- * the given `edgeNumber` is equal to the number of edges of the mesh. If this
+ * the given `edgeCount` is equal to the number of edges of the mesh. If this
  * is not the case, an exception is thrown. Then, the function sets the indices
  * of the edges of the mesh from the input edge buffer. In this scenario, all
  * the components (except the indices) of the edges stored in the mesh before
@@ -292,7 +292,7 @@ void faceIndicesFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edges.
  * @param[in] buffer: a contiguous array of \#E*2 values containing the indices
  * of the vertices of the edges of the mesh.
- * @param[in] edgeNumber: the number of edges contained in the input buffer.
+ * @param[in] edgeCount: the number of edges contained in the input buffer.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the edges of the mesh before adding the edges from the input buffer.
  * If `false`, the function sets the indices from the input buffer to the
@@ -301,7 +301,7 @@ void faceIndicesFromBuffer(
  * row-major or column-major.
  * @param[in] numRows: if the storage type is column-major, this parameter
  * specifies the number of rows in the input buffer. If it is not specified
- * (default), it is assumed to be equal to `edgeNumber`.
+ * (default), it is assumed to be equal to `edgeCount`.
  *
  * @ingroup import_buffer
  */
@@ -309,7 +309,7 @@ template<EdgeMeshConcept MeshType>
 void edgeIndicesFromBuffer(
     MeshType&         mesh,
     const auto*       buffer,
-    uint              edgeNumber,
+    uint              edgeCount,
     bool              clearBeforeSet = true,
     MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
     uint              numRows        = UINT_NULL)
@@ -318,16 +318,16 @@ void edgeIndicesFromBuffer(
 
     if (clearBeforeSet) {
         mesh.clearEdges();
-        mesh.resizeEdges(edgeNumber);
+        mesh.resizeEdges(edgeCount);
     }
     else {
-        if (edgeNumber != mesh.edgeCount()) {
+        if (edgeCount != mesh.edgeCount()) {
             throw WrongSizeException(
-                "The input edge number does not match the number of edges "
+                "The input edge count does not match the number of edges "
                 "of the mesh\n"
                 "Number of edges in the mesh: " +
                 std::to_string(mesh.edgeCount()) +
-                "\nNumber of input edge number: " + std::to_string(edgeNumber));
+                "\nNumber of input edge count: " + std::to_string(edgeCount));
         }
     }
 
@@ -413,8 +413,6 @@ void faceSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  * EdgeMeshConcept.
  * @param[in/out] mesh: the mesh on which import the input edge selection.
  * @param[in] buffer: the input edge selection buffer.
- * @param[in] elementNumber: the number of elements contained in the input
- * buffer.
  *
  * @ingroup import_buffer
  */
@@ -607,7 +605,7 @@ void edgeNormalsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -620,7 +618,7 @@ void edgeNormalsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input element colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -637,7 +635,7 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
@@ -647,7 +645,7 @@ void elementColorsFromBuffer(
     const uint NUM_ROWS =
         numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
-    if (channelsNumber != 3 && channelsNumber != 4)
+    if (channelCount != 3 && channelCount != 4)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " colors must have 3 or 4 channels.");
@@ -658,23 +656,22 @@ void elementColorsFromBuffer(
     for (uint  i = 0;
          auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
         if (representation == Color::Representation::INT_0_255) {
-            c.x() = at(buffer, i, 0, NUM_ROWS, channelsNumber, storage);
-            c.y() = at(buffer, i, 1, NUM_ROWS, channelsNumber, storage);
-            c.z() = at(buffer, i, 2, NUM_ROWS, channelsNumber, storage);
+            c.x() = at(buffer, i, 0, NUM_ROWS, channelCount, storage);
+            c.y() = at(buffer, i, 1, NUM_ROWS, channelCount, storage);
+            c.z() = at(buffer, i, 2, NUM_ROWS, channelCount, storage);
 
-            if (channelsNumber == 4)
-                c.w() = at(buffer, i, 3, NUM_ROWS, channelsNumber, storage);
+            if (channelCount == 4)
+                c.w() = at(buffer, i, 3, NUM_ROWS, channelCount, storage);
             else
                 c.w() = 255;
         }
         else {
-            c.x() = at(buffer, i, 0, NUM_ROWS, channelsNumber, storage) * 255;
-            c.y() = at(buffer, i, 1, NUM_ROWS, channelsNumber, storage) * 255;
-            c.z() = at(buffer, i, 2, NUM_ROWS, channelsNumber, storage) * 255;
+            c.x() = at(buffer, i, 0, NUM_ROWS, channelCount, storage) * 255;
+            c.y() = at(buffer, i, 1, NUM_ROWS, channelCount, storage) * 255;
+            c.z() = at(buffer, i, 2, NUM_ROWS, channelCount, storage) * 255;
 
-            if (channelsNumber == 4)
-                c.w() =
-                    at(buffer, i, 3, NUM_ROWS, channelsNumber, storage) * 255;
+            if (channelCount == 4)
+                c.w() = at(buffer, i, 3, NUM_ROWS, channelCount, storage) * 255;
             else
                 c.w() = 255;
         }
@@ -731,7 +728,7 @@ void elementColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -744,7 +741,7 @@ void elementColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input vertex colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -760,13 +757,13 @@ template<MeshConcept MeshType>
 void vertexColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**
@@ -811,7 +808,7 @@ void vertexColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -824,7 +821,7 @@ void vertexColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input face colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -840,13 +837,13 @@ template<FaceMeshConcept MeshType>
 void faceColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::FACE, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**
@@ -890,7 +887,7 @@ void faceColorsFromBuffer(
  * specified by the `representation` argument. The default is [0,255].
  *
  * The number of channels can be either 3 (RGB) or 4 (RGBA), as specified by
- * the `channelsNumber` argument. The default is 4.
+ * the `channelCount` argument. The default is 4.
  *
  * The layout of the buffer can be either row-major or column-major, as
  * specified by the `storage` argument. The default is row-major.
@@ -903,7 +900,7 @@ void faceColorsFromBuffer(
  * @param[in/out] mesh: the mesh on which import the input edge colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
- * @param[in] channelsNumber: the number of channels per color in the input
+ * @param[in] channelCount: the number of channels per color in the input
  * buffer. It can be either 3 (RGB) or 4 (RGBA).
  * @param[in] storage: the storage type of the input buffer. It can be either
  * row-major or column-major.
@@ -919,13 +916,13 @@ template<EdgeMeshConcept MeshType>
 void edgeColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
-    uint                  channelsNumber = 4,
+    uint                  channelCount = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
     uint                  numRows        = UINT_NULL)
 {
     elementColorsFromBuffer<ElemId::EDGE, MeshType>(
-        mesh, buffer, channelsNumber, storage, representation, numRows);
+        mesh, buffer, channelCount, storage, representation, numRows);
 }
 
 /**

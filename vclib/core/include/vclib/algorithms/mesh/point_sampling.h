@@ -907,10 +907,10 @@ auto montecarloPoissonPointSampling(
 
     for (const FaceType& f : m.faces()) {
         ScalarType areaT  = faceArea(f);
-        int faceSampleNum = poissonRandomNumber(areaT * samplePerAreaUnit, gen);
+        int faceSampleCnt = poissonRandomNumber(areaT * samplePerAreaUnit, gen);
 
         // for every sample p_i in T...
-        for (int i = 0; i < faceSampleNum; i++)
+        for (int i = 0; i < faceSampleCnt; i++)
             ps.add(
                 f,
                 randomPolygonBarycentricCoordinate<ScalarType>(

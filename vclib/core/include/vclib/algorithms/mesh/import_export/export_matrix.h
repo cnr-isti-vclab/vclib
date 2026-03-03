@@ -253,14 +253,14 @@ Matrix triangulatedFaceVertexIndicesMatrix(
 {
     requireVertexContainerCompactness(mesh);
 
-    uint tNumber = vcl::triangulatedFaceCount(mesh);
+    uint tCount = vcl::triangulatedFaceCount(mesh);
 
-    Matrix tM(tNumber, 3);
+    Matrix tM(tCount, 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
     triangulatedFaceVertexIndicesToBuffer(
-        mesh, tM.data(), indexMap, stg, tNumber);
+        mesh, tM.data(), indexMap, stg, tCount);
 
     return tM;
 }
