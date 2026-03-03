@@ -224,8 +224,7 @@ public:
      * @endcode
      *
      * @param[in] i: the position of the required adjacent edge in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjEdgeCount().
+     * container, w.r.t. the position 0; value is modularized on adjEdgeCount().
      * @return The index of the required adjacent edge of the element.
      */
     uint adjEdgeIndexMod(int i) const { return Base::elementIndexMod(i); }
@@ -737,8 +736,7 @@ void AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>::
                     if constexpr (N == Element::ADJ_EDGE_COUNT) {
                         importIndicesFrom(e);
                     }
-                    // from dynamic to static, but dynamic size == static
-                    // size
+                    // from dynamic to static, but dynamic size == static size
                     else if constexpr (Element::ADJ_EDGE_COUNT < 0) {
                         if (e.adjEdgeCount() == N) {
                             importIndicesFrom(e);

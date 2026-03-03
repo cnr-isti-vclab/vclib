@@ -115,9 +115,9 @@ def polymesh_specifics():
     print("Face-face adjacency enabled for PolyMesh")
     if poly_mesh_loaded.face_count() > 0:
         face = poly_mesh_loaded.face(0)
-        print(f"Face 0 has {face.vertex_count()} vertices and {face.adj_faces_count()} adjacent faces")
+        print(f"Face 0 has {face.vertex_count()} vertices and {face.adj_face_count()} adjacent faces")
         print("Adjacent faces: ", end="")
-        for i in range(face.adj_faces_count()):
+        for i in range(face.adj_face_count()):
             adj_face = face.adj_face(i)
             if adj_face is not None:
                 print(f"{adj_face.index()} ", end="")
@@ -195,7 +195,7 @@ def polymesh_specifics():
     print("   - Adjacency information updates automatically\n")
     print("4. POLYMESH-SPECIFIC FEATURES:")
     print("   - vertex_count() varies per face")
-    print("   - adj_faces_count() matches vertex count")
+    print("   - adj_face_count() matches vertex count")
     print("   - Face operations work with arbitrary polygon sizes\n")
     print("PolyMesh is ideal for:")
     print("- CAD and architectural models")

@@ -56,7 +56,7 @@ void clearPerElementAdjacentFaces(MeshType& mesh)
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
         if constexpr (comp::IsTiedToVertexCount<AdjacentFacesType>) {
-            for (uint i = 0; i < e.adjFacesNumber(); ++i) {
+            for (uint i = 0; i < e.adjFaceCount(); ++i) {
                 e.setAdjFace(i, nullptr);
             }
         }

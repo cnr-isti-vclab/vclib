@@ -411,7 +411,7 @@ void testVertexAdjacentFacesVectors(const auto& tm)
 
     for (vcl::uint i = 0; const auto& v : tm.vertices()) {
         const auto& adjList = adjacencies[i];
-        REQUIRE(adjList.size() == v.adjFacesNumber());
+        REQUIRE(adjList.size() == v.adjFaceCount());
 
         vcl::uint j = 0;
         for (const auto* adjF : v.adjFaces()) {
@@ -455,7 +455,7 @@ void testFaceAdjacentFacesVectors(const auto& tm)
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
         const auto& adjList = adjacencies[i];
-        REQUIRE(adjList.size() == f.adjFacesNumber());
+        REQUIRE(adjList.size() == f.adjFaceCount());
 
         vcl::uint j = 0;
         for (const auto* adjF : f.adjFaces()) {

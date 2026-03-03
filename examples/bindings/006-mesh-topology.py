@@ -68,14 +68,14 @@ def mesh_topology():
         print(f"Vertex {i} at {vertex.position()} is adjacent to faces: ", end="")
         for face in vertex.adj_faces():
             print(f"{face.index()} ", end="")
-        print(f"\n(Total: {vertex.adj_faces_count()} faces)\n")
+        print(f"\n(Total: {vertex.adj_face_count()} faces)\n")
 
     # Find vertex with most adjacent faces
     max_adj_faces = 0
     max_vertex = 0
     for v in mesh.vertices():
-        if v.adj_faces_count() > max_adj_faces:
-            max_adj_faces = v.adj_faces_count()
+        if v.adj_face_count() > max_adj_faces:
+            max_adj_faces = v.adj_face_count()
             max_vertex = v.index()
     print(f"Vertex with most adjacent faces: {max_vertex} ({max_adj_faces} faces)\n")
 
@@ -133,7 +133,7 @@ def mesh_topology():
                 print(f"{adj_face.index()} ", end="")
             else:
                 print("border ", end="")
-        print(f"\n(Total: {face.adj_faces_count()} faces)\n")
+        print(f"\n(Total: {face.adj_face_count()} faces)\n")
 
     # Count border edges (faces with null adjacent faces)
     border_edges = 0

@@ -1295,7 +1295,7 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjFacesNumber());
+        vec.resize(v.adjFaceCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjFaces()) {
             uint idx = fe ? fe->index() : UINT_NULL;

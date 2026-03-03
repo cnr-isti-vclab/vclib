@@ -114,54 +114,54 @@ TEMPLATE_TEST_CASE(
         tm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(tm);
 
-        REQUIRE(tm.vertex(0).adjFacesNumber() == 3);
+        REQUIRE(tm.vertex(0).adjFaceCount() == 3);
         REQUIRE(tm.vertex(0).adjFace(0) == &tm.face(0));
         REQUIRE(tm.vertex(0).adjFace(1) == &tm.face(2));
         REQUIRE(tm.vertex(0).adjFace(2) == &tm.face(4));
 
-        REQUIRE(tm.vertex(1).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(1).adjFaceCount() == 5);
         REQUIRE(tm.vertex(1).adjFace(0) == &tm.face(0));
         REQUIRE(tm.vertex(1).adjFace(1) == &tm.face(1));
         REQUIRE(tm.vertex(1).adjFace(2) == &tm.face(4));
         REQUIRE(tm.vertex(1).adjFace(3) == &tm.face(5));
         REQUIRE(tm.vertex(1).adjFace(4) == &tm.face(11));
 
-        REQUIRE(tm.vertex(2).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(2).adjFaceCount() == 5);
         REQUIRE(tm.vertex(2).adjFace(0) == &tm.face(0));
         REQUIRE(tm.vertex(2).adjFace(1) == &tm.face(1));
         REQUIRE(tm.vertex(2).adjFace(2) == &tm.face(2));
         REQUIRE(tm.vertex(2).adjFace(3) == &tm.face(3));
         REQUIRE(tm.vertex(2).adjFace(4) == &tm.face(9));
 
-        REQUIRE(tm.vertex(3).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(3).adjFaceCount() == 5);
         REQUIRE(tm.vertex(3).adjFace(0) == &tm.face(1));
         REQUIRE(tm.vertex(3).adjFace(1) == &tm.face(8));
         REQUIRE(tm.vertex(3).adjFace(2) == &tm.face(9));
         REQUIRE(tm.vertex(3).adjFace(3) == &tm.face(10));
         REQUIRE(tm.vertex(3).adjFace(4) == &tm.face(11));
 
-        REQUIRE(tm.vertex(4).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(4).adjFaceCount() == 5);
         REQUIRE(tm.vertex(4).adjFace(0) == &tm.face(2));
         REQUIRE(tm.vertex(4).adjFace(1) == &tm.face(3));
         REQUIRE(tm.vertex(4).adjFace(2) == &tm.face(4));
         REQUIRE(tm.vertex(4).adjFace(3) == &tm.face(5));
         REQUIRE(tm.vertex(4).adjFace(4) == &tm.face(7));
 
-        REQUIRE(tm.vertex(5).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(5).adjFaceCount() == 5);
         REQUIRE(tm.vertex(5).adjFace(0) == &tm.face(5));
         REQUIRE(tm.vertex(5).adjFace(1) == &tm.face(6));
         REQUIRE(tm.vertex(5).adjFace(2) == &tm.face(7));
         REQUIRE(tm.vertex(5).adjFace(3) == &tm.face(10));
         REQUIRE(tm.vertex(5).adjFace(4) == &tm.face(11));
 
-        REQUIRE(tm.vertex(6).adjFacesNumber() == 5);
+        REQUIRE(tm.vertex(6).adjFaceCount() == 5);
         REQUIRE(tm.vertex(6).adjFace(0) == &tm.face(3));
         REQUIRE(tm.vertex(6).adjFace(1) == &tm.face(6));
         REQUIRE(tm.vertex(6).adjFace(2) == &tm.face(7));
         REQUIRE(tm.vertex(6).adjFace(3) == &tm.face(8));
         REQUIRE(tm.vertex(6).adjFace(4) == &tm.face(9));
 
-        REQUIRE(tm.vertex(7).adjFacesNumber() == 3);
+        REQUIRE(tm.vertex(7).adjFaceCount() == 3);
         REQUIRE(tm.vertex(7).adjFace(0) == &tm.face(6));
         REQUIRE(tm.vertex(7).adjFace(1) == &tm.face(8));
         REQUIRE(tm.vertex(7).adjFace(2) == &tm.face(10));
@@ -230,62 +230,62 @@ TEMPLATE_TEST_CASE(
         tm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(tm);
 
-        REQUIRE(tm.face(0).adjFacesNumber() == 3);
+        REQUIRE(tm.face(0).adjFaceCount() == 3);
         REQUIRE(tm.face(0).adjFace(0) == &tm.face(1));
         REQUIRE(tm.face(0).adjFace(1) == &tm.face(4));
         REQUIRE(tm.face(0).adjFace(2) == &tm.face(2));
 
-        REQUIRE(tm.face(1).adjFacesNumber() == 3);
+        REQUIRE(tm.face(1).adjFaceCount() == 3);
         REQUIRE(tm.face(1).adjFace(0) == &tm.face(0));
         REQUIRE(tm.face(1).adjFace(1) == &tm.face(9));
         REQUIRE(tm.face(1).adjFace(2) == &tm.face(11));
 
-        REQUIRE(tm.face(2).adjFacesNumber() == 3);
+        REQUIRE(tm.face(2).adjFaceCount() == 3);
         REQUIRE(tm.face(2).adjFace(0) == &tm.face(3));
         REQUIRE(tm.face(2).adjFace(1) == &tm.face(0));
         REQUIRE(tm.face(2).adjFace(2) == &tm.face(4));
 
-        REQUIRE(tm.face(3).adjFacesNumber() == 3);
+        REQUIRE(tm.face(3).adjFaceCount() == 3);
         REQUIRE(tm.face(3).adjFace(0) == &tm.face(2));
         REQUIRE(tm.face(3).adjFace(1) == &tm.face(7));
         REQUIRE(tm.face(3).adjFace(2) == &tm.face(9));
 
-        REQUIRE(tm.face(4).adjFacesNumber() == 3);
+        REQUIRE(tm.face(4).adjFaceCount() == 3);
         REQUIRE(tm.face(4).adjFace(0) == &tm.face(5));
         REQUIRE(tm.face(4).adjFace(1) == &tm.face(2));
         REQUIRE(tm.face(4).adjFace(2) == &tm.face(0));
 
-        REQUIRE(tm.face(5).adjFacesNumber() == 3);
+        REQUIRE(tm.face(5).adjFaceCount() == 3);
         REQUIRE(tm.face(5).adjFace(0) == &tm.face(4));
         REQUIRE(tm.face(5).adjFace(1) == &tm.face(11));
         REQUIRE(tm.face(5).adjFace(2) == &tm.face(7));
 
-        REQUIRE(tm.face(6).adjFacesNumber() == 3);
+        REQUIRE(tm.face(6).adjFaceCount() == 3);
         REQUIRE(tm.face(6).adjFace(0) == &tm.face(7));
         REQUIRE(tm.face(6).adjFace(1) == &tm.face(10));
         REQUIRE(tm.face(6).adjFace(2) == &tm.face(8));
 
-        REQUIRE(tm.face(7).adjFacesNumber() == 3);
+        REQUIRE(tm.face(7).adjFaceCount() == 3);
         REQUIRE(tm.face(7).adjFace(0) == &tm.face(6));
         REQUIRE(tm.face(7).adjFace(1) == &tm.face(3));
         REQUIRE(tm.face(7).adjFace(2) == &tm.face(5));
 
-        REQUIRE(tm.face(8).adjFacesNumber() == 3);
+        REQUIRE(tm.face(8).adjFaceCount() == 3);
         REQUIRE(tm.face(8).adjFace(0) == &tm.face(9));
         REQUIRE(tm.face(8).adjFace(1) == &tm.face(6));
         REQUIRE(tm.face(8).adjFace(2) == &tm.face(10));
 
-        REQUIRE(tm.face(9).adjFacesNumber() == 3);
+        REQUIRE(tm.face(9).adjFaceCount() == 3);
         REQUIRE(tm.face(9).adjFace(0) == &tm.face(8));
         REQUIRE(tm.face(9).adjFace(1) == &tm.face(1));
         REQUIRE(tm.face(9).adjFace(2) == &tm.face(3));
 
-        REQUIRE(tm.face(10).adjFacesNumber() == 3);
+        REQUIRE(tm.face(10).adjFaceCount() == 3);
         REQUIRE(tm.face(10).adjFace(0) == &tm.face(11));
         REQUIRE(tm.face(10).adjFace(1) == &tm.face(8));
         REQUIRE(tm.face(10).adjFace(2) == &tm.face(6));
 
-        REQUIRE(tm.face(11).adjFacesNumber() == 3);
+        REQUIRE(tm.face(11).adjFaceCount() == 3);
         REQUIRE(tm.face(11).adjFace(0) == &tm.face(10));
         REQUIRE(tm.face(11).adjFace(1) == &tm.face(5));
         REQUIRE(tm.face(11).adjFace(2) == &tm.face(1));
@@ -377,54 +377,54 @@ TEMPLATE_TEST_CASE(
         pm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(pm);
 
-        REQUIRE(pm.vertex(0).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(0).adjFaceCount() == 3);
         REQUIRE(pm.vertex(0).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(0).adjFace(1) == &pm.face(2));
         REQUIRE(pm.vertex(0).adjFace(2) == &pm.face(4));
 
-        REQUIRE(pm.vertex(1).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(1).adjFaceCount() == 5);
         REQUIRE(pm.vertex(1).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(1).adjFace(1) == &pm.face(1));
         REQUIRE(pm.vertex(1).adjFace(2) == &pm.face(4));
         REQUIRE(pm.vertex(1).adjFace(3) == &pm.face(5));
         REQUIRE(pm.vertex(1).adjFace(4) == &pm.face(11));
 
-        REQUIRE(pm.vertex(2).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(2).adjFaceCount() == 5);
         REQUIRE(pm.vertex(2).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(2).adjFace(1) == &pm.face(1));
         REQUIRE(pm.vertex(2).adjFace(2) == &pm.face(2));
         REQUIRE(pm.vertex(2).adjFace(3) == &pm.face(3));
         REQUIRE(pm.vertex(2).adjFace(4) == &pm.face(9));
 
-        REQUIRE(pm.vertex(3).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(3).adjFaceCount() == 5);
         REQUIRE(pm.vertex(3).adjFace(0) == &pm.face(1));
         REQUIRE(pm.vertex(3).adjFace(1) == &pm.face(8));
         REQUIRE(pm.vertex(3).adjFace(2) == &pm.face(9));
         REQUIRE(pm.vertex(3).adjFace(3) == &pm.face(10));
         REQUIRE(pm.vertex(3).adjFace(4) == &pm.face(11));
 
-        REQUIRE(pm.vertex(4).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(4).adjFaceCount() == 5);
         REQUIRE(pm.vertex(4).adjFace(0) == &pm.face(2));
         REQUIRE(pm.vertex(4).adjFace(1) == &pm.face(3));
         REQUIRE(pm.vertex(4).adjFace(2) == &pm.face(4));
         REQUIRE(pm.vertex(4).adjFace(3) == &pm.face(5));
         REQUIRE(pm.vertex(4).adjFace(4) == &pm.face(7));
 
-        REQUIRE(pm.vertex(5).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(5).adjFaceCount() == 5);
         REQUIRE(pm.vertex(5).adjFace(0) == &pm.face(5));
         REQUIRE(pm.vertex(5).adjFace(1) == &pm.face(6));
         REQUIRE(pm.vertex(5).adjFace(2) == &pm.face(7));
         REQUIRE(pm.vertex(5).adjFace(3) == &pm.face(10));
         REQUIRE(pm.vertex(5).adjFace(4) == &pm.face(11));
 
-        REQUIRE(pm.vertex(6).adjFacesNumber() == 5);
+        REQUIRE(pm.vertex(6).adjFaceCount() == 5);
         REQUIRE(pm.vertex(6).adjFace(0) == &pm.face(3));
         REQUIRE(pm.vertex(6).adjFace(1) == &pm.face(6));
         REQUIRE(pm.vertex(6).adjFace(2) == &pm.face(7));
         REQUIRE(pm.vertex(6).adjFace(3) == &pm.face(8));
         REQUIRE(pm.vertex(6).adjFace(4) == &pm.face(9));
 
-        REQUIRE(pm.vertex(7).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(7).adjFaceCount() == 3);
         REQUIRE(pm.vertex(7).adjFace(0) == &pm.face(6));
         REQUIRE(pm.vertex(7).adjFace(1) == &pm.face(8));
         REQUIRE(pm.vertex(7).adjFace(2) == &pm.face(10));
@@ -493,62 +493,62 @@ TEMPLATE_TEST_CASE(
         pm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(pm);
 
-        REQUIRE(pm.face(0).adjFacesNumber() == 3);
+        REQUIRE(pm.face(0).adjFaceCount() == 3);
         REQUIRE(pm.face(0).adjFace(0) == &pm.face(1));
         REQUIRE(pm.face(0).adjFace(1) == &pm.face(4));
         REQUIRE(pm.face(0).adjFace(2) == &pm.face(2));
 
-        REQUIRE(pm.face(1).adjFacesNumber() == 3);
+        REQUIRE(pm.face(1).adjFaceCount() == 3);
         REQUIRE(pm.face(1).adjFace(0) == &pm.face(0));
         REQUIRE(pm.face(1).adjFace(1) == &pm.face(9));
         REQUIRE(pm.face(1).adjFace(2) == &pm.face(11));
 
-        REQUIRE(pm.face(2).adjFacesNumber() == 3);
+        REQUIRE(pm.face(2).adjFaceCount() == 3);
         REQUIRE(pm.face(2).adjFace(0) == &pm.face(3));
         REQUIRE(pm.face(2).adjFace(1) == &pm.face(0));
         REQUIRE(pm.face(2).adjFace(2) == &pm.face(4));
 
-        REQUIRE(pm.face(3).adjFacesNumber() == 3);
+        REQUIRE(pm.face(3).adjFaceCount() == 3);
         REQUIRE(pm.face(3).adjFace(0) == &pm.face(2));
         REQUIRE(pm.face(3).adjFace(1) == &pm.face(7));
         REQUIRE(pm.face(3).adjFace(2) == &pm.face(9));
 
-        REQUIRE(pm.face(4).adjFacesNumber() == 3);
+        REQUIRE(pm.face(4).adjFaceCount() == 3);
         REQUIRE(pm.face(4).adjFace(0) == &pm.face(5));
         REQUIRE(pm.face(4).adjFace(1) == &pm.face(2));
         REQUIRE(pm.face(4).adjFace(2) == &pm.face(0));
 
-        REQUIRE(pm.face(5).adjFacesNumber() == 3);
+        REQUIRE(pm.face(5).adjFaceCount() == 3);
         REQUIRE(pm.face(5).adjFace(0) == &pm.face(4));
         REQUIRE(pm.face(5).adjFace(1) == &pm.face(11));
         REQUIRE(pm.face(5).adjFace(2) == &pm.face(7));
 
-        REQUIRE(pm.face(6).adjFacesNumber() == 3);
+        REQUIRE(pm.face(6).adjFaceCount() == 3);
         REQUIRE(pm.face(6).adjFace(0) == &pm.face(7));
         REQUIRE(pm.face(6).adjFace(1) == &pm.face(10));
         REQUIRE(pm.face(6).adjFace(2) == &pm.face(8));
 
-        REQUIRE(pm.face(7).adjFacesNumber() == 3);
+        REQUIRE(pm.face(7).adjFaceCount() == 3);
         REQUIRE(pm.face(7).adjFace(0) == &pm.face(6));
         REQUIRE(pm.face(7).adjFace(1) == &pm.face(3));
         REQUIRE(pm.face(7).adjFace(2) == &pm.face(5));
 
-        REQUIRE(pm.face(8).adjFacesNumber() == 3);
+        REQUIRE(pm.face(8).adjFaceCount() == 3);
         REQUIRE(pm.face(8).adjFace(0) == &pm.face(9));
         REQUIRE(pm.face(8).adjFace(1) == &pm.face(6));
         REQUIRE(pm.face(8).adjFace(2) == &pm.face(10));
 
-        REQUIRE(pm.face(9).adjFacesNumber() == 3);
+        REQUIRE(pm.face(9).adjFaceCount() == 3);
         REQUIRE(pm.face(9).adjFace(0) == &pm.face(8));
         REQUIRE(pm.face(9).adjFace(1) == &pm.face(1));
         REQUIRE(pm.face(9).adjFace(2) == &pm.face(3));
 
-        REQUIRE(pm.face(10).adjFacesNumber() == 3);
+        REQUIRE(pm.face(10).adjFaceCount() == 3);
         REQUIRE(pm.face(10).adjFace(0) == &pm.face(11));
         REQUIRE(pm.face(10).adjFace(1) == &pm.face(8));
         REQUIRE(pm.face(10).adjFace(2) == &pm.face(6));
 
-        REQUIRE(pm.face(11).adjFacesNumber() == 3);
+        REQUIRE(pm.face(11).adjFaceCount() == 3);
         REQUIRE(pm.face(11).adjFace(0) == &pm.face(10));
         REQUIRE(pm.face(11).adjFace(1) == &pm.face(5));
         REQUIRE(pm.face(11).adjFace(2) == &pm.face(1));
@@ -618,42 +618,42 @@ TEMPLATE_TEST_CASE(
         pm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(pm);
 
-        REQUIRE(pm.vertex(0).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(0).adjFaceCount() == 3);
         REQUIRE(pm.vertex(0).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(0).adjFace(1) == &pm.face(1));
         REQUIRE(pm.vertex(0).adjFace(2) == &pm.face(2));
 
-        REQUIRE(pm.vertex(1).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(1).adjFaceCount() == 3);
         REQUIRE(pm.vertex(1).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(1).adjFace(1) == &pm.face(2));
         REQUIRE(pm.vertex(1).adjFace(2) == &pm.face(5));
 
-        REQUIRE(pm.vertex(2).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(2).adjFaceCount() == 3);
         REQUIRE(pm.vertex(2).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(2).adjFace(1) == &pm.face(1));
         REQUIRE(pm.vertex(2).adjFace(2) == &pm.face(4));
 
-        REQUIRE(pm.vertex(3).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(3).adjFaceCount() == 3);
         REQUIRE(pm.vertex(3).adjFace(0) == &pm.face(0));
         REQUIRE(pm.vertex(3).adjFace(1) == &pm.face(4));
         REQUIRE(pm.vertex(3).adjFace(2) == &pm.face(5));
 
-        REQUIRE(pm.vertex(4).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(4).adjFaceCount() == 3);
         REQUIRE(pm.vertex(4).adjFace(0) == &pm.face(1));
         REQUIRE(pm.vertex(4).adjFace(1) == &pm.face(2));
         REQUIRE(pm.vertex(4).adjFace(2) == &pm.face(3));
 
-        REQUIRE(pm.vertex(5).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(5).adjFaceCount() == 3);
         REQUIRE(pm.vertex(5).adjFace(0) == &pm.face(2));
         REQUIRE(pm.vertex(5).adjFace(1) == &pm.face(3));
         REQUIRE(pm.vertex(5).adjFace(2) == &pm.face(5));
 
-        REQUIRE(pm.vertex(6).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(6).adjFaceCount() == 3);
         REQUIRE(pm.vertex(6).adjFace(0) == &pm.face(1));
         REQUIRE(pm.vertex(6).adjFace(1) == &pm.face(3));
         REQUIRE(pm.vertex(6).adjFace(2) == &pm.face(4));
 
-        REQUIRE(pm.vertex(7).adjFacesNumber() == 3);
+        REQUIRE(pm.vertex(7).adjFaceCount() == 3);
         REQUIRE(pm.vertex(7).adjFace(0) == &pm.face(3));
         REQUIRE(pm.vertex(7).adjFace(1) == &pm.face(4));
         REQUIRE(pm.vertex(7).adjFace(2) == &pm.face(5));
@@ -710,37 +710,37 @@ TEMPLATE_TEST_CASE(
         pm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(pm);
 
-        REQUIRE(pm.face(0).adjFacesNumber() == 4);
+        REQUIRE(pm.face(0).adjFaceCount() == 4);
         REQUIRE(pm.face(0).adjFace(0) == &pm.face(4));
         REQUIRE(pm.face(0).adjFace(1) == &pm.face(5));
         REQUIRE(pm.face(0).adjFace(2) == &pm.face(2));
         REQUIRE(pm.face(0).adjFace(3) == &pm.face(1));
 
-        REQUIRE(pm.face(1).adjFacesNumber() == 4);
+        REQUIRE(pm.face(1).adjFaceCount() == 4);
         REQUIRE(pm.face(1).adjFace(0) == &pm.face(3));
         REQUIRE(pm.face(1).adjFace(1) == &pm.face(4));
         REQUIRE(pm.face(1).adjFace(2) == &pm.face(0));
         REQUIRE(pm.face(1).adjFace(3) == &pm.face(2));
 
-        REQUIRE(pm.face(2).adjFacesNumber() == 4);
+        REQUIRE(pm.face(2).adjFaceCount() == 4);
         REQUIRE(pm.face(2).adjFace(0) == &pm.face(5));
         REQUIRE(pm.face(2).adjFace(1) == &pm.face(3));
         REQUIRE(pm.face(2).adjFace(2) == &pm.face(1));
         REQUIRE(pm.face(2).adjFace(3) == &pm.face(0));
 
-        REQUIRE(pm.face(3).adjFacesNumber() == 4);
+        REQUIRE(pm.face(3).adjFaceCount() == 4);
         REQUIRE(pm.face(3).adjFace(0) == &pm.face(1));
         REQUIRE(pm.face(3).adjFace(1) == &pm.face(2));
         REQUIRE(pm.face(3).adjFace(2) == &pm.face(5));
         REQUIRE(pm.face(3).adjFace(3) == &pm.face(4));
 
-        REQUIRE(pm.face(4).adjFacesNumber() == 4);
+        REQUIRE(pm.face(4).adjFaceCount() == 4);
         REQUIRE(pm.face(4).adjFace(0) == &pm.face(0));
         REQUIRE(pm.face(4).adjFace(1) == &pm.face(1));
         REQUIRE(pm.face(4).adjFace(2) == &pm.face(3));
         REQUIRE(pm.face(4).adjFace(3) == &pm.face(5));
 
-        REQUIRE(pm.face(5).adjFacesNumber() == 4);
+        REQUIRE(pm.face(5).adjFaceCount() == 4);
         REQUIRE(pm.face(5).adjFace(0) == &pm.face(2));
         REQUIRE(pm.face(5).adjFace(1) == &pm.face(0));
         REQUIRE(pm.face(5).adjFace(2) == &pm.face(4));
@@ -871,16 +871,16 @@ TEMPLATE_TEST_CASE(
         tm.enablePerEdgeAdjacentFaces();
         vcl::updatePerEdgeAdjacentFaces(tm);
 
-        REQUIRE(tm.edge(0).adjFacesNumber() == 2);
+        REQUIRE(tm.edge(0).adjFaceCount() == 2);
         REQUIRE(tm.edge(0).containsAdjFace(&tm.face(6)));
         REQUIRE(tm.edge(0).containsAdjFace(&tm.face(8)));
-        REQUIRE(tm.edge(1).adjFacesNumber() == 2);
+        REQUIRE(tm.edge(1).adjFaceCount() == 2);
         REQUIRE(tm.edge(1).containsAdjFace(&tm.face(6)));
         REQUIRE(tm.edge(1).containsAdjFace(&tm.face(10)));
-        REQUIRE(tm.edge(2).adjFacesNumber() == 2);
+        REQUIRE(tm.edge(2).adjFaceCount() == 2);
         REQUIRE(tm.edge(2).containsAdjFace(&tm.face(5)));
         REQUIRE(tm.edge(2).containsAdjFace(&tm.face(7)));
-        REQUIRE(tm.edge(3).adjFacesNumber() == 2);
+        REQUIRE(tm.edge(3).adjFaceCount() == 2);
         REQUIRE(tm.edge(3).containsAdjFace(&tm.face(3)));
         REQUIRE(tm.edge(3).containsAdjFace(&tm.face(7)));
     }

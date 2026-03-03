@@ -301,13 +301,13 @@ uint largestPerElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
-    uint maxAFN = 0;
+    uint maxAFC = 0;
 
     for (const auto& e : mesh.template elements<ELEM_ID>()) {
-        maxAFN = std::max(maxAFN, e.adjFacesNumber());
+        maxAFC = std::max(maxAFC, e.adjFaceCount());
     }
 
-    return maxAFN;
+    return maxAFC;
 }
 
 /**

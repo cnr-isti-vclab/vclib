@@ -42,10 +42,10 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int  N    = ElementType::ADJ_FACE_NUMBER;
+    static const int  N    = ElementType::ADJ_FACE_COUNT;
     static const bool TTVC = CompType::TIED_TO_VERTEX_COUNT;
 
-    c.def("adj_faces_count", &ElementType::adjFacesNumber);
+    c.def("adj_face_count", &ElementType::adjFaceCount);
 
     c.def(
         "adj_face",

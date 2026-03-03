@@ -46,7 +46,7 @@ namespace vcl::comp {
  * `v`:
  *
  * @code{.cpp}
- * v.adjFacesNumber();
+ * v.adjFaceCount();
  * auto* f = v.adjFace(0);
  * uint vi = v.adjFaceIndex(0);
  * @endcode
@@ -128,10 +128,10 @@ public:
 
     /**
      * @brief Static size of the container. If the container is dynamic, this
-     * value will be negative and you should use the adjFacesNumber() member
+     * value will be negative and you should use the adjFaceCount() member
      * function.
      */
-    static const int ADJ_FACE_NUMBER = Base::SIZE;
+    static const int ADJ_FACE_COUNT = Base::SIZE;
 
     /* Constructors */
 
@@ -149,7 +149,7 @@ public:
      * @brief Returns the number of adjacent faces of this element.
      * @return The number of adjacent faces of this element.
      */
-    uint adjFacesNumber() const { return Base::size(); }
+    uint adjFaceCount() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element.
@@ -189,12 +189,11 @@ public:
      * auto* next = e.adjFaceMod(k+1); // the adj face next to k, that may also
      *                                 // be at pos 0
      * auto* last = e.adjFaceMod(-1); // the adj face in position
-     *                                // adjFacesNumber()-1
+     *                                // adjFaceCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent face in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjFacesNumber().
+     * container, w.r.t. the position 0; value is modularized on adjFaceCount().
      * @return The pointer to the required adjacent face of this element.
      */
     Face* adjFaceMod(int i) { return Base::elementMod(i); }
@@ -203,8 +202,7 @@ public:
      * @brief Same of adjFaceMod, but returns a const Pointer to the adjacent
      * face.
      * @param[in] i: the position of the required adjacent face in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjFacesNumber().
+     * container, w.r.t. the position 0; value is modularized on adjFaceCount().
      * @return The pointer to the required adjacent face of this element.
      */
     const Face* adjFaceMod(int i) const { return Base::elementMod(i); }
@@ -221,12 +219,11 @@ public:
      * auto idx = e.adjFaceIndexMod(k+1); // the index of the adjacent face next
      *                                    // to k, that may also be at pos 0
      * auto lastIdx = e.adjFaceIndexMod(-1); // the index of the adjacent face
-     *                                       // in position adjFacesNumber()-1
+     *                                       // in position adjFaceCount()-1
      * @endcode
      *
      * @param[in] i: the position of the required adjacent face in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjFacesNumber().
+     * container, w.r.t. the position 0; value is modularized on adjFaceCount().
      * @return The index of the required adjacent face of the element.
      */
     uint adjFaceIndexMod(int i) const { return Base::elementIndexMod(i); }
@@ -303,11 +300,11 @@ public:
      * e.setAdjFaceMod(k+1, aFace); // set the adj face next to k, that may also
      *                               // be at pos 0
      * e.setAdjFaceMod(-1, aFace); // set the adj face in position
-     *                              // adjFacesNumber()-1
+     *                              // adjFaceCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj face; value is modularized on adjFacesNumber().
+     * which set the adj face; value is modularized on adjFaceCount().
      * @param[in] f: The pointer to the adj face to set to the element.
      */
     void setAdjFaceMod(int i, Face* f) { Base::setElementMod(i, f); }
@@ -324,11 +321,11 @@ public:
      * e.setAdjFaceMod(k+1, aFaceInd); // set the adj face next to k, that may
      *                                 // also be at pos 0
      * e.setAdjFaceMod(-1, aFaceInd); // set the adj face in position
-     *                                // adjFacesNumber()-1
+     *                                // adjFaceCount()-1
      * @endcode
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj face; value is modularized on adjFacesNumber().
+     * which set the adj face; value is modularized on adjFaceCount().
      * @param[in] fi: The index in the face containrt of the face to set.
      */
     void setAdjFaceMod(int i, uint fi) { Base::setElementMod(i, fi); }
@@ -618,9 +615,9 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
         if constexpr (N < 0) {
-            vcl::serialize(os, adjFacesNumber());
+            vcl::serialize(os, adjFaceCount());
         }
-        for (uint i = 0; i < adjFacesNumber(); ++i) {
+        for (uint i = 0; i < adjFaceCount(); ++i) {
             vcl::serialize(os, adjFaceIndex(i));
         }
     }
@@ -632,7 +629,7 @@ protected:
             vcl::deserialize(is, n);
             Base::resize(n);
         }
-        for (uint i = 0; i < adjFacesNumber(); ++i) {
+        for (uint i = 0; i < adjFaceCount(); ++i) {
             uint afi;
             vcl::deserialize(is, afi);
             setAdjFace(i, afi);
@@ -643,7 +640,7 @@ private:
     template<typename Element>
     void importIndicesFrom(const Element& e)
     {
-        for (uint i = 0; i < e.adjFacesNumber(); ++i) {
+        for (uint i = 0; i < e.adjFaceCount(); ++i) {
             setAdjFace(i, e.adjFaceIndex(i));
         }
     }
@@ -701,7 +698,7 @@ concept HasOptionalAdjacentFaces =
 template<typename T>
 concept HasRightNumberOfAdjacentFaces =
     !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentFaces> ||
-    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_FACE_NUMBER;
+    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_FACE_COUNT;
 
 /**
  * @private
@@ -738,13 +735,12 @@ void AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
             if (isAdjacentFacesAvailableOn(e)) {
                 if constexpr (N > 0) {
                     // same static size
-                    if constexpr (N == Element::ADJ_FACE_NUMBER) {
+                    if constexpr (N == Element::ADJ_FACE_COUNT) {
                         importIndicesFrom(e);
                     }
-                    // from dynamic to static, but dynamic size == static
-                    // size
-                    else if constexpr (Element::ADJ_FACE_NUMBER < 0) {
-                        if (e.adjFacesNumber() == N) {
+                    // from dynamic to static, but dynamic size == static size
+                    else if constexpr (Element::ADJ_FACE_COUNT < 0) {
+                        if (e.adjFaceCount() == N) {
                             importIndicesFrom(e);
                         }
                     }
@@ -756,7 +752,7 @@ void AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>::
                 else {
                     // from static/dynamic to dynamic size: need to resize
                     // first, then import
-                    Base::resize(e.adjFacesNumber());
+                    Base::resize(e.adjFaceCount());
                     importIndicesFrom(e);
                 }
             }

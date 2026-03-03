@@ -198,10 +198,10 @@ auto polymeshSpecifics()
     if (polyMeshLoaded.faceCount() > 0) {
         const auto& face = polyMeshLoaded.face(0);
         std::cout << "Face 0 has " << face.vertexCount() << " vertices and "
-                  << face.adjFacesNumber() << " adjacent faces\n";
+                  << face.adjFaceCount() << " adjacent faces\n";
 
         std::cout << "Adjacent faces: ";
-        for (int i = 0; i < face.adjFacesNumber(); ++i) {
+        for (int i = 0; i < face.adjFaceCount(); ++i) {
             const auto* adjFace = face.adjFace(i);
             if (adjFace != nullptr) {
                 std::cout << adjFace->index() << " ";
@@ -336,7 +336,7 @@ auto polymeshSpecifics()
 
     std::cout << "4. POLYMESH-SPECIFIC FEATURES:\n";
     std::cout << "   - vertexCount() varies per face\n";
-    std::cout << "   - adjFacesNumber() matches vertex count\n";
+    std::cout << "   - adjFaceCount() matches vertex count\n";
     std::cout << "   - Face operations work with arbitrary polygon sizes\n\n";
 
     std::cout << "PolyMesh is ideal for:\n";
