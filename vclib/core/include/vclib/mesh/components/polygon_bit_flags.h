@@ -139,13 +139,13 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
      * to the user
      */
-    static const uint EDGE_USER_BITS_NUMBER =
+    static const uint EDGE_USER_BIT_COUNT =
         sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
     /* Constructors */
@@ -347,7 +347,7 @@ public:
      */
     bool userBit(uint bit) const
     {
-        assert(bit < USER_BITS_NUMBER);
+        assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
     }
 
@@ -361,7 +361,7 @@ public:
      */
     BitProxy<FT> userBit(uint bit)
     {
-        assert(bit < USER_BITS_NUMBER);
+        assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
     }
 
@@ -376,7 +376,7 @@ public:
      */
     bool edgeUserBit(uint i, uint bit) const
     {
-        assert(bit < EDGE_USER_BITS_NUMBER);
+        assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
     }
 
@@ -391,7 +391,7 @@ public:
      */
     BitProxy<FT> edgeUserBit(uint i, uint bit)
     {
-        assert(bit < EDGE_USER_BITS_NUMBER);
+        assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
     }
 
@@ -493,7 +493,7 @@ protected:
                 deletedBit()  = e.deleted();
                 selected()    = e.selected();
                 visited()     = e.visited();
-                const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
+                const uint UM = std::min(USER_BIT_COUNT, e.USER_BIT_COUNT);
                 for (uint i = 0; i < UM; ++i)
                     userBit(i) = e.userBit(i);
                 if constexpr (HasTriangleBitFlags<Element>) {

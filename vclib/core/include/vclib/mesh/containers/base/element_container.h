@@ -457,7 +457,7 @@ protected:
      *
      * @param out
      */
-    void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
+    void serializeOptionalComponentsAndElementCount(std::ostream& out) const
     {
         constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
@@ -479,7 +479,7 @@ protected:
      * @brief This function serializes the elements of the container.
      *
      * It must be called by the Mesh after calling
-     * serializeOptionalComponentsAndElementsNumber.
+     * serializeOptionalComponentsAndElementCount.
      *
      * @param out
      */
@@ -500,7 +500,7 @@ protected:
      *
      * @param in
      */
-    void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
+    void deserializeOptionalComponentsAndElementCount(std::istream& in)
     {
         constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
@@ -527,7 +527,7 @@ protected:
      * @brief This function deserializes the elements of the container.
      *
      * It must be called by the Mesh after calling
-     * deserializeOptionalComponentsAndElementsNumber for ALL its containers.
+     * deserializeOptionalComponentsAndElementCount for ALL its containers.
      *
      * @param in
      */

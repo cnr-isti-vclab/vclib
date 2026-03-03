@@ -2072,7 +2072,7 @@ private:
     void preSerialization(std::ostream& os) const
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::serializeOptionalComponentsAndElementsNumber(os);
+            Cont::serializeOptionalComponentsAndElementCount(os);
         }
     }
 
@@ -2092,7 +2092,7 @@ private:
     void preDeserialization(std::istream& is)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::deserializeOptionalComponentsAndElementsNumber(is);
+            Cont::deserializeOptionalComponentsAndElementCount(is);
         }
     }
 
