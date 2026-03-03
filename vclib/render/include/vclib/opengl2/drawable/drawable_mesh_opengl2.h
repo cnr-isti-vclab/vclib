@@ -530,11 +530,11 @@ private:
 
     void bindTextures()
     {
-        mTextID.resize(mMRD.textureNumber());
+        mTextID.resize(mMRD.textureCount());
         glEnable(GL_TEXTURE_2D);
-        glGenTextures(mMRD.textureNumber(), mTextID.data());
+        glGenTextures(mMRD.textureCount(), mTextID.data());
 
-        for (uint i = 0; i < mMRD.textureNumber(); i++) {
+        for (uint i = 0; i < mMRD.textureCount(); i++) {
             glBindTexture(GL_TEXTURE_2D, mTextID[i]);
             glTexImage2D(
                 GL_TEXTURE_2D,

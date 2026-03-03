@@ -107,7 +107,7 @@ public:
 
     uint wireframeEdgeCount() const { return mWireframe.size() / 2; }
 
-    uint textureNumber() const { return mTextures.size(); }
+    uint textureCount() const { return mTextures.size(); }
 
     vcl::Point2i textureSize(uint ti) const
     {
