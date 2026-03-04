@@ -130,6 +130,7 @@ public:
     void onInit(uint) override
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
+        mDrawList->init();
     }
 
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override

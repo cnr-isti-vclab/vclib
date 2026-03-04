@@ -50,8 +50,8 @@ auto meshClean()
     vcl::TriMesh mesh = originalMesh;
     mesh.name()       = "Cleaned Brain Mesh";
 
-    std::cout << "Original mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Original mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Remove unreferenced vertices
     vcl::uint removedUnref = vcl::removeUnreferencedVertices(mesh);
@@ -76,8 +76,8 @@ auto meshClean()
     // Compact the mesh to remove deleted elements
     mesh.compact();
 
-    std::cout << "Cleaned mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n"
+    std::cout << "Cleaned mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces\n"
               << std::endl;
 
     /****** Removing degenerate vertices with NaN positions ******/
@@ -101,9 +101,8 @@ auto meshClean()
     testMesh.addFace(v0, v1, v2);
     testMesh.addFace(v0, v1, v3); // This face will be affected
 
-    std::cout << "Test mesh before cleaning: " << testMesh.vertexNumber()
-              << " vertices, " << testMesh.faceNumber() << " faces"
-              << std::endl;
+    std::cout << "Test mesh before cleaning: " << testMesh.vertexCount()
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     // Remove degenerate vertices and associated faces
     vcl::uint removedDegVerts = vcl::removeDegenerateVertices(testMesh, true);
@@ -111,9 +110,8 @@ auto meshClean()
               << std::endl;
 
     testMesh.compact();
-    std::cout << "Test mesh after cleaning: " << testMesh.vertexNumber()
-              << " vertices, " << testMesh.faceNumber() << " faces"
-              << std::endl;
+    std::cout << "Test mesh after cleaning: " << testMesh.vertexCount()
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     std::cout << "Example completed successfully!\n";
 

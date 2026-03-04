@@ -54,8 +54,8 @@ def mesh_clean():
     mesh = vcl.TriMesh(original_mesh)
     mesh.set_name("Cleaned Brain Mesh")
 
-    print(f"Original mesh: {mesh.vertex_number()} vertices, "
-          f"{mesh.face_number()} faces")
+    print(f"Original mesh: {mesh.vertex_count()} vertices, "
+          f"{mesh.face_count()} faces")
 
     # Remove unreferenced vertices
     removed_unref = vcl.remove_unreferenced_vertices(mesh)
@@ -76,8 +76,8 @@ def mesh_clean():
     # Compact the mesh to remove deleted elements
     mesh.compact()
 
-    print(f"Cleaned mesh: {mesh.vertex_number()} vertices, "
-          f"{mesh.face_number()} faces\n")
+    print(f"Cleaned mesh: {mesh.vertex_count()} vertices, "
+          f"{mesh.face_count()} faces\n")
 
     # Removing degenerate vertices with NaN positions
     print("\n=== Handling Degenerate Vertices ===")
@@ -98,16 +98,16 @@ def mesh_clean():
     test_mesh.add_face([v0, v1, v2])
     test_mesh.add_face([v0, v1, v3])  # This face will be affected
 
-    print(f"Test mesh before cleaning: {test_mesh.vertex_number()} vertices, "
-          f"{test_mesh.face_number()} faces")
+    print(f"Test mesh before cleaning: {test_mesh.vertex_count()} vertices, "
+          f"{test_mesh.face_count()} faces")
 
     # Remove degenerate vertices and associated faces
     removed_deg_verts = vcl.remove_degenerate_vertices(test_mesh, True)
     print(f"Removed {removed_deg_verts} degenerate vertices")
 
     test_mesh.compact()
-    print(f"Test mesh after cleaning: {test_mesh.vertex_number()} vertices, "
-          f"{test_mesh.face_number()} faces")
+    print(f"Test mesh after cleaning: {test_mesh.vertex_count()} vertices, "
+          f"{test_mesh.face_count()} faces")
 
     print("\nExample completed successfully!")
 

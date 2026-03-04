@@ -119,7 +119,7 @@ template<typename T>
 concept EdgeConcept =
     IsDerivedFromSpecializationOfV<T, Edge> &&
     RemoveRef<T>::ELEMENT_ID == ElemId::EDGE && edge::HasBitFlags<T> &&
-    edge::HasVertexReferences<T> && RemoveRef<T>::VERTEX_NUMBER == 2;
+    edge::HasVertexReferences<T> && RemoveRef<T>::VERTEX_COUNT == 2;
 
 } // namespace vcl
 

@@ -95,7 +95,7 @@ struct PlyElement
 {
     ply::ElementType       type;
     std::list<PlyProperty> properties;
-    uint                   numberElements;
+    uint                   elementCount;
     std::string unknownElementType; // when an element is not recognized
 };
 

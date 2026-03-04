@@ -50,8 +50,8 @@ def mesh_curvature():
     original_mesh.set_name("Original Bunny Mesh")
 
     print("Original mesh loaded:")
-    print(f"  Vertices: {original_mesh.vertex_number()}")
-    print(f"  Faces: {original_mesh.face_number()}")
+    print(f"  Vertices: {original_mesh.vertex_count()}")
+    print(f"  Faces: {original_mesh.face_count()}")
 
     # Enable required components
     original_mesh.enable_per_vertex_adjacent_faces()
@@ -86,7 +86,7 @@ def mesh_curvature():
         h.value_at_percentile(0.9))
 
     print("Taubin95 curvature computed.")
-    print(f"  Mean curvature range: {h.min_range_value()} to {h.max_range_value()}")
+    print(f"  Mean curvature range: {h.range_value_min()} to {h.range_value_max()}")
 
     # Principal Curvature with PCA Method
     print("\n=== Principal Curvature (PCA) ===")
@@ -112,7 +112,7 @@ def mesh_curvature():
         h2.value_at_percentile(0.95))
 
     print(f"PCA curvature computed (radius: {radius}).")
-    print(f"  Gaussian curvature range: {h2.min_range_value()} to {h2.max_range_value()}")
+    print(f"  Gaussian curvature range: {h2.range_value_min()} to {h2.range_value_max()}")
 
     # General Principal Curvature Function
     print("\n=== Principal Curvature (General Function) ===")
@@ -140,7 +140,7 @@ def mesh_curvature():
         h3.value_at_percentile(0.9))
 
     print("General curvature computed.")
-    print(f"  Maximum curvature range: {h3.min_range_value()} to {h3.max_range_value()}")
+    print(f"  Maximum curvature range: {h3.range_value_min()} to {h3.range_value_max()}")
 
     # Display statistics
     print("\n=== Curvature Statistics ===")

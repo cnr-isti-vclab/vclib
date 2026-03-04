@@ -61,7 +61,7 @@ public:
         FOV,
         FOCUS,
         DIR_LIGHT_ARC,
-        MOTION_NUMBER
+        MOTION_COUNT
     };
 
     struct TransformArgs
@@ -106,7 +106,7 @@ private:
 
     // trackball interaction state
     bool       mDragging       = false;
-    MotionType mCurrDragMotion = MOTION_NUMBER;
+    MotionType mCurrDragMotion = MOTION_COUNT;
 
     // initial arcball hit point
     Point3<Scalar> mInitialPoint;
@@ -498,7 +498,7 @@ public:
      */
     void beginDragMotion(MotionType motion)
     {
-        assert(motion != MOTION_NUMBER && "Invalid motion type");
+        assert(motion != MOTION_COUNT && "Invalid motion type");
 
         // no need to restart?
         if (mCurrDragMotion == motion)
@@ -535,7 +535,7 @@ public:
     void update() // TODO: rename this function (it just updates the motion)
     {
         assert(
-            mDragging != (mCurrDragMotion == MOTION_NUMBER) &&
+            mDragging != (mCurrDragMotion == MOTION_COUNT) &&
             "Invalid state: dragging and no motion");
         if (mDragging && mCurrMousePosition != mPrevMousePosition)
             drag(mCurrDragMotion);
@@ -546,7 +546,7 @@ private:
 
     void setDragMotionValue(MotionType motion, bool value)
     {
-        mCurrDragMotion = value ? motion : MOTION_NUMBER;
+        mCurrDragMotion = value ? motion : MOTION_COUNT;
     }
 
     void drag(MotionType motion)

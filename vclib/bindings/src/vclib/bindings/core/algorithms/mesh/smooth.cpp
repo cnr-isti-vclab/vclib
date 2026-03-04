@@ -36,13 +36,13 @@ void initSmoothAlgorithms(pybind11::module& m)
         []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
             m.def(
                 "smooth_per_vertex_normals_point_cloud",
-                [](MeshType& m, uint neighborNum, uint iterNum) -> void {
+                [](MeshType& m, uint neighborCount, uint iterCount) -> void {
                     return smoothPerVertexNormalsPointCloud(
-                        m, neighborNum, iterNum);
+                        m, neighborCount, iterCount);
                 },
                 "mesh"_a,
-                "neighbor_number"_a,
-                "iter_number"_a);
+                "neighbor_count"_a,
+                "iter_count"_a);
         };
 
     defForAllMeshTypes(m, fAllMeshes);

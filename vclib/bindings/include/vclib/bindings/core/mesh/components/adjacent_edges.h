@@ -42,10 +42,10 @@ void initAdjacentEdges(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int  N    = ElementType::ADJ_EDGE_NUMBER;
-    static const bool TTVN = CompType::TIED_TO_VERTEX_NUMBER;
+    static const int  N    = ElementType::ADJ_EDGE_COUNT;
+    static const bool TTVC = CompType::TIED_TO_VERTEX_COUNT;
 
-    c.def("adj_edges_number", &ElementType::adjEdgesNumber);
+    c.def("adj_edge_count", &ElementType::adjEdgeCount);
 
     c.def(
         "adj_edge",
@@ -97,7 +97,7 @@ void initAdjacentEdges(pybind11::class_<ElementType>& c)
         "index_of_adj_edge",
         py::overload_cast<uint>(&ElementType::indexOfAdjEdge, py::const_));
 
-    if constexpr (N < 0 && !TTVN) {
+    if constexpr (N < 0 && !TTVC) {
         c.def("resize_adj_edges", &ElementType::resizeAdjEdges);
         c.def(
             "push_adj_edge",

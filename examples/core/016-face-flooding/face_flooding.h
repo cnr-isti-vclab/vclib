@@ -52,7 +52,7 @@ auto faceFlooding()
     // Initialize face colors
     vcl::setPerFaceColor(m, vcl::Color::LightGray);
 
-    std::cout << "Mesh loaded: " << m.faceNumber() << " faces\n";
+    std::cout << "Mesh loaded: " << m.faceCount() << " faces\n";
 
     // Custom flooding function: select faces with normal pointing upward
     auto upwardFacingSelector = [](const vcl::TriMesh::Face& f) {
