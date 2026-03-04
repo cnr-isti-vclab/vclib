@@ -125,7 +125,7 @@ public:
         mVertColors     = vertColors;
         mVertNormals    = vertNormals;
         mLineColors     = lineColors;
-        Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
+        Lines::setPoints(vertCoords, vertNormals, vertColors, lineColors);
     }
 
     void setPoints(
@@ -142,7 +142,7 @@ public:
         mVertNormals    = vertNormals;
         mLineColors     = lineColors;
         Lines::setPoints(
-            vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
+            vertCoords, lineIndices, vertNormals, vertColors, lineColors);
     }
 
     // DrawableObject interface
