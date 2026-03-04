@@ -24,6 +24,10 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_H
 
 #include "embedded_vf_programs/custom_cpu_lines.h"
+#include "embedded_vf_programs/drawable_selection_face.h"
+#include "embedded_vf_programs/drawable_selection_vert.h"
+#include "embedded_vf_programs/selection_face_visible_render_pass.h"
+#include "embedded_vf_programs/drawable_selection_box.h"
 #include "embedded_vf_programs/drawable_axis.h"
 #include "embedded_vf_programs/drawable_directional_light.h"
 #include "embedded_vf_programs/drawable_environment_pbr.h"

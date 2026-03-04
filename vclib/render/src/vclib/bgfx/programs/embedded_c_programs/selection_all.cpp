@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2026                                                    *
+ * Copyright(C) 2021-2025                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,33 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include <vclib/bgfx/programs/embedded_c_programs/selection_all.h>
+
+#include <vclib/shaders/selection/cs_selection_all.sc.400.bin.h>
+
+#include <vclib/shaders/selection/cs_selection_all.sc.essl.bin.h>
+
+#include <vclib/shaders/selection/cs_selection_all.sc.spv.bin.h>
+
+#ifdef _WIN32
+#include <vclib/shaders/selection/cs_selection_all.sc.dx11.bin.h>
+
+#endif //  defined(_WIN32)
+#ifdef __APPLE__
+#include <vclib/shaders/selection/cs_selection_all.sc.mtl.bin.h>
+#endif // __APPLE__
 
 namespace vcl {
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_ALL>::
+    computeShader(bgfx::RendererType::Enum type)
+{
+    switch (type) {
+    case bgfx::RendererType::OpenGLES:
+        return {type, cs_selection_all_essl, sizeof(cs_selection_all_essl)};
+    case bgfx::RendererType::OpenGL:
+        return {type, cs_selection_all_400, sizeof(cs_selection_all_400)};
+    case bgfx::RendererType::Vulkan:
+        return {type, cs_selection_all_spv, sizeof(cs_selection_all_spv)};
+#ifdef _WIN32
+    case bgfx::RendererType::Direct3D11:
+        return {type, cs_selection_all_dx11, sizeof(cs_selection_all_dx11)};
+    case bgfx::RendererType::Direct3D12:
+#endif
+#ifdef __APPLE__
+    case bgfx::RendererType::Metal:
+        return {type, cs_selection_all_mtl, sizeof(cs_selection_all_mtl)};
+#endif
+    default: return {type, nullptr, 0};
+    }
+}
 
 } // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H

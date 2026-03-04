@@ -23,11 +23,23 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
+#include "embedded_c_programs/buffer_to_tex.h"
 #include "embedded_c_programs/cubemap_mipmap_gen.h"
 #include "embedded_c_programs/cubemap_to_irradiance.h"
 #include "embedded_c_programs/cubemap_to_specular.h"
 #include "embedded_c_programs/drawable_mesh_points.h"
 #include "embedded_c_programs/hdr_equirect_to_cubemap.h"
 #include "embedded_c_programs/ibl_lookup_texture_gen.h"
+#include "embedded_c_programs/selection_all.h"
+#include "embedded_c_programs/selection_face.h"
+#include "embedded_c_programs/selection_face_add.h"
+#include "embedded_c_programs/selection_face_subtract.h"
+#include "embedded_c_programs/selection_face_visible_add.h"
+#include "embedded_c_programs/selection_face_visible_subtract.h"
+#include "embedded_c_programs/selection_invert.h"
+#include "embedded_c_programs/selection_none.h"
+#include "embedded_c_programs/selection_vertex.h"
+#include "embedded_c_programs/selection_vertex_add.h"
+#include "embedded_c_programs/selection_vertex_subtract.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
