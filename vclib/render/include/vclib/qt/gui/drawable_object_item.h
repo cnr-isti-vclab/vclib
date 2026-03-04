@@ -31,11 +31,18 @@ namespace vcl::qt {
 
 class DrawableObjectItem : public QTreeWidgetItem
 {
+public:
+    using IconFunction =
+        std::function<std::pair<QIcon, std::string>(const DrawableObject&)>;
+
+private:
     std::shared_ptr<DrawableObject> mObj;
+    IconFunction                    mIconFunction;
 
 public:
     explicit DrawableObjectItem(
         const std::shared_ptr<DrawableObject>& obj,
+        IconFunction                           iconFunction,
         QTreeWidget*                           parent = nullptr);
 
     std::shared_ptr<DrawableObject> drawableObject() const;

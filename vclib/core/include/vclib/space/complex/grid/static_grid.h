@@ -90,12 +90,12 @@ public:
 
     void build()
     {
-        uint totCellNumber = 1;
+        uint totCellCount = 1;
         for (uint i = 0; i < GridType::DIM; ++i) {
-            totCellNumber *= GridType::cellNumber(i);
+            totCellCount *= GridType::cellCount(i);
         }
 
-        mGrid.resize(totCellNumber);
+        mGrid.resize(totCellCount);
 
         std::sort(mValues.begin(), mValues.end(), mComparator);
 

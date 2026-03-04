@@ -199,20 +199,20 @@ public:
         mMRB.updateWireframeSettings(rs);
     }
 
-    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+    uint vertexCount() const override { return MeshType::vertexCount(); }
 
-    uint faceNumber() const override
+    uint faceCount() const override
     {
         if constexpr (HasFaces<MeshType>)
-            return MeshType::faceNumber();
+            return MeshType::faceCount();
         else
             return 0;
     }
 
-    uint edgeNumber() const override
+    uint edgeCount() const override
     {
         if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeNumber();
+            return MeshType::edgeCount();
         else
             return 0;
     }

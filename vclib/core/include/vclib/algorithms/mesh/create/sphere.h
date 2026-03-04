@@ -175,7 +175,7 @@ MeshType createSphereUV(
         VertexType* a = &mesh.vertex(i + meridians * (parallels - 2) + 1);
         VertexType* b =
             &mesh.vertex((i + 1) % meridians + meridians * (parallels - 2) + 1);
-        VertexType* v = &mesh.vertex(mesh.vertexNumber() - 1);
+        VertexType* v = &mesh.vertex(mesh.vertexCount() - 1);
         mesh.addFace(v, a, b);
     }
 
@@ -375,7 +375,7 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
     MeshType mesh = createIcosahedron<MeshType>(true);
 
     for (uint d = 0; d < divisions; d++) {
-        uint nf = mesh.faceNumber();
+        uint nf = mesh.faceCount();
         for (uint f = 0; f < nf; f++) {
             FaceType&   f0   = mesh.face(f);
             VertexType& v0   = *f0.vertex(0);

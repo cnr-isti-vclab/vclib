@@ -53,8 +53,8 @@ def mesh_topology_statistics():
     range_mesh.enable_per_face_adjacent_faces()
     vcl.update_per_face_adjacent_faces(range_mesh)
 
-    print(f"Range mesh: {range_mesh.vertex_number()} vertices, "
-          f"{range_mesh.face_number()} faces")
+    print(f"Range mesh: {range_mesh.vertex_count()} vertices, "
+          f"{range_mesh.face_count()} faces")
 
     # Find connected components
     components = vcl.connected_components(range_mesh)
@@ -83,11 +83,11 @@ def mesh_topology_statistics():
     print(f"Is water tight: {'Yes' if water_tight else 'No'}")
 
     # Count non-manifold vertices
-    non_manifold = vcl.number_non_manifold_vertices(mesh)
+    non_manifold = vcl.non_manifold_vertex_count(mesh)
     print(f"Non-manifold vertices: {non_manifold}")
 
     # Count holes
-    holes = vcl.number_holes(mesh)
+    holes = vcl.hole_count(mesh)
     print(f"Number of holes: {holes}")
 
     print("\nExample completed successfully!")

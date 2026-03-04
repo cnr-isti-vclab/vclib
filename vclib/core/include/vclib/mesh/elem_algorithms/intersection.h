@@ -126,7 +126,7 @@ bool intersect(
             res);
     }
     else {
-        if (f.vertexNumber() == 3) {
+        if (f.vertexCount() == 3) {
             return intersect(
                 TriangleWrapper(
                     f.vertex(0)->position(),
@@ -252,7 +252,7 @@ std::optional<typename RayType::PointType> intersection(
         return triangleIntersection(face, ray, t);
     }
     else {
-        if (face.vertexNumber() == 3) {
+        if (face.vertexCount() == 3) {
             return triangleIntersection(face, ray, t);
         }
         else {

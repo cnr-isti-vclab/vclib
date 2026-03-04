@@ -121,7 +121,7 @@ public:
                      typename MeshType::VertexType::PositionType,
                      PointType>)
             :
-            mPoints(m.vertexNumber()), mIndices(m.vertexNumber()),
+            mPoints(m.vertexCount()), mIndices(m.vertexCount()),
             mPointsPerCell(pointsPerCell), mMaxDepth(maxDepth)
     {
         using VertexType = MeshType::VertexType;

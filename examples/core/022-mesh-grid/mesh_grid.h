@@ -163,8 +163,8 @@ void meshGridExamples()
     vcl::TriMesh mesh = vcl::createHexahedron<vcl::TriMesh>();
     using ScalarType  = vcl::TriMesh::ScalarType;
 
-    std::cout << "Created hexahedron mesh with " << mesh.faceNumber()
-              << " faces" << std::endl;
+    std::cout << "Created hexahedron mesh with " << mesh.faceCount() << " faces"
+              << std::endl;
 
     // Create intersection function for faces and bounding boxes
     auto intersectionFunc =
@@ -212,7 +212,7 @@ void meshGridExamples()
     try {
         mesh =
             vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
-        std::cout << "Loaded bone mesh with " << mesh.vertexNumber()
+        std::cout << "Loaded bone mesh with " << mesh.vertexCount()
                   << " vertices" << std::endl;
 
         // Create StaticGrid with mesh vertices
