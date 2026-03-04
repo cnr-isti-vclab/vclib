@@ -28,7 +28,9 @@ namespace vcl::qt {
 
 DrawableObjectItem::DrawableObjectItem(
     const std::shared_ptr<DrawableObject>& obj,
-    QTreeWidget* parent) : QTreeWidgetItem(parent), mObj(obj)
+    IconFunction                           iconFunction,
+    QTreeWidget*                           parent) :
+        QTreeWidgetItem(parent), mObj(obj), mIconFunction(iconFunction)
 {
     assert(obj);
     if (obj->isVisible())
@@ -65,6 +67,11 @@ void DrawableObjectItem::addMeshItem()
         addMeshInfoItem(*mesh);
         addTransformMatrixItem(*mesh);
         addMaterialsItem(*mesh);
+
+        if (mIconFunction) {
+            std::pair<QIcon, std::string> p = mIconFunction(*mesh);
+            setIcon(2, p.first);
+        }
     }
 }
 
@@ -76,23 +83,23 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     makeItemNotSelectable(meshInfoItem);
 
     // vertex number item
-    auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
-    vertexNumberItem->setText(0, "# Vertices");
-    vertexNumberItem->setText(1, QString::number(mesh.vertexNumber()));
-    makeItemNotSelectable(vertexNumberItem);
+    auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
+    vertexCountItem->setText(0, "# Vertices");
+    vertexCountItem->setText(1, QString::number(mesh.vertexCount()));
+    makeItemNotSelectable(vertexCountItem);
 
-    if (mesh.faceNumber() > 0) {
-        auto faceNumberItem = new QTreeWidgetItem(meshInfoItem);
-        faceNumberItem->setText(0, "# Faces");
-        faceNumberItem->setText(1, QString::number(mesh.faceNumber()));
-        makeItemNotSelectable(faceNumberItem);
+    if (mesh.faceCount() > 0) {
+        auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
+        faceCountItem->setText(0, "# Faces");
+        faceCountItem->setText(1, QString::number(mesh.faceCount()));
+        makeItemNotSelectable(faceCountItem);
     }
 
-    if (mesh.edgeNumber() > 0) {
-        auto edgeNumberItem = new QTreeWidgetItem(meshInfoItem);
-        edgeNumberItem->setText(0, "# Edges");
-        edgeNumberItem->setText(1, QString::number(mesh.edgeNumber()));
-        makeItemNotSelectable(edgeNumberItem);
+    if (mesh.edgeCount() > 0) {
+        auto edgeCountItem = new QTreeWidgetItem(meshInfoItem);
+        edgeCountItem->setText(0, "# Edges");
+        edgeCountItem->setText(1, QString::number(mesh.edgeCount()));
+        makeItemNotSelectable(edgeCountItem);
     }
 }
 

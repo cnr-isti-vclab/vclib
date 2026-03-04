@@ -70,7 +70,7 @@ struct CompId
         CUSTOM_COMPONENTS,
         // Additional components here
 
-        COMPONENTS_NUMBER,
+        COMPONENT_COUNT,
     };
 };
 
@@ -80,7 +80,7 @@ struct CompId
  *
  * @ingroup base
  */
-constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
+constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENT_COUNT] = {
     "BitFlags",         "Position",
     "Normal",           "Color",
     "Quality",          "Mark",
@@ -99,7 +99,7 @@ constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
  * to a COMP_ID value, trough its member 'str'.
  *
  * If you use a custom component class, you should specialize this struct with
- * your COMP_ID value (that is >= COMPONENTS_NUMBER).
+ * your COMP_ID value (that is >= COMPONENT_COUNT).
  *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  *
@@ -111,7 +111,7 @@ struct ComponentString
     /**
      * @brief The string associated to the COMPONENT_ID.
      */
-    const char* str = COMP_ID < CompId::COMPONENTS_NUMBER ?
+    const char* str = COMP_ID < CompId::COMPONENT_COUNT ?
                           COMPONENT_ENUM_STRINGS[COMP_ID] :
                           nullptr;
 };

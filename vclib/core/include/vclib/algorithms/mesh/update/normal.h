@@ -589,7 +589,7 @@ void updatePerVertexNormalsAngleWeighted(
     for (auto& f : mesh.faces()) {
         auto n = faceNormal(f).template cast<NScalarType>();
 
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             NormalType vec1 =
                 (f.vertexMod(i - 1)->position() - f.vertexMod(i)->position())
                     .normalized()
@@ -662,7 +662,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(
     for (auto& f : mesh.faces()) {
         auto n = faceNormal(f).template cast<NScalarType>();
 
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             NScalarType e1 =
                 (f.vertexMod(i - 1)->position() - f.vertexMod(i)->position())
                     .squaredNorm();

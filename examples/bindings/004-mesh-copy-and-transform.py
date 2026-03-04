@@ -53,14 +53,14 @@ def mesh_copy_and_transform():
 
     original_mesh = vcl.create_icosahedron_tri_mesh()
 
-    print(f"Original mesh created: icosahedron with {original_mesh.vertex_number()} vertices and {original_mesh.face_number()} faces\n")
+    print(f"Original mesh created: icosahedron with {original_mesh.vertex_count()} vertices and {original_mesh.face_count()} faces\n")
 
     # Copy via deepcopy
 
     print("\nCopy via deepcopy:\n")
 
     copied_mesh = copy.deepcopy(original_mesh)
-    print(f"   Mesh copied with {copied_mesh.vertex_number()} vertices\n")
+    print(f"   Mesh copied with {copied_mesh.vertex_count()} vertices\n")
 
     # Verify that copies are independent
     print("\nVerifying independence of copies:\n")
@@ -68,8 +68,8 @@ def mesh_copy_and_transform():
     print(f"   ID of copied mesh: {id(copied_mesh)}")
 
     original_mesh.clear()
-    print(f"   Original mesh cleared: {original_mesh.vertex_number()} vertices\n")
-    print(f"   Copied mesh maintains: {copied_mesh.vertex_number()} vertices\n")
+    print(f"   Original mesh cleared: {original_mesh.vertex_count()} vertices\n")
+    print(f"   Copied mesh maintains: {copied_mesh.vertex_count()} vertices\n")
 
     # ========================================
     # PART 2: GEOMETRIC TRANSFORMATIONS
@@ -207,7 +207,7 @@ def mesh_copy_and_transform():
     print("---------------------------------\n")
 
     combined_mesh = vcl.create_cube_tri_mesh()
-    print (f"   Main Mesh (cube): {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
+    print (f"   Main Mesh (cube): {combined_mesh.vertex_count()} vertices, {combined_mesh.face_count()} faces\n")
     combined_mesh.set_name("Combined Scene")
 
     # Create different primitives to add
@@ -225,26 +225,26 @@ def mesh_copy_and_transform():
     vcl.scale(tetrahedron, 1.5)
 
     print("\nPrimitives to add:\n")
-    print(f"- Icosphere (3 subdivisions): {sphere1.vertex_number()} vertices, {sphere1.face_number()} faces")
-    print(f"- UV Sphere (16x16): {sphere2.vertex_number()} vertices, {sphere2.face_number()} faces")
-    print(f"- Tetrahedron: {tetrahedron.vertex_number()} vertices, {tetrahedron.face_number()} faces")
+    print(f"- Icosphere (3 subdivisions): {sphere1.vertex_count()} vertices, {sphere1.face_count()} faces")
+    print(f"- UV Sphere (16x16): {sphere2.vertex_count()} vertices, {sphere2.face_count()} faces")
+    print(f"- Tetrahedron: {tetrahedron.vertex_count()} vertices, {tetrahedron.face_count()} faces")
 
     print("\nCombination through append:\n")
 
-    original_count = combined_mesh.vertex_number()
+    original_count = combined_mesh.vertex_count()
     combined_mesh.append(sphere1)
-    print(f"After appending sphere 1: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending sphere 1: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
     combined_mesh.append(sphere2)
-    print(f"After appending sphere 2: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending sphere 2: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
     combined_mesh.append(tetrahedron)
-    print(f"After appending tetrahedron: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending tetrahedron: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
-    print(f"\nFinal combined mesh: {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
+    print(f"\nFinal combined mesh: {combined_mesh.vertex_count()} vertices, {combined_mesh.face_count()} faces\n")
 
     vcl.update_bounding_box(combined_mesh)
     bb_combined = combined_mesh.bounding_box()

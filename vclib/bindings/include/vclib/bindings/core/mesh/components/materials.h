@@ -38,8 +38,8 @@ void initMaterials(pybind11::class_<MeshType>& c)
     namespace py = pybind11;
     using namespace py::literals;
 
-    c.def("materials_number", &MeshType::materialsNumber);
-    c.def("texture_images_number", &MeshType::textureImagesNumber);
+    c.def("material_count", &MeshType::materialCount);
+    c.def("texture_image_count", &MeshType::textureImageCount);
     c.def(
         "mesh_base_path",
         py::overload_cast<>(&MeshType::meshBasePath, py::const_));

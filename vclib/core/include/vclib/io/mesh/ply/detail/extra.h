@@ -67,16 +67,16 @@ void readPlyUnknownElement(
     PlyElement       el,
     LogType&         log)
 {
-    log.startProgress("Reading unknown elements", el.numberElements);
+    log.startProgress("Reading unknown elements", el.elementCount);
 
     if (header.format() == ply::ASCII) {
-        for (uint i = 0; i < el.numberElements; ++i) {
+        for (uint i = 0; i < el.elementCount; ++i) {
             readAndTokenizeNextNonEmptyLine(file);
             log.progress(i);
         }
     }
     else {
-        for (uint i = 0; i < el.numberElements; ++i) {
+        for (uint i = 0; i < el.elementCount; ++i) {
             for (const PlyProperty& p : el.properties) {
                 if (p.list) {
                     uint s = io::readPrimitiveType<int>(file, p.listSizeType);
@@ -101,7 +101,7 @@ void readPlyMaterialIndexPostProcessing(
     const LoadSettings& settings)
 {
     if constexpr (HasMaterials<MeshType>) {
-        if (mesh.materialsNumber() > 0) {
+        if (mesh.materialCount() > 0) {
             if (loadedInfo.hasPerVertexTexCoord() &&
                 !loadedInfo.hasPerVertexMaterialIndex()) {
                 if constexpr (HasPerVertexMaterialIndex<MeshType>) {

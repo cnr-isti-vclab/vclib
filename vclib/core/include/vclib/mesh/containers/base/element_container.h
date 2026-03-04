@@ -66,7 +66,7 @@ protected:
      * from elements.size() due to elements marked as deleted into the
      * container.
      */
-    uint mElemNumber = 0;
+    uint mElemCount = 0;
 
     /**
      * @brief The vector of elements: will contain the set of elements,
@@ -140,18 +140,18 @@ protected:
      * @brief Returns the number of **non-deleted** elements contained in the
      * Element container of the Mesh.
      *
-     * If elementNumber() != elementContainerSize(), it means that there are
+     * If elementCount() != elementContainerSize(), it means that there are
      * some elements that are flagged as deleted.
      *
      * @return The number of non-deleted elements of the Mesh.
      */
-    uint elementNumber() const { return mElemNumber; }
+    uint elementCount() const { return mElemCount; }
 
     /**
      * @brief Returns the number of elements (also deleted) contained in the
      * Element container of the Mesh.
      *
-     * If elementNumber() != elementContainerSize(), it means that there are
+     * If elementCount() != elementContainerSize(), it means that there are
      * some elements that are flagged as deleted.
      *
      * @return The number of all the elements contained in the Mesh.
@@ -160,13 +160,13 @@ protected:
 
     /**
      * @brief Returns the number of deleted elements in the Element container,
-     * that is elementContainerSize() - elementNumber().
+     * that is elementContainerSize() - elementCount().
      *
      * @return The number of deleted elements in the container.
      */
-    uint deletedElementNumber() const
+    uint deletedElementCount() const
     {
-        return elementContainerSize() - elementNumber();
+        return elementContainerSize() - elementCount();
     }
 
     uint addElement()
@@ -178,7 +178,7 @@ protected:
         T* oldB = mElemVec.data();
         mElemVec.emplace_back();
         T* newB = mElemVec.data();
-        mElemNumber++;
+        mElemCount++;
 
         mElemVec.back().setParentMesh(mParentMesh);
         mElemVec.back().initVerticalComponents();
@@ -209,7 +209,7 @@ protected:
         T*   oldB   = mElemVec.data();
         mElemVec.resize(mElemVec.size() + size);
         T* newB = mElemVec.data();
-        mElemNumber += size;
+        mElemCount += size;
 
         for (uint i = baseId; i < mElemVec.size(); ++i) {
             mElemVec[i].setParentMesh(mParentMesh);
@@ -227,7 +227,7 @@ protected:
     void clearElements()
     {
         mElemVec.clear();
-        mElemNumber = 0;
+        mElemCount = 0;
 
         // clear vertical and custom components
 
@@ -266,11 +266,11 @@ protected:
      */
     void resizeElements(uint size)
     {
-        if (size > mElemNumber) {
-            addElements(size - mElemNumber);
+        if (size > mElemCount) {
+            addElements(size - mElemCount);
         }
-        else if (size < mElemNumber) {
-            uint nToDelete = mElemNumber - size;
+        else if (size < mElemCount) {
+            uint nToDelete = mElemCount - size;
             for (uint i = mElemVec.size() - 1; nToDelete > 0; --i) {
                 if (!mElemVec[i].deleted()) {
                     deleteElement(i);
@@ -305,7 +305,7 @@ protected:
     std::vector<uint> compactElements()
     {
         std::vector<uint> newIndices = elementCompactIndices();
-        if (elementNumber() != elementContainerSize()) {
+        if (elementCount() != elementContainerSize()) {
             compactVector(mElemVec, newIndices);
 
             mVerticalCompVecTuple.compact(newIndices);
@@ -336,7 +336,7 @@ protected:
     {
         assert(i < mElemVec.size());
         mElemVec[i].deletedBit() = true;
-        --mElemNumber;
+        --mElemCount;
     }
 
     /**
@@ -373,7 +373,7 @@ protected:
     uint elementIndexIfCompact(uint i) const
     {
         assert(i < mElemVec.size());
-        if (mElemVec.size() == mElemNumber)
+        if (mElemVec.size() == mElemCount)
             return i;
         else {
             uint cnt = 0;
@@ -457,7 +457,7 @@ protected:
      *
      * @param out
      */
-    void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
+    void serializeOptionalComponentsAndElementCount(std::ostream& out) const
     {
         constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
@@ -479,7 +479,7 @@ protected:
      * @brief This function serializes the elements of the container.
      *
      * It must be called by the Mesh after calling
-     * serializeOptionalComponentsAndElementsNumber.
+     * serializeOptionalComponentsAndElementCount.
      *
      * @param out
      */
@@ -500,7 +500,7 @@ protected:
      *
      * @param in
      */
-    void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
+    void deserializeOptionalComponentsAndElementCount(std::istream& in)
     {
         constexpr uint                 N_VERT_COMPS = VertComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
@@ -527,7 +527,7 @@ protected:
      * @brief This function deserializes the elements of the container.
      *
      * It must be called by the Mesh after calling
-     * deserializeOptionalComponentsAndElementsNumber for ALL its containers.
+     * deserializeOptionalComponentsAndElementCount for ALL its containers.
      *
      * @param in
      */
@@ -554,7 +554,7 @@ protected:
         return ElementIterator(
             mElemVec.begin(),
             mElemVec,
-            jumpDeleted && mElemVec.size() != mElemNumber);
+            jumpDeleted && mElemVec.size() != mElemCount);
     }
 
     /**
@@ -582,7 +582,7 @@ protected:
         return ConstElementIterator(
             mElemVec.begin(),
             mElemVec,
-            jumpDeleted && mElemVec.size() != mElemNumber);
+            jumpDeleted && mElemVec.size() != mElemCount);
     }
 
     /**
@@ -619,7 +619,7 @@ protected:
     View<ElementIterator> elements(bool jumpDeleted = true)
     {
         return View(
-            elementBegin(jumpDeleted && mElemVec.size() != mElemNumber),
+            elementBegin(jumpDeleted && mElemVec.size() != mElemCount),
             elementEnd());
     }
 
@@ -681,7 +681,7 @@ protected:
     View<ConstElementIterator> elements(bool jumpDeleted = true) const
     {
         return View(
-            elementBegin(jumpDeleted && mElemVec.size() != mElemNumber),
+            elementBegin(jumpDeleted && mElemVec.size() != mElemCount),
             elementEnd());
     }
 
@@ -785,13 +785,13 @@ protected:
                     e.C::init();
                 }
             }
-            // then resize the component containers with tied size to vertex
-            // number
-            if constexpr (comp::IsTiedToVertexNumber<C>) {
-                static const int N = T::VERTEX_NUMBER;
+            // then resize the component containers with tied size to number of
+            // vertices of the element, if needed
+            if constexpr (comp::IsTiedToVertexCount<C>) {
+                static const int N = T::VERTEX_COUNT;
                 if constexpr (N < 0) {
                     for (auto& e : elements()) {
-                        e.C::resize(e.vertexNumber());
+                        e.C::resize(e.vertexCount());
                     }
                 }
             }
@@ -1009,7 +1009,7 @@ protected:
                 ++eid;
             }
             // set the number of elements (different from the container size)
-            mElemNumber = c.mElemNumber;
+            mElemCount = c.mElemCount;
             if constexpr (
                 comp::HasCustomComponents<T> &&
                 comp::HasCustomComponents<typename Container::ElementType>) {
