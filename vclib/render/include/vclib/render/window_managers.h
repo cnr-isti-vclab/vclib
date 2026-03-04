@@ -40,7 +40,7 @@ struct WindowManagerId
         QT_WINDOW,
         // Additional window managers here
 
-        WINDOW_MANAGERS_NUMBER
+        WINDOW_MANAGER_COUNT
     };
 };
 

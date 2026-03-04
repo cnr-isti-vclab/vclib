@@ -280,9 +280,9 @@ void readPlyMaterials(
     MeshType&        mesh,
     LogType&         log)
 {
-    log.startProgress("Reading materials", header.numberMaterials());
+    log.startProgress("Reading materials", header.materialCount());
 
-    for (uint mid = 0; mid < header.numberMaterials(); ++mid) {
+    for (uint mid = 0; mid < header.materialCount(); ++mid) {
         Material mat;
         if (header.format() == ply::ASCII) {
             detail::readPlyMaterialTxt(file, mat, header.materialProperties());

@@ -49,7 +49,7 @@ concept HasBarComponent = requires (T&& obj) {
 };
 
 // Component ID for Bar component (different from Foo component)
-inline const vcl::uint BAR_COMPONENT = vcl::CompId::COMPONENTS_NUMBER + 1;
+inline const vcl::uint BAR_COMPONENT = vcl::CompId::COMPONENT_COUNT + 1;
 
 namespace detail {
 // Complex components often use a data structure to organize multiple fields

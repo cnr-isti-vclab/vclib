@@ -104,13 +104,13 @@ public:
      * @brief Returns the number of materials of the mesh.
      * @return The total number of materials.
      */
-    uint materialsNumber() const { return mats().size(); }
+    uint materialCount() const { return mats().size(); }
 
     /**
      * @brief Returns the number of texture images stored in the component.
      * @return The total number of texture images.
      */
-    uint textureImagesNumber() const { return txtImgs().size(); }
+    uint textureImageCount() const { return txtImgs().size(); }
 
     /**
      * @brief Returns the mesh base path.

@@ -95,13 +95,13 @@ public:
      * @param d
      * @return
      */
-    uint cellNumber(uint d) const { return mSize(d); }
+    uint cellCount(uint d) const { return mSize(d); }
 
     /**
      * @brief Returns the number of cells for each dimension of the grid
      * @return
      */
-    Point<uint, N> cellNumbers() const { return mSize; }
+    Point<uint, N> cellCount() const { return mSize; }
 
     /**
      * @brief Return an unique index that can be associated to the given cell
@@ -141,7 +141,7 @@ public:
      * @param d
      * @return
      */
-    Scalar cellLength(uint d) const { return length(d) / cellNumber(d); }
+    Scalar cellLength(uint d) const { return length(d) / cellCount(d); }
 
     /**
      * @brief Returns the lengths of a cell of the grid for each dimension
@@ -162,7 +162,7 @@ public:
         if (s < mBBox.min()(d))
             return 0;
         if (s > mBBox.max()(d))
-            return cellNumber(d) - 1;
+            return cellCount(d) - 1;
         Scalar t = s - mBBox.min()(d);
         return uint(t / cellLength(d));
     }

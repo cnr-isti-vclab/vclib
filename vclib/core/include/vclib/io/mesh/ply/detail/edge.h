@@ -45,7 +45,7 @@ void readPlyEdgeProperty(
         vids.resize(eSize);
         for (uint i = 0; i < eSize; ++i) {
             vids[i] = io::readPrimitiveType<size_t>(file, p.type, end);
-            if (vids[i] >= mesh.vertexNumber()) {
+            if (vids[i] >= mesh.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for edge " + std::to_string(e.index()));
             }
@@ -220,11 +220,11 @@ void readPlyEdges(
     LogType&         log)
 {
     using EdgeType = MeshType::EdgeType;
-    m.reserveEdges(header.numberEdges());
+    m.reserveEdges(header.edgeCount());
 
-    log.startProgress("Reading edges", header.numberEdges());
+    log.startProgress("Reading edges", header.edgeCount());
 
-    for (uint eid = 0; eid < header.numberEdges(); ++eid) {
+    for (uint eid = 0; eid < header.edgeCount(); ++eid) {
         uint      eeid = m.addEdge();
         EdgeType& e    = m.edge(eeid);
         if (header.format() == ply::ASCII) {

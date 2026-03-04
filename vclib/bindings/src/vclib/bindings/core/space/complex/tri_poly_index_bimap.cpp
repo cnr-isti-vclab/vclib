@@ -39,8 +39,8 @@ void initTriPolyIndexBimap(pybind11::module& m)
     c.def(
         "triangle_begin", &TriPolyIndexBiMap::triangleBegin, "polygon_index"_a);
     c.def(
-        "triangle_number",
-        py::overload_cast<uint>(&TriPolyIndexBiMap::triangleNumber, py::const_),
+        "triangle_count",
+        py::overload_cast<uint>(&TriPolyIndexBiMap::triangleCount, py::const_),
         "polygon_index"_a);
     c.def("clear", &TriPolyIndexBiMap::clear);
     c.def(
@@ -55,9 +55,9 @@ void initTriPolyIndexBimap(pybind11::module& m)
         "polygon_index"_a);
 
     c.def(
-        "triangle_number",
-        py::overload_cast<>(&TriPolyIndexBiMap::triangleNumber, py::const_));
-    c.def("polygon_number", &TriPolyIndexBiMap::polygonNumber);
+        "triangle_count",
+        py::overload_cast<>(&TriPolyIndexBiMap::triangleCount, py::const_));
+    c.def("polygon_count", &TriPolyIndexBiMap::polygonCount);
 }
 
 } // namespace vcl::bind

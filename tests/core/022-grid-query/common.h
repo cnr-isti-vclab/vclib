@@ -81,7 +81,7 @@ auto randomSpheres(
 
     std::mt19937 gen(seed);
 
-    VertDistrType  disV(0, mesh.vertexNumber());
+    VertDistrType  disV(0, mesh.vertexCount());
     NoiseDistrType disX(-ext, ext);
     NoiseDistrType disY(-ext, ext);
     NoiseDistrType disZ(-ext, ext);

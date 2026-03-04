@@ -33,7 +33,7 @@ namespace vcl::vc {
 template<MeshConcept MeshType, typename VCGMeshType>
 void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
 {
-    vcg::tri::Allocator<VCGMeshType>::AddVertices(vcgMesh, mesh.vertexNumber());
+    vcg::tri::Allocator<VCGMeshType>::AddVertices(vcgMesh, mesh.vertexCount());
 
     uint vi = 0;
     for (const auto& v : mesh.vertices()) {
@@ -92,7 +92,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
     }
 
     if constexpr (HasFaces<MeshType>) {
-        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceNumber());
+        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceCount());
 
         uint fi = 0;
         for (const auto& f : mesh.faces()) {
