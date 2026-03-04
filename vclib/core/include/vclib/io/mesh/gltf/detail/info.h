@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -41,7 +41,7 @@ namespace vcl::detail {
  * @param node
  * @return
  */
-inline uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
+inline uint gltfNodeMeshCount(const tinygltf::Model& model, uint node)
 {
     uint nMeshes = 0;
     if (model.nodes[node].mesh >= 0) {
@@ -49,7 +49,7 @@ inline uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
     }
     for (int c : model.nodes[node].children) {
         if (c >= 0) {
-            nMeshes += gltfNodeNumberMeshes(model, c);
+            nMeshes += gltfNodeMeshCount(model, c);
         }
     }
     return nMeshes;
@@ -68,13 +68,13 @@ inline uint gltfNodeNumberMeshes(const tinygltf::Model& model, uint node)
  * @param model
  * @return
  */
-inline uint gltfNumberMeshes(const tinygltf::Model& model)
+inline uint gltfMeshCount(const tinygltf::Model& model)
 {
     uint nMeshes = 0;
     for (uint s = 0; s < model.scenes.size(); ++s) {
         const tinygltf::Scene& scene = model.scenes[s];
         for (uint n = 0; n < scene.nodes.size(); ++n) {
-            nMeshes += gltfNodeNumberMeshes(model, scene.nodes[n]);
+            nMeshes += gltfNodeMeshCount(model, scene.nodes[n]);
         }
     }
     return nMeshes;

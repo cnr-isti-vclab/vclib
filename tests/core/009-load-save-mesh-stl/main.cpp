@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -141,8 +141,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = stlCube();
         vcl::loadStl(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 36);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 36);
+        REQUIRE(tm.faceCount() == 12);
     }
 }
 
@@ -166,7 +166,7 @@ TEMPLATE_TEST_CASE(
         std::ostringstream ss;
         vcl::saveStl(tm, ss, settings);
 
-        const unsigned int expectedStlSize = 7 * tm.faceNumber() + 2;
+        const unsigned int expectedStlSize = 7 * tm.faceCount() + 2;
 
         // verify that ss contains 86 lines
         std::istringstream iss(ss.str());

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,8 +22,9 @@
 
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 
+#include <vclib/bgfx/drawable/uniforms/drawable_directional_light_uniforms.h>
+
 #include <vclib/algorithms/core.h>
-#include <vclib/render/viewer/matrix.h>
 
 namespace vcl {
 
@@ -56,7 +57,6 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     }
 
     createVertexBuffer();
-    setLinesColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
@@ -66,7 +66,6 @@ DrawableDirectionalLight::DrawableDirectionalLight(
         mColor(other.mColor)
 {
     createVertexBuffer();
-    mUniform.setColor(mColor);
 }
 
 DrawableDirectionalLight::DrawableDirectionalLight(
@@ -92,7 +91,6 @@ void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
     swap(mVisible, other.mVisible);
     mVertices.swap(other.mVertices);
     swap(mColor, other.mColor);
-    swap(mUniform, other.mUniform);
     swap(mTransform, other.mTransform);
     swap(mVertexPosBuffer, other.mVertexPosBuffer);
 }
@@ -105,7 +103,6 @@ void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)
 void DrawableDirectionalLight::setLinesColor(const Color& c)
 {
     mColor = c;
-    mUniform.setColor(mColor);
 }
 
 void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
@@ -121,7 +118,8 @@ void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
 
         bgfx::setTransform(mTransform.data());
 
-        mUniform.bind();
+        DrawableDirectionalLightUniforms::setColor(mColor);
+        DrawableDirectionalLightUniforms::bind();
 
         mVertexPosBuffer.bind(0);
 

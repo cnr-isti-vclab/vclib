@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,7 +27,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 TEMPLATE_TEST_CASE(
-    "Compute Crease Edges Number",
+    "Compute Number of Crease Edges",
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
@@ -48,7 +48,7 @@ TEMPLATE_TEST_CASE(
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
 
-    unsigned int creaseEdges = vcl::faceEdgesSelectionNumber(cylinder);
+    unsigned int creaseEdges = vcl::faceEdgesSelectionCount(cylinder);
 
     THEN("Compute the number of selected face edges on cylinder")
     {

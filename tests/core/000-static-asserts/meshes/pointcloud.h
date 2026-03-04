@@ -33,6 +33,8 @@ void pointcloudStaticAsserts()
     static_assert(!HasQuads<PointCloud>, "");
     static_assert(!HasPolygons<PointCloud>, "");
 
+    static_assert(HasMaterials<PointCloud>, "The PointCloud has no materials.");
+
     // mesh views
     meshViewsStaticAsserts<PointCloud>();
 }

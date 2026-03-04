@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -55,7 +55,7 @@ auto halfSpaceDeterminant(const FaceType& face, const PointType& point)
             point);
     }
     else {
-        if (face.vertexNumber() == 3) {
+        if (face.vertexCount() == 3) {
             return halfSpaceDeterminant(
                 face.vertex(0)->position(),
                 face.vertex(1)->position(),

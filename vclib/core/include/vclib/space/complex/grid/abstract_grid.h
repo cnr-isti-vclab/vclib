@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -891,7 +891,7 @@ private:
                     if (currentIntervalBox.min()(i) != 0)
                         currentIntervalBox.min()(i)--;
                     if (currentIntervalBox.max()(i) !=
-                        GridType::cellNumber(i) - 1)
+                        GridType::cellCount(i) - 1)
                         currentIntervalBox.max()(i)++;
                 }
             }

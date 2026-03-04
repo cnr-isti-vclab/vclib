@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -48,10 +48,10 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
         else {
             uint      fid = m.addFace();
             FaceType& f   = m.face(fid);
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 f.resizeVertices(3);
             }
-            for (uint i = 0; i < f.vertexNumber(); ++i) {
+            for (uint i = 0; i < f.vertexCount(); ++i) {
                 f.setVertex(i, tristrip[k + i]);
             }
 
@@ -71,9 +71,9 @@ void readPlyTriStripsTxt(
     MeshType&        m,
     LogType&         log)
 {
-    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
+    log.startProgress("Reading Triangle Strips", header.triStripCount());
 
-    for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
+    for (uint tid = 0; tid < header.triStripCount(); ++tid) {
         Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
         Tokenizer::iterator token = spaceTokenizer.begin();
         for (const PlyProperty& p : header.triStripsProperties()) {
@@ -92,7 +92,7 @@ void readPlyTriStripsTxt(
             }
             if (!hasBeenRead) {
                 if (p.list) {
-                    uint s = io::readPrimitiveType<int>(token, p.listSizeType);
+                    uint s = io::readPrimitiveType<uint>(token, p.listSizeType);
                     for (uint i = 0; i < s; ++i) {
                         ++token;
                     }
@@ -115,8 +115,8 @@ void readPlyTriStripsBin(
     std::endian      end,
     LogType&         log)
 {
-    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
-    for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
+    log.startProgress("Reading Triangle Strips", header.triStripCount());
+    for (uint tid = 0; tid < header.triStripCount(); ++tid) {
         for (const PlyProperty& p : header.triStripsProperties()) {
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {
@@ -131,7 +131,7 @@ void readPlyTriStripsBin(
             if (!hasBeenRead) {
                 if (p.list) {
                     uint s =
-                        io::readPrimitiveType<int>(file, p.listSizeType, end);
+                        io::readPrimitiveType<uint>(file, p.listSizeType, end);
                     for (uint i = 0; i < s; ++i)
                         io::readPrimitiveType<int>(file, p.type, end);
                 }

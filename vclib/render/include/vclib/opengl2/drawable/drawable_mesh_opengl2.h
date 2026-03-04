@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -139,20 +139,20 @@ public:
         bindTextures();
     }
 
-    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+    uint vertexCount() const override { return MeshType::vertexCount(); }
 
-    uint faceNumber() const override
+    uint faceCount() const override
     {
         if constexpr (HasFaces<MeshType>)
-            return MeshType::faceNumber();
+            return MeshType::faceCount();
         else
             return 0;
     }
 
-    uint edgeNumber() const override
+    uint edgeCount() const override
     {
         if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeNumber();
+            return MeshType::edgeCount();
         else
             return 0;
     }
@@ -167,16 +167,14 @@ public:
         }
     }
 
-    std::vector<std::string> textures() const override
+    View<MatIt> materials() const override
     {
-        std::vector<std::string> txs;
-        if constexpr (HasTexturePaths<MeshType>) {
-            txs.reserve(MeshType::textureNumber());
-            for (const auto& tpath : MeshType::texturePaths()) {
-                txs.push_back(tpath);
-            }
+        if constexpr (HasMaterials<MeshType>) {
+            return MeshType::materials();
         }
-        return txs;
+        else {
+            return View<MatIt>();
+        }
     }
 
     // DrawableObject implementation
@@ -272,8 +270,8 @@ public:
 private:
     void renderPass() const
     {
-        uint nv = mMRD.vertexNumber();
-        uint nt = mMRD.triangleNumber();
+        uint nv = mMRD.vertexCount();
+        uint nt = mMRD.triangleCount();
 
         const float*    positions       = mMRD.vertexBufferData();
         const uint32_t* triangles       = mMRD.triangleBufferData();
@@ -532,11 +530,11 @@ private:
 
     void bindTextures()
     {
-        mTextID.resize(mMRD.textureNumber());
+        mTextID.resize(mMRD.textureCount());
         glEnable(GL_TEXTURE_2D);
-        glGenTextures(mMRD.textureNumber(), mTextID.data());
+        glGenTextures(mMRD.textureCount(), mTextID.data());
 
-        for (uint i = 0; i < mMRD.textureNumber(); i++) {
+        for (uint i = 0; i < mMRD.textureCount(); i++) {
             glBindTexture(GL_TEXTURE_2D, mTextID[i]);
             glTexImage2D(
                 GL_TEXTURE_2D,

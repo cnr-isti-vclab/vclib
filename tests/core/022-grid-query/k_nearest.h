@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -50,7 +50,7 @@ auto bruteForceKNearestFaces(
 
     for (vcl::uint i = 0; const auto& p : points) {
         std::vector<std::pair<vcl::uint, ScalarType>> facesAndDists(
-            mesh.faceNumber());
+            mesh.faceCount());
 
         vcl::uint j = 0;
         for (const auto& f : mesh.faces()) {

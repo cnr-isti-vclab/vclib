@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -25,7 +25,15 @@
 
 namespace vcl {
 
-enum class ComputeProgram { DRAWABLE_MESH_POINTS, COUNT };
+enum class ComputeProgram {
+    DRAWABLE_MESH_POINTS,
+    HDR_EQUIRECT_TO_CUBEMAP,
+    CUBEMAP_MIPMAP_GEN,
+    CUBEMAP_TO_IRRADIANCE,
+    CUBEMAP_TO_SPECULAR,
+    IBL_LOOKUP_TEXTURE_GEN,
+    COUNT
+};
 
 } // namespace vcl
 

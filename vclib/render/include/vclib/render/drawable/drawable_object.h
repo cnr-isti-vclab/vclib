@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 #define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_H
 
-#include "draw_object_settings.h"
+#include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/point.h>

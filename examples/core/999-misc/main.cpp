@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -82,6 +82,12 @@ int main()
     static_assert(vcl::Cloneable<Shape&>, "");
     static_assert(vcl::Cloneable<const Shape&>, "");
     static_assert(vcl::Cloneable<Shape&&>, "");
+
+    static_assert(vcl::Cloneable<Square>, "");
+    static_assert(vcl::Cloneable<const Square>, "");
+    static_assert(vcl::Cloneable<Square&>, "");
+    static_assert(vcl::Cloneable<const Square&>, "");
+    static_assert(vcl::Cloneable<Square&&>, "");
 
     vcl::Point3d p(1, 1, 1);
 

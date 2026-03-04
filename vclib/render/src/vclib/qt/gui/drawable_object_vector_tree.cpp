@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -32,6 +32,11 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         QFrame(parent), mUI(new Ui::DrawableObjectVectorTree)
 {
     mUI->setupUi(this);
+
+    mUI->treeWidget->header()->setStretchLastSection(false);
+    mUI->treeWidget->header()->setSectionResizeMode(2, QHeaderView::Fixed);
+    mUI->treeWidget->setColumnWidth(2, 28);
+    mUI->treeWidget->header()->setSectionResizeMode(1, QHeaderView::Stretch);
 
     // each time the user selects an item, call the itemSelectionChanged slot
     connect(
@@ -124,14 +129,8 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
     mUI->treeWidget->clear();
 
     for (auto& d : *mDrawList) {
-        DrawableObjectItem* item = new DrawableObjectItem(d, mUI->treeWidget);
-
-        // TODO: add icon. was:
-        // if (mIconFunction) {
-        //     std::pair<QIcon, std::string> p = mIconFunction(*d);
-
-        //     frame->setIcon(p.first, QString::fromStdString(p.second));
-        // }
+        DrawableObjectItem* item =
+            new DrawableObjectItem(d, mIconFunction, mUI->treeWidget);
 
         mUI->treeWidget->addTopLevelItem(item);
 
@@ -163,7 +162,7 @@ void DrawableObjectVectorTree::itemCheckStateChanged(
     QTreeWidgetItem* item,
     int              column)
 {
-    if (item) {
+    if (item && column == 0) {
         // update the visibility of the drawable object
         auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
         if (drawableItem) {

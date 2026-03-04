@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -123,7 +123,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
 
     MeshType mesh;
     using ST = MeshType::VertexType::PositionType::ScalarType;
-    mesh.reserveVertices(pmesh.vertexNumber());
+    mesh.reserveVertices(pmesh.vertexCount());
     for (const auto& v : pmesh.vertices()) {
         mesh.addVertex(v.position().cast<ST>());
     }

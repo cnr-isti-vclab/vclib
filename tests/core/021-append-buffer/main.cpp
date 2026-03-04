@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -107,7 +107,7 @@ void testPositionsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -144,7 +144,7 @@ void testTriangleMatrix(
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
     using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
-    vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
+    vcl::uint               nVerts = tm.vertexCount() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
     vcl::vertexPositionsToBuffer(tm, verts.data());
     vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
@@ -155,7 +155,7 @@ void testTriangleMatrix(
     vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
         tm, vtd, ftr, tris.data(), 3, stg);
 
-    REQUIRE(tris.rows() == tm.faceNumber());
+    REQUIRE(tris.rows() == tm.faceCount());
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
@@ -177,7 +177,7 @@ void testVertexSelectionVector(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     VectorType sel(nRows);
 
     vcl::vertexSelectionToBuffer(tm, sel.data());
@@ -221,7 +221,7 @@ TEMPLATE_TEST_CASE(
     std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
     std::list<vcl::uint>                                  vertsToDuplicate;
     std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
-    vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+    vcl::uint nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
     SECTION("Append duplicated vertex positions...")

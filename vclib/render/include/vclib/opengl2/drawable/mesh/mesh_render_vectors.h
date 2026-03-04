@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -99,15 +99,15 @@ public:
         swap(mMeshColor, other.mMeshColor);
     }
 
-    uint vertexNumber() const { return mVerts.size() / 3; }
+    uint vertexCount() const { return mVerts.size() / 3; }
 
-    uint triangleNumber() const { return mTris.size() / 3; }
+    uint triangleCount() const { return mTris.size() / 3; }
 
-    uint edgeNumber() const { return mEdges.size() / 2; }
+    uint edgeCount() const { return mEdges.size() / 2; }
 
-    uint wireframeEdgeNumber() const { return mWireframe.size() / 2; }
+    uint wireframeEdgeCount() const { return mWireframe.size() / 2; }
 
-    uint textureNumber() const { return mTextures.size(); }
+    uint textureCount() const { return mTextures.size(); }
 
     vcl::Point2i textureSize(uint ti) const
     {
@@ -300,24 +300,24 @@ private:
         Base::fillTriangleColors(mesh, mTColors.data(), Color::Format::ABGR);
     }
 
-    void setVertexTextureIndicesBuffer(const MeshType& mesh) // override
+    void setVertexMaterialIndicesBuffer(const MeshType& mesh) // override
     {
-        if (vcl::isPerVertexTexCoordAvailable(mesh)) {
+        if (vcl::isPerVertexMaterialIndexAvailable(mesh)) {
             uint nt = Base::numTris();
 
             mVTexIds.resize(nt);
 
-            Base::fillVertexTextureIndices(mesh, mVTexIds.data());
+            Base::fillVertexMaterialIndices(mesh, mVTexIds.data());
         }
     }
 
-    void setWedgeTextureIndicesBuffer(const MeshType& mesh) // override
+    void setFaceMaterialIndicesBuffer(const MeshType& mesh) // override
     {
         uint nt = Base::numTris();
 
         mWTexIds.resize(nt);
 
-        Base::fillWedgeTextureIndices(mesh, mWTexIds.data());
+        Base::fillFaceMaterialIndices(mesh, mWTexIds.data());
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
@@ -356,33 +356,40 @@ private:
         Base::fillWireframeIndices(mesh, mWireframe.data());
     }
 
-    void setTextureUnits(const MeshType& mesh) // override
+    void setTextures(const MeshType& mesh) // override
     {
         mTextures.clear();
-        mTextures.reserve(mesh.textureNumber());
-        for (uint i = 0; i < mesh.textureNumber(); ++i) {
-            vcl::Image txt;
-            if constexpr (vcl::HasTextureImages<MeshType>) {
-                if (mesh.texture(i).image().isNull()) {
-                    txt = vcl::loadImage(
-                        mesh.meshBasePath() + mesh.texturePath(i));
+
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            mTextures.reserve(mesh.materialCount());
+            for (uint i = 0; i < mesh.materialCount(); ++i) {
+                const auto& texture =
+                    mesh.material(i).baseColorTextureDescriptor();
+
+                vcl::Image txt = mesh.textureImage(texture.path());
+
+                if (txt.isNull()) {
+                    if (!texture.path().empty()) {
+                        try {
+                            txt = vcl::loadImage(
+                                mesh.meshBasePath() + texture.path());
+                        }
+                        catch (...) {
+                            // do nothing
+                        }
+                    }
                 }
-                else {
-                    txt = mesh.texture(i).image();
+
+                if (txt.isNull()) {
+                    txt = vcl::createCheckBoardImage(512);
                 }
+                txt.mirror();
+                mTextures.push_back(txt);
             }
-            else {
-                txt = vcl::loadImage(mesh.meshBasePath() + mesh.texturePath(i));
-            }
-            if (txt.isNull()) {
-                txt = vcl::createCheckBoardImage(512);
-            }
-            txt.mirror();
-            mTextures.push_back(txt);
         }
     }
 
-    void setMeshUniforms(const MeshType& m) // override
+    void setMeshAdditionalData(const MeshType& m) // override
     {
         if constexpr (vcl::HasColor<MeshType>) {
             mMeshColor[0] = m.color().redF();

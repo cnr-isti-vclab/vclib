@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -39,7 +39,7 @@ template<typename M, typename V>
 std::vector<V*> genericFASVPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<V*> vec;
-    vec.reserve(m.vertexNumber());
+    vec.reserve(m.vertexCount());
 
     for (V& v : m.vertices()) {
         vec.push_back(&v);
@@ -60,7 +60,7 @@ template<typename M, typename F>
 std::vector<F*> genericFASFPV(M m, std::optional<uint> seed = std::nullopt)
 {
     std::vector<F*> vec;
-    vec.reserve(m.faceNumber());
+    vec.reserve(m.faceCount());
 
     for (F& f : m.faces()) {
         vec.push_back(&f);
@@ -101,7 +101,7 @@ std::vector<uint> fillAndShuffleVertexIndexVector(
     using VertexType = MeshType::VertexType;
 
     std::vector<uint> vec;
-    vec.reserve(m.vertexNumber());
+    vec.reserve(m.vertexCount());
 
     for (const VertexType& v : m.vertices()) {
         vec.push_back(m.index(v));
@@ -140,7 +140,7 @@ std::vector<uint> fillAndShuffleFaceIndexVector(
     using FaceType = MeshType::FaceType;
 
     std::vector<uint> vec;
-    vec.reserve(m.faceNumber());
+    vec.reserve(m.faceCount());
 
     for (const FaceType& f : m.faces()) {
         vec.push_back(m.index(f));

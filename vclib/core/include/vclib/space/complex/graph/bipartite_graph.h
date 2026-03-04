@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -119,7 +119,7 @@ public:
      * @brief Returns the number of left nodes of the graph.
      * @return the number of nodes on the left side of the graph
      */
-    uint leftNodesNumber() const
+    uint leftNodeCount() const
     {
         return (unsigned int) (mNodesL.size() - mUnusedLNodes.size());
     }
@@ -128,7 +128,7 @@ public:
      * @brief Returns the number of right nodes of the graph.
      * @return the number of nodes on the right side of the graph
      */
-    uint rightNodesNumber() const
+    uint rightNodeCount() const
     {
         return (unsigned int) (mNodesR.size() - mUnusedRNodes.size());
     }
@@ -138,7 +138,7 @@ public:
      * @param lNode
      * @return the number of adjacent nodes to lNode
      */
-    uint adjacentLeftNodeNumber(const T1& lNode) const
+    uint adjacentLeftNodeCount(const T1& lNode) const
     {
         int uid = getIdLeftNode(lNode);
         return mNodesL[uid].sizeAdjacentNodes();
@@ -149,7 +149,7 @@ public:
      * @param rNode
      * @return the number of adjacent nodes to rNode
      */
-    uint adjacentRightNodeNumber(const T2& rNode) const
+    uint adjacentRightNodeCount(const T2& rNode) const
     {
         int vid = getIdRightNode(rNode);
         return mNodesR[vid].sizeAdjacentNodes();

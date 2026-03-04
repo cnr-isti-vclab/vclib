@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -53,9 +53,8 @@ int main(int argc, char** argv)
     tw.enableText();
 
     tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
-    tw.appendStaticText(
-        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
-    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
+    tw.appendStaticText({5, 5}, "Vertices: " + std::to_string(m.vertexCount()));
+    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceCount()));
 
     tw.fitScene();
 

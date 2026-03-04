@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -27,6 +27,10 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 if (TARGET vclib-3rd-vcg)
     add_subdirectory(000-mesh-import-vcg)
+endif()
+
+if (TARGET vclib-3rd-embree)
+    add_subdirectory(010-embree-intersection)
 endif()
 
 

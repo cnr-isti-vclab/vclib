@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -34,8 +34,7 @@ namespace vcl::comp {
  * @brief The TexCoord class represents a component that stores a texture
  * coordinate.
  *
- * It exposes a vcl::TexCoordIndexed object, that stores a texture coordinate
- * and an id of the texture to use.
+ * It exposes a vcl::TexCoord object, that stores a texture coordinate.
  *
  * For example, if you have a Vertex Element `v` with the TexCoord component,
  * you'll be able to access to this component member functions from `v`:
@@ -59,7 +58,7 @@ class TexCoord :
         public Component<
             TexCoord<Scalar, ParentElemType, OPT>,
             CompId::TEX_COORD,
-            vcl::TexCoordIndexed<Scalar>,
+            vcl::TexCoord<Scalar>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -67,7 +66,7 @@ class TexCoord :
     using Base = Component<
         TexCoord<Scalar, ParentElemType, OPT>,
         CompId::TEX_COORD,
-        vcl::TexCoordIndexed<Scalar>,
+        vcl::TexCoord<Scalar>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -76,7 +75,7 @@ public:
     /**
      * @brief Expose the type of the TexCoord.
      */
-    using TexCoordType = vcl::TexCoordIndexed<Scalar>;
+    using TexCoordType = vcl::TexCoord<Scalar>;
 
     /* Constructors */
 

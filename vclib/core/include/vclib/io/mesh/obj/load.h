@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -41,18 +41,36 @@ namespace vcl {
 
 namespace detail {
 
-template<MeshConcept MeshType>
-using ObjNormalsMap = std::conditional_t<
-    HasPerVertexNormal<MeshType>,
-    std::map<uint, typename MeshType::VertexType::NormalType>,
-    std::map<uint, Point3d>>;
-
 inline void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     std::istream&                       stream)
 {
     std::string matName;
     ObjMaterial mat;
+
+    auto manageMaterialArgsFn = [&](auto& token) {
+        while ((*token)[0] == '-') {
+            if (*token == "-o" || *token == "-s" || *token == "-t") {
+                // ignore the argument and the three values
+                ++token;
+                ++token;
+                ++token;
+                ++token;
+            }
+            if (*token == "-mm") {
+                // ignore the argument and the two values
+                ++token;
+                ++token;
+                ++token;
+            }
+            if (*token == "-blendu" || *token == "-blendv" || *token == "-cc" ||
+                *token == "-clamp" || *token == "-texres") {
+                // ignore the argument and the value
+                ++token;
+                ++token;
+            }
+        }
+    };
 
     do {
         Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
@@ -64,8 +82,9 @@ inline void loadObjMaterials(
             if (header == "newmtl") {
                 if (!matName.empty())
                     materialMap[matName] = mat;
-                mat     = ObjMaterial();
-                matName = *token;
+                mat         = ObjMaterial();
+                matName     = *token;
+                mat.matName = matName;
             }
             if (header == "Ka") {
                 if (tokens.size() >= 4) {
@@ -79,10 +98,9 @@ inline void loadObjMaterials(
             if (header == "Kd") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Kd.x()   = io::readFloat<float>(token);
-                        mat.Kd.y()   = io::readFloat<float>(token);
-                        mat.Kd.z()   = io::readFloat<float>(token);
-                        mat.hasColor = true;
+                        mat.Kd.x() = io::readFloat<float>(token);
+                        mat.Kd.y() = io::readFloat<float>(token);
+                        mat.Kd.z() = io::readFloat<float>(token);
                     }
                 }
             }
@@ -92,6 +110,15 @@ inline void loadObjMaterials(
                         mat.Ks.x() = io::readFloat<float>(token);
                         mat.Ks.y() = io::readFloat<float>(token);
                         mat.Ks.z() = io::readFloat<float>(token);
+                    }
+                }
+            }
+            if (header == "Ke") {
+                if (tokens.size() >= 4) {
+                    if (*token != "spectral" && *token != "xyz") {
+                        mat.Ke.x() = io::readFloat<float>(token);
+                        mat.Ke.y() = io::readFloat<float>(token);
+                        mat.Ke.z() = io::readFloat<float>(token);
                     }
                 }
             }
@@ -113,32 +140,24 @@ inline void loadObjMaterials(
             }
             if (header == "map_Kd") {
                 // need to manage args
-                while ((*token)[0] == '-') {
-                    if (*token == "-o" || *token == "-s" || *token == "-t") {
-                        // ignore the argument and the three values
-                        ++token;
-                        ++token;
-                        ++token;
-                        ++token;
-                    }
-                    if (*token == "-mm") {
-                        // ignore the argument and the two values
-                        ++token;
-                        ++token;
-                        ++token;
-                    }
-                    if (*token == "-blendu" || *token == "-blendv" ||
-                        *token == "-cc" || *token == "-clamp" ||
-                        *token == "-texres") {
-                        // ignore the argument and the value
-                        ++token;
-                        ++token;
-                    }
-                }
+                manageMaterialArgsFn(token);
                 mat.map_Kd = *token;
                 // replace backslashes with slashes - windows compatibility
                 std::ranges::replace(mat.map_Kd, '\\', '/');
-                mat.hasTexture = true;
+            }
+            if (header == "map_Ke") {
+                // need to manage args
+                manageMaterialArgsFn(token);
+                mat.map_Ke = *token;
+                // replace backslashes with slashes - windows compatibility
+                std::ranges::replace(mat.map_Ke, '\\', '/');
+            }
+            if (header == "map_bump" || header == "bump") {
+                // need to manage args
+                manageMaterialArgsFn(token);
+                mat.map_bump = *token;
+                // replace backslashes with slashes - windows compatibility
+                std::ranges::replace(mat.map_bump, '\\', '/');
             }
         }
     } while (stream);
@@ -156,22 +175,12 @@ void loadObjMaterials(
 {
     loadObjMaterials(materialMap, stream);
 
-    uint nt = 0;
-
-    if constexpr (HasTexturePaths<MeshType>) {
-        nt = mesh.textureNumber();
-    }
-
     for (auto& [matName, mat] : materialMap) {
-        if (mat.hasTexture) {
-            if constexpr (HasTexturePaths<MeshType>) {
-                loadedInfo.setTextures();
-                mat.mapId = mesh.textureNumber();
-                mesh.pushTexturePath(mat.map_Kd);
-            }
-            else {
-                mat.mapId = nt++;
-            }
+        if constexpr (HasMaterials<MeshType>) {
+            loadedInfo.setMaterials();
+            Material m = mat.toMaterial();
+            mat.matId  = mesh.materialCount();
+            mesh.pushMaterial(m);
         }
     }
 }
@@ -194,7 +203,6 @@ void readObjVertex(
     Tokenizer::iterator& token,
     MeshInfo&            loadedInfo,
     const Tokenizer&     tokens,
-    const ObjMaterial&   currentMaterial,
     const LoadSettings&  settings)
 {
     uint vid = m.addVertex();
@@ -203,10 +211,9 @@ void readObjVertex(
     }
     if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {
-            // if the current material has a valid color, or the file stores the
-            // vertex color in the non-standard way (color values after the
-            // positions)
-            if (currentMaterial.hasColor || tokens.size() > 6) {
+            // if the file stores the vertex color in the non-standard way
+            // (color values after the positions)
+            if (tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
                     loadedInfo.setPerVertexColor();
@@ -225,66 +232,25 @@ void readObjVertex(
                 m.vertex(vid).color().setGreenF(io::readFloat<float>(token));
                 m.vertex(vid).color().setBlueF(io::readFloat<float>(token));
             }
-            else if (currentMaterial.hasColor) {
-                m.vertex(vid).color() = currentMaterial.color();
-            }
-        }
-    }
-}
-
-template<MeshConcept MeshType>
-void readObjVertexNormal(
-    MeshType&                        m,
-    detail::ObjNormalsMap<MeshType>& mapNormalsCache,
-    uint                             vn,
-    Tokenizer::iterator&             token,
-    MeshInfo&                        loadedInfo,
-    const LoadSettings&              settings)
-{
-    using NormalType = MeshType::VertexType::NormalType;
-
-    // first, need to check if I can store normals in the mesh
-    if (vn == 0) {
-        if (settings.enableOptionalComponents) {
-            enableIfPerVertexNormalOptional(m);
-            loadedInfo.setPerVertexNormal();
-        }
-        else {
-            if (isPerVertexNormalAvailable(m))
-                loadedInfo.setPerVertexNormal();
-        }
-    }
-    if (loadedInfo.hasPerVertexNormal()) {
-        // read the normal
-        NormalType n;
-        for (uint i = 0; i < 3; ++i) {
-            n[i] = io::readDouble<typename NormalType::ScalarType>(token);
-        }
-        // I can store the normal in its vertex
-        if (m.vertexNumber() > vn) {
-            m.vertex(vn).normal() = n;
-        }
-        // read the normal and save it in the cache map, because we still don't
-        // have read the vertex corresponding to the current normal
-        else {
-            mapNormalsCache[vn] = n;
         }
     }
 }
 
 template<FaceMeshConcept MeshType>
 void readObjFace(
-    MeshType&                            m,
-    MeshInfo&                            loadedInfo,
-    const Tokenizer&                     tokens,
-    const std::vector<TexCoordIndexedd>& wedgeTexCoords,
-    const ObjMaterial&                   currentMaterial,
-    const LoadSettings&                  settings)
+    MeshType&                     m,
+    MeshInfo&                     loadedInfo,
+    const Tokenizer&              tokens,
+    const std::vector<Point3d>&   normals,
+    const std::vector<TexCoordd>& wedgeTexCoords,
+    const ObjMaterial&            currentMaterial,
+    const LoadSettings&           settings)
 {
     using FaceType = MeshType::FaceType;
 
     std::vector<uint> vids;
     std::vector<uint> wids;
+    std::vector<uint> nids;
 
     loadedInfo.updateMeshType(tokens.size() - 1);
 
@@ -293,6 +259,7 @@ void readObjFace(
     ++token;
     vids.resize(tokens.size() - 1);
     wids.reserve(tokens.size() - 1);
+    nids.reserve(tokens.size() - 1);
     for (uint i = 0; i < tokens.size() - 1; ++i) {
         Tokenizer subt(*token, '/', false);
         auto      t = subt.begin();
@@ -300,6 +267,11 @@ void readObjFace(
         if (subt.size() > 1) {
             if (!t->empty()) {
                 wids.push_back(io::readUInt<uint>(t) - 1);
+            }
+            if (subt.size() > 2) {
+                if (!t->empty()) {
+                    nids.push_back(io::readUInt<uint>(t) - 1);
+                }
             }
         }
         ++token;
@@ -312,11 +284,11 @@ void readObjFace(
     // check if we need to split the face we read into triangles
     bool splitFace = false;
     // we have a polygonal mesh, no need to split
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         // need to resize to the right number of verts
         f.resizeVertices(tokens.size() - 1);
     }
-    else if (FaceType::VERTEX_NUMBER != tokens.size() - 1) {
+    else if (FaceType::VERTEX_COUNT != tokens.size() - 1) {
         // we have faces with static sizes (triangles), but we are loading faces
         // with number of verts > 3. Need to split the face we are loading in n
         // faces!
@@ -326,7 +298,7 @@ void readObjFace(
     // create the face in the mesh, for now we manage only vertex indices
     if (!splitFace) { // no need to split face case
         for (uint i = 0; i < vids.size(); ++i) {
-            if (vids[i] >= m.vertexNumber()) {
+            if (vids[i] >= m.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for face " + std::to_string(fid));
             }
@@ -337,29 +309,60 @@ void readObjFace(
         addTriangleFacesFromPolygon(m, f, vids);
     }
 
-    // color
-    if (HasPerFaceColor<MeshType>) {
-        // if the first face, we need to check if I can store colors
-        if (fid == 0) {
-            // if the current material has no color, we assume that the file has
-            // no face color
-            if (currentMaterial.hasColor) {
-                if (settings.enableOptionalComponents) {
-                    enableIfPerFaceColorOptional(m);
-                    loadedInfo.setPerFaceColor();
-                }
-                else {
-                    if (isPerFaceColorAvailable(m))
-                        loadedInfo.setPerFaceColor();
+    // material
+    if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+        if (fid == 0 && currentMaterial.matId != UINT_NULL) {
+            if (settings.enableOptionalComponents) {
+                enableIfPerFaceMaterialIndexOptional(m);
+                loadedInfo.setPerFaceMaterialIndex();
+            }
+            else {
+                if (isPerFaceMaterialIndexAvailable(m)) {
+                    loadedInfo.setPerFaceMaterialIndex();
                 }
             }
         }
-        if (loadedInfo.hasPerFaceColor()) {
-            if (currentMaterial.hasColor) {
-                // in case the loaded polygon has been triangulated in the last
-                // n triangles of mesh
-                for (uint ff = fid; ff < m.faceNumber(); ++ff) {
-                    m.face(ff).color() = currentMaterial.color();
+        if (loadedInfo.hasPerFaceMaterialIndex()) {
+            if (!splitFace) {
+                f.materialIndex() = currentMaterial.matId;
+            }
+            else {
+                for (uint ff = fid; ff < m.faceCount(); ++ff) {
+                    FaceType& f       = m.face(ff);
+                    f.materialIndex() = currentMaterial.matId;
+                }
+            }
+        }
+    }
+
+    // vertex normals
+    if constexpr (HasPerVertexNormal<MeshType>) {
+        using NormalType = typename MeshType::VertexType::NormalType;
+        using NST        = typename NormalType::ScalarType;
+        // first, need to check if I can store per-vertex normals in the mesh
+        if (fid == 0) {
+            // if the current face has the right number of normals, we assume
+            // that we can load per-vertex normals
+            if (nids.size() == vids.size()) {
+                if (settings.enableOptionalComponents) {
+                    enableIfPerVertexNormalOptional(m);
+                    loadedInfo.setPerVertexNormal();
+                }
+                else {
+                    if (isPerVertexNormalAvailable(m)) {
+                        loadedInfo.setPerVertexNormal();
+                    }
+                }
+            }
+        }
+        if (loadedInfo.hasPerVertexNormal()) {
+            if (nids.size() == vids.size()) {
+                for (uint i = 0; i < nids.size(); ++i) {
+                    if (nids[i] >= normals.size()) {
+                        throw MalformedFileException(
+                            "Bad normal index for face " + std::to_string(fid));
+                    }
+                    m.vertex(vids[i]).normal() = normals[nids[i]].cast<NST>();
                 }
             }
         }
@@ -367,6 +370,8 @@ void readObjFace(
 
     // wedge texcoords
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+        using WedgeTCType = MeshType::FaceType::WedgeTexCoordType;
+        using WTCST       = typename WedgeTCType::ScalarType;
         // first, need to check if I can store wedge texcoords in the mesh
         if (fid == 0) {
             // if the current face has the right number of wedge texcoords, we
@@ -377,8 +382,9 @@ void readObjFace(
                     loadedInfo.setPerFaceWedgeTexCoords();
                 }
                 else {
-                    if (isPerFaceWedgeTexCoordsAvailable(m))
+                    if (isPerFaceWedgeTexCoordsAvailable(m)) {
                         loadedInfo.setPerFaceWedgeTexCoords();
+                    }
                 }
             }
         }
@@ -394,21 +400,16 @@ void readObjFace(
                                 std::to_string(fid));
                         }
                         f.wedgeTexCoord(i) =
-                            ((vcl::TexCoordd) wedgeTexCoords[wids[i]])
-                                .cast<typename FaceType::WedgeTexCoordType::
-                                          ScalarType>();
-                        if (currentMaterial.hasTexture) {
-                            f.textureIndex() = currentMaterial.mapId;
-                        }
+                            wedgeTexCoords[wids[i]].cast<WTCST>();
                     }
                 }
                 else {
                     // take read texcoords and map them in the triangulated
                     // faces for each face of the triangulation of the polygon
-                    for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+                    for (uint ff = fid; ff < m.faceCount(); ++ff) {
                         FaceType& f = m.face(ff);
                         // for each vertex of the face
-                        for (uint i = 0; i < f.vertexNumber(); ++i) {
+                        for (uint i = 0; i < f.vertexCount(); ++i) {
                             uint vid = m.index(f.vertex(i));
                             // find the position of the vertex in the vids array
                             auto it = std::find(vids.begin(), vids.end(), vid);
@@ -423,12 +424,9 @@ void readObjFace(
                             // set the wedge texcoord in the same position of
                             // the vertex
                             f.wedgeTexCoord(i) =
-                                ((vcl::TexCoordd) wedgeTexCoords[wids[pos]])
+                                wedgeTexCoords[wids[pos]]
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
-                            if (currentMaterial.hasTexture) {
-                                f.textureIndex() = currentMaterial.mapId;
-                            }
                         }
                     }
                 }
@@ -457,31 +455,6 @@ void readObjEdge(
     uint vid1 = io::readUInt<uint>(token) - 1;
     uint vid2 = io::readUInt<uint>(token) - 1;
     e.setVertices(vid1, vid2);
-
-    // color
-    if (HasPerEdgeColor<MeshType>) {
-        // if the first edge, we need to check if I can store colors
-        if (eid == 0) {
-            // if the current material has no color, we assume that the file has
-            // no edge color
-            if (currentMaterial.hasColor) {
-                if (settings.enableOptionalComponents) {
-                    enableIfPerEdgeColorOptional(m);
-                    loadedInfo.setPerEdgeColor();
-                }
-                else {
-                    if (isPerEdgeColorAvailable(m))
-                        loadedInfo.setPerEdgeColor();
-                }
-            }
-        }
-        if (loadedInfo.hasPerEdgeColor()) {
-            if (currentMaterial.hasColor) {
-                // set the current color to the edge
-                m.edge(eid).color() = currentMaterial.color();
-            }
-        }
-    }
 }
 
 /**
@@ -516,12 +489,12 @@ void loadObj(
 {
     loadedInfo.clear();
 
-    // save normals if they can't be stored directly into vertices
-    detail::ObjNormalsMap<MeshType> mapNormalsCache;
-    uint                            vn = 0; // number of vertex normals read
+    // save array of normals, that are stored later
+    std::vector<Point3d> normals;
+
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
-    std::vector<TexCoordIndexedd> texCoords;
+    std::vector<TexCoordd> texCoords;
 
     // map of materials loaded
     std::map<std::string, detail::ObjMaterial> materialMap;
@@ -534,7 +507,7 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
@@ -586,31 +559,29 @@ void loadObj(
             if (header == "v") {
                 loadedInfo.setVertices();
                 loadedInfo.setPerVertexPosition();
-                detail::readObjVertex(
-                    m, token, loadedInfo, tokens, currentMaterial, settings);
+                detail::readObjVertex(m, token, loadedInfo, tokens, settings);
             }
-            // read vertex normal (and save in vn how many normals we read)
+            // read normals and save them in the vector of normasl, we will
+            // store them in the mesh later
             if (header == "vn") {
-                loadedInfo.setPerVertexNormal();
                 if constexpr (HasPerVertexNormal<MeshType>) {
-                    detail::readObjVertexNormal(
-                        m, mapNormalsCache, vn, token, loadedInfo, settings);
-                    vn++;
+                    Point3d n;
+                    for (uint i = 0; i < 3; ++i) {
+                        n[i] = io::readDouble<double>(token);
+                    }
+                    normals.push_back(n);
                 }
             }
             // read texcoords and save them in the vector of texcoords, we will
             // store them in the mesh later
-            if constexpr (
-                HasPerVertexTexCoord<MeshType> ||
-                HasPerFaceWedgeTexCoords<MeshType>) {
-                if (header == "vt") {
+            if (header == "vt") {
+                if constexpr (
+                    HasPerVertexTexCoord<MeshType> ||
+                    HasPerFaceWedgeTexCoords<MeshType>) {
                     // save the texcoord for later
-                    TexCoordIndexedd tf;
+                    TexCoordd tf;
                     for (uint i = 0; i < 2; ++i) {
                         tf[i] = io::readDouble<double>(token);
-                    }
-                    if (currentMaterial.hasTexture) {
-                        tf.index() = currentMaterial.mapId;
                     }
                     texCoords.push_back(tf);
                 }
@@ -627,6 +598,7 @@ void loadObj(
                         m,
                         loadedInfo,
                         tokens,
+                        normals,
                         texCoords,
                         currentMaterial,
                         settings);
@@ -646,19 +618,34 @@ void loadObj(
     } while (inputObjStream);
 
     if constexpr (HasPerVertexNormal<MeshType>) {
-        // set all vertex normals that have not been stored in vertices
-        for (const auto& p : mapNormalsCache) {
-            if (p.first < m.vertexNumber()) {
-                m.vertex(p.first).normal() = p.second;
+        using NormalType = typename MeshType::VertexType::NormalType;
+        using NST        = typename NormalType::ScalarType;
+        // if we have not yet set per-vertex normals, try to set them now
+        if (!loadedInfo.hasPerVertexNormal()) {
+            if (normals.size() == m.vertexCount()) {
+                if (settings.enableOptionalComponents) {
+                    enableIfPerVertexNormalOptional(m);
+                    loadedInfo.setPerVertexNormal();
+                }
+                else {
+                    if (isPerVertexNormalAvailable(m))
+                        loadedInfo.setPerVertexNormal();
+                }
+
+                if (loadedInfo.hasPerVertexNormal()) {
+                    for (uint i = 0; const auto& n : normals) {
+                        m.vertex(i).normal() = n.template cast<NST>();
+                        ++i;
+                    }
+                }
             }
         }
     }
+
     if constexpr (HasPerVertexTexCoord<MeshType>) {
-        using VertexType = MeshType::VertexType;
         if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
-            // we can set the loaded texCoords to vertices, also if they are not
-            // supported in obj
-            if (texCoords.size() == m.vertexNumber()) {
+            if (texCoords.size() == m.vertexCount()) {
+                // load texcoords into vertices only if there are no wedge
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexTexCoordOptional(m);
                     loadedInfo.setPerVertexTexCoord();
@@ -668,28 +655,42 @@ void loadObj(
                         loadedInfo.setPerVertexTexCoord();
                 }
                 if (loadedInfo.hasPerVertexTexCoord()) {
-                    uint i = 0;
-                    for (VertexType& v : m.vertices()) {
-                        v.texCoord() =
-                            texCoords[i++]
-                                .cast<typename VertexType::TexCoordType::
-                                          ScalarType>();
+                    using TexCoordType =
+                        typename MeshType::VertexType::TexCoordType;
+                    using TCT = typename TexCoordType::ScalarType;
+                    for (uint i = 0; i < m.vertexCount(); ++i) {
+                        m.vertex(i).texCoord() =
+                            texCoords[i].template cast<TCT>();
+                    }
+                }
+
+                // material index
+                if constexpr (HasMaterials<MeshType>) {
+                    if (m.materialCount() > 0) {
+                        if (settings.enableOptionalComponents) {
+                            enableIfPerVertexMaterialIndexOptional(m);
+                            loadedInfo.setPerVertexMaterialIndex();
+                        }
+                        else {
+                            if (isPerVertexMaterialIndexAvailable(m))
+                                loadedInfo.setPerVertexMaterialIndex();
+                        }
+                        if (loadedInfo.hasPerVertexMaterialIndex()) {
+                            for (uint i = 0; i < m.vertexCount(); ++i) {
+                                // assign the first material to all vertices
+                                m.vertex(i).materialIndex() = 0;
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    if constexpr (HasTextureImages<MeshType>) {
+    if constexpr (HasMaterials<MeshType>) {
         if (settings.loadTextureImages) {
-            for (Texture& texture : m.textures()) {
-                texture.image() = loadImage(m.meshBasePath() + texture.path());
-                if (texture.image().isNull()) {
-                    log.log(
-                        "Cannot load texture " + texture.path(),
-                        LogType::WARNING_LOG);
-                }
-            }
+            using enum Material::TextureType;
+            loadTextureImages(m, m.meshBasePath(), {BASE_COLOR, EMISSIVE}, log);
         }
     }
 

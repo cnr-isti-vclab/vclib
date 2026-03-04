@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -58,10 +58,10 @@ void saveOff(
     uint fn = 0;
     uint en = 0;
     if constexpr (HasVertices<MeshType>) {
-        vn = m.vertexNumber();
+        vn = m.vertexCount();
     }
     if constexpr (HasFaces<MeshType>) {
-        fn = m.faceNumber();
+        fn = m.faceCount();
     }
 
     io::writeInt(fp, vn, false);
@@ -112,7 +112,7 @@ void saveOff(
         std::vector<uint> vIndices = m.vertexCompactIndices();
 
         for (const FaceType& f : m.faces()) {
-            io::writeInt(fp, f.vertexNumber(), false);
+            io::writeInt(fp, f.vertexCount(), false);
             for (const VertexType* v : f.vertices()) {
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }

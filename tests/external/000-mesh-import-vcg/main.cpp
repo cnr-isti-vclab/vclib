@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -54,10 +54,10 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
 
-        for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {
+        for (unsigned int fi = 0; fi < tm.faceCount(); ++fi) {
             const auto& f    = tm.face(fi);
             const auto& vcgf = vcgMesh.face[fi];
             for (unsigned int vi = 0; vi < 3; ++vi) {
@@ -100,7 +100,7 @@ TEMPLATE_TEST_CASE(
         for (const auto& v : tm.vertices()) {
             REQUIRE(
                 v.template customComponent<float>("perVertex") ==
-                (float) v.index() / tm.vertexNumber());
+                (float) v.index() / tm.vertexCount());
         }
     }
 
@@ -158,7 +158,7 @@ TEMPLATE_TEST_CASE(
         for (const auto& f : tm.faces()) {
             REQUIRE(
                 f.template customComponent<double>("perFace") ==
-                (double) f.index() / tm.faceNumber());
+                (double) f.index() / tm.faceCount());
         }
     }
 
@@ -224,14 +224,14 @@ TEMPLATE_TEST_CASE(
 
     PolyMesh pm = vcl::vc::meshFromVCGMesh<PolyMesh>(vcgMesh);
 
-    REQUIRE(pm.vertexNumber() == 8);
-    REQUIRE(pm.faceNumber() == 12);
+    REQUIRE(pm.vertexCount() == 8);
+    REQUIRE(pm.faceCount() == 12);
 
-    for (unsigned int fi = 0; fi < pm.faceNumber(); ++fi) {
+    for (unsigned int fi = 0; fi < pm.faceCount(); ++fi) {
         const auto& f    = pm.face(fi);
         const auto& vcgf = vcgMesh.face[fi];
 
-        REQUIRE(f.vertexNumber() == 3);
+        REQUIRE(f.vertexCount() == 3);
         for (unsigned int vi = 0; vi < 3; ++vi) {
             REQUIRE(
                 pm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
@@ -256,10 +256,10 @@ TEMPLATE_TEST_CASE(
         VCGMesh vcgMesh;
         vcl::vc::exportMeshToVCGMesh(tm, vcgMesh);
 
-        REQUIRE(vcgMesh.VN() == tm.vertexNumber());
-        REQUIRE(vcgMesh.FN() == tm.faceNumber());
+        REQUIRE(vcgMesh.VN() == tm.vertexCount());
+        REQUIRE(vcgMesh.FN() == tm.faceCount());
 
-        for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {
+        for (unsigned int fi = 0; fi < tm.faceCount(); ++fi) {
             const auto& f    = tm.face(fi);
             const auto& vcgf = vcgMesh.face[fi];
             for (unsigned int vi = 0; vi < 3; ++vi) {

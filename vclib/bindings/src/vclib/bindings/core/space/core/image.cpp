@@ -31,6 +31,14 @@ void initImage(pybind11::module& m)
     namespace py = pybind11;
 
     py::class_<Image> c(m, "Image" /*, py::buffer_protocol()*/);
+
+    using enum Image::ColorSpace;
+    py::enum_<Image::ColorSpace> cs(c, "ColorSpace");
+    cs.value("UNKNOWN", UNKNOWN);
+    cs.value("LINEAR", LINEAR);
+    cs.value("SRGB", SRGB);
+    cs.export_values();
+
     c.def(py::init<>());
 
     c.def("is_null", &Image::isNull);

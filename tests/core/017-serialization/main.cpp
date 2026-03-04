@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -417,7 +417,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
     Mesh mesh1 = vcl::loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     mesh1.enablePerVertexColor();
-    for (unsigned int i = 0; i < mesh1.vertexNumber(); i++)
+    for (unsigned int i = 0; i < mesh1.vertexCount(); i++)
         mesh1.vertex(i).color() = randomColor();
 
     std::ofstream fo =
@@ -431,18 +431,18 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
     mesh2.deserialize(fi);
     fi.close();
 
-    REQUIRE(mesh1.vertexNumber() == mesh2.vertexNumber());
-    REQUIRE(mesh1.faceNumber() == mesh2.faceNumber());
+    REQUIRE(mesh1.vertexCount() == mesh2.vertexCount());
+    REQUIRE(mesh1.faceCount() == mesh2.faceCount());
     REQUIRE(mesh2.isPerVertexColorEnabled());
 
-    for (unsigned int i = 0; i < mesh1.vertexNumber(); i++) {
+    for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
         REQUIRE(mesh1.vertex(i).position() == mesh2.vertex(i).position());
         REQUIRE(mesh1.vertex(i).color() == mesh2.vertex(i).color());
     }
 
-    for (unsigned int i = 0; i < mesh1.faceNumber(); i++) {
-        REQUIRE(mesh1.face(i).vertexNumber() == mesh2.face(i).vertexNumber());
-        for (unsigned int j = 0; j < mesh1.face(i).vertexNumber(); j++)
+    for (unsigned int i = 0; i < mesh1.faceCount(); i++) {
+        REQUIRE(mesh1.face(i).vertexCount() == mesh2.face(i).vertexCount());
+        for (unsigned int j = 0; j < mesh1.face(i).vertexCount(); j++)
             REQUIRE(
                 mesh1.face(i).vertexIndex(j) == mesh2.face(i).vertexIndex(j));
     }
@@ -474,7 +474,7 @@ TEMPLATE_TEST_CASE(
     auto vh = mesh1.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
         "rand");
 
-    for (unsigned int i = 0; i < mesh1.vertexNumber(); i++) {
+    for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
         vh[i] = randomPoint<double, 3>();
     }
 
@@ -482,7 +482,7 @@ TEMPLATE_TEST_CASE(
         vcl::ElemId::FACE,
         vcl::Color>("rand_color");
 
-    for (unsigned int i = 0; i < mesh1.faceNumber(); i++) {
+    for (unsigned int i = 0; i < mesh1.faceCount(); i++) {
         fh[i] = randomColor();
     }
 

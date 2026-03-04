@@ -38,7 +38,7 @@ void initWedgeTexCoords(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int N = ElementType::WEDGE_TEX_COORD_NUMBER;
+    static const int N = ElementType::WEDGE_TEX_COORD_COUNT;
 
     c.def(
         "wedge_tex_coord",
@@ -66,13 +66,6 @@ void initWedgeTexCoords(pybind11::class_<ElementType>& c)
         [](ElementType& e, const std::vector<WedgeTexCoordType>& v) {
             e.setWedgeTexCoords(v);
         });
-
-    c.def(
-        "texture_index",
-        py::overload_cast<>(&ElementType::textureIndex, py::const_));
-    c.def("set_texture_index", [](ElementType& e, uint i) {
-        e.textureIndex() = i;
-    });
 
     using WedgeTexCoordsView = decltype(ElementType().wedgeTexCoords());
 

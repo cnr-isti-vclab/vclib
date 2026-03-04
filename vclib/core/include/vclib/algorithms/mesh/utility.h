@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,7 +35,7 @@ std::vector<uint> elemCompactIndices(const auto& mesh, bool wantCompact)
 {
     std::vector<uint> elemCompIndices;
 
-    bool isCompact = mesh.template number<ELEM_ID>() ==
+    bool isCompact = mesh.template count<ELEM_ID>() ==
                      mesh.template containerSize<ELEM_ID>();
 
     if (wantCompact && !isCompact)

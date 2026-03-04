@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
     vcl::scale(drawable, 0.5f);
     vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
 
-    drawable.updateBuffers({VERTICES, VERT_NORMALS});
+    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
     v->pushBack(std::move(drawable));
 
     mv.setDrawableObjectVector(v);

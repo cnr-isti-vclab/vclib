@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -30,11 +30,13 @@
 #include "../components/color.h"
 #include "../components/custom_components.h"
 #include "../components/mark.h"
+#include "../components/material_index.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/position.h"
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
+#include "../components/tangent.h"
 #include "../components/tex_coord.h"
 
 /**
@@ -90,6 +92,10 @@ concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
+concept HasMaterialIndex = comp::HasMaterialIndex<T>;
+template<typename T>
+concept HasOptionalMaterialIndex = comp::HasOptionalMaterialIndex<T>;
+template<typename T>
 concept HasNormal = comp::HasNormal<T>;
 template<typename T>
 concept HasOptionalNormal = comp::HasOptionalNormal<T>;
@@ -101,6 +107,10 @@ template<typename T>
 concept HasQuality = comp::HasQuality<T>;
 template<typename T>
 concept HasOptionalQuality = comp::HasOptionalQuality<T>;
+template<typename T>
+concept HasTangent = comp::HasTangent<T>;
+template<typename T>
+concept HasOptionalTangent = comp::HasOptionalTangent<T>;
 template<typename T>
 concept HasTexCoord = comp::HasTexCoord<T>;
 template<typename T>
@@ -252,6 +262,15 @@ using VerticalMark = comp::Mark<ParentVertexType>;
 template<typename ParentVertexType>
 using OptionalMark = comp::Mark<ParentVertexType, true>;
 
+/* Port MaterialIndex class into vert namespace */
+using MaterialIndex = comp::MaterialIndex<>;
+
+template<typename ParentVertexType>
+using VerticalMaterialIndex = comp::MaterialIndex<ParentVertexType>;
+
+template<typename ParentVertexType>
+using OptionalMaterialIndex = comp::MaterialIndex<ParentVertexType, true>;
+
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
 using Normal = comp::Normal<Point<ScalarType, N>>;
@@ -364,6 +383,41 @@ using OptionalQualityf = comp::Quality<float, ParentVertexType, true>;
 
 template<typename ParentVertexType>
 using OptionalQualityd = comp::Quality<double, ParentVertexType, true>;
+
+/* Port Tangent classes into vert namespace */
+template<typename ScalarType, int N>
+using Tangent = comp::Tangent<Point<ScalarType, N>>;
+
+template<typename ScalarType>
+using Tangent3 = comp::Tangent3<ScalarType>;
+
+using Tangent3f = comp::Tangent3f<>;
+using Tangent3d = comp::Tangent3d<>;
+
+template<typename ScalarType, int N, typename ParentVertexType>
+using VerticalTangent = comp::Tangent<Point<ScalarType, N>, ParentVertexType>;
+
+template<typename ScalarType, typename ParentVertexType>
+using VerticalTangent3 = comp::Tangent3<ScalarType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalTangent3f = comp::Tangent3f<ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalTangent3d = comp::Tangent3d<ParentVertexType>;
+
+template<typename ScalarType, int N, typename ParentVertexType>
+using OptionalTangent =
+    comp::Tangent<Point<ScalarType, N>, ParentVertexType, true>;
+
+template<typename ScalarType, typename ParentVertexType>
+using OptionalTangent3 = comp::Tangent3<ScalarType, ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalTangent3f = comp::Tangent3f<ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalTangent3d = comp::Tangent3d<ParentVertexType, true>;
 
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>

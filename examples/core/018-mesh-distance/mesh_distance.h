@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -43,8 +43,8 @@ void meshDistance()
     vcl::TriMesh mesh =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
-              << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Loaded mesh with " << mesh.vertexCount() << " vertices and "
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Prepare mesh for distance computation
     vcl::updateBoundingBox(mesh);

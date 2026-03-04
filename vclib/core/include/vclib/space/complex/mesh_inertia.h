@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -247,7 +247,7 @@ private:
         mP1 = mPa = mPb = mPaa = mPab = mPbb = mPaaa = mPaab = mPabb = mPbbb =
             0.0;
 
-        for (uint i = 0; i < f.vertexNumber(); i++) {
+        for (uint i = 0; i < f.vertexCount(); i++) {
             a0   = f.vertex(i)->position()[mA];
             b0   = f.vertex(i)->position()[mB];
             a1   = f.vertexMod(i + 1)->position()[mA];

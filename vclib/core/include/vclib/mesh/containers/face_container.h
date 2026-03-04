@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -98,18 +98,18 @@ public:
      * @brief Returns the number of **non-deleted** Faces contained in the Face
      * container of the Mesh.
      *
-     * If faceNumber() != faceContainerSize(), it means that there are some
+     * If faceCount() != faceContainerSize(), it means that there are some
      * Faces that are flagged as deleted.
      *
      * @return the number of non-deleted Faces of the Mesh.
      */
-    uint faceNumber() const { return Base::elementNumber(); }
+    uint faceCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Faces (also deleted) contained in the Face
      * container of the Mesh.
      *
-     * If faceNumber() != faceContainerSize(), it means that there are some
+     * If faceCount() != faceContainerSize(), it means that there are some
      * Faces that are flagged as deleted.
      *
      * @return the number of all the Faces contained in the Mesh.
@@ -118,11 +118,11 @@ public:
 
     /**
      * @brief Returns the number of deleted Faces in the Face container, that is
-     * faceContainerSize() - faceNumber().
+     * faceContainerSize() - faceCount().
      *
      * @return The number of deleted Faces in the container.
      */
-    uint deletedFaceNumber() const { return Base::deletedElementNumber(); }
+    uint deletedFaceCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a Face to the container, returning its index.
@@ -143,12 +143,12 @@ public:
 
         constexpr uint n = sizeof...(args);
 
-        if constexpr (T::VERTEX_NUMBER < 0) {
+        if constexpr (T::VERTEX_COUNT < 0) {
             f.resizeVertices(n);
         }
         else {
             static_assert(
-                n == T::VERTEX_NUMBER,
+                n == T::VERTEX_COUNT,
                 "Wrong number of vertices in Mesh::addFace.");
         }
 
@@ -173,13 +173,13 @@ public:
         if (n < 3)
             return UINT_NULL;
 
-        if constexpr (T::VERTEX_NUMBER < 0) {
+        if constexpr (T::VERTEX_COUNT < 0) {
             fid = addFace();
             face(fid).resizeVertices(n);
         }
         else {
-            assert(n == T::VERTEX_NUMBER);
-            if (n == T::VERTEX_NUMBER)
+            assert(n == T::VERTEX_COUNT);
+            if (n == T::VERTEX_COUNT)
                 fid = addFace();
         }
 
@@ -714,6 +714,46 @@ public:
         Base::template disableOptionalComponent<typename T::Mark>();
     }
 
+    // MaterialIndex
+
+    /**
+     * @brief Checks if the Face Optional MaterialIndex is enabled.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     *
+     * @return true if the Optional MaterialIndex is enabled, false otherwise.
+     */
+    bool isPerFaceMaterialIndexEnabled() const
+        requires face::HasOptionalMaterialIndex<T>
+    {
+        return Base::template isOptionalComponentEnabled<
+            typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Enable the Optional MaterialIndex of the Face.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void enablePerFaceMaterialIndex() requires face::HasOptionalMaterialIndex<T>
+    {
+        Base::template enableOptionalComponent<typename T::MaterialIndex>();
+    }
+
+    /**
+     * @brief Disables the Optional MaterialIndex of the Face.
+     *
+     * @note This function is available only if the Face Element has the
+     * OptionalMaterialIndex Component.
+     */
+    void disablePerFaceMaterialIndex()
+        requires face::HasOptionalMaterialIndex<T>
+    {
+        Base::template disableOptionalComponent<typename T::MaterialIndex>();
+    }
+
     // Normal
 
     /**
@@ -1226,8 +1266,8 @@ protected:
         // we don't know how to convert a polygon mesh into a quad mesh, or
         // convert a quad mesh into a pentagonal mesh...)
         static_assert(
-            !(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-              FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
+            !(FaceType::VERTEX_COUNT != 3 && FaceType::VERTEX_COUNT > 0 &&
+              FaceType::VERTEX_COUNT != MFaceType::VERTEX_COUNT),
             "Cannot import from that type of Mesh. Don't know how to "
             "convert faces.");
 
@@ -1235,8 +1275,8 @@ protected:
         // (e.g. quads) to triangle meshes. In this case, we triangulate the
         // polygon using the earcut algorithm.
         if constexpr (
-            FaceType::VERTEX_NUMBER == 3 &&
-            (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
+            FaceType::VERTEX_COUNT == 3 &&
+            (MFaceType::VERTEX_COUNT > 3 || MFaceType::VERTEX_COUNT < 0)) {
             VertexType*        base   = &Base::mParentMesh->vertex(0);
             const MVertexType* mvbase = &m.vertex(0);
 
@@ -1246,7 +1286,7 @@ protected:
                 // imported from the import pointers function. The import
                 // pointers function does nothing when importing from a face
                 // with at least 4 vertices
-                if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
+                if (mf.vertexCount() != FaceType::VERTEX_COUNT) {
                     // triangulate mf; the first triangle of the triangulation
                     // will be this->face(m.index(mf)); the other triangles will
                     // be added at the end of the container
@@ -1277,7 +1317,7 @@ private:
     void addFaceHelper(T& f, typename T::VertexType* v, V... args)
     {
         // position on which add the vertex
-        const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
         f.setVertex(n, v); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
@@ -1287,7 +1327,7 @@ private:
     void addFaceHelper(T& f, uint vid, V... args)
     {
         // position on which add the vertex
-        const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+        const std::size_t n = f.vertexCount() - sizeof...(args) - 1;
         f.setVertex(n, vid); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);

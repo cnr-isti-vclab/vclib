@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -32,6 +32,7 @@
 #include "components/principal_curvatures.h"
 #include "components/quality.h"
 #include "components/selection.h"
+#include "components/tangents.h"
 #include "components/tex_coords.h"
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_H

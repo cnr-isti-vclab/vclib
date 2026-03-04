@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,6 +23,11 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
+#include "embedded_c_programs/cubemap_mipmap_gen.h"
+#include "embedded_c_programs/cubemap_to_irradiance.h"
+#include "embedded_c_programs/cubemap_to_specular.h"
 #include "embedded_c_programs/drawable_mesh_points.h"
+#include "embedded_c_programs/hdr_equirect_to_cubemap.h"
+#include "embedded_c_programs/ibl_lookup_texture_gen.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H

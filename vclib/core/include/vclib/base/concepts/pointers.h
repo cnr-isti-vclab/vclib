@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,7 @@
 #ifndef VCL_BASE_CONCEPTS_POINTERS_H
 #define VCL_BASE_CONCEPTS_POINTERS_H
 
-#include <vclib/base/concepts/const_correctness.h>
-#include <vclib/base/pointers.h>
+#include "const_correctness.h"
 
 #include <memory>
 

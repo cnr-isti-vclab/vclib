@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -45,8 +45,7 @@ namespace vcl {
 template<uint ELEM_ID, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType& m)
 {
-    return (
-        m.template number<ELEM_ID>() == m.template containerSize<ELEM_ID>());
+    return (m.template count<ELEM_ID>() == m.template containerSize<ELEM_ID>());
 }
 
 /**

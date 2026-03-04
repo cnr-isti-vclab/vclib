@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -33,15 +33,15 @@ inline auto& at(
     auto*             buffer,
     uint              i,
     uint              j,
-    uint              rowNum,
-    uint              colNum,
+    uint              numRows,
+    uint              numCols,
     MatrixStorageType storage)
 {
     if (storage == MatrixStorageType::ROW_MAJOR) {
-        return buffer[i * colNum + j];
+        return buffer[i * numCols + j];
     }
     else {
-        return buffer[j * rowNum + i];
+        return buffer[j * numRows + i];
     }
 }
 

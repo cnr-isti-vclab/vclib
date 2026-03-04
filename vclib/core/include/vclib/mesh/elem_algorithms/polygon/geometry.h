@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -53,7 +53,7 @@ typename FaceType::VertexType::PositionType faceNormal(const FaceType& f)
             f.vertex(2)->position());
     }
     else {
-        if (f.vertexNumber() == 3) {
+        if (f.vertexCount() == 3) {
             return Triangle<PositionType>::normal(
                 f.vertex(0)->position(),
                 f.vertex(1)->position(),
@@ -115,7 +115,7 @@ auto faceArea(const FaceType& f)
             f.vertex(2)->position());
     }
     else {
-        if (f.vertexNumber() == 3) {
+        if (f.vertexCount() == 3) {
             return Triangle<PositionType>::area(
                 f.vertex(0)->position(),
                 f.vertex(1)->position(),
@@ -149,7 +149,7 @@ auto facePerimeter(const FaceType& f)
             f.vertex(2)->position());
     }
     else {
-        if (f.vertexNumber() == 3) {
+        if (f.vertexCount() == 3) {
             return Triangle<PositionType>::perimeter(
                 f.vertex(0)->position(),
                 f.vertex(1)->position(),

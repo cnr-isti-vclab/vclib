@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -47,8 +47,8 @@ inline void meshStatistics()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n\n";
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces\n\n";
 
     // Update bounding box for geometric calculations
     vcl::updateBoundingBox(mesh);
@@ -263,8 +263,8 @@ inline void meshStatistics()
     vcl::TriMesh mesh2;
     vcl::loadMesh(mesh2, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Comparison mesh (cube): " << mesh2.vertexNumber()
-              << " vertices, " << mesh2.faceNumber() << " faces\n";
+    std::cout << "Comparison mesh (cube): " << mesh2.vertexCount()
+              << " vertices, " << mesh2.faceCount() << " faces\n";
 
     double surfaceArea2 = vcl::surfaceArea(mesh2);
     auto   barycenter2  = vcl::barycenter(mesh2);

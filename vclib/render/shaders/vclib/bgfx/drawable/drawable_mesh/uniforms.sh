@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,6 +27,7 @@
 
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/material_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.sh>
 
 #include <vclib/render/drawable/mesh/mesh_render_info_macros.h>

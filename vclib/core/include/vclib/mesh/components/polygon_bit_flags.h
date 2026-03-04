@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -42,7 +42,7 @@ namespace vcl::comp {
  * This class also provides 3 flags for faux edges. These flags are added just
  * to make portable all the algorithms that use faux flags also for
  * PolygonMeshes. However, these flags should be used only when the mesh is a
- * Triangle mesh, that is when each face has vertexNumber() == 3.
+ * Triangle mesh, that is when each face has vertexCount() == 3.
  *
  * The bits have the follwing meaning:
  * - 0: deleted: if the current Polygon has been deleted - read only
@@ -77,8 +77,8 @@ namespace vcl::comp {
  * v.isAnyEdgeOnBorder();
  * @endcode
  *
- * @note This component is *Tied To Vertex Number*: it means that the size of
- * the container, if dynamic, will change automatically along the Vertex Number
+ * @note This component is *Tied To Vertex Count*: it means that the size of
+ * the container, if dynamic, will change automatically along the Vertex Count
  * of the Component. For further details check the documentation of the @ref
  * ContainerComponent class.
  *
@@ -139,13 +139,13 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
      * to the user
      */
-    static const uint EDGE_USER_BITS_NUMBER =
+    static const uint EDGE_USER_BIT_COUNT =
         sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
     /* Constructors */
@@ -307,7 +307,7 @@ public:
      * @note The 'faux' bit is used to just for portability with triangle meshes
      * that are stored in polygonal meshes. However, these flags should be used
      * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexNumber()== 3.
+     * vertexCount()== 3.
      *
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the polygon.
@@ -325,7 +325,7 @@ public:
      * @note The 'faux' bit is used to just for portability with triangle meshes
      * that are stored in polygonal meshes. However, these flags should be used
      * only when the mesh is a Triangle mesh, that is when each face has
-     * vertexNumber()== 3.
+     * vertexCount()== 3.
      *
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return true if the i-th edge of the Polygon is faux, false otherwise.
@@ -347,7 +347,7 @@ public:
      */
     bool userBit(uint bit) const
     {
-        assert(bit < USER_BITS_NUMBER);
+        assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
     }
 
@@ -361,7 +361,7 @@ public:
      */
     BitProxy<FT> userBit(uint bit)
     {
-        assert(bit < USER_BITS_NUMBER);
+        assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
     }
 
@@ -376,7 +376,7 @@ public:
      */
     bool edgeUserBit(uint i, uint bit) const
     {
-        assert(bit < EDGE_USER_BITS_NUMBER);
+        assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
     }
 
@@ -391,7 +391,7 @@ public:
      */
     BitProxy<FT> edgeUserBit(uint i, uint bit)
     {
-        assert(bit < EDGE_USER_BITS_NUMBER);
+        assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
     }
 
@@ -493,7 +493,7 @@ protected:
                 deletedBit()  = e.deleted();
                 selected()    = e.selected();
                 visited()     = e.visited();
-                const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
+                const uint UM = std::min(USER_BIT_COUNT, e.USER_BIT_COUNT);
                 for (uint i = 0; i < UM; ++i)
                     userBit(i) = e.userBit(i);
                 if constexpr (HasTriangleBitFlags<Element>) {

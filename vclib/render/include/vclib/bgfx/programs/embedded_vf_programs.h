@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -27,6 +27,7 @@
 #include "embedded_vf_programs/custom_gpu_lines.h"
 #include "embedded_vf_programs/drawable_axis.h"
 #include "embedded_vf_programs/drawable_directional_light.h"
+#include "embedded_vf_programs/drawable_environment_pbr.h"
 #include "embedded_vf_programs/drawable_mesh_edges.h"
 #include "embedded_vf_programs/drawable_mesh_edges_id.h"
 #include "embedded_vf_programs/drawable_mesh_points.h"
@@ -75,6 +76,7 @@
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_wedge.h"
 #include "embedded_vf_programs/drawable_mesh_surface_smooth_tex_wedge_si.h"
 #include "embedded_vf_programs/drawable_mesh_surface_uber.h"
+#include "embedded_vf_programs/drawable_mesh_surface_uber_pbr.h"
 
 #include "embedded_vf_programs/drawable_trackball.h"
 #include "embedded_vf_programs/font_basic.h"

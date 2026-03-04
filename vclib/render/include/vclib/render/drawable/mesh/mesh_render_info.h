@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -65,6 +65,7 @@ public:
         VERT_NORMALS,
         VERT_COLORS,
         VERT_TEXCOORDS,
+        VERT_TANGENT,
 
         TRIANGLES,
         TRI_NORMALS,
@@ -79,7 +80,7 @@ public:
 
         TEXTURES,
 
-        MESH_UNIFORMS,
+        MESH_ADDITIONAL_DATA,
 
         COUNT,
     };

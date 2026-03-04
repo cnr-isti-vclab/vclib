@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -346,6 +346,8 @@ private:
 
     void* dWindowPtr() { return WindowManagerType::windowPtr(); }
 
+    uint dCanvasViewId() const { return CanvasType::viewId(); }
+
     vcl::Point2<uint> dCanvasSize() const { return CanvasType::size(); }
 
     void dSetCanvasDefaultClearColor(const Color& color)
@@ -669,6 +671,15 @@ public: // TODO - remove this when C++26 is supported
      * @return
      */
     static void* windowPtr(RenderApp* r) { return r->dWindowPtr(); }
+
+    /**
+     * @brief A Drawer object can request the viewId of the canvas. This
+     * function is called by the Drawer object to request the viewId of the
+     * canvas.
+     *
+     * @return The viewId of the canvas.
+     */
+    static uint canvasViewId(const RenderApp* r) { return r->dCanvasViewId(); }
 
     /**
      * @brief A Drawer object can request the size of the canvas. This function

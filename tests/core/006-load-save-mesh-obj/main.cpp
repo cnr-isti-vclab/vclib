@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -118,8 +118,8 @@ TEMPLATE_TEST_CASE(
         auto    ss = objPolyCube();
 
         vcl::loadObj(tm, ss, {}, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -135,8 +135,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = objTriCube();
         vcl::loadObj(tm, ss, {}, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -151,13 +151,14 @@ TEMPLATE_TEST_CASE(
 
         TriMesh tm;
         vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
+        REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
-            // first two faces have texture index 0, the other two have index 1
-            REQUIRE(f.textureIndex() == f.index() / 2);
+            // first two faces have material index 0, the other two have index 1
+            REQUIRE(f.materialIndex() == f.index() / 2);
         }
 
         REQUIRE(info.hasVertices());
@@ -167,7 +168,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(info.isTriangleMesh());
 
         REQUIRE(info.hasPerFaceWedgeTexCoords());
-        REQUIRE(info.hasTextures());
+        REQUIRE(info.hasMaterials());
     }
 
     SECTION("PolyMesh - PolyCube")
@@ -177,8 +178,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = objPolyCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 6);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -194,8 +195,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = objTriCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -211,8 +212,8 @@ TEMPLATE_TEST_CASE(
         TriMesh pm;
         vcl::loadObj(
             pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
-        REQUIRE(pm.vertexNumber() == 60);
-        REQUIRE(pm.faceNumber() == 116);
+        REQUIRE(pm.vertexCount() == 60);
+        REQUIRE(pm.faceCount() == 116);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -228,8 +229,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         vcl::loadObj(
             pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
-        REQUIRE(pm.vertexNumber() == 60);
-        REQUIRE(pm.faceNumber() == 62);
+        REQUIRE(pm.vertexCount() == 60);
+        REQUIRE(pm.faceCount() == 62);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -245,8 +246,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh em;
         auto     ss = objPolyCube();
         vcl::loadObj(em, ss, {}, info);
-        REQUIRE(em.vertexNumber() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.vertexCount() == 8);
+        REQUIRE(em.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -260,8 +261,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh pm;
         auto     ss = objTriCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());

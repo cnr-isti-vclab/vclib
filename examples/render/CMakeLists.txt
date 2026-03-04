@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -53,6 +53,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(808-test-lines)
 
     if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+        add_subdirectory(950-pbr)
         add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
     endif()
 

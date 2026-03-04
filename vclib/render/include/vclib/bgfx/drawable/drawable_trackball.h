@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,8 +23,6 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
 
-#include "uniforms/drawable_trackball_uniforms.h"
-
 #include <vclib/algorithms/core.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/render/drawable/drawable_object.h>
@@ -38,9 +36,8 @@ class DrawableTrackBall : public DrawableObject
     VertexBuffer mVertexPosColorBuffer;
     IndexBuffer  mEdgeIndexBuffer;
 
-    DrawableTrackballUniforms mUniforms;
-
-    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
+    vcl::Matrix44f mTransform  = vcl::Matrix44f::Identity();
+    bool           mIsDragging = false;
 
 public:
     DrawableTrackBall();

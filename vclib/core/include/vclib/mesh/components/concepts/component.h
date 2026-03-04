@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -113,18 +113,18 @@ concept HasIsAvailableMemberFunction =
  * @brief Evaluates to true if the type `T` is tied to the number of vertices in
  * the face.
  *
- * A component that is tied to the vertex number if it belongs to a face element
+ * A component that is tied to the vertex count if it belongs to a face element
  * and its data is composed of a number of elements that must be equal to the
  * number of vertices in the face.
  *
  * To be evaluated as true, the component must have a static constexpr member
- * `TIED_TO_VERTEX_NUMBER` of type `bool` set to `true`.
+ * `TIED_TO_VERTEX_COUNT` of type `bool` set to `true`.
  *
  * @tparam T the type to be evaluated.
  */
 template<typename T>
-concept IsTiedToVertexNumber =
-    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_NUMBER;
+concept IsTiedToVertexCount =
+    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_COUNT;
 
 /**
  * @private

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -80,30 +80,20 @@ template<typename MeshType>
 concept HasMark = MeshConcept<MeshType> && mesh::HasMark<MeshType>;
 
 /**
+ * @brief Concept that is evaluated true if a Mesh has the Materials component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasMaterials = MeshConcept<MeshType> && mesh::HasMaterials<MeshType>;
+
+/**
  * @brief Concept that checks if a Mesh has the Name component.
  *
  * @ingroup mesh_concepts
  */
 template<typename MeshType>
 concept HasName = MeshConcept<MeshType> && mesh::HasName<MeshType>;
-
-/**
- * @brief Concept that checks if a Mesh has the TextureImages component.
- *
- * @ingroup mesh_concepts
- */
-template<typename MeshType>
-concept HasTextureImages =
-    MeshConcept<MeshType> && mesh::HasTextureImages<MeshType>;
-
-/**
- * @brief Concept that checks if a Mesh has the TexturePaths component.
- *
- * @ingroup mesh_concepts
- */
-template<typename MeshType>
-concept HasTexturePaths =
-    MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
 
 /**
  * @brief Concept that checks if a Mesh has the TransformMatrix component.
@@ -144,7 +134,7 @@ bool isTriangleMesh(const MeshType& m)
     else if constexpr (HasFaces<MeshType>) {
         using F = MeshType::FaceType;
         for (const F& f : m.faces()) {
-            if (f.vertexNumber() != 3)
+            if (f.vertexCount() != 3)
                 return false;
         }
         return true;
@@ -180,7 +170,7 @@ bool isQuadMesh(const MeshType& m)
     else if constexpr (HasFaces<MeshType>) {
         using F = MeshType::FaceType;
         for (const F& f : m.faces()) {
-            if (f.vertexNumber() != 4)
+            if (f.vertexCount() != 4)
                 return false;
         }
         return true;
@@ -235,7 +225,7 @@ void requireTriangleMesh(const MeshType& m)
 {
     if constexpr (!HasTriangles<MeshType>) {
         for (const auto& f : m.faces()) {
-            if (f.vertexNumber() != 3) {
+            if (f.vertexCount() != 3) {
                 throw MissingTriangularRequirementException(
                     "Triangle Mesh Required.");
             }
@@ -268,7 +258,7 @@ void requireQuadMesh(const MeshType& m)
 {
     if constexpr (!HasQuads<MeshType>) {
         for (const auto& f : m.faces()) {
-            if (f.vertexNumber() != 4) {
+            if (f.vertexCount() != 4) {
                 throw MissingQuadRequirementException("Quad Mesh Required.");
             }
         }

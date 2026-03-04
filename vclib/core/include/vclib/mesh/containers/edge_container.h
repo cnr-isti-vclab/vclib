@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -98,18 +98,18 @@ public:
      * @brief Returns the number of **non-deleted** Edges contained in the
      * Edge container of the Mesh.
      *
-     * If edgeNumber() != edgeContainerSize(), it means that there are some
+     * If edgeCount() != edgeContainerSize(), it means that there are some
      * Edges that are flagged as deleted.
      *
      * @return the number of non-deleted Edges of the Mesh.
      */
-    uint edgeNumber() const { return Base::elementNumber(); }
+    uint edgeCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Edges (also deleted) contained in the
      * Edge container of the Mesh.
      *
-     * If edgeNumber() != edgeContainerSize(), it means that there are some
+     * If edgeCount() != edgeContainerSize(), it means that there are some
      * Edges that are flagged as deleted.
      *
      * @return the number of all the Edges contained in the Mesh.
@@ -118,11 +118,11 @@ public:
 
     /**
      * @brief Returns the number of deleted Edges in the Edge container,
-     * that is edgeContainerSize() - edgeNumber().
+     * that is edgeContainerSize() - edgeCount().
      *
      * @return The number of deleted Edges in the container.
      */
-    uint deletedEdgeNumber() const { return Base::deletedElementNumber(); }
+    uint deletedEdgeCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add an Edge to the container, returning its index.

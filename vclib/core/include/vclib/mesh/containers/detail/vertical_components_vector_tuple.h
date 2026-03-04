@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -38,13 +38,13 @@ class VerticalComponentsVectorTuple
 {
     using ComponentTypes = std::tuple<Comp...>;
 
-    static constexpr uint COMP_NUMBER =
+    static constexpr uint COMP_COUNT =
         std::tuple_size_v<std::tuple<std::vector<Comp>...>>;
 
     std::tuple<std::vector<typename Comp::DataValueType>...> mVecTuple;
 
-    std::array<bool, COMP_NUMBER> mVecEnabled;
-    std::size_t                   mSize = 0;
+    std::array<bool, COMP_COUNT> mVecEnabled;
+    std::size_t                  mSize = 0;
 
 public:
     VerticalComponentsVectorTuple()
@@ -52,7 +52,7 @@ public:
         (setComponentEnabled<Comp, !comp::IsOptionalComponent<Comp>>(), ...);
     }
 
-    static constexpr uint componentsNumber() { return COMP_NUMBER; }
+    static constexpr uint componentCount() { return COMP_COUNT; }
 
     template<typename C>
     constexpr bool hasComponent() const
@@ -78,23 +78,23 @@ public:
 
     void resize(std::size_t size)
     {
-        if constexpr (componentsNumber() > 0) {
-            vectorResize<componentsNumber() - 1>(size);
+        if constexpr (componentCount() > 0) {
+            vectorResize<componentCount() - 1>(size);
         }
         mSize = size;
     }
 
     void reserve(std::size_t size)
     {
-        if constexpr (componentsNumber() > 0) {
-            vectorReserve<componentsNumber() - 1>(size);
+        if constexpr (componentCount() > 0) {
+            vectorReserve<componentCount() - 1>(size);
         }
     }
 
     void compact(const std::vector<uint>& newIndices)
     {
-        if constexpr (componentsNumber() > 0) {
-            vectorCompact<componentsNumber() - 1>(newIndices);
+        if constexpr (componentCount() > 0) {
+            vectorCompact<componentCount() - 1>(newIndices);
         }
     }
 

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -233,10 +233,10 @@ void PrimitiveLines::setPoints(
 
     if (numElements > 1) {
         auto [vNormals, vNormalsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(vertCoords.size());
+            Context::getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
         auto [vColors, vColorsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<uint>(numVertices);
+            Context::getAllocatedBufferAndReleaseFn<uint>(numVertices);
 
         if (!setNormals) {
             for (uint i = 0; i < vertCoords.size(); i++)

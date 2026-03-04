@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -23,10 +23,10 @@
 #ifndef VCL_RENDER_VIEWER_TRACKBALL_H
 #define VCL_RENDER_VIEWER_TRACKBALL_H
 
-#include "camera.h"
 #include "lights/directional_light.h"
 
-#include <vclib/space/core/quaternion.h>
+#include <vclib/algorithms/core.h>
+#include <vclib/space/core.h>
 
 #include <variant>
 
@@ -61,7 +61,7 @@ public:
         FOV,
         FOCUS,
         DIR_LIGHT_ARC,
-        MOTION_NUMBER
+        MOTION_COUNT
     };
 
     struct TransformArgs
@@ -106,7 +106,7 @@ private:
 
     // trackball interaction state
     bool       mDragging       = false;
-    MotionType mCurrDragMotion = MOTION_NUMBER;
+    MotionType mCurrDragMotion = MOTION_COUNT;
 
     // initial arcball hit point
     Point3<Scalar> mInitialPoint;
@@ -256,12 +256,6 @@ public:
             if (scaleRatio < 0)
                 return; // center is behind the camera
 
-            std::cout << "adapting view to center "
-                      << transformedCenter.transpose()
-                      << " scaleRatio: " << scaleRatio << std::endl
-                      << " eyeToCenter: " << eyeToCenter.transpose()
-                      << std::endl
-                      << " toCenter: " << toCenter.transpose() << std::endl;
             mTransform.pretranslate(eyeToCenter);
             mTransform.prescale(1.0 / scaleRatio);
             mTransform.pretranslate(-eyeToCenter);
@@ -504,7 +498,7 @@ public:
      */
     void beginDragMotion(MotionType motion)
     {
-        assert(motion != MOTION_NUMBER && "Invalid motion type");
+        assert(motion != MOTION_COUNT && "Invalid motion type");
 
         // no need to restart?
         if (mCurrDragMotion == motion)
@@ -541,7 +535,7 @@ public:
     void update() // TODO: rename this function (it just updates the motion)
     {
         assert(
-            mDragging != (mCurrDragMotion == MOTION_NUMBER) &&
+            mDragging != (mCurrDragMotion == MOTION_COUNT) &&
             "Invalid state: dragging and no motion");
         if (mDragging && mCurrMousePosition != mPrevMousePosition)
             drag(mCurrDragMotion);
@@ -552,7 +546,7 @@ private:
 
     void setDragMotionValue(MotionType motion, bool value)
     {
-        mCurrDragMotion = value ? motion : MOTION_NUMBER;
+        mCurrDragMotion = value ? motion : MOTION_COUNT;
     }
 
     void drag(MotionType motion)

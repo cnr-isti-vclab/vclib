@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -69,7 +69,7 @@ auto elementQualityAverage(const MeshType& m)
 
     auto eq = m.template elements<ELEM_ID>() | views::quality;
     return std::accumulate(std::ranges::begin(eq), std::ranges::end(eq), 0.0) /
-           m.template number<ELEM_ID>();
+           m.template count<ELEM_ID>();
 }
 
 template<uint ELEM_ID, MeshConcept MeshType>

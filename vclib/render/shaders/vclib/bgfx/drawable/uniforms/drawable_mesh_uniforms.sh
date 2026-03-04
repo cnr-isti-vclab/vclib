@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -24,8 +24,9 @@
 #define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
 
 uniform vec4 u_meshColor;
-uniform vec4 u_meshData; // x: first chunk index
+uniform vec4 u_meshData; // x: meshId; y: first chunk index
 
-#define u_firstChunkPrimitiveID floatBitsToUint(u_meshData.x)
+#define u_meshId floatBitsToUint(u_meshData.x)
+#define u_firstChunkPrimitiveID floatBitsToUint(u_meshData.y)
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH

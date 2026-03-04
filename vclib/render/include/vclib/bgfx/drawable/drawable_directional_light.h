@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,8 +22,6 @@
 
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
-
-#include "uniforms/drawable_directional_light_uniforms.h"
 
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/viewer/lights/directional_light.h>
@@ -46,8 +44,6 @@ class DrawableDirectionalLight : public DrawableObject
     vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
 
     VertexBuffer mVertexPosBuffer;
-
-    DrawableDirectionalLightUniforms mUniform;
 
 public:
     DrawableDirectionalLight();

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -121,7 +121,7 @@ public:
                      typename MeshType::VertexType::PositionType,
                      PointType>)
             :
-            mPoints(m.vertexNumber()), mIndices(m.vertexNumber()),
+            mPoints(m.vertexCount()), mIndices(m.vertexCount()),
             mPointsPerCell(pointsPerCell), mMaxDepth(maxDepth)
     {
         using VertexType = MeshType::VertexType;

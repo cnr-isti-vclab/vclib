@@ -223,7 +223,7 @@ void GPUInstancingLines::allocateVertexCoords(
     const std::vector<float>& vertCoords)
 {
     auto [buffer, releaseFn] =
-        linesGetAllocatedBufferAndReleaseFn<float>(vertCoords.size());
+        Context::getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
     std::copy(vertCoords.begin(), vertCoords.end(), buffer);
 
@@ -242,7 +242,7 @@ void GPUInstancingLines::allocateLineIndices(
     const std::vector<uint>& lineIndices)
 { 
     auto [buffer, releaseFn] =
-        linesGetAllocatedBufferAndReleaseFn<uint>(lineIndices.size());
+        Context::getAllocatedBufferAndReleaseFn<uint>(lineIndices.size());
 
     std::copy(lineIndices.begin(), lineIndices.end(), buffer);
 
@@ -258,7 +258,7 @@ void GPUInstancingLines::allocateVertexNormals(
     const std::vector<float>& vertNormals)
 {
     auto [buffer, releaseFn] =
-        linesGetAllocatedBufferAndReleaseFn<float>(vertNormals.size());
+        Context::getAllocatedBufferAndReleaseFn<float>(vertNormals.size());
 
     std::copy(vertNormals.begin(), vertNormals.end(), buffer);
 
@@ -277,7 +277,7 @@ void GPUInstancingLines::allocateVertexColors(
     const std::vector<uint>& vertColors)
 {
     auto [buffer, releaseFn] =
-        linesGetAllocatedBufferAndReleaseFn<uint>(vertColors.size());
+        Context::getAllocatedBufferAndReleaseFn<uint>(vertColors.size());
 
     std::copy(vertColors.begin(), vertColors.end(), buffer);
 
@@ -297,7 +297,7 @@ void GPUInstancingLines::allocateVertexLineColors(
     const std::vector<uint>& lineColors)
 {
     auto [buffer, releaseFn] =
-        linesGetAllocatedBufferAndReleaseFn<uint>(lineColors.size());
+        Context::getAllocatedBufferAndReleaseFn<uint>(lineColors.size());
 
     std::copy(lineColors.begin(), lineColors.end(), buffer);
 

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -37,6 +37,16 @@ namespace vcl {
  */
 template<typename T>
 concept Range = std::ranges::range<T>;
+
+/**
+ * @brief Utility concept that is evaluated true if T is a Random Access Range.
+ *
+ * It is equivalent to std::ranges::random_access_range.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept RandomAccessRange = std::ranges::random_access_range<T>;
 
 /**
  * @brief Utility concept that is evaluated true the Range R has a value_type

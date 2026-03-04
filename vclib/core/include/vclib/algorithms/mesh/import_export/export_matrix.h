@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -71,7 +71,7 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexPositionsMatrix(const MeshType& mesh)
 {
-    Matrix vM(mesh.vertexNumber(), 3);
+    Matrix vM(mesh.vertexCount(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -117,7 +117,7 @@ Vect faceSizesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Vect fM(mesh.faceNumber());
+    Vect fM(mesh.faceCount());
 
     faceSizesToBuffer(mesh, fM.data());
 
@@ -160,7 +160,7 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    uint nIndices = countPerFaceVertexReferences(mesh);
+    uint nIndices = faceVertexReferencesCount(mesh);
 
     Vect fV(nIndices);
 
@@ -210,7 +210,7 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
 
     uint fMaxSize = largestFaceSize(mesh);
 
-    Matrix fM(mesh.faceNumber(), fMaxSize);
+    Matrix fM(mesh.faceCount(), fMaxSize);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -253,14 +253,14 @@ Matrix triangulatedFaceVertexIndicesMatrix(
 {
     requireVertexContainerCompactness(mesh);
 
-    uint tNumber = vcl::countTriangulatedTriangles(mesh);
+    uint tCount = vcl::triangulatedFaceCount(mesh);
 
-    Matrix tM(tNumber, 3);
+    Matrix tM(tCount, 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
     triangulatedFaceVertexIndicesToBuffer(
-        mesh, tM.data(), indexMap, stg, tNumber);
+        mesh, tM.data(), indexMap, stg, tCount);
 
     return tM;
 }
@@ -300,7 +300,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix eM(mesh.edgeNumber(), 2);
+    Matrix eM(mesh.edgeCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -341,7 +341,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-    Vect sV(mesh.template number<ELEM_ID>());
+    Vect sV(mesh.template count<ELEM_ID>());
 
     vcl::elementSelectionToBuffer<ELEM_ID>(mesh, sV.data());
     return sV;
@@ -480,7 +480,7 @@ Vect edgeSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-    Matrix eNM(mesh.template number<ELEM_ID>(), 3);
+    Matrix eNM(mesh.template count<ELEM_ID>(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -585,7 +585,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-    Matrix eCM(mesh.template number<ELEM_ID>(), 4);
+    Matrix eCM(mesh.template count<ELEM_ID>(), 4);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -629,7 +629,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
-    Vect eCV(mesh.template number<ELEM_ID>());
+    Vect eCV(mesh.template count<ELEM_ID>());
 
     elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
 
@@ -873,7 +873,7 @@ Vect edgeColorsVector(const MeshType& mesh, Color::Format colorFormat)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-    Vect eQV(mesh.template number<ELEM_ID>());
+    Vect eQV(mesh.template count<ELEM_ID>());
 
     elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
 
@@ -1008,7 +1008,7 @@ Vect edgeQualityVector(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 {
-    Matrix vTCM(mesh.vertexNumber(), 2);
+    Matrix vTCM(mesh.vertexCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1018,22 +1018,22 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#V vector of scalars containing the texcoord indices of the
+ * @brief Get a \#V vector of scalars containing the material indices of the
  * vertices of a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
  * size_t argument and an operator[uint], and requires that the mesh has
- * per-vertex texcoords.
+ * per-vertex material indices.
  *
  * Usage example with Eigen Vector:
  *
  * @code{.cpp}
  * Eigen::VectorXd VTI =
- *     vcl::vertexTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ *     vcl::vertexMaterialIndicesVector<Eigen::VectorXd>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
- * texcoords available.
+ * material indices available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -1041,16 +1041,16 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
  * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
- * @return \#V vector of scalars (vertex texcoord indices)
+ * @return \#V vector of scalars (vertex material indices)
  *
  * @ingroup export_matrix
  */
 template<typename Vect, MeshConcept MeshType>
-Vect vertexTexCoordIndicesVector(const MeshType& mesh)
+Vect vertexMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect vTCI(mesh.vertexNumber());
+    Vect vTCI(mesh.vertexCount());
 
-    vertexTexCoordIndicesToBuffer(mesh, vTCI.data());
+    vertexMaterialIndicesToBuffer(mesh, vTCI.data());
 
     return vTCI;
 }
@@ -1088,7 +1088,7 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 {
     uint lfs = vcl::largestFaceSize(mesh);
 
-    Matrix fTCM(mesh.faceNumber(), lfs * 2);
+    Matrix fTCM(mesh.faceCount(), lfs * 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1098,22 +1098,22 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#F vector of scalars containing the wedge texcoord indices of
+ * @brief Get a \#F vector of scalars containing the material indices of
  * the faces of a Mesh. The function is templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
  * size_t argument and an operator[uint], and requires that the mesh has
- * per-face texcoords.
+ * per-face material indices.
  *
  * Usage example with Eigen Vector:
  *
  * @code{.cpp}
  * Eigen::VectorXd VTI =
- *     vcl::faceWedgeTexCoordIndicesVector<Eigen::VectorXd>(myMesh);
+ *     vcl::faceWedgeMaterialIndicesVector<Eigen::VectorXd>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
- * wedge texcoords available.
+ * material indices available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible
@@ -1121,16 +1121,16 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
  * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
- * @return \#F vector of scalars (face wedge texcoord indices)
+ * @return \#F vector of scalars (face material indices)
  *
  * @ingroup export_matrix
  */
 template<typename Vect, FaceMeshConcept MeshType>
-Vect faceWedgeTexCoordIndicesVector(const MeshType& mesh)
+Vect faceMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect fTCI(mesh.faceNumber());
+    Vect fTCI(mesh.faceCount());
 
-    faceWedgeTexCoordIndicesToBuffer(mesh, fTCI.data());
+    faceMaterialIndicesToBuffer(mesh, fTCI.data());
 
     return fTCI;
 }
@@ -1176,13 +1176,13 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
     requireVertexContainerCompactness(mesh);
     requirePerVertexAdjacentVertices(mesh);
 
-    Container<Container<T>> vv(mesh.vertexNumber());
+    Container<Container<T>> vv(mesh.vertexCount());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.vertices()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjVerticesNumber());
+        vec.resize(v.adjVertexCount());
         auto vecIt = vec.begin();
         for (const auto* ve : v.adjVertices()) {
             uint idx = ve ? ve->index() : UINT_NULL;
@@ -1228,9 +1228,9 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
 {
-    uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
+    uint lva = vcl::largestPerVertexAdjacentVerticesCount(mesh);
 
-    Matrix vAVM(mesh.vertexNumber(), lva);
+    Matrix vAVM(mesh.vertexCount(), lva);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1289,13 +1289,13 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
     requireFaceContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjFacesNumber());
+        vec.resize(v.adjFaceCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjFaces()) {
             uint idx = fe ? fe->index() : UINT_NULL;
@@ -1348,9 +1348,9 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
 {
-    uint lfa = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(mesh);
+    uint lfa = vcl::largestPerElementAdjacentFacesCount<ELEM_ID>(mesh);
 
-    Matrix eAFM(mesh.template number<ELEM_ID>(), lfa);
+    Matrix eAFM(mesh.template count<ELEM_ID>(), lfa);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1665,13 +1665,13 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
     requireEdgeContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjEdgesNumber());
+        vec.resize(v.adjEdgeCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjEdges()) {
             uint idx = fe ? fe->index() : UINT_NULL;
@@ -1724,9 +1724,9 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
 {
-    uint lea = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(mesh);
+    uint lea = vcl::largestPerElementAdjacentEdgesCount<ELEM_ID>(mesh);
 
-    Matrix eAEM(mesh.template number<ELEM_ID>(), lea);
+    Matrix eAEM(mesh.template count<ELEM_ID>(), lea);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 

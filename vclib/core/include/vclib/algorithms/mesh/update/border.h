@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -49,10 +49,10 @@ void updateBorder(MeshType& m)
     using FaceType   = MeshType::FaceType;
 
     for (FaceType& f : m.faces())
-        for (uint i = 0; i < f.vertexNumber(); ++i)
+        for (uint i = 0; i < f.vertexCount(); ++i)
             f.edgeOnBorder(i) = false;
 
-    if (m.faceNumber() == 0)
+    if (m.faceCount() == 0)
         return;
 
     std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);

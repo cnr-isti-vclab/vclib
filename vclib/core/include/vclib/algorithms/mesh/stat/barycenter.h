@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -50,7 +50,7 @@ auto barycenter(const MeshType& m) -> MeshType::VertexType::PositionType
         bar += v.position();
     }
 
-    return bar / m.vertexNumber();
+    return bar / m.vertexCount();
 }
 
 /**
@@ -75,7 +75,7 @@ auto weightedBarycenter(const MeshType& m, Range auto&& weights)
     using PositionType = VertexType::PositionType;
     using RType        = std::ranges::range_value_t<decltype(weights)>;
 
-    assert(std::ranges::size(weights) == m.vertexNumber());
+    assert(std::ranges::size(weights) == m.vertexCount());
 
     PositionType bar;
     RType        weightedSum = 0;

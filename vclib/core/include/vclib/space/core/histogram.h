@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -141,44 +141,44 @@ public:
      * @brief Minimum value of the range where the histogram is defined.
      * @return
      */
-    ScalarType minRangeValue() const { return mMinRange; }
+    ScalarType rangeValueMin() const { return mMinRange; }
 
     /**
      * @brief Maximum value of the range where the histogram is defined.
      * @return
      */
-    ScalarType maxRangeValue() const { return mMaxRange; }
+    ScalarType rangeValueMax() const { return mMaxRange; }
 
     /**
      * @brief Total sum of inserted values.
      * @return
      */
-    ScalarType sumValues() const { return mSum; }
+    ScalarType valueSum() const { return mSum; }
 
     /**
      * @brief Number of values inserted in the histogram.
      * @return
      */
-    ScalarType numberValues() const { return mCnt; }
+    ScalarType valueCount() const { return mCnt; }
 
     /**
      * @brief Minimum value that has been added to the histogram.
      * @return
      */
-    ScalarType minValue() const { return mMin; }
+    ScalarType valueMin() const { return mMin; }
 
     /**
      * @brief Maximum value that has been added to the histogram.
      * @return
      */
-    ScalarType maxValue() const { return mMax; }
+    ScalarType valueMax() const { return mMax; }
 
     /**
      * @brief Max number of values among all bins (including the two infinity
      * bounded bins)
      * @return
      */
-    ScalarType maxBinCount() const
+    ScalarType binValuesCountMax() const
     {
         return *(std::max_element(mHist.begin(), mHist.end()));
     }
@@ -188,7 +188,7 @@ public:
      * maxRangeValue.
      * @return
      */
-    ScalarType maxBinCountInRange() const
+    ScalarType binValuesCountInRangeMax() const
     {
         return *(std::max_element(mHist.begin() + 1, mHist.end() - 1));
     }
@@ -197,9 +197,9 @@ public:
      * @brief Number of intervals in the histogram
      * @return
      */
-    uint binsNumber() const { return mBinNumber; }
+    uint binCount() const { return mBinNumber; }
 
-    ScalarType binCount(uint ind) const { return mHist[ind]; }
+    ScalarType binValuesCount(uint ind) const { return mHist[ind]; }
 
     ScalarType binLowerBound(uint ind) const { return mRanges[ind]; }
 

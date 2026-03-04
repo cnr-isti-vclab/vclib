@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -80,10 +80,19 @@ void CPUGeneratedLines::setPoints(
 
 void CPUGeneratedLines::draw(uint viewId) const
 {
-    mVertexCoords.bind(0);
-    mVertexColors.bind(1);
-    mVertexNormals.bind(2);
-    
+    assert(mVertexCoords.isValid());
+    uint stream = 0;
+
+    // streams MUST be consecutive starting from 0
+    // otherwise on metal it won't work
+    mVertexCoords.bind(stream++);
+
+    if (mVertexColors.isValid())
+        mVertexColors.bind(stream++);
+
+    if (mVertexNormals.isValid())
+        mVertexNormals.bind(stream++);
+
     mLineColors.bind(0);
     mIndices.bind();
     bgfx::setState(linesDrawState());
@@ -120,16 +129,19 @@ void CPUGeneratedLines::setPoints(
         uint bufferIndsSize = (nPoints / 2) * 6;
 
         auto [vCoords, vCoordsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertCoordsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertCoordsSize);
 
         auto [vColors, vColorsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertColorsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertColorsSize);
 
         auto [vNormals, vNormalsReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<float>(bufferVertNormalsSize);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                bufferVertNormalsSize);
 
         auto [indices, iReleaseFn] =
-            linesGetAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(bufferIndsSize);
 
         uint viCoords  = 0;
         uint viColors  = 0;

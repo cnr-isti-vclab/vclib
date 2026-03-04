@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -30,23 +30,30 @@ namespace vcl {
 
 class DrawableDirectionalLightUniforms
 {
-    float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
+    inline static std::array<float, 4> sLightColor = {1.0, 1.0, 0.0, 1.0};
 
-    Uniform mLightColorUniform =
-        Uniform("u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
+    inline static Uniform sLightColorUniform;
 
 public:
-    DrawableDirectionalLightUniforms() = default;
+    DrawableDirectionalLightUniforms() = delete;
 
-    void setColor(const vcl::Color& color)
+    static void setColor(const vcl::Color& color)
     {
-        mLightColor[0] = color.redF();
-        mLightColor[1] = color.greenF();
-        mLightColor[2] = color.blueF();
-        mLightColor[3] = color.alphaF();
+        sLightColor[0] = color.redF();
+        sLightColor[1] = color.greenF();
+        sLightColor[2] = color.blueF();
+        sLightColor[3] = color.alphaF();
     }
 
-    void bind() const { mLightColorUniform.bind(mLightColor); }
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sLightColorUniform.isValid())
+            sLightColorUniform = Uniform(
+                "u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
+        sLightColorUniform.bind(sLightColor.data());
+    }
 };
 
 } // namespace vcl

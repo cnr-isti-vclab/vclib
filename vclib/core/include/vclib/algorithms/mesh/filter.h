@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -118,7 +118,7 @@ OutMeshType perElementMeshFilterWithVRefs(
     for (const auto& [birthF, filter] :
          std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng)) {
         if (filter) {
-            std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
+            std::vector<uint> verts(birthF.vertexCount(), UINT_NULL);
             uint vi = 0; // incremented with vertices of the element
             // set all the vertex indices in the verts vector
             // two cases here:
@@ -156,7 +156,7 @@ OutMeshType perElementMeshFilterWithVRefs(
             // import all the components from the input mesh
             res.template element<ELEM_ID>(f).importFrom(birthF, false);
 
-            if constexpr (OutElemType::VERTEX_NUMBER < 0) {
+            if constexpr (OutElemType::VERTEX_COUNT < 0) {
                 res.template element<ELEM_ID>(f).resizeVertices(verts.size());
             }
 
@@ -604,7 +604,7 @@ OutMeshType perFaceEdgeMeshFilter(
         unorderedEdges;
 
     for (const auto& f : m.faces()) {
-        for (uint ei = 0; ei < f.vertexNumber(); ++ei) {
+        for (uint ei = 0; ei < f.vertexCount(); ++ei) {
             if (faceEdgeFilter(f, ei)) {
                 std::array<uint, 2> verts = {UINT_NULL, UINT_NULL};
                 for (uint i = 0; i < 2; ++i) {

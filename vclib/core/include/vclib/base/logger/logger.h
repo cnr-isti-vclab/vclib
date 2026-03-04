@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -50,7 +50,7 @@ class Logger : public AbstractLogger
 
     enum InternalLogLevel { START = DEBUG_LOG + 1, END };
 
-    static const uint TIMER_MAX_CHAR_NUMBER = 12;
+    static const uint TIMER_MAX_CHAR_COUNT = 12;
 
     uint mPercPrecision = 0;
 
@@ -318,7 +318,7 @@ private:
     {
         uint maxMsgSize = mLineWidth - n;
         if (mPrintTimer)
-            maxMsgSize -= TIMER_MAX_CHAR_NUMBER;
+            maxMsgSize -= TIMER_MAX_CHAR_COUNT;
         switch (lvl) {
         case LogLevel::ERROR_LOG:
             maxMsgSize -= 8;
@@ -354,7 +354,7 @@ private:
     {
         if (mPrintTimer) {
             o << "[";
-            setWidth(o, TIMER_MAX_CHAR_NUMBER - 3);
+            setWidth(o, TIMER_MAX_CHAR_COUNT - 3);
             alignRight(o);
             o << mTimer.delay() << "s]";
         }

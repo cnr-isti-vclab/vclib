@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -110,9 +110,12 @@ public:
         return (mPoint1 - mPoint0).normalize();
     }
 
-    ScalarType length() const { (mPoint0 - mPoint1).norm(); }
+    ScalarType length() const { return (mPoint0 - mPoint1).norm(); }
 
-    ScalarType squaredLength() const { (mPoint0 - mPoint1).squaredNorm(); }
+    ScalarType squaredLength() const
+    {
+        return (mPoint0 - mPoint1).squaredNorm();
+    }
 
     void flip() { std::swap(mPoint0, mPoint1); }
 

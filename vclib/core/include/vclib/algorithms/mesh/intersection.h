@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -96,7 +96,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
     for (const FaceType& f : m.faces()) {
         std::vector<PositionType> ptVec;
         std::vector<PositionType> nmVec;
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (qH[m.index(f.vertex(j))] == 0) {
                 ptVec.push_back(f.vertex(j)->position());
                 if constexpr (HasPerVertexNormal<MeshType>) {

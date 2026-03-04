@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -91,7 +91,7 @@ void loadGltf(
         typename MeshType::TransformMatrixType,
         Matrix44<ScalarType>>;
 
-    uint nMeshes = gltfNumberMeshes(model);
+    uint nMeshes = gltfMeshCount(model);
 
     Matrix44m identityMatrix = Matrix44m::Identity();
 

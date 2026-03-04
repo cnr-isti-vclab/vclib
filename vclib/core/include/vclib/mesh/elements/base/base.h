@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -56,7 +56,7 @@ struct ElemId
         VERTEX = 0,
         FACE,
         EDGE,
-        ELEMENTS_NUMBER,
+        ELEMENT_COUNT,
     };
 };
 
@@ -66,7 +66,7 @@ struct ElemId
  *
  * @ingroup base
  */
-constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
+constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENT_COUNT] = {
     "Vertex",
     "Face",
     "Edge",
@@ -77,7 +77,7 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
  * to a ELEM_ID value, trough its member 'str'.
  *
  * If you use a custom element class, you should specialize this struct with
- * your ELEM_ID value (that is >= ELEMENTS_NUMBER).
+ * your ELEM_ID value (that is >= ELEMENT_COUNT).
  *
  * @tparam ELEM_ID: The ELEM_ID value associated to the string.
  *
@@ -89,7 +89,7 @@ struct ElementString
     /**
      * @brief The string associated to the ELEM_ID.
      */
-    const char* str = ELEM_ID < ElemId::ELEMENTS_NUMBER ?
+    const char* str = ELEM_ID < ElemId::ELEMENT_COUNT ?
                           ELEMENT_ENUM_STRINGS[ELEM_ID] :
                           nullptr;
 };

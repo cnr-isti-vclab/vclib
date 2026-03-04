@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -97,10 +97,10 @@ public:
     template<FaceConcept FaceType>
     void add(const FaceType& f, const std::vector<ScalarType>& barCoords)
     {
-        assert(f.vertexNumber() <= barCoords.size());
+        assert(f.vertexCount() <= barCoords.size());
 
         PointT p;
-        for (uint i = 0; i < f.vertexNumber(); i++)
+        for (uint i = 0; i < f.vertexCount(); i++)
             p += f.vertex(i)->position() * barCoords[i];
 
         mSamples.push_back(p);
@@ -112,10 +112,10 @@ public:
         const FaceType&                f,
         const std::vector<ScalarType>& barCoords)
     {
-        assert(f.vertexNumber() <= barCoords.size());
+        assert(f.vertexCount() <= barCoords.size());
 
         PointT p;
-        for (uint i = 0; i < f.vertexNumber(); i++)
+        for (uint i = 0; i < f.vertexCount(); i++)
             p += f.vertex(i)->position() * barCoords[i];
 
         mSamples[i] = p;
@@ -126,7 +126,7 @@ public:
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
         if constexpr (FaceType::NV == -1) {
-            assert(f.vertexNumber() == 3);
+            assert(f.vertexCount() == 3);
         }
 
         PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
@@ -139,7 +139,7 @@ public:
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
         if constexpr (FaceType::NV == -1) {
-            assert(f.vertexNumber() == 3);
+            assert(f.vertexCount() == 3);
         }
 
         PointT p = triangleBarycentricCoordinatePoint(f, barCoords);

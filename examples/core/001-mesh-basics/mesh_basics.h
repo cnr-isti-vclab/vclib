@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -53,13 +53,13 @@ auto meshBasics()
     mesh.addVertex(vcl::Point3d(0, 1, 0)); // vertex 2
     mesh.addVertex(vcl::Point3d(1, 1, 0)); // vertex 3
 
-    std::cout << "Added " << mesh.vertexNumber() << " vertices" << std::endl;
+    std::cout << "Added " << mesh.vertexCount() << " vertices" << std::endl;
 
     // Add faces (triangles) using vertex indices
     mesh.addFace(0, 1, 2); // first triangle
     mesh.addFace(1, 3, 2); // second triangle
 
-    std::cout << "Added " << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Added " << mesh.faceCount() << " faces" << std::endl;
 
     /****** Accessing mesh elements ******/
 
@@ -166,12 +166,12 @@ auto meshBasics()
     face.pushVertex(&polyMesh.vertex(2));
     face.pushVertex(&polyMesh.vertex(3));
 
-    std::cout << "Created polygon with " << face.vertexNumber() << " vertices"
+    std::cout << "Created polygon with " << face.vertexCount() << " vertices"
               << std::endl;
 
     // Iterate over vertices of the polygon face
     std::cout << "Polygon vertices: ";
-    for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+    for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
         std::cout << face.vertexIndex(i) << " ";
     }
     std::cout << std::endl;
@@ -181,14 +181,14 @@ auto meshBasics()
     std::cout << "\n=== Mesh Statistics ===" << std::endl;
 
     std::cout << "TriMesh:" << std::endl;
-    std::cout << "  Vertices: " << mesh.vertexNumber() << std::endl;
-    std::cout << "  Faces: " << mesh.faceNumber() << std::endl;
+    std::cout << "  Vertices: " << mesh.vertexCount() << std::endl;
+    std::cout << "  Faces: " << mesh.faceCount() << std::endl;
     std::cout << "  Container sizes - Vertices: " << mesh.vertexContainerSize()
               << ", Faces: " << mesh.faceContainerSize() << std::endl;
 
     std::cout << "PolyMesh:" << std::endl;
-    std::cout << "  Vertices: " << polyMesh.vertexNumber() << std::endl;
-    std::cout << "  Faces: " << polyMesh.faceNumber() << std::endl;
+    std::cout << "  Vertices: " << polyMesh.vertexCount() << std::endl;
+    std::cout << "  Faces: " << polyMesh.faceCount() << std::endl;
 
     /****** Computing and displaying barycenter and bounding box ******/
 
@@ -199,7 +199,7 @@ auto meshBasics()
     for (const auto& vertex : mesh.vertices()) {
         barycenter += vertex.position();
     }
-    barycenter /= mesh.vertexNumber();
+    barycenter /= mesh.vertexCount();
 
     std::cout << "Mesh barycenter: " << barycenter << std::endl;
 

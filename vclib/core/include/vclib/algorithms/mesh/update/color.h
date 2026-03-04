@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -52,7 +52,7 @@ void setPerElemColorFromVertexColor(MeshType& m)
         for (const auto* v : e.vertices()) {
             avg += v->color().template cast<uint>();
         }
-        avg /= e.vertexNumber();
+        avg /= e.vertexCount();
         e.color() = avg.template cast<uint8_t>();
     }
 }
@@ -77,6 +77,23 @@ void setPerVertexColorFromElemColor(MeshType& m)
         if (avgColors[v.index()].cnt > 0) {
             avgColors[v.index()].c /= avgColors[v.index()].cnt;
             v.color() = avgColors[v.index()].c.template cast<uint8_t>();
+        }
+    }
+}
+
+template<uint ELEM_ID, MeshConcept MeshType>
+void setPerElemColorFromMaterial(MeshType& m)
+{
+    static_assert(
+        HasMaterials<MeshType>,
+        "The input Mesh must have the Materials component.");
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
+    requirePerElementComponent<ELEM_ID, CompId::MATERIAL_INDEX>(m);
+
+    for (auto& e : m.template elements<ELEM_ID>()) {
+        uint matIndex = e.materialIndex();
+        if (matIndex < m.materialCount()) {
+            e.color() = m.materials()[matIndex].baseColor();
         }
     }
 }
@@ -348,6 +365,50 @@ void setPerFaceColorFromQuality(
 }
 
 /**
+ * @brief Sets the per-vertex color of a mesh according to a material assigned
+ * to each vertex.
+ *
+ * This function assigns a color to each vertex based on the material associated
+ * with it. The color is derived from the base color of the material.
+ *
+ * @note The base color of the material is applied only if the material index
+ * is valid (i.e., less than the number of materials in the mesh).
+ *
+ * @tparam MeshType The type of the mesh, which must satisfy the MeshConcept.
+ *
+ * @param[in] m: The mesh whose vertices will have their colors set.
+ *
+ * @ingroup update
+ */
+template<MeshConcept MeshType>
+void setPerVertexColorFromMaterial(MeshType& m)
+{
+    detail::setPerElemColorFromMaterial<ElemId::VERTEX>(m);
+}
+
+/**
+ * @brief Sets the per-face color of a mesh according to a material assigned to
+ * each face.
+ *
+ * This function assigns a color to each face based on the material associated
+ * with it. The color is derived from the base color of the material.
+ *
+ * @note The base color of the material is applied only if the material index
+ * is valid (i.e., less than the number of materials in the mesh).
+ *
+ * @tparam MeshType The type of the mesh, which must satisfy the MeshConcept.
+ *
+ * @param[in] m: The mesh whose faces will have their colors set.
+ *
+ * @ingroup update
+ */
+template<FaceMeshConcept MeshType>
+void setPerFaceColorFromMaterial(MeshType& m)
+{
+    detail::setPerElemColorFromMaterial<ElemId::FACE>(m);
+}
+
+/**
  * @brief Color the vertices of the mesh that are on border, using the border
  * flags of the faces.
  *
@@ -388,7 +449,7 @@ void setPerVertexColorFromFaceBorderFlag(
     setPerVertexColor(m, baseColor);
 
     for (FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeOnBorder(i)) {
                 if (f.vertex(i)->color() == baseColor)
                     f.vertex(i)->color() = borderColor;
@@ -519,7 +580,7 @@ void setPerFaceColorScattering(
         }
         if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
             if (checkFauxEdges && isPerFaceAdjacentFacesAvailable(m)) {
-                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                for (uint i = 0; i < f.vertexCount(); ++i) {
                     if (f.edgeFaux(i)) {
                         assert(f.adjFace(i) != nullptr);
                         f.adjFace(i)->color() = f.color();

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -141,8 +141,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = plyPolyCube();
         vcl::loadPly(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - TriCube")
@@ -150,8 +150,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = plyTriCube();
         vcl::loadPly(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - VertTextureDouble")
@@ -159,13 +159,14 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         vcl::loadPly(
             tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
+        REQUIRE(tm.isPerVertexMaterialIndexEnabled());
         for (const auto& v : tm.vertices()) {
             // first four vertices have index 0, the other four have index 1
-            REQUIRE(v.texCoord().index() == v.index() / 4);
+            REQUIRE(v.materialIndex() == v.index() / 4);
         }
     }
 
@@ -173,13 +174,15 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm;
         vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.textureNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
+        REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+        // TODO
         for (const auto& f : tm.faces()) {
-            // first two faces have texture index 0, the other two have index 1
-            REQUIRE(f.textureIndex() == f.index() / 2);
+            // first two faces have material index 0, the other two have index 1
+            REQUIRE(f.materialIndex() == f.index() / 2);
         }
     }
 
@@ -188,8 +191,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = plyPolyCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 6);
     }
 
     SECTION("PolyMesh - TriCube")
@@ -197,8 +200,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 12);
     }
 
     SECTION("EdgeMesh - PolyCube")
@@ -206,8 +209,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh em;
         auto     ss = plyPolyCube();
         vcl::loadPly(em, ss, info);
-        REQUIRE(em.vertexNumber() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.vertexCount() == 8);
+        REQUIRE(em.edgeCount() == 4);
     }
 
     SECTION("EdgeMesh - TriCube")
@@ -215,7 +218,7 @@ TEMPLATE_TEST_CASE(
         EdgeMesh pm;
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.edgeCount() == 4);
     }
 }

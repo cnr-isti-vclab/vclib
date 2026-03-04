@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -39,12 +39,16 @@ namespace vcl {
  */
 class AbstractDrawableMesh : public vcl::DrawableObject
 {
+    inline static const Image EMPTY_IMAGE;
+
 protected:
     MeshRenderSettings mMRS;
 
     Box3d mBoundingBox;
 
 public:
+    using MatIt = std::vector<Material>::const_iterator;
+
     AbstractDrawableMesh() = default;
 
     AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
@@ -62,17 +66,19 @@ public:
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
-    virtual uint vertexNumber() const = 0;
+    virtual uint vertexCount() const = 0;
 
-    virtual uint faceNumber() const = 0;
+    virtual uint faceCount() const = 0;
 
-    virtual uint edgeNumber() const = 0;
+    virtual uint edgeCount() const = 0;
 
     virtual vcl::Matrix44d transformMatrix() const = 0;
 
-    virtual std::vector<std::string> textures() const
+    virtual View<MatIt> materials() const { return View<MatIt>(); }
+
+    virtual const Image& textureImage(const std::string& path) const
     {
-        return std::vector<std::string>();
+        return EMPTY_IMAGE;
     }
 
     // DrawableObject implementation

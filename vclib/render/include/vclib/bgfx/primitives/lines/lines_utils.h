@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -25,8 +25,6 @@
 
 #include <bgfx/bgfx.h>
 
-#include <utility>
-
 namespace vcl::detail {
 
 inline uint64_t linesDrawState()
@@ -35,16 +33,6 @@ inline uint64_t linesDrawState()
            BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
 }
 
-template<typename T>
-inline std::pair<T*, bgfx::ReleaseFn> linesGetAllocatedBufferAndReleaseFn(
-    uint size)
-{
-    T* buffer = new T[size];
-
-    return std::make_pair(buffer, [](void* ptr, void*) {
-        delete[] static_cast<T*>(ptr);
-    });
-}
 } // namespace vcl::detail
 
 #endif // VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H

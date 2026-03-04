@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -51,6 +51,7 @@ class Edge;
  * @extends vert::OptionalAdjacentEdges
  * @extends vert::OptionalAdjacentVertices
  * @extends vert::OptionalTexCoord
+ * @extends vert::OptionalMaterialIndex
  * @extends vert::OptionalMark
  * @extends vert::CustomComponents
  *
@@ -72,6 +73,7 @@ class Vertex :
             vert::OptionalAdjacentEdges<I, Edge<Scalar, I>, Vertex<Scalar, I>>,
             vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
             vert::CustomComponents<Vertex<Scalar, I>>>
 {
@@ -137,8 +139,8 @@ namespace vcl {
  * @extends mesh::BoundingBox3
  * @extends mesh::Color
  * @extends mesh::Mark
+ * @extends mesh::Materials
  * @extends mesh::Name
- * @extends mesh::TextureImages
  * @extends mesh::TransformMatrix
  * @extends mesh::CustomComponents
  *
@@ -151,8 +153,8 @@ class EdgeMeshT :
             mesh::EdgeContainer<edgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
+            mesh::Materials,
             mesh::Name,
-            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

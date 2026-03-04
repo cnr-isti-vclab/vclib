@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -31,11 +31,18 @@ namespace vcl::qt {
 
 class DrawableObjectItem : public QTreeWidgetItem
 {
+public:
+    using IconFunction =
+        std::function<std::pair<QIcon, std::string>(const DrawableObject&)>;
+
+private:
     std::shared_ptr<DrawableObject> mObj;
+    IconFunction                    mIconFunction;
 
 public:
     explicit DrawableObjectItem(
         const std::shared_ptr<DrawableObject>& obj,
+        IconFunction                           iconFunction,
         QTreeWidget*                           parent = nullptr);
 
     std::shared_ptr<DrawableObject> drawableObject() const;
@@ -45,7 +52,11 @@ private:
 
     void addMeshInfoItem(const AbstractDrawableMesh& mesh);
     void addTransformMatrixItem(const AbstractDrawableMesh& mesh);
-    void addTexturesItem(const AbstractDrawableMesh& mesh);
+    void addMaterialsItem(const AbstractDrawableMesh& mesh);
+    void addMaterialData(
+        const AbstractDrawableMesh& mesh,
+        const Material&             material,
+        QTreeWidgetItem*            parent);
 
     static void makeItemNotSelectable(QTreeWidgetItem* item);
 };

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -64,8 +64,8 @@ auto meshMatrixConversion()
     for (auto& f : mesh.faces())
         f.color() = randomColor();
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Export basic geometry
     Eigen::MatrixXd vertices =
@@ -105,8 +105,8 @@ auto meshMatrixConversion()
     vcl::vertexColorsFromMatrix(importedMesh, vertexColors);
     vcl::faceColorsFromMatrix(importedMesh, faceColors);
 
-    std::cout << "Imported mesh: " << importedMesh.vertexNumber()
-              << " vertices, " << importedMesh.faceNumber() << " faces"
+    std::cout << "Imported mesh: " << importedMesh.vertexCount()
+              << " vertices, " << importedMesh.faceCount() << " faces"
               << std::endl;
 
     // Verify data integrity
@@ -186,9 +186,8 @@ auto meshMatrixConversion()
         vcl::meshFromMatrices<vcl::TriMesh>(cubeVertices, cubeTriangles);
     cubeMesh.name() = "Cube Mesh";
 
-    std::cout << "Created cube mesh: " << cubeMesh.vertexNumber()
-              << " vertices, " << cubeMesh.faceNumber() << " faces"
-              << std::endl;
+    std::cout << "Created cube mesh: " << cubeMesh.vertexCount()
+              << " vertices, " << cubeMesh.faceCount() << " faces" << std::endl;
 
     vcl::updatePerVertexAndFaceNormals(cubeMesh);
 

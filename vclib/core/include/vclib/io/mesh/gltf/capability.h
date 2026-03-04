@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -44,12 +44,13 @@ inline MeshInfo gltfFormatCapability()
     info.setVertices();
     info.setFaces();
 
-    info.setTextures();
+    info.setMaterials();
 
     info.setPerVertexPosition();
     info.setPerVertexNormal();
     info.setPerVertexColor();
     info.setPerVertexTexCoord();
+    info.setPerVertexMaterialIndex();
 
     info.setPerFaceVertexReferences();
 
