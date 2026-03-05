@@ -37,57 +37,86 @@ namespace vcl {
  * RenderApp class. It provides the interface for handling events produced by
  * the DerivedRenderApp class.
  *
+ * By default, the EventDrawer class does not block event propagation to other
+ * drawers. This behaviour can be changed by setting the CAN_BLOCK_EVENTS
+ * template parameter to true (or by inheriting from the BlockerEventDrawer
+ * class).
+ *
+ * All the event functions of this class return a boolean value.
+ * If the EventDrawer class is instantiated with CAN_BLOCK_EVENTS = false
+ * (default), the return value of the event functions is ignored.
+ * In case of CAN_BLOCK_EVENTS = true (BlockerEventDrawer), if a function
+ * returns true, the DerivedRenderApp will block event propagation to other
+ * drawers; if a function returns false, the event is propagated to the other
+ * drawers.
+ *
  * @tparam DerivedRenderApp The type of the derived RenderApp class.
+ * @tparam CAN_BLOCK_EVENTS Whether the event functions of this class can block
+ * event propagation to other drawers.
  */
-template<typename DerivedRenderApp>
+template<typename DerivedRenderApp, bool CAN_BLOCK_EVENTS = false>
 class EventDrawer : public PlainDrawer<DerivedRenderApp>
 {
 public:
-    static const bool CAN_BLOCK_EVENT_PROPAGATION = false;
+    static const bool CAN_BLOCK_EVENT_PROPAGATION = CAN_BLOCK_EVENTS;
 
     EventDrawer() = default;
 
     EventDrawer(uint, uint) {}
 
-    virtual void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) {}
-
-    virtual void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) {}
-
-    virtual void onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMousePress(
+    virtual bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseRelease(
+    virtual bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseDoubleClick(
+    virtual bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 
-    virtual void onMouseScroll(
+    virtual bool onMouseScroll(
         double              x,
         double              y,
         const KeyModifiers& modifiers)
     {
+        return false;
     }
 };
+
+template<typename DerivedRenderApp>
+using BlockerEventDrawer = EventDrawer<DerivedRenderApp, true>;
 
 } // namespace vcl
 
