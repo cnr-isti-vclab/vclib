@@ -25,6 +25,7 @@
 #include <vclib/qt/viewer_widget.h>
 
 #include <vclib/bgfx/drawers/text_drawer.h>
+#include <vclib/bgfx/drawable/drawable_box3.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
@@ -48,9 +49,15 @@ int main(int argc, char** argv)
     vcl::DrawableMesh<vcl::TriMesh> m =
         getDrawableMesh<vcl::TriMesh>("greek_helmet.obj");
 
+    vcl::updateBoundingBox(m);
+
+    vcl::DrawableBox3 db(m.boundingBox(), vcl::Color::Red, 3.0f);
+    db.name() = "Bounding Box";
+
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(m);
+    tw.pushDrawableObject(db);
 
     tw.enableText();
 
