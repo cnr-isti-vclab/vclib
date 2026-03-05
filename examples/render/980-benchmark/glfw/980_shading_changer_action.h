@@ -24,6 +24,7 @@
 #define VCL_980_SHADING_CHANGER_AUTOMATION_ACTION_H
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
+#include <vclib/render/automation/metrics/null_benchmark_metric.h>
 #include <vclib/render/drawers/benchmark_viewer_drawer.h>
 
 #include <vclib/space/core/quaternion.h>
@@ -33,6 +34,73 @@
 #include <sstream>
 
 namespace vcl {
+
+class ShadingChangerMetric: public NullBenchmarkMetric {
+    MeshRenderInfo::Surface mShad;
+    mutable uint mPrintWaitCount;
+
+    public:
+    ShadingChangerMetric(MeshRenderInfo::Surface shad, uint printWaitCount) : mShad(shad), mPrintWaitCount(printWaitCount) {};
+
+    std::string getUnitOfMeasure() const override {
+        if (mPrintWaitCount >= 0) {
+            mPrintWaitCount --;
+        }
+        if (mPrintWaitCount != -1) {
+            return "__skip";
+        }
+        using MRIS = MeshRenderInfo::Surface;
+        std::string str;
+        switch (mShad) {
+            case MRIS::COLOR_FACE:
+                str = "col face";
+                break;
+            case MRIS::COLOR_MESH:
+                str = "col mesh";
+                break;
+            case MRIS::COLOR_USER:
+                str = "col user";
+                break;
+            case MRIS::COLOR_VERTEX:
+                str = "col vert";
+                break;
+            case MRIS::COLOR_VERTEX_TEX:
+                str = "tex vert";
+                break;
+            case MRIS::COLOR_WEDGE_TEX:
+                str = "tex wedge";
+                break;
+            case MRIS::SHADING_FLAT:
+                str = "flat";
+                break;
+            case MRIS::SHADING_NONE:
+                str = "none";
+                break;
+            case MRIS::SHADING_SMOOTH:
+                str = "smooth";
+                break;
+            case MRIS::VISIBLE:
+                str = "visible";
+                break;
+            default:
+                str = "unknown";
+                break;
+        }
+        return str;
+    }
+
+    bool isNull() const override { return false; }
+
+    std::shared_ptr<BenchmarkMetric> clone() const& override
+    {
+        return std::make_shared<ShadingChangerMetric>(*this);
+    };
+
+    std::shared_ptr<BenchmarkMetric> clone() && override
+    {
+        return std::make_shared<ShadingChangerMetric>(std::move(*this));
+    };
+};
 
 /**
  * The PerFrameRotationAutomationAction is an automation that represents a
@@ -52,43 +120,45 @@ class ShadingChangerAutomationAction :
 public:
     ShadingChangerAutomationAction(MeshRenderInfo::Surface shad, BmarkViewerDrawer* viewerDrawer): mShad(shad), mViewerDrawer(viewerDrawer) {}
 
+    
+
     std::string getDescription() override
     {
         using MRIS = MeshRenderInfo::Surface;
         std::string str;
         switch (mShad) {
             case MRIS::COLOR_FACE:
-                str = "COLOR_FACE";
+                str = "col face";
                 break;
             case MRIS::COLOR_MESH:
-                str = "COLOR_MESH";
+                str = "col mesh";
                 break;
             case MRIS::COLOR_USER:
-                str = "COLOR_USER";
+                str = "col user";
                 break;
             case MRIS::COLOR_VERTEX:
-                str = "COLOR_VERTEX";
+                str = "col vert";
                 break;
             case MRIS::COLOR_VERTEX_TEX:
-                str = "COLOR_VERTEX_TEX";
+                str = "tex vert";
                 break;
             case MRIS::COLOR_WEDGE_TEX:
-                str = "COLOR_WEDGE_TEX";
+                str = "tex wedge";
                 break;
             case MRIS::SHADING_FLAT:
-                str = "SHADING_FLAT";
+                str = "flat";
                 break;
             case MRIS::SHADING_NONE:
-                str = "SHADING_NONE";
+                str = "none";
                 break;
             case MRIS::SHADING_SMOOTH:
-                str = "SHADING_SMOOTH";
+                str = "smooth";
                 break;
             case MRIS::VISIBLE:
-                str = "VISIBLE";
+                str = "visible";
                 break;
             default:
-                str = "NONESENSE";
+                str = "unknown";
                 break;
         }
         std::ostringstream temp;

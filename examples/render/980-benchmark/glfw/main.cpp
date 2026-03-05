@@ -443,7 +443,8 @@ int main(int argc, char** argv)
 
     tw.setMetric(vcl::FpsBenchmarkMetric());
 
-    if (options.contains("--on-the-fly")) {
+    bool isOnTheFly = options.contains("--on-the-fly");
+    if (isOnTheFly) {
         std::array<vcl::MeshRenderInfo::Surface, 2> shadTypes = {
             vcl::MeshRenderInfo::Surface::SHADING_SMOOTH,
             vcl::MeshRenderInfo::Surface::SHADING_FLAT};
@@ -472,7 +473,7 @@ int main(int argc, char** argv)
                             BenchmarkViewerDrawerT>(shadTypes[i % 2], &tw),
                         1),
                     tot),
-                vcl::NullBenchmarkMetric());
+                vcl::ShadingChangerMetric(shadTypes[i%2], tot));
             tw.addAutomation(
                 aaf.createStartCountDelay(
                     aaf.createStartCountLimited(
@@ -481,7 +482,7 @@ int main(int argc, char** argv)
                             BenchmarkViewerDrawerT>(colTypes[i / 2], &tw),
                         1),
                     tot),
-                vcl::NullBenchmarkMetric());
+                vcl::ShadingChangerMetric(colTypes[i / 2], tot));
 
             tot+=reps[i];
         }
@@ -512,7 +513,7 @@ int main(int argc, char** argv)
     if (options.contains("--flat")) {
         shadingType = "flat";
     }
-    if (options.contains("--on-the-fly")) {
+    if (isOnTheFly) {
         shadingType  = "varying";
         meshColoring = "varying";
     }
@@ -531,41 +532,44 @@ int main(int argc, char** argv)
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
-        auto                     prntr   = vcl::Benchmark980JsonPrinter(
+        auto                     prntr   = vcl::get980Printer(
             optArgs[0],
             device_name,
             meshName,
             shadingType,
             splitType,
             meshColoring,
-            resolution);
-        tw.setPrinter(prntr);
+            resolution,
+            isOnTheFly);
+        tw.setPrinter(*prntr);
     }
     else if (options.contains("--output-dir")) {
         std::string folderString = options["--output-dir"][0];
-        auto        prntr        = vcl::Benchmark980JsonPrinter(
+        auto        prntr        = vcl::get980Printer(
             folderString + splitType + "_result_" + shadingType + ".json",
             device_name,
             meshName,
             shadingType,
             splitType,
             meshColoring,
-            resolution);
-        tw.setPrinter(prntr);
+            resolution,
+            isOnTheFly);
+        tw.setPrinter(*prntr);
     }
     else if (options.contains("--no-print")) {
         tw.setPrinter(vcl::NullBenchmarkPrinter());
     }
     else {
-        auto prntr = vcl::Benchmark980JsonPrinter(
+        auto prntr = vcl::get980Printer(
             "./" + splitType + "_result_" + shadingType + ".json",
             device_name,
             meshName,
             shadingType,
             splitType,
             meshColoring,
-            resolution);
-        tw.setPrinter(prntr);
+            resolution,
+            isOnTheFly);
+        tw.setPrinter(*prntr);
     }
 
     tw.terminateUponCompletion();
