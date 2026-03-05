@@ -92,8 +92,10 @@ public:
         }
 
         for (std::shared_ptr<Editor>& editor : mEditors) {
-            if (editor)
+            if (editor) {
                 editor->setDrawableObjectVector(mDrawList);
+                editor->refresh();
+            }
         }
 
         fitScene();
@@ -104,6 +106,14 @@ public:
         if (editor) {
             mEditors.push_back(editor);
             editor->setDrawableObjectVector(mDrawList);
+            editor->refresh();
+        }
+    }
+
+    void refreshEditors()
+    {
+        for (std::shared_ptr<Editor>& editor : mEditors) {
+            editor->refresh();
         }
     }
 

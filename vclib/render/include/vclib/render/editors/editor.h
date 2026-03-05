@@ -64,6 +64,8 @@ public:
         mDrawList = v;
     }
 
+    virtual void refresh() {}
+
     virtual void draw(uint viewId) const = 0;
 };
 
