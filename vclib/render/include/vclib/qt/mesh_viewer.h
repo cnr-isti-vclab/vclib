@@ -56,9 +56,6 @@ class MeshViewer : public QWidget
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
-
 protected:
     MeshViewerRenderApp& viewer() const;
 
