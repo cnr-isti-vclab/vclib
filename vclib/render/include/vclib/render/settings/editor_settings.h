@@ -38,11 +38,6 @@ struct EditorSettings {
 
     /**< @brief The edit mode of the editor. */
     EditMode editMode = EditMode::CURRENT_OBJECT;
-
-    uint currentObjectId = UINT_NULL;
-
-    /**< @brief The view ID on which the editor can draw. */
-    uint viewId = 0;
 };
 
 } // namespace vcl

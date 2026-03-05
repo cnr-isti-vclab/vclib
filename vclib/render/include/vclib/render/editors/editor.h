@@ -44,6 +44,8 @@ class Editor
 {
     std::shared_ptr<DrawableObjectVector> mDrawList;
 
+    EditorSettings mSettings;
+
     bool mIsActive = false;
 
 public:
@@ -53,12 +55,16 @@ public:
 
     virtual void setActive(bool active) { mIsActive = active; }
 
+    EditorSettings& settings() { return mSettings; }
+
+    const EditorSettings& settings() const { return mSettings; }
+
     void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
         mDrawList = v;
     }
 
-    virtual void draw(const EditorSettings& settings) const = 0;
+    virtual void draw(uint viewId) const = 0;
 };
 
 } // namespace vcl

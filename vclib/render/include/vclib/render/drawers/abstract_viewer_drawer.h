@@ -26,6 +26,7 @@
 #include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/editors/editor.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 
@@ -60,6 +61,8 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
+    std::vector<std::shared_ptr<Editor>> mEditors;
+
     // the drawer id
     uint& id() { return mId; }
 
@@ -87,7 +90,21 @@ public:
         for (auto obj : *mDrawList) {
             obj->init();
         }
+
+        for (std::shared_ptr<Editor>& editor : mEditors) {
+            if (editor)
+                editor->setDrawableObjectVector(mDrawList);
+        }
+
         fitScene();
+    }
+
+    void pushEditor(const std::shared_ptr<Editor>& editor)
+    {
+        if (editor) {
+            mEditors.push_back(editor);
+            editor->setDrawableObjectVector(mDrawList);
+        }
     }
 
     uint pushDrawableObject(const DrawableObject& obj)
