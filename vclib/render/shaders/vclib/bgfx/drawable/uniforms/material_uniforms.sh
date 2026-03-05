@@ -37,6 +37,5 @@ uniform vec4 u_settings;
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
-#define u_pbr_texture_settings floatBitsToUint(u_settings.y)
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH

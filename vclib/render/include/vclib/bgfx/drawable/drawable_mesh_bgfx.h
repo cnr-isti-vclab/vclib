@@ -214,6 +214,7 @@ public:
         }
 
         DrawableMeshUniforms::setColor(*this);
+        DrawableMeshUniforms::resetTextureStages();
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
@@ -227,10 +228,16 @@ public:
                 // Bind textures before vertex buffers!!
 
                 /* TEXTURES */
-                mMRB.bindTextures(mMRS, i, *this);
+                // tStage is the first stage from which we can bind new 2D
+                // textures
+                uint tStage = mMRB.bindTextures(mMRS, i, *this);
                 if (pbrSettings.pbrMode && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
-                    env->bindTexture(BRDF_LUT, VCL_MRB_TEXTURE5);
+                    env->bindTexture(BRDF_LUT, tStage);
+
+                    DrawableMeshUniforms::setTextureStage(
+                        DrawableMeshUniforms::TextureType::BRDF_LUT, tStage);
+
                     env->bindTexture(IRRADIANCE, VCL_MRB_CUBEMAP0);
                     env->bindTexture(SPECULAR, VCL_MRB_CUBEMAP1);
                 }
@@ -436,14 +443,11 @@ protected:
 
         uint64_t state = BGFX_STATE_NONE;
 
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
             MaterialUniforms::set(
                 DEFAULT_MATERIAL,
                 isPerVertexColorAvailable(*this),
-                textureAvailable,
                 isPerVertexTangentAvailable(*this),
                 imageBasedLighting);
         }
@@ -457,18 +461,13 @@ protected:
                 MaterialUniforms::set(
                     DEFAULT_MATERIAL,
                     isPerVertexColorAvailable(*this),
-                    textureAvailable,
                     isPerVertexTangentAvailable(*this),
                     imageBasedLighting);
             }
             else {
-                textureAvailable =
-                    mMRB.textureAvailableArray(*this, materialId);
-
                 MaterialUniforms::set(
                     MeshType::material(materialId),
                     isPerVertexColorAvailable(*this),
-                    textureAvailable,
                     isPerVertexTangentAvailable(*this),
                     imageBasedLighting);
 
