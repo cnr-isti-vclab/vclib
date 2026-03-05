@@ -160,6 +160,15 @@ public:
         mDrawList->init();
     }
 
+    void onDraw(uint viewId) override
+    {
+        Base::onDraw(viewId);
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->draw(viewId);
+        }
+    }
+
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         Base::onKeyPress(key, modifiers);

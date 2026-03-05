@@ -20,59 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_EDITORS_EDITOR_H
-#define VCL_RENDER_EDITORS_EDITOR_H
+#ifndef VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H
+#define VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H
 
-#include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/render/settings/editor_settings.h>
-
-#include <vclib/base.h>
+#include <vclib/bgfx/drawable/drawable_box3.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/editors/editor.h>
 
 namespace vcl {
 
-/**
- * @brief The Editor abstract class is a base class for all the editors of the
- * VCLib Render module.
- *
- * An editor is an object contained in an AbstractViewerDrawer that can "edit"
- * the behavior of the viewer itself. For example, it can be a gizmo that allows
- * to edit the position of a drawable object, or it can be a widget that allows
- * draw additional elements on top of the viewer (e.g. a grid, or a bounding
- * box).
- */
-class Editor
+class BoundingBoxEditor : public Editor
 {
-    std::shared_ptr<DrawableObjectVector> mDrawList;
+    using Base = Editor;
 
-    EditorSettings mSettings;
-
-    bool mIsActive = false;
+    std::vector<DrawableBox3> mBoxes;
 
 public:
-    Editor() = default;
+    BoundingBoxEditor() = default;
 
-    bool isActive() const { return mIsActive; }
+    void refresh() override;
 
-    virtual void setActive(bool active) { mIsActive = active; }
+    void draw(uint viewId) const override;
 
-    EditorSettings& settings() { return mSettings; }
+private:
+    const AbstractDrawableMesh* getDrawableMesh(uint i) const;
 
-    const EditorSettings& settings() const { return mSettings; }
-
-    void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
-    {
-        mDrawList = v;
-        refresh();
-    }
-
-    virtual void refresh() {}
-
-    virtual void draw(uint viewId) const = 0;
-
-protected:
-    std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
+    AbstractDrawableMesh* getDrawableMesh(uint i);
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_EDITORS_EDITOR_H
+#endif // VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H

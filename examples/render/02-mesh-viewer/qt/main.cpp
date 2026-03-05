@@ -22,14 +22,15 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/algorithms/mesh/update/transform.h>
+#include <vclib/bgfx/editors/bounding_box_editor.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
 
 class MeshViewerSelectQt : public vcl::qt::MeshViewer
 {
+    std::shared_ptr<vcl::Editor> mBoundingBoxEditor;
+
 public:
     using vcl::qt::MeshViewer::MeshViewer;
 
@@ -38,6 +39,15 @@ public:
         viewer().setOnObjectSelected([this](uint id) {
             drawableObjectVectorTree().setSelectedItem(id);
         });
+
+        mBoundingBoxEditor = std::make_shared<vcl::BoundingBoxEditor>();
+        mBoundingBoxEditor->setActive(true);
+        viewer().pushEditor(mBoundingBoxEditor);
+    }
+
+    void refreshEditors()
+    {
+        mBoundingBoxEditor->refresh();
     }
 };
 
