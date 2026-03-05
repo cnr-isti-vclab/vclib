@@ -244,6 +244,7 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 {
     // take the newly selected DrawableObject and check whether it is a
     // AbstractDrawableMesh
+    mListedDrawableObjects->setSelectedObjectId(i);
     auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
         mListedDrawableObjects->at(i));
     if (m) {

@@ -43,9 +43,6 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
-    // selected mesh index
-    int mMeshIndex = 0;
-
 public:
     using Base::Base;
 
@@ -71,10 +68,11 @@ public:
         }
 
         // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+        uint meshIndex = Base::mDrawList->selectedObjectId();
+        if (meshIndex >= 0 && meshIndex < Base::mDrawList->size()) {
             auto drawable =
                 std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
+                    Base::mDrawList->at(meshIndex));
             if (drawable) {
                 drawMeshSettings(*drawable);
             }
@@ -186,7 +184,7 @@ public:
                 if (id == UINT_NULL)
                     return;
 
-                mMeshIndex = id;
+                Base::mDrawList->setSelectedObjectId(id);
                 std::cout << "Selected  ID: " << id << std::endl;
             });
         }
@@ -197,6 +195,8 @@ public:
 private:
     void drawMeshList()
     {
+        uint meshIndex = Base::mDrawList->selectedObjectId();
+
         if (!Base::mDrawList || Base::mDrawList->empty()) {
             ImGui::Text("No objects loaded");
             return;
@@ -229,12 +229,12 @@ private:
                 ImGui::TableSetColumnIndex(1);
 
                 // row selection
-                bool isSelected = (mMeshIndex == meshId - 1);
+                bool isSelected = (meshIndex == meshId - 1);
                 if (ImGui::Selectable(
                         drawable.name().c_str(),
                         isSelected,
                         ImGuiSelectableFlags_SpanAllColumns)) {
-                    mMeshIndex = meshId - 1;
+                    Base::mDrawList->setSelectedObjectId(meshId - 1);
                 }
                 // tooltip with info
                 if (!drawable.info().empty() &&
