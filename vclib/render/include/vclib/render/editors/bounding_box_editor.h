@@ -20,34 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H
-#define VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H
+#ifndef VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H
+#define VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H
 
-#include <vclib/bgfx/drawable/drawable_box3.h>
-#include <vclib/render/drawable/abstract_drawable_mesh.h>
-#include <vclib/render/editors/editor.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/editors/bounding_box_editor_bgfx.h>
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include "editor.h"
+#endif
 
 namespace vcl {
 
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+using BoundingBoxEditor = BoundingBoxEditorBGFX;
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+// TODO: implement BoundingBoxEditorOpenGL2
 class BoundingBoxEditor : public Editor
 {
-    using Base = Editor;
-
-    std::vector<DrawableBox3> mBoxes;
-
 public:
-    BoundingBoxEditor() = default;
-
-    void refresh() override;
-
-    void draw(uint viewId) const override;
-
-private:
-    const AbstractDrawableMesh* getDrawableMesh(uint i) const;
-
-    AbstractDrawableMesh* getDrawableMesh(uint i);
+    void draw(uint) const override {}
 };
+#endif
 
 } // namespace vcl
 
-#endif // VCL_BGFX_EDITORS_BOUNDING_BOX_EDITOR_H
+#endif // VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H

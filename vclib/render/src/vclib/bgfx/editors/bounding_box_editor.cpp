@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/editors/bounding_box_editor.h>
+#include <vclib/bgfx/editors/bounding_box_editor_bgfx.h>
 
 namespace vcl {
 
-void BoundingBoxEditor::refresh()
+void BoundingBoxEditorBGFX::refresh()
 {
     mBoxes.clear();
 
@@ -41,7 +41,7 @@ void BoundingBoxEditor::refresh()
     }
 }
 
-void BoundingBoxEditor::draw(uint viewId) const
+void BoundingBoxEditorBGFX::draw(uint viewId) const
 {
     using enum EditorSettings::EditMode;
 
@@ -77,7 +77,7 @@ void BoundingBoxEditor::draw(uint viewId) const
     }
 }
 
-const AbstractDrawableMesh* BoundingBoxEditor::getDrawableMesh(uint i) const
+const AbstractDrawableMesh* BoundingBoxEditorBGFX::getDrawableMesh(uint i) const
 {
     if (i < Base::drawList()->size()) {
          return dynamic_cast<const AbstractDrawableMesh*>(
@@ -88,7 +88,7 @@ const AbstractDrawableMesh* BoundingBoxEditor::getDrawableMesh(uint i) const
     }
 }
 
-AbstractDrawableMesh* BoundingBoxEditor::getDrawableMesh(uint i)
+AbstractDrawableMesh* BoundingBoxEditorBGFX::getDrawableMesh(uint i)
 {
     if (i < Base::drawList()->size()) {
         return dynamic_cast<AbstractDrawableMesh*>(
