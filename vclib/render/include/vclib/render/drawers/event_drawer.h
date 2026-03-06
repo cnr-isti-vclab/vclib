@@ -58,7 +58,7 @@ template<typename DerivedRenderApp, bool CAN_BLOCK_EVENTS = false>
 class EventDrawer : public PlainDrawer<DerivedRenderApp>
 {
 public:
-    static const bool CAN_BLOCK_EVENT_PROPAGATION = CAN_BLOCK_EVENTS;
+    static constexpr bool CAN_BLOCK_EVENT_PROPAGATION = CAN_BLOCK_EVENTS;
 
     EventDrawer() = default;
 
