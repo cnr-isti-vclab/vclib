@@ -51,14 +51,6 @@ public:
     {
     }
 
-    ViewerDrawerBGFX(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerBGFX(width, height)
-    {
-        ParentViewer::setDrawableObjectVector(v);
-    }
-
     const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
 
     void setPbrSettings(const PBRViewerSettings& settings)
