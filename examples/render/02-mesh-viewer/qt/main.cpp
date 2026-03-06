@@ -42,29 +42,19 @@ public:
 
     MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
     {
-        mBoundingBoxEditor =
-            std::make_shared<vcl::BoundingBoxEditor<Base::ViewerType>>();
+        mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
         mBoundingBoxEditor->setActive(true);
-        mBoundingBoxEditor->setViewer(&dynamic_cast<Base::ViewerType&>(viewer()));
-        viewer().pushEditor(mBoundingBoxEditor);
 
         auto callback = [this](uint id) {
             drawableObjectVectorTree().setSelectedItem(id);
         };
 
-         mMeshSelectorEditor =
-             std::make_shared<vcl::MeshSelectorEditor<Base::ViewerType>>();
-         mMeshSelectorEditor->setActive(true);
-         mMeshSelectorEditor->setViewer(&dynamic_cast<Base::ViewerType&>(viewer()));
-         mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
-         viewer().pushEditor(mMeshSelectorEditor);
+        mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
+        mMeshSelectorEditor->setActive(true);
+        mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
     }
 
-    void refreshEditors()
-    {
-        mBoundingBoxEditor->refresh();
-        mMeshSelectorEditor->refresh();
-    }
+    void refreshEditors() { viewer().refreshEditors(); }
 };
 
 int main(int argc, char** argv)

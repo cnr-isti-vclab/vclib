@@ -44,6 +44,8 @@ namespace vcl {
 template<typename ViewerDrawer>
 class Editor
 {
+    friend ViewerDrawer;
+
     ViewerDrawer* mViewer = nullptr;
 
     std::shared_ptr<DrawableObjectVector> mDrawList;
@@ -64,14 +66,6 @@ public:
     EditorSettings& settings() { return mSettings; }
 
     const EditorSettings& settings() const { return mSettings; }
-
-    void setViewer(ViewerDrawer* viewer) { mViewer = viewer; }
-
-    void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
-    {
-        mDrawList = v;
-        refresh();
-    }
 
     virtual void refresh() {}
 
@@ -96,6 +90,16 @@ protected:
     {
         assert(mViewer);
         mViewer->readIdRequest(x, y, std::move(idCallback));
+    }
+
+private:
+    // functions called by the (friend) viewer to set up the Editor
+    void setViewer(ViewerDrawer* viewer) { mViewer = viewer; }
+
+    void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
+    {
+        mDrawList = v;
+        refresh();
     }
 };
 

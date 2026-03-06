@@ -106,13 +106,15 @@ public:
         fitScene();
     }
 
-    void pushEditor(const std::shared_ptr<EditorType>& editor)
+    template<template<typename> typename ET>
+    auto pushEditor()
     {
-        if (editor) {
-            mEditors.push_back(editor);
-            editor->setDrawableObjectVector(mDrawList);
-            editor->refresh();
-        }
+        auto editor = std::make_shared<ET<ViewerType>>();
+        mEditors.push_back(editor);
+        editor->setViewer(this);
+        editor->setDrawableObjectVector(mDrawList);
+        editor->refresh();
+        return editor;
     }
 
     void refreshEditors()
