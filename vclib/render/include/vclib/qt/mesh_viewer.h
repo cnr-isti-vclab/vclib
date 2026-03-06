@@ -70,9 +70,6 @@ public:
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
     uint selectedDrawableObject() const;
 
     TextEditLogger& logger();
