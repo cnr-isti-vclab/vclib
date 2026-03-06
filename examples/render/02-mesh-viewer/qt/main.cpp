@@ -22,7 +22,9 @@
 
 #include "get_drawable_mesh.h"
 
+#ifdef VCLIB_RENDER_BACKEND_BGFX
 #include <vclib/bgfx/editors/bounding_box_editor.h>
+#endif // VCLIB_RENDER_BACKEND_BGFX
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
@@ -40,14 +42,18 @@ public:
             drawableObjectVectorTree().setSelectedItem(id);
         });
 
+#ifdef VCLIB_RENDER_BACKEND_BGFX
         mBoundingBoxEditor = std::make_shared<vcl::BoundingBoxEditor>();
         mBoundingBoxEditor->setActive(true);
         viewer().pushEditor(mBoundingBoxEditor);
+#endif
     }
 
     void refreshEditors()
     {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
         mBoundingBoxEditor->refresh();
+#endif
     }
 };
 
