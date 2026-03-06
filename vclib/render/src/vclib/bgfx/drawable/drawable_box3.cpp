@@ -75,7 +75,7 @@ std::shared_ptr<DrawableObject> DrawableBox3::clone() &&
 
 void DrawableBox3::updateLines()
 {
-// clang-format off
+    // clang-format off
     std::vector<float> points = {
         mBox.min().x(), mBox.min().y(), mBox.min().z(),
         mBox.max().x(), mBox.min().y(), mBox.min().z(),
@@ -101,7 +101,7 @@ void DrawableBox3::updateLines()
         2, 6,
         3, 7
     };
-// clang-format on
+    // clang-format on
     mBoxLines.setPoints(points, lineIndices, {}, {}, {});
 }
 
