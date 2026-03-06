@@ -24,6 +24,7 @@
 #define VCL_RENDER_EDITORS_EDITOR_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/input.h>
 #include <vclib/render/settings/editor_settings.h>
 
 #include <vclib/base.h>
@@ -68,6 +69,15 @@ public:
     virtual void refresh() {}
 
     virtual void draw(uint viewId) const = 0;
+
+    virtual bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers)
+    {
+        return false;
+    }
 
 protected:
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
