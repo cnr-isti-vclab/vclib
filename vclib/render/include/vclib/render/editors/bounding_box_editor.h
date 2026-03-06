@@ -34,12 +34,14 @@
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-using BoundingBoxEditor = BoundingBoxEditorBGFX;
+template<typename ViewerDrawer>
+using BoundingBoxEditor = BoundingBoxEditorBGFX<ViewerDrawer>;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 // TODO: implement BoundingBoxEditorOpenGL2
-class BoundingBoxEditor : public Editor
+template<typename ViewerDrawer>
+class BoundingBoxEditor : public Editor<ViewerDrawer>
 {
 public:
     void draw(uint) const override {}

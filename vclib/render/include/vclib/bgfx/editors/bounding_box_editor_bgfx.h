@@ -29,23 +29,92 @@
 
 namespace vcl {
 
-class BoundingBoxEditorBGFX : public Editor
+template<typename ViewerDrawer>
+class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 {
-    using Base = Editor;
+    using Base = Editor<ViewerDrawer>;
 
     std::vector<DrawableBox3> mBoxes;
 
 public:
     BoundingBoxEditorBGFX() = default;
 
-    void refresh() override;
+    void refresh() override
+    {
+        mBoxes.clear();
 
-    void draw(uint viewId) const override;
+        for (const auto& drawable : *Base::drawList()) {
+
+            const AbstractDrawableMesh* m =
+                dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
+            if (m) {
+                mBoxes.push_back(DrawableBox3(m->boundingBox(), Color::Red, 2.0f));
+            }
+            else {
+                mBoxes.push_back(DrawableBox3(Box3f()));
+            }
+        }
+    }
+
+    void draw(uint viewId) const override
+    {
+        using enum EditorSettings::EditMode;
+
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
+
+        if (Base::settings().editMode == NONE)
+            return;
+
+        if (Base::settings().editMode == CURRENT_OBJECT) {
+            uint id = Base::drawList()->selectedObjectId();
+            if (id < mBoxes.size()) {
+                mBoxes[id].draw(settings);
+            }
+        }
+        else {
+            for (uint i = 0; i < mBoxes.size(); ++i) {
+                bool show = (Base::settings().editMode == VISIBLE_OBJECTS) ?
+                                Base::drawList()->at(i)->isVisible() :
+                                true;
+
+                if (show) {
+                    const AbstractDrawableMesh* m = getDrawableMesh(i);
+
+                    if (m) {
+                        Matrix44f transform =
+                            m->transformMatrix().cast<float>();
+                        bgfx::setTransform(transform.data());
+                    }
+
+                    mBoxes[i].draw(settings);
+                }
+            }
+        }
+    }
 
 private:
-    const AbstractDrawableMesh* getDrawableMesh(uint i) const;
+    const AbstractDrawableMesh* getDrawableMesh(uint i) const
+    {
+        if (i < Base::drawList()->size()) {
+            return dynamic_cast<const AbstractDrawableMesh*>(
+                Base::drawList()->at(i).get());
+        }
+        else {
+            return nullptr;
+        }
+    }
 
-    AbstractDrawableMesh* getDrawableMesh(uint i);
+    AbstractDrawableMesh* getDrawableMesh(uint i)
+    {
+        if (i < Base::drawList()->size()) {
+            return dynamic_cast<AbstractDrawableMesh*>(
+                Base::drawList()->at(i).get());
+        }
+        else {
+            return nullptr;
+        }
+    }
 };
 
 } // namespace vcl

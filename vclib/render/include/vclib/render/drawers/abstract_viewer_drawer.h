@@ -45,6 +45,8 @@ namespace vcl {
 template<typename ViewProjEventDrawer>
 class AbstractViewerDrawer : public ViewProjEventDrawer
 {
+    friend Editor<AbstractViewerDrawer>;
+
     using Base = ViewProjEventDrawer;
     using DRA  = ViewProjEventDrawer::DRA;
 
@@ -61,12 +63,15 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
-    std::vector<std::shared_ptr<Editor>> mEditors;
+    std::vector<std::shared_ptr<Editor<AbstractViewerDrawer>>> mEditors;
 
     // the drawer id
     uint& id() { return mId; }
 
 public:
+    using EditorType = Editor<AbstractViewerDrawer>;
+    using ViewerType = AbstractViewerDrawer;
+
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
@@ -91,7 +96,7 @@ public:
             obj->init();
         }
 
-        for (std::shared_ptr<Editor>& editor : mEditors) {
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
             if (editor) {
                 editor->setDrawableObjectVector(mDrawList);
                 editor->refresh();
@@ -101,7 +106,7 @@ public:
         fitScene();
     }
 
-    void pushEditor(const std::shared_ptr<Editor>& editor)
+    void pushEditor(const std::shared_ptr<EditorType>& editor)
     {
         if (editor) {
             mEditors.push_back(editor);
@@ -112,7 +117,7 @@ public:
 
     void refreshEditors()
     {
-        for (std::shared_ptr<Editor>& editor : mEditors) {
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
             editor->refresh();
         }
     }

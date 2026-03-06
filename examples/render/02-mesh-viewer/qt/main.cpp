@@ -29,7 +29,9 @@
 
 class MeshViewerSelectQt : public vcl::qt::MeshViewer
 {
-    std::shared_ptr<vcl::Editor> mBoundingBoxEditor;
+    using Base = vcl::qt::MeshViewer;
+
+    std::shared_ptr<Base::EditorType> mBoundingBoxEditor;
 
 public:
     using vcl::qt::MeshViewer::MeshViewer;
@@ -40,8 +42,10 @@ public:
             drawableObjectVectorTree().setSelectedItem(id);
         });
 
-        mBoundingBoxEditor = std::make_shared<vcl::BoundingBoxEditor>();
+        mBoundingBoxEditor =
+            std::make_shared<vcl::BoundingBoxEditor<Base::ViewerType>>();
         mBoundingBoxEditor->setActive(true);
+        mBoundingBoxEditor->setViewer(&dynamic_cast<Base::ViewerType&>(viewer()));
         viewer().pushEditor(mBoundingBoxEditor);
     }
 

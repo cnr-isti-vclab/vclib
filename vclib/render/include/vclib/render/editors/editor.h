@@ -41,8 +41,11 @@ namespace vcl {
  * draw additional elements on top of the viewer (e.g. a grid, or a bounding
  * box).
  */
+template<typename ViewerDrawer>
 class Editor
 {
+    ViewerDrawer* mViewer = nullptr;
+
     std::shared_ptr<DrawableObjectVector> mDrawList;
 
     EditorSettings mSettings;
@@ -50,6 +53,8 @@ class Editor
     bool mIsActive = false;
 
 public:
+    using ViewerDrawerType = ViewerDrawer;
+
     Editor() = default;
 
     bool isActive() const { return mIsActive; }
@@ -59,6 +64,8 @@ public:
     EditorSettings& settings() { return mSettings; }
 
     const EditorSettings& settings() const { return mSettings; }
+
+    void setViewer(ViewerDrawer* viewer) { mViewer = viewer; }
 
     void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
@@ -81,6 +88,15 @@ public:
 
 protected:
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
+
+    void viewerReadIdRequest(
+        double                    x,
+        double                    y,
+        std::function<void(uint)> idCallback)
+    {
+        assert(mViewer);
+        mViewer->readIdRequest(x, y, std::move(idCallback));
+    }
 };
 
 } // namespace vcl

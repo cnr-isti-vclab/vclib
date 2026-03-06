@@ -64,6 +64,9 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 
 public:
+    using EditorType = MeshViewerRenderApp::EditorType;
+    using ViewerType = MeshViewerRenderApp::ViewerType;
+
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 

@@ -249,6 +249,7 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         // disabled
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
+     mUI->viewer->update();
 }
 
 /**
