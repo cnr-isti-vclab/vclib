@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_BOX_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_BOX_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
 
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/render/drawable/drawable_object.h>
@@ -35,7 +35,7 @@ class DrawableBox3 : public DrawableObject
     Box3f mBox;
 
     Lines mBoxLines;
-    bool  mVisible   = true;
+    bool  mVisible = true;
 
 public:
     DrawableBox3() = default;
@@ -47,7 +47,7 @@ public:
         float          thickness = 1.0f) : mBox(box.template cast<float>())
     {
         mBoxLines.generalColor() = color;
-        mBoxLines.thickness() = thickness;
+        mBoxLines.thickness()    = thickness;
         updateLines();
     }
 
@@ -97,4 +97,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_BOX_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H

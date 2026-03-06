@@ -145,11 +145,6 @@ void MeshViewer::setDrawableObjectVector(
     updateGUI();
 }
 
-void MeshViewer::setUnlistedDrawableObjectVector(
-    const std::shared_ptr<DrawableObjectVector>& v)
-{
-}
-
 uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
