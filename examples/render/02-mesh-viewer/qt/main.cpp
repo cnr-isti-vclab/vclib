@@ -34,8 +34,6 @@ class MeshViewerSelectQt : public vcl::qt::MeshViewer
 
     std::shared_ptr<vcl::BoundingBoxEditor<Base::ViewerType>>
         mBoundingBoxEditor;
-    std::shared_ptr<vcl::MeshSelectorEditor<Base::ViewerType>>
-        mMeshSelectorEditor;
 
 public:
     using vcl::qt::MeshViewer::MeshViewer;
@@ -44,17 +42,7 @@ public:
     {
         mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
         mBoundingBoxEditor->setActive(true);
-
-        auto callback = [this](uint id) {
-            drawableObjectVectorTree().setSelectedItem(id);
-        };
-
-        mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
-        mMeshSelectorEditor->setActive(true);
-        mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
     }
-
-    void refreshEditors() { viewer().refreshEditors(); }
 };
 
 int main(int argc, char** argv)

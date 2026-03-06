@@ -28,6 +28,7 @@
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/editors/mesh_selector_editor.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <QWidget>
@@ -56,6 +57,9 @@ class MeshViewer : public QWidget
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
+    std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
+        mMeshSelectorEditor;
+
 protected:
     MeshViewerRenderApp& viewer() const;
 
@@ -77,6 +81,8 @@ public:
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     uint selectedDrawableObject() const;
+
+    void refreshEditors();
 
     TextEditLogger& logger();
 

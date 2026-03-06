@@ -82,6 +82,14 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
+    // install the editors
+    mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
+    mMeshSelectorEditor->setActive(true);
+    auto callback = [this](uint id) {
+        drawableObjectVectorTree().setSelectedItem(id);
+    };
+    mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
@@ -145,6 +153,11 @@ void MeshViewer::setUnlistedDrawableObjectVector(
 uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
+}
+
+void MeshViewer::refreshEditors()
+{
+    viewer().refreshEditors();
 }
 
 TextEditLogger& MeshViewer::logger()
