@@ -23,6 +23,7 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/render/editors/bounding_box_editor.h>
+#include <vclib/render/editors/mesh_selector_editor.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
@@ -31,27 +32,38 @@ class MeshViewerSelectQt : public vcl::qt::MeshViewer
 {
     using Base = vcl::qt::MeshViewer;
 
-    std::shared_ptr<Base::EditorType> mBoundingBoxEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<Base::ViewerType>>
+        mBoundingBoxEditor;
+    std::shared_ptr<vcl::MeshSelectorEditor<Base::ViewerType>>
+        mMeshSelectorEditor;
 
 public:
     using vcl::qt::MeshViewer::MeshViewer;
 
     MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
     {
-        viewer().setOnObjectSelected([this](uint id) {
-            drawableObjectVectorTree().setSelectedItem(id);
-        });
-
         mBoundingBoxEditor =
             std::make_shared<vcl::BoundingBoxEditor<Base::ViewerType>>();
         mBoundingBoxEditor->setActive(true);
         mBoundingBoxEditor->setViewer(&dynamic_cast<Base::ViewerType&>(viewer()));
         viewer().pushEditor(mBoundingBoxEditor);
+
+        auto callback = [this](uint id) {
+            drawableObjectVectorTree().setSelectedItem(id);
+        };
+
+         mMeshSelectorEditor =
+             std::make_shared<vcl::MeshSelectorEditor<Base::ViewerType>>();
+         mMeshSelectorEditor->setActive(true);
+         mMeshSelectorEditor->setViewer(&dynamic_cast<Base::ViewerType&>(viewer()));
+         mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+         viewer().pushEditor(mMeshSelectorEditor);
     }
 
     void refreshEditors()
     {
         mBoundingBoxEditor->refresh();
+        mMeshSelectorEditor->refresh();
     }
 };
 

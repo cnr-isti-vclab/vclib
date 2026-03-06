@@ -174,6 +174,20 @@ public:
         }
     }
 
+    void onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        Base::onMousePress(button, x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->onMousePress(button, x, y, modifiers);
+        }
+    }
+
     void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         Base::onKeyPress(key, modifiers);

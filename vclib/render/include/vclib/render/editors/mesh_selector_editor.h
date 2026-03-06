@@ -20,59 +20,55 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
-#define VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#ifndef VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
+#define VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
 
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+#include "editor.h"
 
-template<typename DerivedRenderApp>
-class ViewerDrawerSelectQt : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+namespace vcl {
+
+template<typename ViewerDrawer>
+class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
-    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    using Base = Editor<ViewerDrawer>;
 
     // a callback function called when an object is selected
-    std::function<void(uint)> mOnObjectSelected = [](uint) {
+    std::function<void(uint)> mOnObjectSelectedFunction = [](uint) {
     };
 
 public:
-    using Base::Base;
+    void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
+    {
+        mOnObjectSelectedFunction = f;
+    }
 
-    void onMousePress(
+    // Editor implementation
+
+    void draw(uint viewId) const override {}
+
+    bool onMousePress(
         vcl::MouseButton::Enum   button,
         double                   x,
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        if (button == vcl::MouseButton::RIGHT) {
-            this->readIdRequest(x, y, [&](uint id) {
+        bool block = Base::onMousePress(button, x, y, modifiers);
+
+        if (!block && button == vcl::MouseButton::RIGHT) {
+            auto callback = [&](uint id) {
                 if (id == vcl::UINT_NULL)
                     return;
 
-                std::cout << "selected ID: " << id << std::endl;
-                if (mOnObjectSelected)
-                    mOnObjectSelected(id);
-            });
+                if (mOnObjectSelectedFunction)
+                    mOnObjectSelectedFunction(id);
+            };
+
+            Base::viewerReadIdRequest(x, y, callback);
         }
-
-        Base::onMousePress(button, x, y, modifiers);
-    }
-
-    // seeter fo the callback function called when an object is selected
-    void setOnObjectSelected(const std::function<void(uint)>& f)
-    {
-        mOnObjectSelected = f;
+        return block;
     }
 };
 
-// definition of custom MeshViewerRenderApp for the qt MeshViewer
-namespace vcl::qt {
+} // namespace vcl
 
-using MeshViewerRenderApp =
-    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
-
-} // namespace vcl::qt
-
-#endif // VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#endif // VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
