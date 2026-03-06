@@ -28,6 +28,7 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/editors/mesh_selector_editor.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
@@ -43,8 +44,18 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
+    std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
+        mMeshSelectorEditor;
+
 public:
-    using Base::Base;
+    MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
+            Base(width, height)
+    {
+        // install editors
+        mMeshSelectorEditor =
+            Base::template pushEditor<vcl::MeshSelectorEditor>();
+        mMeshSelectorEditor->setActive(true);
+    }
 
     virtual void onDraw(vcl::uint viewId) override
     {
@@ -171,25 +182,6 @@ public:
         }
 
         ImGui::End();
-    }
-
-    void onMousePress(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        if (button == MouseButton::RIGHT) {
-            this->readIdRequest(x, y, [&](uint id) {
-                if (id == UINT_NULL)
-                    return;
-
-                Base::mDrawList->setSelectedObjectId(id);
-                std::cout << "Selected  ID: " << id << std::endl;
-            });
-        }
-
-        Base::onMousePress(button, x, y, modifiers);
     }
 
 private:

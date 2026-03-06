@@ -59,6 +59,8 @@ public:
                 if (id == vcl::UINT_NULL)
                     return;
 
+                Base::drawList()->setSelectedObjectId(id);
+
                 if (mOnObjectSelectedFunction)
                     mOnObjectSelectedFunction(id);
             };
