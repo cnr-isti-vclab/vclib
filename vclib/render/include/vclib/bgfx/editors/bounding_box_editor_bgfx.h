@@ -39,6 +39,12 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 public:
     BoundingBoxEditorBGFX() = default;
 
+    void setActive(bool active) override
+    {
+        Base::setActive(active);
+        Base::viewerUpdate();
+    }
+
     void refresh() override
     {
         mBoxes.clear();

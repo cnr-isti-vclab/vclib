@@ -357,6 +357,8 @@ protected:
             derived()->update();
     }
 
+    void requestUpdate() { derived()->update(); }
+
 private:
     auto* derived() { return static_cast<DRA*>(this); }
 

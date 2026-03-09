@@ -133,6 +133,12 @@ protected:
         mViewer->readIdRequest(x, y, std::move(idCallback));
     }
 
+    void viewerUpdate() const
+    {
+        assert(mViewer);
+        mViewer->requestUpdate();
+    }
+
 private:
     // functions called by the (friend) viewer to set up the Editor
     void setViewer(ViewerDrawer* viewer) { mViewer = viewer; }
