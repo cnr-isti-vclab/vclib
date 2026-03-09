@@ -20,56 +20,52 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
+#define VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
+
+#include "generic_editor_frame.h"
 
 #include <vclib/render/editors/bounding_box_editor.h>
-#include <vclib/render/editors/mesh_selector_editor.h>
-#include <vclib/qt/mesh_viewer.h>
 
-#include <QApplication>
+namespace vcl::qt {
 
-int main(int argc, char** argv)
+template<typename ViewerType>
+class BoundingBoxEditorFrame : public GenericEditorFrame
 {
-    QApplication app(argc, argv);
+    using Base = GenericEditorFrame;
 
-    vcl::qt::MeshViewer mv;
+    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>>
+        mBoundingBoxEditor;
 
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
+public:
+    explicit BoundingBoxEditorFrame(QWidget* parent = nullptr) :
+            GenericEditorFrame(parent)
+    {
+        QIcon ic(":/icons/bbox.png");
 
-    using enum vcl::MeshRenderInfo::Buffers;
-
-    m.enablePerFaceColor();
-    for (auto& f : m.faces()) {
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
+        GenericEditorFrame::setIcon(ic);
     }
-    m.updateBuffers({TRI_COLORS});
 
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
+    explicit BoundingBoxEditorFrame(
+        std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> ptr,
+        QWidget*                                            parent = nullptr) :
+            BoundingBoxEditorFrame(parent)
+    {
+        mBoundingBoxEditor = ptr;
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+        connect(
+            Base::editorButton(),
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                if (mBoundingBoxEditor) {
+                    mBoundingBoxEditor->setActive(
+                        !mBoundingBoxEditor->isActive());
+                }
+            });
+    }
+};
 
-    drawable.name() = "bimba_scaled";
+} // namespace vcl::qt
 
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
-
-    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
-    v->pushBack(std::move(drawable));
-
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
-
-    return app.exec();
-}
+#endif // VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H

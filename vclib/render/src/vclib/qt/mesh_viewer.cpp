@@ -20,13 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/mesh_viewer.h>
-
-#include "ui_mesh_viewer.h"
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/qt/gui/editors/bounding_box_editor_frame.h>
+#include <vclib/qt/gui/screen_shot_dialog.h>
+
+#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
@@ -89,6 +90,11 @@ MeshViewer::MeshViewer(QWidget* parent) :
         drawableObjectVectorTree().setSelectedItem(id);
     };
     mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+
+    mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
+    BoundingBoxEditorFrame<ViewerType>* bboxEditor =
+        new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
+    mUI->toolBar->addWidget(bboxEditor);
 
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
