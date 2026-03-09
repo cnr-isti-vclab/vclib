@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="bbox.png">icons/bbox.png</file>
+    </qresource>
+</RCC>
