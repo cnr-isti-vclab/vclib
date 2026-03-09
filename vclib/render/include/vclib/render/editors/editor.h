@@ -71,11 +71,52 @@ public:
 
     virtual void draw(uint viewId) const = 0;
 
+    virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseMove(double x, double y, const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
     virtual bool onMousePress(
         vcl::MouseButton::Enum   button,
         double                   x,
         double                   y,
         const vcl::KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
+    {
+        return false;
+    }
+
+    virtual bool onMouseScroll(
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers)
     {
         return false;
     }
