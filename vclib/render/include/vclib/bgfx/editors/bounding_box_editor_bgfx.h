@@ -37,7 +37,11 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
     std::vector<DrawableBox3> mBoxes;
 
 public:
-    BoundingBoxEditorBGFX() = default;
+    BoundingBoxEditorBGFX()
+    {
+        Base::settings().customSettings["color"] = vcl::Color();
+        Base::settings().customSettings["thickness"] = 2.0f;
+    };
 
     void setActive(bool active) override
     {
@@ -49,16 +53,40 @@ public:
     {
         mBoxes.clear();
 
+        assert(Base::settings().customSettings["color"].has_value());
+        assert(Base::settings().customSettings["thickness"].has_value());
+
+        Color c =
+            std::any_cast<Color>(Base::settings().customSettings["color"]);
+        float thickness = std::any_cast<float>(
+            Base::settings().customSettings["thickness"]);
+
         for (const auto& drawable : *Base::drawList()) {
 
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
-                mBoxes.push_back(DrawableBox3(m->boundingBox(), Color::Red, 2.0f));
+                mBoxes.push_back(DrawableBox3(m->boundingBox(), c, thickness));
             }
             else {
                 mBoxes.push_back(DrawableBox3(Box3f()));
             }
+        }
+    }
+
+    void refreshSettings() override
+    {
+        assert(Base::settings().customSettings["color"].has_value());
+        assert(Base::settings().customSettings["thickness"].has_value());
+
+        Color c =
+            std::any_cast<Color>(Base::settings().customSettings["color"]);
+        float thickness = std::any_cast<float>(
+            Base::settings().customSettings["thickness"]);
+
+        for (auto& b : mBoxes) {
+            b.setColor(c);
+            b.setThickness(thickness);
         }
     }
 

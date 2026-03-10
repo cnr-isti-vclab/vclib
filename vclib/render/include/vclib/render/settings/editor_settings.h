@@ -38,6 +38,16 @@ struct EditorSettings {
 
     /**< @brief The edit mode of the editor. */
     EditMode editMode = EditMode::CURRENT_OBJECT;
+
+    /**
+     * @brief Additional custom settings. Each editor can define its own custom
+     * settings, that can be used to store additional information about the
+     * editor (e.g. the color of a bounding box, or the size of a gizmo). The
+     * editor is responsible for defining the keys and the types of the values
+     * stored in this map, and for using them in the editor itself (e.g. to draw
+     * the bounding box with).
+     */
+    std::map<std::string, std::any> customSettings;
 };
 
 } // namespace vcl

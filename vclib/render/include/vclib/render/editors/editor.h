@@ -69,6 +69,8 @@ public:
 
     virtual void refresh() {}
 
+    virtual void refreshSettings() {}
+
     virtual void draw(uint viewId) const = 0;
 
     virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
