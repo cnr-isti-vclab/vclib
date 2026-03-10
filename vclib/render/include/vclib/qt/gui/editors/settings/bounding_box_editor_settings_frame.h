@@ -53,6 +53,8 @@ private slots:
     void editModeChanged(int index);
 
     void onLinesWidthSliderValueChanged(int value);
+
+    void onColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt

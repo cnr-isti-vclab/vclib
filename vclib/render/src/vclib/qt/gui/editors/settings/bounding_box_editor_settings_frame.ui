@@ -14,22 +14,6 @@
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="QSlider" name="linesWidthSlider">
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>10</number>
-     </property>
-     <property name="value">
-      <number>2</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Orientation::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="linesWidthLabel">
      <property name="text">
@@ -47,6 +31,36 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QSlider" name="linesWidthSlider">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10</number>
+     </property>
+     <property name="value">
+      <number>2</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Lines Color:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="vcl::qt::ColorPushButton" name="colorPushButton">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -55,6 +69,11 @@
    <extends>QFrame</extends>
    <header>vclib/qt/gui/editors/settings/edit_mode_settings_frame.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::ColorPushButton</class>
+   <extends>QPushButton</extends>
+   <header>vclib/qt/gui/color_push_button.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

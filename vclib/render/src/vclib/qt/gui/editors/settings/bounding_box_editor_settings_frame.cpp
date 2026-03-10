@@ -22,6 +22,8 @@
 
 #include <vclib/qt/gui/editors/settings/bounding_box_editor_settings_frame.h>
 
+#include <vclib/space/core.h>
+
 #include "ui_bounding_box_editor_settings_frame.h"
 
 namespace vcl::qt {
@@ -37,11 +39,21 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
     assert(mSettings.customSettings["color"].has_value());
     assert(mSettings.customSettings["thickness"].has_value());
 
+    Color c = std::any_cast<Color>(mSettings.customSettings["color"]);
+
     float thickness =
         std::any_cast<float>(mSettings.customSettings["thickness"]);
 
-    mUI->linesWidthSlider->setValue(int(thickness));
     mUI->editModeFrame->setEditMode(mSettings.editMode);
+    mUI->linesWidthSlider->setValue(int(thickness));
+    mUI->colorPushButton->setBackgroundColor(
+        QColor(c.red(), c.green(), c.blue(), c.alpha()));
+
+    connect(
+        mUI->editModeFrame,
+        &EditModeSettingsFrame::editModeChanged,
+        this,
+        &BoundingBoxEditorSettingsFrame::editModeChanged);
 
     connect(
         mUI->linesWidthSlider,
@@ -50,10 +62,10 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
         &BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged);
 
     connect(
-        mUI->editModeFrame,
-        &EditModeSettingsFrame::editModeChanged,
+        mUI->colorPushButton,
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        &BoundingBoxEditorSettingsFrame::editModeChanged);
+        SLOT(onColorChanged(const QColor&)));
 }
 
 BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
@@ -73,6 +85,13 @@ void BoundingBoxEditorSettingsFrame::editModeChanged(int index)
 void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 {
     mSettings.customSettings["thickness"] = float(value);
+    emit settingsUpdated();
+}
+
+void BoundingBoxEditorSettingsFrame::onColorChanged(const QColor& c)
+{
+    mSettings.customSettings["color"] =
+        Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }
 
