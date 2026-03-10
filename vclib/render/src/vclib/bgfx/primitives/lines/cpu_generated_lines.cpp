@@ -119,7 +119,7 @@ void CPUGeneratedLines::setPoints(
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
-    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
+    assert(!setLineColors || lineIndices.size() == lineColors.size() * 2);
 
     if (nPoints > 1) {
         uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
