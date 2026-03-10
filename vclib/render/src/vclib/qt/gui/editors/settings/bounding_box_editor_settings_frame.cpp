@@ -20,55 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
+#include <vclib/qt/gui/editors/settings/bounding_box_editor_settings_frame.h>
 
-#include <QFrame>
-#include <QMenu>
-#include <QPushButton>
-#include <QWidgetAction>
+#include "ui_bounding_box_editor_settings_frame.h"
 
 namespace vcl::qt {
 
-namespace Ui {
-class GenericEditorFrame;
-} // namespace Ui
-
-class GenericEditorFrame : public QFrame
+BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
+    QWidget* parent) :
+        QFrame(parent), mUI(new Ui::BoundingBoxEditorSettingsFrame)
 {
-    Q_OBJECT
+    mUI->setupUi(this);
+}
 
-    Ui::GenericEditorFrame* mUI;
-
-public:
-    explicit GenericEditorFrame(QWidget* parent = nullptr);
-    ~GenericEditorFrame();
-
-protected:
-    void setIcon(const QIcon& icon);
-
-    QPushButton* editorButton() const;
-    QPushButton* settingsButton() const;
-
-    void hideSettingsButton() {
-        settingsButton()->setVisible(false);
-    }
-
-    void showSettingsButton() {
-        settingsButton()->setVisible(true);
-    }
-
-    template<typename SettingsFrame>
-    void setSettingsFrame()
-    {
-        QWidgetAction* wa = new QWidgetAction(this);
-        wa->setDefaultWidget(new SettingsFrame());
-        QMenu* popupMenu = new QMenu(this);
-        popupMenu->addAction(wa);
-        settingsButton()->setMenu(popupMenu);
-    }
-};
+BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
+{
+    delete mUI;
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H

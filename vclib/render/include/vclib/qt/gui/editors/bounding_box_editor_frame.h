@@ -23,6 +23,7 @@
 #ifndef VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
 #define VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
 
+#include "settings/bounding_box_editor_settings_frame.h"
 #include "generic_editor_frame.h"
 
 #include <vclib/render/editors/bounding_box_editor.h>
@@ -63,6 +64,8 @@ public:
                         !mBoundingBoxEditor->isActive());
                 }
             });
+
+        Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>();
     }
 };
 
