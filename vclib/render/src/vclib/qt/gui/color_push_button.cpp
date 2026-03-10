@@ -20,57 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H
-#define VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H
+#include <vclib/qt/gui/color_push_button.h>
 
-#include "generic_mesh_render_settings_frame.h"
-
-#include <vclib/render/drawable/mesh/mesh_render_settings.h>
-
-#include <QFrame>
+#include <QColorDialog>
 
 namespace vcl::qt {
 
-namespace Ui {
-class SurfaceFrame;
-} // namespace Ui
-
-class SurfaceFrame : public GenericMeshRenderSettingsFrame
+ColorPushButton::ColorPushButton(QWidget* parent) :
+        QPushButton(parent)
 {
-    Q_OBJECT
+    setBackgroundColor(QColor());
+    connect(this, SIGNAL(clicked(bool)), this, SLOT(onClicked(bool)));
+}
 
-    Ui::SurfaceFrame* mUI;
+ColorPushButton::ColorPushButton(const QColor& c, QWidget* parent) :
+        QPushButton(parent)
+{
+    setBackgroundColor(c);
+}
 
-public:
-    explicit SurfaceFrame(
-        MeshRenderSettings& settings,
-        QWidget*            parent = nullptr);
-    ~SurfaceFrame();
+void ColorPushButton::setBackgroundColor(const QColor& c)
+{
+    QPalette px;
+    px.setColor(QPalette::Button, c);
+    setPalette(px);
+    update();
+}
 
-    void updateFrameFromSettings() override;
+QColor ColorPushButton::getBackgroundColor() const
+{
+    QPalette px = palette();
+    return px.color(QPalette::Button);
+}
 
-private:
-    enum SURF_COLOR {
-        SC_VERT = 0,
-        SC_FACE,
-        SC_MESH,
-        SC_VERT_TEX,
-        SC_WEDG_TEX,
-        SC_USER
-    };
-
-    void uptateShadingRadioButtonsFromSettings();
-    void updateColorComboBoxFromSettings();
-
-private slots:
-    void onVisibilityChanged(Qt::CheckState arg1);
-    void onShadingSmoothToggled(bool checked);
-    void onShadingFlatToggled(bool checked);
-    void onShadingNoneToggled(bool checked);
-    void onColorComboBoxChanged(int index);
-    void onUserColorChanged(const QColor& c);
-};
+void ColorPushButton::onClicked(bool checked)
+{
+    QColor color = QColorDialog::getColor(getBackgroundColor(), this);
+    if (color.isValid()) {
+        setBackgroundColor(color);
+        emit colorChanged(color);
+    }
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H

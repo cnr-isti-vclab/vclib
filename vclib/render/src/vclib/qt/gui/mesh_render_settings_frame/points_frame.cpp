@@ -75,9 +75,9 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->colorDialogPushButton,
-        SIGNAL(clicked()),
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        SLOT(onColorDialogButtonClicked()));
+        SLOT(onUserColorChanged(const QColor&)));
 
     connect(
         mUI->sizeSlider,
@@ -148,7 +148,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
     mUI->userColorFrame->setEnabled(mMRS.isPoints(COLOR_USER));
     vcl::Color vc = mMRS.pointUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->colorDialogPushButton, c);
+    mUI->colorDialogPushButton->setBackgroundColor(c);
 }
 
 void PointsFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -200,18 +200,10 @@ void PointsFrame::onColorComboBoxChanged(int index)
     emit settingsUpdated();
 }
 
-void PointsFrame::onColorDialogButtonClicked()
+void PointsFrame::onUserColorChanged(const QColor& c)
 {
-    QColor color =
-        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-
-    if (color.isValid()) {
-        setButtonBackGround(mUI->colorDialogPushButton, color);
-
-        mMRS.setPointsUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
+    mMRS.setPointsUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
 }
 
 void PointsFrame::onSizeChanged(int value)
