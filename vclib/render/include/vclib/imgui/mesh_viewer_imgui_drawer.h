@@ -104,6 +104,10 @@ public:
                 ImGui::EndCombo();
             }
 
+            // Update local state and persist any changes to the viewer.
+            pbrMode = pbrSettings.pbrMode;
+            Base::setPbrSettings(pbrSettings);
+
             ImGui::BeginDisabled(!pbrMode);
             {
                 // exposure slider
