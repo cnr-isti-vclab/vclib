@@ -47,9 +47,8 @@ public:
     ~GenericEditorFrame();
 
 protected:
-    void setIcon(const QIcon& icon);
+    QPushButton* addButton(const QIcon& icon, bool checkable = true);
 
-    QPushButton* editorButton() const;
     QPushButton* settingsButton() const;
 
     void hideSettingsButton() {
@@ -69,6 +68,11 @@ protected:
         QMenu* popupMenu = new QMenu(this);
         popupMenu->addAction(wa);
         settingsButton()->setMenu(popupMenu);
+        settingsButton()->setStyleSheet(
+            "QPushButton::menu-indicator {"
+            "    subcontrol-origin: padding;"
+            "    subcontrol-position: center center;"
+            "}");
         return sf;
     }
 

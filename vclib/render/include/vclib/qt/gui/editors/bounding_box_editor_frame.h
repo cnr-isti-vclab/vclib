@@ -39,23 +39,21 @@ class BoundingBoxEditorFrame : public GenericEditorFrame
         mBoundingBoxEditor;
 
 public:
-    explicit BoundingBoxEditorFrame(QWidget* parent = nullptr) :
-            GenericEditorFrame(parent)
-    {
-        QIcon ic(":/icons/bbox.png");
-
-        GenericEditorFrame::setIcon(ic);
-    }
-
     explicit BoundingBoxEditorFrame(
         std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> ptr,
         QWidget*                                            parent = nullptr) :
-            BoundingBoxEditorFrame(parent)
+            GenericEditorFrame(parent)
     {
         mBoundingBoxEditor = ptr;
 
+        QIcon ic(":/icons/bbox.png");
+
+        QPushButton* editorButton = Base::addButton(ic);
+
+        editorButton->setToolTip("Show Bounding Box");
+
         connect(
-            Base::editorButton(),
+            editorButton,
             &QPushButton::clicked,
             this,
             [this]() {

@@ -43,17 +43,20 @@ GenericEditorFrame::~GenericEditorFrame()
     delete mUI;
 }
 
-void GenericEditorFrame::setIcon(const QIcon& icon)
+QPushButton* GenericEditorFrame::addButton(
+    const QIcon& icon,
+    bool         checkable)
 {
-    mUI->editorPushButton->setIcon(icon);
-    mUI->editorPushButton->setIconSize(QSize(50,50));
-    mUI->editorPushButton->setMinimumSize(50,50);
-    mUI->editorPushButton->setMaximumSize(50,50);
-}
+    QPushButton* button = new QPushButton(this);
+    button->setIcon(icon);
+    button->setIconSize(QSize(50,50));
+    button->setMinimumSize(50,50);
+    button->setMaximumSize(50,50);
 
-QPushButton* GenericEditorFrame::editorButton() const
-{
-    return mUI->editorPushButton;
+    button->setCheckable(checkable);
+
+    mUI->buttonFrame->layout()->addWidget(button);
+    return button;
 }
 
 QPushButton* GenericEditorFrame::settingsButton() const
