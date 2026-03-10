@@ -20,40 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_CLICKABLE_LABEL_H
-#define VCL_QT_GUI_CLICKABLE_LABEL_H
+#ifndef VCL_QT_GUI_COLOR_PUSH_BUTTON_H
+#define VCL_QT_GUI_COLOR_PUSH_BUTTON_H
 
-#include <QLabel>
-#include <QWidget>
-#include <Qt>
+#include <QColor>
+#include <QPushButton>
 
 namespace vcl::qt {
 
-/**
- * @brief The ClickableLabel class is a QLabel class which can be clicked
- * (clicked event).
- *
- * Usage: just Promote a QLabel to a vcl::qt::ClickableLabel
- *
- * @link https://wiki.qt.io/Clickable_QLabel
- */
-class ClickableLabel : public QLabel
+class ColorPushButton : public QPushButton
 {
     Q_OBJECT
 
 public:
-    explicit ClickableLabel(
-        QWidget*        parent = Q_NULLPTR,
-        Qt::WindowFlags f      = Qt::WindowFlags());
-    ~ClickableLabel() = default;
+    explicit ColorPushButton(QWidget* parent = Q_NULLPTR);
+    explicit ColorPushButton(const QColor& c, QWidget* parent = Q_NULLPTR);
+
+    ~ColorPushButton() = default;
+
+    void setBackgroundColor(const QColor& c);
+    QColor getBackgroundColor() const;
 
 signals:
-    void clicked();
+    void colorChanged(QColor);
 
-protected:
-    void mousePressEvent(QMouseEvent* event);
+private slots:
+    void onClicked(bool checked);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_CLICKABLE_LABEL_H
+#endif // VCL_QT_GUI_COLOR_PUSH_BUTTON_H

@@ -20,40 +20,46 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_CLICKABLE_LABEL_H
-#define VCL_QT_GUI_CLICKABLE_LABEL_H
+#include <vclib/qt/gui/color_push_button.h>
 
-#include <QLabel>
-#include <QWidget>
-#include <Qt>
+#include <QColorDialog>
 
 namespace vcl::qt {
 
-/**
- * @brief The ClickableLabel class is a QLabel class which can be clicked
- * (clicked event).
- *
- * Usage: just Promote a QLabel to a vcl::qt::ClickableLabel
- *
- * @link https://wiki.qt.io/Clickable_QLabel
- */
-class ClickableLabel : public QLabel
+ColorPushButton::ColorPushButton(QWidget* parent) :
+        QPushButton(parent)
 {
-    Q_OBJECT
+    setBackgroundColor(QColor());
+    connect(this, SIGNAL(clicked(bool)), this, SLOT(onClicked(bool)));
+}
 
-public:
-    explicit ClickableLabel(
-        QWidget*        parent = Q_NULLPTR,
-        Qt::WindowFlags f      = Qt::WindowFlags());
-    ~ClickableLabel() = default;
+ColorPushButton::ColorPushButton(const QColor& c, QWidget* parent) :
+        QPushButton(parent)
+{
+    setBackgroundColor(c);
+}
 
-signals:
-    void clicked();
+void ColorPushButton::setBackgroundColor(const QColor& c)
+{
+    QPalette px;
+    px.setColor(QPalette::Button, c);
+    setPalette(px);
+    update();
+}
 
-protected:
-    void mousePressEvent(QMouseEvent* event);
-};
+QColor ColorPushButton::getBackgroundColor() const
+{
+    QPalette px = palette();
+    return px.color(QPalette::Button);
+}
+
+void ColorPushButton::onClicked(bool checked)
+{
+    QColor color = QColorDialog::getColor(getBackgroundColor(), this);
+    if (color.isValid()) {
+        setBackgroundColor(color);
+        emit colorChanged(color);
+    }
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_QT_GUI_CLICKABLE_LABEL_H
