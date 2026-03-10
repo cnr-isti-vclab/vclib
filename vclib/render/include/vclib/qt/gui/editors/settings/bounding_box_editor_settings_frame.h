@@ -23,6 +23,8 @@
 #ifndef VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 #define VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 
+#include <vclib/render/settings/editor_settings.h>
+
 #include <QFrame>
 
 namespace vcl::qt {
@@ -36,10 +38,19 @@ class BoundingBoxEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::BoundingBoxEditorSettingsFrame* mUI;
+    EditorSettings& mSettings;
 
 public:
-    explicit BoundingBoxEditorSettingsFrame(QWidget* parent = nullptr);
+    explicit BoundingBoxEditorSettingsFrame(
+        EditorSettings& sts,
+        QWidget*        parent = nullptr);
     ~BoundingBoxEditorSettingsFrame();
+
+signals:
+    void settingsUpdated();
+
+private slots:
+    void onLinesWidthSliderValueChanged(int value);
 };
 
 } // namespace vcl::qt

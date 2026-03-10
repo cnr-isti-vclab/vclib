@@ -27,15 +27,37 @@
 namespace vcl::qt {
 
 BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
-    QWidget* parent) :
-        QFrame(parent), mUI(new Ui::BoundingBoxEditorSettingsFrame)
+    EditorSettings& sts,
+    QWidget*        parent) :
+        QFrame(parent), mUI(new Ui::BoundingBoxEditorSettingsFrame),
+        mSettings(sts)
 {
     mUI->setupUi(this);
+
+    assert(mSettings.customSettings["color"].has_value());
+    assert(mSettings.customSettings["thickness"].has_value());
+
+    float thickness =
+        std::any_cast<float>(mSettings.customSettings["thickness"]);
+
+    mUI->linesWidthSlider->setValue(int(thickness));
+
+    connect(
+        mUI->linesWidthSlider,
+        &QSlider::valueChanged,
+        this,
+        &BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged);
 }
 
 BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
 {
     delete mUI;
+}
+
+void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
+{
+    mSettings.customSettings["thickness"] = float(value);
+    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

@@ -72,6 +72,7 @@ public:
                 mBoxes.push_back(DrawableBox3(Box3f()));
             }
         }
+        Base::viewerUpdate();
     }
 
     void refreshSettings() override
@@ -88,6 +89,7 @@ public:
             b.setColor(c);
             b.setThickness(thickness);
         }
+        Base::viewerUpdate();
     }
 
     void draw(uint viewId) const override

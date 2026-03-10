@@ -23,6 +23,8 @@
 #ifndef VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
 #define VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
 
+#include <vclib/render/settings/editor_settings.h>
+
 #include <QFrame>
 #include <QMenu>
 #include <QPushButton>
@@ -59,14 +61,19 @@ protected:
     }
 
     template<typename SettingsFrame>
-    void setSettingsFrame()
+    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
     {
         QWidgetAction* wa = new QWidgetAction(this);
-        wa->setDefaultWidget(new SettingsFrame());
+        SettingsFrame*sf = new SettingsFrame(sts);
+        wa->setDefaultWidget(sf);
         QMenu* popupMenu = new QMenu(this);
         popupMenu->addAction(wa);
         settingsButton()->setMenu(popupMenu);
+        return sf;
     }
+
+protected slots:
+    virtual void refreshSettings() {};
 };
 
 } // namespace vcl::qt

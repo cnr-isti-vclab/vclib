@@ -65,7 +65,18 @@ public:
                 }
             });
 
-        Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>();
+        BoundingBoxEditorSettingsFrame* sf =
+            Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>(
+                mBoundingBoxEditor->settings());
+
+        connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+    }
+
+private slots:
+    void refreshSettings() override {
+        if (mBoundingBoxEditor) {
+            mBoundingBoxEditor->refreshSettings();
+        }
     }
 };
 
