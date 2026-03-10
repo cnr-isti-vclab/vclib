@@ -104,7 +104,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="colorDialogPushButton">
+         <widget class="vcl::qt::ColorPushButton" name="colorDialogPushButton">
           <property name="autoFillBackground">
            <bool>true</bool>
           </property>
@@ -202,6 +202,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>vcl::qt::ColorPushButton</class>
+   <extends>QPushButton</extends>
+   <header>vclib/qt/gui/color_push_button.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
  <slots>

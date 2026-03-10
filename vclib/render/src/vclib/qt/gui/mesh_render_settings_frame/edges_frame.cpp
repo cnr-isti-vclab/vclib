@@ -69,9 +69,9 @@ EdgesFrame::EdgesFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->colorDialogPushButton,
-        SIGNAL(clicked()),
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        SLOT(onColorDialogButtonClicked()));
+        SLOT(onUserColorChanged(const QColor&)));
 
     connect(
         mUI->sizeSlider,
@@ -148,7 +148,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     mUI->userColorFrame->setEnabled(mMRS.isEdges(COLOR_USER));
     vcl::Color vc = mMRS.edgesUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->colorDialogPushButton, c);
+    mUI->colorDialogPushButton->setBackgroundColor(c);
 }
 
 void EdgesFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -193,17 +193,10 @@ void EdgesFrame::onColorComboBoxChanged(int index)
     emit settingsUpdated();
 }
 
-void EdgesFrame::onColorDialogButtonClicked()
+void EdgesFrame::onUserColorChanged(const QColor& c)
 {
-    QColor color =
-        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-    if (color.isValid()) {
-        setButtonBackGround(mUI->colorDialogPushButton, color);
-
-        mMRS.setEdgesUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
+    mMRS.setEdgesUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
 }
 
 void EdgesFrame::onSizeChanged(int value)
