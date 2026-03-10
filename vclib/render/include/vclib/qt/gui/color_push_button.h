@@ -20,57 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H
-#define VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H
+#ifndef VCL_QT_GUI_COLOR_PUSH_BUTTON_H
+#define VCL_QT_GUI_COLOR_PUSH_BUTTON_H
 
-#include "generic_mesh_render_settings_frame.h"
-
-#include <vclib/render/drawable/mesh/mesh_render_settings.h>
-
-#include <QFrame>
+#include <QColor>
+#include <QPushButton>
 
 namespace vcl::qt {
 
-namespace Ui {
-class SurfaceFrame;
-} // namespace Ui
-
-class SurfaceFrame : public GenericMeshRenderSettingsFrame
+class ColorPushButton : public QPushButton
 {
     Q_OBJECT
 
-    Ui::SurfaceFrame* mUI;
-
 public:
-    explicit SurfaceFrame(
-        MeshRenderSettings& settings,
-        QWidget*            parent = nullptr);
-    ~SurfaceFrame();
+    explicit ColorPushButton(QWidget* parent = Q_NULLPTR);
+    explicit ColorPushButton(const QColor& c, QWidget* parent = Q_NULLPTR);
 
-    void updateFrameFromSettings() override;
+    ~ColorPushButton() = default;
 
-private:
-    enum SURF_COLOR {
-        SC_VERT = 0,
-        SC_FACE,
-        SC_MESH,
-        SC_VERT_TEX,
-        SC_WEDG_TEX,
-        SC_USER
-    };
+    void setBackgroundColor(const QColor& c);
+    QColor getBackgroundColor() const;
 
-    void uptateShadingRadioButtonsFromSettings();
-    void updateColorComboBoxFromSettings();
+signals:
+    void colorChanged(QColor);
 
 private slots:
-    void onVisibilityChanged(Qt::CheckState arg1);
-    void onShadingSmoothToggled(bool checked);
-    void onShadingFlatToggled(bool checked);
-    void onShadingNoneToggled(bool checked);
-    void onColorComboBoxChanged(int index);
-    void onUserColorChanged(const QColor& c);
+    void onClicked(bool checked);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_SURFACE_FRAME_H
+#endif // VCL_QT_GUI_COLOR_PUSH_BUTTON_H

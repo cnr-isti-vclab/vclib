@@ -63,14 +63,6 @@ public:
         this->onResize(width, height);
     }
 
-    ViewerDrawerBGFX(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerBGFX(width, height)
-    {
-        ParentViewer::setDrawableObjectVector(v);
-    }
-
     ~ViewerDrawerBGFX()
     {
         for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {

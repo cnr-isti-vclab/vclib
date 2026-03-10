@@ -20,60 +20,81 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
-#define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
 
-#include "drawable_object.h"
+#include <vclib/bgfx/primitives/lines.h>
+#include <vclib/render/drawable/drawable_object.h>
 
-#include <vclib/space/core/box.h>
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 
-class DrawableObjectVector :
-        public PolymorphicObjectVector<DrawableObject>,
-        public DrawableObject
+class DrawableBox3 : public DrawableObject
 {
-    using Base = PolymorphicObjectVector<DrawableObject>;
+    Box3f mBox;
 
-    bool mVisible = true;
-
-    uint mSelectedObjectId = 0;
+    Lines mBoxLines;
+    bool  mVisible = true;
 
 public:
-    DrawableObjectVector() = default;
+    DrawableBox3() = default;
 
-    uint selectedObjectId() const { return mSelectedObjectId; }
-
-    void setSelectedObjectId(uint id)
+    template<typename S>
+    DrawableBox3(
+        const Box3<S>& box,
+        const Color&   color     = Color::Black,
+        float          thickness = 1.0f) : mBox(box.template cast<float>())
     {
-        if (id < Base::size())
-            mSelectedObjectId = id;
+        mBoxLines.generalColor() = color;
+        mBoxLines.thickness()    = thickness;
+        updateLines();
     }
 
-    // DrawableObject interface
-    void init();
+    DrawableBox3(const DrawableBox3& other);
 
-    void draw(const DrawObjectSettings& settings) const;
+    DrawableBox3(DrawableBox3&& other) { swap(other); }
 
-    void drawId(const DrawObjectSettings& settings) const;
+    ~DrawableBox3() = default;
 
-    Box3d boundingBox() const;
+    DrawableBox3& operator=(DrawableBox3 other);
 
-    Point3d center() const;
+    void swap(DrawableBox3& other);
 
-    std::shared_ptr<DrawableObject> clone() const&;
+    friend void swap(DrawableBox3& first, DrawableBox3& second)
+    {
+        first.swap(second);
+    }
 
-    std::shared_ptr<DrawableObject> clone() &&;
+    template<typename S>
+    void setBox(const Box3<S>& box)
+    {
+        mBox = box.template cast<float>();
+        updateLines();
+    }
 
-    bool isVisible() const;
+    void setThickness(float thickness);
 
-    void setVisibility(bool vis);
+    void setColor(const Color& color);
+
+    // DrawableObject implementation
+
+    void draw(const DrawObjectSettings& settings) const override;
+
+    vcl::Box3d boundingBox() const override { return mBox.cast<double>(); }
+
+    std::shared_ptr<DrawableObject> clone() const& override;
+
+    std::shared_ptr<DrawableObject> clone() && override;
+
+    bool isVisible() const override { return mVisible; }
+
+    void setVisibility(bool vis) override { mVisible = vis; }
 
 private:
-    uint firstVisibleObject() const;
+    void updateLines();
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H

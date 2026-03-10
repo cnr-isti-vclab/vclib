@@ -50,14 +50,6 @@ public:
     {
     }
 
-    ViewerDrawerOpenGL2(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerOpenGL2(width, height)
-    {
-        ParentViewer::setDrawableObjectVector(v);
-    }
-
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);

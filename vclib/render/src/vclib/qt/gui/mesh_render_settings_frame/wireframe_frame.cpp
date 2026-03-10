@@ -63,9 +63,9 @@ WireframeFrame::WireframeFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->colorDialogPushButton,
-        SIGNAL(clicked()),
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        SLOT(onColorDialogButtonClicked()));
+        SLOT(onUserColorChanged(const QColor&)));
 
     connect(
         mUI->sizeSlider,
@@ -130,7 +130,7 @@ void WireframeFrame::updateColorComboBoxFromSettings()
     mUI->userColorFrame->setEnabled(mMRS.isWireframe(COLOR_USER));
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->colorDialogPushButton, c);
+    mUI->colorDialogPushButton->setBackgroundColor(c);
 }
 
 void WireframeFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -166,17 +166,10 @@ void WireframeFrame::onColorComboBoxChanged(int index)
     emit settingsUpdated();
 }
 
-void WireframeFrame::onColorDialogButtonClicked()
+void WireframeFrame::onUserColorChanged(const QColor& c)
 {
-    QColor color =
-        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-    if (color.isValid()) {
-        setButtonBackGround(mUI->colorDialogPushButton, color);
-
-        mMRS.setWireframeUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
+    mMRS.setWireframeUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
 }
 
 void WireframeFrame::onSizeChanged(int value)
