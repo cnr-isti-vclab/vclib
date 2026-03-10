@@ -41,17 +41,33 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
         std::any_cast<float>(mSettings.customSettings["thickness"]);
 
     mUI->linesWidthSlider->setValue(int(thickness));
+    mUI->editModeFrame->setEditMode(mSettings.editMode);
 
     connect(
         mUI->linesWidthSlider,
         &QSlider::valueChanged,
         this,
         &BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged);
+
+    connect(
+        mUI->editModeFrame,
+        &EditModeSettingsFrame::editModeChanged,
+        this,
+        &BoundingBoxEditorSettingsFrame::editModeChanged);
 }
 
 BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
 {
     delete mUI;
+}
+
+void BoundingBoxEditorSettingsFrame::editModeChanged(int index)
+{
+    using enum EditorSettings::EditMode;
+    assert(index <= toUnderlying(ALL_OBJECTS));
+
+    mSettings.editMode = static_cast<EditorSettings::EditMode>(index);
+    emit settingsUpdated();
 }
 
 void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)

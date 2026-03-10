@@ -14,14 +14,7 @@
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="linesWidthLabel">
-     <property name="text">
-      <string>Lines Width:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
+   <item row="1" column="1">
     <widget class="QSlider" name="linesWidthSlider">
      <property name="minimum">
       <number>1</number>
@@ -37,8 +30,33 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="linesWidthLabel">
+     <property name="text">
+      <string>Lines Width:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="vcl::qt::EditModeSettingsFrame" name="editModeFrame">
+     <property name="frameShape">
+      <enum>QFrame::Shape::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Plain</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>vcl::qt::EditModeSettingsFrame</class>
+   <extends>QFrame</extends>
+   <header>vclib/qt/gui/editors/settings/edit_mode_settings_frame.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

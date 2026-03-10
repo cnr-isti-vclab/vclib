@@ -20,41 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
-#define VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#include <vclib/qt/gui/editors/settings/edit_mode_settings_frame.h>
 
-#include <vclib/render/settings/editor_settings.h>
-
-#include <QFrame>
+#include "ui_edit_mode_settings_frame.h"
 
 namespace vcl::qt {
 
-namespace Ui {
-class BoundingBoxEditorSettingsFrame;
-} // namespace Ui
-
-class BoundingBoxEditorSettingsFrame : public QFrame
+EditModeSettingsFrame::EditModeSettingsFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::EditModeSettingsFrame)
 {
-    Q_OBJECT
+    mUI->setupUi(this);
 
-    Ui::BoundingBoxEditorSettingsFrame* mUI;
-    EditorSettings& mSettings;
+    connect(
+        mUI->editModeComboBox,
+        QOverload<int>::of(&QComboBox::currentIndexChanged),
+        this,
+        &EditModeSettingsFrame::editModeChanged);
+}
 
-public:
-    explicit BoundingBoxEditorSettingsFrame(
-        EditorSettings& sts,
-        QWidget*        parent = nullptr);
-    ~BoundingBoxEditorSettingsFrame();
+EditModeSettingsFrame::~EditModeSettingsFrame()
+{
+    delete mUI;
+}
 
-signals:
-    void settingsUpdated();
-
-private slots:
-    void editModeChanged(int index);
-
-    void onLinesWidthSliderValueChanged(int value);
-};
+void EditModeSettingsFrame::setEditMode(EditorSettings::EditMode mode)
+{
+    mUI->editModeComboBox->setCurrentIndex(toUnderlying(mode));
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H

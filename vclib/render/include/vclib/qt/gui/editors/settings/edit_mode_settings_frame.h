@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
-#define VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#define VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
 
 #include <vclib/render/settings/editor_settings.h>
 
@@ -30,31 +30,25 @@
 namespace vcl::qt {
 
 namespace Ui {
-class BoundingBoxEditorSettingsFrame;
+class EditModeSettingsFrame;
 } // namespace Ui
 
-class BoundingBoxEditorSettingsFrame : public QFrame
+class EditModeSettingsFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::BoundingBoxEditorSettingsFrame* mUI;
-    EditorSettings& mSettings;
+    Ui::EditModeSettingsFrame* mUI;
 
 public:
-    explicit BoundingBoxEditorSettingsFrame(
-        EditorSettings& sts,
-        QWidget*        parent = nullptr);
-    ~BoundingBoxEditorSettingsFrame();
+    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
+    ~EditModeSettingsFrame();
+
+    void setEditMode(EditorSettings::EditMode mode);
 
 signals:
-    void settingsUpdated();
-
-private slots:
     void editModeChanged(int index);
-
-    void onLinesWidthSliderValueChanged(int value);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
