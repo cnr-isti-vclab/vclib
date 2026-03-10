@@ -22,8 +22,6 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/render/editors/bounding_box_editor.h>
-#include <vclib/render/editors/mesh_selector_editor.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
