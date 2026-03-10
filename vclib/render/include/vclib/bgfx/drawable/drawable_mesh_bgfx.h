@@ -214,7 +214,6 @@ public:
         }
 
         DrawableMeshUniforms::setColor(*this);
-        DrawableMeshUniforms::resetTextureStages();
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
@@ -228,6 +227,7 @@ public:
                 // Bind textures before vertex buffers!!
 
                 /* TEXTURES */
+                DrawableMeshUniforms::resetTextureStages();
                 // tStage is the first stage from which we can bind new 2D
                 // textures
                 uint tStage = mMRB.bindTextures(mMRS, i, *this);

@@ -89,8 +89,8 @@ public:
     {
         assert(toUnderlying(type) < toUnderlying(TextureType::COUNT));
 
-        if (toUnderlying(type) < 8) { // use y
-            setYTextureStage(toUnderlying(type), stage);
+        if (toUnderlying(type) < 8) { // use z component to store texture stages
+            setZTextureStage(toUnderlying(type), stage);
         }
     }
 
@@ -112,7 +112,7 @@ public:
     }
 
 private:
-    static void setYTextureStage(uint8_t pos, uint8_t stage)
+    static void setZTextureStage(uint8_t pos, uint8_t stage)
     {
         uint value = std::bit_cast<uint>(sMeshData[2]);
 
