@@ -36,13 +36,13 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
 {
     mUI->setupUi(this);
 
-    assert(mSettings.customSettings["color"].has_value());
-    assert(mSettings.customSettings["thickness"].has_value());
+    assert(mSettings.customSettings.at("color").has_value());
+    assert(mSettings.customSettings.at("thickness").has_value());
 
-    Color c = std::any_cast<Color>(mSettings.customSettings["color"]);
+    Color c = std::any_cast<Color>(mSettings.customSettings.at("color"));
 
     float thickness =
-        std::any_cast<float>(mSettings.customSettings["thickness"]);
+        std::any_cast<float>(mSettings.customSettings.at("thickness"));
 
     mUI->editModeFrame->setEditMode(mSettings.editMode);
     mUI->linesWidthSlider->setValue(int(thickness));
