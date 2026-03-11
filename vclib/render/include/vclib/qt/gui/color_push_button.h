@@ -38,7 +38,7 @@ public:
 
     ~ColorPushButton() = default;
 
-    void setBackgroundColor(const QColor& c);
+    void   setBackgroundColor(const QColor& c);
     QColor getBackgroundColor() const;
 
 signals:

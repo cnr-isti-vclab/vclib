@@ -104,6 +104,10 @@ public:
                 ImGui::EndCombo();
             }
 
+            // Update local state and persist any changes to the viewer.
+            pbrMode = pbrSettings.pbrMode;
+            Base::setPbrSettings(pbrSettings);
+
             ImGui::BeginDisabled(!pbrMode);
             {
                 // exposure slider
@@ -173,13 +177,15 @@ public:
         ImGui::End();
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        if (button == MouseButton::RIGHT) {
+        bool block = Base::onMousePress(button, x, y, modifiers);
+
+        if (!block && button == MouseButton::RIGHT) {
             this->readIdRequest(x, y, [&](uint id) {
                 if (id == UINT_NULL)
                     return;
@@ -188,8 +194,7 @@ public:
                 std::cout << "Selected  ID: " << id << std::endl;
             });
         }
-
-        Base::onMousePress(button, x, y, modifiers);
+        return block;
     }
 
 private:

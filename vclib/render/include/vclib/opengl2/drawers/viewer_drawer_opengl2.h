@@ -94,13 +94,17 @@ public:
     }
 
     // events
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::readDepthRequest(x, y);
+        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        if (!block && button == MouseButton::LEFT) {
+            ParentViewer::readDepthRequest(x, y);
+        }
+        return block;
     }
 };
 
