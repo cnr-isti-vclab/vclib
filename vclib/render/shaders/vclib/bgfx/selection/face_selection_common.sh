@@ -67,9 +67,8 @@ bool segmentIntersectsAABB(vec3 minBoxPoint, vec3 maxBoxPoint, vec3 p0, vec3 p1)
         return false;
     }
     if (
-        (tclose <= 0 && tfar >= 1) 
-        || (tclose >= 0 && tclose <= 1)
-        || (tfar >= 0 && tfar <= 1)
+        tfar >= 0
+        && tclose <= 1
     ) {
         float tmid = 0.5f*tclose + 0.5f*tfar;
         vec3 pmid = (1.f - tmid) * p0 + tmid * p1;
