@@ -176,106 +176,107 @@ public:
         }
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        Base::onKeyPress(key, modifiers);
+        bool block = Base::onKeyPress(key, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onKeyPress(key, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onKeyPress(key, modifiers);
         }
 
-        switch (key) {
-        case Key::R: fitScene(); break;
-        case Key::S:
-            if (modifiers[KeyModifier::CONTROL])
-                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-            break;
-
-        default: break;
+        if (!block) {
+            switch (key) {
+            case Key::R: fitScene(); break;
+            case Key::S:
+                if (modifiers[KeyModifier::CONTROL])
+                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+                break;
+            default: break;
+            }
         }
+        return block;
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        Base::onKeyRelease(key, modifiers);
+        bool block = Base::onKeyRelease(key, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onKeyRelease(key, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onKeyRelease(key, modifiers);
         }
+        return block;
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
-        Base::onMouseMove(x, y, modifiers);
+        bool block = Base::onMouseMove(x, y, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onMouseMove(x, y, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onMouseMove(x, y, modifiers);
         }
+        return block;
     }
 
-    void onMousePress(
+    bool onMousePress(
         vcl::MouseButton::Enum   button,
         double                   x,
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        Base::onMousePress(button, x, y, modifiers);
+        bool block = Base::onMousePress(button, x, y, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onMousePress(button, x, y, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onMousePress(button, x, y, modifiers);
         }
+        return block;
     }
 
-    void onMouseRelease(
+    bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        Base::onMouseRelease(button, x, y, modifiers);
+        bool block = Base::onMouseRelease(button, x, y, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onMouseRelease(button, x, y, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onMouseRelease(button, x, y, modifiers);
         }
+        return block;
     }
 
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        Base::onMouseDoubleClick(button, x, y, modifiers);
+        bool block = Base::onMouseDoubleClick(button, x, y, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onMouseDoubleClick(button, x, y, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onMouseDoubleClick(button, x, y, modifiers);
         }
+        return block;
     }
 
-    void onMouseScroll(
+    bool onMouseScroll(
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        Base::onMouseScroll(x, y, modifiers);
+        bool block = Base::onMouseScroll(x, y, modifiers);
 
-        // TODO: manage blocking event propagation from editors
         for (const auto& editor : mEditors) {
-            if (editor->isActive())
-                editor->onMouseScroll(x, y, modifiers);
+            if (!block && editor->isActive())
+                block = editor->onMouseScroll(x, y, modifiers);
         }
+        return block;
     }
 
 protected:
