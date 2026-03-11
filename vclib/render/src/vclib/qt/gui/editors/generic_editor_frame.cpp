@@ -31,11 +31,13 @@ void initIcons()
 
 namespace vcl::qt {
 
+std::once_flag initIconsFlag;
+
 GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
         QFrame(parent), mUI(new Ui::GenericEditorFrame)
 {
     mUI->setupUi(this);
-    initIcons();
+    std::call_once(initIconsFlag, initIcons);
 }
 
 GenericEditorFrame::~GenericEditorFrame()
