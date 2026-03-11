@@ -99,7 +99,6 @@ public:
         for (std::shared_ptr<EditorType>& editor : mEditors) {
             if (editor) {
                 editor->setDrawableObjectVector(mDrawList);
-                editor->refresh();
             }
         }
 
@@ -113,7 +112,6 @@ public:
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
-        editor->refresh();
         return editor;
     }
 

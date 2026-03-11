@@ -51,7 +51,7 @@ public:
     {
         // Initialize settings keys expected.
         Base::settings().customSettings["color"] = vcl::Color();
-        Base::settings().customSettings["thickness"] = 0.0f;
+        Base::settings().customSettings["thickness"] = 2.0f;
     }
 
     void draw(uint) const override {}

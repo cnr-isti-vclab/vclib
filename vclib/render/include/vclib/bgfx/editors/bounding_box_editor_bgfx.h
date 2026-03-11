@@ -66,6 +66,8 @@ public:
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
+                // note: the bounding box is already trasformed if the mesh has
+                // a transform matrix
                 mBoxes.push_back(DrawableBox3(m->boundingBox(), c, thickness));
             }
             else {
@@ -115,40 +117,9 @@ public:
                                 true;
 
                 if (show) {
-                    const AbstractDrawableMesh* m = getDrawableMesh(i);
-
-                    if (m) {
-                        Matrix44f transform =
-                            m->transformMatrix().cast<float>();
-                        bgfx::setTransform(transform.data());
-                    }
-
                     mBoxes[i].draw(settings);
                 }
             }
-        }
-    }
-
-private:
-    const AbstractDrawableMesh* getDrawableMesh(uint i) const
-    {
-        if (i < Base::drawList()->size()) {
-            return dynamic_cast<const AbstractDrawableMesh*>(
-                Base::drawList()->at(i).get());
-        }
-        else {
-            return nullptr;
-        }
-    }
-
-    AbstractDrawableMesh* getDrawableMesh(uint i)
-    {
-        if (i < Base::drawList()->size()) {
-            return dynamic_cast<AbstractDrawableMesh*>(
-                Base::drawList()->at(i).get());
-        }
-        else {
-            return nullptr;
         }
     }
 };
