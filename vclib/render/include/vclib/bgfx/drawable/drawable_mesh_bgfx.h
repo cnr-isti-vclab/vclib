@@ -302,7 +302,7 @@ public:
             }
             else {
                 // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, settings.additionalViewIds[1]);
+                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
