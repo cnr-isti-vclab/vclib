@@ -26,8 +26,7 @@
 
 namespace vcl::qt {
 
-ColorPushButton::ColorPushButton(QWidget* parent) :
-        QPushButton(parent)
+ColorPushButton::ColorPushButton(QWidget* parent) : QPushButton(parent)
 {
     setBackgroundColor(QColor());
     connect(this, SIGNAL(clicked(bool)), this, SLOT(onClicked(bool)));

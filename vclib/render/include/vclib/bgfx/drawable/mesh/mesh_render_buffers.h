@@ -236,8 +236,8 @@ public:
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
     /**
-     * @brief Binds the textures associated to the material of the given triangle
-     * chunk. Returns the number of bound textures.
+     * @brief Binds the textures associated to the material of the given
+     * triangle chunk. Returns the number of bound textures.
      *
      * @param[in] mrs: the mesh render settings, needed to identify the material
      * index to use (per vertex or per face)
@@ -271,7 +271,8 @@ public:
                             flags);
 
                         tt = static_cast<DrawableMeshUniforms::TextureType>(j);
-                        DrawableMeshUniforms::setTextureStage(tt, boundTextures);
+                        DrawableMeshUniforms::setTextureStage(
+                            tt, boundTextures);
                         boundTextures++;
                     }
                 }
