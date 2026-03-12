@@ -20,24 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H
-#define VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H
+#ifndef VCL_QT_GUI_COLOR_PUSH_BUTTON_H
+#define VCL_QT_GUI_COLOR_PUSH_BUTTON_H
 
-/**
- * These macros are used both on the library and on the shader side.
- */
+#include <QColor>
+#include <QPushButton>
 
-// bit positions used to tell which features are enabled at shader level
-#define VCL_PBR_VERTEX_COLOR         0
-#define VCL_PBR_VERTEX_TANGENT       1
-#define VCL_PBR_IS_ALPHA_MODE_MASK   2
-#define VCL_PBR_IMAGE_BASED_LIGHTING 3
+namespace vcl::qt {
 
-// bit positions used to tell which textures are available at shader level
-#define VCL_PBR_TEXTURE_BASE_COLOR         0
-#define VCL_PBR_TEXTURE_METALLIC_ROUGHNESS 1
-#define VCL_PBR_TEXTURE_NORMAL             2
-#define VCL_PBR_TEXTURE_OCCLUSION          3
-#define VCL_PBR_TEXTURE_EMISSIVE           4
+class ColorPushButton : public QPushButton
+{
+    Q_OBJECT
 
-#endif // VCL_BGFX_DRAWABLE_MESH_PBR_MACROS_H
+public:
+    explicit ColorPushButton(QWidget* parent = Q_NULLPTR);
+    explicit ColorPushButton(const QColor& c, QWidget* parent = Q_NULLPTR);
+
+    ~ColorPushButton() = default;
+
+    void   setBackgroundColor(const QColor& c);
+    QColor getBackgroundColor() const;
+
+signals:
+    void colorChanged(QColor);
+
+private slots:
+    void onClicked(bool checked);
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_GUI_COLOR_PUSH_BUTTON_H

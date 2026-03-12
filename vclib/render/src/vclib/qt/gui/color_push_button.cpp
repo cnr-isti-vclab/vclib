@@ -20,52 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/imgui_stats_drawer.h>
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/qt/gui/color_push_button.h>
 
-#include <QApplication>
-#include <QFileDialog>
+#include <QColorDialog>
 
-template<typename Der>
-class ViewerDrawer : public vcl::TrackBallViewerDrawer<Der>
+namespace vcl::qt {
+
+ColorPushButton::ColorPushButton(QWidget* parent) : QPushButton(parent)
 {
-public:
-    using Base = vcl::TrackBallViewerDrawer<Der>;
-    using Base::Base;
-
-    bool onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        bool block = Base::onMousePress(button, x, y, modifiers);
-
-        if (!block && button == vcl::MouseButton::RIGHT) {
-            QFileDialog::getOpenFileName(
-                nullptr, QObject::tr("Open Document"), QDir::currentPath());
-        }
-        return block;
-    }
-};
-
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
-
-    // vcl::Context::setResetFlags(BGFX_RESET_NONE);
-
-    using Viewer = vcl::RenderApp<
-        vcl::qt::WidgetManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::ImguiStatsDrawer,
-        ViewerDrawer>;
-
-    Viewer viewer("Viewer with ImGui and Stats");
-
-    viewer.show();
-
-    return app.exec();
+    setBackgroundColor(QColor());
+    connect(this, SIGNAL(clicked(bool)), this, SLOT(onClicked(bool)));
 }
+
+ColorPushButton::ColorPushButton(const QColor& c, QWidget* parent) :
+        QPushButton(parent)
+{
+    setBackgroundColor(c);
+}
+
+void ColorPushButton::setBackgroundColor(const QColor& c)
+{
+    QPalette px;
+    px.setColor(QPalette::Button, c);
+    setPalette(px);
+    update();
+}
+
+QColor ColorPushButton::getBackgroundColor() const
+{
+    QPalette px = palette();
+    return px.color(QPalette::Button);
+}
+
+void ColorPushButton::onClicked(bool checked)
+{
+    QColor color = QColorDialog::getColor(getBackgroundColor(), this);
+    if (color.isValid()) {
+        setBackgroundColor(color);
+        emit colorChanged(color);
+    }
+}
+
+} // namespace vcl::qt

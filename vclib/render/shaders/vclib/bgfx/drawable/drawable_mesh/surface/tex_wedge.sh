@@ -1,9 +1,9 @@
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-
-SAMPLER2D(baseColorTex, VCL_MRB_TEXTURE0);
-
-#define COLORING vec4 color = texture2D(baseColorTex, v_texcoord1);
+#define COLORING \
+    vec4 color; \
+    if (isBaseColorTextureAvailable()) \
+        color = baseColorTex(v_texcoord1); \
+    else \
+        color = vec4(0.0, 0.0, 0.0, 1.0);
