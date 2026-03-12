@@ -191,7 +191,7 @@ public:
     // has been successfully calculated and until all the mouse buttons are
     // released. Also, cannot swap selection mode while defining the selection
     // area (dragging the mouse with LMB held down)
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (key == Key::S && modifiers == KeyModifiers {KeyModifier::ALT} &&
             !mRMBHeld && !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
@@ -205,16 +205,16 @@ public:
             }
         }
         if (mCurrentToolset == ToolSets::DEFAULT) {
-            Base::onKeyPress(key, modifiers);
-            return;
+            return Base::onKeyPress(key, modifiers);
+
         }
         if (mLMBHeld) {
-            return;
+            return false;
         }
         auto pair  = std::make_pair(key, modifiers);
         auto found = mKeyMap.find(pair);
         if (found == mKeyMap.end()) {
-            return;
+            return false;
         }
         auto found2 = mPressActionExecuted.find(pair);
         if (found2 == mPressActionExecuted.end()) {
@@ -224,27 +224,28 @@ public:
             found2 = mPressActionExecuted.find(pair);
         }
         if (found2->second) {
-            return;
+            return false;
         }
         found->second();
         mPressActionExecuted[pair] = true;
+        return false;
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (mCurrentToolset == ToolSets::DEFAULT) {
-            Base::onKeyRelease(key, modifiers);
-            return;
+            return Base::onKeyRelease(key, modifiers);
         }
         auto pair  = std::make_pair(key, modifiers);
         auto found = mPressActionExecuted.find(pair);
         if (found == mPressActionExecuted.end()) {
-            return;
+            return false;
         }
         found->second = false;
+        return false;
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -257,29 +258,29 @@ public:
         default: break;
         }
         if (mCurrentToolset == ToolSets::DEFAULT) {
-            Base::onMousePress(button, x, y, modifiers);
-            return;
+            return Base::onMousePress(button, x, y, modifiers);
         }
         if (mLMBHeld && !mLMBPressPositionTaken) {
             mSelectionBox.set1({x, y});
             mSelectionBox.set2({x, y});
             mLMBPressPositionTaken = true;
         }
+        return false;
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
         if (mCurrentToolset == ToolSets::DEFAULT) {
-            Base::onMouseMove(x, y, modifiers);
-            return;
+            return Base::onMouseMove(x, y, modifiers);
         }
         if (mLMBHeld) {
             mSelectionBox.set2({x, y});
             mSelectionCalcRequired = true;
         }
+        return false;
     }
 
-    void onMouseRelease(
+    bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -292,14 +293,14 @@ public:
         default: break;
         }
         if (mCurrentToolset == ToolSets::DEFAULT) {
-            Base::onMouseRelease(button, x, y, modifiers);
-            return;
+            return Base::onMouseRelease(button, x, y, modifiers);
         }
         if (mLMBHeld) {
-            return;
+            return false;
         }
         mLMBPressPositionTaken = false;
         mSelectionCalcRequired = true;
+        return false;
     }
 };
 

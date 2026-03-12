@@ -290,11 +290,11 @@ public:
     }
 
     // events
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         if (ParentViewer::getCurrentToolset() == ToolSets::SELECTION) {
             SelectionTrackBallEventDrawer<DerivedRenderApp>::onKeyPress(key, modifiers);
-            return;
+            return true;
         } else {
             ParentViewer::onKeyPress(key, modifiers);
         }
@@ -306,6 +306,7 @@ public:
         
         default: break;
         }
+        return false;
     }
 
     void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
