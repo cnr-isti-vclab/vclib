@@ -36,9 +36,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
-        ANISOTROPY_DISC_TEST,
         ANISOTROPY_ROTATION_TEST,
-        ANISOTROPY_STRENGTH_TEST,
         CARBON_FIBRE,
         COUNT_EXAMPLES
     };
@@ -49,9 +47,7 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
-        "/gltf/AnisotropyDiscTest/AnisotropyDiscTest.gltf",
         "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
-        "/gltf/AnisotropyStrengthTest/AnisotropyStrengthTest.gltf",
         "/gltf/CarbonFibre/CarbonFibre.gltf"};
 
     uint selectedExample = CARBON_FIBRE;
