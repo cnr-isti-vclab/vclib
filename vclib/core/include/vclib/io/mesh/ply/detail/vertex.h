@@ -234,11 +234,11 @@ void readPlyVertices(
     MeshType&        m,
     LogType&         log)
 {
-    m.addVertices(header.numberVertices());
+    m.addVertices(header.vertexCount());
 
-    log.startProgress("Reading vertices", header.numberVertices());
+    log.startProgress("Reading vertices", header.vertexCount());
 
-    for (uint vid = 0; vid < header.numberVertices(); ++vid) {
+    for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto& v = m.vertex(vid);
         if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(file, v, m, header.vertexProperties());

@@ -60,7 +60,7 @@ private slots:
     void onShadingFlatToggled(bool checked);
     void onShadingNoneToggled(bool checked);
     void onColorComboBoxChanged(int index);
-    void onColorDialogButtonClicked();
+    void onUserColorChanged(const QColor& c);
     void onSizeChanged(int value);
 };
 

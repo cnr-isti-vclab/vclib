@@ -23,6 +23,7 @@
 #ifndef VCL_BASE_BASE_H
 #define VCL_BASE_BASE_H
 
+#include <array>
 #include <cassert>
 #include <cstdint>
 #include <limits>
@@ -138,6 +139,20 @@ public:
 
     T* operator->() { return std::addressof(mValue); }
 };
+
+/**
+ * @brief Utility function to create in place a std::array with all the elements
+ * initialized to the same value.
+ * @param[in] value: the value to initialize all the elements of the array with.
+ * @return a std::array with all the elements initialized to the same value.
+ */
+template<typename T, size_t N>
+constexpr std::array<T, N> makeArray(T value)
+{
+    std::array<T, N> a;
+    a.fill(value);
+    return a;
+}
 
 } // namespace vcl
 

@@ -23,8 +23,8 @@
 #ifndef VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
 #define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
 
-#include <vclib/render/settings/pbr_viewer_settings.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
+#include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <QFrame>
 

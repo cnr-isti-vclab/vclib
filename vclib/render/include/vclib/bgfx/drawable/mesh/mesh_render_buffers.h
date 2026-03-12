@@ -150,7 +150,7 @@ public:
         bgfx::dispatch(
             viewId,
             pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-            mesh.vertexNumber(),
+            mesh.vertexCount(),
             1,
             1);
 
@@ -159,6 +159,14 @@ public:
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
+        // TODO: streams cannot be higher than
+        // "bgfx::getCaps()->limits.maxVertexStreams". Buffers must be bound
+        // only if necessary (using MeshRenderSettings) right now, this is
+        // managed only for uvs (per vertex or per wedge, not both).
+        // We MUST be sure that the limit is not exceeded.
+
+        using enum MeshRenderInfo::Surface;
+
         uint stream = 0;
 
         // streams MUST be consecutive starting from 0
@@ -166,23 +174,33 @@ public:
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexNormalsBuffer.bindVertex(stream++);
         }
 
+        if (mVertexTangentsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
+            mVertexTangentsBuffer.bind(stream++);
+        }
+
         if (mVertexColorsBuffer.isValid()) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexColorsBuffer.bindVertex(stream++);
         }
 
-        if (mVertexUVBuffer.isValid()) {
+        if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexUVBuffer.bind(stream++);
         }
 
-        if (mVertexWedgeUVBuffer.isValid()) {
+        if (mVertexWedgeUVBuffer.isValid() && mrs.isSurface(COLOR_WEDGE_TEX)) {
+            // bgfx limitation
+            assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexWedgeUVBuffer.bind(stream++);
-        }
-
-        if (mVertexTangentsBuffer.isValid()) {
-            mVertexTangentsBuffer.bind(stream++);
         }
     }
 
@@ -218,8 +236,8 @@ public:
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
     /**
-     * @brief Binds the textures associated to the material of the given triangle
-     * chunk. Returns the number of bound textures.
+     * @brief Binds the textures associated to the material of the given
+     * triangle chunk. Returns the number of bound textures.
      *
      * @param[in] mrs: the mesh render settings, needed to identify the material
      * index to use (per vertex or per face)
@@ -253,7 +271,8 @@ public:
                             flags);
 
                         tt = static_cast<DrawableMeshUniforms::TextureType>(j);
-                        DrawableMeshUniforms::setTextureStage(tt, boundTextures);
+                        DrawableMeshUniforms::setTextureStage(
+                            tt, boundTextures);
                         boundTextures++;
                     }
                 }
@@ -341,7 +360,7 @@ private:
 
             // create the dynamic vertex buffer for splatting
             mVertexQuadBuffer.create(
-                mesh.vertexNumber() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
+                mesh.vertexCount() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
 
             // create the index buffer for splatting
             setVertexQuadIndexBuffer(mesh);
@@ -359,7 +378,7 @@ private:
      */
     void setVertexQuadIndexBuffer(const MeshType& mesh)
     {
-        const uint totalIndices = mesh.vertexNumber() * 6;
+        const uint totalIndices = mesh.vertexCount() * 6;
 
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
@@ -644,7 +663,7 @@ private:
             // map is used to avoid duplicates, then is moved to a vector for
             // parallel processing
             std::map<std::string, uint> texturePaths;
-            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+            for (uint i = 0; i < mesh.materialCount(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                     const vcl::TextureDescriptor& td =
                         mesh.material(i).textureDescriptor(j);

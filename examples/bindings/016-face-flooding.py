@@ -59,7 +59,7 @@ def face_flooding():
     # Initialize face colors
     vcl.set_per_face_color(m, vcl.Color.LIGHT_GRAY)
 
-    print(f"Mesh loaded: {m.face_number()} faces")
+    print(f"Mesh loaded: {m.face_count()} faces")
 
     # Custom flooding function: select faces with normal pointing upward
     def upward_facing_selector(f):

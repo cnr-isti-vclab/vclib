@@ -179,7 +179,7 @@ void loadObjMaterials(
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
             Material m = mat.toMaterial();
-            mat.matId  = mesh.materialsNumber();
+            mat.matId  = mesh.materialCount();
             mesh.pushMaterial(m);
         }
     }
@@ -284,11 +284,11 @@ void readObjFace(
     // check if we need to split the face we read into triangles
     bool splitFace = false;
     // we have a polygonal mesh, no need to split
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         // need to resize to the right number of verts
         f.resizeVertices(tokens.size() - 1);
     }
-    else if (FaceType::VERTEX_NUMBER != tokens.size() - 1) {
+    else if (FaceType::VERTEX_COUNT != tokens.size() - 1) {
         // we have faces with static sizes (triangles), but we are loading faces
         // with number of verts > 3. Need to split the face we are loading in n
         // faces!
@@ -298,7 +298,7 @@ void readObjFace(
     // create the face in the mesh, for now we manage only vertex indices
     if (!splitFace) { // no need to split face case
         for (uint i = 0; i < vids.size(); ++i) {
-            if (vids[i] >= m.vertexNumber()) {
+            if (vids[i] >= m.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for face " + std::to_string(fid));
             }
@@ -327,7 +327,7 @@ void readObjFace(
                 f.materialIndex() = currentMaterial.matId;
             }
             else {
-                for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+                for (uint ff = fid; ff < m.faceCount(); ++ff) {
                     FaceType& f       = m.face(ff);
                     f.materialIndex() = currentMaterial.matId;
                 }
@@ -406,10 +406,10 @@ void readObjFace(
                 else {
                     // take read texcoords and map them in the triangulated
                     // faces for each face of the triangulation of the polygon
-                    for (uint ff = fid; ff < m.faceNumber(); ++ff) {
+                    for (uint ff = fid; ff < m.faceCount(); ++ff) {
                         FaceType& f = m.face(ff);
                         // for each vertex of the face
-                        for (uint i = 0; i < f.vertexNumber(); ++i) {
+                        for (uint i = 0; i < f.vertexCount(); ++i) {
                             uint vid = m.index(f.vertex(i));
                             // find the position of the vertex in the vids array
                             auto it = std::find(vids.begin(), vids.end(), vid);
@@ -622,7 +622,7 @@ void loadObj(
         using NST        = typename NormalType::ScalarType;
         // if we have not yet set per-vertex normals, try to set them now
         if (!loadedInfo.hasPerVertexNormal()) {
-            if (normals.size() == m.vertexNumber()) {
+            if (normals.size() == m.vertexCount()) {
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexNormalOptional(m);
                     loadedInfo.setPerVertexNormal();
@@ -644,7 +644,7 @@ void loadObj(
 
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         if (!loadedInfo.hasPerFaceWedgeTexCoords()) {
-            if (texCoords.size() == m.vertexNumber()) {
+            if (texCoords.size() == m.vertexCount()) {
                 // load texcoords into vertices only if there are no wedge
                 if (settings.enableOptionalComponents) {
                     enableIfPerVertexTexCoordOptional(m);
@@ -658,7 +658,7 @@ void loadObj(
                     using TexCoordType =
                         typename MeshType::VertexType::TexCoordType;
                     using TCT = typename TexCoordType::ScalarType;
-                    for (uint i = 0; i < m.vertexNumber(); ++i) {
+                    for (uint i = 0; i < m.vertexCount(); ++i) {
                         m.vertex(i).texCoord() =
                             texCoords[i].template cast<TCT>();
                     }
@@ -666,7 +666,7 @@ void loadObj(
 
                 // material index
                 if constexpr (HasMaterials<MeshType>) {
-                    if (m.materialsNumber() > 0) {
+                    if (m.materialCount() > 0) {
                         if (settings.enableOptionalComponents) {
                             enableIfPerVertexMaterialIndexOptional(m);
                             loadedInfo.setPerVertexMaterialIndex();
@@ -676,7 +676,7 @@ void loadObj(
                                 loadedInfo.setPerVertexMaterialIndex();
                         }
                         if (loadedInfo.hasPerVertexMaterialIndex()) {
-                            for (uint i = 0; i < m.vertexNumber(); ++i) {
+                            for (uint i = 0; i < m.vertexCount(); ++i) {
                                 // assign the first material to all vertices
                                 m.vertex(i).materialIndex() = 0;
                             }

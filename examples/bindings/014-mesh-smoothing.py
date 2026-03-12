@@ -51,8 +51,8 @@ def mesh_smoothing():
     original_mesh.set_name("Original Bunny Mesh")
 
     print("Original mesh loaded:")
-    print(f"  Vertices: {original_mesh.vertex_number()}")
-    print(f"  Faces: {original_mesh.face_number()}")
+    print(f"  Vertices: {original_mesh.vertex_count()}")
+    print(f"  Faces: {original_mesh.face_count()}")
 
     vcl.update_per_vertex_and_face_normals(original_mesh)
 
@@ -117,8 +117,8 @@ def mesh_smoothing():
     # Display mesh statistics
     print("\n=== Mesh Statistics ===")
     print("All meshes have:")
-    print(f"  Vertices: {original_mesh.vertex_number()}")
-    print(f"  Faces: {original_mesh.face_number()}")
+    print(f"  Vertices: {original_mesh.vertex_count()}")
+    print(f"  Faces: {original_mesh.face_count()}")
 
     return original_mesh, laplacian_mesh, cotangent_mesh, taubin_mesh, normal_mesh
 

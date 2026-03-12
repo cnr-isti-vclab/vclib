@@ -51,14 +51,6 @@ public:
     {
     }
 
-    ViewerDrawerBGFX(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerBGFX(width, height)
-    {
-        ParentViewer::setDrawableObjectVector(v);
-    }
-
     const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
 
     void setPbrSettings(const PBRViewerSettings& settings)
@@ -110,9 +102,11 @@ public:
         ParentViewer::drawableObjectVector().drawId(settings);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (key == Key::F1) {
+        bool block = ParentViewer::onKeyPress(key, modifiers);
+
+        if (!block && key == Key::F1) {
             if (mStatsEnabled) {
                 mStatsEnabled = false;
                 bgfx::setDebug(BGFX_DEBUG_NONE);
@@ -122,23 +116,24 @@ public:
                 bgfx::setDebug(BGFX_DEBUG_STATS);
             }
         }
-        ParentViewer::onKeyPress(key, modifiers);
+        return block;
     }
 
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
 
-        if (button == MouseButton::LEFT) {
+        if (!block && button == MouseButton::LEFT) {
             const bool homogeneousNDC =
                 Context::instance().capabilites().homogeneousDepth;
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+        return block;
     }
 
 private:

@@ -37,7 +37,7 @@ def mesh_statistics():
     # PART 1: BASIC GEOMETRIC PROPERTIES
     print("PART 1: Basic Geometric Properties\n-----------------------------------")
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bimba_simplified.obj")
-    print(f"Loaded mesh: {mesh.vertex_number()} vertices, {mesh.face_number()} faces\n")
+    print(f"Loaded mesh: {mesh.vertex_count()} vertices, {mesh.face_count()} faces\n")
     vcl.update_bounding_box(mesh)
     bbox = mesh.bounding_box()
     print(f"Bounding Box:\n  Min: {bbox.min()}\n  Max: {bbox.max()}\n  Size: {bbox.size()}\n  Diagonal: {bbox.diagonal()}\n")
@@ -134,7 +134,7 @@ def mesh_statistics():
     # PART 6: COMPARISON WITH DIFFERENT MESH
     print("\n\nPART 6: Comparison with Different Mesh\n--------------------------------------")
     mesh2 = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
-    print(f"Comparison mesh (cube): {mesh2.vertex_number()} vertices, {mesh2.face_number()} faces")
+    print(f"Comparison mesh (cube): {mesh2.vertex_count()} vertices, {mesh2.face_count()} faces")
     surface_area2 = vcl.surface_area(mesh2)
     barycenter2 = vcl.barycenter(mesh2)
     print(f"Cube surface area: {surface_area2}")

@@ -263,25 +263,28 @@ public:
         resizeViewer(width, height);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         keyPress(key);
+        return false;
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         keyRelease(key);
+        return false;
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
+        return false;
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -290,9 +293,10 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         pressMouse(button);
+        return false;
     }
 
-    void onMouseRelease(
+    bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -301,13 +305,15 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         releaseMouse(button);
+        return false;
     }
 
-    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+    bool onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
         override
     {
         setKeyModifiers(modifiers);
         scroll(dx, dy);
+        return false;
     }
 
 protected:

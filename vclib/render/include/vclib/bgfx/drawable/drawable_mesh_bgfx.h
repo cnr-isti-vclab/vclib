@@ -146,20 +146,20 @@ public:
         mMRB.updateWireframeSettings(rs);
     }
 
-    uint vertexNumber() const override { return MeshType::vertexNumber(); }
+    uint vertexCount() const override { return MeshType::vertexCount(); }
 
-    uint faceNumber() const override
+    uint faceCount() const override
     {
         if constexpr (HasFaces<MeshType>)
-            return MeshType::faceNumber();
+            return MeshType::faceCount();
         else
             return 0;
     }
 
-    uint edgeNumber() const override
+    uint edgeCount() const override
     {
         if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeNumber();
+            return MeshType::edgeCount();
         else
             return 0;
     }
@@ -214,12 +214,11 @@ public:
         }
 
         DrawableMeshUniforms::setColor(*this);
-        DrawableMeshUniforms::resetTextureStages();
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            const PBRViewerSettings&    pbrSettings = settings.pbrSettings;
-            const DrawableEnvironment*  env         = settings.environment;
+            const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
+            const DrawableEnvironment* env         = settings.environment;
 
             bool iblEnabled = pbrSettings.imageBasedLighting &&
                               env != nullptr && env->canDraw();
@@ -228,6 +227,7 @@ public:
                 // Bind textures before vertex buffers!!
 
                 /* TEXTURES */
+                DrawableMeshUniforms::resetTextureStages();
                 // tStage is the first stage from which we can bind new 2D
                 // textures
                 uint tStage = mMRB.bindTextures(mMRS, i, *this);
