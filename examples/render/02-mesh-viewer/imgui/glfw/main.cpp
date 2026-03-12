@@ -58,6 +58,8 @@ int main(int argc, char** argv)
 
     tw.pushDrawableObject(drawable);
 
+    tw.refreshEditors();
+
     tw.fitScene();
 
     tw.show();

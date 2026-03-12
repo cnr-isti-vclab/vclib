@@ -29,6 +29,7 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/editors/mesh_selector_editor.h>
+#include <vclib/render/editors/bounding_box_editor.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
@@ -46,6 +47,8 @@ class MeshViewerDrawerImgui :
 
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
         mMeshSelectorEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
+        mBoundingBoxEditor;
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
@@ -55,6 +58,9 @@ public:
         mMeshSelectorEditor =
             Base::template pushEditor<vcl::MeshSelectorEditor>();
         mMeshSelectorEditor->setActive(true);
+
+        mBoundingBoxEditor =
+            Base::template pushEditor<vcl::BoundingBoxEditor>();
     }
 
     virtual void onDraw(vcl::uint viewId) override
@@ -186,9 +192,113 @@ public:
         }
 
         ImGui::End();
+
+        // floating editors toolbar
+        drawEditorsToolbar();
     }
 
 private:
+    void drawEditorsToolbar()
+    {
+        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 toolbarPos = ImVec2(
+            viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f);
+
+        ImGui::SetNextWindowPos(toolbarPos, ImGuiCond_Always);
+        ImGui::SetNextWindowBgAlpha(0.85f);
+
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoDecoration      |
+            ImGuiWindowFlags_AlwaysAutoResize  |
+            ImGuiWindowFlags_NoSavedSettings   |
+            ImGuiWindowFlags_NoFocusOnAppearing|
+            ImGuiWindowFlags_NoNav;
+
+        if (ImGui::Begin("##EditorsToolbar", nullptr, flags)) {
+            // bounding box editor toggle
+            bool bbActive =
+                mBoundingBoxEditor && mBoundingBoxEditor->isActive();
+            // TODO: find a way to insert the assets/icons/bbox.png icon here
+            // instead of text
+            if (ImGui::Button(bbActive ? "[BB]" : " BB ")) {
+                if (mBoundingBoxEditor)
+                    mBoundingBoxEditor->setActive(!bbActive);
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Bounding Box");
+
+            // small settings popup button
+            ImGui::SameLine(0, 2);
+            if (ImGui::Button("v##BBSettings")) {
+                ImGui::OpenPopup("##BBSettingsPopup");
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Bounding Box Settings");
+
+            if (ImGui::BeginPopup("##BBSettingsPopup")) {
+                drawBoundingBoxSettings();
+                ImGui::EndPopup();
+            }
+        }
+        ImGui::End();
+    }
+
+    void drawBoundingBoxSettings()
+    {
+        if (!mBoundingBoxEditor)
+            return;
+
+        EditorSettings& sts = mBoundingBoxEditor->settings();
+
+        // Edit mode
+        static const char* editModeNames[] = {
+            "None", "Selected Object", "Visible Objects", "All Objects"};
+        int currentMode = toUnderlying(sts.editMode);
+        ImGui::Text("Apply to:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::BeginCombo("##BBEditMode", editModeNames[currentMode])) {
+            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
+                bool selected = (n == currentMode);
+                if (ImGui::Selectable(editModeNames[n], selected)) {
+                    sts.editMode =
+                        static_cast<EditorSettings::EditMode>(n);
+                    mBoundingBoxEditor->refreshSettings();
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        // Lines width
+        assert(sts.customSettings["thickness"].has_value());
+        float thickness =
+            std::any_cast<float>(sts.customSettings["thickness"]);
+        ImGui::Text("Lines Width:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::SliderFloat("##BBThickness", &thickness, 1.0f, 10.0f, "%.0f")) {
+            sts.customSettings["thickness"] = thickness;
+            mBoundingBoxEditor->refreshSettings();
+        }
+
+        // Lines color
+        assert(sts.customSettings["color"].has_value());
+        ImGui::Text("Lines Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##BBColor",
+            [&] {
+                return std::any_cast<Color>(sts.customSettings["color"]);
+            },
+            [&](Color c) {
+                sts.customSettings["color"] = c;
+                mBoundingBoxEditor->refreshSettings();
+            },
+            ImGuiColorEditFlags_NoInputs);
+    }
+
     void drawMeshList()
     {
         uint meshIndex = Base::mDrawList->selectedObjectId();
