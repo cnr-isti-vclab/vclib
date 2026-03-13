@@ -42,8 +42,8 @@ class DrawableMeshUniforms
     // sMeshData[0]: as uint, mesh id
     // sMeshData[1]: as uint, first chunk primitive id drawn
     // sMeshData[2]: 8 texture stages with 4 bit each, to specify if texture is
-    //    used (value != 15) and which stage is used for each texture (as uint):
-    //    none|none|brdfLut|emissive|occlusion|normal|metallRough|baseColor
+    //   used (value != 15) and which stage is used for each texture (as uint):
+    //   none|brdfLut|anisotropy|emissive|occlusion|normal|metallRough|baseColor
     inline static std::array<float, 4> sMeshData =
         {0.0, 0.0, std::bit_cast<float>(0xFFFFFFFF), 0.0};
 

@@ -283,8 +283,6 @@ public:
      */
     float& anisotropyRotation() { return mAnisotropyRotation; }
 
-    /**/
-
     /**
      * @brief Gets the texture descriptor for the base color texture.
      * @return A const reference to the base color texture descriptor.

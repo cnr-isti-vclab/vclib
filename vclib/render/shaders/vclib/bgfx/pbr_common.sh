@@ -126,6 +126,7 @@ float pbrSpecularAnisotropic(
 /**
  * @brief Computes a bent normal used to modify the reflection direction in order to simulate anisotropic reflections.
  * @param[in] normal: The original normal vector.
+ * @param[in] view: The view direction vector (must be normalized).
  * @param[in] anisotropyDirection: The direction of anisotropy (must be normalized).
  * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
  * @param[in] roughness: The surface roughness (between 0 and 1).

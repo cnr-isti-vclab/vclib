@@ -136,6 +136,7 @@ int loadGltfPrimitiveMaterial(
                 anisotropyStrength = anisotropyExt
                     .Get("anisotropyStrength")
                     .GetNumberAsDouble();
+                anisotropyStrength = std::clamp(anisotropyStrength, 0.0, 1.0);
             }
 
             if (anisotropyExt.Has("anisotropyRotation")) {
@@ -145,10 +146,10 @@ int loadGltfPrimitiveMaterial(
             }
 
             if (anisotropyExt.Has("anisotropyTexture")) {
-                anisotropyTextureId = anisotropyExt
-                    .Get("anisotropyTexture")
-                    .Get("index")
-                    .GetNumberAsInt();
+                auto& tex = anisotropyExt.Get("anisotropyTexture");
+                if (tex.Has("index")) {
+                    anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                }
             }
         }
 
