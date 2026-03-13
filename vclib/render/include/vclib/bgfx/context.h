@@ -31,7 +31,7 @@
 #include <bgfx/platform.h>
 
 #include <mutex>
-#include <stack>
+#include <set>
 
 #define BGFX_INVALID_VIEW 65535
 
@@ -45,7 +45,9 @@ class Context
     void* mWindowHandle  = nullptr;
     void* mDisplayHandle = nullptr;
 
-    std::stack<bgfx::ViewId> mViewStack;
+    // ordered set of views (high priority from top, low priority at the
+    // bottom)
+    std::set<bgfx::ViewId> mViewSet;
 
     Callback        mCallBack;
     FontManager*    mFontManager    = nullptr;
@@ -118,7 +120,7 @@ public:
 
     bool isValidViewId(bgfx::ViewId viewId) const;
 
-    bgfx::ViewId requestViewId();
+    bgfx::ViewId requestViewId(bool highPriority = true);
 
     void releaseViewId(bgfx::ViewId viewId);
 

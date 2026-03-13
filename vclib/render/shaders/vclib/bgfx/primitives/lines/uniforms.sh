@@ -20,41 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
-#define VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
+#ifndef VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
+#define VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH
 
-#include <vclib/base.h>
+uniform vec4 u_linesSettings;
 
-#include <vclib/bgfx/drawable/drawable_environment.h>
-#include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#define thickness          u_linesSettings.x
+#define u_colorShadingPack floatBitsToUint(u_linesSettings.y)
 
-#include <array>
+#define colorToUse         uint(u_colorShadingPack & 0x00FFFFFF)
+#define u_shadingPerVertex bool(u_colorShadingPack >> 24u)
 
-namespace vcl {
+#define generalColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.z))
 
-/**
- * @brief A simple struct containing the settings to draw a drawable object
- * in a bgfx canvas.
- */
-struct DrawObjectSettingsBGFX
-{
-    inline static const uint N_ADDITIONAL_VIEWS = 4;
+#define u_depthOffset u_linesSettings.w
 
-    /**< @brief The object ID to assign to the object. */
-    uint objectId = 0;
-
-    /**< @brief The view ID on which to draw the object. */
-    uint viewId = 0;
-
-    std::array<uint, N_ADDITIONAL_VIEWS> additionalViewIds =
-        makeArray<uint, N_ADDITIONAL_VIEWS>(BGFX_INVALID_VIEW);
-
-    PBRViewerSettings pbrSettings;
-
-    const DrawableEnvironment* environment = nullptr;
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_SETTINGS_DRAW_OBJECT_SETTINGS_BGFX_H
+#endif // VCL_EXT_PRIMITIVES_LINES_UNIFORMS_SH

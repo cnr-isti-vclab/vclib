@@ -140,18 +140,26 @@ bool Context::supportsCompute() const
     return (capabilites().supported & BGFX_CAPS_COMPUTE) == BGFX_CAPS_COMPUTE;
 }
 
-bgfx::ViewId Context::requestViewId()
+bgfx::ViewId Context::requestViewId(bool highPriority)
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    bgfx::ViewId                viewId = mViewStack.top();
-    mViewStack.pop();
+    bgfx::ViewId                viewId = BGFX_INVALID_HANDLE;
+    if (mViewSet.size() > 0) {
+        std::set<bgfx::ViewId>::iterator it;
+        if (highPriority)
+            it = mViewSet.begin();
+        else
+            it = std::prev(mViewSet.end());
+        viewId = *it;
+        mViewSet.erase(it);
+    }
     return viewId;
 }
 
 void Context::releaseViewId(bgfx::ViewId viewId)
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    instance().mViewStack.push(viewId);
+    instance().mViewSet.insert(viewId);
 }
 
 bool Context::isDefaultWindow(void* windowHandle) const
@@ -349,9 +357,8 @@ Context::Context(void* windowHandle, void* displayHandle)
     // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
 
-    // the view id is a 0-based index, so we start from maxViews - 1
-    while (mv != 0) {
-        mViewStack.push((bgfx::ViewId) --mv);
+    for (bgfx::ViewId viewId = 0; viewId < mv; viewId++) {
+        mViewSet.insert(viewId);
     }
 
     // font manager must be created after bgfx::init
