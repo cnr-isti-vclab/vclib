@@ -143,7 +143,7 @@ bool Context::supportsCompute() const
 bgfx::ViewId Context::requestViewId(bool highPriority)
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    bgfx::ViewId viewId = BGFX_INVALID_HANDLE;
+    bgfx::ViewId                viewId = BGFX_INVALID_HANDLE;
     if (mViewSet.size() > 0) {
         std::set<bgfx::ViewId>::iterator it;
         if (highPriority)

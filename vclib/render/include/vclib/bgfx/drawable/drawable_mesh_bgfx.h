@@ -298,7 +298,8 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    settings.additionalViewIds[1], pm.getProgram<DRAWABLE_MESH_POINTS>());
+                    settings.additionalViewIds[1],
+                    pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
             else {
                 // generate splats (quads) lazy

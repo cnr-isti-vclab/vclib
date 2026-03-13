@@ -77,7 +77,7 @@ public:
     };
 
 private:
-    float mThickness = 5.0f;
+    float mThickness   = 5.0f;
     float mDepthOffset = 0.0f;
 
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
@@ -343,7 +343,7 @@ public:
      */
     float& thickness() { return mThickness; }
 
-     /**
+    /**
      * @brief Returns the depth offset applied to the lines.
      * @return The depth offset applied to the lines.
      */
