@@ -204,17 +204,18 @@ private:
         ImVec2 toolbarPos = ImVec2(
             viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f);
 
-        ImGui::SetNextWindowPos(toolbarPos, ImGuiCond_Always);
+        ImGui::SetNextWindowPos(toolbarPos, ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowBgAlpha(0.85f);
 
         ImGuiWindowFlags flags =
-            ImGuiWindowFlags_NoDecoration      |
+            ImGuiWindowFlags_NoScrollbar       |
+            ImGuiWindowFlags_NoScrollWithMouse |
             ImGuiWindowFlags_AlwaysAutoResize  |
             ImGuiWindowFlags_NoSavedSettings   |
             ImGuiWindowFlags_NoFocusOnAppearing|
             ImGuiWindowFlags_NoNav;
 
-        if (ImGui::Begin("##EditorsToolbar", nullptr, flags)) {
+        if (ImGui::Begin("Editors", nullptr, flags)) {
             // bounding box editor toggle
             bool bbActive =
                 mBoundingBoxEditor && mBoundingBoxEditor->isActive();
