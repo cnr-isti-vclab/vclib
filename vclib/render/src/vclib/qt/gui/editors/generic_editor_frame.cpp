@@ -45,19 +45,20 @@ GenericEditorFrame::~GenericEditorFrame()
     delete mUI;
 }
 
-QPushButton* GenericEditorFrame::addButton(
-    const QIcon& icon,
-    bool         checkable)
+QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
 {
     QPushButton* button = new QPushButton(this);
     button->setIcon(icon);
-    button->setIconSize(QSize(50,50));
-    button->setMinimumSize(50,50);
-    button->setMaximumSize(50,50);
+    button->setIconSize(QSize(40, 40));
+    button->setMinimumSize(40, 40);
+    button->setMaximumSize(40, 40);
 
     button->setCheckable(checkable);
 
-    mUI->buttonFrame->layout()->addWidget(button);
+    // add the button before the settings button in the mUI layout
+    int settingsButtonIndex =
+        mUI->horizontalLayout->indexOf(mUI->settingsPushButton);
+    mUI->horizontalLayout->insertWidget(settingsButtonIndex, button);
     return button;
 }
 
