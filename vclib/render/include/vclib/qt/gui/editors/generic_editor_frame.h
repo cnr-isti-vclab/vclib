@@ -51,19 +51,15 @@ protected:
 
     QPushButton* settingsButton() const;
 
-    void hideSettingsButton() {
-        settingsButton()->setVisible(false);
-    }
+    void hideSettingsButton() { settingsButton()->setVisible(false); }
 
-    void showSettingsButton() {
-        settingsButton()->setVisible(true);
-    }
+    void showSettingsButton() { settingsButton()->setVisible(true); }
 
     template<typename SettingsFrame>
     [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
     {
         QWidgetAction* wa = new QWidgetAction(this);
-        SettingsFrame*sf = new SettingsFrame(sts);
+        SettingsFrame* sf = new SettingsFrame(sts);
         wa->setDefaultWidget(sf);
         QMenu* popupMenu = new QMenu(this);
         popupMenu->addAction(wa);
