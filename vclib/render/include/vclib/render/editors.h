@@ -20,50 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
-#define VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
+#ifndef VCL_RENDER_EDITORS_H
+#define VCL_RENDER_EDITORS_H
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
-#include <vclib/render/editors/editor.h>
+#include "editors/axis_editor.h"
+#include "editors/bounding_box_editor.h"
+#include "editors/mesh_selector_editor.h"
 
-namespace vcl {
-
-template<typename ViewerDrawer>
-class AxisEditorBGFX : public Editor<ViewerDrawer>
-{
-    using Base = Editor<ViewerDrawer>;
-
-    DrawableAxis mAxis;
-
-public:
-    AxisEditorBGFX() {};
-
-    void setActive(bool active) override
-    {
-        Base::setActive(active);
-        Base::viewerUpdate();
-    }
-
-    void draw(uint viewId) const override
-    {
-        DrawObjectSettings settings;
-        settings.viewId = viewId;
-
-        mAxis.draw(settings);
-    }
-
-    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
-    {
-        switch (key) {
-        case Key::A: toggleVisibility(); break;
-        default: break;
-        }
-        return false;
-    }
-
-    void toggleVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
+#endif // VCL_RENDER_EDITORS_H
