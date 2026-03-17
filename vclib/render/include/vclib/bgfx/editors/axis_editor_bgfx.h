@@ -70,6 +70,8 @@ public:
         mCustomShortcutCallback = callback;
     }
 
+    bool isVisible() const { return mAxis.isVisible(); }
+
     void toggleVisibility()
     {
         mAxis.setVisibility(!mAxis.isVisible());

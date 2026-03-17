@@ -28,8 +28,7 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/editors/mesh_selector_editor.h>
-#include <vclib/render/editors/bounding_box_editor.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
@@ -45,6 +44,7 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
+    std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
         mMeshSelectorEditor;
     std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
@@ -55,6 +55,10 @@ public:
             Base(width, height)
     {
         // install editors
+        mAxisEditor = std::dynamic_pointer_cast<
+            vcl::AxisEditor<typename Base::ViewerType>>(
+            Base::getEditor(Base::ViewerType::BuiltInEditors::AXIS));
+
         mMeshSelectorEditor =
             Base::template pushEditor<vcl::MeshSelectorEditor>();
         mMeshSelectorEditor->setActive(true);
@@ -216,6 +220,17 @@ private:
             ImGuiWindowFlags_NoNav;
 
         if (ImGui::Begin("Editors", nullptr, flags)) {
+            // axis editor toggle
+            bool axisActive = mAxisEditor && mAxisEditor->isVisible();
+            if (ImGui::Button(axisActive ? "[Axis]" : " Axis ")) {
+                if (mAxisEditor)
+                    mAxisEditor->toggleVisibility();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Axis");
+
+            ImGui::SameLine();
+
             // bounding box editor toggle
             bool bbActive =
                 mBoundingBoxEditor && mBoundingBoxEditor->isActive();
