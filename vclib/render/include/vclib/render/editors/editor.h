@@ -59,35 +59,125 @@ public:
 
     Editor() = default;
 
+    /**
+     * @brief Returns whether the editor is currently active.
+     *
+     * Only active editors receive input events and are drawn by the viewer.
+     *
+     * @return true if the editor is active, false otherwise.
+     */
     bool isActive() const { return mIsActive; }
 
+    /**
+     * @brief Sets the editor active state.
+     *
+     * When active, the editor receives input events and its `draw()` function
+     * is called at every frame.
+     *
+     * @param[in] active: the new active state.
+     */
     virtual void setActive(bool active) { mIsActive = active; }
 
+    /**
+     * @brief Returns the editor settings.
+     * @return a reference to the EditorSettings object.
+     */
     EditorSettings& settings() { return mSettings; }
 
+    /**
+     * @brief Returns the editor settings.
+     * @return a const reference to the EditorSettings object.
+     */
     const EditorSettings& settings() const { return mSettings; }
 
+    /**
+     * @brief Called by the viewer when the drawable object vector changes.
+     *
+     * Subclasses may override this function to update their internal state
+     * when the set of drawable objects changes (e.g. when a new object is
+     * pushed into the viewer).
+     */
     virtual void refresh() {}
 
+    /**
+     * @brief Called by the viewer when the editor settings change.
+     *
+     * Subclasses may override this function to react to settings updates.
+     */
     virtual void refreshSettings() {}
 
+    /**
+     * @brief Draws the editor content for the given view.
+     *
+     * This function is called at every frame by the viewer when the editor is
+     * active. Subclasses must implement this function to draw their content.
+     *
+     * @param[in] viewId: the identifier of the view to draw into.
+     */
     virtual void draw(uint viewId) const = 0;
 
+    /**
+     * @brief Called when a keyboard key is pressed.
+     *
+     * Subclasses may override this function to handle key press events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] key: the key that was pressed.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers)
     {
         return false;
     }
 
+    /**
+     * @brief Called when a keyboard key is released.
+     *
+     * Subclasses may override this function to handle key release events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] key: the key that was released.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers)
     {
         return false;
     }
 
+    /**
+     * @brief Called when the mouse cursor is moved.
+     *
+     * Subclasses may override this function to handle mouse move events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] x: the x coordinate of the cursor, in window pixels.
+     * @param[in] y: the y coordinate of the cursor, in window pixels.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onMouseMove(double x, double y, const KeyModifiers& modifiers)
     {
         return false;
     }
 
+    /**
+     * @brief Called when a mouse button is pressed.
+     *
+     * Subclasses may override this function to handle mouse press events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] button: the mouse button that was pressed.
+     * @param[in] x: the x coordinate of the cursor, in window pixels.
+     * @param[in] y: the y coordinate of the cursor, in window pixels.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onMousePress(
         vcl::MouseButton::Enum   button,
         double                   x,
@@ -97,6 +187,19 @@ public:
         return false;
     }
 
+    /**
+     * @brief Called when a mouse button is released.
+     *
+     * Subclasses may override this function to handle mouse release events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] button: the mouse button that was released.
+     * @param[in] x: the x coordinate of the cursor, in window pixels.
+     * @param[in] y: the y coordinate of the cursor, in window pixels.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
@@ -106,6 +209,20 @@ public:
         return false;
     }
 
+    /**
+     * @brief Called when a mouse button is double-clicked.
+     *
+     * Subclasses may override this function to handle mouse double-click
+     * events. If the event is consumed by the editor, the function should
+     * return `true` to prevent further propagation to other editors or the
+     * viewer.
+     *
+     * @param[in] button: the mouse button that was double-clicked.
+     * @param[in] x: the x coordinate of the cursor, in window pixels.
+     * @param[in] y: the y coordinate of the cursor, in window pixels.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
@@ -115,6 +232,18 @@ public:
         return false;
     }
 
+    /**
+     * @brief Called when the mouse wheel is scrolled.
+     *
+     * Subclasses may override this function to handle mouse scroll events.
+     * If the event is consumed by the editor, the function should return
+     * `true` to prevent further propagation to other editors or the viewer.
+     *
+     * @param[in] x: the horizontal scroll delta.
+     * @param[in] y: the vertical scroll delta.
+     * @param[in] modifiers: the currently active key modifiers.
+     * @return true if the event is consumed, false otherwise.
+     */
     virtual bool onMouseScroll(
         double              x,
         double              y,
@@ -124,8 +253,23 @@ public:
     }
 
 protected:
+    /**
+     * @brief Returns the shared drawable object vector of the viewer.
+     * @return a shared pointer to the DrawableObjectVector.
+     */
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
 
+    /**
+     * @brief Requests the viewer to read the ID of the object at the given
+     * screen coordinates.
+     *
+     * The result is delivered asynchronously via the provided callback.
+     *
+     * @param[in] x: the x coordinate of the point, in window pixels.
+     * @param[in] y: the y coordinate of the point, in window pixels.
+     * @param[in] idCallback: callback invoked with the ID of the object at the
+     * given coordinates once the read is complete.
+     */
     void viewerReadIdRequest(
         double                    x,
         double                    y,
@@ -135,6 +279,12 @@ protected:
         mViewer->readIdRequest(x, y, std::move(idCallback));
     }
 
+    /**
+     * @brief Requests the viewer to redraw the frame.
+     *
+     * Editors should call this function after modifying any state that affects
+     * the visual output, so that the viewer schedules a new frame.
+     */
     void viewerUpdate() const
     {
         assert(mViewer);
