@@ -25,7 +25,6 @@
 
 #include "viewer_drawer_bgfx.h"
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
@@ -39,7 +38,6 @@ class TrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<TrackBallEventDrawer<DerivedRenderApp>>;
 
-    DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
 
@@ -49,7 +47,6 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
     }
@@ -64,10 +61,6 @@ public:
         setDirectionalLightVisibility(
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
-
-        if (mAxis.isVisible()) {
-            mAxis.draw(settings);
-        }
 
         if (mDrawTrackBall.isVisible()) {
             mDrawTrackBall.draw(settings);
@@ -92,7 +85,6 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
         if (!block) {
             switch (key) {
-            case Key::A: toggleAxisVisibility(); break;
 
             case Key::T: toggleTrackBallVisibility(); break;
 
@@ -101,8 +93,6 @@ public:
         }
         return block;
     }
-
-    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
 
     void toggleTrackBallVisibility()
     {
