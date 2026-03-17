@@ -20,63 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
-#define VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
+#ifndef VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
+#define VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
-#include <vclib/render/editors/editor.h>
+#include "generic_editor_frame.h"
 
-namespace vcl {
+#include <vclib/render/editors/axis_editor.h>
 
-template<typename ViewerDrawer>
-class AxisEditorBGFX : public Editor<ViewerDrawer>
+namespace vcl::qt {
+
+template<typename ViewerType>
+class AxisEditorFrame : public GenericEditorFrame
 {
-    using Base = Editor<ViewerDrawer>;
+    using Base = GenericEditorFrame;
 
-    DrawableAxis mAxis;
-
-    std::function<void(void)> mCustomShortcutCallback = [this]() {
-        toggleVisibility();
-    };
+    std::shared_ptr<vcl::AxisEditor<ViewerType>> mAxisEditor;
 
 public:
-    AxisEditorBGFX() {};
-
-    void setActive(bool active) override
+    explicit AxisEditorFrame(
+        std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
+        QWidget*                                            parent = nullptr) :
+            GenericEditorFrame(parent)
     {
-        Base::setActive(active);
-        Base::viewerUpdate();
-    }
+        mAxisEditor = ptr;
 
-    void draw(uint viewId) const override
-    {
-        DrawObjectSettings settings;
-        settings.viewId = viewId;
+        QIcon ic(":/icons/show_axis.png");
 
-        mAxis.draw(settings);
-    }
+        QPushButton* editorButton = Base::addButton(ic);
 
-    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
-    {
-        switch (key) {
-        case Key::A: mCustomShortcutCallback(); break;
-        default: break;
-        }
-        return false;
-    }
+        editorButton->setToolTip("Show Axis");
 
-    void setShortcutCallback(std::function<void(void)> callback)
-    {
-        mCustomShortcutCallback = callback;
-    }
+        Base::hideSettingsButton();
 
-    void toggleVisibility()
-    {
-        mAxis.setVisibility(!mAxis.isVisible());
-        Base::viewerUpdate();
+        mAxisEditor->setShortcutCallback([editorButton]() {
+            editorButton->click();
+        });
+
+        connect(
+            editorButton,
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                if (mAxisEditor) {
+                    mAxisEditor->toggleVisibility();
+                }
+            });
     }
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
+#endif // VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H

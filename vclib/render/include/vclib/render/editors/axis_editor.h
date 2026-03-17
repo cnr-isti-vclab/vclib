@@ -53,6 +53,10 @@ public:
     }
 
     void draw(uint) const override {}
+
+    void toggleVisibility() {}
+
+    void setShortcutCallback(std::function<void(void)>) {}
 };
 #endif
 
