@@ -24,8 +24,7 @@
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/qt/gui/editors/bounding_box_editor_frame.h>
-#include <vclib/qt/gui/editors/selection_editor_frame.h>
+#include <vclib/qt/gui/editors.h>
 #include <vclib/qt/gui/screen_shot_dialog.h>
 
 #include "ui_mesh_viewer.h"
@@ -78,19 +77,30 @@ MeshViewer::MeshViewer(QWidget* parent) :
 {
     mUI->setupUi(this);
 
+    /** Drawable Object Vector **/
+
     mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
-    // install the editors
+    /** Editors **/
+
+    // no toolbar editors
     mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
     mMeshSelectorEditor->setActive(true);
     auto callback = [this](uint id) {
         drawableObjectVectorTree().setSelectedItem(id);
     };
     mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+
+    // toolbar editors
+    mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
+        viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
+    AxisEditorFrame<ViewerType>* axisEditor =
+        new AxisEditorFrame<ViewerType>(mAxisEditor);
+    mUI->toolBar->addWidget(axisEditor);
 
     mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
     BoundingBoxEditorFrame<ViewerType>* bboxEditor =
@@ -105,7 +115,14 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
+    /** Render Settings Frame **/
+
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+
+    /** Events **/
+
+    // install the key filter
+    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function

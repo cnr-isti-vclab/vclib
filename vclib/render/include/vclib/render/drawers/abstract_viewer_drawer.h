@@ -26,7 +26,7 @@
 #include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
-#include <vclib/render/editors/editor.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 
@@ -45,6 +45,10 @@ namespace vcl {
 template<typename ViewProjEventDrawer>
 class AbstractViewerDrawer : public ViewProjEventDrawer
 {
+public:
+    enum class BuiltInEditors { AXIS = 0, COUNT };
+
+private:
     friend Editor<AbstractViewerDrawer>;
 
     using Base = ViewProjEventDrawer;
@@ -79,6 +83,13 @@ public:
             ViewProjectionEventDrawerConcept<Base>,
             "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
             "base class");
+
+        // push built-in editors - the order of the editors in the vector is
+        // important, as it is used to retrieve the editor by its enum value
+
+        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
+        axisEd->setActive(true);
+        assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
 
     ~AbstractViewerDrawer() = default;
@@ -113,6 +124,12 @@ public:
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
         return editor;
+    }
+
+    std::shared_ptr<EditorType> getEditor(BuiltInEditors editor) const
+    {
+        assert(mEditors[toUnderlying(editor)]);
+        return mEditors[toUnderlying(editor)];
     }
 
     void refreshEditors()
