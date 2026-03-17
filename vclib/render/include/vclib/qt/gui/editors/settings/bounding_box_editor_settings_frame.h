@@ -25,6 +25,7 @@
 
 #include <vclib/render/settings/editor_settings.h>
 
+#include <QColor>
 #include <QFrame>
 
 namespace vcl::qt {

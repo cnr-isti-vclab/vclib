@@ -143,6 +143,7 @@ public:
     {
         mDrawList->pushBack(obj);
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
@@ -150,6 +151,7 @@ public:
     {
         mDrawList->pushBack(std::move(obj));
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
