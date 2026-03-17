@@ -98,6 +98,7 @@ MeshViewer::MeshViewer(QWidget* parent) :
     // toolbar editors
     mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
         viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
+    assert(mAxisEditor);
     AxisEditorFrame<ViewerType>* axisEditor =
         new AxisEditorFrame<ViewerType>(mAxisEditor);
     mUI->toolBar->addWidget(axisEditor);
