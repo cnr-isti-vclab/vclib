@@ -20,47 +20,60 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/editors/settings/selection_editor_settings_frame.h>
+#include <vclib/qt/gui/toolbar_frames/settings/bounding_box_editor_settings_frame.h>
 
-#include "ui_selection_editor_settings_frame.h"
+#include <vclib/space/core.h>
+
+#include "ui_bounding_box_editor_settings_frame.h"
 
 namespace vcl::qt {
 
-SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
+BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
     EditorSettings& sts,
     QWidget*        parent) :
-        QFrame(parent), mUI(new Ui::SelectionEditorSettingsFrame),
+        QFrame(parent), mUI(new Ui::BoundingBoxEditorSettingsFrame),
         mSettings(sts)
 {
     mUI->setupUi(this);
 
-    assert(mSettings.customSettings.at("onlyVisible").has_value());
+    assert(mSettings.customSettings.at("color").has_value());
+    assert(mSettings.customSettings.at("thickness").has_value());
 
-    bool onlyVisible =
-        std::any_cast<bool>(mSettings.customSettings.at("onlyVisible"));
+    Color c = std::any_cast<Color>(mSettings.customSettings.at("color"));
+
+    float thickness =
+        std::any_cast<float>(mSettings.customSettings.at("thickness"));
 
     mUI->editModeFrame->setEditMode(mSettings.editMode);
-    mUI->onlyVisibleCheckBox->setChecked(onlyVisible);
+    mUI->linesWidthSlider->setValue(int(thickness));
+    mUI->colorPushButton->setBackgroundColor(
+        QColor(c.red(), c.green(), c.blue(), c.alpha()));
 
     connect(
         mUI->editModeFrame,
         &EditModeSettingsFrame::editModeChanged,
         this,
-        &SelectionEditorSettingsFrame::editModeChanged);
+        &BoundingBoxEditorSettingsFrame::editModeChanged);
 
     connect(
-        mUI->onlyVisibleCheckBox,
-        &QCheckBox::checkStateChanged,
+        mUI->linesWidthSlider,
+        &QSlider::valueChanged,
         this,
-        &SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged);
+        &BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged);
+
+    connect(
+        mUI->colorPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onColorChanged(const QColor&)));
 }
 
-SelectionEditorSettingsFrame::~SelectionEditorSettingsFrame()
+BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
 {
     delete mUI;
 }
 
-void SelectionEditorSettingsFrame::editModeChanged(int index)
+void BoundingBoxEditorSettingsFrame::editModeChanged(int index)
 {
     using enum EditorSettings::EditMode;
     assert(index <= toUnderlying(ALL_OBJECTS));
@@ -69,11 +82,16 @@ void SelectionEditorSettingsFrame::editModeChanged(int index)
     emit settingsUpdated();
 }
 
-void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
-    Qt::CheckState state)
+void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 {
-    bool onlyVisible = state == Qt::CheckState::Checked;
-    mSettings.customSettings["onlyVisible"] = onlyVisible;
+    mSettings.customSettings["thickness"] = float(value);
+    emit settingsUpdated();
+}
+
+void BoundingBoxEditorSettingsFrame::onColorChanged(const QColor& c)
+{
+    mSettings.customSettings["color"] =
+        Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }
 

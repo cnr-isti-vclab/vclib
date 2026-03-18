@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SELECTION_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_SELECTION_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SELECTION_EDITOR_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SELECTION_EDITOR_FRAME_H
 
 #include "generic_editor_frame.h"
 #include "settings/selection_editor_settings_frame.h"
@@ -101,4 +101,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_SELECTION_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SELECTION_EDITOR_FRAME_H

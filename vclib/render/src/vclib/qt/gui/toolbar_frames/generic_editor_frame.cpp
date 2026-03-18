@@ -20,35 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
-#define VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#include <vclib/qt/gui/toolbar_frames/generic_editor_frame.h>
 
-#include <vclib/render/settings/editor_settings.h>
+#include "ui_generic_editor_frame.h"
 
-#include <QFrame>
+void initIcons()
+{
+    Q_INIT_RESOURCE(icons);
+}
 
 namespace vcl::qt {
 
-namespace Ui {
-class EditModeSettingsFrame;
-} // namespace Ui
+std::once_flag initIconsFlag;
 
-class EditModeSettingsFrame : public QFrame
+GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::GenericEditorFrame)
 {
-    Q_OBJECT
+    mUI->setupUi(this);
+    std::call_once(initIconsFlag, initIcons);
+}
 
-    Ui::EditModeSettingsFrame* mUI;
+GenericEditorFrame::~GenericEditorFrame()
+{
+    delete mUI;
+}
 
-public:
-    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
-    ~EditModeSettingsFrame();
+QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
+{
+    QPushButton* button = new QPushButton(this);
+    button->setIcon(icon);
+    button->setIconSize(QSize(40, 40));
+    button->setMinimumSize(40, 40);
+    button->setMaximumSize(40, 40);
 
-    void setEditMode(EditorSettings::EditMode mode);
+    button->setCheckable(checkable);
 
-signals:
-    void editModeChanged(int index);
-};
+    // add the button before the settings button in the mUI layout
+    int settingsButtonIndex =
+        mUI->horizontalLayout->indexOf(mUI->settingsPushButton);
+    mUI->horizontalLayout->insertWidget(settingsButtonIndex, button);
+    return button;
+}
+
+QPushButton* GenericEditorFrame::settingsButton() const
+{
+    return mUI->settingsPushButton;
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H

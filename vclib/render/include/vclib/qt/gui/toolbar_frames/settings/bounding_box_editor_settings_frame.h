@@ -20,54 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 
-#include "generic_editor_frame.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#include <vclib/render/editors/axis_editor.h>
+#include <QColor>
+#include <QFrame>
 
 namespace vcl::qt {
 
-template<typename ViewerType>
-class AxisEditorFrame : public GenericEditorFrame
-{
-    using Base = GenericEditorFrame;
+namespace Ui {
+class BoundingBoxEditorSettingsFrame;
+} // namespace Ui
 
-    std::shared_ptr<vcl::AxisEditor<ViewerType>> mAxisEditor;
+class BoundingBoxEditorSettingsFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::BoundingBoxEditorSettingsFrame* mUI;
+    EditorSettings& mSettings;
 
 public:
-    explicit AxisEditorFrame(
-        std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
-        QWidget*                                            parent = nullptr) :
-            GenericEditorFrame(parent)
-    {
-        mAxisEditor = ptr;
+    explicit BoundingBoxEditorSettingsFrame(
+        EditorSettings& sts,
+        QWidget*        parent = nullptr);
+    ~BoundingBoxEditorSettingsFrame();
 
-        QIcon ic(":/icons/show_axis.png");
+signals:
+    void settingsUpdated();
 
-        QPushButton* editorButton = Base::addButton(ic);
+private slots:
+    void editModeChanged(int index);
 
-        editorButton->setToolTip("Show Axis");
+    void onLinesWidthSliderValueChanged(int value);
 
-        Base::hideSettingsButton();
-
-        mAxisEditor->setShortcutCallback([editorButton]() {
-            editorButton->click();
-        });
-
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                if (mAxisEditor) {
-                    mAxisEditor->toggleVisibility();
-                }
-            });
-    }
+    void onColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H

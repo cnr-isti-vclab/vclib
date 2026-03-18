@@ -20,32 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/editors/settings/edit_mode_settings_frame.h>
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_H
 
-#include "ui_edit_mode_settings_frame.h"
+#include "toolbar_frames/axis_editor_frame.h"
+#include "toolbar_frames/bounding_box_editor_frame.h"
+#include "toolbar_frames/selection_editor_frame.h"
+#include "toolbar_frames/trackball_frame.h"
 
-namespace vcl::qt {
-
-EditModeSettingsFrame::EditModeSettingsFrame(QWidget* parent) :
-        QFrame(parent), mUI(new Ui::EditModeSettingsFrame)
-{
-    mUI->setupUi(this);
-
-    connect(
-        mUI->editModeComboBox,
-        QOverload<int>::of(&QComboBox::currentIndexChanged),
-        this,
-        &EditModeSettingsFrame::editModeChanged);
-}
-
-EditModeSettingsFrame::~EditModeSettingsFrame()
-{
-    delete mUI;
-}
-
-void EditModeSettingsFrame::setEditMode(EditorSettings::EditMode mode)
-{
-    mUI->editModeComboBox->setCurrentIndex(toUnderlying(mode));
-}
-
-} // namespace vcl::qt
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H

@@ -20,51 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/editors/generic_editor_frame.h>
+#include <vclib/qt/gui/toolbar_frames/settings/selection_editor_settings_frame.h>
 
-#include "ui_generic_editor_frame.h"
-
-void initIcons()
-{
-    Q_INIT_RESOURCE(icons);
-}
+#include "ui_selection_editor_settings_frame.h"
 
 namespace vcl::qt {
 
-std::once_flag initIconsFlag;
-
-GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
-        QFrame(parent), mUI(new Ui::GenericEditorFrame)
+SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
+    EditorSettings& sts,
+    QWidget*        parent) :
+        QFrame(parent), mUI(new Ui::SelectionEditorSettingsFrame),
+        mSettings(sts)
 {
     mUI->setupUi(this);
-    std::call_once(initIconsFlag, initIcons);
+
+    assert(mSettings.customSettings.at("onlyVisible").has_value());
+
+    bool onlyVisible =
+        std::any_cast<bool>(mSettings.customSettings.at("onlyVisible"));
+
+    mUI->editModeFrame->setEditMode(mSettings.editMode);
+    mUI->onlyVisibleCheckBox->setChecked(onlyVisible);
+
+    connect(
+        mUI->editModeFrame,
+        &EditModeSettingsFrame::editModeChanged,
+        this,
+        &SelectionEditorSettingsFrame::editModeChanged);
+
+    connect(
+        mUI->onlyVisibleCheckBox,
+        &QCheckBox::checkStateChanged,
+        this,
+        &SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged);
 }
 
-GenericEditorFrame::~GenericEditorFrame()
+SelectionEditorSettingsFrame::~SelectionEditorSettingsFrame()
 {
     delete mUI;
 }
 
-QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
+void SelectionEditorSettingsFrame::editModeChanged(int index)
 {
-    QPushButton* button = new QPushButton(this);
-    button->setIcon(icon);
-    button->setIconSize(QSize(40, 40));
-    button->setMinimumSize(40, 40);
-    button->setMaximumSize(40, 40);
+    using enum EditorSettings::EditMode;
+    assert(index <= toUnderlying(ALL_OBJECTS));
 
-    button->setCheckable(checkable);
-
-    // add the button before the settings button in the mUI layout
-    int settingsButtonIndex =
-        mUI->horizontalLayout->indexOf(mUI->settingsPushButton);
-    mUI->horizontalLayout->insertWidget(settingsButtonIndex, button);
-    return button;
+    mSettings.editMode = static_cast<EditorSettings::EditMode>(index);
+    emit settingsUpdated();
 }
 
-QPushButton* GenericEditorFrame::settingsButton() const
+void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
+    Qt::CheckState state)
 {
-    return mUI->settingsPushButton;
+    bool onlyVisible = state == Qt::CheckState::Checked;
+    mSettings.customSettings["onlyVisible"] = onlyVisible;
+    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

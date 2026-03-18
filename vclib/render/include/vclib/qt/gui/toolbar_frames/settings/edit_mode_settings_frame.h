@@ -20,11 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_H
-#define VCL_QT_GUI_EDITORS_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
 
-#include "editors/axis_editor_frame.h"
-#include "editors/bounding_box_editor_frame.h"
-#include "editors/selection_editor_frame.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#endif // VCL_QT_GUI_EDITORS_H
+#include <QFrame>
+
+namespace vcl::qt {
+
+namespace Ui {
+class EditModeSettingsFrame;
+} // namespace Ui
+
+class EditModeSettingsFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::EditModeSettingsFrame* mUI;
+
+public:
+    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
+    ~EditModeSettingsFrame();
+
+    void setEditMode(EditorSettings::EditMode mode);
+
+signals:
+    void editModeChanged(int index);
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
