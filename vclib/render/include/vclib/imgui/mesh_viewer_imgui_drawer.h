@@ -198,11 +198,11 @@ public:
         ImGui::End();
 
         // floating editors toolbar
-        drawEditorsToolbar();
+        drawToolbar();
     }
 
 private:
-    void drawEditorsToolbar()
+    void drawToolbar()
     {
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImVec2 toolbarPos = ImVec2(
@@ -219,7 +219,7 @@ private:
             ImGuiWindowFlags_NoFocusOnAppearing|
             ImGuiWindowFlags_NoNav;
 
-        if (ImGui::Begin("Editors", nullptr, flags)) {
+        if (ImGui::Begin("Toolbar", nullptr, flags)) {
             // axis editor toggle
             bool axisActive = mAxisEditor && mAxisEditor->isVisible();
             if (ImGui::Button(axisActive ? "[Axis]" : " Axis ")) {
@@ -228,6 +228,16 @@ private:
             }
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Axis");
+
+            ImGui::SameLine();
+
+            // trackball
+            bool trackballActive = Base::isTrackBallVisible();
+            if (ImGui::Button(trackballActive ? "[TB]" : " TB ")) {
+                Base::toggleTrackBallVisibility();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Trackball");
 
             ImGui::SameLine();
 
