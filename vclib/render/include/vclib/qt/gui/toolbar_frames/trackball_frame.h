@@ -20,11 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H
 
-#include "toolbar_frames/axis_editor_frame.h"
-#include "toolbar_frames/bounding_box_editor_frame.h"
-#include "toolbar_frames/trackball_frame.h"
+#include "generic_editor_frame.h"
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H
+namespace vcl::qt {
+
+template<typename ViewerType>
+class TrackBallFrame : public GenericEditorFrame
+{
+    using Base = GenericEditorFrame;
+
+    ViewerType& mViewer;
+
+public:
+    explicit TrackBallFrame(ViewerType& viewer, QWidget* parent = nullptr) :
+        GenericEditorFrame(parent), mViewer(viewer)
+    {
+        QIcon ic(":/icons/trackball.png");
+
+        QPushButton* editorButton = Base::addButton(ic);
+        editorButton->setChecked(mViewer.isTrackBallVisible());
+        editorButton->setToolTip("Show TrackBall");
+
+        mViewer.setShortcutToggleTrackballCallback([editorButton]() {
+            editorButton->click();
+        });
+
+        Base::hideSettingsButton();
+
+        connect(
+            editorButton,
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                mViewer.toggleTrackBallVisibility();
+                mViewer.update();
+            });
+    }
+
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H

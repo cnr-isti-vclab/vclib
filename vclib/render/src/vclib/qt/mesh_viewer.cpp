@@ -95,13 +95,16 @@ MeshViewer::MeshViewer(QWidget* parent) :
     };
     mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
 
-    // toolbar editors
+    // toolbar editors and frames
     mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
         viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
     assert(mAxisEditor);
     AxisEditorFrame<ViewerType>* axisEditor =
         new AxisEditorFrame<ViewerType>(mAxisEditor);
     mUI->toolBar->addWidget(axisEditor);
+
+    auto* trackballEditor = new TrackBallFrame(viewer());
+    mUI->toolBar->addWidget(trackballEditor);
 
     mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
     BoundingBoxEditorFrame<ViewerType>* bboxEditor =
