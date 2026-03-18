@@ -20,35 +20,64 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
-#define VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include "settings/bounding_box_editor_settings_frame.h"
+#include "generic_editor_frame.h"
 
-#include <QFrame>
+#include <vclib/render/editors/bounding_box_editor.h>
 
 namespace vcl::qt {
 
-namespace Ui {
-class EditModeSettingsFrame;
-} // namespace Ui
-
-class EditModeSettingsFrame : public QFrame
+template<typename ViewerType>
+class BoundingBoxEditorFrame : public GenericEditorFrame
 {
-    Q_OBJECT
+    using Base = GenericEditorFrame;
 
-    Ui::EditModeSettingsFrame* mUI;
+    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>>
+        mBoundingBoxEditor;
 
 public:
-    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
-    ~EditModeSettingsFrame();
+    explicit BoundingBoxEditorFrame(
+        std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> ptr,
+        QWidget*                                            parent = nullptr) :
+            GenericEditorFrame(parent)
+    {
+        mBoundingBoxEditor = ptr;
 
-    void setEditMode(EditorSettings::EditMode mode);
+        QIcon ic(":/icons/bbox.png");
 
-signals:
-    void editModeChanged(int index);
+        QPushButton* editorButton = Base::addButton(ic);
+
+        editorButton->setToolTip("Show Bounding Box");
+
+        connect(
+            editorButton,
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                if (mBoundingBoxEditor) {
+                    mBoundingBoxEditor->setActive(
+                        !mBoundingBoxEditor->isActive());
+                }
+            });
+
+        BoundingBoxEditorSettingsFrame* sf =
+            Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>(
+                mBoundingBoxEditor->settings());
+
+        connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+    }
+
+private slots:
+    void refreshSettings() override {
+        if (mBoundingBoxEditor) {
+            mBoundingBoxEditor->refreshSettings();
+        }
+    }
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H

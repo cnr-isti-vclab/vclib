@@ -67,7 +67,7 @@
   <customwidget>
    <class>vcl::qt::EditModeSettingsFrame</class>
    <extends>QFrame</extends>
-   <header>vclib/qt/gui/editors/settings/edit_mode_settings_frame.h</header>
+   <header>vclib/qt/gui/toolbar_frames/settings/edit_mode_settings_frame.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

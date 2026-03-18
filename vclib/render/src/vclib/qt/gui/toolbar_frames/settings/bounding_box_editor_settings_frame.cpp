@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/editors/settings/bounding_box_editor_settings_frame.h>
+#include <vclib/qt/gui/toolbar_frames/settings/bounding_box_editor_settings_frame.h>
 
 #include <vclib/space/core.h>
 

@@ -20,54 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
 
-#include "generic_editor_frame.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#include <vclib/render/editors/axis_editor.h>
+#include <QFrame>
 
 namespace vcl::qt {
 
-template<typename ViewerType>
-class AxisEditorFrame : public GenericEditorFrame
-{
-    using Base = GenericEditorFrame;
+namespace Ui {
+class EditModeSettingsFrame;
+} // namespace Ui
 
-    std::shared_ptr<vcl::AxisEditor<ViewerType>> mAxisEditor;
+class EditModeSettingsFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::EditModeSettingsFrame* mUI;
 
 public:
-    explicit AxisEditorFrame(
-        std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
-        QWidget*                                            parent = nullptr) :
-            GenericEditorFrame(parent)
-    {
-        mAxisEditor = ptr;
+    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
+    ~EditModeSettingsFrame();
 
-        QIcon ic(":/icons/show_axis.png");
+    void setEditMode(EditorSettings::EditMode mode);
 
-        QPushButton* editorButton = Base::addButton(ic);
-
-        editorButton->setToolTip("Show Axis");
-
-        Base::hideSettingsButton();
-
-        mAxisEditor->setShortcutCallback([editorButton]() {
-            editorButton->click();
-        });
-
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                if (mAxisEditor) {
-                    mAxisEditor->toggleVisibility();
-                }
-            });
-    }
+signals:
+    void editModeChanged(int index);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_AXIS_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H

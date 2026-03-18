@@ -20,62 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include "toolbar_frames/axis_editor_frame.h"
+#include "toolbar_frames/bounding_box_editor_frame.h"
 
-#include <QFrame>
-#include <QMenu>
-#include <QPushButton>
-#include <QWidgetAction>
-
-namespace vcl::qt {
-
-namespace Ui {
-class GenericEditorFrame;
-} // namespace Ui
-
-class GenericEditorFrame : public QFrame
-{
-    Q_OBJECT
-
-    Ui::GenericEditorFrame* mUI;
-
-public:
-    explicit GenericEditorFrame(QWidget* parent = nullptr);
-    ~GenericEditorFrame();
-
-protected:
-    QPushButton* addButton(const QIcon& icon, bool checkable = true);
-
-    QPushButton* settingsButton() const;
-
-    void hideSettingsButton() { settingsButton()->setVisible(false); }
-
-    void showSettingsButton() { settingsButton()->setVisible(true); }
-
-    template<typename SettingsFrame>
-    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
-    {
-        QWidgetAction* wa = new QWidgetAction(this);
-        SettingsFrame* sf = new SettingsFrame(sts);
-        wa->setDefaultWidget(sf);
-        QMenu* popupMenu = new QMenu(this);
-        popupMenu->addAction(wa);
-        settingsButton()->setMenu(popupMenu);
-        settingsButton()->setStyleSheet(
-            "QPushButton::menu-indicator {"
-            "    subcontrol-origin: padding;"
-            "    subcontrol-position: center center;"
-            "}");
-        return sf;
-    }
-
-protected slots:
-    virtual void refreshSettings() {};
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_QT_GUI_EDITORS_GENERIC_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H

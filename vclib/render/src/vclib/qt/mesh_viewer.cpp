@@ -24,7 +24,7 @@
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/qt/gui/editors.h>
+#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/screen_shot_dialog.h>
 
 #include "ui_mesh_viewer.h"

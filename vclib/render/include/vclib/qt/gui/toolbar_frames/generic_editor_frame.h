@@ -20,64 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
-#define VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H
 
-#include "settings/bounding_box_editor_settings_frame.h"
-#include "generic_editor_frame.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#include <vclib/render/editors/bounding_box_editor.h>
+#include <QFrame>
+#include <QMenu>
+#include <QPushButton>
+#include <QWidgetAction>
 
 namespace vcl::qt {
 
-template<typename ViewerType>
-class BoundingBoxEditorFrame : public GenericEditorFrame
-{
-    using Base = GenericEditorFrame;
+namespace Ui {
+class GenericEditorFrame;
+} // namespace Ui
 
-    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>>
-        mBoundingBoxEditor;
+class GenericEditorFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::GenericEditorFrame* mUI;
 
 public:
-    explicit BoundingBoxEditorFrame(
-        std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> ptr,
-        QWidget*                                            parent = nullptr) :
-            GenericEditorFrame(parent)
+    explicit GenericEditorFrame(QWidget* parent = nullptr);
+    ~GenericEditorFrame();
+
+protected:
+    QPushButton* addButton(const QIcon& icon, bool checkable = true);
+
+    QPushButton* settingsButton() const;
+
+    void hideSettingsButton() { settingsButton()->setVisible(false); }
+
+    void showSettingsButton() { settingsButton()->setVisible(true); }
+
+    template<typename SettingsFrame>
+    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
     {
-        mBoundingBoxEditor = ptr;
-
-        QIcon ic(":/icons/bbox.png");
-
-        QPushButton* editorButton = Base::addButton(ic);
-
-        editorButton->setToolTip("Show Bounding Box");
-
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                if (mBoundingBoxEditor) {
-                    mBoundingBoxEditor->setActive(
-                        !mBoundingBoxEditor->isActive());
-                }
-            });
-
-        BoundingBoxEditorSettingsFrame* sf =
-            Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>(
-                mBoundingBoxEditor->settings());
-
-        connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+        QWidgetAction* wa = new QWidgetAction(this);
+        SettingsFrame* sf = new SettingsFrame(sts);
+        wa->setDefaultWidget(sf);
+        QMenu* popupMenu = new QMenu(this);
+        popupMenu->addAction(wa);
+        settingsButton()->setMenu(popupMenu);
+        settingsButton()->setStyleSheet(
+            "QPushButton::menu-indicator {"
+            "    subcontrol-origin: padding;"
+            "    subcontrol-position: center center;"
+            "}");
+        return sf;
     }
 
-private slots:
-    void refreshSettings() override {
-        if (mBoundingBoxEditor) {
-            mBoundingBoxEditor->refreshSettings();
-        }
-    }
+protected slots:
+    virtual void refreshSettings() {};
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_BOUNDING_BOX_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H

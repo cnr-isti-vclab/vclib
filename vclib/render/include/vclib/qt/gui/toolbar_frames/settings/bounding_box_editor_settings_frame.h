@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
-#define VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 
 #include <vclib/render/settings/editor_settings.h>
 
@@ -60,4 +60,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_EDITORS_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
