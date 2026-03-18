@@ -371,13 +371,13 @@ public:
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawWireframeLines(settings.viewId);
+            mMRB.drawWireframeLines(settings.additionalViewIds[0]);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawEdgeLines(settings.viewId);
+            mMRB.drawEdgeLines(settings.additionalViewIds[0]);
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
@@ -390,7 +390,8 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS>());
+                    settings.additionalViewIds[1],
+                    pm.getProgram<DRAWABLE_MESH_POINTS>());
             }
             else {
                 // generate splats (quads) lazy
@@ -404,7 +405,7 @@ public:
                 bgfx::setTransform(model.data());
 
                 bgfx::submit(
-                    settings.viewId,
+                    settings.additionalViewIds[1],
                     pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }

@@ -63,7 +63,7 @@ public:
             "ImGuiDrawer supports only GLFW or Qt window managers.");
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-        mImguiViewId = vcl::Context::instance().requestViewId();
+        mImguiViewId = vcl::Context::instance().requestViewId(false);
         assert(vcl::Context::instance().isValidViewId(mImguiViewId));
 #endif
     }
