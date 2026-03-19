@@ -34,7 +34,8 @@ namespace vcl {
  *   - Regular (add in box, subtract outside box)
  *   - Add
  *   - Subtract
- * Furthermore there are some atomic modes (modes which ignore the selection box):
+ * Furthermore there are some atomic modes (modes which ignore the selection
+ * box):
  *   - Invert selected faces/vertices
  *   - Select all faces/vertices
  *   - Deselect all (NONE) faces/vertices
@@ -60,25 +61,15 @@ public:
         FACE_VISIBLE_SUBTRACT
     };
 
+private:
+    Enum mEnum = Enum::VERTEX_REGULAR;
+
+public:
     SelectionMode() = default;
 
     constexpr SelectionMode(Enum en) : mEnum(en) {}
 
-    SelectionMode& operator=(SelectionMode& other)
-    {
-        mEnum = other.mEnum;
-        return *this;
-    }
-
-    SelectionMode& operator=(Enum en)
-    {
-        mEnum = en;
-        return *this;
-    }
-
     constexpr operator Enum() const { return mEnum; }
-
-    constexpr operator bool() const = delete;
 
     // I could cast to int and then do a range check and then re-cast to Enum,
     // but this is more comprehensible
@@ -137,39 +128,6 @@ public:
         default: return false;
         }
     }
-
-    // I could cast to int and then do an arithmetic operation and then re-cast
-    // to Enum, but this is more comprehensible
-    constexpr SelectionMode correspondingVertexMode() const
-    {
-        switch (mEnum) {
-        case Enum::FACE_REGULAR: return SelectionMode(Enum::VERTEX_REGULAR);
-        case Enum::FACE_ADD: return SelectionMode(Enum::VERTEX_ADD);
-        case Enum::FACE_SUBTRACT: return SelectionMode(Enum::VERTEX_SUBTRACT);
-        case Enum::FACE_ALL: return SelectionMode(Enum::VERTEX_ALL);
-        case Enum::FACE_NONE: return SelectionMode(Enum::VERTEX_NONE);
-        case Enum::FACE_INVERT: return SelectionMode(Enum::VERTEX_INVERT);
-        default: return *this;
-        }
-    }
-
-    // I could cast to int and then do an arithmetic operation and then re-cast
-    // to Enum, but this is more comprehensible
-    constexpr SelectionMode correspondingFaceMode() const
-    {
-        switch (mEnum) {
-        case Enum::VERTEX_REGULAR: return SelectionMode(Enum::FACE_REGULAR);
-        case Enum::VERTEX_ADD: return SelectionMode(Enum::FACE_ADD);
-        case Enum::VERTEX_SUBTRACT: return SelectionMode(Enum::FACE_SUBTRACT);
-        case Enum::VERTEX_ALL: return SelectionMode(Enum::FACE_ALL);
-        case Enum::VERTEX_NONE: return SelectionMode(Enum::FACE_NONE);
-        case Enum::VERTEX_INVERT: return SelectionMode(Enum::FACE_INVERT);
-        default: return *this;
-        }
-    }
-
-private:
-    Enum mEnum;
 };
 
 } // namespace vcl

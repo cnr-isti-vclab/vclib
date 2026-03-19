@@ -32,61 +32,8 @@ namespace vcl {
 class SelectionBox
 {
     using ArrayType = std::array<std::optional<Point2d>, 2>;
-    std::array<std::optional<Point2d>, 2> mPoints = {
-        std::nullopt,
-        std::nullopt};
 
-
-    /**
-     * @param[in] box: Another box
-     * 
-     * @return True if this box and the other box have intersection on the x coordinate, false otherwise
-     */
-    bool xIntersectionExists(const SelectionBox& box) const&
-    {
-        return
-            // xMin of first box is before xMax of second box and xMax of first
-            // box is after xMin of second box
-            (get1().value().x() <= box.get2().value().x() &&
-             get2().value().x() >= box.get1().value().x())
-            // OR (xMin of second box is before xMax of first box and xMax of
-            // second box is after xMin of first box)
-            || (box.get1().value().x() <= get2().value().x() &&
-                box.get2().value().x() >= get1().value().x());
-    }
-
-    /**
-     * @param[in] box: Another box
-     * 
-     * @return True if this box and the other box have intersection on the y coordinate, false otherwise
-     */
-    bool yIntersectionExists(const SelectionBox& box) const&
-    {
-        return
-            // yMin of first box is before yMax of second box and yMax of first
-            // box is after yMin of second box
-            (get1().value().y() <= box.get2().value().y() &&
-             get2().value().y() >= box.get1().value().y())
-            // OR (yMin of second box is before yMax of first box and yMax of
-            // second box is after yMin of first box)
-            || (box.get1().value().y() <= get2().value().y() &&
-                box.get2().value().y() >= get1().value().y());
-    }
-
-    /**
-     * @param[in] box: Another box
-     * 
-     * @return True if this box and the other box have intersection, false otherwise
-     */
-    bool intersectionExists(const SelectionBox& box) const&
-    {
-        if (anyNull() || box.anyNull()) {
-            return false;
-        }
-        // Boxes intersect if their coordinates interect both in the X and Y
-        // axis
-        return xIntersectionExists(box) && yIntersectionExists(box);
-    }
+    ArrayType mPoints = {std::nullopt, std::nullopt};
 
 public:
     SelectionBox() {}
@@ -94,10 +41,12 @@ public:
     SelectionBox(ArrayType arr) { mPoints = arr; }
 
     /**
-     * @brief Attempts to calculate a new SelectionBox that has the minimum coordinates on the first point
-     * and the maximum coordinates on the second point
-     * 
-     * @return The calculated SelectionBox if neither point was null, copy of self otherwise
+     * @brief Attempts to calculate a new SelectionBox that has the minimum
+     * coordinates on the first point and the maximum coordinates on the second
+     * point
+     *
+     * @return The calculated SelectionBox if neither point was null, copy of
+     * self otherwise
      */
     SelectionBox toMinAndMax() const
     {
@@ -114,7 +63,7 @@ public:
 
     /**
      * @brief Performs the intersection between two SelectionBox(es)
-     * 
+     *
      * @return The intersection between this box and another box
      */
     SelectionBox intersect(const SelectionBox& other) const&
@@ -126,10 +75,10 @@ public:
             return ret;
         }
         // We exclude the case of NO INTERSECTION, therefore:
-        //     - minimum point of the intersection is comprised of the biggest
-        //     coordinates of the two boxes' minimum points
-        //     - maximum point of the intersection is comprised of the smallest
-        //     coordinates of the two boxes' maximum points
+        //  - minimum point of the intersection is comprised of the biggest
+        //    coordinates of the two boxes' minimum points
+        //  - maximum point of the intersection is comprised of the smallest
+        //    coordinates of the two boxes' maximum points
         ret.set1(
             Point2d {
                 std::max(b1.get1().value().x(), b2.get1().value().x()),
@@ -147,14 +96,14 @@ public:
 
     /**
      * @brief Sets the first point of the box
-     * 
-     * @param[in] p: The point in question 
+     *
+     * @param[in] p: The point in question
      */
     void set1(Point2d p) { mPoints[0] = std::make_optional(p); }
 
     /**
      * @brief Sets the second point of the box
-     * 
+     *
      * @param[in] p: The point in question
      */
     void set2(Point2d p) { mPoints[1] = std::make_optional(p); }
@@ -221,7 +170,8 @@ public:
     // |          |
     // 1----------3
     /**
-     * @return The positions of the vertices of the selection box in Screen Space
+     * @return The positions of the vertices of the selection box in Screen
+     * Space
      */
     std::array<float, 8> vertexPositions() const
     {
@@ -244,6 +194,61 @@ public:
     constexpr static std::array<uint, 6> triangleIndices()
     {
         return std::array<uint, 6> {2, 3, 0, 3, 1, 0};
+    }
+
+private:
+    /**
+     * @param[in] box: Another box
+     *
+     * @return True if this box and the other box have intersection on the x
+     * coordinate, false otherwise
+     */
+    bool xIntersectionExists(const SelectionBox& box) const&
+    {
+        return
+            // xMin of first box is before xMax of second box and xMax of first
+            // box is after xMin of second box
+            (get1().value().x() <= box.get2().value().x() &&
+             get2().value().x() >= box.get1().value().x())
+            // OR (xMin of second box is before xMax of first box and xMax of
+            // second box is after xMin of first box)
+            || (box.get1().value().x() <= get2().value().x() &&
+                box.get2().value().x() >= get1().value().x());
+    }
+
+    /**
+     * @param[in] box: Another box
+     *
+     * @return True if this box and the other box have intersection on the y
+     * coordinate, false otherwise
+     */
+    bool yIntersectionExists(const SelectionBox& box) const&
+    {
+        return
+            // yMin of first box is before yMax of second box and yMax of first
+            // box is after yMin of second box
+            (get1().value().y() <= box.get2().value().y() &&
+             get2().value().y() >= box.get1().value().y())
+            // OR (yMin of second box is before yMax of first box and yMax of
+            // second box is after yMin of first box)
+            || (box.get1().value().y() <= get2().value().y() &&
+                box.get2().value().y() >= get1().value().y());
+    }
+
+    /**
+     * @param[in] box: Another box
+     *
+     * @return True if this box and the other box have intersection, false
+     * otherwise
+     */
+    bool intersectionExists(const SelectionBox& box) const&
+    {
+        if (anyNull() || box.anyNull()) {
+            return false;
+        }
+        // Boxes intersect if their coordinates interect both in the X and Y
+        // axis
+        return xIntersectionExists(box) && yIntersectionExists(box);
     }
 };
 
