@@ -31,7 +31,9 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/render/*.cpp")
 
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
-file (GLOB_RECURSE RESOURCES CONFIGURE_DEPENDS "assets/*.qrc")
+if (TARGET vclib-3rd-qt)
+    file (GLOB_RECURSE RESOURCES CONFIGURE_DEPENDS "assets/*.qrc")
+endif()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
