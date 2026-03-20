@@ -891,7 +891,7 @@ private:
                     if (currentIntervalBox.min()(i) != 0)
                         currentIntervalBox.min()(i)--;
                     if (currentIntervalBox.max()(i) !=
-                        GridType::cellNumber(i) - 1)
+                        GridType::cellCount(i) - 1)
                         currentIntervalBox.max()(i)++;
                 }
             }

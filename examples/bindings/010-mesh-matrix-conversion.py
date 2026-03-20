@@ -69,7 +69,7 @@ def mesh_matrix_conversion():
     for f in mesh.faces():
         f.set_color(random_color())
 
-    print(f"Loaded mesh: {mesh.vertex_number()} vertices, {mesh.face_number()} faces")
+    print(f"Loaded mesh: {mesh.vertex_count()} vertices, {mesh.face_count()} faces")
 
     # Export basic geometry
     vertices = vcl.vertex_positions_matrix(mesh)
@@ -100,7 +100,7 @@ def mesh_matrix_conversion():
     vcl.vertex_colors_from_matrix(imported_mesh, vertex_colors)
     vcl.face_colors_from_matrix(imported_mesh, face_colors)
 
-    print(f"Imported mesh: {imported_mesh.vertex_number()} vertices, {imported_mesh.face_number()} faces")
+    print(f"Imported mesh: {imported_mesh.vertex_count()} vertices, {imported_mesh.face_count()} faces")
 
     # Verify data integrity
     print("Data verification:")
@@ -169,7 +169,7 @@ def mesh_matrix_conversion():
     cube_mesh = vcl.tri_mesh_from_matrices(cube_vertices, cube_triangles)
     cube_mesh.set_name("Cube Mesh")
 
-    print(f"Created cube mesh: {cube_mesh.vertex_number()} vertices, {cube_mesh.face_number()} faces")
+    print(f"Created cube mesh: {cube_mesh.vertex_count()} vertices, {cube_mesh.face_count()} faces")
 
     vcl.update_per_vertex_and_face_normals(cube_mesh)
 

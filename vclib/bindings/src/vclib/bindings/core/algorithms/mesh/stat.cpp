@@ -94,8 +94,8 @@ void initStatAlgorithms(pybind11::module& m)
 
         // selection.h
 
-        m.def("vertex_selection_number", [](const MeshType& m) {
-            return vcl::vertexSelectionNumber(m);
+        m.def("vertex_selection_count", [](const MeshType& m) {
+            return vcl::vertexSelectionCount(m);
         });
 
         // topology.h
@@ -111,9 +111,9 @@ void initStatAlgorithms(pybind11::module& m)
             py::arg("only_faces") = false);
 
         m.def(
-            "number_unreferenced_vertices",
+            "unreferenced_vertex_count",
             [](const MeshType& m, bool onlyFaces) {
-                return vcl::numberUnreferencedVertices(m, onlyFaces);
+                return vcl::unreferencedVertexCount(m, onlyFaces);
             },
             py::arg("mesh"),
             py::arg("only_faces") = false);
@@ -182,46 +182,46 @@ void initStatAlgorithms(pybind11::module& m)
 
         // selection.h
 
-        m.def("face_selection_number", [](const MeshType& m) {
-            return vcl::faceSelectionNumber(m);
+        m.def("face_selection_count", [](const MeshType& m) {
+            return vcl::faceSelectionCount(m);
         });
 
-        m.def("face_edges_selection_number", [](const MeshType& m) {
-            return vcl::faceEdgesSelectionNumber(m);
+        m.def("face_edges_selection_count", [](const MeshType& m) {
+            return vcl::faceEdgesSelectionCount(m);
         });
 
         // topology.h
 
         m.def("count_per_face_vertex_references", [](const MeshType& m) {
-            return vcl::countPerFaceVertexReferences(m);
+            return vcl::faceVertexReferencesCount(m);
         });
 
         m.def("largest_face_size", [](const MeshType& m) {
             return vcl::largestFaceSize(m);
         });
 
-        m.def("count_trinagulated_triangles", [](const MeshType& m) {
-            return vcl::countTriangulatedTriangles(m);
+        m.def("triangulated_face_count", [](const MeshType& m) {
+            return vcl::triangulatedFaceCount(m);
         });
 
-        m.def("number_non_manifold_vertices", [](const MeshType& m) {
-            return vcl::numberNonManifoldVertices(m);
+        m.def("non_manifold_vertex_count", [](const MeshType& m) {
+            return vcl::nonManifoldVertexCount(m);
         });
 
         m.def("is_water_tight", [](const MeshType& m) {
             return vcl::isWaterTight(m);
         });
 
-        m.def("number_holes", [](const MeshType& m) {
-            return vcl::numberHoles(m);
+        m.def("hole_count", [](const MeshType& m) {
+            return vcl::holeCount(m);
         });
 
         m.def("connected_components", [](const MeshType& m) {
             return vcl::connectedComponents(m);
         });
 
-        m.def("number_connected_components", [](const MeshType& m) {
-            return vcl::numberConnectedComponents(m);
+        m.def("connected_component_count", [](const MeshType& m) {
+            return vcl::connectedComponentCount(m);
         });
     };
 

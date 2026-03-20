@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -36,24 +36,40 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data ComputeLoader<ComputeProgram::HDR_EQUIRECT_TO_CUBEMAP>::
+bgfx::EmbeddedShader::Data ComputeLoader<
+    ComputeProgram::HDR_EQUIRECT_TO_CUBEMAP>::
     computeShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, cs_hdr_equirect_to_cubemap_essl, sizeof(cs_hdr_equirect_to_cubemap_essl)};
+        return {
+            type,
+            cs_hdr_equirect_to_cubemap_essl,
+            sizeof(cs_hdr_equirect_to_cubemap_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, cs_hdr_equirect_to_cubemap_400, sizeof(cs_hdr_equirect_to_cubemap_400)};
+        return {
+            type,
+            cs_hdr_equirect_to_cubemap_400,
+            sizeof(cs_hdr_equirect_to_cubemap_400)};
     case bgfx::RendererType::Vulkan:
-        return {type, cs_hdr_equirect_to_cubemap_spv, sizeof(cs_hdr_equirect_to_cubemap_spv)};
+        return {
+            type,
+            cs_hdr_equirect_to_cubemap_spv,
+            sizeof(cs_hdr_equirect_to_cubemap_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, cs_hdr_equirect_to_cubemap_dx11, sizeof(cs_hdr_equirect_to_cubemap_dx11)};
+        return {
+            type,
+            cs_hdr_equirect_to_cubemap_dx11,
+            sizeof(cs_hdr_equirect_to_cubemap_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, cs_hdr_equirect_to_cubemap_mtl, sizeof(cs_hdr_equirect_to_cubemap_mtl)};
+        return {
+            type,
+            cs_hdr_equirect_to_cubemap_mtl,
+            sizeof(cs_hdr_equirect_to_cubemap_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

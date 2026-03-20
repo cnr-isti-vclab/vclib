@@ -130,21 +130,24 @@ public:
     void onInit(uint) override
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
+        mDrawList->init();
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        Base::onKeyPress(key, modifiers);
+        bool block = Base::onKeyPress(key, modifiers);
+        if (!block) {
+            switch (key) {
+            case Key::R: fitScene(); break;
+            case Key::S:
+                if (modifiers[KeyModifier::CONTROL])
+                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+                break;
 
-        switch (key) {
-        case Key::R: fitScene(); break;
-        case Key::S:
-            if (modifiers[KeyModifier::CONTROL])
-                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-            break;
-
-        default: break;
+            default: break;
+            }
         }
+        return block;
     }
 
 protected:

@@ -69,9 +69,9 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->colorDialogPushButton,
-        SIGNAL(clicked()),
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        SLOT(onColorDialogButtonClicked()));
+        SLOT(onUserColorChanged(const QColor&)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -163,7 +163,7 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     mUI->userColorFrame->setEnabled(mMRS.isSurface(COLOR_USER));
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->colorDialogPushButton, c);
+    mUI->colorDialogPushButton->setBackgroundColor(c);
 }
 
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -210,18 +210,10 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
     emit settingsUpdated();
 }
 
-void SurfaceFrame::onColorDialogButtonClicked()
+void SurfaceFrame::onUserColorChanged(const QColor& c)
 {
-    QColor color =
-        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-
-    if (color.isValid()) {
-        setButtonBackGround(mUI->colorDialogPushButton, color);
-
-        mMRS.setSurfaceUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
+    mMRS.setSurfaceUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

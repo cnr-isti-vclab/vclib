@@ -69,8 +69,8 @@ void loadPly(
     std::vector<uint> eln;
     uint              sum = 0;
     for (const PlyElement& el : header) {
-        eln.push_back(el.numberElements);
-        sum += el.numberElements;
+        eln.push_back(el.elementCount);
+        sum += el.elementCount;
     }
 
     try {

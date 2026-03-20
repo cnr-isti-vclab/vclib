@@ -50,15 +50,15 @@ namespace vcl {
 
 template<typename MeshType>
 concept HasTriangles =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == 3;
 
 template<typename MeshType>
 concept HasQuads =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == 4;
 
 template<typename MeshType>
 concept HasPolygons =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == -1;
 
 /**
  * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it

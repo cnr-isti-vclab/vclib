@@ -48,10 +48,10 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
         else {
             uint      fid = m.addFace();
             FaceType& f   = m.face(fid);
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 f.resizeVertices(3);
             }
-            for (uint i = 0; i < f.vertexNumber(); ++i) {
+            for (uint i = 0; i < f.vertexCount(); ++i) {
                 f.setVertex(i, tristrip[k + i]);
             }
 
@@ -71,9 +71,9 @@ void readPlyTriStripsTxt(
     MeshType&        m,
     LogType&         log)
 {
-    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
+    log.startProgress("Reading Triangle Strips", header.triStripCount());
 
-    for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
+    for (uint tid = 0; tid < header.triStripCount(); ++tid) {
         Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
         Tokenizer::iterator token = spaceTokenizer.begin();
         for (const PlyProperty& p : header.triStripsProperties()) {
@@ -115,8 +115,8 @@ void readPlyTriStripsBin(
     std::endian      end,
     LogType&         log)
 {
-    log.startProgress("Reading Triangle Strips", header.numberTriStrips());
-    for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
+    log.startProgress("Reading Triangle Strips", header.triStripCount());
+    for (uint tid = 0; tid < header.triStripCount(); ++tid) {
         for (const PlyProperty& p : header.triStripsProperties()) {
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {

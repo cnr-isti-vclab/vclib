@@ -275,7 +275,7 @@ public:
         }
 
         if constexpr (HasMaterials<Mesh>) {
-            if (m.materialsNumber() > 0) {
+            if (m.materialCount() > 0) {
                 setMaterials(true);
             }
         }

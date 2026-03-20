@@ -613,7 +613,7 @@ public:
     {
         mCapability.reset();
 
-        if (m.vertexNumber() > 0) {
+        if (m.vertexCount() > 0) {
             mCapability.visible() = true;
 
             // -- Points --
@@ -642,7 +642,7 @@ public:
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
-                if (m.faceNumber() > 0) {
+                if (m.faceCount() > 0) {
                     setSurfaceCapability(MRI::Surface::VISIBLE);
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
@@ -685,14 +685,14 @@ public:
                     if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.materialsNumber() > 0)
+                                m.materialCount() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.materialsNumber() > 0) {
+                                m.materialCount() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
                             }
@@ -703,7 +703,7 @@ public:
 
             // -- Edges --
             if constexpr (vcl::HasEdges<MeshType>) {
-                if (m.edgeNumber() > 0) {
+                if (m.edgeCount() > 0) {
                     setEdgesCapability(MRI::Edges::VISIBLE);
                     setEdgesCapability(MRI::Edges::SHADING_NONE);
                     setEdgesCapability(MRI::Edges::COLOR_USER);
