@@ -304,7 +304,7 @@ private:
         ImGui::Text("Lines Width:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderFloat("##BBThickness", &thickness, 1.0f, 10.0f, "%.0f")) {
+        if (ImGui::SliderFloat("##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
             sts.customSettings["thickness"] = thickness;
             mBoundingBoxEditor->refreshSettings();
         }
