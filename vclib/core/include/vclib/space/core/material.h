@@ -68,10 +68,13 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
-        CLEARCOAT,
-        CLEARCOAT_ROUGHNESS,
-        CLEARCOAT_NORMAL,
-        COUNT      ///< Utility value to get the number of texture types.
+        CLEARCOAT, ///< The clearcoat layer texture. Stored in linear color
+                   ///< space.
+        CLEARCOAT_ROUGHNESS, ///< The roughness of the clearcoat layer (R
+                             ///< channel). Stored in linear color space.
+        CLEARCOAT_NORMAL, ///< The normal map for the clearcoat layer. Stored in
+                          ///< linear color space.
+        COUNT ///< Utility value to get the number of texture types.
     };
 
     inline static const std::
