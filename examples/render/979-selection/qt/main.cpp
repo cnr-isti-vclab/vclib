@@ -22,17 +22,21 @@
 
 #include "../../common/get_drawable_mesh.h"
 
-#include <vclib/glfw/window_manager.h>
+#include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
 
-int main(void)
+#include <QApplication>
+
+int main(int argc, char** argv)
 {
+    QApplication app(argc, argv);
+
     using MeshType = vcl::TriMesh;
 
     using RA = vcl::RenderApp<
-        vcl::glfw::WindowManager,
+        vcl::qt::WidgetManager,
         vcl::Canvas,
         vcl::SelectionTrackBallViewerDrawer>;
     
@@ -44,5 +48,5 @@ int main(void)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }
