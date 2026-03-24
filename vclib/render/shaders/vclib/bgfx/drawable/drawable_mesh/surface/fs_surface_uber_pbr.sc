@@ -95,14 +95,19 @@ void main()
     float roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
     // tangent frame for normal mapping
+    // tangent frame is used only when normal texture or clearcoat normal
+    // texture is available
     mat3 tangentFrame;
-    if (isPerVertexTangentAvailable(u_pbr_settings)) {
-        vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
-        tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
-    }
-    else {
-        // construct tangent frame using vertex normals
-        tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+    if (useTexture &&
+        (isNormalTextureAvailable() || isClearcoatNormalTextureAvailable())) {
+        if (isPerVertexTangentAvailable(u_pbr_settings)) {
+            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
+            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
+        }
+        else {
+            // construct tangent frame using vertex normals
+            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        }
     }
 
     // normal
