@@ -726,25 +726,28 @@ vec3 gammaCorrect(vec3 color)
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
  * @param[in] exposure: The exposure factor.
+ * @param[in] clearcoat: The clearcoat layer intensity, ranges from 0 (no clearcoat layer) to 1 (full clearcoat layer).
+ * @param[in] clearcoatRoughness: The roughness of the clearcoat layer, ranges from 0 (optically flat) to 1 (very irregular surface).
+ * @param[in] clearcoatNormal: The normal of the clearcoat layer, must be normalized.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
 vec4 pbrColorLights(
-    vec3 vPos,
-    vec3 cameraEyePos,
-    vec3 lightDirs[LIGHT_COUNT],
-    vec3 lightColors[LIGHT_COUNT],
+    vec3  vPos,
+    vec3  cameraEyePos,
+    vec3  lightDirs[LIGHT_COUNT],
+    vec3  lightColors[LIGHT_COUNT],
     float lightIntensities[LIGHT_COUNT],
-    vec4 color,
-    vec3 normal,
+    vec4  color,
+    vec3  normal,
     float metallic,
     float roughness,
-    vec3 emissive,
+    vec3  emissive,
     float clearcoat,
     float clearcoatRoughness,
-    vec3 clearcoatNormal,
+    vec3  clearcoatNormal,
     float exposure,
-    int toneMapping)
+    int   toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = vec3_splat(0.04);
@@ -843,22 +846,24 @@ vec4 pbrColorLights(
  * @param[in] occlusion: The ambient occlusion factor, ranges from 0 (fully occluded) to 1 (not occluded).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
  * @param[in] exposure: The exposure factor.
+ * @param[in] clearcoatFresnel: The Fresnel factor for the clearcoat layer (RGB).
+ * @param[in] clearcoatSpecularLight: The incoming specular light color (RGB) for the clearcoat layer.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
  */
 vec4 pbrColorIbl(
-    vec3 diffuseLight,
-    vec4 color,
-    vec3 radiance,
-    vec3 metalFresnel,
-    vec3 dielectricFresnel,
+    vec3  diffuseLight,
+    vec4  color,
+    vec3  radiance,
+    vec3  metalFresnel,
+    vec3  dielectricFresnel,
     float metallic,
     float occlusion,
-    vec3 emissive,
-    vec3 clearcoatFresnel,
-    vec3 clearcoatSpecularLight,
+    vec3  emissive,
+    vec3  clearcoatFresnel,
+    vec3  clearcoatSpecularLight,
     float exposure,
-    int toneMapping)
+    int   toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
 

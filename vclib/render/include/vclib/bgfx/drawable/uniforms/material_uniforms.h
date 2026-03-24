@@ -138,7 +138,8 @@ public:
         if (!sSettingsUniform.isValid())
             sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
         if (!sClearcoatPackUniform.isValid())
-        	sClearcoatPackUniform = Uniform("u_clearcoatPack", bgfx::UniformType::Vec4);
+            sClearcoatPackUniform =
+                Uniform("u_clearcoatPack", bgfx::UniformType::Vec4);
 
         sBaseColorUniform.bind(&sBaseColor);
         sFactorsPackUniform.bind(&sFactorsPack);

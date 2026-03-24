@@ -50,21 +50,27 @@ vec4 textureStage(uint stage, vec2 texcoord)
     }
 }
 
-// stages for each texture type are defined in the u_textureStagesZ uniform
+// stages for each texture type are defined in the u_textureStagesZ and
+// u_textureStagesW uniforms
 // you can view this uniform as an array of 8 uints, each one representing the
 // stage index for a specific texture type (each uint is 4 bits)
 // positions for each texture type:
-// 0 -> base color
-// 1 -> metallic roughness
-// 2 -> normal
-// 3 -> occlusion
-// 4 -> emissive
-// 5 -> clearcoat
-// 6 -> clearcoat roughness
-// 7 -> clearcoat normal
-// 8 -> brdf lut
+// u_textureStagesZ:
+// - 0 -> base color
+// - 1 -> metallic roughness
+// - 2 -> normal
+// - 3 -> occlusion
+// - 4 -> emissive
+// - 5 -> clearcoat
+// - 6 -> clearcoat roughness
+// - 7 -> clearcoat normal
+// u_textureStagesW:
+// - 0 -> brdf lut
 //
-// to get the actual stage index: textureStageBitField(u_textureStagesZ, pos)
+// to get the actual stage index:
+//    textureStageBitField(u_textureStagesZ, pos);
+// or
+//    textureStageBitField(u_textureStagesW, pos);
 
 bool isBaseColorTextureAvailable()
 {
