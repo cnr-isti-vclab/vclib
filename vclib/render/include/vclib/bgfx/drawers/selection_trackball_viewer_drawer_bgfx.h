@@ -385,10 +385,10 @@ private:
     {
         Matrix44d vMat = TED::viewMatrix().template cast<double>();
         Matrix44d pMat = TED::projectionMatrix().template cast<double>();
-        // In NDC the frustum is an AABB with min point {-1,-1,-1} and max point
+        // In NDC the frustum is an AABB with min point {-1,-1,0} and max point
         // {1,1,1}
         Box3d frustumNDC;
-        frustumNDC.add(Point3d {-1.0, -1.0, -1.0});
+        frustumNDC.add(Point3d {-1.0, -1.0, 0.0});
         frustumNDC.add(Point3d {1.0, 1.0, 1.0});
         // In NDC space
         Box3d totalBB;
