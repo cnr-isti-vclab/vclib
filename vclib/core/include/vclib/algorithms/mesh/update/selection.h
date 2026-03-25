@@ -54,7 +54,7 @@ template<FaceMeshConcept MeshType>
 void clearFaceEdgesSelection(MeshType& m)
 {
     for (auto& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             f.edgeSelected(i) = false;
         }
     }

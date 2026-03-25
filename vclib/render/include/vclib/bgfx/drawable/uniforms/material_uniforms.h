@@ -65,7 +65,7 @@ class MaterialUniforms
 
     static inline Uniform sBaseColorUniform;
     static inline Uniform sFactorsPackUniform;
-    static inline Uniform sEmissivePackUniform ;
+    static inline Uniform sEmissivePackUniform;
     static inline Uniform sSettingsUniform;
     static inline Uniform sAlphaPackUniform;
 
@@ -125,7 +125,8 @@ public:
             sBaseColorUniform =
                 Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
         if (!sFactorsPackUniform.isValid())
-            sFactorsPackUniform = Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
+            sFactorsPackUniform =
+                Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
         if (!sEmissivePackUniform.isValid())
             sEmissivePackUniform =
                 Uniform("u_emissivePack", bgfx::UniformType::Vec4);

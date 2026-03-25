@@ -46,8 +46,8 @@ def mesh_convex_hull():
     vcl.load_mesh(input_mesh, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny.obj")
     input_mesh.set_name("Input Mesh")
 
-    print(f"Input mesh loaded: {input_mesh.vertex_number()} vertices, "
-          f"{input_mesh.face_number()} faces")
+    print(f"Input mesh loaded: {input_mesh.vertex_count()} vertices, "
+          f"{input_mesh.face_count()} faces")
 
     # Compute convex hull from vertex positions
     print("\n=== Computing Convex Hull ===")
@@ -58,8 +58,8 @@ def mesh_convex_hull():
     hull_mesh = vcl.convex_hull_tri_mesh(positions)
     hull_mesh.set_name("Convex Hull")
 
-    print(f"Convex hull computed: {hull_mesh.vertex_number()} vertices, "
-          f"{hull_mesh.face_number()} faces")
+    print(f"Convex hull computed: {hull_mesh.vertex_count()} vertices, "
+          f"{hull_mesh.face_count()} faces")
 
     # Also demonstrate computing hull from a simple point set
     print("\n=== Computing Convex Hull from Point Set ===")
@@ -79,8 +79,8 @@ def mesh_convex_hull():
     cube_hull = vcl.convex_hull_tri_mesh(points)
     cube_hull.set_name("Cube Convex Hull")
 
-    print(f"Cube convex hull: {cube_hull.vertex_number()} vertices, "
-          f"{cube_hull.face_number()} faces")
+    print(f"Cube convex hull: {cube_hull.vertex_count()} vertices, "
+          f"{cube_hull.face_count()} faces")
 
     return input_mesh, hull_mesh, cube_hull
 

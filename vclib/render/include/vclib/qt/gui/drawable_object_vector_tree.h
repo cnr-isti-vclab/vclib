@@ -23,6 +23,8 @@
 #ifndef VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
 #define VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
 
+#include "drawable_object_item.h"
+
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <QFrame>
@@ -37,8 +39,7 @@ class DrawableObjectVectorTree;
 class DrawableObjectVectorTree : public QFrame
 {
 public:
-    using IconFunction =
-        std::function<std::pair<QIcon, std::string>(const DrawableObject&)>;
+    using IconFunction = DrawableObjectItem::IconFunction;
 
 private:
     Q_OBJECT

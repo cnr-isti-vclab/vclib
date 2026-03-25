@@ -48,20 +48,20 @@ def mesh_creation():
     # 1. Tetrahedron - The simplest 3D primitive
     print("Creating tetrahedron...")
     tetrahedron = vcl.create_tetrahedron_tri_mesh()
-    print(f"  Vertices: {tetrahedron.vertex_number()}, Faces: {tetrahedron.face_number()}")
+    print(f"  Vertices: {tetrahedron.vertex_count()}, Faces: {tetrahedron.face_count()}")
     tetrahedron.set_name("Tetrahedron")
 
     # 2. Hexahedron (Cube) - Box primitive
     print("Creating hexahedron (cube)...")
     cube = vcl.TriMesh()
     vcl.create_hexahedron(cube) # alternative to vcl.create_hexahedron_tri_mesh()
-    print(f"  Vertices: {cube.vertex_number()}, Faces: {cube.face_number()}")
+    print(f"  Vertices: {cube.vertex_count()}, Faces: {cube.face_count()}")
     cube.set_name("Cube")
 
     # 3. Dodecahedron - More complex polyhedron (triangulated)
     print("Creating dodecahedron (triangulated)...")
     dodecahedron = vcl.create_dodecahedron_tri_mesh()
-    print(f"  Vertices: {dodecahedron.vertex_number()}, Faces: {dodecahedron.face_number()}")
+    print(f"  Vertices: {dodecahedron.vertex_count()}, Faces: {dodecahedron.face_count()}")
     dodecahedron.set_name("Dodecahedron")
 
     # /****** Creating Parametric Primitives ******/
@@ -73,7 +73,7 @@ def mesh_creation():
     min_corner = vcl.Point3(-2, -2, -2)
     edge_length = 4.0
     custom_cube = vcl.create_cube_tri_mesh(min_corner, edge_length)
-    print(f"  Custom cube (4x4x4) - Vertices: {custom_cube.vertex_number()}, Faces: {custom_cube.face_number()}")
+    print(f"  Custom cube (4x4x4) - Vertices: {custom_cube.vertex_count()}, Faces: {custom_cube.face_count()}")
     custom_cube.set_name("Custom Cube")
 
     # /****** Creating Primitives with PolyMesh ******/
@@ -85,14 +85,14 @@ def mesh_creation():
     # 1. Hexahedron as quads
     print("Creating hexahedron (PolyMesh - quads)...")
     cube_quads = vcl.create_hexahedron_poly_mesh()
-    print(f"  Cube (quads) - Vertices: {cube_quads.vertex_number()}, Faces: {cube_quads.face_number()}")
+    print(f"  Cube (quads) - Vertices: {cube_quads.vertex_count()}, Faces: {cube_quads.face_count()}")
     cube_quads.set_name("Cube (PolyMesh)")
     # Note: This creates 6 quad faces instead of 12 triangular faces
 
     # 2. Dodecahedron as pentagons
     print("Creating dodecahedron (PolyMesh - pentagons)...")
     dodecahedron_poly = vcl.create_dodecahedron_poly_mesh()
-    print(f"  Dodecahedron (pentagons) - Vertices: {dodecahedron_poly.vertex_number()}, Faces: {dodecahedron_poly.face_number()}")
+    print(f"  Dodecahedron (pentagons) - Vertices: {dodecahedron_poly.vertex_count()}, Faces: {dodecahedron_poly.face_count()}")
     dodecahedron_poly.set_name("Dodecahedron (PolyMesh)")
     # Note: This creates 12 pentagonal faces instead of many triangular faces
 
@@ -101,7 +101,7 @@ def mesh_creation():
     sphere = vcl.Sphere([0, 0, 0], 1.0)
     mode = vcl.SPHERIFIED_CUBE
     sphere_quads = vcl.create_sphere_poly_mesh(sphere, mode, divisions=20)
-    print(f"  Sphere (quads) - Vertices: {sphere_quads.vertex_number()}, Faces: {sphere_quads.face_number()}")
+    print(f"  Sphere (quads) - Vertices: {sphere_quads.vertex_count()}, Faces: {sphere_quads.face_count()}")
     sphere_quads.set_name("Sphere (PolyMesh)")
 
     # /****** Summary and Comparison ******/
@@ -111,15 +111,15 @@ def mesh_creation():
     print("  - All faces are triangles")
     print("  - More faces for complex shapes")
     print("  - Compatible with most graphics pipelines")
-    print(f"  - Cube: {cube.face_number()} triangular faces")
-    print(f"  - Dodecahedron: {dodecahedron.face_number()} triangular faces")
+    print(f"  - Cube: {cube.face_count()} triangular faces")
+    print(f"  - Dodecahedron: {dodecahedron.face_count()} triangular faces")
 
     print("\nPolyMesh:")
     print("  - Faces can have arbitrary number of vertices")
     print("  - More compact representation for regular shapes")
     print("  - Better preserves original geometry intent")
-    print(f"  - Cube: {cube_quads.face_number()} quad faces")
-    print(f"  - Dodecahedron: {dodecahedron_poly.face_number()} pentagonal faces")
+    print(f"  - Cube: {cube_quads.face_count()} quad faces")
+    print(f"  - Dodecahedron: {dodecahedron_poly.face_count()} pentagonal faces")
 
     return (tetrahedron, cube, dodecahedron, custom_cube, cube_quads, 
             dodecahedron_poly, sphere_quads)

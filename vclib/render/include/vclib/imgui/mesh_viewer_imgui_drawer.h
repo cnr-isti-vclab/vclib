@@ -43,9 +43,6 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
-    // selected mesh index
-    int mMeshIndex = 0;
-
 public:
     using Base::Base;
 
@@ -71,10 +68,11 @@ public:
         }
 
         // drawable mesh info and settings for selected mesh
-        if (mMeshIndex >= 0 && mMeshIndex < Base::mDrawList->size()) {
+        uint meshIndex = Base::mDrawList->selectedObjectId();
+        if (meshIndex >= 0 && meshIndex < Base::mDrawList->size()) {
             auto drawable =
                 std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(
-                    Base::mDrawList->at(mMeshIndex));
+                    Base::mDrawList->at(meshIndex));
             if (drawable) {
                 drawMeshSettings(*drawable);
             }
@@ -106,18 +104,27 @@ public:
                 ImGui::EndCombo();
             }
 
-            if (pbrMode) {
+            // Update local state and persist any changes to the viewer.
+            pbrMode = pbrSettings.pbrMode;
+            Base::setPbrSettings(pbrSettings);
+
+            ImGui::BeginDisabled(!pbrMode);
+            {
                 // exposure slider
                 ImGui::Separator();
                 ImGui::Text("Exposure:");
                 ImGui::SameLine();
                 float exposure = pbrSettings.exposure;
                 if (ImGui::SliderFloat(
-                        "##Exposure", &exposure, 0.0f, 64.0f, "%.5f"))
+                        "##Exposure",
+                        &exposure,
+                        0.001f,
+                        64.0f,
+                        "%.3f",
+                        ImGuiSliderFlags_Logarithmic))
                     pbrSettings.exposure = exposure;
 
                 // tone mapping combo box
-                ImGui::Separator();
                 ImGui::Text("Tone mapping:");
                 ImGui::SameLine();
                 uint toneMapping = toUnderlying(pbrSettings.toneMapping);
@@ -142,7 +149,6 @@ public:
                 }
 
                 // image based lighting
-                ImGui::Separator();
                 ImGui::Checkbox(
                     "Image Based Lighting",
                     [&]() {
@@ -153,7 +159,6 @@ public:
                     });
 
                 // draw background checkbox
-                ImGui::Separator();
                 ImGui::Checkbox(
                     "Render Background Panorama",
                     [&]() {
@@ -163,34 +168,40 @@ public:
                         pbrSettings.renderBackgroundPanorama = renderBg;
                     });
             }
-            Base::setPbrSettings(pbrSettings);
+            ImGui::EndDisabled();
+            if (pbrSettings.pbrMode) {
+                Base::setPbrSettings(pbrSettings);
+            }
         }
 
         ImGui::End();
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        if (button == MouseButton::RIGHT) {
+        bool block = Base::onMousePress(button, x, y, modifiers);
+
+        if (!block && button == MouseButton::RIGHT) {
             this->readIdRequest(x, y, [&](uint id) {
                 if (id == UINT_NULL)
                     return;
 
-                mMeshIndex = id;
+                Base::mDrawList->setSelectedObjectId(id);
                 std::cout << "Selected  ID: " << id << std::endl;
             });
         }
-
-        Base::onMousePress(button, x, y, modifiers);
+        return block;
     }
 
 private:
     void drawMeshList()
     {
+        uint meshIndex = Base::mDrawList->selectedObjectId();
+
         if (!Base::mDrawList || Base::mDrawList->empty()) {
             ImGui::Text("No objects loaded");
             return;
@@ -223,12 +234,12 @@ private:
                 ImGui::TableSetColumnIndex(1);
 
                 // row selection
-                bool isSelected = (mMeshIndex == meshId - 1);
+                bool isSelected = (meshIndex == meshId - 1);
                 if (ImGui::Selectable(
                         drawable.name().c_str(),
                         isSelected,
                         ImGuiSelectableFlags_SpanAllColumns)) {
-                    mMeshIndex = meshId - 1;
+                    Base::mDrawList->setSelectedObjectId(meshId - 1);
                 }
                 // tooltip with info
                 if (!drawable.info().empty() &&

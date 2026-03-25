@@ -86,7 +86,7 @@ void testMeshFromMatrices()
     MeshType mesh = vcl::meshFromMatrices<MeshType>(vertices, faces);
 
     // Verify vertices
-    REQUIRE(mesh.vertexNumber() == 8);
+    REQUIRE(mesh.vertexCount() == 8);
     for (vcl::uint i = 0; i < 8; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == vertices(i, 0));
@@ -96,7 +96,7 @@ void testMeshFromMatrices()
 
     // Verify faces
     if constexpr (vcl::HasFaces<MeshType>) {
-        REQUIRE(mesh.faceNumber() == 12);
+        REQUIRE(mesh.faceCount() == 12);
         for (vcl::uint i = 0; i < 12; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -124,7 +124,7 @@ void testVertexPositionsFromMatrix()
     vcl::vertexPositionsFromMatrix(mesh, vertices, false);
 
     // Verify vertices
-    REQUIRE(mesh.vertexNumber() == 3);
+    REQUIRE(mesh.vertexCount() == 3);
     for (vcl::uint i = 0; i < 3; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == vertices(i, 0));
@@ -138,7 +138,7 @@ void testVertexPositionsFromMatrix()
 
     vcl::vertexPositionsFromMatrix(mesh, newVertices, true);
 
-    REQUIRE(mesh.vertexNumber() == 4);
+    REQUIRE(mesh.vertexCount() == 4);
     for (vcl::uint i = 0; i < 4; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == newVertices(i, 0));
@@ -163,7 +163,7 @@ void testFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 2);
+        REQUIRE(mesh.faceCount() == 2);
         for (vcl::uint i = 0; i < 2; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -195,7 +195,7 @@ void testPolyFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 3);
+        REQUIRE(mesh.faceCount() == 3);
 
         // Verify faces using loops
         for (vcl::uint i = 0; i < 3; ++i) {
@@ -209,7 +209,7 @@ void testPolyFaceIndicesFromMatrix()
                 }
             }
 
-            REQUIRE(f.vertexNumber() == expectedVertexCount);
+            REQUIRE(f.vertexCount() == expectedVertexCount);
 
             // Check vertex indices (only non-null ones)
             for (vcl::uint j = 0; j < faces.cols(); ++j) {

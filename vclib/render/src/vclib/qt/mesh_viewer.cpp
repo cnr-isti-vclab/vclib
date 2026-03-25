@@ -78,18 +78,9 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
 
-    // create the vector of DrawableObjects
-    mDrawableObjectVector->resize(2, DrawableObjectVector());
-
-    mListedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
-        mDrawableObjectVector->at(0));
-
-    mUnlistedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
-        mDrawableObjectVector->at(1));
-
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
@@ -136,20 +127,14 @@ MeshViewer::~MeshViewer()
 void MeshViewer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
-    mDrawableObjectVector->set(0, v);
-    mListedDrawableObjects = v;
+    mDrawableObjectVector = v;
 
     // order here is important: drawVectorTree must have the drawVector before
     // the renderSettingsFrame!
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
     updateGUI();
-}
-
-void MeshViewer::setUnlistedDrawableObjectVector(
-    const std::shared_ptr<DrawableObjectVector>& v)
-{
 }
 
 uint MeshViewer::selectedDrawableObject() const
@@ -224,7 +209,7 @@ void MeshViewer::visibilityDrawableObjectChanged()
     uint i = mUI->drawVectorTree->selectedDrawableObject();
     if (i != UINT_NULL) {
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(i));
+            mDrawableObjectVector->at(i));
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
@@ -244,8 +229,9 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 {
     // take the newly selected DrawableObject and check whether it is a
     // AbstractDrawableMesh
+    mDrawableObjectVector->setSelectedObjectId(i);
     auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-        mListedDrawableObjects->at(i));
+        mDrawableObjectVector->at(i));
     if (m) {
         // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
@@ -272,12 +258,12 @@ void MeshViewer::renderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorTree->selectedDrawableObject();
-    if (i != UINT_NULL && mListedDrawableObjects->size() > 0) {
+    if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
         // The selected object must always be a AbstractDrawableMesh, because
         // the RenderSettingsFrame (which called this member function) is
         // visible only when the selected Object is a AbstractDrawableMesh
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(i));
+            mDrawableObjectVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // AbstractDrawableMesh
         m->setRenderSettings(
@@ -306,7 +292,7 @@ void MeshViewer::updateGUI()
 
     if (selected != UINT_NULL) {
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(selected));
+            mDrawableObjectVector->at(selected));
         if (m) {
             mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);

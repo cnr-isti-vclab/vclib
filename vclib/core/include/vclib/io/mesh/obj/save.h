@@ -46,8 +46,8 @@ std::vector<std::string> saveObjMaterials(
 {
     std::vector<std::string> materials;
     if constexpr (HasMaterials<MeshType>) {
-        materials.reserve(m.materialsNumber());
-        for (uint i = 0; i < m.materialsNumber(); ++i) {
+        materials.reserve(m.materialCount());
+        for (uint i = 0; i < m.materialCount(); ++i) {
             const Material& mat = m.material(i);
             ObjMaterial     omat(mat, i);
             std::string     matName = mat.name();

@@ -29,10 +29,6 @@ ClickableLabel::ClickableLabel(QWidget* parent, Qt::WindowFlags) :
 {
 }
 
-ClickableLabel::~ClickableLabel()
-{
-}
-
 void ClickableLabel::mousePressEvent(QMouseEvent*)
 {
     emit clicked();

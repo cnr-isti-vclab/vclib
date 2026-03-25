@@ -46,7 +46,7 @@ def mesh_iteration():
 
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
 
-    print(f"Loaded mesh with {mesh.vertex_number()} vertices and {mesh.face_number()} faces")
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and {mesh.face_count()} faces")
 
     # /****** Basic iteration ******/
 
@@ -63,7 +63,7 @@ def mesh_iteration():
 
     # Iterate with traditional for loop using indices
     print("\nFirst 3 faces (using indices):")
-    for i in range(min(3, mesh.face_number())):
+    for i in range(min(3, mesh.face_count())):
         face = mesh.face(i)
         print(f"  Face {i}: vertices [", end="")
         for j in range(3):
@@ -138,20 +138,20 @@ def mesh_iteration():
     # Load a polygon mesh
     poly_mesh = vcl.load_poly_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
 
-    print(f"Loaded polygon mesh with {poly_mesh.vertex_number()} vertices and {poly_mesh.face_number()} faces")
+    print(f"Loaded polygon mesh with {poly_mesh.vertex_count()} vertices and {poly_mesh.face_count()} faces")
 
     # Iterate over polygon faces (variable number of vertices)
     for face in poly_mesh.faces():
-        print(f"Polygon face {face.index()} has {face.vertex_number()} vertices: ", end="")
-        for i in range(face.vertex_number()):
+        print(f"Polygon face {face.index()} has {face.vertex_count()} vertices: ", end="")
+        for i in range(face.vertex_count()):
             print(f"{face.vertex(i).index()} ", end="")
         print()
 
         # Calculate polygon centroid
         centroid = vcl.Point3(0, 0, 0)
-        for i in range(face.vertex_number()):
+        for i in range(face.vertex_count()):
             centroid += face.vertex(i).position()
-        centroid /= face.vertex_number()
+        centroid /= face.vertex_count()
         print(f"  Centroid: {centroid}")
 
     # /****** Computing mesh statistics through iteration ******/
@@ -159,7 +159,7 @@ def mesh_iteration():
     print("\n=== Mesh Statistics ===")
 
     # Compute bounding box
-    if mesh.vertex_number() > 0:
+    if mesh.vertex_count() > 0:
         min_point = mesh.vertex(0).position()
         max_point = mesh.vertex(0).position()
 
@@ -171,7 +171,7 @@ def mesh_iteration():
 
         # Compute average edge length
         total_edge_length = 0.0
-        edge_count = mesh.face_number() * 3
+        edge_count = mesh.face_count() * 3
 
         for face in mesh.faces():
             for i in range(3):

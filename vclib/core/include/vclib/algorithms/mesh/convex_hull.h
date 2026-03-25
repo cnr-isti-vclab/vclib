@@ -434,7 +434,7 @@ MeshType convexHull(
     // for each point in the conflict graph (still not in the convex hull)
     for (const auto& point : conflictGraph.leftNodes()) {
         // if the point is visible from a face in the convex hull
-        if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
+        if (conflictGraph.adjacentLeftNodeCount(point) != 0) {
             // store the faces that are visible from (conflict with) the point
             // these faces will be deleted from the convex hull
             std::set<const FaceType*> visibleFaces;

@@ -38,8 +38,18 @@ class DrawableObjectVector :
 
     bool mVisible = true;
 
+    uint mSelectedObjectId = 0;
+
 public:
     DrawableObjectVector() = default;
+
+    uint selectedObjectId() const { return mSelectedObjectId; }
+
+    void setSelectedObjectId(uint id)
+    {
+        if (id < Base::size())
+            mSelectedObjectId = id;
+    }
 
     // DrawableObject interface
     void init();

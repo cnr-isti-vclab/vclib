@@ -53,21 +53,21 @@ void savePly(
 
     PlyHeader header(
         settings.binary ? ply::BINARY_LITTLE_ENDIAN : ply::ASCII, meshInfo);
-    header.setNumberVertices(m.vertexNumber());
+    header.setVertexCount(m.vertexCount());
 
     if constexpr (HasFaces<MeshType>) {
         if (header.hasFaces()) {
-            header.setNumberFaces(m.faceNumber());
+            header.setFaceCount(m.faceCount());
         }
     }
     if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
-            header.setNumberEdges(m.edgeNumber());
+            header.setEdgeCount(m.edgeCount());
         }
     }
     if constexpr (HasMaterials<MeshType>) {
         if (header.hasMaterials()) {
-            header.setNumberMaterials(m.materialsNumber());
+            header.setMaterialCount(m.materialCount());
         }
     }
 

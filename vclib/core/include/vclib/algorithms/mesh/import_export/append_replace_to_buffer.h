@@ -67,7 +67,7 @@ namespace vcl {
  * buffer the positions of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexPositionsToBuffer function:
  *
  * @code{.cpp}
@@ -76,10 +76,10 @@ namespace vcl {
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
+ * std::vector<double> buffer((mesh.vertexCount() + nV) * 3);
  * vertexPositionsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexPositionsToBuffer(mesh, vertsToDuplicate,
  * buffer.data());
@@ -111,14 +111,14 @@ void appendDuplicateVertexPositionsToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& pos = mesh.vertex(v).position();
 
-        at(buffer, i, 0, ROW_NUM, 3, storage) = pos.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = pos.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = pos.z();
+        at(buffer, i, 0, NUM_ROWS, 3, storage) = pos.x();
+        at(buffer, i, 1, NUM_ROWS, 3, storage) = pos.y();
+        at(buffer, i, 2, NUM_ROWS, 3, storage) = pos.z();
 
         ++i;
     }
@@ -134,7 +134,7 @@ void appendDuplicateVertexPositionsToBuffer(
  * stored in the input lists.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with any of the
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with any of the
  * functions defined in @ref export_buffer that export face indices. e.g.:
  *
  * @code{.cpp}
@@ -143,11 +143,11 @@ void appendDuplicateVertexPositionsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  * uint lfs = vcl::largestFaceSize(mesh);
  *
- * std::vector<uint> buffer(mesh.faceNumber() * lfs);
+ * std::vector<uint> buffer(mesh.faceCount() * lfs);
  * faceVertexIndicesToBuffer(mesh, buffer.data(), lfs);
  * replaceFaceVertexIndicesByVertexDuplicationToBuffer(mesh, vertsToDuplicate,
  *    faceToReassign, buffer.data(), lfs);
@@ -186,13 +186,13 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    const uint ROW_NUM = mesh.faceNumber();
+    const uint NUM_ROWS = mesh.faceCount();
 
-    uint vFirst = mesh.vertexNumber();
-    uint vLast  = mesh.vertexNumber() + vertsToDuplicate.size();
+    uint vFirst = mesh.vertexCount();
+    uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();
     for (uint vi = vFirst; const auto& faces : facesToReassign) {
         for (const auto& f : faces) {
-            at(buffer, f.first, f.second, ROW_NUM, largestFaceSize, storage) =
+            at(buffer, f.first, f.second, NUM_ROWS, largestFaceSize, storage) =
                 vi;
         }
         ++vi;
@@ -209,7 +209,7 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  * stored in the input lists.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with @ref
  * triangulatedFaceIndicesToBuffer function that export triangulated face
  * indices. e.g.:
  *
@@ -220,12 +220,12 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  * TriPolyIndexBiMap indexMap;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * uint numTris = vcl::countTriangulatedTriangles(myMesh);
+ * uint numTris = vcl::triangulatedFaceCount(myMesh);
  *
- * std::vector<uint> buffer(mesh.faceNumber() * numTris);
+ * std::vector<uint> buffer(numTris * 3);
  * triangulatedFaceVertexIndicesToBuffer(mesh, buffer.data(), indexMap);
  * replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(mesh,
  *    vertsToDuplicate, faceToReassign, indexMap, buffer.data());
@@ -263,10 +263,10 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
 
     assert(vertsToDuplicate.size() == facesToReassign.size());
 
-    uint vFirst = mesh.vertexNumber();
-    uint vLast  = mesh.vertexNumber() + vertsToDuplicate.size();
+    uint vFirst = mesh.vertexCount();
+    uint vLast  = mesh.vertexCount() + vertsToDuplicate.size();
 
-    const uint ROW_NUM = indexMap.triangleNumber();
+    const uint NUM_ROWS = indexMap.triangleCount();
 
     // the facesToReassign lists for each vertex contain pairs that in the
     // second element store the index of the vertex in the face. However, the
@@ -283,10 +283,10 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
         for (const auto& f : faces) {
             // get the triangle indices of the face using the index map
             uint tBegin = indexMap.triangleBegin(f.first);
-            uint tEnd   = tBegin + indexMap.triangleNumber(f.first);
+            uint tEnd   = tBegin + indexMap.triangleCount(f.first);
             for (uint t = tBegin; t < tEnd; ++t) { // look into the triangles
                 for (uint j = 0; j < 3; ++j) { // for each vertex of triangle
-                    auto& triVert = at(buffer, t, j, ROW_NUM, 3, storage);
+                    auto& triVert = at(buffer, t, j, NUM_ROWS, 3, storage);
                     if (triVert == vert) {
                         triVert = vi;
                     }
@@ -304,7 +304,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * buffer the selection of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexSelectionToBuffer function:
  *
  * @code{.cpp}
@@ -313,10 +313,10 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<uint> buffer(mesh.vertexNumber() + nV);
+ * std::vector<uint> buffer(mesh.vertexCount() + nV);
  * vertexSelectionToBuffer(mesh, buffer.data());
  * appendDuplicateVertexCoordsToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
@@ -344,7 +344,7 @@ void appendDuplicateVertexSelectionToBuffer(
     if (vertsToDuplicate.empty())
         return;
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).selected();
         ++i;
     }
@@ -357,7 +357,7 @@ void appendDuplicateVertexSelectionToBuffer(
  * buffer the normals of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexNormalsToBuffer function:
  *
  * @code{.cpp}
@@ -366,10 +366,10 @@ void appendDuplicateVertexSelectionToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 3);
+ * std::vector<double> buffer((mesh.vertexCount() + nV) * 3);
  * vertexNormalsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexNormalsToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
@@ -402,13 +402,13 @@ void appendDuplicateVertexNormalsToBuffer(
 
     requirePerVertexNormal(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& normal                    = mesh.vertex(v).normal();
-        at(buffer, i, 0, ROW_NUM, 3, storage) = normal.x();
-        at(buffer, i, 1, ROW_NUM, 3, storage) = normal.y();
-        at(buffer, i, 2, ROW_NUM, 3, storage) = normal.z();
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+        const auto& normal                     = mesh.vertex(v).normal();
+        at(buffer, i, 0, NUM_ROWS, 3, storage) = normal.x();
+        at(buffer, i, 1, NUM_ROWS, 3, storage) = normal.y();
+        at(buffer, i, 2, NUM_ROWS, 3, storage) = normal.z();
 
         ++i;
     }
@@ -421,7 +421,7 @@ void appendDuplicateVertexNormalsToBuffer(
  * buffer the colors of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexColorsToBuffer function:
  *
  * @code{.cpp}
@@ -430,10 +430,10 @@ void appendDuplicateVertexNormalsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<uint> buffer((mesh.vertexNumber() + nV) * 4);
+ * std::vector<uint> buffer((mesh.vertexCount() + nV) * 4);
  * vertexColorsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexColorsToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
@@ -468,15 +468,15 @@ void appendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    const bool R_INT   = representation == Color::Representation::INT_0_255;
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const bool R_INT    = representation == Color::Representation::INT_0_255;
+    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& c                         = mesh.vertex(v).color();
-        at(buffer, i, 0, ROW_NUM, 4, storage) = R_INT ? c.red() : c.redF();
-        at(buffer, i, 1, ROW_NUM, 4, storage) = R_INT ? c.green() : c.greenF();
-        at(buffer, i, 2, ROW_NUM, 4, storage) = R_INT ? c.blue() : c.blueF();
-        at(buffer, i, 3, ROW_NUM, 4, storage) = R_INT ? c.alpha() : c.alphaF();
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+        const auto& c                          = mesh.vertex(v).color();
+        at(buffer, i, 0, NUM_ROWS, 4, storage) = R_INT ? c.red() : c.redF();
+        at(buffer, i, 1, NUM_ROWS, 4, storage) = R_INT ? c.green() : c.greenF();
+        at(buffer, i, 2, NUM_ROWS, 4, storage) = R_INT ? c.blue() : c.blueF();
+        at(buffer, i, 3, NUM_ROWS, 4, storage) = R_INT ? c.alpha() : c.alphaF();
 
         ++i;
     }
@@ -491,7 +491,7 @@ void appendDuplicateVertexColorsToBuffer(
  * of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexColorToBuffer function:
  *
  * @code{.cpp}
@@ -500,10 +500,10 @@ void appendDuplicateVertexColorsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer(mesh.vertexNumber() + nV);
+ * std::vector<double> buffer(mesh.vertexCount() + nV);
  * vertexColorToBuffer(mesh, buffer.data(), Color::Format::RGBA);
  * appendDuplicateVertexColorToBuffer(mesh, vertsToDuplicate, buffer.data(),
  *     Color::Format::RGBA);
@@ -534,7 +534,7 @@ void appendDuplicateVertexColorsToBuffer(
 
     requirePerVertexColor(mesh);
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& c = mesh.vertex(v).color();
         switch (colorFormat) {
             using enum Color::Format;
@@ -554,7 +554,7 @@ void appendDuplicateVertexColorsToBuffer(
  * buffer the quality of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexQualityToBuffer function:
  *
  * @code{.cpp}
@@ -563,10 +563,10 @@ void appendDuplicateVertexColorsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer(mesh.vertexNumber() + nV);
+ * std::vector<double> buffer(mesh.vertexCount() + nV);
  * vertexQualityToBuffer(mesh, buffer.data());
  * appendDuplicateVertexQualityToBuffer(mesh, vertsToDuplicate, buffer.data());
  * @endcode
@@ -595,7 +595,7 @@ void appendDuplicateVertexQualityToBuffer(
 
     requirePerVertexQuality(mesh);
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).quality();
         ++i;
     }
@@ -610,7 +610,7 @@ void appendDuplicateVertexQualityToBuffer(
  * list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexTexCoordsToBuffer function:
  *
  * @code{.cpp}
@@ -619,10 +619,10 @@ void appendDuplicateVertexQualityToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 2);
+ * std::vector<double> buffer((mesh.vertexCount() + nV) * 2);
  * vertexTexCoordsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexTexCoordsToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
@@ -657,12 +657,12 @@ void appendDuplicateVertexTexCoordsToBuffer(
 
     requirePerVertexTexCoord(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
+    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
-        const auto& t                         = mesh.vertex(v).texCoord();
-        at(buffer, i, 0, ROW_NUM, 2, storage) = t.u();
-        at(buffer, i, 1, ROW_NUM, 2, storage) = t.v();
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
+        const auto& t                          = mesh.vertex(v).texCoord();
+        at(buffer, i, 0, NUM_ROWS, 2, storage) = t.u();
+        at(buffer, i, 1, NUM_ROWS, 2, storage) = t.v();
 
         ++i;
     }
@@ -681,7 +681,7 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * stored.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexTangentToBuffer function:
  *
  * @code{.cpp}
@@ -690,10 +690,10 @@ void appendDuplicateVertexTexCoordsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<double> buffer((mesh.vertexNumber() + nV) * 4);
+ * std::vector<double> buffer((mesh.vertexCount() + nV) * 4);
  * vertexTangentsToBuffer(mesh, buffer.data());
  * appendDuplicateVertexTangentsToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
@@ -731,17 +731,17 @@ void appendDuplicateVertexTangentsToBuffer(
 
     requirePerVertexTangent(mesh);
 
-    const uint ROW_NUM = mesh.vertexNumber() + vertsToDuplicate.size();
-    const uint COL_NUM = storeHandednessAsW ? 4 : 3;
+    const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
+    const uint NUM_COLS = storeHandednessAsW ? 4 : 3;
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         const auto& t = mesh.vertex(v).tangent();
 
-        at(buffer, i, 0, ROW_NUM, COL_NUM, storage) = t.x();
-        at(buffer, i, 1, ROW_NUM, COL_NUM, storage) = t.y();
-        at(buffer, i, 2, ROW_NUM, COL_NUM, storage) = t.z();
+        at(buffer, i, 0, NUM_ROWS, NUM_COLS, storage) = t.x();
+        at(buffer, i, 1, NUM_ROWS, NUM_COLS, storage) = t.y();
+        at(buffer, i, 2, NUM_ROWS, NUM_COLS, storage) = t.z();
         if (storeHandednessAsW) {
-            at(buffer, i, 3, ROW_NUM, COL_NUM, storage) =
+            at(buffer, i, 3, NUM_ROWS, NUM_COLS, storage) =
                 mesh.vertex(v).tangentRightHanded() ? 1.0 : -1.0;
         }
 
@@ -757,7 +757,7 @@ void appendDuplicateVertexTangentsToBuffer(
  * buffer the vertex material indices of the vertices listed in the input list.
  *
  * Typical usage of this function is after the @ref
- * countVerticesToDuplicateByWedgeTexCoords function and along with the @ref
+ * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
  * vertexMaterialIndicesToBuffer function:
  *
  * @code{.cpp}
@@ -766,10 +766,10 @@ void appendDuplicateVertexTangentsToBuffer(
  * std::list<uint> vertsToDuplicate;
  * std::list<std::list<std::pair<uint, uint>>> facesToReassign;
  *
- * uint nV = countVerticesToDuplicateByWedgeTexCoords(mesh, vertWedgeMap,
+ * uint nV = verticesToDuplicateByWedgeTexCoordsCount(mesh, vertWedgeMap,
  *     vertsToDuplicate, facesToReassign);
  *
- * std::vector<ushort> buffer(mesh.vertexNumber() + nV);
+ * std::vector<ushort> buffer(mesh.vertexCount() + nV);
  * vertexMaterialIndicesToBuffer(mesh, buffer.data());
  * appendDuplicateVertexMaterialIndicesToBuffer(mesh, vertsToDuplicate,
  *     buffer.data());
@@ -800,7 +800,7 @@ void appendDuplicateVertexMaterialIndicesToBuffer(
 
     requirePerVertexMaterialIndex(mesh);
 
-    for (uint i = mesh.vertexNumber(); const auto& v : vertsToDuplicate) {
+    for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
         buffer[i] = mesh.vertex(v).materialIndex();
         ++i;
     }

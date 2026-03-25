@@ -96,18 +96,18 @@ public:
      * @brief Returns the number of **non-deleted** vertices contained in the
      * Vertex container of the Mesh.
      *
-     * If vertexNumber() != vertexContainerSize(), it means that there are some
+     * If vertexCount() != vertexContainerSize(), it means that there are some
      * vertices that are flagged as deleted.
      *
      * @return The number of non-deleted vertices of the Mesh.
      */
-    uint vertexNumber() const { return Base::elementNumber(); }
+    uint vertexCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of vertices (also deleted) contained in the
      * Vertex container of the Mesh.
      *
-     * If vertexNumber() != vertexContainerSize(), it means that there are some
+     * If vertexCount() != vertexContainerSize(), it means that there are some
      * vertices that are flagged as deleted.
      *
      * @return The number of all the vertices contained in the Mesh.
@@ -116,11 +116,11 @@ public:
 
     /**
      * @brief Returns the number of deleted vertices in the Vertex container,
-     * that is vertexContainerSize() - vertexNumber().
+     * that is vertexContainerSize() - vertexCount().
      *
      * @return The number of deleted vertices in the container.
      */
-    uint deletedVertexNumber() const { return Base::deletedElementNumber(); }
+    uint deletedVertexCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a new vertex into the vertex container, returning the index of

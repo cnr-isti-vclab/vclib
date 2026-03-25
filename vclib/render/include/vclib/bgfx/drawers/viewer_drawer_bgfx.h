@@ -31,12 +31,20 @@
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
+#include <array>
+
 namespace vcl {
 
 template<typename ViewProjEventDrawer>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 {
+    inline static const uint N_ADDITIONAL_VIEWS =
+        DrawObjectSettings::N_ADDITIONAL_VIEWS;
+
     using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
+    using DRA          = ViewProjEventDrawer::DRA;
+
+    std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
     // flags
     bool mStatsEnabled = false;
@@ -49,14 +57,17 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            mAdditionalViewIds[i] = Context::instance().requestViewId();
+        }
+        this->onResize(width, height);
     }
 
-    ViewerDrawerBGFX(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerBGFX(width, height)
+    ~ViewerDrawerBGFX()
     {
-        ParentViewer::setDrawableObjectVector(v);
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            Context::instance().releaseViewId(mAdditionalViewIds[i]);
+        }
     }
 
     const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
@@ -73,10 +84,28 @@ public:
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
     }
 
+    void onResize(uint width, uint height) override
+    {
+        ParentViewer::onResize(width, height);
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
+            bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+    }
+
     void onDrawContent(uint viewId) override
     {
+        auto fbh = DRA::DRW::canvasFrameBuffer(derived());
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewFrameBuffer(mAdditionalViewIds[i], fbh);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+
         DrawObjectSettings settings;
         settings.viewId = viewId;
+
+        settings.additionalViewIds = mAdditionalViewIds;
 
         settings.pbrSettings = mPBRSettings;
 
@@ -110,9 +139,11 @@ public:
         ParentViewer::drawableObjectVector().drawId(settings);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (key == Key::F1) {
+        bool block = ParentViewer::onKeyPress(key, modifiers);
+
+        if (!block && key == Key::F1) {
             if (mStatsEnabled) {
                 mStatsEnabled = false;
                 bgfx::setDebug(BGFX_DEBUG_NONE);
@@ -122,23 +153,24 @@ public:
                 bgfx::setDebug(BGFX_DEBUG_STATS);
             }
         }
-        ParentViewer::onKeyPress(key, modifiers);
+        return block;
     }
 
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
 
-        if (button == MouseButton::LEFT) {
+        if (!block && button == MouseButton::LEFT) {
             const bool homogeneousNDC =
                 Context::instance().capabilites().homogeneousDepth;
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+        return block;
     }
 
 private:
@@ -150,7 +182,15 @@ private:
         Matrix44f pm = ParentViewer::projectionMatrix();
 
         bgfx::setViewTransform(viewId, vm.data(), pm.data());
+
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
+        }
     }
+
+    auto* derived() { return static_cast<DRA*>(this); }
+
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 };
 
 } // namespace vcl

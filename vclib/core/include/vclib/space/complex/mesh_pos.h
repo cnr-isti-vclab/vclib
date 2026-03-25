@@ -69,7 +69,7 @@ public:
 
     MeshPos(const FaceType* f, const VertexType* v) : mFace(f), mVertex(v)
     {
-        for (uint i = 0; i < f->vertexNumber(); i++)
+        for (uint i = 0; i < f->vertexCount(); i++)
             if (f->vertex(i) == v)
                 mEdge = i;
         assert(isValid(mFace, mVertex, mEdge));
@@ -82,7 +82,7 @@ public:
      *
      * @param[in] f: the Face pointer on which place the MeshPos.
      * @param[in] v: the Vertex pointer on which place the MeshPos.
-     * @param[in] e: the Edge (an positive index < f.vertexNumber() on which
+     * @param[in] e: the Edge (an positive index < f.vertexCount() on which
      * place the MeshPos.
      */
     MeshPos(const FaceType* f, const VertexType* v, short e) :
@@ -97,7 +97,7 @@ public:
      * - the type of f has AdjacentFaces
      * - e is less than the number of vertices of f (that is the number of edges
      *   of f)
-     * - v is the vertex of f in position e or (e+1)%f->numberVertices()
+     * - v is the vertex of f in position e or (e+1)%f->vertexCount()
      *
      * @param f: a face pointer
      * @param v: a vertex pointer
@@ -110,7 +110,7 @@ public:
             return false;
         if (!comp::isAdjacentFacesAvailableOn(*f))
             return false;
-        return (ushort) e < f->vertexNumber() &&
+        return (ushort) e < f->vertexCount() &&
                (v == f->vertex(e) || v == f->vertexMod(e + 1));
     }
 
@@ -196,7 +196,7 @@ public:
                 mEdge          = nf->indexOfEdge(v0, v1);
                 // if this assert fails, it means that the edge was not found.
                 // you probably need to update adjacency information of the mesh
-                assert(mEdge >= 0 && mEdge < nf->vertexNumber());
+                assert(mEdge >= 0 && mEdge < nf->vertexCount());
                 if (mEdge < 0) {
                     *this = MeshPos<FaceType>(); // reset to null
                     return false;
@@ -231,10 +231,10 @@ public:
     void flipEdge()
     {
         if (mFace->vertexMod(mEdge + 1) == mVertex) {
-            mEdge = (mEdge + 1) % (short) mFace->vertexNumber();
+            mEdge = (mEdge + 1) % (short) mFace->vertexCount();
         }
         else {
-            short n = mFace->vertexNumber();
+            short n = mFace->vertexCount();
             mEdge   = ((mEdge - 1) % n + n) %
                     n; // be sure to get the right index of the previous edge
         }

@@ -968,7 +968,7 @@ private:
 
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
-                    countVerticesToDuplicateByWedgeTexCoords(
+                    verticesToDuplicateByWedgeTexCoordsCount(
                         mesh,
                         mVertWedgeMap,
                         mVertsToDuplicate,
@@ -976,19 +976,19 @@ private:
                 }
             }
 
-            mNumVerts = mesh.vertexNumber() + mVertsToDuplicate.size();
+            mNumVerts = mesh.vertexCount() + mVertsToDuplicate.size();
         }
 
         if constexpr (HasFaces<MeshType>) {
             if (btu[toUnderlying(TRIANGLES)])
-                mNumTris = countTriangulatedTriangles(mesh);
+                mNumTris = triangulatedFaceCount(mesh);
             if (btu[toUnderlying(WIREFRAME)])
-                nWireframeLines = countPerFaceVertexReferences(mesh);
+                nWireframeLines = faceVertexReferencesCount(mesh);
         }
 
         if constexpr (HasEdges<MeshType>) {
             if (btu[toUnderlying(EDGES)])
-                mNumEdges = mesh.edgeNumber();
+                mNumEdges = mesh.edgeCount();
         }
     }
 
@@ -1182,12 +1182,11 @@ private:
         }
 
         // temporary copy of the buffer
-        std::vector<uint> bufferCopy(indexMap.triangleNumber() * 3);
+        std::vector<uint> bufferCopy(indexMap.triangleCount() * 3);
 
         // temporary bimbap
         TriPolyIndexBiMap indexMapCopy;
-        indexMapCopy.reserve(
-            indexMap.triangleNumber(), indexMap.polygonNumber());
+        indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
 
         uint copiedTriangles = 0;
 
@@ -1196,7 +1195,7 @@ private:
             // of oldFaceIndices
             uint polyIndex = oldFaceIndices[i];
             uint firstTri  = indexMap.triangleBegin(polyIndex);
-            uint nTris     = indexMap.triangleNumber(polyIndex);
+            uint nTris     = indexMap.triangleCount(polyIndex);
 
             std::copy(
                 buffer + firstTri * 3,
@@ -1230,7 +1229,7 @@ private:
         uint currentVertMatID = UINT_NULL;
         uint currentFaceMatID = UINT_NULL;
 
-        for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
+        for (uint i = 0; i < mIndexMap.triangleCount(); ++i) {
             uint fIndex = mIndexMap.polygon(i);
 
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
