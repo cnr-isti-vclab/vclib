@@ -104,7 +104,7 @@ def run(executable_name: str, execution: Args, output_file: str = "./test_result
     if not os.path.exists(execution.mesh):
             print(f"{execution.mesh} model not found, skipping", file=sys.stderr);
             return;
-    subprocess.run([executable_name, *execution.asArgList(), "-o", output_file, "-f", "1000", "--scale", "+1", "--device-name", platform.node()]);
+    subprocess.run([executable_name, *execution.asArgList(), "-o", output_file, "-f", "1000", "--scale", "+1", "--device-name", platform.node() + "_" + platform.system()]);
 
 def main():
     global SMOOTH, FLAT, UBER, SPLIT, UBER_IF, COL_VERT, COL_FACE, TEX_VERT, TEX_WEDGE
