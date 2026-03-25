@@ -165,8 +165,7 @@ void componentStaticAsserts()
     // IsOptionalComponent
     static_assert(
         !comp::IsOptionalComponent<vert::Color>,
-        "vert::Color doesIsTiedToVertexNumber satisfy the OptionalComponent "
-        "concept");
+        "vert::Color does satisfy the OptionalComponent concept");
     static_assert(
         !comp::IsOptionalComponent<const vert::Color>,
         "const vert::Color does satisfy the OptionalComponent concept");
@@ -275,47 +274,41 @@ void componentStaticAsserts()
         "vert::Color&& does not satisfy the HasIsAvailableMemberFunction "
         "concept");
 
-    // IsTiedToVertexNumber
+    // IsTiedToVertexCount
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges>,
-        "OptionalAdjEdges does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges>,
+        "OptionalAdjEdges does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<const OptionalAdjEdges>,
-        "const OptionalAdjEdges does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<const OptionalAdjEdges>,
+        "const OptionalAdjEdges does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges&>,
-        "OptionalAdjEdges& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges&>,
+        "OptionalAdjEdges& does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<const OptionalAdjEdges&>,
-        "const OptionalAdjEdges& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges&&>,
-        "OptionalAdjEdges&& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does satisfy the IsTiedToVertexCount concept");
 
     static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors>,
-        "OptionalWedgeColors does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors>,
+        "OptionalWedgeColors does not satisfy the IsTiedToVertexCount concept");
+    static_assert(
+        comp::IsTiedToVertexCount<const OptionalWedgeColors>,
+        "const OptionalWedgeColors does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<const OptionalWedgeColors>,
-        "const OptionalWedgeColors does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors&>,
+        "OptionalWedgeColors& does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors&>,
-        "OptionalWedgeColors& does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<const OptionalWedgeColors&>,
+        "const OptionalWedgeColors& does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<const OptionalWedgeColors&>,
-        "const OptionalWedgeColors& does not satisfy the IsTiedToVertexNumber "
-        "concept");
-    static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors&&>,
-        "OptionalWedgeColors&& does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors&&>,
+        "OptionalWedgeColors&& does not satisfy the IsTiedToVertexCount "
         "concept");
 
     // HasReferencesOfType

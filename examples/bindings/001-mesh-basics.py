@@ -56,13 +56,13 @@ def mesh_basics():
     mesh.add_vertex([0, 1, 0])
     mesh.add_vertex([1, 1, 0])
 
-    print(f"Added {mesh.vertex_number()} vertices")
+    print(f"Added {mesh.vertex_count()} vertices")
 
     # Add faces (triangles) using vertex indices
     mesh.add_face([0, 1, 2])  # first triangle
     mesh.add_face([1, 3, 2])  # second triangle
 
-    print(f"Added {mesh.face_number()} faces")
+    print(f"Added {mesh.face_count()} faces")
 
     # /****** Accessing mesh elements ******/
 
@@ -158,11 +158,11 @@ def mesh_basics():
     face.push_vertex(poly_mesh.vertex(2))
     face.push_vertex(poly_mesh.vertex(3))
 
-    print(f"Created polygon with {face.vertex_number()} vertices")
+    print(f"Created polygon with {face.vertex_count()} vertices")
 
     # Iterate over vertices of the polygon face
     print("Polygon vertices:", end=" ")
-    for i in range(face.vertex_number()):
+    for i in range(face.vertex_count()):
         print(f"{face.vertex(i).index()}", end=" ")
     print()
 
@@ -171,13 +171,13 @@ def mesh_basics():
     print("\n=== Mesh Statistics ===")
 
     print("TriMesh:")
-    print(f"  Vertices: {mesh.vertex_number()}")
-    print(f"  Faces: {mesh.face_number()}")
+    print(f"  Vertices: {mesh.vertex_count()}")
+    print(f"  Faces: {mesh.face_count()}")
     print(f"  Container sizes - Vertices: {mesh.vertex_container_size()}, Faces: {mesh.face_container_size()}")
 
     print("PolyMesh:")
-    print(f"  Vertices: {poly_mesh.vertex_number()}")
-    print(f"  Faces: {poly_mesh.face_number()}")
+    print(f"  Vertices: {poly_mesh.vertex_count()}")
+    print(f"  Faces: {poly_mesh.face_count()}")
 
     # /****** Computing and displaying barycenter and bounding box ******/
 
@@ -187,7 +187,7 @@ def mesh_basics():
     barycenter = vcl.Point3(0, 0, 0)
     for vertex in mesh.vertices():
         barycenter += vertex.position()
-    barycenter /= mesh.vertex_number()
+    barycenter /= mesh.vertex_count()
 
     print(f"Mesh barycenter: {barycenter}")
 

@@ -50,14 +50,6 @@ public:
     {
     }
 
-    ViewerDrawerOpenGL2(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerOpenGL2(width, height)
-    {
-        ParentViewer::setDrawableObjectVector(v);
-    }
-
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
@@ -102,13 +94,17 @@ public:
     }
 
     // events
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::readDepthRequest(x, y);
+        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        if (!block && button == MouseButton::LEFT) {
+            ParentViewer::readDepthRequest(x, y);
+        }
+        return block;
     }
 };
 

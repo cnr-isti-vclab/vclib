@@ -35,7 +35,7 @@ std::vector<uint> elemCompactIndices(const auto& mesh, bool wantCompact)
 {
     std::vector<uint> elemCompIndices;
 
-    bool isCompact = mesh.template number<ELEM_ID>() ==
+    bool isCompact = mesh.template count<ELEM_ID>() ==
                      mesh.template containerSize<ELEM_ID>();
 
     if (wantCompact && !isCompact)

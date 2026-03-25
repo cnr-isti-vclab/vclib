@@ -67,7 +67,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
 
     log.log(5, "Computing per vertex curvature...");
     // log every 5%, starting from 5% to 100%
-    log.startProgress("", m.vertexNumber(), 5, 5, 100);
+    log.startProgress("", m.vertexCount(), 5, 5, 100);
 
     for (VertexType& v : m.vertices()) {
         std::vector<ScalarType> weights;
@@ -265,7 +265,7 @@ void updatePrincipalCurvaturePCA(
     normalizePerVertexNormals(m);
 
     log.log(0, "Computing per vertex curvature...");
-    log.startProgress("", m.vertexNumber());
+    log.startProgress("", m.vertexCount());
 
     if (montecarloSampling) {
         area  = surfaceArea(m);

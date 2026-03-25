@@ -42,8 +42,8 @@ void meshTopologyStatistics()
     rangeMesh.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(rangeMesh);
 
-    std::cout << "Range mesh: " << rangeMesh.vertexNumber() << " vertices, "
-              << rangeMesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Range mesh: " << rangeMesh.vertexCount() << " vertices, "
+              << rangeMesh.faceCount() << " faces" << std::endl;
 
     // Find connected components
     auto components = vcl::connectedComponents(rangeMesh);
@@ -77,11 +77,11 @@ void meshTopologyStatistics()
     std::cout << "Is water tight: " << (waterTight ? "Yes" : "No") << std::endl;
 
     // Count non-manifold vertices
-    vcl::uint nonManifold = vcl::numberNonManifoldVertices(mesh);
+    vcl::uint nonManifold = vcl::nonManifoldVertexCount(mesh);
     std::cout << "Non-manifold vertices: " << nonManifold << std::endl;
 
     // Count holes
-    vcl::uint holes = vcl::numberHoles(mesh);
+    vcl::uint holes = vcl::holeCount(mesh);
     std::cout << "Number of holes: " << holes << std::endl;
 
     std::cout << "Example completed successfully!\n";

@@ -99,15 +99,15 @@ public:
         swap(mMeshColor, other.mMeshColor);
     }
 
-    uint vertexNumber() const { return mVerts.size() / 3; }
+    uint vertexCount() const { return mVerts.size() / 3; }
 
-    uint triangleNumber() const { return mTris.size() / 3; }
+    uint triangleCount() const { return mTris.size() / 3; }
 
-    uint edgeNumber() const { return mEdges.size() / 2; }
+    uint edgeCount() const { return mEdges.size() / 2; }
 
-    uint wireframeEdgeNumber() const { return mWireframe.size() / 2; }
+    uint wireframeEdgeCount() const { return mWireframe.size() / 2; }
 
-    uint textureNumber() const { return mTextures.size(); }
+    uint textureCount() const { return mTextures.size(); }
 
     vcl::Point2i textureSize(uint ti) const
     {
@@ -361,8 +361,8 @@ private:
         mTextures.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
-            mTextures.reserve(mesh.materialsNumber());
-            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+            mTextures.reserve(mesh.materialCount());
+            for (uint i = 0; i < mesh.materialCount(); ++i) {
                 const auto& texture =
                     mesh.material(i).baseColorTextureDescriptor();
 

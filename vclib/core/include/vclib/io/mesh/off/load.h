@@ -413,7 +413,7 @@ void readOffFaces(
             Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
             Tokenizer::iterator token  = tokens.begin();
             mesh.addFace();
-            FaceType& f = mesh.face(mesh.faceNumber() - 1);
+            FaceType& f = mesh.face(mesh.faceCount() - 1);
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
@@ -429,11 +429,11 @@ void readOffFaces(
             // load vertex indices into face
             bool splitFace = false;
             // we have a polygonal mesh
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize to the right number of verts
                 f.resizeVertices(vids.size());
             }
-            else if (FaceType::VERTEX_NUMBER != vids.size()) {
+            else if (FaceType::VERTEX_COUNT != vids.size()) {
                 // we have faces with static sizes (triangles), but we are
                 // loading faces with number of verts > 3. Need to split the
                 // face we are loading in n faces!
@@ -441,7 +441,7 @@ void readOffFaces(
             }
             if (!splitFace) { // classic load, no split needed
                 for (uint i = 0; i < vids.size(); ++i) {
-                    if (vids[i] >= mesh.vertexNumber()) {
+                    if (vids[i] >= mesh.vertexCount()) {
                         throw MalformedFileException(
                             "Bad vertex index for face " + std::to_string(i));
                     }
@@ -463,7 +463,7 @@ void readOffFaces(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = mesh.index(f); ff < mesh.faceNumber();
+                        for (uint ff = mesh.index(f); ff < mesh.faceCount();
                              ++ff) {
                             mesh.face(ff).color() = f.color();
                         }

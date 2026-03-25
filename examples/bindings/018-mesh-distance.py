@@ -47,8 +47,8 @@ def mesh_distance():
     mesh = vcl.TriMesh()
     vcl.load_mesh(mesh, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny.obj")
 
-    print(f"Loaded mesh with {mesh.vertex_number()} vertices and "
-          f"{mesh.face_number()} faces")
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and "
+          f"{mesh.face_count()} faces")
 
     # Prepare mesh for distance computation
     vcl.update_bounding_box(mesh)

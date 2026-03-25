@@ -23,7 +23,7 @@
 #ifndef VCL_IMGUI_IMGUI_DRAWER_H
 #define VCL_IMGUI_IMGUI_DRAWER_H
 
-#include <vclib/render/drawers/blocker_event_drawer.h>
+#include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/window_managers.h>
 
 // Include the render backand imgui implementation
@@ -63,7 +63,7 @@ public:
             "ImGuiDrawer supports only GLFW or Qt window managers.");
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-        mImguiViewId = vcl::Context::instance().requestViewId();
+        mImguiViewId = vcl::Context::instance().requestViewId(false);
         assert(vcl::Context::instance().isValidViewId(mImguiViewId));
 #endif
     }

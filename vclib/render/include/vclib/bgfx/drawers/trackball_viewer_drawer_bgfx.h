@@ -87,17 +87,19 @@ public:
     }
 
     // events
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        ParentViewer::onKeyPress(key, modifiers);
+        bool block = ParentViewer::onKeyPress(key, modifiers);
+        if (!block) {
+            switch (key) {
+            case Key::A: toggleAxisVisibility(); break;
 
-        switch (key) {
-        case Key::A: toggleAxisVisibility(); break;
+            case Key::T: toggleTrackBallVisibility(); break;
 
-        case Key::T: toggleTrackBallVisibility(); break;
-
-        default: break;
+            default: break;
+            }
         }
+        return block;
     }
 
     void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
