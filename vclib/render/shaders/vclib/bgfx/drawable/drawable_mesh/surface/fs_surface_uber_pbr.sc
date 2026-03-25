@@ -97,7 +97,7 @@ void main()
     // tangent frame for normal mapping
     // tangent frame is used only when normal texture or clearcoat normal
     // texture is available
-    mat3 tangentFrame;
+    mat3 tangentFrame = mat3(1.0);
     if (useTexture &&
         (isNormalTextureAvailable() || isClearcoatNormalTextureAvailable())) {
         if (isPerVertexTangentAvailable(u_pbr_settings)) {
