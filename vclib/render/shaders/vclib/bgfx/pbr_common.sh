@@ -44,10 +44,10 @@
 
 // Lighting settings, may not be definitive
 
-#define LIGHT_COUNT                                   2
+#define LIGHT_COUNT 1
 
 // use the same lights as defined in other vclib rendering modes (see u_lightDir, u_lightColor)
-//#define VIEWER_LIGHTS
+#define VIEWER_LIGHTS
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 
