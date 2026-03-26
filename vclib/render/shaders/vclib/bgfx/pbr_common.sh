@@ -724,6 +724,8 @@ vec3 gammaCorrect(vec3 color)
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] specular: The specular value of the fragment's material, ranges from 0 (non reflective) to 1 (fully reflective).
+ * @param[in] specularColor: The specular color of the fragment's material, used as F0 for dielectrics (RGB).
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.

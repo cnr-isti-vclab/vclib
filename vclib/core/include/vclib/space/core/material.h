@@ -264,7 +264,7 @@ public:
 
     /**
      * @brief Gets the strength of the specular effect.
-     * @return The spceular strength, in the range [0.0, 1.0].
+     * @return The specular strength, in the range [0.0, 1.0].
      */
     float specular() const { return mSpecular; }
 
