@@ -119,7 +119,10 @@ void CPUGeneratedLines::setPoints(
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
-    assert(!setLineColors || lineIndices.size() == lineColors.size() * 2);
+    assert(
+        !setLineColors ||
+        (setLineIndices && lineIndices.size() == lineColors.size() * 2) ||
+        (!setLineIndices && vertCoords.size() / 3 == lineColors.size() * 2));
 
     if (nPoints > 1) {
         uint bufferVertCoordsSize  = (nPoints / 2) * 4 * 6;
@@ -238,11 +241,18 @@ void CPUGeneratedLines::setPoints(
         }
 
         if (setLineColors) {
+            auto [l, lineColorsReleaseFn] =
+                Context::getAllocatedBufferAndReleaseFn<uint>(
+                    lineColors.size());
+
+            std::copy(lineColors.begin(), lineColors.end(), l);
+
             mLineColors.createForCompute(
-                lineColors.data(),
+                l,
                 lineColors.size(),
                 PrimitiveType::UINT,
-                bgfx::Access::Read);
+                bgfx::Access::Read,
+                lineColorsReleaseFn);
         }
 
         mIndices.create(
