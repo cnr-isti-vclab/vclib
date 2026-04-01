@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_SHADERS_COMMON_SH
-#define VCL_EXT_BGFX_SHADERS_COMMON_SH
+#ifndef VCL_BGFX_SHADERS_COMMON_SH
+#define VCL_BGFX_SHADERS_COMMON_SH
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
@@ -98,4 +98,4 @@ vec3 computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
 }
 
-#endif // VCL_EXT_BGFX_SHADERS_COMMON_SH
+#endif // VCL_BGFX_SHADERS_COMMON_SH
