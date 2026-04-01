@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
 
 uniform vec4 u_mrsDrawPack;
 uniform vec4 u_mrsWidthPack;
@@ -41,4 +41,4 @@ uniform vec4 u_mrsColorPack;
 #define u_userWireframeColorFloat u_mrsColorPack.z
 #define u_userEdgesColorFloat u_mrsColorPack.w
 
-#endif // VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH

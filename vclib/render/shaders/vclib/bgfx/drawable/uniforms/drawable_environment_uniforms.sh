@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/pbr_common.sh>
@@ -31,4 +31,4 @@ uniform vec4 u_environmentSettingsPack;
 #define u_roughness u_environmentSettingsPack.x
 #define u_cubeSideResolution u_environmentSettingsPack.y
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_BACKGROUND_UNIFORMS_SH
