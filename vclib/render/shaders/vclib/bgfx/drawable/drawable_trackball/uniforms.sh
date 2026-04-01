@@ -20,12 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
-#define VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 
 #include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 
-#endif // VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_UNIFORMS_SH

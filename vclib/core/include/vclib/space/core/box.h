@@ -44,8 +44,8 @@ namespace vcl {
 template<PointConcept PointT>
 class Box
 {
-    PointT mMin;
-    PointT mMax;
+    PointT mMin = PointT::max();
+    PointT mMax = PointT::min();
 
 public:
     /**
@@ -62,7 +62,7 @@ public:
      * @brief The Empty constructor of a box, initializes a null box.
      * @see setNull
      */
-    Box() { setNull(); }
+    Box() = default;
 
     /**
      * @brief Initializes the box with the given point. The box is a valid empty
@@ -367,10 +367,8 @@ public:
      */
     void setNull()
     {
-        mMin.setConstant(
-            std::numeric_limits<typename PointT::ScalarType>::max());
-        mMax.setConstant(
-            std::numeric_limits<typename PointT::ScalarType>::lowest());
+        mMin = PointT::max();
+        mMax = PointT::min();
     }
 
     /**
