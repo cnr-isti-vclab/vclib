@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_SH
 
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
@@ -43,4 +43,4 @@ uniform vec4 u_clearcoatPack;
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
 
-#endif // VCL_EXT_BGFX_UNIFORMS_MATERIAL_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_SH
