@@ -27,7 +27,7 @@
 
 namespace vcl::qt {
 
-class FloatRangeSlider: public RangeSlider
+class FloatRangeSlider : public RangeSlider
 {
     Q_OBJECT
 
@@ -49,34 +49,20 @@ public:
             SLOT(notifyUpperValueChanged(int)));
     }
 
-    FloatRangeSlider(QWidget* parent = nullptr) : FloatRangeSlider(0.01f, parent)
+    FloatRangeSlider(QWidget* parent = nullptr) :
+            FloatRangeSlider(0.01f, parent)
     {
     }
 
-    float step() const
-    {
-        return STEP;
-    }
+    float step() const { return STEP; }
 
-    float minimum() const
-    {
-        return RangeSlider::minimum() * STEP;
-    }
+    float minimum() const { return RangeSlider::minimum() * STEP; }
 
-    float maximum() const
-    {
-        return RangeSlider::maximum() * STEP;
-    }
+    float maximum() const { return RangeSlider::maximum() * STEP; }
 
-    float lowerValue() const
-    {
-        return RangeSlider::lowerValue() * STEP;
-    }
+    float lowerValue() const { return RangeSlider::lowerValue() * STEP; }
 
-    float upperValue() const
-    {
-        return RangeSlider::upperValue() * STEP;
-    }
+    float upperValue() const { return RangeSlider::upperValue() * STEP; }
 
     void setMinimum(float min)
     {
@@ -89,6 +75,7 @@ public:
     }
 
 public slots:
+
     void setLowerValue(float lowerValue)
     {
         RangeSlider::setLowerValue(static_cast<int>(lowerValue / STEP));
@@ -110,6 +97,7 @@ signals:
     void upperValueChanged(float upperValue);
 
 private slots:
+
     void notifyLowerValueChanged(int value)
     {
         float floatValue = value * STEP;

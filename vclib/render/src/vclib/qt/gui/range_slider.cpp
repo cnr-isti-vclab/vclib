@@ -211,8 +211,8 @@ void RangeSlider::mousePressEvent(QMouseEvent* event)
         posValue = (mOrientation == Qt::Horizontal) ? event->pos().x() :
                                                       event->pos().y();
         firstHandleRectPosValue  = (mOrientation == Qt::Horizontal) ?
-                                      firstHandleRect().x() :
-                                      firstHandleRect().y();
+                                       firstHandleRect().x() :
+                                       firstHandleRect().y();
         secondHandleRectPosValue = (mOrientation == Qt::Horizontal) ?
                                        secondHandleRect().x() :
                                        secondHandleRect().y();
@@ -277,8 +277,8 @@ void RangeSlider::mouseMoveEvent(QMouseEvent* event)
         posValue = (mOrientation == Qt::Horizontal) ? event->pos().x() :
                                                       event->pos().y();
         firstHandleRectPosValue  = (mOrientation == Qt::Horizontal) ?
-                                      firstHandleRect().x() :
-                                      firstHandleRect().y();
+                                       firstHandleRect().x() :
+                                       firstHandleRect().y();
         secondHandleRectPosValue = (mOrientation == Qt::Horizontal) ?
                                        secondHandleRect().x() :
                                        secondHandleRect().y();

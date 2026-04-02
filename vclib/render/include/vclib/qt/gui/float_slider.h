@@ -44,29 +44,15 @@ public:
             SLOT(notifyValueChanged(int)));
     }
 
-    FloatSlider(QWidget* parent = nullptr) : FloatSlider(0.01f, parent)
-    {
-    }
+    FloatSlider(QWidget* parent = nullptr) : FloatSlider(0.01f, parent) {}
 
-    float step() const
-    {
-        return STEP;
-    }
+    float step() const { return STEP; }
 
-    float minimum() const
-    {
-        return QSlider::minimum() * STEP;
-    }
+    float minimum() const { return QSlider::minimum() * STEP; }
 
-    float maximum() const
-    {
-        return QSlider::maximum() * STEP;
-    }
+    float maximum() const { return QSlider::maximum() * STEP; }
 
-    float value() const
-    {
-        return QSlider::value() * STEP;
-    }
+    float value() const { return QSlider::value() * STEP; }
 
     void setMinimum(float min)
     {
@@ -79,6 +65,7 @@ public:
     }
 
 public slots:
+
     void setValue(float value)
     {
         QSlider::setValue(static_cast<int>(value / STEP));
@@ -94,6 +81,7 @@ signals:
     void valueChanged(float value);
 
 private slots:
+
     void notifyValueChanged(int value)
     {
         float floatValue = value * STEP;
