@@ -1,0 +1,7 @@
+The vertex_selected buffer works as follows:
+    - It is a buffer of 32bit unsigned integers
+    - Each vertex is assigned 1 bit. Said bit is 1 if the vertex is selected and 0 if it is not
+        - This means that for vertex counts that are not divisible by 32 there will be some excess space used (at most 31 bits).
+    - Within each uint the bits are assigned in MSb first order (for example, if we have 32 vertices and only the third is selected we'll have 00100000000000000000000000000000)
+
+The face_selected buffer works the same way but instead it is 1 bit per triangle and each bit corresponds to 3 indices in the index buffer. A face is selected only if all 3 of its vertices are selected.

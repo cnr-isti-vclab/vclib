@@ -20,33 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+#include "../../common/get_drawable_mesh.h"
 
-namespace vcl {
+#include <vclib/glfw/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/render_app.h>
+#include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
 
-enum class ComputeProgram {
-    DRAWABLE_MESH_POINTS,
-    SELECTION_ALL,
-    SELECTION_NONE,
-    SELECTION_INVERT,
-    SELECTION_VERTEX,
-    SELECTION_VERTEX_ADD,
-    SELECTION_VERTEX_SUBTRACT,
-    SELECTION_FACE,
-    SELECTION_FACE_ADD,
-    SELECTION_FACE_SUBTRACT,
-    SELECTION_FACE_VISIBLE_ADD,
-    SELECTION_FACE_VISIBLE_SUBTRACT,
-    BUFFER_TO_TEX,
-    HDR_EQUIRECT_TO_CUBEMAP,
-    CUBEMAP_MIPMAP_GEN,
-    CUBEMAP_TO_IRRADIANCE,
-    CUBEMAP_TO_SPECULAR,
-    IBL_LOOKUP_TEXTURE_GEN,
-    COUNT
-};
+int main(void)
+{
+    using MeshType = vcl::TriMesh;
 
-} // namespace vcl
+    using RA = vcl::RenderApp<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::SelectionTrackBallViewerDrawer>;
+    
+    RA tw("Selection", 1024, 768);
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_PROGRAM_H
+    tw.pushDrawableObject(getDrawableMesh<vcl::TriMesh>());
+
+    tw.fitScene();
+
+    tw.show();
+
+    return 0;
+}
