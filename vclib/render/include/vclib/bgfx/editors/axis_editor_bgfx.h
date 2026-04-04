@@ -20,34 +20,65 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
+#define VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H
 
-#include "viewer_drawer_opengl2.h"
-
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include <vclib/bgfx/drawable/drawable_axis.h>
+#include <vclib/render/editors/editor.h>
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+template<typename ViewerDrawer>
+class AxisEditorBGFX : public Editor<ViewerDrawer>
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    using Base = Editor<ViewerDrawer>;
+
+    DrawableAxis mAxis;
+
+    std::function<void(void)> mCustomShortcutCallback = [this]() {
+        toggleVisibility();
+    };
 
 public:
-    using ParentViewer::ParentViewer;
+    AxisEditorBGFX() {};
 
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    void setActive(bool active) override
     {
+        Base::setActive(active);
+        Base::viewerUpdate();
+    }
+
+    void draw(uint viewId) const override
+    {
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
+
+        mAxis.draw(settings);
+    }
+
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        switch (key) {
+        case Key::A: mCustomShortcutCallback(); break;
+        default: break;
+        }
+        return false;
+    }
+
+    void setShortcutCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutCallback = callback;
+    }
+
+    bool isVisible() const { return mAxis.isVisible(); }
+
+    void toggleVisibility()
+    {
+        mAxis.setVisibility(!mAxis.isVisible());
+        Base::viewerUpdate();
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_BGFX_EDITORS_AXIS_EDITOR_BGFX_H

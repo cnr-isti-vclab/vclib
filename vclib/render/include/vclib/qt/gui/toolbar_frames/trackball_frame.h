@@ -20,34 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H
 
-#include "viewer_drawer_opengl2.h"
+#include "generic_editor_frame.h"
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+namespace vcl::qt {
 
-namespace vcl {
-
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+template<typename ViewerType>
+class TrackBallFrame : public GenericEditorFrame
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    using Base = GenericEditorFrame;
+
+    ViewerType& mViewer;
 
 public:
-    using ParentViewer::ParentViewer;
-
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    explicit TrackBallFrame(ViewerType& viewer, QWidget* parent = nullptr) :
+        GenericEditorFrame(parent), mViewer(viewer)
     {
+        QIcon ic(":/icons/trackball.png");
+
+        QPushButton* editorButton = Base::addButton(ic);
+        editorButton->setChecked(mViewer.isTrackBallVisible());
+        editorButton->setToolTip("Show TrackBall");
+
+        mViewer.setShortcutToggleTrackballCallback([editorButton]() {
+            editorButton->click();
+        });
+
+        Base::hideSettingsButton();
+
+        connect(
+            editorButton,
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                mViewer.toggleTrackBallVisibility();
+                mViewer.update();
+            });
     }
+
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_TRACKBALL_FRAME_H

@@ -20,60 +20,62 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
-#define VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H
 
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
-#include <vclib/render/render_app.h>
+#include <vclib/render/settings/editor_settings.h>
 
-template<typename DerivedRenderApp>
-class ViewerDrawerSelectQt : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
-{
-    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+#include <QFrame>
+#include <QMenu>
+#include <QPushButton>
+#include <QWidgetAction>
 
-    // a callback function called when an object is selected
-    std::function<void(uint)> mOnObjectSelected = [](uint) {
-    };
-
-public:
-    using Base::Base;
-
-    bool onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
-    {
-        bool block = Base::onMousePress(button, x, y, modifiers);
-
-        if (!block && button == vcl::MouseButton::RIGHT) {
-            this->readIdRequest(x, y, [&](uint id) {
-                if (id == vcl::UINT_NULL)
-                    return;
-
-                std::cout << "selected ID: " << id << std::endl;
-                if (mOnObjectSelected)
-                    mOnObjectSelected(id);
-            });
-        }
-        return block;
-    }
-
-    // seeter fo the callback function called when an object is selected
-    void setOnObjectSelected(const std::function<void(uint)>& f)
-    {
-        mOnObjectSelected = f;
-    }
-};
-
-// definition of custom MeshViewerRenderApp for the qt MeshViewer
 namespace vcl::qt {
 
-using MeshViewerRenderApp =
-    vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ViewerDrawerSelectQt>;
+namespace Ui {
+class GenericEditorFrame;
+} // namespace Ui
+
+class GenericEditorFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::GenericEditorFrame* mUI;
+
+public:
+    explicit GenericEditorFrame(QWidget* parent = nullptr);
+    ~GenericEditorFrame();
+
+protected:
+    QPushButton* addButton(const QIcon& icon, bool checkable = true);
+
+    QPushButton* settingsButton() const;
+
+    void hideSettingsButton() { settingsButton()->setVisible(false); }
+
+    void showSettingsButton() { settingsButton()->setVisible(true); }
+
+    template<typename SettingsFrame>
+    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
+    {
+        QWidgetAction* wa = new QWidgetAction(this);
+        SettingsFrame* sf = new SettingsFrame(sts);
+        wa->setDefaultWidget(sf);
+        QMenu* popupMenu = new QMenu(this);
+        popupMenu->addAction(wa);
+        settingsButton()->setMenu(popupMenu);
+        settingsButton()->setStyleSheet(
+            "QPushButton::menu-indicator {"
+            "    subcontrol-origin: padding;"
+            "    subcontrol-position: center center;"
+            "}");
+        return sf;
+    }
+
+protected slots:
+    virtual void refreshSettings() {};
+};
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_CUSTOM_MESH_VIEWER_RENDER_APP_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H

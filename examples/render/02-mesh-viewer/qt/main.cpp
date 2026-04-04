@@ -22,30 +22,15 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/qt/mesh_viewer.h>
 
 #include <QApplication>
-
-class MeshViewerSelectQt : public vcl::qt::MeshViewer
-{
-public:
-    using vcl::qt::MeshViewer::MeshViewer;
-
-    MeshViewerSelectQt(QWidget* parent = nullptr) : vcl::qt::MeshViewer(parent)
-    {
-        viewer().setOnObjectSelected([this](uint id) {
-            drawableObjectVectorTree().setSelectedItem(id);
-        });
-    }
-};
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    MeshViewerSelectQt mv;
+    vcl::qt::MeshViewer mv;
 
     // load and set up a drawable mesh
     auto m = getDrawableMesh<vcl::TriMesh>();

@@ -20,34 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H
+#define VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H
 
-#include "viewer_drawer_opengl2.h"
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/editors/bounding_box_editor_bgfx.h>
+#endif
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/space/core.h>
+
+#include "editor.h"
+#endif
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+template<typename ViewerDrawer>
+using BoundingBoxEditor = BoundingBoxEditorBGFX<ViewerDrawer>;
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+// TODO: implement BoundingBoxEditorOpenGL2
+template<typename ViewerDrawer>
+class BoundingBoxEditor : public Editor<ViewerDrawer>
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
-
+    using Base = Editor<ViewerDrawer>;
 public:
-    using ParentViewer::ParentViewer;
-
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    BoundingBoxEditor()
     {
+        // Initialize settings keys expected.
+        Base::settings().customSettings["color"] = vcl::Color();
+        Base::settings().customSettings["thickness"] = 2.0f;
     }
+
+    void draw(uint) const override {}
 };
+#endif
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_RENDER_EDITORS_BOUNDING_BOX_EDITOR_H

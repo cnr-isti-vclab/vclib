@@ -20,34 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
+#define VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
 
-#include "viewer_drawer_opengl2.h"
-
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include "editor.h"
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+template<typename ViewerDrawer>
+class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    using Base = Editor<ViewerDrawer>;
+
+    // a callback function called when an object is selected
+    std::function<void(uint)> mOnObjectSelectedFunction = [](uint) {
+    };
 
 public:
-    using ParentViewer::ParentViewer;
-
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
     {
+        mOnObjectSelectedFunction = f;
+    }
+
+    // Editor implementation
+
+    void draw(uint viewId) const override {}
+
+    bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMousePress(button, x, y, modifiers);
+
+        if (!block && button == vcl::MouseButton::RIGHT) {
+            auto callback = [&](uint id) {
+                if (id == vcl::UINT_NULL)
+                    return;
+
+                Base::drawList()->setSelectedObjectId(id);
+
+                if (mOnObjectSelectedFunction)
+                    mOnObjectSelectedFunction(id);
+            };
+
+            Base::viewerReadIdRequest(x, y, callback);
+        }
+        return block;
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H

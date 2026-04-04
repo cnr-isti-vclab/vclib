@@ -20,34 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_H
 
-#include "viewer_drawer_opengl2.h"
+#include "toolbar_frames/axis_editor_frame.h"
+#include "toolbar_frames/bounding_box_editor_frame.h"
+#include "toolbar_frames/trackball_frame.h"
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
-
-namespace vcl {
-
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
-{
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
-
-public:
-    using ParentViewer::ParentViewer;
-
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
-    {
-    }
-};
-
-} // namespace vcl
-
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H

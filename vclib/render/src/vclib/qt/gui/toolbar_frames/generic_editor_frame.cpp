@@ -20,34 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#include <vclib/qt/gui/toolbar_frames/generic_editor_frame.h>
 
-#include "viewer_drawer_opengl2.h"
+#include "ui_generic_editor_frame.h"
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
-
-namespace vcl {
-
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+void initIcons()
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    Q_INIT_RESOURCE(icons);
+}
 
-public:
-    using ParentViewer::ParentViewer;
+namespace vcl::qt {
 
-    bool isTrackBallVisible() const { return false; }
+std::once_flag initIconsFlag;
 
-    void toggleTrackBallVisibility() {}
+GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::GenericEditorFrame)
+{
+    mUI->setupUi(this);
+    std::call_once(initIconsFlag, initIcons);
+}
 
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
-    {
-    }
-};
+GenericEditorFrame::~GenericEditorFrame()
+{
+    delete mUI;
+}
 
-} // namespace vcl
+QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
+{
+    QPushButton* button = new QPushButton(this);
+    button->setIcon(icon);
+    button->setIconSize(QSize(40, 40));
+    button->setMinimumSize(40, 40);
+    button->setMaximumSize(40, 40);
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+    button->setCheckable(checkable);
+
+    // add the button before the settings button in the mUI layout
+    int settingsButtonIndex =
+        mUI->horizontalLayout->indexOf(mUI->settingsPushButton);
+    mUI->horizontalLayout->insertWidget(settingsButtonIndex, button);
+    return button;
+}
+
+QPushButton* GenericEditorFrame::settingsButton() const
+{
+    return mUI->settingsPushButton;
+}
+
+} // namespace vcl::qt

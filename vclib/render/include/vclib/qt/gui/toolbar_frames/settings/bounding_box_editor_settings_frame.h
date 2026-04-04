@@ -20,34 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 
-#include "viewer_drawer_opengl2.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include <QColor>
+#include <QFrame>
 
-namespace vcl {
+namespace vcl::qt {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+namespace Ui {
+class BoundingBoxEditorSettingsFrame;
+} // namespace Ui
+
+class BoundingBoxEditorSettingsFrame : public QFrame
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    Q_OBJECT
+
+    Ui::BoundingBoxEditorSettingsFrame* mUI;
+    EditorSettings& mSettings;
 
 public:
-    using ParentViewer::ParentViewer;
+    explicit BoundingBoxEditorSettingsFrame(
+        EditorSettings& sts,
+        QWidget*        parent = nullptr);
+    ~BoundingBoxEditorSettingsFrame();
 
-    bool isTrackBallVisible() const { return false; }
+signals:
+    void settingsUpdated();
 
-    void toggleTrackBallVisibility() {}
+private slots:
+    void editModeChanged(int index);
 
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
-    {
-    }
+    void onLinesWidthSliderValueChanged(int value);
+
+    void onColorChanged(const QColor& c);
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H

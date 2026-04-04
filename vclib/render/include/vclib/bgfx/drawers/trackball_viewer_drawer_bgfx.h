@@ -25,7 +25,6 @@
 
 #include "viewer_drawer_bgfx.h"
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
@@ -39,9 +38,13 @@ class TrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<TrackBallEventDrawer<DerivedRenderApp>>;
 
-    DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
 public:
     using ParentViewer::ParentViewer;
@@ -49,7 +52,6 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
     }
@@ -64,10 +66,6 @@ public:
         setDirectionalLightVisibility(
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
-
-        if (mAxis.isVisible()) {
-            mAxis.draw(settings);
-        }
 
         if (mDrawTrackBall.isVisible()) {
             mDrawTrackBall.draw(settings);
@@ -92,9 +90,8 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
         if (!block) {
             switch (key) {
-            case Key::A: toggleAxisVisibility(); break;
 
-            case Key::T: toggleTrackBallVisibility(); break;
+            case Key::T: mCustomShortcutToggleTrackballCallback(); break;
 
             default: break;
             }
@@ -102,11 +99,29 @@ public:
         return block;
     }
 
-    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
+    bool isTrackBallVisible() const
+    {
+        return mDrawTrackBall.isVisible();
+    }
 
     void toggleTrackBallVisibility()
     {
         mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    /**
+     * @brief Sets the callback function that will be called when the user
+     * presses the shortcut to toggle the trackball visibility (by default, the
+     * shortcut is T).
+     *
+     * This is useful when the user wants to execute some custom code when the
+     * trackball visibility is toggled trough the shortcut.
+     *
+     * @param callback
+     */
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
     }
 
 private:

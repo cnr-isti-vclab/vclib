@@ -20,34 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_RENDER_SETTINGS_EDITOR_SETTINGS_H
+#define VCL_RENDER_SETTINGS_EDITOR_SETTINGS_H
 
-#include "viewer_drawer_opengl2.h"
-
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include <vclib/base.h>
 
 namespace vcl {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
-{
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+struct EditorSettings {
 
-public:
-    using ParentViewer::ParentViewer;
+    enum class EditMode {
+        NONE,
+        CURRENT_OBJECT,
+        VISIBLE_OBJECTS,
+        ALL_OBJECTS,
+    };
 
-    bool isTrackBallVisible() const { return false; }
+    /**< @brief The edit mode of the editor. */
+    EditMode editMode = EditMode::CURRENT_OBJECT;
 
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
-    {
-    }
+    /**
+     * @brief Additional custom settings. Each editor can define its own custom
+     * settings, that can be used to store additional information about the
+     * editor (e.g. the color of a bounding box, or the size of a gizmo). The
+     * editor is responsible for defining the keys and the types of the values
+     * stored in this map, and for using them in the editor itself (e.g. to draw
+     * the bounding box with).
+     */
+    std::map<std::string, std::any> customSettings;
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_RENDER_SETTINGS_EDITOR_SETTINGS_H

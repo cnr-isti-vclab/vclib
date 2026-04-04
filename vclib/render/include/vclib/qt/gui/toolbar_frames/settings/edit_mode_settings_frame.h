@@ -20,34 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
 
-#include "viewer_drawer_opengl2.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include <QFrame>
 
-namespace vcl {
+namespace vcl::qt {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+namespace Ui {
+class EditModeSettingsFrame;
+} // namespace Ui
+
+class EditModeSettingsFrame : public QFrame
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    Q_OBJECT
+
+    Ui::EditModeSettingsFrame* mUI;
 
 public:
-    using ParentViewer::ParentViewer;
+    explicit EditModeSettingsFrame(QWidget* parent = nullptr);
+    ~EditModeSettingsFrame();
 
-    bool isTrackBallVisible() const { return false; }
+    void setEditMode(EditorSettings::EditMode mode);
 
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
-    {
-    }
+signals:
+    void editModeChanged(int index);
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H

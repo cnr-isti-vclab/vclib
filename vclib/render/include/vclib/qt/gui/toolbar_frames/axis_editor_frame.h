@@ -20,34 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
-#define VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H
 
-#include "viewer_drawer_opengl2.h"
+#include "generic_editor_frame.h"
 
-#include <vclib/render/drawers/trackball_event_drawer.h>
+#include <vclib/render/editors/axis_editor.h>
 
-namespace vcl {
+namespace vcl::qt {
 
-template<typename DerivedRenderApp>
-class TrackBallViewerDrawerOpenGL2 :
-        public ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>
+template<typename ViewerType>
+class AxisEditorFrame : public GenericEditorFrame
 {
-    using ParentViewer =
-        ViewerDrawerOpenGL2<TrackBallEventDrawer<DerivedRenderApp>>;
+    using Base = GenericEditorFrame;
+
+    std::shared_ptr<vcl::AxisEditor<ViewerType>> mAxisEditor;
 
 public:
-    using ParentViewer::ParentViewer;
-
-    bool isTrackBallVisible() const { return false; }
-
-    void toggleTrackBallVisibility() {}
-
-    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    explicit AxisEditorFrame(
+        std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
+        QWidget*                                            parent = nullptr) :
+            GenericEditorFrame(parent)
     {
+        mAxisEditor = ptr;
+
+        QIcon ic(":/icons/show_axis.png");
+
+        QPushButton* editorButton = Base::addButton(ic);
+
+        editorButton->setToolTip("Show Axis");
+
+        Base::hideSettingsButton();
+
+        mAxisEditor->setShortcutCallback([editorButton]() {
+            editorButton->click();
+        });
+
+        connect(
+            editorButton,
+            &QPushButton::clicked,
+            this,
+            [this]() {
+                if (mAxisEditor) {
+                    mAxisEditor->toggleVisibility();
+                }
+            });
     }
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_OPENGL2_DRAWERS_TRACKBALL_VIEWER_DRAWER_OPENGL2_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H

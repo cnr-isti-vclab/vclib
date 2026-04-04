@@ -31,6 +31,10 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/render/*.cpp")
 
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
+if (TARGET vclib-3rd-qt)
+    file (GLOB_RECURSE RESOURCES CONFIGURE_DEPENDS "assets/*.qrc")
+endif()
+
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
@@ -126,7 +130,7 @@ if (TARGET vclib-3rd-qt)
 endif()
 
 add_library(${PROJECT_NAME}
-    ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS})
+    ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS} ${RESOURCES})
 add_library(vclib::render ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${VCLIB_RENDER_INCLUDE_DIR})

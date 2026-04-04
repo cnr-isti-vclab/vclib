@@ -28,6 +28,7 @@
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <imgui.h>
@@ -43,8 +44,28 @@ class MeshViewerDrawerImgui :
 {
     using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
 
+    std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
+    std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
+        mMeshSelectorEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
+        mBoundingBoxEditor;
+
 public:
-    using Base::Base;
+    MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
+            Base(width, height)
+    {
+        // install editors
+        mAxisEditor = std::dynamic_pointer_cast<
+            vcl::AxisEditor<typename Base::ViewerType>>(
+            Base::getEditor(Base::ViewerType::BuiltInEditors::AXIS));
+
+        mMeshSelectorEditor =
+            Base::template pushEditor<vcl::MeshSelectorEditor>();
+        mMeshSelectorEditor->setActive(true);
+
+        mBoundingBoxEditor =
+            Base::template pushEditor<vcl::BoundingBoxEditor>();
+    }
 
     virtual void onDraw(vcl::uint viewId) override
     {
@@ -175,29 +196,135 @@ public:
         }
 
         ImGui::End();
-    }
 
-    bool onMousePress(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        bool block = Base::onMousePress(button, x, y, modifiers);
-
-        if (!block && button == MouseButton::RIGHT) {
-            this->readIdRequest(x, y, [&](uint id) {
-                if (id == UINT_NULL)
-                    return;
-
-                Base::mDrawList->setSelectedObjectId(id);
-                std::cout << "Selected  ID: " << id << std::endl;
-            });
-        }
-        return block;
+        // floating editors toolbar
+        drawToolbar();
     }
 
 private:
+    void drawToolbar()
+    {
+        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 toolbarPos = ImVec2(
+            viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f);
+
+        ImGui::SetNextWindowPos(toolbarPos, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowBgAlpha(0.85f);
+
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoScrollbar       |
+            ImGuiWindowFlags_NoScrollWithMouse |
+            ImGuiWindowFlags_AlwaysAutoResize  |
+            ImGuiWindowFlags_NoSavedSettings   |
+            ImGuiWindowFlags_NoFocusOnAppearing|
+            ImGuiWindowFlags_NoNav;
+
+        if (ImGui::Begin("Toolbar", nullptr, flags)) {
+            // axis editor toggle
+            bool axisActive = mAxisEditor && mAxisEditor->isVisible();
+            if (ImGui::Button(axisActive ? "[Axis]" : " Axis ")) {
+                if (mAxisEditor)
+                    mAxisEditor->toggleVisibility();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Axis");
+
+            ImGui::SameLine();
+
+            // trackball
+            bool trackballActive = Base::isTrackBallVisible();
+            if (ImGui::Button(trackballActive ? "[TB]" : " TB ")) {
+                Base::toggleTrackBallVisibility();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Trackball");
+
+            ImGui::SameLine();
+
+            // bounding box editor toggle
+            bool bbActive =
+                mBoundingBoxEditor && mBoundingBoxEditor->isActive();
+            // TODO: find a way to insert the assets/icons/bbox.png icon here
+            // instead of text
+            if (ImGui::Button(bbActive ? "[BB]" : " BB ")) {
+                if (mBoundingBoxEditor)
+                    mBoundingBoxEditor->setActive(!bbActive);
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Show Bounding Box");
+
+            // small settings popup button
+            ImGui::SameLine(0, 2);
+            if (ImGui::Button("v##BBSettings")) {
+                ImGui::OpenPopup("##BBSettingsPopup");
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Bounding Box Settings");
+
+            if (ImGui::BeginPopup("##BBSettingsPopup")) {
+                drawBoundingBoxSettings();
+                ImGui::EndPopup();
+            }
+        }
+        ImGui::End();
+    }
+
+    void drawBoundingBoxSettings()
+    {
+        if (!mBoundingBoxEditor)
+            return;
+
+        EditorSettings& sts = mBoundingBoxEditor->settings();
+
+        // Edit mode
+        static const char* editModeNames[] = {
+            "None", "Selected Object", "Visible Objects", "All Objects"};
+        int currentMode = toUnderlying(sts.editMode);
+        ImGui::Text("Apply to:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::BeginCombo("##BBEditMode", editModeNames[currentMode])) {
+            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
+                bool selected = (n == currentMode);
+                if (ImGui::Selectable(editModeNames[n], selected)) {
+                    sts.editMode =
+                        static_cast<EditorSettings::EditMode>(n);
+                    mBoundingBoxEditor->refreshSettings();
+                }
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        // Lines width
+        assert(sts.customSettings["thickness"].has_value());
+        float thickness =
+            std::any_cast<float>(sts.customSettings["thickness"]);
+        ImGui::Text("Lines Width:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::SliderFloat("##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
+            sts.customSettings["thickness"] = thickness;
+            mBoundingBoxEditor->refreshSettings();
+        }
+
+        // Lines color
+        assert(sts.customSettings["color"].has_value());
+        ImGui::Text("Lines Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##BBColor",
+            [&] {
+                return std::any_cast<Color>(sts.customSettings["color"]);
+            },
+            [&](Color c) {
+                sts.customSettings["color"] = c;
+                mBoundingBoxEditor->refreshSettings();
+            },
+            ImGuiColorEditFlags_NoInputs);
+    }
+
     void drawMeshList()
     {
         uint meshIndex = Base::mDrawList->selectedObjectId();
