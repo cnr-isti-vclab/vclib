@@ -20,13 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_SAVE_MESH_H
-#define VCL_IO_MESH_SAVE_MESH_H
-
-#include "obj/save.h"
-#include "off/save.h"
-#include "ply/save.h"
-#include "stl/save.h"
+#ifndef VCL_IO_MESH_SAVE_MESHES_H
+#define VCL_IO_MESH_SAVE_MESHES_H
 
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/save.h"
@@ -34,33 +29,22 @@
 
 #include "capability.h"
 
-/**
- * @defgroup save_mesh Save mesh functions
- * @ingroup io_mesh
- *
- * @brief List of functions that allow to saveMesh to file an input Mesh.
- */
-
 namespace vcl {
 
 /**
- * @brief Returns the set of mesh formats supported for saving.
+ * @brief Returns the set of mesh formats supported for saving multiple Meshes
+ * to file.
  *
  * The set contains all the mesh formats that can be saved using all the
  * external libraries compiled with VCLib.
  *
- * @return A set of mesh formats supported for saving.
+ * @return A set of mesh formats supported for saving multiple Meshes.
  *
  * @ingroup save_mesh
  */
-inline std::set<FileFormat> saveMeshFormats()
+inline std::set<FileFormat> saveMeshesFormats()
 {
     std::set<FileFormat> ff;
-
-    ff.insert(objFileFormat());
-    ff.insert(offFileFormat());
-    ff.insert(plyFileFormat());
-    ff.insert(stlFileFormat());
 
 #ifdef VCLIB_WITH_TINYGLTF
     ff.insert(gltfFileFormat());
@@ -70,14 +54,15 @@ inline std::set<FileFormat> saveMeshFormats()
 }
 
 /**
- * @brief Saves a mesh to a file with the given filename. Checks automatically
- * the file format to save from the given filename.
+ * @brief Saves a range of meshes to a file with the given filename. Checks
+ * automatically the file format to save from the given filename.
  *
- * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam Meshes The range of meshes to save. It must satisfy the RangeOfMeshes
+ * concept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
  *
- * @param[in] m: The mesh object to save.
- * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] meshes: The range of meshes to save.
+ * @param[in] filename: The filename of the file where to save the meshes.
  * @param[in] settings: Settings for saving the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
@@ -87,46 +72,35 @@ inline std::set<FileFormat> saveMeshFormats()
  *
  * @ingroup save_mesh
  */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveMesh(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
+template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
+void saveMeshes(
+    Meshes&&               meshes,
+    const std::string&     filename,
+    const SaveSettings&    settings,
+    LogType&               log = nullLogger)
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 
-    if (ff == objFileFormat()) {
-        saveObj(m, filename, settings, log);
-    }
-    else if (ff == offFileFormat()) {
-        saveOff(m, filename, settings, log);
-    }
-    else if (ff == plyFileFormat()) {
-        savePly(m, filename, settings, log);
-    }
-    else if (ff == stlFileFormat()) {
-        saveStl(m, filename, settings, log);
-    }
 #ifdef VCLIB_WITH_TINYGLTF
-    else if (ff == gltfFileFormat()) {
-        saveGltf(m, filename, settings, log);
+    if (ff == gltfFileFormat()) {
+        saveGltf(meshes, filename, settings, log);
     }
-#endif
     else {
         throw UnknownFileFormatException(ff.extensions().front());
     }
+#endif
 }
 
 /**
- * @brief Saves a mesh to a file with the given filename. Checks automatically
- * the file format to save from the given filename.
+ * @brief Saves a range of meshes to a file with the given filename. Checks
+ * automatically the file format to save from the given filename.
  *
- * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam Meshes The range of meshes to save. It must satisfy the RangeOfMeshes
+ * concept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
  *
- * @param[in] m: The mesh object to save.
- * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] meshes: The range of meshes to save.
+ * @param[in] filename: The filename of the file where to save the meshes.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
  * @param[in] settings: Settings for saving the file.
@@ -136,16 +110,16 @@ void saveMesh(
  *
  * @ingroup save_mesh
  */
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveMesh(
-    const MeshType&     m,
+template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
+void saveMeshes(
+    Meshes&&            meshes,
     const std::string&  filename,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
-    saveMesh(m, filename, settings, log);
+    saveMeshes(meshes, filename, settings, log);
 }
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_SAVE_MESH_H
+#endif // VCL_IO_MESH_SAVE_MESHES_H

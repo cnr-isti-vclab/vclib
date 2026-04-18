@@ -20,13 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_H
-#define VCL_IO_MESH_H
+#ifndef VCL_IO_MESH_GLTF_SAVE_H
+#define VCL_IO_MESH_GLTF_SAVE_H
 
-#include "mesh/capability.h"
-#include "mesh/load_mesh.h"
-#include "mesh/load_meshes.h"
-#include "mesh/save_mesh.h"
-#include "mesh/save_meshes.h"
+#include <vclib/io/file_info.h>
+#include <vclib/io/mesh/settings.h>
 
-#endif // VCL_IO_MESH_H
+namespace vcl {
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveGltf(
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
+{
+    // todo implement
+}
+
+template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
+void saveGltf(
+    Meshes&&            meshes,
+    const std::string&  filename,
+    const SaveSettings& settings = SaveSettings(),
+    LogType&            log      = nullLogger)
+{
+    for (const auto& mesh : meshes) {
+        // todo...
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_IO_MESH_GLTF_SAVE_H
