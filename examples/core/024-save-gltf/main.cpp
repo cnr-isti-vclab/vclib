@@ -48,7 +48,7 @@ int main()
 
     //TODO controlla il codice di save e load buffer
     //TODO controlla il codice di rendering
-    //TODO 1) colore per vertice
+    //TODO 1) colore per vertice (to test)
     //TODO 2) templating su mesh concept
     //TODO 3) templating per mesh poligonali
     //TODO faces to triangles: triangulatedFaceVertexIndicesToBuffer
@@ -68,11 +68,12 @@ int main()
     tinygltf::Primitive primitive;
     primitive.attributes["POSITION"] = 0;
     primitive.attributes["NORMAL"] = 1; //TODO only if info.hasPerVertexNormal()
+    if (info.hasPerVertexColor())
+        primitive.attributes["COLOR_0"] = 3;
     primitive.indices = 2;
-    primitive.mode = 4; // gltf TRIANGLES
+    primitive.mode = TINYGLTF_MODE_TRIANGLES;
     //TODO Tex coords
     //TODO material
-    //TODO vertex color
 
     mesh.primitives.push_back(primitive);
     model.meshes.push_back(mesh);
@@ -81,7 +82,7 @@ int main()
     //guarda loadGltfPrimitiveMaterial
 
     // buffer
-    tinygltf::Buffer positionsBuffer{}, normalsBuffer{}, indicesBuffer{};
+    tinygltf::Buffer positionsBuffer{}, normalsBuffer{}, indicesBuffer{}, colorsBuffer{};
 
     // vertices
     positionsBuffer.data.resize(3 * bunnyMesh.vertexCount() * sizeof(float));
@@ -95,24 +96,32 @@ int main()
 
     // indices
     indicesBuffer.data.resize(3 * bunnyMesh.faceCount() * sizeof(uint32_t));
-    uint32_t* fuint = reinterpret_cast<uint32_t*>(indicesBuffer.data.data());
+    uint32_t* u32d = reinterpret_cast<uint32_t*>(indicesBuffer.data.data());
     // indices of vertices that do not consider deleted vertices
     std::vector<uint32_t> vIndices = bunnyMesh.vertexCompactIndices();
     size_t indexI = 0;
 
     for (const vcl::TriMesh::Face& f : bunnyMesh.faces()) {
         for (const vcl::TriMesh::Vertex* v : f.vertices()) {
-            fuint[indexI] = vIndices[bunnyMesh.index(v)];
+            u32d[indexI] = vIndices[bunnyMesh.index(v)];
             indexI++;
         }
+    }
+
+    // colors
+    if (info.hasPerVertexColor()) {
+        colorsBuffer.data.resize(4 * bunnyMesh.vertexCount());
+        u32d = reinterpret_cast<uint32_t*>(colorsBuffer.data.data());
+        vcl::vertexColorsToBuffer(bunnyMesh, u32d, vcl::Color::Format::RGBA);
     }
 
     model.buffers.push_back(positionsBuffer);
     model.buffers.push_back(normalsBuffer);
     model.buffers.push_back(indicesBuffer);
+    if (info.hasPerVertexColor()) model.buffers.push_back(colorsBuffer);
 
     // buffer views
-    tinygltf::BufferView positionsBufferView{}, normalsBufferView{}, indicesBufferView{};
+    tinygltf::BufferView positionsBufferView{}, normalsBufferView{}, indicesBufferView{}, colorsBufferView{};
 
     positionsBufferView.buffer = 0;
     positionsBufferView.byteLength = positionsBuffer.data.size();
@@ -124,12 +133,16 @@ int main()
     indicesBufferView.byteLength = indicesBuffer.data.size();
     indicesBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
 
+    colorsBufferView.buffer = 3;
+    colorsBufferView.byteLength = colorsBuffer.data.size();
+
     model.bufferViews.push_back(positionsBufferView);
     model.bufferViews.push_back(normalsBufferView);
     model.bufferViews.push_back(indicesBufferView);
+    if (info.hasPerVertexColor()) model.bufferViews.push_back(colorsBufferView);
 
     // accessors
-    tinygltf::Accessor positionsAccessor{}, normalsAccessor{}, indicesAccessor{};
+    tinygltf::Accessor positionsAccessor{}, normalsAccessor{}, indicesAccessor{}, colorsAccessor{};
 
     positionsAccessor.bufferView = 0;
     positionsAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT; // gltf FLOAT - 32bit
@@ -149,9 +162,17 @@ int main()
     indicesAccessor.type = TINYGLTF_TYPE_SCALAR;
     indicesAccessor.count = indicesBufferView.byteLength / 4; // count = bytes / uint_bytes
 
+    if (info.hasPerVertexColor()) {
+        colorsAccessor.bufferView = 3;
+        colorsAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE; // gltf UNSIGNED_BYTE - 8bit
+        colorsAccessor.type = TINYGLTF_TYPE_VEC4;
+        colorsAccessor.count = colorsBufferView.byteLength / 4; // count = bytes / vec4_elem_count
+    }
+
     model.accessors.push_back(positionsAccessor);
     model.accessors.push_back(normalsAccessor);
     model.accessors.push_back(indicesAccessor);
+    if (info.hasPerVertexColor()) model.accessors.push_back(colorsAccessor);
 
     // node
     tinygltf::Node node;
