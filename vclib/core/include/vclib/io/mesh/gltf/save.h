@@ -27,14 +27,14 @@
 #include <vclib/io/mesh/settings.h>
 #include <tiny_gltf.h>
 
-#define GLTF_ASSET_VERSION "2.0"
-#define GLTF_GENERATOR_NAME "vclib-tinygltf-exporter"
+#define VCL_GLTF_ASSET_VERSION "2.0"
+#define VCL_GLTF_GENERATOR_NAME "vclib-tinygltf-exporter"
 
 namespace vcl {
 
 namespace detail {
 
-std::pair<uint, tinygltf::Buffer&> addBuffer(
+inline std::pair<uint, tinygltf::Buffer&> addGltfBuffer(
     tinygltf::Model& model,
     size_t           size)
 {
@@ -46,7 +46,7 @@ std::pair<uint, tinygltf::Buffer&> addBuffer(
     return { index, buf };
 }
 
-std::pair<uint, tinygltf::BufferView&> addBufferView(
+inline std::pair<uint, tinygltf::BufferView&> addGltfBufferView(
     tinygltf::Model&                   model,
     std::pair<uint, tinygltf::Buffer&> buffer)
 {
@@ -59,7 +59,7 @@ std::pair<uint, tinygltf::BufferView&> addBufferView(
     return { index, bufView };
 }
 
-std::pair<uint, tinygltf::Accessor&> addAccessor(
+inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     tinygltf::Model&                   model,
     std::pair<uint, tinygltf::BufferView&> bufferView,
     int componentType,
@@ -102,12 +102,12 @@ void addMeshToTinygltfModel(
         primitive.mode = TINYGLTF_MODE_TRIANGLES;
 
         // vertices position buffer, buffer view and accessor
-        auto posBuf = addBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
+        auto posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
         float* fd = reinterpret_cast<float*>(posBuf.second.data.data());
         vertexPositionsToBuffer(m, fd);
 
-        auto posBufView = addBufferView(tModel, posBuf);
-        auto posAccessor = addAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
+        auto posBufView = addGltfBufferView(tModel, posBuf);
+        auto posAccessor = addGltfAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
         posAccessorI = posAccessor.first;
 
         //TODO remove
@@ -131,12 +131,12 @@ void addMeshToTinygltfModel(
 
         if constexpr (HasPerVertexColor<MeshType>) {
             if (meshInfo.hasPerVertexColor()) {
-                auto colBuf = addBuffer(tModel, 4 * m.vertexCount());
+                auto colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
                 uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.second.data.data());
                 vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA);
 
-                auto colBufView = addBufferView(tModel, colBuf);
-                auto colAccessor = addAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
+                auto colBufView = addGltfBufferView(tModel, colBuf);
+                auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
                 colAccessorI = colAccessor.first;
 
                 primitive.attributes["COLOR_0"] = colAccessorI;
@@ -144,12 +144,12 @@ void addMeshToTinygltfModel(
         }
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (meshInfo.hasPerVertexNormal()) {
-                auto normBuf = addBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
+                auto normBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
                 fd = reinterpret_cast<float*>(normBuf.second.data.data());
                 vertexNormalsToBuffer(m, fd);
 
-                auto normBufView = addBufferView(tModel, normBuf);
-                auto normAccessor = addAccessor(tModel, normBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
+                auto normBufView = addGltfBufferView(tModel, normBuf);
+                auto normAccessor = addGltfAccessor(tModel, normBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
                 normAccessorI = normAccessor.first;
 
                 primitive.attributes["NORMAL"] = normAccessorI;
@@ -167,12 +167,12 @@ void addMeshToTinygltfModel(
         tinygltf::Primitive& primitive = mesh.primitives.back();
 
         // indices buffer, buffer view and accessor
-        auto indBuf = addBuffer(tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+        auto indBuf = addGltfBuffer(tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
         uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
         triangulatedFaceVertexIndicesToBuffer(m, ud); //TODO should indexMap be used?
 
-        auto indBufView = addBufferView(tModel, indBuf);
-        auto indAccessor = addAccessor(tModel, indBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT, TINYGLTF_TYPE_SCALAR);
+        auto indBufView = addGltfBufferView(tModel, indBuf);
+        auto indAccessor = addGltfAccessor(tModel, indBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT, TINYGLTF_TYPE_SCALAR);
         indAccessorI = indAccessor.first;
 
         primitive.indices = indAccessorI;
@@ -221,8 +221,8 @@ void saveGltf(
     tinygltf::Model model{};
     MeshInfo meshInfo(m);
 
-    model.asset.version = GLTF_ASSET_VERSION;
-    model.asset.generator = GLTF_GENERATOR_NAME;
+    model.asset.version = VCL_GLTF_ASSET_VERSION;
+    model.asset.generator = VCL_GLTF_GENERATOR_NAME;
 
     model.scenes.emplace_back();
     model.defaultScene = 0;
@@ -261,8 +261,8 @@ void saveGltf(
 {
     tinygltf::Model model{};
 
-    model.asset.version = GLTF_ASSET_VERSION;
-    model.asset.generator = GLTF_GENERATOR_NAME;
+    model.asset.version = VCL_GLTF_ASSET_VERSION;
+    model.asset.generator = VCL_GLTF_GENERATOR_NAME;
 
     model.scenes.emplace_back();
     model.defaultScene = 0;
