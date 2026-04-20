@@ -24,6 +24,7 @@
 #define VCL_QT_WINDOW_MANAGER_H
 
 #include "input.h"
+#include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
@@ -114,7 +115,7 @@ public:
     void update() { QWindow::requestUpdate(); }
 
 protected:
-    bool event(QEvent* event)
+    bool event(QEvent* event) override
     {
         if (event->type() == QEvent::UpdateRequest) {
             DerivedRenderApp::WM::paint(derived());

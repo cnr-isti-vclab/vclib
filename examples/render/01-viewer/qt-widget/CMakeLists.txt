@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 01-viewer-qt)
+set(EXAMPLE_NAME 01-viewer-qt-widget)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

@@ -23,7 +23,6 @@
 #ifndef IMGUI_DISABLE
 #include <vclib/qt_imgui/imgui_impl_qt.h>
 
-#include <QApplication>
 #include <QClipboard>
 #include <QEvent>
 #include <QKeyEvent>

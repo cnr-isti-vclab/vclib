@@ -20,37 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_QT_VIEWER_WINDOW_H
+#define VCL_QT_VIEWER_WINDOW_H
 
-#include <vclib/qt/viewer_widget.h>
+#include <vclib/qt/window_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/render_app.h>
 
-#include <QApplication>
+namespace vcl::qt {
 
-int main(int argc, char** argv)
-{
-    QApplication app(argc, argv);
+using ViewerWindow = vcl::
+    RenderApp<vcl::qt::WindowManager, vcl::Canvas, vcl::TrackBallViewerDrawer>;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+} // namespace vcl::qt
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.color() = vcl::Color::Yellow;
-    drawable.updateBuffers(
-        {vcl::MeshRenderInfo::Buffers::MESH_ADDITIONAL_DATA});
-
-    auto mrs = drawable.renderSettings();
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
-    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
-    drawable.setRenderSettings(mrs);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
-}
+#endif // VCL_QT_VIEWER_WINDOW_H

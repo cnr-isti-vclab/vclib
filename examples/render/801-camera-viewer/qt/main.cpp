@@ -28,8 +28,6 @@
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
-#include <QApplication>
-
 template<typename DerivedRenderApp>
 class CameraViewerDrawer :
         public vcl::ViewerDrawer<vcl::CameraDrawer<DerivedRenderApp>>
@@ -41,7 +39,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     using SimpleCameraDemo =
         vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, CameraViewerDrawer>;

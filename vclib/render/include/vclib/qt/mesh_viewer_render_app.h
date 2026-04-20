@@ -31,6 +31,7 @@
 // note: the MeshViewerRenderApp class must be a QWidget.
 
 #if __has_include(<custom_mesh_viewer_render_app.h>)
+#include "utils.h"
 #include <custom_mesh_viewer_render_app.h>
 #else
 

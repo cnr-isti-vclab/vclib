@@ -32,7 +32,6 @@
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
 #include <vclib/qt/mesh_viewer.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/glfw/viewer_window.h>
@@ -135,7 +134,7 @@ template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
+    auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
     auto viewer = defaultViewer();
@@ -161,7 +160,7 @@ int showMeshesOnDefaultViewer(
     const std::string&       panorama = "")
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
+    auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
     auto viewer = defaultViewer();

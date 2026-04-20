@@ -20,38 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_QT_UTILS_H
+#define VCL_QT_UTILS_H
 
-#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
+#include "utils/file_format.h"
+#include "utils/qapplication.h"
 
-#include <vclib/imgui/imgui_drawer.h>
-
-#include <vclib/qt/widget_manager.h>
-#include <vclib/render/canvas.h>
-#include <vclib/render/render_app.h>
-
-using ViewerWidget = vcl::RenderApp<
-    vcl::qt::WidgetManager,
-    vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui>;
-
-int main(int argc, char** argv)
-{
-    auto app = vcl::qt::qAppl(argc, argv);
-
-    ViewerWidget tw("Mesh Viewer ImGui Qt");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
-}
+#endif // VCL_QT_UTILS_H

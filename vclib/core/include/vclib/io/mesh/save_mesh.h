@@ -73,6 +73,11 @@ inline std::set<FileFormat> saveMeshFormats()
  * @param[in] settings: Settings for saving the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * saving.
+ *
+ * @throws vcl::UnknownFileFormatException if the file extension is not
+ * recognized.
+ *
+ * @ingroup save_mesh
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveMesh(

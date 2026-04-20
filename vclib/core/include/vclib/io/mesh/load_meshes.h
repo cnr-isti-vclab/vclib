@@ -42,7 +42,7 @@ namespace vcl {
  *
  * @ingroup load_mesh
  */
-inline std::set<FileFormat> loadMeshesFileFormats()
+inline std::set<FileFormat> loadMeshesFormats()
 {
     std::set<FileFormat> ff;
 
