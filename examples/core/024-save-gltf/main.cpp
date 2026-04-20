@@ -28,120 +28,7 @@
 #include <vector>
 
 #include <iostream>
-
 #include <cstdint>
-
-namespace vcl
-{
-template<MeshConcept MeshType>
-void addMeshToTinygltfModel(
-    const MeshType&  m,
-    tinygltf::Model& tM)
-{
-    MeshInfo meshInfo(m);
-    //TODO vcl::updateBoundingBox(bunnyMesh); (?)
-    uint posBufI, colBufI, normBufI;
-
-    // vertices
-    if constexpr (HasVertices<MeshType>) {
-        // vertices position buffer
-        m.buffers.push_back();
-        // buffer index, buffer ref
-        tinygltf::Buffer& posBuf = m.buffers.back();
-        posBufI = m.buffers.size() - 1;
-
-        posBuf.data.resize(3 * m.vertexCount() * sizeof(float));
-        float* fd = reinterpret_cast<float*>(posBuf.data.data());
-        vcl::vertexPositionsToBuffer(m, fd);
-
-        // vertices color buffer
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (meshInfo.hasPerVertexColor()) {
-                m.buffers.push_back();
-                // buffer index, buffer ref
-                tinygltf::Buffer& colBuf = m.buffers.back();
-                colBufI = m.buffers.size() - 1;
-
-                colBuf.data.resize(4 * m.vertexCount());
-                uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.data.data());
-                vcl::vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA);
-            }
-        }
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            if (meshInfo.hasPerVertexNormal()) {
-                m.buffers.push_back();
-                // buffer index, buffer ref
-                tinygltf::Buffer& normBuf = m.buffers.back();
-                normBufI = m.buffers.size() - 1;
-
-                normBuf.data.resize(3 * m.vertexCount() * sizeof(float));
-                fd = reinterpret_cast<float*>(normBuf.data.data());
-                vcl::vertexNormalsToBuffer(m, fd);
-            }
-        }
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (meshInfo.hasPerVertexTexCoord()) {
-                //TODO per vertex tex coord
-            }
-        }
-    }
-
-    // faces
-    if constexpr (HasFaces<MeshType>) {
-        //TODO triangle indices
-        //TODO use function triangulatedFaceVertexIndicesToBuffer from algorithms/mesh/import_export/export_buffer.h
-
-        if (meshInfo.hasPerFaceColor()) {
-            //TODO per face color
-        }
-    }
-
-    //TODO mesh
-
-
-
-    // --- TODO LIST ---
-
-    //TODO save all vertices into a single buffer (face triangulation needed?)
-    //TODO save all vertex colors into a single buffer
-    //TODO save all normals into a single buffer
-    //TODO save all materials
-    //TODO save all textures
-
-    //TODO a primitive per chunk (chunk split by material. Multiple chunks could be using the same material)
-    //TODO each primitive will then reference an accessor for:
-        //TODO - indices
-        //TODO - colors
-        //TODO - normals
-        //TODO - text normals
-    //TODO each primitive will reference its material
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveGltf(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings = SaveSettings(),
-    LogType&            log      = nullLogger)
-{
-    MeshInfo meshInfo(m);
-    tinygltf::Model tM{};
-
-    //TODO settings.binary
-    //TODO settings.saveTextureImages
-
-    // make sure that the given info contains only components that are actually
-    // available in the mesh. meshInfo will contain the intersection between the
-    // components that the user wants to save and the components that are
-    // available in the mesh.
-    if (!settings.info.isEmpty())
-        meshInfo = settings.info.intersect(meshInfo);
-
-    addMeshToTinygltfModel(m, tM);
-
-    //TODO write scene to file
-}
-} // namespace vcl
 
 int main()
 {
@@ -155,6 +42,10 @@ int main()
     vcl::updateBoundingBox(bunnyMesh);
 
     std::cout << "Converting mesh..." << std::endl;
+
+    vcl::saveGltf(bunnyMesh, VCLIB_EXAMPLE_MESHES_PATH "/gltf/bunny_export_gltf.gltf");
+
+    return 0;
 
     tinygltf::Model model;
 
