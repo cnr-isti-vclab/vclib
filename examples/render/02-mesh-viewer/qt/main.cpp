@@ -26,8 +26,6 @@
 #include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/qt/mesh_viewer.h>
 
-#include <QApplication>
-
 class MeshViewerSelectQt : public vcl::qt::MeshViewer
 {
 public:
@@ -43,7 +41,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     MeshViewerSelectQt mv;
 

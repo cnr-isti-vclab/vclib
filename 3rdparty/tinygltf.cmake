@@ -23,7 +23,7 @@
 if (VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
     message(STATUS "- tinygltf - using downloaded source")
 
-    set(TINYGLTF_VERSION 2.9.6)
+    set(TINYGLTF_VERSION 3.0.0)
 
     set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
 
