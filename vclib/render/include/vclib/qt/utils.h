@@ -20,11 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
+#ifndef VCL_QT_UTILS_H
+#define VCL_QT_UTILS_H
 
-#include <vclib/bgfx/shaders_common.sh>
+#include "utils/file_format.h"
+#include "utils/qapplication.h"
 
-void main()
-{
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-}
+#endif // VCL_QT_UTILS_H

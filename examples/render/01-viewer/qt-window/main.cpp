@@ -20,23 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_H
+#include "get_drawable_mesh.h"
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include <vclib/qt/viewer_window.h>
 
-namespace vcl {
-
-template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_EDGES>
+int main(int argc, char** argv)
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+    auto app = vcl::qt::qAppl(argc, argv);
 
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
-};
+    vcl::qt::ViewerWindow tw("Viewer Qt");
 
-} // namespace vcl
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_EDGES_H
+    drawable.color() = vcl::Color::Yellow;
+    drawable.updateBuffers(
+        {vcl::MeshRenderInfo::Buffers::MESH_ADDITIONAL_DATA});
+
+    auto mrs = drawable.renderSettings();
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
+    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
+    drawable.setRenderSettings(mrs);
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
+
+    tw.fitScene();
+
+    tw.show();
+
+    return app.exec();
+}

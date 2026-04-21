@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
 
 uniform vec4 u_meshColor;
 uniform vec4 u_meshData; // x: meshId; y: first chunk index
@@ -29,4 +29,4 @@ uniform vec4 u_meshData; // x: meshId; y: first chunk index
 #define u_meshId floatBitsToUint(u_meshData.x)
 #define u_firstChunkPrimitiveID floatBitsToUint(u_meshData.y)
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH

@@ -2181,6 +2181,21 @@ concept MeshConcept =
 template<typename T>
 concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
 
+/**
+ * @brief A concept that checks whether a type is a range of Meshes.
+ *
+ * The concept is satisfied when `T` is a range and the value type of the
+ * range satisfies the MeshConcept.
+ *
+ * @tparam T: The type to be tested for conformity to the RangeOfMeshes concept.
+ *
+ * @ingroup mesh
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept RangeOfMeshes =
+    std::ranges::range<T> && MeshConcept<std::ranges::range_value_t<T>>;
+
 } // namespace vcl
 
 #endif // VCL_MESH_MESH_H

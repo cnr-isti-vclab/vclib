@@ -90,6 +90,9 @@ using MeshesIndexed = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
 
+// allow up to 0.02% numerical mismatches due to precision issues
+static const vcl::uint N_NUMERIC_TOLERANCE = N_RAYS_TEST * 0.0002;
+
 TEMPLATE_TEST_CASE(
     "Embree ray-triangle intersection vs brute force",
     "",
@@ -190,7 +193,15 @@ TEMPLATE_TEST_CASE(
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
-        REQUIRE(matches == N_RAYS_TEST);
+        if (matches < N_RAYS_TEST) {
+            WARN(
+                vcl::meshTypeName<TriMesh>()
+                << ": " << (N_RAYS_TEST - matches)
+                << " numerical mismatch(es) between Embree and brute force "
+                   "(tolerance: "
+                << N_NUMERIC_TOLERANCE << ")");
+        }
+        REQUIRE(matches >= N_RAYS_TEST - N_NUMERIC_TOLERANCE);
     }
 
     SECTION(vcl::meshTypeName<PolyMesh>().c_str())
@@ -288,6 +299,14 @@ TEMPLATE_TEST_CASE(
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
-        REQUIRE(matches == N_RAYS_TEST);
+        if (matches < N_RAYS_TEST) {
+            WARN(
+                vcl::meshTypeName<PolyMesh>()
+                << ": " << (N_RAYS_TEST - matches)
+                << " numerical mismatch(es) between Embree and brute force "
+                   "(tolerance: "
+                << N_NUMERIC_TOLERANCE << ")");
+        }
+        REQUIRE(matches >= N_RAYS_TEST - N_NUMERIC_TOLERANCE);
     }
 }

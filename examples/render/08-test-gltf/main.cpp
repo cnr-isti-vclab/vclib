@@ -27,14 +27,10 @@
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
-#endif
-
 int main(int argc, char** argv)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
+    auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
     auto viewer = defaultViewer();

@@ -20,23 +20,75 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_WIREFRAME_ID_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_WIREFRAME_ID_H
+#ifndef VCL_QT_GUI_FLOAT_SLIDER_H
+#define VCL_QT_GUI_FLOAT_SLIDER_H
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include <QSlider>
 
-namespace vcl {
+namespace vcl::qt {
 
-template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_WIREFRAME_ID>
+class FloatSlider : public QSlider
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+    Q_OBJECT
 
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
+    const float STEP = 0.01f;
+
+public:
+    FloatSlider(float step, QWidget* parent = nullptr) :
+            QSlider(parent), STEP(step)
+    {
+        connect(
+            dynamic_cast<QSlider*>(this),
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(notifyValueChanged(int)));
+    }
+
+    FloatSlider(QWidget* parent = nullptr) : FloatSlider(0.01f, parent) {}
+
+    float step() const { return STEP; }
+
+    float minimum() const { return QSlider::minimum() * STEP; }
+
+    float maximum() const { return QSlider::maximum() * STEP; }
+
+    float value() const { return QSlider::value() * STEP; }
+
+    void setMinimum(float min)
+    {
+        QSlider::setMinimum(static_cast<int>(min / STEP));
+    }
+
+    void setMaximum(float max)
+    {
+        QSlider::setMaximum(static_cast<int>(max / STEP));
+    }
+
+public slots:
+
+    void setValue(float value)
+    {
+        QSlider::setValue(static_cast<int>(value / STEP));
+    }
+
+    void setRange(float min, float max)
+    {
+        QSlider::setRange(
+            static_cast<int>(min / STEP), static_cast<int>(max / STEP));
+    }
+
+signals:
+    void valueChanged(float value);
+
+private slots:
+
+    void notifyValueChanged(int value)
+    {
+        float floatValue = value * STEP;
+        emit valueChanged(floatValue);
+    }
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_WIREFRAME_ID_H
+#endif // VCL_QT_GUI_FLOAT_SLIDER_H

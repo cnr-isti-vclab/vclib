@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
-#define VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 
@@ -32,4 +32,4 @@
 
 #include <vclib/render/drawable/mesh/mesh_render_info_macros.h>
 
-#endif // VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_UNIFORMS_SH

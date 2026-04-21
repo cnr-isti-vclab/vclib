@@ -30,8 +30,6 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
-#include <QApplication>
-
 using ViewerWidget = vcl::RenderApp<
     vcl::qt::WidgetManager,
     vcl::Canvas,
@@ -40,7 +38,7 @@ using ViewerWidget = vcl::RenderApp<
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     ViewerWidget tw("Mesh Viewer ImGui Qt");
 
