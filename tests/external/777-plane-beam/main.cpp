@@ -122,10 +122,11 @@ int main()
 		return {1, 1, lenU, lenV};
 	};
 
-	constexpr uint targetCells = 10000;
-	constexpr uint NUM_PLANES  = 5000;
+	constexpr uint targetCells = 50000;
+	constexpr uint NUM_PLANES  = 2000;
 
 	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_test.ply");
+	//PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
 	updateBoundingBox(m);
 
 	const double EPS = 1e-6 * m.boundingBox().diagonal();
@@ -166,30 +167,28 @@ int main()
 			ids[k + 4] = tm.addVertex(t[k]);
 		}
 
-		// Bottom and top quads.
-		tm.addFace(ids[0], ids[1], ids[2]);
-		tm.addFace(ids[0], ids[2], ids[3]);
-		tm.addFace(ids[4], ids[6], ids[5]);
-		tm.addFace(ids[4], ids[7], ids[6]);
+		// Bottom
+		tm.addFace(ids[0], ids[2], ids[1]);
+		tm.addFace(ids[0], ids[3], ids[2]);
+		tm.addFace(ids[4], ids[5], ids[6]);
+		tm.addFace(ids[4], ids[6], ids[7]);
 
-		// Side quads (as two triangles each).
-		tm.addFace(ids[0], ids[4], ids[5]);
-		tm.addFace(ids[0], ids[5], ids[1]);
-
-		tm.addFace(ids[1], ids[5], ids[6]);
-		tm.addFace(ids[1], ids[6], ids[2]);
-
-		tm.addFace(ids[2], ids[6], ids[7]);
-		tm.addFace(ids[2], ids[7], ids[3]);
-
-		tm.addFace(ids[3], ids[7], ids[4]);
-		tm.addFace(ids[3], ids[4], ids[0]);
+		// Sides
+		tm.addFace(ids[0], ids[1], ids[5]);
+		tm.addFace(ids[0], ids[5], ids[4]);
+		tm.addFace(ids[1], ids[2], ids[6]);
+		tm.addFace(ids[1], ids[6], ids[5]);
+		tm.addFace(ids[2], ids[3], ids[7]);
+		tm.addFace(ids[2], ids[7], ids[6]);
+		tm.addFace(ids[3], ids[0], ids[4]);
+		tm.addFace(ids[3], ids[4], ids[7]);
 	};
 
 	struct HitEvent
 	{
 		Point3d point;
 		double  t = 0.0;
+		Point3d normal = Point3d(0, 0, 0);
 	};
 
 	struct PlaneEvalStats
@@ -328,11 +327,15 @@ int main()
 
 			uint step = 0;
 			for (; step < MAX_RAY_STEPS; ++step) {
-				const Point3d currentOrigin = rayOrigin + n * rayAdvance;
+				// On the very first query, start slightly below the plane (opposite to n)
+				// to avoid numerically starting inside the mesh for tangent faces.
+				const double originAdvance = (step == 0) ? -EPS : rayAdvance;
+				const double rayEps = (step == 0) ? 0.0 : EPS;
+				const Point3d currentOrigin = rayOrigin + n * originAdvance;
 				std::vector<Point3d> origins    = {currentOrigin};
 				std::vector<Point3d> directions = {n};
 				std::vector<embree::Scene::HitResult> hits =
-					scene.firstFaceIntersectedByRays(origins, directions, EPS);
+					scene.firstFaceIntersectedByRays(origins, directions, rayEps);
 
 				auto [hitFaceId, barCoords, hitTriId] = hits[0];
 
@@ -353,20 +356,24 @@ int main()
 
 				const Point3d hitPoint =
 					q0 * barCoords.x() + q1 * barCoords.y() + q2 * barCoords.z();
+				Point3d triNormal = (q1 - q0).cross(q2 - q0);
+				if (triNormal.norm() >= EPS) {
+					triNormal.normalize();
+				}
 				const double localTHit = (hitPoint - currentOrigin).dot(n);
-				const double tHit      = rayAdvance + localTHit;
-				if (tHit <= EPS) {
-						rayAdvance = std::max(EPS, rayAdvance + nearAdvanceEps);
+				const double tHit      = originAdvance + localTHit;
+				if (tHit < -EPS) {
+					rayAdvance = std::max(EPS, tHit + nearAdvanceEps);
 					continue;
 				}
 
 				// Progress guard: if we are not moving forward along the ray, stop.
-				if (tHit <= lastTHit + EPS) {
+				if (tHit < lastTHit + EPS) {
 					break;
 				}
 				lastTHit = tHit;
 
-				hitEvents.push_back({hitPoint, tHit});
+				hitEvents.push_back({hitPoint, tHit, triNormal});
 				rayAdvance = tHit + EPS;
 			}
 
@@ -391,6 +398,11 @@ int main()
 					filteredHits.back().point =
 						(filteredHits.back().point + h.point) * 0.5;
 					filteredHits.back().t = (filteredHits.back().t + h.t) * 0.5;
+					filteredHits.back().normal =
+						(filteredHits.back().normal + h.normal) * 0.5;
+					if (filteredHits.back().normal.norm() > EPS) {
+						filteredHits.back().normal.normalize();
+					}
 				}
 			}
 
@@ -401,11 +413,6 @@ int main()
 		const double cellDu   = lenU / grid.cols;
 		const double cellDv   = lenV / grid.rows;
 		const double cellArea = cellDu * cellDv;
-
-		auto pointIsInside = [&](const Point3d& p) {
-			const std::vector<HitEvent> pHits = collectFilteredHits(p);
-			return (pHits.size() % 2u) == 1u;
-		};
 
 		auto computeCellGeometry = [&](uint i,
 								 uint j,
@@ -431,17 +438,19 @@ int main()
 								 const Point3d& segEnd,
 								 const std::array<Point3d, 4>& cellCorners,
 								 double startD,
-								 double endD) {
+						 		 double endD,
+						 		 bool first = false) {
 			const double segLength = endD - startD;
-			if (segLength > EPS) {
+			const bool validLength = first || (segLength >= EPS);
+			if (validLength) {
 				const double segVolume = cellArea * segLength;
 				totalVolume += segVolume;
 			}
 
-			if (collectDebug && outRayhitMesh && segLength > EPS) {
+			if (collectDebug && outRayhitMesh && validLength) {
 				addSegment(*outRayhitMesh, segStart, segEnd);
 			}
-			if (collectDebug && outPrismsMesh && segLength > EPS) {
+			if (collectDebug && outPrismsMesh && validLength) {
 				addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
 			}
 		};
@@ -455,16 +464,16 @@ int main()
 				std::vector<HitEvent> hitEvents = collectFilteredHits(cellCenter);
 
 				if (!hitEvents.empty()) {
-					const Point3d segStart = cellCenter;
+					const Point3d segStart = cellCenter + n * -EPS;
 					const Point3d segEnd   = hitEvents[0].point;
-					const double  startD   = 0.0;
+					const double  startD   = -EPS;
 					const double  endD     = hitEvents[0].t;
-					if (endD > startD) {
-						accumulateSegment(segStart, segEnd, cellCorners, startD, endD);
-					}
+					accumulateSegment(segStart, segEnd, cellCorners, startD, endD, true);
 				}
 
-				for (int h = 1; h + 1 < (int)hitEvents.size(); h += 2) {
+				int hitsMesh = 1;
+				//std::cout << "Ray in cell (" << i << ", " << j << "): " << hitEvents.size() << " hits\n";
+				for (int h = 0; h + 1 < (int)hitEvents.size(); h += 1) {
 					const Point3d segStart = hitEvents[h].point;
 					const Point3d segEnd   = hitEvents[h + 1].point;
 					const double  startD   = hitEvents[h].t;
@@ -473,18 +482,21 @@ int main()
 						continue;
 					}
 
-					if (collectDebug) {
-						const Point3d midPoint = cellCenter + n * ((startD + endD) * 0.5);
-						if (pointIsInside(midPoint)) {
-							hitEvents.erase(hitEvents.begin() + h);
-							h -= 1;
-						}
-						else {
+					const Point3d& startNormal = hitEvents[h].normal;
+					const Point3d& endNormal   = hitEvents[h + 1].normal;
+					const double  startDot = startNormal.dot(n);
+					const double  endDot   = endNormal.dot(n);
+
+					//std::cout << "  Hit " << h << ": normal = " << startNormal << ", StartDot = " << startDot << ", EndDot = " << endDot << ", HitMesh = " << hitsMesh << "\n";
+
+					if (endDot < 0.0) {
+						if ((startDot > 0.0) && (hitsMesh == 0)) {
 							accumulateSegment(segStart, segEnd, cellCorners, startD, endD);
 						}
+						hitsMesh += 1;
 					}
 					else {
-						accumulateSegment(segStart, segEnd, cellCorners, startD, endD);
+						hitsMesh -= 1;
 					}
 				}
 			}
@@ -541,23 +553,70 @@ int main()
 
 	saveMesh(bestRayhitMesh, VCLIB_RESULTS_PATH "/777_plane_beam_rayhits.ply");
 	saveMesh(bestPrismsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_prisms.ply");
-	saveMesh(
-		bestProjectedPointsMesh,
-		VCLIB_RESULTS_PATH "/777_plane_beam_projected_points.ply");
+	saveMesh(bestProjectedPointsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_projected_points.ply");
 	saveMesh(bestBbox2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
 	saveMesh(bestGrid2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_grid2d.ply");
+
+	auto saveDebugMeshes = [&](const std::string& suffix,
+								 const Point3d&     normal) {
+		EdgeMesh rayhitMesh;
+		TriMesh  prismsMesh;
+		EdgeMesh projectedPointsMesh;
+		EdgeMesh bbox2dMesh;
+		EdgeMesh grid2dMesh;
+
+		evaluatePlane(
+			normal,
+			true,
+			&rayhitMesh,
+			&prismsMesh,
+			&projectedPointsMesh,
+			&bbox2dMesh,
+			&grid2dMesh,
+			nullptr);
+
+		const std::string base = std::string(VCLIB_RESULTS_PATH) + "/777_plane_beam_" + suffix;
+		saveMesh(rayhitMesh, base + "_rayhits.ply");
+		saveMesh(prismsMesh, base + "_prisms.ply");
+		saveMesh(projectedPointsMesh, base + "_projected_points.ply");
+		saveMesh(bbox2dMesh, base + "_bbox2d.ply");
+		saveMesh(grid2dMesh, base + "_grid2d.ply");
+	};
+
+	const Point3d plusY(0.0, 1.0, 0.0);
+	const Point3d minusY(0.0, -1.0, 0.0);
+
+	double plusYVolume = evaluatePlane(
+		plusY, false, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+	double minusYVolume = evaluatePlane(
+		minusY, false, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
+
+	saveDebugMeshes("plus_y", plusY);
+	saveDebugMeshes("minus_y", minusY);
 
 	std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
 			  << "Best plane id: " << bestPlaneId << "\n"
 			  << "Best plane normal: " << bestNormal << "\n"
 			  << "Target cells: " << targetCells << "\n"
 			  << "Minimum volume: " << bestVolume << "\n"
+			  << "Special plane +Y volume: " << plusYVolume << "\n"
+			  << "Special plane -Y volume: " << minusYVolume << "\n"
 			  << "Saved debug meshes:\n"
 			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_prisms.ply\n"
 			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_projected_points.ply\n"
 			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_bbox2d.ply\n"
 			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_grid2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n";
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_prisms.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_projected_points.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_bbox2d.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_grid2d.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_rayhits.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_prisms.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_projected_points.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_bbox2d.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_grid2d.ply\n"
+			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_rayhits.ply\n";
 
     return 0;
 }
