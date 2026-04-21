@@ -35,5 +35,4 @@ vclib_add_test(
     ${HEADER_ONLY_OPTION})
 
 set(TARGET_NAME vclib-external-test-${TEST_NAME})
-target_link_libraries(${TARGET_NAME} PRIVATE vclib::render)
 target_compile_definitions(${TARGET_NAME} PRIVATE VCL_EMBREE_FORCE_CHUNK_16)
