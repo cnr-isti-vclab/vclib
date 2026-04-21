@@ -22,17 +22,24 @@
 
 #include <vclib/embree/scene.h>
 #include <vclib/algorithms/core/fibonacci.h>
+#include <vclib/base/parallel.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <utility>
 #include <vector>
 
-int main()
+vcl::Point3d runPlaneBeam(
+	vcl::PolyMesh          m,
+	const std::vector<double>& gridCellSideLengths,
+	vcl::uint              NUM_PLANES,
+	bool                   debug)
 {
 	using namespace vcl;
 
@@ -44,90 +51,27 @@ int main()
 		double sideV = 0.0;
 	};
 
-	auto chooseGrid = [&](double lenU, double lenV, uint targetCells) -> GridChoice {
-		const double minSideFraction = 0.99;
+	updateBoundingBox(m);
 
-		if (lenU <= 0.0 || lenV <= 0.0 || targetCells == 0) {
+	auto chooseGrid = [&](double lenU, double lenV) -> GridChoice {
+		if (lenU <= 0.0 || lenV <= 0.0) {
 			return {1, 1, lenU, lenV};
 		}
 
-		GridChoice best;
-		bool       foundValid = false;
-		double     bestScore  = std::numeric_limits<double>::infinity();
+		const double sideU =
+			(gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : lenU;
+		const double sideV =
+			(gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] : sideU;
 
-		GridChoice bestAny;
-		bool       foundAny   = false;
-		double     bestAnyScore = std::numeric_limits<double>::infinity();
-
-		const uint maxColsToTry = std::max<uint>(200, targetCells * 2 + 1);
-
-		for (uint cols = 1; cols <= maxColsToTry; ++cols) {
-			const double rowsIdeal = static_cast<double>(targetCells) / cols;
-			if (!std::isfinite(rowsIdeal)) {
-				continue;
-			}
-
-			const uint rowCandidates[2] = {
-				static_cast<uint>(std::max(1.0, std::floor(rowsIdeal))),
-				static_cast<uint>(std::max(1.0, std::ceil(rowsIdeal)))};
-
-			for (uint rows : rowCandidates) {
-				const uint chosenCells = rows * cols;
-				if (chosenCells == 0) {
-					continue;
-				}
-
-				const double sideU = lenU / cols;
-				const double sideV = lenV / rows;
-				if (sideU <= 0.0 || sideV <= 0.0) {
-					continue;
-				}
-
-				const double shorterSide = std::min(sideU, sideV);
-				const double longerSide  = std::max(sideU, sideV);
-
-				const double countPenalty =
-					std::abs(static_cast<double>(chosenCells) - targetCells);
-				const double shapePenalty = std::abs(std::log(sideU / sideV));
-				const double anyScore     = countPenalty * 1000.0 + shapePenalty;
-				if (!foundAny || anyScore < bestAnyScore) {
-					foundAny      = true;
-					bestAnyScore  = anyScore;
-					bestAny       = {rows, cols, sideU, sideV};
-				}
-
-				if (shorterSide / longerSide < minSideFraction) {
-					continue;
-				}
-
-				const double score        = countPenalty * 1000.0 + shapePenalty;
-
-				if (!foundValid || score < bestScore) {
-					foundValid = true;
-					bestScore  = score;
-					best       = {rows, cols, sideU, sideV};
-				}
-			}
+		if (sideU <= 0.0 || sideV <= 0.0) {
+			return {1, 1, lenU, lenV};
 		}
 
-		if (foundValid) {
-			return best;
-		}
+		const uint cols = static_cast<uint>(std::max(1.0, std::ceil(lenU / sideU)));
+		const uint rows = static_cast<uint>(std::max(1.0, std::ceil(lenV / sideV)));
 
-		if (foundAny) {
-			return bestAny;
-		}
-
-		// Fallback: one cell if no valid candidate was found in the search window.
-		return {1, 1, lenU, lenV};
+		return {rows, cols, sideU, sideV};
 	};
-
-	constexpr uint targetCells = 50000;
-	constexpr uint NUM_PLANES  = 2000;
-
-	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_test.ply");
-	//PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
-	updateBoundingBox(m);
 
 	const double EPS = 1e-6 * m.boundingBox().diagonal();
 
@@ -210,6 +154,8 @@ int main()
 							EdgeMesh*      outBbox2dMesh,
 							EdgeMesh*      outGrid2dMesh,
 							PlaneEvalStats* outStats) {
+		const bool collectDebugEnabled = debug && collectDebug;
+
 		Point3d n = rawPlaneNormal;
 		if (n.norm() <= EPS) {
 			return std::numeric_limits<double>::infinity();
@@ -237,14 +183,14 @@ int main()
 		double maxV = -std::numeric_limits<double>::infinity();
 
 		std::vector<Point3d> projectedPoints;
-		if (collectDebug && outProjectedPointsMesh) {
+		if (collectDebugEnabled && outProjectedPointsMesh) {
 			projectedPoints.reserve(
 				std::distance(m.vertices().begin(), m.vertices().end()));
 		}
 
 		for (const auto& vert : m.vertices()) {
 			const Point3d projected = plane.projectPoint(vert.position());
-			if (collectDebug && outProjectedPointsMesh) {
+			if (collectDebugEnabled && outProjectedPointsMesh) {
 				projectedPoints.push_back(projected);
 			}
 			const Point3d rel = projected - planePoint;
@@ -264,7 +210,7 @@ int main()
 			return std::numeric_limits<double>::infinity();
 		}
 
-		const GridChoice grid = chooseGrid(lenU, lenV, targetCells);
+		const GridChoice grid = chooseGrid(lenU, lenV);
 		if (outStats) {
 			outStats->minU  = minU;
 			outStats->minV  = minV;
@@ -275,20 +221,23 @@ int main()
 			outStats->cells = grid.rows * grid.cols;
 		}
 
+		const double gridMaxU = minU + grid.sideU * grid.cols;
+		const double gridMaxV = minV + grid.sideV * grid.rows;
+
 		const std::array<Point3d, 4> bboxCorners = {
 			planePoint + u * minU + v * minV,
-			planePoint + u * maxU + v * minV,
-			planePoint + u * maxU + v * maxV,
-			planePoint + u * minU + v * maxV};
+			planePoint + u * gridMaxU + v * minV,
+			planePoint + u * gridMaxU + v * gridMaxV,
+			planePoint + u * minU + v * gridMaxV};
 
-		if (collectDebug && outProjectedPointsMesh) {
+		if (collectDebugEnabled && outProjectedPointsMesh) {
 			outProjectedPointsMesh->reserveVertices(projectedPoints.size());
 			for (const Point3d& p : projectedPoints) {
 				outProjectedPointsMesh->addVertex(p);
 			}
 		}
 
-		if (collectDebug && outBbox2dMesh) {
+		if (collectDebugEnabled && outBbox2dMesh) {
 			std::array<uint, 4> cornerIds;
 			for (uint k = 0; k < bboxCorners.size(); ++k) {
 				cornerIds[k] = outBbox2dMesh->addVertex(bboxCorners[k]);
@@ -299,55 +248,43 @@ int main()
 			outBbox2dMesh->addEdge(cornerIds[3], cornerIds[0]);
 		}
 
-		if (collectDebug && outGrid2dMesh) {
+		if (collectDebugEnabled && outGrid2dMesh) {
 			for (uint ii = 0; ii <= grid.cols; ++ii) {
-				const double cu = minU + (lenU * ii) / grid.cols;
+				const double cu = minU + grid.sideU * ii;
 				const uint a =
 					outGrid2dMesh->addVertex(planePoint + u * cu + v * minV);
 				const uint b =
-					outGrid2dMesh->addVertex(planePoint + u * cu + v * maxV);
+					outGrid2dMesh->addVertex(planePoint + u * cu + v * gridMaxV);
 				outGrid2dMesh->addEdge(a, b);
 			}
 			for (uint jj = 0; jj <= grid.rows; ++jj) {
-				const double cv = minV + (lenV * jj) / grid.rows;
+				const double cv = minV + grid.sideV * jj;
 				const uint a =
 					outGrid2dMesh->addVertex(planePoint + u * minU + v * cv);
 				const uint b =
-					outGrid2dMesh->addVertex(planePoint + u * maxU + v * cv);
+					outGrid2dMesh->addVertex(planePoint + u * gridMaxU + v * cv);
 				outGrid2dMesh->addEdge(a, b);
 			}
 		}
 
-		auto collectFilteredHits = [&](const Point3d& rayOrigin) {
-			double               rayAdvance = EPS;
-			double               lastTHit   = -std::numeric_limits<double>::infinity();
+		auto collectHits = [&](const Point3d& rayOrigin) {
 			std::vector<HitEvent> hitEvents;
-			constexpr uint        MAX_RAY_STEPS = 2048;
-			const double          nearAdvanceEps = 0.25 * EPS;
+			std::vector<embree::Scene::FilteredHitResult> hits =
+				scene.collectFilteredHits(rayOrigin, n, static_cast<float>(EPS));
+			hitEvents.reserve(hits.size());
 
-			uint step = 0;
-			for (; step < MAX_RAY_STEPS; ++step) {
-				// On the very first query, start slightly below the plane (opposite to n)
-				// to avoid numerically starting inside the mesh for tangent faces.
-				const double originAdvance = (step == 0) ? -EPS : rayAdvance;
-				const double rayEps = (step == 0) ? 0.0 : EPS;
-				const Point3d currentOrigin = rayOrigin + n * originAdvance;
-				std::vector<Point3d> origins    = {currentOrigin};
-				std::vector<Point3d> directions = {n};
-				std::vector<embree::Scene::HitResult> hits =
-					scene.firstFaceIntersectedByRays(origins, directions, rayEps);
-
-				auto [hitFaceId, barCoords, hitTriId] = hits[0];
+			for (const auto& h : hits) {
+				auto [hitFaceId, barCoords, hitTriId, tHit] = h;
 
 				if (hitFaceId == UINT_NULL || hitFaceId >= faceTriangulations.size()) {
-					break;
+					continue;
 				}
 
 				const auto& face    = m.face(hitFaceId);
 				const auto& hitTris = faceTriangulations[hitFaceId];
 				const uint  base    = hitTriId * 3;
 				if (base + 2 >= hitTris.size()) {
-					break;
+					continue;
 				}
 
 				const Point3d& q0 = face.vertex(hitTris[base + 0])->position();
@@ -360,58 +297,16 @@ int main()
 				if (triNormal.norm() >= EPS) {
 					triNormal.normalize();
 				}
-				const double localTHit = (hitPoint - currentOrigin).dot(n);
-				const double tHit      = originAdvance + localTHit;
-				if (tHit < -EPS) {
-					rayAdvance = std::max(EPS, tHit + nearAdvanceEps);
-					continue;
-				}
-
-				// Progress guard: if we are not moving forward along the ray, stop.
-				if (tHit < lastTHit + EPS) {
-					break;
-				}
-				lastTHit = tHit;
 
 				hitEvents.push_back({hitPoint, tHit, triNormal});
-				rayAdvance = tHit + EPS;
 			}
 
-			if (step == MAX_RAY_STEPS) {
-				std::cerr << "[WARN] collectFilteredHits reached MAX_RAY_STEPS="
-						  << MAX_RAY_STEPS << " for rayOrigin=" << rayOrigin
-						  << " and normal=" << n << "\n";
-			}
-
-			std::sort(
-				hitEvents.begin(),
-				hitEvents.end(),
-				[](const HitEvent& a, const HitEvent& b) { return a.t < b.t; });
-
-			std::vector<HitEvent> filteredHits;
-			filteredHits.reserve(hitEvents.size());
-			for (const auto& h : hitEvents) {
-				if (filteredHits.empty() || h.t - filteredHits.back().t > EPS) {
-					filteredHits.push_back(h);
-				}
-				else {
-					filteredHits.back().point =
-						(filteredHits.back().point + h.point) * 0.5;
-					filteredHits.back().t = (filteredHits.back().t + h.t) * 0.5;
-					filteredHits.back().normal =
-						(filteredHits.back().normal + h.normal) * 0.5;
-					if (filteredHits.back().normal.norm() > EPS) {
-						filteredHits.back().normal.normalize();
-					}
-				}
-			}
-
-			return filteredHits;
+			return hitEvents;
 		};
 
 		double totalVolume = 0.0;
-		const double cellDu   = lenU / grid.cols;
-		const double cellDv   = lenV / grid.rows;
+		const double cellDu   = grid.sideU;
+		const double cellDv   = grid.sideV;
 		const double cellArea = cellDu * cellDv;
 
 		auto computeCellGeometry = [&](uint i,
@@ -434,7 +329,8 @@ int main()
 			cellCenter           = planePoint + u * centerU + v * centerV;
 		};
 
-		auto accumulateSegment = [&](const Point3d& segStart,
+		auto accumulateSegment = [&](double& localVolume,
+							 const Point3d& segStart,
 								 const Point3d& segEnd,
 								 const std::array<Point3d, 4>& cellCorners,
 								 double startD,
@@ -444,60 +340,87 @@ int main()
 			const bool validLength = first || (segLength >= EPS);
 			if (validLength) {
 				const double segVolume = cellArea * segLength;
-				totalVolume += segVolume;
+				localVolume += segVolume;
 			}
 
-			if (collectDebug && outRayhitMesh && validLength) {
+			if (collectDebugEnabled && outRayhitMesh && validLength) {
 				addSegment(*outRayhitMesh, segStart, segEnd);
 			}
-			if (collectDebug && outPrismsMesh && validLength) {
+			if (collectDebugEnabled && outPrismsMesh && validLength) {
 				addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
 			}
 		};
 
-		for (uint j = 0; j < grid.rows; ++j) {
-			for (uint i = 0; i < grid.cols; ++i) {
-				Point3d               cellCenter;
-				std::array<Point3d, 4> cellCorners;
-				computeCellGeometry(i, j, cellCenter, cellCorners);
+		auto processCell = [&](uint i, uint j, double& volumeAcc) {
+			Point3d               cellCenter;
+			std::array<Point3d, 4> cellCorners;
+			computeCellGeometry(i, j, cellCenter, cellCorners);
 
-				std::vector<HitEvent> hitEvents = collectFilteredHits(cellCenter);
+			std::vector<HitEvent> hitEvents = collectHits(cellCenter);
 
-				if (!hitEvents.empty()) {
-					const Point3d segStart = cellCenter + n * -EPS;
-					const Point3d segEnd   = hitEvents[0].point;
-					const double  startD   = -EPS;
-					const double  endD     = hitEvents[0].t;
-					accumulateSegment(segStart, segEnd, cellCorners, startD, endD, true);
+			if (!hitEvents.empty()) {
+				const Point3d segStart = cellCenter + n * -EPS;
+				const Point3d segEnd   = hitEvents[0].point;
+				const double  startD   = -EPS;
+				const double  endD     = hitEvents[0].t;
+				accumulateSegment(
+					volumeAcc, segStart, segEnd, cellCorners, startD, endD, true);
+			}
+
+			int hitsMesh = 1;
+			//std::cout << "Ray in cell (" << i << ", " << j << "): " << hitEvents.size() << " hits\n";
+			for (int h = 0; h + 1 < (int)hitEvents.size(); h += 1) {
+				const Point3d segStart = hitEvents[h].point;
+				const Point3d segEnd   = hitEvents[h + 1].point;
+				const double  startD   = hitEvents[h].t;
+				const double  endD     = hitEvents[h + 1].t;
+				if (endD <= startD) {
+					continue;
 				}
 
-				int hitsMesh = 1;
-				//std::cout << "Ray in cell (" << i << ", " << j << "): " << hitEvents.size() << " hits\n";
-				for (int h = 0; h + 1 < (int)hitEvents.size(); h += 1) {
-					const Point3d segStart = hitEvents[h].point;
-					const Point3d segEnd   = hitEvents[h + 1].point;
-					const double  startD   = hitEvents[h].t;
-					const double  endD     = hitEvents[h + 1].t;
-					if (endD <= startD) {
-						continue;
-					}
+				const Point3d& startNormal = hitEvents[h].normal;
+				const Point3d& endNormal   = hitEvents[h + 1].normal;
+				const double  startDot = startNormal.dot(n);
+				const double  endDot   = endNormal.dot(n);
 
-					const Point3d& startNormal = hitEvents[h].normal;
-					const Point3d& endNormal   = hitEvents[h + 1].normal;
-					const double  startDot = startNormal.dot(n);
-					const double  endDot   = endNormal.dot(n);
+				//std::cout << "  Hit " << h << ": normal = " << startNormal << ", StartDot = " << startDot << ", EndDot = " << endDot << ", HitMesh = " << hitsMesh << "\n";
 
-					//std::cout << "  Hit " << h << ": normal = " << startNormal << ", StartDot = " << startDot << ", EndDot = " << endDot << ", HitMesh = " << hitsMesh << "\n";
+				if (endDot < 0.0) {
+					if ((startDot > 0.0) && (hitsMesh == 0)) {
+						accumulateSegment(
+							volumeAcc, segStart, segEnd, cellCorners, startD, endD);
+					}
+					hitsMesh += 1;
+				}
+				else {
+					hitsMesh -= 1;
+				}
+			}
+		};
 
-					if (endDot < 0.0) {
-						if ((startDot > 0.0) && (hitsMesh == 0)) {
-							accumulateSegment(segStart, segEnd, cellCorners, startD, endD);
-						}
-						hitsMesh += 1;
-					}
-					else {
-						hitsMesh -= 1;
-					}
+		if (!collectDebugEnabled) {
+			std::vector<uint> rowIndices(grid.rows);
+			for (uint j = 0; j < grid.rows; ++j) {
+				rowIndices[j] = j;
+			}
+
+			std::vector<double> rowVolumes(grid.rows, 0.0);
+			vcl::parallelFor(rowIndices, [&](uint j) {
+				double localVolume = 0.0;
+				for (uint i = 0; i < grid.cols; ++i) {
+					processCell(i, j, localVolume);
+				}
+				rowVolumes[j] = localVolume;
+			});
+
+			for (double vRow : rowVolumes) {
+				totalVolume += vRow;
+			}
+		}
+		else {
+			for (uint j = 0; j < grid.rows; ++j) {
+				for (uint i = 0; i < grid.cols; ++i) {
+					processCell(i, j, totalVolume);
 				}
 			}
 		}
@@ -508,7 +431,7 @@ int main()
 	std::vector<Point3d> fibNormals = sphericalFibonacciPointSet<Point3d>(NUM_PLANES);
 	if (fibNormals.empty()) {
 		std::cerr << "No Fibonacci planes generated.\n";
-		return 1;
+		return Point3d(0, 0, 0);
 	}
 
 	uint    bestPlaneId = 0;
@@ -520,19 +443,25 @@ int main()
 		double vol = evaluatePlane(
 			fibNormals[i], false, nullptr, nullptr, nullptr, nullptr, nullptr, &stats);
 
-		std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
-				  << ", normal: " << fibNormals[i] << ", volume: " << vol
-				  << ", bbox2d(u,v): [(" << stats.minU << ", " << stats.minV
-				  << ") -> (" << stats.maxU << ", " << stats.maxV << ")]"
-				  << ", cells: " << stats.cells << " (" << stats.cols << "x"
-				  << stats.rows << ")";
+		if (debug) {
+			std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
+					  << ", normal: " << fibNormals[i] << ", volume: " << vol
+					  << ", bbox2d(u,v): [(" << stats.minU << ", " << stats.minV
+					  << ") -> (" << stats.maxU << ", " << stats.maxV << ")]"
+					  << ", cells: " << stats.cells << " (" << stats.cols << "x"
+					  << stats.rows << ")";
+		}
 		if (vol < bestVolume) {
 			bestVolume  = vol;
 			bestPlaneId = i;
 			bestNormal  = fibNormals[i];
-			std::cout << " [new best]";
+			if (debug) {
+				std::cout << " [new best]";
+			}
 		}
-		std::cout << "\n";
+		if (debug) {
+			std::cout << "\n";
+		}
 	}
 
 	EdgeMesh bestRayhitMesh;
@@ -551,11 +480,13 @@ int main()
 		&bestGrid2dMesh,
 		nullptr);
 
-	saveMesh(bestRayhitMesh, VCLIB_RESULTS_PATH "/777_plane_beam_rayhits.ply");
-	saveMesh(bestPrismsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_prisms.ply");
-	saveMesh(bestProjectedPointsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_projected_points.ply");
-	saveMesh(bestBbox2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
-	saveMesh(bestGrid2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_grid2d.ply");
+	if (debug) {
+		saveMesh(bestRayhitMesh, VCLIB_RESULTS_PATH "/777_plane_beam_rayhits.ply");
+		saveMesh(bestPrismsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_prisms.ply");
+		saveMesh(bestProjectedPointsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_projected_points.ply");
+		saveMesh(bestBbox2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
+		saveMesh(bestGrid2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_grid2d.ply");
+	}
 
 	auto saveDebugMeshes = [&](const std::string& suffix,
 								 const Point3d&     normal) {
@@ -583,6 +514,8 @@ int main()
 		saveMesh(grid2dMesh, base + "_grid2d.ply");
 	};
 
+	
+	/*
 	const Point3d plusY(0.0, 1.0, 0.0);
 	const Point3d minusY(0.0, -1.0, 0.0);
 
@@ -594,29 +527,69 @@ int main()
 	saveDebugMeshes("plus_y", plusY);
 	saveDebugMeshes("minus_y", minusY);
 
-	std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
-			  << "Best plane id: " << bestPlaneId << "\n"
-			  << "Best plane normal: " << bestNormal << "\n"
-			  << "Target cells: " << targetCells << "\n"
-			  << "Minimum volume: " << bestVolume << "\n"
-			  << "Special plane +Y volume: " << plusYVolume << "\n"
-			  << "Special plane -Y volume: " << minusYVolume << "\n"
-			  << "Saved debug meshes:\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_prisms.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_projected_points.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_bbox2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_grid2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_prisms.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_projected_points.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_bbox2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_grid2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_rayhits.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_prisms.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_projected_points.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_bbox2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_grid2d.ply\n"
-			  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_rayhits.ply\n";
+	*/
 
-    return 0;
+	
+
+	if (debug) {
+		std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
+				  << "Best plane id: " << bestPlaneId << "\n"
+				  << "Best plane normal: " << bestNormal << "\n"
+				  << "Grid cell side lengths (u, v): "
+				  << ((gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : 0.0)
+				  << ", "
+				  << ((gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] :
+						 ((gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : 0.0))
+				  << "\n"
+				  << "Minimum volume: " << bestVolume << "\n"
+				  //<< "Special plane +Y volume: " << plusYVolume << "\n"
+				  //<< "Special plane -Y volume: " << minusYVolume << "\n"
+				  << "Saved debug meshes:\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_prisms.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_projected_points.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_bbox2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_grid2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n"
+				  /*<< " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_prisms.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_projected_points.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_bbox2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_grid2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_rayhits.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_prisms.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_projected_points.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_bbox2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_grid2d.ply\n"
+				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_rayhits.ply\n"*/;
+	}
+
+	return bestNormal;
+}
+
+int main()
+{
+	using namespace vcl;
+
+	std::vector<double> gridCellSideLengths = {0.184, 0.234};
+	constexpr uint NUM_PLANES = 2000;
+	constexpr bool debug = true;
+
+	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
+	// PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
+
+	const auto startTime = std::chrono::steady_clock::now();
+	const Point3d bestNormal =
+		runPlaneBeam(std::move(m), gridCellSideLengths, NUM_PLANES, debug);
+	const auto endTime = std::chrono::steady_clock::now();
+	const auto elapsedMs =
+		std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime)
+			.count();
+
+	if (bestNormal.norm() == 0.0) {
+		return 1;
+	}
+
+	std::cout << "Best plane normal: " << bestNormal << "\n";
+	std::cout << "Tempo di esecuzione: " << elapsedMs << " ms\n";
+
+	return 0;
 }
