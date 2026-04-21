@@ -24,10 +24,10 @@
 #include <vclib/algorithms/core/fibonacci.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
-#include <vclib/qt/mesh_viewer.h>
-#include <vclib/render/drawable/drawable_mesh.h>
+//#include <vclib/qt/mesh_viewer.h>
+//#include <vclib/render/drawable/drawable_mesh.h>
 
-#include <QApplication>
+//#include <QApplication>
 #include <array>
 #include <chrono>
 #include <cmath>
@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 {
     using namespace vcl;
 
-    QApplication app(argc, argv);
+    //QApplication app(argc, argv);
 
     // Runtime/configuration knobs for search, debug geometry and visualization.
     constexpr bool   VISUAL             = false;
@@ -553,6 +553,7 @@ int main(int argc, char** argv)
               << " - " << VCLIB_RESULTS_PATH
               << "/666_volume_prism_prisms.ply\n";
 
+/*             
     if (VISUAL) {
         // Show mesh + best plane + debug rays/prisms.
         vcl::qt::MeshViewer mv;
@@ -588,6 +589,7 @@ int main(int argc, char** argv)
 
         return app.exec();
     }
+*/
 
     return 0;
 }
