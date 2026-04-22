@@ -25,6 +25,7 @@
 
 #include <vclib/io/file_info.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <tiny_gltf.h>
 
 #define VCL_GLTF_ASSET_VERSION "2.0"
@@ -48,13 +49,15 @@ inline std::pair<uint, tinygltf::Buffer&> addGltfBuffer(
 
 inline std::pair<uint, tinygltf::BufferView&> addGltfBufferView(
     tinygltf::Model&                   model,
-    std::pair<uint, tinygltf::Buffer&> buffer)
+    std::pair<uint, tinygltf::Buffer&> buffer,
+    int                                bufferViewTarget = TINYGLTF_TARGET_ARRAY_BUFFER)
 {
     model.bufferViews.emplace_back();
     tinygltf::BufferView& bufView = model.bufferViews.back();
     uint index = model.bufferViews.size() - 1;
     bufView.buffer = buffer.first;
     bufView.byteLength = buffer.second.data.size();
+    bufView.target = bufferViewTarget;
 
     return { index, bufView };
 }
@@ -63,7 +66,8 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     tinygltf::Model&                   model,
     std::pair<uint, tinygltf::BufferView&> bufferView,
     int componentType,
-    int type)
+    int type,
+    bool normalized = false)
 {
     //TODO check if component type and type are valid
 
@@ -76,6 +80,7 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     // count = bytes / (comp_bytes * num_comp_in_type)
     accessor.count = bufferView.second.byteLength / (
         tinygltf::GetComponentSizeInBytes(componentType) * tinygltf::GetNumComponentsInType(type));
+    accessor.normalized = normalized;
 
     return { index, accessor };
 }
@@ -86,9 +91,6 @@ void addMeshToTinygltfModel(
     tinygltf::Model& tModel,
     MeshInfo         meshInfo)
 {
-    //TODO updateBoundingBox(bunnyMesh); (?)
-    uint posAccessorI, colAccessorI, normAccessorI, indAccessorI;
-
     // mesh
     tModel.meshes.emplace_back();
     tinygltf::Mesh& mesh = tModel.meshes.back();
@@ -108,16 +110,6 @@ void addMeshToTinygltfModel(
 
         auto posBufView = addGltfBufferView(tModel, posBuf);
         auto posAccessor = addGltfAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
-        posAccessorI = posAccessor.first;
-
-        //TODO remove
-        // tModel.accessors.emplace_back();
-        // tinygltf::Accessor& posAccessor = tModel.accessors.back();
-        // posAccessorI = tModel.accessors.size() - 1;
-        // posAccessor.bufferView = posBufViewI;
-        // posAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT; // gltf FLOAT - 32bit
-        // posAccessor.type = TINYGLTF_TYPE_VEC3;
-        // posAccessor.count = posBufView.byteLength / (4 * 3); // count = bytes / (float_bytes * vec3_elem_count)
 
         if constexpr (HasBoundingBox<MeshType>) {
             if (!m.boundingBox().isNull()) {
@@ -127,7 +119,7 @@ void addMeshToTinygltfModel(
             }
         }
 
-        primitive.attributes["POSITION"] = posAccessorI;
+        primitive.attributes["POSITION"] = posAccessor.first;
 
         if constexpr (HasPerVertexColor<MeshType>) {
             if (meshInfo.hasPerVertexColor()) {
@@ -137,22 +129,20 @@ void addMeshToTinygltfModel(
 
                 auto colBufView = addGltfBufferView(tModel, colBuf);
                 auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
-                colAccessorI = colAccessor.first;
 
-                primitive.attributes["COLOR_0"] = colAccessorI;
+                primitive.attributes["COLOR_0"] = colAccessor.first;
             }
         }
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (meshInfo.hasPerVertexNormal()) {
                 auto normBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
                 fd = reinterpret_cast<float*>(normBuf.second.data.data());
-                vertexNormalsToBuffer(m, fd);
+                vertexNormalsToBuffer(m, fd, true);
 
                 auto normBufView = addGltfBufferView(tModel, normBuf);
                 auto normAccessor = addGltfAccessor(tModel, normBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
-                normAccessorI = normAccessor.first;
 
-                primitive.attributes["NORMAL"] = normAccessorI;
+                primitive.attributes["NORMAL"] = normAccessor.first;
             }
         }
         if constexpr (HasPerVertexTexCoord<MeshType>) {
@@ -171,15 +161,10 @@ void addMeshToTinygltfModel(
         uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
         triangulatedFaceVertexIndicesToBuffer(m, ud); //TODO should indexMap be used?
 
-        auto indBufView = addGltfBufferView(tModel, indBuf);
+        auto indBufView = addGltfBufferView(tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
         auto indAccessor = addGltfAccessor(tModel, indBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT, TINYGLTF_TYPE_SCALAR);
-        indAccessorI = indAccessor.first;
 
-        primitive.indices = indAccessorI;
-
-        if (meshInfo.hasPerFaceColor()) {
-            //TODO per face color
-        }
+        primitive.indices = indAccessor.first;
     }
 
     // node
@@ -187,8 +172,9 @@ void addMeshToTinygltfModel(
     tinygltf::Node& node = tModel.nodes.back();
     node.mesh = meshI;
 
-    if (HasTransformMatrix<MeshType>) {
-        node.matrix = std::vector<double>(m.transformMatrix().data(), m.transformMatrix().data() + m.transformMatrix().size());
+    if constexpr (HasTransformMatrix<MeshType>) {
+        if (!m.transformMatrix().isIdentity())
+            node.matrix = std::vector<double>(m.transformMatrix().data(), m.transformMatrix().data() + m.transformMatrix().size());
     }
 
     uint nodeI = tModel.nodes.size() - 1;
@@ -200,12 +186,11 @@ void addMeshToTinygltfModel(
     // --- TODO LIST ---
 
     //TODO save all materials
-    //TODO save all textures
+    //TODO save all textures (textures, images, samplers)
 
     //TODO a primitive per chunk (chunk split by material. Multiple chunks could be using the same material)
     //TODO each primitive will then reference an accessor for:
-        //TODO - indices
-        //TODO - text normals
+        //TODO - texture normals
     //TODO each primitive will reference its material
 }
 
@@ -245,11 +230,7 @@ void saveGltf(
         true,             // pretty print
         settings.binary); // write binary
 
-    //TODO print success or failure?
-    if (success)
-        std::cout << "Export successful" << std::endl;
-    else
-        std::cout << "Export failed" << std::endl;
+    //TODO success or failure
 }
 
 template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
@@ -289,11 +270,7 @@ void saveGltf(
         true,             // pretty print
         settings.binary); // write binary
 
-    //TODO print success or failure?
-    if (success)
-        std::cout << "Export successful" << std::endl;
-    else
-        std::cout << "Export failed" << std::endl;
+    //TODO success or failure
 }
 
 } // namespace vcl
