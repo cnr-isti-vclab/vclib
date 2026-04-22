@@ -31,16 +31,22 @@ int main()
 {
     std::cout << "Loading mesh..." << std::endl;
 
-    //TODO tri mesh (material index solo dei vertici)
     vcl::LoadSettings loadSettings;
     vcl::MeshInfo info;
     loadSettings.loadTextureImages = true;
-    auto bunnyMesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info, loadSettings);
-    vcl::updateBoundingBox(bunnyMesh);
+    auto mesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", info, loadSettings);
+    vcl::updateBoundingBox(mesh);
+    vcl::updatePerVertexAndFaceNormals(mesh);
+
+    // test normals normalization
+    //for (auto& norm : mesh.vertices() | vcl::views::normals)
+    //    norm *= 2.0;
 
     std::cout << "Converting mesh..." << std::endl;
 
-    vcl::saveGltf(bunnyMesh, VCLIB_EXAMPLE_MESHES_PATH "/gltf/bunny_export_gltf.gltf");
+    vcl::SaveSettings saveSettings;
+    saveSettings.binary = false;
+    vcl::saveGltf(mesh, VCLIB_EXAMPLE_MESHES_PATH "/gltf/greek_helmet_export_gltf.gltf", saveSettings);
 
     return 0;
 }
