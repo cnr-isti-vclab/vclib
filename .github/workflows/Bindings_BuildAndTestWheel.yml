@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-latest']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
     - name: Setup env
@@ -38,7 +38,7 @@ jobs:
         cache: 'true'
         version: '6.8.2'
     - name: Install Python ${{ steps.envs.outputs.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ steps.envs.outputs.python-version }}
     - name: Install dependencies
@@ -47,16 +47,11 @@ jobs:
         sudo apt-get install cmake ninja-build
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
     - name: Install dependencies
-      if: runner.os == 'macOS'
-      shell: bash
-      run: |
-        brew install ninja
-    - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
         winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.22
       with:
         key: bindings-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build Wheel
@@ -71,7 +66,7 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel build
         python -m build --wheel --outdir dist
     - name: Upload Wheel
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
         path: dist/*.whl
@@ -85,7 +80,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-latest']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
     - name: Setup env
@@ -103,10 +98,10 @@ jobs:
         sudo apt-get update && sudo apt-get upgrade
         sudo apt-get install freeglut3-dev
     - name: Install Python ${{ steps.envs.outputs.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ steps.envs.outputs.python-version }}
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v8
       with:
         name: vclib-wheel-${{ matrix.os }}-python-${{ steps.envs.outputs.python-version }}
         path: dist/

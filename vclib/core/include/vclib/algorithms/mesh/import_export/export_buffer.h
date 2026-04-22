@@ -683,6 +683,8 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of elements in the mesh) - used only when storage is column major
@@ -693,8 +695,9 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
     using namespace detail;
 
@@ -703,8 +706,10 @@ void elementNormalsToBuffer(
     const uint NUM_ROWS =
         numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
-    for (uint        i = 0;
-         const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+    for (uint i = 0;
+         auto n : mesh.template elements<ELEM_ID>() | views::normals) {
+        if (normalize)
+            n.normalize();
         at(buffer, i, 0, NUM_ROWS, 3, storage) = n.x();
         at(buffer, i, 1, NUM_ROWS, 3, storage) = n.y();
         at(buffer, i, 2, NUM_ROWS, 3, storage) = n.z();
@@ -728,6 +733,8 @@ void elementNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of vertices in the mesh) - used only when storage is column major
@@ -738,10 +745,12 @@ template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::VERTEX>(
+        mesh, buffer, normalize, storage, numRows);
 }
 
 /**
@@ -758,6 +767,8 @@ void vertexNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of faces in the mesh) - used only when storage is column major
@@ -768,10 +779,12 @@ template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::FACE>(
+        mesh, buffer, storage, normalize, numRows);
 }
 
 /**
@@ -792,6 +805,8 @@ void faceNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] indexMap: map from triangle index to face index
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of triangles in the map) - used only when storage is column major
@@ -803,8 +818,9 @@ void triangulatedFaceNormalsToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR,
-    uint                     numRows = UINT_NULL)
+    bool                     normalize = false,
+    MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
+    uint                     numRows   = UINT_NULL)
 {
     using namespace detail;
 
@@ -814,9 +830,11 @@ void triangulatedFaceNormalsToBuffer(
         numRows == UINT_NULL ? indexMap.triangleCount() : numRows;
 
     for (const auto& f : mesh.faces()) {
-        const auto& n     = f.normal();
-        uint        first = indexMap.triangleBegin(f.index());
-        uint        last  = first + indexMap.triangleCount(f.index());
+        auto n = f.normal();
+        if (normalize)
+            n.normalize();
+        uint first = indexMap.triangleBegin(f.index());
+        uint last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             at(buffer, t, 0, NUM_ROWS, 3, storage) = n.x();
             at(buffer, t, 1, NUM_ROWS, 3, storage) = n.y();
@@ -839,6 +857,8 @@ void triangulatedFaceNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of edges in the mesh) - used only when storage is column major
@@ -849,10 +869,12 @@ template<EdgeMeshConcept MeshType>
 void edgeNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::EDGE>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::EDGE>(
+        mesh, buffer, normalize, storage, numRows);
 }
 
 /**
