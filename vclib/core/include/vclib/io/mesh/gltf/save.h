@@ -119,11 +119,14 @@ void addMeshToTinygltfModel(
     auto posAccessor = addGltfAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
 
     if constexpr (HasBoundingBox<MeshType>) {
-        if (!m.boundingBox().isNull()) {
-            auto bBox = m.boundingBox();
-            posAccessor.second.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
-            posAccessor.second.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
-        }
+        auto bBox = m.boundingBox().isNull() ? boundingBox(m) : m.boundingBox();
+        posAccessor.second.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
+        posAccessor.second.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
+    }
+    else {
+        auto bBox = boundingBox(m);
+        posAccessor.second.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
+        posAccessor.second.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
     }
 
     primitive.attributes["POSITION"] = posAccessor.first;
