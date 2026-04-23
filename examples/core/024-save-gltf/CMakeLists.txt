@@ -32,8 +32,3 @@ vclib_add_example(
     ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
     ${HEADER_ONLY_OPTION})
-
-if (TARGET pybind11::pybind11)
-    target_link_libraries(${PROJECT_NAME}
-        PRIVATE pybind11::embed)
-endif()

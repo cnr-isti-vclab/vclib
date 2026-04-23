@@ -29,24 +29,51 @@
 
 int main()
 {
-    std::cout << "Loading mesh..." << std::endl;
+    // Test saving a PolyMesh
 
     vcl::LoadSettings loadSettings;
-    vcl::MeshInfo info;
     loadSettings.loadTextureImages = true;
-    auto mesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", info, loadSettings);
-    vcl::updateBoundingBox(mesh);
-    vcl::updatePerVertexAndFaceNormals(mesh);
+
+    auto helmet = vcl::loadMesh<vcl::PolyMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", loadSettings);
+    vcl::updateBoundingBox(helmet);
+    vcl::updatePerVertexAndFaceNormals(helmet);
 
     // test normals normalization
-    //for (auto& norm : mesh.vertices() | vcl::views::normals)
+    // for (auto& norm : mesh.vertices() | vcl::views::normals)
     //    norm *= 2.0;
-
-    std::cout << "Converting mesh..." << std::endl;
 
     vcl::SaveSettings saveSettings;
     saveSettings.binary = false;
-    vcl::saveGltf(mesh, VCLIB_EXAMPLE_MESHES_PATH "/gltf/greek_helmet_export_gltf.gltf", saveSettings);
+    vcl::saveMesh(
+        helmet,
+        VCLIB_RESULTS_PATH "/024_greek_helmet_export_gltf.gltf",
+        saveSettings);
+
+    std::cout << "Saved Greek helmet in gltf format (ASCII)" << std::endl;
+
+    saveSettings.binary = true;
+    vcl::saveMesh(
+        helmet,
+        VCLIB_RESULTS_PATH "/024_greek_helmet_export_bin.glb",
+        saveSettings);
+
+    std::cout << "Saved Greek helmet in gltf format (binary)" << std::endl;
+
+    // Test multiple meshes on same file
+
+    auto bunny = vcl::loadMesh<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", loadSettings);
+    auto bimba = vcl::loadMesh<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj", loadSettings);
+    vcl::updatePerVertexAndFaceNormals(bimba);
+
+    std::vector<vcl::TriMesh> meshes{std::move(bunny), std::move(bimba)};
+
+    vcl::saveMeshes(
+        meshes, VCLIB_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
+
+    std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
 
     return 0;
 }
