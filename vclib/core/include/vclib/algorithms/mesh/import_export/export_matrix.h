@@ -1173,7 +1173,8 @@ Vect faceMaterialIndicesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     MeshConcept MeshType>
 Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
@@ -1285,7 +1286,8 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
@@ -1401,7 +1403,8 @@ Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
@@ -1483,7 +1486,8 @@ Matrix vertexAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
@@ -1565,7 +1569,8 @@ Matrix faceAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
@@ -1657,7 +1662,8 @@ Matrix edgeAdjacentFacesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
@@ -1773,7 +1779,8 @@ Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
@@ -1860,7 +1867,8 @@ Matrix vertexAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
@@ -1944,7 +1952,8 @@ Matrix faceAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...> typename Container,
+    template<typename, typename...>
+    typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)
