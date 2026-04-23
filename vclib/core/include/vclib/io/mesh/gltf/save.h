@@ -125,10 +125,12 @@ void addMeshToTinygltfModel(
         if (meshInfo.hasPerVertexColor()) {
             auto colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
             uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.second.data.data());
-            vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA);
+            vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA); //TODO this is endianness dependant. On a big-endian machine, vcl::Color::Format::ABGR is required
 
             auto colBufView = addGltfBufferView(tModel, colBuf);
             auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
+            // glTF requires normalized set to true for integer vertex colors
+            colAccessor.second.normalized = true;
 
             primitive.attributes["COLOR_0"] = colAccessor.first;
         }
