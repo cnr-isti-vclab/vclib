@@ -101,7 +101,7 @@ void addMeshToTinygltfModel(
     // primitive
     mesh.primitives.emplace_back();
     tinygltf::Primitive& primitive = mesh.primitives.back();
-    primitive.mode = TINYGLTF_MODE_TRIANGLES;
+    primitive.mode = TINYGLTF_MODE_TRIANGLES; //TODO should take into account all other modes
 
     // vertices position buffer, buffer view and accessor
     auto posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
@@ -124,8 +124,8 @@ void addMeshToTinygltfModel(
     if constexpr (HasPerVertexColor<MeshType>) {
         if (meshInfo.hasPerVertexColor()) {
             auto colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
-            uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.second.data.data());
-            vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA); //TODO this is endianness dependant. On a big-endian machine, vcl::Color::Format::ABGR is required
+            uint8_t* u8d = reinterpret_cast<uint8_t*>(colBuf.second.data.data());
+            vertexColorsToBuffer(m, u8d, vcl::Color::Format::RGBA);
 
             auto colBufView = addGltfBufferView(tModel, colBuf);
             auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
