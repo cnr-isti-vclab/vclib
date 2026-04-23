@@ -229,7 +229,8 @@ void saveGltf(
         true,             // pretty print
         settings.binary); // write binary
 
-    //TODO success or failure
+    if (!success)
+        throw std::runtime_error("Failed to export mesh to glTF format: " + filename);
 }
 
 template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
@@ -269,7 +270,9 @@ void saveGltf(
         true,             // pretty print
         settings.binary); // write binary
 
-    //TODO success or failure
+    if (!success)
+        throw std::runtime_error("Failed to export meshes to glTF format: " + filename);
+
 }
 
 } // namespace vcl
