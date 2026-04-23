@@ -101,7 +101,14 @@ void addMeshToTinygltfModel(
     // primitive
     mesh.primitives.emplace_back();
     tinygltf::Primitive& primitive = mesh.primitives.back();
-    primitive.mode = TINYGLTF_MODE_TRIANGLES; //TODO should take into account all other modes
+    primitive.mode = TINYGLTF_MODE_TRIANGLES;
+
+    if constexpr (EdgeMeshConcept<MeshType>) {
+        primitive.mode = TINYGLTF_MODE_LINE;
+    }
+    if constexpr (!HasFaces<MeshType> && !HasEdges<MeshType>) {
+        primitive.mode = TINYGLTF_MODE_POINTS;
+    }
 
     // vertices position buffer, buffer view and accessor
     auto posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
