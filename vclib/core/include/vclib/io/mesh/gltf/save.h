@@ -97,58 +97,57 @@ void addMeshToTinygltfModel(
     uint meshI = tModel.meshes.size() - 1;
 
     // vertices
-    if constexpr (HasVertices<MeshType>) {
-        // primitive
-        mesh.primitives.emplace_back();
-        tinygltf::Primitive& primitive = mesh.primitives.back();
-        primitive.mode = TINYGLTF_MODE_TRIANGLES;
 
-        // vertices position buffer, buffer view and accessor
-        auto posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
-        float* fd = reinterpret_cast<float*>(posBuf.second.data.data());
-        vertexPositionsToBuffer(m, fd);
+    // primitive
+    mesh.primitives.emplace_back();
+    tinygltf::Primitive& primitive = mesh.primitives.back();
+    primitive.mode = TINYGLTF_MODE_TRIANGLES;
 
-        auto posBufView = addGltfBufferView(tModel, posBuf);
-        auto posAccessor = addGltfAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
+    // vertices position buffer, buffer view and accessor
+    auto posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
+    float* fd = reinterpret_cast<float*>(posBuf.second.data.data());
+    vertexPositionsToBuffer(m, fd);
 
-        if constexpr (HasBoundingBox<MeshType>) {
-            if (!m.boundingBox().isNull()) {
-                auto bBox = m.boundingBox();
-                posAccessor.second.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
-                posAccessor.second.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
-            }
+    auto posBufView = addGltfBufferView(tModel, posBuf);
+    auto posAccessor = addGltfAccessor(tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
+
+    if constexpr (HasBoundingBox<MeshType>) {
+        if (!m.boundingBox().isNull()) {
+            auto bBox = m.boundingBox();
+            posAccessor.second.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
+            posAccessor.second.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
         }
+    }
 
-        primitive.attributes["POSITION"] = posAccessor.first;
+    primitive.attributes["POSITION"] = posAccessor.first;
 
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (meshInfo.hasPerVertexColor()) {
-                auto colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
-                uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.second.data.data());
-                vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA);
+    if constexpr (HasPerVertexColor<MeshType>) {
+        if (meshInfo.hasPerVertexColor()) {
+            auto colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
+            uint32_t* u32d = reinterpret_cast<uint32_t*>(colBuf.second.data.data());
+            vertexColorsToBuffer(m, u32d, vcl::Color::Format::RGBA);
 
-                auto colBufView = addGltfBufferView(tModel, colBuf);
-                auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
+            auto colBufView = addGltfBufferView(tModel, colBuf);
+            auto colAccessor = addGltfAccessor(tModel, colBufView, TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, TINYGLTF_TYPE_VEC4);
 
-                primitive.attributes["COLOR_0"] = colAccessor.first;
-            }
+            primitive.attributes["COLOR_0"] = colAccessor.first;
         }
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            if (meshInfo.hasPerVertexNormal()) {
-                auto normBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
-                fd = reinterpret_cast<float*>(normBuf.second.data.data());
-                vertexNormalsToBuffer(m, fd, true);
+    }
+    if constexpr (HasPerVertexNormal<MeshType>) {
+        if (meshInfo.hasPerVertexNormal()) {
+            auto normBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
+            fd = reinterpret_cast<float*>(normBuf.second.data.data());
+            vertexNormalsToBuffer(m, fd, true);
 
-                auto normBufView = addGltfBufferView(tModel, normBuf);
-                auto normAccessor = addGltfAccessor(tModel, normBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
+            auto normBufView = addGltfBufferView(tModel, normBuf);
+            auto normAccessor = addGltfAccessor(tModel, normBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
 
-                primitive.attributes["NORMAL"] = normAccessor.first;
-            }
+            primitive.attributes["NORMAL"] = normAccessor.first;
         }
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (meshInfo.hasPerVertexTexCoord()) {
-                //TODO per vertex tex coord
-            }
+    }
+    if constexpr (HasPerVertexTexCoord<MeshType>) {
+        if (meshInfo.hasPerVertexTexCoord()) {
+            //TODO per vertex tex coord
         }
     }
 
