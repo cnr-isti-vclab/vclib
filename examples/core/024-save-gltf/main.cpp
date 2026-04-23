@@ -86,7 +86,7 @@ int main()
     vcl::SaveSettings sS;
     sS.binary = false;
     vcl::saveMesh(
-        helmet,
+        pointCloud,
         VCLIB_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
         sS);
 
