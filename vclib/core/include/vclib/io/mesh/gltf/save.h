@@ -28,8 +28,8 @@
 #include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <tiny_gltf.h>
 
-#define VCL_GLTF_ASSET_VERSION "2.0"
-#define VCL_GLTF_GENERATOR_NAME "vclib-tinygltf-exporter"
+static std::string VCL_GLTF_ASSET_VERSION = "2.0";
+static std::string VCL_GLTF_GENERATOR_NAME = "vclib-tinygltf-exporter";
 
 namespace vcl {
 
