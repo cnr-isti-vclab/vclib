@@ -75,5 +75,22 @@ int main()
 
     std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
 
+    // Test saving a PointCloud
+
+    vcl::LoadSettings lS;
+    lS.loadTextureImages = true;
+
+    auto pointCloud = vcl::loadMesh<vcl::PointCloud>(
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/FlowerPointCloud/scene.gltf", lS);
+
+    vcl::SaveSettings sS;
+    sS.binary = false;
+    vcl::saveMesh(
+        helmet,
+        VCLIB_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
+        sS);
+
+    std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
+
     return 0;
 }
