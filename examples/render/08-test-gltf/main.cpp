@@ -41,6 +41,7 @@ int main(int argc, char** argv)
         CESIUM_MILK_TRUCK,
         DAMAGED_HELMET,
         DUCK,
+        FLOWER_POINT_CLOUD,
         ORIENTATION_TEST,
         COUNT
     };
@@ -51,6 +52,7 @@ int main(int argc, char** argv)
         "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/Duck/Duck.gltf",
+        "/gltf/FlowerPointCloud/scene.gltf",
         "/gltf/OrientationTest/OrientationTest.gltf"};
 
     const bool LOAD_CUSTOM_CAMERA = false;
