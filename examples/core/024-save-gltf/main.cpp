@@ -68,7 +68,7 @@ int main()
         VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj", loadSettings);
     vcl::updatePerVertexAndFaceNormals(bimba);
 
-    std::vector<vcl::TriMesh> meshes{std::move(bunny), std::move(bimba)};
+    std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
 
     vcl::saveMeshes(
         meshes, VCLIB_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
