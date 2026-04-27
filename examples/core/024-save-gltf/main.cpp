@@ -24,88 +24,194 @@
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
+#include <tiny_gltf.h>
+#include <vector>
 
 #include <iostream>
 
+#include <cstdint>
+
+/**
+ * @brief Converts a mesh into a collection of tinygltf objects and inserts them into a tinygltf model.
+ *
+ * @tparam MeshType: type of the input mesh.
+ *
+ * @param[in] mesh: input mesh to insert into the model.
+ * @param[out] model: model to be updated.
+ *
+ * @ingroup update
+ */
+template<vcl::MeshConcept MeshType>
+void addMeshToTinygltfModel(MeshType mesh, tinygltf::Model model);
+
 int main()
 {
-    // Test saving a PolyMesh
+    std::cout << "Loading mesh..." << std::endl;
 
+    //TODO tri mesh (material index solo dei vertici)
     vcl::LoadSettings loadSettings;
+    vcl::MeshInfo info;
     loadSettings.loadTextureImages = true;
+    auto bunnyMesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info, loadSettings);
+    vcl::updateBoundingBox(bunnyMesh);
 
-    auto helmet = vcl::loadMesh<vcl::PolyMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", loadSettings);
-    vcl::updateBoundingBox(helmet);
-    vcl::updatePerVertexAndFaceNormals(helmet);
+    std::cout << "Converting mesh..." << std::endl;
 
-    // test normals normalization
-    // for (auto& norm : mesh.vertices() | vcl::views::normals)
-    //    norm *= 2.0;
+    tinygltf::Model model;
 
-    vcl::SaveSettings saveSettings;
-    saveSettings.binary = false;
-    vcl::saveMesh(
-        helmet,
-        VCLIB_RESULTS_PATH "/024_greek_helmet_export_gltf.gltf",
-        saveSettings);
+    //TODO controlla il codice di save e load buffer
+    //TODO controlla il codice di rendering
+    //TODO 1) colore per vertice (to test)
+    //TODO 2) templating su mesh concept
+    //TODO 3) templating per mesh poligonali
+    //TODO faces to triangles: triangulatedFaceVertexIndicesToBuffer
 
-    std::cout << "Saved Greek helmet in gltf format (ASCII)" << std::endl;
+    //TODO pull dalla main branch
 
-    saveSettings.binary = true;
-    vcl::saveMesh(
-        helmet,
-        VCLIB_RESULTS_PATH "/024_greek_helmet_export_bin.glb",
-        saveSettings);
+    //TODO materials, tex coord, nome della mesh
+    //TODO separazione delle primitive in base al materiale dei vertici
 
-    std::cout << "Saved Greek helmet in gltf format (binary)" << std::endl;
+    model.asset.version = "2.0";
+    model.asset.generator = "vclib-tinygltf-exporter";
 
-    // Test multiple meshes on same file
+    // mesh
+    tinygltf::Mesh mesh;
 
-    auto bunny = vcl::loadMesh<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", loadSettings);
-    auto bimba = vcl::loadMesh<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj", loadSettings);
-    vcl::updatePerVertexAndFaceNormals(bimba);
+    // triangles
+    tinygltf::Primitive primitive;
+    primitive.attributes["POSITION"] = 0;
+    primitive.attributes["NORMAL"] = 1; //TODO only if info.hasPerVertexNormal()
+    if (info.hasPerVertexColor())
+        primitive.attributes["COLOR_0"] = 3;
+    primitive.indices = 2;
+    primitive.mode = TINYGLTF_MODE_TRIANGLES;
+    //TODO Tex coords
+    //TODO material
 
-    std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
+    mesh.primitives.push_back(primitive);
+    model.meshes.push_back(mesh);
 
-    vcl::saveMeshes(
-        meshes, VCLIB_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
+    //TODO materials
+    //guarda loadGltfPrimitiveMaterial
 
-    std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
+    // buffer
+    tinygltf::Buffer positionsBuffer{}, normalsBuffer{}, indicesBuffer{}, colorsBuffer{};
 
-    // Test saving a PointCloud
+    // vertices
+    positionsBuffer.data.resize(3 * bunnyMesh.vertexCount() * sizeof(float));
+    float* fd = reinterpret_cast<float*>(positionsBuffer.data.data());
+    vcl::vertexPositionsToBuffer(bunnyMesh, fd);
 
-    vcl::LoadSettings lS;
-    lS.loadTextureImages = true;
+    // normals
+    normalsBuffer.data.resize(3 * bunnyMesh.vertexCount() * sizeof(float));
+    fd = reinterpret_cast<float*>(normalsBuffer.data.data());
+    vcl::vertexNormalsToBuffer(bunnyMesh, fd);
 
-    auto pointCloud = vcl::loadMesh<vcl::PointCloud>(
-        VCLIB_EXAMPLE_MESHES_PATH "/gltf/FlowerPointCloud/scene.gltf", lS);
+    // indices
+    indicesBuffer.data.resize(3 * bunnyMesh.faceCount() * sizeof(uint32_t));
+    uint32_t* u32d = reinterpret_cast<uint32_t*>(indicesBuffer.data.data());
+    // indices of vertices that do not consider deleted vertices
+    std::vector<uint32_t> vIndices = bunnyMesh.vertexCompactIndices();
+    size_t indexI = 0;
 
-    vcl::SaveSettings sS;
-    sS.binary = false;
-    vcl::saveMesh(
-        pointCloud,
-        VCLIB_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
-        sS);
+    for (const vcl::TriMesh::Face& f : bunnyMesh.faces()) {
+        for (const vcl::TriMesh::Vertex* v : f.vertices()) {
+            u32d[indexI] = vIndices[bunnyMesh.index(v)];
+            indexI++;
+        }
+    }
 
-    std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
+    // colors
+    if (info.hasPerVertexColor()) {
+        colorsBuffer.data.resize(4 * bunnyMesh.vertexCount());
+        u32d = reinterpret_cast<uint32_t*>(colorsBuffer.data.data());
+        vcl::vertexColorsToBuffer(bunnyMesh, u32d, vcl::Color::Format::RGBA);
+    }
 
-    // Test a TriEdgeMesh with edges and faces
+    model.buffers.push_back(positionsBuffer);
+    model.buffers.push_back(normalsBuffer);
+    model.buffers.push_back(indicesBuffer);
+    if (info.hasPerVertexColor()) model.buffers.push_back(colorsBuffer);
 
-    auto bte =
-        vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-    auto tmp = vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH
-                                               "/bunny_edge_sections.obj");
+    // buffer views
+    tinygltf::BufferView positionsBufferView{}, normalsBufferView{}, indicesBufferView{}, colorsBufferView{};
 
-    bte.append(tmp);
+    positionsBufferView.buffer = 0;
+    positionsBufferView.byteLength = positionsBuffer.data.size();
 
-    std::cout << "Number of vertices: " << bte.vertexCount() << std::endl;
-    std::cout << "Number of faces: " << bte.faceCount() << std::endl;
-    std::cout << "Number of edges: " << bte.edgeCount() << std::endl;
+    normalsBufferView.buffer = 1;
+    normalsBufferView.byteLength = normalsBuffer.data.size();
 
-    // TODO: save bte to a gltf having both faces and edges
+    indicesBufferView.buffer = 2;
+    indicesBufferView.byteLength = indicesBuffer.data.size();
+    indicesBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
+
+    colorsBufferView.buffer = 3;
+    colorsBufferView.byteLength = colorsBuffer.data.size();
+
+    model.bufferViews.push_back(positionsBufferView);
+    model.bufferViews.push_back(normalsBufferView);
+    model.bufferViews.push_back(indicesBufferView);
+    if (info.hasPerVertexColor()) model.bufferViews.push_back(colorsBufferView);
+
+    // accessors
+    tinygltf::Accessor positionsAccessor{}, normalsAccessor{}, indicesAccessor{}, colorsAccessor{};
+
+    positionsAccessor.bufferView = 0;
+    positionsAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT; // gltf FLOAT - 32bit
+    positionsAccessor.type = TINYGLTF_TYPE_VEC3;
+    positionsAccessor.count = positionsBufferView.byteLength / (4 * 3); // count = bytes / (float_bytes * vec3_elem_count)
+    auto bBox = bunnyMesh.boundingBox();
+    positionsAccessor.maxValues = std::vector<double>{bBox.max().x(), bBox.max().y(), bBox.max().z()};
+    positionsAccessor.minValues = std::vector<double>{bBox.min().x(), bBox.min().y(), bBox.min().z()};
+
+    normalsAccessor.bufferView = 1;
+    normalsAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT; // gltf FLOAT - 32bit
+    normalsAccessor.type = TINYGLTF_TYPE_VEC3;
+    normalsAccessor.count = normalsBufferView.byteLength / (4 * 3); // count = bytes / (float_bytes * vec3_elem_count)
+
+    indicesAccessor.bufferView = 2;
+    indicesAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT; // gltf UNSIGNED_INT - 32bit
+    indicesAccessor.type = TINYGLTF_TYPE_SCALAR;
+    indicesAccessor.count = indicesBufferView.byteLength / 4; // count = bytes / uint_bytes
+
+    if (info.hasPerVertexColor()) {
+        colorsAccessor.bufferView = 3;
+        colorsAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE; // gltf UNSIGNED_BYTE - 8bit
+        colorsAccessor.type = TINYGLTF_TYPE_VEC4;
+        colorsAccessor.count = colorsBufferView.byteLength / 4; // count = bytes / vec4_elem_count
+    }
+
+    model.accessors.push_back(positionsAccessor);
+    model.accessors.push_back(normalsAccessor);
+    model.accessors.push_back(indicesAccessor);
+    if (info.hasPerVertexColor()) model.accessors.push_back(colorsAccessor);
+
+    // node
+    tinygltf::Node node;
+    node.mesh = 0;
+    node.matrix = std::vector<double>(bunnyMesh.transformMatrix().data(), bunnyMesh.transformMatrix().data() + bunnyMesh.transformMatrix().size());
+    model.nodes.push_back(node);
+
+    // default scene
+    tinygltf::Scene scene;
+    scene.nodes.push_back(0);
+    model.scenes.push_back(scene);
+    model.defaultScene = 0;
+
+    std::cout << "Exporting to gltf..." << std::endl;
+
+    tinygltf::TinyGLTF gltf;
+    bool success = gltf.WriteGltfSceneToFile(&model, VCLIB_EXAMPLE_MESHES_PATH "/gltf/bunny_export_gltf.gltf",
+          true,   // embedImages
+          true,   // embedBuffers
+          true,   // pretty print
+          false); // write binary
+
+    if (success)
+        std::cout << "Export successful" << std::endl;
+    else
+        std::cout << "Export failed" << std::endl;
 
     return 0;
 }
