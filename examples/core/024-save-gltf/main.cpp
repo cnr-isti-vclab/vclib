@@ -92,5 +92,20 @@ int main()
 
     std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
 
+    // Test a TriEdgeMesh with edges and faces
+
+    auto bte =
+        vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    auto tmp = vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                               "/bunny_edge_sections.obj");
+
+    bte.append(tmp);
+
+    std::cout << "Number of vertices: " << bte.vertexCount() << std::endl;
+    std::cout << "Number of faces: " << bte.faceCount() << std::endl;
+    std::cout << "Number of edges: " << bte.edgeCount() << std::endl;
+
+    // TODO: save bte to a gltf having both faces and edges
+
     return 0;
 }
