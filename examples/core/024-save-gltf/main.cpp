@@ -105,7 +105,12 @@ int main()
     std::cout << "Number of faces: " << bte.faceCount() << std::endl;
     std::cout << "Number of edges: " << bte.edgeCount() << std::endl;
 
-    // TODO: save bte to a gltf having both faces and edges
+    vcl::saveMesh(
+        bte,
+        VCLIB_RESULTS_PATH "/024_bunny_edge_sections_export_gltf.gltf",
+        sS);
+
+    std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)" << std::endl;
 
     return 0;
 }
