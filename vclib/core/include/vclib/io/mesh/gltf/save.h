@@ -70,7 +70,7 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     int                                    type,
     bool                                   normalized = false)
 {
-    // TODO check if component type and type are valid
+    // TODO check if component type and type are valid values
 
     model.accessors.emplace_back();
     tinygltf::Accessor& accessor = model.accessors.back();
@@ -87,6 +87,29 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     return {index, accessor};
 }
 
+inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
+    tinygltf::Mesh&  mesh,
+    int              posAccessorIndex,
+    int              colAccessorIndex,
+    int              normAccessorIndex,
+    int              mode) {
+    // TODO check if mode is a valid value
+
+    mesh.primitives.emplace_back();
+    tinygltf::Primitive& primitive   = mesh.primitives.back();
+    uint                index        = mesh.primitives.size() - 1;
+    primitive.mode                   = mode;
+    primitive.attributes["POSITION"] = posAccessorIndex;
+
+    if (colAccessorIndex >= 0)
+        primitive.attributes["COLOR_0"] = colAccessorIndex;
+
+    if (normAccessorIndex >= 0)
+        primitive.attributes["NORMAL"] = normAccessorIndex;
+
+    return {index, primitive};
+}
+
 template<MeshConcept MeshType>
 void addMeshToTinygltfModel(
     const MeshType&  m,
@@ -99,18 +122,7 @@ void addMeshToTinygltfModel(
     uint            meshI = tModel.meshes.size() - 1;
 
     // vertices
-
-    // primitive
-    mesh.primitives.emplace_back();
-    tinygltf::Primitive& primitive = mesh.primitives.back();
-    primitive.mode                 = TINYGLTF_MODE_TRIANGLES;
-
-    if constexpr (EdgeMeshConcept<MeshType>) {
-        primitive.mode = TINYGLTF_MODE_LINE;
-    }
-    if constexpr (!HasFaces<MeshType> && !HasEdges<MeshType>) {
-        primitive.mode = TINYGLTF_MODE_POINTS;
-    }
+    int posAccI = -1, colAccI = -1, normAccI = -1;
 
     // vertices position buffer, buffer view and accessor
     auto   posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
@@ -134,7 +146,7 @@ void addMeshToTinygltfModel(
     posAccessor.second.minValues = std::vector<double> {
         bBox.min().x(), bBox.min().y(), bBox.min().z()};
 
-    primitive.attributes["POSITION"] = posAccessor.first;
+    posAccI = posAccessor.first;
 
     if constexpr (HasPerVertexColor<MeshType>) {
         if (meshInfo.hasPerVertexColor()) {
@@ -151,7 +163,7 @@ void addMeshToTinygltfModel(
             // glTF requires normalized set to true for integer vertex colors
             colAccessor.second.normalized = true;
 
-            primitive.attributes["COLOR_0"] = colAccessor.first;
+            colAccI = colAccessor.first;
         }
     }
     if constexpr (HasPerVertexNormal<MeshType>) {
@@ -168,7 +180,7 @@ void addMeshToTinygltfModel(
                 TINYGLTF_COMPONENT_TYPE_FLOAT,
                 TINYGLTF_TYPE_VEC3);
 
-            primitive.attributes["NORMAL"] = normAccessor.first;
+            normAccI = normAccessor.first;
         }
     }
     if constexpr (HasPerVertexTexCoord<MeshType>) {
@@ -177,26 +189,63 @@ void addMeshToTinygltfModel(
         }
     }
 
+    // primitives
+
     // faces
     if constexpr (HasFaces<MeshType>) {
-        tinygltf::Primitive& primitive = mesh.primitives.back();
+        if (meshInfo.hasFaces()) {
+            auto primitive =
+                addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
 
-        // indices buffer, buffer view and accessor
-        auto indBuf =
-            addGltfBuffer(tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
-        uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
-        triangulatedFaceVertexIndicesToBuffer(
-            m, ud); // TODO should indexMap be used?
+            // indices buffer, buffer view and accessor
+            auto indBuf =
+                addGltfBuffer(tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+            uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+            triangulatedFaceVertexIndicesToBuffer(
+                m, ud);
 
-        auto indBufView = addGltfBufferView(
-            tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-        auto indAccessor = addGltfAccessor(
-            tModel,
-            indBufView,
-            TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
-            TINYGLTF_TYPE_SCALAR);
+            auto indBufView = addGltfBufferView(
+                tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+            auto indAccessor = addGltfAccessor(
+                tModel,
+                indBufView,
+                TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                TINYGLTF_TYPE_SCALAR);
 
-        primitive.indices = indAccessor.first;
+            primitive.second.indices = indAccessor.first;
+        }
+    }
+
+    // edges
+    if constexpr (EdgeMeshConcept<MeshType>) {
+        if (meshInfo.hasEdges()) {
+            auto primitive =
+                addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_LINE);
+
+            // indices buffer, buffer view and accessor
+            auto indBuf =
+                addGltfBuffer(tModel, 2 * m.edgeCount() * sizeof(uint));
+            uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+            edgeVertexIndicesToBuffer(
+                m, ud);
+
+            auto indBufView = addGltfBufferView(
+                tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+            auto indAccessor = addGltfAccessor(
+                tModel,
+                indBufView,
+                TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                TINYGLTF_TYPE_SCALAR);
+
+            primitive.second.indices = indAccessor.first;
+        }
+    }
+
+    // points
+    // since no primitives were added, the mesh has neither faces nor edges
+    if (mesh.primitives.size() == 0) {
+        auto primitive =
+            addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_POINTS);
     }
 
     // node
