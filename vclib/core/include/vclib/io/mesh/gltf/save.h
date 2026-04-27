@@ -138,10 +138,9 @@ void addMeshToTinygltfModel(
 
     if constexpr (HasPerVertexColor<MeshType>) {
         if (meshInfo.hasPerVertexColor()) {
-            auto     colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
-            uint8_t* u8d =
-                reinterpret_cast<uint8_t*>(colBuf.second.data.data());
-            vertexColorsToBuffer(m, u8d, vcl::Color::Format::RGBA);
+            auto  colBuf = addGltfBuffer(tModel, 4 * m.vertexCount());
+            uint* ud     = reinterpret_cast<uint*>(colBuf.second.data.data());
+            vertexColorsToBuffer(m, ud, vcl::Color::Format::ABGR);
 
             auto colBufView  = addGltfBufferView(tModel, colBuf);
             auto colAccessor = addGltfAccessor(
