@@ -88,16 +88,17 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
 }
 
 inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
-    tinygltf::Mesh&  mesh,
-    int              posAccessorIndex,
-    int              colAccessorIndex,
-    int              normAccessorIndex,
-    int              mode) {
+    tinygltf::Mesh& mesh,
+    int             posAccessorIndex,
+    int             colAccessorIndex,
+    int             normAccessorIndex,
+    int             mode)
+{
     // TODO check if mode is a valid value
 
     mesh.primitives.emplace_back();
     tinygltf::Primitive& primitive   = mesh.primitives.back();
-    uint                index        = mesh.primitives.size() - 1;
+    uint                 index       = mesh.primitives.size() - 1;
     primitive.mode                   = mode;
     primitive.attributes["POSITION"] = posAccessorIndex;
 
@@ -141,10 +142,10 @@ void addMeshToTinygltfModel(
         bBox = boundingBox(m).template cast<double>();
     }
 
-    posAccessor.second.maxValues = std::vector<double> {
-        bBox.max().x(), bBox.max().y(), bBox.max().z()};
-    posAccessor.second.minValues = std::vector<double> {
-        bBox.min().x(), bBox.min().y(), bBox.min().z()};
+    posAccessor.second.maxValues =
+        std::vector<double> {bBox.max().x(), bBox.max().y(), bBox.max().z()};
+    posAccessor.second.minValues =
+        std::vector<double> {bBox.min().x(), bBox.min().y(), bBox.min().z()};
 
     posAccI = posAccessor.first;
 
@@ -193,16 +194,15 @@ void addMeshToTinygltfModel(
 
     // faces
     if constexpr (HasFaces<MeshType>) {
-        if (meshInfo.hasFaces()) {
-            auto primitive =
-                addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+        if (meshInfo.hasFaces() && m.faceCount() > 0) {
+            auto primitive = addGltfPrimitive(
+                mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
 
             // indices buffer, buffer view and accessor
-            auto indBuf =
-                addGltfBuffer(tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+            auto indBuf = addGltfBuffer(
+                tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
             uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
-            triangulatedFaceVertexIndicesToBuffer(
-                m, ud);
+            triangulatedFaceVertexIndicesToBuffer(m, ud);
 
             auto indBufView = addGltfBufferView(
                 tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
@@ -218,16 +218,15 @@ void addMeshToTinygltfModel(
 
     // edges
     if constexpr (EdgeMeshConcept<MeshType>) {
-        if (meshInfo.hasEdges()) {
-            auto primitive =
-                addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_LINE);
+        if (meshInfo.hasEdges() && m.edgeCount() > 0) {
+            auto primitive = addGltfPrimitive(
+                mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_LINE);
 
             // indices buffer, buffer view and accessor
             auto indBuf =
                 addGltfBuffer(tModel, 2 * m.edgeCount() * sizeof(uint));
             uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
-            edgeVertexIndicesToBuffer(
-                m, ud);
+            edgeVertexIndicesToBuffer(m, ud);
 
             auto indBufView = addGltfBufferView(
                 tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
@@ -244,8 +243,8 @@ void addMeshToTinygltfModel(
     // points
     // since no primitives were added, the mesh has neither faces nor edges
     if (mesh.primitives.size() == 0) {
-        auto primitive =
-            addGltfPrimitive(mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_POINTS);
+        auto primitive = addGltfPrimitive(
+            mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_POINTS);
     }
 
     // node
