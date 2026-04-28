@@ -138,7 +138,7 @@ void addMeshToTinygltfModel(
     if constexpr (HasBoundingBox<MeshType>) {
         bBox = m.boundingBox().template cast<double>();
     }
-    if (bBox.isNull()) {
+    if (bBox.isNull() || bBox.isEmpty()) {
         bBox = boundingBox(m).template cast<double>();
     }
 
