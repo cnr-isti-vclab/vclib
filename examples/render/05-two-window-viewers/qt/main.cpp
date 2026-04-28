@@ -24,11 +24,9 @@
 
 #include <vclib/qt/viewer_widget.h>
 
-#include <QApplication>
-
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     vcl::qt::ViewerWidget viewer1("Viewer Qt 1");
     vcl::qt::ViewerWidget viewer2("Viewer Qt 2");

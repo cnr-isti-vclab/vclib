@@ -229,14 +229,34 @@ void PrimitiveLines::setPoints(
 
     assert(!setColors || vertCoords.size() == vertColors.size() * 3);
     assert(!setNormals || vertCoords.size() == vertNormals.size());
-    assert(!setLineColors || vertColors.size() == lineColors.size() * 2);
+    assert(
+        !setLineColors ||
+        (setLineIndices && lineIndices.size() == lineColors.size() * 2) ||
+        (!setLineIndices && vertCoords.size() / 3 == lineColors.size() * 2));
 
     if (numElements > 1) {
-        auto [vNormals, vNormalsReleaseFn] =
+        // coordinates
+        auto [vCoords, vCoordsReleaseFn] =
             Context::getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
-        auto [vColors, vColorsReleaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(numVertices);
+        std::copy(vertCoords.begin(), vertCoords.end(), vCoords);
+
+        bgfx::VertexLayout vCoordslayout;
+        vCoordslayout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .end();
+
+        std::get<OWNED>(mVertexCoords)
+            .create(
+                bgfx::makeRef(
+                    vCoords,
+                    sizeof(float) * vertCoords.size(),
+                    vCoordsReleaseFn),
+                vCoordslayout);
+
+        // normals
+        auto [vNormals, vNormalsReleaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(vertCoords.size());
 
         if (!setNormals) {
             for (uint i = 0; i < vertCoords.size(); i++)
@@ -246,6 +266,23 @@ void PrimitiveLines::setPoints(
             std::copy(vertNormals.begin(), vertNormals.end(), vNormals);
         }
 
+        bgfx::VertexLayout vNormalsLayout;
+        vNormalsLayout.begin()
+            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float, true)
+            .end();
+
+        std::get<OWNED>(mVertexNormals)
+            .create(
+                bgfx::makeRef(
+                    vNormals,
+                    sizeof(float) * vertCoords.size(),
+                    vNormalsReleaseFn),
+                vNormalsLayout);
+
+        // colors
+        auto [vColors, vColorsReleaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(numVertices);
+
         if (!setColors) {
             for (uint i = 0; i < numVertices; ++i)
                 vColors[i] = 0xffffffff;
@@ -254,63 +291,48 @@ void PrimitiveLines::setPoints(
             std::copy(vertColors.begin(), vertColors.end(), vColors);
         }
 
-        {
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-                .end();
+        bgfx::VertexLayout vColorsLayout;
+        vColorsLayout.begin()
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .end();
 
-            std::get<OWNED>(mVertexCoords)
-                .create(
-                    bgfx::makeRef(
-                        vertCoords.data(), sizeof(float) * vertCoords.size()),
-                    layout);
-        }
+        std::get<OWNED>(mVertexColors)
+            .create(
+                bgfx::makeRef(
+                    vColors, sizeof(uint32_t) * numVertices, vColorsReleaseFn),
+                vColorsLayout);
 
-        {
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float, true)
-                .end();
-
-            std::get<OWNED>(mVertexNormals)
-                .create(
-                    bgfx::makeRef(
-                        vNormals,
-                        sizeof(float) * vertCoords.size(),
-                        vNormalsReleaseFn),
-                    layout);
-        }
-
-        {
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-                .end();
-
-            std::get<OWNED>(mVertexColors)
-                .create(
-                    bgfx::makeRef(
-                        vColors,
-                        sizeof(uint32_t) * numVertices,
-                        vColorsReleaseFn),
-                    layout);
-        }
-
+        // line indices
         if (setLineIndices) {
+            auto [lineInds, lineIndsReleaseFn] =
+                Context::getAllocatedBufferAndReleaseFn<uint>(
+                    lineIndices.size());
+
+            std::copy(lineIndices.begin(), lineIndices.end(), lineInds);
+
             std::get<OWNED>(mIndices).create(
                 bgfx::makeRef(
-                    lineIndices.data(), sizeof(uint32_t) * lineIndices.size()),
+                    lineInds,
+                    sizeof(uint32_t) * lineIndices.size(),
+                    lineIndsReleaseFn),
                 BGFX_BUFFER_INDEX32);
         }
 
+        // line colors
         if (setLineColors) {
+            auto [lColors, lColorsReleaseFn] =
+                Context::getAllocatedBufferAndReleaseFn<uint>(
+                    lineColors.size());
+
+            std::copy(lineColors.begin(), lineColors.end(), lColors);
+
             std::get<OWNED>(mLineColors)
                 .createForCompute(
-                    lineColors.data(),
+                    lColors,
                     lineColors.size(),
                     PrimitiveType::UINT,
-                    bgfx::Access::Read);
+                    bgfx::Access::Read,
+                    lColorsReleaseFn);
         }
     }
     else {

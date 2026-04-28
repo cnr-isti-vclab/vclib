@@ -24,11 +24,9 @@
 
 #include <vclib/qt/mesh_viewer.h>
 
-#include <QApplication>
-
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     vcl::qt::MeshViewer mv;
 

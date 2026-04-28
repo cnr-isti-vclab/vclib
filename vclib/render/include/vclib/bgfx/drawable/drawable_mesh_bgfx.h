@@ -351,28 +351,9 @@ public:
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        // if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-        //     mMRB.bindVertexBuffers(mMRS);
-        //     mMRB.bindIndexBuffers(mMRS, MRI::Buffers::WIREFRAME);
-        //     mIdUniform.bind(&idFloat);
+        // TODO: manage ID for wireframe
 
-        //     bgfx::setState(state | BGFX_STATE_PT_LINES);
-        //     bgfx::setTransform(model.data());
-
-        //     bgfx::submit(viewId,
-        //     pm.getProgram<DRAWABLE_MESH_WIREFRAME_ID>());
-        // }
-
-        // if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
-        //     mMRB.bindVertexBuffers(mMRS);
-        //     mMRB.bindIndexBuffers(mMRS, MRI::Buffers::EDGES);
-        //     mIdUniform.bind(&idFloat);
-
-        //     bgfx::setState(state | BGFX_STATE_PT_LINES);
-        //     bgfx::setTransform(model.data());
-
-        //     bgfx::submit(viewId, pm.getProgram<DRAWABLE_MESH_EDGES_ID>());
-        // }
+        // TODO: manage ID for edges
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             if (!Context::instance().supportsCompute()) {

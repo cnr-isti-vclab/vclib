@@ -522,8 +522,7 @@ protected:
      */
     void fillTriangleNormals(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        triangulatedFaceNormalsToBuffer(
-            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR);
+        triangulatedFaceNormalsToBuffer(mesh, buffer, mIndexMap);
     }
 
     /**

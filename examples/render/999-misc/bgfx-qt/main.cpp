@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <QApplication>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -73,7 +72,7 @@ class Gesu : public Minestrone<Canvas, EventManager>
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     Gesu M;
 
