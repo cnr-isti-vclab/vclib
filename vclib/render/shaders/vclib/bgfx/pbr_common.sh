@@ -66,6 +66,18 @@
 #define TONEMAP_ACES_NARKOWICZ           4
 #define TONEMAP_KHRONOS_PBR_NEUTRAL      5
 
+/**
+ * @brief Computes the dot product of two vectors and clamps it to be >= 0.
+ * This is useful for light computations where negative values don't make sense.
+ * @param[in] a: The first vector.
+ * @param[in] b: The second vector.
+ * @return The clamped dot product.
+*/
+float clampedDot(vec3 a, vec3 b)
+{
+    return clamp(dot(a, b), 0.0, 1.0);
+}
+
 // GGX Distribution Anisotropic (Same as Babylon.js)
 // https://blog.selfshadow.com/publications/s2012-shading-course/burley/s2012_pbs_disney_brdf_notes_v3.pdf Addenda
 float D_GGX_anisotropic(
@@ -95,8 +107,8 @@ float V_GGX_anisotropic(
 {
     float GGXV = NoL * length(vec3(at * ToV, ab * BoV, NoV));
     float GGXL = NoV * length(vec3(at * ToL, ab * BoL, NoL));
-    float v = 0.5 / (GGXV + GGXL);
-    return clamp(v, 0.0, 1.0);
+    float GGXSum = GGXV + GGXL;;
+    return GGXSum > 0.0 ? 0.5 / GGXSum : 0.0;
 }
 
 float pbrSpecularAnisotropic(
@@ -116,7 +128,7 @@ float pbrSpecularAnisotropic(
 
     float NoL = clamp(dot(N, L), 0.0, 1.0);
     float NoH = clamp(dot(N, H), 0.001, 1.0);
-    float NoV = dot(N, V);
+    float NoV = clampedDot(N, V);
 
     return 
         V_GGX_anisotropic(NoL, NoV, dot(B, V), dot(T, V), dot(T, L), dot(B, L), at, ab) *
@@ -131,6 +143,8 @@ float pbrSpecularAnisotropic(
  * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
  * @param[in] roughness: The surface roughness (between 0 and 1).
  * @return The bent normal vector.
+ *
+ * @note TODO: check this function, is it used only for the IBL (environment map) reflection direction?
  */
 vec3 bendNormal(vec3 normal, vec3 view, vec3 anisotropyDirection, float anisotropyStrength, float roughness)
 {
@@ -648,18 +662,6 @@ mat3 tangentFrameFromPosition(vec3 position, vec2 UV, bool frontFacing)
 }
 
 #endif
-
-/**
- * @brief Computes the dot product of two vectors and clamps it to be >= 0.
- * This is useful for light computations where negative values don't make sense.
- * @param[in] a: The first vector.
- * @param[in] b: The second vector.
- * @return The clamped dot product.
-*/
-float clampedDot(vec3 a, vec3 b)
-{
-    return clamp(dot(a, b), 0.0, 1.0);
-}
 
 /**
  * @brief BRDF diffuse part (Lambertian).
