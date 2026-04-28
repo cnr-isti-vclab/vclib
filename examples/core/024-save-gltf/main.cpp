@@ -96,10 +96,20 @@ int main()
 
     auto bte =
         vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+
+    bte.enablePerVertexColor();
+    for (auto& c : bte.vertices() | vcl::views::colors)
+        c = vcl::Color(vcl::Color::Random());
+
     auto tmp = vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                                "/bunny_edge_sections.obj");
+    tmp.enablePerVertexColor();
+    for (auto& c : tmp.vertices() | vcl::views::colors)
+        c = vcl::Color::Black;
 
     bte.append(tmp);
+
+    vcl::updatePerVertexAndFaceNormals(bte);
 
     std::cout << "Number of vertices: " << bte.vertexCount() << std::endl;
     std::cout << "Number of faces: " << bte.faceCount() << std::endl;
