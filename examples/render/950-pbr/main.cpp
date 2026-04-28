@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     enum GLTFExamples {
         METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
         METAL_ROUGH_SPHERES,
-        NORMAL_TENGENT_MIRROR_TEST,
+        NORMAL_TANGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
         ANISOTROPY_ROTATION_TEST,
