@@ -466,7 +466,7 @@ MeshType createSphere(
 template<FaceMeshConcept MeshType>
 MeshType createSphere()
 {
-    return createSphere<MeshType, double>({Point3d(), 1});
+    return createSphere<MeshType>(Sphere(Point3d(), 1.0));
 }
 
 } // namespace vcl

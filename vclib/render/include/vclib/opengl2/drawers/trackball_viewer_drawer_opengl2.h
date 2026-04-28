@@ -38,6 +38,14 @@ class TrackBallViewerDrawerOpenGL2 :
 
 public:
     using ParentViewer::ParentViewer;
+
+    bool isTrackBallVisible() const { return false; }
+
+    void toggleTrackBallVisibility() {}
+
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    {
+    }
 };
 
 } // namespace vcl

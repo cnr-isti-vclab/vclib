@@ -24,10 +24,12 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
+#include "utils.h"
 
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <QWidget>
@@ -56,6 +58,13 @@ class MeshViewer : public QWidget
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
+    std::shared_ptr<vcl::AxisEditor<MeshViewerRenderApp::ViewerType>>
+        mAxisEditor;
+    std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
+        mMeshSelectorEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>
+        mBoundingBoxEditor;
+
 protected:
     MeshViewerRenderApp& viewer() const;
 
@@ -64,6 +73,9 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 
 public:
+    using EditorType = MeshViewerRenderApp::EditorType;
+    using ViewerType = MeshViewerRenderApp::ViewerType;
+
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
@@ -71,6 +83,8 @@ public:
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     uint selectedDrawableObject() const;
+
+    void refreshEditors();
 
     TextEditLogger& logger();
 

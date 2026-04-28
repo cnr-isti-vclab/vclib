@@ -12,7 +12,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-latest']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
     - name: Setup MSVC
@@ -31,7 +31,7 @@ jobs:
       run: |
         winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.22
       with:
         key: core-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build

@@ -27,14 +27,10 @@
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
-#endif
-
 int main(int argc, char** argv)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
+    auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
     auto viewer = defaultViewer();
@@ -45,6 +41,7 @@ int main(int argc, char** argv)
         CESIUM_MILK_TRUCK,
         DAMAGED_HELMET,
         DUCK,
+        FLOWER_POINT_CLOUD,
         ORIENTATION_TEST,
         COUNT
     };
@@ -55,6 +52,7 @@ int main(int argc, char** argv)
         "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/Duck/Duck.gltf",
+        "/gltf/FlowerPointCloud/scene.gltf",
         "/gltf/OrientationTest/OrientationTest.gltf"};
 
     const bool LOAD_CUSTOM_CAMERA = false;

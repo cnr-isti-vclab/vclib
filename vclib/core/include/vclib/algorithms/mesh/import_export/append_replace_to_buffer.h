@@ -383,6 +383,8 @@ void appendDuplicateVertexSelectionToBuffer(
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
  * @param[out] buffer: The buffer where to append the duplicated vertex normals.
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
@@ -392,7 +394,8 @@ void appendDuplicateVertexNormalsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    bool                   normalize = false,
+    MatrixStorageType      storage   = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
 
@@ -405,7 +408,9 @@ void appendDuplicateVertexNormalsToBuffer(
     const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
-        const auto& normal                     = mesh.vertex(v).normal();
+        auto normal = mesh.vertex(v).normal();
+        if (normalize)
+            normal.normalize();
         at(buffer, i, 0, NUM_ROWS, 3, storage) = normal.x();
         at(buffer, i, 1, NUM_ROWS, 3, storage) = normal.y();
         at(buffer, i, 2, NUM_ROWS, 3, storage) = normal.z();

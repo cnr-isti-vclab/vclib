@@ -20,13 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/mesh_viewer.h>
-
-#include "ui_mesh_viewer.h"
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/qt/gui/toolbar_frames.h>
+#include <vclib/qt/gui/screen_shot_dialog.h>
+
+#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
@@ -76,16 +77,48 @@ MeshViewer::MeshViewer(QWidget* parent) :
 {
     mUI->setupUi(this);
 
+    /** Drawable Object Vector **/
+
     mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
+    /** Editors **/
+
+    // no toolbar editors
+    mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
+    mMeshSelectorEditor->setActive(true);
+    auto callback = [this](uint id) {
+        drawableObjectVectorTree().setSelectedItem(id);
+    };
+    mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+
+    // toolbar editors and frames
+    mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
+        viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
+    assert(mAxisEditor);
+    AxisEditorFrame<ViewerType>* axisEditor =
+        new AxisEditorFrame<ViewerType>(mAxisEditor);
+    mUI->toolBar->addWidget(axisEditor);
+
+    auto* trackballEditor = new TrackBallFrame(viewer());
+    mUI->toolBar->addWidget(trackballEditor);
+
+    mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
+    BoundingBoxEditorFrame<ViewerType>* bboxEditor =
+        new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
+    mUI->toolBar->addWidget(bboxEditor);
+
+    /** Render Settings Frame **/
 
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+
+    /** Events **/
+
+    // install the key filter
+    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
@@ -140,6 +173,11 @@ void MeshViewer::setDrawableObjectVector(
 uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
+}
+
+void MeshViewer::refreshEditors()
+{
+    viewer().refreshEditors();
 }
 
 TextEditLogger& MeshViewer::logger()
@@ -244,6 +282,7 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         // disabled
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
+    mUI->viewer->update();
 }
 
 /**

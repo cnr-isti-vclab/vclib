@@ -24,7 +24,6 @@
 #include <vclib/imgui/imgui_stats_drawer.h>
 #include <vclib/qt/viewer_widget.h>
 
-#include <QApplication>
 #include <QFileDialog>
 
 template<typename Der>
@@ -52,7 +51,7 @@ public:
 
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     // vcl::Context::setResetFlags(BGFX_RESET_NONE);
 

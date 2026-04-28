@@ -26,6 +26,7 @@
 #include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 
@@ -44,6 +45,12 @@ namespace vcl {
 template<typename ViewProjEventDrawer>
 class AbstractViewerDrawer : public ViewProjEventDrawer
 {
+public:
+    enum class BuiltInEditors { AXIS = 0, COUNT };
+
+private:
+    friend Editor<AbstractViewerDrawer>;
+
     using Base = ViewProjEventDrawer;
     using DRA  = ViewProjEventDrawer::DRA;
 
@@ -60,10 +67,15 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
+    std::vector<std::shared_ptr<Editor<AbstractViewerDrawer>>> mEditors;
+
     // the drawer id
     uint& id() { return mId; }
 
 public:
+    using EditorType = Editor<AbstractViewerDrawer>;
+    using ViewerType = AbstractViewerDrawer;
+
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
@@ -71,6 +83,13 @@ public:
             ViewProjectionEventDrawerConcept<Base>,
             "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
             "base class");
+
+        // push built-in editors - the order of the editors in the vector is
+        // important, as it is used to retrieve the editor by its enum value
+
+        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
+        axisEd->setActive(true);
+        assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
 
     ~AbstractViewerDrawer() = default;
@@ -87,13 +106,44 @@ public:
         for (auto obj : *mDrawList) {
             obj->init();
         }
+
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
+            if (editor) {
+                editor->setDrawableObjectVector(mDrawList);
+            }
+        }
+
         fitScene();
+    }
+
+    template<template<typename> typename ET>
+    auto pushEditor()
+    {
+        auto editor = std::make_shared<ET<ViewerType>>();
+        mEditors.push_back(editor);
+        editor->setViewer(this);
+        editor->setDrawableObjectVector(mDrawList);
+        return editor;
+    }
+
+    std::shared_ptr<EditorType> getEditor(BuiltInEditors editor) const
+    {
+        assert(mEditors[toUnderlying(editor)]);
+        return mEditors[toUnderlying(editor)];
+    }
+
+    void refreshEditors()
+    {
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
+            editor->refresh();
+        }
     }
 
     uint pushDrawableObject(const DrawableObject& obj)
     {
         mDrawList->pushBack(obj);
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
@@ -101,6 +151,7 @@ public:
     {
         mDrawList->pushBack(std::move(obj));
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
@@ -133,9 +184,24 @@ public:
         mDrawList->init();
     }
 
+    void onDraw(uint viewId) override
+    {
+        Base::onDraw(viewId);
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->draw(viewId);
+        }
+    }
+
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         bool block = Base::onKeyPress(key, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onKeyPress(key, modifiers);
+        }
+
         if (!block) {
             switch (key) {
             case Key::R: fitScene(); break;
@@ -143,9 +209,89 @@ public:
                 if (modifiers[KeyModifier::CONTROL])
                     DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
                 break;
-
             default: break;
             }
+        }
+        return block;
+    }
+
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        bool block = Base::onKeyRelease(key, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onKeyRelease(key, modifiers);
+        }
+        return block;
+    }
+
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMouseMove(x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseMove(x, y, modifiers);
+        }
+        return block;
+    }
+
+    bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMousePress(button, x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMousePress(button, x, y, modifiers);
+        }
+        return block;
+    }
+
+    bool onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMouseRelease(button, x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseRelease(button, x, y, modifiers);
+        }
+        return block;
+    }
+
+    bool onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseDoubleClick(button, x, y, modifiers);
+        }
+        return block;
+    }
+
+    bool onMouseScroll(
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMouseScroll(x, y, modifiers);
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseScroll(x, y, modifiers);
         }
         return block;
     }
@@ -228,6 +374,8 @@ protected:
         if (mReadRequested)
             derived()->update();
     }
+
+    void requestUpdate() { derived()->update(); }
 
 private:
     auto* derived() { return static_cast<DRA*>(this); }

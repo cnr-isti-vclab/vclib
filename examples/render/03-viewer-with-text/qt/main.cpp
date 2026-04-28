@@ -31,8 +31,6 @@
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
-#include <QApplication>
-
 int main(int argc, char** argv)
 {
     using ViewerWidget = vcl::RenderApp<
@@ -41,7 +39,7 @@ int main(int argc, char** argv)
         vcl::TrackBallViewerDrawer,
         vcl::TextDrawer>;
 
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     ViewerWidget tw("Viewer Qt");
 

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install dependencies
         run: | 
           sudo apt-get install doxygen graphviz
@@ -17,7 +17,7 @@ jobs:
         run: |
           python3 scripts/generate_versioned_docs.py --verbose
       - name: Upload Docs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vclib_docs
           path: docs/_doxygen/html
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           repository: alemuntoni/alemuntoni.github.io
           token: ${{ secrets.PAT }}
@@ -37,7 +37,7 @@ jobs:
           cd static/vclib
           rm -R *
       - name: Download new docs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: vclib_docs
           path: static/vclib/

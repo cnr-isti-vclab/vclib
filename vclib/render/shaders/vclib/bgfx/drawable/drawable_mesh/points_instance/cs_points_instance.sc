@@ -25,7 +25,7 @@
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 BUFFER_RO(normals,   vec4, VCL_MRB_VERTEX_NORMAL_STREAM);   // normals (3 floats)
-BUFFER_RO(colors,    uvec4, VCL_MRB_VERTEX_COLOR_STREAM);   // colors (rgba uint)
+BUFFER_RO(colors,    vec4, VCL_MRB_VERTEX_COLOR_STREAM);    // colors (rgba as float bits)
 
 BUFFER_WO(vOut, vec4, 4); // output vertices
 // 2 vec4 per vertex:
@@ -41,7 +41,7 @@ void main()
     uint idx31 = idx30+1;
     uint idx32 = idx30+2;
 
-    float col = uintBitsToFloat(colors[pointId/4][pointId%4]);
+    float col = colors[pointId/4][pointId%4];
     vec3 p = vec3(
         positions[idx30/4][idx30%4],
         positions[idx31/4][idx31%4],
