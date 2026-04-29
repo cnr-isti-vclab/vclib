@@ -23,8 +23,8 @@
 #ifndef VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H
 #define VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H
 
-#include "settings/bounding_box_editor_settings_frame.h"
 #include "generic_editor_frame.h"
+#include "settings/bounding_box_editor_settings_frame.h"
 
 #include <vclib/render/editors/bounding_box_editor.h>
 
@@ -35,14 +35,12 @@ class BoundingBoxEditorFrame : public GenericEditorFrame
 {
     using Base = GenericEditorFrame;
 
-    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>>
-        mBoundingBoxEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> mBoundingBoxEditor;
 
 public:
     explicit BoundingBoxEditorFrame(
         std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> ptr,
-        QWidget*                                            parent = nullptr) :
-            GenericEditorFrame(parent)
+        QWidget* parent = nullptr) : GenericEditorFrame(parent)
     {
         mBoundingBoxEditor = ptr;
 
@@ -52,16 +50,11 @@ public:
 
         editorButton->setToolTip("Show Bounding Box");
 
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                if (mBoundingBoxEditor) {
-                    mBoundingBoxEditor->setActive(
-                        !mBoundingBoxEditor->isActive());
-                }
-            });
+        connect(editorButton, &QPushButton::clicked, this, [this]() {
+            if (mBoundingBoxEditor) {
+                mBoundingBoxEditor->setActive(!mBoundingBoxEditor->isActive());
+            }
+        });
 
         BoundingBoxEditorSettingsFrame* sf =
             Base::setSettingsFrame<BoundingBoxEditorSettingsFrame>(
@@ -71,7 +64,9 @@ public:
     }
 
 private slots:
-    void refreshSettings() override {
+
+    void refreshSettings() override
+    {
         if (mBoundingBoxEditor) {
             mBoundingBoxEditor->refreshSettings();
         }

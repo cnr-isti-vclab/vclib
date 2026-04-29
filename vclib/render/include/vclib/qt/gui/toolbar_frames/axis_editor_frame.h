@@ -39,8 +39,7 @@ class AxisEditorFrame : public GenericEditorFrame
 public:
     explicit AxisEditorFrame(
         std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
-        QWidget*                                            parent = nullptr) :
-            GenericEditorFrame(parent)
+        QWidget* parent = nullptr) : GenericEditorFrame(parent)
     {
         mAxisEditor = ptr;
 
@@ -56,15 +55,11 @@ public:
             editorButton->click();
         });
 
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                if (mAxisEditor) {
-                    mAxisEditor->toggleVisibility();
-                }
-            });
+        connect(editorButton, &QPushButton::clicked, this, [this]() {
+            if (mAxisEditor) {
+                mAxisEditor->toggleVisibility();
+            }
+        });
     }
 };
 

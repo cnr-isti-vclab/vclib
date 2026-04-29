@@ -90,7 +90,6 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
         if (!block) {
             switch (key) {
-
             case Key::T: mCustomShortcutToggleTrackballCallback(); break;
 
             default: break;
@@ -99,10 +98,7 @@ public:
         return block;
     }
 
-    bool isTrackBallVisible() const
-    {
-        return mDrawTrackBall.isVisible();
-    }
+    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
 
     void toggleTrackBallVisibility()
     {

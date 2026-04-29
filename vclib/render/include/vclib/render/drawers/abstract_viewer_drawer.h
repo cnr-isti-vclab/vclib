@@ -282,10 +282,8 @@ public:
         return block;
     }
 
-    bool onMouseScroll(
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
+    bool onMouseScroll(double x, double y, const KeyModifiers& modifiers)
+        override
     {
         bool block = Base::onMouseScroll(x, y, modifiers);
 

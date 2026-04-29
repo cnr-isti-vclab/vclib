@@ -39,7 +39,7 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 public:
     BoundingBoxEditorBGFX()
     {
-        Base::settings().customSettings["color"] = vcl::Color();
+        Base::settings().customSettings["color"]     = vcl::Color();
         Base::settings().customSettings["thickness"] = 2.0f;
     };
 
@@ -58,11 +58,10 @@ public:
 
         Color c =
             std::any_cast<Color>(Base::settings().customSettings["color"]);
-        float thickness = std::any_cast<float>(
-            Base::settings().customSettings["thickness"]);
+        float thickness =
+            std::any_cast<float>(Base::settings().customSettings["thickness"]);
 
         for (const auto& drawable : *Base::drawList()) {
-
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
@@ -84,8 +83,8 @@ public:
 
         Color c =
             std::any_cast<Color>(Base::settings().customSettings["color"]);
-        float thickness = std::any_cast<float>(
-            Base::settings().customSettings["thickness"]);
+        float thickness =
+            std::any_cast<float>(Base::settings().customSettings["thickness"]);
 
         for (auto& b : mBoxes) {
             b.setColor(c);

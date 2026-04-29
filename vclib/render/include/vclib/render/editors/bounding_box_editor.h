@@ -46,11 +46,12 @@ template<typename ViewerDrawer>
 class BoundingBoxEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+
 public:
     BoundingBoxEditor()
     {
         // Initialize settings keys expected.
-        Base::settings().customSettings["color"] = vcl::Color();
+        Base::settings().customSettings["color"]     = vcl::Color();
         Base::settings().customSettings["thickness"] = 2.0f;
     }
 

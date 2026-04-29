@@ -27,8 +27,8 @@
 
 namespace vcl {
 
-struct EditorSettings {
-
+struct EditorSettings
+{
     enum class EditMode {
         NONE,
         CURRENT_OBJECT,

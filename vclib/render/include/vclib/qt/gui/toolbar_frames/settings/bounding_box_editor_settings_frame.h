@@ -39,7 +39,7 @@ class BoundingBoxEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::BoundingBoxEditorSettingsFrame* mUI;
-    EditorSettings& mSettings;
+    EditorSettings&                     mSettings;
 
 public:
     explicit BoundingBoxEditorSettingsFrame(

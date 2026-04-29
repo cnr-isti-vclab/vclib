@@ -36,7 +36,7 @@ class TrackBallFrame : public GenericEditorFrame
 
 public:
     explicit TrackBallFrame(ViewerType& viewer, QWidget* parent = nullptr) :
-        GenericEditorFrame(parent), mViewer(viewer)
+            GenericEditorFrame(parent), mViewer(viewer)
     {
         QIcon ic(":/icons/trackball.png");
 
@@ -50,16 +50,11 @@ public:
 
         Base::hideSettingsButton();
 
-        connect(
-            editorButton,
-            &QPushButton::clicked,
-            this,
-            [this]() {
-                mViewer.toggleTrackBallVisibility();
-                mViewer.update();
-            });
+        connect(editorButton, &QPushButton::clicked, this, [this]() {
+            mViewer.toggleTrackBallVisibility();
+            mViewer.update();
+        });
     }
-
 };
 
 } // namespace vcl::qt

@@ -210,19 +210,17 @@ private:
     void drawToolbar()
     {
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImVec2 toolbarPos = ImVec2(
-            viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f);
+        ImVec2               toolbarPos =
+            ImVec2(viewport->WorkPos.x + 10.0f, viewport->WorkPos.y + 10.0f);
 
         ImGui::SetNextWindowPos(toolbarPos, ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowBgAlpha(0.85f);
 
         ImGuiWindowFlags flags =
-            ImGuiWindowFlags_NoScrollbar       |
-            ImGuiWindowFlags_NoScrollWithMouse |
-            ImGuiWindowFlags_AlwaysAutoResize  |
-            ImGuiWindowFlags_NoSavedSettings   |
-            ImGuiWindowFlags_NoFocusOnAppearing|
-            ImGuiWindowFlags_NoNav;
+            ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse |
+            ImGuiWindowFlags_AlwaysAutoResize |
+            ImGuiWindowFlags_NoSavedSettings |
+            ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
         if (ImGui::Begin("Toolbar", nullptr, flags)) {
             // axis editor toggle
@@ -379,8 +377,7 @@ private:
             for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
                 bool selected = (n == currentMode);
                 if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode =
-                        static_cast<EditorSettings::EditMode>(n);
+                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
                     mBoundingBoxEditor->refreshSettings();
                 }
                 if (selected)
@@ -391,12 +388,12 @@ private:
 
         // Lines width
         assert(sts.customSettings["thickness"].has_value());
-        float thickness =
-            std::any_cast<float>(sts.customSettings["thickness"]);
+        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
         ImGui::Text("Lines Width:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderFloat("##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
+        if (ImGui::SliderFloat(
+                "##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
             sts.customSettings["thickness"] = thickness;
             mBoundingBoxEditor->refreshSettings();
         }

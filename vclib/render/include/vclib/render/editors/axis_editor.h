@@ -46,6 +46,7 @@ template<typename ViewerDrawer>
 class AxisEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+
 public:
     AxisEditor()
     {
