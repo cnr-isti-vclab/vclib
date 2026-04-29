@@ -501,7 +501,7 @@ public:
         }
 
         constexpr uint MAX_RAY_STEPS = 2048;
-        const float    nearAdvanceEps = 0.25f * eps;
+        const float    nearAdvanceEps = eps;
 
         float rayAdvance = eps;
         float lastTHit   = -std::numeric_limits<float>::infinity();
