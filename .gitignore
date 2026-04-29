@@ -213,6 +213,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 build/*
+out/*
 
 # Local History for Visual Studio Code
 */.history/

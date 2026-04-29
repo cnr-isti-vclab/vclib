@@ -41,7 +41,9 @@ int main(int argc, char** argv)
         CESIUM_MILK_TRUCK,
         DAMAGED_HELMET,
         DUCK,
+        FLOWER_POINT_CLOUD,
         ORIENTATION_TEST,
+        BUNNY_EDGES,
         COUNT
     };
 
@@ -51,7 +53,10 @@ int main(int argc, char** argv)
         "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/Duck/Duck.gltf",
-        "/gltf/OrientationTest/OrientationTest.gltf"};
+        "/gltf/FlowerPointCloud/scene.gltf",
+        "/gltf/OrientationTest/OrientationTest.gltf",
+        "/gltf/bunny_edge_sections.gltf"
+    };
 
     const bool LOAD_CUSTOM_CAMERA = false;
 
@@ -60,16 +65,18 @@ int main(int argc, char** argv)
     uint selectedExample = DAMAGED_HELMET;
 
     if (AS_SINGLE_MESH) {
-        vcl::DrawableMesh<vcl::TriMesh> drawable =
-            getDrawableMesh<vcl::TriMesh>(
+        vcl::DrawableMesh<vcl::TriEdgeMesh> drawable =
+            getDrawableMesh<vcl::TriEdgeMesh>(
                 VCLIB_EXAMPLE_MESHES_PATH +
                     GLTFExampleFilenames[selectedExample],
                 false);
         showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
     }
     else {
-        std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
-            VCLIB_EXAMPLE_MESHES_PATH + GLTFExampleFilenames[selectedExample]);
+        std::vector<vcl::TriEdgeMesh> meshes =
+            vcl::loadMeshes<vcl::TriEdgeMesh>(
+                VCLIB_EXAMPLE_MESHES_PATH +
+                GLTFExampleFilenames[selectedExample]);
         showMeshesOnViewer(argc, argv, viewer, std::move(meshes));
     }
 

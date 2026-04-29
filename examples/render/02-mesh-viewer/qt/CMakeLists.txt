@@ -29,7 +29,6 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-    custom_mesh_viewer_render_app.h
     main.cpp)
 
 target_include_directories(vclib-render PUBLIC
