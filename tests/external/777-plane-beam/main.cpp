@@ -30,6 +30,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <numeric>
 #include <iostream>
 #include <limits>
 #include <utility>
@@ -349,12 +350,17 @@ vcl::Point3d runPlaneBeam(
 			if (collectDebugEnabled && outPrismsMesh && validLength) {
 				addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
 			}
+
+			return localVolume;
+
 		};
 
-		auto processCell = [&](uint i, uint j, double& volumeAcc) {
+		auto processCell = [&](uint i, uint j) {
 			Point3d               cellCenter;
 			std::array<Point3d, 4> cellCorners;
 			computeCellGeometry(i, j, cellCenter, cellCorners);
+
+			double volumeAcc = 0.0;
 
 			std::vector<HitEvent> hitEvents = collectHits(cellCenter);
 
@@ -363,7 +369,7 @@ vcl::Point3d runPlaneBeam(
 				const Point3d segEnd   = hitEvents[0].point;
 				const double  startD   = -EPS;
 				const double  endD     = hitEvents[0].t;
-				accumulateSegment(
+				volumeAcc = accumulateSegment(
 					volumeAcc, segStart, segEnd, cellCorners, startD, endD, true);
 			}
 
@@ -387,7 +393,7 @@ vcl::Point3d runPlaneBeam(
 
 				if (endDot < 0.0) {
 					if ((startDot > 0.0) && (hitsMesh == 0)) {
-						accumulateSegment(
+						volumeAcc = accumulateSegment(
 							volumeAcc, segStart, segEnd, cellCorners, startD, endD);
 					}
 					hitsMesh += 1;
@@ -396,9 +402,14 @@ vcl::Point3d runPlaneBeam(
 					hitsMesh -= 1;
 				}
 			}
-		};
 
+			return volumeAcc;
+		};
+		
 		if (!collectDebugEnabled) {
+
+			/*
+			
 			std::vector<uint> rowIndices(grid.rows);
 			for (uint j = 0; j < grid.rows; ++j) {
 				rowIndices[j] = j;
@@ -408,21 +419,45 @@ vcl::Point3d runPlaneBeam(
 			vcl::parallelFor(rowIndices, [&](uint j) {
 				double localVolume = 0.0;
 				for (uint i = 0; i < grid.cols; ++i) {
-					processCell(i, j, localVolume);
+					localVolume = processCell(i, j);
 				}
 				rowVolumes[j] = localVolume;
 			});
 
 			for (double vRow : rowVolumes) {
-				totalVolume += vRow;
+				totalVolume += std::accumulate(rowVolumes.begin(), rowVolumes.end(), 0.0);
 			}
+			*/
+			
+
+			
+			std::vector<uint> allCells(grid.rows * grid.cols);
+			std::iota(allCells.begin(), allCells.end(), 0);
+
+			std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
+			vcl::parallelFor(allCells, [&](uint idx) {
+				uint j = idx / grid.cols; 
+				uint i = idx % grid.cols; 
+				cellVolumes[idx] = processCell(i, j);
+			});
+
+			totalVolume += std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
+			
+			
 		}
 		else {
-			for (uint j = 0; j < grid.rows; ++j) {
-				for (uint i = 0; i < grid.cols; ++i) {
-					processCell(i, j, totalVolume);
-				}
-			}
+			std::vector<uint> allCells(grid.rows * grid.cols);
+			std::iota(allCells.begin(), allCells.end(), 0);
+
+			totalVolume += std::accumulate(
+				allCells.begin(),
+				allCells.end(),
+				0.0,
+				[&](double acc, uint idx) {
+					const uint j = idx / grid.cols;
+					const uint i = idx % grid.cols;
+					return acc + processCell(i, j);
+				});
 		}
 
 		return totalVolume;
@@ -571,7 +606,7 @@ int main()
 
 	std::vector<double> gridCellSideLengths = {0.184, 0.234};
 	constexpr uint NUM_PLANES = 2000;
-	constexpr bool debug = true;
+	constexpr bool debug = false;
 
 	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
 	// PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
