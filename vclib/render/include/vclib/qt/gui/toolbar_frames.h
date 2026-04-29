@@ -20,58 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_H
 
-#include <vclib/qt/mesh_viewer.h>
+#include "toolbar_frames/axis_editor_frame.h"
+#include "toolbar_frames/bounding_box_editor_frame.h"
+#include "toolbar_frames/trackball_frame.h"
 
-int main(int argc, char** argv)
-{
-    auto app = vcl::qt::qAppl(argc, argv);
-
-    vcl::qt::MeshViewer mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    using enum vcl::MeshRenderInfo::Buffers;
-
-    // to test the per-vertex and per-face color rendering, we set both of them
-    m.enablePerVertexColor();
-    m.enablePerFaceColor();
-
-    for (auto& f : m.faces()) {
-        f.vertex(0)->color() = vcl::Color::Red;
-        f.vertex(1)->color() = vcl::Color::Green;
-        f.vertex(2)->color() = vcl::Color::Blue;
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
-    }
-    m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
-
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.name() = "bimba_scaled";
-
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
-
-    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
-    v->pushBack(std::move(drawable));
-
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
-
-    return app.exec();
-}
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H
