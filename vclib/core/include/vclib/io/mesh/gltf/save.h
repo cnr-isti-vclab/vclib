@@ -200,24 +200,109 @@ void addMeshToTinygltfModel(
     // faces
     if constexpr (HasFaces<MeshType>) {
         if (meshInfo.hasFaces() && m.faceCount() > 0) {
-            auto primitive = addGltfPrimitive(
-                mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+            if (meshInfo.hasPerVertexMaterialIndex()) {
+                //TODO 1) chiamo la funzione per ordinare le facce per material index
+                //TODO 2) trovo le boundaries dei chunk (chunk di facce con lo stesso materiale)
+                //TODO 3) ogni volta che trovo una boundary, creo una primitiva per quel chunk
+                //TODO ogni volta che trovo una faccia, salvo gli indici dei vertici in un buffer contenente tutti gli indici dei vertici
+                //TODO successivamente, ogni primitiva avra' una buffer view con un offset in quel buffer
+                //TODO 4) salvo i materiali
 
-            // indices buffer, buffer view and accessor
-            auto indBuf = addGltfBuffer(
-                tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
-            uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
-            triangulatedFaceVertexIndicesToBuffer(m, ud);
+                //TODO 1
 
-            auto indBufView = addGltfBufferView(
-                tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-            auto indAccessor = addGltfAccessor(
-                tModel,
-                indBufView,
-                TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
-                TINYGLTF_TYPE_SCALAR);
+                using FaceType = MeshType::FaceType;
 
-            primitive.second.indices = indAccessor.first;
+                // comparator of faces
+                // ordering first by per-vertex material index (if available),
+                // then by per-face material index (if available)
+                auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
+                    if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                        if (isPerVertexMaterialIndexAvailable(m)) {
+                            uint id1 = f1.vertex(0)->materialIndex();
+                            uint id2 = f2.vertex(0)->materialIndex();
+                            if (id1 != id2) { // do not return true if equal
+                                return id1 < id2;
+                            }
+                        }
+                    }
+
+                    // if both per-vertex and per-face material indices are equal, sort
+                    // by face index to have a stable sorting
+                    return f1.index() < f2.index();
+                };
+
+                // get the list of face indices sorted by material ID
+                // using the face comparator defined above
+                const std::vector<uint> faceIndicesSortedByMaterialID =
+                    sortFaceIndicesByFunction(m, faceComp, true);
+
+                //TODO 2
+
+                //TODO usando l'indice della faccia, ottengo il material index
+                //TODO se diverso da quello precedente, e' una chunk boundary
+
+                //TODO compact face indices
+                //const std::vector<uint> faceCompIndices =
+                //    faceCompactIndices(m, true);
+                //TODO if faceCompIndices, face container is compact
+
+                uint faceCount = 0;
+                uint lastMaterialIndex = -1;
+
+                for (size_t i = 0; i < faceIndicesSortedByMaterialID.size(); i++) {
+                    //TODO ATTENZIONE! l'indice nel vettore e' compatto, quindi bisogna accedere alla faccia utilizzando il suo vero indice
+                    for (const auto& face : m.faces()) {
+                        if (faceCount == faceIndicesSortedByMaterialID.at(i)) {
+                            //TODO get first vertex, get its material
+                            uint mIndex = face.vertex(0)->materialIndex();
+
+                            //TODO add face vertices' indices to the buffer
+
+                            if (mIndex == lastMaterialIndex)
+                                break;
+
+                            //TODO 3
+
+                            //TODO end previous chunk
+                            //if started, create buffer view with offset into the buffer
+                            //create accessor for the buffer view
+                            //create the primitive
+
+                            //TODO start new chunk
+
+
+
+                            lastMaterialIndex = mIndex;
+
+                            break;
+                        }
+
+                        faceCount++;
+                    }
+                }
+
+                //TODO 4
+            }
+            else {
+                auto primitive = addGltfPrimitive(
+                    mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+
+                // indices buffer, buffer view and accessor
+                auto indBuf = addGltfBuffer(
+                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+                triangulatedFaceVertexIndicesToBuffer(m, ud);
+
+                auto indBufView = addGltfBufferView(
+                    tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+                auto indAccessor = addGltfAccessor(
+                    tModel,
+                    indBufView,
+                    TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                    TINYGLTF_TYPE_SCALAR);
+
+                primitive.second.indices = indAccessor.first;
+            }
         }
     }
 
