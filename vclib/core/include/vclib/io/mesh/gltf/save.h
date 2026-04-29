@@ -147,6 +147,11 @@ void addMeshToTinygltfModel(
     posAccessor.second.minValues =
         std::vector<double> {bBox.min().x(), bBox.min().y(), bBox.min().z()};
 
+    if constexpr (HasName<MeshType>) {
+        if (!m.name().empty())
+            mesh.name = m.name();
+    }
+
     posAccI = posAccessor.first;
 
     if constexpr (HasPerVertexColor<MeshType>) {
