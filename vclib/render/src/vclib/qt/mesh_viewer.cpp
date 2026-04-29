@@ -111,6 +111,14 @@ MeshViewer::MeshViewer(QWidget* parent) :
         new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
     mUI->toolBar->addWidget(bboxEditor);
 
+    mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
+    SelectionEditorFrame<ViewerType>* selectionEditor =
+        new SelectionEditorFrame<ViewerType>(mSelectionEditor);
+    mUI->toolBar->addWidget(selectionEditor);
+
+    // install the key filter
+    mUI->viewer->installEventFilter(new KeyFilter(this));
+
     /** Render Settings Frame **/
 
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);

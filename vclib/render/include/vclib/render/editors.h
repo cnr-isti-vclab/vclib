@@ -26,5 +26,6 @@
 #include "editors/axis_editor.h"
 #include "editors/bounding_box_editor.h"
 #include "editors/mesh_selector_editor.h"
+#include "editors/selection_editor.h"
 
 #endif // VCL_RENDER_EDITORS_H

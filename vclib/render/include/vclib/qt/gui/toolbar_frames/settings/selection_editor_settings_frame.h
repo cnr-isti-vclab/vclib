@@ -20,12 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_H
+#ifndef VCL_QT_GUI_EDITORS_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
+#define VCL_QT_GUI_EDITORS_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
 
-#include "toolbar_frames/axis_editor_frame.h"
-#include "toolbar_frames/bounding_box_editor_frame.h"
-#include "toolbar_frames/selection_editor_frame.h"
-#include "toolbar_frames/trackball_frame.h"
+#include <vclib/render/settings/editor_settings.h>
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H
+#include <QFrame>
+
+namespace vcl::qt {
+
+namespace Ui {
+class SelectionEditorSettingsFrame;
+} // namespace Ui
+
+class SelectionEditorSettingsFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::SelectionEditorSettingsFrame* mUI;
+    EditorSettings& mSettings;
+
+public:
+    explicit SelectionEditorSettingsFrame(
+        EditorSettings& sts,
+        QWidget*        parent = nullptr);
+    ~SelectionEditorSettingsFrame();
+
+signals:
+    void settingsUpdated();
+
+private slots:
+    void editModeChanged(int index);
+
+    void onlyVisibleCheckBoxChanged(Qt::CheckState state);
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_QT_GUI_EDITORS_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H

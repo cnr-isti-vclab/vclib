@@ -20,12 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_H
+#ifndef VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
+#define VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
 
-#include "toolbar_frames/axis_editor_frame.h"
-#include "toolbar_frames/bounding_box_editor_frame.h"
-#include "toolbar_frames/selection_editor_frame.h"
-#include "toolbar_frames/trackball_frame.h"
+#include <vclib/render/editors/editor.h>
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_H
+namespace vcl {
+
+template<typename ViewerDrawer>
+class SelectionEditorBGFX : public Editor<ViewerDrawer>
+{
+    using Base = Editor<ViewerDrawer>;
+
+public:
+    SelectionEditorBGFX()
+    {
+        Base::settings().customSettings["selectVertices"] = false;
+        Base::settings().customSettings["selectFaces"] = false;
+        Base::settings().customSettings["onlyVisible"] = false;
+        // init other settings here...
+    }
+
+    void draw(uint viewId) const override
+    {
+        // ...
+    }
+
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        return false;
+    }
+
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        return false;
+    }
+
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    {
+        return false;
+    }
+
+    bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        return false;
+    }
+
+    bool onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        return false;
+    }
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
