@@ -20,58 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_RENDER_EDITORS_AXIS_EDITOR_H
+#define VCL_RENDER_EDITORS_AXIS_EDITOR_H
 
-#include <vclib/qt/mesh_viewer.h>
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/editors/axis_editor_bgfx.h>
+#endif
 
-int main(int argc, char** argv)
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include <vclib/space/core.h>
+
+#include "editor.h"
+#endif
+
+namespace vcl {
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+template<typename ViewerDrawer>
+using AxisEditor = AxisEditorBGFX<ViewerDrawer>;
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+// TODO: implement AxisEditorOpenGL2
+template<typename ViewerDrawer>
+class AxisEditor : public Editor<ViewerDrawer>
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    using Base = Editor<ViewerDrawer>;
 
-    vcl::qt::MeshViewer mv;
-
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    using enum vcl::MeshRenderInfo::Buffers;
-
-    // to test the per-vertex and per-face color rendering, we set both of them
-    m.enablePerVertexColor();
-    m.enablePerFaceColor();
-
-    for (auto& f : m.faces()) {
-        f.vertex(0)->color() = vcl::Color::Red;
-        f.vertex(1)->color() = vcl::Color::Green;
-        f.vertex(2)->color() = vcl::Color::Blue;
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
+public:
+    AxisEditor()
+    {
+        // Initialize settings keys expected.
     }
-    m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
+    void draw(uint) const override {}
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    bool isVisible() const { return false; }
 
-    drawable.name() = "bimba_scaled";
+    void toggleVisibility() {}
 
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
+    void setShortcutCallback(std::function<void(void)>) {}
+};
+#endif
 
-    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
-    v->pushBack(std::move(drawable));
+} // namespace vcl
 
-    mv.setDrawableObjectVector(v);
-
-    mv.show();
-    mv.showMaximized();
-
-    return app.exec();
-}
+#endif // VCL_RENDER_EDITORS_AXIS_EDITOR_H

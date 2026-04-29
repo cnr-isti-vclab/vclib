@@ -20,58 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "get_drawable_mesh.h"
+#ifndef VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
+#define VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
 
-#include <vclib/qt/mesh_viewer.h>
+#include "editor.h"
 
-int main(int argc, char** argv)
+namespace vcl {
+
+template<typename ViewerDrawer>
+class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    using Base = Editor<ViewerDrawer>;
 
-    vcl::qt::MeshViewer mv;
+    // a callback function called when an object is selected
+    std::function<void(uint)> mOnObjectSelectedFunction = [](uint) {
+    };
 
-    // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
-
-    using enum vcl::MeshRenderInfo::Buffers;
-
-    // to test the per-vertex and per-face color rendering, we set both of them
-    m.enablePerVertexColor();
-    m.enablePerFaceColor();
-
-    for (auto& f : m.faces()) {
-        f.vertex(0)->color() = vcl::Color::Red;
-        f.vertex(1)->color() = vcl::Color::Green;
-        f.vertex(2)->color() = vcl::Color::Blue;
-        if (f.index() % 3 == 0)
-            f.color() = vcl::Color::Red;
-        else if (f.index() % 3 == 1)
-            f.color() = vcl::Color::Green;
-        else
-            f.color() = vcl::Color::Blue;
+public:
+    void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
+    {
+        mOnObjectSelectedFunction = f;
     }
-    m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
+    // Editor implementation
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
+    void draw(uint viewId) const override {}
 
-    drawable.name() = "bimba_scaled";
+    bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMousePress(button, x, y, modifiers);
 
-    // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
+        if (!block && button == vcl::MouseButton::RIGHT) {
+            auto callback = [&](uint id) {
+                if (id == vcl::UINT_NULL)
+                    return;
 
-    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
-    v->pushBack(std::move(drawable));
+                Base::drawList()->setSelectedObjectId(id);
 
-    mv.setDrawableObjectVector(v);
+                if (mOnObjectSelectedFunction)
+                    mOnObjectSelectedFunction(id);
+            };
 
-    mv.show();
-    mv.showMaximized();
+            Base::viewerReadIdRequest(x, y, callback);
+        }
+        return block;
+    }
+};
 
-    return app.exec();
-}
+} // namespace vcl
+
+#endif // VCL_RENDER_EDITORS_MESH_SELECTOR_EDITOR_H
