@@ -224,8 +224,8 @@ void addMeshToTinygltfModel(
 
             // indices buffer, buffer view and accessor
             auto indBuf =
-                addGltfBuffer(tModel, 2 * m.edgeCount() * sizeof(uint32_t));
-            uint32_t* ud = reinterpret_cast<uint32_t*>(indBuf.second.data.data());
+                addGltfBuffer(tModel, 2 * m.edgeCount() * sizeof(uint));
+            uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
             edgeVertexIndicesToBuffer(m, ud);
 
             auto indBufView = addGltfBufferView(
