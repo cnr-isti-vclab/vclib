@@ -51,7 +51,6 @@ vcl::Point3d runPlaneBeam(
 		double sideU = 0.0;
 		double sideV = 0.0;
 	};
-
 	updateBoundingBox(m);
 
 	auto chooseGrid = [&](double lenU, double lenV) -> GridChoice {
@@ -225,11 +224,6 @@ vcl::Point3d runPlaneBeam(
 		const double gridMaxU = minU + grid.sideU * grid.cols;
 		const double gridMaxV = minV + grid.sideV * grid.rows;
 
-		const std::array<Point3d, 4> bboxCorners = {
-			planePoint + u * minU + v * minV,
-			planePoint + u * gridMaxU + v * minV,
-			planePoint + u * gridMaxU + v * gridMaxV,
-			planePoint + u * minU + v * gridMaxV};
 
 		if (collectDebugEnabled && outProjectedPointsMesh) {
 			outProjectedPointsMesh->reserveVertices(projectedPoints.size());
@@ -239,6 +233,12 @@ vcl::Point3d runPlaneBeam(
 		}
 
 		if (collectDebugEnabled && outBbox2dMesh) {
+			const std::array<Point3d, 4> bboxCorners = {
+			planePoint + u * minU + v * minV,
+			planePoint + u * gridMaxU + v * minV,
+			planePoint + u * gridMaxU + v * gridMaxV,
+			planePoint + u * minU + v * gridMaxV};
+
 			std::array<uint, 4> cornerIds;
 			for (uint k = 0; k < bboxCorners.size(); ++k) {
 				cornerIds[k] = outBbox2dMesh->addVertex(bboxCorners[k]);
@@ -606,7 +606,7 @@ int main()
 
 	std::vector<double> gridCellSideLengths = {0.184, 0.234};
 	constexpr uint NUM_PLANES = 2000;
-	constexpr bool debug = false;
+	constexpr bool debug = true;
 
 	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
 	// PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
