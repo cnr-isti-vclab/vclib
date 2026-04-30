@@ -58,7 +58,7 @@ int main()
 
         auto hits = scene.firstFaceIntersectedByRays(origins, directions);
     
-        for (uint i = 0; const auto& [faceId, barCoords, tId] : hits) {
+        for (uint i = 0; const auto& [faceId, barCoords, tId, _] : hits) {
             const uint rayIdx = i++;
             std::cout << "Ray " << rayIdx << ":\n";
 

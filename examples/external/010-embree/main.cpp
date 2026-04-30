@@ -45,7 +45,7 @@ int main()
 
     auto hits = scene.firstFaceIntersectedByRays(origins, directions);
 
-    for (uint i = 0; const auto& [faceId, barCoords, tId] : hits) {
+    for (uint i = 0; const auto& [faceId, barCoords, tId, dist] : hits) {
         std::cout << "Ray " << i++ << ":\n";
 
         std::string fString =
@@ -54,6 +54,9 @@ int main()
         std::cout << "First face intersected by ray: " << fString << "\n";
 
         if (faceId != UINT_NULL) { // should never be UINT_NULL here
+            std::cout << "Distance from ray origin to hit point: " << dist
+                      << "\n";
+
             std::cout << "Barycentric coordinates of the intersection point: "
                       << barCoords << "\n";
 

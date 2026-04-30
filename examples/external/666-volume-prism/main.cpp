@@ -227,7 +227,7 @@ int main(int argc, char** argv)
         std::vector<Point3d>     retryDirections;
 
         for (std::size_t i = 0; i < candidates.size(); ++i) {
-            auto [hitFaceId, barCoords, hitTriId] = hits[i];
+            auto [hitFaceId, barCoords, hitTriId, _] = hits[i];
             if (hitFaceId == candidates[i].sourceFaceId) {
                 retryMap.push_back(i);
                 retryOrigins.push_back(
@@ -251,7 +251,7 @@ int main(int argc, char** argv)
 
         for (std::size_t i = 0; i < candidates.size(); ++i) {
             const auto& c = candidates[i];
-            auto [hitFaceId, barCoords, hitTriId] = hits[i];
+            auto [hitFaceId, barCoords, hitTriId, _] = hits[i];
 
             Point3d targetPoint;
             bool    hitMesh = hitFaceId != UINT_NULL;

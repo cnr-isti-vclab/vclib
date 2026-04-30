@@ -32,4 +32,3 @@ endif()
 if (TARGET vclib-3rd-embree)
     add_subdirectory(010-embree-intersection)
 endif()
-
