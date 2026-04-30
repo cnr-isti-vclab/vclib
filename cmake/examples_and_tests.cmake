@@ -35,7 +35,7 @@ target_compile_definitions(vclib-tests-examples-common INTERFACE
 
 function(_vclib_add_test_example name)
     set(options TEST HEADER_ONLY)
-    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE VCLIB_CORE_TEST)
+    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE VCLIB_EXTERNAL_EXAMPLE)
     set(multiValueArgs SOURCES)
 
     cmake_parse_arguments(ARG
@@ -48,7 +48,13 @@ function(_vclib_add_test_example name)
     if (${ARG_TEST})
         set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-test-${name}")
     else()
-        set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-${name}")
+        if (ARG_VCLIB_CORE_EXAMPLE)
+            set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-core-${name}")
+        elseif (ARG_VCLIB_EXTERNAL_EXAMPLE)
+             set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-external-${name}")
+        else()
+            set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-${name}")
+        endif()
     endif()
 
     if (${VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS})
@@ -75,10 +81,10 @@ function(_vclib_add_test_example name)
                 ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
 
-    if (ARG_VCLIB_CORE_TEST)
-        set(VCLIB_INCLUDE_TESTS_DIR ${VCLIB_TESTS_DIR}/core/${ARG_VCLIB_CORE_TEST})
+    if (ARG_VCLIB_EXTERNAL_EXAMPLE)
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/external/${ARG_VCLIB_EXTERNAL_EXAMPLE})
         target_include_directories(${TARGET_NAME} PUBLIC
-                ${VCLIB_INCLUDE_TESTS_DIR})
+                ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
 
     if (NOT ${ARG_HEADER_ONLY})
@@ -125,6 +131,8 @@ endfunction()
 #                           (default is core)
 #     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
 #                                     the core module from which reuse some code
+#     [VCLIB_EXTERNAL_EXAMPLE 000-mesh] # optional - to specify the example of
+#                                 the external module from which reuse some code
 #     SOURCES main.cpp # sources of the example
 # )
 function(vclib_add_example name)
@@ -142,8 +150,8 @@ endfunction()
 #                           (default is core)
 #     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
 #                                     the core module from which reuse some code
-#     [VCLIB_CORE_TEST 000-mesh-basic] # optional - to specify the test of
-#                                     the core module from which reuse some code
+#     [VCLIB_EXTERNAL_EXAMPLE 000-mesh] # optional - to specify the example of
+#                                 the external module from which reuse some code
 #     SOURCES main.cpp # sources of the test
 # )
 function(vclib_add_test name)
