@@ -51,13 +51,16 @@ inline std::pair<uint, tinygltf::Buffer&> addGltfBuffer(
 inline std::pair<uint, tinygltf::BufferView&> addGltfBufferView(
     tinygltf::Model&                   model,
     std::pair<uint, tinygltf::Buffer&> buffer,
-    int bufferViewTarget = TINYGLTF_TARGET_ARRAY_BUFFER)
+    int                                bufferViewTarget = TINYGLTF_TARGET_ARRAY_BUFFER,
+    uint                               byteOffset = 0,
+    std::optional<uint>                byteLength = std::nullopt)
 {
     model.bufferViews.emplace_back();
     tinygltf::BufferView& bufView = model.bufferViews.back();
     uint                  index   = model.bufferViews.size() - 1;
     bufView.buffer                = buffer.first;
-    bufView.byteLength            = buffer.second.data.size();
+    bufView.byteOffset            = byteOffset;
+    bufView.byteLength            = byteLength.has_value() ? byteLength.value() : buffer.second.data.size();
     bufView.target                = bufferViewTarget;
 
     return {index, bufView};
@@ -206,7 +209,6 @@ void addMeshToTinygltfModel(
                 //TODO 3) ogni volta che trovo una boundary, creo una primitiva per quel chunk
                 //TODO ogni volta che trovo una faccia, salvo gli indici dei vertici in un buffer contenente tutti gli indici dei vertici
                 //TODO successivamente, ogni primitiva avra' una buffer view con un offset in quel buffer
-                //TODO 4) salvo i materiali
 
                 //TODO 1
 
@@ -238,50 +240,75 @@ void addMeshToTinygltfModel(
 
                 //TODO 2
 
-                //TODO usando l'indice della faccia, ottengo il material index
-                //TODO se diverso da quello precedente, e' una chunk boundary
-
                 //TODO compact face indices
                 //const std::vector<uint> faceCompIndices =
                 //    faceCompactIndices(m, true);
                 //TODO if faceCompIndices, face container is compact
 
-                uint faceCount = 0;
-                uint lastMaterialIndex = -1;
+                // get the mapping from actual indices to compact indices
+                std::vector<uint> compactIndices = m.faceCompactIndices();
+                // create a reverse mapping from compact index to actual index
+                std::vector<uint> reverseIndicesMap(m.faceCount());
 
-                for (size_t i = 0; i < faceIndicesSortedByMaterialID.size(); i++) {
-                    //TODO ATTENZIONE! l'indice nel vettore e' compatto, quindi bisogna accedere alla faccia utilizzando il suo vero indice
-                    for (const auto& face : m.faces()) {
-                        if (faceCount == faceIndicesSortedByMaterialID.at(i)) {
-                            //TODO get first vertex, get its material
-                            uint mIndex = face.vertex(0)->materialIndex();
-
-                            //TODO add face vertices' indices to the buffer
-
-                            if (mIndex == lastMaterialIndex)
-                                break;
-
-                            //TODO 3
-
-                            //TODO end previous chunk
-                            //if started, create buffer view with offset into the buffer
-                            //create accessor for the buffer view
-                            //create the primitive
-
-                            //TODO start new chunk
-
-
-
-                            lastMaterialIndex = mIndex;
-
-                            break;
-                        }
-
-                        faceCount++;
+                for (uint i = 0; i < compactIndices.size(); ++i) {
+                    if (compactIndices[i] != UINT_NULL) {
+                        reverseIndicesMap[compactIndices[i]] = i;
                     }
                 }
 
-                //TODO 4
+                auto indBuf = addGltfBuffer(
+                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                uint lastMaterialIndex = -1;
+                std::unordered_map<uint, uint> modelMaterialIndices{};
+                uint chunkByteOffset = 0;
+                uint chunkLength = 0;
+
+                for (auto faceCompactIndex : faceIndicesSortedByMaterialID) {
+                    auto& face = m.face(reverseIndicesMap[faceCompactIndex]);
+                    // get first vertex's material
+                    uint mIndex = face.vertex(0)->materialIndex();
+
+                    //TODO add face vertices' indices to the buffer
+                    //TODO face must be triangulated
+
+                    if (mIndex == lastMaterialIndex) {
+                        //chunkLength += TO CALCULATE;
+
+                        break;
+                    }
+
+                    // the material is added to the model if not already present
+                    if (!modelMaterialIndices.contains(mIndex)) {
+                        //TODO add material to model
+                        //modelMaterialIndices[mIndex] = model material index
+                    }
+
+                    uint modelMaterialIndex = modelMaterialIndices.at(mIndex);
+
+                    //TODO 3
+
+                    // end previous chunk
+                    if (lastMaterialIndex != -1) {
+                        // buffer view, accessor and primitive
+                        auto indBufView = addGltfBufferView(
+                            tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
+                        auto indAccessor = addGltfAccessor(
+                            tModel,
+                            indBufView,
+                            TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                            TINYGLTF_TYPE_SCALAR);
+                        auto primitive = addGltfPrimitive(
+                            mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+
+                        primitive.second.indices = indAccessor.first;
+                        primitive.second.material = modelMaterialIndex;
+                    }
+
+                    // start new chunk
+                    chunkByteOffset += chunkLength;
+                    //chunkLength = TO CALCULATE;
+                    lastMaterialIndex = mIndex;
+                }
             }
             else {
                 auto primitive = addGltfPrimitive(
