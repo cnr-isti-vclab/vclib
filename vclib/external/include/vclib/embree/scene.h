@@ -23,13 +23,13 @@
 #ifndef VCL_EMBREE_SCENE_H
 #define VCL_EMBREE_SCENE_H
 
-#include <embree4/rtcore.h>
-
-#include <cmath>
-
 #include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
+
+#include <embree4/rtcore.h>
+
+#include <cmath>
 
 namespace vcl::embree {
 
@@ -462,12 +462,12 @@ public:
     }
 
     /**
-     * @brief Collects filtered hit events by repeatedly intersecting a ray.
+     * @brief Finds the faces intersected by a ray, filtering out near-duplicate
+     * hits using a specified epsilon tolerance.
      *
      * This member function repeatedly casts a ray starting from the given
      * origin and direction, advancing the origin after each hit by `eps` to
-     * collect consecutive intersections. Hits with non-progressing or near-
-     * duplicate `t` values are filtered out.
+     * collect consecutive intersections.
      *
      * @tparam ScalarType: Scalar type used by the point coordinates
      * (for example, float or double).
@@ -477,10 +477,11 @@ public:
      * @param[in] eps: Small positive tolerance used for numerical robustness
      * and hit filtering.
      *
-     * @return A vector of hits ordered by increasing ray parameter `t`.
+     * @return A vector of HitResult describing the faces intersected by the
+     * ray. If no face is intersected, the vector will be empty.
      */
     template<typename ScalarType>
-    std::vector<HitResult> collectFilteredHits(
+    std::vector<HitResult> facesIntersectedByRay(
         const Point3<ScalarType>& origin,
         const Point3<ScalarType>& direction,
         float                     eps) const
@@ -541,11 +542,15 @@ public:
     }
 
     /**
-     * @brief Collects filtered hit events using an automatically computed EPS.
+     * @brief Finds the faces intersected by a ray.
      *
-     * This overload computes `EPS` from the diagonal of the bounding box of
-     * the mesh stored in the Embree scene:
-     * `EPS = 1e-6 * diagonal`.
+     * This member function repeatedly casts a ray starting from the given
+     * origin and direction, advancing the origin after each hit by `eps` to
+     * collect consecutive intersections.
+     *
+     * This overload computes the epsilon value from the diagonal of the
+     * bounding box of the mesh stored in the Embree scene: `EPS = 1e-6 *
+     * diagonal`.
      *
      * @tparam ScalarType: Scalar type used by the point coordinates
      * (for example, float or double).
@@ -553,10 +558,11 @@ public:
      * @param[in] origin: The origin point of the ray in world space.
      * @param[in] direction: The direction vector of the ray in world space.
      *
-     * @return A vector of hits ordered by increasing ray parameter `t`.
+     * @return A vector of HitResult describing the faces intersected by the
+     * ray. If no face is intersected, the vector will be empty.
      */
     template<typename ScalarType>
-    std::vector<HitResult> collectFilteredHitsNoEPS(
+    std::vector<HitResult> facesIntersectedByRay(
         const Point3<ScalarType>& origin,
         const Point3<ScalarType>& direction) const
     {
@@ -577,7 +583,7 @@ public:
             return {};
         }
 
-        return collectFilteredHits(
+        return facesIntersectedByRay(
             origin, direction, static_cast<float>(EPS));
     }
 

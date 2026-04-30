@@ -271,7 +271,7 @@ vcl::Point3d runPlaneBeam(
 		auto collectHits = [&](const Point3d& rayOrigin) {
 			std::vector<HitEvent> hitEvents;
             std::vector<embree::Scene::HitResult> hits =
-				scene.collectFilteredHits(rayOrigin, n, static_cast<float>(EPS));
+                scene.facesIntersectedByRay(rayOrigin, n, static_cast<float>(EPS));
 			hitEvents.reserve(hits.size());
 
 			for (const auto& h : hits) {
