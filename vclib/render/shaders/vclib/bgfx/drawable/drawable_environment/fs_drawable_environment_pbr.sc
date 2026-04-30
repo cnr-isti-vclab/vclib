@@ -26,8 +26,15 @@ $input v_texcoord0
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+/*
+TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
+restore next lines with:
+
 // textures
 SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
+*/
+// textures
+SAMPLERCUBE(s_env0, 10);
 
 void main()
 {

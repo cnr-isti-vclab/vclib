@@ -23,9 +23,17 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+/*
+TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
+restore next lines with:
+
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 BUFFER_RO(normals,   vec4, VCL_MRB_VERTEX_NORMAL_STREAM);   // normals (3 floats)
 BUFFER_RO(colors,    vec4, VCL_MRB_VERTEX_COLOR_STREAM);    // colors (rgba as float bits)
+*/
+BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
+BUFFER_RO(normals,   vec4, 1);   // normals (3 floats)
+BUFFER_RO(colors,    vec4, 2);    // colors (rgba as float bits)
 
 BUFFER_WO(vOut, vec4, 4); // output vertices
 // 2 vec4 per vertex:
