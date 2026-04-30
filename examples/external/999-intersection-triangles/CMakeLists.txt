@@ -22,14 +22,14 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-test-${TEST_NAME})
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-test-${EXAMPLE_NAME})
 
 set(SOURCES
     main.cpp)
 
-vclib_add_test(
-    ${TEST_NAME}
+vclib_add_example(
+    ${EXAMPLE_NAME}
     VCLIB_MODULE external
     SOURCES ${SOURCES}
     ${HEADER_ONLY_OPTION})
