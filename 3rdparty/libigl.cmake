@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -20,44 +20,25 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-external)
+set(LIBIGL_VER 2.6.0)
 
-### vclib-external target
-set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
+    message(STATUS "- libigl - using downloaded source")
 
-if (TARGET vclib-3rd-embree)
-    file(GLOB_RECURSE HEADERS_EMBREE CONFIGURE_DEPENDS
-        "include/vclib/embree/*.h")
-    list(APPEND HEADERS ${HEADERS_EMBREE})
+    FetchContent_Declare(libigl
+        GIT_REPOSITORY https://github.com/libigl/libigl.git
+        GIT_TAG        v${LIBIGL_VER}
+        EXCLUDE_FROM_ALL)
+
+    FetchContent_MakeAvailable(libigl)
+
+    add_library(vclib-3rd-libigl INTERFACE)
+    target_link_libraries(vclib-3rd-libigl INTERFACE igl::core)
+
+    target_compile_definitions(vclib-3rd-libigl INTERFACE
+        VCLIB_WITH_LIBIGL)
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+else()
+    message(STATUS "- libigl - not found, skipping")
 endif()
-
-if (TARGET vclib-3rd-libigl)
-    file(GLOB_RECURSE HEADERS_IGL CONFIGURE_DEPENDS
-        "include/vclib/igl/*.h")
-    list(APPEND HEADERS ${HEADERS_IGL})
-
-    if (NOT TARGET vclib-3rd-cgal)
-        # remove include/vclib/igl/booleans.h
-        list(FILTER HEADERS EXCLUDE REGEX ".*igl/booleans.h$")
-    endif()
-endif()
-
-if (TARGET vclib-3rd-vcg)
-    file(GLOB_RECURSE HEADERS_VCG CONFIGURE_DEPENDS "include/vclib/vcg/*.h")
-    list(APPEND HEADERS ${HEADERS_VCG})
-endif()
-
-add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
-add_library(vclib::external ALIAS ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_INCLUDE_DIR})
-target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_EXTERNAL_MODULE)
-
-target_link_libraries(${PROJECT_NAME} INTERFACE
-    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core)
-
-target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
-
-# Install
-install(DIRECTORY ${VCLIB_EXTERNAL_INCLUDE_DIR}/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

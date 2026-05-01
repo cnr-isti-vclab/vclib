@@ -82,10 +82,21 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
 endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
+    # CGAL
+    #option(VCLIB_ALLOW_DOWNLOAD_CGAL "Allow use of downloaded CGAL source" ON)
+    option(VCLIB_ALLOW_SYSTEM_CGAL "Allow use of system-provided CGAL" ON)
+
+    include(cgal.cmake)
+
     # embree
     option(VCLIB_ALLOW_SYSTEM_EMBREE
         "Allow use of system-provided Embree" ON)
     include(embree.cmake)
+
+    # libigl
+    option(VCLIB_ALLOW_DOWNLOAD_LIBIGL
+        "Allow use of downloaded libigl source" ON)
+    include(libigl.cmake)
 
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
