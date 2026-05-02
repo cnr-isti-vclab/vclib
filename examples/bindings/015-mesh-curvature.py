@@ -31,7 +31,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh curvature computation algorithms:
 # 1. Principal curvature using Taubin95 algorithm
@@ -164,13 +164,13 @@ def main():
         print("\n=== Saving Meshes ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(taubin_mesh, f"{VCLIB_RESULTS_PATH}/015_taubin_curvature.ply")
-        vcl.save_mesh(pca_mesh, f"{VCLIB_RESULTS_PATH}/015_pca_curvature.ply")
-        vcl.save_mesh(general_mesh, f"{VCLIB_RESULTS_PATH}/015_general_curvature.ply")
+        vcl.save_mesh(taubin_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_taubin_curvature.ply")
+        vcl.save_mesh(pca_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_pca_curvature.ply")
+        vcl.save_mesh(general_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_general_curvature.ply")
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}")
         print("Files saved:")
         print("  - 015_taubin_curvature.ply (colored by mean curvature)")
         print("  - 015_pca_curvature.ply (colored by Gaussian curvature)")
