@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 set(EXAMPLE_NAME 999-misc-native)
 project(vclib-render-example-${EXAMPLE_NAME})
 
