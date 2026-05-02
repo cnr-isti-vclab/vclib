@@ -28,14 +28,14 @@
 
 int main()
 {
-    auto [m1, m2, res] = meshBooleans();
+    auto [m1, m2, mUnion, mIntersection] = meshBooleans();
 
     /****** Save the created meshes ******/
 
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
 
         vcl::saveMesh(m1, resultsPath + "/020_input_bimba.ply");
         std::cout << "Saved: 020_input_bimba.ply\n";
@@ -43,8 +43,12 @@ int main()
         vcl::saveMesh(m1, resultsPath + "/020_input_bunny.ply");
         std::cout << "Saved: 020_input_bunny.ply\n";
 
-        vcl::saveMesh(res, resultsPath + "/020_boolean_union.ply");
+        vcl::saveMesh(mUnion, resultsPath + "/020_boolean_union.ply");
         std::cout << "Saved: 020_boolean_union.ply\n";
+
+        vcl::saveMesh(
+            mIntersection, resultsPath + "/020_boolean_intersection.ply");
+        std::cout << "Saved: 020_boolean_intersection.ply\n";
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }
