@@ -28,22 +28,6 @@ find_package(CGAL ${CGAL_VER} QUIET)
 if (VCLIB_ALLOW_SYSTEM_CGAL AND CGAL_FOUND)
     message(STATUS "- CGAL - using system-provided library")
 
-    set(VCLIB_USES_CGAL TRUE)
-
-# elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
-#     message(STATUS "- CGAL - using downloaded source")
-
-#     FetchContent_Declare(cgal
-#         GIT_REPOSITORY https://github.com/CGAL/cgal.git
-#         GIT_TAG        v${CGAL_VER}
-#         EXCLUDE_FROM_ALL)
-
-#     FetchContent_MakeAvailable(cgal)
-
-#     set(VCLIB_USES_CGAL TRUE)
-endif()
-
-if (VCLIB_USES_CGAL)
     add_library(vclib-3rd-cgal INTERFACE)
     target_link_libraries(vclib-3rd-cgal INTERFACE CGAL::CGAL)
 
@@ -51,6 +35,37 @@ if (VCLIB_USES_CGAL)
 
     target_compile_definitions(vclib-3rd-cgal INTERFACE
         VCLIB_WITH_CGAL)
+
+elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
+    message(STATUS "- CGAL - using downloaded source")
+
+    FetchContent_Declare(cgal
+        GIT_REPOSITORY https://github.com/CGAL/cgal.git
+        GIT_TAG        v${CGAL_VER}
+        EXCLUDE_FROM_ALL)
+
+    FetchContent_MakeAvailable(cgal)
+
+    add_library(vclib-3rd-cgal INTERFACE)
+    target_link_libraries(vclib-3rd-cgal INTERFACE cgal)
+
+    if (WIN32)
+        set(GMP_MPFR_URL
+            https://github.com/CGAL/cgal/releases/download/v${CGAL_VER}/CGAL-${CGAL_VER}-win64-auxiliary-libraries-gmp-mpfr.zip)
+
+        # download zip package from GMP_MPFR_URL
+        file(DOWNLOAD ${GMP_MPFR_URL} ${CMAKE_CURRENT_BINARY_DIR}/gmp_mpfr.zip)
+
+        # extract the zip in the cgal build directory
+        file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_BINARY_DIR}/gmp_mpfr.zip
+            DESTINATION ${cgal_SOURCE_DIR})
+    endif()
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)
+
+    target_compile_definitions(vclib-3rd-cgal INTERFACE
+        VCLIB_WITH_CGAL)
+
 else()
     message(STATUS "- CGAL - not found, skipping")
 endif()
