@@ -97,9 +97,6 @@ static const std::string resultsPath =
 
 TEMPLATE_TEST_CASE("Point Serialization", "", int, float, double)
 {
-    // create directory if it doesn't exist
-    std::filesystem::create_directories(resultsPath);
-
     using Scalar = TestType;
 
     std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/point3.bin");
