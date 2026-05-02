@@ -20,15 +20,18 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-external-examples)
+find_package(Boost QUIET)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+if (VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
+    message(STATUS "- boost - using system-provided library")
 
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree)
-endif()
+    add_library(vclib-3rd-boost INTERFACE)
+    target_link_libraries(vclib-3rd-boost INTERFACE Boost::boost)
 
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-boost)
+
+    target_compile_definitions(vclib-3rd-boost INTERFACE
+        VCLIB_WITH_BOOST)
+else()
+    message(STATUS "- boost - not found, skipping")
 endif()

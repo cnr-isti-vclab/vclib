@@ -82,6 +82,10 @@ if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
 endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
+    # boost
+    option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
+    include(boost.cmake)
+
     # CGAL
     option(VCLIB_ALLOW_DOWNLOAD_CGAL "Allow use of downloaded CGAL source" ON)
     option(VCLIB_ALLOW_SYSTEM_CGAL "Allow use of system-provided CGAL" ON)
