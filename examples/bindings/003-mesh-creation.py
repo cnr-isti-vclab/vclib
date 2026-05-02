@@ -29,7 +29,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh creation in VCLib:
 # 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
@@ -143,13 +143,13 @@ if __name__ == "__main__":
     print("\n=== Saving Meshes ===")
     
     try:
-        vcl.save_mesh(tetrahedron, VCLIB_RESULTS_PATH + "/003_tetrahedron.ply", info = save_info)
-        vcl.save_mesh(cube, VCLIB_RESULTS_PATH + "/003_cube_tri.ply", info = save_info)
-        vcl.save_mesh(dodecahedron, VCLIB_RESULTS_PATH + "/003_dodecahedron_tri.ply", info = save_info)
-        vcl.save_mesh(custom_cube, VCLIB_RESULTS_PATH + "/003_custom_cube.ply", info = save_info)
-        vcl.save_mesh(cube_quads, VCLIB_RESULTS_PATH + "/003_cube_poly.ply", info = save_info)
-        vcl.save_mesh(dodecahedron_poly, VCLIB_RESULTS_PATH + "/003_dodecahedron_poly.ply", info = save_info)
-        vcl.save_mesh(sphere_quads, VCLIB_RESULTS_PATH + "/003_sphere_poly.ply", info = save_info)
+        vcl.save_mesh(tetrahedron, VCLIB_PYTHON_RESULTS_PATH + "/003_tetrahedron.ply", info = save_info)
+        vcl.save_mesh(cube, VCLIB_PYTHON_RESULTS_PATH + "/003_cube_tri.ply", info = save_info)
+        vcl.save_mesh(dodecahedron, VCLIB_PYTHON_RESULTS_PATH + "/003_dodecahedron_tri.ply", info = save_info)
+        vcl.save_mesh(custom_cube, VCLIB_PYTHON_RESULTS_PATH + "/003_custom_cube.ply", info = save_info)
+        vcl.save_mesh(cube_quads, VCLIB_PYTHON_RESULTS_PATH + "/003_cube_poly.ply", info = save_info)
+        vcl.save_mesh(dodecahedron_poly, VCLIB_PYTHON_RESULTS_PATH + "/003_dodecahedron_poly.ply", info = save_info)
+        vcl.save_mesh(sphere_quads, VCLIB_PYTHON_RESULTS_PATH + "/003_sphere_poly.ply", info = save_info)
 
         print("\nAll meshes have been saved to the results directory.")
     except Exception as e:

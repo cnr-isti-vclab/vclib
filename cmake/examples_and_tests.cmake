@@ -31,7 +31,10 @@ target_compile_definitions(vclib-tests-examples-common INTERFACE
     VCLIB_EXAMPLE_MESHES_PATH="${VCLIB_ASSETS_PATH}/example_meshes")
 
 target_compile_definitions(vclib-tests-examples-common INTERFACE
-    VCLIB_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
+    VCLIB_CORE_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/core")
+
+target_compile_definitions(vclib-tests-examples-common INTERFACE
+    VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external")
 
 function(_vclib_add_test_example name)
     set(options TEST HEADER_ONLY)

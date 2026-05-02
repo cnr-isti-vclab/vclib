@@ -20,13 +20,8 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 set(EXAMPLE_NAME 04-hello-triangle-imgui-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
-
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
 
 set(HEADERS
     ../common.h

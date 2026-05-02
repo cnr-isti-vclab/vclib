@@ -31,11 +31,11 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
-        vcl::saveMesh(mesh, VCLIB_RESULTS_PATH "/012_cleaned_brain.ply");
+        vcl::saveMesh(mesh, resultsPath + "/012_cleaned_brain.ply");
 
-        vcl::saveMesh(testMesh, VCLIB_RESULTS_PATH "/012_test_clean.ply");
+        vcl::saveMesh(testMesh, resultsPath + "/012_test_clean.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

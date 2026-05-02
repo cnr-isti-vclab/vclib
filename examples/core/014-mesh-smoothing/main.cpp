@@ -32,16 +32,16 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
         vcl::saveMesh(
-            laplacianMesh, VCLIB_RESULTS_PATH "/013_laplacian_smoothed.ply");
+            laplacianMesh, resultsPath + "/013_laplacian_smoothed.ply");
         vcl::saveMesh(
-            cotangentMesh, VCLIB_RESULTS_PATH "/013_cotangent_smoothed.ply");
+            cotangentMesh, resultsPath + "/013_cotangent_smoothed.ply");
         vcl::saveMesh(
-            taubinMesh, VCLIB_RESULTS_PATH "/013_taubin_smoothed.ply");
+            taubinMesh, resultsPath + "/013_taubin_smoothed.ply");
         vcl::saveMesh(
-            normalMesh, VCLIB_RESULTS_PATH "/013_normal_smoothed.ply");
+            normalMesh, resultsPath + "/013_normal_smoothed.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }

@@ -28,7 +28,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 
 def polymesh_specifics():
@@ -211,12 +211,12 @@ if __name__ == "__main__":
     poly_mesh, tri_mesh, dynamic_mesh = polymesh_specifics()
     print("\n=== Saving Meshes ===")
     try:
-        vcl.save_mesh(poly_mesh, VCLIB_RESULTS_PATH + "/008_hexagon_pyramid_polymesh.ply")
+        vcl.save_mesh(poly_mesh, VCLIB_PYTHON_RESULTS_PATH + "/008_hexagon_pyramid_polymesh.ply")
         print("Saved: 008_hexagon_pyramid_polymesh.ply")
-        vcl.save_mesh(tri_mesh, VCLIB_RESULTS_PATH + "/008_hexagon_pyramid_trimesh.ply")
+        vcl.save_mesh(tri_mesh, VCLIB_PYTHON_RESULTS_PATH + "/008_hexagon_pyramid_trimesh.ply")
         print("Saved: 008_hexagon_pyramid_trimesh.ply")
-        vcl.save_mesh(dynamic_mesh, VCLIB_RESULTS_PATH + "/008_square_polymesh.ply")
+        vcl.save_mesh(dynamic_mesh, VCLIB_PYTHON_RESULTS_PATH + "/008_square_polymesh.ply")
         print("Saved: 008_square_polymesh.ply")
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}")
     except Exception as e:
         print(f"Error in saving: {e}")

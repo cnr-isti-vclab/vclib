@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates the basic concepts and operations with VCLib
 # meshes:
@@ -208,8 +208,8 @@ if __name__ == "__main__":
 
     try:
         # Save the meshes to files
-        vcl.save_mesh(mesh, VCLIB_RESULTS_PATH + "/001_mesh-basics_triangle.ply")
-        vcl.save_mesh(poly_mesh, VCLIB_RESULTS_PATH + "/001_mesh-basics_polygon.ply")
+        vcl.save_mesh(mesh, VCLIB_PYTHON_RESULTS_PATH + "/001_mesh-basics_triangle.ply")
+        vcl.save_mesh(poly_mesh, VCLIB_PYTHON_RESULTS_PATH + "/001_mesh-basics_polygon.ply")
         print("Meshes saved successfully.")
     except Exception as e:
         print(f"Error saving meshes: {e}")

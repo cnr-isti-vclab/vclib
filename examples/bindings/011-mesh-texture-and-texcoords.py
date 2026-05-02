@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to work with textures and texture coordinates:
 # 1. Loading meshes with vertex texture coordinates
@@ -193,9 +193,9 @@ def main():
         # Save the created meshes
         print("\n=== Saving Meshes ===")
 
-        vcl.save_mesh(custom_mesh, f"{VCLIB_RESULTS_PATH}/011_custom_textured.ply", save_texture_images = True)
+        vcl.save_mesh(custom_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/011_custom_textured.ply", save_texture_images = True)
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}\n")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}\n")
 
     except Exception as e:
         print(f"Error in main: {e}", file=sys.stderr)
