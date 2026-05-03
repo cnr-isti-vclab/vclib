@@ -27,6 +27,6 @@ set(SOURCES
     main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 015-mesh-curvature
+    MODULE render
+    CORE_EXAMPLE 015-mesh-curvature
     SOURCES ${SOURCES})

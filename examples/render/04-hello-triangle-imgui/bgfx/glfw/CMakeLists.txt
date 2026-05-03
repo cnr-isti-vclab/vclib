@@ -37,7 +37,7 @@ set(SHADERS
     shaders/varying.def.sc)
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${HEADERS} ${SOURCES})
 
 target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

@@ -30,5 +30,5 @@ target_include_directories(vclib-render PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR})
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${SOURCES})

@@ -39,6 +39,6 @@ set(SOURCES
 
 vclib_add_test(
     ${TEST_NAME}
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})

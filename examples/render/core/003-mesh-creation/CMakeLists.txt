@@ -27,6 +27,6 @@ set(SOURCES
     main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 003-mesh-creation
+    MODULE render
+    CORE_EXAMPLE 003-mesh-creation
     SOURCES ${SOURCES})
