@@ -38,10 +38,8 @@ int main()
             laplacianMesh, resultsPath + "/013_laplacian_smoothed.ply");
         vcl::saveMesh(
             cotangentMesh, resultsPath + "/013_cotangent_smoothed.ply");
-        vcl::saveMesh(
-            taubinMesh, resultsPath + "/013_taubin_smoothed.ply");
-        vcl::saveMesh(
-            normalMesh, resultsPath + "/013_normal_smoothed.ply");
+        vcl::saveMesh(taubinMesh, resultsPath + "/013_taubin_smoothed.ply");
+        vcl::saveMesh(normalMesh, resultsPath + "/013_normal_smoothed.ply");
 
         std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
     }
