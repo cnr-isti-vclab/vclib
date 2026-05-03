@@ -27,6 +27,6 @@ set(SOURCES
     main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 014-mesh-smoothing
+    MODULE render
+    CORE_EXAMPLE 014-mesh-smoothing
     SOURCES ${SOURCES})

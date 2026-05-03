@@ -23,5 +23,5 @@
 set(SOURCES main.cpp)
 
 vclib_add_example(999-misc-bgfx-qt
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${SOURCES})

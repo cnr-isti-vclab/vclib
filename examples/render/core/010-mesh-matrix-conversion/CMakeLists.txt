@@ -27,6 +27,6 @@ set(SOURCES
     main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
-    VCLIB_CORE_EXAMPLE 010-mesh-matrix-conversion
+    MODULE render
+    CORE_EXAMPLE 010-mesh-matrix-conversion
     SOURCES ${SOURCES})

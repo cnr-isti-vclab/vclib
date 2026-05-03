@@ -23,5 +23,5 @@
 set(SOURCES main.cpp)
 
 vclib_add_example(999-misc-broken-bgfx-imgui-qt
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${SOURCES})
