@@ -15,9 +15,11 @@ auto meshBooleans()
 
     vcl::TriMesh mUnion =
         vcl::igl::meshBoolean(m1, m2, igl::MESH_BOOLEAN_TYPE_UNION);
+    mUnion.name() = "union";
 
     vcl::TriMesh mIntersection =
         vcl::igl::meshBoolean(m1, m2, igl::MESH_BOOLEAN_TYPE_INTERSECT);
+    mIntersection.name() = "intersection";
 
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }

@@ -22,39 +22,24 @@
 
 #include "igl_booleans.h"
 
-#include <vclib/igl/booleans.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#include <default_viewer.h>
 
-int main()
+int main(int argc, char** argv)
 {
     auto [m1, m2, mUnion, mIntersection] = meshBooleans();
 
-    /****** Save the created meshes ******/
+    vcl::updatePerVertexAndFaceNormals(m1);
+    vcl::updatePerVertexAndFaceNormals(m2);
+    vcl::updatePerVertexAndFaceNormals(mUnion);
+    vcl::updatePerVertexAndFaceNormals(mIntersection);
 
-    std::cout << "\n=== Saving Meshes ===" << std::endl;
-
-    try {
-        std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
-
-        vcl::saveMesh(m1, resultsPath + "/020_input_bimba.ply");
-        std::cout << "Saved: 020_input_bimba.ply\n";
-
-        vcl::saveMesh(m1, resultsPath + "/020_input_bunny.ply");
-        std::cout << "Saved: 020_input_bunny.ply\n";
-
-        vcl::saveMesh(mUnion, resultsPath + "/020_boolean_union.ply");
-        std::cout << "Saved: 020_boolean_union.ply\n";
-
-        vcl::saveMesh(
-            mIntersection, resultsPath + "/020_boolean_intersection.ply");
-        std::cout << "Saved: 020_boolean_intersection.ply\n";
-
-        std::cout << "\nAll files have been saved to: " << resultsPath << "\n";
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
-    }
+    return showMeshesOnDefaultViewer(
+        argc,
+        argv,
+        std::move(m1),
+        std::move(m2),
+        std::move(mUnion),
+        std::move(mIntersection));
 
     return 0;
 }

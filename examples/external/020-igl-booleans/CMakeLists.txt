@@ -29,7 +29,7 @@ set(SOURCES
 
 vclib_add_example(
     ${EXAMPLE_NAME}
-    VCLIB_MODULE external
+    MODULE external
     SOURCES ${SOURCES})
 
 set_property(TARGET vclib-external-example-${EXAMPLE_NAME}
