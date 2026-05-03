@@ -85,7 +85,6 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
     set(BIMG_DECODE ON CACHE BOOL "" FORCE)
     set(BIMG_CUBEMAP ON CACHE BOOL "" FORCE)
-    set(BGFX_CUSTOM_TARGETS OFF CACHE BOOL "" FORCE)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
