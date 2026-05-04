@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
@@ -38,16 +37,14 @@ TEMPLATE_TEST_CASE(
     vcl::TriMeshIndexedf)
 {
     using namespace vcl;
+    using namespace vcl::igl;
 
     SECTION("Union")
     {
-        TriMesh tm1 =
-            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-        TriMesh tm2 =
-            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+        TriMesh tm1 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        TriMesh tm2 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
-        TriMesh result =
-            vcl::igl::meshBoolean(tm1, tm2, ::igl::MESH_BOOLEAN_TYPE_UNION);
+        TriMesh result = meshBoolean(tm1, tm2, MeshBoolean::UNION);
 
         REQUIRE(result.vertexCount() == 43022);
         REQUIRE(result.faceCount() == 86044);
@@ -55,13 +52,10 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Intersection")
     {
-        TriMesh tm1 =
-            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-        TriMesh tm2 =
-            vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+        TriMesh tm1 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        TriMesh tm2 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
-        TriMesh result =
-            vcl::igl::meshBoolean(tm1, tm2, ::igl::MESH_BOOLEAN_TYPE_INTERSECT);
+        TriMesh result = meshBoolean(tm1, tm2, MeshBoolean::INTERSECTION);
 
         REQUIRE(result.vertexCount() == 10898);
         REQUIRE(result.faceCount() == 21788);

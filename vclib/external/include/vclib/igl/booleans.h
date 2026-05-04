@@ -32,6 +32,20 @@
 
 namespace vcl::igl {
 
+#ifdef WIN32
+#undef DIFFERENCE
+#endif
+
+enum class MeshBoolean : int
+{
+    UNION = ::igl::MESH_BOOLEAN_TYPE_UNION,
+    INTERSECTION = ::igl::MESH_BOOLEAN_TYPE_INTERSECT,
+    DIFFERENCE = ::igl::MESH_BOOLEAN_TYPE_MINUS,
+    XOR = ::igl::MESH_BOOLEAN_TYPE_XOR,
+    RESOLVE = ::igl::MESH_BOOLEAN_TYPE_RESOLVE,
+    COUNT = ::igl::NUM_MESH_BOOLEAN_TYPES
+};
+
 /**
  * @brief Perform boolean operations between two meshes using libigl's
  * CGAL-based implementation.
@@ -49,7 +63,7 @@ template<FaceMeshConcept MeshType>
 MeshType meshBoolean(
     const MeshType& m1,
     const MeshType& m2,
-    ::igl::MeshBooleanType op)
+    MeshBoolean op)
 {
     using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
@@ -72,7 +86,14 @@ MeshType meshBoolean(
     Eigen::VectorXi  indices; // mapping indices for birth faces
 
     bool result = ::igl::copyleft::cgal::mesh_boolean(
-        V1, F1, V2, F2, op, VR, FR, indices);
+        V1,
+        F1,
+        V2,
+        F2,
+        static_cast<::igl::MeshBooleanType>(op),
+        VR,
+        FR,
+        indices);
 
     if (!result) {
         throw std::runtime_error(

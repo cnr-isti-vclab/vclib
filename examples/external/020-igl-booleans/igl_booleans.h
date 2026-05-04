@@ -7,19 +7,20 @@
 
 auto meshBooleans()
 {
-    vcl::TriMesh m1;
-    vcl::loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    using namespace vcl;
+    using namespace vcl::igl;
 
-    vcl::TriMesh m2;
-    vcl::loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    TriMesh m1;
+    loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
-    vcl::TriMesh mUnion =
-        vcl::igl::meshBoolean(m1, m2, igl::MESH_BOOLEAN_TYPE_UNION);
-    mUnion.name() = "union";
+    TriMesh m2;
+    loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    vcl::TriMesh mIntersection =
-        vcl::igl::meshBoolean(m1, m2, igl::MESH_BOOLEAN_TYPE_INTERSECT);
-    mIntersection.name() = "intersection";
+    TriMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
+    mUnion.name()  = "union";
+
+    TriMesh mIntersection = meshBoolean(m1, m2, MeshBoolean::INTERSECTION);
+    mIntersection.name()  = "intersection";
 
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }
