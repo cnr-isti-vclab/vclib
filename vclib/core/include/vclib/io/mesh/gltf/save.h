@@ -114,6 +114,147 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     return {index, primitive};
 }
 
+inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
+    tinygltf::Model& model,
+    const Material&  material)
+{
+    model.materials.emplace_back();
+    tinygltf::Material& tMaterial = model.materials.back();
+    uint                index    = model.materials.size() - 1;
+
+    tMaterial.name = material.name();
+
+    // baseColorFactor
+    tMaterial.pbrMetallicRoughness.baseColorFactor = {
+        material.baseColor().redF(),
+        material.baseColor().greenF(),
+        material.baseColor().blueF(),
+        material.baseColor().alphaF()};
+
+    //TODO optional?
+    //TODO
+    // baseColorTexture
+    //tMaterial.pbrMetallicRoughness.baseColorTexture.index = //TODO get index
+    //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord =
+
+    // metallicFactor
+    tMaterial.pbrMetallicRoughness.metallicFactor =
+        material.metallic();
+
+    // roughnessFactor
+    tMaterial.pbrMetallicRoughness.roughnessFactor =
+        material.roughness();
+
+    //TODO optional?
+    //TODO
+    //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = //TODO get index
+    //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord =
+
+    // emissiveFactor
+    tMaterial.emissiveFactor = {
+        material.emissiveColor().redF(),
+        material.emissiveColor().greenF(),
+        material.emissiveColor().blueF()};
+
+    //TODO optional?
+    //TODO
+    // emissiveTexture
+    //tMaterial.emissiveTexture.index = //TODO get index
+    //tMaterial.emissiveTexture.texCoord =
+
+    //TODO optional?
+    //TODO
+    // normalTexture
+    //tMaterial.normalTexture.index = //TODO get index
+    //tMaterial.normalTexture.texCoord =
+    //tMaterial.normalTexture.scale = material.normalScale;
+
+    //TODO optional?
+    //TODO
+    // occlusionTexture
+    //tMaterial.occlusionTexture.index = //TODO get index
+    //tMaterial.occlusionTexture.texCoord =
+    //tMaterial.occlusionTexture.strength = material.occlusionStrength;
+
+    // doubleSided
+    tMaterial.doubleSided =
+        material.doubleSided();
+
+    // alphaMode
+    switch (material.alphaMode()) {
+        using enum Material::AlphaMode;
+
+        case ALPHA_MASK:
+            tMaterial.alphaMode = "MASK";
+            break;
+        case ALPHA_BLEND:
+            tMaterial.alphaMode = "BLEND";
+            break;
+        case ALPHA_OPAQUE:
+            tMaterial.alphaMode = "OPAQUE"; // default value
+            break;
+    }
+
+    // alphaCutoff
+    tMaterial.alphaCutoff =
+        material.alphaCutoff();
+
+    return {index, tMaterial};
+}
+
+// NOTE:
+// temporary implementation
+// MUST be removed when this function will be present in the core library
+// copied from vclib/render/drawable/mesh/mesh_render_data.h
+static void permuteTriangulatedFaceVertexIndices(
+    auto*                    buffer,
+    TriPolyIndexBiMap&       indexMap,
+    const std::vector<uint>& newFaceIndices)
+{
+    // newFaceIndices tells for each face, which is its new position
+    // we need the inverse mapping: for each new position, which is the old
+    // face index
+    std::vector<uint> oldFaceIndices(newFaceIndices.size());
+    for (uint i = 0; i < newFaceIndices.size(); ++i) {
+        oldFaceIndices[newFaceIndices[i]] = static_cast<uint>(i);
+    }
+
+    // temporary copy of the buffer
+    std::vector<uint> bufferCopy(indexMap.triangleCount() * 3);
+
+    // temporary bimbap
+    TriPolyIndexBiMap indexMapCopy;
+    indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
+
+    uint copiedTriangles = 0;
+
+    for (uint i = 0; i < oldFaceIndices.size(); ++i) {
+        // need to place the k triangles associated to the i-th face
+        // of oldFaceIndices
+        uint polyIndex = oldFaceIndices[i];
+        uint firstTri  = indexMap.triangleBegin(polyIndex);
+        uint nTris     = indexMap.triangleCount(polyIndex);
+
+        std::copy(
+            buffer + firstTri * 3,
+            buffer + (firstTri + nTris) * 3,
+            bufferCopy.data() + copiedTriangles * 3);
+
+        for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
+            indexMapCopy.insert(t, polyIndex);
+        }
+
+        copiedTriangles += nTris;
+    }
+
+    // copy back
+    std::copy(
+        bufferCopy.begin(),
+        bufferCopy.begin() + copiedTriangles * 3,
+        buffer);
+    indexMap = std::move(indexMapCopy);
+}
+
 template<MeshConcept MeshType>
 void addMeshToTinygltfModel(
     const MeshType&  m,
@@ -204,13 +345,10 @@ void addMeshToTinygltfModel(
     if constexpr (HasFaces<MeshType>) {
         if (meshInfo.hasFaces() && m.faceCount() > 0) {
             if (meshInfo.hasPerVertexMaterialIndex()) {
-                //TODO 1) chiamo la funzione per ordinare le facce per material index
-                //TODO 2) trovo le boundaries dei chunk (chunk di facce con lo stesso materiale)
-                //TODO 3) ogni volta che trovo una boundary, creo una primitiva per quel chunk
-                //TODO ogni volta che trovo una faccia, salvo gli indici dei vertici in un buffer contenente tutti gli indici dei vertici
-                //TODO successivamente, ogni primitiva avra' una buffer view con un offset in quel buffer
-
-                //TODO 1
+                // faces are sorted per material index and saved into and index buffer
+                // for each material chunk, a primitive is created with relative accessor
+                // and buffer view into the index buffer
+                // materials are saved into the model
 
                 using FaceType = MeshType::FaceType;
 
@@ -237,58 +375,64 @@ void addMeshToTinygltfModel(
                 // using the face comparator defined above
                 const std::vector<uint> faceIndicesSortedByMaterialID =
                     sortFaceIndicesByFunction(m, faceComp, true);
+                auto indBuf = addGltfBuffer(
+                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+                TriPolyIndexBiMap indexMap;
 
-                //TODO 2
+                triangulatedFaceVertexIndicesToBuffer(
+                    m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
 
-                //TODO compact face indices
-                //const std::vector<uint> faceCompIndices =
-                //    faceCompactIndices(m, true);
-                //TODO if faceCompIndices, face container is compact
+                //TODO remove
+                // replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+                //     m, mVertsToDuplicate, mFacesToReassign, indexMap, ud);
+
+                // permute the triangulated face vertex indices according to the face
+                // sorting by material ID (the function also edits the index map from
+                // polygonal faces (which still refers to the mesh ones) to the
+                // triangulated faces (which refers to the sorted triangles))
+                permuteTriangulatedFaceVertexIndices(
+                    ud, indexMap, faceIndicesSortedByMaterialID);
 
                 // get the mapping from actual indices to compact indices
                 std::vector<uint> compactIndices = m.faceCompactIndices();
-                // create a reverse mapping from compact index to actual index
-                std::vector<uint> reverseIndicesMap(m.faceCount());
 
+                // compactIndices tells for each face, which is its new position
+                // we need the inverse mapping: for each new position, which is the old
+                // face index
+                std::vector<uint> oldFaceIndices(compactIndices.size());
                 for (uint i = 0; i < compactIndices.size(); ++i) {
-                    if (compactIndices[i] != UINT_NULL) {
-                        reverseIndicesMap[compactIndices[i]] = i;
-                    }
+                    oldFaceIndices[compactIndices[i]] = static_cast<uint>(i);
                 }
 
-                auto indBuf = addGltfBuffer(
-                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
-                uint lastMaterialIndex = -1;
+                uint lastMaterialIndex = UINT_NULL;
                 std::unordered_map<uint, uint> modelMaterialIndices{};
                 uint chunkByteOffset = 0;
                 uint chunkLength = 0;
+                uint modelMaterialIndex = 0;
 
                 for (auto faceCompactIndex : faceIndicesSortedByMaterialID) {
-                    auto& face = m.face(reverseIndicesMap[faceCompactIndex]);
+                    auto& face = m.face(oldFaceIndices[faceCompactIndex]);
                     // get first vertex's material
-                    uint mIndex = face.vertex(0)->materialIndex();
+                    uint materialIndex = face.vertex(0)->materialIndex();
+                    uint faceChunkLength = indexMap.triangleCount(oldFaceIndices[faceCompactIndex]) * 3 * sizeof(uint);
 
-                    //TODO add face vertices' indices to the buffer
-                    //TODO face must be triangulated
-
-                    if (mIndex == lastMaterialIndex) {
-                        //chunkLength += TO CALCULATE;
+                    if (materialIndex == lastMaterialIndex) {
+                        chunkLength += faceChunkLength;
 
                         break;
                     }
 
                     // the material is added to the model if not already present
-                    if (!modelMaterialIndices.contains(mIndex)) {
-                        //TODO add material to model
-                        //modelMaterialIndices[mIndex] = model material index
+                    if (!modelMaterialIndices.contains(materialIndex)) {
+                        auto material = addGltfMaterial(tModel, m.material(materialIndex));
+                        modelMaterialIndices[materialIndex] = material.first;
                     }
 
-                    uint modelMaterialIndex = modelMaterialIndices.at(mIndex);
-
-                    //TODO 3
+                    modelMaterialIndex = modelMaterialIndices.at(materialIndex);
 
                     // end previous chunk
-                    if (lastMaterialIndex != -1) {
+                    if (lastMaterialIndex != UINT_NULL) {
                         // buffer view, accessor and primitive
                         auto indBufView = addGltfBufferView(
                             tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
@@ -306,8 +450,25 @@ void addMeshToTinygltfModel(
 
                     // start new chunk
                     chunkByteOffset += chunkLength;
-                    //chunkLength = TO CALCULATE;
-                    lastMaterialIndex = mIndex;
+                    chunkLength = faceChunkLength;
+                    lastMaterialIndex = materialIndex;
+                }
+
+                // add last chunk
+                if (lastMaterialIndex != UINT_NULL) {
+                    // buffer view, accessor and primitive
+                    auto indBufView = addGltfBufferView(
+                        tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
+                    auto indAccessor = addGltfAccessor(
+                        tModel,
+                        indBufView,
+                        TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                        TINYGLTF_TYPE_SCALAR);
+                    auto primitive = addGltfPrimitive(
+                        mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+
+                    primitive.second.indices = indAccessor.first;
+                    primitive.second.material = modelMaterialIndex;
                 }
             }
             else {
