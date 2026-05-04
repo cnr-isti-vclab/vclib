@@ -117,13 +117,12 @@ void Callback::screenShot(
 {
     vcl::Color::Format colorFormat = vcl::Color::Format::BGRA;
     switch (format) {
-    case bgfx::TextureFormat::BGRA8:
-        break;
-    case bgfx::TextureFormat::RGBA8: colorFormat = vcl::Color::Format::ARGB;
+    case bgfx::TextureFormat::BGRA8: break;
+    case bgfx::TextureFormat::RGBA8:
+        colorFormat = vcl::Color::Format::ARGB;
         break;
     default:
-        std::cerr << "Unsupported texture format for screenshot: "
-                  << std::endl;
+        std::cerr << "Unsupported texture format for screenshot: " << std::endl;
         return;
     }
 

@@ -32,7 +32,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh creation in VCLib:
 # 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
@@ -261,11 +261,11 @@ if __name__ == "__main__":
 
     try:
         # Save the meshes to files
-        vcl.save_mesh(transform_mesh, VCLIB_RESULTS_PATH + "/004_transformed_icosahedron.ply")
-        vcl.save_mesh(scale_mesh, VCLIB_RESULTS_PATH + "/004_scaled_cube.ply")
-        vcl.save_mesh(rotate_mesh, VCLIB_RESULTS_PATH + "/004_rotated_cube.ply")
-        vcl.save_mesh(matrix_mesh, VCLIB_RESULTS_PATH + "/004_matrix_transformed.ply")
-        vcl.save_mesh(combined_mesh, VCLIB_RESULTS_PATH + "/004_combined_scene.ply")
+        vcl.save_mesh(transform_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_transformed_icosahedron.ply")
+        vcl.save_mesh(scale_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_scaled_cube.ply")
+        vcl.save_mesh(rotate_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_rotated_cube.ply")
+        vcl.save_mesh(matrix_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_matrix_transformed.ply")
+        vcl.save_mesh(combined_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_combined_scene.ply")
         print("Meshes saved successfully.")
     except Exception as e:
         print(f"Error saving meshes: {e}")

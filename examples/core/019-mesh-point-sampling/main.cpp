@@ -32,14 +32,13 @@ int main()
     std::cout << "\n=== Saving Sampled Meshes ===" << std::endl;
 
     try {
-        vcl::saveMesh(
-            originalMesh, VCLIB_RESULTS_PATH "/019_original_mesh.ply");
-        vcl::saveMesh(
-            allVertices, VCLIB_RESULTS_PATH "/019_vertices_sampling.ply");
-        vcl::saveMesh(uniform, VCLIB_RESULTS_PATH "/019_uniform_sampling.ply");
-        vcl::saveMesh(
-            montecarlo, VCLIB_RESULTS_PATH "/019_montecarlo_sampling.ply");
-        vcl::saveMesh(poisson, VCLIB_RESULTS_PATH "/019_poisson_sampling.ply");
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
+
+        vcl::saveMesh(originalMesh, resultsPath + "/019_original_mesh.ply");
+        vcl::saveMesh(allVertices, resultsPath + "/019_vertices_sampling.ply");
+        vcl::saveMesh(uniform, resultsPath + "/019_uniform_sampling.ply");
+        vcl::saveMesh(montecarlo, resultsPath + "/019_montecarlo_sampling.ply");
+        vcl::saveMesh(poisson, resultsPath + "/019_poisson_sampling.ply");
 
         std::cout << "Saved all sampled meshes to results directory"
                   << std::endl;
