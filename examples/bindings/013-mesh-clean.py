@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh cleaning and repairing algorithms:
 # 1. Removing unreferenced vertices
@@ -122,12 +122,12 @@ def main():
         print("\n=== Saving Meshes ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(mesh, f"{VCLIB_RESULTS_PATH}/013_cleaned_brain.ply")
-        vcl.save_mesh(test_mesh, f"{VCLIB_RESULTS_PATH}/013_test_clean.ply")
+        vcl.save_mesh(mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/013_cleaned_brain.ply")
+        vcl.save_mesh(test_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/013_test_clean.ply")
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}")
 
     except Exception as e:
         print(f"Error in main: {e}", file=sys.stderr)

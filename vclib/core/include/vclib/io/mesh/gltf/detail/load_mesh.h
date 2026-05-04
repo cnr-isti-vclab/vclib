@@ -453,8 +453,7 @@ bool populateGltfLines(
             uint ei   = m.addEdges(lineCount);
             for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
                 auto& e = m.edge(ei);
-                e.setVertices(
-                    firstVertex + i, firstVertex + i + 1);
+                e.setVertices(firstVertex + i, firstVertex + i + 1);
             }
         }
         return true;

@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-test-${TEST_NAME})
 
@@ -41,6 +39,6 @@ set(SOURCES
 
 vclib_add_test(
     ${TEST_NAME}
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})

@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 if (TARGET vclib-3rd-imgui)
     if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         add_subdirectory(bgfx)

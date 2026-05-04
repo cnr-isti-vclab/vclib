@@ -31,10 +31,10 @@ int main()
     std::cout << "\n=== Saving Meshes ===\n";
 
     try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
-        vcl::saveMesh(hullMesh, VCLIB_RESULTS_PATH "/017_convex_hull.ply");
-        vcl::saveMesh(cubeHull, VCLIB_RESULTS_PATH "/017_cube_hull.ply");
+        vcl::saveMesh(hullMesh, resultsPath + "/017_convex_hull.ply");
+        vcl::saveMesh(cubeHull, resultsPath + "/017_cube_hull.ply");
 
         std::cout << "Files saved to: " << resultsPath << "\n";
         std::cout << "- 017_convex_hull.ply (convex hull of bunny mesh)\n";
