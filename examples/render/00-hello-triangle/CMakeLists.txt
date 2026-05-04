@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     add_subdirectory(bgfx)
 elseif (VCLIB_RENDER_BACKEND STREQUAL "opengl2")

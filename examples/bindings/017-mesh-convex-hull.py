@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to compute the convex hull of a point set
 # using the incremental convex hull algorithm provided by VCLib.
@@ -93,12 +93,12 @@ def main():
         print("\n=== Saving Meshes ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(hull_mesh, f"{VCLIB_RESULTS_PATH}/017_convex_hull.ply")
-        vcl.save_mesh(cube_hull, f"{VCLIB_RESULTS_PATH}/017_cube_hull.ply")
+        vcl.save_mesh(hull_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/017_convex_hull.ply")
+        vcl.save_mesh(cube_hull, f"{VCLIB_PYTHON_RESULTS_PATH}/017_cube_hull.ply")
 
-        print(f"Files saved to: {VCLIB_RESULTS_PATH}")
+        print(f"Files saved to: {VCLIB_PYTHON_RESULTS_PATH}")
         print("- 017_convex_hull.ply (convex hull of bunny mesh)")
         print("- 017_cube_hull.ply (convex hull of cube points)")
 

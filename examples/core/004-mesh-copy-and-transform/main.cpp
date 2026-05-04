@@ -33,7 +33,7 @@ int main()
 
     try {
         // Save some of the created meshes
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
         vcl::saveMesh(
             transformMesh, resultsPath + "/004_transformed_icosahedron.ply");

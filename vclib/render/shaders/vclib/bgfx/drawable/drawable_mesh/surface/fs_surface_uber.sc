@@ -32,8 +32,15 @@ $input v_worldPos, v_discardFlag
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
+/*
+TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
+restore next lines with:
+
 BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
 BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
+*/
+BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
+BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
 
 void main()
 {
