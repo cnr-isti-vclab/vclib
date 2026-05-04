@@ -30,6 +30,6 @@ set(SOURCES
 
 vclib_add_example(
     ${EXAMPLE_NAME}
-    VCLIB_MODULE external
+    MODULE external
     SOURCES ${SOURCES}
     ${HEADER_ONLY_OPTION})
