@@ -52,7 +52,9 @@ jobs:
       shell: bash
       run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
+          CURRENT_PATH=$(pwd)
           export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/embree-4.4.1.x64.windows/bin:$PATH"
+          export PATH="$CURRENT_PATH/build/_deps/cgal-src/auxiliary/gmp/bin:$PATH"
         fi
         cd build
         ctest --verbose
