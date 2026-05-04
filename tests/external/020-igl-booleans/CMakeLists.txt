@@ -20,20 +20,16 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-render-example-external-${EXAMPLE_NAME})
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-external-test-${TEST_NAME})
 
 set(SOURCES
     main.cpp)
 
-vclib_add_example(
-    ${EXAMPLE_NAME}
-    MODULE render
-    LINK_MODULES external
-    EXTERNAL_EXAMPLE 020-igl-booleans
+vclib_add_test(
+    ${TEST_NAME}
+    MODULE external
     SOURCES ${SOURCES})
 
 set_property(TARGET ${PROJECT_NAME}
-    PROPERTY COMPILE_WARNING_AS_ERROR OFF)
-
-
+   PROPERTY COMPILE_WARNING_AS_ERROR OFF)
