@@ -533,8 +533,8 @@ int main(int argc, char** argv)
         bestPlaneMesh.addFace(v0, v2, v3);
     }
 
-    vcl::saveMesh(bestRaysMesh, VCLIB_RESULTS_PATH "/666_volume_prism_rays.ply");
-    vcl::saveMesh(bestPrismsMesh, VCLIB_RESULTS_PATH "/666_volume_prism_prisms.ply");
+    vcl::saveMesh(bestRaysMesh, VCLIB_EXTERNAL_RESULTS_PATH "/666_volume_prism_rays.ply");
+    vcl::saveMesh(bestPrismsMesh, VCLIB_EXTERNAL_RESULTS_PATH "/666_volume_prism_prisms.ply");
 
     std::cout << "\nFibonacci planes tested: " << fibNormals.size()
               << "\nBest plane id: " << bestPlaneId
@@ -549,8 +549,8 @@ int main(int argc, char** argv)
 #endif
               << "\nTotal runtime ms: " << totalRuntimeMs.count() << "\n";
     std::cout << "Saved debug meshes:\n"
-              << " - " << VCLIB_RESULTS_PATH << "/666_volume_prism_rays.ply\n"
-              << " - " << VCLIB_RESULTS_PATH
+              << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/666_volume_prism_rays.ply\n"
+              << " - " << VCLIB_EXTERNAL_RESULTS_PATH
               << "/666_volume_prism_prisms.ply\n";
 
 /*             

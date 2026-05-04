@@ -516,11 +516,11 @@ vcl::Point3d runPlaneBeam(
 		nullptr);
 
 	if (debug) {
-		saveMesh(bestRayhitMesh, VCLIB_RESULTS_PATH "/777_plane_beam_rayhits.ply");
-		saveMesh(bestPrismsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_prisms.ply");
-		saveMesh(bestProjectedPointsMesh, VCLIB_RESULTS_PATH "/777_plane_beam_projected_points.ply");
-		saveMesh(bestBbox2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
-		saveMesh(bestGrid2dMesh, VCLIB_RESULTS_PATH "/777_plane_beam_grid2d.ply");
+        saveMesh(bestRayhitMesh, VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_rayhits.ply");
+        saveMesh(bestPrismsMesh, VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_prisms.ply");
+        saveMesh(bestProjectedPointsMesh, VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_projected_points.ply");
+        saveMesh(bestBbox2dMesh, VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
+        saveMesh(bestGrid2dMesh, VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_grid2d.ply");
 	}
 
 	auto saveDebugMeshes = [&](const std::string& suffix,
@@ -541,7 +541,7 @@ vcl::Point3d runPlaneBeam(
 			&grid2dMesh,
 			nullptr);
 
-		const std::string base = std::string(VCLIB_RESULTS_PATH) + "/777_plane_beam_" + suffix;
+        const std::string base = std::string(VCLIB_EXTERNAL_RESULTS_PATH) + "/777_plane_beam_" + suffix;
 		saveMesh(rayhitMesh, base + "_rayhits.ply");
 		saveMesh(prismsMesh, base + "_prisms.ply");
 		saveMesh(projectedPointsMesh, base + "_projected_points.ply");
@@ -580,21 +580,21 @@ vcl::Point3d runPlaneBeam(
 				  //<< "Special plane +Y volume: " << plusYVolume << "\n"
 				  //<< "Special plane -Y volume: " << minusYVolume << "\n"
 				  << "Saved debug meshes:\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_prisms.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_projected_points.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_bbox2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_grid2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n"
-				  /*<< " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_prisms.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_projected_points.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_bbox2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_grid2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_plus_y_rayhits.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_prisms.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_projected_points.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_bbox2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_grid2d.ply\n"
-				  << " - " << VCLIB_RESULTS_PATH << "/777_plane_beam_minus_y_rayhits.ply\n"*/;
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_prisms.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_projected_points.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_bbox2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_grid2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_rayhits.ply\n"
+                  /*<< " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_plus_y_prisms.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_plus_y_projected_points.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_plus_y_bbox2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_plus_y_grid2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_plus_y_rayhits.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_minus_y_prisms.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_minus_y_projected_points.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_minus_y_bbox2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_minus_y_grid2d.ply\n"
+                  << " - " << VCLIB_EXTERNAL_RESULTS_PATH << "/777_plane_beam_minus_y_rayhits.ply\n"*/;
 	}
 
 	return bestNormal;
