@@ -20,47 +20,19 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-render-examples)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-external-example-${EXAMPLE_NAME})
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(SOURCES
+    igl_booleans.h
+    main.cpp)
 
-if (TARGET vclib-3rd-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
-endif()
-if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_RENDER_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
-    endif()
-endif()
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    MODULE external
+    SOURCES ${SOURCES})
 
-if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
-    add_subdirectory(common)
+set_property(TARGET vclib-external-example-${EXAMPLE_NAME}
+    PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
-    add_subdirectory(00-hello-triangle)
-    add_subdirectory(01-viewer)
-    add_subdirectory(02-mesh-viewer)
-    add_subdirectory(03-viewer-with-text)
-    add_subdirectory(04-hello-triangle-imgui)
-    add_subdirectory(05-two-window-viewers)
-    add_subdirectory(06-viewer-imgui)
-    add_subdirectory(07-test-texcoords)
-    add_subdirectory(08-test-gltf)
 
-    add_subdirectory(801-camera-viewer)
-    add_subdirectory(808-test-lines)
-
-    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-        add_subdirectory(950-pbr)
-        add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
-    endif()
-
-    add_subdirectory(999-misc)
-
-    add_subdirectory(core)
-
-    if (VCLIB_BUILD_MODULE_EXTERNAL)
-        add_subdirectory(external)
-    endif()
-endif()
