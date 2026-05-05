@@ -57,6 +57,9 @@ enum class MeshBoolean : int
  *
  * @throws std::runtime_error if the input meshes do not induce a piecewise
  * constant winding number field (i.e., if they are not watertight).
+ *
+ * @throws vcl::MissingCompactnessException if the vertex containers of the
+ * input meshes are not compact.
  */
 template<FaceMeshConcept MeshType>
 MeshType meshBoolean(
@@ -64,6 +67,8 @@ MeshType meshBoolean(
     const MeshType& m2,
     MeshBoolean op)
 {
+    // TODO: allow to use non-compact meshes
+
     using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
     using EigenMatrixX3m = Eigen::Matrix<ScalarType, Eigen::Dynamic, 3>;
