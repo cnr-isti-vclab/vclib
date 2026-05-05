@@ -21,19 +21,19 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install cmake ninja-build libtbb-dev catch2
-        sudo apt-get install libembree-dev
+        sudo apt-get install libcgal-dev libembree-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
         brew install catch2
-        brew install embree
+        brew install embree cgal
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
         winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
         # embree not available with winget
-        choco install embree
+        choco install embree boost-msvc-14.3
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.22
       with:
@@ -52,7 +52,9 @@ jobs:
       shell: bash
       run: |
         if [ "$RUNNER_OS" == "Windows" ]; then
+          CURRENT_PATH=$(pwd)
           export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/embree-4.4.1.x64.windows/bin:$PATH"
+          export PATH="$CURRENT_PATH/build/_deps/cgal-src/auxiliary/gmp/bin:$PATH"
         fi
         cd build
         ctest --verbose
