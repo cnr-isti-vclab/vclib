@@ -39,12 +39,14 @@ TEMPLATE_TEST_CASE(
     using namespace vcl;
     using namespace vcl::igl;
 
+    using Mesh = TestType;
+
     SECTION("Union")
     {
-        TriMesh tm1 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-        TriMesh tm2 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+        Mesh tm1 = loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        Mesh tm2 = loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
-        TriMesh result = meshBoolean(tm1, tm2, MeshBoolean::UNION);
+        Mesh result = meshBoolean(tm1, tm2, MeshBoolean::UNION);
 
         REQUIRE(result.vertexCount() == 43022);
         REQUIRE(result.faceCount() == 86044);
@@ -52,10 +54,10 @@ TEMPLATE_TEST_CASE(
 
     SECTION("Intersection")
     {
-        TriMesh tm1 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
-        TriMesh tm2 = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+        Mesh tm1 = loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+        Mesh tm2 = loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
-        TriMesh result = meshBoolean(tm1, tm2, MeshBoolean::INTERSECTION);
+        Mesh result = meshBoolean(tm1, tm2, MeshBoolean::INTERSECTION);
 
         REQUIRE(result.vertexCount() == 10898);
         REQUIRE(result.faceCount() == 21788);

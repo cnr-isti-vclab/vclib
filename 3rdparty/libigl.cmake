@@ -22,7 +22,21 @@
 
 set(LIBIGL_VER 2.6.0)
 
-if(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
+find_package(libigl QUIET)
+
+if (VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
+    message(STATUS "- libigl - using system-provided library")
+
+    add_library(vclib-3rd-libigl INTERFACE)
+    target_link_libraries(vclib-3rd-libigl INTERFACE
+        igl::core igl::copyleft::cgal)
+
+    target_compile_definitions(vclib-3rd-libigl INTERFACE
+        VCLIB_WITH_LIBIGL)
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+
+elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     message(STATUS "- libigl - using downloaded source")
 
     FetchContent_Declare(libigl

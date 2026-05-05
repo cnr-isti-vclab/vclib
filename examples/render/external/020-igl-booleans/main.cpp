@@ -40,6 +40,4 @@ int main(int argc, char** argv)
         std::move(m2),
         std::move(mUnion),
         std::move(mIntersection));
-
-    return 0;
 }

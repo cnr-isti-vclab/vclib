@@ -97,7 +97,7 @@ MeshType meshBoolean(
     if (!result) {
         throw std::runtime_error(
             "Mesh inputs must induce a piecewise constant winding number "
-            "field. Make sure that both the input mesh are watertight "
+            "field. Make sure that both the input meshes are watertight "
             "(closed).");
     }
 

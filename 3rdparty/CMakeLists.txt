@@ -98,6 +98,7 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
     include(embree.cmake)
 
     # libigl
+    option(VCLIB_ALLOW_SYSTEM_LIBIGL "Allow use of system-provided libigl" ON)
     option(VCLIB_ALLOW_DOWNLOAD_LIBIGL
         "Allow use of downloaded libigl source" ON)
     include(libigl.cmake)

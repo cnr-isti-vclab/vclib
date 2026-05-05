@@ -40,7 +40,7 @@ int main()
         vcl::saveMesh(m1, resultsPath + "/020_input_bimba.ply");
         std::cout << "Saved: 020_input_bimba.ply\n";
 
-        vcl::saveMesh(m1, resultsPath + "/020_input_bunny.ply");
+        vcl::saveMesh(m2, resultsPath + "/020_input_bunny.ply");
         std::cout << "Saved: 020_input_bunny.ply\n";
 
         vcl::saveMesh(mUnion, resultsPath + "/020_boolean_union.ply");
