@@ -492,9 +492,11 @@ protected:
         };
 
         // get the list of face indices sorted by material ID and
-        // using the face comparator defined above
+        // using the face comparator defined above.
+        // The result contains original container indices of non-deleted faces
+        // in sorted order: sortedFaces[newPos] = originalContainerIndex.
         std::vector<uint> faceIndicesSortedByMaterialID =
-            sortFaceIndicesByFunction(mesh, faceComp, true);
+            sortFaceIndicesByFunction(mesh, faceComp, false);
 
         triangulatedFaceVertexIndicesToBuffer(
             mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
@@ -1170,29 +1172,23 @@ private:
     static void permuteTriangulatedFaceVertexIndices(
         auto*                    buffer,
         TriPolyIndexBiMap&       indexMap,
-        const std::vector<uint>& newFaceIndices)
+        const std::vector<uint>& sortedFaceContainerIndices)
     {
-        // newFaceIndices tells for each face, which is its new position
-        // we need the inverse mapping: for each new position, which is the old
-        // face index
-        std::vector<uint> oldFaceIndices(newFaceIndices.size());
-        for (uint i = 0; i < newFaceIndices.size(); ++i) {
-            oldFaceIndices[newFaceIndices[i]] = static_cast<uint>(i);
-        }
+        // sortedFaceContainerIndices[newPos] = originalContainerIndex
+        // (only non-deleted faces, in the desired new order)
 
         // temporary copy of the buffer
         std::vector<uint> bufferCopy(indexMap.triangleCount() * 3);
 
-        // temporary bimbap
+        // temporary indexmap
         TriPolyIndexBiMap indexMapCopy;
         indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
 
         uint copiedTriangles = 0;
 
-        for (uint i = 0; i < oldFaceIndices.size(); ++i) {
-            // need to place the k triangles associated to the i-th face
-            // of oldFaceIndices
-            uint polyIndex = oldFaceIndices[i];
+        for (uint i = 0; i < sortedFaceContainerIndices.size(); ++i) {
+            // place the triangles associated to the face at new position i
+            uint polyIndex = sortedFaceContainerIndices[i];
             uint firstTri  = indexMap.triangleBegin(polyIndex);
             uint nTris     = indexMap.triangleCount(polyIndex);
 
