@@ -20,47 +20,39 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-render-examples)
+set(LIBIGL_VER 2.6.0)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+find_package(libigl QUIET)
 
-if (TARGET vclib-3rd-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
-endif()
-if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_RENDER_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
-    endif()
-endif()
+if (VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
+    message(STATUS "- libigl - using system-provided library")
 
-if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
-    add_subdirectory(common)
+    add_library(vclib-3rd-libigl INTERFACE)
+    target_link_libraries(vclib-3rd-libigl INTERFACE
+        igl::core igl::copyleft::cgal)
 
-    add_subdirectory(00-hello-triangle)
-    add_subdirectory(01-viewer)
-    add_subdirectory(02-mesh-viewer)
-    add_subdirectory(03-viewer-with-text)
-    add_subdirectory(04-hello-triangle-imgui)
-    add_subdirectory(05-two-window-viewers)
-    add_subdirectory(06-viewer-imgui)
-    add_subdirectory(07-test-texcoords)
-    add_subdirectory(08-test-gltf)
+    target_compile_definitions(vclib-3rd-libigl INTERFACE
+        VCLIB_WITH_LIBIGL)
 
-    add_subdirectory(801-camera-viewer)
-    add_subdirectory(808-test-lines)
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
 
-    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-        add_subdirectory(950-pbr)
-        add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
-    endif()
+elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
+    message(STATUS "- libigl - using downloaded source")
 
-    add_subdirectory(999-misc)
+    FetchContent_Declare(libigl
+        GIT_REPOSITORY https://github.com/libigl/libigl.git
+        GIT_TAG        v${LIBIGL_VER}
+        EXCLUDE_FROM_ALL)
 
-    add_subdirectory(core)
+    FetchContent_MakeAvailable(libigl)
 
-    if (VCLIB_BUILD_MODULE_EXTERNAL)
-        add_subdirectory(external)
-    endif()
+    add_library(vclib-3rd-libigl INTERFACE)
+    target_link_libraries(vclib-3rd-libigl INTERFACE igl::core)
+
+    target_compile_definitions(vclib-3rd-libigl INTERFACE
+        VCLIB_WITH_LIBIGL)
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+else()
+    message(STATUS "- libigl - not found, skipping")
 endif()
