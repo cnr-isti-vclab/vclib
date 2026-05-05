@@ -44,7 +44,6 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
         SOURCE_SUBDIR "include" # trick to avoid add_subdir of cgal directory
     )
 
-    # Here MakeAvailable fails - CGAL CMake files are not made for FetchContent
     FetchContent_MakeAvailable(cgal)
 
     add_library(vclib-3rd-cgal INTERFACE)
@@ -77,10 +76,6 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
         target_include_directories(gmpxx INTERFACE "${cgal_SOURCE_DIR}/auxiliary/gmp/include")
 
         target_link_libraries(vclib-3rd-cgal INTERFACE gmp gmpxx mpfr Threads::Threads)
-    else()
-        find_package(GMP QUIET)
-        target_include_directories(vclib-3rd-cgal SYSTEM INTERFACE ${GMP_INCLUDE_DIRS})
-        target_link_libraries(vclib-3rd-cgal INTERFACE ${GMP_LIBRARIES} mpfr Threads::Threads)
     endif()
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)

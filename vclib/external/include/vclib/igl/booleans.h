@@ -52,8 +52,7 @@ enum class MeshBoolean : int
  *
  * @param[in] m1: First input mesh.
  * @param[in] m2: Second input mesh.
- * @param[in] op: The type of boolean operation to perform (union, intersection,
- * difference).
+ * @param[in] op: The type of boolean operation to perform.
  * @return The resulting mesh after the boolean operation.
  *
  * @throws std::runtime_error if the input meshes do not induce a piecewise
@@ -101,6 +100,11 @@ MeshType meshBoolean(
             "field. Make sure that both the input mesh are watertight "
             "(closed).");
     }
+
+    // TODO: before returning, we should post-process the output mesh to
+    // transfer the attributes (e.g., vertex colors, face colors, etc.) from the
+    // input meshes to the output mesh.
+
     return vcl::meshFromMatrices<MeshType>(VR, FR);
 }
 
