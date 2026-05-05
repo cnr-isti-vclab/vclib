@@ -23,18 +23,18 @@
 #ifndef VCL_IGL_BOOLEANS_H
 #define VCL_IGL_BOOLEANS_H
 
-#ifdef VCLIB_WITH_CGAL
+#if defined(VCLIB_WITH_CGAL) && defined(VCLIB_WITH_BOOST)
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
 
 #include <igl/copyleft/cgal/CSGTree.h>
 
-namespace vcl::igl {
-
 #ifdef WIN32
 #undef DIFFERENCE
 #endif
+
+namespace vcl::igl {
 
 enum class MeshBoolean : int
 {

@@ -36,7 +36,7 @@ if (TARGET vclib-3rd-libigl)
         "include/vclib/igl/*.h")
     list(APPEND HEADERS ${HEADERS_IGL})
 
-    if (NOT TARGET vclib-3rd-cgal)
+    if (NOT TARGET vclib-3rd-cgal OR NOT TARGET vclib-3rd-boost)
         # remove include/vclib/igl/booleans.h
         list(FILTER HEADERS EXCLUDE REGEX ".*igl/booleans.h$")
     endif()
