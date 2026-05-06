@@ -76,6 +76,9 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
     template<ElementConcept>
     friend class mesh::ElementContainer;
 
+    // hide the component id of the components
+    static const uint COMPONENT_ID = UINT_NULL;
+
 public:
     using ParentMeshType = MeshType;
 
