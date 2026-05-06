@@ -37,6 +37,7 @@ int main(int argc, char** argv)
         BUNNY,
         QUAD_OBJ,
         TEXTURE_DOUBLE_OBJ,
+        SPOT,
         COUNT
     };
 
@@ -45,12 +46,13 @@ int main(int argc, char** argv)
         "VertTextureDouble.ply",
         "bunny_textured.ply",
         "TextureDoubleQuad.obj",
-        "TextureDouble.obj"};
+        "TextureDouble.obj",
+        "spot/spot_quadrangulated.obj"};
 
     uint selectedExample = SPONZA;
 
-    vcl::DrawableMesh<vcl::TriMesh> drawable =
-        getDrawableMesh<vcl::TriMesh>(exampleFilenames[selectedExample]);
+    vcl::DrawableMesh<vcl::PolyMesh> drawable =
+        getDrawableMesh<vcl::PolyMesh>(exampleFilenames[selectedExample]);
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT

@@ -36,14 +36,13 @@
 
 namespace vcl::igl {
 
-enum class MeshBoolean : int
-{
-    UNION = ::igl::MESH_BOOLEAN_TYPE_UNION,
+enum class MeshBoolean : int {
+    UNION        = ::igl::MESH_BOOLEAN_TYPE_UNION,
     INTERSECTION = ::igl::MESH_BOOLEAN_TYPE_INTERSECT,
-    DIFFERENCE = ::igl::MESH_BOOLEAN_TYPE_MINUS,
-    XOR = ::igl::MESH_BOOLEAN_TYPE_XOR,
-    RESOLVE = ::igl::MESH_BOOLEAN_TYPE_RESOLVE,
-    COUNT = ::igl::NUM_MESH_BOOLEAN_TYPES
+    DIFFERENCE   = ::igl::MESH_BOOLEAN_TYPE_MINUS,
+    XOR          = ::igl::MESH_BOOLEAN_TYPE_XOR,
+    RESOLVE      = ::igl::MESH_BOOLEAN_TYPE_RESOLVE,
+    COUNT        = ::igl::NUM_MESH_BOOLEAN_TYPES
 };
 
 /**
@@ -62,10 +61,7 @@ enum class MeshBoolean : int
  * input meshes are not compact.
  */
 template<FaceMeshConcept MeshType>
-MeshType meshBoolean(
-    const MeshType& m1,
-    const MeshType& m2,
-    MeshBoolean op)
+MeshType meshBoolean(const MeshType& m1, const MeshType& m2, MeshBoolean op)
 {
     // TODO: allow to use non-compact meshes
 
