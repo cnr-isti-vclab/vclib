@@ -27,7 +27,7 @@ jobs:
         extensions: 'h,cpp'
         clangFormatVersion: 18
         inplace: True
-    - uses: EndBug/add-and-commit@v9
+    - uses: EndBug/add-and-commit@v10
       with:
         committer_name: GitHub Actions
         committer_email: actions@github.com
