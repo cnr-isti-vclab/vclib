@@ -51,7 +51,7 @@ jobs:
       run: |
         winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.22
+      uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         key: bindings-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build Wheel
