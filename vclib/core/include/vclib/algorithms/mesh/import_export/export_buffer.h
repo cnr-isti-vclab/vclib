@@ -43,12 +43,6 @@
 
 namespace vcl {
 
-namespace detail {
-
-inline TriPolyIndexBiMap indexMap;
-
-} // namespace detail
-
 /**
  * @brief Export the vertex positions of a mesh to a buffer.
  *
@@ -417,6 +411,12 @@ void triangulatedFaceVertexIndicesToBuffer(
                 ++t;
             }
         }
+    }
+
+    if (&indexMap == &detail::indexMap) {
+        // if the user did not give an indexMap, we clear it at the end of the
+        // function to keep the global one empty for the next call.
+        indexMap.clear();
     }
 }
 
