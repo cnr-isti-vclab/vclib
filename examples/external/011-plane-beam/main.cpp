@@ -35,8 +35,8 @@ int main()
         loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
 
     const auto    startTime  = std::chrono::steady_clock::now();
-    const Point3d bestNormal = embree::runPlaneBeam(
-        std::move(m), gridCellSideLengths, NUM_PLANES, debug);
+    const Point3d bestNormal =
+        embree::runPlaneBeam(m, gridCellSideLengths, NUM_PLANES, debug);
     const auto endTime = std::chrono::steady_clock::now();
     const auto elapsedMs =
         std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -49,6 +49,19 @@ int main()
 
     std::cout << "Best plane normal: " << bestNormal << "\n";
     std::cout << "Tempo di esecuzione: " << elapsedMs << " ms\n";
+
+    updatePerVertexAndFaceNormals(m);
+
+    const std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
+
+    const Point3d Z = Point3d(0, 0, 1);
+
+    Matrix44d rMatrix = Matrix44d::Identity();
+    setTransformMatrixRotation(rMatrix, Z, bestNormal);
+
+    vcl::applyTransformMatrix(m, rMatrix);
+
+    vcl::saveMesh(m, resultsPath + "/011_brain_aligned.ply");
 
     return 0;
 }
