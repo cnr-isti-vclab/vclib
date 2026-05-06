@@ -31,7 +31,10 @@ jobs:
           echo "python-version=3.12" >> $GITHUB_OUTPUT
         fi
     - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
