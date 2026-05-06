@@ -609,7 +609,6 @@ int main()
 	constexpr bool debug = true;
 
 	PolyMesh m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
-	// PolyMesh m = loadMesh<PolyMesh>("C:\\Users\\Ougi\\Desktop\\delirium2.ply");
 
 	const auto startTime = std::chrono::steady_clock::now();
 	const Point3d bestNormal =
