@@ -463,6 +463,11 @@ protected:
         using MeshType = std::decay_t<decltype(mesh)>;
         using FaceType = MeshType::FaceType;
 
+        triangulatedFaceVertexIndicesToBuffer(
+            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
+        replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+            mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
+
         // comparator of faces
         // ordering first by per-vertex material index (if available),
         // then by per-face material index (if available)
@@ -491,24 +496,12 @@ protected:
             return f1.index() < f2.index();
         };
 
-        // get the list of face indices sorted by material ID and
-        // using the face comparator defined above.
-        // The result contains original container indices of non-deleted faces
-        // in sorted order: sortedFaces[newPos] = originalContainerIndex.
-        std::vector<uint> faceIndicesSortedByMaterialID =
-            sortFaceIndicesByFunction(mesh, faceComp, false);
-
-        triangulatedFaceVertexIndicesToBuffer(
-            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
-        replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
-            mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
-
         // permute the triangulated face vertex indices according to the face
         // sorting by material ID (the function also edits the index map from
         // polygonal faces (which still refers to the mesh ones) to the
         // triangulated faces (which refers to the sorted triangles))
-        permuteTriangulatedFaceVertexIndices(
-            buffer, mIndexMap, faceIndicesSortedByMaterialID);
+        permuteFaceVertexIndicesByFunctionToBuffer(
+            mesh, buffer, faceComp, mIndexMap);
 
         fillChuncks(mesh);
     }
@@ -1167,49 +1160,6 @@ private:
                 derived().setTextures(mesh);
             }
         }
-    }
-
-    static void permuteTriangulatedFaceVertexIndices(
-        auto*                    buffer,
-        TriPolyIndexBiMap&       indexMap,
-        const std::vector<uint>& sortedFaceContainerIndices)
-    {
-        // sortedFaceContainerIndices[newPos] = originalContainerIndex
-        // (only non-deleted faces, in the desired new order)
-
-        // temporary copy of the buffer
-        std::vector<uint> bufferCopy(indexMap.triangleCount() * 3);
-
-        // temporary indexmap
-        TriPolyIndexBiMap indexMapCopy;
-        indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
-
-        uint copiedTriangles = 0;
-
-        for (uint i = 0; i < sortedFaceContainerIndices.size(); ++i) {
-            // place the triangles associated to the face at new position i
-            uint polyIndex = sortedFaceContainerIndices[i];
-            uint firstTri  = indexMap.triangleBegin(polyIndex);
-            uint nTris     = indexMap.triangleCount(polyIndex);
-
-            std::copy(
-                buffer + firstTri * 3,
-                buffer + (firstTri + nTris) * 3,
-                bufferCopy.data() + copiedTriangles * 3);
-
-            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
-                indexMapCopy.insert(t, polyIndex);
-            }
-
-            copiedTriangles += nTris;
-        }
-
-        // copy back
-        std::copy(
-            bufferCopy.begin(),
-            bufferCopy.begin() + copiedTriangles * 3,
-            buffer);
-        indexMap = std::move(indexMapCopy);
     }
 
     void fillChuncks(const FaceMeshConcept auto& mesh)
