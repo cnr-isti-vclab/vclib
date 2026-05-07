@@ -44,7 +44,7 @@ int main()
 
     auto    startTime  = std::chrono::steady_clock::now();
     Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
-        m, gridCellSideLengths, NUM_PLANES, debug);
+        m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
     auto endTime   = std::chrono::steady_clock::now();
     auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
                          endTime - startTime)
@@ -72,7 +72,7 @@ int main()
 
     startTime  = std::chrono::steady_clock::now();
     bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
-        m, gridCellSideLengths, NUM_PLANES, debug);
+        m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
     endTime   = std::chrono::steady_clock::now();
     elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
                     endTime - startTime)

@@ -40,6 +40,24 @@ struct GridChoice
     double sideV = 0.0;
 };
 
+struct HitEvent
+{
+    Point3d point;
+    double  t      = 0.0;
+    Point3d normal = Point3d(0, 0, 0);
+};
+
+struct PlaneEvalStats
+{
+    double minU  = 0.0;
+    double minV  = 0.0;
+    double maxU  = 0.0;
+    double maxV  = 0.0;
+    uint   rows  = 0;
+    uint   cols  = 0;
+    uint   cells = 0;
+};
+
 GridChoice chooseGrid(
     double                     lenU,
     double                     lenV,
@@ -64,6 +82,49 @@ GridChoice chooseGrid(
         static_cast<uint>(std::max(1.0, std::ceil(lenV / sideV)));
 
     return {rows, cols, sideU, sideV};
+}
+
+void addSegment(EdgeMesh& em, const Point3d& a, const Point3d& b) {
+    const uint va = em.addVertex(a);
+    const uint vb = em.addVertex(b);
+    em.addEdge(va, vb);
+}
+
+void addQuadPrism(
+    TriMesh&                      tm,
+    const std::array<Point3d, 4>& baseCorners,
+    double                        startOffset,
+    double                        endOffset,
+    const Point3d&                dir)
+{
+    std::array<Point3d, 4> b;
+    std::array<Point3d, 4> t;
+    for (uint k = 0; k < 4; ++k) {
+        b[k] = baseCorners[k] + dir * startOffset;
+        t[k] = baseCorners[k] + dir * endOffset;
+    }
+
+    std::array<uint, 8> ids;
+    for (uint k = 0; k < 4; ++k) {
+        ids[k + 0] = tm.addVertex(b[k]);
+        ids[k + 4] = tm.addVertex(t[k]);
+    }
+
+    // Bottom
+    tm.addFace(ids[0], ids[2], ids[1]);
+    tm.addFace(ids[0], ids[3], ids[2]);
+    tm.addFace(ids[4], ids[5], ids[6]);
+    tm.addFace(ids[4], ids[6], ids[7]);
+
+    // Sides
+    tm.addFace(ids[0], ids[1], ids[5]);
+    tm.addFace(ids[0], ids[5], ids[4]);
+    tm.addFace(ids[1], ids[2], ids[6]);
+    tm.addFace(ids[1], ids[6], ids[5]);
+    tm.addFace(ids[2], ids[3], ids[7]);
+    tm.addFace(ids[2], ids[7], ids[6]);
+    tm.addFace(ids[3], ids[0], ids[4]);
+    tm.addFace(ids[3], ids[4], ids[7]);
 }
 
 } // namespace vcl::embree::detail
@@ -95,6 +156,8 @@ GridChoice chooseGrid(
  * @param[in] nDirs: The number of candidate print directions to test.
  * A higher number increases accuracy but significantly increases computation
  * time.
+ * @param[in] epsilon: A small value used to handle numerical precision issues,
+ * multiplied by the diagonal of the mesh's bounding box.
  *
  * @return The optimal orientation (e.g., direction vector) that minimizes the
  * required support volume.
@@ -104,7 +167,8 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     const MeshType&            m,
     const std::vector<double>& gridCellSideLengths,
     vcl::uint                  nDirections,
-    bool                       debug = false)
+    double                     epsilon = 1e-6,
+    bool                       debug   = false)
 {
     using namespace vcl;
 
@@ -112,69 +176,10 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     Box3d bb = boundingBox(m);
 
-    const double EPS = 1e-6 * bb.diagonal();
+    epsilon *= bb.diagonal();
 
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
-
-    auto addSegment = [](EdgeMesh& em, const Point3d& a, const Point3d& b) {
-        const uint va = em.addVertex(a);
-        const uint vb = em.addVertex(b);
-        em.addEdge(va, vb);
-    };
-
-    auto addQuadPrism = [](TriMesh&                      tm,
-                           const std::array<Point3d, 4>& baseCorners,
-                           double                        startOffset,
-                           double                        endOffset,
-                           const Point3d&                dir) {
-        std::array<Point3d, 4> b;
-        std::array<Point3d, 4> t;
-        for (uint k = 0; k < 4; ++k) {
-            b[k] = baseCorners[k] + dir * startOffset;
-            t[k] = baseCorners[k] + dir * endOffset;
-        }
-
-        std::array<uint, 8> ids;
-        for (uint k = 0; k < 4; ++k) {
-            ids[k + 0] = tm.addVertex(b[k]);
-            ids[k + 4] = tm.addVertex(t[k]);
-        }
-
-        // Bottom
-        tm.addFace(ids[0], ids[2], ids[1]);
-        tm.addFace(ids[0], ids[3], ids[2]);
-        tm.addFace(ids[4], ids[5], ids[6]);
-        tm.addFace(ids[4], ids[6], ids[7]);
-
-        // Sides
-        tm.addFace(ids[0], ids[1], ids[5]);
-        tm.addFace(ids[0], ids[5], ids[4]);
-        tm.addFace(ids[1], ids[2], ids[6]);
-        tm.addFace(ids[1], ids[6], ids[5]);
-        tm.addFace(ids[2], ids[3], ids[7]);
-        tm.addFace(ids[2], ids[7], ids[6]);
-        tm.addFace(ids[3], ids[0], ids[4]);
-        tm.addFace(ids[3], ids[4], ids[7]);
-    };
-
-    struct HitEvent
-    {
-        Point3d point;
-        double  t      = 0.0;
-        Point3d normal = Point3d(0, 0, 0);
-    };
-
-    struct PlaneEvalStats
-    {
-        double minU  = 0.0;
-        double minV  = 0.0;
-        double maxU  = 0.0;
-        double maxV  = 0.0;
-        uint   rows  = 0;
-        uint   cols  = 0;
-        uint   cells = 0;
-    };
 
     auto evaluatePlane = [&](const Point3d&  rawPlaneNormal,
                              bool            collectDebug,
@@ -183,11 +188,11 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                              EdgeMesh*       outProjectedPointsMesh,
                              EdgeMesh*       outBbox2dMesh,
                              EdgeMesh*       outGrid2dMesh,
-                             PlaneEvalStats* outStats) {
+                             detail::PlaneEvalStats* outStats) {
         const bool collectDebugEnabled = debug && collectDebug;
 
         Point3d n = rawPlaneNormal;
-        if (n.norm() <= EPS) {
+        if (n.norm() <= epsilon) {
             return std::numeric_limits<double>::infinity();
         }
         n.normalize();
@@ -201,7 +206,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
         Point3d u, v;
         n.orthoBase(u, v);
-        if (u.norm() <= EPS || v.norm() <= EPS) {
+        if (u.norm() <= epsilon || v.norm() <= epsilon) {
             return std::numeric_limits<double>::infinity();
         }
         u.normalize();
@@ -236,7 +241,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
         const double lenU = maxU - minU;
         const double lenV = maxV - minV;
-        if (lenU <= EPS || lenV <= EPS) {
+        if (lenU <= epsilon || lenV <= epsilon) {
             return std::numeric_limits<double>::infinity();
         }
 
@@ -299,10 +304,10 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         }
 
         auto collectHits = [&](const Point3d& rayOrigin) {
-            std::vector<HitEvent>                 hitEvents;
+            std::vector<detail::HitEvent>                 hitEvents;
             std::vector<embree::Scene::HitResult> hits =
                 scene.facesIntersectedByRay(
-                    rayOrigin, n, static_cast<float>(EPS));
+                    rayOrigin, n, static_cast<float>(epsilon));
             hitEvents.reserve(hits.size());
 
             for (const auto& h : hits) {
@@ -316,7 +321,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
                 const Point3d hitPoint = rayOrigin + n * tHit;
                 Point3d triNormal = face.normal();
-                if (triNormal.norm() >= EPS) {
+                if (triNormal.norm() >= epsilon) {
                     triNormal.normalize();
                 }
 
@@ -359,17 +364,17 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                                      double                        endD,
                                      bool first = false) {
             const double segLength   = endD - startD;
-            const bool   validLength = first || (segLength >= EPS);
+            const bool   validLength = first || (segLength >= epsilon);
             if (validLength) {
                 const double segVolume = cellArea * segLength;
                 localVolume += segVolume;
             }
 
             if (collectDebugEnabled && outRayhitMesh && validLength) {
-                addSegment(*outRayhitMesh, segStart, segEnd);
+                detail::addSegment(*outRayhitMesh, segStart, segEnd);
             }
             if (collectDebugEnabled && outPrismsMesh && validLength) {
-                addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+                detail::addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
             }
 
             return localVolume;
@@ -382,12 +387,12 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
             double volumeAcc = 0.0;
 
-            std::vector<HitEvent> hitEvents = collectHits(cellCenter);
+            std::vector<detail::HitEvent> hitEvents = collectHits(cellCenter);
 
             if (!hitEvents.empty()) {
-                const Point3d segStart = cellCenter + n * -EPS;
+                const Point3d segStart = cellCenter + n * -epsilon;
                 const Point3d segEnd   = hitEvents[0].point;
-                const double  startD   = -EPS;
+                const double  startD   = -epsilon;
                 const double  endD     = hitEvents[0].t;
                 volumeAcc              = accumulateSegment(
                     volumeAcc,
@@ -478,7 +483,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     Point3d bestNormal  = fibNormals.front();
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
-        PlaneEvalStats stats;
+        detail::PlaneEvalStats stats;
         double         vol = evaluatePlane(
             fibNormals[i],
             false,
