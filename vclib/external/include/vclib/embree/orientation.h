@@ -104,7 +104,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     const MeshType&            m,
     const std::vector<double>& gridCellSideLengths,
     vcl::uint                  nDirections,
-    bool                       debug)
+    bool                       debug = false)
 {
     using namespace vcl;
 
