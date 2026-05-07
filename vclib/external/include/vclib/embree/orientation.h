@@ -30,10 +30,40 @@
 
 namespace vcl::embree {
 
-vcl::Point3d runPlaneBeam(
-    vcl::PolyMesh              m,
+/**
+ * @brief Finds the optimal print orientation by minimizing the exterior
+ * heightfield volume.
+ *
+ * This function determines the best spatial orientation for a given 3D mesh to
+ * minimize the amount of support material required during 3D printing (e.g.,
+ * for MJP printers). It achieves this by evaluating a discrete set of possible
+ * print directions. For each direction, the algorithm computes the "exterior
+ * volume" (the space between the print bed and the mesh's downward-facing
+ * surfaces) using a heightfield-based sampling approach. The orientation that
+ * yields the minimum exterior volume is considered the optimal one.
+ *
+ * @note The candidate directions are uniformly sampled over a sphere using a
+ * Fibonacci lattice/sphere algorithm to ensure an even and unbiased coverage of
+ * the search space.
+ *
+ * @param[in] m: The input 3D mesh to be evaluated. It is expected that this
+ * mesh is already pre-scaled relative to the single cell dimensions. It must
+ * satisfy the FaceMeshConcept.
+ * @param[in] gridCellSideLengths: The physical dimensions of the single
+ * sampling cell (e.g., the X, Y size of the printing "pixel" used to build the
+ * heightfield).
+ * @param[in] nDirs: The number of candidate print directions to test.
+ * A higher number increases accuracy but significantly increases computation
+ * time.
+ *
+ * @return The optimal orientation (e.g., direction vector) that minimizes the
+ * required support volume.
+ */
+template<FaceMeshConcept MeshType>
+vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
+    const MeshType&            m,
     const std::vector<double>& gridCellSideLengths,
-    vcl::uint                  NUM_PLANES,
+    vcl::uint                  nDirections,
     bool                       debug)
 {
     using namespace vcl;
@@ -46,7 +76,7 @@ vcl::Point3d runPlaneBeam(
         double sideV = 0.0;
     };
 
-    updateBoundingBox(m);
+    Box3d bb = boundingBox(m);
 
     auto chooseGrid = [&](double lenU, double lenV) -> GridChoice {
         if (lenU <= 0.0 || lenV <= 0.0) {
@@ -70,7 +100,7 @@ vcl::Point3d runPlaneBeam(
         return {rows, cols, sideU, sideV};
     };
 
-    const double EPS = 1e-6 * m.boundingBox().diagonal();
+    const double EPS = 1e-6 * bb.diagonal();
 
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
@@ -445,7 +475,7 @@ vcl::Point3d runPlaneBeam(
     };
 
     std::vector<Point3d> fibNormals =
-        sphericalFibonacciPointSet<Point3d>(NUM_PLANES);
+        sphericalFibonacciPointSet<Point3d>(nDirections);
     if (fibNormals.empty()) {
         std::cerr << "No Fibonacci planes generated.\n";
         return Point3d(0, 0, 0);

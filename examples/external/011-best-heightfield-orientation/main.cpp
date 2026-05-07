@@ -37,19 +37,17 @@ int main()
 
     // brain
 
-    PolyMesh m =
-        loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+    TriMesh m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
     vcl::scale(m, 10.0);
 
     auto    startTime  = std::chrono::steady_clock::now();
-    Point3d bestNormal =
-        embree::runPlaneBeam(m, gridCellSideLengths, NUM_PLANES, debug);
-    auto endTime = std::chrono::steady_clock::now();
-    auto elapsedMs =
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            endTime - startTime)
-            .count();
+    Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
+        m, gridCellSideLengths, NUM_PLANES, debug);
+    auto endTime   = std::chrono::steady_clock::now();
+    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+                         endTime - startTime)
+                         .count();
 
     if (bestNormal.norm() == 0.0) {
         return 1;
@@ -68,18 +66,17 @@ int main()
 
     // bunny
 
-    m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
     vcl::scale(m, 100.0);
 
     startTime  = std::chrono::steady_clock::now();
-    bestNormal =
-        embree::runPlaneBeam(m, gridCellSideLengths, NUM_PLANES, debug);
-    endTime = std::chrono::steady_clock::now();
-    elapsedMs =
-        std::chrono::duration_cast<std::chrono::milliseconds>(
-            endTime - startTime)
-            .count();
+    bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
+        m, gridCellSideLengths, NUM_PLANES, debug);
+    endTime   = std::chrono::steady_clock::now();
+    elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
+                    endTime - startTime)
+                    .count();
 
     if (bestNormal.norm() == 0.0) {
         return 1;
