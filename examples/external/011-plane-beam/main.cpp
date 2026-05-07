@@ -35,8 +35,12 @@ int main()
 
     const Point3d Z = Point3d(0, 0, 1);
 
+    // brain
+
     PolyMesh m =
-        loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
+        loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
+
+    vcl::scale(m, 10.0);
 
     auto    startTime  = std::chrono::steady_clock::now();
     Point3d bestNormal =
