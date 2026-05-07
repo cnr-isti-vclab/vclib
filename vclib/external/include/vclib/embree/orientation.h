@@ -30,6 +30,44 @@
 
 namespace vcl::embree {
 
+namespace detail {
+
+struct GridChoice
+{
+    uint   rows  = 1;
+    uint   cols  = 1;
+    double sideU = 0.0;
+    double sideV = 0.0;
+};
+
+GridChoice chooseGrid(
+    double                     lenU,
+    double                     lenV,
+    const std::vector<double>& gridCellSideLengths)
+{
+    if (lenU <= 0.0 || lenV <= 0.0) {
+        return {1, 1, lenU, lenV};
+    }
+
+    const double sideU =
+        (gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : lenU;
+    const double sideV =
+        (gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] : sideU;
+
+    if (sideU <= 0.0 || sideV <= 0.0) {
+        return {1, 1, lenU, lenV};
+    }
+
+    const uint cols =
+        static_cast<uint>(std::max(1.0, std::ceil(lenU / sideU)));
+    const uint rows =
+        static_cast<uint>(std::max(1.0, std::ceil(lenV / sideV)));
+
+    return {rows, cols, sideU, sideV};
+}
+
+} // namespace vcl::embree::detail
+
 /**
  * @brief Finds the optimal print orientation by minimizing the exterior
  * heightfield volume.
@@ -68,37 +106,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 {
     using namespace vcl;
 
-    struct GridChoice
-    {
-        uint   rows  = 1;
-        uint   cols  = 1;
-        double sideU = 0.0;
-        double sideV = 0.0;
-    };
-
     Box3d bb = boundingBox(m);
-
-    auto chooseGrid = [&](double lenU, double lenV) -> GridChoice {
-        if (lenU <= 0.0 || lenV <= 0.0) {
-            return {1, 1, lenU, lenV};
-        }
-
-        const double sideU =
-            (gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : lenU;
-        const double sideV =
-            (gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] : sideU;
-
-        if (sideU <= 0.0 || sideV <= 0.0) {
-            return {1, 1, lenU, lenV};
-        }
-
-        const uint cols =
-            static_cast<uint>(std::max(1.0, std::ceil(lenU / sideU)));
-        const uint rows =
-            static_cast<uint>(std::max(1.0, std::ceil(lenV / sideV)));
-
-        return {rows, cols, sideU, sideV};
-    };
 
     const double EPS = 1e-6 * bb.diagonal();
 
@@ -237,7 +245,8 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             return std::numeric_limits<double>::infinity();
         }
 
-        const GridChoice grid = chooseGrid(lenU, lenV);
+        const detail::GridChoice grid =
+            detail::chooseGrid(lenU, lenV, gridCellSideLengths);
         if (outStats) {
             outStats->minU  = minU;
             outStats->minV  = minV;
