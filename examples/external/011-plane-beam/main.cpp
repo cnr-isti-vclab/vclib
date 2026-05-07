@@ -31,14 +31,18 @@ int main()
     constexpr uint      NUM_PLANES          = 2000;
     constexpr bool      debug               = true;
 
+    const std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
+
+    const Point3d Z = Point3d(0, 0, 1);
+
     PolyMesh m =
         loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain_enlarged.ply");
 
-    const auto    startTime  = std::chrono::steady_clock::now();
-    const Point3d bestNormal =
+    auto    startTime  = std::chrono::steady_clock::now();
+    Point3d bestNormal =
         embree::runPlaneBeam(m, gridCellSideLengths, NUM_PLANES, debug);
-    const auto endTime = std::chrono::steady_clock::now();
-    const auto elapsedMs =
+    auto endTime = std::chrono::steady_clock::now();
+    auto elapsedMs =
         std::chrono::duration_cast<std::chrono::milliseconds>(
             endTime - startTime)
             .count();
@@ -47,21 +51,46 @@ int main()
         return 1;
     }
 
-    std::cout << "Best plane normal: " << bestNormal << "\n";
-    std::cout << "Tempo di esecuzione: " << elapsedMs << " ms\n";
+    std::cout << "Brain Best plane normal: " << bestNormal << "\n";
+    std::cout << "Brain execution time: " << elapsedMs << " ms\n";
 
     updatePerVertexAndFaceNormals(m);
 
-    const std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
+    Matrix33d rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormal, Z);
 
-    const Point3d Z = Point3d(0, 0, 1);
-
-    Matrix44d rMatrix = Matrix44d::Identity();
-    setTransformMatrixRotation(rMatrix, Z, bestNormal);
-
-    vcl::applyTransformMatrix(m, rMatrix);
+    vcl::rotate(m, rMatrix);
 
     vcl::saveMesh(m, resultsPath + "/011_brain_aligned.ply");
+
+    // bunny
+
+    m = loadMesh<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+
+    vcl::scale(m, 100.0);
+
+    startTime  = std::chrono::steady_clock::now();
+    bestNormal =
+        embree::runPlaneBeam(m, gridCellSideLengths, NUM_PLANES, debug);
+    endTime = std::chrono::steady_clock::now();
+    elapsedMs =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            endTime - startTime)
+            .count();
+
+    if (bestNormal.norm() == 0.0) {
+        return 1;
+    }
+
+    std::cout << "Bunny Best plane normal: " << bestNormal << "\n";
+    std::cout << "Bunny execution time: " << elapsedMs << " ms\n";
+
+    updatePerVertexAndFaceNormals(m);
+
+    rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormal, Z);
+
+    vcl::rotate(m, rMatrix);
+
+    vcl::saveMesh(m, resultsPath + "/011_bunny_aligned.ply");
 
     return 0;
 }
