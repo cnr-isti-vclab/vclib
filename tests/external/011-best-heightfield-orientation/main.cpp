@@ -30,7 +30,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 static const std::vector<double> CELL_SIDE_LENGTHS = {0.184, 0.234};
-static const uint                NUM_DIRECTIONS    = 2000;
+static const vcl::uint           NUM_DIRECTIONS    = 2000;
 
 static const double ANGLE_TOLERANCE_DEGREES = 2.0;
 
