@@ -39,7 +39,8 @@ int main()
 
     TriMesh m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/brain.ply");
 
-    vcl::scale(m, 10.0);
+    scale(m, 10.0);
+    updatePerVertexAndFaceNormals(m);
 
     auto    startTime  = std::chrono::steady_clock::now();
     Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
@@ -56,8 +57,6 @@ int main()
     std::cout << "Brain Best plane normal: " << bestNormal << "\n";
     std::cout << "Brain execution time: " << elapsedMs << " ms\n";
 
-    updatePerVertexAndFaceNormals(m);
-
     Matrix33d rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormal, Z);
 
     vcl::rotate(m, rMatrix);
@@ -68,7 +67,8 @@ int main()
 
     m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    vcl::scale(m, 100.0);
+    scale(m, 100.0);
+    updatePerVertexAndFaceNormals(m);
 
     startTime  = std::chrono::steady_clock::now();
     bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(

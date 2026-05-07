@@ -80,6 +80,8 @@ GridChoice chooseGrid(
  * surfaces) using a heightfield-based sampling approach. The orientation that
  * yields the minimum exterior volume is considered the optimal one.
  *
+ * @note The input mesh is expected to have updated per-face normals.
+ *
  * @note The candidate directions are uniformly sampled over a sphere using a
  * Fibonacci lattice/sphere algorithm to ensure an even and unbiased coverage of
  * the search space.
@@ -106,21 +108,14 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 {
     using namespace vcl;
 
+    requirePerFaceNormal(m);
+
     Box3d bb = boundingBox(m);
 
     const double EPS = 1e-6 * bb.diagonal();
 
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
-
-    std::vector<std::vector<uint>> faceTriangulations;
-    for (const auto& face : m.faces()) {
-        const uint faceId = face.index();
-        if (faceId >= faceTriangulations.size()) {
-            faceTriangulations.resize(faceId + 1);
-        }
-        faceTriangulations[faceId] = earCut(face);
-    }
 
     auto addSegment = [](EdgeMesh& em, const Point3d& a, const Point3d& b) {
         const uint va = em.addVertex(a);
@@ -313,26 +308,14 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             for (const auto& h : hits) {
                 auto [hitFaceId, barCoords, hitTriId, tHit] = h;
 
-                if (hitFaceId == UINT_NULL ||
-                    hitFaceId >= faceTriangulations.size()) {
+                if (hitFaceId == UINT_NULL) {
                     continue;
                 }
 
                 const auto& face    = m.face(hitFaceId);
-                const auto& hitTris = faceTriangulations[hitFaceId];
-                const uint  base    = hitTriId * 3;
-                if (base + 2 >= hitTris.size()) {
-                    continue;
-                }
 
-                const Point3d& q0 = face.vertex(hitTris[base + 0])->position();
-                const Point3d& q1 = face.vertex(hitTris[base + 1])->position();
-                const Point3d& q2 = face.vertex(hitTris[base + 2])->position();
-
-                const Point3d hitPoint = q0 * barCoords.x() +
-                                         q1 * barCoords.y() +
-                                         q2 * barCoords.z();
-                Point3d triNormal = (q1 - q0).cross(q2 - q0);
+                const Point3d hitPoint = rayOrigin + n * tHit;
+                Point3d triNormal = face.normal();
                 if (triNormal.norm() >= EPS) {
                     triNormal.normalize();
                 }
