@@ -302,9 +302,9 @@ PointType multiplyNormalByMatrix(
     Matrix33<ScalarType> m33 =
         mat.template cast<ScalarType>().block(0, 0, 3, 3);
     if (removeScalingFromMatrix) {
-        removeScalingFromMatrixInPlace(mat);
+        removeScalingFromMatrixInPlace(m33);
     }
-    return mat * normal;
+    return m33 * normal;
 }
 
 template<Range R, Matrix44Concept MatrixType>
