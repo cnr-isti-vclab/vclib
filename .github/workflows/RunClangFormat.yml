@@ -21,13 +21,13 @@ jobs:
         cd scripts
         python3 replace_header_guards.py
         python3 replace_headings.py
-    - uses: DoozyX/clang-format-lint-action@v0.18.2
+    - uses: DoozyX/clang-format-lint-action@v0.20
       with:
         source: '.'
         extensions: 'h,cpp'
         clangFormatVersion: 18
         inplace: True
-    - uses: EndBug/add-and-commit@v9
+    - uses: EndBug/add-and-commit@v10
       with:
         committer_name: GitHub Actions
         committer_email: actions@github.com

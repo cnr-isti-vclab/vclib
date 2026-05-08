@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to export meshes to matrices and import
 # matrices back to meshes, including:
@@ -179,15 +179,15 @@ def mesh_matrix_conversion():
 def save_results(imported_mesh, cube_mesh):
     """Save the resulting meshes"""
     # Create results directory if it doesn't exist
-    os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+    os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
     # Save the imported mesh
-    vcl.save_mesh(imported_mesh, VCLIB_RESULTS_PATH + "/010_imported_mesh.ply")
-    print(f"Saved imported mesh to: {VCLIB_RESULTS_PATH}/010_imported_mesh.ply")
+    vcl.save_mesh(imported_mesh, VCLIB_PYTHON_RESULTS_PATH + "/010_imported_mesh.ply")
+    print(f"Saved imported mesh to: {VCLIB_PYTHON_RESULTS_PATH}/010_imported_mesh.ply")
 
     # Save the created cube mesh
-    vcl.save_mesh(cube_mesh, VCLIB_RESULTS_PATH + "/010_created_cube.ply")
-    print(f"Saved created cube to: {VCLIB_RESULTS_PATH}/010_created_cube.ply")
+    vcl.save_mesh(cube_mesh, VCLIB_PYTHON_RESULTS_PATH + "/010_created_cube.ply")
+    print(f"Saved created cube to: {VCLIB_PYTHON_RESULTS_PATH}/010_created_cube.ply")
 
 
 if __name__ == "__main__":

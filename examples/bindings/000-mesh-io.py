@@ -29,7 +29,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example shows how to load and save meshes using the VCLib IO module.
 # VCLib supports loading and saving the following mesh formats:
@@ -77,7 +77,7 @@ def save_meshes(mesh0, mesh1):
 
     # To save a mesh you can use the save function. The function will
     # automatically detect the file format based on the file extension.
-    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny.obj")
+    vcl.save_mesh(mesh0, VCLIB_PYTHON_RESULTS_PATH + "/000_mesh-io_bunny.obj")
 
     # You can also specify what kind of data you want to save in the file,
     # using a MeshInfo object
@@ -86,14 +86,14 @@ def save_meshes(mesh0, mesh1):
     save_info.set_per_vertex_position()
     save_info.set_faces(False) # do not save faces - only point cloud
 
-    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
+    vcl.save_mesh(mesh0, VCLIB_PYTHON_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
 
     # You can also specify other settings for saving
     save_info.set_faces(True)
     save_info.set_per_face_vertex_references(True)
 
     # Save in ply ASCII format
-    vcl.save_mesh(mesh0, VCLIB_RESULTS_PATH + "/000_mesh-io_bunny-ascii.ply", info = save_info, binary = False)
+    vcl.save_mesh(mesh0, VCLIB_PYTHON_RESULTS_PATH + "/000_mesh-io_bunny-ascii.ply", info = save_info, binary = False)
 
 
 if __name__ == "__main__":

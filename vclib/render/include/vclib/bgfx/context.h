@@ -68,7 +68,7 @@ public:
     static constexpr float                     DEFAULT_CLEAR_DEPTH = 1.0f;
     static constexpr uint8_t                   DEFAULT_CLEAR_STENCIL = 0;
     static constexpr bgfx::TextureFormat::Enum DEFAULT_COLOR_FORMAT =
-        bgfx::TextureFormat::RGBA8;
+        bgfx::TextureFormat::BGRA8;
     static constexpr bgfx::TextureFormat::Enum DEFAULT_DEPTH_FORMAT =
         bgfx::TextureFormat::D24S8;
 

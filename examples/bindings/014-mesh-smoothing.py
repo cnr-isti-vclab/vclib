@@ -31,7 +31,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh smoothing algorithms:
 # 1. Laplacian smoothing with uniform weights
@@ -131,14 +131,14 @@ def main():
         print("\n=== Saving Meshes ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(laplacian_mesh, f"{VCLIB_RESULTS_PATH}/014_laplacian_smoothed.ply")
-        vcl.save_mesh(cotangent_mesh, f"{VCLIB_RESULTS_PATH}/014_cotangent_smoothed.ply")
-        vcl.save_mesh(taubin_mesh, f"{VCLIB_RESULTS_PATH}/014_taubin_smoothed.ply")
-        vcl.save_mesh(normal_mesh, f"{VCLIB_RESULTS_PATH}/014_normal_smoothed.ply")
+        vcl.save_mesh(laplacian_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/014_laplacian_smoothed.ply")
+        vcl.save_mesh(cotangent_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/014_cotangent_smoothed.ply")
+        vcl.save_mesh(taubin_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/014_taubin_smoothed.ply")
+        vcl.save_mesh(normal_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/014_normal_smoothed.ply")
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}")
 
     except Exception as e:
         print(f"Error in saving: {e}", file=sys.stderr)

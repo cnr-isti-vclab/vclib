@@ -55,8 +55,7 @@ int main(int argc, char** argv)
         "/gltf/Duck/Duck.gltf",
         "/gltf/FlowerPointCloud/scene.gltf",
         "/gltf/OrientationTest/OrientationTest.gltf",
-        "/gltf/bunny_edge_sections.gltf"
-    };
+        "/gltf/bunny_edge_sections.gltf"};
 
     const bool LOAD_CUSTOM_CAMERA = false;
 

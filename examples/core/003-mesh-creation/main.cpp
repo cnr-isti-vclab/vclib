@@ -50,29 +50,28 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        vcl::saveMesh(
-            tetrahedron, VCLIB_RESULTS_PATH "/003_tetrahedron.ply", settings);
-
-        vcl::saveMesh(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
         vcl::saveMesh(
-            dodecahedron,
-            VCLIB_RESULTS_PATH "/003_dodecahedron_tri.ply",
-            settings);
+            tetrahedron, resultsPath + "/003_tetrahedron.ply", settings);
+
+        vcl::saveMesh(cube, resultsPath + "/003_cube_tri.ply", settings);
 
         vcl::saveMesh(
-            customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
+            dodecahedron, resultsPath + "/003_dodecahedron_tri.ply", settings);
 
         vcl::saveMesh(
-            cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
+            customCube, resultsPath + "/003_custom_cube.ply", settings);
+
+        vcl::saveMesh(cubeQuads, resultsPath + "/003_cube_poly.ply", settings);
 
         vcl::saveMesh(
             dodecahedronPoly,
-            VCLIB_RESULTS_PATH "/003_dodecahedron_poly.ply",
+            resultsPath + "/003_dodecahedron_poly.ply",
             settings);
 
         vcl::saveMesh(
-            sphereQuads, VCLIB_RESULTS_PATH "/003_sphere_poly.ply", settings);
+            sphereQuads, resultsPath + "/003_sphere_poly.ply", settings);
 
         std::cout << "\nAll meshes have been saved to the results directory."
                   << std::endl;
