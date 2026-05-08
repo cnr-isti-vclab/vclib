@@ -235,52 +235,36 @@ double processCell(
 
     const double cellArea = cellUV.x() * cellUV.y();
 
-    if (!hitEvents.empty()) {
-        const Point3d segStart = cellCenter + n * -epsilon;
-        const Point3d segEnd   = hitEvents[0].point;
-        const double  startD   = -epsilon;
-        const double  endD     = hitEvents[0].t;
+    const HitEvent startEvent{cellCenter + n * -epsilon, -epsilon, n};
 
-        double volSeg =
-            accumulateSegment(cellArea, startD, endD, epsilon, true);
+    int hitsMesh = 0;
+    for (int h = -1; h + 1 < (int) hitEvents.size(); h++) {
+        const HitEvent& startEvt = (h < 0) ? startEvent : hitEvents[h];
+        const HitEvent& endEvt   = hitEvents[h + 1];
 
-        if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
-            addSegment(*outRayhitMesh, segStart, segEnd);
-        }
-        if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
-            addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
-        }
+        const double startD = startEvt.t;
+        const double endD   = endEvt.t;
 
-        volumeAcc += volSeg;
-    }
-
-    int hitsMesh = 1;
-    for (int h = 0; h + 1 < (int) hitEvents.size(); h += 1) {
-        const Point3d segStart = hitEvents[h].point;
-        const Point3d segEnd   = hitEvents[h + 1].point;
-        const double  startD   = hitEvents[h].t;
-        const double  endD     = hitEvents[h + 1].t;
-        if (endD <= startD) {
+        if (h >= 0 && endD <= startD) {
             continue;
         }
 
-        const Point3d& startNormal = hitEvents[h].normal;
-        const Point3d& endNormal   = hitEvents[h + 1].normal;
-        const double   startDot    = startNormal.dot(n);
-        const double   endDot      = endNormal.dot(n);
+        const double startDot = startEvt.normal.dot(n);
+        const double endDot   = endEvt.normal.dot(n);
 
         if (endDot < 0.0) {
-            if ((startDot > 0.0) && (hitsMesh == 0)) {
+            if (startDot > 0.0 && hitsMesh == 0) {
                 double volSeg =
-                    accumulateSegment(cellArea, startD, endD, epsilon);
-                volumeAcc += volSeg;
+                    accumulateSegment(cellArea, startD, endD, epsilon, h < 0);
 
                 if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
-                    addSegment(*outRayhitMesh, segStart, segEnd);
+                    addSegment(*outRayhitMesh, startEvt.point, endEvt.point);
                 }
                 if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
                     addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
                 }
+
+                volumeAcc += volSeg;
             }
             hitsMesh += 1;
         }
