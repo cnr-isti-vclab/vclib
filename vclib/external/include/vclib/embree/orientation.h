@@ -129,7 +129,6 @@ void addQuadPrism(
 }
 
 double accumulateSegment(
-    double                        localVolume,
     const Point3d&                segStart,
     const Point3d&                segEnd,
     const std::array<Point3d, 4>& cellCorners,
@@ -145,9 +144,10 @@ double accumulateSegment(
 {
     const double segLength   = endD - startD;
     const bool   validLength = first || (segLength >= epsilon);
+
+    double segVolume = 0;
     if (validLength) {
-        const double segVolume = cellArea * segLength;
-        localVolume += segVolume;
+        segVolume = cellArea * segLength;
     }
 
     if (collectDebugEnabled && outRayhitMesh && validLength) {
@@ -157,7 +157,7 @@ double accumulateSegment(
         addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
     }
 
-    return localVolume;
+    return segVolume;
 }
 
 template<FaceMeshConcept MeshType>
@@ -254,8 +254,7 @@ double processCell(
         const Point3d segEnd   = hitEvents[0].point;
         const double  startD   = -epsilon;
         const double  endD     = hitEvents[0].t;
-        volumeAcc              = accumulateSegment(
-            volumeAcc,
+        volumeAcc              += accumulateSegment(
             segStart,
             segEnd,
             cellCorners,
@@ -287,8 +286,7 @@ double processCell(
 
         if (endDot < 0.0) {
             if ((startDot > 0.0) && (hitsMesh == 0)) {
-                volumeAcc = accumulateSegment(
-                    volumeAcc,
+                volumeAcc += accumulateSegment(
                     segStart,
                     segEnd,
                     cellCorners,
