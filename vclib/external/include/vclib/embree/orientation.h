@@ -128,6 +128,38 @@ void addQuadPrism(
     tm.addFace(ids[3], ids[4], ids[7]);
 }
 
+double accumulateSegment(
+    double                        localVolume,
+    const Point3d&                segStart,
+    const Point3d&                segEnd,
+    const std::array<Point3d, 4>& cellCorners,
+    double                        cellArea,
+    double                        startD,
+    double                        endD,
+    double                        epsilon,
+    bool                          collectDebugEnabled,
+    EdgeMesh*                     outRayhitMesh,
+    TriMesh*                      outPrismsMesh,
+    const Point3d&                n,
+    bool                          first = false)
+{
+    const double segLength   = endD - startD;
+    const bool   validLength = first || (segLength >= epsilon);
+    if (validLength) {
+        const double segVolume = cellArea * segLength;
+        localVolume += segVolume;
+    }
+
+    if (collectDebugEnabled && outRayhitMesh && validLength) {
+        addSegment(*outRayhitMesh, segStart, segEnd);
+    }
+    if (collectDebugEnabled && outPrismsMesh && validLength) {
+        addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+    }
+
+    return localVolume;
+}
+
 template<FaceMeshConcept MeshType>
 std::vector<HitEvent> collectHits(
     const Scene&    scene,
@@ -368,32 +400,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
         double totalVolume = 0.0;
 
-        auto accumulateSegment = [&](double                        localVolume,
-                                     const Point3d&                segStart,
-                                     const Point3d&                segEnd,
-                                     const std::array<Point3d, 4>& cellCorners,
-                                     double                        cellArea,
-                                     double                        startD,
-                                     double                        endD,
-                                     bool first = false) {
-            const double segLength   = endD - startD;
-            const bool   validLength = first || (segLength >= epsilon);
-            if (validLength) {
-                const double segVolume = cellArea * segLength;
-                localVolume += segVolume;
-            }
-
-            if (collectDebugEnabled && outRayhitMesh && validLength) {
-                detail::addSegment(*outRayhitMesh, segStart, segEnd);
-            }
-            if (collectDebugEnabled && outPrismsMesh && validLength) {
-                detail::addQuadPrism(
-                    *outPrismsMesh, cellCorners, startD, endD, n);
-            }
-
-            return localVolume;
-        };
-
         auto processCell = [&](uint i, uint j) {
             Point2d cellUV(grid.sideU, grid.sideV);
             auto [cellCenter, cellCorners] = detail::computeCellGeometry(
@@ -411,7 +417,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                 const Point3d segEnd   = hitEvents[0].point;
                 const double  startD   = -epsilon;
                 const double  endD     = hitEvents[0].t;
-                volumeAcc              = accumulateSegment(
+                volumeAcc              = detail::accumulateSegment(
                     volumeAcc,
                     segStart,
                     segEnd,
@@ -419,6 +425,11 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                     cellArea,
                     startD,
                     endD,
+                    epsilon,
+                    collectDebugEnabled,
+                    outRayhitMesh,
+                    outPrismsMesh,
+                    n,
                     true);
             }
 
@@ -439,14 +450,19 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
                 if (endDot < 0.0) {
                     if ((startDot > 0.0) && (hitsMesh == 0)) {
-                        volumeAcc = accumulateSegment(
+                        volumeAcc = detail::accumulateSegment(
                             volumeAcc,
                             segStart,
                             segEnd,
                             cellCorners,
                             cellArea,
                             startD,
-                            endD);
+                            endD,
+                            epsilon,
+                            collectDebugEnabled,
+                            outRayhitMesh,
+                            outPrismsMesh,
+                            n);
                     }
                     hitsMesh += 1;
                 }
