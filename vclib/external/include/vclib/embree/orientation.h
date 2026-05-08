@@ -129,18 +129,11 @@ void addQuadPrism(
 }
 
 double accumulateSegment(
-    const Point3d&                segStart,
-    const Point3d&                segEnd,
-    const std::array<Point3d, 4>& cellCorners,
-    double                        cellArea,
-    double                        startD,
-    double                        endD,
-    double                        epsilon,
-    bool                          collectDebugEnabled,
-    EdgeMesh*                     outRayhitMesh,
-    TriMesh*                      outPrismsMesh,
-    const Point3d&                n,
-    bool                          first = false)
+    double cellArea,
+    double startD,
+    double endD,
+    double epsilon,
+    bool   first = false)
 {
     const double segLength   = endD - startD;
     const bool   validLength = first || (segLength >= epsilon);
@@ -148,13 +141,6 @@ double accumulateSegment(
     double segVolume = 0;
     if (validLength) {
         segVolume = cellArea * segLength;
-    }
-
-    if (collectDebugEnabled && outRayhitMesh && validLength) {
-        addSegment(*outRayhitMesh, segStart, segEnd);
-    }
-    if (collectDebugEnabled && outPrismsMesh && validLength) {
-        addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
     }
 
     return segVolume;
@@ -254,19 +240,18 @@ double processCell(
         const Point3d segEnd   = hitEvents[0].point;
         const double  startD   = -epsilon;
         const double  endD     = hitEvents[0].t;
-        volumeAcc              += accumulateSegment(
-            segStart,
-            segEnd,
-            cellCorners,
-            cellArea,
-            startD,
-            endD,
-            epsilon,
-            collectDebugEnabled,
-            outRayhitMesh,
-            outPrismsMesh,
-            n,
-            true);
+
+        double volSeg =
+            accumulateSegment(cellArea, startD, endD, epsilon, true);
+
+        if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
+            addSegment(*outRayhitMesh, segStart, segEnd);
+        }
+        if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
+            addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+        }
+
+        volumeAcc += volSeg;
     }
 
     int hitsMesh = 1;
@@ -286,18 +271,16 @@ double processCell(
 
         if (endDot < 0.0) {
             if ((startDot > 0.0) && (hitsMesh == 0)) {
-                volumeAcc += accumulateSegment(
-                    segStart,
-                    segEnd,
-                    cellCorners,
-                    cellArea,
-                    startD,
-                    endD,
-                    epsilon,
-                    collectDebugEnabled,
-                    outRayhitMesh,
-                    outPrismsMesh,
-                    n);
+                double volSeg =
+                    accumulateSegment(cellArea, startD, endD, epsilon);
+                volumeAcc += volSeg;
+
+                if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
+                    addSegment(*outRayhitMesh, segStart, segEnd);
+                }
+                if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
+                    addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+                }
             }
             hitsMesh += 1;
         }
@@ -444,8 +427,8 @@ double evaluatePlane(
     double totalVolume = 0.0;
 
     auto processCellClosure = [&](uint idx) {
-        uint j           = idx / grid.cols;
-        uint i           = idx % grid.cols;
+        uint j = idx / grid.cols;
+        uint i = idx % grid.cols;
         return processCell(
             i,
             j,
@@ -474,11 +457,12 @@ double evaluatePlane(
         });
     }
     else {
-        vcl::parallelFor(allCells, processCellClosure);
+        vcl::parallelFor(allCells, [&](uint idx) {
+            cellVolumes[idx] = processCellClosure(idx);
+        });
     }
 
-    totalVolume +=
-        std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
+    totalVolume += std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
 
     return totalVolume;
 }
