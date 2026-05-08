@@ -20,19 +20,15 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
-get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-test-${TEST_NAME})
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-external-example-${EXAMPLE_NAME})
 
 set(SOURCES
     main.cpp)
 
-vclib_add_test(
-    ${TEST_NAME}
-    VCLIB_MODULE external
-    SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    MODULE external
+    SOURCES ${SOURCES})
 
-set(TARGET_NAME vclib-external-test-${TEST_NAME})
-target_compile_definitions(${TARGET_NAME} PRIVATE VCL_EMBREE_FORCE_CHUNK_16)
+target_compile_definitions(${PROJECT_NAME} PRIVATE VCL_EMBREE_FORCE_CHUNK_16)
