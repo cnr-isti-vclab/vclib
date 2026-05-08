@@ -445,59 +445,42 @@ double evaluatePlane(
 
     double totalVolume = 0.0;
 
-    if (!collectDebugEnabled) {
-        std::vector<uint> allCells(grid.rows * grid.cols);
-        std::iota(allCells.begin(), allCells.end(), 0);
+    auto processCellClosure = [&](uint idx) {
+        uint j           = idx / grid.cols;
+        uint i           = idx % grid.cols;
+        return processCell(
+            i,
+            j,
+            grid,
+            bbPlane,
+            u,
+            v,
+            planePoint,
+            scene,
+            n,
+            m,
+            epsilon,
+            collectDebugEnabled,
+            outRayhitMesh,
+            outPrismsMesh);
+    };
 
-        std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
-        vcl::parallelFor(allCells, [&](uint idx) {
-            uint j           = idx / grid.cols;
-            uint i           = idx % grid.cols;
-            cellVolumes[idx] = processCell(
-                i,
-                j,
-                grid,
-                bbPlane,
-                u,
-                v,
-                planePoint,
-                scene,
-                n,
-                m,
-                epsilon,
-                collectDebugEnabled,
-                outRayhitMesh,
-                outPrismsMesh);
+    std::vector<uint> allCells(grid.rows * grid.cols);
+    std::iota(allCells.begin(), allCells.end(), 0);
+
+    std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
+
+    if (collectDebugEnabled) {
+        std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
+            cellVolumes[idx] = processCellClosure(idx);
         });
-
-        totalVolume +=
-            std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
     }
     else {
-        std::vector<uint> allCells(grid.rows * grid.cols);
-        std::iota(allCells.begin(), allCells.end(), 0);
-
-        totalVolume += std::accumulate(
-            allCells.begin(), allCells.end(), 0.0, [&](double acc, uint idx) {
-                const uint j = idx / grid.cols;
-                const uint i = idx % grid.cols;
-                return acc + processCell(
-                                 i,
-                                 j,
-                                 grid,
-                                 bbPlane,
-                                 u,
-                                 v,
-                                 planePoint,
-                                 scene,
-                                 n,
-                                 m,
-                                 epsilon,
-                                 collectDebugEnabled,
-                                 outRayhitMesh,
-                                 outPrismsMesh);
-            });
+        vcl::parallelFor(allCells, processCellClosure);
     }
+
+    totalVolume +=
+        std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
 
     return totalVolume;
 }
