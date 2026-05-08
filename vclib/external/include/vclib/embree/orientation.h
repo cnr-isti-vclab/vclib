@@ -59,32 +59,33 @@ struct PlaneEvalStats
 };
 
 GridChoice chooseGrid(
-    double                     lenU,
-    double                     lenV,
+    const Box2d&               bbPlane,
     const std::vector<double>& gridCellSideLengths)
 {
-    if (lenU <= 0.0 || lenV <= 0.0) {
-        return {1, 1, lenU, lenV};
+    if (bbPlane.dim(0) <= 0.0 || bbPlane.dim(1) <= 0.0) {
+        return {1, 1, bbPlane.dim(0), bbPlane.dim(1)};
     }
 
-    const double sideU =
-        (gridCellSideLengths.size() >= 1) ? gridCellSideLengths[0] : lenU;
+    const double sideU = (gridCellSideLengths.size() >= 1) ?
+                             gridCellSideLengths[0] :
+                             bbPlane.dim(0);
     const double sideV =
         (gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] : sideU;
 
     if (sideU <= 0.0 || sideV <= 0.0) {
-        return {1, 1, lenU, lenV};
+        return {1, 1, bbPlane.dim(0), bbPlane.dim(1)};
     }
 
     const uint cols =
-        static_cast<uint>(std::max(1.0, std::ceil(lenU / sideU)));
+        static_cast<uint>(std::max(1.0, std::ceil(bbPlane.dim(0) / sideU)));
     const uint rows =
-        static_cast<uint>(std::max(1.0, std::ceil(lenV / sideV)));
+        static_cast<uint>(std::max(1.0, std::ceil(bbPlane.dim(1) / sideV)));
 
     return {rows, cols, sideU, sideV};
 }
 
-void addSegment(EdgeMesh& em, const Point3d& a, const Point3d& b) {
+void addSegment(EdgeMesh& em, const Point3d& a, const Point3d& b)
+{
     const uint va = em.addVertex(a);
     const uint vb = em.addVertex(b);
     em.addEdge(va, vb);
@@ -127,7 +128,68 @@ void addQuadPrism(
     tm.addFace(ids[3], ids[4], ids[7]);
 }
 
-} // namespace vcl::embree::detail
+template<FaceMeshConcept MeshType>
+std::vector<HitEvent> collectHits(
+    const Scene&    scene,
+    const Point3d&  rayOrigin,
+    const Point3d&  rayDir,
+    const MeshType& m,
+    double          epsilon)
+{
+    std::vector<HitEvent>         hitEvents;
+    std::vector<Scene::HitResult> hits = scene.facesIntersectedByRay(
+        rayOrigin, rayDir, static_cast<float>(epsilon));
+    hitEvents.reserve(hits.size());
+
+    for (const auto& h : hits) {
+        auto [hitFaceId, barCoords, hitTriId, tHit] = h;
+
+        if (hitFaceId == UINT_NULL) {
+            continue;
+        }
+
+        const auto& face = m.face(hitFaceId);
+
+        const Point3d hitPoint  = rayOrigin + rayDir * tHit;
+        Point3d       triNormal = face.normal();
+        if (triNormal.norm() >= epsilon) {
+            triNormal.normalize();
+        }
+
+        hitEvents.push_back({hitPoint, tHit, triNormal});
+    }
+
+    return hitEvents;
+}
+
+auto computeCellGeometry(
+    uint           i,
+    uint           j,
+    const Point2d& cellUV,
+    const Box2d&   bbPlane,
+    const Point3d& u,
+    const Point3d& v,
+    const Point3d& planePoint)
+{
+    const double u0 = bbPlane.min().x() + i * cellUV.x();
+    const double u1 = u0 + cellUV.x();
+    const double v0 = bbPlane.min().y() + j * cellUV.y();
+    const double v1 = v0 + cellUV.y();
+
+    std::array<Point3d, 4> cellCorners = {
+        planePoint + u * u0 + v * v0,
+        planePoint + u * u1 + v * v0,
+        planePoint + u * u1 + v * v1,
+        planePoint + u * u0 + v * v1};
+
+    const double centerU    = bbPlane.min().x() + (i + 0.5) * cellUV.x();
+    const double centerV    = bbPlane.min().y() + (j + 0.5) * cellUV.y();
+    Point3d      cellCenter = planePoint + u * centerU + v * centerV;
+
+    return std::make_pair(cellCenter, cellCorners);
+};
+
+} // namespace detail
 
 /**
  * @brief Finds the optimal print orientation by minimizing the exterior
@@ -181,13 +243,13 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
 
-    auto evaluatePlane = [&](const Point3d&  rawPlaneNormal,
-                             bool            collectDebug,
-                             EdgeMesh*       outRayhitMesh,
-                             TriMesh*        outPrismsMesh,
-                             EdgeMesh*       outProjectedPointsMesh,
-                             EdgeMesh*       outBbox2dMesh,
-                             EdgeMesh*       outGrid2dMesh,
+    auto evaluatePlane = [&](const Point3d&          rawPlaneNormal,
+                             bool                    collectDebug,
+                             EdgeMesh*               outRayhitMesh,
+                             TriMesh*                outPrismsMesh,
+                             EdgeMesh*               outProjectedPointsMesh,
+                             EdgeMesh*               outBbox2dMesh,
+                             EdgeMesh*               outGrid2dMesh,
                              detail::PlaneEvalStats* outStats) {
         const bool collectDebugEnabled = debug && collectDebug;
 
@@ -216,6 +278,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         double minV = std::numeric_limits<double>::infinity();
         double maxU = -std::numeric_limits<double>::infinity();
         double maxV = -std::numeric_limits<double>::infinity();
+        Box2d  bbPlane;
 
         std::vector<Point3d> projectedPoints;
         if (collectDebugEnabled && outProjectedPointsMesh) {
@@ -230,25 +293,25 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             }
             const Point3d rel = projected - planePoint;
 
-            const double pu = rel.dot(u);
-            const double pv = rel.dot(v);
+            const double  pu = rel.dot(u);
+            const double  pv = rel.dot(v);
+            const Point2d projUV(pu, pv);
 
             minU = std::min(minU, pu);
             minV = std::min(minV, pv);
             maxU = std::max(maxU, pu);
             maxV = std::max(maxV, pv);
+            bbPlane.add(projUV);
         }
 
-        const double lenU = maxU - minU;
-        const double lenV = maxV - minV;
-        if (lenU <= epsilon || lenV <= epsilon) {
+        if (bbPlane.dim(0) <= epsilon || bbPlane.dim(1) <= epsilon) {
             return std::numeric_limits<double>::infinity();
         }
 
         const detail::GridChoice grid =
-            detail::chooseGrid(lenU, lenV, gridCellSideLengths);
+            detail::chooseGrid(bbPlane, gridCellSideLengths);
         if (outStats) {
-            outStats->minU  = minU;
+            outStats->minU  = bbPlane.min().x();
             outStats->minV  = minV;
             outStats->maxU  = maxU;
             outStats->maxV  = maxV;
@@ -303,63 +366,13 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             }
         }
 
-        auto collectHits = [&](const Point3d& rayOrigin) {
-            std::vector<detail::HitEvent>                 hitEvents;
-            std::vector<embree::Scene::HitResult> hits =
-                scene.facesIntersectedByRay(
-                    rayOrigin, n, static_cast<float>(epsilon));
-            hitEvents.reserve(hits.size());
-
-            for (const auto& h : hits) {
-                auto [hitFaceId, barCoords, hitTriId, tHit] = h;
-
-                if (hitFaceId == UINT_NULL) {
-                    continue;
-                }
-
-                const auto& face    = m.face(hitFaceId);
-
-                const Point3d hitPoint = rayOrigin + n * tHit;
-                Point3d triNormal = face.normal();
-                if (triNormal.norm() >= epsilon) {
-                    triNormal.normalize();
-                }
-
-                hitEvents.push_back({hitPoint, tHit, triNormal});
-            }
-
-            return hitEvents;
-        };
-
-        double       totalVolume = 0.0;
-        const double cellDu      = grid.sideU;
-        const double cellDv      = grid.sideV;
-        const double cellArea    = cellDu * cellDv;
-
-        auto computeCellGeometry = [&](uint                    i,
-                                       uint                    j,
-                                       Point3d&                cellCenter,
-                                       std::array<Point3d, 4>& cellCorners) {
-            const double u0 = minU + i * cellDu;
-            const double u1 = u0 + cellDu;
-            const double v0 = minV + j * cellDv;
-            const double v1 = v0 + cellDv;
-
-            cellCorners = {
-                planePoint + u * u0 + v * v0,
-                planePoint + u * u1 + v * v0,
-                planePoint + u * u1 + v * v1,
-                planePoint + u * u0 + v * v1};
-
-            const double centerU = minU + (i + 0.5) * cellDu;
-            const double centerV = minV + (j + 0.5) * cellDv;
-            cellCenter           = planePoint + u * centerU + v * centerV;
-        };
+        double totalVolume = 0.0;
 
         auto accumulateSegment = [&](double&                       localVolume,
                                      const Point3d&                segStart,
                                      const Point3d&                segEnd,
                                      const std::array<Point3d, 4>& cellCorners,
+                                     double                        cellArea,
                                      double                        startD,
                                      double                        endD,
                                      bool first = false) {
@@ -374,20 +387,24 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                 detail::addSegment(*outRayhitMesh, segStart, segEnd);
             }
             if (collectDebugEnabled && outPrismsMesh && validLength) {
-                detail::addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+                detail::addQuadPrism(
+                    *outPrismsMesh, cellCorners, startD, endD, n);
             }
 
             return localVolume;
         };
 
         auto processCell = [&](uint i, uint j) {
-            Point3d                cellCenter;
-            std::array<Point3d, 4> cellCorners;
-            computeCellGeometry(i, j, cellCenter, cellCorners);
+            Point2d cellUV(grid.sideU, grid.sideV);
+            auto [cellCenter, cellCorners] = detail::computeCellGeometry(
+                i, j, cellUV, bbPlane, u, v, planePoint);
 
             double volumeAcc = 0.0;
 
-            std::vector<detail::HitEvent> hitEvents = collectHits(cellCenter);
+            std::vector<detail::HitEvent> hitEvents =
+                detail::collectHits(scene, cellCenter, n, m, epsilon);
+
+            const double cellArea = cellUV.x() * cellUV.y();
 
             if (!hitEvents.empty()) {
                 const Point3d segStart = cellCenter + n * -epsilon;
@@ -399,6 +416,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                     segStart,
                     segEnd,
                     cellCorners,
+                    cellArea,
                     startD,
                     endD,
                     true);
@@ -426,6 +444,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                             segStart,
                             segEnd,
                             cellCorners,
+                            cellArea,
                             startD,
                             endD);
                     }
@@ -484,7 +503,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
         detail::PlaneEvalStats stats;
-        double         vol = evaluatePlane(
+        double                 vol = evaluatePlane(
             fibNormals[i],
             false,
             nullptr,
@@ -540,7 +559,8 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_prisms.ply");
     //     saveMesh(
     //         bestProjectedPointsMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_projected_points.ply");
+    //         VCLIB_EXTERNAL_RESULTS_PATH
+    //         "/777_plane_beam_projected_points.ply");
     //     saveMesh(
     //         bestBbox2dMesh,
     //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
@@ -591,19 +611,18 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                                gridCellSideLengths[0] :
                                0.0))
                   << "\n"
-                  << "Minimum volume: " << bestVolume
-                  << "\n"
-                  // << "Saved debug meshes:\n"
-                  // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-                  // << "/777_plane_beam_prisms.ply\n"
-                  // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-                  // << "/777_plane_beam_projected_points.ply\n"
-                  // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-                  // << "/777_plane_beam_bbox2d.ply\n"
-                  // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-                  // << "/777_plane_beam_grid2d.ply\n"
-                  // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-                  // << "/777_plane_beam_rayhits.ply\n"
+                  << "Minimum volume: " << bestVolume << "\n"
+            // << "Saved debug meshes:\n"
+            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
+            // << "/777_plane_beam_prisms.ply\n"
+            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
+            // << "/777_plane_beam_projected_points.ply\n"
+            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
+            // << "/777_plane_beam_bbox2d.ply\n"
+            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
+            // << "/777_plane_beam_grid2d.ply\n"
+            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
+            // << "/777_plane_beam_rayhits.ply\n"
             ;
     }
 
