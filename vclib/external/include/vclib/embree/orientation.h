@@ -187,7 +187,7 @@ auto computeCellGeometry(
     Point3d      cellCenter = planePoint + u * centerU + v * centerV;
 
     return std::make_pair(cellCenter, cellCorners);
-};
+}
 
 } // namespace detail
 
@@ -368,7 +368,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
         double totalVolume = 0.0;
 
-        auto accumulateSegment = [&](double&                       localVolume,
+        auto accumulateSegment = [&](double                        localVolume,
                                      const Point3d&                segStart,
                                      const Point3d&                segEnd,
                                      const std::array<Point3d, 4>& cellCorners,
