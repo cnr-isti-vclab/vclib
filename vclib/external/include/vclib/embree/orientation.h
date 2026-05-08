@@ -311,6 +311,197 @@ double processCell(
     return volumeAcc;
 }
 
+template<FaceMeshConcept MeshType>
+double evaluatePlane(
+    const Point3d&             rawPlaneNormal,
+    bool                       collectDebug,
+    EdgeMesh*                  outRayhitMesh,
+    TriMesh*                   outPrismsMesh,
+    EdgeMesh*                  outProjectedPointsMesh,
+    EdgeMesh*                  outBbox2dMesh,
+    EdgeMesh*                  outGrid2dMesh,
+    PlaneEvalStats*            outStats,
+    const MeshType&            m,
+    const std::vector<double>& gridCellSideLengths,
+    const Scene&               scene,
+    double                     epsilon,
+    bool                       debug)
+{
+    using namespace vcl;
+
+    const bool collectDebugEnabled = debug && collectDebug;
+
+    Point3d n = rawPlaneNormal;
+    if (n.norm() <= epsilon) {
+        return std::numeric_limits<double>::infinity();
+    }
+    n.normalize();
+
+    double minProj = std::numeric_limits<double>::infinity();
+    for (const auto& vv : m.vertices()) {
+        minProj = std::min(minProj, vv.position().dot(n));
+    }
+    const Point3d planePoint = n * minProj;
+    const Planed  plane(planePoint, n);
+
+    Point3d u, v;
+    n.orthoBase(u, v);
+    if (u.norm() <= epsilon || v.norm() <= epsilon) {
+        return std::numeric_limits<double>::infinity();
+    }
+    u.normalize();
+    v.normalize();
+
+    double minU = std::numeric_limits<double>::infinity();
+    double minV = std::numeric_limits<double>::infinity();
+    double maxU = -std::numeric_limits<double>::infinity();
+    double maxV = -std::numeric_limits<double>::infinity();
+    Box2d  bbPlane;
+
+    std::vector<Point3d> projectedPoints;
+    if (collectDebugEnabled && outProjectedPointsMesh) {
+        projectedPoints.reserve(
+            std::distance(m.vertices().begin(), m.vertices().end()));
+    }
+
+    for (const auto& vert : m.vertices()) {
+        const Point3d projected = plane.projectPoint(vert.position());
+        if (collectDebugEnabled && outProjectedPointsMesh) {
+            projectedPoints.push_back(projected);
+        }
+        const Point3d rel = projected - planePoint;
+
+        const double  pu = rel.dot(u);
+        const double  pv = rel.dot(v);
+        const Point2d projUV(pu, pv);
+
+        minU = std::min(minU, pu);
+        minV = std::min(minV, pv);
+        maxU = std::max(maxU, pu);
+        maxV = std::max(maxV, pv);
+        bbPlane.add(projUV);
+    }
+
+    if (bbPlane.dim(0) <= epsilon || bbPlane.dim(1) <= epsilon) {
+        return std::numeric_limits<double>::infinity();
+    }
+
+    const GridChoice grid = chooseGrid(bbPlane, gridCellSideLengths);
+    if (outStats) {
+        outStats->minU  = bbPlane.min().x();
+        outStats->minV  = minV;
+        outStats->maxU  = maxU;
+        outStats->maxV  = maxV;
+        outStats->rows  = grid.rows;
+        outStats->cols  = grid.cols;
+        outStats->cells = grid.rows * grid.cols;
+    }
+
+    const double gridMaxU = minU + grid.sideU * grid.cols;
+    const double gridMaxV = minV + grid.sideV * grid.rows;
+
+    if (collectDebugEnabled && outProjectedPointsMesh) {
+        outProjectedPointsMesh->reserveVertices(projectedPoints.size());
+        for (const Point3d& p : projectedPoints) {
+            outProjectedPointsMesh->addVertex(p);
+        }
+    }
+
+    if (collectDebugEnabled && outBbox2dMesh) {
+        const std::array<Point3d, 4> bboxCorners = {
+            planePoint + u * minU + v * minV,
+            planePoint + u * gridMaxU + v * minV,
+            planePoint + u * gridMaxU + v * gridMaxV,
+            planePoint + u * minU + v * gridMaxV};
+
+        std::array<uint, 4> cornerIds;
+        for (uint k = 0; k < bboxCorners.size(); ++k) {
+            cornerIds[k] = outBbox2dMesh->addVertex(bboxCorners[k]);
+        }
+        outBbox2dMesh->addEdge(cornerIds[0], cornerIds[1]);
+        outBbox2dMesh->addEdge(cornerIds[1], cornerIds[2]);
+        outBbox2dMesh->addEdge(cornerIds[2], cornerIds[3]);
+        outBbox2dMesh->addEdge(cornerIds[3], cornerIds[0]);
+    }
+
+    if (collectDebugEnabled && outGrid2dMesh) {
+        for (uint ii = 0; ii <= grid.cols; ++ii) {
+            const double cu = minU + grid.sideU * ii;
+            const uint   a =
+                outGrid2dMesh->addVertex(planePoint + u * cu + v * minV);
+            const uint b =
+                outGrid2dMesh->addVertex(planePoint + u * cu + v * gridMaxV);
+            outGrid2dMesh->addEdge(a, b);
+        }
+        for (uint jj = 0; jj <= grid.rows; ++jj) {
+            const double cv = minV + grid.sideV * jj;
+            const uint   a =
+                outGrid2dMesh->addVertex(planePoint + u * minU + v * cv);
+            const uint b =
+                outGrid2dMesh->addVertex(planePoint + u * gridMaxU + v * cv);
+            outGrid2dMesh->addEdge(a, b);
+        }
+    }
+
+    double totalVolume = 0.0;
+
+    if (!collectDebugEnabled) {
+        std::vector<uint> allCells(grid.rows * grid.cols);
+        std::iota(allCells.begin(), allCells.end(), 0);
+
+        std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
+        vcl::parallelFor(allCells, [&](uint idx) {
+            uint j           = idx / grid.cols;
+            uint i           = idx % grid.cols;
+            cellVolumes[idx] = processCell(
+                i,
+                j,
+                grid,
+                bbPlane,
+                u,
+                v,
+                planePoint,
+                scene,
+                n,
+                m,
+                epsilon,
+                collectDebugEnabled,
+                outRayhitMesh,
+                outPrismsMesh);
+        });
+
+        totalVolume +=
+            std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
+    }
+    else {
+        std::vector<uint> allCells(grid.rows * grid.cols);
+        std::iota(allCells.begin(), allCells.end(), 0);
+
+        totalVolume += std::accumulate(
+            allCells.begin(), allCells.end(), 0.0, [&](double acc, uint idx) {
+                const uint j = idx / grid.cols;
+                const uint i = idx % grid.cols;
+                return acc + processCell(
+                                 i,
+                                 j,
+                                 grid,
+                                 bbPlane,
+                                 u,
+                                 v,
+                                 planePoint,
+                                 scene,
+                                 n,
+                                 m,
+                                 epsilon,
+                                 collectDebugEnabled,
+                                 outRayhitMesh,
+                                 outPrismsMesh);
+            });
+    }
+
+    return totalVolume;
+}
+
 } // namespace detail
 
 /**
@@ -365,191 +556,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
 
-    auto evaluatePlane = [&](const Point3d&          rawPlaneNormal,
-                             bool                    collectDebug,
-                             EdgeMesh*               outRayhitMesh,
-                             TriMesh*                outPrismsMesh,
-                             EdgeMesh*               outProjectedPointsMesh,
-                             EdgeMesh*               outBbox2dMesh,
-                             EdgeMesh*               outGrid2dMesh,
-                             detail::PlaneEvalStats* outStats) {
-        const bool collectDebugEnabled = debug && collectDebug;
-
-        Point3d n = rawPlaneNormal;
-        if (n.norm() <= epsilon) {
-            return std::numeric_limits<double>::infinity();
-        }
-        n.normalize();
-
-        double minProj = std::numeric_limits<double>::infinity();
-        for (const auto& vv : m.vertices()) {
-            minProj = std::min(minProj, vv.position().dot(n));
-        }
-        const Point3d planePoint = n * minProj;
-        const Planed  plane(planePoint, n);
-
-        Point3d u, v;
-        n.orthoBase(u, v);
-        if (u.norm() <= epsilon || v.norm() <= epsilon) {
-            return std::numeric_limits<double>::infinity();
-        }
-        u.normalize();
-        v.normalize();
-
-        double minU = std::numeric_limits<double>::infinity();
-        double minV = std::numeric_limits<double>::infinity();
-        double maxU = -std::numeric_limits<double>::infinity();
-        double maxV = -std::numeric_limits<double>::infinity();
-        Box2d  bbPlane;
-
-        std::vector<Point3d> projectedPoints;
-        if (collectDebugEnabled && outProjectedPointsMesh) {
-            projectedPoints.reserve(
-                std::distance(m.vertices().begin(), m.vertices().end()));
-        }
-
-        for (const auto& vert : m.vertices()) {
-            const Point3d projected = plane.projectPoint(vert.position());
-            if (collectDebugEnabled && outProjectedPointsMesh) {
-                projectedPoints.push_back(projected);
-            }
-            const Point3d rel = projected - planePoint;
-
-            const double  pu = rel.dot(u);
-            const double  pv = rel.dot(v);
-            const Point2d projUV(pu, pv);
-
-            minU = std::min(minU, pu);
-            minV = std::min(minV, pv);
-            maxU = std::max(maxU, pu);
-            maxV = std::max(maxV, pv);
-            bbPlane.add(projUV);
-        }
-
-        if (bbPlane.dim(0) <= epsilon || bbPlane.dim(1) <= epsilon) {
-            return std::numeric_limits<double>::infinity();
-        }
-
-        const detail::GridChoice grid =
-            detail::chooseGrid(bbPlane, gridCellSideLengths);
-        if (outStats) {
-            outStats->minU  = bbPlane.min().x();
-            outStats->minV  = minV;
-            outStats->maxU  = maxU;
-            outStats->maxV  = maxV;
-            outStats->rows  = grid.rows;
-            outStats->cols  = grid.cols;
-            outStats->cells = grid.rows * grid.cols;
-        }
-
-        const double gridMaxU = minU + grid.sideU * grid.cols;
-        const double gridMaxV = minV + grid.sideV * grid.rows;
-
-        if (collectDebugEnabled && outProjectedPointsMesh) {
-            outProjectedPointsMesh->reserveVertices(projectedPoints.size());
-            for (const Point3d& p : projectedPoints) {
-                outProjectedPointsMesh->addVertex(p);
-            }
-        }
-
-        if (collectDebugEnabled && outBbox2dMesh) {
-            const std::array<Point3d, 4> bboxCorners = {
-                planePoint + u * minU + v * minV,
-                planePoint + u * gridMaxU + v * minV,
-                planePoint + u * gridMaxU + v * gridMaxV,
-                planePoint + u * minU + v * gridMaxV};
-
-            std::array<uint, 4> cornerIds;
-            for (uint k = 0; k < bboxCorners.size(); ++k) {
-                cornerIds[k] = outBbox2dMesh->addVertex(bboxCorners[k]);
-            }
-            outBbox2dMesh->addEdge(cornerIds[0], cornerIds[1]);
-            outBbox2dMesh->addEdge(cornerIds[1], cornerIds[2]);
-            outBbox2dMesh->addEdge(cornerIds[2], cornerIds[3]);
-            outBbox2dMesh->addEdge(cornerIds[3], cornerIds[0]);
-        }
-
-        if (collectDebugEnabled && outGrid2dMesh) {
-            for (uint ii = 0; ii <= grid.cols; ++ii) {
-                const double cu = minU + grid.sideU * ii;
-                const uint   a =
-                    outGrid2dMesh->addVertex(planePoint + u * cu + v * minV);
-                const uint b = outGrid2dMesh->addVertex(
-                    planePoint + u * cu + v * gridMaxV);
-                outGrid2dMesh->addEdge(a, b);
-            }
-            for (uint jj = 0; jj <= grid.rows; ++jj) {
-                const double cv = minV + grid.sideV * jj;
-                const uint   a =
-                    outGrid2dMesh->addVertex(planePoint + u * minU + v * cv);
-                const uint b = outGrid2dMesh->addVertex(
-                    planePoint + u * gridMaxU + v * cv);
-                outGrid2dMesh->addEdge(a, b);
-            }
-        }
-
-        double totalVolume = 0.0;
-
-        if (!collectDebugEnabled) {
-            std::vector<uint> allCells(grid.rows * grid.cols);
-            std::iota(allCells.begin(), allCells.end(), 0);
-
-            std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
-            vcl::parallelFor(allCells, [&](uint idx) {
-                uint j           = idx / grid.cols;
-                uint i           = idx % grid.cols;
-                cellVolumes[idx] = detail::processCell(
-                    i,
-                    j,
-                    grid,
-                    bbPlane,
-                    u,
-                    v,
-                    planePoint,
-                    scene,
-                    n,
-                    m,
-                    epsilon,
-                    collectDebugEnabled,
-                    outRayhitMesh,
-                    outPrismsMesh);
-            });
-
-            totalVolume +=
-                std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
-        }
-        else {
-            std::vector<uint> allCells(grid.rows * grid.cols);
-            std::iota(allCells.begin(), allCells.end(), 0);
-
-            totalVolume += std::accumulate(
-                allCells.begin(),
-                allCells.end(),
-                0.0,
-                [&](double acc, uint idx) {
-                    const uint j = idx / grid.cols;
-                    const uint i = idx % grid.cols;
-                    return acc + detail::processCell(
-                        i,
-                        j,
-                        grid,
-                        bbPlane,
-                        u,
-                        v,
-                        planePoint,
-                        scene,
-                        n,
-                        m,
-                        epsilon,
-                        collectDebugEnabled,
-                        outRayhitMesh,
-                        outPrismsMesh);
-                });
-        }
-
-        return totalVolume;
-    };
-
     std::vector<Point3d> fibNormals =
         sphericalFibonacciPointSet<Point3d>(nDirections);
     if (fibNormals.empty()) {
@@ -563,7 +569,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
         detail::PlaneEvalStats stats;
-        double                 vol = evaluatePlane(
+        double                 vol = detail::evaluatePlane(
             fibNormals[i],
             false,
             nullptr,
@@ -571,7 +577,12 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             nullptr,
             nullptr,
             nullptr,
-            &stats);
+            &stats,
+            m,
+            gridCellSideLengths,
+            scene,
+            epsilon,
+            debug);
 
         if (debug) {
             std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
@@ -600,7 +611,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     EdgeMesh bestBbox2dMesh;
     EdgeMesh bestGrid2dMesh;
 
-    bestVolume = evaluatePlane(
+    bestVolume = detail::evaluatePlane(
         bestNormal,
         true,
         &bestRayhitMesh,
@@ -608,53 +619,12 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         &bestProjectedPointsMesh,
         &bestBbox2dMesh,
         &bestGrid2dMesh,
-        nullptr);
-
-    // if (debug) {
-    //     saveMesh(
-    //         bestRayhitMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_rayhits.ply");
-    //     saveMesh(
-    //         bestPrismsMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_prisms.ply");
-    //     saveMesh(
-    //         bestProjectedPointsMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH
-    //         "/777_plane_beam_projected_points.ply");
-    //     saveMesh(
-    //         bestBbox2dMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_bbox2d.ply");
-    //     saveMesh(
-    //         bestGrid2dMesh,
-    //         VCLIB_EXTERNAL_RESULTS_PATH "/777_plane_beam_grid2d.ply");
-    // }
-
-    auto saveDebugMeshes = [&](const std::string& suffix,
-                               const Point3d&     normal) {
-        EdgeMesh rayhitMesh;
-        TriMesh  prismsMesh;
-        EdgeMesh projectedPointsMesh;
-        EdgeMesh bbox2dMesh;
-        EdgeMesh grid2dMesh;
-
-        evaluatePlane(
-            normal,
-            true,
-            &rayhitMesh,
-            &prismsMesh,
-            &projectedPointsMesh,
-            &bbox2dMesh,
-            &grid2dMesh,
-            nullptr);
-
-        // const std::string base = std::string(VCLIB_EXTERNAL_RESULTS_PATH) +
-        //                          "/777_plane_beam_" + suffix;
-        // saveMesh(rayhitMesh, base + "_rayhits.ply");
-        // saveMesh(prismsMesh, base + "_prisms.ply");
-        // saveMesh(projectedPointsMesh, base + "_projected_points.ply");
-        // saveMesh(bbox2dMesh, base + "_bbox2d.ply");
-        // saveMesh(grid2dMesh, base + "_grid2d.ply");
-    };
+        nullptr,
+        m,
+        gridCellSideLengths,
+        scene,
+        epsilon,
+        debug);
 
     if (debug) {
         std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
@@ -671,19 +641,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                                gridCellSideLengths[0] :
                                0.0))
                   << "\n"
-                  << "Minimum volume: " << bestVolume << "\n"
-            // << "Saved debug meshes:\n"
-            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-            // << "/777_plane_beam_prisms.ply\n"
-            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-            // << "/777_plane_beam_projected_points.ply\n"
-            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-            // << "/777_plane_beam_bbox2d.ply\n"
-            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-            // << "/777_plane_beam_grid2d.ply\n"
-            // << " - " << VCLIB_EXTERNAL_RESULTS_PATH
-            // << "/777_plane_beam_rayhits.ply\n"
-            ;
+                  << "Minimum volume: " << bestVolume << "\n";
     }
 
     return bestNormal;
