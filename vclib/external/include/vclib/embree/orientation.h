@@ -221,6 +221,96 @@ auto computeCellGeometry(
     return std::make_pair(cellCenter, cellCorners);
 }
 
+template<FaceMeshConcept MeshType>
+double processCell(
+    uint              i,
+    uint              j,
+    const GridChoice& grid,
+    const Box2d&      bbPlane,
+    const Point3d&    u,
+    const Point3d&    v,
+    const Point3d&    planePoint,
+    const Scene&      scene,
+    const Point3d&    n,
+    const MeshType&   m,
+    double            epsilon,
+    bool              collectDebugEnabled,
+    EdgeMesh*         outRayhitMesh,
+    TriMesh*          outPrismsMesh)
+{
+    Point2d cellUV(grid.sideU, grid.sideV);
+    auto [cellCenter, cellCorners] =
+        computeCellGeometry(i, j, cellUV, bbPlane, u, v, planePoint);
+
+    double volumeAcc = 0.0;
+
+    std::vector<HitEvent> hitEvents =
+        collectHits(scene, cellCenter, n, m, epsilon);
+
+    const double cellArea = cellUV.x() * cellUV.y();
+
+    if (!hitEvents.empty()) {
+        const Point3d segStart = cellCenter + n * -epsilon;
+        const Point3d segEnd   = hitEvents[0].point;
+        const double  startD   = -epsilon;
+        const double  endD     = hitEvents[0].t;
+        volumeAcc              = accumulateSegment(
+            volumeAcc,
+            segStart,
+            segEnd,
+            cellCorners,
+            cellArea,
+            startD,
+            endD,
+            epsilon,
+            collectDebugEnabled,
+            outRayhitMesh,
+            outPrismsMesh,
+            n,
+            true);
+    }
+
+    int hitsMesh = 1;
+    for (int h = 0; h + 1 < (int) hitEvents.size(); h += 1) {
+        const Point3d segStart = hitEvents[h].point;
+        const Point3d segEnd   = hitEvents[h + 1].point;
+        const double  startD   = hitEvents[h].t;
+        const double  endD     = hitEvents[h + 1].t;
+        if (endD <= startD) {
+            continue;
+        }
+
+        const Point3d& startNormal = hitEvents[h].normal;
+        const Point3d& endNormal   = hitEvents[h + 1].normal;
+        const double   startDot    = startNormal.dot(n);
+        const double   endDot      = endNormal.dot(n);
+
+        if (endDot < 0.0) {
+            if ((startDot > 0.0) && (hitsMesh == 0)) {
+                volumeAcc = accumulateSegment(
+                    volumeAcc,
+                    segStart,
+                    segEnd,
+                    cellCorners,
+                    cellArea,
+                    startD,
+                    endD,
+                    epsilon,
+                    collectDebugEnabled,
+                    outRayhitMesh,
+                    outPrismsMesh,
+                    n);
+            }
+            hitsMesh += 1;
+        }
+        else {
+            hitsMesh -= 1;
+        }
+    }
+
+    return volumeAcc;
+}
+
 } // namespace detail
 
 /**
@@ -400,80 +490,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
         double totalVolume = 0.0;
 
-        auto processCell = [&](uint i, uint j) {
-            Point2d cellUV(grid.sideU, grid.sideV);
-            auto [cellCenter, cellCorners] = detail::computeCellGeometry(
-                i, j, cellUV, bbPlane, u, v, planePoint);
-
-            double volumeAcc = 0.0;
-
-            std::vector<detail::HitEvent> hitEvents =
-                detail::collectHits(scene, cellCenter, n, m, epsilon);
-
-            const double cellArea = cellUV.x() * cellUV.y();
-
-            if (!hitEvents.empty()) {
-                const Point3d segStart = cellCenter + n * -epsilon;
-                const Point3d segEnd   = hitEvents[0].point;
-                const double  startD   = -epsilon;
-                const double  endD     = hitEvents[0].t;
-                volumeAcc              = detail::accumulateSegment(
-                    volumeAcc,
-                    segStart,
-                    segEnd,
-                    cellCorners,
-                    cellArea,
-                    startD,
-                    endD,
-                    epsilon,
-                    collectDebugEnabled,
-                    outRayhitMesh,
-                    outPrismsMesh,
-                    n,
-                    true);
-            }
-
-            int hitsMesh = 1;
-            for (int h = 0; h + 1 < (int) hitEvents.size(); h += 1) {
-                const Point3d segStart = hitEvents[h].point;
-                const Point3d segEnd   = hitEvents[h + 1].point;
-                const double  startD   = hitEvents[h].t;
-                const double  endD     = hitEvents[h + 1].t;
-                if (endD <= startD) {
-                    continue;
-                }
-
-                const Point3d& startNormal = hitEvents[h].normal;
-                const Point3d& endNormal   = hitEvents[h + 1].normal;
-                const double   startDot    = startNormal.dot(n);
-                const double   endDot      = endNormal.dot(n);
-
-                if (endDot < 0.0) {
-                    if ((startDot > 0.0) && (hitsMesh == 0)) {
-                        volumeAcc = detail::accumulateSegment(
-                            volumeAcc,
-                            segStart,
-                            segEnd,
-                            cellCorners,
-                            cellArea,
-                            startD,
-                            endD,
-                            epsilon,
-                            collectDebugEnabled,
-                            outRayhitMesh,
-                            outPrismsMesh,
-                            n);
-                    }
-                    hitsMesh += 1;
-                }
-                else {
-                    hitsMesh -= 1;
-                }
-            }
-
-            return volumeAcc;
-        };
-
         if (!collectDebugEnabled) {
             std::vector<uint> allCells(grid.rows * grid.cols);
             std::iota(allCells.begin(), allCells.end(), 0);
@@ -482,7 +498,21 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             vcl::parallelFor(allCells, [&](uint idx) {
                 uint j           = idx / grid.cols;
                 uint i           = idx % grid.cols;
-                cellVolumes[idx] = processCell(i, j);
+                cellVolumes[idx] = detail::processCell(
+                    i,
+                    j,
+                    grid,
+                    bbPlane,
+                    u,
+                    v,
+                    planePoint,
+                    scene,
+                    n,
+                    m,
+                    epsilon,
+                    collectDebugEnabled,
+                    outRayhitMesh,
+                    outPrismsMesh);
             });
 
             totalVolume +=
@@ -499,7 +529,21 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
                 [&](double acc, uint idx) {
                     const uint j = idx / grid.cols;
                     const uint i = idx % grid.cols;
-                    return acc + processCell(i, j);
+                    return acc + detail::processCell(
+                        i,
+                        j,
+                        grid,
+                        bbPlane,
+                        u,
+                        v,
+                        planePoint,
+                        scene,
+                        n,
+                        m,
+                        epsilon,
+                        collectDebugEnabled,
+                        outRayhitMesh,
+                        outPrismsMesh);
                 });
         }
 
