@@ -42,22 +42,13 @@ int main()
     scale(m, 10.0);
     updatePerVertexAndFaceNormals(m);
 
-    auto    startTime  = std::chrono::steady_clock::now();
-    Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
-        m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
-    auto endTime   = std::chrono::steady_clock::now();
-    auto elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
-                         endTime - startTime)
-                         .count();
+    vcl::Timer tbrain("Brain Best Orientation");
+    Point3d bestNormalBrain =
+        embree::findBestOrientationByHeightfieldExteriorVolume(
+            m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
+    tbrain.stop();
 
-    if (bestNormal.norm() == 0.0) {
-        return 1;
-    }
-
-    std::cout << "Brain Best plane normal: " << bestNormal << "\n";
-    std::cout << "Brain execution time: " << elapsedMs << " ms\n";
-
-    Matrix33d rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormal, Z);
+    Matrix33d rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormalBrain, Z);
 
     vcl::rotate(m, rMatrix);
 
@@ -70,28 +61,25 @@ int main()
     scale(m, 100.0);
     updatePerVertexAndFaceNormals(m);
 
-    startTime  = std::chrono::steady_clock::now();
-    bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
-        m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
-    endTime   = std::chrono::steady_clock::now();
-    elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    endTime - startTime)
-                    .count();
+    vcl::Timer tbunny("Bunny Best Orientation");
+    Point3d bestNormalBunny =
+        embree::findBestOrientationByHeightfieldExteriorVolume(
+            m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
+    tbunny.stop();
 
-    if (bestNormal.norm() == 0.0) {
-        return 1;
-    }
-
-    std::cout << "Bunny Best plane normal: " << bestNormal << "\n";
-    std::cout << "Bunny execution time: " << elapsedMs << " ms\n";
-
-    updatePerVertexAndFaceNormals(m);
-
-    rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormal, Z);
+    rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormalBunny, Z);
 
     vcl::rotate(m, rMatrix);
 
     vcl::saveMesh(m, resultsPath + "/011_bunny_aligned.ply");
+
+    // print results
+
+    std::cout << "Brain Best plane normal: " << bestNormalBrain << "\n";
+    std::cout << "Brain execution time: " << tbrain.delay() << " s\n";
+
+    std::cout << "Bunny Best plane normal: " << bestNormalBunny << "\n";
+    std::cout << "Bunny execution time: " << tbunny.delay() << " s\n";
 
     return 0;
 }
