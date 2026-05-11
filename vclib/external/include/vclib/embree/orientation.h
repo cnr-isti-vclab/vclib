@@ -40,13 +40,6 @@ struct GridChoice
     double sideV = 0.0;
 };
 
-struct HitEvent
-{
-    Point3d point;
-    double  t      = 0.0;
-    Point3d normal = Point3d(0, 0, 0);
-};
-
 struct PlaneEvalStats
 {
     double minU  = 0.0;
@@ -146,40 +139,6 @@ double accumulateSegment(
     return segVolume;
 }
 
-template<FaceMeshConcept MeshType>
-std::vector<HitEvent> collectHits(
-    const Scene&    scene,
-    const Point3d&  rayOrigin,
-    const Point3d&  rayDir,
-    const MeshType& m,
-    double          epsilon)
-{
-    std::vector<HitEvent>         hitEvents;
-    std::vector<Scene::HitResult> hits = scene.facesIntersectedByRay(
-        rayOrigin, rayDir, static_cast<float>(epsilon));
-    hitEvents.reserve(hits.size());
-
-    for (const auto& h : hits) {
-        auto [hitFaceId, barCoords, hitTriId, tHit] = h;
-
-        if (hitFaceId == UINT_NULL) {
-            continue;
-        }
-
-        const auto& face = m.face(hitFaceId);
-
-        const Point3d hitPoint  = rayOrigin + rayDir * tHit;
-        Point3d       triNormal = face.normal();
-        if (triNormal.norm() >= epsilon) {
-            triNormal.normalize();
-        }
-
-        hitEvents.push_back({hitPoint, tHit, triNormal});
-    }
-
-    return hitEvents;
-}
-
 auto computeCellGeometry(
     uint           i,
     uint           j,
@@ -230,38 +189,53 @@ double processCell(
 
     double volumeAcc = 0.0;
 
-    std::vector<HitEvent> hitEvents =
-        collectHits(scene, cellCenter, n, m, epsilon);
+    std::vector<Scene::HitResult> hits = scene.facesIntersectedByRay(
+        cellCenter, n, static_cast<float>(epsilon));
 
     const double cellArea = cellUV.x() * cellUV.y();
 
-    const HitEvent startEvent{cellCenter + n * -epsilon, -epsilon, n};
+    Point3d prevPoint  = cellCenter + n * -epsilon;
+    double  prevT      = -epsilon;
+    Point3d prevNormal = n;
+    bool    first      = true;
 
     int hitsMesh = 0;
-    for (int h = -1; h + 1 < (int) hitEvents.size(); h++) {
-        const HitEvent& startEvt = (h < 0) ? startEvent : hitEvents[h];
-        const HitEvent& endEvt   = hitEvents[h + 1];
 
-        const double startD = startEvt.t;
-        const double endD   = endEvt.t;
+    for (const auto& hit : hits) {
+        auto [hitFaceId, barCoords, hitTriId, tHit] = hit;
 
-        if (h >= 0 && endD <= startD) {
+        if (hitFaceId == UINT_NULL) {
             continue;
         }
 
-        const double startDot = startEvt.normal.dot(n);
-        const double endDot   = endEvt.normal.dot(n);
+        const auto& face = m.face(hitFaceId);
+
+        const Point3d endPoint  = cellCenter + n * tHit;
+        Point3d       endNormal = face.normal();
+        if (endNormal.norm() >= epsilon) {
+            endNormal.normalize();
+        }
+
+        if (!first && tHit <= prevT) {
+            prevPoint  = endPoint;
+            prevT      = tHit;
+            prevNormal = endNormal;
+            continue;
+        }
+
+        const double startDot = prevNormal.dot(n);
+        const double endDot   = endNormal.dot(n);
 
         if (endDot < 0.0) {
             if (startDot > 0.0 && hitsMesh == 0) {
                 double volSeg =
-                    accumulateSegment(cellArea, startD, endD, epsilon, h < 0);
+                    accumulateSegment(cellArea, prevT, tHit, epsilon, first);
 
                 if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
-                    addSegment(*outRayhitMesh, startEvt.point, endEvt.point);
+                    addSegment(*outRayhitMesh, prevPoint, endPoint);
                 }
                 if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
-                    addQuadPrism(*outPrismsMesh, cellCorners, startD, endD, n);
+                    addQuadPrism(*outPrismsMesh, cellCorners, prevT, tHit, n);
                 }
 
                 volumeAcc += volSeg;
@@ -271,6 +245,11 @@ double processCell(
         else {
             hitsMesh -= 1;
         }
+
+        prevPoint  = endPoint;
+        prevT      = tHit;
+        prevNormal = endNormal;
+        first      = false;
     }
 
     return volumeAcc;
