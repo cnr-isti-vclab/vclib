@@ -189,8 +189,8 @@ double processCell(
 
     double volumeAcc = 0.0;
 
-    std::vector<Scene::HitResult> hits = scene.facesIntersectedByRay(
-        cellCenter, n, static_cast<float>(epsilon));
+    std::vector<Scene::HitResult> hits =
+        scene.facesIntersectedByRay(cellCenter, n, static_cast<float>(epsilon));
 
     const double cellArea = cellUV.x() * cellUV.y();
 
@@ -255,27 +255,29 @@ double processCell(
     return volumeAcc;
 }
 
+} // namespace detail
+
 template<FaceMeshConcept MeshType>
-double evaluatePlane(
-    const Point3d&             rawPlaneNormal,
+double heightfieldExteriorVolume(
+    const MeshType&            m,
+    const Scene&               scene,
+    const std::vector<double>& gridCellSideLengths,
+    const Point3d&             direction,
+    double                     epsilon,
     bool                       collectDebug,
     EdgeMesh*                  outRayhitMesh,
     TriMesh*                   outPrismsMesh,
-    EdgeMesh*                  outProjectedPointsMesh,
+    PointCloud*                outProjectedPointsMesh,
     EdgeMesh*                  outBbox2dMesh,
     EdgeMesh*                  outGrid2dMesh,
-    PlaneEvalStats*            outStats,
-    const MeshType&            m,
-    const std::vector<double>& gridCellSideLengths,
-    const Scene&               scene,
-    double                     epsilon,
+    detail::PlaneEvalStats*    outStats,
     bool                       debug)
 {
     using namespace vcl;
 
     const bool collectDebugEnabled = debug && collectDebug;
 
-    Point3d n = rawPlaneNormal;
+    Point3d n = direction;
     if (n.norm() <= epsilon) {
         return std::numeric_limits<double>::infinity();
     }
@@ -330,7 +332,8 @@ double evaluatePlane(
         return std::numeric_limits<double>::infinity();
     }
 
-    const GridChoice grid = chooseGrid(bbPlane, gridCellSideLengths);
+    const detail::GridChoice grid =
+        detail::chooseGrid(bbPlane, gridCellSideLengths);
     if (outStats) {
         outStats->minU  = bbPlane.min().x();
         outStats->minV  = minV;
@@ -430,8 +433,6 @@ double evaluatePlane(
     return totalVolume;
 }
 
-} // namespace detail
-
 /**
  * @brief Finds the optimal print orientation by minimizing the exterior
  * heightfield volume.
@@ -497,8 +498,12 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
         detail::PlaneEvalStats stats;
-        double                 vol = detail::evaluatePlane(
+        double                 vol = heightfieldExteriorVolume(
+            m,
+            scene,
+            gridCellSideLengths,
             fibNormals[i],
+            epsilon,
             false,
             nullptr,
             nullptr,
@@ -506,10 +511,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             nullptr,
             nullptr,
             &stats,
-            m,
-            gridCellSideLengths,
-            scene,
-            epsilon,
             debug);
 
         if (debug) {
@@ -535,12 +536,16 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     EdgeMesh bestRayhitMesh;
     TriMesh  bestPrismsMesh;
-    EdgeMesh bestProjectedPointsMesh;
+    PointCloud bestProjectedPointsMesh;
     EdgeMesh bestBbox2dMesh;
     EdgeMesh bestGrid2dMesh;
 
-    bestVolume = detail::evaluatePlane(
+    bestVolume = heightfieldExteriorVolume(
+        m,
+        scene,
+        gridCellSideLengths,
         bestNormal,
+        epsilon,
         true,
         &bestRayhitMesh,
         &bestPrismsMesh,
@@ -548,10 +553,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         &bestBbox2dMesh,
         &bestGrid2dMesh,
         nullptr,
-        m,
-        gridCellSideLengths,
-        scene,
-        epsilon,
         debug);
 
     if (debug) {
