@@ -179,7 +179,7 @@ double processCell(
     const Point3d&    n,
     const MeshType&   m,
     double            epsilon,
-    bool              collectDebugEnabled,
+    bool              collectDebug,
     EdgeMesh*         outRayhitMesh,
     TriMesh*          outPrismsMesh)
 {
@@ -231,10 +231,10 @@ double processCell(
                 double volSeg =
                     accumulateSegment(cellArea, prevT, tHit, epsilon, first);
 
-                if (collectDebugEnabled && outRayhitMesh && volSeg > 0) {
+                if (collectDebug && outRayhitMesh && volSeg > 0) {
                     addSegment(*outRayhitMesh, prevPoint, endPoint);
                 }
-                if (collectDebugEnabled && outPrismsMesh && volSeg > 0) {
+                if (collectDebug && outPrismsMesh && volSeg > 0) {
                     addQuadPrism(*outPrismsMesh, cellCorners, prevT, tHit, n);
                 }
 
@@ -270,12 +270,9 @@ double heightfieldExteriorVolume(
     PointCloud*                outProjectedPointsMesh,
     EdgeMesh*                  outBbox2dMesh,
     EdgeMesh*                  outGrid2dMesh,
-    detail::PlaneEvalStats*    outStats,
-    bool                       debug)
+    detail::PlaneEvalStats*    outStats)
 {
     using namespace vcl;
-
-    const bool collectDebugEnabled = debug && collectDebug;
 
     Point3d n = direction;
     if (n.norm() <= epsilon) {
@@ -305,14 +302,14 @@ double heightfieldExteriorVolume(
     Box2d  bbPlane;
 
     std::vector<Point3d> projectedPoints;
-    if (collectDebugEnabled && outProjectedPointsMesh) {
+    if (collectDebug && outProjectedPointsMesh) {
         projectedPoints.reserve(
             std::distance(m.vertices().begin(), m.vertices().end()));
     }
 
     for (const auto& vert : m.vertices()) {
         const Point3d projected = plane.projectPoint(vert.position());
-        if (collectDebugEnabled && outProjectedPointsMesh) {
+        if (collectDebug && outProjectedPointsMesh) {
             projectedPoints.push_back(projected);
         }
         const Point3d rel = projected - planePoint;
@@ -347,14 +344,14 @@ double heightfieldExteriorVolume(
     const double gridMaxU = minU + grid.sideU * grid.cols;
     const double gridMaxV = minV + grid.sideV * grid.rows;
 
-    if (collectDebugEnabled && outProjectedPointsMesh) {
+    if (collectDebug && outProjectedPointsMesh) {
         outProjectedPointsMesh->reserveVertices(projectedPoints.size());
         for (const Point3d& p : projectedPoints) {
             outProjectedPointsMesh->addVertex(p);
         }
     }
 
-    if (collectDebugEnabled && outBbox2dMesh) {
+    if (collectDebug && outBbox2dMesh) {
         const std::array<Point3d, 4> bboxCorners = {
             planePoint + u * minU + v * minV,
             planePoint + u * gridMaxU + v * minV,
@@ -371,7 +368,7 @@ double heightfieldExteriorVolume(
         outBbox2dMesh->addEdge(cornerIds[3], cornerIds[0]);
     }
 
-    if (collectDebugEnabled && outGrid2dMesh) {
+    if (collectDebug && outGrid2dMesh) {
         for (uint ii = 0; ii <= grid.cols; ++ii) {
             const double cu = minU + grid.sideU * ii;
             const uint   a =
@@ -407,7 +404,7 @@ double heightfieldExteriorVolume(
             n,
             m,
             epsilon,
-            collectDebugEnabled,
+            collectDebug,
             outRayhitMesh,
             outPrismsMesh);
     };
@@ -417,7 +414,7 @@ double heightfieldExteriorVolume(
 
     std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
 
-    if (collectDebugEnabled) {
+    if (collectDebug) {
         std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
             cellVolumes[idx] = processCellClosure(idx);
         });
@@ -510,8 +507,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             nullptr,
             nullptr,
             nullptr,
-            &stats,
-            debug);
+            &stats);
 
         if (debug) {
             std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
@@ -546,14 +542,13 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         gridCellSideLengths,
         bestNormal,
         epsilon,
-        true,
+        debug,
         &bestRayhitMesh,
         &bestPrismsMesh,
         &bestProjectedPointsMesh,
         &bestBbox2dMesh,
         &bestGrid2dMesh,
-        nullptr,
-        debug);
+        nullptr);
 
     if (debug) {
         std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
