@@ -100,6 +100,51 @@ public:
     }
 
     /**
+     * @brief Constructs a grid from a bounding box, per-dimension cell lengths,
+     * and a flag controlling how the bounding box is adapted.
+     *
+     * The bounding box is always adapted so that it covers exactly @f$ n_i @f$
+     * full cells in every dimension, guaranteeing that `cellLengths()` returns
+     * exactly @p cellLens after construction.
+     *
+     * The flag @p extendBBox controls the rounding direction used to derive
+     * @f$ n_i @f$ from the input bounding box:
+     *
+     * - `true` (default) — round **up**: the cell count is
+     *   @f$ n_i = \lceil \mathrm{bbox.dim}(i) \;/\; \mathrm{cellLens}(i) \rceil
+     *   @f$ and the maximum corner is extended outward so that the grid covers
+     *   at least the original bounding box.
+     *
+     * - `false` — round **down**: the cell count is
+     *   @f$ n_i = \lfloor \mathrm{bbox.dim}(i) \;/\; \mathrm{cellLens}(i)
+     *   \rfloor @f$ and the maximum corner is pulled inward so that the grid
+     *   fits strictly inside the original bounding box.
+     *
+     * Each dimension is guaranteed to have at least 1 cell regardless of the
+     * rounding direction.
+     *
+     * @param[in] bbox: Axis-aligned bounding box of the grid.
+     * @param[in] cellLens:Side lengths of a single cell (one per dimension).
+     * @param[in] extendBBox: If `true` (default), round the cell count up and
+     * extend the maximum corner outward. If `false`, round the cell count down
+     * and pull the maximum corner inward.
+     */
+    RegularGrid(
+        const BBoxType&         bbox,
+        const Point<Scalar, N>& cellLens,
+        bool                    extendBBox = true) :
+            mBBox(bbox)
+    {
+        for (uint i = 0; i < N; ++i) {
+            Scalar ratio = mBBox.dim(i) / cellLens(i);
+            mSize(i)     = std::max(
+                extendBBox ? uint(std::ceil(ratio)) : uint(std::floor(ratio)),
+                1u);
+            mBBox.max()(i) = mBBox.min()(i) + mSize(i) * cellLens(i);
+        }
+    }
+
+    /**
      * @brief Returns the minimum corner of the grid's bounding box.
      * @return Minimum corner point.
      */
