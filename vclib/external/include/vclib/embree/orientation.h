@@ -40,17 +40,6 @@ struct GridChoice
     double sideV = 0.0;
 };
 
-struct PlaneEvalStats
-{
-    double minU  = 0.0;
-    double minV  = 0.0;
-    double maxU  = 0.0;
-    double maxV  = 0.0;
-    uint   rows  = 0;
-    uint   cols  = 0;
-    uint   cells = 0;
-};
-
 GridChoice chooseGrid(
     const Box2d&               bbPlane,
     const std::vector<double>& gridCellSideLengths)
@@ -269,8 +258,7 @@ double heightfieldExteriorVolume(
     TriMesh*                   outPrismsMesh,
     PointCloud*                outProjectedPointsMesh,
     EdgeMesh*                  outBbox2dMesh,
-    EdgeMesh*                  outGrid2dMesh,
-    detail::PlaneEvalStats*    outStats)
+    EdgeMesh*                  outGrid2dMesh)
 {
     using namespace vcl;
 
@@ -331,15 +319,6 @@ double heightfieldExteriorVolume(
 
     const detail::GridChoice grid =
         detail::chooseGrid(bbPlane, gridCellSideLengths);
-    if (outStats) {
-        outStats->minU  = bbPlane.min().x();
-        outStats->minV  = minV;
-        outStats->maxU  = maxU;
-        outStats->maxV  = maxV;
-        outStats->rows  = grid.rows;
-        outStats->cols  = grid.cols;
-        outStats->cells = grid.rows * grid.cols;
-    }
 
     const double gridMaxU = minU + grid.sideU * grid.cols;
     const double gridMaxV = minV + grid.sideV * grid.rows;
@@ -494,8 +473,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     Point3d bestNormal  = fibNormals.front();
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
-        detail::PlaneEvalStats stats;
-        double                 vol = heightfieldExteriorVolume(
+        double vol = heightfieldExteriorVolume(
             m,
             scene,
             gridCellSideLengths,
@@ -506,35 +484,26 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             nullptr,
             nullptr,
             nullptr,
-            nullptr,
-            &stats);
+            nullptr);
 
-        if (debug) {
-            std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
-                      << ", normal: " << fibNormals[i] << ", volume: " << vol
-                      << ", bbox2d(u,v): [(" << stats.minU << ", " << stats.minV
-                      << ") -> (" << stats.maxU << ", " << stats.maxV << ")]"
-                      << ", cells: " << stats.cells << " (" << stats.cols << "x"
-                      << stats.rows << ")";
-        }
         if (vol < bestVolume) {
             bestVolume  = vol;
             bestPlaneId = i;
             bestNormal  = fibNormals[i];
             if (debug) {
-                std::cout << " [new best]";
+                std::cout << "New best: ";
+                std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
+                          << ", normal: " << fibNormals[i]
+                          << ", volume: " << vol << "\n";
             }
-        }
-        if (debug) {
-            std::cout << "\n";
         }
     }
 
-    EdgeMesh bestRayhitMesh;
-    TriMesh  bestPrismsMesh;
+    EdgeMesh   bestRayhitMesh;
+    TriMesh    bestPrismsMesh;
     PointCloud bestProjectedPointsMesh;
-    EdgeMesh bestBbox2dMesh;
-    EdgeMesh bestGrid2dMesh;
+    EdgeMesh   bestBbox2dMesh;
+    EdgeMesh   bestGrid2dMesh;
 
     bestVolume = heightfieldExteriorVolume(
         m,
@@ -547,24 +516,12 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
         &bestPrismsMesh,
         &bestProjectedPointsMesh,
         &bestBbox2dMesh,
-        &bestGrid2dMesh,
-        nullptr);
+        &bestGrid2dMesh);
 
     if (debug) {
         std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
                   << "Best plane id: " << bestPlaneId << "\n"
                   << "Best plane normal: " << bestNormal << "\n"
-                  << "Grid cell side lengths (u, v): "
-                  << ((gridCellSideLengths.size() >= 1) ?
-                          gridCellSideLengths[0] :
-                          0.0)
-                  << ", "
-                  << ((gridCellSideLengths.size() >= 2) ?
-                          gridCellSideLengths[1] :
-                          ((gridCellSideLengths.size() >= 1) ?
-                               gridCellSideLengths[0] :
-                               0.0))
-                  << "\n"
                   << "Minimum volume: " << bestVolume << "\n";
     }
 
