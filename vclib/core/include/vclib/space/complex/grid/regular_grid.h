@@ -132,8 +132,7 @@ public:
     RegularGrid(
         const BBoxType&         bbox,
         const Point<Scalar, N>& cellLens,
-        bool                    extendBBox = true) :
-            mBBox(bbox)
+        bool                    extendBBox = true) : mBBox(bbox)
     {
         for (uint i = 0; i < N; ++i) {
             Scalar ratio = mBBox.dim(i) / cellLens(i);
