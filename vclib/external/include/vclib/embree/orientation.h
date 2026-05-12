@@ -30,7 +30,19 @@
 
 namespace vcl::embree {
 
+struct VolumeResultMeshes
+{
+    bool       computeMeshes = true;
+    EdgeMesh   rayhitMesh;
+    TriMesh    prismsMesh;
+    PointCloud projectedPointsMesh;
+    EdgeMesh   bbox2dMesh;
+    EdgeMesh   grid2dMesh;
+};
+
 namespace detail {
+
+inline static VolumeResultMeshes NO_VOLUME_MESHES = {false};
 
 struct GridChoice
 {
@@ -157,20 +169,18 @@ auto computeCellGeometry(
 
 template<FaceMeshConcept MeshType>
 double processCell(
-    uint              i,
-    uint              j,
-    const GridChoice& grid,
-    const Box2d&      bbPlane,
-    const Point3d&    u,
-    const Point3d&    v,
-    const Point3d&    planePoint,
-    const Scene&      scene,
-    const Point3d&    n,
-    const MeshType&   m,
-    double            epsilon,
-    bool              collectDebug,
-    EdgeMesh*         outRayhitMesh,
-    TriMesh*          outPrismsMesh)
+    uint                i,
+    uint                j,
+    const GridChoice&   grid,
+    const Box2d&        bbPlane,
+    const Point3d&      u,
+    const Point3d&      v,
+    const Point3d&      planePoint,
+    const Scene&        scene,
+    const Point3d&      n,
+    const MeshType&     m,
+    double              epsilon,
+    VolumeResultMeshes& outMeshes = detail::NO_VOLUME_MESHES)
 {
     Point2d cellUV(grid.sideU, grid.sideV);
     auto [cellCenter, cellCorners] =
@@ -220,11 +230,9 @@ double processCell(
                 double volSeg =
                     accumulateSegment(cellArea, prevT, tHit, epsilon, first);
 
-                if (collectDebug && outRayhitMesh && volSeg > 0) {
-                    addSegment(*outRayhitMesh, prevPoint, endPoint);
-                }
-                if (collectDebug && outPrismsMesh && volSeg > 0) {
-                    addQuadPrism(*outPrismsMesh, cellCorners, prevT, tHit, n);
+                if (outMeshes.computeMeshes && volSeg > 0) {
+                    addSegment(outMeshes.rayhitMesh, prevPoint, endPoint);
+                    addQuadPrism(outMeshes.prismsMesh, cellCorners, prevT, tHit, n);
                 }
 
                 volumeAcc += volSeg;
@@ -253,12 +261,7 @@ double heightfieldExteriorVolume(
     const std::vector<double>& gridCellSideLengths,
     const Point3d&             direction,
     double                     epsilon,
-    bool                       collectDebug,
-    EdgeMesh*                  outRayhitMesh,
-    TriMesh*                   outPrismsMesh,
-    PointCloud*                outProjectedPointsMesh,
-    EdgeMesh*                  outBbox2dMesh,
-    EdgeMesh*                  outGrid2dMesh)
+    VolumeResultMeshes&        outMeshes = detail::NO_VOLUME_MESHES)
 {
     using namespace vcl;
 
@@ -290,14 +293,14 @@ double heightfieldExteriorVolume(
     Box2d  bbPlane;
 
     std::vector<Point3d> projectedPoints;
-    if (collectDebug && outProjectedPointsMesh) {
+    if (outMeshes.computeMeshes) {
         projectedPoints.reserve(
             std::distance(m.vertices().begin(), m.vertices().end()));
     }
 
     for (const auto& vert : m.vertices()) {
         const Point3d projected = plane.projectPoint(vert.position());
-        if (collectDebug && outProjectedPointsMesh) {
+        if (outMeshes.computeMeshes) {
             projectedPoints.push_back(projected);
         }
         const Point3d rel = projected - planePoint;
@@ -323,46 +326,42 @@ double heightfieldExteriorVolume(
     const double gridMaxU = minU + grid.sideU * grid.cols;
     const double gridMaxV = minV + grid.sideV * grid.rows;
 
-    if (collectDebug && outProjectedPointsMesh) {
-        outProjectedPointsMesh->reserveVertices(projectedPoints.size());
-        for (const Point3d& p : projectedPoints) {
-            outProjectedPointsMesh->addVertex(p);
-        }
-    }
+    if (outMeshes.computeMeshes) {
+        // projected points
+        outMeshes.projectedPointsMesh.addVertices(projectedPoints);
 
-    if (collectDebug && outBbox2dMesh) {
+        // out bbox
         const std::array<Point3d, 4> bboxCorners = {
             planePoint + u * minU + v * minV,
             planePoint + u * gridMaxU + v * minV,
             planePoint + u * gridMaxU + v * gridMaxV,
             planePoint + u * minU + v * gridMaxV};
 
-        std::array<uint, 4> cornerIds;
+        uint startCornerId = outMeshes.bbox2dMesh.vertexCount();
         for (uint k = 0; k < bboxCorners.size(); ++k) {
-            cornerIds[k] = outBbox2dMesh->addVertex(bboxCorners[k]);
+            outMeshes.bbox2dMesh.addVertex(bboxCorners[k]);
         }
-        outBbox2dMesh->addEdge(cornerIds[0], cornerIds[1]);
-        outBbox2dMesh->addEdge(cornerIds[1], cornerIds[2]);
-        outBbox2dMesh->addEdge(cornerIds[2], cornerIds[3]);
-        outBbox2dMesh->addEdge(cornerIds[3], cornerIds[0]);
-    }
+        outMeshes.bbox2dMesh.addEdge(startCornerId + 0, startCornerId + 1);
+        outMeshes.bbox2dMesh.addEdge(startCornerId + 1, startCornerId + 2);
+        outMeshes.bbox2dMesh.addEdge(startCornerId + 2, startCornerId + 3);
+        outMeshes.bbox2dMesh.addEdge(startCornerId + 3, startCornerId + 0);
 
-    if (collectDebug && outGrid2dMesh) {
+        // out grid
         for (uint ii = 0; ii <= grid.cols; ++ii) {
             const double cu = minU + grid.sideU * ii;
             const uint   a =
-                outGrid2dMesh->addVertex(planePoint + u * cu + v * minV);
-            const uint b =
-                outGrid2dMesh->addVertex(planePoint + u * cu + v * gridMaxV);
-            outGrid2dMesh->addEdge(a, b);
+                outMeshes.grid2dMesh.addVertex(planePoint + u * cu + v * minV);
+            const uint b = outMeshes.grid2dMesh.addVertex(
+                planePoint + u * cu + v * gridMaxV);
+            outMeshes.grid2dMesh.addEdge(a, b);
         }
         for (uint jj = 0; jj <= grid.rows; ++jj) {
             const double cv = minV + grid.sideV * jj;
             const uint   a =
-                outGrid2dMesh->addVertex(planePoint + u * minU + v * cv);
-            const uint b =
-                outGrid2dMesh->addVertex(planePoint + u * gridMaxU + v * cv);
-            outGrid2dMesh->addEdge(a, b);
+                outMeshes.grid2dMesh.addVertex(planePoint + u * minU + v * cv);
+            const uint b = outMeshes.grid2dMesh.addVertex(
+                planePoint + u * gridMaxU + v * cv);
+            outMeshes.grid2dMesh.addEdge(a, b);
         }
     }
 
@@ -383,9 +382,7 @@ double heightfieldExteriorVolume(
             n,
             m,
             epsilon,
-            collectDebug,
-            outRayhitMesh,
-            outPrismsMesh);
+            outMeshes);
     };
 
     std::vector<uint> allCells(grid.rows * grid.cols);
@@ -393,7 +390,7 @@ double heightfieldExteriorVolume(
 
     std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
 
-    if (collectDebug) {
+    if (outMeshes.computeMeshes) {
         std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
             cellVolumes[idx] = processCellClosure(idx);
         });
@@ -463,9 +460,10 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
     std::vector<Point3d> fibNormals =
         sphericalFibonacciPointSet<Point3d>(nDirections);
+
     if (fibNormals.empty()) {
-        std::cerr << "No Fibonacci planes generated.\n";
-        return Point3d(0, 0, 0);
+        throw std::runtime_error(
+            "Failed to generate Fibonacci normals for orientation search.");
     }
 
     uint    bestPlaneId = 0;
@@ -479,12 +477,7 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             gridCellSideLengths,
             fibNormals[i],
             epsilon,
-            false,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr,
-            nullptr);
+            detail::NO_VOLUME_MESHES);
 
         if (vol < bestVolume) {
             bestVolume  = vol;
@@ -498,25 +491,6 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             }
         }
     }
-
-    EdgeMesh   bestRayhitMesh;
-    TriMesh    bestPrismsMesh;
-    PointCloud bestProjectedPointsMesh;
-    EdgeMesh   bestBbox2dMesh;
-    EdgeMesh   bestGrid2dMesh;
-
-    bestVolume = heightfieldExteriorVolume(
-        m,
-        scene,
-        gridCellSideLengths,
-        bestNormal,
-        epsilon,
-        debug,
-        &bestRayhitMesh,
-        &bestPrismsMesh,
-        &bestProjectedPointsMesh,
-        &bestBbox2dMesh,
-        &bestGrid2dMesh);
 
     if (debug) {
         std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
