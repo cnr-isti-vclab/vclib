@@ -191,6 +191,22 @@ public:
     Point<uint, N> cellCount() const { return mSize; }
 
     /**
+     * @brief Returns the total number of cells in the grid.
+     *
+     * This is the product of the cell counts along all dimensions:
+     * @f$ \prod_{i=0}^{N-1} \mathrm{cellCount}(i) @f$
+     *
+     * @return Total number of cells.
+     */
+    uint totalCellCount() const
+    {
+        uint total = 1;
+        for (uint i = 0; i < N; ++i)
+            total *= mSize(i);
+        return total;
+    }
+
+    /**
      * @brief Returns a unique flat index associated to the given N-D cell
      * coordinates.
      *
@@ -259,6 +275,23 @@ public:
      * @return Euclidean norm of the cell's side-length vector.
      */
     Scalar cellDiagonal() const { return cellLengths().norm(); }
+
+    /**
+     * @brief Returns the hyper-volume of a single cell.
+     *
+     * In 2-D this equals the cell area; in 3-D the cell volume; in general it
+     * is the product of the cell lengths along all dimensions:
+     * @f$ \prod_{i=0}^{N-1} \mathrm{cellLength}(i) @f$
+     *
+     * @return Product of cell lengths along all dimensions.
+     */
+    Scalar cellVolume() const
+    {
+        Scalar vol = 1;
+        for (uint i = 0; i < N; ++i)
+            vol *= cellLength(i);
+        return vol;
+    }
 
     /**
      * @brief Returns the index of the cell that contains the coordinate @p s
