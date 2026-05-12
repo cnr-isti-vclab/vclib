@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EMBREE_ORIENTATION_H
-#define VCL_EMBREE_ORIENTATION_H
+#ifndef VCL_EMBREE_HEIGHTFIELD_EXTERIOR_VOLUME_H
+#define VCL_EMBREE_HEIGHTFIELD_EXTERIOR_VOLUME_H
 
 #include "scene.h"
 
@@ -498,4 +498,4 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
 
 } // namespace vcl::embree
 
-#endif // VCL_EMBREE_ORIENTATION_H
+#endif // VCL_EMBREE_HEIGHTFIELD_EXTERIOR_VOLUME_H

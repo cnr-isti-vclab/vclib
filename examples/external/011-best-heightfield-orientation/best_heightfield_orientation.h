@@ -23,7 +23,7 @@
 #ifndef BEST_ORIENTATION_HEIGHTFIELD_H
 #define BEST_ORIENTATION_HEIGHTFIELD_H
 
-#include <vclib/embree/orientation.h>
+#include <vclib/embree/heightfield_exterior_volume.h>
 #include <vclib/io.h>
 
 auto bestHeightfieldOrientation(

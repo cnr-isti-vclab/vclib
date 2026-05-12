@@ -24,7 +24,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-#include <vclib/embree/orientation.h>
+#include <vclib/embree/heightfield_exterior_volume.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -50,7 +50,7 @@ TEMPLATE_TEST_CASE(
     {
         TestMesh m = loadMesh<TestMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-        scale(m, 10.0);
+        scale(m, 100.0);
         updatePerVertexAndFaceNormals(m);
 
         Point3d bestNormal =
