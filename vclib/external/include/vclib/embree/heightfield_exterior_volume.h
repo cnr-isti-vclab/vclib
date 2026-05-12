@@ -71,19 +71,6 @@ double accumulateSegment(
     return segVolume;
 }
 
-Point3d computeCellCenter(
-    uint                        i,
-    uint                        j,
-    const RegularGrid2<double>& grid,
-    const Point3d&              u,
-    const Point3d&              v,
-    const Point3d&              planePoint)
-{
-    const double centerU = grid.min()(0) + (i + 0.5) * grid.cellLength(0);
-    const double centerV = grid.min()(1) + (j + 0.5) * grid.cellLength(1);
-    return planePoint + u * centerU + v * centerV;
-}
-
 template<FaceMeshConcept MeshType>
 double processCell(
     uint                        i,
@@ -98,7 +85,10 @@ double processCell(
     double                      epsilon,
     VolumeResultMeshes&         outMeshes = detail::NO_VOLUME_MESHES)
 {
-    const Point3d cellCenter = computeCellCenter(i, j, grid, u, v, planePoint);
+    RegularGrid2<double>::CellPos cellPos(i, j);
+
+    const auto    c2d        = grid.cellCenter(cellPos);
+    const Point3d cellCenter = planePoint + u * c2d(0) + v * c2d(1);
 
     double volumeAcc = 0.0;
 
