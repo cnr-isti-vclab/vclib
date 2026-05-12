@@ -29,11 +29,12 @@ int main()
 
     Point2d        gridCellSideLengths = {0.184, 0.234};
     constexpr uint NUM_PLANES          = 2000;
-    constexpr bool debug               = true;
 
     const std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
 
     const Point3d Z = Point3d(0, 0, 1);
+
+    vcl::ConsoleLogger logger;
 
     // brain
 
@@ -45,7 +46,7 @@ int main()
     vcl::Timer tbrain("Brain Best Orientation");
     Point3d bestNormalBrain =
         embree::findBestOrientationByHeightfieldExteriorVolume(
-            m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
+            m, gridCellSideLengths, NUM_PLANES, 1e-6, logger);
     tbrain.stop();
 
     Matrix33d rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormalBrain, Z);
@@ -64,7 +65,7 @@ int main()
     vcl::Timer tbunny("Bunny Best Orientation");
     Point3d bestNormalBunny =
         embree::findBestOrientationByHeightfieldExteriorVolume(
-            m, gridCellSideLengths, NUM_PLANES, 1e-6, debug);
+            m, gridCellSideLengths, NUM_PLANES, 1e-6, logger);
     tbunny.stop();
 
     rMatrix = vcl::rotationMatrix<Matrix33d>(bestNormalBunny, Z);

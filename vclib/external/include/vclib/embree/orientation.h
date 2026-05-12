@@ -431,15 +431,18 @@ double heightfieldExteriorVolume(
  * @return The optimal orientation (e.g., direction vector) that minimizes the
  * required support volume.
  */
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
     const MeshType& m,
     const Point2d&  gridCellSideLengths,
     vcl::uint       nDirections,
     double          epsilon = 1e-6,
-    bool            debug   = false)
+    LogType&        log     = nullLogger)
 {
     using namespace vcl;
+
+    log.startNewTask(
+        0, 100, "Finding best orientation by heightfield exterior volume...");
 
     requirePerFaceNormal(m);
 
@@ -475,21 +478,20 @@ vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
             bestVolume  = vol;
             bestPlaneId = i;
             bestNormal  = fibNormals[i];
-            if (debug) {
-                std::cout << "New best: ";
-                std::cout << "Plane id: " << i << "/" << (fibNormals.size() - 1)
-                          << ", normal: " << fibNormals[i]
-                          << ", volume: " << vol << "\n";
-            }
+
+            log.setPercentage(i / static_cast<double>(fibNormals.size()) * 100);
+            log << "New best: Plane id: " << i << "/" << fibNormals.size() - 1
+                << ", normal: " << fibNormals[i]
+                << ", volume: " << std::to_string(vol) << "\n";
         }
     }
 
-    if (debug) {
-        std::cout << "Fibonacci planes tested: " << fibNormals.size() << "\n"
-                  << "Best plane id: " << bestPlaneId << "\n"
-                  << "Best plane normal: " << bestNormal << "\n"
-                  << "Minimum volume: " << bestVolume << "\n";
-    }
+    log.setPercentage(100);
+    log << "Fibonacci planes tested: " << fibNormals.size() << "\n"
+        << "Best plane id: " << bestPlaneId << "\n"
+        << "Best plane normal: " << bestNormal << "\n"
+        << "Minimum volume: " << bestVolume << "\n";
+    log.endTask("Best orientation found.");
 
     return bestNormal;
 }
