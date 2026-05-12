@@ -27,43 +27,30 @@
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/meshes.h>
+#include <vclib/space/complex.h>
 
 namespace vcl::embree {
 
 struct VolumeResultMeshes
 {
-    bool       computeMeshes = true;
-    PolyMesh   exteriorVolumeMesh;
-    EdgeMesh   grid2dMesh;
+    bool     computeMeshes = true;
+    PolyMesh exteriorVolumeMesh;
+    EdgeMesh grid2dMesh;
 };
 
 namespace detail {
 
 inline static VolumeResultMeshes NO_VOLUME_MESHES = {false};
 
-struct GridChoice
+RegularGrid2<double> makeGrid(
+    const Box2d&   bbPlane,
+    const Point2d& gridCellSideLengths)
 {
-    uint   rows  = 1;
-    uint   cols  = 1;
-    double sideU = 0.0;
-    double sideV = 0.0;
-};
-
-GridChoice chooseGrid(const Box2d& bbPlane, const Point2d& gridCellSideLengths)
-{
-    const double sideU = gridCellSideLengths.x();
-    const double sideV = gridCellSideLengths.y();
-
-    if (sideU <= 0.0 || sideV <= 0.0) {
-        return {1, 1, bbPlane.dim(0), bbPlane.dim(1)};
+    if (gridCellSideLengths.x() <= 0.0 || gridCellSideLengths.y() <= 0.0) {
+        Point<uint, 2> oneCell(1u, 1u);
+        return RegularGrid2<double>(bbPlane, oneCell);
     }
-
-    const uint cols =
-        static_cast<uint>(std::max(1.0, std::ceil(bbPlane.dim(0) / sideU)));
-    const uint rows =
-        static_cast<uint>(std::max(1.0, std::ceil(bbPlane.dim(1) / sideV)));
-
-    return {rows, cols, sideU, sideV};
+    return RegularGrid2<double>(bbPlane, gridCellSideLengths);
 }
 
 double accumulateSegment(
@@ -85,44 +72,40 @@ double accumulateSegment(
 }
 
 Point3d computeCellCenter(
-    uint           i,
-    uint           j,
-    const Point2d& cellUV,
-    const Box2d&   bbPlane,
-    const Point3d& u,
-    const Point3d& v,
-    const Point3d& planePoint)
+    uint                        i,
+    uint                        j,
+    const RegularGrid2<double>& grid,
+    const Point3d&              u,
+    const Point3d&              v,
+    const Point3d&              planePoint)
 {
-    const double centerU = bbPlane.min().x() + (i + 0.5) * cellUV.x();
-    const double centerV = bbPlane.min().y() + (j + 0.5) * cellUV.y();
+    const double centerU = grid.min()(0) + (i + 0.5) * grid.cellLength(0);
+    const double centerV = grid.min()(1) + (j + 0.5) * grid.cellLength(1);
     return planePoint + u * centerU + v * centerV;
 }
 
 template<FaceMeshConcept MeshType>
 double processCell(
-    uint                i,
-    uint                j,
-    const GridChoice&   grid,
-    const Box2d&        bbPlane,
-    const Point3d&      u,
-    const Point3d&      v,
-    const Point3d&      planePoint,
-    const Scene&        scene,
-    const Point3d&      n,
-    const MeshType&     m,
-    double              epsilon,
-    VolumeResultMeshes& outMeshes = detail::NO_VOLUME_MESHES)
+    uint                        i,
+    uint                        j,
+    const RegularGrid2<double>& grid,
+    const Point3d&              u,
+    const Point3d&              v,
+    const Point3d&              planePoint,
+    const Scene&                scene,
+    const Point3d&              n,
+    const MeshType&             m,
+    double                      epsilon,
+    VolumeResultMeshes&         outMeshes = detail::NO_VOLUME_MESHES)
 {
-    Point2d       cellUV(grid.sideU, grid.sideV);
-    const Point3d cellCenter =
-        computeCellCenter(i, j, cellUV, bbPlane, u, v, planePoint);
+    const Point3d cellCenter = computeCellCenter(i, j, grid, u, v, planePoint);
 
     double volumeAcc = 0.0;
 
     std::vector<Scene::HitResult> hits =
         scene.facesIntersectedByRay(cellCenter, n, static_cast<float>(epsilon));
 
-    const double cellArea = cellUV.x() * cellUV.y();
+    const double cellArea = grid.cellVolume();
 
     Point3d prevPoint  = cellCenter + n * -epsilon;
     double  prevT      = -epsilon;
@@ -164,11 +147,11 @@ double processCell(
                 if (outMeshes.computeMeshes && volSeg > 0) {
                     using VMesh = decltype(outMeshes.exteriorVolumeMesh);
 
-                    const double u0 = bbPlane.min().x() + i * cellUV.x();
-                    const double u1 = u0 + cellUV.x();
-                    const double v0 = bbPlane.min().y() + j * cellUV.y();
-                    const double v1 = v0 + cellUV.y();
-                    VMesh hex = createHexahedron<VMesh>(
+                    const double u0  = grid.min()(0) + i * grid.cellLength(0);
+                    const double u1  = u0 + grid.cellLength(0);
+                    const double v0  = grid.min()(1) + j * grid.cellLength(1);
+                    const double v1  = v0 + grid.cellLength(1);
+                    VMesh        hex = createHexahedron<VMesh>(
                         Point3d(u0, v0, prevT), Point3d(u1, v1, tHit));
                     for (auto& vert : hex.vertices()) {
                         const Point3d p = vert.position();
@@ -229,24 +212,16 @@ double heightfieldExteriorVolume(
     u.normalize();
     v.normalize();
 
-    double minU = std::numeric_limits<double>::infinity();
-    double minV = std::numeric_limits<double>::infinity();
-    double maxU = -std::numeric_limits<double>::infinity();
-    double maxV = -std::numeric_limits<double>::infinity();
-    Box2d  bbPlane;
+    Box2d bbPlane;
 
     for (const auto& vert : m.vertices()) {
         const Point3d projected = plane.projectPoint(vert.position());
-        const Point3d rel = projected - planePoint;
+        const Point3d rel       = projected - planePoint;
 
         const double  pu = rel.dot(u);
         const double  pv = rel.dot(v);
         const Point2d projUV(pu, pv);
 
-        minU = std::min(minU, pu);
-        minV = std::min(minV, pv);
-        maxU = std::max(maxU, pu);
-        maxV = std::max(maxV, pv);
         bbPlane.add(projUV);
     }
 
@@ -254,30 +229,27 @@ double heightfieldExteriorVolume(
         return std::numeric_limits<double>::infinity();
     }
 
-    const detail::GridChoice grid =
-        detail::chooseGrid(bbPlane, gridCellSideLengths);
-
-    const double gridMaxU = minU + grid.sideU * grid.cols;
-    const double gridMaxV = minV + grid.sideV * grid.rows;
+    const RegularGrid2<double> grid =
+        detail::makeGrid(bbPlane, gridCellSideLengths);
 
     if (outMeshes.computeMeshes) {
         // out grid
-        for (uint ii = 0; ii <= grid.cols; ++ii) {
-            const double cu = minU + grid.sideU * ii;
-            const uint   a =
-                outMeshes.grid2dMesh.addVertex(planePoint + u * cu + v * minV);
+        for (uint ii = 0; ii <= grid.cellCount(0); ++ii) {
+            const double cu = grid.min()(0) + grid.cellLength(0) * ii;
+            const uint   a  = outMeshes.grid2dMesh.addVertex(
+                planePoint + u * cu + v * grid.min()(1));
             const uint b = outMeshes.grid2dMesh.addVertex(
-                planePoint + u * cu + v * gridMaxV);
+                planePoint + u * cu + v * grid.max()(1));
             outMeshes.grid2dMesh.addEdge(a, b);
             outMeshes.grid2dMesh.vertex(a).normal() = direction;
             outMeshes.grid2dMesh.vertex(b).normal() = direction;
         }
-        for (uint jj = 0; jj <= grid.rows; ++jj) {
-            const double cv = minV + grid.sideV * jj;
-            const uint   a =
-                outMeshes.grid2dMesh.addVertex(planePoint + u * minU + v * cv);
+        for (uint jj = 0; jj <= grid.cellCount(1); ++jj) {
+            const double cv = grid.min()(1) + grid.cellLength(1) * jj;
+            const uint   a  = outMeshes.grid2dMesh.addVertex(
+                planePoint + u * grid.min()(0) + v * cv);
             const uint b = outMeshes.grid2dMesh.addVertex(
-                planePoint + u * gridMaxU + v * cv);
+                planePoint + u * grid.max()(0) + v * cv);
             outMeshes.grid2dMesh.addEdge(a, b);
             outMeshes.grid2dMesh.vertex(a).normal() = direction;
             outMeshes.grid2dMesh.vertex(b).normal() = direction;
@@ -287,27 +259,16 @@ double heightfieldExteriorVolume(
     double totalVolume = 0.0;
 
     auto processCellClosure = [&](uint idx) {
-        uint j = idx / grid.cols;
-        uint i = idx % grid.cols;
-        return processCell(
-            i,
-            j,
-            grid,
-            bbPlane,
-            u,
-            v,
-            planePoint,
-            scene,
-            n,
-            m,
-            epsilon,
-            outMeshes);
+        uint i = idx % grid.cellCount(0);
+        uint j = idx / grid.cellCount(0);
+        return detail::processCell(
+            i, j, grid, u, v, planePoint, scene, n, m, epsilon, outMeshes);
     };
 
-    std::vector<uint> allCells(grid.rows * grid.cols);
+    std::vector<uint> allCells(grid.totalCellCount());
     std::iota(allCells.begin(), allCells.end(), 0);
 
-    std::vector<double> cellVolumes(grid.rows * grid.cols, 0.0);
+    std::vector<double> cellVolumes(grid.totalCellCount(), 0.0);
 
     if (outMeshes.computeMeshes) {
         std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
