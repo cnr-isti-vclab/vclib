@@ -34,7 +34,7 @@ struct VolumeResultMeshes
 {
     bool       computeMeshes = true;
     EdgeMesh   rayhitMesh;
-    TriMesh    prismsMesh;
+    TriMesh    exteriorVolumeMesh;
     PointCloud projectedPointsMesh;
     EdgeMesh   bbox2dMesh;
     EdgeMesh   grid2dMesh;
@@ -224,7 +224,7 @@ double processCell(
                 if (outMeshes.computeMeshes && volSeg > 0) {
                     addSegment(outMeshes.rayhitMesh, prevPoint, endPoint);
                     addQuadPrism(
-                        outMeshes.prismsMesh, cellCorners, prevT, tHit, n);
+                        outMeshes.exteriorVolumeMesh, cellCorners, prevT, tHit, n);
                 }
 
                 volumeAcc += volSeg;
