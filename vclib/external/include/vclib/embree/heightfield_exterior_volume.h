@@ -53,26 +53,6 @@ RegularGrid2<double> makeGrid(
     return RegularGrid2<double>(bbPlane, gridCellSideLengths);
 }
 
-/**
- * @brief A local orthonormal frame anchored to the support plane.
- *
- * Stores the origin of the UV coordinate system (the point on the tangent
- * support plane closest to the world origin along the print direction) and the
- * two in-plane basis vectors.  `toWorld` converts a 2-D grid coordinate back
- * to 3-D world space.
- */
-struct PlaneFrame {
-    Point3d origin; ///< point on the support plane (origin of the UV frame)
-    Point3d u;      ///< first in-plane basis vector
-    Point3d v;      ///< second in-plane basis vector
-
-    /// Maps a 2-D grid coordinate to 3-D world space.
-    Point3d toWorld(const Point2d& p) const
-    {
-        return origin + u * p(0) + v * p(1);
-    }
-};
-
 double accumulateSegment(
     double cellArea,
     double startD,
@@ -96,17 +76,18 @@ double processCell(
     uint                        i,
     uint                        j,
     const RegularGrid2<double>& grid,
-    const PlaneFrame&           frame,
+    const OrthoFrame3d&         frame,
     const Scene&                scene,
-    const Point3d&              n,
     const MeshType&             m,
     double                      epsilon,
     VolumeResultMeshes&         outMeshes = detail::NO_VOLUME_MESHES)
 {
+    const Point3d& n = frame.axis(2);
+
     RegularGrid2<double>::CellPos cellPos(i, j);
 
     const auto    c2d        = grid.cellCenter(cellPos);
-    const Point3d cellCenter = frame.toWorld(c2d);
+    const Point3d cellCenter = frame.toWorld(Point3d(c2d(0), c2d(1), 0.0));
 
     double volumeAcc = 0.0;
 
@@ -163,9 +144,7 @@ double processCell(
                         Point3d(u0, v0, prevT), Point3d(u1, v1, tHit));
                     for (auto& vert : hex.vertices()) {
                         const Point3d p = vert.position();
-                        vert.position() =
-                            frame.origin + frame.u * p.x() + frame.v * p.y() +
-                            n * p.z();
+                        vert.position() = frame.toWorld(p);
                     }
                     outMeshes.exteriorVolumeMesh.append(hex);
                 }
@@ -213,24 +192,16 @@ double heightfieldExteriorVolume(
     const Point3d planeOrigin = n * minProj;
     const Planed  plane(planeOrigin, n);
 
-    Point3d u, v;
-    n.orthoBase(u, v);
-    if (u.norm() <= epsilon || v.norm() <= epsilon) {
-        return std::numeric_limits<double>::infinity();
-    }
-    u.normalize();
-    v.normalize();
-
-    const detail::PlaneFrame frame{planeOrigin, u, v};
+    const OrthoFrame3d frame = OrthoFrame3d::fromNormal(planeOrigin, n);
 
     Box2d bbPlane;
 
     for (const auto& vert : m.vertices()) {
         const Point3d projected = plane.projectPoint(vert.position());
-        const Point3d rel       = projected - frame.origin;
+        const Point3d rel       = projected - frame.origin();
 
-        const double  pu = rel.dot(frame.u);
-        const double  pv = rel.dot(frame.v);
+        const double  pu = rel.dot(frame.axis(0));
+        const double  pv = rel.dot(frame.axis(1));
         const Point2d projUV(pu, pv);
 
         bbPlane.add(projUV);
@@ -248,9 +219,9 @@ double heightfieldExteriorVolume(
         for (uint ii = 0; ii <= grid.cellCount(0); ++ii) {
             const double cu = grid.min()(0) + grid.cellLength(0) * ii;
             const uint   a  = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point2d(cu, grid.min()(1))));
+                frame.toWorld(Point3d(cu, grid.min()(1), 0.0)));
             const uint b = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point2d(cu, grid.max()(1))));
+                frame.toWorld(Point3d(cu, grid.max()(1), 0.0)));
             outMeshes.grid2dMesh.addEdge(a, b);
             outMeshes.grid2dMesh.vertex(a).normal() = direction;
             outMeshes.grid2dMesh.vertex(b).normal() = direction;
@@ -258,9 +229,9 @@ double heightfieldExteriorVolume(
         for (uint jj = 0; jj <= grid.cellCount(1); ++jj) {
             const double cv = grid.min()(1) + grid.cellLength(1) * jj;
             const uint   a  = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point2d(grid.min()(0), cv)));
+                frame.toWorld(Point3d(grid.min()(0), cv, 0.0)));
             const uint b = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point2d(grid.max()(0), cv)));
+                frame.toWorld(Point3d(grid.max()(0), cv, 0.0)));
             outMeshes.grid2dMesh.addEdge(a, b);
             outMeshes.grid2dMesh.vertex(a).normal() = direction;
             outMeshes.grid2dMesh.vertex(b).normal() = direction;
@@ -273,7 +244,7 @@ double heightfieldExteriorVolume(
         uint i = idx % grid.cellCount(0);
         uint j = idx / grid.cellCount(0);
         return detail::processCell(
-            i, j, grid, frame, scene, n, m, epsilon, outMeshes);
+            i, j, grid, frame, scene, m, epsilon, outMeshes);
     };
 
     std::vector<uint> allCells(grid.totalCellCount());
