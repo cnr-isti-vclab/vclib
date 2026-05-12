@@ -26,6 +26,7 @@
 #include <vclib/base/base.h>
 #include <vclib/base/pointers.h>
 
+#include <sstream>
 #include <string>
 
 namespace vcl {
@@ -147,6 +148,43 @@ public:
     virtual void log(uint perc, const std::string& msg, LogLevel lvl) = 0;
 
     /**
+     * @brief Streams a value to the logger.
+     *
+     * Content is buffered internally. The virtual `log(msg)` member function
+     * is called once per complete line (i.e., whenever a `'\n'` character is
+     * encountered in the streamed output).
+     *
+     * Supported for any type that supports `operator<<` with `std::ostream`.
+     *
+     * @param[in] val: The value to stream.
+     * @return A reference to this logger, to allow chaining.
+     */
+    template<typename T>
+        requires requires(std::ostream& os, const T& val) { os << val; }
+    AbstractLogger& operator<<(const T& val)
+    {
+        std::ostringstream ss;
+        ss << val;
+        appendToStreamBuffer(ss.str());
+        return *this;
+    }
+
+    /**
+     * @brief Handles stream manipulators (e.g. `std::endl`, `std::flush`).
+     *
+     * Flushes the current internal line buffer by calling `log()`, even if no
+     * newline character has been received yet.
+     *
+     * @return A reference to this logger, to allow chaining.
+     */
+    AbstractLogger& operator<<(std::ostream& (*)(std::ostream&))
+    {
+        log(mStreamBuffer);
+        mStreamBuffer.clear();
+        return *this;
+    }
+
+    /**
      * @brief Allows to easily manage progresses with the logger, along with the
      * `progress` and `endProgress` member functions.
      *
@@ -240,6 +278,22 @@ public:
      * than the `progressSize` argument of the `startProgress` member function.
      */
     virtual void progress(uint n) = 0;
+
+private:
+    std::string mStreamBuffer;
+
+    void appendToStreamBuffer(const std::string& s)
+    {
+        for (char c : s) {
+            if (c == '\n') {
+                log(mStreamBuffer);
+                mStreamBuffer.clear();
+            }
+            else {
+                mStreamBuffer += c;
+            }
+        }
+    }
 };
 
 /* Concepts */
