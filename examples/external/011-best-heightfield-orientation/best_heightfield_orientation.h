@@ -79,6 +79,7 @@ auto bestHeightfieldOrientation(
 
     vcl::rotate(outMeshes.exteriorVolumeMesh, rMatrix);
     outMeshes.exteriorVolumeMesh.name() = name + "_exterior_volume";
+    updatePerVertexAndFaceNormals(outMeshes.exteriorVolumeMesh);
 
     vcl::rotate(outMeshes.grid2dMesh, rMatrix);
     outMeshes.grid2dMesh.name() = name + "_grid_2d";

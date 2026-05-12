@@ -20,14 +20,15 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-# the following examples are the same of the ones in the external module,
-# but they add a viewer at the end in order to visualize the results
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-render-example-external-${EXAMPLE_NAME})
 
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(011-best-heightfield-orientation)
-endif()
+set(SOURCES
+    main.cpp)
 
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
-endif()
-
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    MODULE render
+    LINK_MODULES external
+    EXTERNAL_EXAMPLE 011-best-heightfield-orientation
+    SOURCES ${SOURCES})

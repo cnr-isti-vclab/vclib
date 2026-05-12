@@ -307,6 +307,8 @@ double heightfieldExteriorVolume(
             const uint b = outMeshes.grid2dMesh.addVertex(
                 planePoint + u * cu + v * gridMaxV);
             outMeshes.grid2dMesh.addEdge(a, b);
+            outMeshes.grid2dMesh.vertex(a).normal() = direction;
+            outMeshes.grid2dMesh.vertex(b).normal() = direction;
         }
         for (uint jj = 0; jj <= grid.rows; ++jj) {
             const double cv = minV + grid.sideV * jj;
@@ -315,6 +317,8 @@ double heightfieldExteriorVolume(
             const uint b = outMeshes.grid2dMesh.addVertex(
                 planePoint + u * gridMaxU + v * cv);
             outMeshes.grid2dMesh.addEdge(a, b);
+            outMeshes.grid2dMesh.vertex(a).normal() = direction;
+            outMeshes.grid2dMesh.vertex(b).normal() = direction;
         }
     }
 
