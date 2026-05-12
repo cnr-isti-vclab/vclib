@@ -25,7 +25,7 @@
 
 #include "scene.h"
 
-#include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh.h>
 #include <vclib/meshes.h>
 
 namespace vcl::embree {
@@ -33,7 +33,7 @@ namespace vcl::embree {
 struct VolumeResultMeshes
 {
     bool       computeMeshes = true;
-    TriMesh    exteriorVolumeMesh;
+    PolyMesh   exteriorVolumeMesh;
     EdgeMesh   grid2dMesh;
 };
 
@@ -66,43 +66,6 @@ GridChoice chooseGrid(const Box2d& bbPlane, const Point2d& gridCellSideLengths)
     return {rows, cols, sideU, sideV};
 }
 
-void addQuadPrism(
-    TriMesh&                      tm,
-    const std::array<Point3d, 4>& baseCorners,
-    double                        startOffset,
-    double                        endOffset,
-    const Point3d&                dir)
-{
-    std::array<Point3d, 4> b;
-    std::array<Point3d, 4> t;
-    for (uint k = 0; k < 4; ++k) {
-        b[k] = baseCorners[k] + dir * startOffset;
-        t[k] = baseCorners[k] + dir * endOffset;
-    }
-
-    std::array<uint, 8> ids;
-    for (uint k = 0; k < 4; ++k) {
-        ids[k + 0] = tm.addVertex(b[k]);
-        ids[k + 4] = tm.addVertex(t[k]);
-    }
-
-    // Bottom
-    tm.addFace(ids[0], ids[2], ids[1]);
-    tm.addFace(ids[0], ids[3], ids[2]);
-    tm.addFace(ids[4], ids[5], ids[6]);
-    tm.addFace(ids[4], ids[6], ids[7]);
-
-    // Sides
-    tm.addFace(ids[0], ids[1], ids[5]);
-    tm.addFace(ids[0], ids[5], ids[4]);
-    tm.addFace(ids[1], ids[2], ids[6]);
-    tm.addFace(ids[1], ids[6], ids[5]);
-    tm.addFace(ids[2], ids[3], ids[7]);
-    tm.addFace(ids[2], ids[7], ids[6]);
-    tm.addFace(ids[3], ids[0], ids[4]);
-    tm.addFace(ids[3], ids[4], ids[7]);
-}
-
 double accumulateSegment(
     double cellArea,
     double startD,
@@ -121,7 +84,7 @@ double accumulateSegment(
     return segVolume;
 }
 
-auto computeCellGeometry(
+Point3d computeCellCenter(
     uint           i,
     uint           j,
     const Point2d& cellUV,
@@ -130,22 +93,9 @@ auto computeCellGeometry(
     const Point3d& v,
     const Point3d& planePoint)
 {
-    const double u0 = bbPlane.min().x() + i * cellUV.x();
-    const double u1 = u0 + cellUV.x();
-    const double v0 = bbPlane.min().y() + j * cellUV.y();
-    const double v1 = v0 + cellUV.y();
-
-    std::array<Point3d, 4> cellCorners = {
-        planePoint + u * u0 + v * v0,
-        planePoint + u * u1 + v * v0,
-        planePoint + u * u1 + v * v1,
-        planePoint + u * u0 + v * v1};
-
-    const double centerU    = bbPlane.min().x() + (i + 0.5) * cellUV.x();
-    const double centerV    = bbPlane.min().y() + (j + 0.5) * cellUV.y();
-    Point3d      cellCenter = planePoint + u * centerU + v * centerV;
-
-    return std::make_pair(cellCenter, cellCorners);
+    const double centerU = bbPlane.min().x() + (i + 0.5) * cellUV.x();
+    const double centerV = bbPlane.min().y() + (j + 0.5) * cellUV.y();
+    return planePoint + u * centerU + v * centerV;
 }
 
 template<FaceMeshConcept MeshType>
@@ -163,9 +113,9 @@ double processCell(
     double              epsilon,
     VolumeResultMeshes& outMeshes = detail::NO_VOLUME_MESHES)
 {
-    Point2d cellUV(grid.sideU, grid.sideV);
-    auto [cellCenter, cellCorners] =
-        computeCellGeometry(i, j, cellUV, bbPlane, u, v, planePoint);
+    Point2d       cellUV(grid.sideU, grid.sideV);
+    const Point3d cellCenter =
+        computeCellCenter(i, j, cellUV, bbPlane, u, v, planePoint);
 
     double volumeAcc = 0.0;
 
@@ -212,8 +162,20 @@ double processCell(
                     accumulateSegment(cellArea, prevT, tHit, epsilon, first);
 
                 if (outMeshes.computeMeshes && volSeg > 0) {
-                    addQuadPrism(
-                        outMeshes.exteriorVolumeMesh, cellCorners, prevT, tHit, n);
+                    using VMesh = decltype(outMeshes.exteriorVolumeMesh);
+
+                    const double u0 = bbPlane.min().x() + i * cellUV.x();
+                    const double u1 = u0 + cellUV.x();
+                    const double v0 = bbPlane.min().y() + j * cellUV.y();
+                    const double v1 = v0 + cellUV.y();
+                    VMesh hex = createHexahedron<VMesh>(
+                        Point3d(u0, v0, prevT), Point3d(u1, v1, tHit));
+                    for (auto& vert : hex.vertices()) {
+                        const Point3d p = vert.position();
+                        vert.position() =
+                            planePoint + u * p.x() + v * p.y() + n * p.z();
+                    }
+                    outMeshes.exteriorVolumeMesh.append(hex);
                 }
 
                 volumeAcc += volSeg;
