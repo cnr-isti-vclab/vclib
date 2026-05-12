@@ -345,6 +345,19 @@ public:
     }
 
     /**
+     * @brief Returns the center point of the given cell.
+     * @param[in] c: N-D cell coordinates.
+     * @return Center of cell @p c (= cellLowerCorner(c) + 0.5 * cellLengths()).
+     */
+    Point<Scalar, N> cellCenter(const CellPos& c) const
+    {
+        Point<Scalar, N> p;
+        for (size_t i = 0; i < DIM; ++i)
+            p(i) = mBBox.min()(i) + (c(i) + Scalar(0.5)) * cellLength(i);
+        return p;
+    }
+
+    /**
      * @brief Returns the axis-aligned bounding box of the given cell.
      * @param[in] c: N-D cell coordinates.
      * @return Bounding box of cell @p c.
