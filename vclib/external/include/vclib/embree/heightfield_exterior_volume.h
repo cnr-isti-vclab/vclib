@@ -33,10 +33,7 @@ namespace vcl::embree {
 struct VolumeResultMeshes
 {
     bool       computeMeshes = true;
-    EdgeMesh   rayhitMesh;
     TriMesh    exteriorVolumeMesh;
-    PointCloud projectedPointsMesh;
-    EdgeMesh   bbox2dMesh;
     EdgeMesh   grid2dMesh;
 };
 
@@ -67,13 +64,6 @@ GridChoice chooseGrid(const Box2d& bbPlane, const Point2d& gridCellSideLengths)
         static_cast<uint>(std::max(1.0, std::ceil(bbPlane.dim(1) / sideV)));
 
     return {rows, cols, sideU, sideV};
-}
-
-void addSegment(EdgeMesh& em, const Point3d& a, const Point3d& b)
-{
-    const uint va = em.addVertex(a);
-    const uint vb = em.addVertex(b);
-    em.addEdge(va, vb);
 }
 
 void addQuadPrism(
@@ -222,7 +212,6 @@ double processCell(
                     accumulateSegment(cellArea, prevT, tHit, epsilon, first);
 
                 if (outMeshes.computeMeshes && volSeg > 0) {
-                    addSegment(outMeshes.rayhitMesh, prevPoint, endPoint);
                     addQuadPrism(
                         outMeshes.exteriorVolumeMesh, cellCorners, prevT, tHit, n);
                 }
@@ -284,17 +273,8 @@ double heightfieldExteriorVolume(
     double maxV = -std::numeric_limits<double>::infinity();
     Box2d  bbPlane;
 
-    std::vector<Point3d> projectedPoints;
-    if (outMeshes.computeMeshes) {
-        projectedPoints.reserve(
-            std::distance(m.vertices().begin(), m.vertices().end()));
-    }
-
     for (const auto& vert : m.vertices()) {
         const Point3d projected = plane.projectPoint(vert.position());
-        if (outMeshes.computeMeshes) {
-            projectedPoints.push_back(projected);
-        }
         const Point3d rel = projected - planePoint;
 
         const double  pu = rel.dot(u);
@@ -319,25 +299,6 @@ double heightfieldExteriorVolume(
     const double gridMaxV = minV + grid.sideV * grid.rows;
 
     if (outMeshes.computeMeshes) {
-        // projected points
-        outMeshes.projectedPointsMesh.addVertices(projectedPoints);
-
-        // out bbox
-        const std::array<Point3d, 4> bboxCorners = {
-            planePoint + u * minU + v * minV,
-            planePoint + u * gridMaxU + v * minV,
-            planePoint + u * gridMaxU + v * gridMaxV,
-            planePoint + u * minU + v * gridMaxV};
-
-        uint startCornerId = outMeshes.bbox2dMesh.vertexCount();
-        for (uint k = 0; k < bboxCorners.size(); ++k) {
-            outMeshes.bbox2dMesh.addVertex(bboxCorners[k]);
-        }
-        outMeshes.bbox2dMesh.addEdge(startCornerId + 0, startCornerId + 1);
-        outMeshes.bbox2dMesh.addEdge(startCornerId + 1, startCornerId + 2);
-        outMeshes.bbox2dMesh.addEdge(startCornerId + 2, startCornerId + 3);
-        outMeshes.bbox2dMesh.addEdge(startCornerId + 3, startCornerId + 0);
-
         // out grid
         for (uint ii = 0; ii <= grid.cols; ++ii) {
             const double cu = minU + grid.sideU * ii;
