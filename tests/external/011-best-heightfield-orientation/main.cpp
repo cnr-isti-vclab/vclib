@@ -29,8 +29,8 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-static const std::vector<double> CELL_SIDE_LENGTHS = {0.184, 0.234};
-static const vcl::uint           NUM_DIRECTIONS    = 2000;
+static const vcl::Point2d CELL_SIDE_LENGTHS = {0.184, 0.234};
+static const vcl::uint    NUM_DIRECTIONS    = 2000;
 
 static const double ANGLE_TOLERANCE_DEGREES = 2.0;
 

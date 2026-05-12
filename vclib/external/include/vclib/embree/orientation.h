@@ -52,19 +52,10 @@ struct GridChoice
     double sideV = 0.0;
 };
 
-GridChoice chooseGrid(
-    const Box2d&               bbPlane,
-    const std::vector<double>& gridCellSideLengths)
+GridChoice chooseGrid(const Box2d& bbPlane, const Point2d& gridCellSideLengths)
 {
-    if (bbPlane.dim(0) <= 0.0 || bbPlane.dim(1) <= 0.0) {
-        return {1, 1, bbPlane.dim(0), bbPlane.dim(1)};
-    }
-
-    const double sideU = (gridCellSideLengths.size() >= 1) ?
-                             gridCellSideLengths[0] :
-                             bbPlane.dim(0);
-    const double sideV =
-        (gridCellSideLengths.size() >= 2) ? gridCellSideLengths[1] : sideU;
+    const double sideU = gridCellSideLengths.x();
+    const double sideV = gridCellSideLengths.y();
 
     if (sideU <= 0.0 || sideV <= 0.0) {
         return {1, 1, bbPlane.dim(0), bbPlane.dim(1)};
@@ -232,7 +223,8 @@ double processCell(
 
                 if (outMeshes.computeMeshes && volSeg > 0) {
                     addSegment(outMeshes.rayhitMesh, prevPoint, endPoint);
-                    addQuadPrism(outMeshes.prismsMesh, cellCorners, prevT, tHit, n);
+                    addQuadPrism(
+                        outMeshes.prismsMesh, cellCorners, prevT, tHit, n);
                 }
 
                 volumeAcc += volSeg;
@@ -256,12 +248,12 @@ double processCell(
 
 template<FaceMeshConcept MeshType>
 double heightfieldExteriorVolume(
-    const MeshType&            m,
-    const Scene&               scene,
-    const std::vector<double>& gridCellSideLengths,
-    const Point3d&             direction,
-    double                     epsilon,
-    VolumeResultMeshes&        outMeshes = detail::NO_VOLUME_MESHES)
+    const MeshType&     m,
+    const Scene&        scene,
+    const Point2d&      gridCellSideLengths,
+    const Point3d&      direction,
+    double              epsilon,
+    VolumeResultMeshes& outMeshes = detail::NO_VOLUME_MESHES)
 {
     using namespace vcl;
 
@@ -441,11 +433,11 @@ double heightfieldExteriorVolume(
  */
 template<FaceMeshConcept MeshType>
 vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
-    const MeshType&            m,
-    const std::vector<double>& gridCellSideLengths,
-    vcl::uint                  nDirections,
-    double                     epsilon = 1e-6,
-    bool                       debug   = false)
+    const MeshType& m,
+    const Point2d&  gridCellSideLengths,
+    vcl::uint       nDirections,
+    double          epsilon = 1e-6,
+    bool            debug   = false)
 {
     using namespace vcl;
 

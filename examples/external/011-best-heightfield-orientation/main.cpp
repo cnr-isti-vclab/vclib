@@ -27,9 +27,9 @@ int main()
 {
     using namespace vcl;
 
-    std::vector<double> gridCellSideLengths = {0.184, 0.234};
-    constexpr uint      NUM_PLANES          = 2000;
-    constexpr bool      debug               = true;
+    Point2d        gridCellSideLengths = {0.184, 0.234};
+    constexpr uint NUM_PLANES          = 2000;
+    constexpr bool debug               = true;
 
     const std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
 
