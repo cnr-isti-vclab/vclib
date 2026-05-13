@@ -75,13 +75,14 @@ public:
     void cacheWrite(uint64_t id, const void* data, uint32_t size);
 
     void screenShot(
-        const char* filePath,
-        uint32_t    width,
-        uint32_t    height,
-        uint32_t    pitch,
-        const void* data,
-        uint32_t    size,
-        bool        yflip);
+        const char*               filePath,
+        uint32_t                  width,
+        uint32_t                  height,
+        uint32_t                  pitch,
+        bgfx::TextureFormat::Enum format,
+        const void*               data,
+        uint32_t                  size,
+        bool                      yflip);
 
     void captureBegin(
         uint32_t                  width,

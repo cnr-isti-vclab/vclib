@@ -31,24 +31,33 @@ target_compile_definitions(vclib-tests-examples-common INTERFACE
     VCLIB_EXAMPLE_MESHES_PATH="${VCLIB_ASSETS_PATH}/example_meshes")
 
 target_compile_definitions(vclib-tests-examples-common INTERFACE
-    VCLIB_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
+    VCLIB_CORE_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/core")
+
+target_compile_definitions(vclib-tests-examples-common INTERFACE
+    VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external")
 
 function(_vclib_add_test_example name)
     set(options TEST HEADER_ONLY)
-    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE VCLIB_CORE_TEST)
-    set(multiValueArgs SOURCES)
+    set(oneValueArgs MODULE CORE_EXAMPLE EXTERNAL_EXAMPLE)
+    set(multiValueArgs LINK_MODULES SOURCES)
 
     cmake_parse_arguments(ARG
         "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    if (NOT ARG_VCLIB_MODULE)
-        set(ARG_VCLIB_MODULE "core")
+    if (NOT ARG_MODULE)
+        set(ARG_MODULE "core")
     endif()
 
     if (${ARG_TEST})
-        set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-test-${name}")
+        set(TARGET_NAME "vclib-${ARG_MODULE}-test-${name}")
     else()
-        set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-${name}")
+        if (ARG_CORE_EXAMPLE)
+            set(TARGET_NAME "vclib-${ARG_MODULE}-example-core-${name}")
+        elseif (ARG_EXTERNAL_EXAMPLE)
+             set(TARGET_NAME "vclib-${ARG_MODULE}-example-external-${name}")
+        else()
+            set(TARGET_NAME "vclib-${ARG_MODULE}-example-${name}")
+        endif()
     endif()
 
     if (${VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS})
@@ -58,31 +67,37 @@ function(_vclib_add_test_example name)
     endif()
 
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
+
+    # for each module in LINK_MODULES, link the example/test with it
+    foreach(module IN LISTS ARG_LINK_MODULES)
+         target_link_libraries(${TARGET_NAME} PRIVATE vclib::${module})
+    endforeach()
+
     target_link_libraries(${TARGET_NAME} PRIVATE vclib-tests-examples-common)
 
     if (${TO_EXCLUDE})
         set_target_properties(${TARGET_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
     endif()
 
-    # if ARG_VCLIB_MODULE is "render"
-    if (ARG_VCLIB_MODULE STREQUAL "render")
+    # if ARG_MODULE is "render"
+    if (ARG_MODULE STREQUAL "render")
         target_link_libraries(${TARGET_NAME} PRIVATE vclib-render-examples-common)
     endif()
 
-    if (ARG_VCLIB_CORE_EXAMPLE)
-        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_VCLIB_CORE_EXAMPLE})
+    if (ARG_CORE_EXAMPLE)
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_CORE_EXAMPLE})
         target_include_directories(${TARGET_NAME} PUBLIC
                 ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
 
-    if (ARG_VCLIB_CORE_TEST)
-        set(VCLIB_INCLUDE_TESTS_DIR ${VCLIB_TESTS_DIR}/core/${ARG_VCLIB_CORE_TEST})
+    if (ARG_EXTERNAL_EXAMPLE)
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/external/${ARG_EXTERNAL_EXAMPLE})
         target_include_directories(${TARGET_NAME} PUBLIC
-                ${VCLIB_INCLUDE_TESTS_DIR})
+                ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
 
     if (NOT ${ARG_HEADER_ONLY})
-        target_link_libraries(${TARGET_NAME} PRIVATE vclib::${ARG_VCLIB_MODULE})
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib::${ARG_MODULE})
     else()
         # additional include and links required when using header only:
 
@@ -121,10 +136,14 @@ endfunction()
 #     000-mesh-basic # name of the example
 #     [HEADER_ONLY] # optional - to build the example with includepath
 #                     (no cmake targets)
-#     [VCLIB_MODULE core] # optional - to specify the module of the example
-#                           (default is core)
-#     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
+#     [MODULE core] # optional - to specify the module of the example
+#                     (default is core)
+#     [CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
 #                                     the core module from which reuse some code
+#     [EXTERNAL_EXAMPLE 000-mesh] # optional - to specify the example of
+#                                 the external module from which reuse some code
+#     [LINK_MODULES render] # optional - to specify additional modules to link
+#                             to the example
 #     SOURCES main.cpp # sources of the example
 # )
 function(vclib_add_example name)
@@ -138,12 +157,14 @@ endfunction()
 #     000-mesh-basic # name of the test
 #     [HEADER_ONLY] # optional - to build the test with includepath
 #                     (no cmake targets)
-#     [VCLIB_MODULE core] # optional - to specify the module of the test
-#                           (default is core)
-#     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
+#     [MODULE core] # optional - to specify the module of the test
+#                     (default is core)
+#     [CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
 #                                     the core module from which reuse some code
-#     [VCLIB_CORE_TEST 000-mesh-basic] # optional - to specify the test of
-#                                     the core module from which reuse some code
+#     [EXTERNAL_EXAMPLE 000-mesh] # optional - to specify the example of
+#                                 the external module from which reuse some code
+#     [LINK_MODULES render] # optional - to specify additional modules to link
+#                             to the test
 #     SOURCES main.cpp # sources of the test
 # )
 function(vclib_add_test name)

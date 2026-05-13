@@ -20,13 +20,8 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 set(EXAMPLE_NAME 02-mesh-viewer-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
-
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
     main.cpp)
@@ -34,7 +29,6 @@ set(SOURCES
 target_include_directories(vclib-render PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR})
 
-# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
 vclib_add_example(${EXAMPLE_NAME}
-    VCLIB_MODULE render
+    MODULE render
     SOURCES ${SOURCES})

@@ -47,7 +47,7 @@ int main()
     saveSettings.binary = false;
     vcl::saveMesh(
         helmet,
-        VCLIB_RESULTS_PATH "/024_greek_helmet_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf.gltf",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (ASCII)" << std::endl;
@@ -55,7 +55,7 @@ int main()
     saveSettings.binary = true;
     vcl::saveMesh(
         helmet,
-        VCLIB_RESULTS_PATH "/024_greek_helmet_export_bin.glb",
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin.glb",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (binary)" << std::endl;
@@ -71,7 +71,7 @@ int main()
     std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
 
     vcl::saveMeshes(
-        meshes, VCLIB_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
+        meshes, VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
 
     std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
 
@@ -87,7 +87,7 @@ int main()
     sS.binary = false;
     vcl::saveMesh(
         pointCloud,
-        VCLIB_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
         sS);
 
     std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
@@ -117,10 +117,11 @@ int main()
 
     vcl::saveMesh(
         bte,
-        VCLIB_RESULTS_PATH "/024_bunny_edge_sections_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf.gltf",
         sS);
 
-    std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)" << std::endl;
+    std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)"
+              << std::endl;
 
     return 0;
 }

@@ -30,7 +30,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to flood a mesh starting from a seed face
 # using a custom selection criterion. It uses the face flooding algorithm
@@ -108,11 +108,11 @@ def main():
         print("\n=== Saving Mesh ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(m, f"{VCLIB_RESULTS_PATH}/016_flooded_faces.ply")
+        vcl.save_mesh(m, f"{VCLIB_PYTHON_RESULTS_PATH}/016_flooded_faces.ply")
 
-        print(f"\nFile saved to: {VCLIB_RESULTS_PATH}/016_flooded_faces.ply")
+        print(f"\nFile saved to: {VCLIB_PYTHON_RESULTS_PATH}/016_flooded_faces.ply")
         print("- Red face: seed for flooding")
         print("- Green faces: upward-facing connected faces")
         print("- Gray faces: other faces")

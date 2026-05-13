@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_DETAIL_H
 
+#include <vclib/space/complex.h>
 #include <vclib/space/core.h>
 
 namespace vcl::detail {
@@ -44,6 +45,8 @@ inline auto& at(
         return buffer[j * numRows + i];
     }
 }
+
+inline TriPolyIndexBiMap indexMap;
 
 } // namespace vcl::detail
 
