@@ -20,22 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BASE_CONCEPTS_H
-#define VCL_BASE_CONCEPTS_H
+#ifndef VCL_BASE_CONCEPTS_PARALLEL_H
+#define VCL_BASE_CONCEPTS_PARALLEL_H
 
-#include "concepts/const_correctness.h"
-#include "concepts/iterators.h"
-#include "concepts/parallel.h"
-#include "concepts/pointers.h"
-#include "concepts/polymorphism.h"
-#include "concepts/range.h"
-#include "concepts/types.h"
+// tbb and qt conflicts: if both are linked, we need to first undef Qt's
+// emit - see: https://github.com/oneapi-src/oneTBB/issues/547
+#if defined(emit)
+#undef emit
+#define VCLIB_EMIT_REDEFINED
+#endif // emit
+
+// Hack to compensate lack of support for c++17 parallel algorithms by
+// several compilers. We use poolSTL.
+#define POOLSTL_STD_SUPPLEMENT
+#if __has_include(<poolstl/poolstl.hpp>)
+#include <poolstl/poolstl.hpp>
+#else
+#include "../../../../../../3rdparty/poolSTL-0.3.5/include/poolstl/poolstl.hpp"
+#endif
+
+// Restore the definition of "emit" if it was defined before
+#ifdef VCLIB_EMIT_REDEFINED
+#undef VCLIB_EMIT_REDEFINED
+#define emit // restore the macro definition of "emit", as it was
+             // defined in gtmetamacros.h
+#endif       // VCLIB_EMIT_REDEFINED
+
+namespace vcl {
 
 /**
- * @defgroup util_concepts Utility Concepts
+ * @brief The ExecutionPolicy is satisfied if T is a standard execution policy
+ * type.
  *
- * @brief List of utility concepts used in the library, that allows to check and
- * constrain iterators, pointers, const correctness management, ranges, etc.
+ * @ingroup util_concepts
  */
+template<typename T>
+concept ExecutionPolicy = std::is_execution_policy_v<std::remove_cvref_t<T>>;
 
-#endif // VCL_BASE_CONCEPTS_H
+} // namespace vcl
+
+#endif // VCL_BASE_CONCEPTS_PARALLEL_H
