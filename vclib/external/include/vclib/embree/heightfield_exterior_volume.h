@@ -179,6 +179,53 @@ ScalarType processCell(
 
 } // namespace detail
 
+/**
+ * @brief Computes the exterior heightfield volume of a mesh along a given
+ * direction.
+ *
+ * This function estimates the "exterior volume" of a mesh projected along
+ * @p direction. The mesh's bounding plane perpendicular to @p direction is
+ * subdivided into a 2D regular grid of cells with the specified side lengths.
+ * For each cell, a ray is cast along @p direction through the mesh using
+ * Embree ray tracing. The exterior volume is accumulated by integrating the
+ * portions of each ray segment that lie outside the mesh (i.e., between the
+ * print bed plane and the first downward-facing surface encountered).
+ *
+ * If @p outMeshes.computeMeshes is `true`, the function also populates
+ * @p outMeshes with:
+ * - `exteriorVolumeMesh`: a `PolyMesh` made of hexahedral cells representing
+ *   each exterior volume segment.
+ * - `grid2dMesh`: an `EdgeMesh` representing the 2D grid projected onto the
+ *   plane perpendicular to @p direction.
+ *
+ * @note The input mesh is expected to have updated per-face normals.
+ *
+ * @throws std::invalid_argument if the direction vector has zero length or if
+ * the bounding box of the mesh projected onto the plane perpendicular to @p
+ * direction has zero area (i.e., the mesh is degenerate in that plane).
+ *
+ * @tparam MeshType: A type satisfying `FaceMeshConcept`.
+ * @tparam ScalarType: The scalar type used for positions and volume
+ * accumulation.
+ * @tparam Point2Type: A type satisfying `Point2Concept`, used for
+ * @p gridCellSideLengths.
+ *
+ * @param[in] m: The input 3D mesh to evaluate. Must satisfy `FaceMeshConcept`.
+ * @param[in] scene: The Embree scene built from @p m, used for ray intersection
+ * queries.
+ * @param[in] direction: The direction along which rays are cast and volume is
+ * measured. It will be normalized internally.
+ * @param[in]: gridCellSideLengths The physical width and height of each 2D grid
+ * cell in the plane perpendicular to @p direction. If either component is
+ * zero or negative, a single cell covering the full bounding box is used.
+ * @param[in]: epsilon A small value used for numerical precision: it filters
+ * out degenerate ray segments and near-zero normals.
+ * @param[in/out]: outMeshes Optional output structure to receive the hexahedral
+ * exterior volume mesh and 2D grid mesh. Defaults to
+ * `detail::NO_VOLUME_MESHES`, which disables mesh construction.
+ *
+ * @return The total exterior heightfield volume as a `ScalarType` value.
+ */
 template<
     FaceMeshConcept MeshType,
     typename ScalarType,
@@ -198,7 +245,8 @@ auto heightfieldExteriorVolume(
 
     PointType n = direction;
     if (n.norm() <= epsilon) {
-        return std::numeric_limits<ScalarType>::infinity();
+        throw std::invalid_argument(
+            "Direction vector must have non-zero length greater than epsilon.");
     }
     n.normalize();
 
@@ -301,6 +349,8 @@ auto heightfieldExteriorVolume(
  * Fibonacci lattice/sphere algorithm to ensure an even and unbiased coverage of
  * the search space.
  *
+ * @throws std::invalid_argument if the number of directions is zero.
+ *
  * @param[in] m: The input 3D mesh to be evaluated. It is expected that this
  * mesh is already pre-scaled relative to the single cell dimensions. It must
  * satisfy the FaceMeshConcept.
@@ -312,6 +362,8 @@ auto heightfieldExteriorVolume(
  * time.
  * @param[in] epsilon: A small value used to handle numerical precision issues,
  * multiplied by the diagonal of the mesh's bounding box.
+ * @param[in] log: An optional logger object to report progress and results. If
+ * not provided, a null logger will be used, and no logging will occur.
  *
  * @return A vcl::Point3<S> representing the optimal orientation (e.g.,
  * direction vector) that minimizes the required support volume. `S` is the
@@ -333,6 +385,11 @@ auto findBestOrientationByHeightfieldExteriorVolume(
     using PointType  = MeshType::VertexType::PositionType;
     using ScalarType = typename PointType::ScalarType;
 
+    if (nDirections == 0) {
+        throw std::invalid_argument(
+            "Number of directions must be greater than zero.");
+    }
+
     log.startNewTask(
         0, 100, "Finding best orientation by heightfield exterior volume...");
 
@@ -347,11 +404,6 @@ auto findBestOrientationByHeightfieldExteriorVolume(
 
     std::vector<PointType> fibNormals =
         sphericalFibonacciPointSet<PointType>(nDirections);
-
-    if (fibNormals.empty()) {
-        throw std::runtime_error(
-            "Failed to generate Fibonacci normals for orientation search.");
-    }
 
     uint       bestPlaneId = 0;
     ScalarType bestVolume  = std::numeric_limits<ScalarType>::infinity();
