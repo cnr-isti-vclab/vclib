@@ -425,29 +425,21 @@ auto findBestOrientationByHeightfieldExteriorVolume(
     ScalarType bestVolume  = std::numeric_limits<ScalarType>::infinity();
     PointType  bestNormal  = fibNormals.front();
 
-    std::mutex fibMutex;
-
-    uint i = 0;
-    vcl::parallelFor(fibNormals, [&](const PointType& normal) {
+    for (uint i = 0; i < fibNormals.size(); ++i) {
         ScalarType vol = heightfieldExteriorVolume(
-            m, scene, normal, gridCellSideLengths, epsilon);
+            m, scene, fibNormals[i], gridCellSideLengths, epsilon);
 
-        {
-            std::lock_guard<std::mutex> lock(fibMutex);
-            ++i;
-            if (vol < bestVolume) {
-                bestVolume  = vol;
-                bestPlaneId = i;
-                bestNormal  = normal;
+        if (vol < bestVolume) {
+            bestVolume  = vol;
+            bestPlaneId = i;
+            bestNormal  = fibNormals[i];
 
-                log.setPercentage(
-                    i / static_cast<double>(fibNormals.size()) * 100);
-                log << "New best: Plane id: " << i << "/"
-                    << fibNormals.size() - 1 << ", normal: " << normal
-                    << ", volume: " << std::to_string(vol) << "\n";
-            }
+            log.setPercentage(i / static_cast<double>(fibNormals.size()) * 100);
+            log << "New best: Plane id: " << i << "/" << fibNormals.size() - 1
+                << ", normal: " << fibNormals[i]
+                << ", volume: " << std::to_string(vol) << "\n";
         }
-    });
+    }
 
     log.setPercentage(100);
     log << "Fibonacci planes tested: " << fibNormals.size() << "\n"
