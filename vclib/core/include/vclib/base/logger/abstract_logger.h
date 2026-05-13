@@ -160,7 +160,7 @@ public:
      * @return A reference to this logger, to allow chaining.
      */
     template<typename T>
-        requires requires(std::ostream& os, const T& val) { os << val; }
+    requires requires (std::ostream& os, const T& val) { os << val; }
     AbstractLogger& operator<<(const T& val)
     {
         std::ostringstream ss;
@@ -177,7 +177,7 @@ public:
      *
      * @return A reference to this logger, to allow chaining.
      */
-    AbstractLogger& operator<<(std::ostream& (*)(std::ostream&))
+    AbstractLogger& operator<<(std::ostream& (*) (std::ostream&) )
     {
         log(mStreamBuffer);
         mStreamBuffer.clear();

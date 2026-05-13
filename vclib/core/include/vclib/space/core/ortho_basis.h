@@ -95,9 +95,8 @@ public:
      * @param[in] axes: The N orthonormal basis vectors.
      */
     template<typename... Axes>
-    OrthoBasis(Axes&&... axes)
-        requires (sizeof...(Axes) == N)
-        : mAxes{std::forward<Axes>(axes)...}
+    OrthoBasis(Axes&&... axes) requires (sizeof...(Axes) == N)
+            : mAxes {std::forward<Axes>(axes)...}
     {
     }
 
