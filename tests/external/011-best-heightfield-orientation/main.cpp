@@ -38,11 +38,16 @@ TEMPLATE_TEST_CASE(
     "Find best Orientation by Heightfield Exterior Volume",
     "",
     vcl::TriMesh,
+    vcl::TriMeshf,
     vcl::PolyMesh,
+    vcl::PolyMeshf,
     vcl::TriMeshIndexed,
-    vcl::PolyMeshIndexed)
+    vcl::TriMeshIndexedf,
+    vcl::PolyMeshIndexed,
+    vcl::PolyMeshIndexedf)
 {
-    using TestMesh = TestType;
+    using TestMesh  = TestType;
+    using ScalaType = typename TestMesh::ScalarType;
 
     using namespace vcl;
 
@@ -53,18 +58,21 @@ TEMPLATE_TEST_CASE(
         scale(m, 100.0);
         updatePerVertexAndFaceNormals(m);
 
-        Point3d bestNormal =
+        Point3<ScalaType> bestNormal =
             embree::findBestOrientationByHeightfieldExteriorVolume(
                 m, CELL_SIDE_LENGTHS, NUM_DIRECTIONS);
 
         // the best orientation for the bunny mesh
-        const Point3d EXPECTED_RESULT = Point3d(0.0, 1.0, 0.0);
+        const Point3<ScalaType> EXPECTED_RESULT =
+            Point3<ScalaType>(0.0, 1.0, 0.0);
 
         // require that the angle between bestNormal and EXPECTED_RESULT is less
         // than ANGLE_TOLERANCE_DEGREES
-        const double angle = std::acos(
+        const ScalaType angle = std::acos(
             std::clamp(
-                bestNormal.normalized().dot(EXPECTED_RESULT), -1.0, 1.0));
+                bestNormal.normalized().dot(EXPECTED_RESULT),
+                ScalaType(-1.0),
+                ScalaType(1.0)));
         REQUIRE(angle < ANGLE_TOLERANCE_DEGREES * M_PI / 180.0);
     }
 }

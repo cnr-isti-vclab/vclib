@@ -29,13 +29,13 @@
 auto bestHeightfieldOrientation(
     const std::string& filename,
     const std::string& name,
-    double scaleFactor)
+    double             scaleFactor)
 {
     using namespace vcl;
 
-    const Point2d  gridCellSideLengths = {0.184, 0.234};
-    constexpr uint NUM_PLANES          = 2000;
-    constexpr double EPSILON           = 1e-6;
+    const Point2d    gridCellSideLengths = {0.184, 0.234};
+    constexpr uint   NUM_PLANES          = 2000;
+    constexpr double EPSILON             = 1e-6;
 
     const Point3d Z = Point3d(0, 0, 1);
 
@@ -44,15 +44,14 @@ auto bestHeightfieldOrientation(
     // brain
 
     TriMesh m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
-    m.name() = name + "_input";
+    m.name()  = name + "_input";
 
     scale(m, scaleFactor);
     updatePerVertexAndFaceNormals(m);
 
     vcl::Timer timer(name + " Best Orientation");
-    Point3d bestNormal =
-        embree::findBestOrientationByHeightfieldExteriorVolume(
-            m, gridCellSideLengths, NUM_PLANES, EPSILON, logger);
+    Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
+        m, gridCellSideLengths, NUM_PLANES, EPSILON, logger);
     timer.stop();
 
     // print results
@@ -72,8 +71,8 @@ auto bestHeightfieldOrientation(
     embree::heightfieldExteriorVolume(
         m,
         embree::Scene(m),
-        gridCellSideLengths,
         bestNormal,
+        gridCellSideLengths,
         EPSILON,
         outMeshes);
 
@@ -85,10 +84,7 @@ auto bestHeightfieldOrientation(
     outMeshes.grid2dMesh.name() = name + "_grid_2d";
 
     return std::make_tuple(
-        m,
-        mOriented,
-        outMeshes.exteriorVolumeMesh,
-        outMeshes.grid2dMesh);
+        m, mOriented, outMeshes.exteriorVolumeMesh, outMeshes.grid2dMesh);
 }
 
 #endif // BEST_ORIENTATION_HEIGHTFIELD_H

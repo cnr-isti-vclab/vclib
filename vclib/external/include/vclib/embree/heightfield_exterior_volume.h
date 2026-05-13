@@ -42,15 +42,16 @@ namespace detail {
 
 inline static VolumeResultMeshes NO_VOLUME_MESHES = {false};
 
-RegularGrid2<double> makeGrid(
-    const Box2d&   bbPlane,
-    const Point2d& gridCellSideLengths)
+template<typename ScalarType>
+RegularGrid2<ScalarType> makeGrid(
+    const Box2<ScalarType>&   bbPlane,
+    const Point2<ScalarType>& gridCellSideLengths)
 {
     if (gridCellSideLengths.x() <= 0.0 || gridCellSideLengths.y() <= 0.0) {
         Point<uint, 2> oneCell(1u, 1u);
-        return RegularGrid2<double>(bbPlane, oneCell);
+        return RegularGrid2<ScalarType>(bbPlane, oneCell);
     }
-    return RegularGrid2<double>(bbPlane, gridCellSideLengths);
+    return RegularGrid2<ScalarType>(bbPlane, gridCellSideLengths);
 }
 
 double accumulateSegment(
@@ -71,35 +72,37 @@ double accumulateSegment(
     return segVolume;
 }
 
-template<FaceMeshConcept MeshType>
-double processCell(
-    uint                        i,
-    uint                        j,
-    const RegularGrid2<double>& grid,
-    const OrthoFrame3d&         frame,
-    const Scene&                scene,
-    const MeshType&             m,
-    double                      epsilon,
-    VolumeResultMeshes&         outMeshes = detail::NO_VOLUME_MESHES)
+template<FaceMeshConcept MeshType, typename ScalarType>
+ScalarType processCell(
+    uint                            i,
+    uint                            j,
+    const RegularGrid2<ScalarType>& grid,
+    const OrthoFrame3<ScalarType>&  frame,
+    const Scene&                    scene,
+    const MeshType&                 m,
+    auto                            epsilon,
+    VolumeResultMeshes&             outMeshes = detail::NO_VOLUME_MESHES)
 {
-    const Point3d& n = frame.axis(2);
+    using PointType = Point3<ScalarType>;
+
+    const PointType& n = frame.axis(2);
 
     RegularGrid2<double>::CellPos cellPos(i, j);
 
-    const auto    c2d        = grid.cellCenter(cellPos);
-    const Point3d cellCenter = frame.toWorld(Point3d(c2d(0), c2d(1), 0.0));
+    const auto      c2d        = grid.cellCenter(cellPos);
+    const PointType cellCenter = frame.toWorld(PointType(c2d(0), c2d(1), 0.0));
 
-    double volumeAcc = 0.0;
+    ScalarType volumeAcc = 0.0;
 
     std::vector<Scene::HitResult> hits =
         scene.facesIntersectedByRay(cellCenter, n, static_cast<float>(epsilon));
 
-    const double cellArea = grid.cellVolume();
+    const ScalarType cellArea = grid.cellVolume();
 
-    Point3d prevPoint  = cellCenter + n * -epsilon;
-    double  prevT      = -epsilon;
-    Point3d prevNormal = n;
-    bool    first      = true;
+    PointType  prevPoint  = cellCenter + n * -epsilon;
+    ScalarType prevT      = -epsilon;
+    PointType  prevNormal = n;
+    bool       first      = true;
 
     int hitsMesh = 0;
 
@@ -112,8 +115,8 @@ double processCell(
 
         const auto& face = m.face(hitFaceId);
 
-        const Point3d endPoint  = cellCenter + n * tHit;
-        Point3d       endNormal = face.normal();
+        const PointType endPoint  = cellCenter + n * tHit;
+        PointType       endNormal = face.normal();
         if (endNormal.norm() >= epsilon) {
             endNormal.normalize();
         }
@@ -125,8 +128,8 @@ double processCell(
             continue;
         }
 
-        const double startDot = prevNormal.dot(n);
-        const double endDot   = endNormal.dot(n);
+        const ScalarType startDot = prevNormal.dot(n);
+        const ScalarType endDot   = endNormal.dot(n);
 
         if (endDot < 0.0) {
             if (startDot > 0.0 && hitsMesh == 0) {
@@ -136,15 +139,17 @@ double processCell(
                 if (outMeshes.computeMeshes && volSeg > 0) {
                     using VMesh = decltype(outMeshes.exteriorVolumeMesh);
 
-                    const double u0  = grid.min()(0) + i * grid.cellLength(0);
-                    const double u1  = u0 + grid.cellLength(0);
-                    const double v0  = grid.min()(1) + j * grid.cellLength(1);
-                    const double v1  = v0 + grid.cellLength(1);
-                    VMesh        hex = createHexahedron<VMesh>(
+                    const auto u0  = grid.min()(0) + i * grid.cellLength(0);
+                    const auto u1  = u0 + grid.cellLength(0);
+                    const auto v0  = grid.min()(1) + j * grid.cellLength(1);
+                    const auto v1  = v0 + grid.cellLength(1);
+                    VMesh      hex = createHexahedron<VMesh>(
                         Point3d(u0, v0, prevT), Point3d(u1, v1, tHit));
                     for (auto& vert : hex.vertices()) {
-                        const Point3d p = vert.position();
-                        vert.position() = frame.toWorld(p);
+                        const PointType p =
+                            vert.position().template cast<ScalarType>();
+                        vert.position() =
+                            frame.toWorld(p).template cast<double>();
                     }
                     outMeshes.exteriorVolumeMesh.append(hex);
                 }
@@ -168,77 +173,91 @@ double processCell(
 
 } // namespace detail
 
-template<FaceMeshConcept MeshType>
-double heightfieldExteriorVolume(
-    const MeshType&     m,
-    const Scene&        scene,
-    const Point2d&      gridCellSideLengths,
-    const Point3d&      direction,
-    double              epsilon,
-    VolumeResultMeshes& outMeshes = detail::NO_VOLUME_MESHES)
+template<
+    FaceMeshConcept MeshType,
+    typename ScalarType,
+    Point2Concept Point2Type>
+auto heightfieldExteriorVolume(
+    const MeshType&           m,
+    const Scene&              scene,
+    const Point3<ScalarType>& direction,
+    const Point2Type&         gridCellSideLengths,
+    auto                      epsilon,
+    VolumeResultMeshes&       outMeshes = detail::NO_VOLUME_MESHES)
 {
     using namespace vcl;
 
-    Point3d n = direction;
+    using PointType      = Point3<ScalarType>;
+    using OrthoFrameType = OrthoFrame<ScalarType, 3>;
+
+    PointType n = direction;
     if (n.norm() <= epsilon) {
-        return std::numeric_limits<double>::infinity();
+        return std::numeric_limits<ScalarType>::infinity();
     }
     n.normalize();
 
-    double minProj = std::numeric_limits<double>::infinity();
+    ScalarType minProj = std::numeric_limits<ScalarType>::infinity();
     for (const auto& vv : m.vertices()) {
         minProj = std::min(minProj, vv.position().dot(n));
     }
-    const Point3d planeOrigin = n * minProj;
-    const Planed  plane(planeOrigin, n);
+    const PointType         planeOrigin = n * minProj;
+    const Plane<ScalarType> plane(planeOrigin, n);
 
-    const OrthoFrame3d frame = OrthoFrame3d::fromNormal(planeOrigin, n);
+    const OrthoFrameType frame = OrthoFrameType::fromNormal(planeOrigin, n);
 
-    Box2d bbPlane;
+    Box2<ScalarType> bbPlane;
 
     for (const auto& vert : m.vertices()) {
-        const Point3d projected = plane.projectPoint(vert.position());
-        const Point3d rel       = projected - frame.origin();
+        const PointType projected = plane.projectPoint(vert.position());
+        const PointType rel       = projected - frame.origin();
 
-        const double  pu = rel.dot(frame.axis(0));
-        const double  pv = rel.dot(frame.axis(1));
-        const Point2d projUV(pu, pv);
+        const ScalarType pu = rel.dot(frame.axis(0));
+        const ScalarType pv = rel.dot(frame.axis(1));
+        const Point2Type projUV(pu, pv);
 
-        bbPlane.add(projUV);
+        bbPlane.add(projUV.template cast<ScalarType>());
     }
 
     if (bbPlane.dim(0) <= epsilon || bbPlane.dim(1) <= epsilon) {
-        return std::numeric_limits<double>::infinity();
+        return std::numeric_limits<ScalarType>::infinity();
     }
 
-    const RegularGrid2<double> grid =
-        detail::makeGrid(bbPlane, gridCellSideLengths);
+    const RegularGrid2<ScalarType> grid = detail::makeGrid(
+        bbPlane, gridCellSideLengths.template cast<ScalarType>());
 
     if (outMeshes.computeMeshes) {
         // out grid
         for (uint ii = 0; ii <= grid.cellCount(0); ++ii) {
-            const double cu = grid.min()(0) + grid.cellLength(0) * ii;
-            const uint   a  = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point3d(cu, grid.min()(1), 0.0)));
+            const ScalarType cu = grid.min()(0) + grid.cellLength(0) * ii;
+            const uint       a  = outMeshes.grid2dMesh.addVertex(
+                frame.toWorld(PointType(cu, grid.min()(1), 0.0))
+                    .template cast<double>());
             const uint b = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point3d(cu, grid.max()(1), 0.0)));
+                frame.toWorld(PointType(cu, grid.max()(1), 0.0))
+                    .template cast<double>());
             outMeshes.grid2dMesh.addEdge(a, b);
-            outMeshes.grid2dMesh.vertex(a).normal() = direction;
-            outMeshes.grid2dMesh.vertex(b).normal() = direction;
+            outMeshes.grid2dMesh.vertex(a).normal() =
+                direction.template cast<double>();
+            outMeshes.grid2dMesh.vertex(b).normal() =
+                direction.template cast<double>();
         }
         for (uint jj = 0; jj <= grid.cellCount(1); ++jj) {
-            const double cv = grid.min()(1) + grid.cellLength(1) * jj;
-            const uint   a  = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point3d(grid.min()(0), cv, 0.0)));
+            const ScalarType cv = grid.min()(1) + grid.cellLength(1) * jj;
+            const uint       a  = outMeshes.grid2dMesh.addVertex(
+                frame.toWorld(PointType(grid.min()(0), cv, 0.0))
+                    .template cast<double>());
             const uint b = outMeshes.grid2dMesh.addVertex(
-                frame.toWorld(Point3d(grid.max()(0), cv, 0.0)));
+                frame.toWorld(PointType(grid.max()(0), cv, 0.0))
+                    .template cast<double>());
             outMeshes.grid2dMesh.addEdge(a, b);
-            outMeshes.grid2dMesh.vertex(a).normal() = direction;
-            outMeshes.grid2dMesh.vertex(b).normal() = direction;
+            outMeshes.grid2dMesh.vertex(a).normal() =
+                direction.template cast<double>();
+            outMeshes.grid2dMesh.vertex(b).normal() =
+                direction.template cast<double>();
         }
     }
 
-    double totalVolume = 0.0;
+    ScalarType totalVolume = 0.0;
 
     auto processCellClosure = [&](uint idx) {
         uint i = idx % grid.cellCount(0);
@@ -250,7 +269,7 @@ double heightfieldExteriorVolume(
     std::vector<uint> allCells(grid.totalCellCount());
     std::iota(allCells.begin(), allCells.end(), 0);
 
-    std::vector<double> cellVolumes(grid.totalCellCount(), 0.0);
+    std::vector<ScalarType> cellVolumes(grid.totalCellCount(), 0.0);
 
     if (outMeshes.computeMeshes) {
         std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
@@ -298,49 +317,56 @@ double heightfieldExteriorVolume(
  * @param[in] epsilon: A small value used to handle numerical precision issues,
  * multiplied by the diagonal of the mesh's bounding box.
  *
- * @return The optimal orientation (e.g., direction vector) that minimizes the
- * required support volume.
+ * @return A vcl::Point3<S> representing the optimal orientation (e.g.,
+ * direction vector) that minimizes the required support volume. `S` is the
+ * scalar type used for the mesh's vertex positions and normals.
  */
-template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-vcl::Point3d findBestOrientationByHeightfieldExteriorVolume(
-    const MeshType& m,
-    const Point2d&  gridCellSideLengths,
-    vcl::uint       nDirections,
-    double          epsilon = 1e-6,
-    LogType&        log     = nullLogger)
+template<
+    FaceMeshConcept MeshType,
+    typename P2Scalar,
+    LoggerConcept LogType = NullLogger>
+auto findBestOrientationByHeightfieldExteriorVolume(
+    const MeshType&         m,
+    const Point2<P2Scalar>& gridCellSideLengths,
+    vcl::uint               nDirections,
+    double                  epsilon = 1e-6,
+    LogType&                log     = nullLogger)
 {
     using namespace vcl;
+
+    using PointType  = MeshType::VertexType::PositionType;
+    using ScalarType = typename PointType::ScalarType;
 
     log.startNewTask(
         0, 100, "Finding best orientation by heightfield exterior volume...");
 
     requirePerFaceNormal(m);
 
-    Box3d bb = boundingBox(m);
+    Box3<ScalarType> bbox = boundingBox(m);
 
-    epsilon *= bb.diagonal();
+    epsilon *= bbox.diagonal();
 
     // Ray tracing: shoot rays from grid cell centers through the mesh.
     embree::Scene scene(m);
 
-    std::vector<Point3d> fibNormals =
-        sphericalFibonacciPointSet<Point3d>(nDirections);
+    std::vector<PointType> fibNormals =
+        sphericalFibonacciPointSet<PointType>(nDirections);
 
     if (fibNormals.empty()) {
         throw std::runtime_error(
             "Failed to generate Fibonacci normals for orientation search.");
     }
 
-    uint    bestPlaneId = 0;
-    double  bestVolume  = std::numeric_limits<double>::infinity();
-    Point3d bestNormal  = fibNormals.front();
+    uint       bestPlaneId = 0;
+    ScalarType bestVolume  = std::numeric_limits<ScalarType>::infinity();
+    PointType  bestNormal  = fibNormals.front();
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
-        double vol = heightfieldExteriorVolume(
+        ScalarType vol = heightfieldExteriorVolume(
             m,
             scene,
-            gridCellSideLengths,
             fibNormals[i],
+            gridCellSideLengths,
             epsilon,
             detail::NO_VOLUME_MESHES);
 
