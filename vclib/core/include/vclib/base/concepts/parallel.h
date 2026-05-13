@@ -48,6 +48,31 @@
 
 namespace vcl {
 
+namespace detail {
+
+// poolSTL does not provide the is_execution_policy type trait, so we define it
+// here, using the one provided by poolSTL
+// TODO: remove this when https://github.com/alugowski/poolSTL/pull/42 is merged
+template<class T>
+struct is_execution_policy : std::false_type
+{
+};
+
+template<>
+struct is_execution_policy<std::execution::sequenced_policy> : std::true_type
+{
+};
+
+template<>
+struct is_execution_policy<std::execution::parallel_policy> : std::true_type
+{
+};
+
+template<class T>
+constexpr bool is_execution_policy_v = is_execution_policy<T>::value;
+
+} // namespace detail
+
 /**
  * @brief The ExecutionPolicy is satisfied if T is a standard execution policy
  * type.
@@ -55,7 +80,7 @@ namespace vcl {
  * @ingroup util_concepts
  */
 template<typename T>
-concept ExecutionPolicy = std::is_execution_policy_v<std::remove_cvref_t<T>>;
+concept ExecutionPolicy = detail::is_execution_policy_v<std::remove_cvref_t<T>>;
 
 } // namespace vcl
 
