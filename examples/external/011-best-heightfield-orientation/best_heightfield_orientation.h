@@ -41,8 +41,6 @@ auto bestHeightfieldOrientation(
 
     vcl::ConsoleLogger logger;
 
-    // brain
-
     TriMesh m = loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
     m.name()  = name + "_input";
 

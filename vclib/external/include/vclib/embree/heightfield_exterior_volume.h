@@ -29,7 +29,12 @@
 #include <vclib/meshes.h>
 #include <vclib/space/complex.h>
 
+#include <algorithm>
+#include <limits>
 #include <mutex>
+#include <numeric>
+#include <stdexcept>
+#include <vector>
 
 namespace vcl::embree {
 
@@ -42,8 +47,6 @@ struct VolumeResultMeshes
 };
 
 namespace detail {
-
-inline static VolumeResultMeshes NO_VOLUME_MESHES = {false};
 
 template<typename ScalarType>
 RegularGrid2<ScalarType> makeGrid(
@@ -84,7 +87,7 @@ ScalarType processCell(
     const Scene&                    scene,
     const MeshType&                 m,
     auto                            epsilon,
-    VolumeResultMeshes&             outMeshes = detail::NO_VOLUME_MESHES)
+    VolumeResultMeshes&             outMeshes)
 {
     using PointType = Point3<ScalarType>;
 
@@ -102,7 +105,6 @@ ScalarType processCell(
 
     const ScalarType cellArea = grid.cellVolume();
 
-    PointType  prevPoint  = cellCenter + n * -epsilon;
     ScalarType prevT      = -epsilon;
     PointType  prevNormal = n;
     bool       first      = true;
@@ -110,7 +112,7 @@ ScalarType processCell(
     int hitsMesh = 0;
 
     for (const auto& hit : hits) {
-        auto [hitFaceId, barCoords, hitTriId, tHit] = hit;
+        auto [hitFaceId, _, __, tHit] = hit;
 
         if (hitFaceId == UINT_NULL) {
             continue;
@@ -125,7 +127,6 @@ ScalarType processCell(
         }
 
         if (!first && tHit <= prevT) {
-            prevPoint  = endPoint;
             prevT      = tHit;
             prevNormal = endNormal;
             continue;
@@ -168,7 +169,6 @@ ScalarType processCell(
             hitsMesh -= 1;
         }
 
-        prevPoint  = endPoint;
         prevT      = tHit;
         prevNormal = endNormal;
         first      = false;
@@ -200,9 +200,7 @@ ScalarType processCell(
  *
  * @note The input mesh is expected to have updated per-face normals.
  *
- * @throws std::invalid_argument if the direction vector has zero length or if
- * the bounding box of the mesh projected onto the plane perpendicular to @p
- * direction has zero area (i.e., the mesh is degenerate in that plane).
+ * @throws std::invalid_argument if the direction vector has zero length.
  *
  * @tparam MeshType: A type satisfying `FaceMeshConcept`.
  * @tparam ScalarType: The scalar type used for positions and volume
@@ -215,14 +213,13 @@ ScalarType processCell(
  * queries.
  * @param[in] direction: The direction along which rays are cast and volume is
  * measured. It will be normalized internally.
- * @param[in]: gridCellSideLengths The physical width and height of each 2D grid
+ * @param[in] gridCellSideLengths: The physical width and height of each 2D grid
  * cell in the plane perpendicular to @p direction. If either component is
  * zero or negative, a single cell covering the full bounding box is used.
- * @param[in]: epsilon A small value used for numerical precision: it filters
+ * @param[in] epsilon: A small value used for numerical precision: it filters
  * out degenerate ray segments and near-zero normals.
- * @param[in/out]: outMeshes Optional output structure to receive the hexahedral
- * exterior volume mesh and 2D grid mesh. Defaults to
- * `detail::NO_VOLUME_MESHES`, which disables mesh construction.
+ * @param[in/out] outMeshes: Output structure to receive the hexahedral
+ * exterior volume mesh and 2D grid mesh if `outMeshes.computeMeshes` is `true`.
  *
  * @return The total exterior heightfield volume as a `ScalarType` value.
  */
@@ -236,7 +233,7 @@ auto heightfieldExteriorVolume(
     const Point3<ScalarType>& direction,
     const Point2Type&         gridCellSideLengths,
     auto                      epsilon,
-    VolumeResultMeshes&       outMeshes = detail::NO_VOLUME_MESHES)
+    VolumeResultMeshes&       outMeshes)
 {
     using namespace vcl;
 
@@ -332,6 +329,25 @@ auto heightfieldExteriorVolume(
 }
 
 /**
+ * @copydoc heightfieldExteriorVolume
+ */
+template<
+    FaceMeshConcept MeshType,
+    typename ScalarType,
+    Point2Concept Point2Type>
+auto heightfieldExteriorVolume(
+    const MeshType&           m,
+    const Scene&              scene,
+    const Point3<ScalarType>& direction,
+    const Point2Type&         gridCellSideLengths,
+    auto                      epsilon)
+{
+    VolumeResultMeshes dummyOutMeshes {false};
+    return heightfieldExteriorVolume(
+        m, scene, direction, gridCellSideLengths, epsilon, dummyOutMeshes);
+}
+
+/**
  * @brief Finds the optimal print orientation by minimizing the exterior
  * heightfield volume.
  *
@@ -411,12 +427,7 @@ auto findBestOrientationByHeightfieldExteriorVolume(
 
     for (uint i = 0; i < fibNormals.size(); ++i) {
         ScalarType vol = heightfieldExteriorVolume(
-            m,
-            scene,
-            fibNormals[i],
-            gridCellSideLengths,
-            epsilon,
-            detail::NO_VOLUME_MESHES);
+            m, scene, fibNormals[i], gridCellSideLengths, epsilon);
 
         if (vol < bestVolume) {
             bestVolume  = vol;

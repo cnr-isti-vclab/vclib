@@ -47,32 +47,33 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMeshIndexedf)
 {
     using TestMesh  = TestType;
-    using ScalaType = typename TestMesh::ScalarType;
+    using ScalarType = typename TestMesh::ScalarType;
 
     using namespace vcl;
 
-    SECTION(vcl::meshTypeName<TestMesh>().c_str())
+    const auto sectionName = vcl::meshTypeName<TestMesh>();
+    SECTION(sectionName.c_str())
     {
         TestMesh m = loadMesh<TestMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
         scale(m, 100.0);
         updatePerVertexAndFaceNormals(m);
 
-        Point3<ScalaType> bestNormal =
+        Point3<ScalarType> bestNormal =
             embree::findBestOrientationByHeightfieldExteriorVolume(
                 m, CELL_SIDE_LENGTHS, NUM_DIRECTIONS);
 
         // the best orientation for the bunny mesh
-        const Point3<ScalaType> EXPECTED_RESULT =
-            Point3<ScalaType>(0.0, 1.0, 0.0);
+        const Point3<ScalarType> EXPECTED_RESULT =
+            Point3<ScalarType>(0.0, 1.0, 0.0);
 
         // require that the angle between bestNormal and EXPECTED_RESULT is less
         // than ANGLE_TOLERANCE_DEGREES
-        const ScalaType angle = std::acos(
+        const ScalarType angle = std::acos(
             std::clamp(
                 bestNormal.normalized().dot(EXPECTED_RESULT),
-                ScalaType(-1.0),
-                ScalaType(1.0)));
+                ScalarType(-1.0),
+                ScalarType(1.0)));
         REQUIRE(angle < ANGLE_TOLERANCE_DEGREES * M_PI / 180.0);
     }
 }

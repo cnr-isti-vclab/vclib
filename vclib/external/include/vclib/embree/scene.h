@@ -29,7 +29,9 @@
 
 #include <embree4/rtcore.h>
 
+#include <algorithm>
 #include <cmath>
+#include <limits>
 
 namespace vcl::embree {
 
