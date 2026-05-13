@@ -29,13 +29,16 @@
 #include <vclib/meshes.h>
 #include <vclib/space/complex.h>
 
+#include <mutex>
+
 namespace vcl::embree {
 
 struct VolumeResultMeshes
 {
-    bool     computeMeshes = true;
-    PolyMesh exteriorVolumeMesh;
-    EdgeMesh grid2dMesh;
+    bool       computeMeshes = true;
+    PolyMesh   exteriorVolumeMesh;
+    EdgeMesh   grid2dMesh;
+    std::mutex appendMutex;
 };
 
 namespace detail {
@@ -54,7 +57,7 @@ RegularGrid2<ScalarType> makeGrid(
     return RegularGrid2<ScalarType>(bbPlane, gridCellSideLengths);
 }
 
-double accumulateSegment(
+inline double segmentVolume(
     double cellArea,
     double startD,
     double endD,
@@ -134,7 +137,7 @@ ScalarType processCell(
         if (endDot < 0.0) {
             if (startDot > 0.0 && hitsMesh == 0) {
                 double volSeg =
-                    accumulateSegment(cellArea, prevT, tHit, epsilon, first);
+                    segmentVolume(cellArea, prevT, tHit, epsilon, first);
 
                 if (outMeshes.computeMeshes && volSeg > 0) {
                     using VMesh = decltype(outMeshes.exteriorVolumeMesh);
@@ -151,7 +154,10 @@ ScalarType processCell(
                         vert.position() =
                             frame.toWorld(p).template cast<double>();
                     }
-                    outMeshes.exteriorVolumeMesh.append(hex);
+                    {
+                        std::lock_guard<std::mutex> lock(outMeshes.appendMutex);
+                        outMeshes.exteriorVolumeMesh.append(hex);
+                    }
                 }
 
                 volumeAcc += volSeg;
@@ -259,28 +265,18 @@ auto heightfieldExteriorVolume(
 
     ScalarType totalVolume = 0.0;
 
-    auto processCellClosure = [&](uint idx) {
-        uint i = idx % grid.cellCount(0);
-        uint j = idx / grid.cellCount(0);
-        return detail::processCell(
-            i, j, grid, frame, scene, m, epsilon, outMeshes);
-    };
-
     std::vector<uint> allCells(grid.totalCellCount());
     std::iota(allCells.begin(), allCells.end(), 0);
 
     std::vector<ScalarType> cellVolumes(grid.totalCellCount(), 0.0);
 
-    if (outMeshes.computeMeshes) {
-        std::for_each(allCells.begin(), allCells.end(), [&](uint idx) {
-            cellVolumes[idx] = processCellClosure(idx);
-        });
-    }
-    else {
-        vcl::parallelFor(allCells, [&](uint idx) {
-            cellVolumes[idx] = processCellClosure(idx);
-        });
-    }
+    vcl::parallelFor(allCells, [&](uint idx) {
+        uint i = idx % grid.cellCount(0);
+        uint j = idx / grid.cellCount(0);
+
+        cellVolumes[idx] = detail::processCell(
+            i, j, grid, frame, scene, m, epsilon, outMeshes);
+    });
 
     totalVolume += std::accumulate(cellVolumes.begin(), cellVolumes.end(), 0.0);
 
