@@ -31,5 +31,3 @@ vclib_add_example(
     ${EXAMPLE_NAME}
     MODULE external
     SOURCES ${SOURCES})
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE VCL_EMBREE_FORCE_CHUNK_16)
