@@ -23,39 +23,48 @@
 #ifndef VCL_BASE_PARALLEL_H
 #define VCL_BASE_PARALLEL_H
 
+#include <vclib/base/concepts/parallel.h>
 #include <vclib/base/concepts/range.h>
-
-// tbb and qt conflicts: if both are linked, we need to first undef Qt's
-// emit - see: https://github.com/oneapi-src/oneTBB/issues/547
-#if defined(emit)
-#undef emit
-#define VCLIB_EMIT_REDEFINED
-#endif // emit
-
-// Hack to compensate lack of support for c++17 parallel algorithms by
-// several compilers. We use poolSTL.
-#define POOLSTL_STD_SUPPLEMENT
-#if __has_include(<poolstl/poolstl.hpp>)
-#include <poolstl/poolstl.hpp>
-#else
-#include "../../../../../3rdparty/poolSTL-0.3.5/include/poolstl/poolstl.hpp"
-#endif
-
-// Restore the definition of "emit" if it was defined before
-#ifdef VCLIB_EMIT_REDEFINED
-#undef VCLIB_EMIT_REDEFINED
-#define emit // restore the macro definition of "emit", as it was
-             // defined in gtmetamacros.h
-#endif       // VCLIB_EMIT_REDEFINED
 
 #include <algorithm>
 
 namespace vcl {
 
 /**
- * @brief This function executes a parallel for over the elements
- * iterated between `begin` and `end` iterators, if parallel requirements have
- * been found in the system.
+ * @brief This function corresponds to std::for_each with an execution policy,
+ * and it is provided for completeness.
+ *
+ * It executes a parallel for over the elements iterated between `begin` and
+ * `end` iterators, with the given execution policy, if parallel requirements
+ * have been found in the system.
+ *
+ * Example of usage on a vcl::Mesh, iterating over vertices:
+ *
+ * @code{.cpp}
+ * vcl::parallelFor(
+ *     std::execution::par_unseq,
+ *     m.vertices().begin(),
+ *     m.vertices().end(),
+ *     [&](VertexType& v) {
+ *         // make some computing on v
+ *     });
+ * @endcode
+ *
+ * @param[in] p: execution policy to use for the parallel for
+ * @param[in] begin: iterator of the first element to iterate
+ * @param[in] end: iterator of the end of the iterated container
+ * @param[in] F: lambda function that takes the iterated type as input
+ */
+template<ExecutionPolicy Policy, typename Iterator, typename Lambda>
+void parallelFor(Policy&& p, Iterator&& begin, Iterator&& end, Lambda&& F)
+{
+    std::for_each(p, begin, end, F);
+}
+
+/**
+ * @brief This function executes a parallel for (with std::execution::par
+ * policy) over the elements iterated between `begin` and `end` iterators, if
+ * parallel requirements have been found in the system.
  *
  * Example of usage on a vcl::Mesh, iterating over vertices:
  *
@@ -77,8 +86,34 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 }
 
 /**
- * @brief This function executes a parallel for over a range if
- * parallel requirements have been found in the system.
+ * @brief This function executes a parallel for (with std::execution::par
+ * policy) over a range, with the given execution policy, if parallel
+ * requirements have been found in the system.
+ *
+ * Example of usage on a vcl::Mesh, iterating over vertices:
+ *
+ * @code{.cpp}
+ * vcl::parallelFor(
+ *     std::execution::par_unseq,
+ *     m.vertices(),
+ *     [&](VertexType& v) {
+ *         // make some computing on v
+ *     });
+ * @endcode
+ *
+ * @param[in] p: execution policy to use for the parallel for
+ * @param[in] r: a range having begin() and end() functions
+ * @param[in] F: lambda function that takes the iterated type as input
+ */
+template<ExecutionPolicy Policy, Range Rng, typename Lambda>
+void parallelFor(Policy&& p, Rng&& r, Lambda&& F)
+{
+    parallelFor(p, std::ranges::begin(r), std::ranges::end(r), F);
+}
+
+/**
+ * @brief This function executes a parallel for (with std::execution::par
+ * policy) over a range if parallel requirements have been found in the system.
  *
  * Example of usage on a vcl::Mesh, iterating over vertices:
  *

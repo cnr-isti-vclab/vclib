@@ -59,4 +59,8 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(999-misc)
 
     add_subdirectory(core)
+
+    if (VCLIB_BUILD_MODULE_EXTERNAL)
+        add_subdirectory(external)
+    endif()
 endif()

@@ -20,7 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-
 if (VCLIB_ALLOW_SYSTEM_VCG AND (DEFINED VCG_INCLUDE_DIRS OR DEFINED VCG_DIR))
     if (DEFINED VCG_DIR)
         set(VCG_INCLUDE_DIRS ${VCG_DIR})
