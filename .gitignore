@@ -197,6 +197,7 @@ cython_debug/
 *.exe
 *.out
 *.app
+*.pdb
 
 # CMake gitignore
 
@@ -220,6 +221,7 @@ out/*
 
 # Built Visual Studio Code Extensions
 */*.vsix
+./vscode/tasks.json
 
 # QtCreator
 *.autosave

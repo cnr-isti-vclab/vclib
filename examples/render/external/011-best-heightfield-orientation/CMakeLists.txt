@@ -20,19 +20,15 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-external-tests)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-render-example-external-${EXAMPLE_NAME})
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(SOURCES
+    main.cpp)
 
-if (TARGET vclib-3rd-vcg)
-    add_subdirectory(000-mesh-import-vcg)
-endif()
-
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree-intersection)
-    add_subdirectory(011-best-heightfield-orientation)
-endif()
-
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
-endif()
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    MODULE render
+    LINK_MODULES external
+    EXTERNAL_EXAMPLE 011-best-heightfield-orientation
+    SOURCES ${SOURCES})
