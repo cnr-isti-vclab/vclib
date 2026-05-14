@@ -31,7 +31,7 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        std::string resultsPath = VCLIB_RESULTS_PATH;
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
         // save the imported mesh after processing
         vcl::saveMesh(importedMesh, resultsPath + "/010_imported_mesh.ply");

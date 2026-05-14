@@ -126,10 +126,12 @@ std::vector<uint> sortElemIndicesByFunction(
         mesh, getIndicesAsIfContainerCompact);
 
     std::vector<uint> indices;
+    indices.reserve(mesh.template count<ELEM_ID>());
 
-    // Initialize indices with sequential values
-    indices.resize(mesh.template count<ELEM_ID>());
-    std::iota(indices.begin(), indices.end(), 0u);
+    // Initialize indices with the actual non-deleted element container indices
+    for (const auto& el : mesh.template elements<ELEM_ID>()) {
+        indices.push_back(el.index());
+    }
 
     std::sort(indices.begin(), indices.end(), [&](uint a, uint b) {
         return func(

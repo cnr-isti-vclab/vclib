@@ -117,11 +117,13 @@ protected:
         }
 
         if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(m);
+            mBoundingBox = vcl::boundingBox(m).template cast<double>();
         }
 
         if constexpr (HasTransformMatrix<MeshType>) {
-            mBoundingBox = transformBox(mBoundingBox, m.transformMatrix());
+            mBoundingBox = transformBox(
+                mBoundingBox,
+                Matrix44d(m.transformMatrix().template cast<double>()));
         }
     }
 };

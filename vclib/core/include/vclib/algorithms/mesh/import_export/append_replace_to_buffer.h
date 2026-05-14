@@ -25,6 +25,8 @@
 
 #include "detail.h"
 
+#include <vclib/algorithms/mesh/sort.h>
+
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
 
@@ -295,6 +297,92 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
         }
         ++vi;
     }
+}
+
+/**
+ * @brief Permute the face vertex indices in the given buffer according to the
+ * given face comparator function.
+ *
+ * This function is useful to reorder the triangles of a (triangulated) mesh
+ * according to a given face comparator function, that can be for example the
+ * sorting by material ID.
+ *
+ * The function works also with triangulated buffers, meaning that it also
+ * updates the index map from polygonal faces to triangles, to keep it
+ * consistent with the new order of the triangles in the buffer. If the input
+ * index map is empty, the function assumes that the buffer contains only
+ * triangles in the same order of the faces in the mesh.
+ *
+ * @param[in] mesh: The input mesh.
+ * @param[in/out] buffer: The buffer where the face vertex indices are stored
+ * and must be permuted. The buffer is modified in place.
+ * @param[in] func: The face comparator function that defines the new order of
+ * the faces. The function must take as input two faces and return true if the
+ * first face must be placed before the second face in the new order.
+ * @param[in/out] indexMap: The map from triangle index to face index. The
+ * function updates the map to keep it consistent with the new order of the
+ * triangles in the buffer.
+ */
+template<FaceMeshConcept MeshType>
+static void permuteFaceVertexIndicesByFunctionToBuffer(
+    const MeshType&                           mesh,
+    auto*                                     buffer,
+    const std::function<bool(
+        const typename MeshType::FaceType&,
+        const typename MeshType::FaceType&)>& func,
+    TriPolyIndexBiMap&                        indexMap = detail::indexMap)
+{
+    // get the list of face indices sorted by material ID and using the given
+    // face comparator function. The result contains original container indices
+    // of non-deleted faces in sorted order:
+    std::vector<uint> sortedFaceContainerIndices =
+        sortFaceIndicesByFunction(mesh, func, false);
+
+    // sortedFaceContainerIndices[newPos] = originalContainerIndex
+    // (only non-deleted faces, in the desired new order)
+
+    bool isIndexMapEmpty = indexMap.triangleCount() == 0;
+
+    // temporary copy of the buffer
+    uint buffSize =
+        isIndexMapEmpty ? mesh.faceCount() : indexMap.triangleCount();
+    std::vector<uint> bufferCopy(buffSize * 3);
+
+    // temporary indexmap (not used if input map is empty)
+    TriPolyIndexBiMap indexMapCopy;
+
+    if (!isIndexMapEmpty)
+        indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
+
+    uint copiedTriangles = 0;
+
+    for (uint i = 0; i < sortedFaceContainerIndices.size(); ++i) {
+        // place the triangles associated to the face at new position i
+        uint polyIndex = sortedFaceContainerIndices[i];
+        uint firstTri =
+            isIndexMapEmpty ? polyIndex : indexMap.triangleBegin(polyIndex);
+        uint nTris = isIndexMapEmpty ? 1 : indexMap.triangleCount(polyIndex);
+
+        std::copy(
+            buffer + firstTri * 3,
+            buffer + (firstTri + nTris) * 3,
+            bufferCopy.data() + copiedTriangles * 3);
+
+        if (!isIndexMapEmpty) {
+            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
+                indexMapCopy.insert(t, polyIndex);
+            }
+        }
+
+        copiedTriangles += nTris;
+    }
+
+    // copy back
+    std::copy(
+        bufferCopy.begin(), bufferCopy.begin() + copiedTriangles * 3, buffer);
+
+    if (!isIndexMapEmpty)
+        indexMap = std::move(indexMapCopy);
 }
 
 /**

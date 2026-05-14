@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-example-${EXAMPLE_NAME})
 

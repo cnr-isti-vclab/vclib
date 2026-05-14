@@ -20,7 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
 project(vclib-render-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
@@ -60,22 +59,9 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
 
     add_subdirectory(999-misc)
 
-    # the following examples are the same of the ones in the core module,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(9000-mesh-io)
-    add_subdirectory(9001-mesh-basics)
-    add_subdirectory(9003-mesh-creation)
-    add_subdirectory(9004-mesh-copy-and-transform)
-    add_subdirectory(9008-polymesh-specifics)
-    add_subdirectory(9009-mesh-custom-components)
-    add_subdirectory(9010-mesh-matrix-conversion)
-    add_subdirectory(9011-mesh-texture-and-texcoords)
-    add_subdirectory(9013-mesh-clean)
-    add_subdirectory(9014-mesh-smoothing)
-    add_subdirectory(9015-mesh-curvature)
-    add_subdirectory(9016-face-flooding)
-    add_subdirectory(9017-mesh-convex-hull)
-    add_subdirectory(9019-mesh-point-sampling)
-    add_subdirectory(9020-mesh-crease-edges)
-    add_subdirectory(9021-mesh-sphere-intersection)
+    add_subdirectory(core)
+
+    if (VCLIB_BUILD_MODULE_EXTERNAL)
+        add_subdirectory(external)
+    endif()
 endif()

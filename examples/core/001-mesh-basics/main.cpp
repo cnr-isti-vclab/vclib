@@ -31,9 +31,10 @@ int main()
     std::cout << "\n=== Saving Mesh ===" << std::endl;
 
     try {
-        vcl::saveMesh(mesh, VCLIB_RESULTS_PATH "/001_mesh-basics_triangle.ply");
-        vcl::saveMesh(
-            polyMesh, VCLIB_RESULTS_PATH "/001_mesh-basics_polygon.ply");
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
+
+        vcl::saveMesh(mesh, resultsPath + "/001_mesh-basics_triangle.ply");
+        vcl::saveMesh(polyMesh, resultsPath + "/001_mesh-basics_polygon.ply");
 
         std::cout << "Saved meshes to results directory" << std::endl;
     }
