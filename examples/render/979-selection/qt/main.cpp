@@ -27,11 +27,9 @@
 #include <vclib/render/render_app.h>
 #include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
 
-#include <QApplication>
-
 int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
+    auto app = vcl::qt::qAppl(argc, argv);
 
     using MeshType = vcl::TriMesh;
 
