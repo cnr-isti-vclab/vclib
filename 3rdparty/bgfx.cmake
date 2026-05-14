@@ -22,7 +22,7 @@
 
 find_package(bgfx QUIET)
 
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
+set(BGFX_VERSION 1.143.9248-539)
 
 if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
@@ -88,7 +88,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v1.143.9241-534
+        GIT_TAG        v${BGFX_VERSION}
         EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(bgfx)
@@ -114,4 +114,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 else()
     message(FATAL_ERROR
         "bgfx is required - be sure to clone recursively the vclib repository.")
+endif()
+
+if (TARGET vclib-3rd-bgfx)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
 endif()
