@@ -20,6 +20,8 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+set(BGFX_VERSION 1.143.9241-534)
+
 find_package(bgfx QUIET)
 
 set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
@@ -88,7 +90,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v1.143.9241-534
+        GIT_TAG        v${BGFX_VERSION}
         EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(bgfx)
