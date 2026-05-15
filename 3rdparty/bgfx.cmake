@@ -24,8 +24,6 @@ set(BGFX_VERSION 1.143.9248-539)
 
 find_package(bgfx QUIET)
 
-set(BGFX_VERSION 1.143.9248-539)
-
 if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
 
