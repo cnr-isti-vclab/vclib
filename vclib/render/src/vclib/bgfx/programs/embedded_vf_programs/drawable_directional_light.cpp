@@ -18,25 +18,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+ *****************************************************************************/
 
 #include <vclib/bgfx/programs/embedded_vf_programs/drawable_directional_light.h>
 
-#include <vclib/shaders/drawable/drawable_directional_light/fs_drawable_directional_light.sc.glsl.bin.h>
-#include <vclib/shaders/drawable/drawable_directional_light/vs_drawable_directional_light.sc.glsl.bin.h>
+#include <vclib/bgfx/programs/macros.h>
 
-#include <vclib/shaders/drawable/drawable_directional_light/fs_drawable_directional_light.sc.essl.bin.h>
-#include <vclib/shaders/drawable/drawable_directional_light/vs_drawable_directional_light.sc.essl.bin.h>
+// clang-format off
+#define COMMON_PATH vclib/shaders/drawable/drawable_directional_light
+// clang-format on
+#define VS_NAME vs_drawable_directional_light
+#define FS_NAME fs_drawable_directional_light
 
-#include <vclib/shaders/drawable/drawable_directional_light/fs_drawable_directional_light.sc.spv.bin.h>
-#include <vclib/shaders/drawable/drawable_directional_light/vs_drawable_directional_light.sc.spv.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, FS_NAME.sc.bin.h)
+
 #ifdef _WIN32
-#include <vclib/shaders/drawable/drawable_directional_light/fs_drawable_directional_light.sc.dx11.bin.h>
-#include <vclib/shaders/drawable/drawable_directional_light/vs_drawable_directional_light.sc.dx11.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, FS_NAME.sc.bin.h)
+
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, VS_NAME.sc.bin.h)
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, FS_NAME.sc.bin.h)
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/drawable/drawable_directional_light/fs_drawable_directional_light.sc.mtl.bin.h>
-#include <vclib/shaders/drawable/drawable_directional_light/vs_drawable_directional_light.sc.mtl.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, FS_NAME.sc.bin.h)
 #endif // __APPLE__
 
 namespace vcl {
@@ -49,32 +61,36 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     case bgfx::RendererType::OpenGLES:
         return {
             type,
-            vs_drawable_directional_light_essl,
-            sizeof(vs_drawable_directional_light_essl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, essl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
         return {
             type,
-            vs_drawable_directional_light_glsl,
-            sizeof(vs_drawable_directional_light_glsl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, glsl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
         return {
             type,
-            vs_drawable_directional_light_spv,
-            sizeof(vs_drawable_directional_light_spv)};
+            VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, spv),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
         return {
             type,
-            vs_drawable_directional_light_dx11,
-            sizeof(vs_drawable_directional_light_dx11)};
+            VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, dxbc),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type,
+        //     VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, dxil),
+        //     sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
         return {
             type,
-            vs_drawable_directional_light_mtl,
-            sizeof(vs_drawable_directional_light_mtl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, mtl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(VS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }
@@ -88,32 +104,36 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     case bgfx::RendererType::OpenGLES:
         return {
             type,
-            fs_drawable_directional_light_essl,
-            sizeof(fs_drawable_directional_light_essl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, essl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
         return {
             type,
-            fs_drawable_directional_light_glsl,
-            sizeof(fs_drawable_directional_light_glsl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, glsl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
         return {
             type,
-            fs_drawable_directional_light_spv,
-            sizeof(fs_drawable_directional_light_spv)};
+            VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, spv),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
         return {
             type,
-            fs_drawable_directional_light_dx11,
-            sizeof(fs_drawable_directional_light_dx11)};
+            VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, dxbc),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type,
+        //     VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, dxil),
+        //     sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
         return {
             type,
-            fs_drawable_directional_light_mtl,
-            sizeof(fs_drawable_directional_light_mtl)};
+            VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, mtl),
+            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(FS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }

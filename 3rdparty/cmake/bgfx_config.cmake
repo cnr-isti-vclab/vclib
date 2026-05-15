@@ -20,9 +20,62 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-get_property(BGFX_CMAKE_SCRIPTS_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_CMAKE_SCRIPTS_PATH)
+# Replace original bgfx profile names with the ones used by vclib
+function(_bgfx_get_profile_path_ext PROFILE PROFILE_PATH_EXT)
+    string(REPLACE 100_es essl PROFILE ${PROFILE})
+    string(REPLACE 300_es essl PROFILE ${PROFILE})
+    string(REPLACE 120 glsl PROFILE ${PROFILE})
+    string(REPLACE 430 glsl PROFILE ${PROFILE})
+    string(REPLACE s_5_0 dxbc PROFILE ${PROFILE})
+    string(REPLACE s_6_0 dxil PROFILE ${PROFILE})
 
-include(${BGFX_CMAKE_SCRIPTS_PATH}/bgfxToolUtils.cmake)
+    string(REPLACE 140 glsl PROFILE ${PROFILE})
+    string(REPLACE 400 glsl PROFILE ${PROFILE})
+    string(REPLACE 320_es essl PROFILE ${PROFILE})
+    string(REPLACE metal22-11 mtl PROFILE ${PROFILE})
+
+    # after replacing metal22-11
+    string(REPLACE metal mtl PROFILE ${PROFILE})
+
+    set(${PROFILE_PATH_EXT} ${PROFILE} PARENT_SCOPE)
+endfunction()
+
+# Replace original bgfx profile names with the ones used by vclib
+function(_bgfx_get_profile_ext PROFILE PROFILE_EXT)
+    string(REPLACE 100_es essl PROFILE ${PROFILE})
+    string(REPLACE 300_es essl PROFILE ${PROFILE})
+    string(REPLACE 120 glsl PROFILE ${PROFILE})
+    string(REPLACE 430 glsl PROFILE ${PROFILE})
+    string(REPLACE spirv spv PROFILE ${PROFILE})
+    string(REPLACE s_5_0 dxbc PROFILE ${PROFILE})
+    string(REPLACE s_6_0 dxil PROFILE ${PROFILE})
+
+    string(REPLACE 140 glsl PROFILE ${PROFILE})
+    string(REPLACE 400 glsl PROFILE ${PROFILE})
+    string(REPLACE 320_es essl PROFILE ${PROFILE})
+    string(REPLACE metal22-11 mtl PROFILE ${PROFILE})
+
+    # after replacing metal22-11
+    string(REPLACE metal mtl PROFILE ${PROFILE})
+
+    set(${PROFILE_EXT} ${PROFILE} PARENT_SCOPE)
+endfunction()
+
+#get_property(BGFX_CMAKE_SCRIPTS_PATH
+#    TARGET vclib-3rd-bgfx
+#    PROPERTY BGFX_CMAKE_SCRIPTS_PATH)
+
+#include(${BGFX_CMAKE_SCRIPTS_PATH}/bgfxToolUtils.cmake)
+
+# set profiles
+function(set_bgfx_profiles)
+    set(VCLIB_BGFX_GLSL_PROFILE 140 PARENT_SCOPE)
+    set(VCLIB_BGFX_GLSL_COMPUTE_PROFILE 400 PARENT_SCOPE)
+    set(VCLIB_BGFX_ESSL_PROFILE 320_es PARENT_SCOPE)
+    set(VCLIB_BGFX_SPIRV_PROFILE spirv PARENT_SCOPE)
+    set(VCLIB_BGFX_DX_PROFILE s_5_0 PARENT_SCOPE)
+    set(VCLIB_BGFX_METAL_PROFILE metal22-11 PARENT_SCOPE)
+endfunction()
 
 function(_set_bgfx_profiles)
     set(GLSL_PROFILE 140 PARENT_SCOPE)
@@ -329,6 +382,25 @@ function(build_bgfx_shaders_to_headers)
 
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
 
+    set_bgfx_profiles()
+    set(BGFX_VF_PROFILES
+        ${VCLIB_BGFX_GLSL_PROFILE}
+        ${VCLIB_BGFX_ESSL_PROFILE}
+        ${VCLIB_BGFX_SPIRV_PROFILE})
+    set(BGFX_COMPUTE_PROFILES
+        ${VCLIB_BGFX_GLSL_COMPUTE_PROFILE}
+        ${VCLIB_BGFX_ESSL_PROFILE}
+        ${VCLIB_BGFX_SPIRV_PROFILE})
+
+    if (APPLE)
+        list(APPEND BGFX_VF_PROFILES ${VCLIB_BGFX_METAL_PROFILE})
+        list(APPEND BGFX_COMPUTE_PROFILES ${VCLIB_BGFX_METAL_PROFILE})
+    endif()
+    if (WIN32)
+        list(APPEND BGFX_VF_PROFILES ${VCLIB_BGFX_DX_PROFILE})
+        list(APPEND BGFX_COMPUTE_PROFILES ${VCLIB_BGFX_DX_PROFILE})
+    endif()
+
     foreach(SHADER ${ARGV})
         file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
         get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
@@ -349,18 +421,25 @@ function(build_bgfx_shaders_to_headers)
 
         if(NOT "${TYPE}" STREQUAL "")
             if ("${TYPE}" STREQUAL "COMPUTE")
-                set(VARYING_DEF_PATH)
+                bgfx_compile_shaders(
+                    TYPE COMPUTE
+                    SHADERS ${SHADER}
+                    OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
+                    INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
+                    PROFILES ${BGFX_COMPUTE_PROFILES}
+                    AS_HEADERS
+                )
             else()
-                set(VARYING_DEF_PATH "${ABSOLUTE_DIR_PATH}/varying.def.sc")
+                bgfx_compile_shaders(
+                    TYPE ${TYPE}
+                    SHADERS ${SHADER}
+                    VARYING_DEF ${ABSOLUTE_DIR_PATH}/varying.def.sc
+                    OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
+                    INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
+                    PROFILES ${BGFX_VF_PROFILES}
+                    AS_HEADERS
+                )
             endif()
-            _bgfx_compile_shader_to_header(
-                TYPE ${TYPE}
-                SHADERS ${ABSOLUTE_PATH_SHADER}
-                VARYING_DEF ${VARYING_DEF_PATH}
-                OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
-                INCLUDE_DIRS "${BGFX_DIR}/src;${VCLIB_RENDER_DIR};${VCLIB_RENDER_SHADER_DIR}"
-                DEPENDS ${ARGV}
-            )
         endif()
     endforeach()
 endfunction()
