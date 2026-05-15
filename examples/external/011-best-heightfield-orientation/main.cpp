@@ -43,7 +43,7 @@ int main()
 
     auto bunnyMeshes = bestHeightfieldOrientation("bunny.obj", "Bunny", 100);
 
-     // for each mesh in the std::tuple
+    // for each mesh in the std::tuple
     std::apply(
         [&](const auto&... mesh) {
             (fnSave(mesh), ...);

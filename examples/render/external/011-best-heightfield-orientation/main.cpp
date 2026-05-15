@@ -33,11 +33,8 @@ int main(int argc, char** argv)
     // merge the meshes into a single tuple
     auto allMeshes = std::tuple_cat(brainMeshes, bunnyMeshes);
 
-    auto closure = [&](auto&&... meshes){
-        return showMeshesOnDefaultViewer(
-            argc,
-            argv,
-            meshes...);
+    auto closure = [&](auto&&... meshes) {
+        return showMeshesOnDefaultViewer(argc, argv, meshes...);
     };
 
     std::apply(closure, allMeshes);
