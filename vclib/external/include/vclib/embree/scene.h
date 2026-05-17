@@ -494,7 +494,7 @@ public:
             return filteredHits;
         }
 
-        constexpr uint MAX_RAY_STEPS = 2048;
+        constexpr uint MAX_RAY_STEPS  = 2048;
         const float    nearAdvanceEps = eps;
 
         float rayAdvance = eps;
@@ -532,7 +532,7 @@ public:
             uint    fID = mIndexMap.polygon(rayhit.hit.primID);
             float   w   = 1.f - rayhit.hit.u - rayhit.hit.v;
             Point3f barycentricCoords(w, rayhit.hit.u, rayhit.hit.v);
-            uint triID = rayhit.hit.primID - mIndexMap.triangleBegin(fID);
+            uint    triID = rayhit.hit.primID - mIndexMap.triangleBegin(fID);
 
             filteredHits.push_back(
                 std::make_tuple(fID, barycentricCoords, triID, tHit));
@@ -575,11 +575,11 @@ public:
         RTCBounds bounds;
         rtcGetSceneBounds(mScene, &bounds);
 
-        const double dx = bounds.upper_x - bounds.lower_x;
-        const double dy = bounds.upper_y - bounds.lower_y;
-        const double dz = bounds.upper_z - bounds.lower_z;
+        const double dx       = bounds.upper_x - bounds.lower_x;
+        const double dy       = bounds.upper_y - bounds.lower_y;
+        const double dz       = bounds.upper_z - bounds.lower_z;
         const double diagonal = std::sqrt(dx * dx + dy * dy + dz * dz);
-        const double EPS = 1e-6 * diagonal;
+        const double EPS      = 1e-6 * diagonal;
 
         if (!std::isfinite(EPS) || EPS <= 0.0) {
             return {};
