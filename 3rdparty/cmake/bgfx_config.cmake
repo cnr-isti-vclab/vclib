@@ -87,15 +87,21 @@ function(target_ide_add_assets target_name)
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
-function(build_bgfx_shaders_to_headers)
-    target_ide_add_bgfx_shaders(vclib-render ${ARGV})
+function(vclib_build_shader)
+    # single value arguments: SHADER, OUT_DIR, [VARYING_DEF]
+    # options: AS_HEADER
+    set(options AS_HEADER)
+    set(oneValueArgs SHADER OUT_DIR VARYING_DEF)
+    set(multiValueArgs)
+    cmake_parse_arguments(ARG
+        "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
-    get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
-    get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
-    get_property(BGFX_SHADER_INCLUDE_PATH TARGET vclib-3rd-bgfx PROPERTY BGFX_SHADER_INCLUDE_PATH)
-
-    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
+    if (NOT ARG_SHADER)
+        message(FATAL_ERROR "vclib_build_shader: missing SHADER argument")
+    endif()
+    if (NOT ARG_OUT_DIR)
+        message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
+    endif()
 
     set_bgfx_profiles()
     set(BGFX_VF_PROFILES
@@ -116,46 +122,84 @@ function(build_bgfx_shaders_to_headers)
         list(APPEND BGFX_COMPUTE_PROFILES ${VCLIB_BGFX_DX_PROFILE})
     endif()
 
+    if (ARG_AS_HEADER)
+        set(AS_HEADER_OPTION AS_HEADERS)
+    else()
+        set(AS_HEADER_OPTION "")
+    endif()
+
+    get_property(VCLIB_RENDER_DIR
+        TARGET vclib::render
+        PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+    get_property(VCLIB_RENDER_SHADER_DIR
+        TARGET vclib::render
+        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+
+    get_filename_component(FILENAME "${ARG_SHADER}" NAME_WE)
+    get_filename_component(ABSOLUTE_PATH_SHADER ${ARG_SHADER} ABSOLUTE)
+    get_filename_component(ABSOLUTE_DIR_PATH ${ABSOLUTE_PATH_SHADER} DIRECTORY)
+
+    # used by bgfx_compile_shaders to resolve includes in shaders
+    get_property(BGFX_SHADER_INCLUDE_PATH
+        TARGET vclib-3rd-bgfx
+        PROPERTY BGFX_SHADER_INCLUDE_PATH)
+
+    string(SUBSTRING "${FILENAME}" 0 2 TYPE)
+    if("${TYPE}" STREQUAL "fs")
+        set(TYPE "FRAGMENT")
+    elseif("${TYPE}" STREQUAL "vs")
+        set(TYPE "VERTEX")
+    elseif("${TYPE}" STREQUAL "cs")
+        set(TYPE "COMPUTE")
+    else()
+        set(TYPE "")
+    endif()
+
+    if ("${TYPE}" STREQUAL "COMPUTE")
+        set(VARYING_DEF_ARGUMENT "")
+        set(PROFILES_ARGUMENT PROFILES ${BGFX_COMPUTE_PROFILES})
+    else()
+        if(ARG_VARYING_DEF)
+            set(VARYING_DEF_ARGUMENT VARYING_DEF ${ARG_VARYING_DEF})
+        else()
+            set(VARYING_DEF_ARGUMENT VARYING_DEF ${ABSOLUTE_DIR_PATH}/varying.def.sc)
+        endif()
+        set(PROFILES_ARGUMENT PROFILES ${BGFX_VF_PROFILES})
+    endif()
+
+    if(NOT "${TYPE}" STREQUAL "")
+        bgfx_compile_shaders(
+            TYPE ${TYPE}
+            SHADERS ${ARG_SHADER}
+            ${VARYING_DEF_ARGUMENT}
+            OUTPUT_DIR ${ARG_OUT_DIR}
+            INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
+            ${PROFILES_ARGUMENT}
+            ${AS_HEADER_OPTION}
+        )
+    endif()
+endfunction()
+
+function(build_bgfx_shaders_to_headers)
+    target_ide_add_bgfx_shaders(vclib-render ${ARGV})
+
+    get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
+    get_property(VCLIB_RENDER_SHADER_DIR
+        TARGET vclib::render
+        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+
+    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
+
     foreach(SHADER ${ARGV})
         file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
         get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
-        get_filename_component(FILENAME "${SHADER}" NAME_WE)
-        get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)
-        get_filename_component(ABSOLUTE_DIR_PATH ${ABSOLUTE_PATH_SHADER} DIRECTORY)
+        set(OUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
 
-        string(SUBSTRING "${FILENAME}" 0 2 TYPE)
-        if("${TYPE}" STREQUAL "fs")
-            set(TYPE "FRAGMENT")
-        elseif("${TYPE}" STREQUAL "vs")
-            set(TYPE "VERTEX")
-        elseif("${TYPE}" STREQUAL "cs")
-            set(TYPE "COMPUTE")
-        else()
-            set(TYPE "")
-        endif()
-
-        if(NOT "${TYPE}" STREQUAL "")
-            if ("${TYPE}" STREQUAL "COMPUTE")
-                bgfx_compile_shaders(
-                    TYPE COMPUTE
-                    SHADERS ${SHADER}
-                    OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
-                    INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
-                    PROFILES ${BGFX_COMPUTE_PROFILES}
-                    AS_HEADERS
-                )
-            else()
-                bgfx_compile_shaders(
-                    TYPE ${TYPE}
-                    SHADERS ${SHADER}
-                    VARYING_DEF ${ABSOLUTE_DIR_PATH}/varying.def.sc
-                    OUTPUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH}
-                    INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
-                    PROFILES ${BGFX_VF_PROFILES}
-                    AS_HEADERS
-                )
-            endif()
-        endif()
+        vclib_build_shader(
+            SHADER ${SHADER}
+            OUT_DIR ${OUT_DIR}
+            AS_HEADER
+        )
     endforeach()
 endfunction()
 
