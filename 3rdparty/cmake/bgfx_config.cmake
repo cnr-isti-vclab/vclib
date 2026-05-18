@@ -20,8 +20,6 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config_old.cmake)
-
 # Replace original bgfx profile names with the ones used by vclib
 function(_bgfx_get_profile_path_ext PROFILE PROFILE_PATH_EXT)
     string(REPLACE 100_es essl PROFILE ${PROFILE})
@@ -225,4 +223,37 @@ function(build_assets_to_headers)
             ARRAY_NAME ${FILENAME_WE}
         )
     endforeach()
+endfunction()
+
+# Function to add a list of shaders to a target
+# When building tha target, the shaders will be compiled and placed in the
+# following directory:
+# <BINARY_DIR>/shaders/<platform>/<PATH_TO_/FILE_NAME>.bin
+# Note: if the path to the shader begins with "shaders/", it will be removed
+# (the same is done in the "bgf::loadProgram" function)
+function(target_add_bgfx_shaders target_name)
+    get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
+
+    list(REMOVE_AT ARGV 0)
+
+    foreach(SHADER ${ARGV})
+        get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)
+        get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
+
+        # if DIR_PATH begins with "shaders/", remove it
+        if (DIR_PATH MATCHES "^shaders/")
+            string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
+        endif()
+        # if DIR_PATH is "shaders", replace it with "./"
+        if (DIR_PATH STREQUAL "shaders")
+            set(DIR_PATH "./")
+        endif()
+
+        set(OUT_DIR ${TARGET_BIN_DIR}/shaders/${DIR_PATH})
+
+        vclib_build_shader(
+            SHADER "${ABSOLUTE_PATH_SHADER}"
+            OUT_DIR "${OUT_DIR}")
+    endforeach()
+    target_ide_add_bgfx_shaders(${target_name} ${ARGV})
 endfunction()
