@@ -64,9 +64,6 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_DIR})
-
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
@@ -103,9 +100,6 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
-
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_SOURCE_DIR}/cmake)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src)
