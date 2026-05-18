@@ -61,16 +61,6 @@ function(_bgfx_get_profile_ext PROFILE PROFILE_EXT)
     set(${PROFILE_EXT} ${PROFILE} PARENT_SCOPE)
 endfunction()
 
-# set profiles
-function(set_bgfx_profiles)
-    set(VCLIB_BGFX_GLSL_PROFILE 140 PARENT_SCOPE)
-    set(VCLIB_BGFX_GLSL_COMPUTE_PROFILE 400 PARENT_SCOPE)
-    set(VCLIB_BGFX_ESSL_PROFILE 320_es PARENT_SCOPE)
-    set(VCLIB_BGFX_SPIRV_PROFILE spirv PARENT_SCOPE)
-    set(VCLIB_BGFX_DX_PROFILE s_5_0 PARENT_SCOPE)
-    set(VCLIB_BGFX_METAL_PROFILE metal22-11 PARENT_SCOPE)
-endfunction()
-
 function(target_ide_add_bgfx_shaders target_name)
     list(REMOVE_AT ARGV 0)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${ARGV})
@@ -101,23 +91,31 @@ function(vclib_build_shader)
         message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
     endif()
 
-    set_bgfx_profiles()
     set(BGFX_VF_PROFILES
-        ${VCLIB_BGFX_GLSL_PROFILE}
-        ${VCLIB_BGFX_ESSL_PROFILE}
-        ${VCLIB_BGFX_SPIRV_PROFILE})
+        140    # glsl
+        320_es # essl
+        spirv  # spirv
+    )
     set(BGFX_COMPUTE_PROFILES
-        ${VCLIB_BGFX_GLSL_COMPUTE_PROFILE}
-        ${VCLIB_BGFX_ESSL_PROFILE}
-        ${VCLIB_BGFX_SPIRV_PROFILE})
-
+        400    # glsl
+        320_es # essl
+        spirv  # spirv
+    )
     if (APPLE)
-        list(APPEND BGFX_VF_PROFILES ${VCLIB_BGFX_METAL_PROFILE})
-        list(APPEND BGFX_COMPUTE_PROFILES ${VCLIB_BGFX_METAL_PROFILE})
+        list(APPEND BGFX_VF_PROFILES
+            metal22-11 # metal
+        )
+        list(APPEND BGFX_COMPUTE_PROFILES
+            metal22-11 # metal
+        )
     endif()
     if (WIN32)
-        list(APPEND BGFX_VF_PROFILES ${VCLIB_BGFX_DX_PROFILE})
-        list(APPEND BGFX_COMPUTE_PROFILES ${VCLIB_BGFX_DX_PROFILE})
+        list(APPEND BGFX_VF_PROFILES
+            s_5_0 # dxbc, dx11
+        )
+        list(APPEND BGFX_COMPUTE_PROFILES
+            s_5_0 # dxbc, dx11
+        )
     endif()
 
     if (ARG_AS_HEADER)
