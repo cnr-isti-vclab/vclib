@@ -1,49 +1,46 @@
 # usage (e.g. to generate the embedded shader files for drawable axis:
-# python gen_embedded_shader.py -e DRAWABLE_AXIS -v drawable/drawable_axis/vs_drawable_axis.sc -f drawable/drawable_axis/fs_drawable_axis.sc
+# python gen_embedded_shader.py -e DRAWABLE_AXIS -p vclib/shaders/drawable/drawable_axis -v vs_drawable_axis.sc -f fs_drawable_axis.sc
 # or, for compute shaders:
-# python gen_embedded_shader.py -e DRAWABLE_AXIS -c drawable/drawable_axis/compute_drawable_axis.sc
+# python gen_embedded_shader.py -e DRAWABLE_AXIS -p vclib/shaders/drawable/drawable_axis -c compute_drawable_axis.sc
 
 import argparse
 
-def replace_strings(input_string, enum_name, vertex_shader_path = None, fragment_shader_path = None, compute_shader_path=None):
+def replace_strings(input_string, enum_name, shader_path=None, vertex_shader_name=None, fragment_shader_name=None, compute_shader_name=None):
     enum_name_lc = enum_name.lower()
     enum_name_uc = enum_name.upper()
 
     input_string = input_string.replace('%PR_NAME_UC%', enum_name_uc)
     input_string = input_string.replace('%PR_NAME_LC%', enum_name_lc)
 
-    if vertex_shader_path is not None:
-        vertex_shader_name = vertex_shader_path.split('/')[-1].split('.')[0]
-        input_string = input_string.replace('%PR_VS_PATH%', vertex_shader_path)
+    if shader_path is not None:
+        input_string = input_string.replace('%PR_PATH%', shader_path)
+
+    if vertex_shader_name is not None:
         input_string = input_string.replace('%PR_VS_NAME%', vertex_shader_name)
 
-    if fragment_shader_path is not None:
-        fragment_shader_name = fragment_shader_path.split('/')[-1].split('.')[0]
-        input_string = input_string.replace('%PR_FS_PATH%', fragment_shader_path)
+    if fragment_shader_name is not None:
         input_string = input_string.replace('%PR_FS_NAME%', fragment_shader_name)
 
-    if compute_shader_path is not None:
-        compute_shader_name = compute_shader_path.split('/')[-1].split('.')[0]
-        input_string = input_string.replace('%PR_CS_PATH%', compute_shader_path)
+    if compute_shader_name is not None:
         input_string = input_string.replace('%PR_CS_NAME%', compute_shader_name)
 
     return input_string
 
-def create_c_file(f_input, f_output, enum_name, compute_shader_path):
+def create_c_file(f_input, f_output, enum_name, shader_path, compute_shader_name):
     with open(f_input, 'r') as f:
         input_string = f.read()
 
-    output_string = replace_strings(input_string, enum_name, compute_shader_path=compute_shader_path)
+    output_string = replace_strings(input_string, enum_name, shader_path=shader_path, compute_shader_name=compute_shader_name)
 
     with open(f_output, 'w') as f:
         f.write(output_string)
     print(f"File {f_output} created successfully.")
 
-def create_vf_files(f_input, f_output, enum_name, vertex_shader_path, fragment_shader_path):
+def create_vf_files(f_input, f_output, enum_name, shader_path, vertex_shader_name, fragment_shader_name):
     with open(f_input, 'r') as f:
         input_string = f.read()
 
-    output_string = replace_strings(input_string, enum_name, vertex_shader_path, fragment_shader_path)
+    output_string = replace_strings(input_string, enum_name, shader_path=shader_path, vertex_shader_name=vertex_shader_name, fragment_shader_name=fragment_shader_name)
 
     with open(f_output, 'w') as f:
         f.write(output_string)
@@ -54,14 +51,16 @@ def main():
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument('-e', '--enum', help='Enum name used for the shader, it should be written using upper case.', required=True)
-    parser.add_argument('-v', '--vertex', help='Vertex shader file path, starting from the vclib/bgfx root dir', required=False)
-    parser.add_argument('-f', '--fragment', help='Fragment shader file path, starting from the vclib/bgfx root dir', required=False)
-    parser.add_argument('-c', '--compute', help='Compute shader file path, starting from the vclib/bgfx root dir', required=False)
+    parser.add_argument('-p', '--path', help='Path to the shader directory, starting from the vclib/bgfx root dir', required=True)
+    parser.add_argument('-v', '--vertex', help='Vertex shader filename (e.g. vs_drawable_axis.sc)', required=False)
+    parser.add_argument('-f', '--fragment', help='Fragment shader filename (e.g. fs_drawable_axis.sc)', required=False)
+    parser.add_argument('-c', '--compute', help='Compute shader filename (e.g. compute_drawable_axis.sc)', required=False)
 
     args = parser.parse_args()
 
     enum_name = args.enum
     enum_name_lc = enum_name.lower()
+    shader_path = args.path
 
     # the user should input both vertex and fragment shaders, or just compute shader
     if args.vertex is None and args.fragment is None and args.compute is None:
@@ -69,11 +68,11 @@ def main():
         return
 
     if args.compute is None:
-        vertex_shader_path = args.vertex
-        fragment_shader_path = args.fragment
+        vertex_shader_name = args.vertex.split('/')[-1].split('.')[0]
+        fragment_shader_name = args.fragment.split('/')[-1].split('.')[0]
 
-        create_vf_files('templates/embedded_vf_programs/header.h', '../include/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.h', enum_name, vertex_shader_path, fragment_shader_path)
-        create_vf_files('templates/embedded_vf_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.cpp', enum_name, vertex_shader_path, fragment_shader_path)
+        create_vf_files('templates/embedded_vf_programs/header.h', '../include/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.h', enum_name, shader_path, vertex_shader_name, fragment_shader_name)
+        create_vf_files('templates/embedded_vf_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_vf_programs/' + enum_name_lc + '.cpp', enum_name, shader_path, vertex_shader_name, fragment_shader_name)
 
         # Update the embedded_vf_programs.h file to include the new header
         with open('../include/vclib/bgfx/programs/embedded_vf_programs.h', 'r') as f:
@@ -85,10 +84,10 @@ def main():
         with open('../include/vclib/bgfx/programs/embedded_vf_programs.h', 'w') as f:
             f.writelines(lines)
     else:
-        compute_shader_path = args.compute
+        compute_shader_name = args.compute.split('/')[-1].split('.')[0]
 
-        create_c_file('templates/embedded_c_programs/header.h', '../include/vclib/bgfx/programs/embedded_c_programs/' + enum_name_lc + '.h', enum_name, compute_shader_path)
-        create_c_file('templates/embedded_c_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_c_programs/' + enum_name_lc + '.cpp', enum_name, compute_shader_path)
+        create_c_file('templates/embedded_c_programs/header.h', '../include/vclib/bgfx/programs/embedded_c_programs/' + enum_name_lc + '.h', enum_name, shader_path, compute_shader_name)
+        create_c_file('templates/embedded_c_programs/source.cpp', '../src/vclib/bgfx/programs/embedded_c_programs/' + enum_name_lc + '.cpp', enum_name, shader_path, compute_shader_name)
 
 
         # Update the embedded_c_programs.h file to include the new header

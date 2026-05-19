@@ -65,7 +65,7 @@ inline void setUpBGFX(
         bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
     program = vcl::loadProgram(
-        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
+        "shaders/vs_vertex_shader.sc", "shaders/fs_fragment_shader.sc");
 
     bgfx::touch(viewId);
 }

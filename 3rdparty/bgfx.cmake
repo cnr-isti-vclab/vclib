@@ -20,9 +20,9 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(bgfx QUIET)
+set(BGFX_VERSION 1.143.9253-543)
 
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
+find_package(bgfx QUIET)
 
 if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
@@ -64,9 +64,6 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_DIR})
-
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
@@ -88,7 +85,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v1.143.9241-534
+        GIT_TAG        v${BGFX_VERSION}
         EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(bgfx)
@@ -105,13 +102,17 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_SOURCE_DIR}/cmake)
-
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 else()
     message(FATAL_ERROR
         "bgfx is required - be sure to clone recursively the vclib repository.")
+endif()
+
+if (TARGET vclib-3rd-bgfx)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
 endif()
