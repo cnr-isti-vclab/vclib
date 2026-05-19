@@ -34,6 +34,8 @@
 #include "core/line.h"
 #include "core/material.h"
 #include "core/matrix.h"
+#include "core/ortho_basis.h"
+#include "core/ortho_frame.h"
 #include "core/parallel_vector_tuple.h"
 #include "core/plane.h"
 #include "core/point.h"

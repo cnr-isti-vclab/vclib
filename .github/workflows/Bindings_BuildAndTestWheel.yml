@@ -31,7 +31,10 @@ jobs:
           echo "python-version=3.12" >> $GITHUB_OUTPUT
         fi
     - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -51,7 +54,7 @@ jobs:
       run: |
         winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.22
+      uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         key: bindings-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build Wheel
