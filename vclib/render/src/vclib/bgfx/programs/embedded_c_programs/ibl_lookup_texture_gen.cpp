@@ -53,37 +53,26 @@ bgfx::EmbeddedShader::Data ComputeLoader<
     switch (type) {
     case bgfx::RendererType::OpenGLES:
         return {
-            type,
-            VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, essl),
-            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, essl))};
+            type, VCLIB_JOIN(CS_NAME, essl), sizeof(VCLIB_JOIN(CS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
         return {
-            type,
-            VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, glsl),
-            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, glsl))};
+            type, VCLIB_JOIN(CS_NAME, glsl), sizeof(VCLIB_JOIN(CS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
         return {
-            type,
-            VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, spv),
-            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, spv))};
+            type, VCLIB_JOIN(CS_NAME, spv), sizeof(VCLIB_JOIN(CS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
         return {
-            type,
-            VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, dxbc),
-            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, dxbc))};
+            type, VCLIB_JOIN(CS_NAME, dxbc), sizeof(VCLIB_JOIN(CS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
         // return {
-        //     type,
-        //     VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, dxil),
-        //     sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, dxil))};
+        //     type, VCLIB_JOIN(CS_NAME, dxil), sizeof(VCLIB_JOIN(CS_NAME,
+        //     dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
         return {
-            type,
-            VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, mtl),
-            sizeof(VCLIB_JOIN_WITH_UNDERSCORE(CS_NAME, mtl))};
+            type, VCLIB_JOIN(CS_NAME, mtl), sizeof(VCLIB_JOIN(CS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }

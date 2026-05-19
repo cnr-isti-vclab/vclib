@@ -34,12 +34,12 @@
 #define VCLIB_BGFX_SHADER(path, profile, file) \
     VCLIB_TOSTRING(path/profile/file)
 
-// VCLIB_JOIN_WITH_UNDERSCORE concatenates two tokens with an underscore.
+// VCLIB_JOIN concatenates two tokens with an underscore.
 // usage:
-// VCLIB_JOIN_WITH_UNDERSCORE(token1, token2)
+// VCLIB_JOIN(token1, token2)
 // result:
 // token1_token2
-#define VCLIB_JOIN_WITH_UNDERSCORE2(a, b) a ## _ ## b
-#define VCLIB_JOIN_WITH_UNDERSCORE(a, b) VCLIB_JOIN_WITH_UNDERSCORE2(a, b)
+#define VCLIB_JOIN2(a, b) a ## _ ## b
+#define VCLIB_JOIN(a, b) VCLIB_JOIN2(a, b)
 
 #endif // VCL_BGFX_PROGRAMS_MACROS_H
