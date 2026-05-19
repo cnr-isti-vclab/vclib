@@ -22,66 +22,96 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/selection_face_visible_render_pass.h>
 
-#include <vclib/shaders/selection/face_visible/fs_face_visible.sc.glsl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_face_visible.sc.glsl.bin.h>
+#include <vclib/bgfx/programs/macros.h>
 
-#include <vclib/shaders/selection/face_visible/fs_face_visible.sc.essl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_face_visible.sc.essl.bin.h>
+// clang-format off
+#define COMMON_PATH vclib/shaders/selection/face_visible
+// clang-format on
+#define VS_NAME vs_face_visible
+#define FS_NAME fs_face_visible
 
-#include <vclib/shaders/selection/face_visible/fs_face_visible.sc.spv.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_face_visible.sc.spv.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, FS_NAME.sc.bin.h)
+
 #ifdef _WIN32
-#include <vclib/shaders/selection/face_visible/fs_face_visible.sc.dx11.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_face_visible.sc.dx11.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, FS_NAME.sc.bin.h)
+
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, VS_NAME.sc.bin.h)
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, FS_NAME.sc.bin.h)
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/selection/face_visible/fs_face_visible.sc.mtl.bin.h>
-#include <vclib/shaders/selection/face_visible/vs_face_visible.sc.mtl.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, FS_NAME.sc.bin.h)
 #endif // __APPLE__
 
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_face_visible_essl, sizeof(vs_face_visible_essl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, essl), sizeof(VCLIB_JOIN(VS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_face_visible_glsl, sizeof(vs_face_visible_glsl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, glsl), sizeof(VCLIB_JOIN(VS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_face_visible_spv, sizeof(vs_face_visible_spv)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, spv), sizeof(VCLIB_JOIN(VS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_face_visible_dx11, sizeof(vs_face_visible_dx11)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, dxbc), sizeof(VCLIB_JOIN(VS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type, VCLIB_JOIN(VS_NAME, dxil), sizeof(VCLIB_JOIN(VS_NAME,
+        //     dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_face_visible_mtl, sizeof(vs_face_visible_mtl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, mtl), sizeof(VCLIB_JOIN(VS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_face_visible_essl, sizeof(fs_face_visible_essl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, essl), sizeof(VCLIB_JOIN(FS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_face_visible_glsl, sizeof(fs_face_visible_glsl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, glsl), sizeof(VCLIB_JOIN(FS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_face_visible_spv, sizeof(fs_face_visible_spv)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, spv), sizeof(VCLIB_JOIN(FS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_face_visible_dx11, sizeof(fs_face_visible_dx11)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, dxbc), sizeof(VCLIB_JOIN(FS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type, VCLIB_JOIN(FS_NAME, dxil), sizeof(VCLIB_JOIN(FS_NAME,
+        //     dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_face_visible_mtl, sizeof(fs_face_visible_mtl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, mtl), sizeof(VCLIB_JOIN(FS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }
