@@ -20,23 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H
+#ifndef VCL_BGFX_PROGRAMS_MACROS_H
+#define VCL_BGFX_PROGRAMS_MACROS_H
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#define VCLIB_STRINGIFY(x) #x
+#define VCLIB_TOSTRING(x) VCLIB_STRINGIFY(x)
 
-namespace vcl {
+// VCLIB_BGFX_SHADER creates the include directive for the shader file.
+// usage:
+// #include VCLIB_BGFX_SHADER(path, profile, file)
+// result:
+// #include "path/profile/file"
+#define VCLIB_BGFX_SHADER(path, profile, file) \
+    VCLIB_TOSTRING(path/profile/file)
 
-template<>
-struct VertFragLoader<VertFragProgram::%PR_NAME_UC%>
-{
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+// VCLIB_JOIN concatenates two tokens with an underscore.
+// usage:
+// VCLIB_JOIN(token1, token2)
+// result:
+// token1_token2
+#define VCLIB_JOIN2(a, b) a ## _ ## b
+#define VCLIB_JOIN(a, b) VCLIB_JOIN2(a, b)
 
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_%PR_NAME_UC%_H
+#endif // VCL_BGFX_PROGRAMS_MACROS_H

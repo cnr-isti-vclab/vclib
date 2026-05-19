@@ -39,4 +39,4 @@ vclib_add_example(${EXAMPLE_NAME}
     MODULE render
     SOURCES ${HEADERS} ${SOURCES})
 
-target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
+vclib_target_add_shaders(${PROJECT_NAME} ${SHADERS})
