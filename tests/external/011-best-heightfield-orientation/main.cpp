@@ -46,7 +46,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMeshIndexed,
     vcl::PolyMeshIndexedf)
 {
-    using TestMesh  = TestType;
+    using TestMesh   = TestType;
     using ScalarType = typename TestMesh::ScalarType;
 
     using namespace vcl;
@@ -69,11 +69,10 @@ TEMPLATE_TEST_CASE(
 
         // require that the angle between bestNormal and EXPECTED_RESULT is less
         // than ANGLE_TOLERANCE_DEGREES
-        const ScalarType angle = std::acos(
-            std::clamp(
-                bestNormal.normalized().dot(EXPECTED_RESULT),
-                ScalarType(-1.0),
-                ScalarType(1.0)));
+        const ScalarType angle = std::acos(std::clamp(
+            bestNormal.normalized().dot(EXPECTED_RESULT),
+            ScalarType(-1.0),
+            ScalarType(1.0)));
         REQUIRE(angle < ANGLE_TOLERANCE_DEGREES * M_PI / 180.0);
     }
 }

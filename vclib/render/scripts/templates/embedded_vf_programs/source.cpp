@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,21 +22,33 @@
 
 #include <vclib/bgfx/programs/embedded_vf_programs/%PR_NAME_LC%.h>
 
-#include <vclib/shaders/%PR_FS_PATH%.glsl.bin.h>
-#include <vclib/shaders/%PR_VS_PATH%.glsl.bin.h>
+#include <vclib/bgfx/programs/macros.h>
 
-#include <vclib/shaders/%PR_FS_PATH%.essl.bin.h>
-#include <vclib/shaders/%PR_VS_PATH%.essl.bin.h>
+// clang-format off
+#define COMMON_PATH %PR_PATH%
+// clang-format on
+#define VS_NAME %PR_VS_NAME%
+#define FS_NAME %PR_FS_NAME%
 
-#include <vclib/shaders/%PR_FS_PATH%.spv.bin.h>
-#include <vclib/shaders/%PR_VS_PATH%.spv.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, essl, FS_NAME.sc.bin.h)
+
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, spirv, FS_NAME.sc.bin.h)
+
 #ifdef _WIN32
-#include <vclib/shaders/%PR_FS_PATH%.dx11.bin.h>
-#include <vclib/shaders/%PR_VS_PATH%.dx11.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, FS_NAME.sc.bin.h)
+
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, VS_NAME.sc.bin.h)
+// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, FS_NAME.sc.bin.h)
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <vclib/shaders/%PR_FS_PATH%.mtl.bin.h>
-#include <vclib/shaders/%PR_VS_PATH%.mtl.bin.h>
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, VS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, FS_NAME.sc.bin.h)
 #endif // __APPLE__
 
 namespace vcl {
@@ -46,19 +58,27 @@ bgfx::EmbeddedShader::Data VertFragLoader<
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, %PR_VS_NAME%_essl, sizeof(%PR_VS_NAME%_essl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, essl), sizeof(VCLIB_JOIN(VS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
-        return {type, %PR_VS_NAME%_glsl, sizeof(%PR_VS_NAME%_glsl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, glsl), sizeof(VCLIB_JOIN(VS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
-        return {type, %PR_VS_NAME%_spv, sizeof(%PR_VS_NAME%_spv)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, spv), sizeof(VCLIB_JOIN(VS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, %PR_VS_NAME%_dx11, sizeof(%PR_VS_NAME%_dx11)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, dxbc), sizeof(VCLIB_JOIN(VS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type, VCLIB_JOIN(VS_NAME, dxil), sizeof(VCLIB_JOIN(VS_NAME,
+        //     dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, %PR_VS_NAME%_mtl, sizeof(%PR_VS_NAME%_mtl)};
+        return {
+            type, VCLIB_JOIN(VS_NAME, mtl), sizeof(VCLIB_JOIN(VS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }
@@ -69,19 +89,27 @@ bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::%PR_NAME_UC%>::
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, %PR_FS_NAME%_essl, sizeof(%PR_FS_NAME%_essl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, essl), sizeof(VCLIB_JOIN(FS_NAME, essl))};
     case bgfx::RendererType::OpenGL:
-        return {type, %PR_FS_NAME%_glsl, sizeof(%PR_FS_NAME%_glsl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, glsl), sizeof(VCLIB_JOIN(FS_NAME, glsl))};
     case bgfx::RendererType::Vulkan:
-        return {type, %PR_FS_NAME%_spv, sizeof(%PR_FS_NAME%_spv)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, spv), sizeof(VCLIB_JOIN(FS_NAME, spv))};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, %PR_FS_NAME%_dx11, sizeof(%PR_FS_NAME%_dx11)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, dxbc), sizeof(VCLIB_JOIN(FS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
+        // return {
+        //     type, VCLIB_JOIN(FS_NAME, dxil), sizeof(VCLIB_JOIN(FS_NAME,
+        //     dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, %PR_FS_NAME%_mtl, sizeof(%PR_FS_NAME%_mtl)};
+        return {
+            type, VCLIB_JOIN(FS_NAME, mtl), sizeof(VCLIB_JOIN(FS_NAME, mtl))};
 #endif
     default: return {type, nullptr, 0};
     }
