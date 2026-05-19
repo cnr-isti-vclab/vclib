@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -61,20 +61,25 @@ function(_bgfx_get_profile_ext PROFILE PROFILE_EXT)
     set(${PROFILE_EXT} ${PROFILE} PARENT_SCOPE)
 endfunction()
 
-function(target_ide_add_bgfx_shaders target_name)
+function(_vclib_target_ide_add_shaders target_name)
     list(REMOVE_AT ARGV 0)
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
 # Function to add a list of assets to a target
-function(target_ide_add_assets target_name)
+function(_vclib_target_ide_add_assets target_name)
     list(REMOVE_AT ARGV 0)
-
     source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Asset Files" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
+# vclib_build_shader(
+#   SHADER <shader_file>
+#   OUT_DIR <output_directory>
+#   [VARYING_DEF <varying_def_file>]
+#   [AS_HEADER]
+# )
 function(vclib_build_shader)
     # single value arguments: SHADER, OUT_DIR, [VARYING_DEF]
     # options: AS_HEADER
@@ -172,12 +177,14 @@ function(vclib_build_shader)
             INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
+            # NO_SOURCE_GROUP
         )
     endif()
 endfunction()
 
-function(build_bgfx_shaders_to_headers)
-    target_ide_add_bgfx_shaders(vclib-render ${ARGV})
+# vclib_build_shaders_to_headers(<shader_file1> <shader_file2> ...)
+function(vclib_build_shaders_to_headers)
+    _vclib_target_ide_add_shaders(vclib-render ${ARGV})
 
     get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
     get_property(VCLIB_RENDER_SHADER_DIR
@@ -199,8 +206,9 @@ function(build_bgfx_shaders_to_headers)
     endforeach()
 endfunction()
 
-function(build_assets_to_headers)
-    target_ide_add_assets(vclib-render ${ARGV})
+# vclib_build_assets_to_headers(<asset_file1> <asset_file2> ...)
+function(vclib_build_assets_to_headers)
+    _vclib_target_ide_add_assets(vclib-render ${ARGV})
 
     get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
     get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
@@ -223,13 +231,14 @@ function(build_assets_to_headers)
     endforeach()
 endfunction()
 
-# Function to add a list of shaders to a target
+# vclib_target_add_shaders(<target_name> <shader_file1> <shader_file2> ...)
+# Function to add a list of shaders to a target.
 # When building tha target, the shaders will be compiled and placed in the
 # following directory:
 # <BINARY_DIR>/shaders/<platform>/<PATH_TO_/FILE_NAME>.bin
 # Note: if the path to the shader begins with "shaders/", it will be removed
 # (the same is done in the "bgf::loadProgram" function)
-function(target_add_bgfx_shaders target_name)
+function(vclib_target_add_shaders target_name)
     get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
 
     list(REMOVE_AT ARGV 0)
@@ -253,5 +262,5 @@ function(target_add_bgfx_shaders target_name)
             SHADER "${ABSOLUTE_PATH_SHADER}"
             OUT_DIR "${OUT_DIR}")
     endforeach()
-    target_ide_add_bgfx_shaders(${target_name} ${ARGV})
+    _vclib_target_ide_add_shaders(${target_name} ${ARGV})
 endfunction()

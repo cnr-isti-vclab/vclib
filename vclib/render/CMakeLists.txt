@@ -148,8 +148,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_BGFX)
 
-    build_bgfx_shaders_to_headers(${SHADERS})
-    build_assets_to_headers(${ASSETS})
+    vclib_build_shaders_to_headers(${SHADERS})
+    vclib_build_assets_to_headers(${ASSETS})
 endif()
 
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
