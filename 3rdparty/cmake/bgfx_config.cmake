@@ -177,7 +177,7 @@ function(vclib_build_shader)
             INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
-            # NO_SOURCE_GROUP
+            NO_SOURCE_GROUP
         )
     endif()
 endfunction()
