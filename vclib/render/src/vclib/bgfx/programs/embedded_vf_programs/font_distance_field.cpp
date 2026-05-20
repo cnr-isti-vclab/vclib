@@ -54,8 +54,8 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::FONT_DISTANCE_FIELD>::
-    vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::FONT_DISTANCE_FIELD>::vertexShader(bgfx::RendererType::Enum
+                                                            type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

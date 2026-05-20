@@ -24,7 +24,7 @@
 #define VCL_BGFX_PROGRAMS_MACROS_H
 
 #define VCLIB_STRINGIFY(x) #x
-#define VCLIB_TOSTRING(x) VCLIB_STRINGIFY(x)
+#define VCLIB_TOSTRING(x)  VCLIB_STRINGIFY(x)
 
 // VCLIB_BGFX_SHADER creates the include directive for the shader file.
 // usage:
@@ -32,14 +32,14 @@
 // result:
 // #include "path/profile/file"
 #define VCLIB_BGFX_SHADER(path, profile, file) \
-    VCLIB_TOSTRING(path/profile/file)
+    VCLIB_TOSTRING(path / profile / file)
 
 // VCLIB_JOIN concatenates two tokens with an underscore.
 // usage:
 // VCLIB_JOIN(token1, token2)
 // result:
 // token1_token2
-#define VCLIB_JOIN2(a, b) a ## _ ## b
-#define VCLIB_JOIN(a, b) VCLIB_JOIN2(a, b)
+#define VCLIB_JOIN2(a, b) a##_##b
+#define VCLIB_JOIN(a, b)  VCLIB_JOIN2(a, b)
 
 #endif // VCL_BGFX_PROGRAMS_MACROS_H
