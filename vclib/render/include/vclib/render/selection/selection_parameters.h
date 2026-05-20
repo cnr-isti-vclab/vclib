@@ -28,7 +28,14 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
+namespace vcl {
+
 // NOT IMPLEMENTED
+struct SelectionParameters
+{
+};
+
+}
 #endif
 
 #endif // VCL_RENDER_SELECTION_SELECTION_PARAMETERS_H
