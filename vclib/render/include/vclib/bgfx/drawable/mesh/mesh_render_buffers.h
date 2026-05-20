@@ -29,7 +29,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
-#include <vclib/bgfx/index_buffer_to_cpu_handler.h>
+#include <vclib/bgfx/read_from_gpu_buffer.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
 
@@ -92,7 +92,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
 
     // Handler used to copy selection buffers to CPU
-    IndexBufferToCpuHandler mSelectionToCPUBufferHandler;
+    detail::ReadFromGPUBuffer mSelectionToCPUBufferHandler;
     VertexBuffer            mVertexTangentsBuffer;
 
     // point splatting
@@ -358,8 +358,8 @@ public:
             idxBuf       = &mSelectedVerticesBuffer;
             elementCount = Base::numVerts();
         }
-        mSelectionToCPUBufferHandler.copyFromGPU(
-            *idxBuf, elementCount, elementBitSize);
+        mSelectionToCPUBufferHandler.submit(
+            *idxBuf, elementCount, elementBitSize, nullptr);
         return 2;
     }
 
@@ -765,7 +765,7 @@ private:
         }
 
         mSelectionToCPUBufferHandler =
-            std::move(IndexBufferToCpuHandler(uint(ceil(
+            std::move(detail::ReadFromGPUBuffer(uint(ceil(
                 max(double(Base::numVerts()), double(Base::numTris())) /
                 8.0))));
     }
