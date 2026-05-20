@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_PROGRAMS_MACROS_H
 #define VCL_BGFX_PROGRAMS_MACROS_H
 
+// clang-format off
+
 #define VCLIB_STRINGIFY(x) #x
 #define VCLIB_TOSTRING(x)  VCLIB_STRINGIFY(x)
 
@@ -32,7 +34,7 @@
 // result:
 // #include "path/profile/file"
 #define VCLIB_BGFX_SHADER(path, profile, file) \
-    VCLIB_TOSTRING(path / profile / file)
+    VCLIB_TOSTRING(path/profile/file)
 
 // VCLIB_JOIN concatenates two tokens with an underscore.
 // usage:
@@ -41,5 +43,7 @@
 // token1_token2
 #define VCLIB_JOIN2(a, b) a##_##b
 #define VCLIB_JOIN(a, b)  VCLIB_JOIN2(a, b)
+
+// clang-format on
 
 #endif // VCL_BGFX_PROGRAMS_MACROS_H
