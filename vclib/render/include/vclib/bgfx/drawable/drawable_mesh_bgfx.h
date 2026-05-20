@@ -30,7 +30,6 @@
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
-#include <vclib/render/selection/selectable.h>
 #include <vclib/render/selection/selection_box.h>
 
 #include <bgfx/bgfx.h>
@@ -42,8 +41,7 @@ namespace vcl {
 template<MeshConcept MeshType>
 class DrawableMeshBGFX :
         public AbstractDrawableMesh,
-        public MeshType,
-        public Selectable
+        public MeshType
 {
 public:
     // TODO: to be removed after shader benchmarks
@@ -125,7 +123,7 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
-    void calculateSelection(const SelectionParameters& params) override
+    void computeSelection(const SelectionParameters& params) override
     {
         if (!isVisible()) {
             return;

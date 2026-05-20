@@ -26,6 +26,8 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/render/selection/selection_parameters.h>
+
 #include <vclib/space/core/matrix.h>
 
 namespace vcl {
@@ -80,6 +82,8 @@ public:
     {
         return EMPTY_IMAGE;
     }
+
+    virtual void computeSelection(const SelectionParameters& params) {};
 
     // DrawableObject implementation
 

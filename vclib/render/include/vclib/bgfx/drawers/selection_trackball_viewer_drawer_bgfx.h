@@ -30,7 +30,6 @@
 #include <vclib/bgfx/drawable/drawable_mesh_bgfx.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/selection_trackball_event_drawer.h>
-#include <vclib/render/selection/selectable.h>
 #include <vclib/render/selection/selection_box.h>
 
 #include <bx/math.h>
@@ -344,15 +343,15 @@ private:
                                  sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
             0
         };
-        // Call calculateSelection method on all the DrawableObjects which
-        // implement the Selectable interface REMINDER: in this context objectId
-        // 0 is reserved to indicate a fragment which did NOT pass in face
-        // visible selection
+        // Call computeSelection member function on all the
+        // AbstractDrawableMeshes. REMINDER: in this context objectId 0 is
+        // reserved to indicate a fragment which did NOT pass in face visible
+        // selection
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
             params.meshId = uint(i + 1);
             auto el       = ParentViewer::mDrawList->at(i);
-            if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                p->calculateSelection(params);
+            if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                p->computeSelection(params);
             }
         }
         ParentViewer::selectionCalculated();
@@ -384,7 +383,8 @@ private:
         Box3d totalBB;
         for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
             std::shared_ptr<DrawableObject> el = ParentViewer::mDrawList->at(i);
-            if (!el->isVisible() || !dynamic_cast<Selectable*>(el.get())) {
+            if (!el->isVisible() ||
+                !dynamic_cast<AbstractDrawableMesh*>(el.get())) {
                 continue;
             }
             Box3d bb = el->boundingBox();
