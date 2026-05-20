@@ -257,53 +257,15 @@ public:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+        const uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                               BGFX_STATE_WRITE_Z |
+                               BGFX_STATE_DEPTH_TEST_LEQUAL;
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
         }
-
-        if constexpr (HasFaces<MeshType>) {
-            std::vector<uint8_t> vec;
-            uint                 count = 0;
-            switch (mBufToTexRemainingFrames) {
-            case 0:
-                mBufToTexRemainingFrames = 255;
-                vec                      = mMRB.getSelectionBufferCopy();
-                for (size_t index = 0; index < vec.size(); index++) {
-                    count += uint(std::bitset<8>(vec[index]).count());
-                }
-                std::cout << "Selected count: " << count << std::endl;
-                break;
-            case 255: break;
-            default: mBufToTexRemainingFrames--;
-            }
-        }
-
-        // VISIBLE FACES SELECTION DEBUGGING
-        //{
-        //    if (mVisSelTexRBFrames == 0) {
-        //        mVisSelTexRBFrames = 255;
-        //        std::fstream file;
-        //        file.open("output.ppm", std::ios::binary | std::ios::out);
-        //        file << "P6\n" << mColAttSize[0] << " " << mColAttSize[1]
-        //        <<"\n255\n"; size_t index = 0; for (const uint8_t& val:
-        //        mTexReadBackVec) {
-        //            ++index;
-        //            if (index%4 == 1) {
-        //                continue;
-        //            }
-        //            uint8_t newval = val * 128;
-        //            file.write(reinterpret_cast<const char*>(&newval), 1);
-        //        }
-        //        file.close();
-        //    } else if (mVisSelTexRBFrames != 255) {
-        //        mVisSelTexRBFrames--;
-        //    }
-        //}
 
         DrawableMeshUniforms::setColor(*this);
         MeshRenderSettingsUniforms::set(mMRS);
@@ -410,41 +372,52 @@ public:
             }
         }
 
-    }
+        // draw selection
+        {
+            std::vector<uint8_t> vec;
+            uint                 count = 0;
+            switch (mBufToTexRemainingFrames) {
+            case 0:
+                mBufToTexRemainingFrames = 255;
+                vec                      = mMRB.getSelectionBufferCopy();
+                for (size_t index = 0; index < vec.size(); index++) {
+                    count += uint(std::bitset<8>(vec[index]).count());
+                }
+                std::cout << "Selected count: " << count << std::endl;
+                break;
+            case 255: break;
+            default: mBufToTexRemainingFrames--;
+            }
 
-    void drawSelection(bgfx::ViewId viewId) override {
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
+            // vertices
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS);
+            bindUniforms();
+            mMRB.bindSelectedVerticesBuffer();
 
-        vcl::Matrix44f model = vcl::Matrix44f::Identity();
+            bgfx::setState(
+                state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS |
+                BGFX_STATE_DEPTH_TEST_LEQUAL);
+            bgfx::setTransform(model.data());
 
-        if constexpr (HasTransformMatrix<MeshType>) {
-            model = MeshType::transformMatrix().template cast<float>();
+            bgfx::submit(
+                settings.additionalViewIds[2],
+                pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
+
+            // faces
+            mMRB.bindVertexBuffers(mMRS);
+            mMRB.bindIndexBuffers(mMRS);
+            bindUniforms();
+            mMRB.bindSelectedFacesBuffer();
+
+            bgfx::setState(
+                state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_DEPTH_TEST_LEQUAL);
+            bgfx::setTransform(model.data());
+
+            bgfx::submit(
+                settings.additionalViewIds[2],
+                pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
         }
-        ProgramManager& pm = Context::instance().programManager();
-        mMRB.bindVertexBuffers(mMRS);
-        mMRB.bindIndexBuffers(mMRS);
-        bindUniforms();
-        mMRB.bindSelectedVerticesBuffer();
-
-        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS | BGFX_STATE_DEPTH_TEST_LEQUAL);
-        bgfx::setTransform(model.data());
-
-        bgfx::submit(
-            viewId,
-            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
-
-        mMRB.bindVertexBuffers(mMRS);
-        mMRB.bindIndexBuffers(mMRS);
-        bindUniforms();
-        mMRB.bindSelectedFacesBuffer();
-
-        bgfx::setState(state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_DEPTH_TEST_LEQUAL);
-        bgfx::setTransform(model.data());
-
-        bgfx::submit(
-            viewId,
-            pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
     }
 
     void drawId(const DrawObjectSettings& settings) const override

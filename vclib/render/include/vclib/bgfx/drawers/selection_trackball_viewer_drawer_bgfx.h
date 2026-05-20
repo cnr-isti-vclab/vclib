@@ -264,16 +264,6 @@ public:
             }
         }
 
-        bgfx::setViewTransform(mSelectionDrawingViewId, TED::viewMatrix().data(), TED::projectionMatrix().data());
-
-        for (size_t i = 0; i < ParentViewer::mDrawList->size(); i++) {
-            auto el       = ParentViewer::mDrawList->at(i);
-            if (auto p = dynamic_cast<Selectable*>(el.get())) {
-                p->drawSelection(mSelectionDrawingViewId);
-            }
-        }
-
-        //drawSelectionBox(viewId, calculateWindowSpaceMeshBB());
         drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
 
         if (!ParentViewer::isSelectionTemporary()) {

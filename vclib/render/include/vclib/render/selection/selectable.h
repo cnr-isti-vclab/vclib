@@ -38,7 +38,6 @@ class Selectable
 {
 public:
     virtual void calculateSelection(const SelectionParameters& params) = 0;
-    virtual void drawSelection(bgfx::ViewId viewId) = 0;
 };
 
 } // namespace vcl
