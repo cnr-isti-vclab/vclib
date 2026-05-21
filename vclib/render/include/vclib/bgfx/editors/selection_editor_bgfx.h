@@ -255,6 +255,27 @@ public:
         if (!mInitialized)
             return;
 
+        // Re-configure visible selection views every frame — required by Qt
+        // (all other views follow this pattern; see context.cpp comment)
+        bgfx::setViewFrameBuffer(
+            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer);
+        bgfx::setViewClear(
+            mVisibleSelectionViewIds[0],
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+            0u);
+        bgfx::setViewRect(
+            mVisibleSelectionViewIds[0],
+            0,
+            0,
+            sVisibleFaceFramebufferSize,
+            sVisibleFaceFramebufferSize);
+        bgfx::touch(mVisibleSelectionViewIds[0]);
+
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB);
+        bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
+        bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
+        bgfx::touch(mVisibleSelectionViewIds[1]);
+
         // Re-set up the overlay view each frame (handles canvas resize)
         Base::viewerSetupOverlayView(mSelectionDrawingViewId);
 
