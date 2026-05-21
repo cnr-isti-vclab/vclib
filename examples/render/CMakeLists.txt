@@ -54,7 +54,6 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         add_subdirectory(950-pbr)
         add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
-        add_subdirectory(979-selection)
     endif()
 
     add_subdirectory(999-misc)

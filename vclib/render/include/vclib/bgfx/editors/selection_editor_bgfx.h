@@ -35,12 +35,7 @@
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 
-#include <functional>
-#include <map>
-
 namespace vcl {
-
-enum class ToolSets { DEFAULT, SELECTION };
 
 template<typename ViewerDrawer>
 class SelectionEditorBGFX : public Editor<ViewerDrawer>
@@ -61,113 +56,92 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
 
     // ---- Selection event state ----
     mutable SelectionBox  mSelectionBox;
-    ToolSets              mCurrentToolset             = ToolSets::DEFAULT;
-    mutable SelectionMode mCurrentSelectionMode       = SelectionMode::VERTEX_REGULAR;
-    SelectionMode         mPreviousNonAtomicSelectionMode =
-        SelectionMode::VERTEX_REGULAR;
-    mutable bool mSelectionCalcRequired  = false;
-    bool         mLMBHeld               = false;
-    bool         mLMBPressPositionTaken = false;
-    bool         mRMBHeld               = false;
-    bool         mMMBHeld               = false;
+    mutable SelectionMode mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
+    mutable bool          mSelectionCalcRequired = false;
+    bool                  mLMBHeld               = false;
+    bool                  mLMBPressPositionTaken = false;
 
     // ---- Rendering state ----
     mutable SelectionBox mBoxToDraw;
 
-    void setPrevModIfNonAtomic()
+    // ---- Settings helpers ----
+
+    /**
+     * @brief Returns true if selection is currently active: the editor is
+     * active and at least one of the 'selectVertices'/'selectFaces' settings
+     * is enabled.
+     */
+    bool isSelectionActive() const
     {
-        if (mCurrentSelectionMode.isAtomicMode()) {
-            return;
-        }
-        mPreviousNonAtomicSelectionMode = mCurrentSelectionMode;
+        if (!Base::isActive())
+            return false;
+        const auto& cs = Base::settings().customSettings;
+        bool sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool sf = std::any_cast<bool>(cs.at("selectFaces"));
+        return sv || sf;
     }
 
-    std::map<std::pair<Key::Enum, KeyModifiers>, std::function<void()>>
-        mKeyMap = {
-            {{Key::A, {KeyModifier::NO_MODIFIER}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::VERTEX_ADD;
-             }},
-            {{Key::A, {KeyModifier::SHIFT}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::VERTEX_ALL;
-             }},
-            {{Key::D, {KeyModifier::NO_MODIFIER}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::VERTEX_NONE;
-             }},
-            {{Key::S, {KeyModifier::NO_MODIFIER}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::VERTEX_SUBTRACT;
-             }},
-            {{Key::I, {KeyModifier::NO_MODIFIER}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::VERTEX_INVERT;
-             }},
-            {{Key::R, {KeyModifier::NO_MODIFIER}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
-             }},
-            {{Key::R, {KeyModifier::CONTROL}},
-             [&]() {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_REGULAR;
-             }},
-            {{Key::A, {KeyModifier::CONTROL}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_ADD;
-             }},
-            {{Key::A, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::FACE_ALL;
-             }},
-            {{Key::D, {KeyModifier::CONTROL}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::FACE_NONE;
-             }},
-            {{Key::S, {KeyModifier::CONTROL}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_SUBTRACT;
-             }},
-            {{Key::I, {KeyModifier::CONTROL}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mSelectionCalcRequired = true;
-                 mCurrentSelectionMode  = SelectionMode::FACE_INVERT;
-             }},
-            {{Key::R, {KeyModifier::CONTROL, KeyModifier::ALT}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_REGULAR;
-             }},
-            {{Key::A, {KeyModifier::CONTROL, KeyModifier::ALT}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_ADD;
-             }},
-            {{Key::S, {KeyModifier::CONTROL, KeyModifier::ALT}},
-             [&] {
-                 setPrevModIfNonAtomic();
-                 mCurrentSelectionMode = SelectionMode::FACE_VISIBLE_SUBTRACT;
-             }},
-    };
+    /**
+     * @brief Maps the current settings and drag modifier to the appropriate
+     * SelectionMode.
+     *
+     * Priority: vertices over faces when both flags are set.
+     * 'onlyVisible' is applied only for face selection.
+     *
+     * No modifier  → REGULAR (replace)
+     * Ctrl         → ADD
+     * Ctrl+Shift   → SUBTRACT
+     */
+    SelectionMode selectionModeForModifier(const KeyModifiers& mods) const
+    {
+        const auto& cs = Base::settings().customSettings;
+        bool sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool ov = std::any_cast<bool>(cs.at("onlyVisible"));
 
-    std::map<std::pair<Key::Enum, KeyModifiers>, bool> mPressActionExecuted = {};
+        bool isVertex  = sv; // vertex has priority when both flags are true
+        bool isVisible = !isVertex && ov;
+
+        bool ctrlShift =
+            mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
+        bool ctrlOnly =
+            mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
+
+        if (ctrlShift) {
+            if (isVertex) return SelectionMode::VERTEX_SUBTRACT;
+            if (isVisible) return SelectionMode::FACE_VISIBLE_SUBTRACT;
+            return SelectionMode::FACE_SUBTRACT;
+        }
+        if (ctrlOnly) {
+            if (isVertex) return SelectionMode::VERTEX_ADD;
+            if (isVisible) return SelectionMode::FACE_VISIBLE_ADD;
+            return SelectionMode::FACE_ADD;
+        }
+        // No (relevant) modifier → REGULAR
+        if (isVertex) return SelectionMode::VERTEX_REGULAR;
+        if (isVisible) return SelectionMode::FACE_VISIBLE_REGULAR;
+        return SelectionMode::FACE_REGULAR;
+    }
+
+    SelectionMode allModeForSettings() const
+    {
+        bool sv = std::any_cast<bool>(
+            Base::settings().customSettings.at("selectVertices"));
+        return sv ? SelectionMode::VERTEX_ALL : SelectionMode::FACE_ALL;
+    }
+
+    SelectionMode noneModeForSettings() const
+    {
+        bool sv = std::any_cast<bool>(
+            Base::settings().customSettings.at("selectVertices"));
+        return sv ? SelectionMode::VERTEX_NONE : SelectionMode::FACE_NONE;
+    }
+
+    SelectionMode invertModeForSettings() const
+    {
+        bool sv = std::any_cast<bool>(
+            Base::settings().customSettings.at("selectVertices"));
+        return sv ? SelectionMode::VERTEX_INVERT : SelectionMode::FACE_INVERT;
+    }
 
 public:
     SelectionEditorBGFX()
@@ -179,11 +153,6 @@ public:
         mVertexLayout.begin()
             .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
             .end();
-
-        // The editor starts active: it behaves like the old
-        // SelectionTrackBallEventDrawer that was always in the event chain.
-        // In DEFAULT toolset it does not consume any events.
-        Base::setActive(true);
     }
 
     ~SelectionEditorBGFX()
@@ -297,81 +266,66 @@ public:
                 mSelectionDrawingViewId, vm.data(), pm.data());
         }
 
-        calculateSelections(viewId);
-
-        drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
+        if (isSelectionActive()) {
+            calculateSelections(viewId);
+            drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
+        }
+        else {
+            mBoxToDraw.nullAll();
+            mSelectionBox.nullAll();
+        }
 
         if (!mLMBHeld) {
             mBoxToDraw.nullAll();
         }
     }
 
+    /**
+     * @brief Handles Ctrl+A (select all), Ctrl+D (deselect all), Ctrl+I
+     * (invert selection). Returns true only when one of those shortcuts is
+     * consumed.
+     */
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        // Alt+S toggles the toolset (when no mouse buttons are held and no
-        // pending selection exists)
-        if (key == Key::S && modifiers == KeyModifiers {KeyModifier::ALT} &&
-            !mRMBHeld && !mMMBHeld && !mLMBHeld && !mSelectionCalcRequired) {
-            mCurrentToolset =
-                (mCurrentToolset == ToolSets::DEFAULT ? ToolSets::SELECTION :
-                                                        ToolSets::DEFAULT);
-            if (mCurrentToolset == ToolSets::DEFAULT) {
-                for (auto& it : mPressActionExecuted) {
-                    it.second = false;
-                }
+        if (!isSelectionActive() || mLMBHeld)
+            return false;
+
+        if (modifiers[KeyModifier::CONTROL] && !modifiers[KeyModifier::ALT] &&
+            !modifiers[KeyModifier::SHIFT]) {
+            switch (key) {
+            case Key::A:
+                mCurrentSelectionMode  = allModeForSettings();
+                mSelectionCalcRequired = true;
+                return true;
+            case Key::D:
+                mCurrentSelectionMode  = noneModeForSettings();
+                mSelectionCalcRequired = true;
+                return true;
+            case Key::I:
+                mCurrentSelectionMode  = invertModeForSettings();
+                mSelectionCalcRequired = true;
+                return true;
+            default: break;
             }
         }
-
-        if (mCurrentToolset == ToolSets::DEFAULT) {
-            return false; // Don't consume events in DEFAULT mode
-        }
-
-        // ---- SELECTION toolset ----
-        if (mLMBHeld) {
-            return true; // Block all keys while drawing a selection box
-        }
-        auto pair  = std::make_pair(key, modifiers);
-        auto found = mKeyMap.find(pair);
-        if (found == mKeyMap.end()) {
-            return true; // Block unrecognised keys in SELECTION mode
-        }
-        auto found2 = mPressActionExecuted.find(pair);
-        if (found2 == mPressActionExecuted.end()) {
-            mPressActionExecuted.insert({{pair, false}});
-            found2 = mPressActionExecuted.find(pair);
-        }
-        if (found2->second) {
-            return true; // Key already handled this press cycle
-        }
-        found->second();
-        mPressActionExecuted[pair] = true;
-        return true;
+        return false;
     }
 
     bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (mCurrentToolset == ToolSets::DEFAULT) {
-            return false;
-        }
-        auto pair  = std::make_pair(key, modifiers);
-        auto found = mPressActionExecuted.find(pair);
-        if (found == mPressActionExecuted.end()) {
-            return true;
-        }
-        found->second = false;
-        return true;
+        return false;
     }
 
     bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
-        if (mCurrentToolset == ToolSets::DEFAULT) {
+        if (!isSelectionActive())
             return false;
-        }
         if (mLMBHeld) {
             mSelectionBox.set2({x, y});
+            mCurrentSelectionMode  = selectionModeForModifier(modifiers);
             mSelectionCalcRequired = true;
         }
-        return true; // Block trackball rotation in SELECTION mode
+        return true; // Consume all mouse-move events while selection is active
     }
 
     bool onMousePress(
@@ -380,22 +334,16 @@ public:
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        // Always track button state for the Alt+S condition check
-        switch (button) {
-        case MouseButton::RIGHT: mRMBHeld = true; break;
-        case MouseButton::LEFT: mLMBHeld = true; break;
-        case MouseButton::MIDDLE: mMMBHeld = true; break;
-        default: break;
-        }
-        if (mCurrentToolset == ToolSets::DEFAULT) {
+        if (!isSelectionActive())
             return false;
-        }
-        if (mLMBHeld && !mLMBPressPositionTaken) {
+        if (button == MouseButton::LEFT && !mLMBHeld) {
+            mLMBHeld               = true;
+            mLMBPressPositionTaken = true;
             mSelectionBox.set1({x, y});
             mSelectionBox.set2({x, y});
-            mLMBPressPositionTaken = true;
+            mCurrentSelectionMode = selectionModeForModifier(modifiers);
         }
-        return true;
+        return true; // Consume all mouse-press events while selection is active
     }
 
     bool onMouseRelease(
@@ -404,21 +352,20 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        switch (button) {
-        case MouseButton::RIGHT: mRMBHeld = false; break;
-        case MouseButton::LEFT: mLMBHeld = false; break;
-        case MouseButton::MIDDLE: mMMBHeld = false; break;
-        default: break;
+        if (button == MouseButton::LEFT && mLMBHeld) {
+            mLMBHeld               = false;
+            mLMBPressPositionTaken = false;
+            if (isSelectionActive()) {
+                mSelectionCalcRequired = true;
+            }
         }
-        if (mCurrentToolset == ToolSets::DEFAULT) {
-            return false;
-        }
-        if (mLMBHeld) {
-            return true;
-        }
-        mLMBPressPositionTaken = false;
-        mSelectionCalcRequired = true;
-        return true;
+        return isSelectionActive();
+    }
+
+    bool onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+        override
+    {
+        return isSelectionActive();
     }
 
 private:
@@ -604,9 +551,6 @@ private:
         mSelectionCalcRequired = false;
         if (!mLMBHeld) {
             mSelectionBox.nullAll();
-        }
-        if (mCurrentSelectionMode.isAtomicMode()) {
-            mCurrentSelectionMode = mPreviousNonAtomicSelectionMode;
         }
     }
 };
