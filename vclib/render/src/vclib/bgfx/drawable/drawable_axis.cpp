@@ -28,6 +28,12 @@
 
 namespace vcl {
 
+/**
+ * @brief Constructs a DrawableAxis with the specified size.
+ *
+ * @param[in] size: The scale factor for the axis indicator. Larger values
+ * produce longer axes. Default is 1.
+ */
 DrawableAxis::DrawableAxis(double size)
 {
     createAxis();
@@ -35,11 +41,31 @@ DrawableAxis::DrawableAxis(double size)
     updateMatrices(size);
 }
 
+/**
+ * @brief Sets the size of the axis indicator.
+ *
+ * Updates the scale of all three axes uniformly. This modifies the
+ * transformation matrices used during rendering.
+ *
+ * @param[in] size: The new scale factor for the axis indicator.
+ */
 void DrawableAxis::setSize(double size)
 {
     updateMatrices(size);
 }
 
+/**
+ * @brief Draws the axis indicator if it is currently visible.
+ *
+ * Renders three colored axes (X=red, Y=green, Z=blue), each composed of
+ * a cylinder body and a cone tip. The axis is drawn at the origin using
+ * the current transformation matrices.
+ *
+ * @param[in] settings: The drawing settings, including view ID and other
+ * render parameters.
+ *
+ * @see DrawableObject::draw()
+ */
 void DrawableAxis::draw(const DrawObjectSettings& settings) const
 {
     using enum VertFragProgram;
@@ -69,6 +95,14 @@ void DrawableAxis::draw(const DrawObjectSettings& settings) const
     }
 }
 
+/**
+ * @brief Updates the transformation matrices for all three axes.
+ *
+ * Computes the scale and rotation matrices that position each axis
+ * along its corresponding principal direction (X, Y, Z).
+ *
+ * @param[in] size: The scale factor to apply to all axes.
+ */
 void DrawableAxis::updateMatrices(double size)
 {
     mMatrices[0](0, 1) = size;
@@ -87,6 +121,12 @@ void DrawableAxis::updateMatrices(double size)
     mMatrices[2](3, 3) = 1;
 }
 
+/**
+ * @brief Initializes GPU render buffers for the axis meshes.
+ *
+ * Creates and binds vertex/index buffers for the cylinder and cone
+ * components of the axis indicator using the static axis meshes.
+ */
 void DrawableAxis::createAxis()
 {
     using MRI = MeshRenderInfo;
