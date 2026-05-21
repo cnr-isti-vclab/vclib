@@ -90,8 +90,10 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
         if (!block) {
             switch (key) {
-            case Key::T: mCustomShortcutToggleTrackballCallback(); break;
-
+            case Key::T:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    mCustomShortcutToggleTrackballCallback();
+                break;
             default: break;
             }
         }

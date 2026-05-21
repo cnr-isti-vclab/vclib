@@ -217,7 +217,10 @@ public:
 
         if (!block) {
             switch (key) {
-            case Key::R: fitScene(); break;
+            case Key::R:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    fitScene();
+                break;
             case Key::S:
                 if (modifiers[KeyModifier::CONTROL])
                     DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
