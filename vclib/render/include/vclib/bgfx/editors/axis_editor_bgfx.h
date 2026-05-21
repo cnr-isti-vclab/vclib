@@ -59,7 +59,10 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         switch (key) {
-        case Key::A: mCustomShortcutCallback(); break;
+        case Key::A:
+            if (modifiers[KeyModifier::NO_MODIFIER])
+                mCustomShortcutCallback();
+            break;
         default: break;
         }
         return false;
