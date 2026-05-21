@@ -25,7 +25,7 @@
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
-#include <vclib/render/drawers/selection_trackball_viewer_drawer.h>
+#include <vclib/render/drawers/trackball_viewer_drawer.h>
 
 int main(void)
 {
@@ -34,9 +34,11 @@ int main(void)
     using RA = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::SelectionTrackBallViewerDrawer>;
+        vcl::TrackBallViewerDrawer>;
     
     RA tw("Selection", 1024, 768);
+
+    tw.pushEditor<vcl::SelectionEditor>();
 
     tw.pushDrawableObject(getDrawableMesh<vcl::TriMesh>());
 
