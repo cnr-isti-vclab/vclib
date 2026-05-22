@@ -26,6 +26,9 @@
    </item>
    <item row="1" column="0">
     <widget class="QCheckBox" name="onlyVisibleCheckBox">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
      <property name="text">
       <string>Only Visible</string>
      </property>

@@ -38,6 +38,7 @@ GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
 {
     mUI->setupUi(this);
     std::call_once(initIconsFlag, initIcons);
+    mUI->settingsPushButton->setFocusPolicy(Qt::NoFocus);
 }
 
 GenericEditorFrame::~GenericEditorFrame()
@@ -54,6 +55,7 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
     button->setMaximumSize(40, 40);
 
     button->setCheckable(checkable);
+    button->setFocusPolicy(Qt::NoFocus);
 
     // add the button before the settings button in the mUI layout
     int settingsButtonIndex =
