@@ -289,15 +289,14 @@ public:
 
         if (isSelectionActive()) {
             calculateSelections(viewId);
+            if (!mLMBHeld) {
+                mBoxToDraw.nullAll();
+            }
             drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
         }
         else {
             mBoxToDraw.nullAll();
             mSelectionBox.nullAll();
-        }
-
-        if (!mLMBHeld) {
-            mBoxToDraw.nullAll();
         }
     }
 
@@ -379,6 +378,8 @@ public:
             if (isSelectionActive()) {
                 mSelectionCalcRequired = true;
             }
+            // Force a repaint so the selection box disappears immediately
+            Base::viewerUpdate();
         }
         return isSelectionActive();
     }
