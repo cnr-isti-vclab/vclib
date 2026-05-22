@@ -368,6 +368,80 @@ public:
         return std::move(mSelectionToCPUBufferHandler.getResultsCopy());
     }
 
+    void setVertexSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
+    {
+        if (backup.empty()) return;
+        // Ceiling division: the backup may have fewer bytes than the buffer
+        // (mLastCopyByteSize is bit-granular; buffer is uint32-granular)
+        const uint elementCount =
+            (uint(backup.size()) + uint(sizeof(uint32_t)) - 1u) /
+            uint(sizeof(uint32_t));
+        if (elementCount == 0) return;
+        // Allocate a bgfx-owned copy so the backup vector can be freely
+        // modified without lifetime issues
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint32_t>(elementCount);
+        // The backup bytes are big-endian (uintRGBAToVec4Color stores MSB
+        // in the R channel). Reconstruct each uint32 with proper byte order.
+        for (uint i = 0; i < elementCount; i++) {
+            const uint base = 4u * i;
+            uint32_t   val  = 0;
+            if (base + 0u < uint(backup.size()))
+                val |= uint32_t(backup[base + 0u]) << 24;
+            if (base + 1u < uint(backup.size()))
+                val |= uint32_t(backup[base + 1u]) << 16;
+            if (base + 2u < uint(backup.size()))
+                val |= uint32_t(backup[base + 2u]) << 8;
+            if (base + 3u < uint(backup.size()))
+                val |= uint32_t(backup[base + 3u]);
+            buffer[i] = val;
+        }
+        mSelectedVerticesBuffer.destroy();
+        mSelectedVerticesBuffer.createForCompute(
+            buffer,
+            elementCount,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::ReadWrite,
+            releaseFn);
+    }
+
+    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
+    {
+        if (backup.empty() || !mSelectedFacesBuffer.has_value()) return;
+        // Ceiling division: the backup may have fewer bytes than the buffer
+        // (mLastCopyByteSize is bit-granular; buffer is uint32-granular)
+        const uint elementCount =
+            (uint(backup.size()) + uint(sizeof(uint32_t)) - 1u) /
+            uint(sizeof(uint32_t));
+        if (elementCount == 0) return;
+        // Allocate a bgfx-owned copy so the backup vector can be freely
+        // modified without lifetime issues
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint32_t>(elementCount);
+        // The backup bytes are big-endian (uintRGBAToVec4Color stores MSB
+        // in the R channel). Reconstruct each uint32 with proper byte order.
+        for (uint i = 0; i < elementCount; i++) {
+            const uint base = 4u * i;
+            uint32_t   val  = 0;
+            if (base + 0u < uint(backup.size()))
+                val |= uint32_t(backup[base + 0u]) << 24;
+            if (base + 1u < uint(backup.size()))
+                val |= uint32_t(backup[base + 1u]) << 16;
+            if (base + 2u < uint(backup.size()))
+                val |= uint32_t(backup[base + 2u]) << 8;
+            if (base + 3u < uint(backup.size()))
+                val |= uint32_t(backup[base + 3u]);
+            buffer[i] = val;
+        }
+        mSelectedFacesBuffer->destroy();
+        mSelectedFacesBuffer->createForCompute(
+            buffer,
+            elementCount,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::ReadWrite,
+            releaseFn);
+    }
+
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
 
     void bindSelectedFacesBuffer() const

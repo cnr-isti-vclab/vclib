@@ -472,6 +472,35 @@ private:
                     mBoxToDraw.toMinAndMax()));
         }
         if (skipSelection) {
+            if (mCurrentSelectionMode == SelectionMode::FACE_VISIBLE_REGULAR) {
+                // Box is outside the mesh screen-space BB: clear selection
+                SelectionParameters clearParams = {
+                    viewId,
+                    mVisibleSelectionViewIds[0],
+                    mVisibleSelectionViewIds[1],
+                    SelectionBox{},
+                    SelectionMode::FACE_NONE,
+                    mLMBHeld,
+                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
+                    std::array<uint, 2>{
+                        sVisibleFaceFramebufferSize,
+                        sVisibleFaceFramebufferSize},
+                    0};
+                auto dl = Base::drawList();
+                for (size_t i = 0; i < dl->size(); i++) {
+                    if (!shouldProcessObject(*dl, uint(i))) {
+                        continue;
+                    }
+                    clearParams.meshId = uint(i + 1);
+                    auto el            = dl->at(i);
+                    if (auto p =
+                            dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                        p->computeSelection(clearParams);
+                    }
+                }
+            }
+            selectionCalculated();
             return;
         }
         SelectionParameters params = SelectionParameters {

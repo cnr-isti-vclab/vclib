@@ -59,6 +59,10 @@ private:
 
     mutable uint mBufToTexRemainingFrames = 255;
 
+    mutable std::vector<uint8_t> mVertexSelectionBackup;
+    mutable std::vector<uint8_t> mFaceSelectionBackup;
+    SelectionMode                mLastReadbackMode;
+
     // VISIBLE FACES SELECTION DEBUGGING
     // bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
     // std::vector<uint8_t> mTexReadBackVec;
@@ -112,6 +116,9 @@ public:
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
+        swap(mLastReadbackMode, other.mLastReadbackMode);
+        swap(mVertexSelectionBackup, other.mVertexSelectionBackup);
+        swap(mFaceSelectionBackup, other.mFaceSelectionBackup);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
         swap(mMRB, other.mMRB);
     }
@@ -153,6 +160,7 @@ public:
         if (mBufToTexRemainingFrames != 255 || params.isTemporary) {
             return;
         }
+        mLastReadbackMode      = params.mode;
         mBufToTexRemainingFrames =
             mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
     }
@@ -378,6 +386,12 @@ public:
             case 0:
                 mBufToTexRemainingFrames = 255;
                 vec                      = mMRB.getSelectionBufferCopy();
+                if (mLastReadbackMode.isVertexSelection()) {
+                    mVertexSelectionBackup = vec;
+                }
+                else if (mLastReadbackMode.isFaceSelection()) {
+                    mFaceSelectionBackup = vec;
+                }
                 for (size_t index = 0; index < vec.size(); index++) {
                     count += uint(std::bitset<8>(vec[index]).count());
                 }
@@ -510,6 +524,11 @@ protected:
         if constexpr (!HasVertices<MeshType>) {
             return false;
         }
+        if (params.isTemporary &&
+            (params.mode == SelectionMode::VERTEX_ADD ||
+             params.mode == SelectionMode::VERTEX_SUBTRACT)) {
+            mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
+        }
         return (
             params.mode.isAtomicMode() ? mMRB.vertexSelectionAtomic(params) :
                                          mMRB.vertexSelection(params));
@@ -521,6 +540,11 @@ protected:
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
+        if (params.isTemporary &&
+            (params.mode == SelectionMode::FACE_ADD ||
+             params.mode == SelectionMode::FACE_SUBTRACT)) {
+            mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+        }
         return (
             params.mode.isAtomicMode() ? mMRB.faceSelectionAtomic(params) :
                                          mMRB.faceSelection(params));
@@ -530,6 +554,11 @@ protected:
     {
         if constexpr (!HasFaces<MeshType>) {
             return false;
+        }
+        if (params.isTemporary &&
+            (params.mode == SelectionMode::FACE_VISIBLE_ADD ||
+             params.mode == SelectionMode::FACE_VISIBLE_SUBTRACT)) {
+            mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
         Matrix44f model = Matrix44f::Identity();
         if constexpr (HasTransformMatrix<MeshType>) {
