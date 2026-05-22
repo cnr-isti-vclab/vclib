@@ -31,6 +31,7 @@
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
 
+#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
@@ -65,6 +66,26 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     mutable SelectionBox mBoxToDraw;
 
     // ---- Settings helpers ----
+
+    /**
+     * @brief Returns true if the draw-list element at the given index should
+     * be processed, based on the current EditorSettings::editMode.
+     *
+     * CURRENT_OBJECT  → only the selected object
+     * VISIBLE_OBJECTS → only visible objects
+     */
+    bool shouldProcessObject(const DrawableObjectVector& dl, uint index) const
+    {
+        switch (Base::settings().editMode) {
+        case EditorSettings::EditMode::CURRENT_OBJECT:
+            return index == dl.selectedObjectId();
+        case EditorSettings::EditMode::VISIBLE_OBJECTS:
+            return dl.at(index)->isVisible();
+        default:
+            // NONE and ALL_OBJECTS are not supported by this editor
+            return false;
+        }
+    }
 
     /**
      * @brief Returns true if selection is currently active: the editor is
@@ -468,6 +489,9 @@ private:
         };
         auto dl = Base::drawList();
         for (size_t i = 0; i < dl->size(); i++) {
+            if (!shouldProcessObject(*dl, uint(i))) {
+                continue;
+            }
             params.meshId = uint(i + 1);
             auto el       = dl->at(i);
             if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
@@ -495,6 +519,9 @@ private:
         Box3d totalBB;
         auto  dl = Base::drawList();
         for (size_t i = 0; i < dl->size(); i++) {
+            if (!shouldProcessObject(*dl, uint(i))) {
+                continue;
+            }
             std::shared_ptr<DrawableObject> el = dl->at(i);
             if (!el->isVisible() ||
                 !dynamic_cast<AbstractDrawableMesh*>(el.get())) {

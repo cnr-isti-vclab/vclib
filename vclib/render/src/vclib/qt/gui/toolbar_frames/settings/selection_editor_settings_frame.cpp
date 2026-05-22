@@ -39,6 +39,9 @@ SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
     bool onlyVisible =
         std::any_cast<bool>(mSettings.customSettings.at("onlyVisible"));
 
+    mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::NONE);
+    mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::ALL_OBJECTS);
+
     mUI->editModeFrame->setEditMode(mSettings.editMode);
     mUI->onlyVisibleCheckBox->setChecked(onlyVisible);
 

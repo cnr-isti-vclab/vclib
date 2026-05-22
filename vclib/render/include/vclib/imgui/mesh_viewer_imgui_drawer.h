@@ -335,11 +335,15 @@ private:
         if (ImGui::BeginCombo("##SelEditMode", editModeNames[currentMode])) {
             for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
                 bool selected = (n == currentMode);
+                if (n == 0 || n == 3)
+                    ImGui::BeginDisabled();
                 if (ImGui::Selectable(editModeNames[n], selected)) {
                     sts.editMode =
                         static_cast<EditorSettings::EditMode>(n);
                     mSelectionEditor->refreshSettings();
                 }
+                if (n == 0 || n == 3)
+                    ImGui::EndDisabled();
                 if (selected)
                     ImGui::SetItemDefaultFocus();
             }
