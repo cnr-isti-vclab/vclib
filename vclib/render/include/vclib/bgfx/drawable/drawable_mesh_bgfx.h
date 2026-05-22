@@ -403,18 +403,21 @@ public:
                 pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
 
             // faces
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
-            mMRB.bindSelectedFacesBuffer();
+            if constexpr (HasFaces<MeshType>) {
+                mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindIndexBuffers(mMRS);
+                bindUniforms();
+                mMRB.bindSelectedFacesBuffer();
 
-            bgfx::setState(
-                state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_DEPTH_TEST_LEQUAL);
-            bgfx::setTransform(model.data());
+                bgfx::setState(
+                    state | BGFX_STATE_BLEND_NORMAL |
+                    BGFX_STATE_DEPTH_TEST_LEQUAL);
+                bgfx::setTransform(model.data());
 
-            bgfx::submit(
-                settings.additionalViewIds[2],
-                pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
+                bgfx::submit(
+                    settings.additionalViewIds[2],
+                    pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
+            }
         }
     }
 
