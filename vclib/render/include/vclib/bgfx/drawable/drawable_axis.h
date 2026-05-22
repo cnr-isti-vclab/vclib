@@ -142,7 +142,6 @@ public:
 
     // DrawableObject interface
 
-
     void draw(const DrawObjectSettings& settings) const override;
 
     /**
