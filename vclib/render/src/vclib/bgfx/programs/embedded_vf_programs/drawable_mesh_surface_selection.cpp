@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_vf_programs/drawable_selection_vert.h>
+#include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface_selection.h>
 
 #include <vclib/bgfx/programs/macros.h>
 
 // clang-format off
-#define COMMON_PATH vclib/shaders/drawable/drawable_selection_vert
+#define COMMON_PATH vclib/shaders/drawable/drawable_mesh/surface_selection
 // clang-format on
-#define VS_NAME vs_drawable_selection
-#define FS_NAME fs_drawable_selection
+#define VS_NAME vs_surface_selection
+#define FS_NAME fs_surface_selection
 
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
@@ -54,7 +54,8 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_SELECTION_VERT>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::DRAWABLE_MESH_SURFACE_SELECTION>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -84,7 +85,8 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_SELECTION_VERT>::
+bgfx::EmbeddedShader::Data VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_SURFACE_SELECTION>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

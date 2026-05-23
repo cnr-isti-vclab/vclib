@@ -414,7 +414,7 @@ public:
 
             bgfx::submit(
                 settings.additionalViewIds[2],
-                pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_VERT>());
+                pm.getProgram<VertFragProgram::DRAWABLE_MESH_POINTS_SELECTION>());
 
             // faces
             if constexpr (HasFaces<MeshType>) {
@@ -430,7 +430,7 @@ public:
 
                 bgfx::submit(
                     settings.additionalViewIds[2],
-                    pm.getProgram<VertFragProgram::DRAWABLE_SELECTION_FACE>());
+                    pm.getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_SELECTION>());
             }
         }
     }

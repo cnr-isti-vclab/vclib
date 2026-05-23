@@ -24,8 +24,6 @@
 #define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_H
 
 #include "embedded_vf_programs/custom_cpu_lines.h"
-#include "embedded_vf_programs/drawable_selection_face.h"
-#include "embedded_vf_programs/drawable_selection_vert.h"
 #include "embedded_vf_programs/selection_face_visible_render_pass.h"
 #include "embedded_vf_programs/drawable_selection_box.h"
 #include "embedded_vf_programs/drawable_axis.h"
@@ -35,8 +33,10 @@
 #include "embedded_vf_programs/drawable_mesh_points_id.h"
 #include "embedded_vf_programs/drawable_mesh_points_instance.h"
 #include "embedded_vf_programs/drawable_mesh_points_instance_id.h"
+#include "embedded_vf_programs/drawable_mesh_points_selection.h"
 // #include "embedded_vf_programs/drawable_mesh_surface.h"
 #include "embedded_vf_programs/drawable_mesh_surface_id.h"
+#include "embedded_vf_programs/drawable_mesh_surface_selection.h"
 
 #include "embedded_vf_programs/drawable_mesh_surface_flat_color_face.h"
 #include "embedded_vf_programs/drawable_mesh_surface_flat_color_face_si.h"
