@@ -324,7 +324,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * triangles in the buffer.
  */
 template<FaceMeshConcept MeshType>
-static void permuteFaceVertexIndicesByFunctionToBuffer(
+void permuteFaceVertexIndicesByFunctionToBuffer(
     const MeshType&                           mesh,
     auto*                                     buffer,
     const std::function<bool(
