@@ -21,22 +21,26 @@
  ****************************************************************************/
 
 $input a_position, a_color0
-$output v_color
+$output v_color, v_discardFlag
 
 #include <vclib/bgfx/shaders_common.sh>
 
 BUFFER_RO(vertex_selected, uint, 4);
 
 void main() {
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    vec4 p = mul(u_modelViewProj, vec4(a_position, 1.0));
 
     uint pointId = uint(gl_VertexID);
     uint bufferIndex = pointId/32;
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     if ((vertex_selected[bufferIndex] & bitMask) == 0) {
-        v_color = uintABGRToVec4Color(uint(0x00000000));
+        v_discardFlag = 1.0;
     } else {
+        v_discardFlag = 0.0;
+        // nudge towards camera to avoid z-fighting with other geometry
+        p.z += -0.001 * p.w;
         v_color = uintABGRToVec4Color(uint(0x330000FF));
     }
+    gl_Position = p;
 }

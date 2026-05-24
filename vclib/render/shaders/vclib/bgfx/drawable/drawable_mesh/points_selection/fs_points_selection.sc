@@ -20,11 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color
+$input v_color, v_discardFlag
 
 #include <vclib/bgfx/shaders_common.sh>
 
 void main() {
-    gl_FragDepth = gl_FragCoord.z - 0.001;
+    if (v_discardFlag > 0.0) {
+        discard;
+    }
     gl_FragColor = v_color;
 }
