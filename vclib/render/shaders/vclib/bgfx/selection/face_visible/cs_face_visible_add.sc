@@ -27,6 +27,10 @@ IMAGE2D_RO(s_primIds, rgba8, 0);
 IMAGE2D_RO(s_meshIds, rgba8, 1);
 BUFFER_RW(face_selected, uint, 6);
 
+BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
+BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
+BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
+
 uniform vec4 u_meshIdAndDispatchSizeXY;
 
 uint texVec4ToUint(vec4 pixel) {
@@ -37,10 +41,12 @@ uint texVec4ToUint(vec4 pixel) {
         | (uint(pixel.a * 255.0) & 0xff);
 }
 
+// Polygon-level ADD: if a visible pixel belongs to triangle T, select all
+// triangles of T's polygon.
 NUM_THREADS(1, 1, 1)
 void main() {
     uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
-    // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
+    // NOTE: meshID 0 is reserved to indicate that no data is available
     if(meshId == 0) {
         return;
     }
@@ -60,9 +66,15 @@ void main() {
 
     vec4 vecPrimId = imageLoad(s_primIds, tex2DCoord);
     uint texPrimId = texVec4ToUint(vecPrimId);
-    uint bufferIndex = texPrimId/32;
-    uint bitOffset = 31-(texPrimId%32);
-    uint bitMask = 0x1 << bitOffset;
+
+    // Select all triangles belonging to the same polygon as texPrimId
+    uint polyIdx = tri_to_poly[texPrimId];
+    uint firstTri = poly_to_tri_begin[polyIdx];
+    uint count = poly_to_tri_count[polyIdx];
     uint _useless;
-    atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
+    for (uint t = firstTri; t < firstTri + count; t++) {
+        uint bufferIndex = t / 32;
+        uint bitMask = 0x1 << (31 - (t % 32));
+        atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
+    }
 }

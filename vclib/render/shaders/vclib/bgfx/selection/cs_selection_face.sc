@@ -34,18 +34,19 @@ BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 fl
 BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RO(indices, uint, 5);
-BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per face...
+BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per triangle (MSb first)
+
+BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
+BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
+BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
 
 uniform vec4 u_selectionBox; // screen space
 uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the face count (i.e. numTris)
 
-// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
-// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
-
-// A triangle intersects the selection box if either:
-//     1. At least one of its edges intersects the selection box (easier to calculate, the selection box is an AABB in NDC) or
-//     2. The intersection of at least one of the selection box's edges with the triangle's plane lies inside the triangle
-NUM_THREADS(1, 1, 1) // 1 'thread' per face, or 1 'thread' per 3 indices
+// Polygon-level ADD selection:
+// If any triangle of a polygon intersects the selection box, all triangles of
+// that polygon are marked as selected.
+NUM_THREADS(1, 1, 1) // 1 thread per triangle
 void main()
 {
     uint faceCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
@@ -79,7 +80,7 @@ void main()
         positions[(idcs[1] * 3) / 4][(idcs[1] * 3) % 4], positions[(idcs[1] * 3 + 1) / 4][(idcs[1] * 3 + 1) % 4], positions[(idcs[1] * 3 + 2) / 4][(idcs[1] * 3 + 2) % 4],
         positions[(idcs[2] * 3) / 4][(idcs[2] * 3) % 4], positions[(idcs[2] * 3 + 1) / 4][(idcs[2] * 3 + 1) % 4], positions[(idcs[2] * 3 + 2) / 4][(idcs[2] * 3 + 2) % 4]
     );
-    
+
     vec4 p0NDC = mul(u_modelViewProj, vec4(poss[0].xyz, 1));
     vec4 p1NDC = mul(u_modelViewProj, vec4(poss[1].xyz, 1));
     vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
@@ -96,13 +97,16 @@ void main()
         selected = AABBEdgesIntersectTriangle(tri, minNDC, maxNDC);
     }
 
-    uint fBufferIndex = faceIndex/32;
-    uint fBitOffset = 31-(faceIndex%32);
-    uint fBitMask = 0x1 << fBitOffset;
-    uint _useless;
     if (selected) {
-        atomicFetchAndOr(face_selected[fBufferIndex], fBitMask, _useless);
-    } else {
-        atomicFetchAndAnd(face_selected[fBufferIndex], ~fBitMask, _useless);
+        // Mark all triangles of the same polygon as selected
+        uint polyIdx = tri_to_poly[faceIndex];
+        uint firstTri = poly_to_tri_begin[polyIdx];
+        uint count = poly_to_tri_count[polyIdx];
+        uint _useless;
+        for (uint t = firstTri; t < firstTri + count; t++) {
+            uint tBufIndex = t / 32;
+            uint tBitMask = 0x1 << (31 - (t % 32));
+            atomicFetchAndOr(face_selected[tBufIndex], tBitMask, _useless);
+        }
     }
 }

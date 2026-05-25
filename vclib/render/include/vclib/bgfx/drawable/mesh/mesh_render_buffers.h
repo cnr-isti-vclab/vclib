@@ -91,6 +91,11 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
 
+    // Polygon-to-triangle mapping buffers for polygon-level face selection
+    IndexBuffer mTriToPolyBuffer;
+    IndexBuffer mPolyToTriBeginBuffer;
+    IndexBuffer mPolyToTriCountBuffer;
+
     // Handler used to copy selection buffers to CPU
     detail::ReadFromGPUBuffer mSelectionToCPUBufferHandler;
     VertexBuffer            mVertexTangentsBuffer;
@@ -161,6 +166,9 @@ public:
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
         swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
+        swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
+        swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
+        swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
         swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
         swap(mMaterialTextures, other.mMaterialTextures);
     }
@@ -243,14 +251,28 @@ public:
         if (params.box.anyNull()) {
             return false;
         }
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
-            Context::instance().programManager(), params.mode);
+
+        ProgramManager& pm = Context::instance().programManager();
+
+        // For REGULAR mode, first clear the entire face selection buffer
+        if (params.mode == SelectionMode::FACE_REGULAR) {
+            SelectionParameters clearParams(params);
+            clearParams.mode = SelectionMode::FACE_NONE;
+            faceSelectionAtomic(clearParams);
+        }
+
+        bgfx::ProgramHandle prog =
+            getComputeProgramFromSelectionMode(pm, params.mode);
+
         bindSelectionBox(params.box);
         bindFaceWGroupSizeAndCount();
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
         mVertexPositionsBuffer.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mTriangleIndexBuffer.bind(5, bgfx::Access::Read);
+        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
+        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
+        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
         dispatchFaceSelection(params.drawViewId, prog);
         return true;
     }
@@ -297,8 +319,10 @@ public:
         ProgramManager&     pm          = Context::instance().programManager();
         bgfx::ProgramHandle passProgram = pm.getProgram<
             VertFragProgram::SELECTION_FACE_VISIBLE_RENDER_PASS>();
+
         bgfx::ProgramHandle computeProg =
             getComputeProgramFromSelectionMode(pm, params.mode);
+
         std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(
             params.texAttachmentsSize[0] * params.texAttachmentsSize[1]);
         float temp[4] = {
@@ -329,6 +353,9 @@ public:
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA8);
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
+        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
+        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
         bgfx::setTransform(model.data());
         bgfx::dispatch(
             params.pass2ViewId,
@@ -727,9 +754,8 @@ private:
             return pm
                 .getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
         case SelectionMode::FACE_REGULAR:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
         case SelectionMode::FACE_ADD:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE_ADD>();
+            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
         case SelectionMode::FACE_SUBTRACT:
             return pm
                 .getComputeProgram<ComputeProgram::SELECTION_FACE_SUBTRACT>();
@@ -1041,6 +1067,58 @@ private:
             vcl::PrimitiveType::UINT,
             bgfx::Access::Read,
             releaseFn);
+
+        // Build polygon mapping buffers for polygon-level face selection.
+        // fillTriangleIndices() above has already populated Base::triPolyIndexMap().
+        if (Context::instance().supportsCompute() && nt > 0) {
+            const TriPolyIndexBiMap& indexMap = Base::triPolyIndexMap();
+            uint numPolys = indexMap.polygonCount();
+
+            // tri_to_poly[triIdx] = polygon index
+            {
+                auto [buf, rel] =
+                    Context::getAllocatedBufferAndReleaseFn<uint>(nt);
+                for (uint i = 0; i < nt; i++) {
+                    buf[i] = indexMap.polygon(i);
+                }
+                mTriToPolyBuffer.createForCompute(
+                    buf, nt, PrimitiveType::UINT, bgfx::Access::Read, rel);
+            }
+
+            // poly_to_tri_begin[polyIdx] = first triangle index of polygon
+            // poly_to_tri_count[polyIdx] = number of triangles in polygon
+            {
+                auto [bufBegin, relBegin] =
+                    Context::getAllocatedBufferAndReleaseFn<uint>(numPolys);
+                auto [bufCount, relCount] =
+                    Context::getAllocatedBufferAndReleaseFn<uint>(numPolys);
+                for (uint i = 0; i < numPolys; i++) {
+                    uint begin = indexMap.triangleBegin(i);
+                    if (begin != UINT_NULL) {
+                        bufBegin[i] = begin;
+                        bufCount[i] = indexMap.triangleCount(i);
+                    }
+                    else {
+                        // deleted polygon — will never be accessed by a
+                        // valid triangle thread
+                        bufBegin[i] = 0;
+                        bufCount[i] = 0;
+                    }
+                }
+                mPolyToTriBeginBuffer.createForCompute(
+                    bufBegin,
+                    numPolys,
+                    PrimitiveType::UINT,
+                    bgfx::Access::Read,
+                    relBegin);
+                mPolyToTriCountBuffer.createForCompute(
+                    bufCount,
+                    numPolys,
+                    PrimitiveType::UINT,
+                    bgfx::Access::Read,
+                    relCount);
+            }
+        }
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override

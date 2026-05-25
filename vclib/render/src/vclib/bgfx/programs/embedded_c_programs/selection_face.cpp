@@ -46,8 +46,9 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data vcl::ComputeLoader<ComputeProgram::SELECTION_FACE>::
-    computeShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::
+    ComputeLoader<ComputeProgram::SELECTION_FACE>::computeShader(
+        bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

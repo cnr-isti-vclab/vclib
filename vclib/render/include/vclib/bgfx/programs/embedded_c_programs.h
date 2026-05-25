@@ -32,7 +32,6 @@
 #include "embedded_c_programs/ibl_lookup_texture_gen.h"
 #include "embedded_c_programs/selection_all.h"
 #include "embedded_c_programs/selection_face.h"
-#include "embedded_c_programs/selection_face_add.h"
 #include "embedded_c_programs/selection_face_subtract.h"
 #include "embedded_c_programs/selection_face_visible_add.h"
 #include "embedded_c_programs/selection_face_visible_subtract.h"
