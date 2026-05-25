@@ -418,19 +418,22 @@ public:
 
             // faces
             if constexpr (HasFaces<MeshType>) {
-                mMRB.bindVertexBuffers(mMRS);
-                mMRB.bindIndexBuffers(mMRS);
-                bindUniforms();
-                mMRB.bindSelectedFacesBuffer();
+                if (faceCount() > 0) {
+                    mMRB.bindVertexBuffers(mMRS);
+                    mMRB.bindIndexBuffers(mMRS);
+                    bindUniforms();
+                    mMRB.bindSelectedFacesBuffer();
 
-                bgfx::setState(
-                    state | BGFX_STATE_BLEND_NORMAL |
-                    BGFX_STATE_DEPTH_TEST_LEQUAL);
-                bgfx::setTransform(model.data());
+                    bgfx::setState(
+                        state | BGFX_STATE_BLEND_NORMAL |
+                        BGFX_STATE_DEPTH_TEST_LEQUAL);
+                    bgfx::setTransform(model.data());
 
-                bgfx::submit(
-                    settings.additionalViewIds[2],
-                    pm.getProgram<VertFragProgram::DRAWABLE_MESH_SURFACE_SELECTION>());
+                    bgfx::submit(
+                        settings.additionalViewIds[2],
+                        pm.getProgram<VertFragProgram::
+                                          DRAWABLE_MESH_SURFACE_SELECTION>());
+                }
             }
         }
     }
