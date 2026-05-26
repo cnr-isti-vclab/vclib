@@ -73,7 +73,7 @@ DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
  * @param parent
  */
 MeshViewer::MeshViewer(QWidget* parent) :
-        QWidget(parent), mUI(new Ui::MeshViewer)
+        QMainWindow(parent), mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
 
