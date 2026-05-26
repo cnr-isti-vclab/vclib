@@ -503,6 +503,11 @@ private:
 
         Base::fillTriangleIndices(mesh, buffer);
 
+        // Re-read the actual triangle count: fillTriangleIndices() updates
+        // mNumTris to the real earCut result, which may be smaller than the
+        // pre-triangulation estimate for meshes with degenerate faces.
+        nt = Base::numTris();
+
         mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
     }
 

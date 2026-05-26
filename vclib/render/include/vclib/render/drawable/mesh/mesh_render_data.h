@@ -478,6 +478,11 @@ protected:
 
         triangulatedFaceVertexIndicesToBuffer(
             mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
+        // Update mNumTris to the actual triangle count produced by earCut.
+        // For degenerate faces, earCut may produce fewer than vertexCount()-2
+        // triangles, making the pre-triangulation estimate from
+        // triangulatedFaceCount() too large.
+        mNumTris = mIndexMap.triangleCount();
         replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
             mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
 
