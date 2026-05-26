@@ -39,9 +39,9 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
     }
     catch (const std::exception& e) {
         log.log(
-            log.WARNING_LOG,
             elementEnumString<ELEM_ID>() + " " + std::to_string(elem.index()) +
-                ": " + e.what());
+                ": " + e.what(),
+            log.WARNING_LOG);
     }
 }
 
