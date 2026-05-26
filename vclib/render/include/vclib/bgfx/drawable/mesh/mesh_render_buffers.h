@@ -189,8 +189,6 @@ public:
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mVertexNormalsBuffer.bindCompute(
             VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(
-            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
 
@@ -527,6 +525,14 @@ public:
     {
         mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mVertexQuadIndexBuffer.bind();
+    }
+
+    void bindPointsVertexColorBuffer() const
+    {
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindCompute(
+                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
+        }
     }
 
     void bindIndexBuffers(
