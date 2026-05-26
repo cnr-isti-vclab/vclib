@@ -103,9 +103,7 @@ void main()
             color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
-    gl_FragColor = light * color + vec4(specular, 0);
-    if (isFaceSelected(uint(primitiveID))) {
-        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
-    }
+    color = light * color + vec4(specular, 0);
+    gl_FragColor = mix(color, vec4(1.0, 0.0, 0.0, 1.0), 0.33 * float(isFaceSelected(uint(primitiveID))));
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
