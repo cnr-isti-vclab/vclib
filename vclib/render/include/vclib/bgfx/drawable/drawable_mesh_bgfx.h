@@ -307,6 +307,7 @@ public:
 
                 // render splats
                 mMRB.bindVertexQuadBuffer();
+                mMRB.bindPointsVertexColorBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);
