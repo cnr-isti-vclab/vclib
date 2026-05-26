@@ -305,6 +305,8 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+                if (mMRB.hasFaceSelectionBuffer())
+                    mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
@@ -352,6 +354,8 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
+                if (mMRB.hasVertexSelectionBuffer())
+                    mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -368,6 +372,8 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 mMRB.bindPointsVertexColorBuffer();
+                if (mMRB.hasVertexSelectionBuffer())
+                    mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);
@@ -379,7 +385,7 @@ public:
             }
         }
 
-        // draw selection
+        // selection readback
         {
             std::vector<uint8_t> vec;
             uint                 count = 0;
@@ -400,41 +406,6 @@ public:
                 break;
             case 255: break;
             default: mBufToTexRemainingFrames--;
-            }
-
-            // vertices
-            mMRB.bindVertexBuffers(mMRS);
-            mMRB.bindIndexBuffers(mMRS);
-            bindUniforms();
-            mMRB.bindSelectedVerticesBuffer();
-
-            bgfx::setState(
-                state | BGFX_STATE_BLEND_NORMAL | BGFX_STATE_PT_POINTS |
-                BGFX_STATE_DEPTH_TEST_LEQUAL);
-            bgfx::setTransform(model.data());
-
-            bgfx::submit(
-                settings.additionalViewIds[2],
-                pm.getProgram<VertFragProgram::DRAWABLE_MESH_POINTS_SELECTION>());
-
-            // faces
-            if constexpr (HasFaces<MeshType>) {
-                if (faceCount() > 0) {
-                    mMRB.bindVertexBuffers(mMRS);
-                    mMRB.bindIndexBuffers(mMRS);
-                    bindUniforms();
-                    mMRB.bindSelectedFacesBuffer();
-
-                    bgfx::setState(
-                        state | BGFX_STATE_BLEND_NORMAL |
-                        BGFX_STATE_DEPTH_TEST_LEQUAL);
-                    bgfx::setTransform(model.data());
-
-                    bgfx::submit(
-                        settings.additionalViewIds[2],
-                        pm.getProgram<VertFragProgram::
-                                          DRAWABLE_MESH_SURFACE_SELECTION>());
-                }
             }
         }
     }

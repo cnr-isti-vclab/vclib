@@ -20,10 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal
-$output v_normal, v_texcoord1
+$input a_position, a_normal, a_texcoord0
+$output v_normal, v_texcoord1, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/vertex_selection_utils.sh>
 
 void main()
 {
@@ -43,4 +44,7 @@ void main()
 
     // quad parametrization
     v_texcoord1 = quadUv;
+
+    // vertex selection: 4 vertices per point, so point index = gl_VertexID / 4
+    v_selected = isVertexSelected(uint(gl_VertexID) >> 2u) ? 1.0 : 0.0;
 }

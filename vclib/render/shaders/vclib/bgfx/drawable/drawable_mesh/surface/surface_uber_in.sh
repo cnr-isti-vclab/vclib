@@ -23,9 +23,9 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
-
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/face_selection_utils.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
@@ -102,5 +102,8 @@ void main()
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
+    if (isFaceSelected(uint(primitiveID))) {
+        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
+    }
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_normal, v_texcoord1
+$input v_normal, v_texcoord1, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
@@ -67,4 +67,7 @@ void main()
 
     // NO depth writing (it kills performance)
     gl_FragColor = light * color; // + vec4(specular, 0);
+    if (v_selected > 0.5) {
+        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
+    }
 }

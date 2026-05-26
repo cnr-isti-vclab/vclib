@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,13 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_discardFlag
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_FACE_SELECTION_UTILS_SH
+#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_FACE_SELECTION_UTILS_SH
 
-#include <vclib/bgfx/shaders_common.sh>
+// Bit-packed face selection buffer: bit 1 = selected, bit 0 = not selected.
+// Each uint holds 32 face selection bits (MSB first: bit 31 = face 32*i).
+BUFFER_RO(face_selected, uint, 6);
 
-void main() {
-    if (v_discardFlag > 0.0) {
-        discard;
-    }
-    gl_FragColor = v_color;
+bool isFaceSelected(uint faceId)
+{
+    uint idx  = faceId / 32u;
+    uint mask = 0x1u << (31u - (faceId % 32u));
+    return (face_selected[idx] & mask) != 0u;
 }
+
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_FACE_SELECTION_UTILS_SH

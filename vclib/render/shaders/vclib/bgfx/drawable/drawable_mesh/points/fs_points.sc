@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 // TODO: remove v_position
-$input v_position, v_normal, v_color
+$input v_position, v_normal, v_color, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
@@ -55,5 +55,8 @@ void main()
     float depthOffset = 0.0001;
 
     gl_FragColor = light * color + vec4(specular, 0);
+    if (v_selected > 0.5) {
+        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
+    }
     gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

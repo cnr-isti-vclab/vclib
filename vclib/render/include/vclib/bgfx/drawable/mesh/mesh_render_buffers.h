@@ -467,6 +467,17 @@ public:
             releaseFn);
     }
 
+    bool hasVertexSelectionBuffer() const
+    {
+        return mSelectedVerticesBuffer.isValid();
+    }
+
+    bool hasFaceSelectionBuffer() const
+    {
+        return mSelectedFacesBuffer.has_value() &&
+               mSelectedFacesBuffer->isValid();
+    }
+
     void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
 
     void bindSelectedFacesBuffer() const
@@ -907,7 +918,7 @@ private:
     void setVertexSelectionBuffer(const MeshType& mesh)
     {
         const uint selectionBufferSize =
-            uint(ceil(double(mesh.vertexCount()) / 32.0));
+            uint(ceil(double(Base::numVerts()) / 32.0));
 
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
