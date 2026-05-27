@@ -34,8 +34,6 @@
 
 #include <bgfx/bgfx.h>
 
-#include <bitset>
-
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -62,12 +60,6 @@ private:
     mutable std::vector<uint8_t> mVertexSelectionBackup;
     mutable std::vector<uint8_t> mFaceSelectionBackup;
     SelectionMode                mLastReadbackMode;
-
-    // VISIBLE FACES SELECTION DEBUGGING
-    // bgfx::TextureHandle mBlitTex = BGFX_INVALID_HANDLE;
-    // std::vector<uint8_t> mTexReadBackVec;
-    // std::array<uint, 2> mColAttSize;
-    // mutable uint mVisSelTexRBFrames = 255;
 
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
@@ -135,16 +127,6 @@ public:
         if (!isVisible()) {
             return;
         }
-        // VISIBLE FACES SELECTION DEBUGGING
-        // if (!bgfx::isValid(mBlitTex)) {
-        //    mBlitTex = bgfx::createTexture2D(params.texAttachmentsSize[0],
-        //    params.texAttachmentsSize[1], false, 0,
-        //    bgfx::TextureFormat::RGBA8, BGFX_TEXTURE_BLIT_DST |
-        //    BGFX_TEXTURE_READ_BACK); mTexReadBackVec = std::vector<uint8_t>();
-        //    mTexReadBackVec.resize(params.texAttachmentsSize[0] *
-        //    params.texAttachmentsSize[1] * 4, 0); mColAttSize =
-        //    params.texAttachmentsSize;
-        //}
         if (params.mode.isFaceSelection()) {
             if (!(params.mode.isVisibleSelection() ?
                       faceSelectionVisible(params) :
@@ -387,22 +369,18 @@ public:
 
         // selection readback
         {
-            std::vector<uint8_t> vec;
-            uint                 count = 0;
             switch (mBufToTexRemainingFrames) {
             case 0:
                 mBufToTexRemainingFrames = 255;
-                vec                      = mMRB.getSelectionBufferCopy();
-                if (mLastReadbackMode.isVertexSelection()) {
-                    mVertexSelectionBackup = vec;
+                {
+                    auto vec = mMRB.getSelectionBufferCopy();
+                    if (mLastReadbackMode.isVertexSelection()) {
+                        mVertexSelectionBackup = std::move(vec);
+                    }
+                    else if (mLastReadbackMode.isFaceSelection()) {
+                        mFaceSelectionBackup = std::move(vec);
+                    }
                 }
-                else if (mLastReadbackMode.isFaceSelection()) {
-                    mFaceSelectionBackup = vec;
-                }
-                for (size_t index = 0; index < vec.size(); index++) {
-                    count += uint(std::bitset<8>(vec[index]).count());
-                }
-                std::cout << "Selected count: " << count << std::endl;
                 break;
             case 255: break;
             default: mBufToTexRemainingFrames--;
@@ -507,7 +485,6 @@ protected:
         return (
             params.mode.isAtomicMode() ? mMRB.vertexSelectionAtomic(params) :
                                          mMRB.vertexSelection(params));
-        return true;
     }
 
     bool faceSelection(const SelectionParameters& params)
@@ -539,15 +516,7 @@ protected:
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
         }
-        bool ret = mMRB.faceSelectionVisible(params, model);
-        // VISIBLE FACE SELECTION ATTACHMENT DEBUGGING (BLIT)
-        // if (!params.isTemporary) {
-        //    bgfx::blit(202, mBlitTex, 0, 0, params.meshIdTex, 0, 0,
-        //    params.texAttachmentsSize[0], params.texAttachmentsSize[1]);
-        //    bgfx::readTexture(mBlitTex, mTexReadBackVec.data());
-        //    mVisSelTexRBFrames = 3;
-        //}
-        return ret;
+        return mMRB.faceSelectionVisible(params, model);
     }
 
     void bindUniforms() const
