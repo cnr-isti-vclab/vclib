@@ -31,10 +31,13 @@
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
 
-#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
+
+#include <array>
+#include <vector>
 
 namespace vcl {
 
@@ -44,10 +47,10 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     using Base = Editor<ViewerDrawer>;
 
     // ---- BGFX rendering resources ----
-    bgfx::FrameBufferHandle     mVisibleSelectionFrameBuffer = BGFX_INVALID_HANDLE;
-    bgfx::FrameBufferHandle     mUselessFB                   = BGFX_INVALID_HANDLE;
-    std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds     = {};
-    bgfx::ViewId                mSelectionDrawingViewId      = 0;
+    bgfx::FrameBufferHandle mVisibleSelectionFrameBuffer = BGFX_INVALID_HANDLE;
+    bgfx::FrameBufferHandle mUselessFB                   = BGFX_INVALID_HANDLE;
+    std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
+    bgfx::ViewId                mSelectionDrawingViewId  = 0;
     bgfx::VertexLayout          mVertexLayout;
     mutable VertexBuffer        mPosBuffer;
     IndexBuffer                 mTriIndexBuf;
@@ -56,11 +59,11 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     static const uint sVisibleFaceFramebufferSize = 4096u;
 
     // ---- Selection event state ----
-    mutable SelectionBox  mSelectionBox;
-    mutable SelectionMode mCurrentSelectionMode = SelectionMode::VERTEX_REGULAR;
-    mutable bool          mSelectionCalcRequired = false;
-    bool                  mLMBHeld               = false;
-    bool                  mLMBPressPositionTaken = false;
+    mutable SelectionBox               mSelectionBox;
+    mutable std::vector<SelectionMode> mCurrentSelectionModes;
+    mutable bool                       mSelectionCalcRequired = false;
+    bool                               mLMBHeld               = false;
+    bool                               mLMBPressPositionTaken = false;
 
     // ---- Rendering state ----
     mutable SelectionBox mBoxToDraw;
@@ -97,71 +100,101 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
         if (!Base::isActive())
             return false;
         const auto& cs = Base::settings().customSettings;
-        bool sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool sf = std::any_cast<bool>(cs.at("selectFaces"));
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         return sv || sf;
     }
 
     /**
      * @brief Maps the current settings and drag modifier to the appropriate
-     * SelectionMode.
+     * list of SelectionModes (one per active selection type).
      *
-     * Priority: vertices over faces when both flags are set.
-     * 'onlyVisible' is applied only for face selection.
+     * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
+     * mode and a face mode are returned. 'onlyVisible' is applied only to
+     * face selection.
      *
      * No modifier  → REGULAR (replace)
      * Ctrl         → ADD
      * Ctrl+Shift   → SUBTRACT
      */
-    SelectionMode selectionModeForModifier(const KeyModifiers& mods) const
+    std::vector<SelectionMode> selectionModesForModifier(
+        const KeyModifiers& mods) const
     {
         const auto& cs = Base::settings().customSettings;
-        bool sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool ov = std::any_cast<bool>(cs.at("onlyVisible"));
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        bool        ov = std::any_cast<bool>(cs.at("onlyVisible"));
 
-        bool isVertex  = sv; // vertex has priority when both flags are true
-        bool isVisible = !isVertex && ov;
+        bool ctrlShift = mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
+        bool ctrlOnly = mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
 
-        bool ctrlShift =
-            mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
-        bool ctrlOnly =
-            mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
-
-        if (ctrlShift) {
-            if (isVertex) return SelectionMode::VERTEX_SUBTRACT;
-            if (isVisible) return SelectionMode::FACE_VISIBLE_SUBTRACT;
-            return SelectionMode::FACE_SUBTRACT;
+        std::vector<SelectionMode> modes;
+        if (sv) {
+            if (ctrlShift)
+                modes.push_back(SelectionMode::VERTEX_SUBTRACT);
+            else if (ctrlOnly)
+                modes.push_back(SelectionMode::VERTEX_ADD);
+            else
+                modes.push_back(SelectionMode::VERTEX_REGULAR);
         }
-        if (ctrlOnly) {
-            if (isVertex) return SelectionMode::VERTEX_ADD;
-            if (isVisible) return SelectionMode::FACE_VISIBLE_ADD;
-            return SelectionMode::FACE_ADD;
+        if (sf) {
+            if (ov) {
+                if (ctrlShift)
+                    modes.push_back(SelectionMode::FACE_VISIBLE_SUBTRACT);
+                else if (ctrlOnly)
+                    modes.push_back(SelectionMode::FACE_VISIBLE_ADD);
+                else
+                    modes.push_back(SelectionMode::FACE_VISIBLE_REGULAR);
+            }
+            else {
+                if (ctrlShift)
+                    modes.push_back(SelectionMode::FACE_SUBTRACT);
+                else if (ctrlOnly)
+                    modes.push_back(SelectionMode::FACE_ADD);
+                else
+                    modes.push_back(SelectionMode::FACE_REGULAR);
+            }
         }
-        // No (relevant) modifier → REGULAR
-        if (isVertex) return SelectionMode::VERTEX_REGULAR;
-        if (isVisible) return SelectionMode::FACE_VISIBLE_REGULAR;
-        return SelectionMode::FACE_REGULAR;
+        return modes;
     }
 
-    SelectionMode allModeForSettings() const
+    std::vector<SelectionMode> allModesForSettings() const
     {
-        bool sv = std::any_cast<bool>(
-            Base::settings().customSettings.at("selectVertices"));
-        return sv ? SelectionMode::VERTEX_ALL : SelectionMode::FACE_ALL;
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_ALL);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_ALL);
+        return modes;
     }
 
-    SelectionMode noneModeForSettings() const
+    std::vector<SelectionMode> noneModesForSettings() const
     {
-        bool sv = std::any_cast<bool>(
-            Base::settings().customSettings.at("selectVertices"));
-        return sv ? SelectionMode::VERTEX_NONE : SelectionMode::FACE_NONE;
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_NONE);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_NONE);
+        return modes;
     }
 
-    SelectionMode invertModeForSettings() const
+    std::vector<SelectionMode> invertModesForSettings() const
     {
-        bool sv = std::any_cast<bool>(
-            Base::settings().customSettings.at("selectVertices"));
-        return sv ? SelectionMode::VERTEX_INVERT : SelectionMode::FACE_INVERT;
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_INVERT);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_INVERT);
+        return modes;
     }
 
 public:
@@ -196,8 +229,9 @@ public:
         mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
 
         // Create index buffer for the two selection-box triangles
-        mTriIndexBuf.create(bgfx::copy(
-            SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
+        mTriIndexBuf.create(
+            bgfx::copy(
+                SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
 
         // ---- Pass 1: render scene into visible-selection framebuffer ----
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
@@ -335,15 +369,15 @@ public:
             !modifiers[KeyModifier::SHIFT]) {
             switch (key) {
             case Key::A:
-                mCurrentSelectionMode  = allModeForSettings();
+                mCurrentSelectionModes = allModesForSettings();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::D:
-                mCurrentSelectionMode  = noneModeForSettings();
+                mCurrentSelectionModes = noneModesForSettings();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::I:
-                mCurrentSelectionMode  = invertModeForSettings();
+                mCurrentSelectionModes = invertModesForSettings();
                 mSelectionCalcRequired = true;
                 return true;
             default: break;
@@ -363,7 +397,7 @@ public:
             return false;
         if (mLMBHeld) {
             mSelectionBox.set2({x, y});
-            mCurrentSelectionMode  = selectionModeForModifier(modifiers);
+            mCurrentSelectionModes = selectionModesForModifier(modifiers);
             mSelectionCalcRequired = true;
         }
         return true; // Consume all mouse-move events while selection is active
@@ -382,7 +416,7 @@ public:
             mLMBPressPositionTaken = true;
             mSelectionBox.set1({x, y});
             mSelectionBox.set2({x, y});
-            mCurrentSelectionMode = selectionModeForModifier(modifiers);
+            mCurrentSelectionModes = selectionModesForModifier(modifiers);
         }
         return true; // Consume all mouse-press events while selection is active
     }
@@ -421,9 +455,9 @@ private:
         if (box.anyNull()) {
             return false;
         }
-        auto s     = Base::viewerCanvasSize();
-        uint win_w = s.x();
-        uint win_h = s.y();
+        auto    s     = Base::viewerCanvasSize();
+        uint    win_w = s.x();
+        uint    win_h = s.y();
         Point4f minNDC(
             float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
             1.f - float(box.get2().value().y()) / float(win_h) * 2.f,
@@ -439,8 +473,8 @@ private:
         Matrix44f trns {
             {1.f, 0.f, 0.f, -(minNDC.x() + 0.5f * w)},
             {0.f, 1.f, 0.f, -(minNDC.y() + 0.5f * h)},
-            {0.f, 0.f, 1.f, 0.f                      },
-            {0.f, 0.f, 0.f, 1.f                      }
+            {0.f, 0.f, 1.f, 0.f                     },
+            {0.f, 0.f, 0.f, 1.f                     }
         };
         Matrix44f scl {
             {2.f / w, 0.f,     0.f, 0.f},
@@ -464,69 +498,85 @@ private:
         if (mSelectionBox.allValue()) {
             mBoxToDraw = mSelectionBox;
         }
-        bool         skipSelection = false;
-        SelectionBox minMaxBox     = mSelectionBox.toMinAndMax();
-        if (mCurrentSelectionMode.isVisibleSelection()) {
-            skipSelection = !setVisibleTrisSelectionProjViewMatrix(
+        SelectionBox minMaxBox = mSelectionBox.toMinAndMax();
+
+        // If any active mode is a visible-selection mode, set up the
+        // restricted projection matrix once for all such modes.
+        bool hasVisibleMode       = false;
+        bool skipVisibleSelection = false;
+        for (const auto& mode : mCurrentSelectionModes) {
+            if (mode.isVisibleSelection()) {
+                hasVisibleMode = true;
+                break;
+            }
+        }
+        if (hasVisibleMode) {
+            skipVisibleSelection = !setVisibleTrisSelectionProjViewMatrix(
                 calculateWindowSpaceMeshBB().intersect(
                     mBoxToDraw.toMinAndMax()));
         }
-        if (skipSelection) {
-            if (mCurrentSelectionMode == SelectionMode::FACE_VISIBLE_REGULAR) {
-                // Box is outside the mesh screen-space BB: clear selection
-                SelectionParameters clearParams = {
-                    viewId,
-                    mVisibleSelectionViewIds[0],
-                    mVisibleSelectionViewIds[1],
-                    SelectionBox{},
-                    SelectionMode::FACE_NONE,
-                    mLMBHeld,
-                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-                    bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                    std::array<uint, 2>{
-                        sVisibleFaceFramebufferSize,
-                        sVisibleFaceFramebufferSize},
-                    0};
-                auto dl = Base::drawList();
-                for (size_t i = 0; i < dl->size(); i++) {
-                    if (!shouldProcessObject(*dl, uint(i))) {
-                        continue;
-                    }
-                    clearParams.meshId = uint(i + 1);
-                    auto el            = dl->at(i);
-                    if (auto p =
-                            dynamic_cast<AbstractDrawableMesh*>(el.get())) {
-                        p->computeSelection(clearParams);
+
+        auto dl = Base::drawList();
+
+        for (const auto& mode : mCurrentSelectionModes) {
+            if (mode.isVisibleSelection() && skipVisibleSelection) {
+                // Box is outside the mesh screen-space BB.
+                // For REGULAR mode we must clear the current selection;
+                // for ADD/SUBTRACT we simply skip (no change).
+                if (mode == SelectionMode::FACE_VISIBLE_REGULAR) {
+                    SelectionParameters clearParams = {
+                        viewId,
+                        mVisibleSelectionViewIds[0],
+                        mVisibleSelectionViewIds[1],
+                        SelectionBox {},
+                        SelectionMode::FACE_NONE,
+                        mLMBHeld,
+                        bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                        bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
+                        std::array<uint, 2> {
+                                      sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                        0
+                    };
+                    for (size_t i = 0; i < dl->size(); i++) {
+                        if (!shouldProcessObject(*dl, uint(i))) {
+                            continue;
+                        }
+                        clearParams.meshId = uint(i + 1);
+                        auto el            = dl->at(i);
+                        if (auto p =
+                                dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                            p->computeSelection(clearParams);
+                        }
                     }
                 }
+                continue; // skip this visible-selection mode
             }
-            selectionCalculated();
-            return;
+
+            SelectionParameters params = {
+                viewId,
+                mVisibleSelectionViewIds[0],
+                mVisibleSelectionViewIds[1],
+                minMaxBox,
+                mode,
+                mLMBHeld,
+                bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
+                bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
+                std::array<uint, 2> {
+                                     sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                0
+            };
+            for (size_t i = 0; i < dl->size(); i++) {
+                if (!shouldProcessObject(*dl, uint(i))) {
+                    continue;
+                }
+                params.meshId = uint(i + 1);
+                auto el       = dl->at(i);
+                if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                    p->computeSelection(params);
+                }
+            }
         }
-        SelectionParameters params = SelectionParameters {
-            viewId,
-            mVisibleSelectionViewIds[0],
-            mVisibleSelectionViewIds[1],
-            minMaxBox,
-            mCurrentSelectionMode,
-            mLMBHeld,
-            bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-            bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-            std::array<uint, 2> {
-                sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
-            0
-        };
-        auto dl = Base::drawList();
-        for (size_t i = 0; i < dl->size(); i++) {
-            if (!shouldProcessObject(*dl, uint(i))) {
-                continue;
-            }
-            params.meshId = uint(i + 1);
-            auto el       = dl->at(i);
-            if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
-                p->computeSelection(params);
-            }
-        }
+
         selectionCalculated();
     }
 
@@ -589,9 +639,9 @@ private:
         if (totalBB.isNull()) {
             return box;
         }
-        auto    s      = Base::viewerCanvasSize();
-        uint    width  = s.x();
-        uint    height = s.y();
+        auto    s         = Base::viewerCanvasSize();
+        uint    width     = s.x();
+        uint    height    = s.y();
         Point3d boxPts[2] = {totalBB.min(), totalBB.max()};
         Point2d sSpace[2];
         for (size_t i = 0; i < 2; i++) {
