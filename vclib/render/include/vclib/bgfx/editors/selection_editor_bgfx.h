@@ -25,6 +25,7 @@
 
 #include <vclib/render/editors/editor.h>
 
+#include <vclib/bgfx/buffers/frame_buffer.h>
 #include <vclib/bgfx/buffers/index_buffer.h>
 #include <vclib/bgfx/buffers/vertex_buffer.h>
 #include <vclib/bgfx/context.h>
@@ -47,8 +48,8 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     using Base = Editor<ViewerDrawer>;
 
     // ---- BGFX rendering resources ----
-    bgfx::FrameBufferHandle mVisibleSelectionFrameBuffer = BGFX_INVALID_HANDLE;
-    bgfx::FrameBufferHandle mUselessFB                   = BGFX_INVALID_HANDLE;
+    FrameBuffer                 mVisibleSelectionFrameBuffer;
+    FrameBuffer                 mUselessFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
     bgfx::ViewId                mSelectionDrawingViewId  = 0;
     bgfx::VertexLayout          mVertexLayout;
@@ -80,10 +81,7 @@ public:
     ~SelectionEditorBGFX()
     {
         if (mInitialized) {
-            if (bgfx::isValid(mVisibleSelectionFrameBuffer))
-                bgfx::destroy(mVisibleSelectionFrameBuffer);
-            if (bgfx::isValid(mUselessFB))
-                bgfx::destroy(mUselessFB);
+            // FrameBuffers handle their own destruction
             Context::instance().releaseViewId(mVisibleSelectionViewIds[0]);
             Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
             Context::instance().releaseViewId(mSelectionDrawingViewId);
@@ -127,10 +125,9 @@ public:
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
-        mVisibleSelectionFrameBuffer =
-            bgfx::createFrameBuffer(3, texHandles, true);
+        mVisibleSelectionFrameBuffer.create(texHandles, 3, true);
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer);
+            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer.handle());
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
@@ -160,8 +157,8 @@ public:
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
-        mUselessFB = bgfx::createFrameBuffer(2, uselessTexs, true);
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB);
+        mUselessFB.create(uselessTexs, 2, true);
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
@@ -181,7 +178,7 @@ public:
         // Re-configure visible selection views every frame — required by Qt
         // (all other views follow this pattern; see context.cpp comment)
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer);
+            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer.handle());
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
@@ -194,7 +191,7 @@ public:
             sVisibleFaceFramebufferSize);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB);
+        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
