@@ -65,9 +65,6 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool                               mLMBHeld               = false;
     bool                               mLMBPressPositionTaken = false;
 
-    // ---- Rendering state ----
-    mutable SelectionBox mBoxToDraw;
-
     // ---- Settings helpers ----
 
     /**
@@ -343,14 +340,13 @@ public:
         }
 
         if (isSelectionActive()) {
-            calculateSelections(viewId);
+            SelectionBox boxToDraw = calculateSelections(viewId);
             if (!mLMBHeld) {
-                mBoxToDraw.nullAll();
+                boxToDraw.nullAll();
             }
-            drawSelectionBox(mSelectionDrawingViewId, mBoxToDraw);
+            drawSelectionBox(mSelectionDrawingViewId, boxToDraw);
         }
         else {
-            mBoxToDraw.nullAll();
             mSelectionBox.nullAll();
         }
     }
@@ -490,13 +486,14 @@ private:
         return true;
     }
 
-    void calculateSelections(uint viewId) const
+    SelectionBox calculateSelections(uint viewId) const
     {
+        SelectionBox boxToDraw;
         if (!mSelectionCalcRequired) {
-            return;
+            return mSelectionBox;
         }
         if (mSelectionBox.allValue()) {
-            mBoxToDraw = mSelectionBox;
+            boxToDraw = mSelectionBox;
         }
         SelectionBox minMaxBox = mSelectionBox.toMinAndMax();
 
@@ -513,7 +510,7 @@ private:
         if (hasVisibleMode) {
             skipVisibleSelection = !setVisibleTrisSelectionProjViewMatrix(
                 calculateWindowSpaceMeshBB().intersect(
-                    mBoxToDraw.toMinAndMax()));
+                    boxToDraw.toMinAndMax()));
         }
 
         auto dl = Base::drawList();
@@ -578,6 +575,7 @@ private:
         }
 
         selectionCalculated();
+        return boxToDraw;
     }
 
     /**
