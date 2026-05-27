@@ -32,7 +32,7 @@
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
-#include <QWidget>
+#include <QMainWindow>
 
 namespace vcl::qt {
 
@@ -48,7 +48,7 @@ protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
-class MeshViewer : public QWidget
+class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
