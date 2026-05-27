@@ -65,135 +65,6 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool                               mLMBHeld               = false;
     bool                               mLMBPressPositionTaken = false;
 
-    // ---- Settings helpers ----
-
-    /**
-     * @brief Returns true if the draw-list element at the given index should
-     * be processed, based on the current EditorSettings::editMode.
-     *
-     * CURRENT_OBJECT  → only the selected object
-     * VISIBLE_OBJECTS → only visible objects
-     */
-    bool shouldProcessObject(const DrawableObjectVector& dl, uint index) const
-    {
-        switch (Base::settings().editMode) {
-        case EditorSettings::EditMode::CURRENT_OBJECT:
-            return index == dl.selectedObjectId();
-        case EditorSettings::EditMode::VISIBLE_OBJECTS:
-            return dl.at(index)->isVisible();
-        default:
-            // NONE and ALL_OBJECTS are not supported by this editor
-            return false;
-        }
-    }
-
-    /**
-     * @brief Returns true if selection is currently active: the editor is
-     * active and at least one of the 'selectVertices'/'selectFaces' settings
-     * is enabled.
-     */
-    bool isSelectionActive() const
-    {
-        if (!Base::isActive())
-            return false;
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        return sv || sf;
-    }
-
-    /**
-     * @brief Maps the current settings and drag modifier to the appropriate
-     * list of SelectionModes (one per active selection type).
-     *
-     * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
-     * mode and a face mode are returned. 'onlyVisible' is applied only to
-     * face selection.
-     *
-     * No modifier  → REGULAR (replace)
-     * Ctrl         → ADD
-     * Ctrl+Shift   → SUBTRACT
-     */
-    std::vector<SelectionMode> selectionModesForModifier(
-        const KeyModifiers& mods) const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        bool        ov = std::any_cast<bool>(cs.at("onlyVisible"));
-
-        bool ctrlShift = mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
-        bool ctrlOnly = mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
-
-        std::vector<SelectionMode> modes;
-        if (sv) {
-            if (ctrlShift)
-                modes.push_back(SelectionMode::VERTEX_SUBTRACT);
-            else if (ctrlOnly)
-                modes.push_back(SelectionMode::VERTEX_ADD);
-            else
-                modes.push_back(SelectionMode::VERTEX_REGULAR);
-        }
-        if (sf) {
-            if (ov) {
-                if (ctrlShift)
-                    modes.push_back(SelectionMode::FACE_VISIBLE_SUBTRACT);
-                else if (ctrlOnly)
-                    modes.push_back(SelectionMode::FACE_VISIBLE_ADD);
-                else
-                    modes.push_back(SelectionMode::FACE_VISIBLE_REGULAR);
-            }
-            else {
-                if (ctrlShift)
-                    modes.push_back(SelectionMode::FACE_SUBTRACT);
-                else if (ctrlOnly)
-                    modes.push_back(SelectionMode::FACE_ADD);
-                else
-                    modes.push_back(SelectionMode::FACE_REGULAR);
-            }
-        }
-        return modes;
-    }
-
-    std::vector<SelectionMode> allModesForSettings() const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back(SelectionMode::VERTEX_ALL);
-        if (sf)
-            modes.push_back(SelectionMode::FACE_ALL);
-        return modes;
-    }
-
-    std::vector<SelectionMode> noneModesForSettings() const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back(SelectionMode::VERTEX_NONE);
-        if (sf)
-            modes.push_back(SelectionMode::FACE_NONE);
-        return modes;
-    }
-
-    std::vector<SelectionMode> invertModesForSettings() const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back(SelectionMode::VERTEX_INVERT);
-        if (sf)
-            modes.push_back(SelectionMode::FACE_INVERT);
-        return modes;
-    }
-
 public:
     SelectionEditorBGFX()
     {
@@ -442,6 +313,135 @@ public:
     }
 
 private:
+    // ---- Settings helpers ----
+
+    /**
+     * @brief Returns true if the draw-list element at the given index should
+     * be processed, based on the current EditorSettings::editMode.
+     *
+     * CURRENT_OBJECT  → only the selected object
+     * VISIBLE_OBJECTS → only visible objects
+     */
+    bool shouldProcessObject(const DrawableObjectVector& dl, uint index) const
+    {
+        switch (Base::settings().editMode) {
+        case EditorSettings::EditMode::CURRENT_OBJECT:
+            return index == dl.selectedObjectId();
+        case EditorSettings::EditMode::VISIBLE_OBJECTS:
+            return dl.at(index)->isVisible();
+        default:
+            // NONE and ALL_OBJECTS are not supported by this editor
+            return false;
+        }
+    }
+
+    /**
+     * @brief Returns true if selection is currently active: the editor is
+     * active and at least one of the 'selectVertices'/'selectFaces' settings
+     * is enabled.
+     */
+    bool isSelectionActive() const
+    {
+        if (!Base::isActive())
+            return false;
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        return sv || sf;
+    }
+
+    /**
+     * @brief Maps the current settings and drag modifier to the appropriate
+     * list of SelectionModes (one per active selection type).
+     *
+     * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
+     * mode and a face mode are returned. 'onlyVisible' is applied only to
+     * face selection.
+     *
+     * No modifier  → REGULAR (replace)
+     * Ctrl         → ADD
+     * Ctrl+Shift   → SUBTRACT
+     */
+    std::vector<SelectionMode> selectionModesForModifier(
+        const KeyModifiers& mods) const
+    {
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        bool        ov = std::any_cast<bool>(cs.at("onlyVisible"));
+
+        bool ctrlShift = mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
+        bool ctrlOnly = mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
+
+        std::vector<SelectionMode> modes;
+        if (sv) {
+            if (ctrlShift)
+                modes.push_back(SelectionMode::VERTEX_SUBTRACT);
+            else if (ctrlOnly)
+                modes.push_back(SelectionMode::VERTEX_ADD);
+            else
+                modes.push_back(SelectionMode::VERTEX_REGULAR);
+        }
+        if (sf) {
+            if (ov) {
+                if (ctrlShift)
+                    modes.push_back(SelectionMode::FACE_VISIBLE_SUBTRACT);
+                else if (ctrlOnly)
+                    modes.push_back(SelectionMode::FACE_VISIBLE_ADD);
+                else
+                    modes.push_back(SelectionMode::FACE_VISIBLE_REGULAR);
+            }
+            else {
+                if (ctrlShift)
+                    modes.push_back(SelectionMode::FACE_SUBTRACT);
+                else if (ctrlOnly)
+                    modes.push_back(SelectionMode::FACE_ADD);
+                else
+                    modes.push_back(SelectionMode::FACE_REGULAR);
+            }
+        }
+        return modes;
+    }
+
+    std::vector<SelectionMode> allModesForSettings() const
+    {
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_ALL);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_ALL);
+        return modes;
+    }
+
+    std::vector<SelectionMode> noneModesForSettings() const
+    {
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_NONE);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_NONE);
+        return modes;
+    }
+
+    std::vector<SelectionMode> invertModesForSettings() const
+    {
+        const auto& cs = Base::settings().customSettings;
+        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
+        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
+        std::vector<SelectionMode> modes;
+        if (sv)
+            modes.push_back(SelectionMode::VERTEX_INVERT);
+        if (sf)
+            modes.push_back(SelectionMode::FACE_INVERT);
+        return modes;
+    }
+
     /**
      * @brief Restricts the visible-selection projection to the sub-frustum
      * that corresponds to the given selection box.
