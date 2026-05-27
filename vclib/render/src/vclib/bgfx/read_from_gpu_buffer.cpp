@@ -126,17 +126,25 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
         (target == Target::ID) ? Color(UINT_NULL, Color::Format::RGBA).abgr()
                                : clearColor.rgba();
 
-    mOffscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        mViewOffscreenId,
+    // Create the offscreen framebuffer
+    mOffscreenFbh.create(
         uint16_t(size.x()),
         uint16_t(size.y()),
-        true,
-        clearValue,
-        Context::DEFAULT_CLEAR_DEPTH,
-        Context::DEFAULT_CLEAR_STENCIL,
         offscreenColorFormat(),
         offscreenDepthFormat());
-    assert(bgfx::isValid(mOffscreenFbh));
+    assert(mOffscreenFbh.isValid());
+
+    // Initialize the view
+    bgfx::setViewFrameBuffer(mViewOffscreenId, mOffscreenFbh.handle());
+    bgfx::setViewClear(
+        mViewOffscreenId,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+        clearValue,
+        Context::DEFAULT_CLEAR_DEPTH,
+        Context::DEFAULT_CLEAR_STENCIL);
+    bgfx::setViewRect(
+        mViewOffscreenId, 0, 0, uint16_t(size.x()), uint16_t(size.y()));
+    bgfx::touch(mViewOffscreenId);
 
     mBlitTexture = bgfx::createTexture2D(
         mBlitSize.x(),
@@ -233,7 +241,7 @@ void ReadFromGPUBuffer::swap(ReadFromGPUBuffer& other) noexcept
 
 bool ReadFromGPUBuffer::isValid() const
 {
-    return bgfx::isValid(mOffscreenFbh) || bgfx::isValid(mGPUTexHandle);
+    return mOffscreenFbh.isValid() || bgfx::isValid(mGPUTexHandle);
 }
 
 ReadFromGPUBuffer::Source ReadFromGPUBuffer::source() const
@@ -257,7 +265,7 @@ bgfx::ViewId ReadFromGPUBuffer::viewId() const
 
 bgfx::FrameBufferHandle ReadFromGPUBuffer::frameBuffer() const
 {
-    return mOffscreenFbh;
+    return mOffscreenFbh.handle();
 }
 
 // ============================================================================
@@ -440,10 +448,8 @@ void ReadFromGPUBuffer::destroyFramebufferResources()
         bgfx::destroy(mBlitTexture);
         mBlitTexture = BGFX_INVALID_HANDLE;
     }
-    if (bgfx::isValid(mOffscreenFbh)) {
-        bgfx::destroy(mOffscreenFbh);
-        mOffscreenFbh = BGFX_INVALID_HANDLE;
-    }
+    // FrameBuffer handles its own destruction
+    mOffscreenFbh.destroy();
     if (mViewOffscreenId != BGFX_INVALID_VIEW) {
         Context::instance().releaseViewId(mViewOffscreenId);
         mViewOffscreenId = BGFX_INVALID_VIEW;
