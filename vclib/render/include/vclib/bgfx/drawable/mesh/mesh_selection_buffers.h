@@ -34,7 +34,7 @@
 #include <vclib/render/selection/selection_mode.h>
 #include <vclib/render/selection/selection_parameters.h>
 
-#include <vclib/space/complex/tri_poly_index_bimap.h>
+#include <vclib/space/complex.h>
 #include <vclib/space/core.h>
 
 #include <bgfx/bgfx.h>

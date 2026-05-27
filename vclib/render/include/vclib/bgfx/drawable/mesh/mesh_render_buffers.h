@@ -31,25 +31,13 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
-#include <vclib/bgfx/read_from_gpu_buffer.h>
 #include <vclib/bgfx/texture.h>
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/render/selection/selection_box.h>
-#include <vclib/render/selection/selection_mode.h>
-#include <vclib/render/selection/selection_parameters.h>
-
-#include <vclib/algorithms/core.h>
-#include <vclib/algorithms/mesh.h>
-#include <vclib/io.h>
-#include <vclib/space/core.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
-
-#include <algorithm>
-#include <bit>
 
 namespace vcl {
 
@@ -70,10 +58,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexColorsBuffer;
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
+    VertexBuffer mVertexTangentsBuffer;
 
     MeshSelectionBuffers mSelection;
-
-    VertexBuffer mVertexTangentsBuffer;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -297,6 +284,7 @@ public:
         uint stream = 0;
 
         // streams MUST be consecutive starting from 0
+        // otherwise on metal it won't work
         mVertexPositionsBuffer.bindVertex(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
