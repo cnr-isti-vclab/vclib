@@ -37,9 +37,7 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMeshBGFX :
-        public AbstractDrawableMesh,
-        public MeshType
+class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 {
 public:
     // TODO: to be removed after shader benchmarks
@@ -115,10 +113,7 @@ public:
         swap(mMRB, other.mMRB);
     }
 
-    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b)
-    {
-        a.swap(b);
-    }
+    friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     using AbstractDrawableMesh::boundingBox;
 
@@ -245,9 +240,8 @@ public:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        const uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                               BGFX_STATE_WRITE_Z |
-                               BGFX_STATE_DEPTH_TEST_LEQUAL;
+        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
         vcl::Matrix44f model = vcl::Matrix44f::Identity();
 
