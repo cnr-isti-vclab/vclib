@@ -90,11 +90,11 @@ private:
     // -------------------------------------------------------------------------
     // FRAMEBUFFER-specific state
     // -------------------------------------------------------------------------
-    bgfx::FrameBufferHandle mOffscreenFbh    = BGFX_INVALID_HANDLE;
-    bgfx::ViewId            mViewOffscreenId = BGFX_INVALID_VIEW;
-    bgfx::TextureHandle     mBlitTexture     = BGFX_INVALID_HANDLE;
-    Point2<uint16_t>        mBlitSize        = {0, 0};
-    Color                   mClearColor      = Color::Black;
+    FrameBuffer         mOffscreenFbh;
+    bgfx::ViewId        mViewOffscreenId = BGFX_INVALID_VIEW;
+    bgfx::TextureHandle mBlitTexture     = BGFX_INVALID_HANDLE;
+    Point2<uint16_t>    mBlitSize        = {0, 0};
+    Color               mClearColor      = Color::Black;
 
     // -------------------------------------------------------------------------
     // COMPUTE_BUFFER-specific state
