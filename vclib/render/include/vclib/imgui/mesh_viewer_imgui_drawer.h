@@ -355,7 +355,7 @@ private:
         bool onlyVisible =
             std::any_cast<bool>(sts.customSettings["onlyVisible"]);
         ImGui::Checkbox(
-            "Only Visible",
+            "Only Visible Faces",
             [&] { return onlyVisible; },
             [&](bool v) {
                 sts.customSettings["onlyVisible"] = v;

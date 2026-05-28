@@ -30,7 +30,7 @@
       <enum>Qt::FocusPolicy::NoFocus</enum>
      </property>
      <property name="text">
-      <string>Only Visible</string>
+      <string>Only Visible Faces</string>
      </property>
     </widget>
    </item>
