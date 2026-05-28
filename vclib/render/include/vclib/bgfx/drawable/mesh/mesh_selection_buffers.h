@@ -27,6 +27,7 @@
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/uniforms/selection_uniforms.h>
 #include <vclib/bgfx/read_from_gpu_buffer.h>
 #include <vclib/bgfx/uniform.h>
 
@@ -69,18 +70,13 @@ class MeshSelectionBuffers
 {
     // vertex selection
     IndexBuffer mSelectedVerticesBuffer;
-    Uniform     mSelectionBoxUniform =
-        Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-    Uniform mVertexSelectionWorkgroupSizeAndVertexCountUniform =
-        Uniform("u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
+
     std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
     uint                mNumVerts                     = 0;
 
     // face selection
-    Uniform mVisibleFacesComputeUniform =
+    Uniform mVisibleFacesUniform =
         Uniform("u_meshIdAndDispatchSizeXY", bgfx::UniformType::Vec4);
-    Uniform mVisibleFacesVertFragUniform =
-        Uniform("u_meshId", bgfx::UniformType::Vec4);
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
     uint                       mNumTris                    = 0;
@@ -296,8 +292,12 @@ public:
         }
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
-        bindSelectionBox(params.box);
-        bindVertexWGroupSizeAndCount();
+
+        SelectionUniforms::setSelectionBox(params.box);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mVertexSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+        SelectionUniforms::bind();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
@@ -314,7 +314,10 @@ public:
     {
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
-        bindVertexWGroupSizeAndCount();
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mVertexSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+        SelectionUniforms::bind();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         dispatchVertexSelection(params.drawViewId, prog);
         return true;
@@ -350,8 +353,11 @@ public:
 
         bgfx::ProgramHandle prog =
             getComputeProgramFromSelectionMode(pm, params.mode);
-        bindSelectionBox(params.box);
-        bindFaceWGroupSizeAndCount();
+        SelectionUniforms::setSelectionBox(params.box);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mFaceSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+        SelectionUniforms::bind();
         mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
@@ -372,7 +378,10 @@ public:
     {
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
-        bindFaceWGroupSizeAndCount();
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mFaceSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+        SelectionUniforms::bind();
         mSelectedFacesBuffer.value().bind(4, bgfx::Access::ReadWrite);
         dispatchFaceSelection(params.drawViewId, prog);
         return true;
@@ -423,13 +432,13 @@ public:
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
         bgfx::setState(state);
-        mVisibleFacesVertFragUniform.bind(temp);
+        mVisibleFacesUniform.bind(temp);
         vertPosBuf.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
         triIdxBuf.bind();
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
 
-        mVisibleFacesComputeUniform.bind(temp);
+        mVisibleFacesUniform.bind(temp);
         bgfx::setImage(
             0,
             params.primIdTex,
@@ -636,40 +645,6 @@ public:
     }
 
 private:
-    void bindSelectionBox(const SelectionBox& box)
-    {
-        Point2d minPt  = box.get1().value();
-        Point2d maxPt  = box.get2().value();
-        float   temp[] = {
-            float(minPt.x()),
-            float(minPt.y()),
-            float(maxPt.x()),
-            float(maxPt.y())};
-        mSelectionBoxUniform.bind((void*) temp);
-    }
-
-    void bindVertexWGroupSizeAndCount()
-    {
-        std::array<float, 4> temp = {
-            std::bit_cast<float>(mVertexSelectionWorkgroupSize[0]),
-            std::bit_cast<float>(mVertexSelectionWorkgroupSize[1]),
-            std::bit_cast<float>(mVertexSelectionWorkgroupSize[2]),
-            std::bit_cast<float>(mNumVerts)};
-        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
-            (void*) temp.data());
-    }
-
-    void bindFaceWGroupSizeAndCount()
-    {
-        std::array<float, 4> temp = {
-            std::bit_cast<float>(mFaceSelectionWorkgroupSize[0]),
-            std::bit_cast<float>(mFaceSelectionWorkgroupSize[1]),
-            std::bit_cast<float>(mFaceSelectionWorkgroupSize[2]),
-            std::bit_cast<float>(mNumTris)};
-        mVertexSelectionWorkgroupSizeAndVertexCountUniform.bind(
-            (void*) temp.data());
-    }
-
     void dispatchVertexSelection(
         const uint                 viewId,
         const bgfx::ProgramHandle& handle)

@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/selection/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
@@ -33,7 +34,6 @@ BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-uniform vec4 u_selectionBox; // screen space
 uniform vec4 u_workgroupSizeAndVertexCount;
 
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.

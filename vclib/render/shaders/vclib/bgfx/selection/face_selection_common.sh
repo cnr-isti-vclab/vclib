@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -19,6 +19,9 @@
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
+
+#ifndef VCL_BGFX_SELECTION_FACE_SELECTION_COMMON_SH
+#define VCL_BGFX_SELECTION_FACE_SELECTION_COMMON_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 
@@ -224,3 +227,5 @@ bool AABBEdgesIntersectTriangle(mat3 tri, vec3 minBoxPoint, vec3 maxBoxPoint) {
     }
     return false;
 }
+
+#endif // VCL_BGFX_SELECTION_FACE_SELECTION_COMMON_SH

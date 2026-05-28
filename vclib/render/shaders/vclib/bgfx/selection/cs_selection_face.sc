@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,8 +22,9 @@
 
 #include "face_selection_common.sh"
 
-#include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/selection/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
@@ -40,7 +41,6 @@ BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
 BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
 
-uniform vec4 u_selectionBox; // screen space
 uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the face count (i.e. numTris)
 
 // Polygon-level ADD selection:

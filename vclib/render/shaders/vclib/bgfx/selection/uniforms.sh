@@ -20,30 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/selection/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh>
+#ifndef VCL_BGFX_SELECTION_UNIFORMS_SH
+#define VCL_BGFX_SELECTION_UNIFORMS_SH
 
-BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
+uniform vec4 u_selectionBox; // screen space
 
-uniform vec4 u_workgroupSizeAndVertexCount;
-
-// THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
-// Possibility: uniform containing selection box passed already in NDC space? It's probably doable
-
-NUM_THREADS(1, 1, 1) // 1 'thread' per point
-void main()
-{
-    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
-    if(pointId >= vertexCount) {
-        return;
-    }
-
-    uint bufferIndex = pointId/32;
-    uint bitOffset = 31-(pointId%32);
-    if(bitOffset != 31) {
-        return;
-    }
-    vertex_selected[bufferIndex] = 0xffffffff;
-}
+#endif // VCL_BGFX_SELECTION_UNIFORMS_SH

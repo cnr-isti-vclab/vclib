@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -22,12 +22,12 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-uniform vec4 u_meshId;
+uniform vec4 u_meshIdAndDispatchSizeXY;
 
 #define V4RGBA(x) uintABGRToVec4Color(x).wzyx
 
 void main() {
-    uint meshId = floatBitsToUint(u_meshId.x);
+    uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
     // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
     if(meshId == uint(0)) {
         discard;
