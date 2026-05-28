@@ -83,8 +83,8 @@ public:
             sSelectionBoxUniform =
                 Uniform("u_selectionBox", bgfx::UniformType::Vec4);
         if (!sSelectionWorkgroupSizeAndCountUniform.isValid())
-            sSelectionWorkgroupSizeAndCountUniform = Uniform(
-                "u_workgroupSizeAndVertexCount", bgfx::UniformType::Vec4);
+            sSelectionWorkgroupSizeAndCountUniform =
+                Uniform("u_workgroupSizeAndCount", bgfx::UniformType::Vec4);
 
         sSelectionBoxUniform.bind(&sSelectionBox);
         sSelectionWorkgroupSizeAndCountUniform.bind(

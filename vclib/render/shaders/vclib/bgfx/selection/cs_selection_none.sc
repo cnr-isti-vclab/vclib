@@ -21,11 +21,8 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/selection/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh>
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
-
-uniform vec4 u_workgroupSizeAndVertexCount;
 
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
 // Possibility: uniform containing selection box passed already in NDC space? It's probably doable
@@ -33,10 +30,8 @@ uniform vec4 u_workgroupSizeAndVertexCount;
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
-    if(pointId >= vertexCount) {
+    uint pointId = getPrimitiveID(gl_WorkGroupID);
+    if(pointId >= u_primitiveCount) {
         return;
     }
     uint bufferIndex = pointId/32;

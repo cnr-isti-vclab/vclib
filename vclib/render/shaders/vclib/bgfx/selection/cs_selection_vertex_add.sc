@@ -22,7 +22,6 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
@@ -34,18 +33,14 @@ BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-uniform vec4 u_workgroupSizeAndVertexCount;
-
 // THE SELECTION IS CHECKED IN NDC SPACE. I decided for this because this way i only need the viewRect and the modelViewProj uniforms.
 // Possibility: uniform containing selection box passed already in NDC space? It's probably doable
 
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
-    uint vertexCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint pointId = gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z;
-    if(pointId >= vertexCount) {
+    uint pointId = getPrimitiveID(gl_WorkGroupID);
+    if(pointId >= u_primitiveCount) {
         return;
     }
     uint idx30 = pointId * 3;

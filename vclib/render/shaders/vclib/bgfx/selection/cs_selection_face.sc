@@ -24,7 +24,6 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
@@ -41,21 +40,17 @@ BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
 BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
 
-uniform vec4 u_workgroupSizeAndVertexCount; // despite the name, w should contain the face count (i.e. numTris)
-
 // Polygon-level ADD selection:
 // If any triangle of a polygon intersects the selection box, all triangles of
 // that polygon are marked as selected.
 NUM_THREADS(1, 1, 1) // 1 thread per triangle
 void main()
 {
-    uint faceCount = floatBitsToUint(u_workgroupSizeAndVertexCount.w);
-    uvec3 workGroupSize = uvec3(floatBitsToUint(u_workgroupSizeAndVertexCount.x), floatBitsToUint(u_workgroupSizeAndVertexCount.y), floatBitsToUint(u_workgroupSizeAndVertexCount.z));
-    uint faceIndex = (gl_WorkGroupID.x + workGroupSize.x * gl_WorkGroupID.y + workGroupSize.x * workGroupSize.y * gl_WorkGroupID.z);
+    uint faceIndex = getPrimitiveID(gl_WorkGroupID);
     uint indicesBaseIndex = 3 * faceIndex;
     uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
 
-    if(faceIndex >= faceCount) {
+    if(faceIndex >= u_primitiveCount) {
         return;
     }
 

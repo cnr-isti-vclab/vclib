@@ -23,6 +23,22 @@
 #ifndef VCL_BGFX_SELECTION_UNIFORMS_SH
 #define VCL_BGFX_SELECTION_UNIFORMS_SH
 
+#include <vclib/bgfx/shaders_common.sh>
+
 uniform vec4 u_selectionBox; // screen space
+
+uniform vec4 u_workgroupSizeAndCount;
+
+#define u_workgroupSizeX floatBitsToUint(u_workgroupSizeAndCount.x)
+#define u_workgroupSizeY floatBitsToUint(u_workgroupSizeAndCount.y)
+#define u_workgroupSizeZ floatBitsToUint(u_workgroupSizeAndCount.z)
+#define u_primitiveCount floatBitsToUint(u_workgroupSizeAndCount.w)
+
+uint getPrimitiveID(vec3 workGroupID)
+{
+    return workGroupID.x +
+        u_workgroupSizeX * workGroupID.y +
+        u_workgroupSizeX * u_workgroupSizeY * workGroupID.z;
+}
 
 #endif // VCL_BGFX_SELECTION_UNIFORMS_SH
