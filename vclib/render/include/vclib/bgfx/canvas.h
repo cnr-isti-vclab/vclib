@@ -250,8 +250,7 @@ public:
 
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
-            assert(
-                std::holds_alternative<ReadFromGPUBuffer::ByteData>(data));
+            assert(std::holds_alternative<ReadFromGPUBuffer::ByteData>(data));
             const auto& d = std::get<ReadFromGPUBuffer::ByteData>(data);
 
             // save rgb image data into file using stb depending on file

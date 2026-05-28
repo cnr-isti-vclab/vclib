@@ -169,14 +169,17 @@ public:
         destroy();
 
         if (count > 0) {
-            mHandle = bgfx::createFrameBuffer(count, textureHandles, destroyTextures);
+            mHandle =
+                bgfx::createFrameBuffer(count, textureHandles, destroyTextures);
 
-            // If we're not destroying textures via bgfx (destroyTextures=false),
-            // but the caller wants us to manage them, store them
-            // Note: bgfx's destroyTextures parameter handles destruction automatically
-            // when set to true, so we only track if bgfx will destroy them
+            // If we're not destroying textures via bgfx
+            // (destroyTextures=false), but the caller wants us to manage them,
+            // store them Note: bgfx's destroyTextures parameter handles
+            // destruction automatically when set to true, so we only track if
+            // bgfx will destroy them
             if (destroyTextures) {
-                // bgfx will destroy the textures, so we don't need to track them
+                // bgfx will destroy the textures, so we don't need to track
+                // them
                 mOwnedTextures.clear();
             }
         }

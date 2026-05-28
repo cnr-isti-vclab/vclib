@@ -69,9 +69,9 @@ static bgfx::TextureFormat::Enum offscreenDepthFormat()
 }
 
 static constexpr uint64_t kBlitFlags =
-    BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK |
-    BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
-    BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+    BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK | BGFX_SAMPLER_MIN_POINT |
+    BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP |
+    BGFX_SAMPLER_V_CLAMP;
 
 // ============================================================================
 // Constructors / destructor
@@ -83,7 +83,8 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
     const Color& clearColor) :
         mSource(Source::FRAMEBUFFER), mTarget(target), mClearColor(clearColor)
 {
-    assert(target != Target::RAW && "RAW target is only valid for COMPUTE_BUFFER");
+    assert(
+        target != Target::RAW && "RAW target is only valid for COMPUTE_BUFFER");
     assert(size.x() != 0 && size.y() != 0);
 
     // Clamp size to hardware limits
@@ -92,10 +93,10 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
         std::cerr << "ReadFromGPUBuffer: requested size (" << size.x() << "x"
                   << size.y() << ") exceeds max texture size " << maxTex
                   << ". Clamping.\n";
-        const bool wideIsLarger = size.x() >= size.y();
-        const uint larger       = wideIsLarger ? size.x() : size.y();
-        const double ratio      = double(maxTex) / double(larger);
-        size = {
+        const bool   wideIsLarger = size.x() >= size.y();
+        const uint   larger       = wideIsLarger ? size.x() : size.y();
+        const double ratio        = double(maxTex) / double(larger);
+        size                      = {
             wideIsLarger ? maxTex : uint(double(size.x()) * ratio),
             wideIsLarger ? uint(double(size.y()) * ratio) : maxTex};
     }
@@ -123,8 +124,8 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
 
     // Determine clear color (ID uses the null-ID as clear)
     const uint32_t clearValue =
-        (target == Target::ID) ? Color(UINT_NULL, Color::Format::RGBA).abgr()
-                               : clearColor.rgba();
+        (target == Target::ID) ? Color(UINT_NULL, Color::Format::RGBA).abgr() :
+                                 clearColor.rgba();
 
     // Create the offscreen framebuffer
     mOffscreenFbh.create(
@@ -147,12 +148,7 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
     bgfx::touch(mViewOffscreenId);
 
     mBlitTexture = bgfx::createTexture2D(
-        mBlitSize.x(),
-        mBlitSize.y(),
-        false,
-        1,
-        blitFormat,
-        kBlitFlags);
+        mBlitSize.x(), mBlitSize.y(), false, 1, blitFormat, kBlitFlags);
     assert(bgfx::isValid(mBlitTexture));
 }
 
@@ -162,9 +158,8 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(uint maxByteSize) :
             "u_workGroupSizeXYTexSizeXAndBufSize",
             bgfx::UniformType::Vec4)
 {
-    const uint requiredTexArea =
-        uint(std::ceil(double(maxByteSize) / 4.0));
-    const uint maxTex = bgfx::getCaps()->limits.maxTextureSize;
+    const uint requiredTexArea = uint(std::ceil(double(maxByteSize) / 4.0));
+    const uint maxTex          = bgfx::getCaps()->limits.maxTextureSize;
 
     mComputeTexSize[0] = std::min(maxTex, requiredTexArea);
     mComputeTexSize[1] =
@@ -347,20 +342,20 @@ uint ReadFromGPUBuffer::submit(
         return 0;
     }
 
-    mReadCallback     = callback;
-    mLastCopyByteSize = uint(std::ceil(
-        double(elementCount) * double(elementBitSize) / 8.0));
+    mReadCallback = callback;
+    mLastCopyByteSize =
+        uint(std::ceil(double(elementCount) * double(elementBitSize) / 8.0));
 
-    const uint uintElementCount = uint(std::ceil(
-        double(elementCount) * double(elementBitSize) / 32.0));
+    const uint uintElementCount =
+        uint(std::ceil(double(elementCount) * double(elementBitSize) / 32.0));
 
     std::array<uint, 3> wgpSize;
     wgpSize[0] = std::min(uintElementCount, COMPUTE_MAX_WGP_SIZE);
     wgpSize[1] = std::min(
         uint(std::ceil(double(uintElementCount) / double(wgpSize[0]))),
         COMPUTE_MAX_WGP_SIZE);
-    wgpSize[2] = uint(std::ceil(
-        double(uintElementCount) / double(wgpSize[0] * wgpSize[1])));
+    wgpSize[2] = uint(
+        std::ceil(double(uintElementCount) / double(wgpSize[0] * wgpSize[1])));
 
     const std::array<float, 4> unifData = {
         std::bit_cast<float>(wgpSize[0]),
@@ -368,17 +363,13 @@ uint ReadFromGPUBuffer::submit(
         std::bit_cast<float>(mComputeTexSize[0]),
         std::bit_cast<float>(uintElementCount)};
 
-    auto& ctx            = Context::instance();
-    auto& pm             = ctx.programManager();
+    auto&        ctx          = Context::instance();
+    auto&        pm           = ctx.programManager();
     bgfx::ViewId dispatchView = ctx.requestViewId();
     bgfx::ViewId blitView     = ctx.requestViewId();
 
     bgfx::setImage(
-        4,
-        mGPUTexHandle,
-        0,
-        bgfx::Access::Write,
-        bgfx::TextureFormat::RGBA8);
+        4, mGPUTexHandle, 0, bgfx::Access::Write, bgfx::TextureFormat::RGBA8);
     mBufferToTexUnif.bind(unifData.data());
     buf.bind(5, bgfx::Access::Read);
     bgfx::dispatch(
@@ -541,7 +532,7 @@ void ReadFromGPUBuffer::performFramebufferRead() const
             mReadCallback(mReadData);
         }
         else {
-            ByteData idPixel(4);
+            ByteData   idPixel(4);
             const auto offset =
                 (uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x())) * 4;
             std::copy_n(data.begin() + offset, 4, idPixel.begin());
@@ -557,8 +548,7 @@ void ReadFromGPUBuffer::performComputeRead() const
 {
     assert(mSource == Source::COMPUTE_BUFFER);
     ByteData result(
-        mReadResults.begin(),
-        mReadResults.begin() + mLastCopyByteSize);
+        mReadResults.begin(), mReadResults.begin() + mLastCopyByteSize);
     mReadCallback(result);
 }
 
