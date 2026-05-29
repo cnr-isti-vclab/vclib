@@ -41,9 +41,6 @@ BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
 
 void main()
 {
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -101,9 +98,9 @@ void main()
             color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
-    gl_FragColor = light * color + vec4(specular, 0);
-    if (isFaceSelected(uint(primitiveID))) {
-        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
-    }
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    color = light * color + vec4(specular, 0);
+    float selWeight =
+        u_selectionSurfaceColor.a * float(isFaceSelected(uint(primitiveID)));
+    vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
+    gl_FragColor = vec4(tmp, color.a);
 }

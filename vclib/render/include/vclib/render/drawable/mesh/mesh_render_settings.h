@@ -73,13 +73,15 @@ class MeshRenderSettings
     MeshRenderInfo mCapability; // capabilities of the mesh
     MeshRenderInfo mDrawMode;   // current rendering settings
 
-    float mPointWidth        = 3;
-    float mPointUserColor[4] = {1, 1, 0, 1}; // TODO: change to uint?
-    uint  mSurfUserColor     = 0xFF808080;   // abgr
-    int   mWrfWidth          = 1;
-    float mWrfUserColor[4]   = {0, 0, 0, 1}; // TODO: change to uint?
-    int   mEdgesWidth        = 1;
-    uint  mEdgesUserColor    = 0xFF000000; // abgr
+    float mPointWidth          = 3;
+    float mPointUserColor[4]   = {1, 1, 0, 1}; // TODO: change to uint?
+    uint  mSurfUserColor       = 0xFF808080;   // abgr
+    int   mWrfWidth            = 1;
+    float mWrfUserColor[4]     = {0, 0, 0, 1}; // TODO: change to uint?
+    int   mEdgesWidth          = 1;
+    uint  mEdgesUserColor      = 0xFF000000; // abgr
+    uint  mPointSelectionColor = 0x88FF9732; // abgr
+    uint  mSurfSelectionColor  = 0x88FF9732; // abgr
 
 public:
     /**
@@ -307,6 +309,30 @@ public:
     }
 
     const uint* edgesUserColorData() const { return &mEdgesUserColor; }
+
+    vcl::Color pointSelectionColor() const
+    {
+        vcl::Color c;
+        c.setAbgr(mPointSelectionColor);
+        return c;
+    }
+
+    const uint* pointSelectionColorData() const
+    {
+        return &mPointSelectionColor;
+    }
+
+    vcl::Color surfaceSelectionColor() const
+    {
+        vcl::Color c;
+        c.setAbgr(mSurfSelectionColor);
+        return c;
+    }
+
+    const uint* surfaceSelectionColorData() const
+    {
+        return &mSurfSelectionColor;
+    }
 
     // rendering option setters
 
@@ -606,6 +632,40 @@ public:
         else {
             return false;
         }
+    }
+
+    bool setPointSelectionColor(float r, float g, float b, float a = 1)
+    {
+        vcl::Color c;
+        c.setRedF(r);
+        c.setGreenF(g);
+        c.setBlueF(b);
+        c.setAlphaF(a);
+        mPointSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setPointSelectionColor(const vcl::Color& c)
+    {
+        mPointSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setSurfaceSelectionColor(float r, float g, float b, float a = 1)
+    {
+        vcl::Color c;
+        c.setRedF(r);
+        c.setGreenF(g);
+        c.setBlueF(b);
+        c.setAlphaF(a);
+        mSurfSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setSurfaceSelectionColor(const vcl::Color& c)
+    {
+        mSurfSelectionColor = c.abgr();
+        return true;
     }
 
     template<MeshConcept MeshType>

@@ -23,5 +23,5 @@
 #include <vclib/bgfx/shaders_common.sh>
 
 void main() {
-    gl_FragColor = uintABGRToVec4Color(uint(0x401b78f9));
+    gl_FragColor = uintABGRToVec4Color(uint(0x40f9781b));
 }

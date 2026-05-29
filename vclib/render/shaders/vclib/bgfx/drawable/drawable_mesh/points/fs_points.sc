@@ -54,9 +54,11 @@ void main()
     // depth offset - avoid z-fighting
     float depthOffset = 0.0001;
 
-    gl_FragColor = light * color + vec4(specular, 0);
+    color = light * color; // + vec4(specular, 0);
     if (v_selected > 0.5) {
-        gl_FragColor = mix(gl_FragColor, vec4(1.0, 0.0, 0.0, 1.0), 0.33);
+        vec3 tmp =
+            mix(color.rgb, u_selectionPointColor.rgb, u_selectionPointColor.a);
+        color = vec4(tmp, color.a);
     }
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    gl_FragColor = color;
 }
