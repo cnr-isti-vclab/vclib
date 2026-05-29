@@ -41,11 +41,11 @@ class SelectionUniforms
 {
     static inline std::array<float, 4> sSelectionBox;
     static inline std::array<float, 4> sSelectionWorkgroupSizeAndCount;
-    static inline std::array<float, 4> sMeshIDSelectionColor;
+    static inline std::array<float, 4> sMeshIDData;
 
     static inline Uniform sSelectionBoxUniform;
     static inline Uniform sSelectionWorkgroupSizeAndCountUniform;
-    static inline Uniform sMeshIDSelectionColorUniform;
+    static inline Uniform sMeshIDDataUniform;
 
 public:
     SelectionUniforms() = delete;
@@ -81,12 +81,7 @@ public:
 
     static void setMeshIdForSelection(uint meshId)
     {
-        sMeshIDSelectionColor[0] = std::bit_cast<float>(meshId);
-    }
-
-    static void setSelectionColor(vcl::Color& c)
-    {
-        sMeshIDSelectionColor[1] = std::bit_cast<float>(c.abgr());
+        sMeshIDData[0] = std::bit_cast<float>(meshId);
     }
 
     static void bind()
@@ -99,14 +94,14 @@ public:
         if (!sSelectionWorkgroupSizeAndCountUniform.isValid())
             sSelectionWorkgroupSizeAndCountUniform =
                 Uniform("u_workgroupSizeAndCount", bgfx::UniformType::Vec4);
-        if (!sMeshIDSelectionColorUniform.isValid())
-            sMeshIDSelectionColorUniform =
-                Uniform("u_meshIdAndSelectionColor", bgfx::UniformType::Vec4);
+        if (!sMeshIDDataUniform.isValid())
+            sMeshIDDataUniform =
+                Uniform("u_meshIdData", bgfx::UniformType::Vec4);
 
         sSelectionBoxUniform.bind(&sSelectionBox);
         sSelectionWorkgroupSizeAndCountUniform.bind(
             &sSelectionWorkgroupSizeAndCount);
-        sMeshIDSelectionColorUniform.bind(&sMeshIDSelectionColor);
+        sMeshIDDataUniform.bind(&sMeshIDData);
     }
 };
 
