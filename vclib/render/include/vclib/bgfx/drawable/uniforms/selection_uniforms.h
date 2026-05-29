@@ -26,6 +26,8 @@
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/selection/selection_box.h>
 
+#include <vclib/space/core.h>
+
 namespace vcl {
 
 /**
@@ -39,9 +41,11 @@ class SelectionUniforms
 {
     static inline std::array<float, 4> sSelectionBox;
     static inline std::array<float, 4> sSelectionWorkgroupSizeAndCount;
+    static inline std::array<float, 4> sMeshIDSelectionColor;
 
     static inline Uniform sSelectionBoxUniform;
     static inline Uniform sSelectionWorkgroupSizeAndCountUniform;
+    static inline Uniform sMeshIDSelectionColorUniform;
 
 public:
     SelectionUniforms() = delete;
@@ -75,6 +79,16 @@ public:
             std::bit_cast<float>(numPrimitives);
     }
 
+    static void setMeshIdForSelection(uint meshId)
+    {
+        sMeshIDSelectionColor[0] = std::bit_cast<float>(meshId);
+    }
+
+    static void setSelectionColor(vcl::Color& c)
+    {
+        sMeshIDSelectionColor[1] = std::bit_cast<float>(c.abgr());
+    }
+
     static void bind()
     {
         // lazy initialization
@@ -85,10 +99,14 @@ public:
         if (!sSelectionWorkgroupSizeAndCountUniform.isValid())
             sSelectionWorkgroupSizeAndCountUniform =
                 Uniform("u_workgroupSizeAndCount", bgfx::UniformType::Vec4);
+        if (!sMeshIDSelectionColorUniform.isValid())
+            sMeshIDSelectionColorUniform =
+                Uniform("u_meshIdAndSelectionColor", bgfx::UniformType::Vec4);
 
         sSelectionBoxUniform.bind(&sSelectionBox);
         sSelectionWorkgroupSizeAndCountUniform.bind(
             &sSelectionWorkgroupSizeAndCount);
+        sMeshIDSelectionColorUniform.bind(&sMeshIDSelectionColor);
     }
 };
 

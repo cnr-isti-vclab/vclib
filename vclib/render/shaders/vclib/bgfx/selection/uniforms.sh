@@ -29,10 +29,17 @@ uniform vec4 u_selectionBox; // screen space
 
 uniform vec4 u_workgroupSizeAndCount;
 
+uniform vec4 u_meshIdAndSelectionColor;
+
 #define u_workgroupSizeX floatBitsToUint(u_workgroupSizeAndCount.x)
 #define u_workgroupSizeY floatBitsToUint(u_workgroupSizeAndCount.y)
 #define u_workgroupSizeZ floatBitsToUint(u_workgroupSizeAndCount.z)
 #define u_primitiveCount floatBitsToUint(u_workgroupSizeAndCount.w)
+
+#define u_meshID floatBitsToUint(u_meshIdAndSelectionColor.x)
+
+#define u_selectionColor \
+    uintABGRToVec4Color(floatBitsToUint(u_meshIdAndSelectionColor.y))
 
 uint getPrimitiveID(vec3 workGroupID)
 {

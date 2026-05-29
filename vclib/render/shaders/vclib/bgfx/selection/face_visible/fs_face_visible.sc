@@ -20,19 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
-
-uniform vec4 u_meshIdAndDispatchSizeXY;
+#include <vclib/bgfx/selection/uniforms.sh>
 
 #define V4RGBA(x) uintABGRToVec4Color(x).wzyx
 
 void main() {
-    uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
-    // NOTE: meshID 0 is reserved to indicate that no data is available (i.e. the fragment did NOT pass)
-    if(meshId == uint(0)) {
+    // NOTE: u_meshID 0 is reserved to indicate that no data is available
+    // (i.e. the fragment did NOT pass)
+    if(u_meshID == uint(0)) {
         discard;
     }
     uint priId = uint(gl_PrimitiveID);
     gl_FragData[0] = V4RGBA(gl_PrimitiveID);
-    gl_FragData[1] = V4RGBA(meshId);
+    gl_FragData[1] = V4RGBA(u_meshID);
 }

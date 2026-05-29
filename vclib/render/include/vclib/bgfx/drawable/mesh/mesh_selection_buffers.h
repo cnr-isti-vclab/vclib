@@ -75,8 +75,6 @@ class MeshSelectionBuffers
     uint                mNumVerts                     = 0;
 
     // face selection
-    Uniform mVisibleFacesUniform =
-        Uniform("u_meshIdAndDispatchSizeXY", bgfx::UniformType::Vec4);
     std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
     std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
     uint                       mNumTris                    = 0;
@@ -423,22 +421,20 @@ public:
         std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(
             params.texAttachmentsSize[0] * params.texAttachmentsSize[1]);
 
-        float temp[4] = {
-            std::bit_cast<float>(params.meshId),
-            std::bit_cast<float>(workGroupSize[0]),
-            std::bit_cast<float>(workGroupSize[1]),
-            0.f};
-
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
         bgfx::setState(state);
-        mVisibleFacesUniform.bind(temp);
+        SelectionUniforms::setMeshIdForSelection(params.meshId);
+        SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
+        SelectionUniforms::bind();
         vertPosBuf.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
         triIdxBuf.bind();
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
 
-        mVisibleFacesUniform.bind(temp);
+        SelectionUniforms::setMeshIdForSelection(params.meshId);
+        SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
+        SelectionUniforms::bind();
         bgfx::setImage(
             0,
             params.primIdTex,

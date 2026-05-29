@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/selection/uniforms.sh>
 
 // INFO: the two textures MUST be of the same size
 IMAGE2D_RO(s_primIds, rgba8, 0);
@@ -30,8 +30,6 @@ BUFFER_RW(face_selected, uint, 6);
 BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
 BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
-
-uniform vec4 u_meshIdAndDispatchSizeXY;
 
 uint texVec4ToUint(vec4 pixel) {
     return
@@ -45,22 +43,17 @@ uint texVec4ToUint(vec4 pixel) {
 // triangles of T's polygon.
 NUM_THREADS(1, 1, 1)
 void main() {
-    uint meshId = floatBitsToUint(u_meshIdAndDispatchSizeXY.x);
-    // NOTE: meshID 0 is reserved to indicate that no data is available
-    if(meshId == 0) {
+    // NOTE: u_meshID 0 is reserved to indicate that no data is available
+    if(u_meshID == 0) {
         return;
     }
-    uvec2 dispatchSize = uvec2(floatBitsToUint(u_meshIdAndDispatchSizeXY.y), floatBitsToUint(u_meshIdAndDispatchSizeXY.z));
-    uint tex1DCoord = 
-          uint(gl_WorkGroupID.x) 
-        + uint(gl_WorkGroupID.y) * dispatchSize.x 
-        + uint(gl_WorkGroupID.z) * dispatchSize.x * dispatchSize.y;
+    uint tex1DCoord = getPrimitiveID(gl_WorkGroupID);
     uvec2 imSz = imageSize(s_primIds).xy;
     ivec2 tex2DCoord = ivec2(int(tex1DCoord % imSz.x), int(tex1DCoord / imSz.x));
 
     vec4 vecMeshId = imageLoad(s_meshIds, tex2DCoord);
     uint texMeshId = texVec4ToUint(vecMeshId);
-    if (texMeshId != meshId) {
+    if (texMeshId != u_meshID) {
         return;
     }
 
