@@ -31,7 +31,6 @@ namespace vcl {
 template<typename T>
 concept DrawableObjectConcept =
     requires (T&& obj, uint u, DrawObjectSettings s) {
-        { obj.draw(s) } -> std::same_as<void>;
         { obj.boundingBox() } -> Box3Concept;
         obj.clone();
         { obj.isVisible() } -> std::same_as<bool>;
@@ -42,6 +41,7 @@ concept DrawableObjectConcept =
         requires IsConst<T> || requires {
             { obj.init() } -> std::same_as<void>;
             { obj.setVisibility(bool()) } -> std::same_as<void>;
+            { obj.draw(s) } -> std::same_as<void>;
             { obj.name() } -> std::same_as<std::string&>;
             { obj.info() } -> std::same_as<std::string&>;
         };
