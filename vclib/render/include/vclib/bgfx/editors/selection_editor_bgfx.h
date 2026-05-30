@@ -68,6 +68,9 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool                               mLMBHeld               = false;
     bool                               mLMBPressPositionTaken = false;
 
+    // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
+    mutable uint mPendingReadbackFrames = 0;
+
 public:
     SelectionEditorBGFX()
     {
@@ -222,9 +225,19 @@ public:
                 boxToDraw.nullAll();
             }
             drawSelectionBox(mSelectionDrawingViewId, boxToDraw);
+
+            // Trigger continuous updates for GPU-to-CPU selection readback
+            // (Qt widgets only redraw on interaction, but readback needs 2 frames)
+            mPendingReadbackFrames = 2;
         }
         else {
             mSelectionBox.nullAll();
+        }
+
+        // Request continuous updates until GPU-to-CPU readback completes
+        if (mPendingReadbackFrames > 0) {
+            mPendingReadbackFrames--;
+            Base::viewerUpdate();
         }
     }
 
