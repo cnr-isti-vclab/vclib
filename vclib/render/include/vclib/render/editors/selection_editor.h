@@ -56,7 +56,7 @@ public:
             vcl::Color(27, 120, 249, 64);
     }
 
-    void draw(uint) const override {}
+    void draw(uint) override {}
 };
 #endif
 

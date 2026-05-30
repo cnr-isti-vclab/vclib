@@ -55,21 +55,21 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
     bgfx::ViewId                mSelectionDrawingViewId  = 0;
     bgfx::VertexLayout          mVertexLayout;
-    mutable VertexBuffer        mPosBuffer;
+    VertexBuffer                mPosBuffer;
     IndexBuffer                 mTriIndexBuf;
     bool                        mInitialized = false;
 
     static const uint sVisibleFaceFramebufferSize = 4096u;
 
     // ---- Selection event state ----
-    mutable SelectionBox               mSelectionBox;
-    mutable std::vector<SelectionMode> mCurrentSelectionModes;
-    mutable bool                       mSelectionCalcRequired = false;
-    bool                               mLMBHeld               = false;
-    bool                               mLMBPressPositionTaken = false;
+    SelectionBox               mSelectionBox;
+    std::vector<SelectionMode> mCurrentSelectionModes;
+    bool                       mSelectionCalcRequired = false;
+    bool                       mLMBHeld               = false;
+    bool                       mLMBPressPositionTaken = false;
 
     // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
-    mutable uint mPendingReadbackFrames = 0;
+    uint mPendingReadbackFrames = 0;
 
 public:
     SelectionEditorBGFX()
@@ -165,7 +165,8 @@ public:
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
         mUselessFB.create(uselessTexs, 2, true);
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB.handle());
+        bgfx::setViewFrameBuffer(
+            mVisibleSelectionViewIds[1], mUselessFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
@@ -182,7 +183,7 @@ public:
         Base::settings().customSettings["selectionBoxColor"] = color;
     }
 
-    void draw(uint viewId) const override
+    void draw(uint viewId) override
     {
         if (!mInitialized)
             return;
@@ -203,7 +204,8 @@ public:
             sVisibleFaceFramebufferSize);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
-        bgfx::setViewFrameBuffer(mVisibleSelectionViewIds[1], mUselessFB.handle());
+        bgfx::setViewFrameBuffer(
+            mVisibleSelectionViewIds[1], mUselessFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
@@ -227,7 +229,8 @@ public:
             drawSelectionBox(mSelectionDrawingViewId, boxToDraw);
 
             // Trigger continuous updates for GPU-to-CPU selection readback
-            // (Qt widgets only redraw on interaction, but readback needs 2 frames)
+            // (Qt widgets only redraw on interaction, but readback needs 2
+            // frames)
             mPendingReadbackFrames = 2;
         }
         else {
@@ -465,7 +468,7 @@ private:
      * @brief Restricts the visible-selection projection to the sub-frustum
      * that corresponds to the given selection box.
      */
-    bool setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box) const
+    bool setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
     {
         if (box.anyNull()) {
             return false;
@@ -505,7 +508,7 @@ private:
         return true;
     }
 
-    SelectionBox calculateSelections(uint viewId) const
+    SelectionBox calculateSelections(uint viewId)
     {
         SelectionBox boxToDraw;
         if (!mSelectionCalcRequired) {
@@ -601,7 +604,7 @@ private:
      * @brief Returns the union of the screen-space bounding boxes of all
      * visible meshes that intersect the view frustum.
      */
-    SelectionBox calculateWindowSpaceMeshBB() const
+    SelectionBox calculateWindowSpaceMeshBB()
     {
         auto      vmf  = Base::viewerViewMatrix();
         auto      pmf  = Base::viewerProjectionMatrix();
@@ -671,7 +674,7 @@ private:
         return box.toMinAndMax();
     }
 
-    void drawSelectionBox(uint viewId, const SelectionBox& box) const
+    void drawSelectionBox(uint viewId, const SelectionBox& box)
     {
         if (box.anyNull()) {
             return;
@@ -697,7 +700,7 @@ private:
                 .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
     }
 
-    void selectionCalculated() const
+    void selectionCalculated()
     {
         mSelectionCalcRequired = false;
         if (!mLMBHeld) {
