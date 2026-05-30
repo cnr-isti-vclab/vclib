@@ -52,6 +52,8 @@ public:
         Base::settings().customSettings["selectVertices"] = false;
         Base::settings().customSettings["selectFaces"] = false;
         Base::settings().customSettings["onlyVisible"] = false;
+        Base::settings().customSettings["selectionBoxColor"] =
+            vcl::Color(27, 120, 249, 64);
     }
 
     void draw(uint) const override {}

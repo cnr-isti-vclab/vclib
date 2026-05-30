@@ -22,6 +22,8 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
+uniform vec4 u_selectionBoxColor;
+
 void main() {
-    gl_FragColor = uintABGRToVec4Color(uint(0x40f9781b));
+    gl_FragColor = u_selectionBoxColor;
 }

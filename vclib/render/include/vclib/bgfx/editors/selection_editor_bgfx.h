@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
 #define VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
 
+#include "uniforms/selection_box_uniforms.h"
+
 #include <vclib/render/editors/editor.h>
 
 #include <vclib/bgfx/buffers/frame_buffer.h>
@@ -72,6 +74,8 @@ public:
         Base::settings().customSettings["selectVertices"] = false;
         Base::settings().customSettings["selectFaces"]    = false;
         Base::settings().customSettings["onlyVisible"]    = false;
+        Base::settings().customSettings["selectionBoxColor"] =
+            vcl::Color(27, 120, 249, 64);
 
         mVertexLayout.begin()
             .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
@@ -168,6 +172,11 @@ public:
         Base::viewerSetupOverlayView(mSelectionDrawingViewId);
 
         mInitialized = true;
+    }
+
+    void setSelectionBoxColor(const Color& color)
+    {
+        Base::settings().customSettings["selectionBoxColor"] = color;
     }
 
     void draw(uint viewId) const override
@@ -662,6 +671,12 @@ private:
         mPosBuffer.create(
             bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
         mPosBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+
+        const vcl::Color& selBoxColor = std::any_cast<const vcl::Color&>(
+            Base::settings().customSettings.at("selectionBoxColor"));
+        SelectionBoxUniforms::setColor(selBoxColor);
+        SelectionBoxUniforms::bind();
+
         bgfx::submit(
             viewId,
             Context::instance()

@@ -20,60 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
-#define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
+#ifndef VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
+#define VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+
+#include <vclib/space/core.h>
 
 namespace vcl {
 
-/**
- * @brief The ViewerDrawerUniforms class is responsible for managing the
- * shader uniforms related to a viewer drawer.
- *
- * It provides a static interface to set the uniform data based on the
- * current viewer settings and to bind the uniforms to the shader programs.
- */
-class ViewerDrawerUniforms
+class SelectionBoxUniforms
 {
-    using enum PBRViewerSettings::ToneMapping;
+    static inline std::array<float, 4> sColor;
 
-    static inline std::array<float, 4> sData = {
-        1.0,                             // exposure
-        std::bit_cast<float>(ACES_HILL), // tone mapping
-        0.0,                             // specular mip levels
-        0.0                              // unused
-    };
-
-    static inline Uniform sDataUniform;
+    static inline Uniform sColorUniform;
 
 public:
-    ViewerDrawerUniforms() = delete;
+    SelectionBoxUniforms() = delete;
 
-    static void setExposure(float exposure) { sData[0] = exposure; }
-
-    static void setToneMapping(PBRViewerSettings::ToneMapping tm)
+    static void setColor(const Color& color)
     {
-        sData[1] = std::bit_cast<float>(tm);
-    }
-
-    static void setSpecularMipsLevels(uint8_t specMips)
-    {
-        sData[2] = std::bit_cast<float>(uint(specMips));
+        sColor = {color.redF(), color.greenF(), color.blueF(), color.alphaF()};
     }
 
     static void bind()
     {
         // lazy initialization
         // to avoid creating uniforms before bgfx is initialized
-        if (!sDataUniform.isValid())
-            sDataUniform =
-                Uniform("u_viewerSettingsPack", bgfx::UniformType::Vec4);
-        sDataUniform.bind(sData.data());
+        if (!sColorUniform.isValid())
+            sColorUniform =
+                Uniform("u_selectionBoxColor", bgfx::UniformType::Vec4);
+        sColorUniform.bind(sColor.data());
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
+#endif // VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
