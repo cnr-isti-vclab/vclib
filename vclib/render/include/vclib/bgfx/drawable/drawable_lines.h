@@ -147,7 +147,7 @@ public:
 
     // DrawableObject interface
 
-    void draw(const DrawObjectSettings& settings) const override
+    void draw(const DrawObjectSettings& settings) override
     {
         Lines::draw(settings.viewId);
     }

@@ -152,7 +152,7 @@ DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
     return *this;
 }
 
-void DrawableTrackBall::draw(const DrawObjectSettings& settings) const
+void DrawableTrackBall::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 

@@ -335,6 +335,11 @@ public:
     }
 
 protected:
+    DrawableObjectVector& drawableObjectVector()
+    {
+        return *mDrawList;
+    }
+
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
     virtual void setupOverlayView(uint /*overlayViewId*/) {}

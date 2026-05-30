@@ -65,7 +65,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
-    mutable bool        mVertexQuadBufferGenerated = false;
+    bool                mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -132,7 +132,7 @@ public:
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,
-        const bgfx::ViewId viewId) const
+        const bgfx::ViewId viewId)
     {
         if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
             return;
