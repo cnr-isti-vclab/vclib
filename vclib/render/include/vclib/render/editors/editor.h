@@ -124,7 +124,7 @@ public:
      *
      * @param[in] viewId: the identifier of the view to draw into.
      */
-    virtual void draw(uint viewId) const = 0;
+    virtual void draw(uint viewId) = 0;
 
     /**
      * @brief Called when a keyboard key is pressed.
