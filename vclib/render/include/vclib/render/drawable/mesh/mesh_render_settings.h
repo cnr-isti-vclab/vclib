@@ -243,6 +243,18 @@ public:
 
     const float* pointUserColorData() const { return mPointUserColor; }
 
+    vcl::Color pointSelectionColor() const
+    {
+        vcl::Color c;
+        c.setAbgr(mPointSelectionColor);
+        return c;
+    }
+
+    const uint* pointSelectionColorData() const
+    {
+        return &mPointSelectionColor;
+    }
+
     /**
      * @brief Returns whether the given surface option is set.
      *
@@ -262,6 +274,18 @@ public:
     }
 
     const uint* surfaceUserColorData() const { return &mSurfUserColor; }
+
+    vcl::Color surfaceSelectionColor() const
+    {
+        vcl::Color c;
+        c.setAbgr(mSurfSelectionColor);
+        return c;
+    }
+
+    const uint* surfaceSelectionColorData() const
+    {
+        return &mSurfSelectionColor;
+    }
 
     /**
      * @brief Returns whether the given wireframe option is set.
@@ -309,30 +333,6 @@ public:
     }
 
     const uint* edgesUserColorData() const { return &mEdgesUserColor; }
-
-    vcl::Color pointSelectionColor() const
-    {
-        vcl::Color c;
-        c.setAbgr(mPointSelectionColor);
-        return c;
-    }
-
-    const uint* pointSelectionColorData() const
-    {
-        return &mPointSelectionColor;
-    }
-
-    vcl::Color surfaceSelectionColor() const
-    {
-        vcl::Color c;
-        c.setAbgr(mSurfSelectionColor);
-        return c;
-    }
-
-    const uint* surfaceSelectionColorData() const
-    {
-        return &mSurfSelectionColor;
-    }
 
     // rendering option setters
 
@@ -464,6 +464,23 @@ public:
         }
     }
 
+    bool setPointSelectionColor(float r, float g, float b, float a = 0.5)
+    {
+        vcl::Color c;
+        c.setRedF(r);
+        c.setGreenF(g);
+        c.setBlueF(b);
+        c.setAlphaF(a);
+        mPointSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setPointSelectionColor(const vcl::Color& c)
+    {
+        mPointSelectionColor = c.abgr();
+        return true;
+    }
+
     /**
      * @brief Sets the given shading option of the surface.
      *
@@ -511,6 +528,23 @@ public:
         else {
             return false;
         }
+    }
+
+    bool setSurfaceSelectionColor(float r, float g, float b, float a = 0.5)
+    {
+        vcl::Color c;
+        c.setRedF(r);
+        c.setGreenF(g);
+        c.setBlueF(b);
+        c.setAlphaF(a);
+        mSurfSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setSurfaceSelectionColor(const vcl::Color& c)
+    {
+        mSurfSelectionColor = c.abgr();
+        return true;
     }
 
     /**
@@ -634,40 +668,6 @@ public:
         }
     }
 
-    bool setPointSelectionColor(float r, float g, float b, float a = 1)
-    {
-        vcl::Color c;
-        c.setRedF(r);
-        c.setGreenF(g);
-        c.setBlueF(b);
-        c.setAlphaF(a);
-        mPointSelectionColor = c.abgr();
-        return true;
-    }
-
-    bool setPointSelectionColor(const vcl::Color& c)
-    {
-        mPointSelectionColor = c.abgr();
-        return true;
-    }
-
-    bool setSurfaceSelectionColor(float r, float g, float b, float a = 1)
-    {
-        vcl::Color c;
-        c.setRedF(r);
-        c.setGreenF(g);
-        c.setBlueF(b);
-        c.setAlphaF(a);
-        mSurfSelectionColor = c.abgr();
-        return true;
-    }
-
-    bool setSurfaceSelectionColor(const vcl::Color& c)
-    {
-        mSurfSelectionColor = c.abgr();
-        return true;
-    }
-
     template<MeshConcept MeshType>
     void setRenderCapabilityFrom(const MeshType& m)
     {
@@ -683,6 +683,7 @@ public:
             setPointsCapability(MRI::Points::SHAPE_SPHERE);
             setPointsCapability(MRI::Points::SHADING_NONE);
             setPointsCapability(MRI::Points::COLOR_USER);
+            setPointsCapability(MRI::Points::SELECTION);
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
@@ -706,6 +707,7 @@ public:
                     setSurfaceCapability(MRI::Surface::VISIBLE);
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
+                    setSurfaceCapability(MRI::Surface::SELECTION);
                     setWireframeCapability(MRI::Wireframe::VISIBLE);
                     setWireframeCapability(MRI::Wireframe::SHADING_NONE);
                     setWireframeCapability(MRI::Wireframe::COLOR_USER);
@@ -853,6 +855,7 @@ private:
         if (canPoints(VISIBLE)) {
             if (!canSurface(MRI::Surface::VISIBLE))
                 setPoints(VISIBLE, true);
+            setPoints(SELECTION, true);
             setPoints(SHADING_NONE);
             setPoints(SHAPE_PIXEL);
             if (canPoints(SHADING_VERT)) {
@@ -875,6 +878,7 @@ private:
 
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
+            setSurface(SELECTION, true);
             // shading
             if (canSurface(SHADING_SMOOTH)) {
                 setSurface(SHADING_SMOOTH);

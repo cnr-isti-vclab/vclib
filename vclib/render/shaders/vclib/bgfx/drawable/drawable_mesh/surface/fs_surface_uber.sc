@@ -101,8 +101,13 @@ void main()
     }
 
     color = light * color + vec4(specular, 0);
-    float selWeight =
-        u_selectionSurfaceColor.a * float(isFaceSelected(uint(primitiveID)));
-    vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
-    gl_FragColor = vec4(tmp, color.a);
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_DRAW_SELECTION))) {
+        float selWeight =
+            u_selectionSurfaceColor.a * float(isFaceSelected(uint(primitiveID)));
+        vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
+        gl_FragColor = vec4(tmp, color.a);
+    }
+    else {
+        gl_FragColor = color;
+    }
 }

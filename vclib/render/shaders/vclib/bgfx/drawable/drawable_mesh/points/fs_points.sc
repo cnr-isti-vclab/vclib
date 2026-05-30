@@ -55,10 +55,12 @@ void main()
     float depthOffset = 0.0001;
 
     color = light * color; // + vec4(specular, 0);
-    if (v_selected > 0.5) {
-        vec3 tmp =
-            mix(color.rgb, u_selectionPointColor.rgb, u_selectionPointColor.a);
-        color = vec4(tmp, color.a);
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_DRAW_SELECTION))) {
+        if (v_selected > 0.5) {
+            vec3 tmp =
+                mix(color.rgb, u_selectionPointColor.rgb, u_selectionPointColor.a);
+            color = vec4(tmp, color.a);
+        }
     }
     gl_FragColor = color;
 }

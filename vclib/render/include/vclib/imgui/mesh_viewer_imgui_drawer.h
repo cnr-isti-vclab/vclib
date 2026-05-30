@@ -617,6 +617,32 @@ private:
             1.0f,
             32.0f);
 
+        // selection visibility
+        ImGui::Checkbox(
+            "Selection",
+            [&] {
+                return settings.isPoints(SELECTION);
+            },
+            [&](bool vis) {
+                settings.setPoints(SELECTION, vis);
+            });
+
+        // selection color picker
+        ImGui::SameLine();
+        ImGui::Text("Selection Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##PointSelectionColor",
+            [&] {
+                return settings.pointSelectionColor();
+            },
+            [&](vcl::Color c) {
+                // alpha is always 128
+                c.alpha() = 128;
+                settings.setPointSelectionColor(c);
+            },
+            ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
+
         ImGui::EndDisabled();
     }
 
@@ -760,6 +786,32 @@ private:
             },
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
+
+        // selection visibility
+        ImGui::Checkbox(
+            "Selection",
+            [&] {
+                return settings.isSurface(SELECTION);
+            },
+            [&](bool vis) {
+                settings.setSurface(SELECTION, vis);
+            });
+
+        // selection color picker
+        ImGui::SameLine();
+        ImGui::Text("Selection Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##SurfaceSelectionColor",
+            [&] {
+                return settings.surfaceSelectionColor();
+            },
+            [&](vcl::Color c) {
+                // alpha is always 128
+                c.alpha() = 128;
+                settings.setSurfaceSelectionColor(c);
+            },
+            ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
 
         ImGui::EndDisabled();
     }
