@@ -48,7 +48,7 @@ public:
         Base::viewerUpdate();
     }
 
-    void draw(uint viewId) const override
+    void draw(uint viewId) override
     {
         DrawObjectSettings settings;
         settings.viewId = viewId;
