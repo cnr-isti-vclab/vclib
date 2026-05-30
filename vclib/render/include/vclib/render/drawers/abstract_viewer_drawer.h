@@ -325,6 +325,11 @@ public:
     }
 
 protected:
+    DrawableObjectVector& drawableObjectVector()
+    {
+        return *mDrawList;
+    }
+
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)

@@ -66,7 +66,7 @@ void DrawableAxis::setSize(double size)
  *
  * @see DrawableObject::draw()
  */
-void DrawableAxis::draw(const DrawObjectSettings& settings) const
+void DrawableAxis::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 

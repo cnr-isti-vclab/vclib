@@ -198,7 +198,7 @@ public:
 
     void init() override {}
 
-    void draw(const DrawObjectSettings& settings) const override
+    void draw(const DrawObjectSettings& settings) override
     {
         using enum VertFragProgram;
 
@@ -320,7 +320,7 @@ public:
         }
     }
 
-    void drawId(const DrawObjectSettings& settings) const override
+    void drawId(const DrawObjectSettings& settings) override
     {
         using enum VertFragProgram;
 
