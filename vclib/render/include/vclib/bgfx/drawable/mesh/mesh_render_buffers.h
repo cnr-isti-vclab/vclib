@@ -271,6 +271,11 @@ public:
         mSelection.bindSelectedFacesBuffer();
     }
 
+    const TriPolyIndexBiMap& triPolyIndexMap() const
+    {
+        return Base::triPolyIndexMap();
+    }
+
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
         // TODO: streams cannot be higher than

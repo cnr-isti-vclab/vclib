@@ -173,6 +173,9 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         setRenderSettings(mMRS);
+
+        // Upload initial selection state from CPU to GPU
+        uploadCPUSelectionToGPU();
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -374,6 +377,9 @@ public:
                     else if (mLastReadbackMode.isFaceSelection()) {
                         mFaceSelectionBackup = std::move(vec);
                     }
+
+                    // Update CPU-side selection flags from GPU readback
+                    updateCPUSelectionFromGPU();
                 }
                 break;
             case 255: break;
@@ -466,6 +472,152 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
+    /**
+     * @brief Uploads the CPU-side selection flags (from BitFlags component) to
+     * the GPU selection buffers.
+     *
+     * This function reads the selected() flag from each vertex/face in the mesh
+     * and uploads the corresponding bitfield to the GPU.
+     *
+     * @note For vertices, only the original mesh vertices are synchronized,
+     * not any duplicated vertices created for rendering purposes (e.g., for
+     * wedge texture coordinates). Duplicated vertices will inherit the
+     * selection state of their original vertex.
+     */
+    void uploadCPUSelectionToGPU()
+    {
+        // Upload vertex selection
+        const uint numVerts = MeshType::vertexCount();
+        if (numVerts == 0)
+            return;
+
+        // Compute number of uint32 words needed to store vertex selection
+        // We use mMRB.numVerts() which includes duplicated vertices
+        const uint numRenderVerts = mMRB.numVerts();
+        const uint wordCount      = (numRenderVerts + 31) / 32;
+        std::vector<uint8_t> vertexBackup(wordCount * 4, 0);
+
+        // Build bitfield from mesh vertex selection flags
+        // Note: For duplicated vertices (indices >= numVerts), they will
+        // remain unselected unless explicitly set elsewhere
+        uint vidx = 0;
+        for (const auto& v : MeshType::vertices()) {
+            if (v.selected()) {
+                const uint wordIdx = vidx / 32;
+                const uint bitIdx  = vidx % 32;
+                const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
+                const uint bitPos  = bitIdx % 8;
+                vertexBackup[byteIdx] |= (1 << bitPos);
+            }
+            ++vidx;
+        }
+
+        mVertexSelectionBackup = vertexBackup;
+        mMRB.setVertexSelectionFromCPUBuffer(vertexBackup);
+
+        // Upload face selection
+        if constexpr (HasFaces<MeshType>) {
+            const uint numFaces = MeshType::faceCount();
+            if (numFaces == 0 || !mMRB.hasFaceSelectionBuffer())
+                return;
+
+            const auto& indexMap = mMRB.triPolyIndexMap();
+            const uint  numTris  = indexMap.triangleCount();
+
+            // Compute number of uint32 words needed to store triangle selection
+            const uint wordCount = (numTris + 31) / 32;
+            std::vector<uint8_t> faceBackup(wordCount * 4, 0);
+
+            // For each face, set selection for all its triangles
+            for (const auto& f : MeshType::faces()) {
+                if (f.selected()) {
+                    const uint faceIdx     = f.index();
+                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
+                    const uint numFaceTris = indexMap.triangleCount(faceIdx);
+
+                    // Set selection for all triangles of this face
+                    for (uint t = 0; t < numFaceTris; ++t) {
+                        const uint triIdx  = firstTriIdx + t;
+                        const uint wordIdx = triIdx / 32;
+                        const uint bitIdx  = triIdx % 32;
+                        const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
+                        const uint bitPos  = bitIdx % 8;
+                        faceBackup[byteIdx] |= (1 << bitPos);
+                    }
+                }
+            }
+
+            mFaceSelectionBackup = faceBackup;
+            mMRB.setFaceSelectionFromCPUBuffer(faceBackup);
+        }
+    }
+
+    /**
+     * @brief Updates the CPU-side selection flags (BitFlags component) from the
+     * GPU selection buffers that have been read back.
+     *
+     * This function parses the selection data from mVertexSelectionBackup and
+     * mFaceSelectionBackup and updates the selected() flag on each mesh element.
+     *
+     * @note For vertices, only the original mesh vertices are synchronized.
+     * Selection state of duplicated vertices is ignored.
+     */
+    void updateCPUSelectionFromGPU()
+    {
+        // Update vertex selection
+        if constexpr (HasVertices<MeshType>) {
+            if (mLastReadbackMode.isVertexSelection() &&
+                !mVertexSelectionBackup.empty()) {
+                uint vidx = 0;
+                for (auto& v : MeshType::vertices()) {
+                    const uint wordIdx = vidx / 32;
+                    const uint bitIdx  = vidx % 32;
+                    const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
+                    const uint bitPos  = bitIdx % 8;
+
+                    if (byteIdx < mVertexSelectionBackup.size()) {
+                        const bool isSelected =
+                            (mVertexSelectionBackup[byteIdx] & (1 << bitPos)) !=
+                            0;
+                        v.selected() = isSelected;
+                    }
+                    ++vidx;
+                }
+            }
+        }
+
+        // Update face selection
+        if constexpr (HasFaces<MeshType>) {
+            if (mLastReadbackMode.isFaceSelection() &&
+                !mFaceSelectionBackup.empty()) {
+                const auto& indexMap = mMRB.triPolyIndexMap();
+
+                // First, clear all face selections
+                for (auto& f : MeshType::faces()) {
+                    f.selected() = false;
+                }
+
+                // For each face, check if its first triangle is selected
+                // (compute shaders ensure all triangles of a face have the same
+                // selection state)
+                for (auto& f : MeshType::faces()) {
+                    const uint faceIdx     = f.index();
+                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
+                    const uint wordIdx     = firstTriIdx / 32;
+                    const uint bitIdx      = firstTriIdx % 32;
+                    const uint byteIdx     = 4 * wordIdx + (3 - bitIdx / 8);
+                    const uint bitPos      = bitIdx % 8;
+
+                    if (byteIdx < mFaceSelectionBackup.size()) {
+                        const bool isSelected =
+                            (mFaceSelectionBackup[byteIdx] & (1 << bitPos)) != 0;
+                        f.selected() = isSelected;
+                    }
+                }
+            }
+        }
+    }
+
     bool vertexSelection(const SelectionParameters& params)
     {
         if constexpr (!HasVertices<MeshType>) {
