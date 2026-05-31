@@ -451,27 +451,27 @@ public:
     {
         int f = 0;
         if (visited())
-            f &= 0x00000010;
+            f |= 0x00000010;
         if (selected())
-            f &= 0x00000020;
+            f |= 0x00000020;
         if (edgeOnBorder(0))
-            f &= 0x00000040;
+            f |= 0x00000040;
         if (edgeOnBorder(1))
-            f &= 0x00000080;
+            f |= 0x00000080;
         if (edgeOnBorder(2))
-            f &= 0x00000100;
+            f |= 0x00000100;
         if (edgeSelected(0))
-            f &= 0x00008000;
+            f |= 0x00008000;
         if (edgeSelected(1))
-            f &= 0x00010000;
+            f |= 0x00010000;
         if (edgeSelected(2))
-            f &= 0x00020000;
+            f |= 0x00020000;
         if (edgeFaux(0))
-            f &= 0x00040000;
+            f |= 0x00040000;
         if (edgeFaux(1))
-            f &= 0x00080000;
+            f |= 0x00080000;
         if (edgeFaux(2))
-            f &= 0x00100000;
+            f |= 0x00100000;
         return f;
     }
 

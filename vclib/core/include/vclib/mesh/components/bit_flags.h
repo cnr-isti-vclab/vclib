@@ -242,11 +242,11 @@ public:
     {
         int f = 0;
         if (visited())
-            f &= 0x0010;
+            f |= 0x0010;
         if (selected())
-            f &= 0x0020;
+            f |= 0x0020;
         if (onBorder())
-            f &= 0x0100;
+            f |= 0x0100;
         return f;
     }
 
