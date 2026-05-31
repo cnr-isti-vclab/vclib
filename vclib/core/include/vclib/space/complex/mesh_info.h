@@ -97,12 +97,12 @@ public:
     enum Component {
         POSITION,
         VREFS,
+        BIT_FLAGS,
         NORMAL,
         COLOR,
         QUALITY,
         TEXCOORD,
         MATERIAL_INDEX,
-        BIT_FLAGS,
         WEDGE_TEXCOORDS,
         CUSTOM_COMPONENTS,
         MATERIALS,

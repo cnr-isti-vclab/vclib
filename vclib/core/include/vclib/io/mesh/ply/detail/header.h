@@ -45,7 +45,8 @@ namespace vcl::detail {
  */
 class PlyHeader
 {
-    bool mValid = false;
+    bool mValid        = false;
+    bool mVcgGenerated = false;
 
     ply::Format mFormat = ply::UNKNOWN;
 
@@ -103,7 +104,14 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (containsCaseInsensitive(*token, "texture")) {
+                            if (*token == "VCGLIB") {
+                                ++token;
+                                if (token != spaceTokenizer.end() &&
+                                    *token == "generated") {
+                                    mVcgGenerated = true;
+                                }
+                            }
+                            else if (containsCaseInsensitive(*token, "texture")) {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
@@ -172,7 +180,8 @@ public:
 
     void clear()
     {
-        mFormat = ply::UNKNOWN;
+        mFormat       = ply::UNKNOWN;
+        mVcgGenerated = false;
         mElements.clear();
         mTextureFiles.clear();
         mValid = false;
@@ -184,6 +193,8 @@ public:
     }
 
     bool isValid() const { return mValid; }
+
+    bool isVcgGenerated() const { return mVcgGenerated; }
 
     ply::Format format() const { return mFormat; }
 
@@ -826,6 +837,8 @@ private:
             pn = ply::vertex1;
         if (name == "vertex2")
             pn = ply::vertex2;
+        if (name == "flags")
+            pn = ply::bit_flags;
         if (name == "name")
             pn = ply::name;
         if (name == "metallic")
