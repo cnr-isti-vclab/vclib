@@ -129,7 +129,8 @@ void readPlyFaceProperty(
     FaceType&   f,
     PlyProperty p,
     MeshInfo&   loadedInfo,
-    std::endian end = std::endian::little)
+    bool        vcgGenerated = false,
+    std::endian end          = std::endian::little)
 {
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
@@ -143,6 +144,13 @@ void readPlyFaceProperty(
         hasBeenRead = true;
         // will manage the case of loading a polygon in a triangle mesh
         setPlyFaceIndices(f, mesh, vids);
+    }
+    else if (p.name == ply::bit_flags) { // loading the flags of the face
+        if (vcgGenerated) {
+            int fval = io::readPrimitiveType<int>(file, p.type, end);
+            f.importFlagsFromVCGFormat(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name == ply::texcoord) { // loading wedge texcoords
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
@@ -253,7 +261,8 @@ void readPlyFaceTxt(
     FaceType&                     f,
     MeshType&                     mesh,
     MeshInfo&                     loadedInfo,
-    const std::list<PlyProperty>& faceProperties)
+    const std::list<PlyProperty>& faceProperties,
+    bool                          vcgGenerated = false)
 {
     Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token          = spaceTokenizer.begin();
@@ -261,7 +270,7 @@ void readPlyFaceTxt(
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");
         }
-        readPlyFaceProperty(token, mesh, f, p, loadedInfo);
+        readPlyFaceProperty(token, mesh, f, p, loadedInfo, vcgGenerated);
     }
 }
 
@@ -272,10 +281,11 @@ void readPlyFaceBin(
     MeshType&                     mesh,
     MeshInfo&                     loadedInfo,
     const std::list<PlyProperty>& faceProperties,
-    std::endian                   end)
+    std::endian                   end,
+    bool                          vcgGenerated = false)
 {
     for (const PlyProperty& p : faceProperties) {
-        readPlyFaceProperty(file, mesh, f, p, loadedInfo, end);
+        readPlyFaceProperty(file, mesh, f, p, loadedInfo, vcgGenerated, end);
     }
 }
 
@@ -380,14 +390,16 @@ void readPlyFaces(
         FaceType& f    = mesh.face(ffid);
         if (header.format() == ply::ASCII) {
             detail::readPlyFaceTxt(
-                file, f, mesh, loadedInfo, header.faceProperties());
+                file, f, mesh, loadedInfo, header.faceProperties(),
+                header.isVcgGenerated());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyFaceBin(
-                file, f, mesh, loadedInfo, header.faceProperties(), end);
+                file, f, mesh, loadedInfo, header.faceProperties(), end,
+                header.isVcgGenerated());
         }
 
         log.progress(fid);

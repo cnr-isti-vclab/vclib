@@ -27,6 +27,8 @@ string(STRIP "${VCLIB_VERSION}" VCLIB_VERSION)
 
 project(vclib VERSION ${VCLIB_VERSION})
 
+message(STATUS "VCLib version: ${PROJECT_VERSION}")
+
 ### Options
 
 option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
