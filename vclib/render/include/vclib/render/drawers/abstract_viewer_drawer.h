@@ -325,10 +325,7 @@ public:
     }
 
 protected:
-    DrawableObjectVector& drawableObjectVector()
-    {
-        return *mDrawList;
-    }
+    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
