@@ -62,7 +62,7 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
     return button;
 }
 
-QPushButton* GenericEditorFrame::settingsButton() const
+QToolButton* GenericEditorFrame::settingsButton() const
 {
     return mUI->settingsPushButton;
 }
