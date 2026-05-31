@@ -50,12 +50,29 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
 {
     QPushButton* button = new QPushButton(this);
     button->setIcon(icon);
-    button->setIconSize(QSize(40, 40));
-    button->setMinimumSize(40, 40);
-    button->setMaximumSize(40, 40);
-
+    // Icon is 32x32 inside a 40x40 button: the 4px padding on each side
+    // prevents the native macOS Aqua bezel from clipping the icon.
+    button->setIconSize(QSize(32, 32));
+    button->setFixedSize(QSize(40, 40));
     button->setCheckable(checkable);
     button->setFocusPolicy(Qt::NoFocus);
+    // Stylesheet overrides the native macOS QPushButton rendering (which has
+    // a large internal bezel that clips icons) and keeps a consistent look
+    // across platforms.
+    button->setStyleSheet(
+        "QPushButton {"
+        "  background-color: transparent;"
+        "  border: 1px solid transparent;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton:checked {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(dark);"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: palette(midlight);"
+        "  border-color: palette(dark);"
+        "}");
 
     // add the button before the settings button in the mUI layout
     int settingsButtonIndex =
