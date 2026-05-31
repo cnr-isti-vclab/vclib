@@ -67,6 +67,15 @@ protected:
         settingsButton()->setMenu(popupMenu);
         // Make the arrow centered trough a style sheet
         settingsButton()->setStyleSheet(
+            "QToolButton {"
+            "  background-color: transparent;"
+            "  border: 1px solid transparent;"
+            "  border-radius: 4px;"
+            "}"
+            "QToolButton:hover {"
+            "  background-color: palette(midlight);"
+            "  border-color: palette(dark);"
+            "}"
             "QToolButton::menu-indicator { image: none; width: 0px; }");
         return sf;
     }
