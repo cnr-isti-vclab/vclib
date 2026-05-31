@@ -505,8 +505,8 @@ protected:
             if (v.selected()) {
                 const uint wordIdx = vidx / 32;
                 const uint bitIdx  = vidx % 32;
-                const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
-                const uint bitPos  = bitIdx % 8;
+                const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
+                const uint bitPos  = 7 - (bitIdx % 8);
                 vertexBackup[byteIdx] |= (1 << bitPos);
             }
             ++vidx;
@@ -540,8 +540,8 @@ protected:
                         const uint triIdx  = firstTriIdx + t;
                         const uint wordIdx = triIdx / 32;
                         const uint bitIdx  = triIdx % 32;
-                        const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
-                        const uint bitPos  = bitIdx % 8;
+                        const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
+                        const uint bitPos  = 7 - (bitIdx % 8);
                         faceBackup[byteIdx] |= (1 << bitPos);
                     }
                 }
@@ -572,8 +572,8 @@ protected:
                 for (auto& v : MeshType::vertices()) {
                     const uint wordIdx = vidx / 32;
                     const uint bitIdx  = vidx % 32;
-                    const uint byteIdx = 4 * wordIdx + (3 - bitIdx / 8);
-                    const uint bitPos  = bitIdx % 8;
+                    const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
+                    const uint bitPos  = 7 - (bitIdx % 8);
 
                     if (byteIdx < mVertexSelectionBackup.size()) {
                         const bool isSelected =
@@ -605,8 +605,8 @@ protected:
                     const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
                     const uint wordIdx     = firstTriIdx / 32;
                     const uint bitIdx      = firstTriIdx % 32;
-                    const uint byteIdx     = 4 * wordIdx + (3 - bitIdx / 8);
-                    const uint bitPos      = bitIdx % 8;
+                    const uint byteIdx     = 4 * wordIdx + (bitIdx / 8);
+                    const uint bitPos      = 7 - (bitIdx % 8);
 
                     if (byteIdx < mFaceSelectionBackup.size()) {
                         const bool isSelected =
