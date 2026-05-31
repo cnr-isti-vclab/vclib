@@ -28,6 +28,7 @@
 #include <QFrame>
 #include <QMenu>
 #include <QPushButton>
+#include <QToolButton>
 #include <QWidgetAction>
 
 namespace vcl::qt {
@@ -49,7 +50,7 @@ public:
 protected:
     QPushButton* addButton(const QIcon& icon, bool checkable = true);
 
-    QPushButton* settingsButton() const;
+    QToolButton* settingsButton() const;
 
     void hideSettingsButton() { settingsButton()->setVisible(false); }
 
@@ -64,11 +65,9 @@ protected:
         QMenu* popupMenu = new QMenu(this);
         popupMenu->addAction(wa);
         settingsButton()->setMenu(popupMenu);
+        // Make the arrow centered trough a style sheet
         settingsButton()->setStyleSheet(
-            "QPushButton::menu-indicator {"
-            "    subcontrol-origin: padding;"
-            "    subcontrol-position: center center;"
-            "}");
+            "QToolButton::menu-indicator { image: none; width: 0px; }");
         return sf;
     }
 
