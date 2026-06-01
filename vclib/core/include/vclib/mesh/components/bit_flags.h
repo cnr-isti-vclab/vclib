@@ -72,7 +72,7 @@ class BitFlags :
         public Component<
             BitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<char>,
+            BitSet<uchar>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -80,12 +80,10 @@ class BitFlags :
     using Base = Component<
         BitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<char>,
+        BitSet<uchar>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
-
-    using FT = char; // FlagsType, the integral type used for the flags
 
     // indices of the bits
     enum {
@@ -99,9 +97,15 @@ class BitFlags :
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = uchar;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /* Constructors */
 
@@ -140,7 +144,7 @@ public:
      * to it.
      * @return a reference to the 'selected' bit of this Element.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Element is selected or not.
@@ -153,7 +157,7 @@ public:
      * to it.
      * @return a reference to the 'onBorder' bit of this Element.
      */
-    BitProxy<FT> onBorder() { return flags()[BORDER]; }
+    BitProxy<FlagsType> onBorder() { return flags()[BORDER]; }
 
     /**
      * @brief Returns whether the current Element is on border or not.
@@ -166,7 +170,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Element.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Element has been visited or not.
@@ -197,7 +201,7 @@ public:
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -251,7 +255,7 @@ public:
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -282,9 +286,9 @@ protected:
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags() { return Base::data(); }
+    BitSet<FlagsType>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const { return Base::data(); }
+    BitSet<FlagsType> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp

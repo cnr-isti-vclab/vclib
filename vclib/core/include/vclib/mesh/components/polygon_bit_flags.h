@@ -99,22 +99,20 @@ class PolygonBitFlags :
         public ContainerComponent<
             PolygonBitFlags<N, ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<char>,
+            BitSet<uchar>,
             N,
-            BitSet<char>,
+            BitSet<uchar>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT,
             true>
 {
-    using FT = char; // FlagsType, the integral type used for the flags
-
     using Base = ContainerComponent<
         PolygonBitFlags<N, ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<FT>,
+        BitSet<uchar>,
         N,
-        BitSet<FT>,
+        BitSet<uchar>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT,
@@ -137,16 +135,22 @@ class PolygonBitFlags :
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = uchar;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
      * to the user
      */
     static const uint EDGE_USER_BIT_COUNT =
-        sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
+        sizeof(FlagsType) * 8 - FIRST_EDGE_USER_BIT;
 
     /* Constructors */
 
@@ -188,7 +192,7 @@ public:
      * to it.
      * @return a reference to the 'selected' bit of this Polygon.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Polygon is selected or not.
@@ -201,7 +205,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Polygon.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Polygon has been visited or not.
@@ -230,7 +234,7 @@ public:
      * @return a reference to the 'onBorder' bit of the i-th edge of the
      * polygon.
      */
-    BitProxy<FT> edgeOnBorder(uint i)
+    BitProxy<FlagsType> edgeOnBorder(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGEBORD];
@@ -256,7 +260,7 @@ public:
      * @return a reference to the 'selected' bit of the i-th edge of the
      * polygon.
      */
-    BitProxy<FT> edgeSelected(uint i)
+    BitProxy<FlagsType> edgeSelected(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGESEL];
@@ -281,7 +285,7 @@ public:
      * @param[in] i: the index of the edge.
      * @return a reference to the 'visited' bit of the i-th edge of the polygon.
      */
-    BitProxy<FT> edgeVisited(uint i)
+    BitProxy<FlagsType> edgeVisited(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGEVIS];
@@ -312,7 +316,7 @@ public:
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the polygon.
      */
-    BitProxy<FT> edgeFaux(uint i)
+    BitProxy<FlagsType> edgeFaux(uint i)
     {
         assert(i < 3);
         return flags()[FAUX0 + i];
@@ -359,7 +363,7 @@ public:
      * @param[in] bit: the position of the bit, in the interval [0 - 1].
      * @return a reference to the desired user bit.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -389,7 +393,7 @@ public:
      * @param[in] bit: the position of the bit, in the interval [0 - 4].
      * @return a reference to the desired user bit.
      */
-    BitProxy<FT> edgeUserBit(uint i, uint bit)
+    BitProxy<FlagsType> edgeUserBit(uint i, uint bit)
     {
         assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
@@ -476,7 +480,7 @@ public:
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -524,12 +528,13 @@ protected:
     // ContainerComponent interface functions
     void resize(uint n) requires (N < 0) { edgeFlags().resize(n); }
 
-    void pushBack(BitSet<FT> f = BitSet<FT>()) requires (N < 0)
+    void pushBack(BitSet<FlagsType> f = BitSet<FlagsType>()) requires (N < 0)
     {
         edgeFlags().pushBack(f);
     }
 
-    void insert(uint i, BitSet<FT> f = BitSet<FT>()) requires (N < 0)
+    void insert(uint i, BitSet<FlagsType> f = BitSet<FlagsType>())
+        requires (N < 0)
     {
         edgeFlags().insert(i, f);
     }
@@ -542,13 +547,13 @@ private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
 
-    BitSet<FT>& flags() { return Base::additionalData(); }
+    BitSet<FlagsType>& flags() { return Base::additionalData(); }
 
-    const BitSet<FT>& flags() const { return Base::additionalData(); }
+    const BitSet<FlagsType>& flags() const { return Base::additionalData(); }
 
-    Vector<BitSet<FT>, -1>& edgeFlags() { return Base::container(); }
+    Vector<BitSet<FlagsType>, -1>& edgeFlags() { return Base::container(); }
 
-    const Vector<BitSet<FT>, -1>& edgeFlags() const
+    const Vector<BitSet<FlagsType>, -1>& edgeFlags() const
     {
         return Base::container();
     }

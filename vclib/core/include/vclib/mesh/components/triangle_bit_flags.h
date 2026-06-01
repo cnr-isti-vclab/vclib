@@ -82,7 +82,7 @@ class TriangleBitFlags :
         public Component<
             TriangleBitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<short>,
+            BitSet<ushort>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -90,12 +90,10 @@ class TriangleBitFlags :
     using Base = Component<
         TriangleBitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<short>,
+        BitSet<ushort>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
-
-    using FT = short; // FlagsType, the integral type used for the flags
 
     static const uint FIRST_USER_BIT = 15;
 
@@ -117,9 +115,15 @@ class TriangleBitFlags :
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = ushort;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /* Constructors */
 
@@ -158,7 +162,7 @@ public:
      * reference to it.
      * @return a reference to the 'selected' bit of this Triangle.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Triangle is selected or not.
@@ -171,7 +175,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Triangle.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Triangle has been visited or not.
@@ -197,7 +201,7 @@ public:
      * @return a reference to the 'onBorder' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeOnBorder(uint i)
+    BitProxy<FlagsType> edgeOnBorder(uint i)
     {
         assert(i < 3);
         return flags()[BORDER0 + i];
@@ -223,7 +227,7 @@ public:
      * @return a reference to the 'selected' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeSelected(uint i)
+    BitProxy<FlagsType> edgeSelected(uint i)
     {
         assert(i < 3);
         return flags()[EDGESEL0 + i];
@@ -249,7 +253,7 @@ public:
      * @return a reference to the 'visited' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeVisited(uint i)
+    BitProxy<FlagsType> edgeVisited(uint i)
     {
         assert(i < 3);
         return flags()[EDGEVIS0 + i];
@@ -274,7 +278,7 @@ public:
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the triangle.
      */
-    BitProxy<FT> edgeFaux(uint i)
+    BitProxy<FlagsType> edgeFaux(uint i)
     {
         assert(i < 3);
         return flags()[FAUX0 + i];
@@ -315,7 +319,7 @@ public:
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -400,7 +404,7 @@ public:
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -438,9 +442,9 @@ protected:
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags() { return Base::data(); }
+    BitSet<FlagsType>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const { return Base::data(); }
+    BitSet<FlagsType> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp
