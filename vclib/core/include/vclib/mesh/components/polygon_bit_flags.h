@@ -418,6 +418,55 @@ public:
     }
 
     /**
+     * @brief Returns the underlying integral value of the BitFlags.
+     * @return the underlying integral value of the BitFlags.
+     */
+    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+
+    /**
+     * @brief Sets the underlying integral value of the BitFlags.
+     *
+     * @note The deleted flag will be preserved and won't be overridden by the
+     * input integral value.
+     *
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * BitFlags
+     */
+    void setUnderlyingBitFlags(FlagsType bits)
+    {
+        bool isD = deleted();
+        flags().setUnderlying(bits);
+        deletedBit() = isD;
+    }
+
+    /**
+     * @brief Returns the underlying integral value of the Edge BitFlags of the
+     * i-th edge.
+     * @param[in] i: the index of the edge.
+     * @return the underlying integral value of the Edge BitFlags of the i-th
+     * edge.
+     */
+    EdgeFlagsType underlyingEdgeBitFlags(uint i) const
+    {
+        assert(i < edgeFlags().size());
+        return edgeFlags()[i].underlying();
+    }
+
+    /**
+     * @brief Sets the underlying integral value of the Edge BitFlags of the
+     * i-th edge.
+     *
+     * @param[in] i: the index of the edge.
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * Edge BitFlags of the i-th edge.
+     */
+    void setUnderlyingEdgeBitFlags(uint i, EdgeFlagsType bits)
+    {
+        assert(i < edgeFlags().size());
+        edgeFlags()[i].setUnderlying(bits);
+    }
+
+    /**
      * @brief Sets all the flags of this element to the values contained in the
      * integer input parameter, that represents the bit flags of the VCG
      * library.
