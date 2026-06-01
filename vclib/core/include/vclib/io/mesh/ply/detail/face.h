@@ -390,7 +390,11 @@ void readPlyFaces(
         FaceType& f    = mesh.face(ffid);
         if (header.format() == ply::ASCII) {
             detail::readPlyFaceTxt(
-                file, f, mesh, loadedInfo, header.faceProperties(),
+                file,
+                f,
+                mesh,
+                loadedInfo,
+                header.faceProperties(),
                 header.isVcgGenerated());
         }
         else {
@@ -398,7 +402,12 @@ void readPlyFaces(
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyFaceBin(
-                file, f, mesh, loadedInfo, header.faceProperties(), end,
+                file,
+                f,
+                mesh,
+                loadedInfo,
+                header.faceProperties(),
+                end,
                 header.isVcgGenerated());
         }
 

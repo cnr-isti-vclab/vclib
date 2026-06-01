@@ -252,15 +252,18 @@ void readPlyVertices(
         auto& v = m.vertex(vid);
         if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(
-                file, v, m, header.vertexProperties(),
-                header.isVcgGenerated());
+                file, v, m, header.vertexProperties(), header.isVcgGenerated());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyVertexBin(
-                file, v, m, header.vertexProperties(), end,
+                file,
+                v,
+                m,
+                header.vertexProperties(),
+                end,
                 header.isVcgGenerated());
         }
         log.progress(vid);
