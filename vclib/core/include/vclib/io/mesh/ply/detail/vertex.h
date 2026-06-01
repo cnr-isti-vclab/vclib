@@ -54,6 +54,13 @@ void readPlyVertexProperty(
             v.importFlagsFromVCGFormat(fval);
             hasBeenRead = true;
         }
+        else {
+            using FlagsType = VertexType::FlagsType;
+            FlagsType fval =
+                io::readPrimitiveType<FlagsType>(file, p.type, end);
+            v.setUnderlyingBitFlags(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -181,6 +188,10 @@ void writePlyVertices(
             if (p.name >= ply::x && p.name <= ply::z) {
                 io::writeProperty(
                     file, v.position()[p.name - ply::x], p.type, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, v.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {

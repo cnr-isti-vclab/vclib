@@ -575,9 +575,9 @@ public:
         setPerElementComponent(VERTEX, POSITION, b, t);
     }
 
-    void setPerVertexBitFlags(bool b = true)
+    void setPerVertexBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(VERTEX, BIT_FLAGS, b, PrimitiveType::INT);
+        setPerElementComponent(VERTEX, BIT_FLAGS, b, t);
     }
 
     void setPerVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
@@ -620,9 +620,9 @@ public:
         setPerElementComponent(FACE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setPerFaceBitFlags(bool b = true)
+    void setPerFaceBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(FACE, BIT_FLAGS, b, PrimitiveType::INT);
+        setPerElementComponent(FACE, BIT_FLAGS, b, t);
     }
 
     void setPerFaceNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
@@ -666,9 +666,9 @@ public:
         setPerElementComponent(EDGE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setPerEdgeBitFlags(bool b = true)
+    void setPerEdgeBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
     {
-        setPerElementComponent(EDGE, BIT_FLAGS, b, PrimitiveType::INT);
+        setPerElementComponent(EDGE, BIT_FLAGS, b, t);
     }
 
     void setPerEdgeColor(bool b = true, DataType t = PrimitiveType::UCHAR)
@@ -758,6 +758,11 @@ public:
         return perElementComponentType(VERTEX, POSITION);
     }
 
+    DataType perVertexBitFlagsType() const
+    {
+        return perElementComponentType(VERTEX, BIT_FLAGS);
+    }
+
     DataType perVertexNormalType() const
     {
         return perElementComponentType(VERTEX, NORMAL);
@@ -783,6 +788,11 @@ public:
         return perElementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
+    DataType perFaceBitFlagsType() const
+    {
+        return perElementComponentType(FACE, BIT_FLAGS);
+    }
+
     DataType perFaceNormalType() const
     {
         return perElementComponentType(FACE, NORMAL);
@@ -806,6 +816,11 @@ public:
     DataType perFaceMaterialIndexType() const
     {
         return perElementComponentType(FACE, MATERIAL_INDEX);
+    }
+
+    DataType perEdgeBitFlagsType() const
+    {
+        return perElementComponentType(EDGE, BIT_FLAGS);
     }
 
     DataType perEdgeNormalType() const

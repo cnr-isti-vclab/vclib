@@ -435,6 +435,12 @@ public:
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
             }
+            if (info.hasPerVertexBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perVertexBitFlagsType();
+                vElem.properties.push_back(bf);
+            }
             if (info.hasPerVertexNormal()) {
                 PlyProperty vnx, vny, vnz;
                 vnx.name = ply::nx;
@@ -838,7 +844,7 @@ private:
             pn = ply::vertex1;
         if (name == "vertex2")
             pn = ply::vertex2;
-        if (name == "flags")
+        if (name == "flags" || name == "bit_flags")
             pn = ply::bit_flags;
         if (name == "name")
             pn = ply::name;
@@ -922,6 +928,7 @@ private:
         case ply::texcoord: return "texcoord";
         case ply::vertex1: return "vertex1";
         case ply::vertex2: return "vertex2";
+        case ply::bit_flags: return "bit_flags";
         case ply::name: return "name";
         case ply::metallic: return "metallic";
         case ply::roughness: return "roughness";
