@@ -229,7 +229,7 @@ inline void readOffHeader(
     uint&         ne)
 {
     fileInfo.clear();
-    Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
     Tokenizer::iterator token  = tokens.begin();
     std::string         header = *token;
 
@@ -255,7 +255,7 @@ inline void readOffHeader(
     // If the file is slightly malformed and it has nvert and nface AFTER the
     // OFF string instead of in the next line we manage it here...
     if (tokens.size() == 1) {
-        tokens = readAndTokenizeNextNonEmptyLine(file);
+        tokens = readAndTokenizeNextNonCommentLine(file);
         token  = tokens.begin();
     }
     else
@@ -325,7 +325,7 @@ void readOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+        Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
         Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
@@ -410,8 +410,8 @@ void readOffFaces(
         log.startProgress("Reading faces", nf);
 
         for (uint fid = 0; fid < nf; ++fid) {
-            Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
-            Tokenizer::iterator token  = tokens.begin();
+            Tokenizer tokens          = readAndTokenizeNextNonCommentLine(file);
+            Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceCount() - 1);
 
@@ -476,7 +476,7 @@ void readOffFaces(
     }
     else { // mesh does not have face, read nf lines and throw them away
         for (uint i = 0; i < nf; ++i)
-            readAndTokenizeNextNonEmptyLine(file);
+            readAndTokenizeNextNonCommentLine(file);
     }
 }
 

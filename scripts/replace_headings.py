@@ -34,7 +34,7 @@ def replace_headers_in_dir(folder_path, exclude_paths = []):
             if any(exclude in file_path for exclude in exclude_paths):
                 continue
             replace_headers_in_dir(file_path, exclude_paths)
-        elif file_path.endswith(('.h', '.cpp', '.sc', '.sh')):
+        elif file_path.endswith(('.h.in', '.h', '.cpp', '.sc', '.sh')):
             # if file_path does not contain 'varying.def.sc'
             if 'varying.def.sc' not in file_path:
                 replace_header(file_path, header_string)

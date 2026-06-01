@@ -27,6 +27,7 @@ namespace vcl {
 
 enum class ComputeProgram {
     DRAWABLE_MESH_POINTS,
+    BUFFER_TO_TEX,
     HDR_EQUIRECT_TO_CUBEMAP,
     CUBEMAP_MIPMAP_GEN,
     CUBEMAP_TO_IRRADIANCE,

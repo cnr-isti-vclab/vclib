@@ -255,6 +255,13 @@ public:
      */
     T underlying() const { return mBits; }
 
+     /**
+     * @brief Sets the underlying integral value of the BitSet
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * BitSet
+     */
+    void setUnderlying(T bits) { mBits = bits; }
+
     /**
      * @brief Returns a BitSet that is the result of the bitwise AND between
      * this BitSet and another BitSet.

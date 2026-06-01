@@ -36,27 +36,36 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QPushButton" name="settingsPushButton">
+    <widget class="QToolButton" name="settingsPushButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize">
+     <property name="minimumSize">
       <size>
-       <width>16</width>
-       <height>16777215</height>
+       <width>20</width>
+       <height>0</height>
       </size>
      </property>
-     <property name="layoutDirection">
-      <enum>Qt::LayoutDirection::LeftToRight</enum>
+     <property name="maximumSize">
+      <size>
+       <width>20</width>
+       <height>16777215</height>
+      </size>
      </property>
      <property name="text">
       <string/>
      </property>
-     <property name="checkable">
-      <bool>false</bool>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
+     </property>
+     <property name="arrowType">
+      <enum>Qt::DownArrow</enum>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonIconOnly</enum>
      </property>
     </widget>
    </item>

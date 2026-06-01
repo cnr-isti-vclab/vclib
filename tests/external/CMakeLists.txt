@@ -30,10 +30,9 @@ endif()
 
 if (TARGET vclib-3rd-embree)
     add_subdirectory(010-embree-intersection)
+    add_subdirectory(011-best-heightfield-orientation)
 endif()
 
 if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
     add_subdirectory(020-igl-booleans)
 endif()
-
-

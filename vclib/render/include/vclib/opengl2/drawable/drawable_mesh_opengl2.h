@@ -181,7 +181,7 @@ public:
 
     void init() override { bindTextures(); }
 
-    void draw(const DrawObjectSettings& settings = {}) const override
+    void draw(const DrawObjectSettings& settings = {}) override
     {
         if (mMRS.isVisible()) {
             if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
@@ -268,7 +268,7 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 private:
-    void renderPass() const
+    void renderPass()
     {
         uint nv = mMRD.vertexCount();
         uint nt = mMRD.triangleCount();

@@ -333,6 +333,19 @@ protected:
      */
     uint numWireframeLines() const { return nWireframeLines; }
 
+    /**
+     * @brief Returns the map that stores the correspondence between the
+     * original polygonal faces and the triangle faces.
+     *
+     * The map is a bidirectional map that allows to get, for each original
+     * polygonal face, the list of triangle faces that correspond to it, and for
+     * each triangle face, the original polygonal face it corresponds to.
+     *
+     * @return The map that stores the correspondence between the original
+     * polygonal faces and the triangle faces.
+     */
+    const TriPolyIndexBiMap& triPolyIndexMap() const { return mIndexMap; }
+
     // utility functions to fill the buffers
 
     /**
@@ -465,6 +478,11 @@ protected:
 
         triangulatedFaceVertexIndicesToBuffer(
             mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
+        // Update mNumTris to the actual triangle count produced by earCut.
+        // For degenerate faces, earCut may produce fewer than vertexCount()-2
+        // triangles, making the pre-triangulation estimate from
+        // triangulatedFaceCount() too large.
+        mNumTris = mIndexMap.triangleCount();
         replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
             mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
 

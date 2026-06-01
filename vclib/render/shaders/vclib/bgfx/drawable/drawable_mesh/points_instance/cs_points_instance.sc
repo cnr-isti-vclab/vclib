@@ -29,15 +29,13 @@ restore next lines with:
 
 BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
 BUFFER_RO(normals,   vec4, VCL_MRB_VERTEX_NORMAL_STREAM);   // normals (3 floats)
-BUFFER_RO(colors,    vec4, VCL_MRB_VERTEX_COLOR_STREAM);    // colors (rgba as float bits)
 */
 BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 BUFFER_RO(normals,   vec4, 1);   // normals (3 floats)
-BUFFER_RO(colors,    vec4, 2);    // colors (rgba as float bits)
 
 BUFFER_WO(vOut, vec4, 4); // output vertices
 // 2 vec4 per vertex:
-// - 3 floats for position + 1 uint for color
+// - 3 floats for position + 1 float (padding)
 // - 3 floats for normal   + 1 float for scale
 
 
@@ -49,7 +47,6 @@ void main()
     uint idx31 = idx30+1;
     uint idx32 = idx30+2;
 
-    float col = colors[pointId/4][pointId%4];
     vec3 p = vec3(
         positions[idx30/4][idx30%4],
         positions[idx31/4][idx31%4],
@@ -64,9 +61,9 @@ void main()
     for (int i = 0; i < 4; ++i) {
         // Offset for quad vertices
         uint vertexId = pointId * 4 + i;
-        // pos 3, col 1
+        // pos 3, padding 1
         // norm 3, sca 1
-        vOut[vertexId * 2]     = vec4(p, col);
+        vOut[vertexId * 2]     = vec4(p, 0.0);
         vOut[vertexId * 2 + 1] = vec4(n, 1.0);
     }
 }

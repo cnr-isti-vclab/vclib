@@ -31,7 +31,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The BitFlags component class represents a collection of 8 bits that
+ * @brief The BitFlags component class represents a collection of 32 bits that
  * will be part of an Element (e.g. Vertex, Face, ...).
  *
  * This Component (or a specialization, that is any class that satisfies the
@@ -43,10 +43,10 @@ namespace vcl::comp {
  * - 2: border: if the current Element is on border
  * - 3: visited: if the current Element has been visited (useful for some visit
  *               algorithms)
- * - from 4 to 7: user bits that can have custom meanings to the user
+ * - from 4 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 4 user bits, that can be accessed using the member
- * function userBit(uint i) with position in the interval [0, 3].
+ * This class provides 28 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 27].
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -72,7 +72,7 @@ class BitFlags :
         public Component<
             BitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<char>,
+            BitSet<uint>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -80,12 +80,10 @@ class BitFlags :
     using Base = Component<
         BitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<char>,
+        BitSet<uint>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
-
-    using FT = char; // FlagsType, the integral type used for the flags
 
     // indices of the bits
     enum {
@@ -99,9 +97,15 @@ class BitFlags :
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = uint;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /* Constructors */
 
@@ -140,7 +144,7 @@ public:
      * to it.
      * @return a reference to the 'selected' bit of this Element.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Element is selected or not.
@@ -153,7 +157,7 @@ public:
      * to it.
      * @return a reference to the 'onBorder' bit of this Element.
      */
-    BitProxy<FT> onBorder() { return flags()[BORDER]; }
+    BitProxy<FlagsType> onBorder() { return flags()[BORDER]; }
 
     /**
      * @brief Returns whether the current Element is on border or not.
@@ -166,7 +170,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Element.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Element has been visited or not.
@@ -177,9 +181,9 @@ public:
     /**
      * @brief Returns a reference to the value of the user bit of this Element
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 4.
+     * assigned user bits, which in this class is 28.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3].
+     * @param[in] bit: the position of the bit, in the interval [0 - 27].
      * @return a reference to the desired user bit.
      */
     bool userBit(uint bit) const
@@ -191,13 +195,13 @@ public:
     /**
      * @brief Returns the boolean value of the user bit of this Element given in
      * input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 4.
+     * user bits, which in this class is 28.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3], that
+     * @param[in] bit: the position of the bit, in the interval [0 - 27], that
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -211,6 +215,28 @@ public:
     {
         bool isD = deleted();
         flags().reset();
+        deletedBit() = isD;
+    }
+
+    /**
+     * @brief Returns the underlying integral value of the BitFlags.
+     * @return the underlying integral value of the BitFlags.
+     */
+    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+
+    /**
+     * @brief Sets the underlying integral value of the BitFlags.
+     *
+     * @note The deleted flag will be preserved and won't be overridden by the
+     * input integral value.
+     *
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * BitFlags
+     */
+    void setUnderlyingBitFlags(FlagsType bits)
+    {
+        bool isD = deleted();
+        flags().setUnderlying(bits);
         deletedBit() = isD;
     }
 
@@ -242,16 +268,16 @@ public:
     {
         int f = 0;
         if (visited())
-            f &= 0x0010;
+            f |= 0x0010;
         if (selected())
-            f &= 0x0020;
+            f |= 0x0020;
         if (onBorder())
-            f &= 0x0100;
+            f |= 0x0100;
         return f;
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -282,9 +308,9 @@ protected:
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags() { return Base::data(); }
+    BitSet<FlagsType>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const { return Base::data(); }
+    BitSet<FlagsType> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp

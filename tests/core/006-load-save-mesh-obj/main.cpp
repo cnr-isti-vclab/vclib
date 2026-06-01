@@ -31,6 +31,7 @@ std::istringstream objPolyCube()
     // string containing a cube in OBJ format
 
     std::string s =
+        "# a comment\n"
         "v -0.500000 -0.500000 0.500000\n"
         "v 0.500000 -0.500000 0.500000\n"
         "v -0.500000 0.500000 0.500000\n"
@@ -39,6 +40,7 @@ std::istringstream objPolyCube()
         "v 0.500000 0.500000 -0.500000\n"
         "v -0.500000 -0.500000 -0.500000\n"
         "v 0.500000 -0.500000 -0.500000\n"
+        "# another comment\n"
         "f 1 2 4 3\n"
         "f 3 4 6 5\n"
         "f 5 6 8 7\n"
@@ -158,7 +160,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
             // first two faces have material index 0, the other two have index 1
-            REQUIRE(f.materialIndex() == f.index() / 2);
+            REQUIRE(f.materialIndex() == f.index() % 2);
         }
 
         REQUIRE(info.hasVertices());

@@ -31,7 +31,7 @@ void DrawableObjectVector::init()
     }
 }
 
-void DrawableObjectVector::draw(const DrawObjectSettings& settings) const
+void DrawableObjectVector::draw(const DrawObjectSettings& settings)
 {
     if (isVisible()) {
         for (const auto& p : *this) {
@@ -41,7 +41,7 @@ void DrawableObjectVector::draw(const DrawObjectSettings& settings) const
     }
 }
 
-void DrawableObjectVector::drawId(const DrawObjectSettings& settings) const
+void DrawableObjectVector::drawId(const DrawObjectSettings& settings)
 {
     DrawObjectSettings sts = settings;
     if (isVisible()) {

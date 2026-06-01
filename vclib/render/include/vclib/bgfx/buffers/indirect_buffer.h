@@ -52,8 +52,7 @@ public:
      */
     void create(uint num)
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        destroy();
 
         mHandle = bgfx::createIndirectBuffer(num);
     }
