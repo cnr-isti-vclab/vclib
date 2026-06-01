@@ -410,8 +410,8 @@ void readOffFaces(
         log.startProgress("Reading faces", nf);
 
         for (uint fid = 0; fid < nf; ++fid) {
-            Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
-            Tokenizer::iterator token  = tokens.begin();
+            Tokenizer tokens          = readAndTokenizeNextNonCommentLine(file);
+            Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceCount() - 1);
 

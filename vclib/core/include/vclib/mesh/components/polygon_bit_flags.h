@@ -31,7 +31,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8
+ * @brief The PolygonBitFlags class represents a collection of 32 bits plus 8
  * bits for each edge that will be part of a generic Polygonal Face of a Mesh.
  *
  * This is a specialization class of the BitFlags component, meaning that it can
@@ -51,10 +51,10 @@ namespace vcl::comp {
  *               algorithms)
  * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2])
  *                marked as faux
- * - from 6 to 7: user bits that can have custom meanings to the user
+ * - from 6 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 2 user bits, that can be accessed using the member
- * function userBit(uint i) with position in the interval [0, 1].
+ * This class provides 26 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 25].
  *
  * Additionally, this class provides the following bits for each edge of the
  * Polygonal Face:
@@ -99,22 +99,20 @@ class PolygonBitFlags :
         public ContainerComponent<
             PolygonBitFlags<N, ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<char>,
+            BitSet<uchar>,
             N,
-            BitSet<char>,
+            BitSet<uint>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT,
             true>
 {
-    using FT = char; // FlagsType, the integral type used for the flags
-
     using Base = ContainerComponent<
         PolygonBitFlags<N, ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<FT>,
+        BitSet<uchar>,
         N,
-        BitSet<FT>,
+        BitSet<uint>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT,
@@ -137,16 +135,27 @@ class PolygonBitFlags :
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = uint;
+
+    /**
+     * @brief Expose the underlying type of the Edge BitFlags.
+     */
+    using EdgeFlagsType = uchar;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
      * to the user
      */
     static const uint EDGE_USER_BIT_COUNT =
-        sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
+        sizeof(EdgeFlagsType) * 8 - FIRST_EDGE_USER_BIT;
 
     /* Constructors */
 
@@ -188,7 +197,7 @@ public:
      * to it.
      * @return a reference to the 'selected' bit of this Polygon.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Polygon is selected or not.
@@ -201,7 +210,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Polygon.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Polygon has been visited or not.
@@ -230,7 +239,7 @@ public:
      * @return a reference to the 'onBorder' bit of the i-th edge of the
      * polygon.
      */
-    BitProxy<FT> edgeOnBorder(uint i)
+    BitProxy<EdgeFlagsType> edgeOnBorder(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGEBORD];
@@ -256,7 +265,7 @@ public:
      * @return a reference to the 'selected' bit of the i-th edge of the
      * polygon.
      */
-    BitProxy<FT> edgeSelected(uint i)
+    BitProxy<EdgeFlagsType> edgeSelected(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGESEL];
@@ -281,7 +290,7 @@ public:
      * @param[in] i: the index of the edge.
      * @return a reference to the 'visited' bit of the i-th edge of the polygon.
      */
-    BitProxy<FT> edgeVisited(uint i)
+    BitProxy<EdgeFlagsType> edgeVisited(uint i)
     {
         assert(i < edgeFlags().size());
         return edgeFlags()[i][EDGEVIS];
@@ -312,7 +321,7 @@ public:
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the polygon.
      */
-    BitProxy<FT> edgeFaux(uint i)
+    BitProxy<FlagsType> edgeFaux(uint i)
     {
         assert(i < 3);
         return flags()[FAUX0 + i];
@@ -339,9 +348,9 @@ public:
     /**
      * @brief Returns the boolean value of the user bit of this Polygon given in
      * input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 2.
+     * user bits, which in this class is 26.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 1], that
+     * @param[in] bit: the position of the bit, in the interval [0 - 25], that
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
@@ -354,12 +363,12 @@ public:
     /**
      * @brief Returns a reference to the value of the user bit of this Polygon
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 2.
+     * assigned user bits, which in this class is 26.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 1].
+     * @param[in] bit: the position of the bit, in the interval [0 - 25].
      * @return a reference to the desired user bit.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -389,7 +398,7 @@ public:
      * @param[in] bit: the position of the bit, in the interval [0 - 4].
      * @return a reference to the desired user bit.
      */
-    BitProxy<FT> edgeUserBit(uint i, uint bit)
+    BitProxy<EdgeFlagsType> edgeUserBit(uint i, uint bit)
     {
         assert(bit < EDGE_USER_BIT_COUNT);
         return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
@@ -406,6 +415,55 @@ public:
         for (uint i = 0; i < edgeFlags().size(); ++i)
             edgeFlags()[i].reset();
         deletedBit() = isD;
+    }
+
+    /**
+     * @brief Returns the underlying integral value of the BitFlags.
+     * @return the underlying integral value of the BitFlags.
+     */
+    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+
+    /**
+     * @brief Sets the underlying integral value of the BitFlags.
+     *
+     * @note The deleted flag will be preserved and won't be overridden by the
+     * input integral value.
+     *
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * BitFlags
+     */
+    void setUnderlyingBitFlags(FlagsType bits)
+    {
+        bool isD = deleted();
+        flags().setUnderlying(bits);
+        deletedBit() = isD;
+    }
+
+    /**
+     * @brief Returns the underlying integral value of the Edge BitFlags of the
+     * i-th edge.
+     * @param[in] i: the index of the edge.
+     * @return the underlying integral value of the Edge BitFlags of the i-th
+     * edge.
+     */
+    EdgeFlagsType underlyingEdgeBitFlags(uint i) const
+    {
+        assert(i < edgeFlags().size());
+        return edgeFlags()[i].underlying();
+    }
+
+    /**
+     * @brief Sets the underlying integral value of the Edge BitFlags of the
+     * i-th edge.
+     *
+     * @param[in] i: the index of the edge.
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * Edge BitFlags of the i-th edge.
+     */
+    void setUnderlyingEdgeBitFlags(uint i, EdgeFlagsType bits)
+    {
+        assert(i < edgeFlags().size());
+        edgeFlags()[i].setUnderlying(bits);
     }
 
     /**
@@ -476,7 +534,7 @@ public:
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -524,12 +582,14 @@ protected:
     // ContainerComponent interface functions
     void resize(uint n) requires (N < 0) { edgeFlags().resize(n); }
 
-    void pushBack(BitSet<FT> f = BitSet<FT>()) requires (N < 0)
+    void pushBack(BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>())
+        requires (N < 0)
     {
         edgeFlags().pushBack(f);
     }
 
-    void insert(uint i, BitSet<FT> f = BitSet<FT>()) requires (N < 0)
+    void insert(uint i, BitSet<EdgeFlagsType> f = BitSet<EdgeFlagsType>())
+        requires (N < 0)
     {
         edgeFlags().insert(i, f);
     }
@@ -542,13 +602,13 @@ private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
 
-    BitSet<FT>& flags() { return Base::additionalData(); }
+    BitSet<FlagsType>& flags() { return Base::additionalData(); }
 
-    const BitSet<FT>& flags() const { return Base::additionalData(); }
+    const BitSet<FlagsType>& flags() const { return Base::additionalData(); }
 
-    Vector<BitSet<FT>, -1>& edgeFlags() { return Base::container(); }
+    Vector<BitSet<EdgeFlagsType>, -1>& edgeFlags() { return Base::container(); }
 
-    const Vector<BitSet<FT>, -1>& edgeFlags() const
+    const Vector<BitSet<EdgeFlagsType>, -1>& edgeFlags() const
     {
         return Base::container();
     }

@@ -72,6 +72,11 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
         "QPushButton:hover {"
         "  background-color: palette(midlight);"
         "  border-color: palette(dark);"
+        "}"
+        "QPushButton:checked:hover {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(highlight-text);"
+        "  border-width: 2px;"
         "}");
 
     // add the button before the settings button in the mUI layout

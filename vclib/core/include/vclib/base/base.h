@@ -35,6 +35,7 @@ namespace vcl {
 // Define some basic types, for convenience
 using uint   = uint32_t;
 using ushort = uint16_t;
+using uchar  = uint8_t;
 
 /**
  * @brief The UINT_NULL value represent a null value of uint that is the maximum
