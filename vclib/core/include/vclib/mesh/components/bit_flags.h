@@ -31,7 +31,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The BitFlags component class represents a collection of 8 bits that
+ * @brief The BitFlags component class represents a collection of 32 bits that
  * will be part of an Element (e.g. Vertex, Face, ...).
  *
  * This Component (or a specialization, that is any class that satisfies the
@@ -43,10 +43,10 @@ namespace vcl::comp {
  * - 2: border: if the current Element is on border
  * - 3: visited: if the current Element has been visited (useful for some visit
  *               algorithms)
- * - from 4 to 7: user bits that can have custom meanings to the user
+ * - from 4 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 4 user bits, that can be accessed using the member
- * function userBit(uint i) with position in the interval [0, 3].
+ * This class provides 28 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 27].
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -72,7 +72,7 @@ class BitFlags :
         public Component<
             BitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<uchar>,
+            BitSet<uint>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -80,7 +80,7 @@ class BitFlags :
     using Base = Component<
         BitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<uchar>,
+        BitSet<uint>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -99,7 +99,7 @@ public:
     /**
      * @brief Expose the underlying type of the BitFlags.
      */
-    using FlagsType = uchar;
+    using FlagsType = uint;
 
     /**
      * @brief Static number of bits that can have custom meanings to the user
@@ -181,9 +181,9 @@ public:
     /**
      * @brief Returns a reference to the value of the user bit of this Element
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 4.
+     * assigned user bits, which in this class is 28.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3].
+     * @param[in] bit: the position of the bit, in the interval [0 - 27].
      * @return a reference to the desired user bit.
      */
     bool userBit(uint bit) const
@@ -195,9 +195,9 @@ public:
     /**
      * @brief Returns the boolean value of the user bit of this Element given in
      * input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 4.
+     * user bits, which in this class is 28.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3], that
+     * @param[in] bit: the position of the bit, in the interval [0 - 27], that
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */

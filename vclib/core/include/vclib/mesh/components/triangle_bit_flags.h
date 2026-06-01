@@ -31,7 +31,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The TriangleBitFlags class represents a collection of 16 bits that
+ * @brief The TriangleBitFlags class represents a collection of 32 bits that
  * will be part of a Triangle of a Mesh.
  *
  * This is a specialization class of the BitFlags component, meaning that it can
@@ -52,10 +52,10 @@ namespace vcl::comp {
  *                               in [0, 2]) visited
  * - from 12 to 14: edge faux: if the current Triangle has the i-th edge (i in
  *                            [0, 2]) marked as faux
- * - 15: user bit that can have custom meanings to the user
+ * - from 15 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 1 user bit, that can be accessed using the member
- * function userBit(uint i) with position 0.
+ * This class provides 17 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 16].
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -82,7 +82,7 @@ class TriangleBitFlags :
         public Component<
             TriangleBitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<ushort>,
+            BitSet<uint>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -90,7 +90,7 @@ class TriangleBitFlags :
     using Base = Component<
         TriangleBitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<ushort>,
+        BitSet<uint>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
@@ -117,7 +117,7 @@ public:
     /**
      * @brief Expose the underlying type of the BitFlags.
      */
-    using FlagsType = ushort;
+    using FlagsType = uint;
 
     /**
      * @brief Static number of bits that can have custom meanings to the user
@@ -299,9 +299,9 @@ public:
     /**
      * @brief Returns a reference to the value of the user bit of this Triangle
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 4.
+     * assigned user bits, which in this class is 17.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3].
+     * @param[in] bit: the position of the bit, in the interval [0 - 16].
      * @return a reference to the desired user bit.
      */
     bool userBit(uint bit) const
@@ -313,9 +313,9 @@ public:
     /**
      * @brief Returns the boolean value of the user bit of this Triangle given
      * in input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 4.
+     * user bits, which in this class is 17.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3], that
+     * @param[in] bit: the position of the bit, in the interval [0 - 16], that
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
