@@ -70,6 +70,29 @@ bool epsilonEquals(
 }
 
 /**
+ * @brief Rounds up an integer to the nearest multiple of another integer.
+ *
+ * This function takes an integer numToRound and rounds it up to the nearest
+ * multiple of the specified multiple. If numToRound is already a multiple of
+ * multiple, it is returned unchanged.
+ *
+ * @note this function works for both positive and negative integers, and it
+ * rounds towards positive.
+ *
+ * @param[in] numToRound: the integer to round up
+ * @param[in] multiple: the multiple to which numToRound should be rounded up
+ * @return the smallest integer greater than or equal to numToRound that is a
+ * multiple of multiple.
+ *
+ * @ingroup base
+ */
+inline int roundUp(int numToRound, int multiple)
+{
+    int isPositive = (int) (numToRound >= 0);
+    return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
+}
+
+/**
  * @brief Converts an angle in degrees to radians.
  *
  * @param[in] deg: the angle in degrees

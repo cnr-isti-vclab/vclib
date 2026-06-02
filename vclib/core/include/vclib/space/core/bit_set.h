@@ -44,10 +44,13 @@ namespace vcl {
  *
  * @tparam T: The type to use as a storage for the bits. It must satisfy the
  * std::integral concept.
+ * @tparam MSB: If false (default), bit index 0 is mapped to the least
+ * significant bit of the underlying value. If true, bit index 0 is mapped to
+ * the most significant bit of the underlying value.
  *
  * @ingroup space_core
  */
-template<std::integral T>
+template<std::integral T, bool MSB = false>
 class BitSet
 {
     T mBits = static_cast<T>(0);
@@ -57,6 +60,11 @@ public:
      * @brief The type of the underlying integral value used to store the bits.
      */
     using UnderlyingType = T;
+
+    /**
+     * @brief True when index 0 is stored in the most significant bit.
+     */
+    static constexpr bool MSB_ORDER = MSB;
 
     /**
      * @brief The number of the bits of the BitSet.
@@ -124,7 +132,7 @@ public:
     bool operator[](uint i) const
     {
         assert(i < SIZE);
-        return mBits & (1 << i);
+        return mBits & (static_cast<T>(1) << bitIndex(i));
     }
 
     /**
@@ -135,7 +143,7 @@ public:
     BitProxy<T> operator[](uint i)
     {
         assert(i < SIZE);
-        return BitProxy(mBits, i);
+        return BitProxy(mBits, bitIndex(i));
     }
 
     /**
@@ -147,7 +155,7 @@ public:
     bool at(uint i) const
     {
         if (i < SIZE)
-            return mBits & (1 << i);
+            return mBits & (static_cast<T>(1) << bitIndex(i));
         else
             throw std::out_of_range(std::to_string(i) + " out of range.");
     }
@@ -162,7 +170,7 @@ public:
     BitProxy<T> at(uint i)
     {
         if (i < SIZE)
-            return BitProxy(mBits, i);
+            return BitProxy(mBits, bitIndex(i));
         else
             throw std::out_of_range(std::to_string(i) + " out of range.");
     }
@@ -189,7 +197,7 @@ public:
      * @brief Sets all the bits to true
      * @return `*this`
      */
-    BitSet<T> set()
+    BitSet<T, MSB> set()
     {
         mBits = ~static_cast<T>(0);
         return *this;
@@ -201,7 +209,7 @@ public:
      * @param[in] i: the position of the bit
      * @return `*this`
      */
-    BitSet<T> set(bool b, uint i)
+    BitSet<T, MSB> set(bool b, uint i)
     {
         at(i) = b;
         return *this;
@@ -211,7 +219,7 @@ public:
      * @brief Sets all the bits to false
      * @return `*this`
      */
-    BitSet<T> reset()
+    BitSet<T, MSB> reset()
     {
         mBits = 0;
         return *this;
@@ -222,7 +230,7 @@ public:
      * @param[in] i: the position of the bit
      * @return `*this`
      */
-    BitSet<T> reset(uint i)
+    BitSet<T, MSB> reset(uint i)
     {
         at(i) = false;
         return *this;
@@ -232,7 +240,7 @@ public:
      * @brief Flips all the bits of the BitSet
      * @return `*this`
      */
-    BitSet<T> flip()
+    BitSet<T, MSB> flip()
     {
         mBits = ~mBits;
         return *this;
@@ -243,7 +251,7 @@ public:
      * @param[in] i: the position of the bit
      * @return `*this`
      */
-    BitSet<T> flip(uint i)
+    BitSet<T, MSB> flip(uint i)
     {
         at(i) = !at(i);
         return *this;
@@ -255,7 +263,7 @@ public:
      */
     T underlying() const { return mBits; }
 
-     /**
+    /**
      * @brief Sets the underlying integral value of the BitSet
      * @param[in] bits: the integral value to set as the underlying value of the
      * BitSet
@@ -270,9 +278,9 @@ public:
      * @return the result of the bitwise AND between this BitSet and another
      * BitSet.
      */
-    BitSet<T> operator&(const BitSet<T>& other) const
+    BitSet<T, MSB> operator&(const BitSet<T, MSB>& other) const
     {
-        return BitSet<T>(mBits & other.mBits);
+        return BitSet<T, MSB>(mBits & other.mBits);
     }
 
     /**
@@ -283,9 +291,9 @@ public:
      * @return the result of the bitwise OR between this BitSet and another
      * BitSet.
      */
-    BitSet<T> operator|(const BitSet<T>& other) const
+    BitSet<T, MSB> operator|(const BitSet<T, MSB>& other) const
     {
-        return BitSet<T>(mBits | other.mBits);
+        return BitSet<T, MSB>(mBits | other.mBits);
     }
 
     /**
@@ -296,9 +304,9 @@ public:
      * @return the result of the bitwise XOR between this BitSet and another
      * BitSet.
      */
-    BitSet<T> operator^(const BitSet<T>& other) const
+    BitSet<T, MSB> operator^(const BitSet<T, MSB>& other) const
     {
-        return BitSet<T>(mBits ^ other.mBits);
+        return BitSet<T, MSB>(mBits ^ other.mBits);
     }
 
     /**
@@ -307,7 +315,7 @@ public:
      *
      * @return the result of the bitwise NOT of this BitSet.
      */
-    BitSet<T> operator~() const { return BitSet<T>(~mBits); }
+    BitSet<T, MSB> operator~() const { return BitSet<T, MSB>(~mBits); }
 
     /**
      * @brief Compound assignment operator that performs the bitwise AND between
@@ -316,7 +324,7 @@ public:
      * @param[in] other: the other BitSet
      * @return `*this`
      */
-    BitSet<T>& operator&=(const BitSet<T>& other)
+    BitSet<T, MSB>& operator&=(const BitSet<T, MSB>& other)
     {
         mBits &= other.mBits;
         return *this;
@@ -329,7 +337,7 @@ public:
      * @param[in] other: the other BitSet
      * @return `*this`
      */
-    BitSet<T>& operator|=(const BitSet<T>& other)
+    BitSet<T, MSB>& operator|=(const BitSet<T, MSB>& other)
     {
         mBits |= other.mBits;
         return *this;
@@ -342,7 +350,7 @@ public:
      * @param[in] other: the other BitSet
      * @return `*this`
      */
-    BitSet<T>& operator^=(const BitSet<T>& other)
+    BitSet<T, MSB>& operator^=(const BitSet<T, MSB>& other)
     {
         mBits ^= other.mBits;
         return *this;
@@ -360,24 +368,32 @@ public:
      */
     void deserialize(std::istream& is) { vcl::deserialize(is, mBits); }
 
-    auto operator<=>(const BitSet<T>&) const = default;
+    auto operator<=>(const BitSet<T, MSB>&) const = default;
 
     /// @private
-    template<typename U>
-    friend std::ostream& operator<<(std::ostream& os, const BitSet<U>& bs);
+    template<typename U, bool B>
+    friend std::ostream& operator<<(std::ostream& os, const BitSet<U, B>& bs);
 
     /**
      * @brief Returns a BitSet with all the bits set to true.
      * @return a BitSet with all the bits set to true.
      */
-    constexpr static BitSet<T> ALL()
+    constexpr static BitSet<T, MSB> ALL()
     {
-        BitSet<T> bs;
+        BitSet<T, MSB> bs;
         bs.set();
         return bs;
     }
 
 private:
+    static constexpr uint bitIndex(uint i)
+    {
+        if constexpr (MSB)
+            return static_cast<uint>(SIZE - i - 1);
+        else
+            return i;
+    }
+
     // constructor to initialize the BitSet with a given integral value
     BitSet(T bits) : mBits(bits) {}
 };
@@ -388,8 +404,8 @@ private:
  * @param[in] bs: the BitSet to output
  * @return the output stream
  */
-template<typename T>
-std::ostream& operator<<(std::ostream& os, const BitSet<T>& bs)
+template<typename T, bool MSB>
+std::ostream& operator<<(std::ostream& os, const BitSet<T, MSB>& bs)
 {
     os << "BitSet<" << typeid(T).name() << ">(";
     for (uint i = 0; i < bs.size(); i++)
@@ -443,7 +459,7 @@ using BitSet64 = BitSet<std::size_t>;
 template<typename T>
 concept BitSetConcept = std::derived_from< // same type or derived type
     std::remove_cvref_t<T>,
-    BitSet<typename RemoveRef<T>::UnderlyingType>>;
+    BitSet<typename RemoveRef<T>::UnderlyingType, RemoveRef<T>::MSB_ORDER>>;
 
 } // namespace vcl
 
