@@ -491,26 +491,30 @@ protected:
         if (numVerts == 0)
             return;
 
-        // Compute number of uint32 words needed to store vertex selection
+        // Compute number of bits rounded to 32 needed to store vertex selection
         // We use mMRB.numVerts() which includes duplicated vertices
-        const uint numRenderVerts = mMRB.numVerts();
-        const uint wordCount      = (numRenderVerts + 31) / 32;
-        std::vector<uint8_t> vertexBackup(wordCount * 4, 0);
+        uint bitNumber = vcl::roundUp(mMRB.numVerts(), 32);
+        std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
 
         // Build bitfield from mesh vertex selection flags
         // Note: For duplicated vertices (indices >= numVerts), they will
         // remain unselected unless explicitly set elsewhere
         uint vidx = 0;
+        uint byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
         for (const auto& v : MeshType::vertices()) {
-            if (v.selected()) {
-                const uint wordIdx = vidx / 32;
-                const uint bitIdx  = vidx % 32;
-                const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
-                const uint bitPos  = 7 - (bitIdx % 8);
-                vertexBackup[byteIdx] |= (1 << bitPos);
-            }
+            flags[vidx % 8] = v.selected();
             ++vidx;
+
+            if (vidx % 8 == 0) {
+                vertexBackup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
         }
+        // Handle remaining bits
+        if (vidx % 8 != 0)
+            vertexBackup[byteIdx] = flags.underlying();
 
         mVertexSelectionBackup = vertexBackup;
         mMRB.setVertexSelectionFromCPUBuffer(vertexBackup);
@@ -522,30 +526,36 @@ protected:
                 return;
 
             const auto& indexMap = mMRB.triPolyIndexMap();
-            const uint  numTris  = indexMap.triangleCount();
 
-            // Compute number of uint32 words needed to store triangle selection
-            const uint wordCount = (numTris + 31) / 32;
-            std::vector<uint8_t> faceBackup(wordCount * 4, 0);
+            // Compute number of bits rounded to 32 needed to store face
+            // selection
+            const uint wordCount = (indexMap.triangleCount() + 31) / 32;
+            uint bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
+            std::vector<uint8_t> faceBackup(bitNumber / 4, 0);
 
             // For each face, set selection for all its triangles
+            uint tIdx = 0;
+            uint byteIdx = 0;
+            vcl::BitSet<uint8_t, true> flags;
             for (const auto& f : MeshType::faces()) {
-                if (f.selected()) {
-                    const uint faceIdx     = f.index();
-                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
-                    const uint numFaceTris = indexMap.triangleCount(faceIdx);
+                const uint faceIdx     = f.index();
+                const uint numFaceTris = indexMap.triangleCount(faceIdx);
 
-                    // Set selection for all triangles of this face
-                    for (uint t = 0; t < numFaceTris; ++t) {
-                        const uint triIdx  = firstTriIdx + t;
-                        const uint wordIdx = triIdx / 32;
-                        const uint bitIdx  = triIdx % 32;
-                        const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
-                        const uint bitPos  = 7 - (bitIdx % 8);
-                        faceBackup[byteIdx] |= (1 << bitPos);
+                // Set selection for all triangles of this face
+                for (uint t = 0; t < numFaceTris; ++t) {
+                    flags[tIdx % 8] = f.selected();
+                    ++tIdx;
+
+                    if (tIdx % 8 == 0) {
+                        faceBackup[byteIdx] = flags.underlying();
+                        byteIdx++;
+                        flags.reset();
                     }
                 }
             }
+            // Handle remaining bits
+            if (tIdx % 8 != 0)
+                faceBackup[byteIdx] = flags.underlying();
 
             mFaceSelectionBackup = faceBackup;
             mMRB.setFaceSelectionFromCPUBuffer(faceBackup);
@@ -569,17 +579,14 @@ protected:
             if (mLastReadbackMode.isVertexSelection() &&
                 !mVertexSelectionBackup.empty()) {
                 uint vidx = 0;
+                vcl::BitSet<uint8_t, true> flags;
                 for (auto& v : MeshType::vertices()) {
-                    const uint wordIdx = vidx / 32;
-                    const uint bitIdx  = vidx % 32;
-                    const uint byteIdx = 4 * wordIdx + (bitIdx / 8);
-                    const uint bitPos  = 7 - (bitIdx % 8);
-
+                    uint byteIdx = vidx / 8;
                     if (byteIdx < mVertexSelectionBackup.size()) {
-                        const bool isSelected =
-                            (mVertexSelectionBackup[byteIdx] & (1 << bitPos)) !=
-                            0;
-                        v.selected() = isSelected;
+                        if (vidx % 8 == 0)
+                            flags.setUnderlying(
+                                mVertexSelectionBackup[byteIdx]);
+                        v.selected() = flags[vidx % 8];
                     }
                     ++vidx;
                 }
@@ -603,15 +610,13 @@ protected:
                 for (auto& f : MeshType::faces()) {
                     const uint faceIdx     = f.index();
                     const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
-                    const uint wordIdx     = firstTriIdx / 32;
-                    const uint bitIdx      = firstTriIdx % 32;
-                    const uint byteIdx     = 4 * wordIdx + (bitIdx / 8);
-                    const uint bitPos      = 7 - (bitIdx % 8);
-
+                    uint byteIdx = firstTriIdx / 8;
                     if (byteIdx < mFaceSelectionBackup.size()) {
-                        const bool isSelected =
-                            (mFaceSelectionBackup[byteIdx] & (1 << bitPos)) != 0;
-                        f.selected() = isSelected;
+                        vcl::BitSet<uint8_t, true> flags;
+                        if (firstTriIdx % 8 == 0)
+                            flags.setUnderlying(
+                                mFaceSelectionBackup[byteIdx]);
+                        f.selected() = flags[firstTriIdx % 8];
                     }
                 }
             }
