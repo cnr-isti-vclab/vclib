@@ -211,6 +211,7 @@ public:
                 case ply::x:
                 case ply::y:
                 case ply::z: mod.setPerVertexPosition(); break;
+                case ply::bit_flags: mod.setPerVertexBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerVertexNormal(); break;
@@ -239,6 +240,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerFaceVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerFaceBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -513,6 +515,12 @@ public:
                 vids.type         = PrimitiveType::UINT;
                 vids.listSizeType = PrimitiveType::UCHAR;
                 fElem.properties.push_back(vids);
+            }
+            if (info.hasPerFaceBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perFaceBitFlagsType();
+                fElem.properties.push_back(bf);
             }
             if (info.hasPerFaceNormal()) {
                 PlyProperty fnx, fny, fnz;
