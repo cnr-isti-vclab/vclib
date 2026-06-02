@@ -288,6 +288,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerEdgeVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerEdgeBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerEdgeNormal(); break;
@@ -595,6 +596,12 @@ public:
                 v2.name = ply::vertex2;
                 v2.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v2);
+            }
+            if (info.hasPerEdgeBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perEdgeBitFlagsType();
+                eElem.properties.push_back(bf);
             }
             mElements.push_back(eElem);
         }

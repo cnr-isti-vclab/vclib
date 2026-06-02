@@ -54,18 +54,25 @@ void readPlyEdgeProperty(
         e.setVertex(0u, vids[0]);
         e.setVertex(1u, vids[1]);
     }
-    if (p.name == ply::vertex1) { // loading vertex1 index
+    else if (p.name == ply::vertex1) { // loading vertex1 index
         uint v0     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(0u, v0);
     }
-    if (p.name == ply::vertex2) { // loading vertex2 index
+    else if (p.name == ply::vertex2) { // loading vertex2 index
         uint v1     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(1u, v1);
     }
+    else if (p.name == ply::bit_flags) { // loading the flags of the edge
+        using FlagsType = EdgeType::FlagsType;
+        FlagsType eval =
+            io::readPrimitiveType<FlagsType>(file, p.type, end);
+        e.setUnderlyingBitFlags(eval);
+        hasBeenRead = true;
+    }
     // loading one of the normal components
-    if (p.name >= ply::nx && p.name <= ply::nz) {
+    else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerEdgeNormal<MeshType>) {
             if (isPerEdgeNormalAvailable(mesh)) {
                 using Scalar = EdgeType::NormalType::ScalarType;
@@ -179,6 +186,10 @@ void writePlyEdges(
             else if (p.name == ply::vertex2) {
                 io::writeProperty(
                     file, vIndices[mesh.index(e.vertex(1))], p.type, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, e.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
