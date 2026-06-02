@@ -51,10 +51,11 @@ namespace vcl::comp {
  *               algorithms)
  * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2])
  *                marked as faux
- * - from 6 to 31: user bits that can have custom meanings to the user
+ * - from 6 to 14: unused for compatibility with TriangleBitFlags
+ * - from 15 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 26 user bits, that can be accessed using the member
- * function userBit(uint i) with position in the interval [0, 25].
+ * This class provides 17 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 16].
  *
  * Additionally, this class provides the following bits for each edge of the
  * Polygonal Face:
@@ -118,7 +119,7 @@ class PolygonBitFlags :
         OPT,
         true>;
 
-    static const uint FIRST_USER_BIT      = 6;
+    static const uint FIRST_USER_BIT      = 15;
     static const uint FIRST_EDGE_USER_BIT = 3;
 
     // indices of the bits
@@ -127,7 +128,7 @@ class PolygonBitFlags :
         SELECTED = 1, // bit 1
         VISITED  = 2, // bit 2
         // Faux edges, for portability with TriangleBits
-        FAUX0 = 3 // bits [3, 5]
+        FAUX0 = 3, // bits [3, 5]
     };
 
     // indices of the bits used for each edge of the polygon
