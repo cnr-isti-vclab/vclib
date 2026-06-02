@@ -86,7 +86,7 @@ bool epsilonEquals(
  *
  * @ingroup base
  */
-int roundUp(int numToRound, int multiple)
+inline int roundUp(int numToRound, int multiple)
 {
     int isPositive = (int) (numToRound >= 0);
     return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
