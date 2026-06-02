@@ -255,7 +255,7 @@ public:
      */
     T underlying() const { return mBits; }
 
-     /**
+    /**
      * @brief Sets the underlying integral value of the BitSet
      * @param[in] bits: the integral value to set as the underlying value of the
      * BitSet
