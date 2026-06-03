@@ -74,10 +74,10 @@ class MeshSelectionBuffers
     std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
     uint                mNumVerts                     = 0;
 
-    // face selection
-    std::optional<IndexBuffer> mSelectedFacesBuffer        = std::nullopt;
-    std::array<uint, 3>        mFaceSelectionWorkgroupSize = {0, 0, 0};
-    uint                       mNumTris                    = 0;
+    // face selection (invalid if mesh has no faces)
+    IndexBuffer         mSelectedFacesBuffer;
+    std::array<uint, 3> mFaceSelectionWorkgroupSize = {0, 0, 0};
+    uint                mNumTris                    = 0;
 
     // Polygon-to-triangle mapping buffers for polygon-level face selection
     IndexBuffer mTriToPolyBuffer;
@@ -87,9 +87,9 @@ class MeshSelectionBuffers
     // Handler used to copy selection buffers to CPU
     detail::ReadFromGPUBuffer mSelectionToCPUBufferHandler;
 
-    // This allows selection for a maximum of 512^3 = 134_217_728 vertices/faces
-    // per mesh. Still likely enough.
-    inline static const uint MAX_COMPUTE_WORKGROUP_SIZE = 512;
+    // This allows selection for a maximum of 2048^3 = 8_589_934_592
+    // vertices/faces per mesh.
+    inline static const uint MAX_COMPUTE_WORKGROUP_SIZE = 2048;
 
 public:
     MeshSelectionBuffers() = default;
@@ -163,7 +163,7 @@ public:
         mNumTris = numTris;
 
         if (numTris == 0) {
-            mSelectedFacesBuffer        = std::nullopt;
+            mSelectedFacesBuffer.destroy();
             mFaceSelectionWorkgroupSize = {0, 0, 0};
             return;
         }
@@ -178,8 +178,7 @@ public:
             buffer[i] = 0;
         }
 
-        mSelectedFacesBuffer = std::make_optional(IndexBuffer());
-        mSelectedFacesBuffer->createForCompute(
+        mSelectedFacesBuffer.createForCompute(
             buffer,
             selectionBufferSize,
             vcl::PrimitiveType::UINT,
@@ -356,7 +355,7 @@ public:
             mFaceSelectionWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
         SelectionUniforms::bind();
-        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);
@@ -380,7 +379,7 @@ public:
             mFaceSelectionWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
         SelectionUniforms::bind();
-        mSelectedFacesBuffer.value().bind(4, bgfx::Access::ReadWrite);
+        mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
         dispatchFaceSelection(params.drawViewId, prog);
         return true;
     }
@@ -447,7 +446,7 @@ public:
             0,
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA8);
-        mSelectedFacesBuffer.value().bind(6, bgfx::Access::ReadWrite);
+        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
         mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
@@ -477,7 +476,7 @@ public:
         IndexBuffer*   idxBuf;
 
         if (mode.isFaceSelection()) {
-            idxBuf       = &(mSelectedFacesBuffer.value());
+            idxBuf       = &(mSelectedFacesBuffer);
             elementCount = mNumTris;
         }
         else {
@@ -497,7 +496,62 @@ public:
 
     void setVertexSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
     {
-        if (backup.empty())
+        setSelectionBufferFromCPUBuffer(backup, mSelectedVerticesBuffer);
+    }
+
+    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
+    {
+        setSelectionBufferFromCPUBuffer(backup, mSelectedFacesBuffer);
+    }
+
+    // ---- State queries --------------------------------------------------
+
+    bool hasVertexSelectionBuffer() const
+    {
+        return mSelectedVerticesBuffer.isValid();
+    }
+
+    bool hasFaceSelectionBuffer() const
+    {
+        return mSelectedFacesBuffer.isValid();
+    }
+
+    // ---- Bind -----------------------------------------------------------
+
+    void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
+
+    void bindSelectedFacesBuffer() const { mSelectedFacesBuffer.bind(6); }
+
+private:
+    void dispatchVertexSelection(
+        const uint                 viewId,
+        const bgfx::ProgramHandle& handle)
+    {
+        bgfx::dispatch(
+            viewId,
+            handle,
+            mVertexSelectionWorkgroupSize[0],
+            mVertexSelectionWorkgroupSize[1],
+            mVertexSelectionWorkgroupSize[2]);
+    }
+
+    void dispatchFaceSelection(
+        const uint                 viewId,
+        const bgfx::ProgramHandle& handle)
+    {
+        bgfx::dispatch(
+            viewId,
+            handle,
+            mFaceSelectionWorkgroupSize[0],
+            mFaceSelectionWorkgroupSize[1],
+            mFaceSelectionWorkgroupSize[2]);
+    }
+
+    static void setSelectionBufferFromCPUBuffer(
+        const std::vector<uint8_t>& backup,
+        IndexBuffer&                sBuffer)
+    {
+        if (backup.empty() || !sBuffer.isValid())
             return;
 
         const uint elementCount =
@@ -525,144 +579,13 @@ public:
             buffer[i] = val;
         }
 
-        mSelectedVerticesBuffer.destroy();
-        mSelectedVerticesBuffer.createForCompute(
+        sBuffer.destroy();
+        sBuffer.createForCompute(
             buffer,
             elementCount,
             vcl::PrimitiveType::UINT,
             bgfx::Access::ReadWrite,
             releaseFn);
-    }
-
-    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
-    {
-        if (backup.empty() || !mSelectedFacesBuffer.has_value())
-            return;
-
-        const uint elementCount =
-            (uint(backup.size()) + uint(sizeof(uint32_t)) - 1u) /
-            uint(sizeof(uint32_t));
-        if (elementCount == 0)
-            return;
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint32_t>(elementCount);
-
-        for (uint i = 0; i < elementCount; i++) {
-            const uint base = 4u * i;
-            uint32_t   val  = 0;
-            if (base + 0u < uint(backup.size()))
-                val |= uint32_t(backup[base + 0u]) << 24;
-            if (base + 1u < uint(backup.size()))
-                val |= uint32_t(backup[base + 1u]) << 16;
-            if (base + 2u < uint(backup.size()))
-                val |= uint32_t(backup[base + 2u]) << 8;
-            if (base + 3u < uint(backup.size()))
-                val |= uint32_t(backup[base + 3u]);
-            buffer[i] = val;
-        }
-
-        mSelectedFacesBuffer->destroy();
-        mSelectedFacesBuffer->createForCompute(
-            buffer,
-            elementCount,
-            vcl::PrimitiveType::UINT,
-            bgfx::Access::ReadWrite,
-            releaseFn);
-    }
-
-    // ---- State queries --------------------------------------------------
-
-    bool hasVertexSelectionBuffer() const
-    {
-        return mSelectedVerticesBuffer.isValid();
-    }
-
-    bool hasFaceSelectionBuffer() const
-    {
-        return mSelectedFacesBuffer.has_value() &&
-               mSelectedFacesBuffer->isValid();
-    }
-
-    // ---- Bind -----------------------------------------------------------
-
-    void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
-
-    void bindSelectedFacesBuffer() const
-    {
-        mSelectedFacesBuffer.value().bind(6);
-    }
-
-    // ---- Misc -----------------------------------------------------------
-
-    /**
-     * @brief Rebuilds the face selection bitfield from a raw colour-attachment
-     * readback (CPU fallback path).
-     *
-     * Each 4-byte pixel encodes one selected triangle index. The method
-     * converts that list of indices into the compact bitfield format used by
-     * the GPU selection buffers.
-     *
-     * @param[in] bytes: Raw RGBA bytes from the colour-attachment readback.
-     */
-    void updateFaceSelectionBufferFromColorAttachment(
-        const std::vector<uint8_t>& bytes)
-    {
-        const uint selectionBufferSize =
-            uint(std::ceil(double(mNumTris) / 32.0));
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
-
-        for (size_t i = 0; i < selectionBufferSize; i++) {
-            buffer[i] = 0;
-        }
-
-        for (size_t i = 0; i < bytes.size() / 4; i++) {
-            uint val = (uint(bytes[4 * i]) << 24) |
-                       (uint(bytes[4 * i + 1]) << 16) |
-                       (uint(bytes[4 * i + 2]) << 8) | (uint(bytes[4 * i + 3]));
-            uint bufInd = val / 32;
-            if (bufInd >= selectionBufferSize) {
-                continue;
-            }
-            uint bitOff    = 31 - (val % 32);
-            uint bitMask   = 0x1 << bitOff;
-            buffer[bufInd] = buffer[bufInd] | bitMask;
-        }
-
-        mSelectedFacesBuffer = std::make_optional(IndexBuffer());
-        mSelectedFacesBuffer->createForCompute(
-            buffer,
-            selectionBufferSize,
-            vcl::PrimitiveType::UINT,
-            bgfx::Access::ReadWrite,
-            releaseFn);
-    }
-
-private:
-    void dispatchVertexSelection(
-        const uint                 viewId,
-        const bgfx::ProgramHandle& handle)
-    {
-        bgfx::dispatch(
-            viewId,
-            handle,
-            mVertexSelectionWorkgroupSize[0],
-            mVertexSelectionWorkgroupSize[1],
-            mVertexSelectionWorkgroupSize[2]);
-    }
-
-    void dispatchFaceSelection(
-        const uint                 viewId,
-        const bgfx::ProgramHandle& handle)
-    {
-        bgfx::dispatch(
-            viewId,
-            handle,
-            mFaceSelectionWorkgroupSize[0],
-            mFaceSelectionWorkgroupSize[1],
-            mFaceSelectionWorkgroupSize[2]);
     }
 
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
@@ -707,23 +630,23 @@ private:
     /**
      * @brief Converts a 1-D element count into a 3-D compute dispatch shape.
      *
-     * No dimension exceeds MAX_COMPUTE_WORKGROUP_SIZE (512).
+     * No dimension exceeds MAX_COMPUTE_WORKGROUP_SIZE (2048).
      *
      * @param[in] size: Total number of elements.
      * @return {x, y, z} workgroup counts.
      */
-    // Possibly replace with an algorithm (maybe a compute shader) that
-    // calculates the closest shape to a cube for the three dimensions (to
-    // reduce the number of excess computations), since currently if there are
-    // 1025 vertices you use 1024*2*1 = 2048 workgroups.
     static std::array<uint, 3> workGroupSizesFrom1DSize(uint size)
     {
-        std::array<uint, 3> sizes;
-        sizes[0] = std::min(size, MAX_COMPUTE_WORKGROUP_SIZE);
-        sizes[1] = std::min(
-            uint(std::ceil(double(size) / double(sizes[0]))),
-            MAX_COMPUTE_WORKGROUP_SIZE);
-        sizes[2] = uint(std::ceil(double(size) / double(sizes[0] * sizes[1])));
+        std::array<uint, 3> sizes = {1, 1, 1};
+        if (size == 0) return sizes;
+
+        // distributes the load across as cubic a grid as possible.
+        uint dim = uint(std::ceil(std::cbrt(size)));
+
+        sizes[0] = std::min(dim, MAX_COMPUTE_WORKGROUP_SIZE);
+        sizes[1] = std::min(uint(std::ceil(double(size) / sizes[0])), sizes[0]);
+        sizes[2] = uint(std::ceil(double(size) / (sizes[0] * sizes[1])));
+
         return sizes;
     }
 

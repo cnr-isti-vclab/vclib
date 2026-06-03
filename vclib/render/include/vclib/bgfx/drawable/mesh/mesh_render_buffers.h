@@ -453,12 +453,6 @@ public:
         }
     }
 
-    void updateFaceSelectionBufferFromColorAttachment(
-        const std::vector<uint8_t>& bytes)
-    {
-        mSelection.updateFaceSelectionBufferFromColorAttachment(bytes);
-    }
-
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
