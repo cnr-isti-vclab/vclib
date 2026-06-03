@@ -58,6 +58,8 @@ private:
     mutable std::vector<uint8_t> mVertexSelectionBackup;
     mutable std::vector<uint8_t> mFaceSelectionBackup;
     SelectionMode                mLastReadbackMode;
+    bool                         mHasPendingReadback = false;
+    SelectionMode                mPendingReadbackMode;
 
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
@@ -107,6 +109,8 @@ public:
         MeshType::swap(other);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
         swap(mLastReadbackMode, other.mLastReadbackMode);
+        swap(mHasPendingReadback, other.mHasPendingReadback);
+        swap(mPendingReadbackMode, other.mPendingReadbackMode);
         swap(mVertexSelectionBackup, other.mVertexSelectionBackup);
         swap(mFaceSelectionBackup, other.mFaceSelectionBackup);
         swap(mSurfaceProgramType, other.mSurfaceProgramType);
@@ -134,12 +138,20 @@ public:
                 return;
             }
         }
-        if (mBufToTexRemainingFrames != 255 || params.isTemporary) {
+        if (params.isTemporary) {
             return;
         }
-        mLastReadbackMode      = params.mode;
-        mBufToTexRemainingFrames =
-            mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
+        if (mBufToTexRemainingFrames == 255) {
+            mLastReadbackMode      = params.mode;
+            mBufToTexRemainingFrames =
+                mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
+        }
+        else {
+            // Queue the most recent mode so both vertex and face backups stay
+            // synchronized even when two tools trigger selection in sequence.
+            mPendingReadbackMode = params.mode;
+            mHasPendingReadback  = true;
+        }
     }
 
     // TODO: to be removed after shader benchmarks
@@ -368,7 +380,6 @@ public:
         {
             switch (mBufToTexRemainingFrames) {
             case 0:
-                mBufToTexRemainingFrames = 255;
                 {
                     auto vec = mMRB.getSelectionBufferCopy();
                     if (mLastReadbackMode.isVertexSelection()) {
@@ -380,6 +391,17 @@ public:
 
                     // Update CPU-side selection flags from GPU readback
                     updateCPUSelectionFromGPU();
+
+                    if (mHasPendingReadback) {
+                        mLastReadbackMode       = mPendingReadbackMode;
+                        mHasPendingReadback     = false;
+                        mBufToTexRemainingFrames =
+                            mMRB.requestCPUCopyOfSelectionBuffer(
+                                mLastReadbackMode);
+                    }
+                    else {
+                        mBufToTexRemainingFrames = 255;
+                    }
                 }
                 break;
             case 255: break;
@@ -607,15 +629,13 @@ protected:
                 // For each face, check if its first triangle is selected
                 // (compute shaders ensure all triangles of a face have the same
                 // selection state)
+                vcl::BitSet<uint8_t, true> flags;
                 for (auto& f : MeshType::faces()) {
                     const uint faceIdx     = f.index();
                     const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
                     uint byteIdx = firstTriIdx / 8;
                     if (byteIdx < mFaceSelectionBackup.size()) {
-                        vcl::BitSet<uint8_t, true> flags;
-                        if (firstTriIdx % 8 == 0)
-                            flags.setUnderlying(
-                                mFaceSelectionBackup[byteIdx]);
+                        flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
                         f.selected() = flags[firstTriIdx % 8];
                     }
                 }
