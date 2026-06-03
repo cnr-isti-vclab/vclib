@@ -77,6 +77,21 @@ MeshViewer::MeshViewer(QWidget* parent) :
 {
     mUI->setupUi(this);
 
+    // give keyboard focus to the viewer widget immediately
+    mUI->viewer->setFocus();
+
+    // prevent any widget in the right area from stealing keyboard focus
+    mUI->rightArea->setFocusPolicy(Qt::NoFocus);
+    std::function<void(QWidget*)> disableFocus =
+        [&disableFocus](QWidget* w) {
+            w->setFocusPolicy(Qt::NoFocus);
+            for (auto* child : w->findChildren<QWidget*>(
+                     QString(), Qt::FindChildrenRecursively)) {
+                disableFocus(child);
+            }
+        };
+    disableFocus(mUI->rightArea);
+
     /** Drawable Object Vector **/
 
     mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
