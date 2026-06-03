@@ -216,7 +216,7 @@ bool AABBEdgesIntersectTriangle(mat3 tri, vec3 minBoxPoint, vec3 maxBoxPoint) {
                 vec2 inters2D = cooplanarCoordsTo2D(inters.xyz, uvo);
                 vec3 baryCoords = barycentricCoords(tri2D, inters2D);
                 if (
-                    baryCoords[0] >= 0 && baryCoords[1] <= 1
+                    baryCoords[0] >= 0 && baryCoords[0] <= 1
                     && baryCoords[1] >= 0 && baryCoords[1] <= 1
                     && baryCoords[2] >= 0 && baryCoords[2] <= 1
                 ) {

@@ -47,12 +47,12 @@ NUM_THREADS(1, 1, 1) // 1 thread per triangle
 void main()
 {
     uint faceIndex = getPrimitiveID(gl_WorkGroupID);
-    uint indicesBaseIndex = 3 * faceIndex;
-    uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
-
     if(faceIndex >= u_primitiveCount) {
         return;
     }
+
+    uint indicesBaseIndex = 3 * faceIndex;
+    uvec3 idcs = uvec3(indices[indicesBaseIndex], indices[indicesBaseIndex + 1], indices[indicesBaseIndex + 2]);
 
     float minX = u_selectionBox[0];
     float minY = u_selectionBox[1];
@@ -76,9 +76,27 @@ void main()
         positions[(idcs[2] * 3) / 4][(idcs[2] * 3) % 4], positions[(idcs[2] * 3 + 1) / 4][(idcs[2] * 3 + 1) % 4], positions[(idcs[2] * 3 + 2) / 4][(idcs[2] * 3 + 2) % 4]
     );
 
-    vec4 p0NDC = mul(u_modelViewProj, vec4(poss[0].xyz, 1));
-    vec4 p1NDC = mul(u_modelViewProj, vec4(poss[1].xyz, 1));
-    vec4 p2NDC = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
+    vec4 p0Clip = mul(u_modelViewProj, vec4(poss[0].xyz, 1));
+    vec4 p1Clip = mul(u_modelViewProj, vec4(poss[1].xyz, 1));
+    vec4 p2Clip = mul(u_modelViewProj, vec4(poss[2].xyz, 1));
+
+    // Conservative reject for fully out-of-frustum triangles before NDC divide
+    if (!pointInClipSpace(p0Clip) && !pointInClipSpace(p1Clip) && !pointInClipSpace(p2Clip)) {
+        if (
+            (p0Clip.x < -p0Clip.w && p1Clip.x < -p1Clip.w && p2Clip.x < -p2Clip.w)
+            || (p0Clip.x > p0Clip.w && p1Clip.x > p1Clip.w && p2Clip.x > p2Clip.w)
+            || (p0Clip.y < -p0Clip.w && p1Clip.y < -p1Clip.w && p2Clip.y < -p2Clip.w)
+            || (p0Clip.y > p0Clip.w && p1Clip.y > p1Clip.w && p2Clip.y > p2Clip.w)
+            || (p0Clip.z < 0 && p1Clip.z < 0 && p2Clip.z < 0)
+            || (p0Clip.z > p0Clip.w && p1Clip.z > p1Clip.w && p2Clip.z > p2Clip.w)
+        ) {
+            return;
+        }
+    }
+
+    vec4 p0NDC = p0Clip;
+    vec4 p1NDC = p1Clip;
+    vec4 p2NDC = p2Clip;
 
     p2NDC = p2NDC / (p2NDC.w == 0? 1 : p2NDC.w);
     p0NDC = p0NDC / (p0NDC.w == 0? 1 : p0NDC.w);
