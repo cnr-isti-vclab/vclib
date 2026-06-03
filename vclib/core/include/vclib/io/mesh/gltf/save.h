@@ -114,10 +114,58 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     return {index, primitive};
 }
 
+// NOTES:
+// every material has a path, but not every path has an image.
+// Check if the image is present, if not, the image must be loaded
+// from the mesh base path.
+// core\include\vclib\mesh\components\materials.h has most of the
+// functions needed to retrieve the loaded images.
+// In there, the struct MData has the needed data structures
+
+//TODO
+inline uint addGltfSampler(
+    tinygltf::Model& model)
+{
+    model.samplers.emplace_back();
+
+    //TODO
+
+    return 0;
+}
+
+//TODO
+inline uint addGltfImage(
+    tinygltf::Model& model)
+{
+    model.images.emplace_back();
+
+    //TODO
+
+    return 0;
+}
+
+//TODO
+inline uint addGltfTexture(
+    tinygltf::Model& model,
+    const TextureDescriptor& textureDescriptor,
+    std::string meshPath)
+{
+    //TODO if image not already present, add it
+    //TODO if sampler not already present, add it
+
+    model.textures.emplace_back();
+
+    //TODO
+
+    return 0;
+}
+
 inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     tinygltf::Model& model,
-    const Material&  material)
-{
+    const Material&  material,
+    std::unordered_map<std::string, uint>& addedTextures,
+    std::string meshPath)
+{   
     model.materials.emplace_back();
     tinygltf::Material& tMaterial = model.materials.back();
     uint                index    = model.materials.size() - 1;
@@ -134,8 +182,12 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     //TODO optional?
     //TODO
     // baseColorTexture
-    //tMaterial.pbrMetallicRoughness.baseColorTexture.index = //TODO get index
-    //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord =
+    if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
+        uint textureId = addGltfTexture(model, material.baseColorTextureDescriptor(), meshPath);
+        addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
+    }
+    tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
+    tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
 
     // metallicFactor
     tMaterial.pbrMetallicRoughness.metallicFactor =
@@ -200,59 +252,6 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
         material.alphaCutoff();
 
     return {index, tMaterial};
-}
-
-// NOTE:
-// temporary implementation
-// MUST be removed when this function will be present in the core library
-// copied from vclib/render/drawable/mesh/mesh_render_data.h
-static void permuteTriangulatedFaceVertexIndices(
-    auto*                    buffer,
-    TriPolyIndexBiMap&       indexMap,
-    const std::vector<uint>& newFaceIndices)
-{
-    // newFaceIndices tells for each face, which is its new position
-    // we need the inverse mapping: for each new position, which is the old
-    // face index
-    std::vector<uint> oldFaceIndices(newFaceIndices.size());
-    for (uint i = 0; i < newFaceIndices.size(); ++i) {
-        oldFaceIndices[newFaceIndices[i]] = static_cast<uint>(i);
-    }
-
-    // temporary copy of the buffer
-    std::vector<uint> bufferCopy(indexMap.triangleCount() * 3);
-
-    // temporary bimbap
-    TriPolyIndexBiMap indexMapCopy;
-    indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
-
-    uint copiedTriangles = 0;
-
-    for (uint i = 0; i < oldFaceIndices.size(); ++i) {
-        // need to place the k triangles associated to the i-th face
-        // of oldFaceIndices
-        uint polyIndex = oldFaceIndices[i];
-        uint firstTri  = indexMap.triangleBegin(polyIndex);
-        uint nTris     = indexMap.triangleCount(polyIndex);
-
-        std::copy(
-            buffer + firstTri * 3,
-            buffer + (firstTri + nTris) * 3,
-            bufferCopy.data() + copiedTriangles * 3);
-
-        for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
-            indexMapCopy.insert(t, polyIndex);
-        }
-
-        copiedTriangles += nTris;
-    }
-
-    // copy back
-    std::copy(
-        bufferCopy.begin(),
-        bufferCopy.begin() + copiedTriangles * 3,
-        buffer);
-    indexMap = std::move(indexMapCopy);
 }
 
 template<MeshConcept MeshType>
@@ -351,6 +350,7 @@ void addMeshToTinygltfModel(
                 // materials are saved into the model
 
                 using FaceType = MeshType::FaceType;
+                std::unordered_map<std::string, uint> addedTextures = {};
 
                 // comparator of faces
                 // ordering first by per-vertex material index (if available),
@@ -383,16 +383,15 @@ void addMeshToTinygltfModel(
                 triangulatedFaceVertexIndicesToBuffer(
                     m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
 
-                //TODO remove
-                // replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
-                //     m, mVertsToDuplicate, mFacesToReassign, indexMap, ud);
-
                 // permute the triangulated face vertex indices according to the face
                 // sorting by material ID (the function also edits the index map from
                 // polygonal faces (which still refers to the mesh ones) to the
                 // triangulated faces (which refers to the sorted triangles))
-                permuteTriangulatedFaceVertexIndices(
-                    ud, indexMap, faceIndicesSortedByMaterialID);
+                permuteFaceVertexIndicesByFunctionToBuffer(
+                    m,
+                    ud,
+                    faceComp,
+                    indexMap);
 
                 // get the mapping from actual indices to compact indices
                 std::vector<uint> compactIndices = m.faceCompactIndices();
@@ -420,12 +419,12 @@ void addMeshToTinygltfModel(
                     if (materialIndex == lastMaterialIndex) {
                         chunkLength += faceChunkLength;
 
-                        break;
+                        continue;
                     }
 
                     // the material is added to the model if not already present
                     if (!modelMaterialIndices.contains(materialIndex)) {
-                        auto material = addGltfMaterial(tModel, m.material(materialIndex));
+                        auto material = addGltfMaterial(tModel, m.material(materialIndex), addedTextures, m.meshPath);
                         modelMaterialIndices[materialIndex] = material.first;
                     }
 
