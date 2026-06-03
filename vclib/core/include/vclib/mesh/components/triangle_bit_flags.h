@@ -109,7 +109,7 @@ class TriangleBitFlags :
         // Edge border
         BORDER0 = 6, // bits [6, 8]
         // Edge selection
-        EDGESEL0 = 9, // bits [9, 11]
+        EDGESEL0 = 9,  // bits [9, 11]
         EDGEVIS0 = 12, // bits [12, 14]
     };
 

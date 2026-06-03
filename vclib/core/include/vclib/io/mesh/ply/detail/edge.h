@@ -66,8 +66,7 @@ void readPlyEdgeProperty(
     }
     else if (p.name == ply::bit_flags) { // loading the flags of the edge
         using FlagsType = EdgeType::FlagsType;
-        FlagsType eval =
-            io::readPrimitiveType<FlagsType>(file, p.type, end);
+        FlagsType eval  = io::readPrimitiveType<FlagsType>(file, p.type, end);
         e.setUnderlyingBitFlags(eval);
         hasBeenRead = true;
     }
