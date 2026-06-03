@@ -44,14 +44,14 @@ namespace vcl::comp {
  * - 1: selected: if the current Triangle has been selected
  * - 2: visited: if the current Triangle has been visited (useful for some visit
  *               algorithms)
- * - from 3 to 5: edge border: if the current Triangle has the i-th edge (i in
- *                             [0, 2]) on border
- * - from 6 to 8: edge selection: if the current Triangle has the i-th edge (i
- *                                in [0, 2]) selected
- * - from 9 to 11: edge visited: if the current Triangle has the i-th edge (i
- *                               in [0, 2]) visited
- * - from 12 to 14: edge faux: if the current Triangle has the i-th edge (i in
+ * - from 3 to 5: edge faux: if the current Triangle has the i-th edge (i in
  *                            [0, 2]) marked as faux
+ * - from 6 to 8: edge border: if the current Triangle has the i-th edge (i in
+ *                             [0, 2]) on border
+ * - from 9 to 11: edge selection: if the current Triangle has the i-th edge (i
+ *                                in [0, 2]) selected
+ * - from 12 to 14: edge visited: if the current Triangle has the i-th edge (i
+ *                               in [0, 2]) visited
  * - from 15 to 31: user bits that can have custom meanings to the user
  *
  * This class provides 17 user bits, that can be accessed using the member
@@ -102,15 +102,15 @@ class TriangleBitFlags :
         DELETED  = 0, // bit 0
         SELECTED = 1, // bit 1
         VISITED  = 2, // bit 2
-        // Edge border
-        BORDER0 = 3, // bits [3, 5]
-        // Edge selection
-        EDGESEL0 = 6, // bits [6, 8]
-        EDGEVIS0 = 9, // bits [9, 11]
         // Faux edges: when representing polygonal meshes on triangle meshes,
         // some triangle edges can be marked as "faux", meaning that they are
         // internal on the polygon
-        FAUX0 = 12 // bits [12, 14]
+        FAUX0 = 3, // bits [3, 5]
+        // Edge border
+        BORDER0 = 6, // bits [6, 8]
+        // Edge selection
+        EDGESEL0 = 9,  // bits [9, 11]
+        EDGEVIS0 = 12, // bits [12, 14]
     };
 
 public:

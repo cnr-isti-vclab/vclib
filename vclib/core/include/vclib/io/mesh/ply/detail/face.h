@@ -151,6 +151,13 @@ void readPlyFaceProperty(
             f.importFlagsFromVCGFormat(fval);
             hasBeenRead = true;
         }
+        else {
+            using FlagsType = FaceType::FlagsType;
+            FlagsType fval =
+                io::readPrimitiveType<FlagsType>(file, p.type, end);
+            f.setUnderlyingBitFlags(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name == ply::texcoord) { // loading wedge texcoords
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
@@ -313,6 +320,10 @@ void writePlyFaces(
             bool hasBeenWritten = false;
             if (p.name == ply::vertex_indices) {
                 detail::writePlyFaceIndices(file, p, mesh, vIndices, f, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, f.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
