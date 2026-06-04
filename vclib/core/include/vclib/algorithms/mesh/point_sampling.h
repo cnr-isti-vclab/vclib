@@ -40,8 +40,8 @@
  * function (e.g. a point sample that is computed as the barycentric coordinate
  * of a triangle).
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/point_sampling.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  *
  * @ingroup algorithms_mesh
  */

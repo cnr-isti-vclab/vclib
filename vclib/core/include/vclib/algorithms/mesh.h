@@ -47,8 +47,8 @@
  * In this module, you can find the mesh algorithms of VCLib, that involve
  * operations on meshes, like cleaning, filtering, and smoothing.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 #endif // VCL_ALGORITHMS_MESH_H

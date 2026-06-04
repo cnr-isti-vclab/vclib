@@ -43,8 +43,8 @@
  * algorithms for checking the mesh topology that allow to identify issues
  * in the mesh structure.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/clean.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 namespace vcl {
