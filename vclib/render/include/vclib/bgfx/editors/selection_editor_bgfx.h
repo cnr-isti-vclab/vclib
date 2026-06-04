@@ -102,9 +102,8 @@ public:
         mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
 
         // Create index buffer for the two selection-box triangles
-        mTriIndexBuf.create(
-            bgfx::copy(
-                SelectionBox::triangleIndices().data(), 6 * sizeof(uint)));
+        std::array<uint, 6> ti {1, 2, 0, 2, 3, 0};
+        mTriIndexBuf.create(bgfx::copy(ti.data(), 6 * sizeof(uint)));
 
         // ---- Pass 1: render scene into visible-selection framebuffer ----
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
@@ -188,6 +187,11 @@ public:
         if (!mInitialized)
             return;
 
+        if (!isSelectionActive()) {
+            mSelectionBox.nullAll();
+            return;
+        }
+
         // Re-configure visible selection views every frame — required by Qt
         // (all other views follow this pattern; see context.cpp comment)
         bgfx::setViewFrameBuffer(
@@ -210,31 +214,32 @@ public:
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
 
-        // Re-set up the overlay view each frame (handles canvas resize)
-        Base::viewerSetupOverlayView(mSelectionDrawingViewId);
+        // 1) Draw the selection box overlay (only visible while dragging)
+        if (mLMBHeld) {
+            // Re-set up the overlay view each frame (handles canvas resize)
+            Base::viewerSetupOverlayView(mSelectionDrawingViewId);
 
-        // Keep the selection drawing view in sync with the main view transform
-        {
+            // Keep the selection drawing view in sync with the main view
+            // transform
             auto vm = Base::viewerViewMatrix();
             auto pm = Base::viewerProjectionMatrix();
             bgfx::setViewTransform(
                 mSelectionDrawingViewId, vm.data(), pm.data());
+
+            drawSelectionBox(mSelectionDrawingViewId, mSelectionBox.box2d());
         }
 
-        if (isSelectionActive()) {
-            SelectionBox boxToDraw = calculateSelections(viewId);
-            if (!mLMBHeld) {
-                boxToDraw.nullAll();
-            }
-            drawSelectionBox(mSelectionDrawingViewId, boxToDraw);
+        // 2) Compute GPU selections with current parameters, if pending
+        if (mSelectionCalcRequired) {
+            computeSelections(viewId);
 
             // Trigger continuous updates for GPU-to-CPU selection readback
             // (Qt widgets only redraw on interaction, but readback needs 2
             // frames)
             mPendingReadbackFrames = 2;
-        }
-        else {
-            mSelectionBox.nullAll();
+
+            // Computation request done — reset flag
+            mSelectionCalcRequired = false;
         }
 
         // Request continuous updates until GPU-to-CPU readback completes
@@ -285,7 +290,7 @@ public:
         if (!isSelectionActive())
             return false;
         if (mLMBHeld) {
-            mSelectionBox.set2({x, y});
+            mSelectionBox.setExtent({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
             mSelectionCalcRequired = true;
         }
@@ -303,8 +308,8 @@ public:
         if (button == MouseButton::LEFT && !mLMBHeld) {
             mLMBHeld               = true;
             mLMBPressPositionTaken = true;
-            mSelectionBox.set1({x, y});
-            mSelectionBox.set2({x, y});
+            mSelectionBox.setAnchor({x, y});
+            mSelectionBox.setExtent({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
         }
         return true; // Consume all mouse-press events while selection is active
@@ -468,22 +473,22 @@ private:
      * @brief Restricts the visible-selection projection to the sub-frustum
      * that corresponds to the given selection box.
      */
-    bool setVisibleTrisSelectionProjViewMatrix(const SelectionBox& box)
+    bool setVisibleTrisSelectionProjViewMatrix(const Box2d& box)
     {
-        if (box.anyNull()) {
+        if (box.isNull()) {
             return false;
         }
         auto    s     = Base::viewerCanvasSize();
         uint    win_w = s.x();
         uint    win_h = s.y();
         Point4f minNDC(
-            float(box.get1().value().x()) / float(win_w) * 2.f - 1.f,
-            1.f - float(box.get2().value().y()) / float(win_h) * 2.f,
+            float(box.min().x()) / float(win_w) * 2.f - 1.f,
+            1.f - float(box.max().y()) / float(win_h) * 2.f,
             0.f,
             1.f);
         Point4f maxNDC(
-            float(box.get2().value().x()) / float(win_w) * 2.f - 1.f,
-            1.f - float(box.get1().value().y()) / float(win_h) * 2.f,
+            float(box.max().x()) / float(win_w) * 2.f - 1.f,
+            1.f - float(box.min().y()) / float(win_h) * 2.f,
             0.f,
             1.f);
         float     w = maxNDC.x() - minNDC.x();
@@ -508,31 +513,31 @@ private:
         return true;
     }
 
-    SelectionBox calculateSelections(uint viewId)
+    /**
+     * @brief Performs GPU selection computation for all active modes.
+     *
+     * Only runs when `mSelectionCalcRequired` is true (set by mouse events
+     * or keyboard shortcuts). After computation the flag is cleared and,
+     * if the drag has ended, the selection box is nulled.
+     */
+    void computeSelections(uint viewId)
     {
-        SelectionBox boxToDraw;
-        if (!mSelectionCalcRequired) {
-            return mSelectionBox;
-        }
-        if (mSelectionBox.allValue()) {
-            boxToDraw = mSelectionBox;
-        }
-        SelectionBox minMaxBox = mSelectionBox.toMinAndMax();
+        Box2d minMaxBox = mSelectionBox.box2d();
 
         // If any active mode is a visible-selection mode, set up the
         // restricted projection matrix once for all such modes.
-        bool hasVisibleMode       = false;
-        bool skipVisibleSelection = false;
+        bool hasVisibleMode = false;
         for (const auto& mode : mCurrentSelectionModes) {
             if (mode.isVisibleSelection()) {
                 hasVisibleMode = true;
                 break;
             }
         }
-        if (hasVisibleMode) {
+
+        bool skipVisibleSelection = false;
+        if (hasVisibleMode && !minMaxBox.isNull()) {
             skipVisibleSelection = !setVisibleTrisSelectionProjViewMatrix(
-                calculateWindowSpaceMeshBB().intersect(
-                    boxToDraw.toMinAndMax()));
+                calculateWindowSpaceMeshBB().intersection(minMaxBox));
         }
 
         auto dl = Base::drawList();
@@ -547,13 +552,13 @@ private:
                         viewId,
                         mVisibleSelectionViewIds[0],
                         mVisibleSelectionViewIds[1],
-                        SelectionBox {},
+                        Box2d(),
                         SelectionMode::FACE_NONE,
                         mLMBHeld,
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
                         std::array<uint, 2> {
-                                      sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                                             sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
                         0
                     };
                     for (size_t i = 0; i < dl->size(); i++) {
@@ -596,15 +601,17 @@ private:
             }
         }
 
-        selectionCalculated();
-        return boxToDraw;
+        // Computation done — clear box if drag ended
+        if (!mLMBHeld) {
+            mSelectionBox.nullAll();
+        }
     }
 
     /**
      * @brief Returns the union of the screen-space bounding boxes of all
      * visible meshes that intersect the view frustum.
      */
-    SelectionBox calculateWindowSpaceMeshBB()
+    Box2d calculateWindowSpaceMeshBB()
     {
         auto      vmf  = Base::viewerViewMatrix();
         auto      pmf  = Base::viewerProjectionMatrix();
@@ -655,7 +662,7 @@ private:
             totalBB.add(inters);
         }
 
-        SelectionBox box;
+        Box2d box;
         if (totalBB.isNull()) {
             return box;
         }
@@ -669,17 +676,21 @@ private:
                 (boxPts[i].x() + 1) / 2 * double(width),
                 (1 - boxPts[i].y()) / 2 * double(height)};
         }
-        box.set1(sSpace[0]);
-        box.set2(sSpace[1]);
-        return box.toMinAndMax();
+        box.add(sSpace[0]);
+        box.add(sSpace[1]);
+        return box;
     }
 
-    void drawSelectionBox(uint viewId, const SelectionBox& box)
+    void drawSelectionBox(uint viewId, const Box2d& box)
     {
-        if (box.anyNull()) {
+        if (box.isNull()) {
             return;
         }
-        std::array<float, 8> temp = box.vertexPositions();
+        std::array<Point2f, 4> temp;
+        temp[0] = vcl::boxVertex(box, 0).cast<float>();
+        temp[1] = vcl::boxVertex(box, 1).cast<float>();
+        temp[2] = vcl::boxVertex(box, 2).cast<float>();
+        temp[3] = vcl::boxVertex(box, 3).cast<float>();
         bgfx::setState(
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
             BGFX_STATE_BLEND_ALPHA);
@@ -698,14 +709,6 @@ private:
             Context::instance()
                 .programManager()
                 .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
-    }
-
-    void selectionCalculated()
-    {
-        mSelectionCalcRequired = false;
-        if (!mLMBHeld) {
-            mSelectionBox.nullAll();
-        }
     }
 };
 

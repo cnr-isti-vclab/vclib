@@ -55,7 +55,7 @@ struct SelectionParameters
     uint                drawViewId;
     uint                pass1ViewId;
     uint                pass2ViewId;
-    SelectionBox        box;
+    Box2d               box;
     SelectionMode       mode;
     bool                isTemporary;
     bgfx::TextureHandle primIdTex;

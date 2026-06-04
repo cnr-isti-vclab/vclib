@@ -50,16 +50,16 @@ class SelectionUniforms
 public:
     SelectionUniforms() = delete;
 
-    static void setSelectionBox(const SelectionBox& box)
+    static void setSelectionBox(const Box2d& box)
     {
-        if (box.anyNull()) {
+        if (box.isNull()) {
             sSelectionBox = {0.0, 0.0, 0.0, 0.0};
         }
         else {
-            sSelectionBox[0] = box.get1().value().x();
-            sSelectionBox[1] = box.get1().value().y();
-            sSelectionBox[2] = box.get2().value().x();
-            sSelectionBox[3] = box.get2().value().y();
+            sSelectionBox[0] = box.min().x();
+            sSelectionBox[1] = box.min().y();
+            sSelectionBox[2] = box.max().x();
+            sSelectionBox[3] = box.max().y();
         }
     }
 

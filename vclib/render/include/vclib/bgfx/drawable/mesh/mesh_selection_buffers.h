@@ -284,7 +284,7 @@ public:
         const SelectionParameters& params,
         const VertexBuffer&        vertPosBuf)
     {
-        if (params.box.anyNull()) {
+        if (params.box.isNull()) {
             return false;
         }
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
@@ -335,7 +335,7 @@ public:
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
-        if (params.box.anyNull()) {
+        if (params.box.isNull()) {
             return false;
         }
 
