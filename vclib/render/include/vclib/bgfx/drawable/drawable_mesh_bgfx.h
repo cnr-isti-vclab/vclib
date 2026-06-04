@@ -648,12 +648,13 @@ protected:
             return false;
         }
         if (params.isTemporary &&
-            (params.mode == SelectionMode::VERTEX_ADD ||
-             params.mode == SelectionMode::VERTEX_SUBTRACT)) {
+            params.mode.primitive == SelectionPrimitive::VERTEX &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
         }
         return (
-            params.mode.isAtomicMode() ? mMRB.vertexSelectionAtomic(params) :
+            params.mode.isAtomicAction() ? mMRB.vertexSelectionAtomic(params) :
                                          mMRB.vertexSelection(params));
     }
 
@@ -663,12 +664,13 @@ protected:
             return false;
         }
         if (params.isTemporary &&
-            (params.mode == SelectionMode::FACE_ADD ||
-             params.mode == SelectionMode::FACE_SUBTRACT)) {
+            params.mode.primitive == SelectionPrimitive::FACE &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
         return (
-            params.mode.isAtomicMode() ? mMRB.faceSelectionAtomic(params) :
+            params.mode.isAtomicAction() ? mMRB.faceSelectionAtomic(params) :
                                          mMRB.faceSelection(params));
     }
 
@@ -678,8 +680,10 @@ protected:
             return false;
         }
         if (params.isTemporary &&
-            (params.mode == SelectionMode::FACE_VISIBLE_ADD ||
-             params.mode == SelectionMode::FACE_VISIBLE_SUBTRACT)) {
+            params.mode.primitive == SelectionPrimitive::FACE &&
+            params.mode.visible &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
         Matrix44f model = Matrix44f::Identity();

@@ -26,107 +26,81 @@
 namespace vcl {
 
 /**
- * You can select:
- *   - Vertices
- *   - Faces
- *   - Visible faces
- * Of each you can do:
- *   - Regular (add in box, subtract outside box)
- *   - Add
- *   - Subtract
- * Furthermore there are some atomic modes (modes which ignore the selection
- * box):
- *   - Invert selected faces/vertices
- *   - Select all faces/vertices
- *   - Deselect all (NONE) faces/vertices
+ * @brief The mesh primitive being selected.
+ *
+ * Extend this enum to support new primitive types (e.g. EDGE) without
+ * touching the action enum or the SelectionMode struct.
+ */
+enum class SelectionPrimitive { VERTEX, FACE };
+
+/**
+ * @brief The selection operation to perform.
+ *
+ * REGULAR / ADD / SUBTRACT require a selection box.
+ * ALL / NONE / INVERT are atomic (no box needed).
+ */
+enum class SelectionAction {
+    REGULAR,
+    ADD,
+    SUBTRACT,
+    ALL,
+    NONE,
+    INVERT
+};
+
+/**
+ * @brief Describes a single selection operation.
+ *
+ * Composed of three orthogonal dimensions:
+ *   - primitive: what to select (vertex, face, …)
+ *   - action:    how to select (regular, add, subtract, all, none, invert)
+ *   - visible:   whether to consider only screen-visible primitives (only
+ *                meaningful for faces)
+ *
+ * Braced initialization:
+ *   SelectionMode mode{SelectionPrimitive::FACE, SelectionAction::ADD, true};
  */
 class SelectionMode
 {
 public:
-    enum Enum {
-        VERTEX_REGULAR,
-        VERTEX_ADD,
-        VERTEX_SUBTRACT,
-        VERTEX_ALL,
-        VERTEX_NONE,
-        VERTEX_INVERT,
-        FACE_REGULAR,
-        FACE_ADD,
-        FACE_SUBTRACT,
-        FACE_ALL,
-        FACE_NONE,
-        FACE_INVERT,
-        FACE_VISIBLE_REGULAR,
-        FACE_VISIBLE_ADD,
-        FACE_VISIBLE_SUBTRACT
-    };
+    SelectionPrimitive primitive = SelectionPrimitive::VERTEX;
+    SelectionAction    action    = SelectionAction::REGULAR;
+    bool               visible   = false;
 
-private:
-    Enum mEnum = Enum::VERTEX_REGULAR;
-
-public:
     SelectionMode() = default;
 
-    constexpr SelectionMode(Enum en) : mEnum(en) {}
-
-    constexpr operator Enum() const { return mEnum; }
-
-    // I could cast to int and then do a range check and then re-cast to Enum,
-    // but this is more comprehensible
-    constexpr bool isAtomicMode() const
+    constexpr SelectionMode(
+        SelectionPrimitive p,
+        SelectionAction    a,
+        bool               v = false)
+        : primitive(p), action(a), visible(v)
     {
-        switch (mEnum) {
-        case Enum::VERTEX_ALL:
-        case Enum::VERTEX_INVERT:
-        case Enum::VERTEX_NONE:
-        case Enum::FACE_ALL:
-        case Enum::FACE_INVERT:
-        case Enum::FACE_NONE: return true;
+    }
+
+    /// Returns true for ALL / NONE / INVERT actions (no selection box needed).
+    constexpr bool isAtomicAction() const
+    {
+        switch (action) {
+        case SelectionAction::ALL:
+        case SelectionAction::NONE:
+        case SelectionAction::INVERT: return true;
         default: return false;
         }
     }
 
-    // I could cast to int and then do a range check and then re-cast to Enum,
-    // but this is more comprehensible
     constexpr bool isVertexSelection() const
     {
-        switch (mEnum) {
-        case Enum::VERTEX_REGULAR:
-        case Enum::VERTEX_ADD:
-        case Enum::VERTEX_SUBTRACT:
-        case Enum::VERTEX_ALL:
-        case Enum::VERTEX_NONE:
-        case Enum::VERTEX_INVERT: return true;
-        default: return false;
-        }
+        return primitive == SelectionPrimitive::VERTEX;
     }
 
-    // I could cast to int and then do a range check and then re-cast to Enum,
-    // but this is more comprehensible
     constexpr bool isFaceSelection() const
     {
-        switch (mEnum) {
-        case Enum::FACE_REGULAR:
-        case Enum::FACE_ADD:
-        case Enum::FACE_SUBTRACT:
-        case Enum::FACE_ALL:
-        case Enum::FACE_NONE:
-        case Enum::FACE_INVERT:
-        case Enum::FACE_VISIBLE_REGULAR:
-        case Enum::FACE_VISIBLE_ADD:
-        case Enum::FACE_VISIBLE_SUBTRACT: return true;
-        default: return false;
-        }
+        return primitive == SelectionPrimitive::FACE;
     }
 
     constexpr bool isVisibleSelection() const
     {
-        switch (mEnum) {
-        case Enum::FACE_VISIBLE_REGULAR:
-        case Enum::FACE_VISIBLE_ADD:
-        case Enum::FACE_VISIBLE_SUBTRACT: return true;
-        default: return false;
-        }
+        return visible && primitive == SelectionPrimitive::FACE;
     }
 };
 

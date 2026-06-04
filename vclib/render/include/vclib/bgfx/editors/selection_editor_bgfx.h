@@ -405,28 +405,28 @@ private:
         std::vector<SelectionMode> modes;
         if (sv) {
             if (ctrlShift)
-                modes.push_back(SelectionMode::VERTEX_SUBTRACT);
+                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::SUBTRACT});
             else if (ctrlOnly)
-                modes.push_back(SelectionMode::VERTEX_ADD);
+                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::ADD});
             else
-                modes.push_back(SelectionMode::VERTEX_REGULAR);
+                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::REGULAR});
         }
         if (sf) {
             if (ov) {
                 if (ctrlShift)
-                    modes.push_back(SelectionMode::FACE_VISIBLE_SUBTRACT);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::SUBTRACT, true});
                 else if (ctrlOnly)
-                    modes.push_back(SelectionMode::FACE_VISIBLE_ADD);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::ADD, true});
                 else
-                    modes.push_back(SelectionMode::FACE_VISIBLE_REGULAR);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::REGULAR, true});
             }
             else {
                 if (ctrlShift)
-                    modes.push_back(SelectionMode::FACE_SUBTRACT);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::SUBTRACT});
                 else if (ctrlOnly)
-                    modes.push_back(SelectionMode::FACE_ADD);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::ADD});
                 else
-                    modes.push_back(SelectionMode::FACE_REGULAR);
+                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::REGULAR});
             }
         }
         return modes;
@@ -439,9 +439,9 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
         if (sv)
-            modes.push_back(SelectionMode::VERTEX_ALL);
+            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::ALL});
         if (sf)
-            modes.push_back(SelectionMode::FACE_ALL);
+            modes.push_back({SelectionPrimitive::FACE, SelectionAction::ALL});
         return modes;
     }
 
@@ -452,9 +452,9 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
         if (sv)
-            modes.push_back(SelectionMode::VERTEX_NONE);
+            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::NONE});
         if (sf)
-            modes.push_back(SelectionMode::FACE_NONE);
+            modes.push_back({SelectionPrimitive::FACE, SelectionAction::NONE});
         return modes;
     }
 
@@ -465,9 +465,9 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
         if (sv)
-            modes.push_back(SelectionMode::VERTEX_INVERT);
+            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::INVERT});
         if (sf)
-            modes.push_back(SelectionMode::FACE_INVERT);
+            modes.push_back({SelectionPrimitive::FACE, SelectionAction::INVERT});
         return modes;
     }
 
@@ -549,13 +549,15 @@ private:
                 // Box is outside the mesh screen-space BB.
                 // For REGULAR mode we must clear the current selection;
                 // for ADD/SUBTRACT we simply skip (no change).
-                if (mode == SelectionMode::FACE_VISIBLE_REGULAR) {
+                if (mode.primitive == SelectionPrimitive::FACE &&
+                    mode.action == SelectionAction::REGULAR &&
+                    mode.visible) {
                     SelectionParameters clearParams = {
                         viewId,
                         mVisibleSelectionViewIds[0],
                         mVisibleSelectionViewIds[1],
                         Box2d(),
-                        SelectionMode::FACE_NONE,
+                        SelectionMode{SelectionPrimitive::FACE, SelectionAction::NONE},
                         mLMBHeld,
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),

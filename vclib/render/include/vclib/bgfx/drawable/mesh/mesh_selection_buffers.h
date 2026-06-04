@@ -341,9 +341,10 @@ public:
         ProgramManager& pm = Context::instance().programManager();
 
         // For REGULAR mode, first clear the entire face selection buffer
-        if (params.mode == SelectionMode::FACE_REGULAR) {
+        if (params.mode.primitive == SelectionPrimitive::FACE &&
+            params.mode.action == SelectionAction::REGULAR) {
             SelectionParameters clearParams(params);
-            clearParams.mode = SelectionMode::FACE_NONE;
+            clearParams.mode.action = SelectionAction::NONE;
             faceSelectionAtomic(clearParams);
         }
 
@@ -402,10 +403,11 @@ public:
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
-        if (params.mode == SelectionMode::FACE_VISIBLE_REGULAR) {
+        if (params.mode.primitive == SelectionPrimitive::FACE &&
+            params.mode.action == SelectionAction::REGULAR) {
             SelectionParameters params2(params);
             params2.drawViewId = params2.pass1ViewId;
-            params2.mode       = SelectionMode::FACE_NONE;
+            params2.mode.action = SelectionAction::NONE;
             faceSelectionAtomic(params2);
         }
 
@@ -588,41 +590,47 @@ private:
     }
 
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
-        ProgramManager& pm,
-        SelectionMode   mode) const
+        ProgramManager&  pm,
+        SelectionMode    mode) const
     {
-        switch (SelectionMode::Enum(mode)) {
-        case SelectionMode::VERTEX_REGULAR:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
-        case SelectionMode::VERTEX_ADD:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX_ADD>();
-        case SelectionMode::VERTEX_SUBTRACT:
-            return pm
-                .getComputeProgram<ComputeProgram::SELECTION_VERTEX_SUBTRACT>();
-        case SelectionMode::FACE_REGULAR:
-        case SelectionMode::FACE_ADD:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_FACE>();
-        case SelectionMode::FACE_SUBTRACT:
-            return pm
-                .getComputeProgram<ComputeProgram::SELECTION_FACE_SUBTRACT>();
-        case SelectionMode::VERTEX_ALL:
-        case SelectionMode::FACE_ALL:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_ALL>();
-        case SelectionMode::VERTEX_NONE:
-        case SelectionMode::FACE_NONE:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_NONE>();
-        case SelectionMode::VERTEX_INVERT:
-        case SelectionMode::FACE_INVERT:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_INVERT>();
-        case SelectionMode::FACE_VISIBLE_REGULAR:
-        case SelectionMode::FACE_VISIBLE_ADD:
-            return pm.getComputeProgram<
-                ComputeProgram::SELECTION_FACE_VISIBLE_ADD>();
-        case SelectionMode::FACE_VISIBLE_SUBTRACT:
-            return pm.getComputeProgram<
-                ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>();
+        using enum SelectionAction;
+        using enum SelectionPrimitive;
+        using enum ComputeProgram;
+
+        switch (mode.primitive) {
+        case VERTEX:
+            switch (mode.action) {
+            case REGULAR: return pm.getComputeProgram<SELECTION_VERTEX>();
+            case ADD: return pm.getComputeProgram<SELECTION_VERTEX_ADD>();
+            case SUBTRACT:
+                return pm.getComputeProgram<SELECTION_VERTEX_SUBTRACT>();
+            case ALL: return pm.getComputeProgram<SELECTION_ALL>();
+            case NONE: return pm.getComputeProgram<SELECTION_NONE>();
+            case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();
+            }
+
+        case FACE:
+            switch (mode.action) {
+            case REGULAR:
+            case ADD:
+                if (mode.visible)
+                    return pm.getComputeProgram<SELECTION_FACE_VISIBLE_ADD>();
+                else
+                    return pm.getComputeProgram<SELECTION_FACE>();
+            case SUBTRACT:
+                if (mode.visible)
+                    return pm
+                        .getComputeProgram<SELECTION_FACE_VISIBLE_SUBTRACT>();
+                else
+                    return pm.getComputeProgram<SELECTION_FACE_SUBTRACT>();
+            case ALL: return pm.getComputeProgram<SELECTION_ALL>();
+            case NONE: return pm.getComputeProgram<SELECTION_NONE>();
+            case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();
+            }
         default:
-            return pm.getComputeProgram<ComputeProgram::SELECTION_VERTEX>();
+            // Invalid mode — should never happen
+            assert(false && "Invalid selection mode");
+            return BGFX_INVALID_HANDLE;
         }
     }
 
