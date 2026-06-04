@@ -36,7 +36,6 @@
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 
 #include <array>
@@ -62,7 +61,8 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     static const uint sVisibleFaceFramebufferSize = 4096u;
 
     // ---- Selection event state ----
-    SelectionBox               mSelectionBox;
+    std::optional<Box2d>       mSelectionBox;
+    std::optional<Point2d>     mSelectionAnchor;
     std::vector<SelectionMode> mCurrentSelectionModes;
     bool                       mSelectionCalcRequired = false;
     bool                       mLMBHeld               = false;
@@ -188,7 +188,8 @@ public:
             return;
 
         if (!isSelectionActive()) {
-            mSelectionBox.nullAll();
+            mSelectionBox.reset();
+            mSelectionAnchor.reset();
             return;
         }
 
@@ -226,7 +227,7 @@ public:
             bgfx::setViewTransform(
                 mSelectionDrawingViewId, vm.data(), pm.data());
 
-            drawSelectionBox(mSelectionDrawingViewId, mSelectionBox.box2d());
+            drawSelectionBox(mSelectionDrawingViewId, mSelectionBox.value_or(Box2d{}));
         }
 
         // 2) Compute GPU selections with current parameters, if pending
@@ -290,7 +291,8 @@ public:
         if (!isSelectionActive())
             return false;
         if (mLMBHeld) {
-            mSelectionBox.setExtent({x, y});
+            mSelectionBox = Box2d(mSelectionAnchor.value());
+            mSelectionBox->add(Point2d{x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
             mSelectionCalcRequired = true;
         }
@@ -308,8 +310,8 @@ public:
         if (button == MouseButton::LEFT && !mLMBHeld) {
             mLMBHeld               = true;
             mLMBPressPositionTaken = true;
-            mSelectionBox.setAnchor({x, y});
-            mSelectionBox.setExtent({x, y});
+            mSelectionAnchor = Point2d{x, y};
+            mSelectionBox = Box2d({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
         }
         return true; // Consume all mouse-press events while selection is active
@@ -522,7 +524,7 @@ private:
      */
     void computeSelections(uint viewId)
     {
-        Box2d minMaxBox = mSelectionBox.box2d();
+        Box2d minMaxBox = mSelectionBox.value_or(Box2d{});
 
         // If any active mode is a visible-selection mode, set up the
         // restricted projection matrix once for all such modes.
@@ -603,7 +605,8 @@ private:
 
         // Computation done — clear box if drag ended
         if (!mLMBHeld) {
-            mSelectionBox.nullAll();
+            mSelectionBox.reset();
+            mSelectionAnchor.reset();
         }
     }
 

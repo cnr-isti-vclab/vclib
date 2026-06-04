@@ -31,7 +31,6 @@
 #include <vclib/bgfx/read_from_gpu_buffer.h>
 #include <vclib/bgfx/uniform.h>
 
-#include <vclib/render/selection/selection_box.h>
 #include <vclib/render/selection/selection_mode.h>
 #include <vclib/render/selection/selection_parameters.h>
 

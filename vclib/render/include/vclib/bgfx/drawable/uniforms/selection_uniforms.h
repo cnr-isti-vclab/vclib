@@ -24,8 +24,6 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_SELECTION_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/selection/selection_box.h>
-
 #include <vclib/space/core.h>
 
 namespace vcl {
