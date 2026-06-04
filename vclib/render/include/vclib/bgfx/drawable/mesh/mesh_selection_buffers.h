@@ -286,6 +286,15 @@ public:
         if (params.box.isNull()) {
             return false;
         }
+
+        // For REGULAR mode, first clear the entire vertex selection buffer
+        if (params.mode.primitive == SelectionPrimitive::VERTEX &&
+            params.mode.action == SelectionAction::REGULAR) {
+            SelectionParameters clearParams(params);
+            clearParams.mode.action = SelectionAction::NONE;
+            vertexSelectionAtomic(clearParams);
+        }
+
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
 
@@ -406,7 +415,7 @@ public:
         if (params.mode.primitive == SelectionPrimitive::FACE &&
             params.mode.action == SelectionAction::REGULAR) {
             SelectionParameters params2(params);
-            params2.drawViewId = params2.pass1ViewId;
+            params2.drawViewId  = params2.pass1ViewId;
             params2.mode.action = SelectionAction::NONE;
             faceSelectionAtomic(params2);
         }
@@ -590,8 +599,8 @@ private:
     }
 
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
-        ProgramManager&  pm,
-        SelectionMode    mode) const
+        ProgramManager& pm,
+        SelectionMode   mode) const
     {
         using enum SelectionAction;
         using enum SelectionPrimitive;
@@ -600,8 +609,8 @@ private:
         switch (mode.primitive) {
         case VERTEX:
             switch (mode.action) {
-            case REGULAR: return pm.getComputeProgram<SELECTION_VERTEX>();
-            case ADD: return pm.getComputeProgram<SELECTION_VERTEX_ADD>();
+            case REGULAR:
+            case ADD: return pm.getComputeProgram<SELECTION_VERTEX>();
             case SUBTRACT:
                 return pm.getComputeProgram<SELECTION_VERTEX_SUBTRACT>();
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();
@@ -645,7 +654,8 @@ private:
     static std::array<uint, 3> workGroupSizesFrom1DSize(uint size)
     {
         std::array<uint, 3> sizes = {1, 1, 1};
-        if (size == 0) return sizes;
+        if (size == 0)
+            return sizes;
 
         // distributes the load across as cubic a grid as possible.
         uint dim = uint(std::ceil(std::cbrt(size)));

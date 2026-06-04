@@ -79,7 +79,5 @@ void main()
     uint _useless;
     if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z) {
         atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
-    } else {
-        atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
     }
 }

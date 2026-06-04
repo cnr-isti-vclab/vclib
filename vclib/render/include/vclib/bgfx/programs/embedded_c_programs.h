@@ -38,7 +38,6 @@
 #include "embedded_c_programs/selection_invert.h"
 #include "embedded_c_programs/selection_none.h"
 #include "embedded_c_programs/selection_vertex.h"
-#include "embedded_c_programs/selection_vertex_add.h"
 #include "embedded_c_programs/selection_vertex_subtract.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
