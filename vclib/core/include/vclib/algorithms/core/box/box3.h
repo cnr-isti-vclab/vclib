@@ -66,7 +66,7 @@
  * @endcode
  *
  * You can access these algorithms by including
- * `#include <vclib/algorithms/core/box/box3.h>`
+ * `#include <vclib/algorithms/core.h>`
  */
 
 namespace vcl {
