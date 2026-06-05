@@ -382,16 +382,28 @@ private:
     }
 
     /**
+     * @brief Maps modifier keys to the corresponding SelectionAction.
+     *
+     * No modifier  → REGULAR (replace)
+     * Ctrl         → ADD
+     * Ctrl+Shift   → SUBTRACT
+     */
+    static SelectionAction actionFromModifier(const KeyModifiers& mods)
+    {
+        if (mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT])
+            return SelectionAction::SUBTRACT;
+        if (mods[KeyModifier::CONTROL])
+            return SelectionAction::ADD;
+        return SelectionAction::REGULAR;
+    }
+
+    /**
      * @brief Maps the current settings and drag modifier to the appropriate
      * list of SelectionModes (one per active selection type).
      *
      * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
      * mode and a face mode are returned. 'onlyVisible' is applied only to
      * face selection.
-     *
-     * No modifier  → REGULAR (replace)
-     * Ctrl         → ADD
-     * Ctrl+Shift   → SUBTRACT
      */
     std::vector<SelectionMode> selectionModesForModifier(
         const KeyModifiers& mods) const
@@ -401,48 +413,15 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         bool        ov = std::any_cast<bool>(cs.at("onlyVisible"));
 
-        bool ctrlShift = mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT];
-        bool ctrlOnly = mods[KeyModifier::CONTROL] && !mods[KeyModifier::SHIFT];
+        auto action = actionFromModifier(mods);
 
         std::vector<SelectionMode> modes;
         if (sv) {
-            if (ctrlShift)
-                modes.push_back(
-                    {SelectionPrimitive::VERTEX, SelectionAction::SUBTRACT});
-            else if (ctrlOnly)
-                modes.push_back(
-                    {SelectionPrimitive::VERTEX, SelectionAction::ADD});
-            else
-                modes.push_back(
-                    {SelectionPrimitive::VERTEX, SelectionAction::REGULAR});
+            modes.push_back({SelectionPrimitive::VERTEX, action});
         }
         if (sf) {
-            if (ov) {
-                if (ctrlShift)
-                    modes.push_back(
-                        {SelectionPrimitive::FACE,
-                         SelectionAction::SUBTRACT,
-                         true});
-                else if (ctrlOnly)
-                    modes.push_back(
-                        {SelectionPrimitive::FACE, SelectionAction::ADD, true});
-                else
-                    modes.push_back(
-                        {SelectionPrimitive::FACE,
-                         SelectionAction::REGULAR,
-                         true});
-            }
-            else {
-                if (ctrlShift)
-                    modes.push_back(
-                        {SelectionPrimitive::FACE, SelectionAction::SUBTRACT});
-                else if (ctrlOnly)
-                    modes.push_back(
-                        {SelectionPrimitive::FACE, SelectionAction::ADD});
-                else
-                    modes.push_back(
-                        {SelectionPrimitive::FACE, SelectionAction::REGULAR});
-            }
+            modes.push_back(
+                {SelectionPrimitive::FACE, action, static_cast<bool>(ov)});
         }
         return modes;
     }
