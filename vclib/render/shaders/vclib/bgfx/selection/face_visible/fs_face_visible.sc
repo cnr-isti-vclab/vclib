@@ -25,9 +25,8 @@
 #define V4RGBA(x) uintABGRToVec4Color(x).wzyx
 
 void main() {
-    // NOTE: u_meshID 0 is reserved to indicate that no data is available
-    // (i.e. the fragment did NOT pass)
-    if(u_meshID == uint(0)) {
+    // NOTE: u_meshID == UINT_MAX is reserved to indicate that no data is available
+    if(u_meshID == uint(0xFFFFFFFF)) {
         discard;
     }
     gl_FragData[0] = V4RGBA(gl_PrimitiveID);

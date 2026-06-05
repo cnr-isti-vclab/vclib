@@ -44,8 +44,8 @@ uint texVec4ToUint(vec4 pixel) {
 // 1 = SUBTRACT).
 NUM_THREADS(1, 1, 1)
 void main() {
-    // NOTE: u_meshID 0 is reserved to indicate that no data is available
-    if(u_meshID == 0) {
+    // NOTE: u_meshID == UINT_MAX is reserved to indicate that no data is available
+    if(u_meshID == uint(0xFFFFFFFF)) {
         return;
     }
     uint tex1DCoord = getPrimitiveID(gl_WorkGroupID);

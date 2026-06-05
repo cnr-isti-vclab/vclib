@@ -137,7 +137,7 @@ public:
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-            0u);
+            UINT_NULL);
         bgfx::setViewRect(
             mVisibleSelectionViewIds[0],
             0,
@@ -200,7 +200,7 @@ public:
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-            0u);
+            UINT_NULL);
         bgfx::setViewRect(
             mVisibleSelectionViewIds[0],
             0,
@@ -582,10 +582,10 @@ private:
                         0
                     };
                     for (size_t i = 0; i < dl->size(); i++) {
-                        if (!shouldProcessObject(*dl, uint(i))) {
+                        if (!shouldProcessObject(*dl, i)) {
                             continue;
                         }
-                        clearParams.meshId = uint(i + 1);
+                        clearParams.meshId = i;
                         auto el            = dl->at(i);
                         if (auto p =
                                 dynamic_cast<AbstractDrawableMesh*>(el.get())) {
@@ -609,10 +609,10 @@ private:
                 0
             };
             for (size_t i = 0; i < dl->size(); i++) {
-                if (!shouldProcessObject(*dl, uint(i))) {
+                if (!shouldProcessObject(*dl, i)) {
                     continue;
                 }
-                params.meshId = uint(i + 1);
+                params.meshId = i;
                 auto el       = dl->at(i);
                 if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
                     p->computeSelection(params);
@@ -645,7 +645,7 @@ private:
         Box3d totalBB;
         auto  dl = Base::drawList();
         for (size_t i = 0; i < dl->size(); i++) {
-            if (!shouldProcessObject(*dl, uint(i))) {
+            if (!shouldProcessObject(*dl, i)) {
                 continue;
             }
             std::shared_ptr<DrawableObject> el = dl->at(i);

@@ -29,8 +29,6 @@
 
 #include <bgfx/bgfx.h>
 
-#include <array>
-
 namespace vcl {
 
 /**
