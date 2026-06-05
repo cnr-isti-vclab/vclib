@@ -92,8 +92,8 @@ public:
      */
     static void setSelectionAction(SelectionAction action)
     {
-        uint val = action == SelectionAction::SUBTRACT ? 1 : 0;
-        sMeshIDSelectionActionData[1] = std::bit_cast<float>(val);
+        float val = action == SelectionAction::SUBTRACT ? 1.0 : 0.0;
+        sMeshIDSelectionActionData[1] = val;
     }
 
     static void bind()

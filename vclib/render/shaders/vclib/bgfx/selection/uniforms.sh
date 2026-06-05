@@ -38,8 +38,8 @@ uniform vec4 u_meshIdSelectionActionData;
 
 #define u_meshID floatBitsToUint(u_meshIdSelectionActionData.x)
 
-// 0 = ADD, 1 = SUBTRACT
-#define u_selectionAction floatBitsToUint(u_meshIdSelectionActionData.y)
+// 0.0 = ADD, 1.0 = SUBTRACT
+#define u_selectionAction u_meshIdSelectionActionData.y
 
 uint getPrimitiveID(vec3 workGroupID)
 {

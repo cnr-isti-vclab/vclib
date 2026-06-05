@@ -69,7 +69,7 @@ void main() {
     for (uint t = firstTri; t < firstTri + count; t++) {
         uint bufferIndex = t / 32;
         uint bitMask = 0x1 << (31 - (t % 32));
-        if (u_selectionAction == 1) {
+        if (u_selectionAction > 0.0) { // subtract
             atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
         } else {
             atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
