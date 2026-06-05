@@ -39,8 +39,9 @@ uint texVec4ToUint(vec4 pixel) {
         | (uint(pixel.a * 255.0) & 0xff);
 }
 
-// Polygon-level SUBTRACT: if a visible pixel belongs to triangle T, deselect
-// all triangles of T's polygon.
+// Polygon-level selection: if a visible pixel belongs to triangle T, select or
+// deselect all triangles of T's polygon based on u_selectionAction (0 = ADD,
+// 1 = SUBTRACT).
 NUM_THREADS(1, 1, 1)
 void main() {
     // NOTE: u_meshID 0 is reserved to indicate that no data is available
@@ -60,7 +61,7 @@ void main() {
     vec4 vecPrimId = imageLoad(s_primIds, tex2DCoord);
     uint texPrimId = texVec4ToUint(vecPrimId);
 
-    // Deselect all triangles belonging to the same polygon as texPrimId
+    // Select or deselect all triangles belonging to the same polygon as texPrimId
     uint polyIdx = tri_to_poly[texPrimId];
     uint firstTri = poly_to_tri_begin[polyIdx];
     uint count = poly_to_tri_count[polyIdx];
@@ -68,6 +69,10 @@ void main() {
     for (uint t = firstTri; t < firstTri + count; t++) {
         uint bufferIndex = t / 32;
         uint bitMask = 0x1 << (31 - (t % 32));
-        atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
+        if (u_selectionAction == 1) {
+            atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
+        } else {
+            atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
+        }
     }
 }

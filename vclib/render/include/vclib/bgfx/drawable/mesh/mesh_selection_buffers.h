@@ -443,6 +443,7 @@ public:
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
 
+        SelectionUniforms::setSelectionAction(params.mode.action);
         SelectionUniforms::setMeshIdForSelection(params.meshId);
         SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
         SelectionUniforms::bind();
@@ -612,7 +613,7 @@ private:
         case VERTEX:
             switch (mode.action) {
             case REGULAR:
-            case ADD: return pm.getComputeProgram<SELECTION_VERTEX>();
+            case ADD:
             case SUBTRACT: return pm.getComputeProgram<SELECTION_VERTEX>();
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();
             case NONE: return pm.getComputeProgram<SELECTION_NONE>();
@@ -623,14 +624,9 @@ private:
             switch (mode.action) {
             case REGULAR:
             case ADD:
-                if (mode.visible)
-                    return pm.getComputeProgram<SELECTION_FACE_VISIBLE_ADD>();
-                else
-                    return pm.getComputeProgram<SELECTION_FACE>();
             case SUBTRACT:
                 if (mode.visible)
-                    return pm
-                        .getComputeProgram<SELECTION_FACE_VISIBLE_SUBTRACT>();
+                    return pm.getComputeProgram<SELECTION_FACE_VISIBLE>();
                 else
                     return pm.getComputeProgram<SELECTION_FACE>();
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();

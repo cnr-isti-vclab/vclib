@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_H
 
 #include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
 template<>
-struct ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>
+struct ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE>
 {
     static bgfx::EmbeddedShader::Data computeShader(
         bgfx::RendererType::Enum type);
@@ -36,4 +36,4 @@ struct ComputeLoader<ComputeProgram::SELECTION_FACE_VISIBLE_SUBTRACT>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_SUBTRACT_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_SELECTION_FACE_VISIBLE_H
