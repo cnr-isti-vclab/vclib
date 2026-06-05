@@ -111,7 +111,7 @@ void main()
     }
 
     if (selected) {
-        // Mark all triangles of the same polygon as selected
+        // Mark/deselect all triangles of the same polygon as selected
         uint polyIdx = tri_to_poly[faceIndex];
         uint firstTri = poly_to_tri_begin[polyIdx];
         uint count = poly_to_tri_count[polyIdx];
@@ -119,7 +119,11 @@ void main()
         for (uint t = firstTri; t < firstTri + count; t++) {
             uint tBufIndex = t / 32;
             uint tBitMask = 0x1 << (31 - (t % 32));
-            atomicFetchAndOr(face_selected[tBufIndex], tBitMask, _useless);
+            if (u_selectionAction == 1) {
+                atomicFetchAndAnd(face_selected[tBufIndex], ~tBitMask, _useless);
+            } else {
+                atomicFetchAndOr(face_selected[tBufIndex], tBitMask, _useless);
+            }
         }
     }
 }

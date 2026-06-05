@@ -288,14 +288,13 @@ public:
         }
 
         // For REGULAR mode, first clear the entire vertex selection buffer
-        if (params.mode.primitive == SelectionPrimitive::VERTEX) {
-            if (params.mode.action == SelectionAction::REGULAR) {
-                SelectionParameters clearParams(params);
-                clearParams.mode.action = SelectionAction::NONE;
-                vertexSelectionAtomic(clearParams);
-            }
-            SelectionUniforms::setSelectionAction(params.mode.action);
+        if (params.mode.primitive == SelectionPrimitive::VERTEX &&
+            params.mode.action == SelectionAction::REGULAR) {
+            SelectionParameters clearParams(params);
+            clearParams.mode.action = SelectionAction::NONE;
+            vertexSelectionAtomic(clearParams);
         }
+        SelectionUniforms::setSelectionAction(params.mode.action);
 
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
@@ -349,8 +348,6 @@ public:
             return false;
         }
 
-        ProgramManager& pm = Context::instance().programManager();
-
         // For REGULAR mode, first clear the entire face selection buffer
         if (params.mode.primitive == SelectionPrimitive::FACE &&
             params.mode.action == SelectionAction::REGULAR) {
@@ -359,8 +356,11 @@ public:
             faceSelectionAtomic(clearParams);
         }
 
-        bgfx::ProgramHandle prog =
-            getComputeProgramFromSelectionMode(pm, params.mode);
+        SelectionUniforms::setSelectionAction(params.mode.action);
+
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
+            Context::instance().programManager(), params.mode);
+
         SelectionUniforms::setSelectionBox(params.box);
         SelectionUniforms::setSelectionWorkgroupSize(
             mFaceSelectionWorkgroupSize);
@@ -632,7 +632,7 @@ private:
                     return pm
                         .getComputeProgram<SELECTION_FACE_VISIBLE_SUBTRACT>();
                 else
-                    return pm.getComputeProgram<SELECTION_FACE_SUBTRACT>();
+                    return pm.getComputeProgram<SELECTION_FACE>();
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();
             case NONE: return pm.getComputeProgram<SELECTION_NONE>();
             case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();
