@@ -30,7 +30,6 @@ void main() {
     if(u_meshID == uint(0)) {
         discard;
     }
-    uint priId = uint(gl_PrimitiveID);
     gl_FragData[0] = V4RGBA(gl_PrimitiveID);
     gl_FragData[1] = V4RGBA(u_meshID);
 }

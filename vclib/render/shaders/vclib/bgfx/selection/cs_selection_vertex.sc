@@ -20,6 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include "selection_common.sh"
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/uniforms.sh>
 
@@ -77,7 +79,7 @@ void main()
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     uint _useless;
-    if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z) {
+    if (pointInAABB(pNDC, minNDC, maxNDC)) {
         if (u_selectionAction > 0.0) { // subtract
             atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
         } else {
