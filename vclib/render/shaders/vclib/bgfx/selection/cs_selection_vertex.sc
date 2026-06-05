@@ -79,7 +79,7 @@ void main()
     uint bitOffset = 31-(pointId%32);
     uint bitMask = 0x1 << bitOffset;
     uint _useless;
-    if (pointInAABB(pNDC, minNDC, maxNDC)) {
+    if (pointInAABB(pNDC.xyz, minNDC, maxNDC)) {
         if (u_selectionAction > 0.0) { // subtract
             atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
         } else {

@@ -58,7 +58,7 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     IndexBuffer                 mTriIndexBuf;
     bool                        mInitialized = false;
 
-    static const uint sVisibleFaceFramebufferSize = 4096u;
+    static const uint VISIBLE_FACE_FB_SIZE = 4096u;
 
     // ---- Selection event state ----
     std::optional<Box2d>       mSelectionBox;
@@ -109,24 +109,24 @@ public:
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
         bgfx::TextureHandle texHandles[3];
         texHandles[0] = bgfx::createTexture2D(
-            uint16_t(sVisibleFaceFramebufferSize),
-            uint16_t(sVisibleFaceFramebufferSize),
+            VISIBLE_FACE_FB_SIZE,
+            VISIBLE_FACE_FB_SIZE,
             false,
             1,
             bgfx::TextureFormat::RGBA8,
             BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE |
                 BGFX_SAMPLER_UVW_CLAMP);
         texHandles[1] = bgfx::createTexture2D(
-            uint16_t(sVisibleFaceFramebufferSize),
-            uint16_t(sVisibleFaceFramebufferSize),
+            VISIBLE_FACE_FB_SIZE,
+            VISIBLE_FACE_FB_SIZE,
             false,
             1,
             bgfx::TextureFormat::RGBA8,
             BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE |
                 BGFX_SAMPLER_UVW_CLAMP);
         texHandles[2] = bgfx::createTexture2D(
-            uint16_t(sVisibleFaceFramebufferSize),
-            uint16_t(sVisibleFaceFramebufferSize),
+            VISIBLE_FACE_FB_SIZE,
+            VISIBLE_FACE_FB_SIZE,
             false,
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
@@ -142,23 +142,23 @@ public:
             mVisibleSelectionViewIds[0],
             0,
             0,
-            sVisibleFaceFramebufferSize,
-            sVisibleFaceFramebufferSize);
+            VISIBLE_FACE_FB_SIZE,
+            VISIBLE_FACE_FB_SIZE);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
         // ---- Pass 2: compute pass (uses a small "useless" framebuffer) ----
         mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
         bgfx::TextureHandle uselessTexs[2];
         uselessTexs[0] = bgfx::createTexture2D(
-            uint16_t(1),
-            uint16_t(1),
+            1,
+            1,
             false,
             1,
             Context::instance().DEFAULT_COLOR_FORMAT,
             BGFX_TEXTURE_RT);
         uselessTexs[1] = bgfx::createTexture2D(
-            uint16_t(1),
-            uint16_t(1),
+            1,
+            1,
             false,
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
@@ -205,8 +205,8 @@ public:
             mVisibleSelectionViewIds[0],
             0,
             0,
-            sVisibleFaceFramebufferSize,
-            sVisibleFaceFramebufferSize);
+            VISIBLE_FACE_FB_SIZE,
+            VISIBLE_FACE_FB_SIZE);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
         bgfx::setViewFrameBuffer(
@@ -227,7 +227,8 @@ public:
             bgfx::setViewTransform(
                 mSelectionDrawingViewId, vm.data(), pm.data());
 
-            drawSelectionBox(mSelectionDrawingViewId, mSelectionBox.value_or(Box2d{}));
+            drawSelectionBox(
+                mSelectionDrawingViewId, mSelectionBox.value_or(Box2d {}));
         }
 
         // 2) Compute GPU selections with current parameters, if pending
@@ -292,7 +293,7 @@ public:
             return false;
         if (mLMBHeld) {
             mSelectionBox = Box2d(mSelectionAnchor.value());
-            mSelectionBox->add(Point2d{x, y});
+            mSelectionBox->add(Point2d {x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
             mSelectionCalcRequired = true;
         }
@@ -310,8 +311,8 @@ public:
         if (button == MouseButton::LEFT && !mLMBHeld) {
             mLMBHeld               = true;
             mLMBPressPositionTaken = true;
-            mSelectionAnchor = Point2d{x, y};
-            mSelectionBox = Box2d({x, y});
+            mSelectionAnchor       = Point2d {x, y};
+            mSelectionBox          = Box2d({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
         }
         return true; // Consume all mouse-press events while selection is active
@@ -405,28 +406,41 @@ private:
         std::vector<SelectionMode> modes;
         if (sv) {
             if (ctrlShift)
-                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::SUBTRACT});
+                modes.push_back(
+                    {SelectionPrimitive::VERTEX, SelectionAction::SUBTRACT});
             else if (ctrlOnly)
-                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::ADD});
+                modes.push_back(
+                    {SelectionPrimitive::VERTEX, SelectionAction::ADD});
             else
-                modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::REGULAR});
+                modes.push_back(
+                    {SelectionPrimitive::VERTEX, SelectionAction::REGULAR});
         }
         if (sf) {
             if (ov) {
                 if (ctrlShift)
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::SUBTRACT, true});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE,
+                         SelectionAction::SUBTRACT,
+                         true});
                 else if (ctrlOnly)
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::ADD, true});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE, SelectionAction::ADD, true});
                 else
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::REGULAR, true});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE,
+                         SelectionAction::REGULAR,
+                         true});
             }
             else {
                 if (ctrlShift)
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::SUBTRACT});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE, SelectionAction::SUBTRACT});
                 else if (ctrlOnly)
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::ADD});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE, SelectionAction::ADD});
                 else
-                    modes.push_back({SelectionPrimitive::FACE, SelectionAction::REGULAR});
+                    modes.push_back(
+                        {SelectionPrimitive::FACE, SelectionAction::REGULAR});
             }
         }
         return modes;
@@ -452,7 +466,8 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
         if (sv)
-            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::NONE});
+            modes.push_back(
+                {SelectionPrimitive::VERTEX, SelectionAction::NONE});
         if (sf)
             modes.push_back({SelectionPrimitive::FACE, SelectionAction::NONE});
         return modes;
@@ -465,9 +480,11 @@ private:
         bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
         if (sv)
-            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::INVERT});
+            modes.push_back(
+                {SelectionPrimitive::VERTEX, SelectionAction::INVERT});
         if (sf)
-            modes.push_back({SelectionPrimitive::FACE, SelectionAction::INVERT});
+            modes.push_back(
+                {SelectionPrimitive::FACE, SelectionAction::INVERT});
         return modes;
     }
 
@@ -524,7 +541,7 @@ private:
      */
     void computeSelections(uint viewId)
     {
-        Box2d minMaxBox = mSelectionBox.value_or(Box2d{});
+        Box2d minMaxBox = mSelectionBox.value_or(Box2d {});
 
         // If any active mode is a visible-selection mode, set up the
         // restricted projection matrix once for all such modes.
@@ -550,19 +567,18 @@ private:
                 // For REGULAR mode we must clear the current selection;
                 // for ADD/SUBTRACT we simply skip (no change).
                 if (mode.primitive == SelectionPrimitive::FACE &&
-                    mode.action == SelectionAction::REGULAR &&
-                    mode.visible) {
+                    mode.action == SelectionAction::REGULAR && mode.visible) {
                     SelectionParameters clearParams = {
                         viewId,
                         mVisibleSelectionViewIds[0],
                         mVisibleSelectionViewIds[1],
                         Box2d(),
-                        SelectionMode{SelectionPrimitive::FACE, SelectionAction::NONE},
+                        SelectionMode {
+                                       SelectionPrimitive::FACE, SelectionAction::NONE},
                         mLMBHeld,
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
                         bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                        std::array<uint, 2> {
-                                             sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                        {VISIBLE_FACE_FB_SIZE,     VISIBLE_FACE_FB_SIZE },
                         0
                     };
                     for (size_t i = 0; i < dl->size(); i++) {
@@ -589,8 +605,7 @@ private:
                 mLMBHeld,
                 bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
                 bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                std::array<uint, 2> {
-                                     sVisibleFaceFramebufferSize, sVisibleFaceFramebufferSize},
+                {VISIBLE_FACE_FB_SIZE, VISIBLE_FACE_FB_SIZE},
                 0
             };
             for (size_t i = 0; i < dl->size(); i++) {

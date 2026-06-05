@@ -61,7 +61,7 @@ struct SelectionParameters
     bool                isTemporary;
     bgfx::TextureHandle primIdTex;
     bgfx::TextureHandle meshIdTex;
-    std::array<uint, 2> texAttachmentsSize;
+    Point2<uint>        texAttachsSize;
     uint                meshId;
 };
 
