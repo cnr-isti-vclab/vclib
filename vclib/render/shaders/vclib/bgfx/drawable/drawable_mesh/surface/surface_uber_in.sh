@@ -23,9 +23,8 @@
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
-
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
@@ -60,22 +59,24 @@ void main()
             primitiveNormals[primitiveID * 3],
             primitiveNormals[primitiveID * 3 + 1],
             primitiveNormals[primitiveID * 3 + 2]);
-        normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
-        normal = normalize(normal);
+        normal = normalize(mul(u_normalMatrix, normal));
     }
 
     // if flat or smooth shading, compute light
     if (!SURF_SHADING_NONE) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
-        vec3 specular = computeSpecular(
+        // all computations are in view (camera) space
+        // => the camera eye is at (0, 0, 0)
+        // also, u_lightDir is provided in view space
+        specular = computeSpecular(
             v_position,
             vec3(0.0, 0.0, 0.0),
             u_lightDir,
             u_lightColor,
             normal);
     }
-    
+
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
