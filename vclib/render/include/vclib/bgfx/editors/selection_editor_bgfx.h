@@ -66,7 +66,6 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     std::vector<SelectionMode> mCurrentSelectionModes;
     bool                       mSelectionCalcRequired = false;
     bool                       mLMBHeld               = false;
-    bool                       mLMBPressPositionTaken = false;
 
     // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
     uint mPendingReadbackFrames = 0;
@@ -310,7 +309,6 @@ public:
             return false;
         if (button == MouseButton::LEFT && !mLMBHeld) {
             mLMBHeld               = true;
-            mLMBPressPositionTaken = true;
             mSelectionAnchor       = Point2d {x, y};
             mSelectionBox          = Box2d({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
@@ -326,7 +324,6 @@ public:
     {
         if (button == MouseButton::LEFT && mLMBHeld) {
             mLMBHeld               = false;
-            mLMBPressPositionTaken = false;
             if (isSelectionActive()) {
                 mSelectionCalcRequired = true;
             }

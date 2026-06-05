@@ -46,7 +46,6 @@ class SelectionUniforms
     static inline Uniform sSelectionBoxUniform;
     static inline Uniform sSelectionWorkgroupSizeAndCountUniform;
     static inline Uniform sMeshIDDataUniform;
-    static inline Uniform sSelectionActionUniform;
 
 public:
     SelectionUniforms() = delete;
