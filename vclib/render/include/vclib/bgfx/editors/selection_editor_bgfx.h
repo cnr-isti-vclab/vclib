@@ -49,16 +49,16 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     using Base = Editor<ViewerDrawer>;
 
     // ---- BGFX rendering resources ----
-    FrameBuffer                 mVisibleSelectionFrameBuffer;
-    FrameBuffer                 mUselessFB;
+    FrameBuffer                 mVisibleSelectionFB;
+    FrameBuffer                 mComputePassFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
     bgfx::ViewId                mSelectionDrawingViewId  = 0;
     bgfx::VertexLayout          mVertexLayout;
-    VertexBuffer                mPosBuffer;
+    VertexBuffer                mPosBuf;
     IndexBuffer                 mTriIndexBuf;
     bool                        mInitialized = false;
 
-    static const uint VISIBLE_FACE_FB_SIZE = 4096u;
+    uint mVisibleFaceFBSize = 4096u;
 
     // ---- Selection event state ----
     std::optional<Box2d>       mSelectionBox;
@@ -96,9 +96,12 @@ public:
 
     void onInit(uint /*viewId*/) override
     {
+        mVisibleFaceFBSize = std::min(
+            4096u, Context::instance().capabilites().limits.maxTextureSize);
+
         // Create initial vertex buffer with dummy positions
         float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
-        mPosBuffer.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
+        mPosBuf.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
 
         // Create index buffer for the two selection-box triangles
         std::array<uint, 6> ti {1, 2, 0, 2, 3, 0};
@@ -108,31 +111,31 @@ public:
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
         bgfx::TextureHandle texHandles[3];
         texHandles[0] = bgfx::createTexture2D(
-            VISIBLE_FACE_FB_SIZE,
-            VISIBLE_FACE_FB_SIZE,
+            mVisibleFaceFBSize,
+            mVisibleFaceFBSize,
             false,
             1,
             bgfx::TextureFormat::RGBA8,
             BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE |
                 BGFX_SAMPLER_UVW_CLAMP);
         texHandles[1] = bgfx::createTexture2D(
-            VISIBLE_FACE_FB_SIZE,
-            VISIBLE_FACE_FB_SIZE,
+            mVisibleFaceFBSize,
+            mVisibleFaceFBSize,
             false,
             1,
             bgfx::TextureFormat::RGBA8,
             BGFX_TEXTURE_RT | BGFX_TEXTURE_COMPUTE_WRITE |
                 BGFX_SAMPLER_UVW_CLAMP);
         texHandles[2] = bgfx::createTexture2D(
-            VISIBLE_FACE_FB_SIZE,
-            VISIBLE_FACE_FB_SIZE,
+            mVisibleFaceFBSize,
+            mVisibleFaceFBSize,
             false,
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
-        mVisibleSelectionFrameBuffer.create(texHandles, 3, true);
+        mVisibleSelectionFB.create(texHandles, 3, true);
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer.handle());
+            mVisibleSelectionViewIds[0], mVisibleSelectionFB.handle());
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
@@ -141,8 +144,8 @@ public:
             mVisibleSelectionViewIds[0],
             0,
             0,
-            VISIBLE_FACE_FB_SIZE,
-            VISIBLE_FACE_FB_SIZE);
+            mVisibleFaceFBSize,
+            mVisibleFaceFBSize);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
         // ---- Pass 2: compute pass (uses a small "useless" framebuffer) ----
@@ -162,9 +165,9 @@ public:
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
-        mUselessFB.create(uselessTexs, 2, true);
+        mComputePassFB.create(uselessTexs, 2, true);
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[1], mUselessFB.handle());
+            mVisibleSelectionViewIds[1], mComputePassFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
@@ -195,7 +198,7 @@ public:
         // Re-configure visible selection views every frame — required by Qt
         // (all other views follow this pattern; see context.cpp comment)
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[0], mVisibleSelectionFrameBuffer.handle());
+            mVisibleSelectionViewIds[0], mVisibleSelectionFB.handle());
         bgfx::setViewClear(
             mVisibleSelectionViewIds[0],
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
@@ -204,12 +207,12 @@ public:
             mVisibleSelectionViewIds[0],
             0,
             0,
-            VISIBLE_FACE_FB_SIZE,
-            VISIBLE_FACE_FB_SIZE);
+            mVisibleFaceFBSize,
+            mVisibleFaceFBSize);
         bgfx::touch(mVisibleSelectionViewIds[0]);
 
         bgfx::setViewFrameBuffer(
-            mVisibleSelectionViewIds[1], mUselessFB.handle());
+            mVisibleSelectionViewIds[1], mComputePassFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
@@ -323,7 +326,7 @@ public:
         const KeyModifiers& modifiers) override
     {
         if (button == MouseButton::LEFT && mLMBHeld) {
-            mLMBHeld               = false;
+            mLMBHeld = false;
             if (isSelectionActive()) {
                 mSelectionCalcRequired = true;
             }
@@ -573,9 +576,9 @@ private:
                         SelectionMode {
                                        SelectionPrimitive::FACE, SelectionAction::NONE},
                         mLMBHeld,
-                        bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-                        bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                        {VISIBLE_FACE_FB_SIZE,     VISIBLE_FACE_FB_SIZE },
+                        bgfx::getTexture(mVisibleSelectionFB, 0),
+                        bgfx::getTexture(mVisibleSelectionFB, 1),
+                        {mVisibleFaceFBSize,       mVisibleFaceFBSize   },
                         0
                     };
                     for (size_t i = 0; i < dl->size(); i++) {
@@ -600,9 +603,9 @@ private:
                 minMaxBox,
                 mode,
                 mLMBHeld,
-                bgfx::getTexture(mVisibleSelectionFrameBuffer, 0),
-                bgfx::getTexture(mVisibleSelectionFrameBuffer, 1),
-                {VISIBLE_FACE_FB_SIZE, VISIBLE_FACE_FB_SIZE},
+                bgfx::getTexture(mVisibleSelectionFB, 0),
+                bgfx::getTexture(mVisibleSelectionFB, 1),
+                {mVisibleFaceFBSize, mVisibleFaceFBSize},
                 0
             };
             for (size_t i = 0; i < dl->size(); i++) {
@@ -712,9 +715,8 @@ private:
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
             BGFX_STATE_BLEND_ALPHA);
         mTriIndexBuf.bind();
-        mPosBuffer.create(
-            bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
-        mPosBuffer.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        mPosBuf.create(bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
+        mPosBuf.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
 
         const vcl::Color& selBoxColor = std::any_cast<const vcl::Color&>(
             Base::settings().customSettings.at("selectionBoxColor"));

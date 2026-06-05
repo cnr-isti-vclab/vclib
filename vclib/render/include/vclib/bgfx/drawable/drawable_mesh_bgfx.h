@@ -52,13 +52,13 @@ private:
     // TODO: to be removed after shader benchmarks
     SurfaceProgramsType mSurfaceProgramType = SurfaceProgramsType::UBER;
 
-    mutable uint mBufToTexRemainingFrames = 255;
+    uint mBufToTexRemainingFrames = UINT_NULL; // NULL means no frames remaining
 
-    mutable std::vector<uint8_t> mVertexSelectionBackup;
-    mutable std::vector<uint8_t> mFaceSelectionBackup;
-    SelectionMode                mLastReadbackMode;
-    bool                         mHasPendingReadback = false;
-    SelectionMode                mPendingReadbackMode;
+    std::vector<uint8_t> mVertexSelectionBackup;
+    std::vector<uint8_t> mFaceSelectionBackup;
+    SelectionMode        mLastReadbackMode;
+    bool                 mHasPendingReadback = false;
+    SelectionMode        mPendingReadbackMode;
 
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
@@ -140,8 +140,8 @@ public:
         if (params.isTemporary) {
             return;
         }
-        if (mBufToTexRemainingFrames == 255) {
-            mLastReadbackMode      = params.mode;
+        if (mBufToTexRemainingFrames == UINT_NULL) {
+            mLastReadbackMode = params.mode;
             mBufToTexRemainingFrames =
                 mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
         }
@@ -378,32 +378,29 @@ public:
         // selection readback
         {
             switch (mBufToTexRemainingFrames) {
-            case 0:
-                {
-                    auto vec = mMRB.getSelectionBufferCopy();
-                    if (mLastReadbackMode.isVertexSelection()) {
-                        mVertexSelectionBackup = std::move(vec);
-                    }
-                    else if (mLastReadbackMode.isFaceSelection()) {
-                        mFaceSelectionBackup = std::move(vec);
-                    }
-
-                    // Update CPU-side selection flags from GPU readback
-                    updateCPUSelectionFromGPU();
-
-                    if (mHasPendingReadback) {
-                        mLastReadbackMode       = mPendingReadbackMode;
-                        mHasPendingReadback     = false;
-                        mBufToTexRemainingFrames =
-                            mMRB.requestCPUCopyOfSelectionBuffer(
-                                mLastReadbackMode);
-                    }
-                    else {
-                        mBufToTexRemainingFrames = 255;
-                    }
+            case 0: {
+                auto vec = mMRB.getSelectionBufferCopy();
+                if (mLastReadbackMode.isVertexSelection()) {
+                    mVertexSelectionBackup = std::move(vec);
                 }
-                break;
-            case 255: break;
+                else if (mLastReadbackMode.isFaceSelection()) {
+                    mFaceSelectionBackup = std::move(vec);
+                }
+
+                // Update CPU-side selection flags from GPU readback
+                updateCPUSelectionFromGPU();
+
+                if (mHasPendingReadback) {
+                    mLastReadbackMode   = mPendingReadbackMode;
+                    mHasPendingReadback = false;
+                    mBufToTexRemainingFrames =
+                        mMRB.requestCPUCopyOfSelectionBuffer(mLastReadbackMode);
+                }
+                else {
+                    mBufToTexRemainingFrames = UINT_NULL;
+                }
+            } break;
+            case UINT_NULL: break;
             default: mBufToTexRemainingFrames--;
             }
         }
@@ -514,14 +511,14 @@ protected:
 
         // Compute number of bits rounded to 32 needed to store vertex selection
         // We use mMRB.numVerts() which includes duplicated vertices
-        uint bitNumber = vcl::roundUp(mMRB.numVerts(), 32);
+        uint                 bitNumber = vcl::roundUp(mMRB.numVerts(), 32);
         std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
 
         // Build bitfield from mesh vertex selection flags
         // Note: For duplicated vertices (indices >= numVerts), they will
         // remain unselected unless explicitly set elsewhere
-        uint vidx = 0;
-        uint byteIdx = 0;
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
         vcl::BitSet<uint8_t, true> flags;
         for (const auto& v : MeshType::vertices()) {
             flags[vidx % 8] = v.selected();
@@ -551,12 +548,12 @@ protected:
             // Compute number of bits rounded to 32 needed to store face
             // selection
             const uint wordCount = (indexMap.triangleCount() + 31) / 32;
-            uint bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
+            uint       bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
             std::vector<uint8_t> faceBackup(bitNumber / 4, 0);
 
             // For each face, set selection for all its triangles
-            uint tIdx = 0;
-            uint byteIdx = 0;
+            uint                       tIdx    = 0;
+            uint                       byteIdx = 0;
             vcl::BitSet<uint8_t, true> flags;
             for (const auto& f : MeshType::faces()) {
                 const uint faceIdx     = f.index();
@@ -588,7 +585,8 @@ protected:
      * GPU selection buffers that have been read back.
      *
      * This function parses the selection data from mVertexSelectionBackup and
-     * mFaceSelectionBackup and updates the selected() flag on each mesh element.
+     * mFaceSelectionBackup and updates the selected() flag on each mesh
+     * element.
      *
      * @note For vertices, only the original mesh vertices are synchronized.
      * Selection state of duplicated vertices is ignored.
@@ -599,7 +597,7 @@ protected:
         if constexpr (HasVertices<MeshType>) {
             if (mLastReadbackMode.isVertexSelection() &&
                 !mVertexSelectionBackup.empty()) {
-                uint vidx = 0;
+                uint                       vidx = 0;
                 vcl::BitSet<uint8_t, true> flags;
                 for (auto& v : MeshType::vertices()) {
                     uint byteIdx = vidx / 8;
@@ -632,7 +630,7 @@ protected:
                 for (auto& f : MeshType::faces()) {
                     const uint faceIdx     = f.index();
                     const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
-                    uint byteIdx = firstTriIdx / 8;
+                    uint       byteIdx     = firstTriIdx / 8;
                     if (byteIdx < mFaceSelectionBackup.size()) {
                         flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
                         f.selected() = flags[firstTriIdx % 8];
@@ -655,7 +653,7 @@ protected:
         }
         return (
             params.mode.isAtomicAction() ? mMRB.vertexSelectionAtomic(params) :
-                                         mMRB.vertexSelection(params));
+                                           mMRB.vertexSelection(params));
     }
 
     bool faceSelection(const SelectionParameters& params)
@@ -671,7 +669,7 @@ protected:
         }
         return (
             params.mode.isAtomicAction() ? mMRB.faceSelectionAtomic(params) :
-                                         mMRB.faceSelection(params));
+                                           mMRB.faceSelection(params));
     }
 
     bool faceSelectionVisible(const SelectionParameters& params)
