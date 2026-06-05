@@ -288,11 +288,13 @@ public:
         }
 
         // For REGULAR mode, first clear the entire vertex selection buffer
-        if (params.mode.primitive == SelectionPrimitive::VERTEX &&
-            params.mode.action == SelectionAction::REGULAR) {
-            SelectionParameters clearParams(params);
-            clearParams.mode.action = SelectionAction::NONE;
-            vertexSelectionAtomic(clearParams);
+        if (params.mode.primitive == SelectionPrimitive::VERTEX) {
+            if (params.mode.action == SelectionAction::REGULAR) {
+                SelectionParameters clearParams(params);
+                clearParams.mode.action = SelectionAction::NONE;
+                vertexSelectionAtomic(clearParams);
+            }
+            SelectionUniforms::setSelectionAction(params.mode.action);
         }
 
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
@@ -611,8 +613,7 @@ private:
             switch (mode.action) {
             case REGULAR:
             case ADD: return pm.getComputeProgram<SELECTION_VERTEX>();
-            case SUBTRACT:
-                return pm.getComputeProgram<SELECTION_VERTEX_SUBTRACT>();
+            case SUBTRACT: return pm.getComputeProgram<SELECTION_VERTEX>();
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();
             case NONE: return pm.getComputeProgram<SELECTION_NONE>();
             case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();

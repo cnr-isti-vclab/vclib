@@ -78,6 +78,11 @@ void main()
     uint bitMask = 0x1 << bitOffset;
     uint _useless;
     if (pNDC.x >= minNDC.x && pNDC.x <= maxNDC.x && pNDC.y >= minNDC.y && pNDC.y <= maxNDC.y && pNDC.z >= minNDC.z && pNDC.z <= maxNDC.z) {
-        atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
+        // u_selectionAction: 0 = ADD, 1 = SUBTRACT
+        if (u_selectionAction == 1) {
+            atomicFetchAndAnd(vertex_selected[bufferIndex], ~bitMask, _useless);
+        } else {
+            atomicFetchAndOr(vertex_selected[bufferIndex], bitMask, _useless);
+        }
     }
 }

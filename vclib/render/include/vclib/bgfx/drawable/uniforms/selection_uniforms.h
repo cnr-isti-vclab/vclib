@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_SELECTION_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_SELECTION_UNIFORMS_H
 
+#include <vclib/render/selection/selection_mode.h>
+
 #include <vclib/bgfx/uniform.h>
 #include <vclib/space/core.h>
 
@@ -39,11 +41,12 @@ class SelectionUniforms
 {
     static inline std::array<float, 4> sSelectionBox;
     static inline std::array<float, 4> sSelectionWorkgroupSizeAndCount;
-    static inline std::array<float, 4> sMeshIDData;
+    static inline std::array<float, 4> sMeshIDSelectionActionData;
 
     static inline Uniform sSelectionBoxUniform;
     static inline Uniform sSelectionWorkgroupSizeAndCountUniform;
     static inline Uniform sMeshIDDataUniform;
+    static inline Uniform sSelectionActionUniform;
 
 public:
     SelectionUniforms() = delete;
@@ -79,7 +82,18 @@ public:
 
     static void setMeshIdForSelection(uint meshId)
     {
-        sMeshIDData[0] = std::bit_cast<float>(meshId);
+        sMeshIDSelectionActionData[0] = std::bit_cast<float>(meshId);
+    }
+
+    /**
+     * @brief Set the selection operation type.
+     *
+     * @param[in] action
+     */
+    static void setSelectionAction(SelectionAction action)
+    {
+        uint val = action == SelectionAction::SUBTRACT ? 1 : 0;
+        sMeshIDSelectionActionData[1] = std::bit_cast<float>(val);
     }
 
     static void bind()
@@ -94,12 +108,12 @@ public:
                 Uniform("u_workgroupSizeAndCount", bgfx::UniformType::Vec4);
         if (!sMeshIDDataUniform.isValid())
             sMeshIDDataUniform =
-                Uniform("u_meshIdData", bgfx::UniformType::Vec4);
+                Uniform("u_meshIdSelectionActionData", bgfx::UniformType::Vec4);
 
         sSelectionBoxUniform.bind(&sSelectionBox);
         sSelectionWorkgroupSizeAndCountUniform.bind(
             &sSelectionWorkgroupSizeAndCount);
-        sMeshIDDataUniform.bind(&sMeshIDData);
+        sMeshIDDataUniform.bind(&sMeshIDSelectionActionData);
     }
 };
 
