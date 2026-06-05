@@ -265,17 +265,18 @@ public:
 
         if (modifiers[KeyModifier::CONTROL] && !modifiers[KeyModifier::ALT] &&
             !modifiers[KeyModifier::SHIFT]) {
+            using enum SelectionAction;
             switch (key) {
             case Key::A:
-                mCurrentSelectionModes = allModesForSettings();
+                mCurrentSelectionModes = actionModesForSettings<ALL>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::D:
-                mCurrentSelectionModes = noneModesForSettings();
+                mCurrentSelectionModes = actionModesForSettings<NONE>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::I:
-                mCurrentSelectionModes = invertModesForSettings();
+                mCurrentSelectionModes = actionModesForSettings<INVERT>();
                 mSelectionCalcRequired = true;
                 return true;
             default: break;
@@ -446,45 +447,14 @@ private:
         return modes;
     }
 
-    std::vector<SelectionMode> allModesForSettings() const
-    {
+    template<SelectionAction ACTION>
+    std::vector<SelectionMode> actionModesForSettings() const {
         const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
         std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back({SelectionPrimitive::VERTEX, SelectionAction::ALL});
-        if (sf)
-            modes.push_back({SelectionPrimitive::FACE, SelectionAction::ALL});
-        return modes;
-    }
-
-    std::vector<SelectionMode> noneModesForSettings() const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back(
-                {SelectionPrimitive::VERTEX, SelectionAction::NONE});
-        if (sf)
-            modes.push_back({SelectionPrimitive::FACE, SelectionAction::NONE});
-        return modes;
-    }
-
-    std::vector<SelectionMode> invertModesForSettings() const
-    {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        std::vector<SelectionMode> modes;
-        if (sv)
-            modes.push_back(
-                {SelectionPrimitive::VERTEX, SelectionAction::INVERT});
-        if (sf)
-            modes.push_back(
-                {SelectionPrimitive::FACE, SelectionAction::INVERT});
+        if (std::any_cast<bool>(cs.at("selectVertices")))
+            modes.push_back({SelectionPrimitive::VERTEX, ACTION});
+        if (std::any_cast<bool>(cs.at("selectFaces")))
+            modes.push_back({SelectionPrimitive::FACE, ACTION});
         return modes;
     }
 

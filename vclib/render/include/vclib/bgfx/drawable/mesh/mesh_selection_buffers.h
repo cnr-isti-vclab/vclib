@@ -643,7 +643,8 @@ private:
     /**
      * @brief Converts a 1-D element count into a 3-D compute dispatch shape.
      *
-     * No dimension exceeds MAX_COMPUTE_WORKGROUP_SIZE (2048).
+     * Distribute the load across as cubic a grid as possible so no dimension
+     * exceeds MAX_COMPUTE_WORKGROUP_SIZE (2048).
      *
      * @param[in] size: Total number of elements.
      * @return {x, y, z} workgroup counts.
@@ -654,11 +655,14 @@ private:
         if (size == 0)
             return sizes;
 
-        // distributes the load across as cubic a grid as possible.
         uint dim = uint(std::ceil(std::cbrt(size)));
 
         sizes[0] = std::min(dim, MAX_COMPUTE_WORKGROUP_SIZE);
-        sizes[1] = std::min(uint(std::ceil(double(size) / sizes[0])), sizes[0]);
+
+        // Cap at sizes[0] to keep the grid roughly cubic rather than letting
+        // one dimension grow much larger than the others.
+        const uint remainingWork = uint(std::ceil(double(size) / sizes[0]));
+        sizes[1] = std::min(remainingWork, sizes[0]);
         sizes[2] = uint(std::ceil(double(size) / (sizes[0] * sizes[1])));
 
         return sizes;
