@@ -157,7 +157,7 @@ public:
             return 0;
     }
 
-    vcl::Matrix44d transformMatrix() const override
+    vcl::Matrix44d modelMatrix() const override
     {
         if constexpr (HasTransformMatrix<MeshType>) {
             return MeshType::transformMatrix().template cast<double>();
