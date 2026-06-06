@@ -279,17 +279,20 @@ public:
      * positions buffer is required.
      *
      * @param[in] params: Selection parameters (box, mode, view id, …).
+     * @param[in] model: Mesh model matrix (used to build modelViewProj in
+     * shader).
      * @param[in] vertPosBuf: Vertex positions buffer (only used for
      * box-based selection).
      */
     bool vertexSelection(
         const SelectionParameters& params,
+        const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf)
     {
         if (params.mode.isAtomicAction())
             return vertexSelectionAtomic(params);
         else
-            return vertexSelectionNonAtomic(params, vertPosBuf);
+            return vertexSelectionNonAtomic(params, model, vertPosBuf);
     }
 
     /**
@@ -300,6 +303,8 @@ public:
      * positions and triangle index buffers are required.
      *
      * @param[in] params: Selection parameters (box, mode, view id, …).
+     * @param[in] model: Mesh model matrix (used to build modelViewProj in
+     * shader).
      * @param[in] vertPosBuf: Vertex positions buffer (only used for
      * box-based selection).
      * @param[in] triIdxBuf: Triangle index buffer (only used for
@@ -307,13 +312,14 @@ public:
      */
     bool faceSelection(
         const SelectionParameters& params,
+        const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
         else
-            return faceSelectionNonAtomic(params, vertPosBuf, triIdxBuf);
+            return faceSelectionNonAtomic(params, model, vertPosBuf, triIdxBuf);
     }
 
     /**
@@ -463,10 +469,13 @@ private:
      * Returns false if the selection box is not yet fully defined.
      *
      * @param[in] params: Selection parameters (box, mode, view id, …).
+     * @param[in] model: Mesh model matrix (used to build modelViewProj in
+     * shader).
      * @param[in] vertPosBuf: Vertex positions buffer (read-only in the shader).
      */
     bool vertexSelectionNonAtomic(
         const SelectionParameters& params,
+        const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf)
     {
         if (params.box.isNull()) {
@@ -492,6 +501,7 @@ private:
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        bgfx::setTransform(model.data());
         dispatchVertexSelection(params.drawViewId, prog);
         return true;
     }
@@ -520,11 +530,14 @@ private:
      * Returns false if the selection box is not yet fully defined.
      *
      * @param[in] params: Selection parameters.
+     * @param[in] model: Mesh model matrix (used to build modelViewProj in
+     * shader).
      * @param[in] vertPosBuf: Vertex positions buffer.
      * @param[in] triIdxBuf: Triangle index buffer.
      */
     bool faceSelectionNonAtomic(
         const SelectionParameters& params,
+        const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
@@ -556,6 +569,7 @@ private:
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
         mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
+        bgfx::setTransform(model.data());
         dispatchFaceSelection(params.drawViewId, prog);
         return true;
     }

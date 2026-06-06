@@ -162,10 +162,11 @@ public:
      * depending on params.mode.isAtomicAction()).
      *
      * @param[in] params: The selection parameters
+     * @param[in] model: The mesh's model matrix
      */
-    bool vertexSelection(const SelectionParameters& params)
+    bool vertexSelection(const SelectionParameters& params, const Matrix44f& model)
     {
-        return mSelection.vertexSelection(params, mVertexPositionsBuffer);
+        return mSelection.vertexSelection(params, model, mVertexPositionsBuffer);
     }
 
     /**
@@ -173,11 +174,12 @@ public:
      * depending on params.mode.isAtomicAction()).
      *
      * @param[in] params: The selection parameters
+     * @param[in] model: The mesh's model matrix
      */
-    bool faceSelection(const SelectionParameters& params)
+    bool faceSelection(const SelectionParameters& params, const Matrix44f& model)
     {
         return mSelection.faceSelection(
-            params, mVertexPositionsBuffer, mTriangleIndexBuffer);
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
     }
 
     /**

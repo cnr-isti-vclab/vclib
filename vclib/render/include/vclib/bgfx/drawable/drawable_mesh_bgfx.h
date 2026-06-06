@@ -651,7 +651,11 @@ protected:
              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
         }
-        return mMRB.vertexSelection(params);
+        Matrix44f model = Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        return mMRB.vertexSelection(params, model);
     }
 
     bool faceSelection(const SelectionParameters& params)
@@ -665,7 +669,11 @@ protected:
              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
-        return mMRB.faceSelection(params);
+        Matrix44f model = Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        return mMRB.faceSelection(params, model);
     }
 
     bool faceSelectionVisible(const SelectionParameters& params)
