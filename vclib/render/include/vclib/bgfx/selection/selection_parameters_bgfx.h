@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -31,36 +31,21 @@
 
 namespace vcl {
 
-/**
- * The parameters are as follows:
- *   - The view id on which you draw
- *   - The view id of the visible selection's first pass
- *   - The view id of the visible selection's compute pass
- *   - The selection box
- *   - The selection mode
- *   - Whether the selection is requested while still deciding on the final
- *     selection box
- *   - The texture handle for the texture that will contain the primitive ids
- *     when doing visible selection
- *   - The texture handle for the texture that will contain the mesh ids when
- *     doing visible selection
- *   - The XY sizes of the previous 2 textures (yes, it should be the same for
- *     both)
- *   - The Id of the mesh (useful only for visible selection; should start from
- *     1)
- */
 struct SelectionParameters
 {
-    uint                drawViewId;
-    uint                pass1ViewId;
-    uint                pass2ViewId;
-    Box2d               box;
-    SelectionMode       mode;
-    bool                isTemporary;
-    bgfx::TextureHandle primIdTex;
-    bgfx::TextureHandle meshIdTex;
-    Point2<uint>        texAttachsSize;
-    uint                meshId;
+    uint          drawViewId;  // The view id on which you draw
+    uint          pass1ViewId; // visible selection's first pass
+    uint          pass2ViewId; // visible selection's compute pass
+    Box2d         box;         // selection box
+    SelectionMode mode;        // selection mode
+    bool isTemporary; // Whether the selection is requested while still deciding
+                      // on the final selection box
+    bgfx::TextureHandle primIdTex; // texture that will contain the primitive
+                                   // ids  when doing visible selection
+    bgfx::TextureHandle meshIdTex; // texture that will contain the mesh ids
+                                   // when doing visible selection
+    Point2<uint> texAttachsSize;   // sizes of the previous 2 textures
+    uint         meshId;           // Id of the mesh
 };
 
 } // namespace vcl
