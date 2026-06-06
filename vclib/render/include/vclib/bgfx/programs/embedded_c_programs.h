@@ -23,6 +23,7 @@
 #ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 #define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_H
 
+#include "embedded_c_programs/buffer_to_tex.h"
 #include "embedded_c_programs/cubemap_mipmap_gen.h"
 #include "embedded_c_programs/cubemap_to_irradiance.h"
 #include "embedded_c_programs/cubemap_to_specular.h"

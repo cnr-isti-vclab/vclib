@@ -79,7 +79,7 @@ public:
 
     // DrawableObject implementation
 
-    void draw(const DrawObjectSettings& settings) const override;
+    void draw(const DrawObjectSettings& settings) override;
 
     vcl::Box3d boundingBox() const override { return mBox.cast<double>(); }
 

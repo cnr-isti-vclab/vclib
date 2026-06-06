@@ -44,7 +44,7 @@ public:
 
     // Editor implementation
 
-    void draw(uint viewId) const override {}
+    void draw(uint viewId) override {}
 
     bool onMousePress(
         vcl::MouseButton::Enum   button,

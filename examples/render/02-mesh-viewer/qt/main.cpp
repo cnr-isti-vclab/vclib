@@ -62,10 +62,21 @@ int main(int argc, char** argv)
 
     // update the mesh to be displayed in the scene
     const auto bb = vcl::boundingBox(drawable);
-    vcl::scale(drawable, 0.5f);
-    vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
 
-    drawable.updateBuffers({VERTICES, VERT_NORMALS, WIREFRAME});
+    vcl::Matrix44d rot         = vcl::Matrix44d::Identity();
+    vcl::Matrix44d scale       = vcl::Matrix44d::Identity();
+    vcl::Matrix44d translation = vcl::Matrix44d::Identity();
+
+    vcl::setTransformMatrixRotation(
+        rot, vcl::Point3d(0, 1, 0), vcl::toRad(90.0));
+
+    vcl::setTransformMatrixScale(scale, 0.5);
+    vcl::setTransformMatrixTranslation(
+        translation, vcl::Point3d(bb.size().x(), 0, 0));
+
+    drawable.transformMatrix() = translation * scale * rot;
+
+    drawable.updateBuffers({MESH_ADDITIONAL_DATA});
     v->pushBack(std::move(drawable));
 
     mv.setDrawableObjectVector(v);

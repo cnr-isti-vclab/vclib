@@ -46,9 +46,6 @@ void main()
     gl_Position = pos + offset;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
 
-    // default case - color is taken from buffer
-    v_color = a_color0;
-
     // quad parametrization
     v_texcoord0 = quadUv;
 

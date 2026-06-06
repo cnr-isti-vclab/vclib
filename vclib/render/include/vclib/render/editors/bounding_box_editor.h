@@ -55,7 +55,7 @@ public:
         Base::settings().customSettings["thickness"] = 2.0f;
     }
 
-    void draw(uint) const override {}
+    void draw(uint) override {}
 };
 #endif
 

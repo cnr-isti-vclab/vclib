@@ -195,16 +195,22 @@ public:
 
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        bool block = Base::onKeyPress(key, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onKeyPress(key, modifiers);
         }
 
+        if (!block)
+            block = Base::onKeyPress(key, modifiers);
+
         if (!block) {
             switch (key) {
-            case Key::R: fitScene(); break;
+            case Key::R:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    fitScene();
+                break;
             case Key::S:
                 if (modifiers[KeyModifier::CONTROL])
                     DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
@@ -217,23 +223,31 @@ public:
 
     bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        bool block = Base::onKeyRelease(key, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onKeyRelease(key, modifiers);
         }
+
+        if (!block)
+            block = Base::onKeyRelease(key, modifiers);
+
         return block;
     }
 
     bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
-        bool block = Base::onMouseMove(x, y, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onMouseMove(x, y, modifiers);
         }
+
+        if (!block)
+            block = Base::onMouseMove(x, y, modifiers);
+
         return block;
     }
 
@@ -243,12 +257,16 @@ public:
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        bool block = Base::onMousePress(button, x, y, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onMousePress(button, x, y, modifiers);
         }
+
+        if (!block)
+            block = Base::onMousePress(button, x, y, modifiers);
+
         return block;
     }
 
@@ -258,12 +276,16 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        bool block = Base::onMouseRelease(button, x, y, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onMouseRelease(button, x, y, modifiers);
         }
+
+        if (!block)
+            block = Base::onMouseRelease(button, x, y, modifiers);
+
         return block;
     }
 
@@ -273,28 +295,38 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        bool block = Base::onMouseDoubleClick(button, x, y, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onMouseDoubleClick(button, x, y, modifiers);
         }
+
+        if (!block)
+            block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
         return block;
     }
 
     bool onMouseScroll(double x, double y, const KeyModifiers& modifiers)
         override
     {
-        bool block = Base::onMouseScroll(x, y, modifiers);
+        bool block = false;
 
         for (const auto& editor : mEditors) {
             if (!block && editor->isActive())
                 block = editor->onMouseScroll(x, y, modifiers);
         }
+
+        if (!block)
+            block = Base::onMouseScroll(x, y, modifiers);
+
         return block;
     }
 
 protected:
+    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
+
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)

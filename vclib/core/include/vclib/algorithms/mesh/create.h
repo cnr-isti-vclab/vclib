@@ -38,8 +38,8 @@
  *
  * @brief List of Mesh Creation algorithms.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/create.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 #endif // VCL_ALGORITHMS_MESH_CREATE_H

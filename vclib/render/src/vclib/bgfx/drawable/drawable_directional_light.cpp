@@ -105,7 +105,7 @@ void DrawableDirectionalLight::setLinesColor(const Color& c)
     mColor = c;
 }
 
-void DrawableDirectionalLight::draw(const DrawObjectSettings& settings) const
+void DrawableDirectionalLight::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 

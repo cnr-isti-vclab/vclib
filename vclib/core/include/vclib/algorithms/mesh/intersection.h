@@ -33,8 +33,8 @@
  *
  * @brief List of mesh intersection algorithms.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/intersection.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 namespace vcl {

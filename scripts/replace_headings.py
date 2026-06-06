@@ -34,7 +34,7 @@ def replace_headers_in_dir(folder_path, exclude_paths = []):
             if any(exclude in file_path for exclude in exclude_paths):
                 continue
             replace_headers_in_dir(file_path, exclude_paths)
-        elif file_path.endswith(('.h', '.cpp', '.sc', '.sh')):
+        elif file_path.endswith(('.h.in', '.h', '.hpp', '.mm', '.cpp', '.sc', '.sh')):
             # if file_path does not contain 'varying.def.sc'
             if 'varying.def.sc' not in file_path:
                 replace_header(file_path, header_string)
@@ -53,7 +53,23 @@ def replace_cmake_headers_in_dir(folder_path, recursive=True):
         if os.path.isdir(file_path) and recursive:
             replace_cmake_headers_in_dir(file_path)
         elif file_path.endswith(('CMakeLists.txt', '.cmake')):
-            replace_header(file_path, header_string, start='#*')
+            replace_header(file_path, header_string, start='#*', end='*/')
+
+def replace_python_headers_in_dir(folder_path, recursive=True):
+    # get the path where this script is located
+    path = os.path.dirname(os.path.abspath(__file__))
+
+    # Read in the file
+    with open(path + '/templates/headings.txt', 'r') as file :
+        header_string = file.read()
+        # replace the first char of the line with a #
+        header_string = re.sub(r'^.', '#', header_string, flags=re.MULTILINE)
+
+    for file_path in glob.glob(os.path.join(folder_path, '*')):
+        if os.path.isdir(file_path) and recursive:
+            replace_python_headers_in_dir(file_path)
+        elif file_path.endswith(('.py',)):
+            replace_header(file_path, header_string, start='#*', end='*/')
 
 def replace_shader_headers_in_dir(folder_path, exclude_paths = []):
     # get the path where this script is located
@@ -73,20 +89,25 @@ def replace_shader_headers_in_dir(folder_path, exclude_paths = []):
             replace_header(file_path, header_string)
 
 if __name__ == "__main__":
-    replace_headers_in_dir('../examples/')
+    replace_headers_in_dir('../examples/bindings/')
     replace_headers_in_dir('../tests/')
     replace_cmake_headers_in_dir('../', recursive=False)
+    replace_cmake_headers_in_dir('../3rdparty/')
     replace_cmake_headers_in_dir('../cmake/')
     replace_cmake_headers_in_dir('../examples/')
     replace_cmake_headers_in_dir('../tests/')
+    replace_python_headers_in_dir('../examples/')
 
-    vcl_modules = ['core', 'external', 'render']
+    vcl_modules = ['bindings', 'core', 'external', 'render']
 
     # paths in which headings should not be replaced
-    exclude_paths = ['bgfx/text/font', 'vclib/bgfx_imgui']
+    exclude_paths = ['bgfx/text/font', 'bgfx_imgui']
 
     os.chdir('../vclib/')
     for module in vcl_modules:
+        # Replace cmake headers in the module root directory (e.g., module/CMakeLists.txt)
+        replace_cmake_headers_in_dir(module, recursive=False)
+
         if os.path.exists(module + '/include/vclib/'):
             replace_headers_in_dir(module + '/include/vclib/', exclude_paths)
             replace_cmake_headers_in_dir(module + '/include/vclib/', recursive=False)
@@ -96,6 +117,6 @@ if __name__ == "__main__":
 
         if os.path.exists(module + '/src/'):
             replace_headers_in_dir(module + '/src/', exclude_paths)
-        
+
         if os.path.exists(module + '/shaders/'):
             replace_shader_headers_in_dir(module + '/shaders/', exclude_paths)

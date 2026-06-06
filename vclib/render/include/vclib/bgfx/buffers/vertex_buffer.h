@@ -212,8 +212,7 @@ public:
         uint64_t                  flags   = BGFX_BUFFER_NONE,
         bool                      compute = false)
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        destroy();
 
         mHandle = bgfx::createVertexBuffer(data, layout, flags);
         assert(bgfx::isValid(mHandle));

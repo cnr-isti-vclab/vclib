@@ -54,9 +54,9 @@ public:
     // DrawableObject interface
     void init();
 
-    void draw(const DrawObjectSettings& settings) const;
+    void draw(const DrawObjectSettings& settings);
 
-    void drawId(const DrawObjectSettings& settings) const;
+    void drawId(const DrawObjectSettings& settings);
 
     Box3d boundingBox() const;
 

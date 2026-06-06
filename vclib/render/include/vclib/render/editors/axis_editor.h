@@ -53,7 +53,7 @@ public:
         // Initialize settings keys expected.
     }
 
-    void draw(uint) const override {}
+    void draw(uint) override {}
 
     bool isVisible() const { return false; }
 

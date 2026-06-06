@@ -48,7 +48,7 @@ public:
         Base::viewerUpdate();
     }
 
-    void draw(uint viewId) const override
+    void draw(uint viewId) override
     {
         DrawObjectSettings settings;
         settings.viewId = viewId;
@@ -59,7 +59,10 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         switch (key) {
-        case Key::A: mCustomShortcutCallback(); break;
+        case Key::A:
+            if (modifiers[KeyModifier::NO_MODIFIER])
+                mCustomShortcutCallback();
+            break;
         default: break;
         }
         return false;

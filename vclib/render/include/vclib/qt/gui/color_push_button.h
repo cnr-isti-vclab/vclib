@@ -33,8 +33,8 @@ class ColorPushButton : public QPushButton
     Q_OBJECT
 
 public:
-    explicit ColorPushButton(QWidget* parent = Q_NULLPTR);
     explicit ColorPushButton(const QColor& c, QWidget* parent = Q_NULLPTR);
+    explicit ColorPushButton(QWidget* parent = Q_NULLPTR);
 
     ~ColorPushButton() = default;
 

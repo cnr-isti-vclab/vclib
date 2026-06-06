@@ -175,6 +175,80 @@ inline Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     return tokenizer;
 }
 
+/**
+ * @brief Reads and returns the next non-empty, non-comment line from a txt
+ * stream, tokenized with the given separator.
+ *
+ * Comment lines are those starting with the specified comment prefix. This
+ * function skips both empty lines and comment lines.
+ *
+ * @throws MalformedFileException if the stream ends before a non-empty,
+ * non-comment line is found.
+ *
+ * @param[in] file: the stream to read from.
+ * @param[in] commentPrefix: the string that identifies a comment line when it
+ * appears at the beginning of the line (default: "#").
+ * @param[in] separators: the separators to use for tokenization.
+ * @return the next non-empty, non-comment line read from the stream, tokenized
+ * with the given separator.
+ */
+inline Tokenizer readAndTokenizeNextNonCommentLine(
+    std::istream&           file,
+    const std::string&      commentPrefix = "#",
+    const std::vector<char> separators    = {' ', '\t'})
+{
+    std::string line;
+    Tokenizer   tokenizer;
+
+    do {
+        line = readNextNonEmptyLine(file);
+        // Skip comment lines (lines starting with commentPrefix)
+        if (!line.empty() && line.size() >= commentPrefix.size() &&
+            line.substr(0, commentPrefix.size()) == commentPrefix) {
+            continue;
+        }
+        tokenizer = Tokenizer(line, separators);
+    } while (tokenizer.begin() == tokenizer.end());
+
+    return tokenizer;
+}
+
+/**
+ * @brief Reads and returns the next non-empty, non-comment line from a txt
+ * stream, tokenized with the given separator.
+ *
+ * Comment lines are those starting with the specified comment prefix. This
+ * function skips both empty lines and comment lines.
+ *
+ * @param[in] file: the stream to read from.
+ * @param[in] commentPrefix: the string that identifies a comment line when it
+ * appears at the beginning of the line (default: "#").
+ * @param[in] separators: the separators to use for tokenization.
+ * @return the next non-empty, non-comment line read from the stream, tokenized
+ * with the given separator. If the stream ends before a non-empty, non-comment
+ * line is found, returns an empty tokenizer.
+ */
+inline Tokenizer readAndTokenizeNextNonCommentLineNoThrow(
+    std::istream&           file,
+    const std::string&      commentPrefix = "#",
+    const std::vector<char> separators    = {' ', '\t'})
+{
+    std::string line;
+    Tokenizer   tokenizer;
+
+    do {
+        line = readNextNonEmptyLineNoThrow(file);
+        // Skip comment lines (lines starting with commentPrefix)
+        if (file && !line.empty() && line.size() >= commentPrefix.size() &&
+            line.substr(0, commentPrefix.size()) == commentPrefix) {
+            continue;
+        }
+        tokenizer = Tokenizer(line, separators);
+    } while (file && tokenizer.begin() == tokenizer.end());
+
+    return tokenizer;
+}
+
 namespace io {
 
 // read/bin

@@ -42,8 +42,8 @@
  *
  * They allow to update components and properties of a mesh.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/update.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 #endif // VCL_ALGORITHMS_MESH_UPDATE_H

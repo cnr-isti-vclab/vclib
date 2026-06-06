@@ -38,7 +38,8 @@ void readPlyVertexProperty(
     MeshType&   mesh,
     VertexType& v,
     PlyProperty p,
-    std::endian end = std::endian::little)
+    bool        vcgGenerated = false,
+    std::endian end          = std::endian::little)
 {
     bool hasBeenRead = false;
     if (p.name >= ply::x && p.name <= ply::z) {
@@ -46,6 +47,20 @@ void readPlyVertexProperty(
         int a           = p.name - ply::x;
         v.position()[a] = io::readPrimitiveType<Scalar>(file, p.type, end);
         hasBeenRead     = true;
+    }
+    else if (p.name == ply::bit_flags) {
+        if (vcgGenerated) {
+            int fval = io::readPrimitiveType<int>(file, p.type, end);
+            v.importFlagsFromVCGFormat(fval);
+            hasBeenRead = true;
+        }
+        else {
+            using FlagsType = VertexType::FlagsType;
+            FlagsType fval =
+                io::readPrimitiveType<FlagsType>(file, p.type, end);
+            v.setUnderlyingBitFlags(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -124,7 +139,8 @@ void readPlyVertexTxt(
     std::istream&                 file,
     VertexType&                   v,
     MeshType&                     mesh,
-    const std::list<PlyProperty>& vertexProperties)
+    const std::list<PlyProperty>& vertexProperties,
+    bool                          vcgGenerated = false)
 {
     Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token          = spaceTokenizer.begin();
@@ -132,7 +148,7 @@ void readPlyVertexTxt(
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");
         }
-        readPlyVertexProperty(token, mesh, v, p);
+        readPlyVertexProperty(token, mesh, v, p, vcgGenerated);
     }
 }
 
@@ -142,10 +158,11 @@ void readPlyVertexBin(
     VertexType&                   v,
     MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties,
-    std::endian                   end)
+    std::endian                   end,
+    bool                          vcgGenerated = false)
 {
     for (const PlyProperty& p : vertexProperties) {
-        readPlyVertexProperty(file, mesh, v, p, end);
+        readPlyVertexProperty(file, mesh, v, p, vcgGenerated, end);
     }
 }
 
@@ -171,6 +188,10 @@ void writePlyVertices(
             if (p.name >= ply::x && p.name <= ply::z) {
                 io::writeProperty(
                     file, v.position()[p.name - ply::x], p.type, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, v.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -241,14 +262,20 @@ void readPlyVertices(
     for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto& v = m.vertex(vid);
         if (header.format() == ply::ASCII) {
-            detail::readPlyVertexTxt(file, v, m, header.vertexProperties());
+            detail::readPlyVertexTxt(
+                file, v, m, header.vertexProperties(), header.isVcgGenerated());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyVertexBin(
-                file, v, m, header.vertexProperties(), end);
+                file,
+                v,
+                m,
+                header.vertexProperties(),
+                end,
+                header.isVcgGenerated());
         }
         log.progress(vid);
     }

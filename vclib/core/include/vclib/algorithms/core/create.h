@@ -35,7 +35,7 @@
  * @brief List core algorithms for creating generic objects.
  *
  * You can access these algorithms by including
- * `#include <vclib/algorithms/core/create.h>`
+ * `#include <vclib/algorithms/core.h>`
  */
 
 namespace vcl {

@@ -26,7 +26,16 @@ $input v_normal, v_color, v_texcoord0
 $input v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
+
+/*
+TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
+restore next line with:
+
+BUFFER_RO(vertexColors, vec4, VCL_MRB_VERTEX_COLOR_STREAM); // colors (rgba as float bits)
+*/
+BUFFER_RO(vertexColors, vec4, 2); // colors (rgba as float bits)
 
 void main()
 {
@@ -55,7 +64,8 @@ void main()
     }
 
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
-        color = v_color;
+        uint pointId = uint(gl_PrimitiveID) / 2u;
+        color = uintABGRToVec4Color(floatBitsToUint(vertexColors[pointId / 4u][pointId % 4u]));
     }
     else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
         color = u_meshColor;

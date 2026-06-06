@@ -64,7 +64,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
-    mutable bool        mVertexQuadBufferGenerated = false;
+    bool                mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -130,7 +130,7 @@ public:
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,
-        const bgfx::ViewId viewId) const
+        const bgfx::ViewId viewId)
     {
         if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
             return;
@@ -141,8 +141,6 @@ public:
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mVertexNormalsBuffer.bindCompute(
             VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(
-            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
 
@@ -209,6 +207,14 @@ public:
     {
         mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mVertexQuadIndexBuffer.bind();
+    }
+
+    void bindPointsVertexColorBuffer() const
+    {
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindCompute(
+                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
+        }
     }
 
     void bindIndexBuffers(
@@ -502,6 +508,11 @@ private:
             Context::getAllocatedBufferAndReleaseFn<uint>(nt * 3);
 
         Base::fillTriangleIndices(mesh, buffer);
+
+        // Re-read the actual triangle count: fillTriangleIndices() updates
+        // mNumTris to the real earCut result, which may be smaller than the
+        // pre-triangulation estimate for meshes with degenerate faces.
+        nt = Base::numTris();
 
         mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
     }
