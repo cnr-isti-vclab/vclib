@@ -158,7 +158,8 @@ public:
     }
 
     /**
-     * @brief Attempts to calculate a non atomic vertex selection
+     * @brief Attempts to calculate a vertex selection (atomic or non-atomic
+     * depending on params.mode.isAtomicAction()).
      *
      * @param[in] params: The selection parameters
      */
@@ -168,17 +169,8 @@ public:
     }
 
     /**
-     * @brief Attempts to calculate an atomic vertex selection
-     *
-     * @param[in] params: The selection parameters
-     */
-    bool vertexSelectionAtomic(const SelectionParameters& params)
-    {
-        return mSelection.vertexSelectionAtomic(params);
-    }
-
-    /**
-     * @brief Attempts to calculate a non atomic face selection
+     * @brief Attempts to calculate a face selection (atomic or non-atomic
+     * depending on params.mode.isAtomicAction()).
      *
      * @param[in] params: The selection parameters
      */
@@ -186,16 +178,6 @@ public:
     {
         return mSelection.faceSelection(
             params, mVertexPositionsBuffer, mTriangleIndexBuffer);
-    }
-
-    /**
-     * @brief Attempts to calculate an atomic face selection
-     *
-     * @param[in] params: The selection parameters
-     */
-    bool faceSelectionAtomic(const SelectionParameters& params)
-    {
-        return mSelection.faceSelectionAtomic(params);
     }
 
     /**

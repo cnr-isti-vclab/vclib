@@ -642,43 +642,39 @@ protected:
 
     bool vertexSelection(const SelectionParameters& params)
     {
+        assert(params.primitive == SelectionPrimitive::VERTEX);
         if constexpr (!HasVertices<MeshType>) {
             return false;
         }
         if (params.isTemporary &&
-            params.mode.primitive == SelectionPrimitive::VERTEX &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
         }
-        return (
-            params.mode.isAtomicAction() ? mMRB.vertexSelectionAtomic(params) :
-                                           mMRB.vertexSelection(params));
+        return mMRB.vertexSelection(params);
     }
 
     bool faceSelection(const SelectionParameters& params)
     {
+        assert(params.primitive == SelectionPrimitive::FACE);
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
         if (params.isTemporary &&
-            params.mode.primitive == SelectionPrimitive::FACE &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
-        return (
-            params.mode.isAtomicAction() ? mMRB.faceSelectionAtomic(params) :
-                                           mMRB.faceSelection(params));
+        return mMRB.faceSelection(params);
     }
 
     bool faceSelectionVisible(const SelectionParameters& params)
     {
+        assert(params.primitive == SelectionPrimitive::FACE);
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
         if (params.isTemporary &&
-            params.mode.primitive == SelectionPrimitive::FACE &&
             params.mode.visible &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {

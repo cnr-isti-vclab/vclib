@@ -272,127 +272,48 @@ public:
     // ---- Selection operations -------------------------------------------
 
     /**
-     * @brief Box-based vertex selection (non-atomic).
+     * @brief Vertex selection dispatch (atomic or box-based).
      *
-     * Returns false if the selection box is not yet fully defined.
+     * Checks whether the action is atomic (ALL / NONE / INVERT) and delegates
+     * to the appropriate private helper. For non-atomic actions the vertex
+     * positions buffer is required.
      *
      * @param[in] params: Selection parameters (box, mode, view id, …).
-     * @param[in] vertPosBuf: Vertex positions buffer (read-only in the shader).
+     * @param[in] vertPosBuf: Vertex positions buffer (only used for
+     * box-based selection).
      */
     bool vertexSelection(
         const SelectionParameters& params,
         const VertexBuffer&        vertPosBuf)
     {
-        if (params.box.isNull()) {
-            return false;
-        }
-
-        // For REGULAR mode, first clear the entire vertex selection buffer
-        if (params.mode.primitive == SelectionPrimitive::VERTEX &&
-            params.mode.action == SelectionAction::REGULAR) {
-            SelectionParameters clearParams(params);
-            clearParams.mode.action = SelectionAction::NONE;
-            vertexSelectionAtomic(clearParams);
-        }
-        SelectionUniforms::setSelectionAction(params.mode.action);
-
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
-            Context::instance().programManager(), params.mode);
-
-        SelectionUniforms::setSelectionBox(params.box);
-        SelectionUniforms::setSelectionWorkgroupSize(
-            mVertexSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
-        SelectionUniforms::bind();
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        vertPosBuf.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        dispatchVertexSelection(params.drawViewId, prog);
-        return true;
+        if (params.mode.isAtomicAction())
+            return vertexSelectionAtomic(params);
+        else
+            return vertexSelectionNonAtomic(params, vertPosBuf);
     }
 
     /**
-     * @brief Atomic vertex selection (ALL / NONE / INVERT — no box needed).
+     * @brief Face selection dispatch (atomic or box-based).
      *
-     * @param[in] params: Selection parameters (mode, view id, …).
-     */
-    bool vertexSelectionAtomic(const SelectionParameters& params)
-    {
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
-            Context::instance().programManager(), params.mode);
-        SelectionUniforms::setSelectionWorkgroupSize(
-            mVertexSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
-        SelectionUniforms::bind();
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchVertexSelection(params.drawViewId, prog);
-        return true;
-    }
-
-    /**
-     * @brief Box-based face selection (non-atomic).
+     * Checks whether the action is atomic (ALL / NONE / INVERT) and delegates
+     * to the appropriate private helper. For non-atomic actions the vertex
+     * positions and triangle index buffers are required.
      *
-     * For FACE_REGULAR mode the buffer is cleared before selection.
-     * Returns false if the selection box is not yet fully defined.
-     *
-     * @param[in] params: Selection parameters.
-     * @param[in] vertPosBuf: Vertex positions buffer.
-     * @param[in] triIdxBuf: Triangle index buffer.
+     * @param[in] params: Selection parameters (box, mode, view id, …).
+     * @param[in] vertPosBuf: Vertex positions buffer (only used for
+     * box-based selection).
+     * @param[in] triIdxBuf: Triangle index buffer (only used for
+     * box-based selection).
      */
     bool faceSelection(
         const SelectionParameters& params,
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
-        if (params.box.isNull()) {
-            return false;
-        }
-
-        // For REGULAR mode, first clear the entire face selection buffer
-        if (params.mode.primitive == SelectionPrimitive::FACE &&
-            params.mode.action == SelectionAction::REGULAR) {
-            SelectionParameters clearParams(params);
-            clearParams.mode.action = SelectionAction::NONE;
-            faceSelectionAtomic(clearParams);
-        }
-
-        SelectionUniforms::setSelectionAction(params.mode.action);
-
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
-            Context::instance().programManager(), params.mode);
-
-        SelectionUniforms::setSelectionBox(params.box);
-        SelectionUniforms::setSelectionWorkgroupSize(
-            mFaceSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
-        SelectionUniforms::bind();
-        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
-        vertPosBuf.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        triIdxBuf.bind(5, bgfx::Access::Read);
-        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
-        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
-        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
-        dispatchFaceSelection(params.drawViewId, prog);
-        return true;
-    }
-
-    /**
-     * @brief Atomic face selection (ALL / NONE / INVERT).
-     *
-     * @param[in] params: Selection parameters.
-     */
-    bool faceSelectionAtomic(const SelectionParameters& params)
-    {
-        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
-            Context::instance().programManager(), params.mode);
-        SelectionUniforms::setSelectionWorkgroupSize(
-            mFaceSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
-        SelectionUniforms::bind();
-        mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchFaceSelection(params.drawViewId, prog);
-        return true;
+        if (params.mode.isAtomicAction())
+            return faceSelectionAtomic(params);
+        else
+            return faceSelectionNonAtomic(params, vertPosBuf, triIdxBuf);
     }
 
     /**
@@ -536,6 +457,127 @@ public:
     void bindSelectedFacesBuffer() const { mSelectedFacesBuffer.bind(6); }
 
 private:
+    /**
+     * @brief Box-based vertex selection (non-atomic).
+     *
+     * Returns false if the selection box is not yet fully defined.
+     *
+     * @param[in] params: Selection parameters (box, mode, view id, …).
+     * @param[in] vertPosBuf: Vertex positions buffer (read-only in the shader).
+     */
+    bool vertexSelectionNonAtomic(
+        const SelectionParameters& params,
+        const VertexBuffer&        vertPosBuf)
+    {
+        if (params.box.isNull()) {
+            return false;
+        }
+
+        // For REGULAR mode, first clear the entire vertex selection buffer
+        if (params.mode.action == SelectionAction::REGULAR) {
+            SelectionParameters clearParams(params);
+            clearParams.mode.action = SelectionAction::NONE;
+            vertexSelectionAtomic(clearParams);
+        }
+        SelectionUniforms::setSelectionAction(params.mode.action);
+
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
+            Context::instance().programManager(), params.mode);
+
+        SelectionUniforms::setSelectionBox(params.box);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mVertexSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+        SelectionUniforms::bind();
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        vertPosBuf.bindCompute(
+            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        dispatchVertexSelection(params.drawViewId, prog);
+        return true;
+    }
+
+    /**
+     * @brief Atomic vertex selection (ALL / NONE / INVERT — no box needed).
+     *
+     * @param[in] params: Selection parameters (mode, view id, …).
+     */
+    bool vertexSelectionAtomic(const SelectionParameters& params)
+    {
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
+            Context::instance().programManager(), params.mode);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mVertexSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+        SelectionUniforms::bind();
+        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        dispatchVertexSelection(params.drawViewId, prog);
+        return true;
+    }
+
+    /**
+     * @brief Box-based face selection (non-atomic).
+     *
+     * Returns false if the selection box is not yet fully defined.
+     *
+     * @param[in] params: Selection parameters.
+     * @param[in] vertPosBuf: Vertex positions buffer.
+     * @param[in] triIdxBuf: Triangle index buffer.
+     */
+    bool faceSelectionNonAtomic(
+        const SelectionParameters& params,
+        const VertexBuffer&        vertPosBuf,
+        const IndexBuffer&         triIdxBuf)
+    {
+        if (params.box.isNull()) {
+            return false;
+        }
+
+        // For REGULAR mode, first clear the entire face selection buffer
+        if (params.mode.action == SelectionAction::REGULAR) {
+            SelectionParameters clearParams(params);
+            clearParams.mode.action = SelectionAction::NONE;
+            faceSelectionAtomic(clearParams);
+        }
+
+        SelectionUniforms::setSelectionAction(params.mode.action);
+
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
+            Context::instance().programManager(), params.mode);
+
+        SelectionUniforms::setSelectionBox(params.box);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mFaceSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+        SelectionUniforms::bind();
+        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
+        vertPosBuf.bindCompute(
+            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        triIdxBuf.bind(5, bgfx::Access::Read);
+        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
+        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
+        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
+        dispatchFaceSelection(params.drawViewId, prog);
+        return true;
+    }
+
+    /**
+     * @brief Atomic face selection (ALL / NONE / INVERT).
+     *
+     * @param[in] params: Selection parameters.
+     */
+    bool faceSelectionAtomic(const SelectionParameters& params)
+    {
+        bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
+            Context::instance().programManager(), params.mode);
+        SelectionUniforms::setSelectionWorkgroupSize(
+            mFaceSelectionWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+        SelectionUniforms::bind();
+        mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
+        dispatchFaceSelection(params.drawViewId, prog);
+        return true;
+    }
+
     void dispatchVertexSelection(
         const uint                 viewId,
         const bgfx::ProgramHandle& handle)
