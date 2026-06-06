@@ -328,9 +328,7 @@ public:
     {
         if (button == MouseButton::LEFT && mLMBHeld) {
             mLMBHeld = false;
-            if (isSelectionActive()) {
-                mSelectionCalcRequired = true;
-            }
+            mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
         }

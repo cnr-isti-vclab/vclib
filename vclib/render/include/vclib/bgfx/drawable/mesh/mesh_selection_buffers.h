@@ -464,6 +464,32 @@ public:
 
 private:
     /**
+     * @brief Clears the vertex selection bitfield by dispatching a NONE action.
+     *
+     * @param[in] drawViewId: View ID for the dispatch.
+     */
+    void clearVertexSelection(uint drawViewId)
+    {
+        SelectionParameters params;
+        params.drawViewId = drawViewId;
+        params.mode.action = SelectionAction::NONE;
+        vertexSelectionAtomic(params);
+    }
+
+    /**
+     * @brief Clears the face selection bitfield by dispatching a NONE action.
+     *
+     * @param[in] drawViewId: View ID for the dispatch.
+     */
+    void clearFaceSelection(uint drawViewId)
+    {
+        SelectionParameters params;
+        params.drawViewId = drawViewId;
+        params.mode.action = SelectionAction::NONE;
+        faceSelectionAtomic(params);
+    }
+
+    /**
      * @brief Box-based vertex selection (non-atomic).
      *
      * Returns false if the selection box is not yet fully defined.
@@ -484,9 +510,7 @@ private:
 
         // For REGULAR mode, first clear the entire vertex selection buffer
         if (params.mode.action == SelectionAction::REGULAR) {
-            SelectionParameters clearParams(params);
-            clearParams.mode.action = SelectionAction::NONE;
-            vertexSelectionAtomic(clearParams);
+            clearVertexSelection(params.drawViewId);
         }
         SelectionUniforms::setSelectionAction(params.mode.action);
 
@@ -547,9 +571,7 @@ private:
 
         // For REGULAR mode, first clear the entire face selection buffer
         if (params.mode.action == SelectionAction::REGULAR) {
-            SelectionParameters clearParams(params);
-            clearParams.mode.action = SelectionAction::NONE;
-            faceSelectionAtomic(clearParams);
+            clearFaceSelection(params.drawViewId);
         }
 
         SelectionUniforms::setSelectionAction(params.mode.action);

@@ -594,21 +594,19 @@ protected:
     void updateCPUSelectionFromGPU()
     {
         // Update vertex selection
-        if constexpr (HasVertices<MeshType>) {
-            if (mLastReadbackMode.isVertexSelection() &&
-                !mVertexSelectionBackup.empty()) {
-                uint                       vidx = 0;
-                vcl::BitSet<uint8_t, true> flags;
-                for (auto& v : MeshType::vertices()) {
-                    uint byteIdx = vidx / 8;
-                    if (byteIdx < mVertexSelectionBackup.size()) {
-                        if (vidx % 8 == 0)
-                            flags.setUnderlying(
-                                mVertexSelectionBackup[byteIdx]);
-                        v.selected() = flags[vidx % 8];
-                    }
-                    ++vidx;
+        if (mLastReadbackMode.isVertexSelection() &&
+            !mVertexSelectionBackup.empty()) {
+            uint                       vidx = 0;
+            vcl::BitSet<uint8_t, true> flags;
+            for (auto& v : MeshType::vertices()) {
+                uint byteIdx = vidx / 8;
+                if (byteIdx < mVertexSelectionBackup.size()) {
+                    if (vidx % 8 == 0)
+                        flags.setUnderlying(
+                            mVertexSelectionBackup[byteIdx]);
+                    v.selected() = flags[vidx % 8];
                 }
+                ++vidx;
             }
         }
 
@@ -640,22 +638,29 @@ protected:
         }
     }
 
-    bool vertexSelection(const SelectionParameters& params)
+    /**
+     * @brief Returns the mesh model matrix as float.
+     *
+     * If the mesh does not have a transform matrix, returns Identity.
+     */
+    Matrix44f modelMatrixf() const
     {
-        assert(params.primitive == SelectionPrimitive::VERTEX);
-        if constexpr (!HasVertices<MeshType>) {
-            return false;
-        }
-        if (params.isTemporary &&
-            (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
-            mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
-        }
         Matrix44f model = Matrix44f::Identity();
         if constexpr (HasTransformMatrix<MeshType>) {
             model = MeshType::transformMatrix().template cast<float>();
         }
-        return mMRB.vertexSelection(params, model);
+        return model;
+    }
+
+    bool vertexSelection(const SelectionParameters& params)
+    {
+        assert(params.primitive == SelectionPrimitive::VERTEX);
+        if (params.isTemporary &&
+            (params.mode.action == SelectionAction::ADD ||
+              params.mode.action == SelectionAction::SUBTRACT)) {
+            mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
+        }
+        return mMRB.vertexSelection(params, modelMatrixf());
     }
 
     bool faceSelection(const SelectionParameters& params)
@@ -666,14 +671,10 @@ protected:
         }
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
+              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
-        Matrix44f model = Matrix44f::Identity();
-        if constexpr (HasTransformMatrix<MeshType>) {
-            model = MeshType::transformMatrix().template cast<float>();
-        }
-        return mMRB.faceSelection(params, model);
+        return mMRB.faceSelection(params, modelMatrixf());
     }
 
     bool faceSelectionVisible(const SelectionParameters& params)
@@ -685,14 +686,10 @@ protected:
         if (params.isTemporary &&
             params.mode.visible &&
             (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
+              params.mode.action == SelectionAction::SUBTRACT)) {
             mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
         }
-        Matrix44f model = Matrix44f::Identity();
-        if constexpr (HasTransformMatrix<MeshType>) {
-            model = MeshType::transformMatrix().template cast<float>();
-        }
-        return mMRB.faceSelectionVisible(params, model);
+        return mMRB.faceSelectionVisible(params, modelMatrixf());
     }
 
     void bindUniforms() const
