@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_color0, a_normal, a_texcoord0
-$output v_normal, v_color, v_texcoord0
+$input a_position, a_normal
+$output v_normal, v_texcoord0
 
 // cross section
 $output v_worldPos, v_discardFlag
