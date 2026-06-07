@@ -23,9 +23,13 @@
 $input a_position, a_normal, a_color0
 $output v_color, v_normal
 
+// cross section
+$output v_worldPos, v_discardFlag
+
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
@@ -36,7 +40,11 @@ $output v_color, v_normal
 void main() {
     v_color = color;
     v_normal = normalize(mul(u_normalMatrix, normal));
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     vec4 pos = mul(u_modelViewProj, vec4(p, 1.0));
     pos.z += -u_depthOffset * pos.w;
     gl_Position = pos;
+
+    // discard flag - used to discard the whole vertex, but in fragment shader
+    v_discardFlag = computeDiscardFlag(v_worldPos);
 }

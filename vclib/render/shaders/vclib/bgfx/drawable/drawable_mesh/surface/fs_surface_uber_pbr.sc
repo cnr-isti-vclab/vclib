@@ -22,13 +22,17 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$input v_worldPos, v_discardFlag
+
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 #include <vclib/bgfx/pbr_common.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
-
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
@@ -50,6 +54,8 @@ SAMPLERCUBE(s_specular, 11);
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // texcoord to use
     bool useTexture =
         bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||

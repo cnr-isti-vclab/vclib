@@ -20,15 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_texcoord1
+$input v_texcoord0
+
+// cross section
+$input v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // circle mode (if outside of the circle, discard)
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
-        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
+        if (length(2.0 * v_texcoord0 - vec2(1.0, 1.0)) > 1.0) {
             discard;
         }
     }

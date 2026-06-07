@@ -21,9 +21,13 @@
  ****************************************************************************/
 
 $input a_position, a_normal
-$output v_normal, v_texcoord1
+$output v_normal, v_texcoord0
+
+// cross section
+$output v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
@@ -37,10 +41,14 @@ void main()
         (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
         0, 0);
 
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     pos = pos / pos.w;
     gl_Position = pos + offset;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
 
     // quad parametrization
-    v_texcoord1 = quadUv;
+    v_texcoord0 = quadUv;
+
+    // discard flag - used to discard the whole vertex, but in fragment shader
+    v_discardFlag = computeDiscardFlag(v_worldPos);
 }

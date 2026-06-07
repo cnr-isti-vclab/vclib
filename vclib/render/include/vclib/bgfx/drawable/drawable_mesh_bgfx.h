@@ -29,6 +29,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 #include <bgfx/bgfx.h>
@@ -137,6 +138,9 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         setRenderSettings(mMRS);
+
+        mCSS.setBoundingBox(*this);
+        mMRB.updateCrossSectionSettings(mCSS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -144,6 +148,12 @@ public:
         AbstractDrawableMesh::setRenderSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
+    }
+
+    void setCrossSectionSettings(const CrossSectionSettings& css) override
+    {
+        AbstractDrawableMesh::setCrossSectionSettings(css);
+        mMRB.updateCrossSectionSettings(css);
     }
 
     uint vertexCount() const override { return MeshType::vertexCount(); }
@@ -215,6 +225,8 @@ public:
 
         DrawableMeshUniforms::setColor(*this);
         MeshRenderSettingsUniforms::set(mMRS);
+
+        updateCrossSectionUniforms();
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
@@ -338,6 +350,8 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        updateCrossSectionUniforms();
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
@@ -408,6 +422,21 @@ protected:
     {
         MeshRenderSettingsUniforms::bind();
         DrawableMeshUniforms::bind();
+        CrossSectionUniforms::bind();
+    }
+
+    void updateCrossSectionUniforms() const
+    {
+        if (AbstractDrawableMesh::mCSS.isEnabled()) {
+            using enum CrossSectionSettings::CrossSectionType;
+            CrossSectionUniforms::set(
+                AbstractDrawableMesh::mCSS.lower(),
+                AbstractDrawableMesh::mCSS.upper(),
+                AbstractDrawableMesh::mCSS.type() == PER_FRAGMENT);
+        }
+        else {
+            CrossSectionUniforms::set();
+        }
     }
 
     /**

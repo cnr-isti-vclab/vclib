@@ -22,6 +22,7 @@
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,

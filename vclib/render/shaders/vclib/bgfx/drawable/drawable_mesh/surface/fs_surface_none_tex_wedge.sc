@@ -22,11 +22,16 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$input v_worldPos, v_discardFlag
+
 #include "none.sh"
 #include "tex_wedge.sh"
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     SHADING
     COLORING
     gl_FragColor = light * color + vec4(specular, 0);

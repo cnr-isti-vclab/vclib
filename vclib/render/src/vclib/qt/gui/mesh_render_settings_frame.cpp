@@ -41,24 +41,36 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 
     auto* pointsFrame = new PointsFrame(mMRS, this);
     mUI->tabWidget->addTab(pointsFrame, "Points");
-    frames.push_back(pointsFrame);
+    mFrames.push_back(pointsFrame);
 
     auto* surfaceFrame = new SurfaceFrame(mMRS, this);
     mUI->tabWidget->addTab(surfaceFrame, "Surface");
-    frames.push_back(surfaceFrame);
+    mFrames.push_back(surfaceFrame);
 
     auto* wireframeFrame = new WireframeFrame(mMRS, this);
     mUI->tabWidget->addTab(wireframeFrame, "Wireframe");
-    frames.push_back(wireframeFrame);
+    mFrames.push_back(wireframeFrame);
 
     auto* edgesFrame = new EdgesFrame(mMRS, this);
     mUI->tabWidget->addTab(edgesFrame, "Edges");
-    frames.push_back(edgesFrame);
+    mFrames.push_back(edgesFrame);
 
-    for (auto* frame : frames) {
+    for (auto* frame : mFrames) {
         connect(
-            frame, SIGNAL(settingsUpdated()), this, SIGNAL(settingsUpdated()));
+            frame,
+            SIGNAL(meshRenderSettingsUpdated()),
+            this,
+            SIGNAL(meshRenderSettingsUpdated()));
     }
+
+    mCrossSectionFrame = new CrossSectionSettingsFrame(this);
+    mUI->tabWidget->addTab(mCrossSectionFrame, "Cross Section");
+
+    connect(
+        mCrossSectionFrame,
+        SIGNAL(crossSectionSettingsUpdated()),
+        this,
+        SIGNAL(crossSectionSettingsUpdated()));
 }
 
 MeshRenderSettingsFrame::~MeshRenderSettingsFrame()
@@ -71,6 +83,12 @@ const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
     return mMRS;
 }
 
+const CrossSectionSettings& MeshRenderSettingsFrame::crossSectionSettings()
+    const
+{
+    return mCrossSectionFrame->crossSectionSettings();
+}
+
 void MeshRenderSettingsFrame::setMeshRenderSettings(
     const MeshRenderSettings& settings,
     bool                      changeCurrentTab /*= false*/)
@@ -79,11 +97,17 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
     updateGuiFromSettings(changeCurrentTab);
 }
 
+void MeshRenderSettingsFrame::setCrossSectionSettings(
+    const CrossSectionSettings& settings)
+{
+    mCrossSectionFrame->setCrossSectionSettings(settings);
+}
+
 void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
 {
     using MRI = MeshRenderInfo;
 
-    for (auto* frame : frames) {
+    for (auto* frame : mFrames) {
         frame->updateFrameFromSettings();
     }
 

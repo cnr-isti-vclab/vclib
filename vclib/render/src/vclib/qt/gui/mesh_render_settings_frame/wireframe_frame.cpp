@@ -136,14 +136,14 @@ void WireframeFrame::updateColorComboBoxFromSettings()
 void WireframeFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setWireframe(VISIBLE, arg1 == Qt::CheckState::Checked);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void WireframeFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
         mMRS.setWireframe(SHADING_VERT);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -151,7 +151,7 @@ void WireframeFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
         mMRS.setWireframe(SHADING_NONE);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -163,19 +163,19 @@ void WireframeFrame::onColorComboBoxChanged(int index)
     case W_USER: mMRS.setWireframe(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == W_USER);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void WireframeFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setWireframeUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void WireframeFrame::onSizeChanged(int value)
 {
     mMRS.setWireframeWidth(value);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 } // namespace vcl::qt

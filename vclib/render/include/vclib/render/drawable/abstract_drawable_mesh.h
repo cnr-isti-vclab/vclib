@@ -26,6 +26,7 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/render/settings/cross_section_settings.h>
 #include <vclib/space/core/matrix.h>
 
 namespace vcl {
@@ -43,6 +44,7 @@ class AbstractDrawableMesh : public vcl::DrawableObject
 
 protected:
     MeshRenderSettings mMRS;
+    CrossSectionSettings mCSS;
 
     Box3d mBoundingBox;
 
@@ -54,17 +56,24 @@ public:
     AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
 
     template<MeshConcept MeshType>
-    AbstractDrawableMesh(const MeshType& m) : mMRS(m)
+    AbstractDrawableMesh(const MeshType& m) : mMRS(m), mCSS(m)
     {
     }
 
     const MeshRenderSettings& renderSettings() const { return mMRS; }
+
+    const CrossSectionSettings& crossSectionSettings() const { return mCSS; }
 
     virtual void updateBuffers(
         MeshRenderInfo::BuffersBitSet buffersToUpdate =
             MeshRenderInfo::BUFFERS_ALL) = 0;
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
+
+    virtual void setCrossSectionSettings(const CrossSectionSettings& css)
+    {
+        mCSS = css;
+    }
 
     virtual uint vertexCount() const = 0;
 
@@ -95,6 +104,7 @@ protected:
         using std::swap;
         vcl::DrawableObject::swap(other);
         swap(mMRS, other.mMRS);
+        swap(mCSS, other.mCSS);
         swap(mBoundingBox, other.mBoundingBox);
     }
 

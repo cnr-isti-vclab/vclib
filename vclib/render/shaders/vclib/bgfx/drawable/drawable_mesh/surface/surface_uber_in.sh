@@ -22,8 +22,12 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$input v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -40,6 +44,8 @@ BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // depth offset - avoid z-fighting
     float depthOffset = 0.0;
 

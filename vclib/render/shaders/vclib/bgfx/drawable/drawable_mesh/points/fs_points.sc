@@ -23,10 +23,16 @@
 // TODO: remove v_position
 $input v_position, v_normal, v_color
 
+// cross section
+$input v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 

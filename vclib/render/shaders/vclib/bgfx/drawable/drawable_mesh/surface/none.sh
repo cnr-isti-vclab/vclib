@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 #define SHADING float depthOffset = 0.0;\
     vec3 specular = vec3(0.0, 0.0, 0.0);\

@@ -23,9 +23,13 @@
 $input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1
 $output v_color, v_normal
 
+// cross section
+$output v_worldPos0, v_worldPos1, v_discardFlag, v_t
+
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
@@ -48,6 +52,10 @@ void main() {
     int generalIndex = gl_VertexID % 4;
     vec2 uv = vec2((generalIndex >> 1) & 0x1, generalIndex & 0x1);
 
+    // compute initial world positions
+    vec3 worldP0 = mul(u_model[0], vec4(p0, 1.0)).xyz;
+    vec3 worldP1 = mul(u_model[0], vec4(p1, 1.0)).xyz;
+
     // segment points in clip space
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
@@ -65,12 +73,16 @@ void main() {
     vec3 clippedNormal0 = n0_NDC;
     vec3 clippedNormal1 = n1_NDC;
 
+    vec3 clippedWorldP0 = worldP0;
+    vec3 clippedWorldP1 = worldP1;
+
     if (p0_NDC.w < NEAR_EPSILON) {
         float t = (NEAR_EPSILON - p0_NDC.w) / (p1_NDC.w - p0_NDC.w);
 
         clippedP0 = mix(p0_NDC, p1_NDC, t);
         clippedColor0 = mix(color0, color1, t);
         clippedNormal0 = mix(normal0, normal1, t);
+        clippedWorldP0 = mix(worldP0, worldP1, t);
     }
 
     if (p1_NDC.w < NEAR_EPSILON) {
@@ -79,6 +91,7 @@ void main() {
         clippedP1 = mix(p1_NDC, p0_NDC, t);
         clippedColor1 = mix(color1, color0, t);
         clippedNormal1 = mix(normal1, normal0, t);
+        clippedWorldP1 = mix(worldP1, worldP0, t);
     }
 
     // pick this vertex's position by uv.x along clipped segment */
@@ -106,9 +119,18 @@ void main() {
         p.xy = p.xy + (offsetNDC * p.w);
     }
 
+    v_worldPos0 = clippedWorldP0;
+    v_worldPos1 = clippedWorldP1;
+    
     v_color = color;
     v_normal = normal;
+    v_t = uv.x;
     // nudge towards camera to avoid z-fighting with other geometry
     p.z += -u_depthOffset * p.w;
     gl_Position = p;
+
+    // discard flag - 1.0 if either endpoint is outside the cross section
+    // (only used in per-vertex mode; in per-fragment mode computeDiscardFlag returns 0.0)
+    v_discardFlag =
+        max(computeDiscardFlag(v_worldPos0), computeDiscardFlag(v_worldPos1));
 }

@@ -22,6 +22,10 @@
 
 $input v_color, v_normal
 
+// cross section
+$input v_worldPos0, v_worldPos1, v_discardFlag, v_t
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
@@ -35,11 +39,14 @@ BUFFER_RO(edgesColors, uint, 0);
 #define vertexColor  v_color
 
 void main() {
+    vec3 fragPos = mix(v_worldPos0, v_worldPos1, v_t);
+    discardIfCrossSectionClipped(v_discardFlag, fragPos);
+
     vec4 color;
     if (colorToUse == 0)        color = vertexColor;
     else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;    
-    
+    else                        color = generalColor;
+
     if (u_shadingPerVertex) {
         color *= computeLight(u_lightDir, u_lightColor, v_normal);
     }

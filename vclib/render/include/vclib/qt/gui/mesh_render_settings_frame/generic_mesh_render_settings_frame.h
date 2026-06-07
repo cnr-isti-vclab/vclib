@@ -47,7 +47,7 @@ public:
     virtual void updateFrameFromSettings() = 0;
 
 signals:
-    void settingsUpdated();
+    void meshRenderSettingsUpdated();
 
 protected:
     static void   setButtonBackGround(QPushButton* b, const QColor& c);
