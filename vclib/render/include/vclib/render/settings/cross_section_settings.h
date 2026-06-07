@@ -74,6 +74,9 @@ public:
     void setBoundingBox(const Box3f& bbox)
     {
         if (!bbox.isNull()) {
+            mLower = Point3f::min();
+            mUpper = Point3f::max();
+
             mBBox = bbox;
 
             Point3f clampedLower =
