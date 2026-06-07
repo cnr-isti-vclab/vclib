@@ -28,7 +28,7 @@
 #define COMMON_PATH vclib/shaders/drawable/drawable_mesh/surface
 // clang-format on
 #define VS_NAME vs_surface
-#define FS_NAME fs_surface_flat_color_face_si
+#define FS_NAME fs_surface_flat_color_mesh_si
 
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
