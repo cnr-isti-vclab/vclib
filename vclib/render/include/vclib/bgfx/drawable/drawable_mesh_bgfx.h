@@ -494,12 +494,12 @@ protected:
         if (mSurfaceProgramType == SurfaceProgramsType::UBER_WITH_STATIC_IF) {
             static const std::array<bgfx::ProgramHandle, 18>
                 surfaceProgramHandles = {
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX_SI>(),
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH_SI>(),
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE_SI>(),
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_USER_SI>(),
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_VERTEX_SI>(),
-                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_WEDGE_SI>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_USER>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_VERTEX>(),
+                    pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_WEDGE>(),
                     pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_VERTEX>(),
                     pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_MESH>(),
                     pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_FACE>(),

@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface_none_color_mesh_si.h>
+#include <vclib/bgfx/programs/embedded_vf_programs/drawable_mesh_surface_none_color_face.h>
 
 #include <vclib/bgfx/programs/macros.h>
 
@@ -28,7 +28,7 @@
 #define COMMON_PATH vclib/shaders/drawable/drawable_mesh/surface
 // clang-format on
 #define VS_NAME vs_surface
-#define FS_NAME fs_surface_none_color_mesh_si
+#define FS_NAME fs_surface_none_color_face
 
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
@@ -54,7 +54,7 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH_SI>::
+    VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>::
     vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
@@ -86,7 +86,7 @@ bgfx::EmbeddedShader::Data VertFragLoader<
 }
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH_SI>::
+    VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
