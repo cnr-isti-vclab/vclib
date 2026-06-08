@@ -263,8 +263,7 @@ public:
         if (!isSelectionActive() || mLMBHeld)
             return false;
 
-        if (modifiers[KeyModifier::CONTROL] && !modifiers[KeyModifier::ALT] &&
-            !modifiers[KeyModifier::SHIFT]) {
+        if (modifiers.only(KeyModifier::CONTROL)) {
             using enum SelectionAction;
             switch (key) {
             case Key::A:
