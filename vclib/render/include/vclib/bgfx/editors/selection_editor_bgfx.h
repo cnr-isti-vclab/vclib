@@ -29,7 +29,7 @@
 
 #include <vclib/bgfx/buffers/frame_buffer.h>
 #include <vclib/bgfx/buffers/index_buffer.h>
-#include <vclib/bgfx/buffers/vertex_buffer.h>
+#include <vclib/bgfx/buffers/dynamic_vertex_buffer.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
@@ -53,8 +53,7 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     FrameBuffer                 mComputePassFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
     bgfx::ViewId                mSelectionDrawingViewId  = 0;
-    bgfx::VertexLayout          mVertexLayout;
-    VertexBuffer                mPosBuf;
+    DynamicVertexBuffer         mPosBuf;
     IndexBuffer                 mTriIndexBuf;
     bool                        mInitialized = false;
 
@@ -78,10 +77,6 @@ public:
         Base::settings().customSettings["onlyVisible"]    = false;
         Base::settings().customSettings["selectionBoxColor"] =
             vcl::Color(27, 120, 249, 64);
-
-        mVertexLayout.begin()
-            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-            .end();
     }
 
     ~SelectionEditorBGFX()
@@ -99,9 +94,12 @@ public:
         mVisibleFaceFBSize = std::min(
             4096u, Context::instance().capabilites().limits.maxTextureSize);
 
-        // Create initial vertex buffer with dummy positions
-        float temp[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
-        mPosBuf.create(bgfx::copy(temp, 8 * sizeof(float)), mVertexLayout);
+        // Create position dynamic vertex buffer
+        bgfx::VertexLayout vertexLayout;
+        vertexLayout.begin()
+            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+            .end();
+        mPosBuf.create(4, vertexLayout);
 
         // Create index buffer for the two selection-box triangles
         std::array<uint, 6> ti {1, 2, 0, 2, 3, 0};
@@ -661,8 +659,9 @@ private:
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
             BGFX_STATE_BLEND_ALPHA);
         mTriIndexBuf.bind();
-        mPosBuf.create(bgfx::copy(&temp[0], 8 * sizeof(float)), mVertexLayout);
-        mPosBuf.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+
+        mPosBuf.update(0, bgfx::copy(&temp[0], 8 * sizeof(float)));
+        mPosBuf.bind(VCL_MRB_VERTEX_POSITION_STREAM);
 
         const vcl::Color& selBoxColor = std::any_cast<const vcl::Color&>(
             Base::settings().customSettings.at("selectionBoxColor"));
