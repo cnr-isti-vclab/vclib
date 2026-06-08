@@ -27,9 +27,9 @@
 
 #include <vclib/render/editors/editor.h>
 
+#include <vclib/bgfx/buffers/dynamic_vertex_buffer.h>
 #include <vclib/bgfx/buffers/frame_buffer.h>
 #include <vclib/bgfx/buffers/index_buffer.h>
-#include <vclib/bgfx/buffers/dynamic_vertex_buffer.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
@@ -52,7 +52,6 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     FrameBuffer                 mVisibleSelectionFB;
     FrameBuffer                 mComputePassFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
-    bgfx::ViewId                mSelectionDrawingViewId  = 0;
     DynamicVertexBuffer         mPosBuf;
     IndexBuffer                 mTriIndexBuf;
     bool                        mInitialized = false;
@@ -85,7 +84,6 @@ public:
             // FrameBuffers handle their own destruction
             Context::instance().releaseViewId(mVisibleSelectionViewIds[0]);
             Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
-            Context::instance().releaseViewId(mSelectionDrawingViewId);
         }
     }
 
@@ -148,31 +146,27 @@ public:
 
         // ---- Pass 2: compute pass (uses a small "useless" framebuffer) ----
         mVisibleSelectionViewIds[1] = Context::instance().requestViewId();
-        bgfx::TextureHandle uselessTexs[2];
-        uselessTexs[0] = bgfx::createTexture2D(
+        bgfx::TextureHandle computePassTexs[2];
+        computePassTexs[0] = bgfx::createTexture2D(
             1,
             1,
             false,
             1,
             Context::instance().DEFAULT_COLOR_FORMAT,
             BGFX_TEXTURE_RT);
-        uselessTexs[1] = bgfx::createTexture2D(
+        computePassTexs[1] = bgfx::createTexture2D(
             1,
             1,
             false,
             1,
             Context::instance().DEFAULT_DEPTH_FORMAT,
             BGFX_TEXTURE_RT);
-        mComputePassFB.create(uselessTexs, 2, true);
+        mComputePassFB.create(computePassTexs, 2, true);
         bgfx::setViewFrameBuffer(
             mVisibleSelectionViewIds[1], mComputePassFB.handle());
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
-
-        // ---- Overlay view for drawing the selection box on top ----
-        mSelectionDrawingViewId = Context::instance().requestViewId();
-        Base::viewerSetupOverlayView(mSelectionDrawingViewId);
 
         mInitialized = true;
     }
@@ -217,18 +211,7 @@ public:
 
         // 1) Draw the selection box overlay (only visible while dragging)
         if (mLMBHeld) {
-            // Re-set up the overlay view each frame (handles canvas resize)
-            Base::viewerSetupOverlayView(mSelectionDrawingViewId);
-
-            // Keep the selection drawing view in sync with the main view
-            // transform
-            auto vm = Base::viewerViewMatrix();
-            auto pm = Base::viewerProjectionMatrix();
-            bgfx::setViewTransform(
-                mSelectionDrawingViewId, vm.data(), pm.data());
-
-            drawSelectionBox(
-                mSelectionDrawingViewId, mSelectionBox.value_or(Box2d {}));
+            drawSelectionBox(viewId, mSelectionBox.value_or(Box2d {}));
         }
 
         // 2) Compute GPU selections with current parameters, if pending
@@ -324,7 +307,7 @@ public:
         const KeyModifiers& modifiers) override
     {
         if (button == MouseButton::LEFT && mLMBHeld) {
-            mLMBHeld = false;
+            mLMBHeld               = false;
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
@@ -422,8 +405,9 @@ private:
     }
 
     template<SelectionAction ACTION>
-    std::vector<SelectionMode> actionModesForSettings() const {
-        const auto& cs = Base::settings().customSettings;
+    std::vector<SelectionMode> actionModesForSettings() const
+    {
+        const auto&                cs = Base::settings().customSettings;
         std::vector<SelectionMode> modes;
         if (std::any_cast<bool>(cs.at("selectVertices")))
             modes.push_back({SelectionPrimitive::VERTEX, ACTION});
