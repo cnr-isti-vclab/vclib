@@ -28,7 +28,8 @@
 namespace vcl {
 
 template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>
+struct VertFragLoader<
+    VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>
 {
     static bgfx::EmbeddedShader::Data vertexShader(
         bgfx::RendererType::Enum type);
