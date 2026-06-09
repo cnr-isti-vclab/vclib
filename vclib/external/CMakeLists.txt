@@ -42,6 +42,11 @@ if (TARGET vclib-3rd-libigl)
     endif()
 endif()
 
+if (TARGET vclib-3rd-poisson-recon)
+    file(GLOB_RECURSE HEADERS_POISSON CONFIGURE_DEPENDS "include/vclib/poisson_recon/*.h")
+    list(APPEND HEADERS ${HEADERS_POISSON})
+endif()
+
 if (TARGET vclib-3rd-vcg)
     file(GLOB_RECURSE HEADERS_VCG CONFIGURE_DEPENDS "include/vclib/vcg/*.h")
     list(APPEND HEADERS ${HEADERS_VCG})

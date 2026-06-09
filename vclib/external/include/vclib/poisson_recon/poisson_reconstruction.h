@@ -20,14 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#ifndef VCL_POISSON_RECON_POISSON_RECONSTRUCTION_H
+#define VCL_POISSON_RECON_POISSON_RECONSTRUCTION_H
 
-#include <vclib/poisson_recon/poisson_reconstruction.h>
+#include <vclib/mesh.h>
 
-int main()
+#include <poisson_recon/PreProcessor.h>
+#include <poisson_recon/Reconstructors.h>
+#include <poisson_recon/Extrapolator.h>
+
+namespace vcl::poiss {
+
+namespace detail {
+
+} // namespace detail
+
+template<FaceMeshConcept OutMesh, MeshConcept MeshType>
+OutMesh poissonReconstruction(
+    const MeshType& mesh,
+    unsigned        depth = 8,
+    unsigned        width = 0,
+    unsigned        scale = 1,
+    bool            linearFit = false)
 {
-    // TODO Test
+    OutMesh outMesh;
 
-    return 0;
+    // TODO
+
+    return outMesh;
 }
+
+} // namespace vcl::poiss
+
+#endif // VCL_POISSON_RECON_POISSON_RECONSTRUCTION_H
