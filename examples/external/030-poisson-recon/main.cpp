@@ -27,16 +27,16 @@
 
 int main()
 {
-    vcl::TriMesh bimba;
-    vcl::loadMesh(bimba, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    vcl::PointCloud cmln;
+    vcl::loadMesh(cmln, VCLIB_EXAMPLE_MESHES_PATH "/chameleon4k.ply");
 
-    vcl::updatePerVertexAndFaceNormals(bimba);
+    //vcl::updatePerVertexAndFaceNormals(cmln);
 
-    auto outMesh = vcl::poiss::poissonReconstruction<vcl::TriMesh>(bimba, 8);
+    auto outMesh = vcl::poiss::poissonReconstruction<vcl::TriMesh>(cmln, 8);
 
     std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
 
-    vcl::saveMesh(outMesh, resultsPath + "/030_recon_bimba.obj");
+    vcl::saveMesh(outMesh, resultsPath + "/030_recon_chameleon.ply");
 
     return 0;
 }
