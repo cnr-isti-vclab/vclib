@@ -131,9 +131,9 @@ private:
 template<FaceMeshConcept OutMesh, MeshConcept MeshType>
 OutMesh poissonReconstruction(
     const MeshType& mesh,
-    unsigned        depth     = 8,
-    unsigned        width     = 0,
-    unsigned        scale     = 1,
+    uint            depth     = 8,
+    uint            width     = 0,
+    uint            scale     = 1,
     bool            linearFit = false)
 {
     requirePerVertexNormal(mesh);
@@ -144,39 +144,41 @@ OutMesh poissonReconstruction(
         return outMesh;
     }
 
-    using Real      = typename MeshType::VertexType::PositionType::ScalarType;
-    using ReconType = PoissonRecon::Reconstructor::Poisson;
+    using ScalarType = MeshType::VertexType::PositionType::ScalarType;
+    using ReconType  = PoissonRecon::Reconstructor::Poisson;
 
-    static constexpr unsigned int Dim    = 3;
-    static constexpr unsigned int FEMSig = PoissonRecon::FEMDegreeAndBType<
+    static constexpr unsigned int DIM     = 3;
+    static constexpr unsigned int FEM_SIG = PoissonRecon::FEMDegreeAndBType<
         ReconType::DefaultFEMDegree,
         ReconType::DefaultFEMBoundary>::Signature;
-    using FEMSigs  = PoissonRecon::IsotropicUIntPack<Dim, FEMSig>;
-    using Solver   = typename ReconType::template Solver<Real, Dim, FEMSigs>;
+    using FEMSigs = PoissonRecon::IsotropicUIntPack<DIM, FEM_SIG>;
+    using Solver =
+        typename ReconType::template Solver<ScalarType, DIM, FEMSigs>;
     using Implicit = typename PoissonRecon::Reconstructor::
-        template Implicit<Real, Dim, FEMSigs>;
+        template Implicit<ScalarType, DIM, FEMSigs>;
 
-    typename ReconType::template SolutionParameters<Real> solverParams;
+    ReconType::template SolutionParameters<ScalarType> solverParams;
     solverParams.depth = depth;
-    solverParams.width = static_cast<Real>(width);
-    solverParams.scale = static_cast<Real>(scale);
+    solverParams.width = static_cast<ScalarType>(width);
+    solverParams.scale = static_cast<ScalarType>(scale);
 
     PoissonRecon::Reconstructor::LevelSetExtractionParameters extractionParams;
     extractionParams.linearFit = linearFit;
 
-    detail::MeshOrientedSampleStream<Real, MeshType> sampleStream(mesh);
+    detail::MeshOrientedSampleStream<ScalarType, MeshType> sampleStream(mesh);
     Implicit* implicit = Solver::Solve(sampleStream, solverParams);
 
-    std::vector<PoissonRecon::Point<Real, Dim>> vertices;
-    std::vector<std::vector<unsigned int>>      faces;
+    std::vector<PoissonRecon::Point<ScalarType, DIM>> vertices;
+    std::vector<std::vector<unsigned int>>            faces;
 
-    detail::OutputVertexStream<Real> vStream(vertices);
-    detail::OutputPolygonStream      fStream(faces);
+    detail::OutputVertexStream<ScalarType> vStream(vertices);
+    detail::OutputPolygonStream            fStream(faces);
     implicit->extractLevelSet(vStream, fStream, extractionParams);
 
-    using OutScalar = typename OutMesh::VertexType::PositionType::ScalarType;
-    using OutPoint  = typename OutMesh::VertexType::PositionType;
+    using OutPoint  = OutMesh::VertexType::PositionType;
+    using OutScalar = OutPoint::ScalarType;
 
+    outMesh.reserveVertices(vertices.size());
     for (const auto& p : vertices) {
         outMesh.addVertex(OutPoint(
             static_cast<OutScalar>(p[0]),
@@ -184,6 +186,7 @@ OutMesh poissonReconstruction(
             static_cast<OutScalar>(p[2])));
     }
 
+    outMesh.reserveFaces(faces.size());
     for (const auto& f : faces) {
         outMesh.addFace(f);
     }
