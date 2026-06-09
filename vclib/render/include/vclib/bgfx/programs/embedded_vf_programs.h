@@ -64,6 +64,8 @@
 #include "embedded_vf_programs/font_distance_field_outline_image.h"
 #include "embedded_vf_programs/font_distance_field_subpixel.h"
 
+#include "embedded_vf_programs/screenspace_box.h"
+
 #include "embedded_vf_programs/primitive_lines.h"
 
 #endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_H
