@@ -20,20 +20,33 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-external-examples)
+set(POISSON_RECON_HASH_COMMIT 262b0f539d404057d1f36e1adc07fc9388678899)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
+    message(STATUS "- PoissonRecon - using downloaded source")
 
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree)
+    FetchContent_Declare(poissonrecon
+        GIT_REPOSITORY https://github.com/mkazhdan/PoissonRecon
+        GIT_TAG ${POISSON_RECON_HASH_COMMIT}
+        EXCLUDE_FROM_ALL)
 
-    add_subdirectory(011-best-heightfield-orientation)
-endif()
+    FetchContent_MakeAvailable(poissonrecon)
 
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
-endif()
+    if (NOT EXISTS ${poissonrecon_SOURCE_DIR}/include/poisson_recon)
+        file(MAKE_DIRECTORY ${poissonrecon_SOURCE_DIR}/include)
+        file(RENAME ${poissonrecon_SOURCE_DIR}/Src
+            ${poissonrecon_SOURCE_DIR}/include/poisson_recon)
+    endif()
 
-if (TARGET vclib-3rd-poisson-recon)
-    add_subdirectory(030-poisson-recon)
+    add_library(vclib-3rd-poisson-recon INTERFACE)
+
+    target_include_directories(vclib-3rd-poisson-recon INTERFACE
+        ${poissonrecon_SOURCE_DIR}/include)
+
+    target_compile_definitions(vclib-3rd-poisson-recon INTERFACE
+        VCLIB_WITH_POISSON_RECON)
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-poisson-recon)
+else()
+    message(STATUS "- PoissonRecon - not found, skipping")
 endif()
