@@ -25,7 +25,6 @@
 
 #include "embedded_vf_programs/custom_cpu_lines.h"
 #include "embedded_vf_programs/selection_face_visible_render_pass.h"
-#include "embedded_vf_programs/drawable_selection_box.h"
 #include "embedded_vf_programs/drawable_axis.h"
 #include "embedded_vf_programs/drawable_directional_light.h"
 #include "embedded_vf_programs/drawable_environment_pbr.h"
@@ -65,6 +64,8 @@
 #include "embedded_vf_programs/font_distance_field_outline_drop_shadow_image.h"
 #include "embedded_vf_programs/font_distance_field_outline_image.h"
 #include "embedded_vf_programs/font_distance_field_subpixel.h"
+
+#include "embedded_vf_programs/screenspace_box.h"
 
 #include "embedded_vf_programs/primitive_lines.h"
 

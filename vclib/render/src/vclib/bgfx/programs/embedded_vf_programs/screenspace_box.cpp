@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/programs/embedded_vf_programs/drawable_selection_box.h>
+#include <vclib/bgfx/programs/embedded_vf_programs/screenspace_box.h>
 
 #include <vclib/bgfx/programs/macros.h>
 
 // clang-format off
-#define COMMON_PATH vclib/shaders/drawable/drawable_selection_box
+#define COMMON_PATH vclib/shaders/screenspace/overlay/screenspace_box
 // clang-format on
-#define VS_NAME vs_drawable_selection_box
-#define FS_NAME fs_drawable_selection_box
+#define VS_NAME vs_screenspace_box
+#define FS_NAME fs_screenspace_box
 
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, VS_NAME.sc.bin.h)
 #include VCLIB_BGFX_SHADER(COMMON_PATH, glsl, FS_NAME.sc.bin.h)
@@ -54,7 +54,7 @@
 namespace vcl {
 
 bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::DRAWABLE_SELECTION_BOX>::vertexShader(bgfx::RendererType::Enum type)
+    VertFragProgram::SCREENSPACE_BOX>::vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
@@ -84,7 +84,7 @@ bgfx::EmbeddedShader::Data VertFragLoader<
     }
 }
 
-bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::DRAWABLE_SELECTION_BOX>::
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::SCREENSPACE_BOX>::
     fragmentShader(bgfx::RendererType::Enum type)
 {
     switch (type) {

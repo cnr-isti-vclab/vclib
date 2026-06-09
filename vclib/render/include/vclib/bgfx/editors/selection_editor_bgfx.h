@@ -23,15 +23,10 @@
 #ifndef VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
 #define VCL_BGFX_EDITORS_SELECTION_EDITOR_BGFX_H
 
-#include "uniforms/selection_box_uniforms.h"
-
 #include <vclib/render/editors/editor.h>
 
-#include <vclib/bgfx/buffers/dynamic_vertex_buffer.h>
 #include <vclib/bgfx/buffers/frame_buffer.h>
-#include <vclib/bgfx/buffers/index_buffer.h>
-#include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/screenspace/overlay/screenspace_box.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
@@ -52,8 +47,7 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     FrameBuffer                 mVisibleSelectionFB;
     FrameBuffer                 mComputePassFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
-    DynamicVertexBuffer         mPosBuf;
-    IndexBuffer                 mTriIndexBuf;
+    ScreenSpaceBox              mScreenSpaceBox;
     bool                        mInitialized = false;
 
     uint mVisibleFaceFBSize = 4096u;
@@ -92,16 +86,11 @@ public:
         mVisibleFaceFBSize = std::min(
             4096u, Context::instance().capabilites().limits.maxTextureSize);
 
-        // Create position dynamic vertex buffer
-        bgfx::VertexLayout vertexLayout;
-        vertexLayout.begin()
-            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-            .end();
-        mPosBuf.create(4, vertexLayout);
-
-        // Create index buffer for the two selection-box triangles
-        std::array<uint, 6> ti {1, 2, 0, 2, 3, 0};
-        mTriIndexBuf.create(bgfx::copy(ti.data(), 6 * sizeof(uint)));
+        // Initialize screen-space box for selection overlay
+        mScreenSpaceBox.init();
+        mScreenSpaceBox.setColor(
+            std::any_cast<const vcl::Color&>(
+                Base::settings().customSettings.at("selectionBoxColor")));
 
         // ---- Pass 1: render scene into visible-selection framebuffer ----
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
@@ -174,6 +163,7 @@ public:
     void setSelectionBoxColor(const Color& color)
     {
         Base::settings().customSettings["selectionBoxColor"] = color;
+        mScreenSpaceBox.setColor(color);
     }
 
     void draw(uint viewId) override
@@ -211,7 +201,12 @@ public:
 
         // 1) Draw the selection box overlay (only visible while dragging)
         if (mLMBHeld) {
-            drawSelectionBox(viewId, mSelectionBox.value_or(Box2d {}));
+            mScreenSpaceBox.setBox(mSelectionBox.value_or(Box2d {}));
+            mScreenSpaceBox.setVisible(true);
+            mScreenSpaceBox.draw(viewId);
+        }
+        else {
+            mScreenSpaceBox.setVisible(false);
         }
 
         // 2) Compute GPU selections with current parameters, if pending
@@ -627,36 +622,6 @@ private:
         box.add(sSpace[0]);
         box.add(sSpace[1]);
         return box;
-    }
-
-    void drawSelectionBox(uint viewId, const Box2d& box)
-    {
-        if (box.isNull()) {
-            return;
-        }
-        std::array<Point2f, 4> temp;
-        temp[0] = vcl::boxVertex(box, 0).cast<float>();
-        temp[1] = vcl::boxVertex(box, 1).cast<float>();
-        temp[2] = vcl::boxVertex(box, 2).cast<float>();
-        temp[3] = vcl::boxVertex(box, 3).cast<float>();
-        bgfx::setState(
-            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
-            BGFX_STATE_BLEND_ALPHA);
-        mTriIndexBuf.bind();
-
-        mPosBuf.update(0, bgfx::copy(&temp[0], 8 * sizeof(float)));
-        mPosBuf.bind(VCL_MRB_VERTEX_POSITION_STREAM);
-
-        const vcl::Color& selBoxColor = std::any_cast<const vcl::Color&>(
-            Base::settings().customSettings.at("selectionBoxColor"));
-        SelectionBoxUniforms::setColor(selBoxColor);
-        SelectionBoxUniforms::bind();
-
-        bgfx::submit(
-            viewId,
-            Context::instance()
-                .programManager()
-                .getProgram<VertFragProgram::DRAWABLE_SELECTION_BOX>());
     }
 };
 

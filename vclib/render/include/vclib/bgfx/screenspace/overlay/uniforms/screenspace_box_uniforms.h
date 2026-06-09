@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -20,23 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_SELECTION_BOX_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_SELECTION_BOX_H
+#ifndef VCL_BGFX_SCREENSPACE_OVERLAY_UNIFORMS_SCREENSPACE_BOX_UNIFORMS_H
+#define VCL_BGFX_SCREENSPACE_OVERLAY_UNIFORMS_SCREENSPACE_BOX_UNIFORMS_H
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include <vclib/bgfx/uniform.h>
+
+#include <vclib/space/core.h>
+
+#include <array>
 
 namespace vcl {
 
-template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_SELECTION_BOX>
+class ScreenSpaceBoxUniforms
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+    static inline std::array<float, 4> sColor;
 
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
+    static inline Uniform sColorUniform;
+
+public:
+    ScreenSpaceBoxUniforms() = delete;
+
+    static void setColor(const Color& color)
+    {
+        sColor = {color.redF(), color.greenF(), color.blueF(), color.alphaF()};
+    }
+
+    static void bind()
+    {
+        // lazy initialization
+        // to avoid creating uniforms before bgfx is initialized
+        if (!sColorUniform.isValid())
+            sColorUniform =
+                Uniform("u_selectionBoxColor", bgfx::UniformType::Vec4);
+        sColorUniform.bind(sColor.data());
+    }
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_SELECTION_BOX_H
+#endif // VCL_BGFX_SCREENSPACE_OVERLAY_UNIFORMS_SCREENSPACE_BOX_UNIFORMS_H

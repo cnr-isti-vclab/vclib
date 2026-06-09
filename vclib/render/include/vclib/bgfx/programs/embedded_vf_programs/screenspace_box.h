@@ -20,40 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
-#define VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SCREENSPACE_BOX_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SCREENSPACE_BOX_H
 
-#include <vclib/bgfx/uniform.h>
-
-#include <vclib/space/core.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 namespace vcl {
 
-class SelectionBoxUniforms
+template<>
+struct VertFragLoader<VertFragProgram::SCREENSPACE_BOX>
 {
-    static inline std::array<float, 4> sColor;
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
 
-    static inline Uniform sColorUniform;
-
-public:
-    SelectionBoxUniforms() = delete;
-
-    static void setColor(const Color& color)
-    {
-        sColor = {color.redF(), color.greenF(), color.blueF(), color.alphaF()};
-    }
-
-    static void bind()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sColorUniform.isValid())
-            sColorUniform =
-                Uniform("u_selectionBoxColor", bgfx::UniformType::Vec4);
-        sColorUniform.bind(sColor.data());
-    }
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_EDITORS_UNIFORMS_SELECTION_BOX_UNIFORMS_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_SCREENSPACE_BOX_H

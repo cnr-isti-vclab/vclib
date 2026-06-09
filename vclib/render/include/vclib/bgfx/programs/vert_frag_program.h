@@ -63,7 +63,7 @@ enum class VertFragProgram {
 
     DRAWABLE_TRACKBALL,
 
-    DRAWABLE_SELECTION_BOX,
+    SCREENSPACE_BOX,
 
     FONT_BASIC,
     FONT_DISTANCE_FIELD,
