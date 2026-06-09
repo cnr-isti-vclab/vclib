@@ -20,23 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX_H
-#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX_H
+#include <vclib/io.h>
+#include <vclib/meshes.h>
 
-#include <vclib/bgfx/programs/vert_frag_loader.h>
+#include <vclib/poisson_recon/poisson_reconstruction.h>
 
-namespace vcl {
-
-template<>
-struct VertFragLoader<VertFragProgram::DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>
+int main()
 {
-    static bgfx::EmbeddedShader::Data vertexShader(
-        bgfx::RendererType::Enum type);
+    vcl::PointCloud cmln;
+    vcl::loadMesh(cmln, VCLIB_EXAMPLE_MESHES_PATH "/chameleon4k.ply");
 
-    static bgfx::EmbeddedShader::Data fragmentShader(
-        bgfx::RendererType::Enum type);
-};
+    //vcl::updatePerVertexAndFaceNormals(cmln);
 
-} // namespace vcl
+    auto outMesh = vcl::poiss::poissonReconstruction<vcl::TriMesh>(cmln, 8);
 
-#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX_H
+    std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
+
+    vcl::saveMesh(outMesh, resultsPath + "/030_recon_chameleon.ply");
+
+    return 0;
+}
