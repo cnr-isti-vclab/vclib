@@ -141,8 +141,8 @@ struct MeshSampleWithColorStream :
             return false;
         }
 
-        const auto& v      = *mIt;
-        const auto& vp     = v.position();
+        const auto&  v     = *mIt;
+        const auto&  vp    = v.position();
         const Color& color = v.color();
 
         p[0] = static_cast<Real>(vp.x());
@@ -213,11 +213,11 @@ private:
 
 template<typename Real, typename MeshType>
 std::vector<RGBAColor<Real>> extrapolateColors(
-    const MeshType&                                     mesh,
-    const std::vector<PoissonRecon::Point<Real, 3>>&    vertices,
-    uint                                               depth,
-    uint                                               width,
-    uint                                               scale)
+    const MeshType&                                  mesh,
+    const std::vector<PoissonRecon::Point<Real, 3>>& vertices,
+    uint                                             depth,
+    uint                                             width,
+    uint                                             scale)
 {
     using Extrapolator =
         PoissonRecon::Extrapolator::Implicit<Real, 3, RGBAColor<Real>>;
@@ -328,7 +328,7 @@ OutMesh poissonReconstruction(
             enableIfPerVertexColorOptional(outMesh);
             if (isPerVertexColorAvailable(outMesh)) {
                 useVertexColor = true;
-                colors = detail::extrapolateColors(
+                colors         = detail::extrapolateColors(
                     mesh, vertices, depth, width, scale);
             }
         }
@@ -339,7 +339,7 @@ OutMesh poissonReconstruction(
 
     outMesh.reserveVertices(vertices.size());
     for (size_t i = 0; i < vertices.size(); ++i) {
-        const auto& p = vertices[i];
+        const auto& p   = vertices[i];
         uint        vid = outMesh.addVertex(OutPoint(
             static_cast<OutScalar>(p[0]),
             static_cast<OutScalar>(p[1]),
