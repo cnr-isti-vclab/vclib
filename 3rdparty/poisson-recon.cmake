@@ -20,48 +20,33 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-external)
+set(POISSON_RECON_HASH_COMMIT 262b0f539d404057d1f36e1adc07fc9388678899)
 
-### vclib-external target
-set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
+    message(STATUS "- PoissonRecon - using downloaded source")
 
-if (TARGET vclib-3rd-embree)
-    file(GLOB_RECURSE HEADERS_EMBREE CONFIGURE_DEPENDS
-        "include/vclib/embree/*.h")
-    list(APPEND HEADERS ${HEADERS_EMBREE})
-endif()
+    FetchContent_Declare(poissonrecon
+        GIT_REPOSITORY https://github.com/mkazhdan/PoissonRecon
+        GIT_TAG ${POISSON_RECON_HASH_COMMIT}
+        EXCLUDE_FROM_ALL)
 
-if (TARGET vclib-3rd-libigl)
-    file(GLOB_RECURSE HEADERS_IGL CONFIGURE_DEPENDS
-        "include/vclib/igl/*.h")
-    list(APPEND HEADERS ${HEADERS_IGL})
+    FetchContent_MakeAvailable(poissonrecon)
 
-    if (NOT TARGET vclib-3rd-cgal OR NOT TARGET vclib-3rd-boost)
-        # remove include/vclib/igl/booleans.h
-        list(FILTER HEADERS EXCLUDE REGEX ".*igl/booleans.h$")
+    if (NOT EXISTS ${poissonrecon_SOURCE_DIR}/include/poisson_recon)
+        file(MAKE_DIRECTORY ${poissonrecon_SOURCE_DIR}/include)
+        file(RENAME ${poissonrecon_SOURCE_DIR}/Src
+            ${poissonrecon_SOURCE_DIR}/include/poisson_recon)
     endif()
+
+    add_library(vclib-3rd-poisson-recon INTERFACE)
+
+    target_include_directories(vclib-3rd-poisson-recon INTERFACE
+        ${poissonrecon_SOURCE_DIR}/include)
+
+    target_compile_definitions(vclib-3rd-poisson-recon INTERFACE
+        VCLIB_WITH_POISSON_RECON)
+
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-poisson-recon)
+else()
+    message(STATUS "- PoissonRecon - not found, skipping")
 endif()
-
-if (TARGET vclib-3rd-poisson-recon)
-    file(GLOB_RECURSE HEADERS_POISSON CONFIGURE_DEPENDS "include/vclib/poisson_recon/*.h")
-    list(APPEND HEADERS ${HEADERS_POISSON})
-endif()
-
-if (TARGET vclib-3rd-vcg)
-    file(GLOB_RECURSE HEADERS_VCG CONFIGURE_DEPENDS "include/vclib/vcg/*.h")
-    list(APPEND HEADERS ${HEADERS_VCG})
-endif()
-
-add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
-add_library(vclib::external ALIAS ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_INCLUDE_DIR})
-target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_EXTERNAL_MODULE)
-
-target_link_libraries(${PROJECT_NAME} INTERFACE
-    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core)
-
-target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
-
-# Install
-install(DIRECTORY ${VCLIB_EXTERNAL_INCLUDE_DIR}/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
