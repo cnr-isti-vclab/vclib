@@ -27,7 +27,16 @@
 
 int main()
 {
-    // TODO Test
+    vcl::TriMesh bimba;
+    vcl::loadMesh(bimba, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+
+    vcl::updatePerVertexAndFaceNormals(bimba);
+
+    auto outMesh = vcl::poiss::poissonReconstruction<vcl::TriMesh>(bimba, 8);
+
+    std::string resultsPath = VCLIB_EXTERNAL_RESULTS_PATH;
+
+    vcl::saveMesh(outMesh, resultsPath + "/030_recon_bimba.obj");
 
     return 0;
 }
