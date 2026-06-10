@@ -531,6 +531,9 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
         return()
     endif()
 
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+    target_sources(vclib-render PRIVATE ${FILE_PATH})
+
     # Read file line by line using file(STRINGS ...) which returns a proper CMake list
     file(STRINGS ${FILE_PATH} FILE_LINES)
 
