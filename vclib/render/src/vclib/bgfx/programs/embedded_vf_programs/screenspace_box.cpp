@@ -53,8 +53,8 @@
 
 namespace vcl {
 
-bgfx::EmbeddedShader::Data VertFragLoader<
-    VertFragProgram::SCREENSPACE_BOX>::vertexShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data VertFragLoader<VertFragProgram::SCREENSPACE_BOX>::
+    vertexShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

@@ -30,7 +30,7 @@ int main()
     vcl::PointCloud cmln;
     vcl::loadMesh(cmln, VCLIB_EXAMPLE_MESHES_PATH "/chameleon4k.ply");
 
-    //vcl::updatePerVertexAndFaceNormals(cmln);
+    // vcl::updatePerVertexAndFaceNormals(cmln);
 
     auto outMesh = vcl::poiss::poissonReconstruction<vcl::TriMesh>(cmln, 8);
 
