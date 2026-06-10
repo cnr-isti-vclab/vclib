@@ -44,7 +44,7 @@ struct SelectionParameters
                                    // ids  when doing visible selection
     bgfx::TextureHandle meshIdTex; // texture that will contain the mesh ids
                                    // when doing visible selection
-    Point2<uint> texAttachsSize;   // sizes of the previous 2 textures
+    Point2<uint> textureSize;      // sizes of the previous 2 textures
     uint         meshId;           // Id of the mesh
 };
 

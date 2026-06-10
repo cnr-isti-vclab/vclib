@@ -357,7 +357,7 @@ public:
             getComputeProgramFromSelectionMode(pm, params.mode);
 
         std::array<uint, 3> workGroupSize = workGroupSizesFrom1DSize(
-            params.texAttachsSize[0] * params.texAttachsSize[1]);
+            params.textureSize[0] * params.textureSize[1]);
 
         uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                          BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
