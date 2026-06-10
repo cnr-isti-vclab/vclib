@@ -105,6 +105,7 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
 
     # PoissonRecon
     option(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON "Allow use of downloaded PoissonRecon source" ON)
+    option(VCLIB_ALLOW_INSTALL_POISSON_RECON "Allow install PoissonRecon source" ON)
     include(poisson-recon.cmake)
 
     # VCG
