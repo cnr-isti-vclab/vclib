@@ -53,9 +53,9 @@ class ScreenSpaceBox
     bool                mInitialized = false;
 
     // ---- Box state ----
-    Color  mColor = {27, 120, 249, 64};
-    bool   mVisible = true;
-    Box2d  mBox;
+    Color mColor   = {27, 120, 249, 64};
+    bool  mVisible = true;
+    Box2d mBox;
 
 public:
     ScreenSpaceBox() = default;
