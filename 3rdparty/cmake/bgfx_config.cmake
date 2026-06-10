@@ -265,137 +265,99 @@ function(vclib_target_add_shaders target_name)
     _vclib_target_ide_add_shaders(${target_name} ${ARGV})
 endfunction()
 
-# vclib_add_embedded_program(
-#   ENUM_NAME <enum_name>
-#   TYPE [VERT_FRAG|COMPUTE]
-#   FILES <file1> [<file2> ...]
-# )
-# Function to add an embedded program that will be generated at CMake configure time.
-# This function generates the header and source files for embedded shaders in the build directory.
-function(vclib_add_embedded_program)
-    # Parse arguments
-    set(oneValueArgs ENUM_NAME TYPE)
-    set(multiValueArgs FILES)
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
-
-    if (NOT ARG_ENUM_NAME)
+function(_vclib_embedded_program_validate_args ENUM_NAME TYPE FILES)
+    if (NOT ENUM_NAME)
         message(FATAL_ERROR "vclib_add_embedded_program: missing ENUM_NAME argument")
     endif()
 
-    if (NOT ARG_TYPE)
+    if (NOT TYPE)
         message(FATAL_ERROR "vclib_add_embedded_program: missing TYPE argument")
     endif()
 
-    if (NOT ARG_FILES)
+    if (NOT FILES)
         message(FATAL_ERROR "vclib_add_embedded_program: missing FILES argument")
     endif()
+endfunction()
 
-    # Determine the type and set appropriate variables
-    string(TOUPPER ${ARG_TYPE} ARG_TYPE_UC)
-    if (${ARG_TYPE_UC} STREQUAL "VERT_FRAG")
-        set(PROGRAM_TYPE VF)
-        set(PROGRAM_TYPE_LC vf)
-    elseif (${ARG_TYPE_UC} STREQUAL "COMPUTE")
-        set(PROGRAM_TYPE C)
-        set(PROGRAM_TYPE_LC c)
+function(_vclib_embedded_program_resolve_type TYPE OUT_PROGRAM_TYPE OUT_PROGRAM_TYPE_LC)
+    string(TOUPPER "${TYPE}" TYPE_UC)
+    if (TYPE_UC STREQUAL "VERT_FRAG")
+        set(PROGRAM_TYPE "VF")
+        set(PROGRAM_TYPE_LC "vf")
+    elseif (TYPE_UC STREQUAL "COMPUTE")
+        set(PROGRAM_TYPE "C")
+        set(PROGRAM_TYPE_LC "c")
     else()
         message(FATAL_ERROR "vclib_add_embedded_program: TYPE must be VERT_FRAG or COMPUTE")
     endif()
 
-    # Get the build directory
+    set(${OUT_PROGRAM_TYPE} "${PROGRAM_TYPE}" PARENT_SCOPE)
+    set(${OUT_PROGRAM_TYPE_LC} "${PROGRAM_TYPE_LC}" PARENT_SCOPE)
+endfunction()
+
+function(_vclib_embedded_program_prepare_output_dirs PROGRAM_TYPE_LC OUT_TARGET_BIN_DIR OUT_HEADER_DIR OUT_SOURCE_DIR)
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
 
-    # Set paths for generated files
     set(GENERATED_HEADER_DIR "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs")
     set(GENERATED_SOURCE_DIR "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs")
 
-    # Create directories if they don't exist
     file(MAKE_DIRECTORY ${GENERATED_HEADER_DIR})
     file(MAKE_DIRECTORY ${GENERATED_SOURCE_DIR})
 
-    # Get the lowercase enum name for naming files
-    string(TOLOWER ${ARG_ENUM_NAME} ENUM_NAME_LC)
+    set(${OUT_TARGET_BIN_DIR} "${TARGET_BIN_DIR}" PARENT_SCOPE)
+    set(${OUT_HEADER_DIR} "${GENERATED_HEADER_DIR}" PARENT_SCOPE)
+    set(${OUT_SOURCE_DIR} "${GENERATED_SOURCE_DIR}" PARENT_SCOPE)
+endfunction()
 
-    # Determine shader names from files
+function(_vclib_embedded_program_collect_shader_info PROGRAM_TYPE FILES OUT_SHADER_PATH OUT_VS_NAME OUT_FS_NAME OUT_CS_NAME)
     set(SHADER_PATH "")
-    if (${PROGRAM_TYPE} STREQUAL "VF")
-        list(LENGTH ARG_FILES NUM_FILES)
+    set(VS_NAME "")
+    set(FS_NAME "")
+    set(CS_NAME "")
+
+    if (PROGRAM_TYPE STREQUAL "VF")
+        list(LENGTH FILES NUM_FILES)
         if (NUM_FILES GREATER 2)
             message(FATAL_ERROR "vclib_add_embedded_program: VERT_FRAG programs require exactly 2 files (vertex and fragment)")
         endif()
 
-        # Get vertex and fragment shader names
-        list(GET ARG_FILES 0 VERTEX_SHADER_FILE)
-        list(GET ARG_FILES 1 FRAGMENT_SHADER_FILE)
-        
-        get_filename_component(VERTEX_SHADER_NAME ${VERTEX_SHADER_FILE} NAME_WE)
-        get_filename_component(FRAGMENT_SHADER_NAME ${FRAGMENT_SHADER_FILE} NAME_WE)
+        list(GET FILES 0 VERTEX_SHADER_FILE)
+        list(GET FILES 1 FRAGMENT_SHADER_FILE)
 
-        # Get the path for the shader (relative to project root)
+        get_filename_component(VS_NAME ${VERTEX_SHADER_FILE} NAME_WE)
+        get_filename_component(FS_NAME ${FRAGMENT_SHADER_FILE} NAME_WE)
+
         get_filename_component(SHADER_DIR ${VERTEX_SHADER_FILE} DIRECTORY)
-        get_filename_component(ABSOLUTE_SHADER_DIR ${SHADER_DIR} ABSOLUTE)
-        file(RELATIVE_PATH SHADER_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${ABSOLUTE_SHADER_DIR})
     else()
-        # COMPUTE program
-        list(GET ARG_FILES 0 COMPUTE_SHADER_FILE)
-        get_filename_component(COMPUTE_SHADER_NAME ${COMPUTE_SHADER_FILE} NAME_WE)
+        list(GET FILES 0 COMPUTE_SHADER_FILE)
+        get_filename_component(CS_NAME ${COMPUTE_SHADER_FILE} NAME_WE)
 
-        # Get the path for the shader (relative to project root)
         get_filename_component(SHADER_DIR ${COMPUTE_SHADER_FILE} DIRECTORY)
-        get_filename_component(ABSOLUTE_SHADER_DIR ${SHADER_DIR} ABSOLUTE)
-        file(RELATIVE_PATH SHADER_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${ABSOLUTE_SHADER_DIR})
     endif()
 
-    # Generate header file using configure_file(@ONLY) to preserve semicolons
-    set(HEADER_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/header.h.in")
-    set(HEADER_OUTPUT "${GENERATED_HEADER_DIR}/${ENUM_NAME_LC}.h")
+    get_filename_component(ABSOLUTE_SHADER_DIR ${SHADER_DIR} ABSOLUTE)
+    file(RELATIVE_PATH SHADER_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${ABSOLUTE_SHADER_DIR})
 
-    if (NOT EXISTS ${HEADER_TEMPLATE})
-        message(FATAL_ERROR "Template file not found: ${HEADER_TEMPLATE}")
+    set(${OUT_SHADER_PATH} "${SHADER_PATH}" PARENT_SCOPE)
+    set(${OUT_VS_NAME} "${VS_NAME}" PARENT_SCOPE)
+    set(${OUT_FS_NAME} "${FS_NAME}" PARENT_SCOPE)
+    set(${OUT_CS_NAME} "${CS_NAME}" PARENT_SCOPE)
+endfunction()
+
+function(_vclib_embedded_program_ensure_template_exists TEMPLATE_PATH)
+    if (NOT EXISTS ${TEMPLATE_PATH})
+        message(FATAL_ERROR "Template file not found: ${TEMPLATE_PATH}")
     endif()
+endfunction()
 
-    # Set variables for configure_file(@ONLY) - must use @VAR@ syntax in templates
-    set(PR_NAME_UC ${ARG_ENUM_NAME})
-    set(PR_NAME_LC ${ENUM_NAME_LC})
-    set(PR_PATH ${SHADER_PATH})
-
-    if (${PROGRAM_TYPE} STREQUAL "VF")
-        set(PR_VS_NAME ${VERTEX_SHADER_NAME})
-        set(PR_FS_NAME ${FRAGMENT_SHADER_NAME})
-        set(PR_CS_NAME "")
-    else()
-        list(GET ARG_FILES 0 COMPUTE_SHADER_FILE)
-        set(PR_CS_NAME ${COMPUTE_SHADER_NAME})
-        set(PR_VS_NAME "")
-        set(PR_FS_NAME "")
-    endif()
-
-    configure_file(${HEADER_TEMPLATE} ${HEADER_OUTPUT} @ONLY)
-
-    # Generate source file using configure_file(@ONLY) to preserve semicolons
-    set(SOURCE_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/source.cpp.in")
-    set(SOURCE_OUTPUT "${GENERATED_SOURCE_DIR}/${ENUM_NAME_LC}.cpp")
-
-    if (NOT EXISTS ${SOURCE_TEMPLATE})
-        message(FATAL_ERROR "Template file not found: ${SOURCE_TEMPLATE}")
-    endif()
-
-    configure_file(${SOURCE_TEMPLATE} ${SOURCE_OUTPUT} @ONLY)
-
-    # Update the main header file using configure_file(@ONLY) with the template
+function(_vclib_embedded_program_update_main_header PROGRAM_TYPE PROGRAM_TYPE_LC TARGET_BIN_DIR ENUM_NAME_LC)
     set(MAIN_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs.h")
 
-    # Initialize includes list as a proper CMake list
     set(INCLUDES_LIST "")
-
-    # Read existing includes from the main header file if it exists
     if (EXISTS ${MAIN_HEADER_FILE})
         file(READ ${MAIN_HEADER_FILE} EXISTING_HEADER_CONTENT)
-        # Extract all #include lines using REGEX MATCHALL with [^\r\n]+ to avoid capturing #endif
         string(REGEX MATCHALL "#include \"[^\"]+\"" EXISTING_INCLUDES "${EXISTING_HEADER_CONTENT}")
-        # Convert the semicolon-separated result into a proper CMake list
         foreach(INC ${EXISTING_INCLUDES})
-            # Check if this include is already in our list
             list(FIND INCLUDES_LIST "${INC}" INC_INDEX)
             if (INC_INDEX EQUAL -1)
                 list(APPEND INCLUDES_LIST "${INC}")
@@ -403,18 +365,15 @@ function(vclib_add_embedded_program)
         endforeach()
     endif()
 
-    # Add the new include if not already present
     set(NEW_INCLUDE "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\"")
     list(FIND INCLUDES_LIST "${NEW_INCLUDE}" NEW_INC_INDEX)
     if (NEW_INC_INDEX EQUAL -1)
         list(APPEND INCLUDES_LIST "${NEW_INCLUDE}")
     endif()
 
-    # Convert list to string with newlines for @INCLUDES@ substitution
     list(JOIN INCLUDES_LIST "\n" INCLUDES_STR)
 
-    # Use the appropriate template based on program type
-    if (${PROGRAM_TYPE} STREQUAL "VF")
+    if (PROGRAM_TYPE STREQUAL "VF")
         set(VF_INCLUDES "${INCLUDES_STR}")
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs.h.in"
@@ -429,27 +388,24 @@ function(vclib_add_embedded_program)
             @ONLY
         )
     endif()
+endfunction()
 
-    # Update the enumeration header file
-    if (${PROGRAM_TYPE} STREQUAL "VF")
+function(_vclib_embedded_program_update_enum_header PROGRAM_TYPE TARGET_BIN_DIR ENUM_NAME)
+    if (PROGRAM_TYPE STREQUAL "VF")
         set(ENUM_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/vert_frag_program.h")
     else()
         set(ENUM_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/compute_program.h")
     endif()
 
-    # Read existing enum entries from the enum header file if it exists
     set(EXISTING_ENUM_ENTRIES "")
     if (EXISTS ${ENUM_HEADER_FILE})
         file(READ ${ENUM_HEADER_FILE} EXISTING_ENUM_CONTENT)
-        # Extract enum entries (lines matching "    ENUM_NAME," pattern)
         string(REGEX MATCHALL "    [A-Z_][A-Z0-9_]*," EXISTING_ENUM_ENTRIES "${EXISTING_ENUM_CONTENT}")
     endif()
 
-    # Add the new enum entry if not already present
-    set(NEW_ENUM_ENTRY "    ${ARG_ENUM_NAME},")
+    set(NEW_ENUM_ENTRY "    ${ENUM_NAME},")
     list(FIND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}" ENTRY_FOUND)
     if (ENTRY_FOUND EQUAL -1)
-        # Add the new enum entry to the list
         if (EXISTING_ENUM_ENTRIES STREQUAL "")
             set(EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}")
         else()
@@ -457,11 +413,9 @@ function(vclib_add_embedded_program)
         endif()
     endif()
 
-    # Convert list to string with newlines for @ENUM_ENTRIES@ substitution
     list(JOIN EXISTING_ENUM_ENTRIES "\n" ENUM_ENTRIES_STR)
 
-    # Use the appropriate template based on program type
-    if (${PROGRAM_TYPE} STREQUAL "VF")
+    if (PROGRAM_TYPE STREQUAL "VF")
         set(VF_ENUM_ENTRIES "${ENUM_ENTRIES_STR}")
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs/vert_frag_program_enum.h.in"
@@ -476,6 +430,86 @@ function(vclib_add_embedded_program)
             @ONLY
         )
     endif()
+endfunction()
+
+# vclib_add_embedded_program(
+#   ENUM_NAME <enum_name>
+#   TYPE [VERT_FRAG|COMPUTE]
+#   FILES <file1> [<file2> ...]
+# )
+# Function to add an embedded program that will be generated at CMake configure time.
+# This function generates the header and source files for embedded shaders in the build directory.
+function(vclib_add_embedded_program)
+    # Parse arguments
+    set(options)
+    set(oneValueArgs ENUM_NAME TYPE)
+    set(multiValueArgs FILES)
+    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+
+    _vclib_embedded_program_validate_args("${ARG_ENUM_NAME}" "${ARG_TYPE}" "${ARG_FILES}")
+    _vclib_embedded_program_resolve_type("${ARG_TYPE}" PROGRAM_TYPE PROGRAM_TYPE_LC)
+    _vclib_embedded_program_prepare_output_dirs(
+        "${PROGRAM_TYPE_LC}"
+        TARGET_BIN_DIR
+        GENERATED_HEADER_DIR
+        GENERATED_SOURCE_DIR
+    )
+
+    # Get the lowercase enum name for naming files
+    string(TOLOWER ${ARG_ENUM_NAME} ENUM_NAME_LC)
+
+    _vclib_embedded_program_collect_shader_info(
+        "${PROGRAM_TYPE}"
+        "${ARG_FILES}"
+        SHADER_PATH
+        VERTEX_SHADER_NAME
+        FRAGMENT_SHADER_NAME
+        COMPUTE_SHADER_NAME
+    )
+
+    # Generate header file using configure_file(@ONLY) to preserve semicolons
+    set(HEADER_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/header.h.in")
+    set(HEADER_OUTPUT "${GENERATED_HEADER_DIR}/${ENUM_NAME_LC}.h")
+
+    _vclib_embedded_program_ensure_template_exists(${HEADER_TEMPLATE})
+
+    # Set variables for configure_file(@ONLY) - must use @VAR@ syntax in templates
+    set(PR_NAME_UC ${ARG_ENUM_NAME})
+    set(PR_NAME_LC ${ENUM_NAME_LC})
+    set(PR_PATH ${SHADER_PATH})
+
+    if (PROGRAM_TYPE STREQUAL "VF")
+        set(PR_VS_NAME ${VERTEX_SHADER_NAME})
+        set(PR_FS_NAME ${FRAGMENT_SHADER_NAME})
+        set(PR_CS_NAME "")
+    else()
+        set(PR_CS_NAME ${COMPUTE_SHADER_NAME})
+        set(PR_VS_NAME "")
+        set(PR_FS_NAME "")
+    endif()
+
+    configure_file(${HEADER_TEMPLATE} ${HEADER_OUTPUT} @ONLY)
+
+    # Generate source file using configure_file(@ONLY) to preserve semicolons
+    set(SOURCE_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/source.cpp.in")
+    set(SOURCE_OUTPUT "${GENERATED_SOURCE_DIR}/${ENUM_NAME_LC}.cpp")
+
+    _vclib_embedded_program_ensure_template_exists(${SOURCE_TEMPLATE})
+
+    configure_file(${SOURCE_TEMPLATE} ${SOURCE_OUTPUT} @ONLY)
+
+    _vclib_embedded_program_update_main_header(
+        "${PROGRAM_TYPE}"
+        "${PROGRAM_TYPE_LC}"
+        "${TARGET_BIN_DIR}"
+        "${ENUM_NAME_LC}"
+    )
+
+    _vclib_embedded_program_update_enum_header(
+        "${PROGRAM_TYPE}"
+        "${TARGET_BIN_DIR}"
+        "${ARG_ENUM_NAME}"
+    )
 
     # Add generated files to vclib::render target
     target_sources(vclib-render PRIVATE ${HEADER_OUTPUT} ${SOURCE_OUTPUT})
