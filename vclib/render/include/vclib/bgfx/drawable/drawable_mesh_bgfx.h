@@ -625,7 +625,7 @@ protected:
 
     bool vertexSelection(const SelectionParameters& params)
     {
-        assert(params.primitive == SelectionPrimitive::VERTEX);
+        assert(params.mode.primitive == SelectionPrimitive::VERTEX);
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
               params.mode.action == SelectionAction::SUBTRACT)) {
@@ -636,7 +636,7 @@ protected:
 
     bool faceSelection(const SelectionParameters& params)
     {
-        assert(params.primitive == SelectionPrimitive::FACE);
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }
@@ -650,7 +650,7 @@ protected:
 
     bool faceSelectionVisible(const SelectionParameters& params)
     {
-        assert(params.primitive == SelectionPrimitive::FACE);
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
         if constexpr (!HasFaces<MeshType>) {
             return false;
         }

@@ -133,10 +133,9 @@ public:
 
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
-
-        for (uint i = 0; i < selectionBufferSize; i++) {
-            buffer[i] = 0;
-        }
+        
+        // clear the buffer with zeroes (no vertex selected)
+        std::fill(buffer, buffer + selectionBufferSize, 0);
 
         mSelectedVerticesBuffer.createForCompute(
             buffer,
@@ -173,9 +172,8 @@ public:
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
 
-        for (uint i = 0; i < selectionBufferSize; i++) {
-            buffer[i] = 0;
-        }
+        // clear the buffer with zeroes (no face selected)
+        std::fill(buffer, buffer + selectionBufferSize, 0);
 
         mSelectedFacesBuffer.createForCompute(
             buffer,
