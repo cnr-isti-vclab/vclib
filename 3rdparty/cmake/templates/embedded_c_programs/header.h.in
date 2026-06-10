@@ -20,38 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PROGRAMS_COMPUTE_LOADER_H
-#define VCL_BGFX_PROGRAMS_COMPUTE_LOADER_H
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_@PR_NAME_UC@_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_@PR_NAME_UC@_H
 
-#include <vclib/bgfx/programs/compute_program.h>
-
-#include <bgfx/embedded_shader.h>
+#include <vclib/bgfx/programs/compute_loader.h>
 
 namespace vcl {
 
-template<ComputeProgram PROGRAM = ComputeProgram::COUNT>
-struct ComputeLoader
+template<>
+struct ComputeLoader<ComputeProgram::@PR_NAME_UC@>
 {
     static bgfx::EmbeddedShader::Data computeShader(
-        bgfx::RendererType::Enum type)
-    {
-        static_assert(false, "Invalid program");
-        switch (type) {
-        case bgfx::RendererType::OpenGLES: return {type, nullptr, 0};
-        case bgfx::RendererType::OpenGL: return {type, nullptr, 0};
-        case bgfx::RendererType::Vulkan: return {type, nullptr, 0};
-#ifdef _WIN32
-        case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
-        case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
-#endif
-#ifdef __APPLE__
-        case bgfx::RendererType::Metal: return {type, nullptr, 0};
-#endif
-        default: return {type, nullptr, 0};
-        }
-    }
+        bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_PROGRAMS_COMPUTE_LOADER_H
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_C_PROGRAMS_@PR_NAME_UC@_H
