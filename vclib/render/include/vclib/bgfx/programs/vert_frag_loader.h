@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_PROGRAMS_VERT_FRAG_LOADER_H
 #define VCL_BGFX_PROGRAMS_VERT_FRAG_LOADER_H
 
-#include "vert_frag_program.h"
+#include <vclib/bgfx/programs/vert_frag_program.h>
 
 #include <bgfx/embedded_shader.h>
 
