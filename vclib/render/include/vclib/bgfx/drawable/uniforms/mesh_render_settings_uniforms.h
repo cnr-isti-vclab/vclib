@@ -57,6 +57,8 @@ class MeshRenderSettingsUniforms
     // sColorPack[3] -> edge user color
     // sColorPack[4] -> point selection color
     // sColorPack[5] -> surface selection color
+    // sColorPack[6] -> unused
+    // sColorPack[7] -> unused
     inline static std::array<float, 8> sColorPack = {0.0};
 
     inline static Uniform sDrawModeUniform;
