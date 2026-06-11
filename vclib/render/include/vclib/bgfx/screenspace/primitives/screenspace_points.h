@@ -42,6 +42,8 @@ public:
     };
 
 private:
+    uint mPointsSize = 0;
+
     float mWidth = 1.0f;
     PointsColor mColorToUse = PointsColor::GENERAL;
     PointsShape mShape = PointsShape::CIRCLE;
@@ -51,6 +53,7 @@ private:
     OwnedOrRefBuffer<VertexBuffer> mPointColors;
 
     VertexBuffer mPointSplats;
+    IndexBuffer  mPointSplatIndices;
 
 public:
     ScreenSpacePoints() = default;
@@ -85,6 +88,6 @@ public:
     void draw(bgfx::ViewId viewId) const;
 };
 
-} // namespace vcl::detail
+} // namespace vcl
 
 #endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_SCREENSPACE_POINTS_H

@@ -24,9 +24,18 @@ $input a_position
 $output v_texcoord1
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_point_uniforms.sh>
+#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
 void main()
 {
-    // TODO
+    uint idx = uint(gl_VertexID) & 3u; // last 2 bits identify the quad corner
+    vec2 quadUv = vec2(idx & 1u, (idx >> 1u) & 1u);
+
+    gl_Position = vec4(
+        (a_position.x - u_viewRect.x) / u_viewRect.z * 2.0 - 1.0,
+        1.0 - (a_position.y - u_viewRect.y) / u_viewRect.w * 2.0,
+        0.0,
+        1.0);
+
+    v_texcoord1 = quadUv;
 }

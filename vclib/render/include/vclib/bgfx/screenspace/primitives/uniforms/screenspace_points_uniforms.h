@@ -27,6 +27,9 @@
 
 #include <vclib/space/core.h>
 
+#include <array>
+#include <bit>
+
 namespace vcl {
 
 class ScreenSpacePointsUniforms
@@ -36,22 +39,23 @@ class ScreenSpacePointsUniforms
 public:
     ScreenSpacePointsUniforms() = delete;
 
-    void setPointsColor(uint c)
+    static void setPointsColor(uint c)
     {
         sPointsSettings[0] = std::bit_cast<float>(c);
     }
 
-    void setPointsShape(uint s)
+    static void setPointsShape(uint s)
     {
         sPointsSettings[1] = std::bit_cast<float>(s);
     }
 
-    void setPointsWidth(float w)
+    static void setPointsWidth(float w)
     {
         sPointsSettings[2] = w;
     }
 
-    void setPointsGeneralColor(const vcl::Color& c) {
+    static void setPointsGeneralColor(const vcl::Color& c)
+    {
         sPointsSettings[3] = std::bit_cast<float>(c.abgr());
     }
 
@@ -66,6 +70,6 @@ public:
     }
 };
 
-} // namespace vcl::detail
+} // namespace vcl
 
 #endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_POINTS_UNIFORMS_H

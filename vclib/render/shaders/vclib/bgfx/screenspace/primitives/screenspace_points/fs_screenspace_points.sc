@@ -23,11 +23,27 @@
 $input v_texcoord1
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_point_uniforms.sh>
+#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
-// TODO
+BUFFER_RO(pointColors, vec4, 1); // colors (rgba as float bits)
 
 void main()
 {
-    // TODO
+    vec4 color = u_pointsGlobalColor;
+
+    if (usePerPointColor()) {
+        uint pointId = uint(gl_PrimitiveID) / 2u;
+        color = uintABGRToVec4Color(
+            floatBitsToUint(pointColors[pointId / 4u][pointId % 4u]));
+    }
+
+    // Circle shape discards fragments outside the unit disk.
+    if (!useQuadShape()) {
+        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+        if (length(uv) > 1.0) {
+            discard;
+        }
+    }
+
+    gl_FragColor = color;
 }
