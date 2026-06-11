@@ -27,19 +27,32 @@
 
 namespace vcl {
 
+/**
+ * @brief Renders a set of 2D points as screen-space splats (squares or
+ * circles).
+ *
+ * Each point is transformed into a quad (or circular disk) in screen space
+ * using a compute shader, then rasterized with alpha blending.
+ */
 class ScreenSpacePoints
 {
     inline static const VertexBuffer NULL_VERTEX_BUFFER;
 
 public:
+    /**
+     * @brief Specifies how point colors are determined during rendering.
+     */
     enum class PointsColor {
-        PER_POINT, // Select color from point buffer color
-        GENERAL,   // Select color from general color
+        PER_POINT, ///< Each point uses color from per-point color buffer.
+        GENERAL    ///< All points use a single general color.
     };
 
+    /**
+     * @brief Specifies the visual shape of each point splat.
+     */
     enum class PointsShape {
-        SQUARE, // square splats
-        CIRCLE  // circular splats
+        SQUARE, ///< Square splats (axis-aligned quads).
+        CIRCLE  ///< Circular splats (disk-shaped).
     };
 
 private:
@@ -57,14 +70,29 @@ private:
     IndexBuffer  mPointSplatIndices;
 
 public:
+    /**
+     * @brief Default constructor — creates an empty point set with no points.
+     */
     ScreenSpacePoints() = default;
 
+    /**
+     * @brief Constructs a point set from ranges of 2D coordinates and per-point
+     * colors.
+     *
+     * @param[in] vertCoords: Range of elements convertible to Point2 (must
+     * provide x() and y()). Each element contributes one screen-space point at
+     * (x, y).
+     * @param[in] vertColors: Optional range of Color elements. If non-empty,
+     * per-point colors are enabled; the size must match vertCoords. Default is
+     * empty (falls back to general color).
+     *
+     * @note This constructor creates an owned buffer copy of the input data.
+     * The original ranges are not referenced after construction.
+     */
     template<Range RV, Range RC>
     requires Point2Concept<std::ranges::range_value_t<RV>> &&
              ColorConcept<std::ranges::range_value_t<RC>>
-    ScreenSpacePoints(
-        RV&& vertCoords,
-        RC&& vertColors = std::vector<Color>())
+    ScreenSpacePoints(RV&& vertCoords, RC&& vertColors = std::vector<Color>())
     {
         setPoints(vertCoords);
         if (!vertColors.empty()) {
@@ -77,6 +105,18 @@ public:
         const VertexBuffer& vertexCoords,
         const VertexBuffer& vertexColors = NULL_VERTEX_BUFFER);
 
+    /**
+     * @brief Sets point positions from a range of 2D points.
+     *
+     * @tparam R: Range whose value type satisfies Point2Concept (must provide
+     * x() and y()).
+     * @param[in] vertCoords: Range of 2D points. Each element is read as a
+     * screen-space coordinate (x, y). The size determines the number of
+     * rendered points.
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
+     */
     template<Range R>
     requires Point2Concept<std::ranges::range_value_t<R>>
     void setPoints(R&& vertCoords)
@@ -107,6 +147,13 @@ public:
         setSplatsBuffers();
     }
 
+    /**
+     * @brief Sets per-point colors from a range of Color elements.
+     *
+     * @tparam R: Range whose value type satisfies ColorConcept.
+     * @param[in] vertColors Range of Color objects. Must have exactly
+     * the pointsCount() size. Each color is converted to ABGR format (uint).
+     */
     template<Range R>
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setPointColors(R&& vertColors)
@@ -139,17 +186,47 @@ public:
 
     void setPointColors(const VertexBuffer& vertexColors);
 
+    /**
+     * @brief Sets the width of point splats (in screen-space pixels or
+     * normalized units).
+     * @param[in] width: The splat width value.
+     */
     void setWidthSetting(float width) { mWidth = width; }
 
+    /**
+     * @brief Sets the color mode for point rendering.
+     * @param[in] colorToUse: Whether to use per-point colors or a general
+     * uniform color.
+     */
     void setColorSetting(PointsColor colorToUse) { mColorToUse = colorToUse; }
 
+    /**
+     * @brief Sets the visual shape of each point splat.
+     * @param[in] shape: The splat shape (SQUARE or CIRCLE).
+     */
     void setShapeSetting(PointsShape shape) { mShape = shape; }
 
+    /**
+     * @brief Sets the general (uniform) color used when color mode is GENERAL.
+     * @param[in] generalColor: The fallback color for all points.
+     */
     void setGeneralColor(const Color& generalColor)
     {
         mGeneralColor = generalColor;
     }
 
+    /**
+     * @brief Draws the point splats on the specified view.
+     *
+     * Renders all points as screen-space splats using a compute shader for
+     * position generation and a vertex/fragment shader for rasterization with
+     * alpha blending.
+     *
+     * If compute shader support is unavailable or the point set is
+     * empty/invalid, this method does nothing.
+     *
+     * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
+     */
     void draw(bgfx::ViewId viewId) const;
 
 private:
@@ -157,7 +234,7 @@ private:
     static constexpr uint POINTS_COLORS_STAGE    = 1;
     static constexpr uint POINTS_OUTPUT_STAGE    = 2;
 
-    static constexpr uint POINTS_SPLAT_INDEX_COUNT_PER_POINT = 6;
+    static constexpr uint POINTS_SPLAT_INDEX_COUNT_PER_POINT  = 6;
     static constexpr uint POINTS_SPLAT_VERTEX_COUNT_PER_POINT = 4;
 
     void setSplatsBuffers()
@@ -166,9 +243,13 @@ private:
         setPointSplatIndicesBuffer(mPointSplatIndices, mPointsCount);
     }
 
-    static void setPointSplatsBuffer(vcl::VertexBuffer& splats, uint pointsSize);
+    static void setPointSplatsBuffer(
+        vcl::VertexBuffer& splats,
+        uint               pointsSize);
 
-    static void setPointSplatIndicesBuffer(vcl::IndexBuffer& indices, uint pointsSize);
+    static void setPointSplatIndicesBuffer(
+        vcl::IndexBuffer& indices,
+        uint              pointsSize);
 };
 
 } // namespace vcl

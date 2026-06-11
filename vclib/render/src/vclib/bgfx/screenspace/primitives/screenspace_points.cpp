@@ -29,6 +29,22 @@
 
 namespace vcl {
 
+/**
+ * @brief Constructs a point set by referencing existing VertexBuffers.
+ *
+ * @param[in] pointsSize: Number of points (length of vertexCoords).
+ * @param[in] vertexCoords: VertexBuffer containing point positions.
+ * Expected layout: an array of `float` with 2 components per point (x, y),
+ * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
+ * buffer must be created for compute access and must remain valid for the
+ * lifetime of this object.
+ * @param[in] vertexColors: Optional VertexBuffer containing per-point
+ * colors.
+ * Expected layout: an array of `uint` with 4 channels per color in
+ * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
+ * must be created for compute access and must remain valid for the lifetime
+ * of this object.
+ */
 ScreenSpacePoints::ScreenSpacePoints(
     const uint          pointsSize,
     const VertexBuffer& vertexCoords,
@@ -40,6 +56,16 @@ ScreenSpacePoints::ScreenSpacePoints(
     }
 }
 
+/**
+ * @brief Sets point positions by referencing an existing VertexBuffer.
+ *
+ * @param[in] pointsSize: Number of points (length of vertexCoords).
+ * @param[in] vertexCoords: VertexBuffer containing point positions.
+ * Expected layout: an array of `float` with 2 components per point (x, y),
+ * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
+ * buffer must be created for compute access and must remain valid for the
+ * lifetime of this object.
+ */
 void ScreenSpacePoints::setPoints(
     const uint          pointsSize,
     const VertexBuffer& vertexCoords)
@@ -51,11 +77,29 @@ void ScreenSpacePoints::setPoints(
     setSplatsBuffers();
 }
 
+/**
+ * @brief Sets per-point colors by referencing an existing VertexBuffer.
+ *
+ * @param[in] vertexColors: VertexBuffer containing per-point colors.
+ * Expected layout: an array of `uint` with 4 channels per color in
+ * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
+ * must be created for compute access and must remain valid for the lifetime
+ * of this object.
+ */
 void ScreenSpacePoints::setPointColors(const VertexBuffer& vertexColors)
 {
     mPointColors.setReferenced(&vertexColors);
 }
 
+/**
+ * @brief Draws the point splats on the specified view.
+ *
+ * Renders all points as screen-space splats using a compute shader for
+ * position generation and a vertex/fragment shader for rasterization with
+ * alpha blending.
+ *
+ * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
+ */
 void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 {
     if (mPointsCount == 0 || !mPoints.isValid() || !mPointSplats.isValid() ||
