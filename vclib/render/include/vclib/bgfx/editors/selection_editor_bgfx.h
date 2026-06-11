@@ -57,7 +57,7 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     std::optional<Point2d>     mSelectionAnchor;
     std::vector<SelectionMode> mCurrentSelectionModes;
     bool                       mSelectionCalcRequired = false;
-    bool                       mLMBHeld               = false;
+    bool                       mSelectionInProgress   = false;
 
     // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
     uint mPendingReadbackFrames = 0;
@@ -200,7 +200,7 @@ public:
         bgfx::touch(mVisibleSelectionViewIds[1]);
 
         // 1) Draw the selection box overlay (only visible while dragging)
-        if (mLMBHeld) {
+        if (mSelectionInProgress) {
             mScreenSpaceBox.setBox(mSelectionBox.value_or(Box2d {}));
             mScreenSpaceBox.setVisible(true);
             mScreenSpaceBox.draw(viewId);
@@ -236,7 +236,7 @@ public:
      */
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (!isSelectionActive() || mLMBHeld)
+        if (!isSelectionActive() || mSelectionInProgress)
             return false;
 
         if (modifiers.only(KeyModifier::CONTROL)) {
@@ -269,7 +269,7 @@ public:
     {
         if (!isSelectionActive())
             return false;
-        if (mLMBHeld) {
+        if (mSelectionInProgress) {
             mSelectionBox = Box2d(mSelectionAnchor.value());
             mSelectionBox->add(Point2d {x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
@@ -286,8 +286,8 @@ public:
     {
         if (!isSelectionActive())
             return false;
-        if (button == MouseButton::LEFT && !mLMBHeld) {
-            mLMBHeld               = true;
+        if (button == MouseButton::LEFT && !mSelectionInProgress) {
+            mSelectionInProgress               = true;
             mSelectionAnchor       = Point2d {x, y};
             mSelectionBox          = Box2d({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
@@ -301,8 +301,8 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        if (button == MouseButton::LEFT && mLMBHeld) {
-            mLMBHeld               = false;
+        if (button == MouseButton::LEFT && mSelectionInProgress) {
+            mSelectionInProgress               = false;
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
@@ -500,7 +500,7 @@ private:
                         Box2d(),
                         SelectionMode {
                                        SelectionPrimitive::FACE, SelectionAction::NONE},
-                        mLMBHeld,
+                        mSelectionInProgress,
                         bgfx::getTexture(mVisibleSelectionFB, 0),
                         bgfx::getTexture(mVisibleSelectionFB, 1),
                         {mVisibleFaceFBSize,       mVisibleFaceFBSize   },
@@ -527,7 +527,7 @@ private:
                 mVisibleSelectionViewIds[1],
                 minMaxBox,
                 mode,
-                mLMBHeld,
+                mSelectionInProgress,
                 bgfx::getTexture(mVisibleSelectionFB, 0),
                 bgfx::getTexture(mVisibleSelectionFB, 1),
                 {mVisibleFaceFBSize, mVisibleFaceFBSize},
@@ -546,7 +546,7 @@ private:
         }
 
         // Computation done — clear box if drag ended
-        if (!mLMBHeld) {
+        if (!mSelectionInProgress) {
             mSelectionBox.reset();
             mSelectionAnchor.reset();
         }
