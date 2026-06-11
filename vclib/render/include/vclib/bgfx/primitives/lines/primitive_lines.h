@@ -26,8 +26,6 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
-#include <variant>
-
 namespace vcl::detail {
 
 // Note: copy constructor and assignment are not allowed (because of bgfx
@@ -39,18 +37,12 @@ class PrimitiveLines
             .programManager()
             .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
-    enum Ownership { OWNED = 0, NOT_OWNED = 1 };
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexCoords;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    vcl::OwnedOrRefBuffer<IndexBuffer>   mLineColors;
 
-    // true if the buffers are created and managed internally
-    // by default, all variants are owned (first element of the variant)
-    bool mOwnsBuffers = true;
-
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexCoords;
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexNormals;
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexColors;
-    std::variant<IndexBuffer, const IndexBuffer*>   mLineColors;
-
-    std::variant<IndexBuffer, const IndexBuffer*> mIndices;
+    vcl::OwnedOrRefBuffer<IndexBuffer> mIndices;
 
 public:
     PrimitiveLines() = default;
@@ -118,8 +110,6 @@ public:
     void draw(uint viewId) const;
 
 private:
-    void reinitBuffers(Ownership owned);
-
     void setPoints(
         bool                      setLineIndices,
         const std::vector<float>& vertCoords,
