@@ -34,7 +34,7 @@ namespace vcl {
 
 class ScreenSpacePointsUniforms
 {
-    inline static std::array<float, 4> sPointsSettings = {0.5, 0.5, 0.5, 1.0};
+    inline static std::array<float, 4> sPointsSettings;
     inline static Uniform sPointsSettingsUniform;
 public:
     ScreenSpacePointsUniforms() = delete;

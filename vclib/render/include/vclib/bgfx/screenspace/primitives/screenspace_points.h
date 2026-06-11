@@ -32,8 +32,8 @@ class ScreenSpacePoints
 {
 public:
     enum class PointsColor {
-        PER_POINT,  // Select color from point buffer color
-        GENERAL,    // Select color from general color
+        PER_POINT, // Select color from point buffer color
+        GENERAL,   // Select color from general color
     };
 
     enum class PointsShape {
@@ -44,9 +44,9 @@ public:
 private:
     uint mPointsSize = 0;
 
-    float mWidth = 1.0f;
-    PointsColor mColorToUse = PointsColor::GENERAL;
-    PointsShape mShape = PointsShape::CIRCLE;
+    float       mWidth        = 1.0f;
+    PointsColor mColorToUse   = PointsColor::GENERAL;
+    PointsShape mShape        = PointsShape::SQUARE;
     Color       mGeneralColor = Color::Black;
 
     OwnedOrRefBuffer<VertexBuffer> mPoints;
@@ -79,6 +79,8 @@ public:
     void setWidth(float width) { mWidth = width; }
 
     void setPointsColor(PointsColor colorToUse) { mColorToUse = colorToUse; }
+
+    void setPointsShape(PointsShape shape) { mShape = shape; }
 
     void setGeneralColor(const Color& generalColor)
     {
