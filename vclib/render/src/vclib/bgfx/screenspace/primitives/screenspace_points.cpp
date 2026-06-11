@@ -106,23 +106,29 @@ void ScreenSpacePoints::setPoints(
 {
     assert(vertCoords.size() % 2 == 0);
 
-    mPointsSize = pointsSize;
+    mPointsCount = pointsSize;
 
     VertexBuffer points;
     {
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(mPointsSize * 4);
+        const uint numVec4 = (mPointsCount + 1u) / 2u;
 
-        for (uint i = 0; i < mPointsSize; ++i) {
-            buffer[i * 4 + 0] = vertCoords[i * 2 + 0];
-            buffer[i * 4 + 1] = vertCoords[i * 2 + 1];
-            buffer[i * 4 + 2] = 0.0f;
-            buffer[i * 4 + 3] = 0.0f;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(numVec4 * 4);
+
+        for (uint i = 0; i < mPointsCount; ++i) {
+            const uint vecIdx = i / 2u;
+            if ((i & 1u) == 0u) {
+                buffer[vecIdx * 4 + 0] = vertCoords[i * 2 + 0];
+                buffer[vecIdx * 4 + 1] = vertCoords[i * 2 + 1];
+            } else {
+                buffer[vecIdx * 4 + 2] = vertCoords[i * 2 + 0];
+                buffer[vecIdx * 4 + 3] = vertCoords[i * 2 + 1];
+            }
         }
 
         points.createForCompute(
             buffer,
-            mPointsSize,
+            numVec4,
             bgfx::Attrib::Position,
             4,
             PrimitiveType::FLOAT,
@@ -138,13 +144,13 @@ void ScreenSpacePoints::setPoints(
         VertexBuffer pointColors;
         {
             auto [buffer, releaseFn] =
-                Context::getAllocatedBufferAndReleaseFn<uint>(mPointsSize);
+                Context::getAllocatedBufferAndReleaseFn<uint>(mPointsCount);
 
-            std::copy(vertColors, vertColors + mPointsSize, buffer);
+            std::copy(vertColors, vertColors + mPointsCount, buffer);
 
             pointColors.createForCompute(
                 buffer,
-                mPointsSize,
+                mPointsCount,
                 bgfx::Attrib::Color0,
                 4,
                 PrimitiveType::UCHAR,
@@ -158,8 +164,8 @@ void ScreenSpacePoints::setPoints(
         mPointColors.setOwned();
     }
 
-    setPointSplatsBuffer(mPointSplats, mPointsSize);
-    setPointSplatIndicesBuffer(mPointSplatIndices, mPointsSize);
+    setPointSplatsBuffer(mPointSplats, mPointsCount);
+    setPointSplatIndicesBuffer(mPointSplatIndices, mPointsCount);
 }
 
 void ScreenSpacePoints::setPoints(
@@ -177,18 +183,18 @@ void ScreenSpacePoints::setPoints(
     const VertexBuffer& vertexCoords,
     const VertexBuffer& vertexColors)
 {
-    mPointsSize = pointsSize;
+    mPointsCount = pointsSize;
 
     mPoints.setReferenced(&vertexCoords);
     mPointColors.setReferenced(&vertexColors);
 
-    setPointSplatsBuffer(mPointSplats, mPointsSize);
-    setPointSplatIndicesBuffer(mPointSplatIndices, mPointsSize);
+    setPointSplatsBuffer(mPointSplats, mPointsCount);
+    setPointSplatIndicesBuffer(mPointSplatIndices, mPointsCount);
 }
 
 void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 {
-    if (mPointsSize == 0 || !mPoints.isValid() || !mPointSplats.isValid() ||
+    if (mPointsCount == 0 || !mPoints.isValid() || !mPointSplats.isValid() ||
         !mPointSplatIndices.isValid()) {
         return;
     }
@@ -220,7 +226,7 @@ void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
     bgfx::dispatch(
         viewId,
         pm.getComputeProgram<ComputeProgram::SCREENSPACE_POINTS>(),
-        mPointsSize,
+        mPointsCount,
         1,
         1);
 

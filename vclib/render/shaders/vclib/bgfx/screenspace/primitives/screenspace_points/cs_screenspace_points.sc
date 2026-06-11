@@ -23,14 +23,15 @@
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
-BUFFER_RO(points, vec4, 0); // per-point screen-space coords (x, y)
+BUFFER_RO(points, vec4, 0); // packed screen-space coords: points[i*2].xy + points[i*2+1].zw
 BUFFER_WO(vOut, vec4, 2);   // per-splat vertex data (x, y, z, padding)
 
 NUM_THREADS(1, 1, 1) // 1 'thread' per point
 void main()
 {
     uint pointId = gl_WorkGroupID.x;
-    vec2 p = points[pointId].xy;
+    uint vecIdx  = pointId / 2u;
+    vec2 p       = (pointId & 1u) ? points[vecIdx].zw : points[vecIdx].xy;
 
     UNROLL
     for (int i = 0; i < 4; ++i) {

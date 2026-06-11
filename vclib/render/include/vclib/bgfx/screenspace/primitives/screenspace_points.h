@@ -30,6 +30,8 @@ namespace vcl {
 
 class ScreenSpacePoints
 {
+    inline static const VertexBuffer NULL_VERTEX_BUFFER;
+
 public:
     enum class PointsColor {
         PER_POINT, // Select color from point buffer color
@@ -42,7 +44,7 @@ public:
     };
 
 private:
-    uint mPointsSize = 0;
+    uint mPointsCount = 0;
 
     float       mWidth        = 1.0f;
     PointsColor mColorToUse   = PointsColor::GENERAL;
@@ -65,10 +67,10 @@ public:
     ScreenSpacePoints(
         const uint          pointsSize,
         const VertexBuffer& vertexCoords,
-        const VertexBuffer& vertexColors);
+        const VertexBuffer& vertexColors = NULL_VERTEX_BUFFER);
 
     void setPoints(
-        const uint pointsSize,
+        const uint   pointsSize,
         const float* vertCoords,
         const uint*  vertColors = nullptr);
 
@@ -79,7 +81,7 @@ public:
     void setPoints(
         const uint          pointsSize,
         const VertexBuffer& vertexCoords,
-        const VertexBuffer& vertexColors);
+        const VertexBuffer& vertexColors = NULL_VERTEX_BUFFER);
 
     void setWidth(float width) { mWidth = width; }
 
