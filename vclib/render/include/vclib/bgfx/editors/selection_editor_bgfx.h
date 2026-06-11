@@ -435,21 +435,17 @@ private:
             1.f);
         float     w = maxNDC.x() - minNDC.x();
         float     h = maxNDC.y() - minNDC.y();
-        Matrix44f trns {
-            {1.f, 0.f, 0.f, -(minNDC.x() + 0.5f * w)},
-            {0.f, 1.f, 0.f, -(minNDC.y() + 0.5f * h)},
-            {0.f, 0.f, 1.f, 0.f                     },
-            {0.f, 0.f, 0.f, 1.f                     }
-        };
-        Matrix44f scl {
-            {2.f / w, 0.f,     0.f, 0.f},
-            {0.f,     2.f / h, 0.f, 0.f},
-            {0.f,     0.f,     1.f, 0.f},
-            {0.f,     0.f,     0.f, 1.f}
+        assert(w > 0.f && h > 0.f);
+        // set the matrix to translate and scale (scale * translate)
+        const Matrix44f scaleTranslate {
+            {2.f/w, 0.f, 0.f, -minNDC.x()},
+            {0.f, 2.f/h, 0.f, -minNDC.y()},
+            {0.f, 0.f, 1.f, 0.f },
+            {0.f, 0.f, 0.f, 1.f  }
         };
         auto      vm      = Base::viewerViewMatrix();
         auto      pm      = Base::viewerProjectionMatrix();
-        Matrix44f newProj = scl * trns * pm;
+        Matrix44f newProj = scaleTranslate * pm;
         bgfx::setViewTransform(
             mVisibleSelectionViewIds[0], vm.data(), newProj.data());
         return true;
