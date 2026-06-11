@@ -414,10 +414,12 @@ private:
     /**
      * @brief Restricts the visible-selection projection to the sub-frustum
      * that corresponds to the given selection box.
+     * @return true if the projection was successfully updated, false if the box
+     * is invalid (null or degenerate) and the projection was not changed.
      */
     bool setVisibleTrisSelectionProjViewMatrix(const Box2d& box)
     {
-        if (box.isNull()) {
+        if (box.isNull() || box.isDegenerate()) {
             return false;
         }
         auto    s     = Base::viewerCanvasSize();
@@ -437,11 +439,14 @@ private:
         float     h = maxNDC.y() - minNDC.y();
         assert(w > 0.f && h > 0.f);
         // set the matrix to translate and scale (scale * translate)
+        // translate to the box center and scale to box size (relative to NDC)
+        // (translate by -minNDC + 1/2 * dim then scale by
+        // 2/dim to map the box to the whole viewport)
         const Matrix44f scaleTranslate {
-            {2.f/w, 0.f, 0.f, -minNDC.x()},
-            {0.f, 2.f/h, 0.f, -minNDC.y()},
+            {2.f/w, 0.f, 0.f, -(2.f/w * minNDC.x() + 1.f)},
+            {0.f, 2.f/h, 0.f, -(2.f/h * minNDC.y() + 1.f)},
             {0.f, 0.f, 1.f, 0.f },
-            {0.f, 0.f, 0.f, 1.f  }
+            {0.f, 0.f, 0.f, 1.f }
         };
         auto      vm      = Base::viewerViewMatrix();
         auto      pm      = Base::viewerProjectionMatrix();
@@ -473,7 +478,8 @@ private:
         }
 
         bool skipVisibleSelection = false;
-        if (hasVisibleMode && !minMaxBox.isNull()) {
+        if (hasVisibleMode && !minMaxBox.isNull())
+        {
             skipVisibleSelection = !setVisibleTrisSelectionProjViewMatrix(
                 calculateWindowSpaceMeshBB().intersection(minMaxBox));
         }
