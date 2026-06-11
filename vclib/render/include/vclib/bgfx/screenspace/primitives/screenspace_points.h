@@ -68,6 +68,11 @@ public:
         const VertexBuffer& vertexColors);
 
     void setPoints(
+        const uint pointsSize,
+        const float* vertCoords,
+        const uint*  vertColors = nullptr);
+
+    void setPoints(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  vertColors = std::vector<uint>());
 

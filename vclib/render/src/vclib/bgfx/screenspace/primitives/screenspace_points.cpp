@@ -104,12 +104,13 @@ ScreenSpacePoints::ScreenSpacePoints(
 }
 
 void ScreenSpacePoints::setPoints(
-    const std::vector<float>& vertCoords,
-    const std::vector<uint>&  vertColors)
+    const uint   pointsSize,
+    const float* vertCoords,
+    const uint*  vertColors)
 {
     assert(vertCoords.size() % 2 == 0);
 
-    mPointsSize = vertCoords.size() / 2;
+    mPointsSize = pointsSize;
 
     VertexBuffer points;
     {
@@ -135,7 +136,7 @@ void ScreenSpacePoints::setPoints(
     }
     mPoints.setOwned(std::move(points));
 
-    if (!vertColors.empty()) {
+    if (vertColors) {
         assert(vertColors.size() == mPointsSize);
 
         VertexBuffer pointColors;
@@ -143,7 +144,7 @@ void ScreenSpacePoints::setPoints(
             auto [buffer, releaseFn] =
                 Context::getAllocatedBufferAndReleaseFn<uint>(mPointsSize);
 
-            std::copy(vertColors.begin(), vertColors.end(), buffer);
+            std::copy(vertColors, vertColors + mPointsSize, buffer);
 
             pointColors.createForCompute(
                 buffer,
@@ -163,6 +164,16 @@ void ScreenSpacePoints::setPoints(
 
     setPointSplatsBuffer(mPointSplats, mPointsSize);
     setPointSplatIndicesBuffer(mPointSplatIndices, mPointsSize);
+}
+
+void ScreenSpacePoints::setPoints(
+    const std::vector<float>& vertCoords,
+    const std::vector<uint>&  vertColors)
+{
+    setPoints(
+        vertCoords.size() / 2,
+        vertCoords.data(),
+        vertColors.empty() ? nullptr : vertColors.data());
 }
 
 void ScreenSpacePoints::setPoints(
