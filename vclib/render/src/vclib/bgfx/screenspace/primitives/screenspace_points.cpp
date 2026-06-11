@@ -29,7 +29,7 @@
 #include <algorithm>
 #include <cassert>
 
-namespace {
+namespace vcl {
 
 constexpr uint POINTS_POSITIONS_STAGE = 0;
 constexpr uint POINTS_COLORS_STAGE    = 1;
@@ -83,10 +83,6 @@ void setPointSplatIndicesBuffer(vcl::IndexBuffer& indices, uint pointsSize)
 
     indices.create(buffer, indexCount, true, releaseFn);
 }
-
-} // namespace
-
-namespace vcl {
 
 ScreenSpacePoints::ScreenSpacePoints(
     const std::vector<float>& vertCoords,
