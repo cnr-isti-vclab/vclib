@@ -70,13 +70,21 @@ class MeshSelectionBuffers
     // vertex selection
     IndexBuffer mSelectedVerticesBuffer;
 
-    std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
+    // Workgroup size xyz for selection dispatches.
     uint                mNumVerts                     = 0;
+    std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
+    // Atomic workgroup sizes, instead, are computed on the number of uints in
+    // the buffer, which is the number of vertices divided by 32 (bits per uint)
+    // i.e. the selection buffer size, rounded up.
+    uint                mSelectedVerticesBufferSize    = 0;
+    std::array<uint, 3> mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // face selection (invalid if mesh has no faces)
     IndexBuffer         mSelectedFacesBuffer;
-    std::array<uint, 3> mFaceSelectionWorkgroupSize = {0, 0, 0};
     uint                mNumTris                    = 0;
+    std::array<uint, 3> mFaceSelectionWorkgroupSize = {0, 0, 0};
+    uint                mSelectedFacesBufferSize    = 0;
+    std::array<uint, 3> mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // Polygon-to-triangle mapping buffers for polygon-level face selection
     IndexBuffer mTriToPolyBuffer;
@@ -100,8 +108,15 @@ public:
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
         swap(mNumVerts, other.mNumVerts);
+        swap(mSelectedVerticesBufferSize, other.mSelectedVerticesBufferSize);
+        swap(
+            mVertexSelectionAtomicWorkgroupSize,
+            other.mVertexSelectionAtomicWorkgroupSize);
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
         swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
+        swap(mSelectedFacesBufferSize, other.mSelectedFacesBufferSize);
+        swap(mFaceSelectionAtomicWorkgroupSize,
+            other.mFaceSelectionAtomicWorkgroupSize);
         swap(mNumTris, other.mNumTris);
         swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
         swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
@@ -128,18 +143,18 @@ public:
     {
         mNumVerts = numVerts;
 
-        const uint selectionBufferSize =
-            uint(std::ceil(double(numVerts) / 32.0));
+        mSelectedVerticesBufferSize = uint(std::ceil(double(numVerts) / 32.0));
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(
+                mSelectedVerticesBufferSize);
         
         // clear the buffer with zeroes (no vertex selected)
-        std::fill(buffer, buffer + selectionBufferSize, 0);
+        std::fill(buffer, buffer + mSelectedVerticesBufferSize, 0);
 
         mSelectedVerticesBuffer.createForCompute(
             buffer,
-            selectionBufferSize,
+            mSelectedVerticesBufferSize,
             vcl::PrimitiveType::UINT,
             bgfx::Access::ReadWrite,
             releaseFn);
@@ -166,18 +181,17 @@ public:
             return;
         }
 
-        const uint selectionBufferSize =
-            uint(std::ceil(double(numTris) / 32.0));
+        mSelectedFacesBufferSize = uint(std::ceil(double(numTris) / 32.0));
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(selectionBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(mSelectedFacesBufferSize);
 
         // clear the buffer with zeroes (no face selected)
-        std::fill(buffer, buffer + selectionBufferSize, 0);
+        std::fill(buffer, buffer + mSelectedFacesBufferSize, 0);
 
         mSelectedFacesBuffer.createForCompute(
             buffer,
-            selectionBufferSize,
+            mSelectedFacesBufferSize,
             vcl::PrimitiveType::UINT,
             bgfx::Access::ReadWrite,
             releaseFn);
@@ -538,11 +552,13 @@ private:
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
         SelectionUniforms::setSelectionWorkgroupSize(
-            mVertexSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+            mVertexSelectionAtomicWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(
+            mSelectedVerticesBufferSize);
         SelectionUniforms::bind();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchVertexSelection(params.drawViewId, prog);
+        dispatchAtomicSelection(params.drawViewId, prog,
+            mVertexSelectionAtomicWorkgroupSize);
         return true;
     }
 
@@ -604,11 +620,13 @@ private:
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
         SelectionUniforms::setSelectionWorkgroupSize(
-            mFaceSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+            mFaceSelectionAtomicWorkgroupSize);
+        SelectionUniforms::setNumPrimitivesForSelection(
+            mSelectedFacesBufferSize);
         SelectionUniforms::bind();
         mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchFaceSelection(params.drawViewId, prog);
+        dispatchAtomicSelection(params.drawViewId, prog,
+            mFaceSelectionAtomicWorkgroupSize);
         return true;
     }
 
@@ -622,6 +640,21 @@ private:
             mVertexSelectionWorkgroupSize[0],
             mVertexSelectionWorkgroupSize[1],
             mVertexSelectionWorkgroupSize[2]);
+    }
+
+    void dispatchAtomicSelection(
+        const uint                 viewId,
+        const bgfx::ProgramHandle& handle,
+        const std::array<uint, 3>& workGroupSize)
+    {
+        bgfx::dispatch(
+            viewId,
+            handle,
+            workGroupSize[0],
+            workGroupSize[1],
+            workGroupSize[2]);
+            // ceil(numPrimitives / 32)
+            // uint32_t(std::ceil(double(numPrimitives)/sizeof(uint))));
     }
 
     void dispatchFaceSelection(
@@ -746,16 +779,26 @@ private:
 
     void calculateVertexSelectionWorkgroupSize()
     {
+        if (mNumVerts == 0) {
+            mVertexSelectionWorkgroupSize = {0, 0, 0};
+            mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
+            return;
+        }
         mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(mNumVerts);
+        mVertexSelectionAtomicWorkgroupSize =
+            workGroupSizesFrom1DSize(mSelectedVerticesBufferSize);
     }
 
     void calculateFaceSelectionWorkgroupSize()
     {
         if (mNumTris == 0) {
             mFaceSelectionWorkgroupSize = {0, 0, 0};
+            mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
         mFaceSelectionWorkgroupSize = workGroupSizesFrom1DSize(mNumTris);
+        mFaceSelectionAtomicWorkgroupSize =
+            workGroupSizesFrom1DSize(mSelectedFacesBufferSize);
     }
 };
 
