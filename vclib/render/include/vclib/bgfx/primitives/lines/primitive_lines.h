@@ -40,7 +40,7 @@ class PrimitiveLines
     vcl::OwnedOrRefBuffer<VertexBuffer> mVertexCoords;
     vcl::OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
     vcl::OwnedOrRefBuffer<VertexBuffer> mVertexColors;
-    vcl::OwnedOrRefBuffer<IndexBuffer>   mLineColors;
+    vcl::OwnedOrRefBuffer<IndexBuffer>  mLineColors;
 
     vcl::OwnedOrRefBuffer<IndexBuffer> mIndices;
 
