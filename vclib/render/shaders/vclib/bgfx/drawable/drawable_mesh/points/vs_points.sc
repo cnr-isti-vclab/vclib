@@ -35,5 +35,6 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
+    // TODO: try to set without condition.
     v_selected = isVertexSelected(uint(gl_VertexID)) ? 1.0 : 0.0;
 }
