@@ -47,27 +47,27 @@ ScreenSpaceLines::ScreenSpaceLines(
     const VertexBuffer& vertexCoords,
     const VertexBuffer& vertexColors)
 {
-    setLineCoords(lineCoordsSize, vertexCoords);
+    setVertices(lineCoordsSize, vertexCoords);
     if (vertexColors.isValid()) {
         setVertexColors(vertexColors);
     }
 }
 
 /**
- * @brief Sets line coordinates by referencing an existing VertexBuffer.
+ * @brief Sets vertex positions by referencing an existing VertexBuffer.
  *
- * @param[in] lineCoordsSize: Number of coordinate pairs (each line uses 2
+ * @param[in] vertexCount: Number of coordinate pairs (each line uses 2
  * points).
- * @param[in] vertexCoords: VertexBuffer containing line coordinates.
+ * @param[in] vertexCoords: VertexBuffer containing vertex positions.
  * Expected layout: an array of `float` with 2 components per point (x, y),
  * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
  * buffer must remain valid for the lifetime of this object.
  */
-void ScreenSpaceLines::setLineCoords(
-    const uint          lineCoordsSize,
+void ScreenSpaceLines::setVertices(
+    const uint          vertexCount,
     const VertexBuffer& vertexCoords)
 {
-    mLinesCount = lineCoordsSize;
+    mLinesCount = vertexCount;
     mLineCoords.setReferenced(&vertexCoords);
     setIndices();
 }
@@ -88,8 +88,10 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
 /**
  * @brief Draws the line segments on the specified view.
  *
- * Renders all lines as screen-space 1px-width line segments using bgfx's
+  * Renders all lines as screen-space 1px-width line segments using bgfx's
  * native line primitive rendering with alpha blending.
+ *
+ * If the line set is empty/invalid, this method does nothing.
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
@@ -133,6 +135,27 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
     bgfx::submit(
         viewId,
         pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
+}
+
+void ScreenSpaceLines::setIndices()
+{
+    if (mLinesCount == 0) {
+        mIndices.destroy();
+        return;
+    }
+
+    auto [buffer, releaseFn] =
+        Context::getAllocatedBufferAndReleaseFn<uint>(mLinesCount * 2);
+
+    for (uint i = 0; i < mLinesCount; ++i) {
+        const uint k  = i * 2;
+        buffer[k + 0] = k + 0;
+        buffer[k + 1] = k + 1;
+    }
+
+    mIndices.create(
+        bgfx::makeRef(buffer, mLinesCount * 2 * sizeof(uint), releaseFn),
+        BGFX_BUFFER_INDEX32);
 }
 
 } // namespace vcl

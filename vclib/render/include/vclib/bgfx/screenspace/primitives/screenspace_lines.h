@@ -84,7 +84,7 @@ public:
              ColorConcept<std::ranges::range_value_t<RC>>
     ScreenSpaceLines(RV&& vertCoords, RC&& vertColors = std::vector<Color>())
     {
-        setLineCoords(vertCoords);
+        setVertices(vertCoords);
         if (!vertColors.empty()) {
             setVertexColors(vertColors);
         }
@@ -109,7 +109,7 @@ public:
      */
     template<Range R>
     requires Point2Concept<std::ranges::range_value_t<R>>
-    void setLineCoords(R&& vertCoords)
+    void setVertices(R&& vertCoords)
     {
         mLinesCount = std::ranges::size(vertCoords) / 2;
 
@@ -172,6 +172,10 @@ public:
         mVertexColors.setOwned(std::move(vertexColors));
     }
 
+    void setVertices(const uint vertexCount, const VertexBuffer& vertexCoords);
+
+    void setVertexColors(const VertexBuffer& vertexColors);
+
     /**
      * @brief Sets the width of line segments (in screen-space pixels).
      * @param[in] width: The line width value.
@@ -194,64 +198,13 @@ public:
         mGeneralColor = generalColor;
     }
 
-    /**
-     * @brief Sets line coordinates by referencing an existing VertexBuffer.
-     *
-     * @param[in] lineCoordsSize: Number of coordinate pairs (each line uses 2
-     * points).
-     * @param[in] vertexCoords: VertexBuffer containing line coordinates.
-     * Expected layout: an array of `float` with 2 components per point (x, y),
-     * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
-     * buffer must remain valid for the lifetime of this object.
-     */
-    void setLineCoords(const uint lineCoordsSize, const VertexBuffer& vertexCoords);
-
-    /**
-     * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
-     *
-     * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
-     * Expected layout: an array of `uint` with 4 channels per color in
-     * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
-     * must remain valid for the lifetime of this object.
-     */
-    void setVertexColors(const VertexBuffer& vertexColors);
-
-    /**
-     * @brief Draws the line segments on the specified view.
-     *
-     * Renders all lines as screen-space 1px-width line segments using bgfx's
-     * native line primitive rendering with alpha blending.
-     *
-     * If the line set is empty/invalid, this method does nothing.
-     *
-     * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
-     */
     void draw(bgfx::ViewId viewId) const;
 
 private:
     static constexpr uint LINES_COORDS_STAGE = 0;
     static constexpr uint LINES_COLORS_STAGE = 1;
 
-    void setIndices()
-    {
-        if (mLinesCount == 0) {
-            mIndices.destroy();
-            return;
-        }
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(mLinesCount * 2);
-
-        for (uint i = 0; i < mLinesCount; ++i) {
-            const uint k = i * 2;
-            buffer[k + 0] = k + 0;
-            buffer[k + 1] = k + 1;
-        }
-
-        mIndices.create(
-            bgfx::makeRef(buffer, mLinesCount * 2 * sizeof(uint), releaseFn),
-            BGFX_BUFFER_INDEX32);
-    }
+    void setIndices();
 };
 
 } // namespace vcl
