@@ -57,7 +57,7 @@ private:
     OwnedOrRefBuffer<VertexBuffer> mLineCoords;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
-    IndexBuffer mIndices;
+    OwnedOrRefBuffer<IndexBuffer> mIndices;
 
 public:
     /**

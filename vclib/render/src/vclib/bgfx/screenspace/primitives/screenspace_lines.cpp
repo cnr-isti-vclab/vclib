@@ -109,7 +109,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
     }
 
     // Bind indices for line primitives
-    mIndices.bind();
+    mIndices.get().bind();
 
     // Set uniforms BEFORE binding vertex attributes (shader uses uniform to decide color)
     ScreenSpaceLinesUniforms::setLinesUsePerVertexColor(
@@ -140,7 +140,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 void ScreenSpaceLines::setIndices()
 {
     if (mLinesCount == 0) {
-        mIndices.destroy();
+        mIndices.setOwned(IndexBuffer{});
         return;
     }
 
@@ -153,9 +153,12 @@ void ScreenSpaceLines::setIndices()
         buffer[k + 1] = k + 1;
     }
 
-    mIndices.create(
+    IndexBuffer indexBuffer;
+    indexBuffer.create(
         bgfx::makeRef(buffer, mLinesCount * 2 * sizeof(uint), releaseFn),
         BGFX_BUFFER_INDEX32);
+
+    mIndices.setOwned(std::move(indexBuffer));
 }
 
 } // namespace vcl
