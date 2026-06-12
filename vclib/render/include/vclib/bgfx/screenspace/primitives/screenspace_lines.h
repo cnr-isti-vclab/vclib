@@ -47,10 +47,27 @@ public:
         GENERAL     ///< All vertices use a single general color.
     };
 
+    /** @brief Specifies the topology used for rendering lines.
+     *
+     * - LINES: Lines are defined by consecutive pairs of vertices in the vertex
+     *     buffer. (vertices 0-1 form line 1, vertices 2-3 form line 2, etc.)
+     * - LINE_STRIP: Lines are defined by a strip of vertices, where each vertex
+     *     after the first forms a line segment with the previous vertex.
+     *     (vertices 0-1 form line 1, vertices 1-2 form line 2, etc.)
+     *
+     * The topology determines how the vertex data is interpreted to form lines.
+     * The default is LINES.
+     */
+    enum class Topology {
+        LINES,
+        LINE_STRIP
+    };
+
 private:
     uint mLinesCount = 0;
 
     float       mWidth        = 1.0f;
+    Topology    mTopology     = Topology::LINES;
     LinesColor  mColorToUse   = LinesColor::GENERAL;
     Color       mGeneralColor = Color::Black;
 
@@ -133,8 +150,29 @@ public:
             bgfx::makeRef(buffer, std::ranges::size(vertCoords) * 2 * sizeof(float), releaseFn),
             layout);
         mLineCoords.setOwned(std::move(lineCoords));
+    }
 
-        setIndices();
+    template<Range R>
+    requires std::integral<std::ranges::range_value_t<R>>
+    void setIndices(R&& indices)
+    {
+        assert(std::ranges::size(indices) == mLinesCount * 2);
+
+        IndexBuffer indexBuffer;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(std::ranges::size(indices));
+
+        size_t i = 0;
+        for (const auto& idx : indices) {
+            buffer[i] = idx;
+            ++i;
+        }
+
+        indexBuffer.create(
+            bgfx::makeRef(buffer, std::ranges::size(indices) * sizeof(uint), releaseFn),
+            BGFX_BUFFER_INDEX32);
+
+        mIndices.setOwned(std::move(indexBuffer));
     }
 
     /**
@@ -183,6 +221,12 @@ public:
     void setWidthSetting(float width) { mWidth = width; }
 
     /**
+     * @brief Sets the topology used for rendering lines.
+     * @param[in] topo: The desired line topology (LINES or LINE_STRIP).
+     */
+    void setTopology(Topology topo) { mTopology = topo; }
+
+    /**
      * @brief Sets the color mode for line rendering.
      * @param[in] colorToUse: Whether to use per-vertex colors or a general
      * uniform color.
@@ -203,8 +247,6 @@ public:
 private:
     static constexpr uint LINES_COORDS_STAGE = 0;
     static constexpr uint LINES_COLORS_STAGE = 1;
-
-    void setIndices();
 };
 
 } // namespace vcl

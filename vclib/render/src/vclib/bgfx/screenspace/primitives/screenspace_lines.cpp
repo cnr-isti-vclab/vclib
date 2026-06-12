@@ -69,7 +69,6 @@ void ScreenSpaceLines::setVertices(
 {
     mLinesCount = vertexCount;
     mLineCoords.setReferenced(&vertexCoords);
-    setIndices();
 }
 
 /**
@@ -97,7 +96,7 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
  */
 void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 {
-    if (mLinesCount == 0 || !mLineCoords.isValid() || !mIndices.isValid()) {
+    if (mLinesCount == 0 || !mLineCoords.isValid()) {
         return;
     }
 
@@ -109,7 +108,8 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
     }
 
     // Bind indices for line primitives
-    mIndices.get().bind();
+    if (mIndices.isValid())
+        mIndices.get().bind();
 
     // Set uniforms BEFORE binding vertex attributes (shader uses uniform to decide color)
     ScreenSpaceLinesUniforms::setLinesUsePerVertexColor(
@@ -131,34 +131,12 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     // Submit to bgfx with line primitive type
     ProgramManager& pm = ctx.programManager();
-    bgfx::setState(state | BGFX_STATE_PT_LINES);
+    state |= mTopology == Topology::LINES ? BGFX_STATE_PT_LINES :
+                                            BGFX_STATE_PT_LINESTRIP;
+    bgfx::setState(state);
     bgfx::submit(
         viewId,
         pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
-}
-
-void ScreenSpaceLines::setIndices()
-{
-    if (mLinesCount == 0) {
-        mIndices.setOwned(IndexBuffer{});
-        return;
-    }
-
-    auto [buffer, releaseFn] =
-        Context::getAllocatedBufferAndReleaseFn<uint>(mLinesCount * 2);
-
-    for (uint i = 0; i < mLinesCount; ++i) {
-        const uint k  = i * 2;
-        buffer[k + 0] = k + 0;
-        buffer[k + 1] = k + 1;
-    }
-
-    IndexBuffer indexBuffer;
-    indexBuffer.create(
-        bgfx::makeRef(buffer, mLinesCount * 2 * sizeof(uint), releaseFn),
-        BGFX_BUFFER_INDEX32);
-
-    mIndices.setOwned(std::move(indexBuffer));
 }
 
 } // namespace vcl
