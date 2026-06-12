@@ -70,10 +70,10 @@ public:
     SelectionMode() = default;
 
     constexpr SelectionMode(
-        SelectionPrimitive p,
-        SelectionAction    a,
-        bool               v = false)
-        : primitive(p), action(a), visible(v)
+        SelectionPrimitive primitive,
+        SelectionAction    action,
+        bool               visible = false)
+        : primitive(primitive), action(action), visible(visible)
     {
     }
 
