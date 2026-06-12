@@ -24,7 +24,6 @@
 #define VCL_BGFX_SCREENSPACE_PRIMITIVES_SCREENSPACE_LINES_H
 
 #include <vclib/bgfx/buffers.h>
-#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_lines_uniforms.h>
 
 namespace vcl {
 
@@ -32,17 +31,18 @@ namespace vcl {
  * @brief Renders a set of 2D lines as screen-space line segments (1px width).
  *
  * Each line segment is rendered directly using bgfx's line primitive.
- * Lines are always indexed, and support both general color and per-vertex colors.
+ *
+ * Lines are rendered using either consecutive vertex pairs or a strip topology.
+ * Optional indices can be provided to define the vertex order; if omitted,
+ * vertices are used in declaration order.
  */
 class ScreenSpaceLines
 {
-    inline static const VertexBuffer NULL_VERTEX_BUFFER;
-
 public:
     /**
      * @brief Specifies how line colors are determined during rendering.
      */
-    enum class LinesColor {
+    enum class ColorSetting {
         PER_VERTEX, ///< Each vertex uses color from per-vertex color buffer.
         GENERAL     ///< All vertices use a single general color.
     };
@@ -58,20 +58,17 @@ public:
      * The topology determines how the vertex data is interpreted to form lines.
      * The default is LINES.
      */
-    enum class Topology {
-        LINES,
-        LINE_STRIP
-    };
+    enum class Topology { LINES, LINE_STRIP };
 
 private:
     uint mLinesCount = 0;
 
-    float       mWidth        = 1.0f;
-    Topology    mTopology     = Topology::LINES;
-    LinesColor  mColorToUse   = LinesColor::GENERAL;
-    Color       mGeneralColor = Color::Black;
+    float        mWidth        = 1.0f;
+    Topology     mTopology     = Topology::LINES;
+    ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    Color        mGeneralColor = Color::Black;
 
-    OwnedOrRefBuffer<VertexBuffer> mLineCoords;
+    OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
     OwnedOrRefBuffer<IndexBuffer> mIndices;
@@ -86,56 +83,49 @@ public:
      * @brief Constructs a line set from ranges of 2D coordinates and per-vertex
      * colors.
      *
-     * @param[in] vertCoords: Range of elements convertible to Point2 (must
-     * provide x() and y()). Each pair of consecutive points defines one line
-     * segment.
-     * @param[in] vertColors: Optional range of Color elements. If non-empty,
-     * per-vertex colors are enabled; the size must match vertCoords. Default is
-     * empty (falls back to general color).
+     * @param[in] verts: Range of elements convertible to Point2 (must
+     * provide x() and y()).
      *
      * @note This constructor creates an owned buffer copy of the input data.
      * The original ranges are not referenced after construction.
      */
-    template<Range RV, Range RC>
-    requires Point2Concept<std::ranges::range_value_t<RV>> &&
-             ColorConcept<std::ranges::range_value_t<RC>>
-    ScreenSpaceLines(RV&& vertCoords, RC&& vertColors = std::vector<Color>())
+    template<Range RV>
+    requires Point2Concept<std::ranges::range_value_t<RV>>
+    ScreenSpaceLines(RV&& verts)
     {
-        setVertices(vertCoords);
-        if (!vertColors.empty()) {
-            setVertexColors(vertColors);
-        }
+        setVertices(verts);
     }
 
-    ScreenSpaceLines(
-        const uint          lineCoordsSize,
-        const VertexBuffer& vertexCoords,
-        const VertexBuffer& vertexColors = NULL_VERTEX_BUFFER);
+    ScreenSpaceLines(const uint vertexCount, const VertexBuffer& verts);
 
     /**
      * @brief Sets line coordinates from a range of 2D points.
      *
+     * If no indices are set, the interpretation depends on the topology:
+     * - For LINES topology, each pair of vertices defines one line segment.
+     * - For LINE_STRIP topology, each vertex after the first forms a line
+     *   segment with the previous vertex.
+     *
      * @tparam R: Range whose value type satisfies Point2Concept (must provide
      * x() and y()).
-     * @param[in] vertCoords: Range of 2D points. Each pair of consecutive
-     * elements defines one line segment: (coords[0], coords[1]) is the first
-     * line, (coords[2], coords[3]) is the second line, etc.
+     * @param[in] verts: Range of 2D points.
      *
      * @note This creates an owned buffer copy. The original range is not
      * referenced.
      */
     template<Range R>
     requires Point2Concept<std::ranges::range_value_t<R>>
-    void setVertices(R&& vertCoords)
+    void setVertices(R&& verts)
     {
-        mLinesCount = std::ranges::size(vertCoords) / 2;
+        mLinesCount = std::ranges::size(verts) / 2;
 
-        VertexBuffer lineCoords;
+        VertexBuffer vertPositions;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(std::ranges::size(vertCoords) * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(
+                std::ranges::size(verts) * 2);
 
         size_t i = 0;
-        for (const auto& v : vertCoords) {
+        for (const auto& v : verts) {
             buffer[i * 2 + 0] = v.x();
             buffer[i * 2 + 1] = v.y();
             ++i;
@@ -146,21 +136,36 @@ public:
             .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
             .end();
 
-        lineCoords.create(
-            bgfx::makeRef(buffer, std::ranges::size(vertCoords) * 2 * sizeof(float), releaseFn),
+        vertPositions.create(
+            bgfx::makeRef(
+                buffer,
+                std::ranges::size(verts) * 2 * sizeof(float),
+                releaseFn),
             layout);
-        mLineCoords.setOwned(std::move(lineCoords));
+        mVertexPositions.setOwned(std::move(vertPositions));
     }
 
+    /**
+     * @brief Sets line indices from a range of unsigned integers.
+     *
+     * @tparam R: Range whose value type is an integral type (e.g., uint).
+     * @param[in] indices: Range of indices defining the vertex order for lines.
+     * The interpretation of indices depends on the topology:
+     * - For LINES topology, each pair of indices defines one line segment.
+     * - For LINE_STRIP topology, each index after the first forms a line
+     *   segment with the previous index.
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
+     */
     template<Range R>
     requires std::integral<std::ranges::range_value_t<R>>
     void setIndices(R&& indices)
     {
-        assert(std::ranges::size(indices) == mLinesCount * 2);
-
         IndexBuffer indexBuffer;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(std::ranges::size(indices));
+            Context::getAllocatedBufferAndReleaseFn<uint>(
+                std::ranges::size(indices));
 
         size_t i = 0;
         for (const auto& idx : indices) {
@@ -169,7 +174,8 @@ public:
         }
 
         indexBuffer.create(
-            bgfx::makeRef(buffer, std::ranges::size(indices) * sizeof(uint), releaseFn),
+            bgfx::makeRef(
+                buffer, std::ranges::size(indices) * sizeof(uint), releaseFn),
             BGFX_BUFFER_INDEX32);
 
         mIndices.setOwned(std::move(indexBuffer));
@@ -180,8 +186,8 @@ public:
      *
      * @tparam R: Range whose value type satisfies ColorConcept.
      * @param[in] vertColors Range of Color objects. Must have exactly
-     * the lineCoordsSize() size (one color per vertex). Each color is converted to ABGR
-     * format (uint).
+     * the lineCoordsSize() size (one color per vertex). Each color is converted
+     * to ABGR format (uint).
      */
     template<Range R>
     requires ColorConcept<std::ranges::range_value_t<R>>
@@ -191,7 +197,8 @@ public:
 
         VertexBuffer vertexColors;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(std::ranges::size(vertColors));
+            Context::getAllocatedBufferAndReleaseFn<uint>(
+                std::ranges::size(vertColors));
 
         uint i = 0;
         for (const auto& c : vertColors) {
@@ -205,12 +212,17 @@ public:
             .end();
 
         vertexColors.create(
-            bgfx::makeRef(buffer, std::ranges::size(vertColors) * sizeof(uint), releaseFn),
+            bgfx::makeRef(
+                buffer,
+                std::ranges::size(vertColors) * sizeof(uint),
+                releaseFn),
             layout);
         mVertexColors.setOwned(std::move(vertexColors));
     }
 
-    void setVertices(const uint vertexCount, const VertexBuffer& vertexCoords);
+    void setVertices(const uint vertexCount, const VertexBuffer& verts);
+
+    void setIndices(const IndexBuffer& indices);
 
     void setVertexColors(const VertexBuffer& vertexColors);
 
@@ -231,7 +243,7 @@ public:
      * @param[in] colorToUse: Whether to use per-vertex colors or a general
      * uniform color.
      */
-    void setColorSetting(LinesColor colorToUse) { mColorToUse = colorToUse; }
+    void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
