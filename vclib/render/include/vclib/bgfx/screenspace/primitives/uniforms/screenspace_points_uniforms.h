@@ -35,7 +35,8 @@ namespace vcl {
 class ScreenSpacePointsUniforms
 {
     inline static std::array<float, 4> sPointsSettings;
-    inline static Uniform sPointsSettingsUniform;
+    inline static Uniform              sPointsSettingsUniform;
+
 public:
     ScreenSpacePointsUniforms() = delete;
 
@@ -49,10 +50,7 @@ public:
         sPointsSettings[1] = std::bit_cast<float>(s);
     }
 
-    static void setPointsWidth(float w)
-    {
-        sPointsSettings[2] = w;
-    }
+    static void setPointsWidth(float w) { sPointsSettings[2] = w; }
 
     static void setPointsGeneralColor(const vcl::Color& c)
     {

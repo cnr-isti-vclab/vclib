@@ -152,7 +152,7 @@ public:
     {
         if (isNull())
             return false;
-        
+
         for (uint i = 0; i < PointT::DIM; ++i) {
             if (mMin[i] == mMax[i])
                 return true;

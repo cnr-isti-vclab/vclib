@@ -124,7 +124,7 @@ public:
      */
     void setReferenced(const T* ptr) { mBuffer = ptr; }
 
-     /**
+    /**
      * @brief Check if the buffer is valid (either owned and valid, or
      * referenced with non-null pointer that is valid).
      * @return true if the buffer is valid, false otherwise.
@@ -136,7 +136,8 @@ public:
         }
         else {
             const T* ptr = std::get<const T*>(mBuffer);
-            if (ptr) return ptr->isValid();
+            if (ptr)
+                return ptr->isValid();
             return false;
         }
     }

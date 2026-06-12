@@ -199,11 +199,9 @@ void PrimitiveLines::setPoints(
 
         VertexBuffer tmpVP;
         tmpVP.create(
-                bgfx::makeRef(
-                    vCoords,
-                    sizeof(float) * vertCoords.size(),
-                    vCoordsReleaseFn),
-                vCoordslayout);
+            bgfx::makeRef(
+                vCoords, sizeof(float) * vertCoords.size(), vCoordsReleaseFn),
+            vCoordslayout);
         mVertexCoords.setOwned(std::move(tmpVP));
 
         // normals
@@ -225,11 +223,9 @@ void PrimitiveLines::setPoints(
 
         VertexBuffer tmpVN;
         tmpVN.create(
-                bgfx::makeRef(
-                    vNormals,
-                    sizeof(float) * vertCoords.size(),
-                    vNormalsReleaseFn),
-                vNormalsLayout);
+            bgfx::makeRef(
+                vNormals, sizeof(float) * vertCoords.size(), vNormalsReleaseFn),
+            vNormalsLayout);
         mVertexNormals.setOwned(std::move(tmpVN));
 
         // colors
@@ -251,9 +247,9 @@ void PrimitiveLines::setPoints(
 
         VertexBuffer tmpVC;
         tmpVC.create(
-                bgfx::makeRef(
-                    vColors, sizeof(uint32_t) * numVertices, vColorsReleaseFn),
-                vColorsLayout);
+            bgfx::makeRef(
+                vColors, sizeof(uint32_t) * numVertices, vColorsReleaseFn),
+            vColorsLayout);
         mVertexColors.setOwned(std::move(tmpVC));
 
         // line indices
@@ -284,11 +280,11 @@ void PrimitiveLines::setPoints(
 
             IndexBuffer tmpLC;
             tmpLC.createForCompute(
-                    lColors,
-                    lineColors.size(),
-                    PrimitiveType::UINT,
-                    bgfx::Access::Read,
-                    lColorsReleaseFn);
+                lColors,
+                lineColors.size(),
+                PrimitiveType::UINT,
+                bgfx::Access::Read,
+                lColorsReleaseFn);
             mLineColors.setOwned(std::move(tmpLC));
         }
     }
