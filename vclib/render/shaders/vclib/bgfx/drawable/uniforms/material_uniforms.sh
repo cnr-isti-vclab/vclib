@@ -27,6 +27,7 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
 uniform vec4 u_emissiveAlphaCutoffPack;
 uniform vec4 u_settings;
+uniform vec4 u_clearcoatPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -35,6 +36,10 @@ uniform vec4 u_settings;
 
 #define u_emissiveFactor u_emissiveAlphaCutoffPack.rgb
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
+
+#define u_clearcoatFactor u_clearcoatPack.r
+#define u_clearcoatRoughnessFactor u_clearcoatPack.g
+#define u_clearcoatNormalScale u_clearcoatPack.b
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
 
