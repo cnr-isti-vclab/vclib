@@ -1,0 +1,78 @@
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2026                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+#include <vclib/bgfx/selection/uniforms.sh>
+
+// INFO: the two textures MUST be of the same size
+IMAGE2D_RO(s_primIds, rgba8, 0);
+IMAGE2D_RO(s_meshIds, rgba8, 1);
+BUFFER_RW(face_selected, uint, 6);
+
+BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
+BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
+BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
+
+uint texVec4ToUint(vec4 pixel) {
+    return
+        ((uint(pixel.r * 255.0) & 0xff) << uint(24))
+        | ((uint(pixel.g * 255.0) & 0xff) << uint(16))  
+        | ((uint(pixel.b * 255.0) & 0xff) << uint(8)) 
+        | (uint(pixel.a * 255.0) & 0xff);
+}
+
+// Polygon-level selection: if a visible pixel belongs to triangle T, select or
+// deselect all triangles of T's polygon based on u_selectionAction (0 = ADD,
+// 1 = SUBTRACT).
+NUM_THREADS(1, 1, 1)
+void main() {
+    // NOTE: u_meshID == UINT_MAX is reserved to indicate that no data is available
+    if(u_meshID == uint(0xFFFFFFFF)) {
+        return;
+    }
+    uint tex1DCoord = getPrimitiveID(gl_WorkGroupID);
+    uvec2 imSz = imageSize(s_primIds).xy;
+    ivec2 tex2DCoord = ivec2(int(tex1DCoord % imSz.x), int(tex1DCoord / imSz.x));
+
+    vec4 vecMeshId = imageLoad(s_meshIds, tex2DCoord);
+    uint texMeshId = texVec4ToUint(vecMeshId);
+    if (texMeshId != u_meshID) {
+        return;
+    }
+
+    vec4 vecPrimId = imageLoad(s_primIds, tex2DCoord);
+    uint texPrimId = texVec4ToUint(vecPrimId);
+
+    // Select or deselect all triangles belonging to the same polygon as texPrimId
+    uint polyIdx = tri_to_poly[texPrimId];
+    uint firstTri = poly_to_tri_begin[polyIdx];
+    uint count = poly_to_tri_count[polyIdx];
+    uint _useless;
+    for (uint t = firstTri; t < firstTri + count; t++) {
+        uint bufferIndex = t / 32;
+        uint bitMask = 0x1 << (31 - (t % 32));
+        if (u_selectionAction > 0.0) { // subtract
+            atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
+        } else {
+            atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
+        }
+    }
+}

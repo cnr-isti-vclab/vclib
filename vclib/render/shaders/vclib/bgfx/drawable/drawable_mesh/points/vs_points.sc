@@ -21,9 +21,10 @@
  ****************************************************************************/
 
 $input a_position, a_normal, a_color0
-$output v_position, v_normal, v_color
+$output v_position, v_normal, v_color, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/vertex_selection_utils.sh>
 
 void main()
 {
@@ -33,4 +34,7 @@ void main()
 
     // default case - color is taken from buffer
     v_color = a_color0;
+
+    // TODO: try to set without condition.
+    v_selected = isVertexSelected(uint(gl_VertexID)) ? 1.0 : 0.0;
 }

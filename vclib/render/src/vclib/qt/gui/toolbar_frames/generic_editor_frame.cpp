@@ -38,6 +38,7 @@ GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
 {
     mUI->setupUi(this);
     std::call_once(initIconsFlag, initIcons);
+    mUI->settingsPushButton->setFocusPolicy(Qt::NoFocus);
 }
 
 GenericEditorFrame::~GenericEditorFrame()
@@ -54,6 +55,7 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
     button->setIconSize(QSize(32, 32));
     button->setFixedSize(QSize(40, 40));
     button->setCheckable(checkable);
+    button->setFocusPolicy(Qt::NoFocus);
     // Stylesheet overrides the native macOS QPushButton rendering (which has
     // a large internal bezel that clips icons) and keeps a consistent look
     // across platforms.

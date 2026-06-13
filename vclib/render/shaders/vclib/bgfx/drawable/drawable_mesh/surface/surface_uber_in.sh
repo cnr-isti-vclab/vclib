@@ -25,6 +25,7 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/face_selection_utils.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
@@ -40,9 +41,6 @@ BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
 
 void main()
 {
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -102,6 +100,15 @@ void main()
             color = vec4(0.0, 0.0, 0.0, 1.0);
     }
 
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    color = light * color + vec4(specular, 0);
+    // TODO - make additional macro
+    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_DRAW_SELECTION))) {
+        float selWeight =
+            u_selectionSurfaceColor.a * float(isFaceSelected(uint(primitiveID)));
+        vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
+        gl_FragColor = vec4(tmp, color.a);
+    }
+    else {
+        gl_FragColor = color;
+    }
 }

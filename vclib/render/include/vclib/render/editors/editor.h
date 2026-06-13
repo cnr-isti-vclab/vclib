@@ -107,6 +107,16 @@ public:
     virtual void refreshSettings() {}
 
     /**
+     * @brief Called by the viewer once the rendering backend is initialized.
+     *
+     * Subclasses may override this function to create GPU resources (buffers,
+     * textures, programs, etc.) that require the backend to be ready.
+     *
+     * @param[in] viewId: the identifier of the main canvas view.
+     */
+    virtual void onInit(uint viewId) {}
+
+    /**
      * @brief Draws the editor content for the given view.
      *
      * This function is called at every frame by the viewer when the editor is
@@ -258,6 +268,48 @@ protected:
      * @return a shared pointer to the DrawableObjectVector.
      */
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
+
+    /**
+     * @brief Returns the canvas size from the viewer.
+     * @return the canvas size as a 2D point (width, height).
+     */
+    auto viewerCanvasSize() const
+    {
+        assert(mViewer);
+        return mViewer->canvasSize();
+    }
+
+    /**
+     * @brief Sets up an overlay view (with canvas framebuffer, no clear)
+     * on the viewer.
+     *
+     * @param[in] overlayViewId: the view ID to set up as an overlay.
+     */
+    void viewerSetupOverlayView(uint overlayViewId) const
+    {
+        assert(mViewer);
+        mViewer->setupOverlayView(overlayViewId);
+    }
+
+    /**
+     * @brief Returns the current view matrix from the viewer.
+     * @return the view matrix.
+     */
+    auto viewerViewMatrix() const
+    {
+        assert(mViewer);
+        return mViewer->viewMatrix();
+    }
+
+    /**
+     * @brief Returns the current projection matrix from the viewer.
+     * @return the projection matrix.
+     */
+    auto viewerProjectionMatrix() const
+    {
+        assert(mViewer);
+        return mViewer->projectionMatrix();
+    }
 
     /**
      * @brief Requests the viewer to read the ID of the object at the given

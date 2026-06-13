@@ -54,7 +54,8 @@ private:
     using Base = ViewProjEventDrawer;
     using DRA  = ViewProjEventDrawer::DRA;
 
-    bool mReadRequested = false;
+    bool mReadRequested     = false;
+    bool mDrawerInitialized = false;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -75,6 +76,8 @@ protected:
 public:
     using EditorType = Editor<AbstractViewerDrawer>;
     using ViewerType = AbstractViewerDrawer;
+
+    auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
 
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -123,6 +126,9 @@ public:
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
+        if (mDrawerInitialized) {
+            editor->onInit(canvasViewId());
+        }
         return editor;
     }
 
@@ -178,10 +184,14 @@ public:
     }
 
     // events
-    void onInit(uint) override
+    void onInit(uint viewId) override
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
         mDrawList->init();
+        mDrawerInitialized = true;
+        for (auto& editor : mEditors) {
+            editor->onInit(viewId);
+        }
     }
 
     void onDraw(uint viewId) override
@@ -328,6 +338,8 @@ protected:
     DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
+
+    virtual void setupOverlayView(uint /*overlayViewId*/) {}
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {

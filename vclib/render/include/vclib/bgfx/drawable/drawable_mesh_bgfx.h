@@ -40,6 +40,14 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 {
     using MRI = MeshRenderInfo;
 
+    uint mBufToTexRemainingFrames = UINT_NULL; // NULL means no frames remaining
+
+    std::vector<uint8_t> mVertexSelectionBackup;
+    std::vector<uint8_t> mFaceSelectionBackup;
+    SelectionMode        mLastReadbackMode;
+    bool                 mHasPendingReadback = false;
+    SelectionMode        mPendingReadbackMode;
+
     inline static const uint N_TEXTURE_TYPES =
         toUnderlying(Material::TextureType::COUNT);
 
@@ -86,12 +94,51 @@ public:
         using std::swap;
         AbstractDrawableMesh::swap(other);
         MeshType::swap(other);
+        swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
+        swap(mLastReadbackMode, other.mLastReadbackMode);
+        swap(mHasPendingReadback, other.mHasPendingReadback);
+        swap(mPendingReadbackMode, other.mPendingReadbackMode);
+        swap(mVertexSelectionBackup, other.mVertexSelectionBackup);
+        swap(mFaceSelectionBackup, other.mFaceSelectionBackup);
         swap(mMRB, other.mMRB);
     }
 
     friend void swap(DrawableMeshBGFX& a, DrawableMeshBGFX& b) { a.swap(b); }
 
     using AbstractDrawableMesh::boundingBox;
+
+    void computeSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        if (params.mode.isFaceSelection()) {
+            if (!(params.mode.isVisibleSelection() ?
+                      faceSelectionVisible(params) :
+                      faceSelection(params))) {
+                return;
+            }
+        }
+        else if (params.mode.isVertexSelection()) {
+            if (!vertexSelection(params)) {
+                return;
+            }
+        }
+        if (params.isTemporary) {
+            return;
+        }
+        if (mBufToTexRemainingFrames == UINT_NULL) {
+            mLastReadbackMode = params.mode;
+            mBufToTexRemainingFrames =
+                mMRB.requestCPUCopyOfSelectionBuffer(params.mode);
+        }
+        else {
+            // Queue the most recent mode so both vertex and face backups stay
+            // synchronized even when two tools trigger selection in sequence.
+            mPendingReadbackMode = params.mode;
+            mHasPendingReadback  = true;
+        }
+    }
 
     // AbstractDrawableMesh implementation
 
@@ -108,6 +155,9 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         setRenderSettings(mMRS);
+
+        // Upload initial selection state from CPU to GPU
+        uploadCPUSelectionToGPU();
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -216,6 +266,8 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+                if (mMRB.hasFaceSelectionBuffer())
+                    mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
@@ -263,6 +315,8 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
+                if (mMRB.hasVertexSelectionBuffer())
+                    mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -279,6 +333,8 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 mMRB.bindPointsVertexColorBuffer();
+                if (mMRB.hasVertexSelectionBuffer())
+                    mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);
@@ -287,6 +343,36 @@ public:
                 bgfx::submit(
                     settings.additionalViewIds[1],
                     pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+            }
+        }
+
+        // selection readback
+        {
+            switch (mBufToTexRemainingFrames) {
+            case 0: {
+                auto vec = mMRB.getSelectionBufferCopy();
+                if (mLastReadbackMode.isVertexSelection()) {
+                    mVertexSelectionBackup = std::move(vec);
+                }
+                else if (mLastReadbackMode.isFaceSelection()) {
+                    mFaceSelectionBackup = std::move(vec);
+                }
+
+                // Update CPU-side selection flags from GPU readback
+                updateCPUSelectionFromGPU();
+
+                if (mHasPendingReadback) {
+                    mLastReadbackMode   = mPendingReadbackMode;
+                    mHasPendingReadback = false;
+                    mBufToTexRemainingFrames =
+                        mMRB.requestCPUCopyOfSelectionBuffer(mLastReadbackMode);
+                }
+                else {
+                    mBufToTexRemainingFrames = UINT_NULL;
+                }
+            } break;
+            case UINT_NULL: break;
+            default: mBufToTexRemainingFrames--;
             }
         }
     }
@@ -375,6 +461,208 @@ public:
     const std::string& name() const override { return MeshType::name(); }
 
 protected:
+    /**
+     * @brief Uploads the CPU-side selection flags (from BitFlags component) to
+     * the GPU selection buffers.
+     *
+     * This function reads the selected() flag from each vertex/face in the mesh
+     * and uploads the corresponding bitfield to the GPU.
+     *
+     * @note For vertices, only the original mesh vertices are synchronized,
+     * not any duplicated vertices created for rendering purposes (e.g., for
+     * wedge texture coordinates). Duplicated vertices will inherit the
+     * selection state of their original vertex.
+     */
+    void uploadCPUSelectionToGPU()
+    {
+        // Upload vertex selection
+        const uint numVerts = MeshType::vertexCount();
+        if (numVerts == 0)
+            return;
+
+        // Compute number of bits rounded to 32 needed to store vertex selection
+        // We use mMRB.numVerts() which includes duplicated vertices
+        uint                 bitNumber = vcl::roundUp(mMRB.numVerts(), 32);
+        std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
+
+        // Build bitfield from mesh vertex selection flags
+        // Note: For duplicated vertices (indices >= numVerts), they will
+        // remain unselected unless explicitly set elsewhere
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+        for (const auto& v : MeshType::vertices()) {
+            flags[vidx % 8] = v.selected();
+            ++vidx;
+
+            if (vidx % 8 == 0) {
+                vertexBackup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
+        }
+        // Handle remaining bits
+        if (vidx % 8 != 0)
+            vertexBackup[byteIdx] = flags.underlying();
+
+        mVertexSelectionBackup = vertexBackup;
+        mMRB.setVertexSelectionFromCPUBuffer(vertexBackup);
+
+        // Upload face selection
+        if constexpr (HasFaces<MeshType>) {
+            const uint numFaces = MeshType::faceCount();
+            if (numFaces == 0 || !mMRB.hasFaceSelectionBuffer())
+                return;
+
+            const auto& indexMap = mMRB.triPolyIndexMap();
+
+            // Compute number of bits rounded to 32 needed to store face
+            // selection
+            const uint wordCount = (indexMap.triangleCount() + 31) / 32;
+            uint       bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
+            std::vector<uint8_t> faceBackup(bitNumber / 4, 0);
+
+            // For each face, set selection for all its triangles
+            uint                       tIdx    = 0;
+            uint                       byteIdx = 0;
+            vcl::BitSet<uint8_t, true> flags;
+            for (const auto& f : MeshType::faces()) {
+                const uint faceIdx     = f.index();
+                const uint numFaceTris = indexMap.triangleCount(faceIdx);
+
+                // Set selection for all triangles of this face
+                for (uint t = 0; t < numFaceTris; ++t) {
+                    flags[tIdx % 8] = f.selected();
+                    ++tIdx;
+
+                    if (tIdx % 8 == 0) {
+                        faceBackup[byteIdx] = flags.underlying();
+                        byteIdx++;
+                        flags.reset();
+                    }
+                }
+            }
+            // Handle remaining bits
+            if (tIdx % 8 != 0)
+                faceBackup[byteIdx] = flags.underlying();
+
+            mFaceSelectionBackup = faceBackup;
+            mMRB.setFaceSelectionFromCPUBuffer(faceBackup);
+        }
+    }
+
+    /**
+     * @brief Updates the CPU-side selection flags (BitFlags component) from the
+     * GPU selection buffers that have been read back.
+     *
+     * This function parses the selection data from mVertexSelectionBackup and
+     * mFaceSelectionBackup and updates the selected() flag on each mesh
+     * element.
+     *
+     * @note For vertices, only the original mesh vertices are synchronized.
+     * Selection state of duplicated vertices is ignored.
+     */
+    void updateCPUSelectionFromGPU()
+    {
+        // Update vertex selection
+        if (mLastReadbackMode.isVertexSelection() &&
+            !mVertexSelectionBackup.empty()) {
+            uint                       vidx = 0;
+            vcl::BitSet<uint8_t, true> flags;
+            for (auto& v : MeshType::vertices()) {
+                uint byteIdx = vidx / 8;
+                if (byteIdx < mVertexSelectionBackup.size()) {
+                    if (vidx % 8 == 0)
+                        flags.setUnderlying(
+                            mVertexSelectionBackup[byteIdx]);
+                    v.selected() = flags[vidx % 8];
+                }
+                ++vidx;
+            }
+        }
+
+        // Update face selection
+        if constexpr (HasFaces<MeshType>) {
+            if (mLastReadbackMode.isFaceSelection() &&
+                !mFaceSelectionBackup.empty()) {
+                const auto& indexMap = mMRB.triPolyIndexMap();
+
+                // First, clear all face selections
+                for (auto& f : MeshType::faces()) {
+                    f.selected() = false;
+                }
+
+                // For each face, check if its first triangle is selected
+                // (compute shaders ensure all triangles of a face have the same
+                // selection state)
+                vcl::BitSet<uint8_t, true> flags;
+                for (auto& f : MeshType::faces()) {
+                    const uint faceIdx     = f.index();
+                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
+                    uint       byteIdx     = firstTriIdx / 8;
+                    if (byteIdx < mFaceSelectionBackup.size()) {
+                        flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
+                        f.selected() = flags[firstTriIdx % 8];
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief Returns the mesh model matrix as float.
+     *
+     * If the mesh does not have a transform matrix, returns Identity.
+     */
+    Matrix44f modelMatrixf() const
+    {
+        Matrix44f model = Matrix44f::Identity();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            model = MeshType::transformMatrix().template cast<float>();
+        }
+        return model;
+    }
+
+    bool vertexSelection(const SelectionParameters& params)
+    {
+        assert(params.mode.primitive == SelectionPrimitive::VERTEX);
+        if (params.isTemporary &&
+            (params.mode.action == SelectionAction::ADD ||
+              params.mode.action == SelectionAction::SUBTRACT)) {
+            mMRB.setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
+        }
+        return mMRB.vertexSelection(params, modelMatrixf());
+    }
+
+    bool faceSelection(const SelectionParameters& params)
+    {
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        if (params.isTemporary &&
+            (params.mode.action == SelectionAction::ADD ||
+              params.mode.action == SelectionAction::SUBTRACT)) {
+            mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+        }
+        return mMRB.faceSelection(params, modelMatrixf());
+    }
+
+    bool faceSelectionVisible(const SelectionParameters& params)
+    {
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
+        if constexpr (!HasFaces<MeshType>) {
+            return false;
+        }
+        if (params.isTemporary &&
+            params.mode.visible &&
+            (params.mode.action == SelectionAction::ADD ||
+              params.mode.action == SelectionAction::SUBTRACT)) {
+            mMRB.setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+        }
+        return mMRB.faceSelectionVisible(params, modelMatrixf());
+    }
+
     void bindUniforms() const
     {
         MeshRenderSettingsUniforms::bind();

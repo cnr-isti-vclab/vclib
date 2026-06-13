@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 // TODO: remove v_position
-$input v_position, v_normal, v_color
+$input v_position, v_normal, v_color, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
@@ -54,6 +54,13 @@ void main()
     // depth offset - avoid z-fighting
     float depthOffset = 0.0001;
 
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    color = light * color; // + vec4(specular, 0);
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_DRAW_SELECTION))) {
+        if (v_selected > 0.5) {
+            vec3 tmp =
+                mix(color.rgb, u_selectionPointColor.rgb, u_selectionPointColor.a);
+            color = vec4(tmp, color.a);
+        }
+    }
+    gl_FragColor = color;
 }

@@ -24,18 +24,17 @@
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
 #include "mesh_render_buffers_macros.h"
+#include "mesh_selection_buffers.h"
 
-#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
-#include <vclib/io/image/load.h>
+
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/space/core/image.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
@@ -60,6 +59,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
     VertexBuffer mVertexTangentsBuffer;
+
+    MeshSelectionBuffers mSelection;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -122,6 +123,7 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
+        swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
     }
 
@@ -153,6 +155,109 @@ public:
             1);
 
         mVertexQuadBufferGenerated = true;
+    }
+
+    /**
+     * @brief Attempts to calculate a vertex selection (atomic or non-atomic
+     * depending on params.mode.isAtomicAction()).
+     *
+     * @param[in] params: The selection parameters
+     * @param[in] model: The mesh's model matrix
+     */
+    bool vertexSelection(const SelectionParameters& params, const Matrix44f& model)
+    {
+        return mSelection.vertexSelection(params, model, mVertexPositionsBuffer);
+    }
+
+    /**
+     * @brief Attempts to calculate a face selection (atomic or non-atomic
+     * depending on params.mode.isAtomicAction()).
+     *
+     * @param[in] params: The selection parameters
+     * @param[in] model: The mesh's model matrix
+     */
+    bool faceSelection(const SelectionParameters& params, const Matrix44f& model)
+    {
+        return mSelection.faceSelection(
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+    }
+
+    /**
+     * @brief Attempts to calculate visible face selection
+     *
+     * This is done in two/three steps (using 2 different views):
+     *   -# If it is a Regular selection (add what's inside the box; remove
+     *    what's outside the box) we first need to clear the current face
+     *    selection buffer (we do a FACE_SELECTION_NONE) (first view)
+     *   -# We run a Vertex + Fragment program that writes primitiveIds in one
+     *    color attachment and meshIds in another color attachment. MeshId 0 is
+     *    considered to be "this fragment did not pass" (first view)
+     *   -# We run a Compute Shader the size of the two previous color
+     *    attachments that uses those two textures to update the face selection
+     *    buffer accordingly
+     *
+     * @param[in] params: The selection parameters
+     * @param[in] model: The mesh's model matrix
+     */
+    bool faceSelectionVisible(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
+    {
+        return mSelection.faceSelectionVisible(
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+    }
+
+    /**
+     * @brief Copies a selection buffer to a CPU buffer (the parameter
+     * determines which)
+     *
+     * @param[in] mode: The selection mode
+     * @return: The number frames that the caller needs to wait before the
+     * result is ready
+     */
+    uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
+    {
+        return mSelection.requestCPUCopyOfSelectionBuffer(mode);
+    }
+
+    std::vector<uint8_t> getSelectionBufferCopy() const
+    {
+        return mSelection.getSelectionBufferCopy();
+    }
+
+    void setVertexSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
+    {
+        mSelection.setVertexSelectionFromCPUBuffer(backup);
+    }
+
+    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
+    {
+        mSelection.setFaceSelectionFromCPUBuffer(backup);
+    }
+
+    bool hasVertexSelectionBuffer() const
+    {
+        return mSelection.hasVertexSelectionBuffer();
+    }
+
+    bool hasFaceSelectionBuffer() const
+    {
+        return mSelection.hasFaceSelectionBuffer();
+    }
+
+    void bindSelectedVerticesBuffer() const
+    {
+        mSelection.bindSelectedVerticesBuffer();
+    }
+
+    void bindSelectedFacesBuffer() const
+    {
+        mSelection.bindSelectedFacesBuffer();
+    }
+
+    const TriPolyIndexBiMap& triPolyIndexMap() const
+    {
+        return Base::triPolyIndexMap();
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -373,7 +478,16 @@ private:
 
             // record that the vertex quad buffer must be generated
             mVertexQuadBufferGenerated = false;
+
+            // create the vertex selection buffer
+            mSelection.initVertexSelectionBitfield(Base::numVerts());
+
+            // create the face selection buffer
+            mSelection.initFaceSelectionBitfield(Base::numTris());
         }
+
+        mSelection.initReadbackHandler(
+            uint(max(double(Base::numVerts()), double(Base::numTris()))));
     }
 
     /**
@@ -508,7 +622,20 @@ private:
         // pre-triangulation estimate for meshes with degenerate faces.
         nt = Base::numTris();
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        // Triangle index buffer required in the face selection compute
+        mTriangleIndexBuffer.createForCompute(
+            buffer,
+            nt * 3,
+            vcl::PrimitiveType::UINT,
+            bgfx::Access::Read,
+            releaseFn);
+
+        // Build polygon mapping buffers for polygon-level face selection.
+        // fillTriangleIndices() above has already populated
+        // Base::triPolyIndexMap().
+        if (Context::instance().supportsCompute() && nt > 0) {
+            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
+        }
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
