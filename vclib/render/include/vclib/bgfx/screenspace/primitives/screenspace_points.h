@@ -31,8 +31,8 @@ namespace vcl {
  * @brief Renders a set of 2D points as screen-space splats (squares or
  * circles).
  *
- * Each point is transformed into a quad (or circular disk) in screen space
- * using a compute shader, then rasterized with alpha blending.
+ * Each point is expanded into a quad procedurally in the vertex shader
+ * using programmable vertex pulling.
  */
 class ScreenSpacePoints
 {
@@ -65,9 +65,6 @@ private:
 
     OwnedOrRefBuffer<VertexBuffer> mPoints;
     OwnedOrRefBuffer<VertexBuffer> mPointColors;
-
-    VertexBuffer mPointSplats;
-    IndexBuffer  mPointSplatIndices;
 
 public:
     /**
@@ -143,8 +140,6 @@ public:
             bgfx::Access::Read,
             releaseFn);
         mPoints.setOwned(std::move(points));
-
-        setSplatsBuffers();
     }
 
     /**
@@ -215,41 +210,11 @@ public:
         mGeneralColor = generalColor;
     }
 
-    /**
-     * @brief Draws the point splats on the specified view.
-     *
-     * Renders all points as screen-space splats using a compute shader for
-     * position generation and a vertex/fragment shader for rasterization with
-     * alpha blending.
-     *
-     * If compute shader support is unavailable or the point set is
-     * empty/invalid, this method does nothing.
-     *
-     * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
-     */
     void draw(bgfx::ViewId viewId) const;
 
 private:
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_COLORS_STAGE    = 1;
-    static constexpr uint POINTS_OUTPUT_STAGE    = 2;
-
-    static constexpr uint POINTS_SPLAT_INDEX_COUNT_PER_POINT  = 6;
-    static constexpr uint POINTS_SPLAT_VERTEX_COUNT_PER_POINT = 4;
-
-    void setSplatsBuffers()
-    {
-        setPointSplatsBuffer(mPointSplats, mPointsCount);
-        setPointSplatIndicesBuffer(mPointSplatIndices, mPointsCount);
-    }
-
-    static void setPointSplatsBuffer(
-        vcl::VertexBuffer& splats,
-        uint               pointsSize);
-
-    static void setPointSplatIndicesBuffer(
-        vcl::IndexBuffer& indices,
-        uint              pointsSize);
 };
 
 } // namespace vcl

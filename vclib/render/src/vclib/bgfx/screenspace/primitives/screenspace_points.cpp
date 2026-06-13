@@ -23,7 +23,6 @@
 #include <vclib/bgfx/screenspace/primitives/screenspace_points.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/programs/compute_loader.h>
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.h>
 
@@ -73,8 +72,6 @@ void ScreenSpacePoints::setPoints(
     mPointsCount = pointsSize;
 
     mPoints.setReferenced(&vertexCoords);
-
-    setSplatsBuffers();
 }
 
 /**
@@ -94,23 +91,21 @@ void ScreenSpacePoints::setPointColors(const VertexBuffer& vertexColors)
 /**
  * @brief Draws the point splats on the specified view.
  *
- * Renders all points as screen-space splats using a compute shader for
- * position generation and a vertex/fragment shader for rasterization with
- * alpha blending.
+ * Renders all points as screen-space splats using programmable vertex
+ * pulling. Each point is expanded into a quad procedurally in the vertex
+ * shader.
+ *
+ * If the point set is empty/invalid, this method does nothing.
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
 void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 {
-    if (mPointsCount == 0 || !mPoints.isValid() || !mPointSplats.isValid() ||
-        !mPointSplatIndices.isValid()) {
+    if (mPointsCount == 0 || !mPoints.isValid()) {
         return;
     }
 
     Context& ctx = Context::instance();
-    if (!ctx.supportsCompute()) {
-        return;
-    }
 
     ProgramManager& pm = ctx.programManager();
 
@@ -124,23 +119,17 @@ void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
     ScreenSpacePointsUniforms::setPointsWidth(mWidth);
     ScreenSpacePointsUniforms::setPointsGeneralColor(mGeneralColor);
 
+    // Bind the points buffer as a compute buffer (SSBO) for vertex shader
+    // access
     mPoints.get().bindCompute(POINTS_POSITIONS_STAGE, bgfx::Access::Read);
-    mPointSplats.bindCompute(POINTS_OUTPUT_STAGE, bgfx::Access::Write);
-
-    ScreenSpacePointsUniforms::bind();
-    bgfx::dispatch(
-        viewId,
-        pm.getComputeProgram<ComputeProgram::SCREENSPACE_POINTS>(),
-        mPointsCount,
-        1,
-        1);
-
-    mPointSplats.bindVertex(0);
-    mPointSplatIndices.bind();
 
     if (mPointColors.isValid()) {
         mPointColors.get().bindCompute(POINTS_COLORS_STAGE, bgfx::Access::Read);
     }
+
+    // Set the number of vertices to generate procedurally
+    // Each point generates 6 vertices (2 triangles)
+    bgfx::setVertexCount(mPointsCount * 6);
 
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -148,57 +137,6 @@ void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 
     ScreenSpacePointsUniforms::bind();
     bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_POINTS>());
-}
-
-void ScreenSpacePoints::setPointSplatsBuffer(
-    VertexBuffer& splats,
-    uint          pointsSize)
-{
-    if (pointsSize == 0) {
-        splats.destroy();
-        return;
-    }
-
-    const uint splatVertCount =
-        pointsSize * POINTS_SPLAT_VERTEX_COUNT_PER_POINT;
-
-    auto [buffer, releaseFn] =
-        vcl::Context::getAllocatedBufferAndReleaseFn<float>(splatVertCount * 4);
-
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-        .end();
-
-    splats.create(
-        bgfx::makeRef(buffer, splatVertCount * 4 * sizeof(float), releaseFn),
-        layout,
-        BGFX_BUFFER_COMPUTE_WRITE);
-}
-
-void ScreenSpacePoints::setPointSplatIndicesBuffer(
-    IndexBuffer& indices,
-    uint         pointsSize)
-{
-    const uint indexCount = pointsSize * POINTS_SPLAT_INDEX_COUNT_PER_POINT;
-
-    auto [buffer, releaseFn] =
-        vcl::Context::getAllocatedBufferAndReleaseFn<uint>(indexCount);
-
-    for (uint i = 0; i < pointsSize; ++i) {
-        const uint v = i * POINTS_SPLAT_VERTEX_COUNT_PER_POINT;
-        const uint k = i * POINTS_SPLAT_INDEX_COUNT_PER_POINT;
-
-        buffer[k + 0] = v + 0;
-        buffer[k + 1] = v + 1;
-        buffer[k + 2] = v + 2;
-        buffer[k + 3] = v + 2;
-        buffer[k + 4] = v + 1;
-        buffer[k + 5] = v + 3;
-    }
-
-    indices.create(buffer, indexCount, true, releaseFn);
 }
 
 } // namespace vcl
