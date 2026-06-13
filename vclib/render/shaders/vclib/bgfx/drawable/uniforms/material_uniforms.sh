@@ -27,6 +27,7 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
 uniform vec4 u_emissiveAlphaCutoffPack;
 uniform vec4 u_settings;
+uniform vec4 u_anisotropyPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -37,5 +38,8 @@ uniform vec4 u_settings;
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
 
 #define u_pbr_settings floatBitsToUint(u_settings.x)
+
+#define u_anisotropyStrength u_anisotropyPack.x
+#define u_anisotropyRotation u_anisotropyPack.y
 
 #endif // VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_SH
