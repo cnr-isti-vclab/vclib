@@ -36,6 +36,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
 
@@ -44,9 +45,11 @@ int main(int argc, char** argv)
         "/gltf/MetalRoughSpheres/MetalRoughSpheres.gltf",
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
-        "/gltf/DamagedHelmet/DamagedHelmet.gltf"};
+        "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"
+    };
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = COMPARE_EMISSIVE_STRENGTH;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -120,6 +123,7 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  emissiveStrength: " << mat.emissiveStrength() << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);
             printTextureInfo(mat, NORMAL);
