@@ -40,19 +40,19 @@ class ScreenSpacePointsUniforms
 public:
     ScreenSpacePointsUniforms() = delete;
 
-    static void setPointsColor(uint c)
+    static void setColorSetting(uint c)
     {
         sPointsSettings[0] = std::bit_cast<float>(c);
     }
 
-    static void setPointsShape(uint s)
+    static void setShape(uint s)
     {
         sPointsSettings[1] = std::bit_cast<float>(s);
     }
 
-    static void setPointsWidth(float w) { sPointsSettings[2] = w; }
+    static void setWidth(float w) { sPointsSettings[2] = w; }
 
-    static void setPointsGeneralColor(const vcl::Color& c)
+    static void setGeneralColor(const vcl::Color& c)
     {
         sPointsSettings[3] = std::bit_cast<float>(c.abgr());
     }
