@@ -50,7 +50,8 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     ScreenSpaceBox              mScreenSpaceBox;
     bool                        mInitialized = false;
 
-    uint mVisibleFaceFBSize = 4096u;
+    static const uint DEFAULT_VISIBLE_FACE_FB_SIZE = 4096u;
+    uint mVisibleFaceFBSize = DEFAULT_VISIBLE_FACE_FB_SIZE;
 
     // ---- Selection event state ----
     std::optional<Box2d>       mSelectionBox;
@@ -84,7 +85,7 @@ public:
     void onInit(uint /*viewId*/) override
     {
         mVisibleFaceFBSize = std::min(
-            4096u, Context::instance().capabilites().limits.maxTextureSize);
+            DEFAULT_VISIBLE_FACE_FB_SIZE, Context::instance().capabilites().limits.maxTextureSize);
 
         // Initialize screen-space box for selection overlay
         mScreenSpaceBox.init();
