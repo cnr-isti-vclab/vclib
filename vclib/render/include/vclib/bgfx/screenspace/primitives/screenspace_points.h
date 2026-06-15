@@ -120,9 +120,12 @@ public:
     {
         mVertexCount = std::ranges::size(verts);
 
+        // move to the nearest multiple of 2 to ensure padding of 4 floats
+        uint nv = mVertexCount + (mVertexCount % 2);
+
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(mVertexCount * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         for (size_t i = 0; const auto& v : verts) {
             buffer[i * 2 + 0] = v.x();
@@ -132,7 +135,7 @@ public:
 
         vertBuff.createForCompute(
             buffer,
-            mVertexCount,
+            nv,
             bgfx::Attrib::Position,
             2,
             PrimitiveType::FLOAT,

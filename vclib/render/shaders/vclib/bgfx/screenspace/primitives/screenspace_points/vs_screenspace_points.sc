@@ -27,7 +27,7 @@ $output v_texcoord1
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
-BUFFER_RO(pointsBuffer, vec2, 0); // 2D point positions
+BUFFER_RO(pointsBuffer, vec4, 0); // 2D point positions
 BUFFER_RO(colorsBuffer, vec4, 1); // Per-point colors (optional)
 
 void main()
@@ -38,7 +38,9 @@ void main()
     uint localVertex = gl_VertexID % 6u;
 
     // Fetch the center position of this point
-    vec2 centerPos = pointsBuffer[pointIndex];
+    vec2 centerPos = pointIndex % 2 == 0 ?
+        pointsBuffer[pointIndex / 2].xy :
+        pointsBuffer[pointIndex / 2].zw;
 
     // Quad expansion: map localVertex (0-5) to quad corners and UVs
     // Triangle 1: verts 0, 1, 2
