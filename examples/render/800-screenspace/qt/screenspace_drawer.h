@@ -23,6 +23,7 @@
 #ifndef SCREENSPACE_DRAWER_H
 #define SCREENSPACE_DRAWER_H
 
+#include <vclib/bgfx/screenspace/overlay/screenspace_box.h>
 #include <vclib/bgfx/screenspace/primitives/screenspace_lines.h>
 #include <vclib/bgfx/screenspace/primitives/screenspace_points.h>
 #include <vclib/render/drawers/plain_drawer.h>
@@ -33,6 +34,8 @@ class ScreenSpaceDrawer : public vcl::PlainDrawer<DerivedRenderApp>
     vcl::ScreenSpacePoints mPointsGCS;
     vcl::ScreenSpacePoints mPointsGCC;
     vcl::ScreenSpacePoints mPointsVC;
+
+    vcl::ScreenSpaceBox mBox;
 
 public:
     ScreenSpaceDrawer(vcl::uint width = 1024, vcl::uint height = 768)
@@ -86,6 +89,10 @@ public:
 
         mPointsVC.setVertices(pts);
         mPointsVC.setVertexColors(colors);
+
+        mBox.setColor(vcl::Color::DarkYellow);
+
+        mBox.setBox(vcl::Box2d({800, 50}, {1000, 150}));
     }
 
     void onInit(vcl::uint viewId) override
@@ -94,6 +101,8 @@ public:
 
         DerivedRenderApp::DRW::setCanvasDefaultClearColor(
             static_cast<DerivedRenderApp*>(this), backgroundColor);
+
+        mBox.init();
     }
 
     void onDrawContent(vcl::uint viewId) override
@@ -101,6 +110,8 @@ public:
         mPointsGCS.draw(viewId);
         mPointsGCC.draw(viewId);
         mPointsVC.draw(viewId);
+
+        mBox.draw(viewId);
     }
 };
 
