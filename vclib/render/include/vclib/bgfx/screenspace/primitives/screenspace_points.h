@@ -153,7 +153,7 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mPointsCount);
+        assert(std::ranges::size(vertColors) == mVertexCount);
 
         VertexBuffer vColsBuff;
 
