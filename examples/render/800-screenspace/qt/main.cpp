@@ -30,8 +30,8 @@ int main(int argc, char** argv)
 {
     auto app = vcl::qt::qAppl(argc, argv);
 
-    using WidgetQt = vcl::
-        RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ScreenSpaceDrawer>;
+    using WidgetQt =
+        vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ScreenSpaceDrawer>;
 
     WidgetQt tw("Draw ScreenSpace Objects with Qt");
 
