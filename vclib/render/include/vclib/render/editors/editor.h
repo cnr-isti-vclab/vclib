@@ -107,16 +107,6 @@ public:
     virtual void refreshSettings() {}
 
     /**
-     * @brief Called by the viewer once the rendering backend is initialized.
-     *
-     * Subclasses may override this function to create GPU resources (buffers,
-     * textures, programs, etc.) that require the backend to be ready.
-     *
-     * @param[in] viewId: the identifier of the main canvas view.
-     */
-    virtual void onInit(uint viewId) {}
-
-    /**
      * @brief Draws the editor content for the given view.
      *
      * This function is called at every frame by the viewer when the editor is

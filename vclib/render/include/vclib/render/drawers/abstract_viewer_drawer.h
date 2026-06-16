@@ -54,8 +54,7 @@ private:
     using Base = ViewProjEventDrawer;
     using DRA  = ViewProjEventDrawer::DRA;
 
-    bool mReadRequested     = false;
-    bool mDrawerInitialized = false;
+    bool mReadRequested = false;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -126,9 +125,6 @@ public:
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
-        if (mDrawerInitialized) {
-            editor->onInit(canvasViewId());
-        }
         return editor;
     }
 
@@ -188,10 +184,6 @@ public:
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
         mDrawList->init();
-        mDrawerInitialized = true;
-        for (auto& editor : mEditors) {
-            editor->onInit(viewId);
-        }
     }
 
     void onDraw(uint viewId) override

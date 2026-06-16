@@ -48,10 +48,9 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     FrameBuffer                 mComputePassFB;
     std::array<bgfx::ViewId, 2> mVisibleSelectionViewIds = {};
     ScreenSpaceBox              mScreenSpaceBox;
-    bool                        mInitialized = false;
 
     inline static const uint DEFAULT_VISIBLE_FACE_FB_SIZE = 4096u;
-    uint mVisibleFaceFBSize = DEFAULT_VISIBLE_FACE_FB_SIZE;
+    uint                     mVisibleFaceFBSize = DEFAULT_VISIBLE_FACE_FB_SIZE;
 
     // ---- Selection event state ----
     std::optional<Box2d>       mSelectionBox;
@@ -66,26 +65,16 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
 public:
     SelectionEditorBGFX()
     {
+        // default settings
         Base::settings().customSettings["selectVertices"] = false;
         Base::settings().customSettings["selectFaces"]    = false;
         Base::settings().customSettings["onlyVisible"]    = false;
         Base::settings().customSettings["selectionBoxColor"] =
             vcl::Color(27, 120, 249, 64);
-    }
 
-    ~SelectionEditorBGFX()
-    {
-        if (mInitialized) {
-            // FrameBuffers handle their own destruction
-            Context::instance().releaseViewId(mVisibleSelectionViewIds[0]);
-            Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
-        }
-    }
-
-    void onInit(uint /*viewId*/) override
-    {
         mVisibleFaceFBSize = std::min(
-            DEFAULT_VISIBLE_FACE_FB_SIZE, Context::instance().capabilites().limits.maxTextureSize);
+            DEFAULT_VISIBLE_FACE_FB_SIZE,
+            Context::instance().capabilites().limits.maxTextureSize);
 
         // Initialize screen-space box for selection overlay
         mScreenSpaceBox.init();
@@ -157,8 +146,12 @@ public:
         bgfx::setViewClear(mVisibleSelectionViewIds[1], BGFX_CLEAR_NONE);
         bgfx::setViewRect(mVisibleSelectionViewIds[1], 0, 0, 1, 1);
         bgfx::touch(mVisibleSelectionViewIds[1]);
+    }
 
-        mInitialized = true;
+    ~SelectionEditorBGFX()
+    {
+        Context::instance().releaseViewId(mVisibleSelectionViewIds[0]);
+        Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
     }
 
     void setSelectionBoxColor(const Color& color)
@@ -169,9 +162,6 @@ public:
 
     void draw(uint viewId) override
     {
-        if (!mInitialized)
-            return;
-
         if (!isSelectionActive()) {
             mSelectionBox.reset();
             mSelectionAnchor.reset();
@@ -288,7 +278,7 @@ public:
         if (!isSelectionActive())
             return false;
         if (button == MouseButton::LEFT && !mSelectionInProgress) {
-            mSelectionInProgress               = true;
+            mSelectionInProgress   = true;
             mSelectionAnchor       = Point2d {x, y};
             mSelectionBox          = Box2d({x, y});
             mCurrentSelectionModes = selectionModesForModifier(modifiers);
@@ -303,7 +293,7 @@ public:
         const KeyModifiers& modifiers) override
     {
         if (button == MouseButton::LEFT && mSelectionInProgress) {
-            mSelectionInProgress               = false;
+            mSelectionInProgress   = false;
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
@@ -436,18 +426,18 @@ private:
             1.f - float(box.min().y()) / float(win_h) * 2.f,
             0.f,
             1.f);
-        float     w = maxNDC.x() - minNDC.x();
-        float     h = maxNDC.y() - minNDC.y();
+        float w = maxNDC.x() - minNDC.x();
+        float h = maxNDC.y() - minNDC.y();
         assert(w > 0.f && h > 0.f);
         // set the matrix to translate and scale (scale * translate)
         // translate to the box center and scale to box size (relative to NDC)
         // (translate by -minNDC + 1/2 * dim then scale by
         // 2/dim to map the box to the whole viewport)
         const Matrix44f scaleTranslate {
-            {2.f/w, 0.f, 0.f, -(2.f/w * minNDC.x() + 1.f)},
-            {0.f, 2.f/h, 0.f, -(2.f/h * minNDC.y() + 1.f)},
-            {0.f, 0.f, 1.f, 0.f },
-            {0.f, 0.f, 0.f, 1.f }
+            {2.f / w, 0.f,     0.f, -(2.f / w * minNDC.x() + 1.f)},
+            {0.f,     2.f / h, 0.f, -(2.f / h * minNDC.y() + 1.f)},
+            {0.f,     0.f,     1.f, 0.f                          },
+            {0.f,     0.f,     0.f, 1.f                          }
         };
         auto      vm      = Base::viewerViewMatrix();
         auto      pm      = Base::viewerProjectionMatrix();
@@ -479,8 +469,7 @@ private:
         }
 
         bool skipVisibleSelection = false;
-        if (hasVisibleMode && !minMaxBox.isNull())
-        {
+        if (hasVisibleMode && !minMaxBox.isNull()) {
             skipVisibleSelection = !setVisibleTrisSelectionProjViewMatrix(
                 calculateWindowSpaceMeshBB().intersection(minMaxBox));
         }
