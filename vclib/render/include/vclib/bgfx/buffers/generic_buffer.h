@@ -152,47 +152,34 @@ protected:
 
         uint64_t flags = BGFX_BUFFER_NONE;
 
+        if (type == DOUBLE) {
+            assert(0); // not supported
+            return flags;
+        }
+
         // for index buffers
         if (type == INT || type == UINT)
             flags |= BGFX_BUFFER_INDEX32;
 
-        if (type == CHAR || type == UCHAR) {
-            if (numPerVertex == 1)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_8X1;
-            else if (numPerVertex == 2)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_8X2;
-            else
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_8X4;
+        // special cases
+        if ((type == CHAR || type == UCHAR) && numPerVertex == 4)
+            flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X1;
+        else if ((type == SHORT || type == USHORT) && numPerVertex == 2)
+            flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X1;
+        else if (numPerVertex == 1)
+            flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X1;
+        else if (numPerVertex == 2)
+            flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X2;
+        else
+            flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X4;
 
-            // TODO: add type int/uint?
-        }
-        else if (type == SHORT || type == USHORT) {
-            if (numPerVertex == 1)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_16X1;
-            else if (numPerVertex == 2)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_16X2;
-            else
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_16X4;
-            // TODO: add type int/uint?
-        }
-        else if (type == DOUBLE) {
-            assert(0); // not supported
-        }
-        else {
-            if (numPerVertex == 1)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X1;
-            else if (numPerVertex == 2)
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X2;
-            else
-                flags |= BGFX_BUFFER_COMPUTE_FORMAT_32X4;
+        if (type == INT || type == CHAR || type == SHORT)
+            flags |= BGFX_BUFFER_COMPUTE_TYPE_INT;
+        else if (type == UINT || type == UCHAR || type == USHORT)
+            flags |= BGFX_BUFFER_COMPUTE_TYPE_UINT;
+        else if (type == FLOAT)
+            flags |= BGFX_BUFFER_COMPUTE_TYPE_FLOAT;
 
-            if (type == INT)
-                flags |= BGFX_BUFFER_COMPUTE_TYPE_INT;
-            else if (type == UINT)
-                flags |= BGFX_BUFFER_COMPUTE_TYPE_UINT;
-            else if (type == FLOAT)
-                flags |= BGFX_BUFFER_COMPUTE_TYPE_FLOAT;
-        }
 
         return flags;
     }
