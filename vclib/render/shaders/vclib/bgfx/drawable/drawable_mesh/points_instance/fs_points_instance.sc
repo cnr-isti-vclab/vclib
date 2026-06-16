@@ -29,9 +29,9 @@ $input v_normal, v_texcoord1, v_selected
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
 restore next line with:
 
-BUFFER_RO(vertexColors, vec4, VCL_MRB_VERTEX_COLOR_STREAM); // colors (rgba as float bits)
+BUFFER_RO(vertexColors, uint, VCL_MRB_VERTEX_COLOR_STREAM); // colors (rgba as float bits)
 */
-BUFFER_RO(vertexColors, vec4, 2); // colors (rgba as float bits)
+BUFFER_RO(vertexColors, uint, 2); // colors (rgba as float bits)
 
 void main()
 {
@@ -59,7 +59,7 @@ void main()
 
     if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
         uint pointId = uint(gl_PrimitiveID) / 2u;
-        color = uintABGRToVec4Color(floatBitsToUint(vertexColors[pointId / 4u][pointId % 4u]));
+        color = uintABGRToVec4Color(vertexColors[pointId]);
     }
     else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
         color = u_meshColor;

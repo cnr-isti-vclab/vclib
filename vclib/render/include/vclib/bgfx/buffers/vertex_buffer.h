@@ -168,7 +168,8 @@ public:
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
         if (vertNum != 0) {
-            uint64_t flags = flagsForAccess(access);
+            uint64_t flags = flagsForType(attribType, attribNumPerVertex);
+            flags |= flagsForAccess(access);
 
             bgfx::VertexLayout layout;
             layout.begin()
