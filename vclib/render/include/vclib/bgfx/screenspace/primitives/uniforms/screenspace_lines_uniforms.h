@@ -40,12 +40,12 @@ class ScreenSpaceLinesUniforms
 public:
     ScreenSpaceLinesUniforms() = delete;
 
-    static void setLinesUsePerVertexColor(uint c)
+    static void setColorSetting(uint c)
     {
         sLinesSettings[0] = std::bit_cast<float>(c);
     }
 
-    static void setLinesGeneralColor(const vcl::Color& c)
+    static void setGeneralColor(const vcl::Color& c)
     {
         sLinesSettings[1] = std::bit_cast<float>(c.abgr());
     }

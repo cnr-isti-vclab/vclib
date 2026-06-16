@@ -20,24 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
+#include "screenspace_drawer.h"
 
-BUFFER_RO(points, vec4, 0); // packed screen-space coords: points[i*2].xy + points[i*2+1].zw
-BUFFER_WO(vOut, vec4, 2);   // per-splat vertex data (x, y, z, padding)
+#include <vclib/qt/widget_manager.h>
+#include <vclib/render/canvas.h>
+#include <vclib/render/render_app.h>
 
-NUM_THREADS(1, 1, 1) // 1 'thread' per point
-void main()
+int main(int argc, char** argv)
 {
-    uint pointId = gl_WorkGroupID.x;
-    uint vecIdx  = pointId / 2u;
-    vec2 p       = (pointId & 1u) ? points[vecIdx].zw : points[vecIdx].xy;
+    auto app = vcl::qt::qAppl(argc, argv);
 
-    UNROLL
-    for (int i = 0; i < 4; ++i) {
-        uint vertexId = pointId * 4u + uint(i);
-        vec2 quadUv = vec2(uint(i) & 1u, (uint(i) >> 1u) & 1u);
-        vec2 offset = (2.0 * quadUv - vec2(1.0, 1.0)) * u_pointsWidth;
-        vOut[vertexId] = vec4(p + offset, 0.0, 0.0);
-    }
+    using WidgetQt =
+        vcl::RenderApp<vcl::qt::WidgetManager, vcl::Canvas, ScreenSpaceDrawer>;
+
+    WidgetQt tw("Draw ScreenSpace Objects with Qt");
+
+    tw.show();
+
+    return app.exec();
 }

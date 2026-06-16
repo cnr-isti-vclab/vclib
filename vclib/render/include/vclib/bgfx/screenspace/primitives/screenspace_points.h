@@ -31,8 +31,8 @@ namespace vcl {
  * @brief Renders a set of 2D points as screen-space splats (squares or
  * circles).
  *
- * Each point is transformed into a quad (or circular disk) in screen space
- * using a compute shader, then rasterized with alpha blending.
+ * Each point is expanded into a quad procedurally in the vertex shader
+ * using programmable vertex pulling.
  */
 class ScreenSpacePoints
 {
@@ -42,32 +42,29 @@ public:
     /**
      * @brief Specifies how point colors are determined during rendering.
      */
-    enum class PointsColor {
-        PER_POINT, ///< Each point uses color from per-point color buffer.
-        GENERAL    ///< All points use a single general color.
+    enum class ColorSetting {
+        PER_VERTEX, ///< Each point uses color from per-vertex color buffer.
+        GENERAL     ///< All points use a single general color.
     };
 
     /**
      * @brief Specifies the visual shape of each point splat.
      */
-    enum class PointsShape {
+    enum class Shape {
         SQUARE, ///< Square splats (axis-aligned quads).
         CIRCLE  ///< Circular splats (disk-shaped).
     };
 
 private:
-    uint mPointsCount = 0;
+    uint mVertexCount = 0;
 
-    float       mWidth        = 1.0f;
-    PointsColor mColorToUse   = PointsColor::GENERAL;
-    PointsShape mShape        = PointsShape::SQUARE;
-    Color       mGeneralColor = Color::Black;
+    float        mWidth        = 1.0f;
+    ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    Shape        mShape        = Shape::SQUARE;
+    Color        mGeneralColor = Color::Black;
 
-    OwnedOrRefBuffer<VertexBuffer> mPoints;
-    OwnedOrRefBuffer<VertexBuffer> mPointColors;
-
-    VertexBuffer mPointSplats;
-    IndexBuffer  mPointSplatIndices;
+    OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
+    OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
 public:
     /**
@@ -79,7 +76,7 @@ public:
      * @brief Constructs a point set from ranges of 2D coordinates and per-point
      * colors.
      *
-     * @param[in] vertCoords: Range of elements convertible to Point2 (must
+     * @param[in] verts: Range of elements convertible to Point2 (must
      * provide x() and y()). Each element contributes one screen-space point at
      * (x, y).
      * @param[in] vertColors: Optional range of Color elements. If non-empty,
@@ -92,25 +89,25 @@ public:
     template<Range RV, Range RC>
     requires Point2Concept<std::ranges::range_value_t<RV>> &&
              ColorConcept<std::ranges::range_value_t<RC>>
-    ScreenSpacePoints(RV&& vertCoords, RC&& vertColors = std::vector<Color>())
+    ScreenSpacePoints(RV&& verts, RC&& vertColors = std::vector<Color>())
     {
-        setPoints(vertCoords);
+        setVertices(verts);
         if (!vertColors.empty()) {
-            setPointColors(vertColors);
+            setVertexColors(vertColors);
         }
     }
 
     ScreenSpacePoints(
-        const uint          pointsSize,
-        const VertexBuffer& vertexCoords,
-        const VertexBuffer& vertexColors = NULL_VERTEX_BUFFER);
+        const uint          vertexCount,
+        const VertexBuffer& verts,
+        const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
 
     /**
      * @brief Sets point positions from a range of 2D points.
      *
      * @tparam R: Range whose value type satisfies Point2Concept (must provide
      * x() and y()).
-     * @param[in] vertCoords: Range of 2D points. Each element is read as a
+     * @param[in] verts: Range of 2D points. Each element is read as a
      * screen-space coordinate (x, y). The size determines the number of
      * rendered points.
      *
@@ -119,32 +116,33 @@ public:
      */
     template<Range R>
     requires Point2Concept<std::ranges::range_value_t<R>>
-    void setPoints(R&& vertCoords)
+    void setVertices(R&& verts)
     {
-        mPointsCount = std::ranges::size(vertCoords);
+        mVertexCount = std::ranges::size(verts);
 
-        VertexBuffer points;
+        // move to the nearest multiple of 2 to ensure padding of 4 floats
+        uint nv = mVertexCount + (mVertexCount % 2);
+
+        VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(mPointsCount * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
-        for (size_t i = 0; const auto& v : vertCoords) {
+        for (size_t i = 0; const auto& v : verts) {
             buffer[i * 2 + 0] = v.x();
             buffer[i * 2 + 1] = v.y();
             ++i;
         }
 
-        points.createForCompute(
+        vertBuff.createForCompute(
             buffer,
-            mPointsCount,
+            nv,
             bgfx::Attrib::Position,
             2,
             PrimitiveType::FLOAT,
             false,
             bgfx::Access::Read,
             releaseFn);
-        mPoints.setOwned(std::move(points));
-
-        setSplatsBuffers();
+        mVertexPositions.setOwned(std::move(vertBuff));
     }
 
     /**
@@ -156,55 +154,55 @@ public:
      */
     template<Range R>
     requires ColorConcept<std::ranges::range_value_t<R>>
-    void setPointColors(R&& vertColors)
+    void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mPointsCount);
+        assert(std::ranges::size(vertColors) == mVertexCount);
 
-        VertexBuffer pointColors;
+        VertexBuffer vColsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(mPointsCount);
+            Context::getAllocatedBufferAndReleaseFn<uint>(mVertexCount);
 
         for (uint i = 0; const auto& c : vertColors) {
             buffer[i] = c.abgr();
             ++i;
         }
 
-        pointColors.createForCompute(
+        vColsBuff.createForCompute(
             buffer,
-            mPointsCount,
+            mVertexCount,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
             bgfx::Access::Read,
             releaseFn);
-        mPointColors.setOwned(std::move(pointColors));
+        mVertexColors.setOwned(std::move(vColsBuff));
     }
 
-    void setPoints(const uint pointsSize, const VertexBuffer& vertexCoords);
+    void setVertices(const uint vertexCount, const VertexBuffer& verts);
 
-    void setPointColors(const VertexBuffer& vertexColors);
+    void setVertexColors(const VertexBuffer& vertColors);
 
     /**
      * @brief Sets the width of point splats (in screen-space pixels or
      * normalized units).
      * @param[in] width: The splat width value.
      */
-    void setWidthSetting(float width) { mWidth = width; }
+    void setWidth(float width) { mWidth = width; }
 
     /**
      * @brief Sets the color mode for point rendering.
      * @param[in] colorToUse: Whether to use per-point colors or a general
      * uniform color.
      */
-    void setColorSetting(PointsColor colorToUse) { mColorToUse = colorToUse; }
+    void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
 
     /**
      * @brief Sets the visual shape of each point splat.
      * @param[in] shape: The splat shape (SQUARE or CIRCLE).
      */
-    void setShapeSetting(PointsShape shape) { mShape = shape; }
+    void setShapeSetting(Shape shape) { mShape = shape; }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
@@ -215,41 +213,11 @@ public:
         mGeneralColor = generalColor;
     }
 
-    /**
-     * @brief Draws the point splats on the specified view.
-     *
-     * Renders all points as screen-space splats using a compute shader for
-     * position generation and a vertex/fragment shader for rasterization with
-     * alpha blending.
-     *
-     * If compute shader support is unavailable or the point set is
-     * empty/invalid, this method does nothing.
-     *
-     * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
-     */
     void draw(bgfx::ViewId viewId) const;
 
 private:
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_COLORS_STAGE    = 1;
-    static constexpr uint POINTS_OUTPUT_STAGE    = 2;
-
-    static constexpr uint POINTS_SPLAT_INDEX_COUNT_PER_POINT  = 6;
-    static constexpr uint POINTS_SPLAT_VERTEX_COUNT_PER_POINT = 4;
-
-    void setSplatsBuffers()
-    {
-        setPointSplatsBuffer(mPointSplats, mPointsCount);
-        setPointSplatIndicesBuffer(mPointSplatIndices, mPointsCount);
-    }
-
-    static void setPointSplatsBuffer(
-        vcl::VertexBuffer& splats,
-        uint               pointsSize);
-
-    static void setPointSplatIndicesBuffer(
-        vcl::IndexBuffer& indices,
-        uint              pointsSize);
 };
 
 } // namespace vcl

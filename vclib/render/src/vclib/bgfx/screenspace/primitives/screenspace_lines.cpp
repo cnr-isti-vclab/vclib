@@ -62,7 +62,7 @@ void ScreenSpaceLines::setVertices(
     const uint          vertexCount,
     const VertexBuffer& verts)
 {
-    mLinesCount = vertexCount;
+    mVertexCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
 }
 
@@ -108,7 +108,7 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
  */
 void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 {
-    if (mLinesCount == 0 || !mVertexPositions.isValid()) {
+    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
 
@@ -119,9 +119,9 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         colorToUse = ColorSetting::GENERAL;
     }
 
-    ScreenSpaceLinesUniforms::setLinesUsePerVertexColor(
+    ScreenSpaceLinesUniforms::setColorSetting(
         colorToUse == ColorSetting::PER_VERTEX ? 1 : 0);
-    ScreenSpaceLinesUniforms::setLinesGeneralColor(mGeneralColor);
+    ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
     ScreenSpaceLinesUniforms::bind();
 
     // Bind vertex coordinates

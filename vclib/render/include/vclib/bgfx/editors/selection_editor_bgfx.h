@@ -50,7 +50,7 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     ScreenSpaceBox              mScreenSpaceBox;
     bool                        mInitialized = false;
 
-    static const uint DEFAULT_VISIBLE_FACE_FB_SIZE = 4096u;
+    inline static const uint DEFAULT_VISIBLE_FACE_FB_SIZE = 4096u;
     uint mVisibleFaceFBSize = DEFAULT_VISIBLE_FACE_FB_SIZE;
 
     // ---- Selection event state ----

@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_color
+$input a_position, a_color0
 $output v_color
 
 #include <bgfx_shader.sh>
@@ -37,7 +37,7 @@ void main()
     
     // Use per-vertex color if enabled, otherwise use general color
     if (usePerVertexColor()) {
-        v_color = a_color;
+        v_color = a_color0;
     } else {
         v_color = u_linesGeneralColor;
     }

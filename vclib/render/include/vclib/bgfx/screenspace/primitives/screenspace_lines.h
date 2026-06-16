@@ -61,7 +61,7 @@ public:
     enum class Topology { LINES, LINE_STRIP };
 
 private:
-    uint mLinesCount = 0;
+    uint mVertexCount = 0;
 
     float        mWidth        = 1.0f;
     Topology     mTopology     = Topology::LINES;
@@ -117,12 +117,11 @@ public:
     requires Point2Concept<std::ranges::range_value_t<R>>
     void setVertices(R&& verts)
     {
-        mLinesCount = std::ranges::size(verts) / 2;
+        mVertexCount = std::ranges::size(verts);
 
-        VertexBuffer vertPositions;
+        VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(
-                std::ranges::size(verts) * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(mVertexCount * 2);
 
         size_t i = 0;
         for (const auto& v : verts) {
@@ -136,13 +135,13 @@ public:
             .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
             .end();
 
-        vertPositions.create(
+        vertBuff.create(
             bgfx::makeRef(
                 buffer,
                 std::ranges::size(verts) * 2 * sizeof(float),
                 releaseFn),
             layout);
-        mVertexPositions.setOwned(std::move(vertPositions));
+        mVertexPositions.setOwned(std::move(vertBuff));
     }
 
     /**
@@ -162,7 +161,7 @@ public:
     requires std::integral<std::ranges::range_value_t<R>>
     void setIndices(R&& indices)
     {
-        IndexBuffer indexBuffer;
+        IndexBuffer indexBuff;
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(
                 std::ranges::size(indices));
@@ -173,12 +172,12 @@ public:
             ++i;
         }
 
-        indexBuffer.create(
+        indexBuff.create(
             bgfx::makeRef(
                 buffer, std::ranges::size(indices) * sizeof(uint), releaseFn),
             BGFX_BUFFER_INDEX32);
 
-        mIndices.setOwned(std::move(indexBuffer));
+        mIndices.setOwned(std::move(indexBuff));
     }
 
     /**
@@ -193,9 +192,9 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mLinesCount * 2);
+        assert(std::ranges::size(vertColors) == mVertexCount * 2);
 
-        VertexBuffer vertexColors;
+        VertexBuffer vColsBuff;
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(
                 std::ranges::size(vertColors));
@@ -211,13 +210,13 @@ public:
             .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
             .end();
 
-        vertexColors.create(
+        vColsBuff.create(
             bgfx::makeRef(
                 buffer,
                 std::ranges::size(vertColors) * sizeof(uint),
                 releaseFn),
             layout);
-        mVertexColors.setOwned(std::move(vertexColors));
+        mVertexColors.setOwned(std::move(vColsBuff));
     }
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
@@ -230,7 +229,7 @@ public:
      * @brief Sets the width of line segments (in screen-space pixels).
      * @param[in] width: The line width value.
      */
-    void setWidthSetting(float width) { mWidth = width; }
+    void setWidth(float width) { mWidth = width; }
 
     /**
      * @brief Sets the topology used for rendering lines.

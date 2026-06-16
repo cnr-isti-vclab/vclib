@@ -23,7 +23,6 @@
 #include <vclib/bgfx/screenspace/primitives/screenspace_points.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/programs/compute_loader.h>
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.h>
 
@@ -32,13 +31,13 @@ namespace vcl {
 /**
  * @brief Constructs a point set by referencing existing VertexBuffers.
  *
- * @param[in] pointsSize: Number of points (length of vertexCoords).
- * @param[in] vertexCoords: VertexBuffer containing point positions.
+ * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 2 components per point (x, y),
  * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
  * buffer must be created for compute access and must remain valid for the
  * lifetime of this object.
- * @param[in] vertexColors: Optional VertexBuffer containing per-point
+ * @param[in] vertColors: Optional VertexBuffer containing per-point
  * colors.
  * Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
@@ -46,101 +45,93 @@ namespace vcl {
  * of this object.
  */
 ScreenSpacePoints::ScreenSpacePoints(
-    const uint          pointsSize,
-    const VertexBuffer& vertexCoords,
-    const VertexBuffer& vertexColors)
+    const uint          vertexCount,
+    const VertexBuffer& verts,
+    const VertexBuffer& vertColors)
 {
-    setPoints(pointsSize, vertexCoords);
-    if (vertexColors.isValid()) {
-        setPointColors(vertexColors);
+    setVertices(vertexCount, verts);
+    if (vertColors.isValid()) {
+        setVertexColors(vertColors);
     }
 }
 
 /**
  * @brief Sets point positions by referencing an existing VertexBuffer.
  *
- * @param[in] pointsSize: Number of points (length of vertexCoords).
- * @param[in] vertexCoords: VertexBuffer containing point positions.
+ * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 2 components per point (x, y),
  * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
  * buffer must be created for compute access and must remain valid for the
  * lifetime of this object.
  */
-void ScreenSpacePoints::setPoints(
-    const uint          pointsSize,
-    const VertexBuffer& vertexCoords)
+void ScreenSpacePoints::setVertices(
+    const uint          vertexCount,
+    const VertexBuffer& verts)
 {
-    mPointsCount = pointsSize;
+    mVertexCount = vertexCount;
 
-    mPoints.setReferenced(&vertexCoords);
-
-    setSplatsBuffers();
+    mVertexPositions.setReferenced(&verts);
 }
 
 /**
  * @brief Sets per-point colors by referencing an existing VertexBuffer.
  *
- * @param[in] vertexColors: VertexBuffer containing per-point colors.
+ * @param[in] vertColors: VertexBuffer containing per-point colors.
  * Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
  * must be created for compute access and must remain valid for the lifetime
  * of this object.
  */
-void ScreenSpacePoints::setPointColors(const VertexBuffer& vertexColors)
+void ScreenSpacePoints::setVertexColors(const VertexBuffer& vertColors)
 {
-    mPointColors.setReferenced(&vertexColors);
+    mVertexColors.setReferenced(&vertColors);
 }
 
 /**
  * @brief Draws the point splats on the specified view.
  *
- * Renders all points as screen-space splats using a compute shader for
- * position generation and a vertex/fragment shader for rasterization with
- * alpha blending.
+ * Renders all points as screen-space splats using programmable vertex
+ * pulling. Each point is expanded into a quad procedurally in the vertex
+ * shader.
+ *
+ * If the point set is empty/invalid, this method does nothing.
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
 void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 {
-    if (mPointsCount == 0 || !mPoints.isValid() || !mPointSplats.isValid() ||
-        !mPointSplatIndices.isValid()) {
+    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
 
     Context& ctx = Context::instance();
-    if (!ctx.supportsCompute()) {
-        return;
-    }
 
     ProgramManager& pm = ctx.programManager();
 
-    PointsColor colorToUse = mColorToUse;
-    if (colorToUse == PointsColor::PER_POINT && !mPointColors.isValid()) {
-        colorToUse = PointsColor::GENERAL;
+    ColorSetting colorToUse = mColorToUse;
+    if (colorToUse == ColorSetting::PER_VERTEX && !mVertexColors.isValid()) {
+        colorToUse = ColorSetting::GENERAL;
     }
 
-    ScreenSpacePointsUniforms::setPointsColor(static_cast<uint>(colorToUse));
-    ScreenSpacePointsUniforms::setPointsShape(static_cast<uint>(mShape));
-    ScreenSpacePointsUniforms::setPointsWidth(mWidth);
-    ScreenSpacePointsUniforms::setPointsGeneralColor(mGeneralColor);
+    ScreenSpacePointsUniforms::setColorSetting(static_cast<uint>(colorToUse));
+    ScreenSpacePointsUniforms::setShape(static_cast<uint>(mShape));
+    ScreenSpacePointsUniforms::setWidth(mWidth);
+    ScreenSpacePointsUniforms::setGeneralColor(mGeneralColor);
 
-    mPoints.get().bindCompute(POINTS_POSITIONS_STAGE, bgfx::Access::Read);
-    mPointSplats.bindCompute(POINTS_OUTPUT_STAGE, bgfx::Access::Write);
+    // Bind the points buffer as a compute buffer (SSBO) for vertex shader
+    // access
+    mVertexPositions.get().bindCompute(
+        POINTS_POSITIONS_STAGE, bgfx::Access::Read);
 
-    ScreenSpacePointsUniforms::bind();
-    bgfx::dispatch(
-        viewId,
-        pm.getComputeProgram<ComputeProgram::SCREENSPACE_POINTS>(),
-        mPointsCount,
-        1,
-        1);
-
-    mPointSplats.bindVertex(0);
-    mPointSplatIndices.bind();
-
-    if (mPointColors.isValid()) {
-        mPointColors.get().bindCompute(POINTS_COLORS_STAGE, bgfx::Access::Read);
+    if (mVertexColors.isValid()) {
+        mVertexColors.get().bindCompute(
+            POINTS_COLORS_STAGE, bgfx::Access::Read);
     }
+
+    // Set the number of vertices to generate procedurally
+    // Each point generates 6 vertices (2 triangles)
+    bgfx::setVertexCount(mVertexCount * 6);
 
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -148,57 +139,6 @@ void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 
     ScreenSpacePointsUniforms::bind();
     bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_POINTS>());
-}
-
-void ScreenSpacePoints::setPointSplatsBuffer(
-    VertexBuffer& splats,
-    uint          pointsSize)
-{
-    if (pointsSize == 0) {
-        splats.destroy();
-        return;
-    }
-
-    const uint splatVertCount =
-        pointsSize * POINTS_SPLAT_VERTEX_COUNT_PER_POINT;
-
-    auto [buffer, releaseFn] =
-        vcl::Context::getAllocatedBufferAndReleaseFn<float>(splatVertCount * 4);
-
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-        .end();
-
-    splats.create(
-        bgfx::makeRef(buffer, splatVertCount * 4 * sizeof(float), releaseFn),
-        layout,
-        BGFX_BUFFER_COMPUTE_WRITE);
-}
-
-void ScreenSpacePoints::setPointSplatIndicesBuffer(
-    IndexBuffer& indices,
-    uint         pointsSize)
-{
-    const uint indexCount = pointsSize * POINTS_SPLAT_INDEX_COUNT_PER_POINT;
-
-    auto [buffer, releaseFn] =
-        vcl::Context::getAllocatedBufferAndReleaseFn<uint>(indexCount);
-
-    for (uint i = 0; i < pointsSize; ++i) {
-        const uint v = i * POINTS_SPLAT_VERTEX_COUNT_PER_POINT;
-        const uint k = i * POINTS_SPLAT_INDEX_COUNT_PER_POINT;
-
-        buffer[k + 0] = v + 0;
-        buffer[k + 1] = v + 1;
-        buffer[k + 2] = v + 2;
-        buffer[k + 3] = v + 2;
-        buffer[k + 4] = v + 1;
-        buffer[k + 5] = v + 3;
-    }
-
-    indices.create(buffer, indexCount, true, releaseFn);
 }
 
 } // namespace vcl
