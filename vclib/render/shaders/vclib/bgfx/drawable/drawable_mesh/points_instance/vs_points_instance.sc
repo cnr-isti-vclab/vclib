@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_texcoord0
+$input a_position, a_normal
 $output v_normal, v_texcoord1, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
