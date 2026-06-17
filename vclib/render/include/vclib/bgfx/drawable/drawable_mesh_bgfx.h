@@ -228,8 +228,7 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
-                if (mMRB.hasFaceSelectionBuffer())
-                    mMRB.bindSelectedFacesBuffer();
+                mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
@@ -277,8 +276,7 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
-                if (mMRB.hasVertexSelectionBuffer())
-                    mMRB.bindSelectedVerticesBuffer();
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -295,8 +293,7 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 mMRB.bindPointsVertexColorBuffer();
-                if (mMRB.hasVertexSelectionBuffer())
-                    mMRB.bindSelectedVerticesBuffer();
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);

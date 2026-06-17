@@ -380,21 +380,40 @@ public:
 
     // ---- Selection operations -------------------------------------------
 
-    void computeSelection(const SelectionParameters& params)
+    void computeSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model,
+        const VertexBuffer&        vertPosBuf,
+        const IndexBuffer&         triIdxBuf)
     {
-        if (params.isTemporary) {
-            return;
+        bool toCompute = false;
+
+        if (params.mode.isFaceSelection()) {
+            if (params.mode.isVisibleSelection()) {
+                toCompute =
+                    faceSelectionVisible(params, model, vertPosBuf, triIdxBuf);
+            }
+            else {
+                toCompute = faceSelection(params, model, vertPosBuf, triIdxBuf);
+            }
         }
-        if (mBufToTexRemainingFrames == UINT_NULL) {
-            mLastReadbackMode = params.mode;
-            mBufToTexRemainingFrames =
-                requestCPUCopyOfSelectionBuffer(params.mode);
+        else if (params.mode.isVertexSelection()) {
+            toCompute = vertexSelection(params, model, vertPosBuf);
         }
-        else {
-            // Queue the most recent mode so both vertex and face backups stay
-            // synchronized even when two tools trigger selection in sequence.
-            mPendingReadbackMode = params.mode;
-            mHasPendingReadback  = true;
+
+        if (toCompute && !params.isTemporary) {
+            if (mBufToTexRemainingFrames == UINT_NULL) {
+                mLastReadbackMode = params.mode;
+                mBufToTexRemainingFrames =
+                    requestCPUCopyOfSelectionBuffer(params.mode);
+            }
+            else {
+                // Queue the most recent mode so both vertex and face backups
+                // stay synchronized even when two tools trigger selection in
+                // sequence.
+                mPendingReadbackMode = params.mode;
+                mHasPendingReadback  = true;
+            }
         }
     }
 

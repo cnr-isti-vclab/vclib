@@ -158,21 +158,12 @@ public:
     }
 
     // called on computeSelection
-    void computeSelection(const SelectionParameters& params, const Matrix44f& model)
+    void computeSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
     {
-        if (params.mode.isFaceSelection()) {
-            if (!(params.mode.isVisibleSelection() ?
-                      faceSelectionVisible(params, model) :
-                      faceSelection(params, model))) {
-                return;
-            }
-        }
-        else if (params.mode.isVertexSelection()) {
-            if (!vertexSelection(params, model)) {
-                return;
-            }
-        }
-        mSelection.computeSelection(params);
+        mSelection.computeSelection(
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
     }
 
     // called on draw
@@ -180,86 +171,6 @@ public:
     void selectionReadback(MeshType& m)
     {
         mSelection.selectionReadback(m, triPolyIndexMap());
-    }
-
-    /**
-     * @brief Attempts to calculate a vertex selection (atomic or non-atomic
-     * depending on params.mode.isAtomicAction()).
-     *
-     * @param[in] params: The selection parameters
-     * @param[in] model: The mesh's model matrix
-     */
-    bool vertexSelection(
-        const SelectionParameters& params,
-        const Matrix44f&           model)
-    {
-        return mSelection.vertexSelection(
-            params, model, mVertexPositionsBuffer);
-    }
-
-    /**
-     * @brief Attempts to calculate a face selection (atomic or non-atomic
-     * depending on params.mode.isAtomicAction()).
-     *
-     * @param[in] params: The selection parameters
-     * @param[in] model: The mesh's model matrix
-     */
-    bool faceSelection(
-        const SelectionParameters& params,
-        const Matrix44f&           model)
-    {
-        return mSelection.faceSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
-    }
-
-    /**
-     * @brief Attempts to calculate visible face selection
-     *
-     * This is done in two/three steps (using 2 different views):
-     *   -# If it is a Regular selection (add what's inside the box; remove
-     *    what's outside the box) we first need to clear the current face
-     *    selection buffer (we do a FACE_SELECTION_NONE) (first view)
-     *   -# We run a Vertex + Fragment program that writes primitiveIds in one
-     *    color attachment and meshIds in another color attachment. MeshId 0 is
-     *    considered to be "this fragment did not pass" (first view)
-     *   -# We run a Compute Shader the size of the two previous color
-     *    attachments that uses those two textures to update the face selection
-     *    buffer accordingly
-     *
-     * @param[in] params: The selection parameters
-     * @param[in] model: The mesh's model matrix
-     */
-    bool faceSelectionVisible(
-        const SelectionParameters& params,
-        const Matrix44f&           model)
-    {
-        return mSelection.faceSelectionVisible(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
-    }
-
-    std::vector<uint8_t> getSelectionBufferCopy() const
-    {
-        return mSelection.getSelectionBufferCopy();
-    }
-
-    void setVertexSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
-    {
-        mSelection.setVertexSelectionFromCPUBuffer(backup);
-    }
-
-    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
-    {
-        mSelection.setFaceSelectionFromCPUBuffer(backup);
-    }
-
-    bool hasVertexSelectionBuffer() const
-    {
-        return mSelection.hasVertexSelectionBuffer();
-    }
-
-    bool hasFaceSelectionBuffer() const
-    {
-        return mSelection.hasFaceSelectionBuffer();
     }
 
     void bindSelectedVerticesBuffer() const
