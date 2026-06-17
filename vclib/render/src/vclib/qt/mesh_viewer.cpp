@@ -130,9 +130,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
         new SelectionEditorFrame<ViewerType>(mSelectionEditor);
     mUI->toolBar->addWidget(selectionEditor);
 
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
-
     /** Render Settings Frame **/
 
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);

@@ -270,18 +270,6 @@ protected:
     }
 
     /**
-     * @brief Sets up an overlay view (with canvas framebuffer, no clear)
-     * on the viewer.
-     *
-     * @param[in] overlayViewId: the view ID to set up as an overlay.
-     */
-    void viewerSetupOverlayView(uint overlayViewId) const
-    {
-        assert(mViewer);
-        mViewer->setupOverlayView(overlayViewId);
-    }
-
-    /**
      * @brief Returns the current view matrix from the viewer.
      * @return the view matrix.
      */
