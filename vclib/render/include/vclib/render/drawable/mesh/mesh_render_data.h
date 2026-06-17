@@ -164,67 +164,6 @@ public:
     }
 
     /**
-     * @brief Returns the number of triangle chunks.
-     *
-     * Each chunk corresponds to a set of triangles associated that can be
-     * rendered with the same material.
-     *
-     * @return The number of triangle chunks.
-     */
-    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
-
-    /**
-     * @brief Returns the triangle material chunk at the given index.
-     *
-     * @param[in] chunkIndex: The index of the triangle material chunk to
-     * retrieve. Must be less than `triangleChunksNumber()`.
-     * @return The triangle material chunk at the given index.
-     */
-    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
-    {
-        return mMaterialChunks[chunkIndex];
-    }
-
-    /**
-     * @brief Returns the material index for the given triangle chunk,
-     * according to the current render settings.
-     *
-     * @param[in] mrs: the mesh render settings
-     * @param[in] chunkNumber: the triangle chunk number
-     * @return the material index for the given triangle chunk
-     */
-    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
-    {
-        using enum MeshRenderInfo::Surface;
-
-        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].faceMaterialId;
-        else
-            return mMaterialChunks[chunkNumber].vertMaterialId;
-    }
-
-protected:
-    MeshRenderData() = default;
-
-    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
-            mBuffersToFill(buffersToFill)
-    {
-    }
-
-    void swap(MeshRenderData& other)
-    {
-        using std::swap;
-        swap(mNumVerts, other.mNumVerts);
-        swap(mNumTris, other.mNumTris);
-        swap(mVertWedgeMap, other.mVertWedgeMap);
-        swap(mVertsToDuplicate, other.mVertsToDuplicate);
-        swap(mFacesToReassign, other.mFacesToReassign);
-        swap(mIndexMap, other.mIndexMap);
-        swap(mBuffersToFill, other.mBuffersToFill);
-        swap(mMaterialChunks, other.mMaterialChunks);
-    }
-
-    /**
      * @brief Returns the number of vertices that will be used to render the
      * mesh.
      *
@@ -303,6 +242,67 @@ protected:
      * @return The number of edges that will be used to render the mesh.
      */
     uint numEdges() const { return mNumEdges; }
+
+    /**
+     * @brief Returns the number of triangle chunks.
+     *
+     * Each chunk corresponds to a set of triangles associated that can be
+     * rendered with the same material.
+     *
+     * @return The number of triangle chunks.
+     */
+    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
+
+    /**
+     * @brief Returns the triangle material chunk at the given index.
+     *
+     * @param[in] chunkIndex: The index of the triangle material chunk to
+     * retrieve. Must be less than `triangleChunksNumber()`.
+     * @return The triangle material chunk at the given index.
+     */
+    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
+    {
+        return mMaterialChunks[chunkIndex];
+    }
+
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
+
+protected:
+    MeshRenderData() = default;
+
+    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
+            mBuffersToFill(buffersToFill)
+    {
+    }
+
+    void swap(MeshRenderData& other)
+    {
+        using std::swap;
+        swap(mNumVerts, other.mNumVerts);
+        swap(mNumTris, other.mNumTris);
+        swap(mVertWedgeMap, other.mVertWedgeMap);
+        swap(mVertsToDuplicate, other.mVertsToDuplicate);
+        swap(mFacesToReassign, other.mFacesToReassign);
+        swap(mIndexMap, other.mIndexMap);
+        swap(mBuffersToFill, other.mBuffersToFill);
+        swap(mMaterialChunks, other.mMaterialChunks);
+    }
 
     /**
      * @brief Returns the number of wireframe lines that will be used to render

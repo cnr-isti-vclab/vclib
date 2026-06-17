@@ -40,9 +40,6 @@ BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
 
 void main()
 {
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -103,5 +100,4 @@ void main()
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
