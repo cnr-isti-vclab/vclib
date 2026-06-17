@@ -260,6 +260,16 @@ protected:
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
 
     /**
+     * @brief Returns the canvas size from the viewer.
+     * @return the canvas size as a 2D point (width, height).
+     */
+    auto viewerCanvasSize() const
+    {
+        assert(mViewer);
+        return mViewer->canvasSize();
+    }
+
+    /**
      * @brief Returns the current view matrix from the viewer.
      * @return the view matrix.
      */
