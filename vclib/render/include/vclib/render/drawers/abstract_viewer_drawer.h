@@ -180,7 +180,7 @@ public:
     }
 
     // events
-    void onInit(uint viewId) override
+    void onInit(uint) override
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
         mDrawList->init();

@@ -402,6 +402,10 @@ public:
         }
 
         if (toCompute && !params.isTemporary) {
+            // If no readback is in progress, start one. Otherwise queue the
+            // most recent mode so both vertex and face backups stay
+            // synchronized even when two tools trigger selection of both
+            // vertices and faces.
             if (mBufToTexRemainingFrames == UINT_NULL) {
                 mLastReadbackMode = params.mode;
                 mBufToTexRemainingFrames =
@@ -584,6 +588,11 @@ public:
             // Update CPU-side selection flags from GPU readback
             updateCPUSelectionFromGPU(m, indexMap);
 
+            // TODO: right now, only one additional readback can be queued. If
+            // multiple selection actions are performed in a single frame.
+            // This is fine now because we can select at the same time both
+            // vertices and faces. If this changes, we need to implement a queue
+            // of pending readbacks.
             if (mHasPendingReadback) {
                 mLastReadbackMode   = mPendingReadbackMode;
                 mHasPendingReadback = false;
