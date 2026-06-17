@@ -331,8 +331,6 @@ protected:
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
-    virtual void setupOverlayView(uint /*overlayViewId*/) {}
-
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;

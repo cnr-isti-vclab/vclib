@@ -173,17 +173,6 @@ public:
         return block;
     }
 
-protected:
-    void setupOverlayView(uint overlayViewId) override
-    {
-        auto fbh  = DRA::DRW::canvasFrameBuffer(derived());
-        auto size = DRA::DRW::canvasSize(derived());
-        bgfx::setViewFrameBuffer(overlayViewId, fbh);
-        bgfx::setViewClear(overlayViewId, BGFX_CLEAR_NONE);
-        bgfx::setViewRect(overlayViewId, 0, 0, size.x(), size.y());
-        bgfx::touch(overlayViewId);
-    }
-
 private:
     void setViewTransform(uint viewId)
     {
