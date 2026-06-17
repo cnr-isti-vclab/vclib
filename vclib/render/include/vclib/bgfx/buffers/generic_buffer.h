@@ -180,7 +180,6 @@ protected:
         else if (type == FLOAT)
             flags |= BGFX_BUFFER_COMPUTE_TYPE_FLOAT;
 
-
         return flags;
     }
 };
