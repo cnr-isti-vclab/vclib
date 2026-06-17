@@ -76,8 +76,6 @@ public:
     using EditorType = Editor<AbstractViewerDrawer>;
     using ViewerType = AbstractViewerDrawer;
 
-    auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
-
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
@@ -330,6 +328,8 @@ protected:
     DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
+
+    auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
