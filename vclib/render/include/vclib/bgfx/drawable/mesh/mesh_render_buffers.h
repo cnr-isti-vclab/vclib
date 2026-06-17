@@ -157,6 +157,31 @@ public:
         mVertexQuadBufferGenerated = true;
     }
 
+    // called on computeSelection
+    void computeSelection(const SelectionParameters& params, const Matrix44f& model)
+    {
+        if (params.mode.isFaceSelection()) {
+            if (!(params.mode.isVisibleSelection() ?
+                      faceSelectionVisible(params, model) :
+                      faceSelection(params, model))) {
+                return;
+            }
+        }
+        else if (params.mode.isVertexSelection()) {
+            if (!vertexSelection(params, model)) {
+                return;
+            }
+        }
+        mSelection.computeSelection(params);
+    }
+
+    // called on draw
+    template<MeshConcept MeshType>
+    void selectionReadback(MeshType& m)
+    {
+        mSelection.selectionReadback(m, triPolyIndexMap());
+    }
+
     /**
      * @brief Attempts to calculate a vertex selection (atomic or non-atomic
      * depending on params.mode.isAtomicAction()).
@@ -164,9 +189,12 @@ public:
      * @param[in] params: The selection parameters
      * @param[in] model: The mesh's model matrix
      */
-    bool vertexSelection(const SelectionParameters& params, const Matrix44f& model)
+    bool vertexSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
     {
-        return mSelection.vertexSelection(params, model, mVertexPositionsBuffer);
+        return mSelection.vertexSelection(
+            params, model, mVertexPositionsBuffer);
     }
 
     /**
@@ -176,7 +204,9 @@ public:
      * @param[in] params: The selection parameters
      * @param[in] model: The mesh's model matrix
      */
-    bool faceSelection(const SelectionParameters& params, const Matrix44f& model)
+    bool faceSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
     {
         return mSelection.faceSelection(
             params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
@@ -205,19 +235,6 @@ public:
     {
         return mSelection.faceSelectionVisible(
             params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
-    }
-
-    /**
-     * @brief Copies a selection buffer to a CPU buffer (the parameter
-     * determines which)
-     *
-     * @param[in] mode: The selection mode
-     * @return: The number frames that the caller needs to wait before the
-     * result is ready
-     */
-    uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
-    {
-        return mSelection.requestCPUCopyOfSelectionBuffer(mode);
     }
 
     std::vector<uint8_t> getSelectionBufferCopy() const
@@ -490,6 +507,11 @@ private:
             uint(max(double(Base::numVerts()), double(Base::numTris()))));
     }
 
+    void setVertexSelectionBuffer(const MeshType& mesh) // override
+    {
+        mSelection.setVertexSelectionFromMesh(mesh);
+    }
+
     /**
      * @brief The function allocates and fills a GPU index buffer to render
      * a quad for each vertex of the mesh.
@@ -636,6 +658,11 @@ private:
         if (Context::instance().supportsCompute() && nt > 0) {
             mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
         }
+    }
+
+    void setTriangleSelectionBuffer(const MeshType& mesh) // override
+    {
+        mSelection.setFaceSelectionFromMesh(mesh, triPolyIndexMap());
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override

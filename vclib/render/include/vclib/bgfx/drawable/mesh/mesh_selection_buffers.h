@@ -68,7 +68,8 @@ namespace vcl {
 class MeshSelectionBuffers
 {
     // vertex selection
-    IndexBuffer mSelectedVerticesBuffer;
+    IndexBuffer          mSelectedVerticesBuffer;
+    std::vector<uint8_t> mVertexSelectionBackup;
 
     // Workgroup size xyz for selection dispatches.
     uint                mNumVerts                     = 0;
@@ -76,14 +77,16 @@ class MeshSelectionBuffers
     // Atomic workgroup sizes, instead, are computed on the number of uints in
     // the buffer, which is the number of vertices divided by 32 (bits per uint)
     // i.e. the selection buffer size, rounded up.
-    uint                mSelectedVerticesBufferSize    = 0;
+    uint                mSelectedVerticesBufferSize         = 0;
     std::array<uint, 3> mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // face selection (invalid if mesh has no faces)
-    IndexBuffer         mSelectedFacesBuffer;
-    uint                mNumTris                    = 0;
-    std::array<uint, 3> mFaceSelectionWorkgroupSize = {0, 0, 0};
-    uint                mSelectedFacesBufferSize    = 0;
+    IndexBuffer          mSelectedFacesBuffer;
+    std::vector<uint8_t> mFaceSelectionBackup;
+
+    uint                mNumTris                          = 0;
+    std::array<uint, 3> mFaceSelectionWorkgroupSize       = {0, 0, 0};
+    uint                mSelectedFacesBufferSize          = 0;
     std::array<uint, 3> mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // Polygon-to-triangle mapping buffers for polygon-level face selection
@@ -93,6 +96,11 @@ class MeshSelectionBuffers
 
     // Handler used to copy selection buffers to CPU
     detail::ReadFromGPUBuffer mSelectionToCPUBufferHandler;
+
+    uint mBufToTexRemainingFrames = UINT_NULL; // NULL means no frames remaining
+    SelectionMode mLastReadbackMode;
+    bool          mHasPendingReadback = false;
+    SelectionMode mPendingReadbackMode;
 
     // This allows selection for a maximum of 2048^3 = 8_589_934_592
     // vertices/faces per mesh.
@@ -105,6 +113,7 @@ public:
     {
         using std::swap;
         swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
+        swap(mVertexSelectionBackup, other.mVertexSelectionBackup);
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
         swap(mNumVerts, other.mNumVerts);
@@ -113,15 +122,21 @@ public:
             mVertexSelectionAtomicWorkgroupSize,
             other.mVertexSelectionAtomicWorkgroupSize);
         swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
+        swap(mFaceSelectionBackup, other.mFaceSelectionBackup);
         swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
         swap(mSelectedFacesBufferSize, other.mSelectedFacesBufferSize);
-        swap(mFaceSelectionAtomicWorkgroupSize,
+        swap(
+            mFaceSelectionAtomicWorkgroupSize,
             other.mFaceSelectionAtomicWorkgroupSize);
         swap(mNumTris, other.mNumTris);
         swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
         swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
         swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
         swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
+        swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
+        swap(mLastReadbackMode, other.mLastReadbackMode);
+        swap(mHasPendingReadback, other.mHasPendingReadback);
+        swap(mPendingReadbackMode, other.mPendingReadbackMode);
     }
 
     friend void swap(MeshSelectionBuffers& a, MeshSelectionBuffers& b)
@@ -148,7 +163,7 @@ public:
         auto [buffer, releaseFn] =
             Context::getAllocatedBufferAndReleaseFn<uint>(
                 mSelectedVerticesBufferSize);
-        
+
         // clear the buffer with zeroes (no vertex selected)
         std::fill(buffer, buffer + mSelectedVerticesBufferSize, 0);
 
@@ -184,7 +199,8 @@ public:
         mSelectedFacesBufferSize = uint(std::ceil(double(numTris) / 32.0));
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(mSelectedFacesBufferSize);
+            Context::getAllocatedBufferAndReleaseFn<uint>(
+                mSelectedFacesBufferSize);
 
         // clear the buffer with zeroes (no face selected)
         std::fill(buffer, buffer + mSelectedFacesBufferSize, 0);
@@ -281,7 +297,106 @@ public:
                 uint(std::ceil(double(maxElements) / 8.0))));
     }
 
+    // --- Set calls
+
+    template<MeshConcept MeshType>
+    void setVertexSelectionFromMesh(const MeshType& mesh)
+    {
+        const uint numVerts = mesh.vertexCount();
+        if (numVerts == 0)
+            return;
+
+        // Compute number of bits rounded to 32 needed to store vertex selection
+        // We use mMRB.numVerts() which includes duplicated vertices
+        uint                 bitNumber = vcl::roundUp(numVerts, 32);
+        std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
+
+        // Build bitfield from mesh vertex selection flags
+        // Note: For duplicated vertices (indices >= numVerts), they will
+        // remain unselected unless explicitly set elsewhere
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+        for (const auto& v : mesh.vertices()) {
+            flags[vidx % 8] = v.selected();
+            ++vidx;
+
+            if (vidx % 8 == 0) {
+                vertexBackup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
+        }
+        // Handle remaining bits
+        if (vidx % 8 != 0)
+            vertexBackup[byteIdx] = flags.underlying();
+
+        mVertexSelectionBackup = vertexBackup;
+        setVertexSelectionFromCPUBuffer(vertexBackup);
+    }
+
+    template<MeshConcept MeshType>
+    void setFaceSelectionFromMesh(
+        const MeshType&          mesh,
+        const TriPolyIndexBiMap& indexMap)
+    {
+        const uint numFaces = mesh.faceCount();
+        if (numFaces == 0 || !hasFaceSelectionBuffer())
+            return;
+
+        // Compute number of bits rounded to 32 needed to store face
+        // selection
+        const uint wordCount = (indexMap.triangleCount() + 31) / 32;
+        uint       bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
+        std::vector<uint8_t> faceBackup(bitNumber / 4, 0);
+
+        // For each face, set selection for all its triangles
+        uint                       tIdx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+        for (const auto& f : mesh.faces()) {
+            const uint faceIdx     = f.index();
+            const uint numFaceTris = indexMap.triangleCount(faceIdx);
+
+            // Set selection for all triangles of this face
+            for (uint t = 0; t < numFaceTris; ++t) {
+                flags[tIdx % 8] = f.selected();
+                ++tIdx;
+
+                if (tIdx % 8 == 0) {
+                    faceBackup[byteIdx] = flags.underlying();
+                    byteIdx++;
+                    flags.reset();
+                }
+            }
+        }
+        // Handle remaining bits
+        if (tIdx % 8 != 0)
+            faceBackup[byteIdx] = flags.underlying();
+
+        mFaceSelectionBackup = faceBackup;
+        setFaceSelectionFromCPUBuffer(faceBackup);
+    }
+
     // ---- Selection operations -------------------------------------------
+
+    void computeSelection(const SelectionParameters& params)
+    {
+        if (params.isTemporary) {
+            return;
+        }
+        if (mBufToTexRemainingFrames == UINT_NULL) {
+            mLastReadbackMode = params.mode;
+            mBufToTexRemainingFrames =
+                requestCPUCopyOfSelectionBuffer(params.mode);
+        }
+        else {
+            // Queue the most recent mode so both vertex and face backups stay
+            // synchronized even when two tools trigger selection in sequence.
+            mPendingReadbackMode = params.mode;
+            mHasPendingReadback  = true;
+        }
+    }
 
     /**
      * @brief Vertex selection dispatch (atomic or box-based).
@@ -301,6 +416,12 @@ public:
         const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf)
     {
+        assert(params.mode.primitive == SelectionPrimitive::VERTEX);
+        if (params.isTemporary &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
+            setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
+        }
         if (params.mode.isAtomicAction())
             return vertexSelectionAtomic(params);
         else
@@ -328,6 +449,12 @@ public:
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
+        if (params.isTemporary &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
+            setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+        }
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
         else
@@ -353,6 +480,13 @@ public:
         const VertexBuffer&        vertPosBuf,
         const IndexBuffer&         triIdxBuf)
     {
+        assert(params.mode.primitive == SelectionPrimitive::FACE);
+        if (params.isTemporary && params.mode.visible &&
+            (params.mode.action == SelectionAction::ADD ||
+             params.mode.action == SelectionAction::SUBTRACT)) {
+            setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+        }
+
         if (params.mode.primitive == SelectionPrimitive::FACE &&
             params.mode.action == SelectionAction::REGULAR) {
             SelectionParameters params2(params);
@@ -413,6 +547,96 @@ public:
     }
 
     // ---- CPU readback ---------------------------------------------------
+
+    // called on draw
+    template<MeshConcept MeshType>
+    void selectionReadback(MeshType& m, const TriPolyIndexBiMap& indexMap)
+    {
+        switch (mBufToTexRemainingFrames) {
+        case 0: {
+            auto vec = getSelectionBufferCopy();
+            if (mLastReadbackMode.isVertexSelection()) {
+                mVertexSelectionBackup = std::move(vec);
+            }
+            else if (mLastReadbackMode.isFaceSelection()) {
+                mFaceSelectionBackup = std::move(vec);
+            }
+
+            // Update CPU-side selection flags from GPU readback
+            updateCPUSelectionFromGPU(m, indexMap);
+
+            if (mHasPendingReadback) {
+                mLastReadbackMode   = mPendingReadbackMode;
+                mHasPendingReadback = false;
+                mBufToTexRemainingFrames =
+                    requestCPUCopyOfSelectionBuffer(mLastReadbackMode);
+            }
+            else {
+                mBufToTexRemainingFrames = UINT_NULL;
+            }
+        } break;
+        case UINT_NULL: break;
+        default: mBufToTexRemainingFrames--;
+        }
+    }
+
+    /**
+     * @brief Updates the CPU-side selection flags (BitFlags component) from the
+     * GPU selection buffers that have been read back.
+     *
+     * This function parses the selection data from mVertexSelectionBackup and
+     * mFaceSelectionBackup and updates the selected() flag on each mesh
+     * element.
+     *
+     * @note For vertices, only the original mesh vertices are synchronized.
+     * Selection state of duplicated vertices is ignored.
+     */
+    template<MeshConcept MeshType>
+    void updateCPUSelectionFromGPU(
+        MeshType&                m,
+        const TriPolyIndexBiMap& indexMap)
+    {
+        // Update vertex selection
+        if (mLastReadbackMode.isVertexSelection() &&
+            !mVertexSelectionBackup.empty()) {
+            uint                       vidx = 0;
+            vcl::BitSet<uint8_t, true> flags;
+            for (auto& v : m.vertices()) {
+                uint byteIdx = vidx / 8;
+                if (byteIdx < mVertexSelectionBackup.size()) {
+                    if (vidx % 8 == 0)
+                        flags.setUnderlying(mVertexSelectionBackup[byteIdx]);
+                    v.selected() = flags[vidx % 8];
+                }
+                ++vidx;
+            }
+        }
+
+        // Update face selection
+        if constexpr (HasFaces<MeshType>) {
+            if (mLastReadbackMode.isFaceSelection() &&
+                !mFaceSelectionBackup.empty()) {
+                // First, clear all face selections
+                for (auto& f : m.faces()) {
+                    f.selected() = false;
+                }
+
+                // For each face, check if its first triangle is selected
+                // (compute shaders ensure all triangles of a face have the same
+                // selection state)
+                vcl::BitSet<uint8_t, true> flags;
+                for (auto& f : m.faces()) {
+                    const uint faceIdx     = f.index();
+                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
+                    uint       byteIdx     = firstTriIdx / 8;
+                    if (byteIdx < mFaceSelectionBackup.size()) {
+                        flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
+                        f.selected() = flags[firstTriIdx % 8];
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * @brief Requests an asynchronous GPU→CPU copy of the selection bitfield.
@@ -483,7 +707,7 @@ private:
     void clearVertexSelection(uint drawViewId)
     {
         SelectionParameters params;
-        params.drawViewId = drawViewId;
+        params.drawViewId  = drawViewId;
         params.mode.action = SelectionAction::NONE;
         vertexSelectionAtomic(params);
     }
@@ -496,7 +720,7 @@ private:
     void clearFaceSelection(uint drawViewId)
     {
         SelectionParameters params;
-        params.drawViewId = drawViewId;
+        params.drawViewId  = drawViewId;
         params.mode.action = SelectionAction::NONE;
         faceSelectionAtomic(params);
     }
@@ -557,8 +781,8 @@ private:
             mSelectedVerticesBufferSize);
         SelectionUniforms::bind();
         mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchAtomicSelection(params.drawViewId, prog,
-            mVertexSelectionAtomicWorkgroupSize);
+        dispatchAtomicSelection(
+            params.drawViewId, prog, mVertexSelectionAtomicWorkgroupSize);
         return true;
     }
 
@@ -625,8 +849,8 @@ private:
             mSelectedFacesBufferSize);
         SelectionUniforms::bind();
         mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
-        dispatchAtomicSelection(params.drawViewId, prog,
-            mFaceSelectionAtomicWorkgroupSize);
+        dispatchAtomicSelection(
+            params.drawViewId, prog, mFaceSelectionAtomicWorkgroupSize);
         return true;
     }
 
@@ -653,8 +877,8 @@ private:
             workGroupSize[0],
             workGroupSize[1],
             workGroupSize[2]);
-            // ceil(numPrimitives / 32)
-            // uint32_t(std::ceil(double(numPrimitives)/sizeof(uint))));
+        // ceil(numPrimitives / 32)
+        // uint32_t(std::ceil(double(numPrimitives)/sizeof(uint))));
     }
 
     void dispatchFaceSelection(
@@ -771,7 +995,7 @@ private:
         // Cap at sizes[0] to keep the grid roughly cubic rather than letting
         // one dimension grow much larger than the others.
         const uint remainingWork = uint(std::ceil(double(size) / sizes[0]));
-        sizes[1] = std::min(remainingWork, sizes[0]);
+        sizes[1]                 = std::min(remainingWork, sizes[0]);
         sizes[2] = uint(std::ceil(double(size) / (sizes[0] * sizes[1])));
 
         return sizes;
@@ -780,7 +1004,7 @@ private:
     void calculateVertexSelectionWorkgroupSize()
     {
         if (mNumVerts == 0) {
-            mVertexSelectionWorkgroupSize = {0, 0, 0};
+            mVertexSelectionWorkgroupSize       = {0, 0, 0};
             mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
@@ -792,7 +1016,7 @@ private:
     void calculateFaceSelectionWorkgroupSize()
     {
         if (mNumTris == 0) {
-            mFaceSelectionWorkgroupSize = {0, 0, 0};
+            mFaceSelectionWorkgroupSize       = {0, 0, 0};
             mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
