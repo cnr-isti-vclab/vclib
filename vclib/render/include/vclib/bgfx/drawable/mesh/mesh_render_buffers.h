@@ -170,7 +170,7 @@ public:
     template<MeshConcept MeshType>
     void selectionReadback(MeshType& m)
     {
-        mSelection.selectionReadback(m, triPolyIndexMap());
+        mSelection.selectionReadback(m, Base::triPolyIndexMap());
     }
 
     void bindSelectedVerticesBuffer() const
@@ -181,11 +181,6 @@ public:
     void bindSelectedFacesBuffer() const
     {
         mSelection.bindSelectedFacesBuffer();
-    }
-
-    const TriPolyIndexBiMap& triPolyIndexMap() const
-    {
-        return Base::triPolyIndexMap();
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -573,7 +568,7 @@ private:
 
     void setTriangleSelectionBuffer(const MeshType& mesh) // override
     {
-        mSelection.setFaceSelectionFromMesh(mesh, triPolyIndexMap());
+        mSelection.setFaceSelectionFromMesh(mesh, Base::triPolyIndexMap());
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
