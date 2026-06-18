@@ -36,23 +36,50 @@ enum class SelectionPrimitive { VERTEX, FACE };
 /**
  * @brief The selection operation to perform.
  *
- * REGULAR / ADD / SUBTRACT require a selection box.
- * ALL / NONE / INVERT are atomic (no box needed).
+ * This enum defines how a selection interacts with the current selection state.
+ * The actions fall into two categories:
+ *
+ *   1. Box-based actions (REGULAR, ADD, SUBTRACT) - these require a
+ *      user-drawn selection box (e.g. rectangle or lasso) to determine
+ *      which primitives are affected.
+ *
+ *   2. Atomic actions (ALL, NONE, INVERT) - these operate on the entire
+ *      selection set without needing any spatial input.
  */
 enum class SelectionAction {
-    REGULAR,
-    ADD,
-    SUBTRACT,
-    ALL,
-    NONE,
-    INVERT
+    REGULAR, ///< Replace the current selection with primitives inside the
+             ///< selection box. This is the default interaction: clicking and
+             ///< dragging a box selects only the primitives that fall within
+             ///< it, clearing any previous selection.
+
+    ADD, ///< Add primitives inside the selection box to the existing selection.
+         ///< Primitives already selected remain selected; new ones inside the
+         ///< box are appended to the selection set. Typically triggered with a
+         ///< modifier key (e.g. Ctrl+drag).
+
+    SUBTRACT, ///< Remove primitives inside the selection box from the existing
+              ///< selection. Primitives that fall within the box are
+              ///< deselected; others remain unaffected. Typically triggered
+              ///< with a modifier key (e.g. Ctrl+Shift+drag).
+
+    ALL, ///< Select all primitives of the specified type, regardless of
+         ///< visibility or position. No selection box is needed or used.
+
+    NONE, ///< Deselect all primitives, clearing the entire selection set.
+          ///< No selection box is needed or used. Also known as "clear" or
+          ///< "deselect all".
+
+    INVERT ///< Toggle the selection state of every primitive of the specified
+           ///< type. Selected primitives become deselected and vice versa. No
+           ///< selection box is needed or used. Useful for quickly selecting
+           ///< everything except what is currently chosen.
 };
 
 /**
  * @brief Describes a single selection operation.
  *
  * Composed of three orthogonal dimensions:
- *   - primitive: what to select (vertex, face, …)
+ *   - primitive: what to select (vertex, face, ...)
  *   - action:    how to select (regular, add, subtract, all, none, invert)
  *   - visible:   whether to consider only screen-visible primitives (only
  *                meaningful for faces)
@@ -72,8 +99,8 @@ public:
     constexpr SelectionMode(
         SelectionPrimitive primitive,
         SelectionAction    action,
-        bool               visible = false)
-        : primitive(primitive), action(action), visible(visible)
+        bool               visible = false) :
+            primitive(primitive), action(action), visible(visible)
     {
     }
 
