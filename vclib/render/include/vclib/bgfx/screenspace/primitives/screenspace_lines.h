@@ -119,9 +119,12 @@ public:
     {
         mVertexCount = std::ranges::size(verts);
 
+        // Move to the nearest multiple of 2 to ensure we have complete line pairs
+        uint nv = mVertexCount + (mVertexCount % 2);
+
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(mVertexCount * 2);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 2);
 
         size_t i = 0;
         for (const auto& v : verts) {
@@ -130,17 +133,16 @@ public:
             ++i;
         }
 
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-            .end();
-
-        vertBuff.create(
-            bgfx::makeRef(
-                buffer,
-                std::ranges::size(verts) * 2 * sizeof(float),
-                releaseFn),
-            layout);
+        // Use createForCompute to enable SSBO binding for vertex pulling
+        vertBuff.createForCompute(
+            buffer,
+            nv,
+            bgfx::Attrib::Position,
+            2,
+            PrimitiveType::FLOAT,
+            false,
+            bgfx::Access::Read,
+            releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
     }
 
@@ -192,7 +194,7 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mVertexCount * 2);
+        assert(std::ranges::size(vertColors) == mVertexCount);
 
         VertexBuffer vColsBuff;
         auto [buffer, releaseFn] =
@@ -205,17 +207,16 @@ public:
             ++i;
         }
 
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-            .end();
-
-        vColsBuff.create(
-            bgfx::makeRef(
-                buffer,
-                std::ranges::size(vertColors) * sizeof(uint),
-                releaseFn),
-            layout);
+        // Use createForCompute to enable SSBO binding for vertex pulling
+        vColsBuff.createForCompute(
+            buffer,
+            mVertexCount,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            bgfx::Access::Read,
+            releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
     }
 

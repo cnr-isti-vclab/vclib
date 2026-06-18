@@ -27,6 +27,7 @@ uniform vec4 u_linesSettings;
 
 #define u_linesUsePerVertexColor floatBitsToUint(u_linesSettings.x)
 #define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.y))
+#define u_linesWidth u_linesSettings.z
 
 bool usePerVertexColor() {
     return u_linesUsePerVertexColor != 0u;

@@ -29,7 +29,7 @@ BUFFER_RO(pointColors, uint, 1); // colors (rgba as float bits)
 
 void main()
 {
-    vec4 color = u_pointsGlobalColor;
+    vec4 color = u_pointsGeneralColor;
 
     if (usePerPointColor()) {
         uint pointId = uint(gl_PrimitiveID) / 2u;

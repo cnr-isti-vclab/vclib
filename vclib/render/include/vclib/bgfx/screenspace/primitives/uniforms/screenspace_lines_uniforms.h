@@ -50,6 +50,8 @@ public:
         sLinesSettings[1] = std::bit_cast<float>(c.abgr());
     }
 
+    static void setWidth(float w) { sLinesSettings[2] = w; }
+
     static void bind()
     {
         // lazy initialization

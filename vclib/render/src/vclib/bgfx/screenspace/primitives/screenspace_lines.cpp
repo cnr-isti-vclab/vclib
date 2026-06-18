@@ -99,8 +99,9 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
 /**
  * @brief Draws the line segments on the specified view.
  *
- * Renders all lines as screen-space 1px-width line segments using bgfx's
- * native line primitive rendering with alpha blending.
+ * Renders all lines as screen-space line segments with variable width using
+ * vertex pulling. Each line (pair of endpoints) is expanded into 2 triangles
+ * (6 vertices) procedurally in the vertex shader.
  *
  * If the line set is empty/invalid, this method does nothing.
  *
@@ -114,6 +115,8 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     Context& ctx = Context::instance();
 
+    ProgramManager& pm = ctx.programManager();
+
     ColorSetting colorToUse = mColorToUse;
     if (colorToUse == ColorSetting::PER_VERTEX && !mVertexColors.isValid()) {
         colorToUse = ColorSetting::GENERAL;
@@ -121,28 +124,30 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     ScreenSpaceLinesUniforms::setColorSetting(
         colorToUse == ColorSetting::PER_VERTEX ? 1 : 0);
+    ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
-    ScreenSpaceLinesUniforms::bind();
 
-    // Bind vertex coordinates
-    mVertexPositions.get().bind(0);
+
+    // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
+    // access (vertex pulling)
+    mVertexPositions.get().bindCompute(
+        LINES_COORDS_STAGE, bgfx::Access::Read);
 
     // Bind colors if using per-vertex colors
     if (mVertexColors.isValid()) {
-        mVertexColors.get().bind(1);
+        mVertexColors.get().bindCompute(
+            LINES_COLORS_STAGE, bgfx::Access::Read);
     }
 
-    // Bind indices for line primitives
-    if (mIndices.isValid())
-        mIndices.get().bind();
+    // Set the number of vertices to generate procedurally
+    // Each line (pair of endpoints) generates 6 vertices (2 triangles)
+    bgfx::setVertexCount(mVertexCount * 3);
 
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
-                     BGFX_STATE_BLEND_ALPHA;
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+        BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
 
-    ProgramManager& pm = ctx.programManager();
-    state |= mTopology == Topology::LINES ? BGFX_STATE_PT_LINES :
-                                            BGFX_STATE_PT_LINESTRIP;
-    bgfx::setState(state);
+    ScreenSpaceLinesUniforms::bind();
     bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
 }
 

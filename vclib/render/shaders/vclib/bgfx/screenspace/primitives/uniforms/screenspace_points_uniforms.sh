@@ -28,7 +28,7 @@ uniform vec4 u_pointsSettings;
 #define u_pointsColorToUse floatBitsToUint(u_pointsSettings.x)
 #define u_pointsShadeMode floatBitsToUint(u_pointsSettings.y)
 #define u_pointsWidth u_pointsSettings.z
-#define u_pointsGlobalColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.w))
+#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.w))
 
 bool usePerPointColor() {
     return u_pointsColorToUse == 0u;

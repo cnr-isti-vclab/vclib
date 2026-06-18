@@ -37,6 +37,8 @@ class ScreenSpaceDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 
     vcl::ScreenSpaceBox mBox;
 
+    vcl::ScreenSpaceLines mLines;
+
 public:
     ScreenSpaceDrawer(vcl::uint width = 1024, vcl::uint height = 768)
     {
@@ -93,6 +95,20 @@ public:
         mBox.setColor(vcl::Color::DarkYellow);
 
         mBox.setBox(vcl::Box2d({800, 50}, {1000, 150}));
+
+        // lines
+
+        std::vector<vcl::Point2f> lpts
+        {
+            {800, 600}, {900, 700},
+            {800, 700}, {900, 600}
+        };
+
+        mLines.setVertices(lpts);
+
+        mLines.setWidth(10);
+        mLines.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::GENERAL);
+        mLines.setGeneralColor(vcl::Color::Green);
     }
 
     void onInit(vcl::uint viewId) override
@@ -112,6 +128,8 @@ public:
         mPointsVC.draw(viewId);
 
         mBox.draw(viewId);
+
+        mLines.draw(viewId);
     }
 };
 
