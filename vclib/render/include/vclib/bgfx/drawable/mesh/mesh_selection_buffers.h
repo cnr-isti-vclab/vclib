@@ -40,9 +40,7 @@
 #include <bgfx/bgfx.h>
 
 #include <array>
-#include <bit>
 #include <cmath>
-#include <optional>
 #include <vector>
 
 namespace vcl {

@@ -24,7 +24,9 @@ $input a_position, a_normal, a_color0
 $output v_position, v_normal, v_color, v_selected
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/drawable_mesh/vertex_selection_utils.sh>
+
+// is vertex selected? 1 bit per vertex (MSb first)
+BUFFER_RO(vertex_selected, uint, 4);
 
 void main()
 {
@@ -35,6 +37,5 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
-    // TODO: try to set without condition.
-    v_selected = isVertexSelected(uint(gl_VertexID)) ? 1.0 : 0.0;
+    v_selected = float(bitSetValueAt(vertex_selected, gl_VertexID));
 }
