@@ -50,6 +50,19 @@ vec4 uintABGRToVec4Color(uint color)
         float((color & uint(0xFF000000)) >> uint(24)) / 255.0);
 }
 
+/**
+ * @brief Convert an uint color in RGBA format to a vec4 float color.
+ * @param[in] color: The input color.
+ * @return The output color.
+ */
+vec4 uintRGBAToVec4Color(uint color) {
+    return vec4(
+        float((color & uint(0xFF000000)) >> uint(24)) / 255.0,
+        float((color & uint(0x00FF0000)) >> uint(16)) / 255.0,
+        float((color & uint(0x0000FF00)) >> uint(8)) / 255.0,
+        float(color & uint(0x000000FF)) / 255.0);
+}
+
 vec4 computeLight(
     vec3 lightDir,
     vec3 lightColor,

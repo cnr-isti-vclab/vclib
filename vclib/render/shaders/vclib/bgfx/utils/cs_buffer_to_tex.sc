@@ -31,15 +31,6 @@ BUFFER_RO(buf, uint, 5); // interpret as uint buffer
 // X and Y are workGroup X and Y sizes, Z is texture X size, W is buffer size (all to be interpreted as uints)
 uniform vec4 u_workGroupSizeXYTexSizeXAndBufSize;
 
-// AGBR function "inverts" the uint's byte order inside the vec4 (little endian),
-// using this would cause us to write the inverse of what we actually need in the texture (we would then need to invert them again when reading).
-// RGBA function "preserves" the uint's byte order inside the vec4 (big endian),
-// which is what we need in this case
-vec4 uintRGBAToVec4Color(uint color) {
-    vec4 temp = uintABGRToVec4Color(color);
-    return vec4(temp.w, temp.z, temp.y, temp.x);
-}
-
 NUM_THREADS(1, 1, 1) // 1 'thread' per buffer index
 void main()
 {
@@ -52,5 +43,7 @@ void main()
     }
 
     ivec2 txCoord = ivec2(int(bufferIndex%texXSize), int(bufferIndex/texXSize));
+
+    // RGBA "preserves" the uint's byte order inside the vec4 (big endian)
     imageStore(s_tex, txCoord, uintRGBAToVec4Color(buf[bufferIndex]));
 }
