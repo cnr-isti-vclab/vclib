@@ -330,7 +330,7 @@ public:
             vertexBackup[byteIdx] = flags.underlying();
 
         mVertexSelectionBackup = vertexBackup;
-        setVertexSelectionFromCPUBuffer(vertexBackup);
+        setSelectionBufferFromCPUBuffer(vertexBackup, mSelectedVerticesBuffer);
     }
 
     template<MeshConcept MeshType>
@@ -373,7 +373,7 @@ public:
             faceBackup[byteIdx] = flags.underlying();
 
         mFaceSelectionBackup = faceBackup;
-        setFaceSelectionFromCPUBuffer(faceBackup);
+        setSelectionBufferFromCPUBuffer(faceBackup, mSelectedFacesBuffer);
     }
 
     // ---- Selection operations -------------------------------------------
@@ -441,7 +441,8 @@ public:
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setVertexSelectionFromCPUBuffer(mVertexSelectionBackup);
+            setSelectionBufferFromCPUBuffer(
+                mVertexSelectionBackup, mSelectedVerticesBuffer);
         }
         if (params.mode.isAtomicAction())
             return vertexSelectionAtomic(params);
@@ -474,7 +475,8 @@ public:
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+            setSelectionBufferFromCPUBuffer(
+                mFaceSelectionBackup, mSelectedFacesBuffer);
         }
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
@@ -505,7 +507,8 @@ public:
         if (params.isTemporary && params.mode.visible &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setFaceSelectionFromCPUBuffer(mFaceSelectionBackup);
+            setSelectionBufferFromCPUBuffer(
+                mFaceSelectionBackup, mSelectedFacesBuffer);
         }
 
         if (params.mode.primitive == SelectionPrimitive::FACE &&
@@ -694,16 +697,6 @@ public:
     std::vector<uint8_t> getSelectionBufferCopy() const
     {
         return std::move(mSelectionToCPUBufferHandler.getResultsCopy());
-    }
-
-    void setVertexSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
-    {
-        setSelectionBufferFromCPUBuffer(backup, mSelectedVerticesBuffer);
-    }
-
-    void setFaceSelectionFromCPUBuffer(const std::vector<uint8_t>& backup)
-    {
-        setSelectionBufferFromCPUBuffer(backup, mSelectedFacesBuffer);
     }
 
     // ---- State queries --------------------------------------------------
