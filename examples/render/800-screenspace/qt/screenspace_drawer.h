@@ -182,7 +182,7 @@ public:
             {320, 550},
         };
 
-        std::vector<uint> linds {0, 1, 1, 2, 2, 3, 3, 0};
+        std::vector<vcl::uint> linds {0, 1, 1, 2, 2, 3, 3, 0};
 
         mLinesIVC.setVertices(ipts);
         mLinesIVC.setIndices(linds);
@@ -214,7 +214,7 @@ public:
         for (auto& p : ipts)
             p += vcl::Point2f {150, 0};
 
-        std::vector<uint> lsinds {0, 1, 3, 2};
+        std::vector<vcl::uint> lsinds {0, 1, 3, 2};
 
         mLinesISVC.setVertices(ipts);
         mLinesISVC.setIndices(lsinds);
