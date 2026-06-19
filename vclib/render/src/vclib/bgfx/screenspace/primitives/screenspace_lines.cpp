@@ -119,15 +119,15 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     ProgramManager& pm = ctx.programManager();
 
-    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(mColorSetting));
     ScreenSpaceLinesUniforms::setWidth(mWidth);
+    ScreenSpaceLinesUniforms::setTopology(vcl::toUnderlying(mTopology));
+    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(mColorSetting));
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
 
     // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
     // access (vertex pulling)
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
 
-    // Bind colors if using per-vertex colors
     if (mVertexColors.isValid()) {
         mVertexColors.get().bindCompute(V_COL_STAGE, bgfx::Access::Read);
     }
@@ -136,9 +136,10 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         mLineColors.get().bind(L_COL_STAGE, bgfx::Access::Read);
     }
 
-    // Set the number of vertices to generate procedurally
-    // Each line (pair of endpoints) generates 6 vertices (2 triangles)
-    bgfx::setVertexCount(mVerPosCount * 3);
+    // Vertex Pulling: the vertex shader will generate the line geometry
+    // number of vertex shader invocations is returned by
+    // vertexPullingInstances()
+    bgfx::setVertexCount(vertexPullingInstances());
 
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -195,6 +196,32 @@ void ScreenSpaceLines::validityCheck() const
             }
         }
     }
+}
+
+uint ScreenSpaceLines::vertexPullingInstances() const
+{
+    uint nVPI = 0;
+
+    if (mIndices.isValid()) { // indexed lines
+        // TODO
+    }
+    else { // non indexed
+        if (mTopology == Topology::LINES) {
+            // the buffer contains 2 vertices per line
+            // each line generates 6 vertices (2 triangles) in the shader
+            // n = (nv / 2) * 6 = nv * 3
+            nVPI = mVerPosCount * 3;
+        }
+        else if (mTopology == Topology::LINE_STRIP) {
+            // the buffer contains nv vertices forming a line strip
+            // each vertex after the first forms a line with the previous vertex
+            // so we have (nv - 1) lines, each generating 6 verts (2 triangles)
+            // n = (nv - 1) * 6
+            nVPI = (mVerPosCount - 1) * 6;
+        }
+    }
+
+    return nVPI;
 }
 
 } // namespace vcl

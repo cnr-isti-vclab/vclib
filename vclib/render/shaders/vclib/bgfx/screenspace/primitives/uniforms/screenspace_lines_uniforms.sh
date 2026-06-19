@@ -26,12 +26,9 @@
 uniform vec4 u_linesSettings;
 
 #define u_linesWidth u_linesSettings.x
-#define u_linesTopology floatBitsToUint(u_linesSettings.y)
+#define u_linesTopoIndPack floatBitsToUint(u_linesSettings.y)
 #define u_linesColorSetting floatBitsToUint(u_linesSettings.z)
 #define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.w))
-
-#define LINES_TOPOLOGY_LINES 0
-#define LINES_TOPOLOGY_LINE_STRIP 1
 
 #define LINES_COLOR_SETTING_PER_VERTEX 0
 #define LINES_COLOR_SETTING_PER_LINE 1
@@ -43,6 +40,18 @@ bool usePerVertexColor() {
 
 bool usePerLineColor() {
     return u_linesColorSetting == LINES_COLOR_SETTING_PER_LINE;
+}
+
+bool isTopologyLines() {
+    return (u_linesTopoIndPack & 0x1) == 0;
+}
+
+bool isTopologyLineStrip() {
+    return (u_linesTopoIndPack & 0x1) != 0;
+}
+
+bool useIndices() {
+    return (u_linesTopoIndPack & 0x2) != 0;
 }
 
 #endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_SH

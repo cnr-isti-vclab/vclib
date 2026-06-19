@@ -40,8 +40,9 @@ void main()
     uint lineIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
-    uint vertexIndex0 = lineIndex * 2u;     // First endpoint of the line
-    uint vertexIndex1 = lineIndex * 2u + 1u; // Second endpoint of the line
+    // lines or line strip topology affects how we index into the vertex buffer
+    uint vertexIndex0 = isTopologyLines() ? lineIndex * 2u : lineIndex;
+    uint vertexIndex1 = vertexIndex0 + 1u;
 
     // Fetch the two endpoints of this line
     vec2 p0 = vertexPosBuffer[vertexIndex0];

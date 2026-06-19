@@ -300,6 +300,8 @@ private:
     static constexpr uint L_COL_STAGE = 3;
 
     void validityCheck() const;
+
+    uint vertexPullingInstances() const;
 };
 
 } // namespace vcl
