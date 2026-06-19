@@ -62,7 +62,7 @@ void ScreenSpaceLines::setVertices(
     const uint          vertexCount,
     const VertexBuffer& verts)
 {
-    mVertexCount = vertexCount;
+    mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
 }
 
@@ -109,35 +109,36 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
  */
 void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 {
-    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
+
+    validityCheck();
 
     Context& ctx = Context::instance();
 
     ProgramManager& pm = ctx.programManager();
 
-    ColorSetting colorToUse = mColorToUse;
-    if (colorToUse == ColorSetting::PER_VERTEX && !mVertexColors.isValid()) {
-        colorToUse = ColorSetting::GENERAL;
-    }
-
-    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(colorToUse));
+    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(mColorSetting));
     ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
 
     // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
     // access (vertex pulling)
-    mVertexPositions.get().bindCompute(LINES_COORDS_STAGE, bgfx::Access::Read);
+    mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
 
     // Bind colors if using per-vertex colors
     if (mVertexColors.isValid()) {
-        mVertexColors.get().bindCompute(LINES_COLORS_STAGE, bgfx::Access::Read);
+        mVertexColors.get().bindCompute(V_COL_STAGE, bgfx::Access::Read);
+    }
+
+    if (mLineColors.isValid()) {
+        mLineColors.get().bind(L_COL_STAGE, bgfx::Access::Read);
     }
 
     // Set the number of vertices to generate procedurally
     // Each line (pair of endpoints) generates 6 vertices (2 triangles)
-    bgfx::setVertexCount(mVertexCount * 3);
+    bgfx::setVertexCount(mVerPosCount * 3);
 
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -145,6 +146,55 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     ScreenSpaceLinesUniforms::bind();
     bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
+}
+
+void ScreenSpaceLines::validityCheck() const
+{
+    if (!mIndices.isValid()) {
+        if (mTopology == Topology::LINES && mVerPosCount % 2 != 0) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: For LINES topology, the number of vertices "
+                "must be even (each line requires 2 endpoints).");
+        }
+        if (mTopology == Topology::LINE_STRIP && mVerPosCount < 2) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: For LINE_STRIP topology, at least 2 "
+                "vertices are required to form a line.");
+        }
+        if (mColorSetting == ColorSetting::PER_VERTEX) {
+            if (!mVertexColors.isValid()) {
+                throw std::runtime_error(
+                    "ScreenSpaceLines: PER_VERTEX color setting requires a "
+                    "valid "
+                    "vertex color buffer.");
+            }
+            if (mVerColCount != mVerPosCount) {
+                throw std::runtime_error(
+                    "ScreenSpaceLines: The number of vertex colors must match "
+                    "the number of vertices.");
+            }
+        }
+        if (mColorSetting == ColorSetting::PER_LINE) {
+            if (!mLineColors.isValid()) {
+                throw std::runtime_error(
+                    "ScreenSpaceLines: PER_LINE color setting requires a valid "
+                    "line color buffer.");
+            }
+            if (mTopology == Topology::LINES &&
+                mLineColorCount != mVerPosCount / 2) {
+                throw std::runtime_error(
+                    "ScreenSpaceLines: The number of line colors must match "
+                    "the number of lines (vertices / 2) for LINES topology.");
+            }
+            if (mTopology == Topology::LINE_STRIP &&
+                mLineColorCount != mVerPosCount - 1) {
+                throw std::runtime_error(
+                    "ScreenSpaceLines: The number of line colors must match "
+                    "the number of lines (vertices - 1) for LINE_STRIP "
+                    "topology.");
+            }
+        }
+    }
 }
 
 } // namespace vcl

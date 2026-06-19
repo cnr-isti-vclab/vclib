@@ -41,4 +41,8 @@ bool usePerVertexColor() {
     return u_linesColorSetting == LINES_COLOR_SETTING_PER_VERTEX;
 }
 
+bool usePerLineColor() {
+    return u_linesColorSetting == LINES_COLOR_SETTING_PER_LINE;
+}
+
 #endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_SH

@@ -23,7 +23,6 @@
 $input v_color
 
 #include <bgfx_shader.sh>
-#include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {

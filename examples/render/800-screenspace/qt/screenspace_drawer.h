@@ -37,7 +37,9 @@ class ScreenSpaceDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 
     vcl::ScreenSpaceBox mBox;
 
-    vcl::ScreenSpaceLines mLines;
+    vcl::ScreenSpaceLines mLinesGC;
+    vcl::ScreenSpaceLines mLinesVC;
+    vcl::ScreenSpaceLines mLinesLC;
 
 public:
     ScreenSpaceDrawer(vcl::uint width = 1024, vcl::uint height = 768)
@@ -98,26 +100,48 @@ public:
 
         // lines
 
+        // general color
         std::vector<vcl::Point2f> lpts {
-            {800, 600},
-            {900, 700},
-            {800, 700},
-            {900, 600}
+            {20, 300},
+            {120, 400},
+            {20, 400},
+            {120, 300}
         };
 
-        std::vector<vcl::Color> lcols {
+        mLinesGC.setVertices(lpts);
+        mLinesGC.setWidth(15);
+        mLinesGC.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::GENERAL);
+        mLinesGC.setGeneralColor(vcl::Color::Magenta);
+
+        // per vertex color
+        for (auto& p : lpts)
+            p += vcl::Point2f {0, 150};
+
+        std::vector<vcl::Color> lvcols {
             vcl::Color::Red,
             vcl::Color::Green,
             vcl::Color::Blue,
             vcl::Color::Yellow
         };
 
-        mLines.setVertices(lpts);
-        mLines.setVertexColors(lcols);
+        mLinesVC.setVertices(lpts);
+        mLinesVC.setVertexColors(lvcols);
 
-        mLines.setWidth(10);
-        mLines.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
-        mLines.setGeneralColor(vcl::Color::Green);
+        mLinesVC.setWidth(10);
+        mLinesVC.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
+
+        // per line color
+        auto lpts2 = lpts;
+
+        for (auto& p : lpts2)
+            p += vcl::Point2f {0, 150};
+
+        std::vector<vcl::Color> llcols {vcl::Color::Blue, vcl::Color::Yellow};
+
+        mLinesLC.setVertices(lpts2);
+        mLinesLC.setLineColors(llcols);
+        mLinesLC.setWidth(8);
+        mLinesLC.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::PER_LINE);
     }
 
     void onInit(vcl::uint viewId) override
@@ -138,7 +162,9 @@ public:
 
         mBox.draw(viewId);
 
-        mLines.draw(viewId);
+        mLinesGC.draw(viewId);
+        mLinesVC.draw(viewId);
+        mLinesLC.draw(viewId);
     }
 };
 

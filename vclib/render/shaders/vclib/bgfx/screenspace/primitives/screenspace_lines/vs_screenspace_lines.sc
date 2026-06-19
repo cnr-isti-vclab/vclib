@@ -29,7 +29,9 @@ $output v_color
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(vertexPosBuffer, vec2, 0); // 2D line endpoint positions (pairs of vertices)
-BUFFER_RO(vertexColBuffer, uint, 1); // colors
+BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
+// ind
+BUFFER_RO(lineColBuffer, uint, 3); // line colors
 
 void main()
 {
@@ -101,6 +103,9 @@ void main()
     if (usePerVertexColor()) {
         uint endpoint = endpointIndices[localVertex];
         v_color = uintABGRToVec4Color(vertexColBuffer[vertexIndex0 + endpoint]);
+    }
+    else if (usePerLineColor()) {
+        v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
     }
     else {
         v_color = u_linesGeneralColor;

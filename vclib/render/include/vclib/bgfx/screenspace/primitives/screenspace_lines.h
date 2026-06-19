@@ -62,17 +62,21 @@ public:
     enum class Topology { LINES = 0, LINE_STRIP = 1 };
 
 private:
-    uint mVertexCount = 0;
+    uint mVerPosCount    = 0;
+    uint mVerColCount    = 0;
+    uint mIndexCount     = 0;
+    uint mLineColorCount = 0;
 
     float        mWidth        = 1.0f;
     Topology     mTopology     = Topology::LINES;
-    ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    ColorSetting mColorSetting = ColorSetting::GENERAL;
     Color        mGeneralColor = Color::Black;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
     OwnedOrRefBuffer<IndexBuffer> mIndices;
+    OwnedOrRefBuffer<IndexBuffer> mLineColors;
 
 public:
     /**
@@ -118,11 +122,11 @@ public:
     requires Point2Concept<std::ranges::range_value_t<R>>
     void setVertices(R&& verts)
     {
-        mVertexCount = std::ranges::size(verts);
+        mVerPosCount = std::ranges::size(verts);
 
         // Move to the nearest multiple of 2 to ensure we have complete line
         // pairs
-        uint nv = mVertexCount + (mVertexCount % 2);
+        uint nv = mVerPosCount + (mVerPosCount % 2);
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -165,10 +169,11 @@ public:
     requires std::integral<std::ranges::range_value_t<R>>
     void setIndices(R&& indices)
     {
+        mIndexCount = std::ranges::size(indices);
+
         IndexBuffer indexBuff;
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(
-                std::ranges::size(indices));
+            Context::getAllocatedBufferAndReleaseFn<uint>(mIndexCount);
 
         size_t i = 0;
         for (const auto& idx : indices) {
@@ -177,8 +182,7 @@ public:
         }
 
         indexBuff.create(
-            bgfx::makeRef(
-                buffer, std::ranges::size(indices) * sizeof(uint), releaseFn),
+            bgfx::makeRef(buffer, mIndexCount * sizeof(uint), releaseFn),
             BGFX_BUFFER_INDEX32);
 
         mIndices.setOwned(std::move(indexBuff));
@@ -196,7 +200,7 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mVertexCount);
+        mVerColCount = std::ranges::size(vertColors);
 
         VertexBuffer vColsBuff;
         auto [buffer, releaseFn] =
@@ -212,7 +216,7 @@ public:
         // Use createForCompute to enable SSBO binding for vertex pulling
         vColsBuff.createForCompute(
             buffer,
-            mVertexCount,
+            mVerPosCount,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
@@ -220,6 +224,33 @@ public:
             bgfx::Access::Read,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
+    }
+
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setLineColors(R&& linColors)
+    {
+        mLineColorCount = std::ranges::size(linColors);
+
+        IndexBuffer lColsBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(
+                std::ranges::size(linColors));
+
+        uint i = 0;
+        for (const auto& c : linColors) {
+            buffer[i] = c.abgr();
+            ++i;
+        }
+
+        // Use createForCompute to enable SSBO binding for vertex pulling
+        lColsBuff.createForCompute(
+            buffer,
+            mLineColorCount,
+            PrimitiveType::UINT,
+            bgfx::Access::Read,
+            releaseFn);
+        mLineColors.setOwned(std::move(lColsBuff));
     }
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
@@ -245,7 +276,10 @@ public:
      * @param[in] colorToUse: Whether to use per-vertex colors or a general
      * uniform color.
      */
-    void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
+    void setColorSetting(ColorSetting colorToUse)
+    {
+        mColorSetting = colorToUse;
+    }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
@@ -259,8 +293,13 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
-    static constexpr uint LINES_COORDS_STAGE = 0;
-    static constexpr uint LINES_COLORS_STAGE = 1;
+    static constexpr uint V_POS_STAGE = 0;
+    static constexpr uint V_COL_STAGE = 1;
+
+    static constexpr uint L_IND_STAGE = 2;
+    static constexpr uint L_COL_STAGE = 3;
+
+    void validityCheck() const;
 };
 
 } // namespace vcl
