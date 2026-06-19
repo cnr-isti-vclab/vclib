@@ -63,8 +63,8 @@ public:
 
 private:
     uint mVerPosCount    = 0;
-    uint mVerColCount    = 0;
     uint mIndexCount     = 0;
+    uint mVerColCount    = 0;
     uint mLineColorCount = 0;
 
     float        mWidth        = 1.0f;
@@ -253,11 +253,13 @@ public:
         mLineColors.setOwned(std::move(lColsBuff));
     }
 
-    void setVertices(const uint vertexCount, const VertexBuffer& verts);
+    void setVertices(uint vertexCount, const VertexBuffer& verts);
 
-    void setIndices(const IndexBuffer& indices);
+    void setIndices(uint indexCount, const IndexBuffer& indices);
 
-    void setVertexColors(const VertexBuffer& vertexColors);
+    void setVertexColors(uint vColsCount, const VertexBuffer& vertexColors);
+
+    void setLineColors(uint lColorCount, const IndexBuffer& lineColors);
 
     /**
      * @brief Sets the width of line segments (in screen-space pixels).

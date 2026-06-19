@@ -28,10 +28,16 @@ $output v_color
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_lines_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
-BUFFER_RO(vertexPosBuffer, vec2, 0); // 2D line endpoint positions (pairs of vertices)
+BUFFER_RO(vertexPosBuffer, vec2, 0); // vertices
 BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
-// ind
-BUFFER_RO(lineColBuffer, uint, 3); // line colors
+BUFFER_RO(indexBuffer, uint, 2);     // line indices
+BUFFER_RO(lineColBuffer, uint, 3);   // line colors
+
+// Helper function to get vertex index based on indexing mode
+uint getVind(uint vind)
+{
+    return useIndices() ? indexBuffer[vind] : vind;
+}
 
 void main()
 {
@@ -40,9 +46,13 @@ void main()
     uint lineIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
+    uint vertexIndex0 = 0;
+    uint vertexIndex1 = 0;
+
+    // useIndices tells whether we need indirect indexing to fetch vertex pos
     // lines or line strip topology affects how we index into the vertex buffer
-    uint vertexIndex0 = isTopologyLines() ? lineIndex * 2u : lineIndex;
-    uint vertexIndex1 = vertexIndex0 + 1u;
+    vertexIndex0 = isTopologyLines() ? getVind(lineIndex * 2u) : getVind(lineIndex);
+    vertexIndex1 = isTopologyLines() ? getVind(lineIndex * 2u + 1u) : getVind(lineIndex + 1u);
 
     // Fetch the two endpoints of this line
     vec2 p0 = vertexPosBuffer[vertexIndex0];
@@ -103,7 +113,8 @@ void main()
 
     if (usePerVertexColor()) {
         uint endpoint = endpointIndices[localVertex];
-        v_color = uintABGRToVec4Color(vertexColBuffer[vertexIndex0 + endpoint]);
+        uint vertIdx = endpoint == 0u ? vertexIndex0 : vertexIndex1;
+        v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
     }
     else if (usePerLineColor()) {
         v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
