@@ -105,10 +105,18 @@ public:
             {900, 600}
         };
 
+        std::vector<vcl::Color> lcols {
+            vcl::Color::Red,
+            vcl::Color::Green,
+            vcl::Color::Blue,
+            vcl::Color::Yellow
+        };
+
         mLines.setVertices(lpts);
+        mLines.setVertexColors(lcols);
 
         mLines.setWidth(10);
-        mLines.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::GENERAL);
+        mLines.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
         mLines.setGeneralColor(vcl::Color::Green);
     }
 

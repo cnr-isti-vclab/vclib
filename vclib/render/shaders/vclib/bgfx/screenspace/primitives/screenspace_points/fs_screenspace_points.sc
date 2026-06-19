@@ -25,7 +25,7 @@ $input v_texcoord1
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
-BUFFER_RO(pointColors, uint, 1); // colors (rgba as float bits)
+BUFFER_RO(pointColors, uint, 1); // colors
 
 void main()
 {

@@ -122,8 +122,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         colorToUse = ColorSetting::GENERAL;
     }
 
-    ScreenSpaceLinesUniforms::setColorSetting(
-        colorToUse == ColorSetting::PER_VERTEX ? 1 : 0);
+    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(colorToUse));
     ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
 

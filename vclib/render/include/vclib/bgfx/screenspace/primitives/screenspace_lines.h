@@ -43,8 +43,9 @@ public:
      * @brief Specifies how line colors are determined during rendering.
      */
     enum class ColorSetting {
-        PER_VERTEX, ///< Each vertex uses color from per-vertex color buffer.
-        GENERAL     ///< All vertices use a single general color.
+        PER_VERTEX = 0, ///< Each vertex uses color from per-vertex color buffer
+        PER_LINE   = 1, ///< Each line uses color from per-line color buffer
+        GENERAL    = 2  ///< All vertices use a single general color
     };
 
     /** @brief Specifies the topology used for rendering lines.
@@ -58,7 +59,7 @@ public:
      * The topology determines how the vertex data is interpreted to form lines.
      * The default is LINES.
      */
-    enum class Topology { LINES, LINE_STRIP };
+    enum class Topology { LINES = 0, LINE_STRIP = 1 };
 
 private:
     uint mVertexCount = 0;

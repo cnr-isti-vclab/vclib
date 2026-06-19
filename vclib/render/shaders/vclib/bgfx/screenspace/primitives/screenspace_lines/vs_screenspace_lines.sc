@@ -28,7 +28,8 @@ $output v_color
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_lines_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
-BUFFER_RO(linesBuffer, vec2, 0); // 2D line endpoint positions (pairs of vertices)
+BUFFER_RO(vertexPosBuffer, vec2, 0); // 2D line endpoint positions (pairs of vertices)
+BUFFER_RO(vertexColBuffer, uint, 1); // colors
 
 void main()
 {
@@ -37,9 +38,12 @@ void main()
     uint lineIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
+    uint vertexIndex0 = lineIndex * 2u;     // First endpoint of the line
+    uint vertexIndex1 = lineIndex * 2u + 1u; // Second endpoint of the line
+
     // Fetch the two endpoints of this line
-    vec2 p0 = linesBuffer[lineIndex * 2u];
-    vec2 p1 = linesBuffer[lineIndex * 2u + 1u];
+    vec2 p0 = vertexPosBuffer[vertexIndex0];
+    vec2 p1 = vertexPosBuffer[vertexIndex1];
 
     // Quad expansion: map localVertex (0-5) to quad corners and UVs
     // Triangle 1: verts 0, 1, 2
@@ -47,6 +51,10 @@ void main()
     const vec2 offsets[6] = {
         vec2(-1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0, -1.0),
         vec2( 1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0,  1.0)
+    };
+    const uint endpointIndices[6] = {
+        0u, 0u, 1u,
+        1u, 0u, 1u
     };
 
     vec2 offset = offsets[localVertex];
@@ -90,9 +98,11 @@ void main()
             1.0);
     }
 
-
-    //if (usePerVertexColor())
-        // TODO
-    //else
+    if (usePerVertexColor()) {
+        uint endpoint = endpointIndices[localVertex];
+        v_color = uintABGRToVec4Color(vertexColBuffer[vertexIndex0 + endpoint]);
+    }
+    else {
         v_color = u_linesGeneralColor;
+    }
 }
