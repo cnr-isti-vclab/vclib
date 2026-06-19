@@ -119,7 +119,8 @@ public:
     {
         mVertexCount = std::ranges::size(verts);
 
-        // Move to the nearest multiple of 2 to ensure we have complete line pairs
+        // Move to the nearest multiple of 2 to ensure we have complete line
+        // pairs
         uint nv = mVertexCount + (mVertexCount % 2);
 
         VertexBuffer vertBuff;

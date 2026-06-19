@@ -98,10 +98,11 @@ public:
 
         // lines
 
-        std::vector<vcl::Point2f> lpts
-        {
-            {800, 600}, {900, 700},
-            {800, 700}, {900, 600}
+        std::vector<vcl::Point2f> lpts {
+            {800, 600},
+            {900, 700},
+            {800, 700},
+            {900, 600}
         };
 
         mLines.setVertices(lpts);

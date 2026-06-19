@@ -127,16 +127,13 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
     ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
 
-
     // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
     // access (vertex pulling)
-    mVertexPositions.get().bindCompute(
-        LINES_COORDS_STAGE, bgfx::Access::Read);
+    mVertexPositions.get().bindCompute(LINES_COORDS_STAGE, bgfx::Access::Read);
 
     // Bind colors if using per-vertex colors
     if (mVertexColors.isValid()) {
-        mVertexColors.get().bindCompute(
-            LINES_COLORS_STAGE, bgfx::Access::Read);
+        mVertexColors.get().bindCompute(LINES_COLORS_STAGE, bgfx::Access::Read);
     }
 
     // Set the number of vertices to generate procedurally
