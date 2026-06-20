@@ -178,7 +178,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
 void ScreenSpaceLines::validityCheck() const
 {
-    uint nv = mIndices.isValid() ? mIndexCount : mVerPosCount;
+    uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
     std::string primstr = mIndices.isValid() ? "indices" : "vertices";
 
     if (mTopology == Topology::LINES && nv % 2 != 0) {
@@ -209,17 +209,18 @@ void ScreenSpaceLines::validityCheck() const
                 "ScreenSpaceLines: PER_LINE color setting requires a valid "
                 "line color buffer.");
         }
-        if (mTopology == Topology::LINES &&
-            mLineColorCount != nv / 2) {
+        if (mTopology == Topology::LINES && mLineColorCount != nv / 2) {
             throw std::runtime_error(
                 "ScreenSpaceLines: The number of line colors must match "
-                "the number of lines (" + primstr+ " / 2) for LINES topology.");
+                "the number of lines (" +
+                primstr + " / 2) for LINES topology.");
         }
-        if (mTopology == Topology::LINE_STRIP &&
-            mLineColorCount != nv - 1) {
+        if (mTopology == Topology::LINE_STRIP && mLineColorCount != nv - 1) {
             throw std::runtime_error(
                 "ScreenSpaceLines: The number of line colors must match "
-                "the number of lines (" + primstr+ " - 1) for LINE_STRIP "
+                "the number of lines (" +
+                primstr +
+                " - 1) for LINE_STRIP "
                 "topology.");
         }
     }

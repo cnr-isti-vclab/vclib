@@ -229,8 +229,7 @@ public:
             p += vcl::Point2f {150, 0};
 
         std::vector<vcl::Color> ilscols {
-            vcl::Color::Green, vcl::Color::Blue, vcl::Color::Yellow
-        };
+            vcl::Color::Green, vcl::Color::Blue, vcl::Color::Yellow};
 
         mLinesISLC.setVertices(ipts2);
         mLinesISLC.setIndices(lsinds);
