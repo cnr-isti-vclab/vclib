@@ -304,6 +304,8 @@ private:
     void validityCheck() const;
 
     uint vertexPullingInstances() const;
+
+    bgfx::ProgramHandle screenspaceLinesProgramSelector() const;
 };
 
 } // namespace vcl

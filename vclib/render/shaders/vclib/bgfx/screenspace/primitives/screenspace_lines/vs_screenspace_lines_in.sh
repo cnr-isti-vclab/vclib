@@ -29,14 +29,24 @@ $output v_color
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(vertexPosBuffer, vec2, 0); // vertices
+#if SCREENSPACE_LINES_COLOR_PER_VERTEX
 BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
+#endif
+#if SCREENSPACE_LINES_INDEXED
 BUFFER_RO(indexBuffer, uint, 2);     // line indices
+#endif
+#if SCREENSPACE_LINES_COLOR_PER_LINE
 BUFFER_RO(lineColBuffer, uint, 3);   // line colors
+#endif
 
 // Helper function to get vertex index based on indexing mode
 uint getVind(uint vind)
 {
-    return useIndices() ? indexBuffer[vind] : vind;
+#if SCREENSPACE_LINES_INDEXED
+    return indexBuffer[vind];
+#else
+    return vind;
+#endif
 }
 
 void main()
@@ -46,13 +56,14 @@ void main()
     uint lineIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
-    uint vertexIndex0 = 0;
-    uint vertexIndex1 = 0;
-
-    // useIndices tells whether we need indirect indexing to fetch vertex pos
-    // lines or line strip topology affects how we index into the vertex buffer
-    vertexIndex0 = isTopologyLines() ? getVind(lineIndex * 2u) : getVind(lineIndex);
-    vertexIndex1 = isTopologyLines() ? getVind(lineIndex * 2u + 1u) : getVind(lineIndex + 1u);
+    // Topology-based vertex indexing
+#if SCREENSPACE_LINES_TOPO_LINES
+    uint vertexIndex0 = getVind(lineIndex * 2u);
+    uint vertexIndex1 = getVind(lineIndex * 2u + 1u);
+#else
+    uint vertexIndex0 = getVind(lineIndex);
+    uint vertexIndex1 = getVind(lineIndex + 1u);
+#endif
 
     // Fetch the two endpoints of this line
     vec2 p0 = vertexPosBuffer[vertexIndex0];
@@ -111,15 +122,14 @@ void main()
             1.0);
     }
 
-    if (usePerVertexColor()) {
-        uint endpoint = endpointIndices[localVertex];
-        uint vertIdx = endpoint == 0u ? vertexIndex0 : vertexIndex1;
-        v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
-    }
-    else if (usePerLineColor()) {
-        v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
-    }
-    else {
-        v_color = u_linesGeneralColor;
-    }
+    // Color selection based on compile-time macros
+#if SCREENSPACE_LINES_COLOR_PER_VERTEX
+    uint endpoint = endpointIndices[localVertex];
+    uint vertIdx = endpoint == 0u ? vertexIndex0 : vertexIndex1;
+    v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
+#elif SCREENSPACE_LINES_COLOR_PER_LINE
+    v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
+    #else
+    v_color = u_linesGeneralColor;
+#endif
 }

@@ -137,30 +137,21 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 
     validityCheck();
 
-    Context& ctx = Context::instance();
-
-    ProgramManager& pm = ctx.programManager();
-
     ScreenSpaceLinesUniforms::setWidth(mWidth);
-    ScreenSpaceLinesUniforms::setTopology(vcl::toUnderlying(mTopology));
-    ScreenSpaceLinesUniforms::setIndexed(mIndices.isValid());
-    ScreenSpaceLinesUniforms::setColorSetting(vcl::toUnderlying(mColorSetting));
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
 
     // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
-    // access (vertex pulling)
+    // access (vertex pulling) - always needed
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
 
-    if (mIndices.isValid()) {
-        mIndices.get().bind(L_IND_STAGE, bgfx::Access::Read);
-    }
-
-    if (mVertexColors.isValid()) {
+    if (mVertexColors.isValid() && mColorSetting == ColorSetting::PER_VERTEX) {
         mVertexColors.get().bindCompute(V_COL_STAGE, bgfx::Access::Read);
     }
-
-    if (mLineColors.isValid()) {
+    if (mLineColors.isValid() && mColorSetting == ColorSetting::PER_LINE) {
         mLineColors.get().bind(L_COL_STAGE, bgfx::Access::Read);
+    }
+    if (mIndices.isValid()) {
+        mIndices.get().bind(L_IND_STAGE, bgfx::Access::Read);
     }
 
     // Vertex Pulling: the vertex shader will generate the line geometry
@@ -173,7 +164,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
 
     ScreenSpaceLinesUniforms::bind();
-    bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
+    bgfx::submit(viewId, screenspaceLinesProgramSelector());
 }
 
 void ScreenSpaceLines::validityCheck() const
@@ -247,6 +238,73 @@ uint ScreenSpaceLines::vertexPullingInstances() const
     }
 
     return nVPI;
+}
+
+/**
+ * @brief Selects the correct program based on topology, indexing, and color
+ * setting.
+ *
+ * @param[in] pm: The program manager to retrieve program handles.
+ * @return bgfx::ProgramHandle for the selected program.
+ */
+bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
+{
+    using enum VertFragProgram;
+
+    Context& ctx = Context::instance();
+
+    ProgramManager& pm = ctx.programManager();
+
+    bool isIndexed = mIndices.isValid();
+    bool isLines   = (mTopology == Topology::LINES);
+
+    if (isIndexed) {
+        if (isLines) {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_GC>();
+            }
+        }
+        else {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_GC>();
+            }
+        }
+    }
+    else {
+        if (isLines) {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
+            }
+        }
+        else {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_GC>();
+            }
+        }
+    }
+
+    // Fallback (should never reach here due to validityCheck)
+    return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
 }
 
 } // namespace vcl
