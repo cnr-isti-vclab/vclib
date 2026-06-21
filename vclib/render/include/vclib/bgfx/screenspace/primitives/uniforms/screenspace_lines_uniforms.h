@@ -34,7 +34,12 @@ namespace vcl {
 
 class ScreenSpaceLinesUniforms
 {
+    // .x = line width in pixels
+    // .y = general color
+    // .z = unused
+    // .w = unused
     inline static std::array<float, 4> sLinesSettings = {0.f, 0.f, 0.f, 0.f};
+
     inline static Uniform              sLinesSettingsUniform;
 
 public:
@@ -42,32 +47,9 @@ public:
 
     static void setWidth(float w) { sLinesSettings[0] = w; }
 
-    static void setTopology(uint t)
-    {
-        // t = 0 for LINES, t = 1 for LINE_STRIP
-        // packing it on the first bit of sLinesSettings[1]
-        uint tmp          = std::bit_cast<uint>(sLinesSettings[1]);
-        tmp               = (tmp & 0xFFFFFFFE) | (t & 0x1);
-        sLinesSettings[1] = std::bit_cast<float>(tmp);
-    }
-
-    static void setIndexed(bool indexed)
-    {
-        // set the second bit of sLinesSettings[1] to indicate whether we are
-        // using indexed rendering
-        uint tmp          = std::bit_cast<uint>(sLinesSettings[1]);
-        tmp               = (tmp & 0xFFFFFFFD) | ((indexed ? 1 : 0) << 1);
-        sLinesSettings[1] = std::bit_cast<float>(tmp);
-    }
-
-    static void setColorSetting(uint c)
-    {
-        sLinesSettings[2] = std::bit_cast<float>(c);
-    }
-
     static void setGeneralColor(const vcl::Color& c)
     {
-        sLinesSettings[3] = std::bit_cast<float>(c.abgr());
+        sLinesSettings[1] = std::bit_cast<float>(c.abgr());
     }
 
     static void bind()
