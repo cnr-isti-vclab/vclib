@@ -181,9 +181,12 @@ public:
             ++i;
         }
 
-        indexBuff.create(
-            bgfx::makeRef(buffer, mIndexCount * sizeof(uint), releaseFn),
-            BGFX_BUFFER_INDEX32);
+        indexBuff.createForCompute(
+            buffer,
+            mIndexCount,
+            PrimitiveType::UINT,
+            bgfx::Access::Read,
+            releaseFn);
 
         mIndices.setOwned(std::move(indexBuff));
     }
