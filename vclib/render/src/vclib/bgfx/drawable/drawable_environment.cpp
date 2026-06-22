@@ -73,7 +73,7 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        mVertexBuffer.bindVertex(0);
+        mVertexBuffer.bind(0);
 
         bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
@@ -443,8 +443,7 @@ vcl::VertexBuffer DrawableEnvironment::fullScreenTriangle()
         3,
         bgfx::Attrib::Enum::Position,
         3,
-        vcl::PrimitiveType::FLOAT,
-        false);
+        vcl::PrimitiveType::FLOAT);
     return vb;
 }
 

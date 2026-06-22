@@ -169,12 +169,12 @@ public:
 
         // streams MUST be consecutive starting from 0
         // otherwise on metal it won't work
-        mVertexPositionsBuffer.bindVertex(stream++);
+        mVertexPositionsBuffer.bind(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexNormalsBuffer.bindVertex(stream++);
+            mVertexNormalsBuffer.bind(stream++);
         }
 
         if (mVertexTangentsBuffer.isValid()) {
@@ -186,7 +186,7 @@ public:
         if (mVertexColorsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexColorsBuffer.bindVertex(stream++);
+            mVertexColorsBuffer.bind(stream++);
         }
 
         if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
@@ -342,14 +342,12 @@ private:
 
         Base::fillVertexPositions(mesh, buffer);
 
-        mVertexPositionsBuffer.createForCompute(
+        mVertexPositionsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
 
         // Creates the buffers to be used with compute for splatting
@@ -406,14 +404,12 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.createForCompute(
+        mVertexNormalsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -426,14 +422,13 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.createForCompute(
+        mVertexColorsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -452,7 +447,6 @@ private:
             bgfx::Attrib::TexCoord0,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -471,7 +465,6 @@ private:
             bgfx::Attrib::Tangent,
             4,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -490,7 +483,6 @@ private:
             bgfx::Attrib::TexCoord1,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
