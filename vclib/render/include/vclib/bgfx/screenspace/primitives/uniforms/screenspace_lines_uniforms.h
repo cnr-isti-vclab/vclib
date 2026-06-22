@@ -40,7 +40,7 @@ class ScreenSpaceLinesUniforms
     // .w = unused
     inline static std::array<float, 4> sLinesSettings = {0.f, 0.f, 0.f, 0.f};
 
-    inline static Uniform              sLinesSettingsUniform;
+    inline static Uniform sLinesSettingsUniform;
 
 public:
     ScreenSpaceLinesUniforms() = delete;
