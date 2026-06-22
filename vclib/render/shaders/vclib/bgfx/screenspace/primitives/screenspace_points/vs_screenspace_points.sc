@@ -21,13 +21,14 @@
  ****************************************************************************/
 
 // Programmable Vertex Pulling: no vertex attributes, we pull data from SSBOs
-$output v_texcoord1
+$output v_color, v_texcoord1
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(pointsBuffer, vec2, 0); // 2D point positions
+BUFFER_RO(pointColors, uint, 1); // colors
 
 void main()
 {
@@ -70,6 +71,12 @@ void main()
         1.0 - (vLocalPos.y - u_viewRect.y) / u_viewRect.w * 2.0,
         0.0,
         1.0);
+
+    v_color = u_pointsGeneralColor;
+
+    if (usePerPointColor()) {
+        v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+    }
 
     // Pass UV coordinates to fragment shader
     v_texcoord1 = quadUv;
