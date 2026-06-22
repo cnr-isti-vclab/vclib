@@ -253,12 +253,20 @@ public:
      */
     void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
 
+     /**
+     * @brief Sets the shading mode for point rendering.
+     *
+     * @param[in] shading: Whether to apply no shading or compute lighting per
+     * vertex using normals (if provided).
+     */
+    void setShading(Shading shading) { mShading = shading; }
+
     /**
      * @brief Sets the visual shape of each point sprite.
      *
      * @param[in] shape: The sprite shape (SQUARE or CIRCLE).
      */
-    void setShapeSetting(Shape shape) { mShape = shape; }
+    void setShape(Shape shape) { mShape = shape; }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
