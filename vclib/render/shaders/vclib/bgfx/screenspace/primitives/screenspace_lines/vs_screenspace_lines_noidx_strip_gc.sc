@@ -20,25 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_color0
-$output v_color
+// Non-indexed + LINE_STRIP topology + General Color
 
-#include <bgfx_shader.sh>
-#include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_lines_uniforms.sh>
+#define SCREENSPACE_LINES_TOPO_LINES 0
+#define SCREENSPACE_LINES_INDEXED 0
+#define SCREENSPACE_LINES_COLOR_PER_VERTEX 0
+#define SCREENSPACE_LINES_COLOR_PER_LINE 0
 
-void main()
-{
-    gl_Position = vec4(
-        (a_position[0] - u_viewRect.x) / u_viewRect.z * 2 -1,
-        1 - (a_position[1] - u_viewRect.y) / u_viewRect.w * 2,
-        0,
-        1);
-    
-    // Use per-vertex color if enabled, otherwise use general color
-    if (usePerVertexColor()) {
-        v_color = a_color0;
-    } else {
-        v_color = u_linesGeneralColor;
-    }
-}
+#include "vs_screenspace_lines_in.sh"

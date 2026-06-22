@@ -165,7 +165,7 @@ public:
         // clear the buffer with zeroes (no vertex selected)
         std::fill(buffer, buffer + mSelectedVerticesBufferSize, 0);
 
-        mSelectedVerticesBuffer.createForCompute(
+        mSelectedVerticesBuffer.create(
             buffer,
             mSelectedVerticesBufferSize,
             vcl::PrimitiveType::UINT,
@@ -203,7 +203,7 @@ public:
         // clear the buffer with zeroes (no face selected)
         std::fill(buffer, buffer + mSelectedFacesBufferSize, 0);
 
-        mSelectedFacesBuffer.createForCompute(
+        mSelectedFacesBuffer.create(
             buffer,
             mSelectedFacesBufferSize,
             vcl::PrimitiveType::UINT,
@@ -240,7 +240,7 @@ public:
             for (uint i = 0; i < numTris; i++) {
                 buf[i] = indexMap.polygon(i);
             }
-            mTriToPolyBuffer.createForCompute(
+            mTriToPolyBuffer.create(
                 buf, numTris, PrimitiveType::UINT, bgfx::Access::Read, rel);
         }
 
@@ -265,13 +265,13 @@ public:
                 }
             }
 
-            mPolyToTriBeginBuffer.createForCompute(
+            mPolyToTriBeginBuffer.create(
                 bufBegin,
                 numPolys,
                 PrimitiveType::UINT,
                 bgfx::Access::Read,
                 relBegin);
-            mPolyToTriCountBuffer.createForCompute(
+            mPolyToTriCountBuffer.create(
                 bufCount,
                 numPolys,
                 PrimitiveType::UINT,
@@ -535,7 +535,7 @@ public:
         SelectionUniforms::setMeshIdForSelection(params.meshId);
         SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
         SelectionUniforms::bind();
-        vertPosBuf.bindVertex(VCL_MRB_VERTEX_POSITION_STREAM);
+        vertPosBuf.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         triIdxBuf.bind();
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
@@ -945,7 +945,7 @@ private:
         }
 
         sBuffer.destroy();
-        sBuffer.createForCompute(
+        sBuffer.create(
             buffer,
             elementCount,
             vcl::PrimitiveType::UINT,

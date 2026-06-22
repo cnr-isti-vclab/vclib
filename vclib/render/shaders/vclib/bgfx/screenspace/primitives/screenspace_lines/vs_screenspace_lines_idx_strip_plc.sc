@@ -20,49 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_H
-#define VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_H
+// Indexed + LINE_STRIP topology + Per-Line Color
 
-#include <vclib/bgfx/uniform.h>
+#define SCREENSPACE_LINES_TOPO_LINES 0
+#define SCREENSPACE_LINES_INDEXED 1
+#define SCREENSPACE_LINES_COLOR_PER_VERTEX 0
+#define SCREENSPACE_LINES_COLOR_PER_LINE 1
 
-#include <vclib/space/core.h>
-
-#include <array>
-#include <bit>
-
-namespace vcl {
-
-class ScreenSpaceLinesUniforms
-{
-    // .x = line width in pixels
-    // .y = general color
-    // .z = unused
-    // .w = unused
-    inline static std::array<float, 4> sLinesSettings = {0.f, 0.f, 0.f, 0.f};
-
-    inline static Uniform sLinesSettingsUniform;
-
-public:
-    ScreenSpaceLinesUniforms() = delete;
-
-    static void setWidth(float w) { sLinesSettings[0] = w; }
-
-    static void setGeneralColor(const vcl::Color& c)
-    {
-        sLinesSettings[1] = std::bit_cast<float>(c.abgr());
-    }
-
-    static void bind()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sLinesSettingsUniform.isValid())
-            sLinesSettingsUniform =
-                Uniform("u_linesSettings", bgfx::UniformType::Vec4);
-        sLinesSettingsUniform.bind(sLinesSettings.data());
-    }
-};
-
-} // namespace vcl
-
-#endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_H
+#include "vs_screenspace_lines_in.sh"

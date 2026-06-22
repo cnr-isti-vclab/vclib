@@ -279,12 +279,7 @@ void PrimitiveLines::setPoints(
             std::copy(lineColors.begin(), lineColors.end(), lColors);
 
             IndexBuffer tmpLC;
-            tmpLC.createForCompute(
-                lColors,
-                lineColors.size(),
-                PrimitiveType::UINT,
-                bgfx::Access::Read,
-                lColorsReleaseFn);
+            tmpLC.create(lColors, lineColors.size(), lColorsReleaseFn);
             mLineColors.setOwned(std::move(tmpLC));
         }
     }

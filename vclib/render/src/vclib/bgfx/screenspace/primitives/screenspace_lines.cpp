@@ -58,17 +58,16 @@ ScreenSpaceLines::ScreenSpaceLines(
  *
  * @note The buffer must remain valid for the lifetime of this object.
  */
-void ScreenSpaceLines::setVertices(
-    const uint          vertexCount,
-    const VertexBuffer& verts)
+void ScreenSpaceLines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
-    mVertexCount = vertexCount;
+    mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
 }
 
 /**
  * @brief Sets line indices from a range of unsigned integers.
  *
+ * @param[in] indexCount: Number of indices in the IndexBuffer.
  * @param[in] indices: IndexBuffer to use for lines.
  * The interpretation of indices depends on the topology:
  * - For LINES topology, each pair of indices defines one line segment.
@@ -77,30 +76,54 @@ void ScreenSpaceLines::setVertices(
  *
  * @note The buffer must remain valid for the lifetime of this object.
  */
-void ScreenSpaceLines::setIndices(const IndexBuffer& indices)
+void ScreenSpaceLines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
+    mIndexCount = indexCount;
     mIndices.setReferenced(&indices);
 }
 
 /**
  * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
  *
+ * @param[in] vColsCount: Number of vertex colors in the VertexBuffer.
  * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
  * Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer).
  *
  * @note The buffer must remain valid for the lifetime of this object.
  */
-void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
+void ScreenSpaceLines::setVertexColors(
+    uint                vColsCount,
+    const VertexBuffer& vertexColors)
 {
+    mVerColCount = vColsCount;
     mVertexColors.setReferenced(&vertexColors);
+}
+
+/**
+ * @brief Sets per-line colors by referencing an existing IndexBuffer.
+ *
+ * @param[in] lColorCount: Number of line colors in the IndexBuffer.
+ * @param[in] lineColors: IndexBuffer containing per-line colors.
+ * Expected layout: an array of `uint` with 4 channels per color in
+ * ABGR order (A, B, G, R packed as a single 32-bit integer).
+ *
+ * @note The buffer must remain valid for the lifetime of this object.
+ */
+void ScreenSpaceLines::setLineColors(
+    uint               lColorCount,
+    const IndexBuffer& lineColors)
+{
+    mLineColorCount = lColorCount;
+    mLineColors.setReferenced(&lineColors);
 }
 
 /**
  * @brief Draws the line segments on the specified view.
  *
- * Renders all lines as screen-space 1px-width line segments using bgfx's
- * native line primitive rendering with alpha blending.
+ * Renders all lines as screen-space line segments with variable width using
+ * vertex pulling. Each line (pair of endpoints) is expanded into 2 triangles
+ * (6 vertices) procedurally in the vertex shader.
  *
  * If the line set is empty/invalid, this method does nothing.
  *
@@ -108,42 +131,180 @@ void ScreenSpaceLines::setVertexColors(const VertexBuffer& vertexColors)
  */
 void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
 {
-    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
 
+    validityCheck();
+
+    ScreenSpaceLinesUniforms::setWidth(mWidth);
+    ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
+
+    // Bind the vertex buffer as a compute buffer (SSBO) for vertex shader
+    // access (vertex pulling) - always needed
+    mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
+
+    if (mVertexColors.isValid() && mColorSetting == ColorSetting::PER_VERTEX) {
+        mVertexColors.get().bindCompute(V_COL_STAGE, bgfx::Access::Read);
+    }
+    if (mLineColors.isValid() && mColorSetting == ColorSetting::PER_LINE) {
+        mLineColors.get().bind(L_COL_STAGE, bgfx::Access::Read);
+    }
+    if (mIndices.isValid()) {
+        mIndices.get().bind(L_IND_STAGE, bgfx::Access::Read);
+    }
+
+    // Vertex Pulling: the vertex shader will generate the line geometry
+    // number of vertex shader invocations is returned by
+    // vertexPullingInstances()
+    bgfx::setVertexCount(vertexPullingInstances());
+
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+        BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
+
+    ScreenSpaceLinesUniforms::bind();
+    bgfx::submit(viewId, screenspaceLinesProgramSelector());
+}
+
+void ScreenSpaceLines::validityCheck() const
+{
+    uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
+    std::string primstr = mIndices.isValid() ? "indices" : "vertices";
+
+    if (mTopology == Topology::LINES && nv % 2 != 0) {
+        throw std::runtime_error(
+            "ScreenSpaceLines: For LINES topology, the number of " + primstr +
+            "must be even (each line requires 2 endpoints).");
+    }
+    if (mTopology == Topology::LINE_STRIP && nv < 2) {
+        throw std::runtime_error(
+            "ScreenSpaceLines: For LINE_STRIP topology, at least 2 " + primstr +
+            " are required to form a line.");
+    }
+    if (mColorSetting == ColorSetting::PER_VERTEX) {
+        if (!mVertexColors.isValid()) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: PER_VERTEX color setting requires a "
+                "valid vertex color buffer.");
+        }
+        if (mVerColCount != mVerPosCount) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: The number of vertex colors must match "
+                "the number of vertices.");
+        }
+    }
+    if (mColorSetting == ColorSetting::PER_LINE) {
+        if (!mLineColors.isValid()) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: PER_LINE color setting requires a valid "
+                "line color buffer.");
+        }
+        if (mTopology == Topology::LINES && mLineColorCount != nv / 2) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: The number of line colors must match "
+                "the number of lines (" +
+                primstr + " / 2) for LINES topology.");
+        }
+        if (mTopology == Topology::LINE_STRIP && mLineColorCount != nv - 1) {
+            throw std::runtime_error(
+                "ScreenSpaceLines: The number of line colors must match "
+                "the number of lines (" +
+                primstr +
+                " - 1) for LINE_STRIP "
+                "topology.");
+        }
+    }
+}
+
+uint ScreenSpaceLines::vertexPullingInstances() const
+{
+    uint nVPI = 0;
+
+    uint nv = mIndices.isValid() ? mIndexCount : mVerPosCount;
+
+    if (mTopology == Topology::LINES) {
+        // the buffer contains 2 vertices per line
+        // each line generates 6 vertices (2 triangles) in the shader
+        // n = (nv / 2) * 6 = nv * 3
+        nVPI = nv * 3;
+    }
+    else if (mTopology == Topology::LINE_STRIP) {
+        // the buffer contains nv vertices forming a line strip
+        // each vertex after the first forms a line with the previous vertex
+        // so we have (nv - 1) lines, each generating 6 verts (2 triangles)
+        // n = (nv - 1) * 6
+        nVPI = (nv - 1) * 6;
+    }
+
+    return nVPI;
+}
+
+/**
+ * @brief Selects the correct program based on topology, indexing, and color
+ * setting.
+ *
+ * @param[in] pm: The program manager to retrieve program handles.
+ * @return bgfx::ProgramHandle for the selected program.
+ */
+bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
+{
+    using enum VertFragProgram;
+
     Context& ctx = Context::instance();
 
-    ColorSetting colorToUse = mColorToUse;
-    if (colorToUse == ColorSetting::PER_VERTEX && !mVertexColors.isValid()) {
-        colorToUse = ColorSetting::GENERAL;
-    }
-
-    ScreenSpaceLinesUniforms::setColorSetting(
-        colorToUse == ColorSetting::PER_VERTEX ? 1 : 0);
-    ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
-    ScreenSpaceLinesUniforms::bind();
-
-    // Bind vertex coordinates
-    mVertexPositions.get().bind(0);
-
-    // Bind colors if using per-vertex colors
-    if (mVertexColors.isValid()) {
-        mVertexColors.get().bind(1);
-    }
-
-    // Bind indices for line primitives
-    if (mIndices.isValid())
-        mIndices.get().bind();
-
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_DEPTH_TEST_ALWAYS |
-                     BGFX_STATE_BLEND_ALPHA;
-
     ProgramManager& pm = ctx.programManager();
-    state |= mTopology == Topology::LINES ? BGFX_STATE_PT_LINES :
-                                            BGFX_STATE_PT_LINESTRIP;
-    bgfx::setState(state);
-    bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_LINES>());
+
+    bool isIndexed = mIndices.isValid();
+    bool isLines   = (mTopology == Topology::LINES);
+
+    if (isIndexed) {
+        if (isLines) {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_GC>();
+            }
+        }
+        else {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_GC>();
+            }
+        }
+    }
+    else {
+        if (isLines) {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
+            }
+        }
+        else {
+            switch (mColorSetting) {
+            case ColorSetting::PER_VERTEX:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PVC>();
+            case ColorSetting::PER_LINE:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PLC>();
+            case ColorSetting::GENERAL:
+                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_GC>();
+            }
+        }
+    }
+
+    // Fallback (should never reach here due to validityCheck)
+    return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
 }
 
 } // namespace vcl

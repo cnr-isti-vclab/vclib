@@ -37,6 +37,16 @@ class ScreenSpaceDrawer : public vcl::PlainDrawer<DerivedRenderApp>
 
     vcl::ScreenSpaceBox mBox;
 
+    vcl::ScreenSpaceLines mLinesGC;
+    vcl::ScreenSpaceLines mLinesVC;
+    vcl::ScreenSpaceLines mLinesLC;
+    vcl::ScreenSpaceLines mLinesLSVC;
+    vcl::ScreenSpaceLines mLinesLSLC;
+    vcl::ScreenSpaceLines mLinesIVC;
+    vcl::ScreenSpaceLines mLinesILC;
+    vcl::ScreenSpaceLines mLinesISVC;
+    vcl::ScreenSpaceLines mLinesISLC;
+
 public:
     ScreenSpaceDrawer(vcl::uint width = 1024, vcl::uint height = 768)
     {
@@ -93,6 +103,141 @@ public:
         mBox.setColor(vcl::Color::DarkYellow);
 
         mBox.setBox(vcl::Box2d({800, 50}, {1000, 150}));
+
+        // lines
+
+        // general color
+        std::vector<vcl::Point2f> lpts {
+            {20,  300},
+            {120, 400},
+            {20,  400},
+            {120, 300}
+        };
+
+        mLinesGC.setVertices(lpts);
+        mLinesGC.setWidth(15);
+        mLinesGC.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::GENERAL);
+        mLinesGC.setGeneralColor(vcl::Color::Magenta);
+
+        // per vertex color
+        for (auto& p : lpts)
+            p += vcl::Point2f {0, 150};
+
+        std::vector<vcl::Color> lvcols {
+            vcl::Color::Red,
+            vcl::Color::Green,
+            vcl::Color::Blue,
+            vcl::Color::Yellow};
+
+        mLinesVC.setVertices(lpts);
+        mLinesVC.setVertexColors(lvcols);
+
+        mLinesVC.setWidth(10);
+        mLinesVC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
+
+        // per line color
+        auto lpts2 = lpts;
+
+        for (auto& p : lpts2)
+            p += vcl::Point2f {0, 150};
+
+        std::vector<vcl::Color> llcols {vcl::Color::Blue, vcl::Color::Yellow};
+
+        mLinesLC.setVertices(lpts2);
+        mLinesLC.setLineColors(llcols);
+        mLinesLC.setWidth(8);
+        mLinesLC.setColorSetting(vcl::ScreenSpaceLines::ColorSetting::PER_LINE);
+
+        // line strip per vertex color
+        for (auto& p : lpts)
+            p += vcl::Point2f {150, 0};
+
+        mLinesLSVC.setVertices(lpts);
+        mLinesLSVC.setVertexColors(lvcols);
+        mLinesLSVC.setWidth(12);
+        mLinesLSVC.setTopology(vcl::ScreenSpaceLines::Topology::LINE_STRIP);
+        mLinesLSVC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
+
+        // line strip per line color
+        for (auto& p : lpts2)
+            p += vcl::Point2f {150, 0};
+
+        std::vector<vcl::Color> lscols {
+            vcl::Color::Blue, vcl::Color::Red, vcl::Color::Yellow};
+
+        mLinesLSLC.setVertices(lpts2);
+        mLinesLSLC.setLineColors(lscols);
+        mLinesLSLC.setWidth(5);
+        mLinesLSLC.setTopology(vcl::ScreenSpaceLines::Topology::LINE_STRIP);
+        mLinesLSLC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_LINE);
+
+        // indexed lines per vertex color
+        std::vector<vcl::Point2f> ipts {
+            {320, 450},
+            {420, 450},
+            {420, 550},
+            {320, 550},
+        };
+
+        std::vector<vcl::uint> linds {0, 1, 1, 2, 2, 3, 3, 0};
+
+        mLinesIVC.setVertices(ipts);
+        mLinesIVC.setIndices(linds);
+        mLinesIVC.setVertexColors(lvcols);
+        mLinesIVC.setWidth(10);
+        mLinesIVC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
+
+        // indexed lines per line color
+        auto ipts2 = ipts;
+
+        for (auto& p : ipts2)
+            p += vcl::Point2f {0, 150};
+
+        std::vector<vcl::Color> ilcols {
+            vcl::Color::Red,
+            vcl::Color::Green,
+            vcl::Color::Blue,
+            vcl::Color::Yellow};
+
+        mLinesILC.setVertices(ipts2);
+        mLinesILC.setIndices(linds);
+        mLinesILC.setLineColors(ilcols);
+        mLinesILC.setWidth(15);
+        mLinesILC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_LINE);
+
+        // indexed line strip per vertex color
+        for (auto& p : ipts)
+            p += vcl::Point2f {150, 0};
+
+        std::vector<vcl::uint> lsinds {0, 1, 3, 2};
+
+        mLinesISVC.setVertices(ipts);
+        mLinesISVC.setIndices(lsinds);
+        mLinesISVC.setVertexColors(lvcols);
+        mLinesISVC.setWidth(10);
+        mLinesISVC.setTopology(vcl::ScreenSpaceLines::Topology::LINE_STRIP);
+        mLinesISVC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_VERTEX);
+
+        // indexed line strip per line color
+        for (auto& p : ipts2)
+            p += vcl::Point2f {150, 0};
+
+        std::vector<vcl::Color> ilscols {
+            vcl::Color::Green, vcl::Color::Blue, vcl::Color::Yellow};
+
+        mLinesISLC.setVertices(ipts2);
+        mLinesISLC.setIndices(lsinds);
+        mLinesISLC.setLineColors(ilscols);
+        mLinesISLC.setWidth(15);
+        mLinesISLC.setTopology(vcl::ScreenSpaceLines::Topology::LINE_STRIP);
+        mLinesISLC.setColorSetting(
+            vcl::ScreenSpaceLines::ColorSetting::PER_LINE);
     }
 
     void onInit(vcl::uint viewId) override
@@ -112,6 +257,17 @@ public:
         mPointsVC.draw(viewId);
 
         mBox.draw(viewId);
+
+        mLinesGC.draw(viewId);
+        mLinesVC.draw(viewId);
+        mLinesLC.draw(viewId);
+        mLinesLSVC.draw(viewId);
+        mLinesLSLC.draw(viewId);
+
+        mLinesIVC.draw(viewId);
+        mLinesILC.draw(viewId);
+        mLinesISVC.draw(viewId);
+        mLinesISLC.draw(viewId);
     }
 };
 
