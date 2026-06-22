@@ -44,6 +44,11 @@ public:
         sPointsSettings[0] = std::bit_cast<float>(c);
     }
 
+    static void setShading(uint s)
+    {
+        // TODO
+    }
+
     static void setShape(uint s)
     {
         sPointsSettings[1] = std::bit_cast<float>(s);

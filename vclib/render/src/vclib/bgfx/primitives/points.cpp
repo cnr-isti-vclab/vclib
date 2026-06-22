@@ -27,6 +27,21 @@
 
 namespace vcl {
 
+/**
+ * @brief Constructs a point set by referencing existing VertexBuffers.
+ *
+ * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] verts: VertexBuffer containing point positions.
+ * Expected layout: an array of `float` with 3 components per point (x, y,
+ * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
+ * yn-1, zn-1]. The buffer must be created for compute access and must
+ * remain valid for the lifetime of this object.
+ * @param[in] vertColors: Optional VertexBuffer containing per-point colors.
+ * Expected layout: an array of `uint` with 4 channels per color in ABGR
+ * order (A, B, G, R packed as a single 32-bit integer). The buffer must be
+ * created for compute access and must remain valid for the lifetime of
+ * this object.
+ */
 Points::Points(
     const uint          vertexCount,
     const VertexBuffer& verts,
@@ -38,17 +53,60 @@ Points::Points(
     }
 }
 
+/**
+ * @brief Sets point positions by referencing an existing VertexBuffer.
+ *
+ * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] verts: VertexBuffer containing point positions.
+ * Expected layout: an array of `float` with 3 components per point (x, y,
+ * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
+ * yn-1, zn-1]. The buffer must be created for compute access and must
+ * remain valid for the lifetime of this object.
+ */
 void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 {
     mVertexCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
 }
 
+/**
+ * @brief Sets per-point normals by referencing an existing VertexBuffer.
+ *
+ * @param[in] vertNormals: VertexBuffer containing per-point normals.
+ * Expected layout: an array of `float` with 3 components per normal (x, y,
+ * z), stored as consecutive floats: [nx0, ny0, nz0, nx1, ny1, nz1, ...,
+ * nxn-1, nyn-1, nzn-1]. The buffer must be created for compute access and
+ * must remain valid for the lifetime of this object.
+ */
+void Points::setVertexNormals(const VertexBuffer& vertNormals)
+{
+    mVertexNormals.setReferenced(&vertNormals);
+}
+
+/**
+ * @brief Sets per-point colors by referencing an existing VertexBuffer.
+ *
+ * @param[in] vertColors: VertexBuffer containing per-point colors.
+ * Expected layout: an array of `uint` with 4 channels per color in
+ * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
+ * must be created for compute access and must remain valid for the
+ * lifetime of this object.
+ */
 void Points::setVertexColors(const VertexBuffer& vertColors)
 {
     mVertexColors.setReferenced(&vertColors);
 }
 
+/**
+ * @brief Draws the point sprites in world space on the specified view.
+ *
+ * Renders all 3D points as screen-space splats using programmable vertex
+ * pulling. Points are positioned through the standard camera projection,
+ * and each point is expanded into a quad procedurally depending on the
+ * configured Shape setting.
+ *
+ * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
+ */
 void Points::draw(bgfx::ViewId viewId) const
 {
     // Skip rendering if there are no vertices or the position buffer is invalid
@@ -70,9 +128,12 @@ void Points::draw(bgfx::ViewId viewId) const
     mVertexPositions.get().bindCompute(
         POINTS_POSITIONS_STAGE, bgfx::Access::Read);
 
+    if (mVertexNormals.isValid()) {
+        mVertexNormals.get().bindCompute(
+            POINTS_NORMALS_STAGE, bgfx::Access::Read);
+    }
+
     if (mVertexColors.isValid()) {
-        // TODO: bind the per-vertex color buffer as a compute buffer at the
-        // colors stage so the shader can read it.
         mVertexColors.get().bindCompute(
             POINTS_COLORS_STAGE, bgfx::Access::Read);
     }

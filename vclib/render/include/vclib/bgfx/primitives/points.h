@@ -47,6 +47,11 @@ public:
         GENERAL     ///< All points use a single general color.
     };
 
+    enum class Shading {
+        NONE,       ///< No shading applied to points.
+        PER_VERTEX  ///< Lighting computed using vertex normals (if provided).
+    };
+
     /**
      * @brief Specifies the visual shape of each point sprite.
      */
@@ -60,10 +65,12 @@ private:
 
     float        mSize         = 1.0f;
     ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    Shading      mShading      = Shading::NONE;
     Shape        mShape        = Shape::SQUARE;
     Color        mGeneralColor = Color::Black;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
+    OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
 public:
@@ -78,6 +85,7 @@ public:
      *
      * @param[in] verts: Range of elements convertible to Point3 (must
      * provide x(), y(), z()). Each element contributes one world-space point.
+     * @param[in] vertNormals: Optional range of elements convertible to Point3.
      * @param[in] vertColors: Optional range of Color elements. If non-empty,
      * per-point colors are enabled; the size must match vertCoords. Default is
      * empty (falls back to general color).
@@ -85,32 +93,24 @@ public:
      * @note This constructor creates an owned buffer copy of the input data.
      * The original ranges are not referenced after construction.
      */
-    template<Range RV, Range RC>
+    template<Range RV, Range RN, Range RC>
     requires Point3Concept<std::ranges::range_value_t<RV>> &&
+             Point3Concept<std::ranges::range_value_t<RN>> &&
              ColorConcept<std::ranges::range_value_t<RC>>
-    Points(RV&& verts, RC&& vertColors = std::vector<Color>())
+    Points(
+        RV&& verts,
+        RN&& vertNormals = std::vector<Point3d>(),
+        RC&& vertColors  = std::vector<Color>())
     {
         setVertices(verts);
+        if (!vertNormals.empty()) {
+            setVertexNormals(vertNormals);
+        }
         if (!vertColors.empty()) {
             setVertexColors(vertColors);
         }
     }
 
-    /**
-     * @brief Constructs a point set by referencing existing VertexBuffers.
-     *
-     * @param[in] vertexCount: Number of points (length of verts).
-     * @param[in] verts: VertexBuffer containing point positions.
-     * Expected layout: an array of `float` with 3 components per point (x, y,
-     * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
-     * yn-1, zn-1]. The buffer must be created for compute access and must
-     * remain valid for the lifetime of this object.
-     * @param[in] vertColors: Optional VertexBuffer containing per-point colors.
-     * Expected layout: an array of `uint` with 4 channels per color in ABGR
-     * order (A, B, G, R packed as a single 32-bit integer). The buffer must be
-     * created for compute access and must remain valid for the lifetime of
-     * this object.
-     */
     Points(
         const uint          vertexCount,
         const VertexBuffer& verts,
@@ -159,11 +159,51 @@ public:
     }
 
     /**
+     * @brief Sets per-point normals from a range of 3D points.
+     *
+     * @tparam R: Range whose value type satisfies Point3Concept (must provide
+     * x(), y(), z()).
+     * @param[in] vertNormals: Range of 3D points representing normals. Each
+     * element is read as a normal vector (x, y, z) for the corresponding point.
+     * The size must match vertexCount().
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertexNormals(R&& vertNormals)
+    {
+        assert(std::ranges::size(vertNormals) == mVertexCount);
+
+        VertexBuffer vNormsBuff;
+
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(mVertexCount * 3);
+
+        for (size_t i = 0; const auto& n : vertNormals) {
+            buffer[i * 3 + 0] = n.x();
+            buffer[i * 3 + 1] = n.y();
+            buffer[i * 3 + 2] = n.z();
+            ++i;
+        }
+
+        vNormsBuff.create(
+            buffer,
+            mVertexCount,
+            bgfx::Attrib::Normal,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mVertexNormals.setOwned(std::move(vNormsBuff));
+    }
+
+    /**
      * @brief Sets per-point colors from a range of Color elements.
      *
      * @tparam R: Range whose value type satisfies ColorConcept.
      * @param[in] vertColors: Range of Color objects. Must have exactly
-     * the pointsCount() size. Each color is converted to ABGR format (uint).
+     * the vertexCount() size. Each color is converted to ABGR format (uint).
      */
     template<Range R>
     requires ColorConcept<std::ranges::range_value_t<R>>
@@ -192,27 +232,10 @@ public:
         mVertexColors.setOwned(std::move(vColsBuff));
     }
 
-    /**
-     * @brief Sets point positions by referencing an existing VertexBuffer.
-     *
-     * @param[in] vertexCount: Number of points (length of verts).
-     * @param[in] verts: VertexBuffer containing point positions.
-     * Expected layout: an array of `float` with 3 components per point (x, y,
-     * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
-     * yn-1, zn-1]. The buffer must be created for compute access and must
-     * remain valid for the lifetime of this object.
-     */
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
 
-    /**
-     * @brief Sets per-point colors by referencing an existing VertexBuffer.
-     *
-     * @param[in] vertColors: VertexBuffer containing per-point colors.
-     * Expected layout: an array of `uint` with 4 channels per color in
-     * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
-     * must be created for compute access and must remain valid for the
-     * lifetime of this object.
-     */
+    void setVertexNormals(const VertexBuffer& vertNormals);
+
     void setVertexColors(const VertexBuffer& vertColors);
 
     /**
@@ -247,21 +270,12 @@ public:
         mGeneralColor = generalColor;
     }
 
-    /**
-     * @brief Draws the point sprites in world space on the specified view.
-     *
-     * Renders all 3D points as screen-space splats using programmable vertex
-     * pulling. Points are positioned through the standard camera projection,
-     * and each point is expanded into a quad procedurally depending on the
-     * configured Shape setting.
-     *
-     * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
-     */
     void draw(bgfx::ViewId viewId) const;
 
 private:
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
-    static constexpr uint POINTS_COLORS_STAGE    = 1;
+    static constexpr uint POINTS_NORMALS_STAGE   = 1;
+    static constexpr uint POINTS_COLORS_STAGE    = 2;
 };
 
 } // namespace vcl
