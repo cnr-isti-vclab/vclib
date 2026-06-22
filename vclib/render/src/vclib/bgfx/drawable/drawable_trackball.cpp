@@ -220,7 +220,9 @@ void DrawableTrackBall::createBuffers()
 
     // edge index buffer
     mEdgeIndexBuffer.create(
-        TRACKBALL_DATA.second.data(), TRACKBALL_DATA.second.size(), false);
+        TRACKBALL_DATA.second.data(),
+        TRACKBALL_DATA.second.size(),
+        PrimitiveType::USHORT);
 }
 
 } // namespace vcl

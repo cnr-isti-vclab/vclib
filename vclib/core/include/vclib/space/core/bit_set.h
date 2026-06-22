@@ -194,6 +194,18 @@ public:
     bool none() const { return mBits == static_cast<T>(0); }
 
     /**
+     * @brief Returns true if only the bit at position i is set to true (and all
+     * others are false).
+     * @param[in] i: the position of the bit to check
+     * @return true if only the bit at position i is set to true.
+     */
+    bool only(uint i) const
+    {
+        assert(i < SIZE);
+        return mBits == (static_cast<T>(1) << bitIndex(i));
+    }
+
+    /**
      * @brief Sets all the bits to true
      * @return `*this`
      */

@@ -150,6 +150,16 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
 
     vclib_build_shaders_to_headers(${SHADERS})
     vclib_build_assets_to_headers(${ASSETS})
+
+    # Add embedded programs from config files
+    vclib_add_embedded_programs_from_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/embedded_vf_programs.config"
+        VERT_FRAG
+    )
+    vclib_add_embedded_programs_from_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/embedded_c_programs.config"
+        COMPUTE
+    )
 endif()
 
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")

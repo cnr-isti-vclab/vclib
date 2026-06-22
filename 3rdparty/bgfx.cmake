@@ -20,7 +20,7 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(BGFX_VERSION 1.143.9253-543)
+set(BGFX_VERSION 1.146.9306-550)
 
 find_package(bgfx QUIET)
 

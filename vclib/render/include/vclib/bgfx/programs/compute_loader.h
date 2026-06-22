@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_PROGRAMS_COMPUTE_LOADER_H
 #define VCL_BGFX_PROGRAMS_COMPUTE_LOADER_H
 
-#include "compute_program.h"
+#include <vclib/bgfx/programs/compute_program.h>
 
 #include <bgfx/embedded_shader.h>
 

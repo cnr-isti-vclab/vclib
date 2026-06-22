@@ -46,9 +46,6 @@ void main()
 {
     discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
 
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -109,5 +106,4 @@ void main()
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

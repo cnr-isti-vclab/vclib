@@ -28,7 +28,6 @@
 #include "context/program_manager.h"
 
 #include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
 
 #include <mutex>
 #include <set>
