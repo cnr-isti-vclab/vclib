@@ -83,14 +83,14 @@ void firstTetOptimization(R&& points)
  *
  * @tparam R
  * @param points
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  */
 template<Range R>
-void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
+void shufflePoints(R&& points, RandomConfig config = std::monostate())
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    shuffle(points, seed);
+    shuffle(points, config);
 
     firstTetOptimization(points);
 
@@ -389,8 +389,8 @@ void updateNewConflicts(
  *
  * @tparam PointType: The type of the points.
  * @param[in] points: The set of points.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @param[in] log: The logger.
  * @return The convex hull of the points.
  *
@@ -398,9 +398,9 @@ void updateNewConflicts(
  */
 template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(
-    const R&            points,
-    std::optional<uint> seed = std::nullopt,
-    LogType&            log  = nullLogger)
+    const R&     points,
+    RandomConfig config = std::monostate(),
+    LogType&     log    = nullLogger)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
@@ -416,7 +416,7 @@ MeshType convexHull(
     std::vector<PointType> pointsCopy(
         std::ranges::begin(points), std::ranges::end(points));
 
-    detail::shufflePoints(pointsCopy, seed);
+    detail::shufflePoints(pointsCopy, config);
 
     log.log(0, "Making first tetrahedron...");
 
@@ -498,7 +498,7 @@ template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(const R& points, LogType& log)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    return convexHull<MeshType>(points, std::nullopt, log);
+    return convexHull<MeshType>(points, std::monostate(), log);
 }
 
 } // namespace vcl
