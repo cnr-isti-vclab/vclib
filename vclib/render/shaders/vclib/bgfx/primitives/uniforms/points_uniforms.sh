@@ -23,19 +23,24 @@
 #ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
 #define VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
 
+#include <vclib/shaders_common.sh>
+
 uniform vec4 u_pointsSettings;
 
-#define u_pointsColorToUse floatBitsToUint(u_pointsSettings.x)
-#define u_pointsShadeMode floatBitsToUint(u_pointsSettings.y)
-#define u_pointsWidth u_pointsSettings.z
-#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.w))
+#define u_pointsSettingPack uintBitsToFloat(u_pointsSettings.x)
+#define u_pointsWidth u_pointsSettings.y
+#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.z))
 
 bool usePerPointColor() {
-    return u_pointsColorToUse == 0u;
+    return bool(u_pointsSettingPack & posToBitFlag(0u));
+}
+
+bool useNoneShading() {
+    return bool(u_pointsSettingPack & posToBitFlag(1u));
 }
 
 bool useQuadShape() {
-    return u_pointsShadeMode == 0u;
+    return bool(u_pointsSettingPack & posToBitFlag(2u));
 }
 
 #endif // VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH

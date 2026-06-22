@@ -119,6 +119,7 @@ void Points::draw(bgfx::ViewId viewId) const
 
     // Upload rendering settings to the shader via uniform.
     PointsUniforms::setColorSetting(static_cast<uint>(mColorToUse));
+    PointsUniforms::setShading(static_cast<uint>(mShading));
     PointsUniforms::setShape(static_cast<uint>(mShape));
     PointsUniforms::setSize(mSize);
     PointsUniforms::setGeneralColor(mGeneralColor);
