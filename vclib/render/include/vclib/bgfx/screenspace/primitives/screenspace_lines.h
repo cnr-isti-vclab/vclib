@@ -140,14 +140,12 @@ public:
         }
 
         // Use createForCompute to enable SSBO binding for vertex pulling
-        vertBuff.createForCompute(
+        vertBuff.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             2,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
     }
@@ -181,12 +179,7 @@ public:
             ++i;
         }
 
-        indexBuff.createForCompute(
-            buffer,
-            mIndexCount,
-            PrimitiveType::UINT,
-            bgfx::Access::Read,
-            releaseFn);
+        indexBuff.create(buffer, mIndexCount, releaseFn);
 
         mIndices.setOwned(std::move(indexBuff));
     }
@@ -217,14 +210,13 @@ public:
         }
 
         // Use createForCompute to enable SSBO binding for vertex pulling
-        vColsBuff.createForCompute(
+        vColsBuff.create(
             buffer,
             mVerPosCount,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
     }
@@ -246,13 +238,7 @@ public:
             ++i;
         }
 
-        // Use createForCompute to enable SSBO binding for vertex pulling
-        lColsBuff.createForCompute(
-            buffer,
-            mLineColorCount,
-            PrimitiveType::UINT,
-            bgfx::Access::Read,
-            releaseFn);
+        lColsBuff.create(buffer, mLineColorCount, releaseFn);
         mLineColors.setOwned(std::move(lColsBuff));
     }
 

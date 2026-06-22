@@ -133,14 +133,12 @@ public:
             ++i;
         }
 
-        vertBuff.createForCompute(
+        vertBuff.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             2,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
     }
@@ -168,14 +166,13 @@ public:
             ++i;
         }
 
-        vColsBuff.createForCompute(
+        vColsBuff.create(
             buffer,
             mVertexCount,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
     }
