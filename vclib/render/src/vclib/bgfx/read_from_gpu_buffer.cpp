@@ -331,9 +331,9 @@ uint ReadFromGPUBuffer::submit(
                      "non-COMPUTE_BUFFER instance\n";
         return 0;
     }
-    if (!buf.isValid() || !buf.isCompute()) {
+    if (!buf.isValid()) {
         std::cerr << "ReadFromGPUBuffer::submit(IndexBuffer): buffer is "
-                     "invalid or not compute-capable\n";
+                     "invalid\n";
         return 0;
     }
     if (!bgfx::isValid(mGPUTexHandle) || !bgfx::isValid(mCPUTexHandle)) {

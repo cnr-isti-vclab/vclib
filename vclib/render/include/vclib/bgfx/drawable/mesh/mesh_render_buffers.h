@@ -391,7 +391,7 @@ private:
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
-        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
+        mVertexQuadIndexBuffer.create(buffer, totalIndices, releaseFn);
 
         // if number of vertices is not zero, the index buffer must be valid
         assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
@@ -508,7 +508,7 @@ private:
         // pre-triangulation estimate for meshes with degenerate faces.
         nt = Base::numTris();
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        mTriangleIndexBuffer.create(buffer, nt * 3, releaseFn);
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
@@ -520,12 +520,8 @@ private:
 
         Base::fillTriangleNormals(mesh, buffer);
 
-        mTriangleNormalBuffer.createForCompute(
-            buffer,
-            nt * 3,
-            PrimitiveType::FLOAT,
-            bgfx::Access::Read,
-            releaseFn);
+        mTriangleNormalBuffer.create(
+            buffer, nt * 3, PrimitiveType::FLOAT, releaseFn);
     }
 
     void setTriangleColorsBuffer(const MeshType& mesh) // override
@@ -537,8 +533,7 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        mTriangleColorBuffer.create(buffer, nt, releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
