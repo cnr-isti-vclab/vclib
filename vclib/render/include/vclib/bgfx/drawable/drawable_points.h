@@ -43,6 +43,7 @@ public:
     using Points::ColorSetting;
     using Points::Shading;
     using Points::Shape;
+    using Points::size;
     using Points::setSize;
     using Points::setColorSetting;
     using Points::setShading;

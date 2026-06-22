@@ -117,6 +117,13 @@ public:
         const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
 
     /**
+     * @brief Returns the render size of point sprites.
+     *
+     * @return The size of each point sprite in pixels.
+     */
+    float size() const { return mSize; }
+
+    /**
      * @brief Sets point positions from a range of 3D points.
      *
      * @tparam R: Range whose value type satisfies Point3Concept (must provide
