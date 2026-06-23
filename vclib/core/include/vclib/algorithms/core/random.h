@@ -25,6 +25,7 @@
 
 #include <vclib/space/core.h>
 
+#include <cassert>
 #include <random>
 
 namespace vcl {
@@ -37,8 +38,24 @@ namespace vcl {
  * specified as a pair of bounds for a uniform distribution or as a custom
  * function that takes a random generator and returns a random number.
  *
- * @tparam T: Numeric type for the random number.
- * @param[in] distConf: DistConfig that determines how to provide the random
+ * When distConf is std::monostate (default), the numeric type determines how
+ * the distribution range is chosen:
+ *   - Floating-point types (float, double): uniform in [0.0, 1.0)
+ *   - Unsigned integer types: uniform in [0, numeric_limits<T>::max()]
+ *   - Signed integer types: uniform in [numeric_limits<T>::min(),
+ *     numeric_limits<T>::max()], which includes negative values for two's
+ *     complement representations (e.g., INT32_MIN to INT32_MAX).
+ *
+ * Example usage:
+ * @code{.cpp}
+ * // Integer with explicit bounds [0, 100]
+ * int x = vcl::random<int>(std::pair{0, 100});
+ * // Double with deterministic seed
+ * double y = vcl::random<double>(std::pair{0.0, 1.0}, 42);
+ * @endcode
+ *
+ * @tparam T: Numeric type for the random number. Must satisfy the Numeric concept.
+ * @param[in] distConf: DistConfig<T> that determines how to provide the random
  * distribution.
  * @param[in] config: RandomConfig that determines how to provide the random
  * number generator.
@@ -215,13 +232,17 @@ BitSetType random(
 }
 
 /**
- * @brief Generate the barycentric coords of a random point over a triangle,
- * with a uniform distribution over the triangle.
+ * @brief Generate the barycentric coordinates of a random point over a
+ * triangle, with a uniform distribution over the triangle.
+ *
  * It uses the parallelogram folding trick.
  *
+ * @tparam PointType: Type of the point to generate. It must satisfy the
+ * Point3Concept. The ScalarType is used as the distribution numeric type.
  * @param[in] config: RandomConfig that determines how to provide the random
  * number generator.
- * @return
+ * @return A Point3 of type PointType whose components are normalized
+ * barycentric coordinates (they sum to 1 and each component is in [0, 1]).
  *
  * @ingroup algorithms_core
  */
@@ -247,22 +268,54 @@ PointType randomTriangleBarycentricCoordinate(
     });
 }
 
+/**
+ * @brief Generate barycentric coordinates of a random point over a regular
+ * polygon in 2D, with uniform distribution over its vertices.
+ *
+ * The algorithm generates N independent and identically distributed random
+ * values, then normalizes them so they sum to 1. This produces a point
+ * uniformly distributed on the (N-1)-simplex — equivalent to a random convex
+ * combination of the polygon vertices.
+ *
+ * For triangles (polySize == 3), prefer @ref
+ * randomTriangleBarycentricCoordinate which uses the exact parallelogram
+ * folding trick and may offer better control over distribution bounds.
+ *
+ * @tparam ScalarType: Numeric type for the barycentric coordinates.
+ * @param[in] polySize: Number of vertices in the polygon. Must be greater than
+ * 0.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A std::vector<ScalarType> of size polySize with values in [0, 1) that
+ * sum to exactly 1 (within floating-point precision). The i-th element is the
+ * weight for the i-th vertex of the polygon.
+ *
+ * @note For perfect uniformity on triangles, the barycentric coordinate method
+ * used by randomTriangleBarycentricCoordinate is exact. This function uses
+ * normalization which is an approximation that becomes arbitrarily close to
+ * uniform as polySize increases.
+ *
+ * @ingroup algorithms_core
+ */
 template<typename ScalarType>
 std::vector<ScalarType> randomPolygonBarycentricCoordinate(
-    uint         polySize,
-    RandomConfig config = std::monostate())
+    uint                               polySize,
+    RandomConfig                       config   = std::monostate())
 {
     return callWithRandomGenerator(config, [&](std::mt19937& gen) {
         std::vector<ScalarType> barCoord(polySize);
-        ScalarType              sum = 0;
+        ScalarType              sum = static_cast<ScalarType>(0);
 
-        std::uniform_real_distribution<ScalarType> unif(0, 100);
+        std::uniform_real_distribution<ScalarType> unif(0, 1);
 
-        for (uint i = 0; i < polySize; i++) {
+        for (uint i = 0; i < polySize; ++i) {
             barCoord[i] = unif(gen);
             sum += barCoord[i];
         }
-        for (uint i = 0; i < polySize; i++) {
+
+        // Normalize so all weights sum to 1.
+        assert(sum != static_cast<ScalarType>(0));
+        for (uint i = 0; i < polySize; ++i) {
             barCoord[i] /= sum;
         }
         return barCoord;
