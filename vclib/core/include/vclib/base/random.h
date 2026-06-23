@@ -208,19 +208,30 @@ decltype(auto) callWithRandomGenerator(RandomConfig config, Func&& func)
 template<Numeric T, typename Func>
 decltype(auto) callWithDistribution(const DistConfig<T>& distConf, Func&& func)
 {
-    // compiler chooses the correct distribution type based on T
+    // 1. Promote T to a safe type if it's an 8-bit integer to avoid
+    // non-supported types in std::uniform_int_distribution.
+    using SafeT = std::conditional_t<
+        std::is_integral_v<T> && sizeof(T) == 1,
+        std::conditional_t<std::is_signed_v<T>, short, unsigned short>,
+        T>;
+
+    // 2. compiler chooses the correct distribution type based on SafeT
     using UniformDist = std::conditional_t<
         std::is_floating_point_v<T>,
-        std::uniform_real_distribution<T>,
-        std::uniform_int_distribution<T>>;
+        std::uniform_real_distribution<SafeT>,
+        std::uniform_int_distribution<SafeT>>;
 
     // Case 1: The user provides a pair of bounds for a uniform distribution
     if (auto* bounds = std::get_if<std::pair<T, T>>(&distConf)) {
-        UniformDist dist(bounds->first, bounds->second);
+        UniformDist dist(
+            static_cast<SafeT>(bounds->first),
+            static_cast<SafeT>(bounds->second));
+
         // 'func' takes a lambda that captures the distribution and calls it
         // with a random generator
         return func([&dist](std::mt19937& g) {
-            return dist(g);
+            // generate using SafeT, but then casts to T
+            return static_cast<T>(dist(g));
         });
     }
     // Case 2: The user provides a custom distribution function
@@ -234,15 +245,21 @@ decltype(auto) callWithDistribution(const DistConfig<T>& distConf, Func&& func)
     // Case 3: The user provides std::monostate or no config, use default
     // uniform distribution with standard bounds based on the type T
     else {
-        // Default: [0.0, 1.0) for float, [min, max] for int
-        T min_val = std::is_floating_point_v<T> ? static_cast<T>(0.0) :
-                                                  std::numeric_limits<T>::min();
-        T max_val = std::is_floating_point_v<T> ? static_cast<T>(1.0) :
-                                                  std::numeric_limits<T>::max();
+        // Extract the maximum and minimum limits for the ORIGINAL T, to avoid
+        // dist(min, max) generating numbers outside the range of T if we have
+        // promoted it.
+        SafeT min_val = std::is_floating_point_v<T> ?
+                            static_cast<SafeT>(0.0) :
+                            static_cast<SafeT>(std::numeric_limits<T>::min());
+
+        SafeT max_val = std::is_floating_point_v<T> ?
+                            static_cast<SafeT>(1.0) :
+                            static_cast<SafeT>(std::numeric_limits<T>::max());
 
         UniformDist dist(min_val, max_val);
         return func([&dist](std::mt19937& g) {
-            return dist(g);
+            // generate using SafeT, but then casts to T
+            return static_cast<T>(dist(g));
         });
     }
 }

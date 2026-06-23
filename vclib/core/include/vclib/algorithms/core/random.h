@@ -98,8 +98,6 @@ PointType random(
     DistConfig<typename PointType::ScalarType> distConf = std::monostate(),
     RandomConfig                               config   = std::monostate())
 {
-    using ScalarType = PointType::ScalarType;
-
     return callWithDistribution(distConf, [&](auto&& distFunc) {
         return callWithRandomGenerator(config, [&](std::mt19937& gen) {
             PointType point;
@@ -138,7 +136,6 @@ BoxType random(
     DistConfig<typename BoxType::ScalarType> distConf = std::monostate(),
     RandomConfig                             config   = std::monostate())
 {
-    using ScalarType = BoxType::ScalarType;
     using PointType  = BoxType::PointType;
 
     return callWithDistribution(distConf, [&](auto&& distFunc) {
@@ -220,8 +217,6 @@ BitSetType random(
     DistConfig<typename BitSetType::UnderlyingType> distConf = std::monostate(),
     RandomConfig                                    config   = std::monostate())
 {
-    using ScalarType = BitSetType::UnderlyingType;
-
     return callWithDistribution(distConf, [&](auto&& distFunc) {
         return callWithRandomGenerator(config, [&](std::mt19937& gen) {
             BitSetType bitset;
