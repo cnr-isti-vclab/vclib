@@ -88,7 +88,7 @@ class CustomBDistWheel(bdist_wheel):
 
 inst_req = [
     "numpy>=2.0",
-    "pyqt6==6.11.*",
+    "pyqt6==6.10.*",
     "msvc-runtime ; platform_system == 'Windows'",
 ]
 
