@@ -28,6 +28,30 @@
 #include <QComboBox>
 #include <QVBoxLayout>
 
+#include <vclib/algorithms/core/random.h>
+
+std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
+{
+    auto points = std::make_shared<vcl::DrawablePoints>();
+
+    std::vector<vcl::Point3d> positions(nPoints);
+    std::vector<vcl::Color> colors(nPoints);
+
+    for (vcl::uint i = 0; i < nPoints; ++i) {
+        positions[i] = vcl::random<vcl::Point3d>();
+        colors[i] = vcl::Color(
+            vcl::random<uint8_t>(),
+            vcl::random<uint8_t>(),
+            vcl::random<uint8_t>()
+        );
+    }
+
+    points->setVertices(positions);
+    points->setVertexColors(colors);
+
+    return points;
+}
+
 class ColorToUseComboBox : public QComboBox
 {
 public:
@@ -73,10 +97,10 @@ int main(int argc, char** argv)
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    //vec->pushBack(std::move(getDrawablePoints(N_POINTS)));
+    vec->pushBack(getDrawablePoints(N_POINTS));
 
     tw->setDrawableObjectVector(vec);
-    //tslider->setValue(getPoints(vec)->size());
+    tslider->setValue(getPoints(vec)->size());
 
     QObject::connect(
         ccb,
@@ -86,13 +110,13 @@ int main(int argc, char** argv)
 
             std::cerr << "Color to use: " << index << std::endl;
 
-            //getPoints(vec)->setColorSetting((ColorSetting) index);
+            getPoints(vec)->setColorSetting((ColorSetting) index);
             tw->update();
         });
 
     QObject::connect(tslider, &QSlider::valueChanged, [=](int value) {
         std::cerr << "Size: " << value << std::endl;
-        //getPoints(vec)->setSize((float) value);
+        getPoints(vec)->setSize((float) value);
         tw->update();
     });
 
