@@ -909,8 +909,8 @@ auto montecarloPoissonPointSampling(
 
         for (const FaceType& f : m.faces()) {
             ScalarType areaT = faceArea(f);
-            int        faceSampleCnt =
-                poissonRandomNumber(areaT * samplePerAreaUnit, gen);
+            std::poisson_distribution<int> poisson(areaT * samplePerAreaUnit);
+            int faceSampleCnt = poisson(gen);
 
             // for every sample p_i in T...
             for (int i = 0; i < faceSampleCnt; i++)

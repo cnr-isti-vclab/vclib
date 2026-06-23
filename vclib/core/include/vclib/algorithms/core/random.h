@@ -132,40 +132,43 @@ T random(
 }
 
 /**
- * @brief algorithm poisson random number (Knuth):
- * init:
- *   Let L ← e^−λ, k ← 0 and p ← 1.
- *   do:
- *     k ← k + 1.
- *     Generate uniform random number u in [0,1] and let p ← p × u.
- *   while p > L.
- *   return k − 1.
- * @param[in] lambda
+ * @brief Generate a random point of a given PointType.
+ *
+ * This function generates a random point of the specified PointType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * @tparam PointType: Type of the point to generate, must satisfy PointConcept.
+ * @param[in] distConf: Distribution configuration, which can be:
+ *   - std::monostate: Use default uniform distribution based on PointType's
+ *     ScalarType.
+ *   - std::pair<PointType::ScalarType, PointType::ScalarType>: Specify bounds
+ *     for a uniform distribution.
+ *   - std::function<PointType::ScalarType(std::mt19937&)>: Custom distribution
+ *     function.
  * @param[in] config: RandomConfig that determines how to provide the random
  * number generator.
- * @return
+ * @return A random point of type PointType based on the specified distribution.
  *
  * @ingroup algorithms_core
  */
-inline int poissonRandomNumber(
-    double       lambda,
-    RandomConfig config = std::monostate())
+template<PointConcept PointType>
+PointType random(
+    DistConfig<typename PointType::ScalarType> distConf = std::monostate(),
+    RandomConfig                               config   = std::monostate())
 {
-    if (lambda > 50)
-        return detail::poissonRatioOfUniformsInteger(lambda, config);
+    using ScalarType = typename PointType::ScalarType;
 
-    std::uniform_real_distribution<double> unif(0, 1);
-
-    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
-        double L = exp(-lambda);
-        int    k = 0;
-        double p = 1.0;
-        do {
-            k = k + 1;
-            p = p * unif(gen);
-        } while (p > L);
-
-        return k - 1;
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            PointType point;
+            for (uint i = 0; i < PointType::DIM; ++i) {
+                point[i] = distFunc(gen);
+            }
+            return point;
+        });
     });
 }
 
