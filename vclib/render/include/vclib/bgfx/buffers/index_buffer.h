@@ -112,10 +112,10 @@ public:
      * no longer needed.
      */
     void create(
-        const void*        bufferIndices,
-        const uint         bufferSize,
-        PrimitiveType      type,
-        bgfx::ReleaseFn    releaseFn)
+        const void*     bufferIndices,
+        const uint      bufferSize,
+        PrimitiveType   type,
+        bgfx::ReleaseFn releaseFn)
     {
         create(bufferIndices, bufferSize, type, bgfx::Access::Read, releaseFn);
     }
@@ -138,9 +138,9 @@ public:
      * no longer needed.
      */
     void create(
-        const void*        bufferIndices,
-        const uint         bufferSize,
-        bgfx::ReleaseFn    releaseFn = nullptr)
+        const void*     bufferIndices,
+        const uint      bufferSize,
+        bgfx::ReleaseFn releaseFn = nullptr)
     {
         create(
             bufferIndices,
