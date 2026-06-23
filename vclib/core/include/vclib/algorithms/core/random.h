@@ -101,6 +101,37 @@ inline int poissonRatioOfUniformsInteger(
 } // namespace detail
 
 /**
+ * @brief Generate a random number with a specified distribution.
+ *
+ * This function generates a random number based on the provided distribution
+ * configuration and random generator configuration. The distribution can be
+ * specified as a pair of bounds for a uniform distribution or as a custom
+ * function that takes a random generator and returns a random number.
+ *
+ * @tparam T: Numeric type for the random number.
+ * @param[in] distConf: Distribution configuration, which can be:
+ *   - std::monostate: Use default uniform distribution based on type T.
+ *   - std::pair<T, T>: Specify bounds for a uniform distribution.
+ *   - std::function<T(std::mt19937&)>: Custom distribution function.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random number of type T based on the specified distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<Numeric T>
+T random(
+    DistConfig<T> distConf = std::monostate(),
+    RandomConfig  config   = std::monostate())
+{
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            return distFunc(gen);
+        });
+    });
+}
+
+/**
  * @brief algorithm poisson random number (Knuth):
  * init:
  *   Let L ← e^−λ, k ← 0 and p ← 1.

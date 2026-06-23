@@ -24,8 +24,10 @@
 #define VCL_BASE_RANDOM_H
 
 #include <vclib/base/concepts/range.h>
+#include <vclib/base/concepts/types.h>
 
 #include <algorithm>
+#include <functional>
 #include <optional>
 #include <random>
 #include <variant>
@@ -62,6 +64,36 @@ using RandomConfig =
     std::variant<std::monostate, uint, std::reference_wrapper<std::mt19937>>;
 
 /**
+ * @brief Configuration type for random value distribution behavior.
+ *
+ * This templated variant abstracts the statistical distribution used to
+ * generate random numbers. It allows functions to seamlessly accept default
+ * uniform generation, simple min/max bounds, or fully custom distributions
+ * (like Gaussian or Poisson) without requiring multiple overloads.
+ *
+ * Depending on the passed argument, the behavior adapts as follows:
+ * - **std::monostate** (Default): The function will use a standard uniform
+ * distribution (Typically `[0.0, 1.0)` for floating-point types, or full range
+ * for integers).
+ * - **std::pair<T, T>** (Bounds): The function will use a uniform distribution
+ * clamped between the provided minimum (`first`) and maximum (`second`) values.
+ * - **std::function<T(std::mt19937&)>** (Custom): The function will evaluate
+ * the provided callable. This is ideal for injecting complex standard
+ * distributions (e.g., `std::normal_distribution`) by wrapping them in a simple
+ * lambda.
+ *
+ * @tparam T: The numeric type of the generated values (defaults to `double`).
+ *
+ * @note Thanks to implicit conversions, you can pass a `std::pair` directly
+ * (e.g., `{10.0, 20.0}`) without explicitly constructing the `std::variant`.
+ *
+ * @ingroup base
+ */
+template<Numeric T>
+using DistConfig = std::
+    variant<std::monostate, std::pair<T, T>, std::function<T(std::mt19937&)>>;
+
+/**
  * @brief Creates a random number generator with an optional seed.
  *
  * If a seed is provided, the generator is seeded with that value, otherwise
@@ -96,6 +128,17 @@ inline std::mt19937 randomGenerator(std::optional<uint> seed = std::nullopt)
  * - A temporary std::mt19937 generator seeded with the provided seed.
  * - A thread-local std::mt19937 generator if no config is provided.
  *
+ * Example usage:
+ *
+ * @code{.cpp}
+ * int randomInt(RandomConfig config) {
+ *   return callWithRandomGenerator(config, [](std::mt19937& gen) {
+ *     std::uniform_int_distribution<int> dist(1, 100);
+ *     return dist(gen);
+ *   });
+ * }
+ * @endcode
+ *
  * @tparam Func: The type of the function to call. It should accept a
  * std::mt19937& as its first parameter.
  * @param[in] config: RandomConfig that determines how to provide the random
@@ -126,6 +169,81 @@ decltype(auto) callWithRandomGenerator(RandomConfig config, Func&& func)
     else {
         thread_local std::mt19937 internal_gen = randomGenerator();
         return func(internal_gen);
+    }
+}
+
+/**
+ * @brief Calls a function with a random number generator and a distribution
+ * based on the provided DistConfig.
+ *
+ * Depending on the type of DistConfig, the function will be called with:
+ * - A uniform distribution based on provided bounds.
+ * - A custom distribution function provided by the user.
+ * - A default uniform distribution if no config is provided.
+ *
+ * Example usage:
+ *
+ * @code{.cpp}
+ * double randomDouble(DistConfig<double> distConf, RandomConfig randConf) {
+ *   return callWithDistribution(distConf, [&](auto&& distFunc) {
+ *     return callWithRandomGenerator(randConf, [&](std::mt19937& gen) {
+ *       return distFunc(gen);
+ *     });
+ *   });
+ * }
+ * @endcode
+ *
+ * @tparam T: The numeric type of the generated values.
+ * @tparam Func: The type of the function to call. It should accept a
+ * std::mt19937& as its first parameter.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] func: The function to call with the appropriate random
+ * distribution.
+ *
+ * @return The result of calling func with the appropriate random distribution.
+ *
+ * @ingroup base
+ */
+template<Numeric T, typename Func>
+decltype(auto) callWithDistribution(const DistConfig<T>& distConf, Func&& func)
+{
+    // compiler chooses the correct distribution type based on T
+    using UniformDist = std::conditional_t<
+        std::is_floating_point_v<T>,
+        std::uniform_real_distribution<T>,
+        std::uniform_int_distribution<T>>;
+
+    // Case 1: The user provides a pair of bounds for a uniform distribution
+    if (auto* bounds = std::get_if<std::pair<T, T>>(&distConf)) {
+        UniformDist dist(bounds->first, bounds->second);
+        // 'func' takes a lambda that captures the distribution and calls it
+        // with a random generator
+        return func([&dist](std::mt19937& g) {
+            return dist(g);
+        });
+    }
+    // Case 2: The user provides a custom distribution function
+    else if (
+        auto* custom =
+            std::get_if<std::function<T(std::mt19937&)>>(&distConf)) {
+        return func([&custom](std::mt19937& g) {
+            return (*custom)(g);
+        });
+    }
+    // Case 3: The user provides std::monostate or no config, use default
+    // uniform distribution with standard bounds based on the type T
+    else {
+        // Default: [0.0, 1.0) for float, [min, max] for int
+        T min_val = std::is_floating_point_v<T> ? static_cast<T>(0.0) :
+                                                  std::numeric_limits<T>::min();
+        T max_val = std::is_floating_point_v<T> ? static_cast<T>(1.0) :
+                                                  std::numeric_limits<T>::max();
+
+        UniformDist dist(min_val, max_val);
+        return func([&dist](std::mt19937& g) {
+            return dist(g);
+        });
     }
 }
 
