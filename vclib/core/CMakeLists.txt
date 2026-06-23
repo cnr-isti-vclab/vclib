@@ -40,6 +40,7 @@ target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES}
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 
 if (MSVC)
+    target_compile_definitions(${PROJECT_NAME} INTERFACE _USE_MATH_DEFINES)
     target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
 endif()
 

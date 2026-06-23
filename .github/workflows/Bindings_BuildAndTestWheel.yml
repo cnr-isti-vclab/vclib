@@ -39,7 +39,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         cache: 'true'
-        version: '6.8.2'
+        version: '6.8.*'
     - name: Install Python ${{ steps.envs.outputs.python-version }}
       uses: actions/setup-python@v6
       with:

@@ -150,7 +150,7 @@ public:
     void create(
         uint                      vertNum,
         const bgfx::VertexLayout& layout,
-        uint64_t                  flags   = BGFX_BUFFER_NONE)
+        uint64_t                  flags = BGFX_BUFFER_NONE)
     {
         destroy();
 
@@ -212,7 +212,7 @@ public:
     void bind(uint stream) const
     {
         if (bgfx::isValid(mHandle)) {
-                bgfx::setVertexBuffer(stream, mHandle);
+            bgfx::setVertexBuffer(stream, mHandle);
         }
     }
 
