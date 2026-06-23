@@ -20,28 +20,64 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal
-$output v_normal, v_texcoord1
+$output v_normal, v_texcoord1, v_color
 
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
+
+BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
+BUFFER_RO(normalsBuffer, vec4, 1); // 3D normals
+BUFFER_RO(pointColors, uint, 2); // colors
 
 void main()
 {
-//    uint idx = uint(gl_VertexID) & 3u; // last 2 bits
-//    // (bit 0 = x axis, bit 1 = y axis)
-//    vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
-//    vec2 quadUv = vec2(idx & 1u, (idx >> 1) & 1u);
-//    vec4 offset = vec4(
-//        // {-1, +1} * width * texel
-//        (2.0 * quadUv.x - 1.0) * u_pointWidth * u_viewTexel.x, // is divided by 2
-//        (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
-//        0, 0);
-//
-//    pos = pos / pos.w;
-//    gl_Position = pos + offset;
-//    v_normal = normalize(mul(u_normalMatrix, a_normal));
-//
-//    // quad parametrization
-//    v_texcoord1 = quadUv;
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    // Calculate which point and which vertex of the quad we're processing
+    // Each point generates 6 vertices (2 triangles)
+    uint pointIndex = gl_VertexID / 6u;
+    uint localVertex = gl_VertexID % 6u;
+
+    uint idx30 = pointIndex * 3u;
+    uint idx31 = idx30 + 1u;
+    uint idx32 = idx30 + 2u;
+
+    vec3 centerPos = vec3(
+        pointsBuffer[idx30/4u][idx30%4u],
+        pointsBuffer[idx31/4u][idx31%4u],
+        pointsBuffer[idx32/4u][idx32%4u]);
+
+    const vec2 offsets[6] = {
+        vec2(-1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0, -1.0),
+        vec2( 1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0,  1.0)
+    };
+
+    vec2 quadUv = offsets[localVertex] * 0.5 + 0.5;
+
+    vec4 pos = mul(u_modelViewProj, vec4(centerPos, 1.0));
+    
+    vec4 offset = vec4(
+        offsets[localVertex].x * u_pointsWidth * u_viewTexel.x,
+        offsets[localVertex].y * u_pointsWidth * u_viewTexel.y,
+        0.0, 0.0);
+
+    pos = pos / pos.w;
+    gl_Position = pos + offset;
+
+    // Normal calculation
+    vec3 normal = vec3(0.0, 0.0, 1.0);
+    if (!useNoneShading()) {
+        normal = vec3(
+            normalsBuffer[idx30/4u][idx30%4u],
+            normalsBuffer[idx31/4u][idx31%4u],
+            normalsBuffer[idx32/4u][idx32%4u]);
+    }
+    v_normal = normalize(mul(u_normalMatrix, normal));
+
+    // Color calculation
+    v_color = u_pointsGeneralColor;
+    if (usePerPointColor()) {
+        v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+    }
+
+    // Pass UV coordinates to fragment shader
+    v_texcoord1 = quadUv;
 }

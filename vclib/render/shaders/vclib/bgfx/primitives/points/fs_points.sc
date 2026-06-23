@@ -20,45 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_normal, v_texcoord1
+$input v_normal, v_texcoord1, v_color
 
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+#include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
-
-BUFFER_RO(vertexColors, uint, 2); // colors (rgba as float bits)
 
 void main()
 {
-//    // defaul color and light
-//    vec4 light = vec4(1, 1, 1, 1);
-//    vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
-//
-//    // circle mode (if outside of the circle, discard)
-//    bool isCircle = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE));
-//    bool isSphere = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SPHERE));
-//    if (isCircle || isSphere) {
-//        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
-//        if (length(uv) > 1.0) {
-//            discard;
-//        }
-//        if (isSphere) {
-//            // sphere mode
-//            v_normal = normalize(vec3(uv.x, uv.y, sqrt(1.0 - dot(uv, uv))));
-//        }
-//    }
-//
-//    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT))) {
-//        light = computeLight(u_lightDir, u_lightColor, v_normal);
-//    }
-//
-//    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX))) {
-//        uint pointId = uint(gl_PrimitiveID) / 2u;
-//        color = uintABGRToVec4Color(vertexColors[pointId]);
-//    }
-//    else if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH))) {
-//        color = u_meshColor;
-//    }
-//
-//    // NO depth writing (it kills performance)
-//    gl_FragColor = light * color; // + vec4(specular, 0);
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    vec4 color = v_color;
+
+    if (!useQuadShape()) {
+        // circle mode (if outside of the circle, discard)
+        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+        if (length(uv) > 1.0) {
+            discard;
+        }
+    }
+
+    vec4 light = vec4(1.0, 1.0, 1.0, 1.0);
+    if (!useNoneShading()) {
+        light = computeLight(u_lightDir, u_lightColor, v_normal);
+    }
+
+    gl_FragColor = light * color;
 }

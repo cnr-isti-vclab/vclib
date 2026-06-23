@@ -139,17 +139,8 @@ void Points::draw(bgfx::ViewId viewId) const
             POINTS_COLORS_STAGE, bgfx::Access::Read);
     }
 
-    // Each point is expanded into one quad (6 vertices / 2 triangles).
-    // TODO: verify this triangle count matches the intended shader behavior;
-    // adjust if a single-vertex point sprite (e.g., GL_POINTS) is preferred.
     bgfx::setVertexCount(mVertexCount * 6);
 
-    // TODO: configure appropriate rasterization state for world-space points.
-    // Suggested settings (adjust according to the final shader design):
-    //   - Enable depth testing with BGFX_STATE_DEPTH_TEST_LESS so closer points
-    //     occlude farther ones correctly.
-    //   - Write RGB and alpha channels.
-    //   - Optionally enable MSAA-compatible blending: BGFX_STATE_BLEND_ALPHA.
     bgfx::setState(0 |
                    BGFX_STATE_WRITE_RGB        |
                    BGFX_STATE_WRITE_A          |
@@ -159,13 +150,8 @@ void Points::draw(bgfx::ViewId viewId) const
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
 
-    // TODO: select and submit with the appropriate world-space points program.
-    // Replace the placeholder below with the real program, e.g.:
-    //   bgfx::submit(viewId, pm.getProgram<VertFragProgram::POINTS>());
-    //bgfx::submit(viewId, nullptr);
-
-    // TODO: unbind compute buffers after draw (if not handled automatically
-    // by setComputeTexture or the framework).
+    auto program = pm.getProgram<VertFragProgram::PRIMITIVE_POINTS>();
+    bgfx::submit(viewId, program);
 }
 
 } // namespace vcl

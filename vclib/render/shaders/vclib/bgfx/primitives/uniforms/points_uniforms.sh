@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
 #define VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
 
-#include <vclib/shaders_common.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 uniform vec4 u_pointsSettings;
 
-#define u_pointsSettingPack uintBitsToFloat(u_pointsSettings.x)
+#define u_pointsSettingPack floatBitsToUint(u_pointsSettings.x)
 #define u_pointsWidth u_pointsSettings.y
 #define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.z))
 
