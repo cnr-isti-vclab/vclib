@@ -109,8 +109,7 @@ auto randomSpheres(
 }
 
 template<
-    template<typename, typename>
-    typename Grid,
+    template<typename, typename> typename Grid,
     vcl::FaceMeshConcept MeshType>
 auto computeGrid(const MeshType& mesh)
 {

@@ -20,30 +20,13 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-core)
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-test-${TEST_NAME})
 
-### vclib-core target
-set(VCLIB_CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(SOURCES
+    main.cpp)
 
-file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
-
-add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
-add_library(vclib::core ALIAS ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_INCLUDE_DIR})
-target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_CORE_MODULE)
-
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR})
-
-target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES})
-
-target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
-
-if (MSVC)
-    target_compile_definitions(${PROJECT_NAME} INTERFACE _USE_MATH_DEFINES)
-    target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
-endif()
-
-# Install
-install(DIRECTORY ${VCLIB_CORE_INCLUDE_DIR}/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+vclib_add_test(
+    ${TEST_NAME}
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})

@@ -67,7 +67,12 @@ void initDistanceAlgorithms(pybind11::module& m)
                    uint                    nSamples,
                    std::optional<uint>     seed) -> HausdorffDistResult {
                     return hausdorffDistance(
-                        m1, m2, nullLogger, sampMethod, nSamples, seed);
+                        m1,
+                        m2,
+                        nullLogger,
+                        sampMethod,
+                        nSamples,
+                        toRConfig(seed));
                 },
                 "mesh1"_a,
                 "mesh2"_a,

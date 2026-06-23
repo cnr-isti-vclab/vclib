@@ -20,20 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_texcoord1
+$input v_color, v_texcoord1
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
-
-BUFFER_RO(pointColors, uint, 1); // colors
 
 void main()
 {
     vec4 color = u_pointsGeneralColor;
 
     if (usePerPointColor()) {
-        uint pointId = uint(gl_PrimitiveID) / 2u;
-        color = uintABGRToVec4Color(pointColors[pointId]);
+        color = v_color;
     }
 
     // Circle shape discards fragments outside the unit disk.
