@@ -46,7 +46,7 @@ TEST_CASE("Random int with custom DistConfig")
 {
     std::mt19937 gen(42);
 
-           // Custom dist: always return 5 when seed is used — deterministic.
+    // Custom dist: always return 5 when seed is used — deterministic.
     auto custom = [](std::mt19937&) -> int {
         return 5;
     };
@@ -105,14 +105,16 @@ TEST_CASE("Random float with custom DistConfig")
 TEST_CASE("Same int seed always produces the same value")
 {
     REQUIRE(
-        vcl::random<int>(std::pair<int, int> {0, 1000}, uint(12345)) ==
-        vcl::random<int>(std::pair<int, int> {0, 1000}, uint(12345)));
+        vcl::random<int>(std::pair<int, int> {0, 1000}, vcl::uint(12345)) ==
+        vcl::random<int>(std::pair<int, int> {0, 1000}, vcl::uint(12345)));
 }
 
 TEST_CASE("Different seeds produce different values")
 {
-    auto v1 = vcl::random<int>(std::pair<int, int> {0, INT32_MAX}, uint(1));
-    auto v2 = vcl::random<int>(std::pair<int, int> {0, INT32_MAX}, uint(2));
+    auto v1 =
+        vcl::random<int>(std::pair<int, int> {0, INT32_MAX}, vcl::uint(1));
+    auto v2 =
+        vcl::random<int>(std::pair<int, int> {0, INT32_MAX}, vcl::uint(2));
     REQUIRE(v1 != v2);
 }
 
@@ -147,8 +149,9 @@ TEST_CASE("Same float seed always produces the same value")
 {
     REQUIRE(
         vcl::random<double>(
-            std::pair<double, double> {0.0, 1.0}, uint(77777)) ==
-        vcl::random<double>(std::pair<double, double> {0.0, 1.0}, uint(77777)));
+            std::pair<double, double> {0.0, 1.0}, vcl::uint(77777)) ==
+        vcl::random<double>(
+            std::pair<double, double> {0.0, 1.0}, vcl::uint(77777)));
 }
 
 TEST_CASE("Same seeded mt19937 produces a deterministic float sequence")
@@ -180,6 +183,7 @@ TEST_CASE("Random with pair dist and seeded RandomConfig is deterministic")
 {
     REQUIRE(
         vcl::random<double>(
-            std::pair<double, double> {0.0, 100.0}, uint(555)) ==
-        vcl::random<double>(std::pair<double, double> {0.0, 100.0}, uint(555)));
+            std::pair<double, double> {0.0, 100.0}, vcl::uint(555)) ==
+        vcl::random<double>(
+            std::pair<double, double> {0.0, 100.0}, vcl::uint(555)));
 }
