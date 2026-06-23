@@ -109,10 +109,8 @@ inline int poissonRatioOfUniformsInteger(
  * function that takes a random generator and returns a random number.
  *
  * @tparam T: Numeric type for the random number.
- * @param[in] distConf: Distribution configuration, which can be:
- *   - std::monostate: Use default uniform distribution based on type T.
- *   - std::pair<T, T>: Specify bounds for a uniform distribution.
- *   - std::function<T(std::mt19937&)>: Custom distribution function.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
  * @param[in] config: RandomConfig that determines how to provide the random
  * number generator.
  * @return A random number of type T based on the specified distribution.
@@ -141,13 +139,8 @@ T random(
  * returns a random number.
  *
  * @tparam PointType: Type of the point to generate, must satisfy PointConcept.
- * @param[in] distConf: Distribution configuration, which can be:
- *   - std::monostate: Use default uniform distribution based on PointType's
- *     ScalarType.
- *   - std::pair<PointType::ScalarType, PointType::ScalarType>: Specify bounds
- *     for a uniform distribution.
- *   - std::function<PointType::ScalarType(std::mt19937&)>: Custom distribution
- *     function.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
  * @param[in] config: RandomConfig that determines how to provide the random
  * number generator.
  * @return A random point of type PointType based on the specified distribution.
@@ -159,7 +152,7 @@ PointType random(
     DistConfig<typename PointType::ScalarType> distConf = std::monostate(),
     RandomConfig                               config   = std::monostate())
 {
-    using ScalarType = typename PointType::ScalarType;
+    using ScalarType = PointType::ScalarType;
 
     return callWithDistribution(distConf, [&](auto&& distFunc) {
         return callWithRandomGenerator(config, [&](std::mt19937& gen) {
@@ -168,6 +161,126 @@ PointType random(
                 point[i] = distFunc(gen);
             }
             return point;
+        });
+    });
+}
+
+/**
+ * @brief Generate a random box of a given BoxType.
+ *
+ * This function generates a random box of the specified BoxType based on the
+ * provided distribution configuration and random generator configuration. The
+ * distribution can be specified as a pair of bounds for a uniform distribution
+ * or as a custom function that takes a random generator and returns a random
+ * number.
+ *
+ * Generated boxes will have their min and max points randomly generated,
+ * ensuring that the min point is less than or equal to the max point for each
+ * dimension.
+ *
+ * @tparam BoxType: Type of the box to generate, must satisfy BoxConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random box of type BoxType based on the specified distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<BoxConcept BoxType>
+BoxType random(
+    DistConfig<typename BoxType::ScalarType> distConf = std::monostate(),
+    RandomConfig                             config   = std::monostate())
+{
+    using ScalarType = BoxType::ScalarType;
+    using PointType  = BoxType::PointType;
+
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            PointType minPoint, maxPoint;
+            for (uint i = 0; i < PointType::DIM; ++i) {
+                minPoint[i] = distFunc(gen);
+                maxPoint[i] = distFunc(gen);
+                if (minPoint[i] > maxPoint[i]) {
+                    std::swap(minPoint[i], maxPoint[i]);
+                }
+            }
+            return BoxType(minPoint, maxPoint);
+        });
+    });
+}
+
+/**
+ * @brief Generate a random plane of a given PlaneType.
+ *
+ * This function generates a random plane of the specified PlaneType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * @tparam PlaneType: Type of the plane to generate, must satisfy PlaneConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random plane of type PlaneType based on the specified distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<PlaneConcept PlaneType>
+PlaneType random(
+    DistConfig<typename PlaneType::ScalarType> distConf = std::monostate(),
+    RandomConfig                               config   = std::monostate())
+{
+    using ScalarType = PlaneType::ScalarType;
+    using PointType  = PlaneType::PointType;
+
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            return PlaneType(
+                random<PointType>(distConf, config),
+                random<ScalarType>(distConf, config));
+        });
+    });
+}
+
+/**
+ * @brief Generate a random bitset of a given BitSetType.
+ *
+ * This function generates a random bitset of the specified BitSetType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * The function performs a single random draw from the specified distribution
+ * and sets the underlying value of the bitset accordingly. The resulting bitset
+ * will have its bits set based on the random value generated.
+ *
+ * @tparam BitSetType: Type of the bitset to generate, must satisfy
+ * BitSetConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random bitset of type BitSetType based on the specified
+ * distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<BitSetConcept BitSetType>
+BitSetType random(
+    DistConfig<typename BitSetType::UnderlyingType> distConf = std::monostate(),
+    RandomConfig                                    config   = std::monostate())
+{
+    using ScalarType = BitSetType::UnderlyingType;
+
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            BitSetType bitset;
+            bitset.setUnderlying(distFunc(gen));
+            return bitset;
         });
     });
 }
