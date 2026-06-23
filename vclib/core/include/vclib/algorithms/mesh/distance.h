@@ -187,13 +187,13 @@ template<
     PointSamplerConcept SamplerType,
     LoggerConcept       LogType>
 HausdorffDistResult hausdorffDistance(
-    const MeshType1&    m1,
-    const MeshType2&    m2,
-    uint                nSamples,
-    std::optional<uint> seed,
-    SamplerType&        sampler,
-    std::vector<uint>&  birth,
-    LogType&            log)
+    const MeshType1&   m1,
+    const MeshType2&   m2,
+    uint               nSamples,
+    RandomConfig       config,
+    SamplerType&       sampler,
+    std::vector<uint>& birth,
+    LogType&           log)
 {
     std::string meshName1 = "first mesh";
     std::string meshName2 = "second mesh";
@@ -210,13 +210,14 @@ HausdorffDistResult hausdorffDistance(
             " samples...");
 
     if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
-        sampler = vertexUniformPointSampling(m2, nSamples, birth, false, seed);
+        sampler =
+            vertexUniformPointSampling(m2, nSamples, birth, false, config);
     }
     else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
         // todo
     }
     else {
-        sampler = montecarloPointSampling(m2, nSamples, birth, seed);
+        sampler = montecarloPointSampling(m2, nSamples, birth, config);
     }
 
     log.log(5, meshName2 + " sampled.");
@@ -242,7 +243,7 @@ HausdorffDistResult hausdorffDistance(
     LogType&                log        = nullLogger,
     HausdorffSamplingMethod sampMethod = HAUSDORFF_VERTEX_UNIFORM,
     uint                    nSamples   = 0,
-    std::optional<uint>     seed       = std::nullopt)
+    RandomConfig            config     = std::monostate())
 {
     if (nSamples == 0)
         nSamples = m2.vertexCount();
@@ -254,7 +255,7 @@ HausdorffDistResult hausdorffDistance(
         PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
-            m1, m2, nSamples, seed, sampler, birth, log);
+            m1, m2, nSamples, config, sampler, birth, log);
     }
 
     case HAUSDORFF_EDGE_UNIFORM: {
@@ -266,7 +267,7 @@ HausdorffDistResult hausdorffDistance(
             PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
             return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
-                m1, m2, nSamples, seed, sampler, birth, log);
+                m1, m2, nSamples, config, sampler, birth, log);
         }
         else {
             throw std::runtime_error(

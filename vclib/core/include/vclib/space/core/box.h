@@ -54,6 +54,11 @@ public:
     using PointType = PointT;
 
     /**
+     * @brief The scalar type used for the coordinates of the box.
+     */
+    using ScalarType = PointT::ScalarType;
+
+    /**
      * @brief The dimensionality of the box.
      */
     static const uint DIM = PointT::DIM;

@@ -20,37 +20,13 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-project(vclib-core-tests)
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-test-${TEST_NAME})
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(SOURCES
+    main.cpp)
 
-add_subdirectory(000-static-asserts)
-add_subdirectory(001-trimesh-base)
-add_subdirectory(002-mesh-topology)
-add_subdirectory(003-mesh-conversions)
-add_subdirectory(004-mesh-custom-components)
-add_subdirectory(005-mesh-new-user-component)
-add_subdirectory(006-load-save-mesh-obj)
-add_subdirectory(007-load-save-mesh-off)
-add_subdirectory(008-load-save-mesh-ply)
-add_subdirectory(009-load-save-mesh-stl)
-add_subdirectory(010-mesh-clean)
-add_subdirectory(011-mesh-filter)
-add_subdirectory(012-kd-tree)
-add_subdirectory(013-mesh-update-normal)
-add_subdirectory(014-polymesh-base)
-add_subdirectory(015-mesh-copy-and-append)
-add_subdirectory(016-mesh-crease-edges)
-add_subdirectory(017-serialization)
-add_subdirectory(018-polygon)
-add_subdirectory(019-export-matrix)
-add_subdirectory(020-import-matrix)
-add_subdirectory(021-append-buffer)
-add_subdirectory(022-grid-query)
-add_subdirectory(024-space-core)
-add_subdirectory(025-mesh-convex-hull)
-add_subdirectory(026-random)
-
-if (TARGET vclib-3rd-tinygltf)
-    add_subdirectory(023-load-mesh-gltf)
-endif()
+vclib_add_test(
+    ${TEST_NAME}
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
