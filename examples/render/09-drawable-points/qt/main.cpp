@@ -53,6 +53,7 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
 
     points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
     points->setShading(vcl::Points::Shading::NONE);
+    points->setShape(vcl::Points::Shape::SQUARE);
 
     return points;
 }
@@ -105,7 +106,7 @@ int main(int argc, char** argv)
     vec->pushBack(getDrawablePoints(N_POINTS));
 
     tw->setDrawableObjectVector(vec);
-    tslider->setValue(getPoints(vec)->size());
+    tslider->setValue(getPoints(vec)->width());
 
     QObject::connect(
         ccb,

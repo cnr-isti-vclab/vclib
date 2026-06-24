@@ -103,6 +103,34 @@ public:
         const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
 
     /**
+     * @brief Returns the width of point splats.
+     *
+     * @return The width of the point splats in pixels.
+     */
+    float width() const { return mWidth; }
+
+    /**
+     * @brief Returns whether the point set has valid vertex positions.
+     *
+     * @return True if vertex positions are valid; false otherwise.
+     */
+    bool hasPositions() const { return mVertexPositions.isValid(); }
+
+    /**
+     * @brief Returns whether the point set has valid vertex colors.
+     *
+     * @return True if vertex colors are valid; false otherwise.
+     */
+    bool hasColors() const { return mVertexColors.isValid(); }
+
+    /**
+     * @brief Returns the number of points in the set.
+     *
+     * @return The number of points (vertices) in the set.
+     */
+    uint vertexCount() const { return mVertexCount; }
+
+    /**
      * @brief Sets point positions from a range of 2D points.
      *
      * @tparam R: Range whose value type satisfies Point2Concept (must provide

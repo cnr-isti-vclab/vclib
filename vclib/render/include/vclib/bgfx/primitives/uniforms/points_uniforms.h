@@ -71,7 +71,7 @@ public:
         sPointsSettings[0] = std::bit_cast<float>(bs.underlying());
     }
 
-    static void setSize(float size) { sPointsSettings[1] = size; }
+    static void setWidth(float width) { sPointsSettings[1] = width; }
 
     static void setGeneralColor(const vcl::Color& color)
     {

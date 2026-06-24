@@ -121,7 +121,7 @@ void Points::draw(bgfx::ViewId viewId) const
     PointsUniforms::setColorSetting(static_cast<uint>(mColorToUse));
     PointsUniforms::setShading(static_cast<uint>(mShading));
     PointsUniforms::setShape(static_cast<uint>(mShape));
-    PointsUniforms::setSize(mSize);
+    PointsUniforms::setWidth(mWidth);
     PointsUniforms::setGeneralColor(mGeneralColor);
 
     // Bind the position buffer as a compute buffer (SSBO) for vertex shader

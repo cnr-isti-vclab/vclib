@@ -63,7 +63,7 @@ public:
 private:
     uint mVertexCount = 0;
 
-    float        mSize         = 1.0f;
+    float        mWidth        = 1.0f;
     ColorSetting mColorToUse   = ColorSetting::GENERAL;
     Shading      mShading      = Shading::NONE;
     Shape        mShape        = Shape::SQUARE;
@@ -117,11 +117,39 @@ public:
         const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
 
     /**
-     * @brief Returns the render size of point sprites.
+     * @brief Returns the width of point splats.
      *
-     * @return The size of each point sprite in pixels.
+     * @return The width of the point splats in pixels.
      */
-    float size() const { return mSize; }
+    float width() const { return mWidth; }
+
+    /**
+     * @brief Returns whether the point set has valid vertex positions.
+     *
+     * @return True if vertex positions are valid; false otherwise.
+     */
+    bool hasPositions() const { return mVertexPositions.isValid(); }
+
+    /**
+     * @brief Returns whether the point set has valid vertex normals.
+     *
+     * @return True if vertex normals are valid; false otherwise.
+     */
+    bool hasNormals() const { return mVertexNormals.isValid(); }
+
+    /**
+     * @brief Returns whether the point set has valid vertex colors.
+     *
+     * @return True if vertex colors are valid; false otherwise.
+     */
+    bool hasColors() const { return mVertexColors.isValid(); }
+
+    /**
+     * @brief Returns the number of points in the set.
+     *
+     * @return The number of points (vertices) in the set.
+     */
+    uint vertexCount() const { return mVertexCount; }
 
     /**
      * @brief Sets point positions from a range of 3D points.
@@ -250,7 +278,7 @@ public:
      *
      * @param[in] size: The point sprite size.
      */
-    void setSize(float size) { mSize = size; }
+    void setSize(float size) { mWidth = size; }
 
     /**
      * @brief Sets the color mode for point rendering.

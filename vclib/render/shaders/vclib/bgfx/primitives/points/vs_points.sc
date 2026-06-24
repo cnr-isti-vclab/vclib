@@ -63,7 +63,7 @@ void main()
     gl_Position = pos + offset;
 
     // Normal calculation
-    vec3 normal = vec3(0.0, 0.0, 1.0);
+    vec3 normal = vec3(0.0, 0.0, 0.0);
     if (!useNoneShading()) {
         normal = vec3(
             normalsBuffer[idx30/4u][idx30%4u],
