@@ -20,19 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
-#define VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H
+$input a_position, a_normal, a_color0
+$output v_color, v_normal
 
-#include <bgfx/bgfx.h>
+#include <bgfx_shader.sh>
+#include <bgfx_compute.sh>
 
-namespace vcl::detail {
+#include <vclib/bgfx/primitives/deprecated/lines/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh> 
 
-inline uint64_t linesDrawState()
-{
-    return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-           BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
+#define p                     a_position
+#define color                 a_color0
+#define normal                a_normal
+
+void main() {
+    v_color = color;
+    v_normal = normalize(mul(u_normalMatrix, normal));
+    vec4 pos = mul(u_modelViewProj, vec4(p, 1.0));
+    pos.z += -u_depthOffset * pos.w;
+    gl_Position = pos;
 }
-
-} // namespace vcl::detail
-
-#endif // VCL_BGFX_PRIMITIVES_LINES_LINES_UTILS_H

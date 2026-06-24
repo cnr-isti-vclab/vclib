@@ -61,7 +61,7 @@ public:
 
     virtual void onDraw(uint viewId) override
     {
-        using enum vcl::Lines::ImplementationType;
+        using enum vcl::depr::Lines::ImplementationType;
 
         ParentDrawer::onDraw(viewId);
 
@@ -78,7 +78,7 @@ public:
         if (selected != mSelected) {
             mSelected = selected;
             mLines->setImplementationType(
-                static_cast<vcl::Lines::ImplementationType>(mSelected));
+                static_cast<vcl::depr::Lines::ImplementationType>(mSelected));
         }
 
         ImGui::Begin("Settings");
@@ -108,7 +108,7 @@ public:
         for (int i = 0; i < 3; ++i) {
             ImGui::RadioButton(colorToUseItems[i], &colorToUse, i);
         }
-        mLines->setColorToUse(static_cast<vcl::Lines::ColorToUse>(colorToUse));
+        mLines->setColorToUse(static_cast<vcl::depr::Lines::ColorToUse>(colorToUse));
         ImGui::End();
     }
 };

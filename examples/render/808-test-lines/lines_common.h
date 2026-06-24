@@ -97,9 +97,9 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
             vcl::DrawableLines(
                 vertCoords, indices, vertNormals, vertColors, lineColors) :
             vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
-    lines.setImplementationType(vcl::Lines::ImplementationType::PRIMITIVE);
+    lines.setImplementationType(vcl::depr::Lines::ImplementationType::PRIMITIVE);
     lines.thickness() = 10;
-    lines.setColorToUse(vcl::Lines::ColorToUse::PER_VERTEX);
+    lines.setColorToUse(vcl::depr::Lines::ColorToUse::PER_VERTEX);
 
     return lines;
 }

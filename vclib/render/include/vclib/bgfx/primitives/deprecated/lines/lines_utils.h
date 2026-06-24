@@ -20,28 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_color, v_normal
+#ifndef VCL_BGFX_PRIMITIVES_DEPR_LINES_LINES_UTILS_H
+#define VCL_BGFX_PRIMITIVES_DEPR_LINES_LINES_UTILS_H
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/primitives/lines/uniforms.sh>
-#include <vclib/bgfx/shaders_common.sh> 
+#include <bgfx/bgfx.h>
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
+namespace vcl::depr::detail {
 
-BUFFER_RO(edgesColors, uint, 0);
-
-#define edgeColor    uintABGRToVec4Color(edgesColors[gl_PrimitiveID])
-#define vertexColor  v_color
-
-void main() {
-    vec4 color;
-    if (colorToUse == 0)        color = vertexColor;
-    else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;
-
-    if (u_shadingPerVertex) {
-        color *= computeLight(u_lightDir, u_lightColor, v_normal);
-    }
-    gl_FragColor = color;
+inline uint64_t linesDrawState()
+{
+    return 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+           BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
 }
+
+} // namespace vcl::detail
+
+#endif // VCL_BGFX_PRIMITIVES_DEPR_LINES_LINES_UTILS_H

@@ -26,7 +26,7 @@ $output v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-#include <vclib/bgfx/primitives/lines/uniforms.sh>
+#include <vclib/bgfx/primitives/deprecated/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 #define NEAR_EPSILON 0.001

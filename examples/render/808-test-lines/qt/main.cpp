@@ -103,10 +103,10 @@ int main(int argc, char** argv)
             vec->clear();
             vec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
             getLines(vec)->setColorToUse(
-                (vcl::Lines::ColorToUse) ccb->currentIndex());
+                (vcl::depr::Lines::ColorToUse) ccb->currentIndex());
             getLines(vec)->thickness() = tslider->value();
             getLines(vec)->setImplementationType(
-                (vcl::Lines::ImplementationType) lcb->currentIndex());
+                (vcl::depr::Lines::ImplementationType) lcb->currentIndex());
             tw->update();
         });
 
@@ -114,7 +114,7 @@ int main(int argc, char** argv)
         lcb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
-            using ImplementationType = vcl::Lines::ImplementationType;
+            using ImplementationType = vcl::depr::Lines::ImplementationType;
 
             std::cerr << "Lines implementation: " << index << std::endl;
 
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
         ccb,
         static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
         [=](int index) {
-            using ColorToUse = vcl::Lines::ColorToUse;
+            using ColorToUse = vcl::depr::Lines::ColorToUse;
 
             std::cerr << "Color to use: " << index << std::endl;
 

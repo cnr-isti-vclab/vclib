@@ -20,11 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PRIMITIVES_LINES_H
-#define VCL_BGFX_PRIMITIVES_LINES_H
+#ifndef VCL_BGFX_PRIMITIVES_DEPR_LINES_H
+#define VCL_BGFX_PRIMITIVES_DEPR_LINES_H
 
-#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
-#include <vclib/bgfx/primitives/lines/primitive_lines.h>
+#include "lines/cpu_generated_lines.h"
+#include "lines/primitive_lines.h"
+
 #include <vclib/bgfx/uniform.h>
 
 #include <vclib/base.h>
@@ -34,7 +35,7 @@
 
 #include <bgfx/bgfx.h>
 
-namespace vcl {
+namespace vcl::depr {
 
 // TODO: add shading per-line (flat, per-line normal) (?)
 /**
@@ -536,6 +537,6 @@ private:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::depr
 
-#endif // VCL_BGFX_PRIMITIVES_LINES_H
+#endif // VCL_BGFX_PRIMITIVES_DEPR_LINES_H

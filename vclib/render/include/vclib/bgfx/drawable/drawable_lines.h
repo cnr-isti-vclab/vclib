@@ -24,14 +24,14 @@
 #define VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/deprecated/lines.h>
 #include <vclib/render/drawable/drawable_object.h>
 
 #include <bgfx/bgfx.h>
 
 namespace vcl {
 
-class DrawableLines : public Lines, public vcl::DrawableObject
+class DrawableLines : public depr::Lines, public vcl::DrawableObject
 {
     bool mVisible        = true;
     bool mUseLineIndices = false; // true whether a vector of line indices has
@@ -67,7 +67,7 @@ public:
 
     DrawableLines(const DrawableLines& other) :
             DrawableObject(other), mVertCoords(other.mVertCoords),
-            Lines(
+            depr::Lines(
                 other.mVertCoords,
                 other.mLineIndices,
                 other.mVertNormals,
@@ -97,7 +97,7 @@ public:
     {
         using std::swap;
         DrawableObject::swap(other);
-        swap(static_cast<Lines&>(*this), static_cast<Lines&>(other));
+        swap(static_cast<depr::Lines&>(*this), static_cast<depr::Lines&>(other));
 
         swap(mVisible, other.mVisible);
         swap(mUseLineIndices, other.mUseLineIndices);
@@ -125,7 +125,7 @@ public:
         mVertColors     = vertColors;
         mVertNormals    = vertNormals;
         mLineColors     = lineColors;
-        Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
+        depr::Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
     }
 
     void setPoints(
@@ -141,7 +141,7 @@ public:
         mVertColors     = vertColors;
         mVertNormals    = vertNormals;
         mLineColors     = lineColors;
-        Lines::setPoints(
+        depr::Lines::setPoints(
             vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
     }
 
@@ -149,7 +149,7 @@ public:
 
     void draw(const DrawObjectSettings& settings) override
     {
-        Lines::draw(settings.viewId);
+        depr::Lines::draw(settings.viewId);
     }
 
     vcl::Box3d boundingBox() const override
@@ -174,7 +174,7 @@ public:
     void setImplementationType(ImplementationType type)
     {
         if (mUseLineIndices) {
-            Lines::setPoints(
+            depr::Lines::setPoints(
                 mVertCoords,
                 mLineIndices,
                 mVertNormals,
@@ -183,7 +183,7 @@ public:
                 type);
         }
         else {
-            Lines::setPoints(
+            depr::Lines::setPoints(
                 mVertCoords, mVertNormals, mVertColors, mLineColors, type);
         }
     }

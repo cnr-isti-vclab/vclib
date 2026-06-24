@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
+#include <vclib/bgfx/primitives/deprecated/lines/cpu_generated_lines.h>
 
-#include <vclib/bgfx/primitives/lines/lines_utils.h>
+#include <vclib/bgfx/primitives/deprecated/lines/lines_utils.h>
 
-namespace vcl::detail {
+namespace vcl::depr::detail {
 
 CPUGeneratedLines::CPUGeneratedLines(
     const std::vector<float>& vertCoords,
@@ -263,4 +263,4 @@ void CPUGeneratedLines::setPoints(
     }
 }
 
-} // namespace vcl::detail
+} // namespace vcl::depr::detail

@@ -23,7 +23,7 @@
 $input v_color, v_normal
 
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/primitives/lines/uniforms.sh>
+#include <vclib/bgfx/primitives/deprecated/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 #include <bgfx_shader.sh>
@@ -31,15 +31,15 @@ $input v_color, v_normal
 
 BUFFER_RO(edgesColors, uint, 0);
 
-#define edgeColor    uintABGRToVec4Color(edgesColors[gl_PrimitiveID / 2])
+#define edgeColor    uintABGRToVec4Color(edgesColors[gl_PrimitiveID])
 #define vertexColor  v_color
 
 void main() {
     vec4 color;
     if (colorToUse == 0)        color = vertexColor;
     else if (colorToUse == 1)   color = edgeColor;
-    else                        color = generalColor;    
-    
+    else                        color = generalColor;
+
     if (u_shadingPerVertex) {
         color *= computeLight(u_lightDir, u_lightColor, v_normal);
     }

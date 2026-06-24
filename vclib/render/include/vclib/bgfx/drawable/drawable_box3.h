@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_BOX3_H
 
-#include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/deprecated/lines.h>
 #include <vclib/render/drawable/drawable_object.h>
 
 #include <vclib/space/core.h>
@@ -34,7 +34,7 @@ class DrawableBox3 : public DrawableObject
 {
     Box3f mBox;
 
-    Lines mBoxLines;
+    depr::Lines mBoxLines;
     bool  mVisible = true;
 
 public:

@@ -20,62 +20,92 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
-#define VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
+#ifndef VCL_BGFX_PRIMITIVES_DEPR_LINES_PRIMITIVE_LINES_H
+#define VCL_BGFX_PRIMITIVES_DEPR_LINES_PRIMITIVE_LINES_H
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
-namespace vcl::detail {
+namespace vcl::depr::detail {
 
 // Note: copy constructor and assignment are not allowed (because of bgfx
 // handles). Move constructor and assignment are allowed.
-class CPUGeneratedLines
+class PrimitiveLines
 {
     bgfx::ProgramHandle mLinesPH =
         Context::instance()
             .programManager()
-            .getProgram<VertFragProgram::CUSTOM_CPU_LINES>();
+            .getProgram<VertFragProgram::DEPRECATED_PRIMITIVE_LINES>();
 
-    VertexBuffer mVertexCoords;
-    VertexBuffer mVertexNormals;
-    VertexBuffer mVertexColors;
-    IndexBuffer  mLineColors;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexCoords;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    vcl::OwnedOrRefBuffer<IndexBuffer>  mLineColors;
 
-    IndexBuffer mIndices;
+    vcl::OwnedOrRefBuffer<IndexBuffer> mIndices;
 
 public:
-    CPUGeneratedLines() = default;
+    PrimitiveLines() = default;
 
-    CPUGeneratedLines(
+    PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>());
 
-    CPUGeneratedLines(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<uint>&  lineColors  = std::vector<uint>());
-
-    void swap(CPUGeneratedLines& other);
-
-    friend void swap(CPUGeneratedLines& a, CPUGeneratedLines& b) { a.swap(b); }
-
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<uint>&  lineColors  = std::vector<uint>());
-
-    void setPoints(
+    PrimitiveLines(
         const std::vector<float>& vertCoords,
         const std::vector<uint>&  lineIndices,
         const std::vector<float>& vertNormals = std::vector<float>(),
         const std::vector<uint>&  vertColors  = std::vector<uint>(),
         const std::vector<uint>&  lineColors  = std::vector<uint>());
+
+    PrimitiveLines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer());
+
+    PrimitiveLines(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer());
+
+    void swap(PrimitiveLines& other);
+
+    friend void swap(PrimitiveLines& a, PrimitiveLines& b) { a.swap(b); }
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
+
+    void setPoints(
+        const std::vector<float>& vertCoords,
+        const std::vector<uint>&  lineIndices,
+        const std::vector<float>& vertNormals,
+        const std::vector<uint>&  vertColors,
+        const std::vector<uint>&  lineColors);
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer());
+
+    void setPoints(
+        const uint          pointsSize,
+        const VertexBuffer& vertexCoords,
+        const IndexBuffer&  lineIndices,
+        const VertexBuffer& vertexNormals = VertexBuffer(),
+        const VertexBuffer& vertexColors  = VertexBuffer(),
+        const IndexBuffer&  lineColors    = IndexBuffer());
 
     void draw(uint viewId) const;
 
@@ -89,6 +119,6 @@ private:
         const std::vector<uint>&  lineColors);
 };
 
-} // namespace vcl::detail
+} // namespace vcl::depr::detail
 
-#endif // VCL_BGFX_PRIMITIVES_LINES_CPU_GENERATED_LINES_H
+#endif // VCL_BGFX_PRIMITIVES_DEPR_LINES_PRIMITIVE_LINES_H

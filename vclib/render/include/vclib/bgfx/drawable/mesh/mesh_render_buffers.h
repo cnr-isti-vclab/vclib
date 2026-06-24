@@ -30,7 +30,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
-#include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/deprecated/lines.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -70,9 +70,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     IndexBuffer mTriangleNormalBuffer;
     IndexBuffer mTriangleColorBuffer;
 
-    Lines mEdgeLines;
+    depr::Lines mEdgeLines;
 
-    Lines mWireframeLines;
+    depr::Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
     // map of textures
@@ -290,7 +290,7 @@ public:
     void updateEdgeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Edges;
-        using enum Lines::ColorToUse;
+        using enum depr::Lines::ColorToUse;
 
         mEdgeLines.thickness() = mrs.edgesWidth();
         mEdgeLines.setShading(mrs.isEdges(SHADING_SMOOTH));
@@ -314,7 +314,7 @@ public:
     void updateWireframeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Wireframe;
-        using enum Lines::ColorToUse;
+        using enum depr::Lines::ColorToUse;
 
         mWireframeLines.thickness() = mrs.wireframeWidth();
         mWireframeLines.setShading(mrs.isWireframe(SHADING_VERT));
