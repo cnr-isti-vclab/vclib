@@ -46,8 +46,13 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
         );
     }
 
+    points->setSize(10);
+
     points->setVertices(positions);
     points->setVertexColors(colors);
+
+    points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
+    points->setShading(vcl::Points::Shading::NONE);
 
     return points;
 }
