@@ -20,26 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal
-$output v_normal, v_texcoord1
+#ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
+#define VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
-void main()
-{
-    uint idx = uint(gl_VertexID) & 3u; // last 2 bits
-    // (bit 0 = x axis, bit 1 = y axis)
-    vec4 pos = mul(u_modelViewProj, vec4(a_position, 1.0));
-    vec2 quadUv = vec2(idx & 1u, (idx >> 1) & 1u);
-    vec4 offset = vec4(
-        // {-1, +1} * width * texel
-        (2.0 * quadUv.x - 1.0) * u_pointWidth * u_viewTexel.x * pos.w, // is divided by 2
-        (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y * pos.w, // is divided by 2
-        0, 0);
+uniform vec4 u_pointsSettings;
 
-    gl_Position = pos + offset;
-    v_normal = normalize(mul(u_normalMatrix, a_normal));
+#define u_pointsWidth u_pointsSettings.x
+#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.y))
 
-    // quad parametrization
-    v_texcoord1 = quadUv;
-}
+#endif // VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
