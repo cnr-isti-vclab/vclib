@@ -128,6 +128,27 @@ public:
     float width() const { return mWidth; }
 
     /**
+     * @brief Returns the topology used for rendering lines.
+     */
+    Topology topology() const { return mTopology; }
+
+    /**
+     * @brief Returns the topology used for rendering lines.
+     */
+    ColorSetting colorSetting() const { return mColorSetting; }
+
+    /**
+     * @brief Returns the topology used for rendering lines.
+     */
+    Shading shading() const { return mShading; }
+
+    /**
+     * @brief Returns the general color used for rendering lines when
+     * ColorSetting is GENERAL.
+     */
+    Color generalColor() const { return mGeneralColor; }
+
+    /**
      * @brief Returns whether the line set has valid vertex positions.
      */
     bool hasPositions() const { return mVertexPositions.isValid(); }
