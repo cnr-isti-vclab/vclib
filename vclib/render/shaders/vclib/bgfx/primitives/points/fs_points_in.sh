@@ -39,7 +39,7 @@ void main()
 #endif
 
     vec4 light = vec4(1.0, 1.0, 1.0, 1.0);
-#if !POINTS_SHADING_NONE
+#if POINTS_SHADING_PER_VERTEX
     light = computeLight(u_lightDir, u_lightColor, v_normal);
 #endif
 

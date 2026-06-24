@@ -28,7 +28,7 @@
 namespace vcl {
 
 /**
- * @brief Renders a set of 3D points in world space as point sprites (squares
+ * @brief Renders a set of 3D points in world space as point splats (squares
  * or circles).
  *
  * Each point is positioned using its 3D coordinates and projected through the
@@ -53,11 +53,11 @@ public:
     };
 
     /**
-     * @brief Specifies the visual shape of each point sprite.
+     * @brief Specifies the visual shape of each point splat.
      */
     enum class Shape {
-        SQUARE, ///< Square sprites (axis-aligned quads in screen space).
-        CIRCLE  ///< Circular sprites (disk-shaped in screen space).
+        SQUARE, ///< Square splats (axis-aligned quads in screen space).
+        CIRCLE  ///< Circular splats (disk-shaped in screen space).
     };
 
 private:
@@ -280,9 +280,9 @@ public:
     void setVertexColors(const VertexBuffer& vertColors);
 
     /**
-     * @brief Sets the size of point sprites.
+     * @brief Sets the size of point splats.
      *
-     * @param[in] size: The point sprite size.
+     * @param[in] size: The point splat size.
      */
     void setSize(float size) { mWidth = size; }
 
@@ -311,9 +311,9 @@ public:
     }
 
     /**
-     * @brief Sets the visual shape of each point sprite.
+     * @brief Sets the visual shape of each point splat.
      *
-     * @param[in] shape: The sprite shape (SQUARE or CIRCLE).
+     * @param[in] shape: The splat shape (SQUARE or CIRCLE).
      */
     void setShape(Shape shape)
     {

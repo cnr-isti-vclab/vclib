@@ -103,7 +103,7 @@ void Points::setVertexColors(const VertexBuffer& vertColors)
 }
 
 /**
- * @brief Draws the point sprites in world space on the specified view.
+ * @brief Draws the point splats in world space on the specified view.
  *
  * Renders all 3D points as screen-space splats using programmable vertex
  * pulling. Points are positioned through the standard camera projection,

@@ -27,7 +27,7 @@ $output v_normal, v_texcoord1, v_color
 
 BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
 
-#if !POINTS_SHADING_NONE
+#if POINTS_SHADING_PER_VERTEX
 BUFFER_RO(normalsBuffer, vec4, 1); // 3D normals
 #endif
 
@@ -69,7 +69,7 @@ void main()
 
     // Normal calculation
     vec3 normal = vec3(0.0, 0.0, 0.0);
-#if !POINTS_SHADING_NONE
+#if POINTS_SHADING_PER_VERTEX
     normal = vec3(
         normalsBuffer[idx30/4u][idx30%4u],
         normalsBuffer[idx31/4u][idx31%4u],
