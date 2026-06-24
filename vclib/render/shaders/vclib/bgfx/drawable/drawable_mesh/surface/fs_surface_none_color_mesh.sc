@@ -20,15 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#define SURF_SHADING_NONE   1
-#define SURF_SHADING_SMOOTH 0
-#define SURF_SHADING_FLAT   0
-
-#define SURF_COLOR_VERTEX 0
+#define SURF_SHADING_NONE 1
 #define SURF_COLOR_MESH   1
-#define SURF_COLOR_FACE   0
-#define SURF_COLOR_USER   0
-#define SURF_TEX_VERTEX   0
-#define SURF_TEX_WEDGE    0
 
 #include "surface_uber_in.sh"

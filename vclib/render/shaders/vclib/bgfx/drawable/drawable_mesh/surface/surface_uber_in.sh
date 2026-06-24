@@ -36,11 +36,11 @@ BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of 
 BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 */
 
-#if SURF_COLOR_FACE
+#ifdef SURF_COLOR_FACE
 BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 #endif
 
-#if SURF_SHADING_FLAT
+#ifdef SURF_SHADING_FLAT
 BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
 DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 #endif
@@ -57,14 +57,14 @@ void main()
 
     vec3 normal = normalize(v_normal);
 
-#if SURF_SHADING_FLAT
+#ifdef SURF_SHADING_FLAT
     // if flat shading, compute normal of face
     normal = fetchPrimitiveNormal(primitiveID);
     normal = normalize(mul(u_normalMatrix, normal));
 #endif
 
 
-#if !SURF_SHADING_NONE
+#ifndef SURF_SHADING_NONE
     // if flat or smooth shading, compute light
     light = computeLight(u_lightDir, u_lightColor, normal);
 
@@ -82,22 +82,22 @@ void main()
     /***** compute color ******/
     color = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
-#if SURF_COLOR_VERTEX
+#ifdef SURF_COLOR_VERTEX
     color = v_color;
 #endif
-#if SURF_COLOR_MESH
+#ifdef SURF_COLOR_MESH
     color = u_meshColor;
 #endif
-#if SURF_COLOR_FACE
+#ifdef SURF_COLOR_FACE
     color = uintABGRToVec4Color(primitiveColors[primitiveID]);
 #endif
-#if SURF_TEX_VERTEX
+#ifdef SURF_TEX_VERTEX
     if (isBaseColorTextureAvailable())
         color = baseColorTex(v_texcoord0);
     else
         color = vec4(0.0, 0.0, 0.0, 1.0);
 #endif
-# if SURF_TEX_WEDGE
+#ifdef SURF_TEX_WEDGE
     if (isBaseColorTextureAvailable())
         color = baseColorTex(v_texcoord1);
     else
