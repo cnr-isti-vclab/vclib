@@ -32,8 +32,8 @@
  *
  * @brief List of distance algorithms.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/core/distance.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/core.h>`
  */
 
 #endif // VCL_ALGORITHMS_CORE_DISTANCE_H

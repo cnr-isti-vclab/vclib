@@ -43,9 +43,9 @@ class IndexBuffer : public GenericBuffer<bgfx::IndexBufferHandle>
 {
     using Base = GenericBuffer<bgfx::IndexBufferHandle>;
 
-    bool mCompute = false;
-
 public:
+    using Base::swap;
+
     /**
      * @brief Empty constructor.
      *
@@ -54,74 +54,8 @@ public:
     IndexBuffer() = default;
 
     /**
-     * @brief Swap the content of this object with another IndexBuffer object.
-     *
-     * @param[in] other: the other IndexBuffer object.
-     */
-    void swap(IndexBuffer& other)
-    {
-        using std::swap;
-        Base::swap(other);
-        swap(mCompute, other.mCompute);
-    }
-
-    friend void swap(IndexBuffer& a, IndexBuffer& b) { a.swap(b); }
-
-    /**
-     * @brief Check if the IndexBuffer is used for compute shaders.
-     *
-     * @return true if the IndexBuffer is used for compute shaders, false
-     * otherwise.
-     */
-    bool isCompute() const { return mCompute; }
-
-    /**
-     * @brief Set if the IndexBuffer is used for compute shaders.
-     *
-     * @param[in] compute: if true, the IndexBuffer is used for compute
-     * shaders.
-     */
-    void setCompute(bool compute) { mCompute = compute; }
-
-    /**
-     * @brief Creates the index buffer and sets the data for rendering.
-     *
-     * If the buffer is already created (@ref isValid() returns `true`), it is
-     * destroyed and a new one is created.
-     *
-     * @note The data must be available for two bgfx::frame calls, then it is
-     * safe to release the data. If you cannot guarantee this, you must provide
-     * a release function that will be called automatically when the data is no
-     * longer needed.
-     *
-     * @param[in] bufferIndices: the data to be copied in the index buffer.
-     * @param[in] bufferSize: the size of the bufferIndices.
-     * @param[in] is32Bit: if true, the bufferIndices are 32-bit integers.
-     * @param[in] releaseFn: the release function to be called when the data is
-     * no longer needed.
-     */
-    void create(
-        const void*     bufferIndices,
-        const uint      bufferSize,
-        bool            is32Bit   = true,
-        bgfx::ReleaseFn releaseFn = nullptr)
-    {
-        if (bufferSize != 0) {
-            uint64_t flags = is32Bit ? BGFX_BUFFER_INDEX32 : BGFX_BUFFER_NONE;
-            uint     size  = is32Bit ? 4 : 2;
-            create(
-                bgfx::makeRef(bufferIndices, bufferSize * size, releaseFn),
-                flags);
-        }
-        else {
-            if (releaseFn)
-                releaseFn((void*) bufferIndices, nullptr);
-            destroy();
-        }
-    }
-
-    /**
-     * @brief Creates the index buffer and sets the data for compute shaders.
+     * @brief Creates the index buffer and sets the data for rendering or
+     * compute.
      *
      * If the buffer is already created (@ref isValid() returns `true`), it is
      * destroyed and a new one is created.
@@ -138,7 +72,7 @@ public:
      * @param[in] releaseFn: the release function to be called when the data is
      * no longer needed.
      */
-    void createForCompute(
+    void create(
         const void*        bufferIndices,
         const uint         bufferSize,
         PrimitiveType      type,
@@ -151,14 +85,69 @@ public:
             create(
                 bgfx::makeRef(
                     bufferIndices, bufferSize * sizeOf(type), releaseFn),
-                flags,
-                true);
+                flags);
         }
         else {
             if (releaseFn)
                 releaseFn((void*) bufferIndices, nullptr);
             destroy();
         }
+    }
+
+    /**
+     * @brief Creates the index buffer and sets the data for rendering or
+     * compute.
+     *
+     * The access type is assumed to be Read.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferIndices: the data to be copied in the index buffer.
+     * @param[in] bufferSize: the size of the bufferIndices.
+     * @param[in] type: the type of the elements.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
+    void create(
+        const void*     bufferIndices,
+        const uint      bufferSize,
+        PrimitiveType   type,
+        bgfx::ReleaseFn releaseFn)
+    {
+        create(bufferIndices, bufferSize, type, bgfx::Access::Read, releaseFn);
+    }
+
+    /**
+     * @brief Creates the index buffer and sets the data for rendering or
+     * compute.
+     *
+     * The type is assumed to be UINT, and the access type is assumed to be
+     * Read.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferIndices: the data to be copied in the index buffer.
+     * @param[in] bufferSize: the size of the bufferIndices.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
+    void create(
+        const void*     bufferIndices,
+        const uint      bufferSize,
+        bgfx::ReleaseFn releaseFn = nullptr)
+    {
+        create(
+            bufferIndices,
+            bufferSize,
+            PrimitiveType::UINT,
+            bgfx::Access::Read,
+            releaseFn);
     }
 
     /**
@@ -169,16 +158,13 @@ public:
      *
      * @param[in] indices: the memory containing the data.
      * @param[in] flags: the flags for the buffer.
-     * @param[in] compute: if true, the buffer is used for compute shaders.
      */
-    void create(
-        const bgfx::Memory* indices,
-        uint64_t            flags   = BGFX_BUFFER_NONE,
-        bool                compute = false)
+    void create(const bgfx::Memory* indices, uint64_t flags = BGFX_BUFFER_NONE)
     {
+        destroy();
+
         mHandle = bgfx::createIndexBuffer(indices, flags);
         assert(bgfx::isValid(mHandle));
-        mCompute = compute;
     }
 
     /**

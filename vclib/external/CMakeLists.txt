@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -40,6 +40,11 @@ if (TARGET vclib-3rd-libigl)
         # remove include/vclib/igl/booleans.h
         list(FILTER HEADERS EXCLUDE REGEX ".*igl/booleans.h$")
     endif()
+endif()
+
+if (TARGET vclib-3rd-poisson-recon)
+    file(GLOB_RECURSE HEADERS_POISSON CONFIGURE_DEPENDS "include/vclib/poisson_recon/*.h")
+    list(APPEND HEADERS ${HEADERS_POISSON})
 endif()
 
 if (TARGET vclib-3rd-vcg)

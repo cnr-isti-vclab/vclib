@@ -56,7 +56,7 @@ void DrawableBox3::setColor(const Color& color)
     mBoxLines.generalColor() = color;
 }
 
-void DrawableBox3::draw(const DrawObjectSettings& settings) const
+void DrawableBox3::draw(const DrawObjectSettings& settings)
 {
     if (mVisible) {
         mBoxLines.draw(settings.viewId);

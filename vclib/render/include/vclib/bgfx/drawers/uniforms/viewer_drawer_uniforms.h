@@ -49,7 +49,7 @@ class ViewerDrawerUniforms
     static inline Uniform sDataUniform;
 
 public:
-    ViewerDrawerUniforms() = default;
+    ViewerDrawerUniforms() = delete;
 
     static void setExposure(float exposure) { sData[0] = exposure; }
 

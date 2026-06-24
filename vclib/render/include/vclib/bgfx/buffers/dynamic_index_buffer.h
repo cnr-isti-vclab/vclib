@@ -48,6 +48,8 @@ class DynamicIndexBuffer : public GenericBuffer<bgfx::DynamicIndexBufferHandle>
     using Base = GenericBuffer<bgfx::DynamicIndexBufferHandle>;
 
 public:
+    using Base::swap;
+
     /**
      * @brief Empty constructor.
      *

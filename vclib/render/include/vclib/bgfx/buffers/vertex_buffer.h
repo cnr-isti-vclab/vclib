@@ -43,9 +43,9 @@ class VertexBuffer : public GenericBuffer<bgfx::VertexBufferHandle>
 {
     using Base = GenericBuffer<bgfx::VertexBufferHandle>;
 
-    bool mCompute = false;
-
 public:
+    using Base::swap;
+
     /**
      * @brief Empty constructor.
      *
@@ -54,90 +54,8 @@ public:
     VertexBuffer() = default;
 
     /**
-     * @brief Swap the content of this object with another VertexBuffer object.
-     *
-     * @param[in] other: the other VertexBuffer object.
-     */
-    void swap(VertexBuffer& other)
-    {
-        using std::swap;
-        Base::swap(other);
-        swap(mCompute, other.mCompute);
-    }
-
-    friend void swap(VertexBuffer& a, VertexBuffer& b) { a.swap(b); }
-
-    /**
-     * @brief Check if the VertexBuffer is used for compute shaders.
-     *
-     * @return true if the VertexBuffer is used for compute shaders, false
-     * otherwise.
-     */
-    bool isCompute() const { return mCompute; }
-
-    /**
-     * @brief Set if the VertexBuffer is used for compute shaders.
-     *
-     * @param[in] compute: if true, the VertexBuffer is used for compute
-     * shaders.
-     */
-    void setCompute(bool compute) { mCompute = compute; }
-
-    /**
-     * @brief Creates the vertex buffer and sets the data for rendering.
-     *
-     * If the buffer is already created (@ref isValid() returns `true`), it is
-     * destroyed and a new one is created.
-     *
-     * @note The data must be available for two bgfx::frame calls, then it is
-     * safe to release the data. If you cannot guarantee this, you must provide
-     * a release function that will be called automatically when the data is no
-     * longer needed.
-     *
-     * @param[in] bufferData: the data to be copied in the vertex buffer.
-     * @param[in] vertNum: the number of vertices in the buffer.
-     * @param[in] attrib: the attribute to which the data of the buffer refers.
-     * @param[in] attribNumPerVertex: the number of attributes per vertex.
-     * @param[in] attribType: the type of the attributes.
-     * @param[in] normalize: if true, the data is normalized.
-     * @param[in] releaseFn: the release function to be called when the data is
-     * no longer needed.
-     */
-    void create(
-        const void*        bufferData,
-        uint               vertNum,
-        bgfx::Attrib::Enum attrib,
-        uint               attribNumPerVertex,
-        PrimitiveType      attribType,
-        bool               normalize = false,
-        bgfx::ReleaseFn    releaseFn = nullptr)
-    {
-        if (vertNum != 0) {
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(
-                    attrib,
-                    attribNumPerVertex,
-                    attributeType(attribType),
-                    normalize)
-                .end();
-
-            create(
-                bgfx::makeRef(
-                    bufferData,
-                    vertNum * attribNumPerVertex * sizeOf(attribType),
-                    releaseFn),
-                layout);
-        }
-        else {
-            if (releaseFn)
-                releaseFn((void*) bufferData, nullptr);
-            destroy();
-        }
-    }
-
-    /**
-     * @brief Creates the vertex buffer and sets the data for compute shaders.
+     * @brief Creates the vertex buffer and sets the data for rendering or
+     * compute.
      *
      * If the buffer is already created (@ref isValid() returns `true`), it is
      * destroyed and a new one is created.
@@ -157,7 +75,7 @@ public:
      * @param[in] releaseFn: the release function to be called when the data is
      * no longer needed.
      */
-    void createForCompute(
+    void create(
         const void*        bufferData,
         const uint         vertNum,
         bgfx::Attrib::Enum attrib,
@@ -168,7 +86,8 @@ public:
         bgfx::ReleaseFn    releaseFn = nullptr)
     {
         if (vertNum != 0) {
-            uint64_t flags = flagsForAccess(access);
+            uint64_t flags = flagsForType(attribType, attribNumPerVertex);
+            flags |= flagsForAccess(access);
 
             bgfx::VertexLayout layout;
             layout.begin()
@@ -185,14 +104,97 @@ public:
                     vertNum * attribNumPerVertex * sizeOf(attribType),
                     releaseFn),
                 layout,
-                flags,
-                true);
+                flags);
         }
         else {
             if (releaseFn)
                 releaseFn((void*) bufferData, nullptr);
             destroy();
         }
+    }
+
+    /**
+     * @brief Creates the vertex buffer and sets the data for rendering or
+     * compute.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
+     * The access type is assumed to be Read.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
+     * @param[in] normalize: if true, the data is normalized.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
+    void create(
+        const void*        bufferData,
+        const uint         vertNum,
+        bgfx::Attrib::Enum attrib,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
+        bool               normalize,
+        bgfx::ReleaseFn    releaseFn = nullptr)
+    {
+        create(
+            bufferData,
+            vertNum,
+            attrib,
+            attribNumPerVertex,
+            attribType,
+            normalize,
+            bgfx::Access::Read,
+            releaseFn);
+    }
+
+    /**
+     * @brief Creates the vertex buffer and sets the data for rendering or
+     * compute.
+     *
+     * If the buffer is already created (@ref isValid() returns `true`), it is
+     * destroyed and a new one is created.
+     *
+     * The access type is assumed to be Read, and the data is not normalized.
+     *
+     * @note The data must be available for two bgfx::frame calls, then it is
+     * safe to release the data. If you cannot guarantee this, you must provide
+     * a release function that will be called automatically when the data is no
+     * longer needed.
+     *
+     * @param[in] bufferData: the data to be copied in the vertex buffer.
+     * @param[in] vertNum: the number of vertices in the buffer.
+     * @param[in] attrib: the attribute to which the data of the buffer refers.
+     * @param[in] attribNumPerVertex: the number of attributes per vertex.
+     * @param[in] attribType: the type of the attributes.
+     * @param[in] releaseFn: the release function to be called when the data is
+     * no longer needed.
+     */
+    void create(
+        const void*        bufferData,
+        const uint         vertNum,
+        bgfx::Attrib::Enum attrib,
+        uint               attribNumPerVertex,
+        PrimitiveType      attribType,
+        bgfx::ReleaseFn    releaseFn)
+    {
+        create(
+            bufferData,
+            vertNum,
+            attrib,
+            attribNumPerVertex,
+            attribType,
+            false,
+            bgfx::Access::Read,
+            releaseFn);
     }
 
     /**
@@ -204,20 +206,16 @@ public:
      * @param[in] data: the memory containing the data.
      * @param[in] layout: the vertex layout.
      * @param[in] flags: the flags for the buffer.
-     * @param[in] compute: if true, the buffer is used for compute shaders.
      */
     void create(
         const bgfx::Memory*       data,
         const bgfx::VertexLayout& layout,
-        uint64_t                  flags   = BGFX_BUFFER_NONE,
-        bool                      compute = false)
+        uint64_t                  flags = BGFX_BUFFER_NONE)
     {
-        if (bgfx::isValid(mHandle))
-            bgfx::destroy(mHandle);
+        destroy();
 
         mHandle = bgfx::createVertexBuffer(data, layout, flags);
         assert(bgfx::isValid(mHandle));
-        mCompute = compute;
     }
 
     /**
@@ -227,15 +225,11 @@ public:
      *
      * @param[in] stream: the stream (or stage, in case of compute) to which the
      * vertex buffer is bound.
-     * @param[in] access: the access type for the buffer (only for compute).
      */
-    void bind(uint stream, bgfx::Access::Enum access = bgfx::Access::Read) const
+    void bind(uint stream) const
     {
         if (bgfx::isValid(mHandle)) {
-            if (!mCompute)
-                bgfx::setVertexBuffer(stream, mHandle);
-            else
-                bgfx::setBuffer(stream, mHandle, access);
+            bgfx::setVertexBuffer(stream, mHandle);
         }
     }
 
@@ -256,13 +250,6 @@ public:
     {
         if (bgfx::isValid(mHandle)) {
             bgfx::setBuffer(stage, mHandle, access);
-        }
-    }
-
-    void bindVertex(uint stream) const
-    {
-        if (bgfx::isValid(mHandle)) {
-            bgfx::setVertexBuffer(stream, mHandle);
         }
     }
 };

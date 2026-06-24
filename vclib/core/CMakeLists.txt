@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -40,6 +40,7 @@ target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES}
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 
 if (MSVC)
+    target_compile_definitions(${PROJECT_NAME} INTERFACE _USE_MATH_DEFINES)
     target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
 endif()
 

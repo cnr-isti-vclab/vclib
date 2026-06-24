@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_color0, a_normal, a_texcoord0
-$output v_normal, v_color, v_texcoord1
+$input a_position, a_normal
+$output v_normal, v_texcoord1
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 
@@ -40,9 +40,6 @@ void main()
     pos = pos / pos.w;
     gl_Position = pos + offset;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
-
-    // default case - color is taken from buffer
-    v_color = a_color0;
 
     // quad parametrization
     v_texcoord1 = quadUv;

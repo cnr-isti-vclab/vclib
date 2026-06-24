@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -41,7 +41,7 @@ void initConvexHullAlgorithms(pybind11::module& m)
         m.def(
             ("convex_hull_" + meshName).c_str(),
             [](const std::vector<Point3d>& points, std::optional<uint> seed) {
-                return vcl::convexHull<MeshType>(points, seed);
+                return vcl::convexHull<MeshType>(points, toRConfig(seed));
             },
             "points"_a,
             "seed"_a = py::none());

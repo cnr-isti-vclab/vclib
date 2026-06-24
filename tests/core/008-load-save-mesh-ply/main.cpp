@@ -69,7 +69,7 @@ std::istringstream plyPolyCube()
 
 std::istringstream plyTriCube()
 {
-    // string containing a triangulted cube in OBJ format
+    // string containing a triangulted cube in PLY format
 
     std::string s =
         "ply\n"
@@ -121,7 +121,7 @@ using MeshesIndexed =
 using MeshesIndexedf = std::
     tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
-// Test to load obj from a istringstream
+// Test to load ply from a istringstream
 TEMPLATE_TEST_CASE(
     "Load PLY cube from istringstream",
     "",

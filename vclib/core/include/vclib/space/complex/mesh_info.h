@@ -97,6 +97,7 @@ public:
     enum Component {
         POSITION,
         VREFS,
+        BIT_FLAGS,
         NORMAL,
         COLOR,
         QUALITY,
@@ -169,6 +170,7 @@ public:
         setPerVertexPosition(
             true,
             getType<typename Mesh::VertexType::PositionType::ScalarType>());
+        setPerVertexBitFlags();
         if constexpr (HasPerVertexNormal<Mesh>) {
             if (isPerVertexNormalAvailable(m)) {
                 setPerVertexNormal(
@@ -214,6 +216,7 @@ public:
         if constexpr (HasFaces<Mesh>) {
             setFaces();
             setPerFaceVertexReferences();
+            setPerFaceBitFlags();
             if (HasTriangles<Mesh>) {
                 setTriangleMesh();
             }
@@ -269,6 +272,7 @@ public:
         if constexpr (HasEdges<Mesh>) {
             setEdges();
             setPerEdgeVertexReferences();
+            setPerEdgeBitFlags();
             // if constexpr (HasPerEdgeColor<Mesh>)
             //     if (isPerEdgeColorAvailable(m))
             //         setEdgeColors(true, UCHAR);
@@ -360,6 +364,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Bit Flags.
+     * @return true if the current object has Vertex Bit Flags.
+     */
+    bool hasPerVertexBitFlags() const
+    {
+        return hasPerElementComponent(VERTEX, BIT_FLAGS);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Normals.
      * @return true if the current object has Vertex Normals.
      */
@@ -428,6 +441,15 @@ public:
         return hasPerElementComponent(FACE, VREFS);
     }
 
+    /**
+     * @brief Returns true if the current object has Face Bit Flags.
+     * @return true if the current object has Face Bit Flags.
+     */
+    bool hasPerFaceBitFlags() const
+    {
+        return hasPerElementComponent(FACE, BIT_FLAGS);
+    }
+
     bool hasPerFaceNormal() const
     {
         return hasPerElementComponent(FACE, NORMAL);
@@ -468,6 +490,15 @@ public:
     bool hasPerEdgeVertexReferences() const
     {
         return hasPerElementComponent(EDGE, VREFS);
+    }
+
+    /**
+     * @brief Returns true if the current object has Edge Bit Flags.
+     * @return true if the current object has Edge Bit Flags.
+     */
+    bool hasPerEdgeBitFlags() const
+    {
+        return hasPerElementComponent(EDGE, BIT_FLAGS);
     }
 
     bool hasPerEdgeColor() const { return hasPerElementComponent(EDGE, COLOR); }
@@ -544,6 +575,11 @@ public:
         setPerElementComponent(VERTEX, POSITION, b, t);
     }
 
+    void setPerVertexBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(VERTEX, BIT_FLAGS, b, t);
+    }
+
     void setPerVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setPerElementComponent(VERTEX, NORMAL, b, t);
@@ -582,6 +618,11 @@ public:
     void setPerFaceVertexReferences(bool b = true)
     {
         setPerElementComponent(FACE, VREFS, b, PrimitiveType::NONE);
+    }
+
+    void setPerFaceBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(FACE, BIT_FLAGS, b, t);
     }
 
     void setPerFaceNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
@@ -623,6 +664,11 @@ public:
     void setPerEdgeVertexReferences(bool b = true)
     {
         setPerElementComponent(EDGE, VREFS, b, PrimitiveType::NONE);
+    }
+
+    void setPerEdgeBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(EDGE, BIT_FLAGS, b, t);
     }
 
     void setPerEdgeColor(bool b = true, DataType t = PrimitiveType::UCHAR)
@@ -712,6 +758,11 @@ public:
         return perElementComponentType(VERTEX, POSITION);
     }
 
+    DataType perVertexBitFlagsType() const
+    {
+        return perElementComponentType(VERTEX, BIT_FLAGS);
+    }
+
     DataType perVertexNormalType() const
     {
         return perElementComponentType(VERTEX, NORMAL);
@@ -737,6 +788,11 @@ public:
         return perElementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
+    DataType perFaceBitFlagsType() const
+    {
+        return perElementComponentType(FACE, BIT_FLAGS);
+    }
+
     DataType perFaceNormalType() const
     {
         return perElementComponentType(FACE, NORMAL);
@@ -760,6 +816,11 @@ public:
     DataType perFaceMaterialIndexType() const
     {
         return perElementComponentType(FACE, MATERIAL_INDEX);
+    }
+
+    DataType perEdgeBitFlagsType() const
+    {
+        return perElementComponentType(EDGE, BIT_FLAGS);
     }
 
     DataType perEdgeNormalType() const

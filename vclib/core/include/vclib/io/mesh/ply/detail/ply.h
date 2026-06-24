@@ -51,6 +51,7 @@ typedef enum {
     green,
     blue,
     alpha,
+    bit_flags,
     quality,
     texture_u,
     texture_v,

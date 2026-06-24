@@ -78,7 +78,7 @@ public:
      *
      * @param[in] settings: The settings to use to draw the object.
      */
-    virtual void draw(const DrawObjectSettings& settings = {}) const = 0;
+    virtual void draw(const DrawObjectSettings& settings = {}) = 0;
 
     /**
      * @brief This member function should draw the object.
@@ -87,7 +87,7 @@ public:
      *
      * @param[in] settings: The settings to use to draw the object.
      */
-    virtual void drawId(const DrawObjectSettings& settings) const {};
+    virtual void drawId(const DrawObjectSettings& settings) {};
 
     /**
      * @brief This member function is used to find a good camera position

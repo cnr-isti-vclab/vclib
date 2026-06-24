@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
 
+#include <vclib/bgfx/shaders_common.sh>
+
 uniform vec4 u_mrsDrawPack;
 uniform vec4 u_mrsWidthPack;
 uniform vec4 u_mrsColorPack;

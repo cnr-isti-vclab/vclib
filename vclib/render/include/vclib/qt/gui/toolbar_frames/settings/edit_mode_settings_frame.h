@@ -45,6 +45,9 @@ public:
 
     void setEditMode(EditorSettings::EditMode mode);
 
+    void disableEditMode(EditorSettings::EditMode mode);
+    void enableEditMode(EditorSettings::EditMode mode);
+
 signals:
     void editModeChanged(int index);
 };

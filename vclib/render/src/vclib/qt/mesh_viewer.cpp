@@ -73,9 +73,23 @@ DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
  * @param parent
  */
 MeshViewer::MeshViewer(QWidget* parent) :
-        QWidget(parent), mUI(new Ui::MeshViewer)
+        QMainWindow(parent), mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
+
+    // give keyboard focus to the viewer widget immediately
+    mUI->viewer->setFocus();
+
+    // prevent any widget in the right area from stealing keyboard focus
+    mUI->rightArea->setFocusPolicy(Qt::NoFocus);
+    std::function<void(QWidget*)> disableFocus = [&disableFocus](QWidget* w) {
+        w->setFocusPolicy(Qt::NoFocus);
+        for (auto* child : w->findChildren<QWidget*>(
+                 QString(), Qt::FindChildrenRecursively)) {
+            disableFocus(child);
+        }
+    };
+    disableFocus(mUI->rightArea);
 
     /** Drawable Object Vector **/
 

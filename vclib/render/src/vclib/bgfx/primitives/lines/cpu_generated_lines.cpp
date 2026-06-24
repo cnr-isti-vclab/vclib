@@ -247,12 +247,7 @@ void CPUGeneratedLines::setPoints(
 
             std::copy(lineColors.begin(), lineColors.end(), l);
 
-            mLineColors.createForCompute(
-                l,
-                lineColors.size(),
-                PrimitiveType::UINT,
-                bgfx::Access::Read,
-                lineColorsReleaseFn);
+            mLineColors.create(l, lineColors.size(), lineColorsReleaseFn);
         }
 
         mIndices.create(

@@ -24,6 +24,8 @@
 
 #include "ui_edit_mode_settings_frame.h"
 
+#include <QStandardItemModel>
+
 namespace vcl::qt {
 
 EditModeSettingsFrame::EditModeSettingsFrame(QWidget* parent) :
@@ -46,6 +48,32 @@ EditModeSettingsFrame::~EditModeSettingsFrame()
 void EditModeSettingsFrame::setEditMode(EditorSettings::EditMode mode)
 {
     mUI->editModeComboBox->setCurrentIndex(toUnderlying(mode));
+}
+
+void EditModeSettingsFrame::disableEditMode(EditorSettings::EditMode mode)
+{
+    QStandardItemModel* model =
+        qobject_cast<QStandardItemModel*>(mUI->editModeComboBox->model());
+    if (model) {
+        QStandardItem* item = model->item(toUnderlying(mode));
+
+        if (item) {
+            item->setEnabled(false);
+        }
+    }
+}
+
+void EditModeSettingsFrame::enableEditMode(EditorSettings::EditMode mode)
+{
+    QStandardItemModel* model =
+        qobject_cast<QStandardItemModel*>(mUI->editModeComboBox->model());
+    if (model) {
+        QStandardItem* item = model->item(toUnderlying(mode));
+
+        if (item) {
+            item->setEnabled(true);
+        }
+    }
 }
 
 } // namespace vcl::qt

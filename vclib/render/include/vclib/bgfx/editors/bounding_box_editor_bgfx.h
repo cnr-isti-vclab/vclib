@@ -93,7 +93,7 @@ public:
         Base::viewerUpdate();
     }
 
-    void draw(uint viewId) const override
+    void draw(uint viewId) override
     {
         using enum EditorSettings::EditMode;
 

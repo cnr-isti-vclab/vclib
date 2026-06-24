@@ -33,8 +33,8 @@
  * @brief List of overloaded boundingBox functions that take in input an object
  * (or a Range of objects) and return its/their bounding box.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/core.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/core.h>`
  *
  * @note To compute the bounding box of a Mesh, use the `vcl::boundingBox`
  * function defined in `vclib/algorithms/mesh.h`.

@@ -64,7 +64,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
-    mutable bool        mVertexQuadBufferGenerated = false;
+    bool                mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
@@ -130,7 +130,7 @@ public:
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,
-        const bgfx::ViewId viewId) const
+        const bgfx::ViewId viewId)
     {
         if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
             return;
@@ -141,8 +141,6 @@ public:
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mVertexNormalsBuffer.bindCompute(
             VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(
-            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
 
@@ -171,12 +169,12 @@ public:
 
         // streams MUST be consecutive starting from 0
         // otherwise on metal it won't work
-        mVertexPositionsBuffer.bindVertex(stream++);
+        mVertexPositionsBuffer.bind(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexNormalsBuffer.bindVertex(stream++);
+            mVertexNormalsBuffer.bind(stream++);
         }
 
         if (mVertexTangentsBuffer.isValid()) {
@@ -188,7 +186,7 @@ public:
         if (mVertexColorsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexColorsBuffer.bindVertex(stream++);
+            mVertexColorsBuffer.bind(stream++);
         }
 
         if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
@@ -209,6 +207,14 @@ public:
     {
         mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
         mVertexQuadIndexBuffer.bind();
+    }
+
+    void bindPointsVertexColorBuffer() const
+    {
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindCompute(
+                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
+        }
     }
 
     void bindIndexBuffers(
@@ -336,14 +342,12 @@ private:
 
         Base::fillVertexPositions(mesh, buffer);
 
-        mVertexPositionsBuffer.createForCompute(
+        mVertexPositionsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
 
         // Creates the buffers to be used with compute for splatting
@@ -385,7 +389,7 @@ private:
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
-        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
+        mVertexQuadIndexBuffer.create(buffer, totalIndices, releaseFn);
 
         // if number of vertices is not zero, the index buffer must be valid
         assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
@@ -400,14 +404,12 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.createForCompute(
+        mVertexNormalsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -420,14 +422,13 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.createForCompute(
+        mVertexColorsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -446,7 +447,6 @@ private:
             bgfx::Attrib::TexCoord0,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -465,7 +465,6 @@ private:
             bgfx::Attrib::Tangent,
             4,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -484,7 +483,6 @@ private:
             bgfx::Attrib::TexCoord1,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -497,7 +495,12 @@ private:
 
         Base::fillTriangleIndices(mesh, buffer);
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        // Re-read the actual triangle count: fillTriangleIndices() updates
+        // mNumTris to the real earCut result, which may be smaller than the
+        // pre-triangulation estimate for meshes with degenerate faces.
+        nt = Base::numTris();
+
+        mTriangleIndexBuffer.create(buffer, nt * 3, releaseFn);
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
@@ -509,12 +512,8 @@ private:
 
         Base::fillTriangleNormals(mesh, buffer);
 
-        mTriangleNormalBuffer.createForCompute(
-            buffer,
-            nt * 3,
-            PrimitiveType::FLOAT,
-            bgfx::Access::Read,
-            releaseFn);
+        mTriangleNormalBuffer.create(
+            buffer, nt * 3, PrimitiveType::FLOAT, releaseFn);
     }
 
     void setTriangleColorsBuffer(const MeshType& mesh) // override
@@ -526,8 +525,7 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        mTriangleColorBuffer.create(buffer, nt, releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override

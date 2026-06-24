@@ -54,6 +54,11 @@ public:
     using PointType = PointT;
 
     /**
+     * @brief The scalar type used for the coordinates of the box.
+     */
+    using ScalarType = PointT::ScalarType;
+
+    /**
      * @brief The dimensionality of the box.
      */
     static const uint DIM = PointT::DIM;
@@ -134,6 +139,27 @@ public:
     {
         for (uint i = 0; i < PointT::DIM; ++i) {
             if (mMin[i] > mMax[i])
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * @brief Checks whether the box is degenerate or not.
+     * A box is considered degenerate if at least one minimum component is equal
+     * to the corresponding maximum component, and the box is not null.
+     * (A null box is not degenerate, since it does not represent a valid box.)
+     * @return true if the box is degenerate, false otherwise.
+     * @note A degenerate box has zero volume, since at least one dimension has
+     * zero length, i.e. is flat.
+     */
+    bool isDegenerate() const
+    {
+        if (isNull())
+            return false;
+
+        for (uint i = 0; i < PointT::DIM; ++i) {
+            if (mMin[i] == mMax[i])
                 return true;
         }
         return false;

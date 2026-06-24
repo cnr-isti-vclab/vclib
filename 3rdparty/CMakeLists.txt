@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
+#* Copyright(C) 2021-2026                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
@@ -102,6 +102,11 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
     option(VCLIB_ALLOW_DOWNLOAD_LIBIGL
         "Allow use of downloaded libigl source" ON)
     include(libigl.cmake)
+
+    # PoissonRecon
+    option(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON "Allow use of downloaded PoissonRecon source" ON)
+    option(VCLIB_ALLOW_INSTALL_POISSON_RECON "Allow install PoissonRecon source" ON)
+    include(poisson-recon.cmake)
 
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)

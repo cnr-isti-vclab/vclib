@@ -152,7 +152,7 @@ DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
     return *this;
 }
 
-void DrawableTrackBall::draw(const DrawObjectSettings& settings) const
+void DrawableTrackBall::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 
@@ -220,7 +220,9 @@ void DrawableTrackBall::createBuffers()
 
     // edge index buffer
     mEdgeIndexBuffer.create(
-        TRACKBALL_DATA.second.data(), TRACKBALL_DATA.second.size(), false);
+        TRACKBALL_DATA.second.data(),
+        TRACKBALL_DATA.second.size(),
+        PrimitiveType::USHORT);
 }
 
 } // namespace vcl

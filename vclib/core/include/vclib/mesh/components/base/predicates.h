@@ -94,8 +94,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<int, typename, bool>
-    class Template,
+    template<int, typename, bool> class Template,
     int I,
     typename T,
     bool B>
@@ -135,8 +134,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<typename, typename, bool>
-    class Template,
+    template<typename, typename, bool> class Template,
     typename T1,
     typename T2,
     bool B>
@@ -176,8 +174,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<typename, int, typename, bool>
-    class Template,
+    template<typename, int, typename, bool> class Template,
     typename T1,
     int I,
     typename T2,
@@ -214,15 +211,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, int, typename, bool>
-    class Template,
+    template<bool, typename, int, typename, bool> class Template,
     bool B1,
     typename T1,
     int I,
@@ -235,8 +230,7 @@ struct IsSpecializationOfComp<Template<B1, T1, I, T2, B2>, Template> :
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -253,8 +247,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
@@ -267,15 +260,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, typename, bool, bool>
-    class Template,
+    template<bool, typename, typename, bool, bool> class Template,
     bool B1,
     typename T1,
     typename T2,
@@ -288,8 +279,7 @@ struct IsSpecializationOfComp<Template<B1, T1, T2, B2, B3>, Template> :
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -306,8 +296,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
@@ -320,15 +309,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template,
+    template<bool, typename, int, bool, typename, bool, bool> class Template,
     bool B1,
     typename T1,
     int  I,
@@ -343,8 +330,7 @@ struct IsSpecializationOfComp<Template<B1, T1, I, B2, T2, B3, B4>, Template> :
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -368,8 +354,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 

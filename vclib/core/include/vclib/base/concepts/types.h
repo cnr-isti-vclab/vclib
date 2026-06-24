@@ -46,6 +46,15 @@ template<typename T>
 concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
 
 /**
+ * @brief Concept for types that can be used as indices, excluding bool and
+ * char.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept Numeric = std::integral<T> || std::floating_point<T>;
+
+/**
  * @brief Concept that is evaluated true if T is a class.
  *
  * @ingroup util_concepts

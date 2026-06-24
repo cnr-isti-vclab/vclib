@@ -72,7 +72,7 @@ public:
 
     virtual uint edgeCount() const = 0;
 
-    virtual vcl::Matrix44d transformMatrix() const = 0;
+    virtual vcl::Matrix44d modelMatrix() const = 0;
 
     virtual View<MatIt> materials() const { return View<MatIt>(); }
 

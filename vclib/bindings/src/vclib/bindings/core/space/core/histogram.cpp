@@ -2,7 +2,7 @@
  * VCLib                                                                     *
  * Visual Computing Library                                                  *
  *                                                                           *
- * Copyright(C) 2021-2025                                                    *
+ * Copyright(C) 2021-2026                                                    *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
@@ -35,8 +35,11 @@ void initHistogram(pybind11::module& m)
     py::class_<Histd> c(m, "Histogram" /*, py::buffer_protocol()*/);
     c.def(py::init<>());
 
-    c.def(py::init(
-        [](double minRange, double maxRange, uint nBins, double gamma = 1.0) {
+    c.def(
+        py::init([](double minRange,
+                    double maxRange,
+                    uint   nBins,
+                    double gamma = 1.0) {
             return Histd(minRange, maxRange, nBins, gamma);
         }));
 

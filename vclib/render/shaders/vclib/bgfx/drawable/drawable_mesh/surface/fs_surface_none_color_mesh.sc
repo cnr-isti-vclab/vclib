@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
+#define SURF_SHADING_NONE   true
+#define SURF_SHADING_SMOOTH false
+#define SURF_SHADING_FLAT   false
 
-#include "none.sh"
-#include "color_mesh.sh"
+#define SURF_COLOR_VERTEX false
+#define SURF_COLOR_MESH   true
+#define SURF_COLOR_FACE   false
+#define SURF_COLOR_USER   false
+#define SURF_TEX_VERTEX   false
+#define SURF_TEX_WEDGE    false
 
-void main()
-{
-    SHADING
-    COLORING
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
-}
+#include "surface_uber_in.sh"

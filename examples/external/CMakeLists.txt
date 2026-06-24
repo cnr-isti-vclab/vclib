@@ -33,3 +33,7 @@ endif()
 if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
     add_subdirectory(020-igl-booleans)
 endif()
+
+if (TARGET vclib-3rd-poisson-recon)
+    add_subdirectory(030-poisson-recon)
+endif()

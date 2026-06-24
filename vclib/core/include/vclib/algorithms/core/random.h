@@ -25,186 +25,297 @@
 
 #include <vclib/space/core.h>
 
+#include <cassert>
 #include <random>
 
 namespace vcl {
 
-namespace detail {
-
 /**
- * @brief This subfunction generates a integer with the poisson distribution
- * using the ratio-of-uniforms rejection method (PRUAt). This approach is STABLE
- * even for large L (e.g. it does not suffer from the overflow limit of the
- * classical Knuth implementation) Execution time does not depend on L, except
- * that it matters whether is within the range where ln(n!) is tabulated.
+ * @brief Generate a random number with a specified distribution.
  *
- * Reference:
+ * This function generates a random number based on the provided distribution
+ * configuration and random generator configuration. The distribution can be
+ * specified as a pair of bounds for a uniform distribution or as a custom
+ * function that takes a random generator and returns a random number.
  *
- * E. Stadlober
- * "The ratio of uniforms approach for generating discrete random variates".
- * Journal of Computational and Applied Mathematics,
- * vol. 31, no. 1, 1990, pp. 181-189.
+ * When distConf is std::monostate (default), the numeric type determines how
+ * the distribution range is chosen:
+ *   - Floating-point types (float, double): uniform in [0.0, 1.0)
+ *   - Unsigned integer types: uniform in [0, numeric_limits<T>::max()]
+ *   - Signed integer types: uniform in [numeric_limits<T>::min(),
+ *     numeric_limits<T>::max()], which includes negative values for two's
+ *     complement representations (e.g., INT32_MIN to INT32_MAX).
  *
- * Partially adapted/inspired from some subfunctions of the Agner Fog stocc
- * library ( www.agner.org/random ) Same licensing scheme.
+ * Example usage:
+ * @code{.cpp}
+ * // Integer with explicit bounds [0, 100]
+ * int x = vcl::random<int>(std::pair{0, 100});
+ * // Double with deterministic seed
+ * double y = vcl::random<double>(std::pair{0.0, 1.0}, 42);
+ * @endcode
  *
- * @param L
- * @param gen
- * @return
+ * @tparam T: Numeric type for the random number. Must satisfy the Numeric
+ * concept.
+ * @param[in] distConf: DistConfig<T> that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random number of type T based on the specified distribution.
  *
  * @ingroup algorithms_core
  */
-inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)
+template<Numeric T>
+T random(
+    DistConfig<T> distConf = std::monostate(),
+    RandomConfig  config   = std::monostate())
 {
-    // constants
-    const double SHAT1 = 2.943035529371538573;  // 8/e
-    const double SHAT2 = 0.8989161620588987408; // 3-sqrt(12/e)
-
-    double u;  // uniform random
-    double lf; // ln(f(x))
-    double x;  // real sample
-    int    k;  // integer sample
-
-    double pois_a     = L + 0.5; // hat center
-    int    mode       = (int) L; // mode
-    double pois_g     = std::log(L);
-    double pois_f0    = mode * pois_g - lnOfFactorial(mode);  // value at mode
-    double pois_h     = std::sqrt(SHAT1 * (L + 0.5)) + SHAT2; // hat width
-    double pois_bound = (int) (pois_a + 6.0 * pois_h);        // safety-bound
-
-    std::uniform_real_distribution<double> unif(0, 1);
-
-    while (1) {
-        u = unif(gen);
-        if (u == 0)
-            continue; // avoid division by 0
-        x = pois_a + pois_h * (unif(gen) - 0.5) / u;
-        if (x < 0 || x >= pois_bound)
-            continue; // reject if outside valid range
-        k  = (int) (x);
-        lf = k * pois_g - lnOfFactorial(k) - pois_f0;
-        if (lf >= u * (4.0 - u) - 3.0)
-            break; // quick acceptance
-        if (u * (u - lf) > 1.0)
-            continue; // quick rejection
-        if (2.0 * log(u) <= lf)
-            break; // final acceptance
-    }
-    return k;
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            return distFunc(gen);
+        });
+    });
 }
-
-inline int poissonRatioOfUniformsInteger(double L)
-{
-    static std::random_device rd;
-    static std::mt19937       gen(rd());
-    return poissonRatioOfUniformsInteger(L, gen);
-}
-
-} // namespace detail
 
 /**
- * @brief algorithm poisson random number (Knuth):
- * init:
- *   Let L ← e^−λ, k ← 0 and p ← 1.
- *   do:
- *     k ← k + 1.
- *     Generate uniform random number u in [0,1] and let p ← p × u.
- *   while p > L.
- *   return k − 1.
- * @param lambda
- * @param gen
- * @return
+ * @brief Generate a random point of a given PointType.
+ *
+ * This function generates a random point of the specified PointType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * @tparam PointType: Type of the point to generate, must satisfy PointConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random point of type PointType based on the specified distribution.
  *
  * @ingroup algorithms_core
  */
-inline int poissonRandomNumber(double lambda, std::mt19937& gen)
+template<PointConcept PointType>
+PointType random(
+    DistConfig<typename PointType::ScalarType> distConf = std::monostate(),
+    RandomConfig                               config   = std::monostate())
 {
-    if (lambda > 50)
-        return detail::poissonRatioOfUniformsInteger(lambda, gen);
-
-    std::uniform_real_distribution<double> unif(0, 1);
-
-    double L = exp(-lambda);
-    int    k = 0;
-    double p = 1.0;
-    do {
-        k = k + 1;
-        p = p * unif(gen);
-    } while (p > L);
-
-    return k - 1;
-}
-
-inline int poissonRandomNumber(double lambda)
-{
-    static std::random_device rd;
-    static std::mt19937       gen(rd());
-    return detail::poissonRatioOfUniformsInteger(lambda, gen);
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            PointType point;
+            for (uint i = 0; i < PointType::DIM; ++i) {
+                point[i] = distFunc(gen);
+            }
+            return point;
+        });
+    });
 }
 
 /**
- * @brief Generate the barycentric coords of a random point over a triangle,
- * with a uniform distribution over the triangle.
+ * @brief Generate a random box of a given BoxType.
+ *
+ * This function generates a random box of the specified BoxType based on the
+ * provided distribution configuration and random generator configuration. The
+ * distribution can be specified as a pair of bounds for a uniform distribution
+ * or as a custom function that takes a random generator and returns a random
+ * number.
+ *
+ * Generated boxes will have their min and max points randomly generated,
+ * ensuring that the min point is less than or equal to the max point for each
+ * dimension.
+ *
+ * @tparam BoxType: Type of the box to generate, must satisfy BoxConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random box of type BoxType based on the specified distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<BoxConcept BoxType>
+BoxType random(
+    DistConfig<typename BoxType::ScalarType> distConf = std::monostate(),
+    RandomConfig                             config   = std::monostate())
+{
+    using PointType = BoxType::PointType;
+
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            PointType minPoint, maxPoint;
+            for (uint i = 0; i < PointType::DIM; ++i) {
+                minPoint[i] = distFunc(gen);
+                maxPoint[i] = distFunc(gen);
+                if (minPoint[i] > maxPoint[i]) {
+                    std::swap(minPoint[i], maxPoint[i]);
+                }
+            }
+            return BoxType(minPoint, maxPoint);
+        });
+    });
+}
+
+/**
+ * @brief Generate a random plane of a given PlaneType.
+ *
+ * This function generates a random plane of the specified PlaneType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * @tparam PlaneType: Type of the plane to generate, must satisfy PlaneConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random plane of type PlaneType based on the specified distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<PlaneConcept PlaneType>
+PlaneType random(
+    DistConfig<typename PlaneType::ScalarType> distConf = std::monostate(),
+    RandomConfig                               config   = std::monostate())
+{
+    using ScalarType = PlaneType::ScalarType;
+    using PointType  = PlaneType::PointType;
+
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            return PlaneType(
+                random<PointType>(distConf, config),
+                random<ScalarType>(distConf, config));
+        });
+    });
+}
+
+/**
+ * @brief Generate a random bitset of a given BitSetType.
+ *
+ * This function generates a random bitset of the specified BitSetType based on
+ * the provided distribution configuration and random generator configuration.
+ * The distribution can be specified as a pair of bounds for a uniform
+ * distribution or as a custom function that takes a random generator and
+ * returns a random number.
+ *
+ * The function performs a single random draw from the specified distribution
+ * and sets the underlying value of the bitset accordingly. The resulting bitset
+ * will have its bits set based on the random value generated.
+ *
+ * @tparam BitSetType: Type of the bitset to generate, must satisfy
+ * BitSetConcept.
+ * @param[in] distConf: DistConfig that determines how to provide the random
+ * distribution.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A random bitset of type BitSetType based on the specified
+ * distribution.
+ *
+ * @ingroup algorithms_core
+ */
+template<BitSetConcept BitSetType>
+BitSetType random(
+    DistConfig<typename BitSetType::UnderlyingType> distConf = std::monostate(),
+    RandomConfig                                    config   = std::monostate())
+{
+    return callWithDistribution(distConf, [&](auto&& distFunc) {
+        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+            BitSetType bitset;
+            bitset.setUnderlying(distFunc(gen));
+            return bitset;
+        });
+    });
+}
+
+/**
+ * @brief Generate the barycentric coordinates of a random point over a
+ * triangle, with a uniform distribution over the triangle.
+ *
  * It uses the parallelogram folding trick.
  *
- * @param gen
- * @return
+ * @tparam PointType: Type of the point to generate. It must satisfy the
+ * Point3Concept. The ScalarType is used as the distribution numeric type.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A Point3 of type PointType whose components are normalized
+ * barycentric coordinates (they sum to 1 and each component is in [0, 1]).
  *
  * @ingroup algorithms_core
  */
 template<Point3Concept PointType>
-PointType randomTriangleBarycentricCoordinate(std::mt19937& gen)
+PointType randomTriangleBarycentricCoordinate(
+    RandomConfig config = std::monostate())
 {
     using ScalarType = PointType::ScalarType;
 
-    PointType                                  interp;
-    std::uniform_real_distribution<ScalarType> unif(0, 1);
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        PointType                                  interp;
+        std::uniform_real_distribution<ScalarType> unif(0, 1);
 
-    interp[1] = unif(gen);
-    interp[2] = unif(gen);
-    if (interp[1] + interp[2] > 1.0) {
-        interp[1] = 1.0 - interp[1];
-        interp[2] = 1.0 - interp[2];
-    }
+        interp[1] = unif(gen);
+        interp[2] = unif(gen);
+        if (interp[1] + interp[2] > 1.0) {
+            interp[1] = 1.0 - interp[1];
+            interp[2] = 1.0 - interp[2];
+        }
 
-    interp[0] = 1.0 - (interp[1] + interp[2]);
-    return interp;
+        interp[0] = 1.0 - (interp[1] + interp[2]);
+        return interp;
+    });
 }
 
-template<Point3Concept PointType>
-PointType randomTriangleBarycentricCoordinate()
-{
-    static std::random_device rd;
-    static std::mt19937       gen(rd());
-    return randomTriangleBarycentricCoordinate<PointType>(gen);
-}
-
+/**
+ * @brief Generate barycentric coordinates of a random point over a regular
+ * polygon in 2D, with uniform distribution over its vertices.
+ *
+ * The algorithm generates N independent and identically distributed random
+ * values, then normalizes them so they sum to 1. This produces a point
+ * uniformly distributed on the (N-1)-simplex — equivalent to a random convex
+ * combination of the polygon vertices.
+ *
+ * For triangles (polySize == 3), prefer @ref
+ * randomTriangleBarycentricCoordinate which uses the exact parallelogram
+ * folding trick and may offer better control over distribution bounds.
+ *
+ * @tparam ScalarType: Numeric type for the barycentric coordinates.
+ * @param[in] polySize: Number of vertices in the polygon. Must be greater than
+ * 0.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ * @return A std::vector<ScalarType> of size polySize with values in [0, 1) that
+ * sum to exactly 1 (within floating-point precision). The i-th element is the
+ * weight for the i-th vertex of the polygon.
+ *
+ * @note For perfect uniformity on triangles, the barycentric coordinate method
+ * used by randomTriangleBarycentricCoordinate is exact. This function uses
+ * normalization which is an approximation that becomes arbitrarily close to
+ * uniform as polySize increases.
+ *
+ * @ingroup algorithms_core
+ */
 template<typename ScalarType>
 std::vector<ScalarType> randomPolygonBarycentricCoordinate(
-    uint          polySize,
-    std::mt19937& gen)
+    uint         polySize,
+    RandomConfig config = std::monostate())
 {
-    std::vector<ScalarType> barCoord(polySize);
-    ScalarType              sum = 0;
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        std::vector<ScalarType> barCoord(polySize);
+        ScalarType              sum = static_cast<ScalarType>(0);
 
-    std::uniform_real_distribution<ScalarType> unif(0, 100);
+        std::uniform_real_distribution<ScalarType> unif(0, 1);
 
-    for (uint i = 0; i < polySize; i++) {
-        barCoord[i] = unif(gen);
-        sum += barCoord[i];
-    }
-    for (uint i = 0; i < polySize; i++) {
-        barCoord[i] /= sum;
-    }
-    return barCoord;
-}
+        for (uint i = 0; i < polySize; ++i) {
+            barCoord[i] = unif(gen);
+            sum += barCoord[i];
+        }
 
-template<typename ScalarType>
-std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize)
-{
-    static std::random_device rd;
-    static std::mt19937       gen(rd());
-    return randomPolygonBarycentricCoordinate<ScalarType>(polySize, gen);
+        // Normalize so all weights sum to 1.
+        assert(sum != static_cast<ScalarType>(0));
+        for (uint i = 0; i < polySize; ++i) {
+            barCoord[i] /= sum;
+        }
+        return barCoord;
+    });
 }
 
 } // namespace vcl

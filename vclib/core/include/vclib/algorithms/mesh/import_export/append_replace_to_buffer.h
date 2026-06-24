@@ -56,8 +56,8 @@
  * 3. Use the algorithms defined in this module to append the duplicated
  * vertices and the texture coordinates.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 namespace vcl {
@@ -324,7 +324,7 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * triangles in the buffer.
  */
 template<FaceMeshConcept MeshType>
-static void permuteFaceVertexIndicesByFunctionToBuffer(
+void permuteFaceVertexIndicesByFunctionToBuffer(
     const MeshType&                           mesh,
     auto*                                     buffer,
     const std::function<bool(
