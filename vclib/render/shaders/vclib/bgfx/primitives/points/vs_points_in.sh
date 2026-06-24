@@ -46,6 +46,9 @@ void main()
     uint idx31 = idx30 + 1u;
     uint idx32 = idx30 + 2u;
 
+    // Unroll a continuous stream of floats from a vec4 compute buffer.
+    // Each point's position takes 3 floats, but the SSBO is accessed as vec4 elements.
+    // idx/4u computes the vec4 index, and idx%4u selects the correct scalar component.
     vec3 centerPos = vec3(
         pointsBuffer[idx30/4u][idx30%4u],
         pointsBuffer[idx31/4u][idx31%4u],
@@ -70,6 +73,7 @@ void main()
     // Normal calculation
     vec3 normal = vec3(0.0, 0.0, 0.0);
 #if POINTS_SHADING_PER_VERTEX
+    // Same vec4 unrolling logic as point positions
     normal = vec3(
         normalsBuffer[idx30/4u][idx30%4u],
         normalsBuffer[idx31/4u][idx31%4u],

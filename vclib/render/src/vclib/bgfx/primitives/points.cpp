@@ -155,6 +155,13 @@ void Points::draw(bgfx::ViewId viewId) const
     bgfx::submit(viewId, mProgram);
 }
 
+/**
+ * @brief Checks if the shader program needs to be updated and updates it.
+ *
+ * Validates that required buffers (normals, colors) are available based on
+ * the current shading and color settings, throwing an exception if invalid.
+ * Then it selects the appropriate shader program.
+ */
 void Points::checkAndUpdateProgram() const
 {
     if (!mIsUpdateProgramNeeded) {
@@ -180,6 +187,11 @@ void Points::checkAndUpdateProgram() const
     mIsUpdateProgramNeeded = false;
 }
 
+/**
+ * @brief Selects the correct bgfx shader program based on current settings.
+ *
+ * @return The appropriate bgfx::ProgramHandle for the current configuration.
+ */
 bgfx::ProgramHandle Points::pointsProgramSelector() const
 {
     using enum VertFragProgram;
@@ -187,6 +199,10 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     Context& ctx = Context::instance();
     ProgramManager& pm = ctx.programManager();
 
+    // Select the program from 8 possible permutations based on:
+    // 1. Color: Per-Vertex Color (PVC) vs General Color (GC)
+    // 2. Shading: Per-Vertex Shading (PVS) vs No Shading (NS)
+    // 3. Shape: Square (SQ) vs Circle (CIR)
     if (mColorToUse == ColorSetting::PER_VERTEX) {
         if (mShading == Shading::NONE) {
             if (mShape == Shape::SQUARE) {

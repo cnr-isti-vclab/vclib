@@ -31,6 +31,13 @@
 
 namespace vcl {
 
+/**
+ * @brief Manages the uniform variables required by the Points shaders.
+ *
+ * This utility class is responsible for packing points rendering settings
+ * (such as width and general color) into a vec4 uniform and binding it
+ * to the bgfx rendering context.
+ */
 class PointsUniforms
 {
     // .x = point width in pixels
@@ -43,13 +50,26 @@ class PointsUniforms
 public:
     PointsUniforms() = delete;
 
+    /**
+     * @brief Sets the width of the points.
+     * @param width The point width in pixels.
+     */
     static void setWidth(float width) { sPointsSettings[0] = width; }
 
+    /**
+     * @brief Sets the general color for points.
+     * @param color The uniform color to apply when per-vertex colors are not used.
+     */
     static void setGeneralColor(const vcl::Color& color)
     {
         sPointsSettings[1] = std::bit_cast<float>(color.abgr());
     }
 
+    /**
+     * @brief Binds the uniform to the current bgfx context.
+     *
+     * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
+     */
     static void bind()
     {
         // Lazy initialization to avoid creating uniforms before bgfx is

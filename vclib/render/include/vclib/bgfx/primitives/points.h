@@ -172,8 +172,11 @@ public:
     {
         mVertexCount = std::ranges::size(verts);
 
-        // Move to the nearest multiple of 2 to ensure padding of 4 floats
-        uint nv = mVertexCount + (mVertexCount % 2);
+        // Compute padding to ensure the buffer size is a multiple of 4 floats
+        // (16 bytes). This is required because the vertex shader reads the
+        // buffer as vec4 elements.
+        uint padding = (4 - (mVertexCount % 4)) % 4;
+        uint nv = mVertexCount + padding;
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -215,10 +218,16 @@ public:
     {
         assert(std::ranges::size(vertNormals) == mVertexCount);
 
+        // Compute padding to ensure the buffer size is a multiple of 4 floats
+        // (16 bytes). This is required because the vertex shader reads the
+        // buffer as vec4 elements.
+        uint padding = (4 - (mVertexCount % 4)) % 4;
+        uint nv = mVertexCount + padding;
+
         VertexBuffer vNormsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(mVertexCount * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
 
         for (size_t i = 0; const auto& n : vertNormals) {
             buffer[i * 3 + 0] = n.x();
@@ -229,7 +238,7 @@ public:
 
         vNormsBuff.create(
             buffer,
-            mVertexCount,
+            nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
@@ -251,10 +260,14 @@ public:
     {
         assert(std::ranges::size(vertColors) == mVertexCount);
 
+        // Compute padding to ensure the buffer size is a multiple of 16 bytes.
+        uint padding = (4 - (mVertexCount % 4)) % 4;
+        uint nv = mVertexCount + padding;
+
         VertexBuffer vColsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(mVertexCount);
+            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
 
         for (uint i = 0; const auto& c : vertColors) {
             buffer[i] = c.abgr();
@@ -263,7 +276,7 @@ public:
 
         vColsBuff.create(
             buffer,
-            mVertexCount,
+            nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,

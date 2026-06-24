@@ -184,10 +184,14 @@ public:
     {
         assert(std::ranges::size(vertColors) == mVertexCount);
 
+        // Compute padding to ensure the buffer size is a multiple of 16 bytes.
+        uint padding = (4 - (mVertexCount % 4)) % 4;
+        uint nv = mVertexCount + padding;
+
         VertexBuffer vColsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(mVertexCount);
+            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
 
         for (uint i = 0; const auto& c : vertColors) {
             buffer[i] = c.abgr();
@@ -196,7 +200,7 @@ public:
 
         vColsBuff.create(
             buffer,
-            mVertexCount,
+            nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
