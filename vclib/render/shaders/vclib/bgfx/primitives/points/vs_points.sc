@@ -55,11 +55,10 @@ void main()
     vec4 pos = mul(u_modelViewProj, vec4(centerPos, 1.0));
     
     vec4 offset = vec4(
-        offsets[localVertex].x * u_pointsWidth * u_viewTexel.x,
-        offsets[localVertex].y * u_pointsWidth * u_viewTexel.y,
+        offsets[localVertex].x * u_pointsWidth * u_viewTexel.x * pos.w,
+        offsets[localVertex].y * u_pointsWidth * u_viewTexel.y * pos.w,
         0.0, 0.0);
 
-    pos = pos / pos.w;
     gl_Position = pos + offset;
 
     // Normal calculation
