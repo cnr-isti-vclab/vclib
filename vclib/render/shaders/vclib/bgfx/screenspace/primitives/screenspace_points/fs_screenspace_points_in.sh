@@ -27,19 +27,15 @@ $input v_color, v_texcoord1
 
 void main()
 {
-    vec4 color = u_pointsGeneralColor;
+    vec4 color = v_color;
 
-    if (usePerPointColor()) {
-        color = v_color;
-    }
-
+#if !POINTS_SHAPE_SQUARE
     // Circle shape discards fragments outside the unit disk.
-    if (!useQuadShape()) {
-        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
-        if (length(uv) > 1.0) {
-            discard;
-        }
+    vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+    if (length(uv) > 1.0) {
+        discard;
     }
+#endif
 
     gl_FragColor = color;
 }

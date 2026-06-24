@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-// Programmable Vertex Pulling: no vertex attributes, we pull data from SSBOs
 $output v_color, v_texcoord1
 
 #include <vclib/bgfx/shaders_common.sh>
@@ -28,7 +27,9 @@ $output v_color, v_texcoord1
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(pointsBuffer, vec2, 0); // 2D point positions
+#if POINTS_COLOR_PER_VERTEX
 BUFFER_RO(pointColors, uint, 1); // colors
+#endif
 
 void main()
 {
@@ -40,17 +41,6 @@ void main()
     // Fetch the center position of this point
     vec2 centerPos = pointsBuffer[pointIndex];
 
-    // Quad expansion: map localVertex (0-5) to quad corners and UVs
-    // Triangle 1: verts 0, 1, 2
-    // Triangle 2: verts 3, 4, 5
-    // Vertex offset mapping for each of the 6 vertices:
-    // localVertex=0: (-1, -1) -> UV (0, 0)   [bottom-left]
-    // localVertex=1: (-1,  1) -> UV (0, 1)   [top-left]
-    // localVertex=2: ( 1, -1) -> UV (1, 0)   [bottom-right]
-    // localVertex=3: ( 1, -1) -> UV (1, 0)   [bottom-right]
-    // localVertex=4: (-1,  1) -> UV (0, 1)   [top-left]
-    // localVertex=5: ( 1,  1) -> UV (1, 1)   [top-right]
-    
     const vec2 offsets[6] = {
         vec2(-1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0, -1.0),
         vec2( 1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0,  1.0)
@@ -72,11 +62,11 @@ void main()
         0.0,
         1.0);
 
+#if POINTS_COLOR_PER_VERTEX
+    v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+#else
     v_color = u_pointsGeneralColor;
-
-    if (usePerPointColor()) {
-        v_color = uintABGRToVec4Color(pointColors[pointIndex]);
-    }
+#endif
 
     // Pass UV coordinates to fragment shader
     v_texcoord1 = quadUv;

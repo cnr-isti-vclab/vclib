@@ -32,42 +32,48 @@ namespace vcl {
 /**
  * @brief Constructs a point set by referencing existing VertexBuffers.
  *
- * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] vertexCount: Number of points.
  * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 3 components per point (x, y,
  * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1]. The buffer must be created for compute access and must
- * remain valid for the lifetime of this object.
+ * yn-1, zn-1]. The buffer must remain valid for the lifetime of this object.
+ * @param[in] normals: Optional VertexBuffer containing per-point normals.
+ * Expected layout: an array of `float` with 3 components per normal (x, y,
+ * z), stored as consecutive floats: [nx0, ny0, nz0, nx1, ny1, nz1, ...,
+ * nxn-1, nyn-1, nzn-1]. The buffer must remain valid for the lifetime of this
+ * object.
  * @param[in] vertColors: Optional VertexBuffer containing per-point colors.
  * Expected layout: an array of `uint` with 4 channels per color in ABGR
- * order (A, B, G, R packed as a single 32-bit integer). The buffer must be
- * created for compute access and must remain valid for the lifetime of
- * this object.
+ * order (A, B, G, R packed as a single 32-bit integer). The buffer must remain
+ * valid for the lifetime of this object.
  */
 Points::Points(
     const uint          vertexCount,
     const VertexBuffer& verts,
+    const VertexBuffer& normals,
     const VertexBuffer& vertColors)
 {
     setVertices(vertexCount, verts);
+    if (normals.isValid()) {
+        setVertexNormals(vertexCount, normals);
+    }
     if (vertColors.isValid()) {
-        setVertexColors(vertColors);
+        setVertexColors(vertexCount, vertColors);
     }
 }
 
 /**
  * @brief Sets point positions by referencing an existing VertexBuffer.
  *
- * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] vertexCount: Number of points in the VertexBuffer.
  * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 3 components per point (x, y,
  * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1]. The buffer must be created for compute access and must
- * remain valid for the lifetime of this object.
+ * yn-1, zn-1]. The buffer must remain valid for the lifetime of this object.
  */
 void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 {
-    mVertexCount = vertexCount;
+    mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
     mIsUpdateProgramNeeded = true;
 }
@@ -75,14 +81,16 @@ void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 /**
  * @brief Sets per-point normals by referencing an existing VertexBuffer.
  *
+ * @param[in] vNorCount: Number of normals in the VertexBuffer.
  * @param[in] vertNormals: VertexBuffer containing per-point normals.
  * Expected layout: an array of `float` with 3 components per normal (x, y,
  * z), stored as consecutive floats: [nx0, ny0, nz0, nx1, ny1, nz1, ...,
- * nxn-1, nyn-1, nzn-1]. The buffer must be created for compute access and
- * must remain valid for the lifetime of this object.
+ * nxn-1, nyn-1, nzn-1]. The buffer must remain valid for the lifetime of this
+ * object.
  */
-void Points::setVertexNormals(const VertexBuffer& vertNormals)
+void Points::setVertexNormals(uint vNorCount, const VertexBuffer& vertNormals)
 {
+    mVerNorCount = vNorCount;
     mVertexNormals.setReferenced(&vertNormals);
     mIsUpdateProgramNeeded = true;
 }
@@ -90,14 +98,15 @@ void Points::setVertexNormals(const VertexBuffer& vertNormals)
 /**
  * @brief Sets per-point colors by referencing an existing VertexBuffer.
  *
+ * @param[in] vColsCount: Number of colors in the VertexBuffer.
  * @param[in] vertColors: VertexBuffer containing per-point colors.
  * Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
- * must be created for compute access and must remain valid for the
- * lifetime of this object.
+ * must remain valid for the lifetime of this object.
  */
-void Points::setVertexColors(const VertexBuffer& vertColors)
+void Points::setVertexColors(uint vColsCount, const VertexBuffer& vertColors)
 {
+    mVerColCount = vColsCount;
     mVertexColors.setReferenced(&vertColors);
     mIsUpdateProgramNeeded = true;
 }
@@ -115,7 +124,7 @@ void Points::setVertexColors(const VertexBuffer& vertColors)
 void Points::draw(bgfx::ViewId viewId) const
 {
     // Skip rendering if there are no vertices or the position buffer is invalid
-    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
 
@@ -140,7 +149,7 @@ void Points::draw(bgfx::ViewId viewId) const
             POINTS_COLORS_STAGE, bgfx::Access::Read);
     }
 
-    bgfx::setVertexCount(mVertexCount * 6);
+    bgfx::setVertexCount(mVerPosCount * 6);
 
     bgfx::setState(0 |
                    BGFX_STATE_WRITE_RGB        |
@@ -168,18 +177,28 @@ void Points::checkAndUpdateProgram() const
         return;
     }
 
-    if (mColorToUse == ColorSetting::PER_VERTEX) {
+    if (mColorSetting == ColorSetting::PER_VERTEX) {
         if (!mVertexColors.isValid()) {
             throw std::runtime_error(
-                "Points: PER_VERTEX color setting requires a "
-                "valid vertex color buffer.");
+                "Points: PER_VERTEX color setting requires a valid vertex "
+                "color buffer.");
+        }
+        if (mVerColCount != mVerPosCount) {
+            throw std::runtime_error(
+                "Points: The number of vertex colors must match the number of "
+                "vertices.");
         }
     }
     if (mShading == Shading::PER_VERTEX) {
         if (!mVertexNormals.isValid()) {
             throw std::runtime_error(
-                "Points: PER_VERTEX shading setting requires a "
-                "valid vertex normal buffer.");
+                "Points: PER_VERTEX shading setting requires a valid vertex "
+                "normal buffer.");
+        }
+        if (mVerNorCount != mVerPosCount) {
+            throw std::runtime_error(
+                "Points: The number of vertex normals must match the number of "
+                "vertices.");
         }
     }
 
@@ -203,7 +222,7 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     // 1. Color: Per-Vertex Color (PVC) vs General Color (GC)
     // 2. Shading: Per-Vertex Shading (PVS) vs No Shading (NS)
     // 3. Shape: Square (SQ) vs Circle (CIR)
-    if (mColorToUse == ColorSetting::PER_VERTEX) {
+    if (mColorSetting == ColorSetting::PER_VERTEX) {
         if (mShading == Shading::NONE) {
             if (mShape == Shape::SQUARE) {
                 return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_SQ>();

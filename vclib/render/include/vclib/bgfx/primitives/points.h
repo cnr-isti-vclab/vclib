@@ -61,10 +61,12 @@ public:
     };
 
 private:
-    uint mVertexCount = 0;
+    uint mVerPosCount = 0;
+    uint mVerNorCount = 0;
+    uint mVerColCount = 0;
 
     float        mWidth        = 1.0f;
-    ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    ColorSetting mColorSetting = ColorSetting::GENERAL;
     Shading      mShading      = Shading::NONE;
     Shape        mShape        = Shape::SQUARE;
     Color        mGeneralColor = Color::Black;
@@ -83,8 +85,8 @@ public:
     Points() = default;
 
     /**
-     * @brief Constructs a point set from ranges of 3D coordinates and
-     * per-point colors.
+     * @brief Constructs a point set from ranges of 3D coordinates, per-point
+     * normals and per-point colors.
      *
      * @param[in] verts: Range of elements convertible to Point3 (must
      * provide x(), y(), z()). Each element contributes one world-space point.
@@ -117,6 +119,7 @@ public:
     Points(
         const uint          vertexCount,
         const VertexBuffer& verts,
+        const VertexBuffer& normals    = NULL_VERTEX_BUFFER,
         const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
 
     /**
@@ -152,7 +155,7 @@ public:
      *
      * @return The number of points (vertices) in the set.
      */
-    uint vertexCount() const { return mVertexCount; }
+    uint vertexCount() const { return mVerPosCount; }
 
     /**
      * @brief Sets point positions from a range of 3D points.
@@ -170,13 +173,13 @@ public:
     requires Point3Concept<std::ranges::range_value_t<R>>
     void setVertices(R&& verts)
     {
-        mVertexCount = std::ranges::size(verts);
+        mVerPosCount = std::ranges::size(verts);
 
         // Compute padding to ensure the buffer size is a multiple of 4 floats
         // (16 bytes). This is required because the vertex shader reads the
         // buffer as vec4 elements.
-        uint padding = (4 - (mVertexCount % 4)) % 4;
-        uint nv = mVertexCount + padding;
+        uint padding = (4 - (mVerPosCount % 4)) % 4;
+        uint nv = mVerPosCount + padding;
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -216,18 +219,18 @@ public:
     requires Point3Concept<std::ranges::range_value_t<R>>
     void setVertexNormals(R&& vertNormals)
     {
-        assert(std::ranges::size(vertNormals) == mVertexCount);
+        mVerNorCount = std::ranges::size(vertNormals);
 
         // Compute padding to ensure the buffer size is a multiple of 4 floats
         // (16 bytes). This is required because the vertex shader reads the
         // buffer as vec4 elements.
-        uint padding = (4 - (mVertexCount % 4)) % 4;
-        uint nv = mVertexCount + padding;
+        uint padding = (4 - (mVerNorCount % 4)) % 4;
+        uint nn = mVerNorCount + padding;
 
         VertexBuffer vNormsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
+            Context::getAllocatedBufferAndReleaseFn<float>(nn * 3);
 
         for (size_t i = 0; const auto& n : vertNormals) {
             buffer[i * 3 + 0] = n.x();
@@ -238,7 +241,7 @@ public:
 
         vNormsBuff.create(
             buffer,
-            nv,
+            nn,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
@@ -258,16 +261,16 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mVertexCount);
+        mVerColCount = std::ranges::size(vertColors);
 
         // Compute padding to ensure the buffer size is a multiple of 16 bytes.
-        uint padding = (4 - (mVertexCount % 4)) % 4;
-        uint nv = mVertexCount + padding;
+        uint padding = (4 - (mVerColCount % 4)) % 4;
+        uint nc = mVerColCount + padding;
 
         VertexBuffer vColsBuff;
 
         auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(nv);
+            Context::getAllocatedBufferAndReleaseFn<uint>(nc);
 
         for (uint i = 0; const auto& c : vertColors) {
             buffer[i] = c.abgr();
@@ -276,7 +279,7 @@ public:
 
         vColsBuff.create(
             buffer,
-            nv,
+            nc,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
@@ -288,9 +291,9 @@ public:
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
 
-    void setVertexNormals(const VertexBuffer& vertNormals);
+    void setVertexNormals(uint vNorCount, const VertexBuffer& vertNormals);
 
-    void setVertexColors(const VertexBuffer& vertColors);
+    void setVertexColors(uint vColsCount, const VertexBuffer& vertColors);
 
     /**
      * @brief Sets the size of point splats.
@@ -307,7 +310,7 @@ public:
      */
     void setColorSetting(ColorSetting colorToUse)
     {
-        mColorToUse            = colorToUse;
+        mColorSetting            = colorToUse;
         mIsUpdateProgramNeeded = true;
     }
 

@@ -56,15 +56,19 @@ public:
     };
 
 private:
-    uint mVertexCount = 0;
+    uint mVerPosCount = 0;
+    uint mVerColCount = 0;
 
     float        mWidth        = 1.0f;
-    ColorSetting mColorToUse   = ColorSetting::GENERAL;
+    ColorSetting mColorSetting = ColorSetting::GENERAL;
     Shape        mShape        = Shape::SQUARE;
     Color        mGeneralColor = Color::Black;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+
+    mutable bool mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -128,7 +132,7 @@ public:
      *
      * @return The number of points (vertices) in the set.
      */
-    uint vertexCount() const { return mVertexCount; }
+    uint vertexCount() const { return mVerPosCount; }
 
     /**
      * @brief Sets point positions from a range of 2D points.
@@ -146,10 +150,13 @@ public:
     requires Point2Concept<std::ranges::range_value_t<R>>
     void setVertices(R&& verts)
     {
-        mVertexCount = std::ranges::size(verts);
+        mVerPosCount = std::ranges::size(verts);
 
-        // move to the nearest multiple of 2 to ensure padding of 4 floats
-        uint nv = mVertexCount + (mVertexCount % 2);
+        // Compute padding to ensure the buffer size is a multiple of 4 floats
+        // (16 bytes). This is required because the vertex shader reads the
+        // buffer as vec4 elements.
+        uint padding = (4 - (mVerPosCount % 4)) % 4;
+        uint nv = mVerPosCount + padding;
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -169,6 +176,7 @@ public:
             PrimitiveType::FLOAT,
             releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -182,11 +190,11 @@ public:
     requires ColorConcept<std::ranges::range_value_t<R>>
     void setVertexColors(R&& vertColors)
     {
-        assert(std::ranges::size(vertColors) == mVertexCount);
+        assert(std::ranges::size(vertColors) == mVerPosCount);
 
         // Compute padding to ensure the buffer size is a multiple of 16 bytes.
-        uint padding = (4 - (mVertexCount % 4)) % 4;
-        uint nv = mVertexCount + padding;
+        uint padding = (4 - (mVerPosCount % 4)) % 4;
+        uint nv = mVerPosCount + padding;
 
         VertexBuffer vColsBuff;
 
@@ -207,6 +215,7 @@ public:
             true,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
@@ -225,13 +234,21 @@ public:
      * @param[in] colorToUse: Whether to use per-point colors or a general
      * uniform color.
      */
-    void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
+    void setColorSetting(ColorSetting colorToUse)
+    {
+        mColorSetting          = colorToUse;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Sets the visual shape of each point splat.
      * @param[in] shape: The splat shape (SQUARE or CIRCLE).
      */
-    void setShapeSetting(Shape shape) { mShape = shape; }
+    void setShapeSetting(Shape shape)
+    {
+        mShape                 = shape;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
@@ -245,6 +262,9 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
+    void checkAndUpdateProgram() const;
+    bgfx::ProgramHandle screenspacePointsProgramSelector() const;
+
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_COLORS_STAGE    = 1;
 };
