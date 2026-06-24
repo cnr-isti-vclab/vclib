@@ -171,6 +171,9 @@ void main() {
 
     v_color = color;
     v_normal = normal;
+
+    // Apply depth offset in clip space.
+    // We scale the offset by w to maintain it consistently after the perspective divide.
     p.z += -u_depthOffset * p.w;
     gl_Position = p;
 }
