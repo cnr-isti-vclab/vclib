@@ -71,15 +71,16 @@ void main()
     gl_Position = pos + offset;
 
     // Normal calculation
-    vec3 normal = vec3(0.0, 0.0, 0.0);
 #if POINTS_SHADING_PER_VERTEX
     // Same vec4 unrolling logic as point positions
-    normal = vec3(
+    v_normal = vec3(
         normalsBuffer[idx30/4u][idx30%4u],
         normalsBuffer[idx31/4u][idx31%4u],
         normalsBuffer[idx32/4u][idx32%4u]);
+    v_normal = normalize(mul(u_normalMatrix, v_normal));
+#else
+    v_normal = vec3(0.0, 0.0, 1.0);
 #endif
-    v_normal = normalize(mul(u_normalMatrix, normal));
 
     // Color calculation
 #if POINTS_COLOR_PER_VERTEX
