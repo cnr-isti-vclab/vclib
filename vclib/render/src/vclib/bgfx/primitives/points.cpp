@@ -69,6 +69,7 @@ void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 {
     mVertexCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -83,7 +84,7 @@ void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 void Points::setVertexNormals(const VertexBuffer& vertNormals)
 {
     mVertexNormals.setReferenced(&vertNormals);
-    mIsValidityCheckNeeded = true;
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -98,7 +99,7 @@ void Points::setVertexNormals(const VertexBuffer& vertNormals)
 void Points::setVertexColors(const VertexBuffer& vertColors)
 {
     mVertexColors.setReferenced(&vertColors);
-    mIsValidityCheckNeeded = true;
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -118,10 +119,7 @@ void Points::draw(bgfx::ViewId viewId) const
         return;
     }
 
-    validityCheck();
-
-    Context& ctx = Context::instance();
-    ProgramManager& pm = ctx.programManager();
+    checkAndUpdateProgram();
 
     // Upload rendering settings to the shader via uniform.
     PointsUniforms::setWidth(mWidth);
@@ -154,13 +152,12 @@ void Points::draw(bgfx::ViewId viewId) const
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
 
-    auto program = pointsProgramSelector();
-    bgfx::submit(viewId, program);
+    bgfx::submit(viewId, mProgram);
 }
 
-void Points::validityCheck() const
+void Points::checkAndUpdateProgram() const
 {
-    if (!mIsValidityCheckNeeded) {
+    if (!mIsUpdateProgramNeeded) {
         return;
     }
 
@@ -179,7 +176,8 @@ void Points::validityCheck() const
         }
     }
 
-    mIsValidityCheckNeeded = false;
+    mProgram = pointsProgramSelector();
+    mIsUpdateProgramNeeded = false;
 }
 
 bgfx::ProgramHandle Points::pointsProgramSelector() const

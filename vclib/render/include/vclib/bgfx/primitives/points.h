@@ -73,7 +73,8 @@ private:
     OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
-    mutable bool mIsValidityCheckNeeded = true;
+    mutable bool mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -193,6 +194,7 @@ public:
             PrimitiveType::FLOAT,
             releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -233,7 +235,7 @@ public:
             PrimitiveType::FLOAT,
             releaseFn);
         mVertexNormals.setOwned(std::move(vNormsBuff));
-        mIsValidityCheckNeeded = true;
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -268,7 +270,7 @@ public:
             true,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
-        mIsValidityCheckNeeded = true;
+        mIsUpdateProgramNeeded = true;
     }
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
@@ -293,7 +295,7 @@ public:
     void setColorSetting(ColorSetting colorToUse)
     {
         mColorToUse            = colorToUse;
-        mIsValidityCheckNeeded = true;
+        mIsUpdateProgramNeeded = true;
     }
 
      /**
@@ -305,7 +307,7 @@ public:
     void setShading(Shading shading)
     {
         mShading               = shading;
-        mIsValidityCheckNeeded = true;
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -313,7 +315,11 @@ public:
      *
      * @param[in] shape: The sprite shape (SQUARE or CIRCLE).
      */
-    void setShape(Shape shape) { mShape = shape; }
+    void setShape(Shape shape)
+    {
+        mShape                 = shape;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
@@ -328,7 +334,7 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
-    void validityCheck() const;
+    void checkAndUpdateProgram() const;
     bgfx::ProgramHandle pointsProgramSelector() const;
 
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
