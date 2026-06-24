@@ -54,7 +54,8 @@ namespace vcl {
  * double y = vcl::random<double>(std::pair{0.0, 1.0}, 42);
  * @endcode
  *
- * @tparam T: Numeric type for the random number. Must satisfy the Numeric concept.
+ * @tparam T: Numeric type for the random number. Must satisfy the Numeric
+ * concept.
  * @param[in] distConf: DistConfig<T> that determines how to provide the random
  * distribution.
  * @param[in] config: RandomConfig that determines how to provide the random
@@ -136,7 +137,7 @@ BoxType random(
     DistConfig<typename BoxType::ScalarType> distConf = std::monostate(),
     RandomConfig                             config   = std::monostate())
 {
-    using PointType  = BoxType::PointType;
+    using PointType = BoxType::PointType;
 
     return callWithDistribution(distConf, [&](auto&& distFunc) {
         return callWithRandomGenerator(config, [&](std::mt19937& gen) {
@@ -294,8 +295,8 @@ PointType randomTriangleBarycentricCoordinate(
  */
 template<typename ScalarType>
 std::vector<ScalarType> randomPolygonBarycentricCoordinate(
-    uint                               polySize,
-    RandomConfig                       config   = std::monostate())
+    uint         polySize,
+    RandomConfig config = std::monostate())
 {
     return callWithRandomGenerator(config, [&](std::mt19937& gen) {
         std::vector<ScalarType> barCoord(polySize);

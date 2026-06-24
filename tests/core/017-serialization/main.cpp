@@ -62,7 +62,8 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 
     std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/box3.bin");
 
-    vcl::Box3<Scalar> b1 = vcl::random<vcl::Box3<Scalar>>(std::pair{-100, 100});
+    vcl::Box3<Scalar> b1 =
+        vcl::random<vcl::Box3<Scalar>>(std::pair {-100, 100});
 
     b1.serialize(fo);
     fo.close();
@@ -398,7 +399,7 @@ TEMPLATE_TEST_CASE(
         "rand");
 
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
-        vh[i] = vcl::random<vcl::Point3d>(std::pair{-100, 100});
+        vh[i] = vcl::random<vcl::Point3d>(std::pair {-100, 100});
     }
 
     auto fh = mesh1.template perElementCustomComponentVectorHandle<

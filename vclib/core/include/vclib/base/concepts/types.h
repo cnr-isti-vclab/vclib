@@ -51,7 +51,7 @@ concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
  *
  * @ingroup util_concepts
  */
-template <typename T>
+template<typename T>
 concept Numeric = std::integral<T> || std::floating_point<T>;
 
 /**
