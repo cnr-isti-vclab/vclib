@@ -32,8 +32,8 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
 restore next lines with:
 
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
-BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
+BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of each face / edge
+BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 */
 
 #if SURF_COLOR_FACE
@@ -41,7 +41,8 @@ BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 #endif
 
 #if SURF_SHADING_FLAT
-BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
+BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
+DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 #endif
 
 void main()
@@ -58,10 +59,7 @@ void main()
 
 #if SURF_SHADING_FLAT
     // if flat shading, compute normal of face
-    normal = vec3(
-        primitiveNormals[primitiveID * 3],
-        primitiveNormals[primitiveID * 3 + 1],
-        primitiveNormals[primitiveID * 3 + 2]);
+    normal = fetchPrimitiveNormal(primitiveID);
     normal = normalize(mul(u_normalMatrix, normal));
 #endif
 

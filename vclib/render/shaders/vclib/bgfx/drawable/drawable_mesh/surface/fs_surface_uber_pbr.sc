@@ -36,14 +36,15 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
 restore next lines with:
 
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
-BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
+BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of each face / edge
+BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 */
 BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
-BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
+BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
+DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 
 SAMPLERCUBE(s_irradiance, 10);
 SAMPLERCUBE(s_specular, 11);
