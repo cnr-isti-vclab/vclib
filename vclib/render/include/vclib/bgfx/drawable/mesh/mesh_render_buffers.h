@@ -68,7 +68,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     IndexBuffer mTriangleIndexBuffer;
     IndexBuffer mTriangleNormalBuffer;
-    IndexBuffer mTriangleColorBuffer;
+    VertexBuffer mTriangleColorBuffer;
 
     Lines mEdgeLines;
 
@@ -234,7 +234,7 @@ public:
 
         mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+        mTriangleColorBuffer.bindCompute(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
@@ -525,7 +525,14 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.create(buffer, nt, releaseFn);
+        mTriangleColorBuffer.create(
+            buffer,
+            nt,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
