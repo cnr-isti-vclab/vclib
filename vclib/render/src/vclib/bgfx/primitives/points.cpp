@@ -133,6 +133,7 @@ void Points::draw(bgfx::ViewId viewId) const
     // Upload rendering settings to the shader via uniform.
     PointsUniforms::setWidth(mWidth);
     PointsUniforms::setGeneralColor(mGeneralColor);
+    PointsUniforms::setDepthOffset(mDepthOffset);
 
     // Bind the position buffer as a compute buffer (SSBO) for vertex shader
     // access. The point positions are read by the vertex pulling mechanism.

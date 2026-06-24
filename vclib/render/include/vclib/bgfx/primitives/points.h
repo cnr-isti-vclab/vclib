@@ -70,6 +70,7 @@ private:
     Shading      mShading      = Shading::NONE;
     Shape        mShape        = Shape::SQUARE;
     Color        mGeneralColor = Color::Black;
+    float        mDepthOffset  = 0.0f;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
@@ -128,6 +129,12 @@ public:
      * @return The width of the point splats in pixels.
      */
     float width() const { return mWidth; }
+
+    /**
+     * @brief Returns the depth offset applied to the points.
+     * @return The depth offset applied to the points.
+     */
+    float depthOffset() const { return mDepthOffset; }
 
     /**
      * @brief Returns whether the point set has valid vertex positions.
@@ -345,6 +352,15 @@ public:
     void setGeneralColor(const Color& generalColor)
     {
         mGeneralColor = generalColor;
+    }
+
+    /**
+     * @brief Sets the depth offset applied to the points.
+     * @param[in] depthOffset: The depth offset value.
+     */
+    void setDepthOffset(float depthOffset)
+    {
+        mDepthOffset = depthOffset;
     }
 
     void draw(bgfx::ViewId viewId) const;
