@@ -316,6 +316,8 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
+    void validityCheck() const;
+
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_NORMALS_STAGE   = 1;
     static constexpr uint POINTS_COLORS_STAGE    = 2;

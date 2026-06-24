@@ -25,6 +25,8 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.h>
 
+#include <stdexcept>
+
 namespace vcl {
 
 /**
@@ -114,6 +116,8 @@ void Points::draw(bgfx::ViewId viewId) const
         return;
     }
 
+    validityCheck();
+
     Context& ctx = Context::instance();
     ProgramManager& pm = ctx.programManager();
 
@@ -153,6 +157,24 @@ void Points::draw(bgfx::ViewId viewId) const
 
     auto program = pm.getProgram<VertFragProgram::PRIMITIVE_POINTS>();
     bgfx::submit(viewId, program);
+}
+
+void Points::validityCheck() const
+{
+    if (mColorToUse == ColorSetting::PER_VERTEX) {
+        if (!mVertexColors.isValid()) {
+            throw std::runtime_error(
+                "Points: PER_VERTEX color setting requires a "
+                "valid vertex color buffer.");
+        }
+    }
+    if (mShading == Shading::PER_VERTEX) {
+        if (!mVertexNormals.isValid()) {
+            throw std::runtime_error(
+                "Points: PER_VERTEX shading setting requires a "
+                "valid vertex normal buffer.");
+        }
+    }
 }
 
 } // namespace vcl
