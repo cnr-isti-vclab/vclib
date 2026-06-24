@@ -40,41 +40,34 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
     auto points = std::make_shared<vcl::DrawablePoints>();
 
     if (nPoints == vcl::UINT_NULL) {
-        // load bimba and use its vertices as points
+        // load bunny and use its vertices as points
         auto m =
-            vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+            vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
         vcl::updatePerVertexAndFaceNormals(m);
 
-        std::vector<vcl::Color> colors(m.vertexCount());
-
-        for (vcl::uint i = 0; i < m.vertexCount(); ++i) {
-            colors[i] = vcl::Color(
-                vcl::random<uint8_t>(),
-                vcl::random<uint8_t>(),
-                vcl::random<uint8_t>()
-                );
-        }
+        nPoints = m.vertexCount();
 
         points->setVertices(m.vertices() | vcl::views::positions);
-        points->setVertexColors(colors);
         points->setVertexNormals(m.vertices() | vcl::views::normals);
     }
     else {
         std::vector<vcl::Point3d> positions(nPoints);
-        std::vector<vcl::Color> colors(nPoints);
 
         for (vcl::uint i = 0; i < nPoints; ++i) {
             positions[i] = vcl::random<vcl::Point3d>();
-            colors[i] = vcl::Color(
-                vcl::random<uint8_t>(),
-                vcl::random<uint8_t>(),
-                vcl::random<uint8_t>()
-            );
         }
 
         points->setVertices(positions);
-        points->setVertexColors(colors);
     }
+
+    std::vector<vcl::Color> colors(nPoints);
+    for (vcl::uint i = 0; i < nPoints; ++i) {
+        colors[i] = vcl::Color(
+            vcl::random<uint8_t>(),
+            vcl::random<uint8_t>(),
+            vcl::random<uint8_t>());
+    }
+    points->setVertexColors(colors);
 
     points->setSize(10);
     points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
