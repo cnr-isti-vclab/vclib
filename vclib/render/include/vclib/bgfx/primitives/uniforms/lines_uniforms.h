@@ -38,7 +38,7 @@ class LinesUniforms
 {
     // .x = line width in pixels
     // .y = general color
-    // .z = unused
+    // .z = depth offset
     // .w = unused
     inline static std::array<float, 4> sLinesSettings = {1.0f, 0.0f, 0.0f, 0.0f};
     inline static Uniform              sLinesSettingsUniform;
@@ -60,6 +60,12 @@ public:
     {
         sLinesSettings[1] = std::bit_cast<float>(color.abgr());
     }
+
+    /**
+     * @brief Sets the depth offset for lines.
+     * @param offset The depth offset value.
+     */
+    static void setDepthOffset(float offset) { sLinesSettings[2] = offset; }
 
     /**
      * @brief Binds the uniform to the current bgfx context.

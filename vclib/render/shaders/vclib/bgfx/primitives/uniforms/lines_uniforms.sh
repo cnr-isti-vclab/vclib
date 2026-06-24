@@ -24,3 +24,4 @@ uniform vec4 u_linesSettings;
 
 #define u_linesWidth u_linesSettings.x
 #define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.y))
+#define u_depthOffset u_linesSettings.z

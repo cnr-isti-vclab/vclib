@@ -84,6 +84,7 @@ private:
     ColorSetting mColorSetting = ColorSetting::GENERAL;
     Shading      mShading      = Shading::NONE;
     Color        mGeneralColor = Color::Black;
+    float        mDepthOffset  = 0.0f;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
@@ -147,6 +148,12 @@ public:
      * ColorSetting is GENERAL.
      */
     Color generalColor() const { return mGeneralColor; }
+
+    /**
+     * @brief Returns the depth offset applied to the lines.
+     * @return The depth offset applied to the lines.
+     */
+    float depthOffset() const { return mDepthOffset; }
 
     /**
      * @brief Returns whether the line set has valid vertex positions.
@@ -439,6 +446,15 @@ public:
     void setGeneralColor(const Color& generalColor)
     {
         mGeneralColor = generalColor;
+    }
+
+    /**
+     * @brief Sets the depth offset applied to the lines.
+     * @param[in] depthOffset: The depth offset value.
+     */
+    void setDepthOffset(float depthOffset)
+    {
+        mDepthOffset = depthOffset;
     }
 
     void draw(bgfx::ViewId viewId) const;

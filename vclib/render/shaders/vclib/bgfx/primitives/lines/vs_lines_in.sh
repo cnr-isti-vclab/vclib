@@ -171,6 +171,6 @@ void main() {
 
     v_color = color;
     v_normal = normal;
-    // p.z += -u_depthOffset * p.w;
+    p.z += -u_depthOffset * p.w;
     gl_Position = p;
 }

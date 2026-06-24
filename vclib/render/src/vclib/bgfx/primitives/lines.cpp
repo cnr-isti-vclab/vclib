@@ -174,6 +174,7 @@ void Lines::draw(bgfx::ViewId viewId) const
 
     LinesUniforms::setWidth(mWidth);
     LinesUniforms::setGeneralColor(mGeneralColor);
+    LinesUniforms::setDepthOffset(mDepthOffset);
 
     // Bind buffers for compute / vertex pulling
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
