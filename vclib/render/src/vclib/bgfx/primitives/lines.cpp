@@ -194,12 +194,12 @@ void Lines::draw(bgfx::ViewId viewId) const
         mLineNormals.get().bindCompute(L_NOR_STAGE, bgfx::Access::Read);
     }
 
-    // TODO: implement and bind shader program
-    // bgfx::setVertexCount(vertexPullingInstances());
-    // bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-    // BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-    // BGFX_STATE_BLEND_ALPHA); LinesUniforms::bind(); bgfx::submit(viewId,
-    // mProgram);
+    bgfx::setVertexCount(vertexPullingInstances());
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
+    LinesUniforms::bind();
+    bgfx::submit(viewId, mProgram);
 }
 
 void Lines::checkAndUpdateProgram() const
@@ -284,7 +284,152 @@ void Lines::checkAndUpdateProgram() const
         }
     }
 
-    // TODO: mProgram = linesProgramSelector();
+    auto& pm = Context::instance().programManager();
+
+    if (mIndices.isValid()) {
+        if (mTopology == Topology::LINES) {
+            if (mColorSetting == ColorSetting::PER_VERTEX) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PVC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PVC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PVC_PLS>();
+            }
+            else if (mColorSetting == ColorSetting::PER_LINE) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PLC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PLC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_PLC_PLS>();
+            }
+            else { // GC
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_GC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_GC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_LINES_GC_PLS>();
+            }
+        }
+        else { // LINE_STRIP
+            if (mColorSetting == ColorSetting::PER_VERTEX) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PVC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PVC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PVC_PLS>();
+            }
+            else if (mColorSetting == ColorSetting::PER_LINE) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PLC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PLC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_PLC_PLS>();
+            }
+            else { // GC
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_GC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_GC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_IDX_STRIP_GC_PLS>();
+            }
+        }
+    }
+    else { // NOIDX
+        if (mTopology == Topology::LINES) {
+            if (mColorSetting == ColorSetting::PER_VERTEX) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PVC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PVC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PVC_PLS>();
+            }
+            else if (mColorSetting == ColorSetting::PER_LINE) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PLC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PLC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_PLC_PLS>();
+            }
+            else { // GC
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_GC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_GC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_LINES_GC_PLS>();
+            }
+        }
+        else { // LINE_STRIP
+            if (mColorSetting == ColorSetting::PER_VERTEX) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PVC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PVC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PVC_PLS>();
+            }
+            else if (mColorSetting == ColorSetting::PER_LINE) {
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PLC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PLC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_PLC_PLS>();
+            }
+            else { // GC
+                if (mShading == Shading::NONE)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_GC_NS>();
+                else if (mShading == Shading::PER_VERTEX)
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_GC_PVS>();
+                else
+                    mProgram = pm.getProgram<
+                        VertFragProgram::PRIMITIVE_LINES_NOIDX_STRIP_GC_PLS>();
+            }
+        }
+    }
     mIsUpdateProgramNeeded = false;
 }
 
