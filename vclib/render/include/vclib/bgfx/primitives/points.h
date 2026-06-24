@@ -329,6 +329,7 @@ public:
 
 private:
     void validityCheck() const;
+    bgfx::ProgramHandle pointsProgramSelector() const;
 
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_NORMALS_STAGE   = 1;

@@ -30,18 +30,18 @@ void main()
 {
     vec4 color = v_color;
 
-    if (!useQuadShape()) {
-        // circle mode (if outside of the circle, discard)
-        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
-        if (length(uv) > 1.0) {
-            discard;
-        }
+#if !POINTS_SHAPE_SQUARE
+    // circle mode (if outside of the circle, discard)
+    vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+    if (length(uv) > 1.0) {
+        discard;
     }
+#endif
 
     vec4 light = vec4(1.0, 1.0, 1.0, 1.0);
-    if (!useNoneShading()) {
-        light = computeLight(u_lightDir, u_lightColor, v_normal);
-    }
+#if !POINTS_SHADING_NONE
+    light = computeLight(u_lightDir, u_lightColor, v_normal);
+#endif
 
     gl_FragColor = light * color;
 }

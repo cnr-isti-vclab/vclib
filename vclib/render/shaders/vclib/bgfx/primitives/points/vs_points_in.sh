@@ -26,8 +26,14 @@ $output v_normal, v_texcoord1, v_color
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 
 BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
+
+#if !POINTS_SHADING_NONE
 BUFFER_RO(normalsBuffer, vec4, 1); // 3D normals
+#endif
+
+#if POINTS_COLOR_PER_VERTEX
 BUFFER_RO(pointColors, uint, 2); // colors
+#endif
 
 void main()
 {
@@ -63,19 +69,20 @@ void main()
 
     // Normal calculation
     vec3 normal = vec3(0.0, 0.0, 0.0);
-    if (!useNoneShading()) {
-        normal = vec3(
-            normalsBuffer[idx30/4u][idx30%4u],
-            normalsBuffer[idx31/4u][idx31%4u],
-            normalsBuffer[idx32/4u][idx32%4u]);
-    }
+#if !POINTS_SHADING_NONE
+    normal = vec3(
+        normalsBuffer[idx30/4u][idx30%4u],
+        normalsBuffer[idx31/4u][idx31%4u],
+        normalsBuffer[idx32/4u][idx32%4u]);
+#endif
     v_normal = normalize(mul(u_normalMatrix, normal));
 
     // Color calculation
+#if POINTS_COLOR_PER_VERTEX
+    v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+#else
     v_color = u_pointsGeneralColor;
-    if (usePerPointColor()) {
-        v_color = uintABGRToVec4Color(pointColors[pointIndex]);
-    }
+#endif
 
     // Pass UV coordinates to fragment shader
     v_texcoord1 = quadUv;

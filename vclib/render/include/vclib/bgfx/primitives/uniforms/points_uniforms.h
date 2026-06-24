@@ -33,49 +33,21 @@ namespace vcl {
 
 class PointsUniforms
 {
-    inline static std::array<float, 4> sPointsSettings = {
-        std::bit_cast<float>(0), // packed bit settings (color, shading, shape)
-        1.0f,                    // size
-        std::bit_cast<float>(0),  // general color (ABGR)
-        0.f // unused
-    };
+    // .x = point width in pixels
+    // .y = general color
+    // .z = unused
+    // .w = unused
+    inline static std::array<float, 4> sPointsSettings = {1.0f, 0.0f, 0.0f, 0.0f};
     inline static Uniform              sPointsSettingsUniform;
 
 public:
     PointsUniforms() = delete;
 
-    static void setColorSetting(uint c)
-    {
-        BitSet<uint> bs;
-        bs.setUnderlying(std::bit_cast<uint>(sPointsSettings[0]));
-        // if true, per vertex color, otherwise general
-        bs.at(0) = c == 0u;
-        sPointsSettings[0] = std::bit_cast<float>(bs.underlying());
-    }
-
-    static void setShading(uint s)
-    {
-        BitSet<uint> bs;
-        bs.setUnderlying(std::bit_cast<uint>(sPointsSettings[0]));
-        // if true, none, otherwise per vertex
-        bs.at(1) = s == 0u;
-        sPointsSettings[0] = std::bit_cast<float>(bs.underlying());
-    }
-
-    static void setShape(uint s)
-    {
-        BitSet<uint> bs;
-        bs.setUnderlying(std::bit_cast<uint>(sPointsSettings[0]));
-        // if true, square, otherwise circle
-        bs.at(2) = s == 0u;
-        sPointsSettings[0] = std::bit_cast<float>(bs.underlying());
-    }
-
-    static void setWidth(float width) { sPointsSettings[1] = width; }
+    static void setWidth(float width) { sPointsSettings[0] = width; }
 
     static void setGeneralColor(const vcl::Color& color)
     {
-        sPointsSettings[2] = std::bit_cast<float>(color.abgr());
+        sPointsSettings[1] = std::bit_cast<float>(color.abgr());
     }
 
     static void bind()

@@ -124,9 +124,6 @@ void Points::draw(bgfx::ViewId viewId) const
     ProgramManager& pm = ctx.programManager();
 
     // Upload rendering settings to the shader via uniform.
-    PointsUniforms::setColorSetting(static_cast<uint>(mColorToUse));
-    PointsUniforms::setShading(static_cast<uint>(mShading));
-    PointsUniforms::setShape(static_cast<uint>(mShape));
     PointsUniforms::setWidth(mWidth);
     PointsUniforms::setGeneralColor(mGeneralColor);
 
@@ -157,7 +154,7 @@ void Points::draw(bgfx::ViewId viewId) const
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
 
-    auto program = pm.getProgram<VertFragProgram::PRIMITIVE_POINTS>();
+    auto program = pointsProgramSelector();
     bgfx::submit(viewId, program);
 }
 
@@ -183,6 +180,44 @@ void Points::validityCheck() const
     }
 
     mIsValidityCheckNeeded = false;
+}
+
+bgfx::ProgramHandle Points::pointsProgramSelector() const
+{
+    using enum VertFragProgram;
+
+    Context& ctx = Context::instance();
+    ProgramManager& pm = ctx.programManager();
+
+    if (mColorToUse == ColorSetting::PER_VERTEX) {
+        if (mShading == Shading::NONE) {
+            if (mShape == Shape::SQUARE) {
+                return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_SQ>();
+            } else {
+                return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_CIR>();
+            }
+        } else {
+            if (mShape == Shape::SQUARE) {
+                return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_SQ>();
+            } else {
+                return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_CIR>();
+            }
+        }
+    } else {
+        if (mShading == Shading::NONE) {
+            if (mShape == Shape::SQUARE) {
+                return pm.getProgram<PRIMITIVE_POINTS_GC_NS_SQ>();
+            } else {
+                return pm.getProgram<PRIMITIVE_POINTS_GC_NS_CIR>();
+            }
+        } else {
+            if (mShape == Shape::SQUARE) {
+                return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_SQ>();
+            } else {
+                return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_CIR>();
+            }
+        }
+    }
 }
 
 } // namespace vcl

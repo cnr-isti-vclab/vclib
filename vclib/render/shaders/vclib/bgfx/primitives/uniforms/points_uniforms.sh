@@ -27,20 +27,7 @@
 
 uniform vec4 u_pointsSettings;
 
-#define u_pointsSettingPack floatBitsToUint(u_pointsSettings.x)
-#define u_pointsWidth u_pointsSettings.y
-#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.z))
-
-uint usePerPointColor() {
-    return uint(u_pointsSettingPack & posToBitFlag(0u));
-}
-
-uint useNoneShading() {
-    return uint(u_pointsSettingPack & posToBitFlag(1u));
-}
-
-uint useQuadShape() {
-    return uint(u_pointsSettingPack & posToBitFlag(2u));
-}
+#define u_pointsWidth u_pointsSettings.x
+#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.y))
 
 #endif // VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH
