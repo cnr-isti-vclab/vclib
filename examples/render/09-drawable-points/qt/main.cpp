@@ -31,29 +31,52 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include <vclib/algorithms/core/random.h>
+#include <vclib/algorithms.h>
+#include <vclib/meshes.h>
+#include <vclib/io.h>
 
 std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
 {
     auto points = std::make_shared<vcl::DrawablePoints>();
 
-    std::vector<vcl::Point3d> positions(nPoints);
-    std::vector<vcl::Color> colors(nPoints);
+    if (nPoints == vcl::UINT_NULL) {
+        // load bimba and use its vertices as points
+        auto m =
+            vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+        vcl::updatePerVertexAndFaceNormals(m);
 
-    for (vcl::uint i = 0; i < nPoints; ++i) {
-        positions[i] = vcl::random<vcl::Point3d>();
-        colors[i] = vcl::Color(
-            vcl::random<uint8_t>(),
-            vcl::random<uint8_t>(),
-            vcl::random<uint8_t>()
-        );
+        std::vector<vcl::Color> colors(m.vertexCount());
+
+        for (vcl::uint i = 0; i < m.vertexCount(); ++i) {
+            colors[i] = vcl::Color(
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>()
+                );
+        }
+
+        points->setVertices(m.vertices() | vcl::views::positions);
+        points->setVertexColors(colors);
+        points->setVertexNormals(m.vertices() | vcl::views::normals);
+    }
+    else {
+        std::vector<vcl::Point3d> positions(nPoints);
+        std::vector<vcl::Color> colors(nPoints);
+
+        for (vcl::uint i = 0; i < nPoints; ++i) {
+            positions[i] = vcl::random<vcl::Point3d>();
+            colors[i] = vcl::Color(
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>()
+            );
+        }
+
+        points->setVertices(positions);
+        points->setVertexColors(colors);
     }
 
     points->setSize(10);
-
-    points->setVertices(positions);
-    points->setVertexColors(colors);
-
     points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
     points->setShading(vcl::Points::Shading::NONE);
     points->setShape(vcl::Points::Shape::SQUARE);
@@ -104,7 +127,7 @@ int main(int argc, char** argv)
     QHBoxLayout* shapeLayout = new QHBoxLayout(shapeGroup);
     QRadioButton* rbShapeSquare = new QRadioButton("Square");
     QRadioButton* rbShapeCircle = new QRadioButton("Circle");
-    rbShapeSquare->setChecked(true); // Default from getDrawablePoints
+    rbShapeSquare->setChecked(true);
     shapeLayout->addWidget(rbShapeSquare);
     shapeLayout->addWidget(rbShapeCircle);
 
@@ -113,7 +136,7 @@ int main(int argc, char** argv)
     QHBoxLayout* shadingLayout = new QHBoxLayout(shadingGroup);
     QRadioButton* rbShadingNone = new QRadioButton("None");
     QRadioButton* rbShadingPerVertex = new QRadioButton("Per Vertex");
-    rbShadingNone->setChecked(true); // Default from getDrawablePoints
+    rbShadingNone->setChecked(true);
     shadingLayout->addWidget(rbShadingNone);
     shadingLayout->addWidget(rbShadingPerVertex);
 
@@ -130,7 +153,7 @@ int main(int argc, char** argv)
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    vec->pushBack(getDrawablePoints(N_POINTS));
+    vec->pushBack(getDrawablePoints(vcl::UINT_NULL));
 
     tw->setDrawableObjectVector(vec);
     auto pts = getPoints(vec);
