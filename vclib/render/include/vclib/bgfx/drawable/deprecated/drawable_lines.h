@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
+#ifndef VCL_BGFX_DRAWABLE_DEPR_DRAWABLE_LINES_H
+#define VCL_BGFX_DRAWABLE_DEPR_DRAWABLE_LINES_H
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/primitives/deprecated/lines.h>
@@ -29,7 +29,7 @@
 
 #include <bgfx/bgfx.h>
 
-namespace vcl {
+namespace vcl::depr {
 
 class DrawableLines : public depr::Lines, public vcl::DrawableObject
 {
@@ -191,4 +191,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_LINES_H
+#endif // VCL_BGFX_DRAWABLE_DEPR_DRAWABLE_LINES_H

@@ -23,7 +23,7 @@
 #ifndef LINES_COMMON_H
 #define LINES_COMMON_H
 
-#include <vclib/bgfx/drawable/drawable_lines.h>
+#include <vclib/bgfx/drawable/deprecated/drawable_lines.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <random>
@@ -67,7 +67,7 @@ void pushRandomLine(
 }
 
 // Returns a DrawableLines object containing nLines random lines.
-vcl::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
+vcl::depr::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
 {
     vcl::DrawableObjectVector vec;
 
@@ -94,9 +94,9 @@ vcl::DrawableLines getDrawableLines(vcl::uint nLines, bool indexed = false)
 
     auto lines =
         indexed ?
-            vcl::DrawableLines(
+            vcl::depr::DrawableLines(
                 vertCoords, indices, vertNormals, vertColors, lineColors) :
-            vcl::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
+            vcl::depr::DrawableLines(vertCoords, vertNormals, vertColors, lineColors);
     lines.setImplementationType(vcl::depr::Lines::ImplementationType::PRIMITIVE);
     lines.thickness() = 10;
     lines.setColorToUse(vcl::depr::Lines::ColorToUse::PER_VERTEX);

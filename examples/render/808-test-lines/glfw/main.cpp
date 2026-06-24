@@ -38,7 +38,7 @@ class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
     using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
     // lines
     const vcl::uint                     N_LINES = 8;
-    std::shared_ptr<vcl::DrawableLines> mLines;
+    std::shared_ptr<vcl::depr::DrawableLines> mLines;
     int                                 mSelected = 0;
 
     std::shared_ptr<vcl::DrawableObjectVector> mVec =
@@ -56,7 +56,7 @@ public:
 
         mVec->pushBack(std::move(getDrawableLines(N_LINES)));
 
-        mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
+        mLines = std::dynamic_pointer_cast<vcl::depr::DrawableLines>(mVec->at(0));
     }
 
     virtual void onDraw(uint viewId) override
@@ -91,7 +91,7 @@ public:
             mIndexed = indexed;
             mVec->clear();
             mVec->pushBack(std::move(getDrawableLines(N_LINES, indexed)));
-            mLines = std::dynamic_pointer_cast<vcl::DrawableLines>(mVec->at(0));
+            mLines = std::dynamic_pointer_cast<vcl::depr::DrawableLines>(mVec->at(0));
             mLines->thickness() = t;
             mLines->setColorToUse(c);
             mLines->setImplementationType(i);

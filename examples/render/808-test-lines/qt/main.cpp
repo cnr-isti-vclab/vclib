@@ -47,11 +47,11 @@ public:
     }
 };
 
-std::shared_ptr<vcl::DrawableLines> getLines(
+std::shared_ptr<vcl::depr::DrawableLines> getLines(
     std::shared_ptr<vcl::DrawableObjectVector> vec)
 {
-    std::shared_ptr<vcl::DrawableLines> lines =
-        std::dynamic_pointer_cast<vcl::DrawableLines>(vec->at(0));
+    std::shared_ptr<vcl::depr::DrawableLines> lines =
+        std::dynamic_pointer_cast<vcl::depr::DrawableLines>(vec->at(0));
 
     return lines;
 }
