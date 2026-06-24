@@ -73,6 +73,8 @@ private:
     OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
+    mutable bool mIsValidityCheckNeeded = true;
+
 public:
     /**
      * @brief Default constructor — creates an empty point set with no points.
@@ -231,6 +233,7 @@ public:
             PrimitiveType::FLOAT,
             releaseFn);
         mVertexNormals.setOwned(std::move(vNormsBuff));
+        mIsValidityCheckNeeded = true;
     }
 
     /**
@@ -265,6 +268,7 @@ public:
             true,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
+        mIsValidityCheckNeeded = true;
     }
 
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
@@ -286,7 +290,11 @@ public:
      * @param[in] colorToUse: Whether to use per-point colors or a general
      * uniform color.
      */
-    void setColorSetting(ColorSetting colorToUse) { mColorToUse = colorToUse; }
+    void setColorSetting(ColorSetting colorToUse)
+    {
+        mColorToUse            = colorToUse;
+        mIsValidityCheckNeeded = true;
+    }
 
      /**
      * @brief Sets the shading mode for point rendering.
@@ -294,7 +302,11 @@ public:
      * @param[in] shading: Whether to apply no shading or compute lighting per
      * vertex using normals (if provided).
      */
-    void setShading(Shading shading) { mShading = shading; }
+    void setShading(Shading shading)
+    {
+        mShading               = shading;
+        mIsValidityCheckNeeded = true;
+    }
 
     /**
      * @brief Sets the visual shape of each point sprite.

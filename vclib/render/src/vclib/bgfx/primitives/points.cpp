@@ -83,6 +83,7 @@ void Points::setVertices(const uint vertexCount, const VertexBuffer& verts)
 void Points::setVertexNormals(const VertexBuffer& vertNormals)
 {
     mVertexNormals.setReferenced(&vertNormals);
+    mIsValidityCheckNeeded = true;
 }
 
 /**
@@ -97,6 +98,7 @@ void Points::setVertexNormals(const VertexBuffer& vertNormals)
 void Points::setVertexColors(const VertexBuffer& vertColors)
 {
     mVertexColors.setReferenced(&vertColors);
+    mIsValidityCheckNeeded = true;
 }
 
 /**
@@ -161,6 +163,10 @@ void Points::draw(bgfx::ViewId viewId) const
 
 void Points::validityCheck() const
 {
+    if (!mIsValidityCheckNeeded) {
+        return;
+    }
+
     if (mColorToUse == ColorSetting::PER_VERTEX) {
         if (!mVertexColors.isValid()) {
             throw std::runtime_error(
@@ -175,6 +181,8 @@ void Points::validityCheck() const
                 "valid vertex normal buffer.");
         }
     }
+
+    mIsValidityCheckNeeded = false;
 }
 
 } // namespace vcl
