@@ -29,5 +29,6 @@ uniform vec4 u_pointsSettings;
 
 #define u_pointsWidth u_pointsSettings.x
 #define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.y))
+#define u_depthOffset u_pointsSettings.z
 
 #endif // VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_SH

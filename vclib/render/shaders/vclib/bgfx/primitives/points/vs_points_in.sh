@@ -68,7 +68,11 @@ void main()
         offsets[localVertex].y * u_pointsWidth * u_viewTexel.y * pos.w,
         0.0, 0.0);
 
-    gl_Position = pos + offset;
+    pos += offset;
+    // Apply depth offset in clip space.
+    // We scale the offset by w to maintain it consistently after the perspective divide.
+    pos.z += -u_depthOffset * pos.w;
+    gl_Position = pos;
 
     // Normal calculation
 #if POINTS_SHADING_PER_VERTEX

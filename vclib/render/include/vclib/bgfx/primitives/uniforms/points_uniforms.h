@@ -42,7 +42,7 @@ class PointsUniforms
 {
     // .x = point width in pixels
     // .y = general color
-    // .z = unused
+    // .z = depth offset
     // .w = unused
     inline static std::array<float, 4> sPointsSettings = {1.0f, 0.0f, 0.0f, 0.0f};
     inline static Uniform              sPointsSettingsUniform;
@@ -63,6 +63,15 @@ public:
     static void setGeneralColor(const vcl::Color& color)
     {
         sPointsSettings[1] = std::bit_cast<float>(color.abgr());
+    }
+
+    /**
+     * @brief Sets the depth offset for points.
+     * @param depthOffset The depth offset value.
+     */
+    static void setDepthOffset(float depthOffset)
+    {
+        sPointsSettings[2] = depthOffset;
     }
 
     /**
