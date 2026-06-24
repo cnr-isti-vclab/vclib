@@ -31,7 +31,7 @@
 
 namespace vcl {
 
-class DrawablePoints: public DrawableObject, private Points
+class DrawablePoints: public DrawableObject, public Points
 {
     bool mVisible = true;
 
@@ -39,16 +39,15 @@ class DrawablePoints: public DrawableObject, private Points
     std::vector<vcl::Point3d> mNormals;
     std::vector<vcl::Color>   mColors;
 
+    using Points::setVertices;
+    using Points::setVertexColors;
+    using Points::setVertexNormals;
+    using Points::draw;
+
 public:
     using Points::ColorSetting;
     using Points::Shading;
     using Points::Shape;
-    using Points::width;
-    using Points::setSize;
-    using Points::setColorSetting;
-    using Points::setShading;
-    using Points::setShape;
-    using Points::setGeneralColor;
 
     DrawablePoints() = default;
 

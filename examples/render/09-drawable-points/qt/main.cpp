@@ -26,6 +26,9 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QGroupBox>
+#include <QRadioButton>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 
 #include <vclib/algorithms/core/random.h>
@@ -54,6 +57,7 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
     points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
     points->setShading(vcl::Points::Shading::NONE);
     points->setShape(vcl::Points::Shape::SQUARE);
+    points->setGeneralColor(vcl::Color::Magenta);
 
     return points;
 }
@@ -95,6 +99,29 @@ int main(int argc, char** argv)
     tslider->setValue(5);
     layout->addWidget(tslider);
 
+    QGroupBox* shapeGroup = new QGroupBox("Shape");
+    shapeGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    QHBoxLayout* shapeLayout = new QHBoxLayout(shapeGroup);
+    QRadioButton* rbShapeSquare = new QRadioButton("Square");
+    QRadioButton* rbShapeCircle = new QRadioButton("Circle");
+    rbShapeSquare->setChecked(true); // Default from getDrawablePoints
+    shapeLayout->addWidget(rbShapeSquare);
+    shapeLayout->addWidget(rbShapeCircle);
+
+    QGroupBox* shadingGroup = new QGroupBox("Shading");
+    shadingGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    QHBoxLayout* shadingLayout = new QHBoxLayout(shadingGroup);
+    QRadioButton* rbShadingNone = new QRadioButton("None");
+    QRadioButton* rbShadingPerVertex = new QRadioButton("Per Vertex");
+    rbShadingNone->setChecked(true); // Default from getDrawablePoints
+    shadingLayout->addWidget(rbShadingNone);
+    shadingLayout->addWidget(rbShadingPerVertex);
+
+    QHBoxLayout* radioLayout = new QHBoxLayout();
+    radioLayout->addWidget(shapeGroup);
+    radioLayout->addWidget(shadingGroup);
+    layout->addLayout(radioLayout);
+
     vcl::qt::ViewerWidget* tw = new vcl::qt::ViewerWidget(&w);
     layout->addWidget(tw);
 
@@ -106,7 +133,10 @@ int main(int argc, char** argv)
     vec->pushBack(getDrawablePoints(N_POINTS));
 
     tw->setDrawableObjectVector(vec);
-    tslider->setValue(getPoints(vec)->width());
+    auto pts = getPoints(vec);
+    tslider->setValue(pts->width());
+    
+    shadingGroup->setEnabled(pts->hasNormals());
 
     QObject::connect(
         ccb,
@@ -124,6 +154,34 @@ int main(int argc, char** argv)
         std::cerr << "Size: " << value << std::endl;
         getPoints(vec)->setSize((float) value);
         tw->update();
+    });
+
+    QObject::connect(rbShapeSquare, &QRadioButton::toggled, [=](bool checked) {
+        if (checked) {
+            getPoints(vec)->setShape(vcl::Points::Shape::SQUARE);
+            tw->update();
+        }
+    });
+
+    QObject::connect(rbShapeCircle, &QRadioButton::toggled, [=](bool checked) {
+        if (checked) {
+            getPoints(vec)->setShape(vcl::Points::Shape::CIRCLE);
+            tw->update();
+        }
+    });
+
+    QObject::connect(rbShadingNone, &QRadioButton::toggled, [=](bool checked) {
+        if (checked) {
+            getPoints(vec)->setShading(vcl::Points::Shading::NONE);
+            tw->update();
+        }
+    });
+
+    QObject::connect(rbShadingPerVertex, &QRadioButton::toggled, [=](bool checked) {
+        if (checked) {
+            getPoints(vec)->setShading(vcl::Points::Shading::PER_VERTEX);
+            tw->update();
+        }
     });
 
     w.resize(1024, 768);
