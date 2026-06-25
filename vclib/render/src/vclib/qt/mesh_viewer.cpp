@@ -125,6 +125,8 @@ MeshViewer::MeshViewer(QWidget* parent) :
         new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
     mUI->toolBar->addWidget(bboxEditor);
 
+    disableFocus(mUI->toolBar);
+
     /** Render Settings Frame **/
 
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
