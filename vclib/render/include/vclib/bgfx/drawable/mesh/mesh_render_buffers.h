@@ -30,7 +30,6 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
-#include <vclib/bgfx/primitives/deprecated/lines.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
@@ -71,7 +70,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mTriangleNormalBuffer;
     VertexBuffer mTriangleColorBuffer;
 
-    depr::Lines mEdgeLines;
+    Lines mEdgeLines;
 
     Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
@@ -126,6 +125,8 @@ public:
         swap(mMeshColor, other.mMeshColor);
         swap(mMaterialTextures, other.mMaterialTextures);
 
+        updateLinesVertexBuffers(*this, mEdgeLines);
+        updateLinesVertexBuffers(other, other.mEdgeLines);
         updateLinesVertexBuffers(*this, mWireframeLines);
         updateLinesVertexBuffers(other, other.mWireframeLines);
     }
@@ -295,24 +296,32 @@ public:
     void updateEdgeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Edges;
-        using enum depr::Lines::ColorToUse;
+        using enum Lines::ColorSetting;
 
-        mEdgeLines.thickness() = mrs.edgesWidth();
-        mEdgeLines.setShading(mrs.isEdges(SHADING_SMOOTH));
+        mEdgeLines.setWidth(mrs.edgesWidth());
+
+        Lines::Shading sh = Lines::Shading::NONE;
+        if (mrs.isEdges(SHADING_SMOOTH)) {
+            sh = Lines::Shading::PER_VERTEX;
+        }
+        else if (mrs.isEdges(SHADING_NONE)) {
+            sh = Lines::Shading::PER_LINE;
+        }
+        mEdgeLines.setShading(sh);
 
         if (mrs.isEdges(COLOR_USER)) {
-            mEdgeLines.generalColor() = mrs.edgesUserColor();
-            mEdgeLines.setColorToUse(GENERAL);
+            mEdgeLines.setGeneralColor(mrs.edgesUserColor());
+            mEdgeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isEdges(COLOR_MESH)) {
-            mEdgeLines.generalColor() = mMeshColor;
-            mEdgeLines.setColorToUse(GENERAL);
+            mEdgeLines.setGeneralColor(mMeshColor);
+            mEdgeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isEdges(COLOR_VERTEX)) {
-            mEdgeLines.setColorToUse(PER_VERTEX);
+            mEdgeLines.setColorSetting(PER_VERTEX);
         }
         else if (mrs.isEdges(COLOR_EDGE)) {
-            mEdgeLines.setColorToUse(PER_EDGE);
+            mEdgeLines.setColorSetting(PER_LINE);
         }
     }
 
@@ -551,7 +560,26 @@ private:
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
-        computeEdgeLines(mesh);
+        updateLinesVertexBuffers(*this, mEdgeLines);
+
+        const uint        ne = Base::numEdges();
+        std::vector<uint> indices(ne * 2);
+        Base::fillEdgeIndices(mesh, indices.data());
+
+        mEdgeLines.setIndices(indices);
+
+        // to avoid z-fighting with filled triangles
+        mWireframeLines.setDepthOffset(0.0001f);
+    }
+
+    void setEdgeNormalsBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineNormals(mesh.edges() | vcl::views::normals);
+    }
+
+    void setEdgeColorsBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineColors(mesh.edges() | vcl::views::colors);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
@@ -724,55 +752,6 @@ private:
         if constexpr (HasColor<MeshType>) {
             mMeshColor = mesh.color();
         }
-    }
-
-    void computeEdgeLines(const MeshType& mesh)
-    {
-        // if cpu lines, do this...
-
-        // positions
-        const uint         nv = Base::numVerts();
-        std::vector<float> positions(nv * 3);
-        Base::fillVertexPositions(mesh, positions.data());
-
-        // indices
-        const uint        ne = Base::numEdges();
-        std::vector<uint> indices(ne * 2);
-        Base::fillEdgeIndices(mesh, indices.data());
-
-        // v normals
-        std::vector<float> normals;
-        if (mVertexNormalsBuffer.isValid()) {
-            normals.resize(nv * 3);
-            Base::fillVertexNormals(mesh, normals.data());
-        }
-
-        // todo - edge normals
-
-        // vcolors
-        std::vector<uint> vcolors;
-        if (mVertexColorsBuffer.isValid()) {
-            vcolors.resize(nv);
-            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
-        }
-
-        std::vector<uint> ecolors;
-        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-            if (vcl::isPerEdgeColorAvailable(mesh)) {
-                // if (btu[toUnderlying(EDGE_COLORS)]) {
-                //  edge color buffer
-                ecolors.resize(ne);
-                Base::fillEdgeColors(mesh, ecolors.data(), Color::Format::ABGR);
-                //}
-            }
-        }
-
-        mEdgeLines.setPoints(positions, indices, normals, vcolors, ecolors);
-
-        // to avoid z-fighting with filled triangles
-        mEdgeLines.depthOffset() = 0.0001f;
-
-        // otherwise, already computed buffers should do the job
     }
 
     static void updateLinesVertexBuffers(
