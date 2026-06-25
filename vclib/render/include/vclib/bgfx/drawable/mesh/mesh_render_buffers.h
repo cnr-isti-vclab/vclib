@@ -31,6 +31,7 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/deprecated/lines.h>
+#include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/io/image/load.h>
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -72,7 +73,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     depr::Lines mEdgeLines;
 
-    depr::Lines mWireframeLines;
+    Lines mWireframeLines;
     Color mMeshColor; // todo: find better way to store mesh color
 
     // map of textures
@@ -122,7 +123,11 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
+        swap(mMeshColor, other.mMeshColor);
         swap(mMaterialTextures, other.mMaterialTextures);
+
+        updateLinesVertexBuffers(*this, mWireframeLines);
+        updateLinesVertexBuffers(other, other.mWireframeLines);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -314,21 +319,25 @@ public:
     void updateWireframeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Wireframe;
-        using enum depr::Lines::ColorToUse;
+        using enum Lines::ColorSetting;
 
-        mWireframeLines.thickness() = mrs.wireframeWidth();
-        mWireframeLines.setShading(mrs.isWireframe(SHADING_VERT));
+        mWireframeLines.setWidth(mrs.wireframeWidth());
+
+        Lines::Shading sh = mrs.isWireframe(SHADING_VERT) ?
+                                Lines::Shading::PER_VERTEX :
+                                Lines::Shading::NONE;
+        mWireframeLines.setShading(sh);
 
         if (mrs.isWireframe(COLOR_USER)) {
-            mWireframeLines.generalColor() = mrs.wireframeUserColor();
-            mWireframeLines.setColorToUse(GENERAL);
+            mWireframeLines.setGeneralColor(mrs.wireframeUserColor());
+            mWireframeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_MESH)) {
-            mWireframeLines.generalColor() = mMeshColor;
-            mWireframeLines.setColorToUse(GENERAL);
+            mWireframeLines.setGeneralColor(mMeshColor);
+            mWireframeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_VERTEX)) {
-            mWireframeLines.setColorToUse(PER_VERTEX);
+            mWireframeLines.setColorSetting(PER_VERTEX);
         }
     }
 
@@ -547,7 +556,16 @@ private:
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        computeWireframeLines(mesh);
+        updateLinesVertexBuffers(*this, mWireframeLines);
+
+        const uint        nw = Base::numWireframeLines();
+        std::vector<uint> indices(nw * 2);
+        Base::fillWireframeIndices(mesh, indices.data());
+
+        mWireframeLines.setIndices(indices);
+
+        // to avoid z-fighting with filled triangles
+        mWireframeLines.setDepthOffset(0.0001f);
     }
 
     void setTextures(const MeshType& mesh) // override
@@ -757,41 +775,14 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    // to generate wireframe lines
-    void computeWireframeLines(const MeshType& mesh)
+    static void updateLinesVertexBuffers(
+        const MeshRenderBuffers<MeshType>& mrb,
+        Lines&                             lines)
     {
-        // if cpu lines, do this...
-
-        // positions
-        const uint         nv = Base::numVerts();
-        std::vector<float> positions(nv * 3);
-        Base::fillVertexPositions(mesh, positions.data());
-
-        // indices
-        const uint        nw = Base::numWireframeLines();
-        std::vector<uint> indices(nw * 2);
-        Base::fillWireframeIndices(mesh, indices.data());
-
-        // v normals
-        std::vector<float> normals;
-        if (mVertexNormalsBuffer.isValid()) {
-            normals.resize(nv * 3);
-            Base::fillVertexNormals(mesh, normals.data());
-        }
-
-        // vcolors
-        std::vector<uint> vcolors;
-        if (mVertexColorsBuffer.isValid()) {
-            vcolors.resize(nv);
-            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
-        }
-
-        mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
-
-        // to avoid z-fighting with filled triangles
-        mWireframeLines.depthOffset() = 0.0001f;
-
-        // otherwise, already computed buffers should do the job
+        uint nv = mrb.numVerts();
+        lines.setVertices(nv, mrb.mVertexPositionsBuffer);
+        lines.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
+        lines.setVertexColors(nv, mrb.mVertexColorsBuffer);
     }
 
     static void createTextureSamplerUniforms()
