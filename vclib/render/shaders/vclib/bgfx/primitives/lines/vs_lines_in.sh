@@ -26,19 +26,6 @@ $output v_color, v_normal
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
 
-#define DECLARE_FETCH_VEC3(funcName, bufferName) \
-vec3 funcName(uint index) { \
-    uint floatIdx = index * 3u; \
-    uint vec4Idx = floatIdx / 4u; \
-    uint offset = floatIdx % 4u; \
-    vec4 v0 = bufferName[vec4Idx]; \
-    if (offset == 0u) return v0.xyz; \
-    if (offset == 1u) return v0.yzw; \
-    vec4 v1 = bufferName[vec4Idx + 1u]; \
-    if (offset == 2u) return vec3(v0.zw, v1.x); \
-    return vec3(v0.w, v1.xy); \
-}
-
 BUFFER_RO(vertexPosBuffer, vec4, 0);
 DECLARE_FETCH_VEC3(getVertexPos, vertexPosBuffer)
 

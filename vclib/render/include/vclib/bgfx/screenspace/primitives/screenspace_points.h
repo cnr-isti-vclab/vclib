@@ -67,8 +67,8 @@ private:
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
 
-    mutable bool mIsUpdateProgramNeeded = true;
-    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
+    mutable bool                mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -156,7 +156,7 @@ public:
         // (16 bytes). This is required because the vertex shader reads the
         // buffer as vec4 elements.
         uint padding = (4 - (mVerPosCount % 4)) % 4;
-        uint nv = mVerPosCount + padding;
+        uint nv      = mVerPosCount + padding;
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -194,7 +194,7 @@ public:
 
         // Compute padding to ensure the buffer size is a multiple of 16 bytes.
         uint padding = (4 - (mVerPosCount % 4)) % 4;
-        uint nv = mVerPosCount + padding;
+        uint nv      = mVerPosCount + padding;
 
         VertexBuffer vColsBuff;
 
@@ -262,7 +262,7 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
-    void checkAndUpdateProgram() const;
+    void                checkAndUpdateProgram() const;
     bgfx::ProgramHandle screenspacePointsProgramSelector() const;
 
     static constexpr uint POINTS_POSITIONS_STAGE = 0;

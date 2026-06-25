@@ -78,8 +78,8 @@ private:
     OwnedOrRefBuffer<IndexBuffer> mIndices;
     OwnedOrRefBuffer<IndexBuffer> mLineColors;
 
-    mutable bool mIsUpdateProgramNeeded = true;
-    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
+    mutable bool                mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
 
 public:
     /**

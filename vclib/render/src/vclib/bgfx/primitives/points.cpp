@@ -152,12 +152,9 @@ void Points::draw(bgfx::ViewId viewId) const
 
     bgfx::setVertexCount(mVerPosCount * 6);
 
-    bgfx::setState(0 |
-                   BGFX_STATE_WRITE_RGB        |
-                   BGFX_STATE_WRITE_A          |
-                   BGFX_STATE_WRITE_Z          |
-                   BGFX_STATE_DEPTH_TEST_LESS  |
-                   BGFX_STATE_BLEND_ALPHA);
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
 
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
@@ -203,7 +200,7 @@ void Points::checkAndUpdateProgram() const
         }
     }
 
-    mProgram = pointsProgramSelector();
+    mProgram               = pointsProgramSelector();
     mIsUpdateProgramNeeded = false;
 }
 
@@ -216,8 +213,8 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
 {
     using enum VertFragProgram;
 
-    Context& ctx = Context::instance();
-    ProgramManager& pm = ctx.programManager();
+    Context&        ctx = Context::instance();
+    ProgramManager& pm  = ctx.programManager();
 
     // Select the program from 8 possible permutations based on:
     // 1. Color: Per-Vertex Color (PVC) vs General Color (GC)
@@ -227,27 +224,34 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
         if (mShading == Shading::NONE) {
             if (mShape == Shape::SQUARE) {
                 return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_SQ>();
-            } else {
+            }
+            else {
                 return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_CIR>();
             }
-        } else {
+        }
+        else {
             if (mShape == Shape::SQUARE) {
                 return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_SQ>();
-            } else {
+            }
+            else {
                 return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_CIR>();
             }
         }
-    } else {
+    }
+    else {
         if (mShading == Shading::NONE) {
             if (mShape == Shape::SQUARE) {
                 return pm.getProgram<PRIMITIVE_POINTS_GC_NS_SQ>();
-            } else {
+            }
+            else {
                 return pm.getProgram<PRIMITIVE_POINTS_GC_NS_CIR>();
             }
-        } else {
+        }
+        else {
             if (mShape == Shape::SQUARE) {
                 return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_SQ>();
-            } else {
+            }
+            else {
                 return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_CIR>();
             }
         }

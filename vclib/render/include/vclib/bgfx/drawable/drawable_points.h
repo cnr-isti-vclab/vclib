@@ -39,7 +39,7 @@ namespace vcl {
  * of the vertices, normals, and colors to support `DrawableObject` interfaces
  * such as bounding box computation and cloning.
  */
-class DrawablePoints: public DrawableObject, public Points
+class DrawablePoints : public DrawableObject, public Points
 {
     bool mVisible = true;
 
@@ -47,10 +47,10 @@ class DrawablePoints: public DrawableObject, public Points
     std::vector<vcl::Point3d> mNormals;
     std::vector<vcl::Color>   mColors;
 
-    using Points::setVertices;
+    using Points::draw;
     using Points::setVertexColors;
     using Points::setVertexNormals;
-    using Points::draw;
+    using Points::setVertices;
 
 public:
     using Points::ColorSetting;
@@ -106,7 +106,8 @@ public:
     }
 
     /**
-     * @brief Sets point positions from a range of 3D points and stores a local copy.
+     * @brief Sets point positions from a range of 3D points and stores a local
+     * copy.
      *
      * @tparam R Range type satisfying Point3Concept.
      * @param verts Range of 3D points.
@@ -120,7 +121,8 @@ public:
     }
 
     /**
-     * @brief Sets per-point normals from a range of 3D points and stores a local copy.
+     * @brief Sets per-point normals from a range of 3D points and stores a
+     * local copy.
      *
      * @tparam R Range type satisfying Point3Concept.
      * @param vertNormals Range of 3D points representing normals.
@@ -135,7 +137,8 @@ public:
     }
 
     /**
-     * @brief Sets per-point colors from a range of Colors and stores a local copy.
+     * @brief Sets per-point colors from a range of Colors and stores a local
+     * copy.
      *
      * @tparam R Range type satisfying ColorConcept.
      * @param vertColors Range of Colors.
