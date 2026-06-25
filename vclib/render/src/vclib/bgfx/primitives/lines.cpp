@@ -30,33 +30,11 @@
 
 namespace vcl {
 
-/**
- * @brief Constructs a line set by referencing existing VertexBuffers.
- *
- * @param[in] vertexCount: Number of vertices.
- * @param[in] verts: VertexBuffer containing vertex positions.
- * Expected layout: an array of `float` with 3 components per vertex (x, y,
- * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1].
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 Lines::Lines(const uint vertexCount, const VertexBuffer& verts)
 {
     setVertices(vertexCount, verts);
 }
 
-/**
- * @brief Sets vertex positions by referencing an existing VertexBuffer.
- *
- * @param[in] vertexCount: Number of vertices in the VertexBuffer.
- * @param[in] verts: VertexBuffer containing vertex positions.
- * Expected layout: an array of `float` with 3 components per vertex (x, y,
- * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1].
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
     if (vertexCount != mVerPosCount)
@@ -65,18 +43,6 @@ void Lines::setVertices(uint vertexCount, const VertexBuffer& verts)
     mVertexPositions.setReferenced(&verts);
 }
 
-/**
- * @brief Sets line indices by referencing an existing IndexBuffer.
- *
- * @param[in] indexCount: Number of indices in the IndexBuffer.
- * @param[in] indices: IndexBuffer to use for lines.
- * The interpretation of indices depends on the topology:
- * - For LINES topology, each pair of indices defines one line segment.
- * - For LINE_STRIP topology, each index after the first forms a line
- *   segment with the previous index.
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
     if (indexCount != mIndexCount)
@@ -85,16 +51,6 @@ void Lines::setIndices(uint indexCount, const IndexBuffer& indices)
     mIndices.setReferenced(&indices);
 }
 
-/**
- * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
- *
- * @param[in] vColsCount: Number of vertex colors in the VertexBuffer.
- * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
- * Expected layout: an array of `uint` with 4 channels per color in
- * ABGR order (A, B, G, R packed as a single 32-bit integer).
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setVertexColors(uint vColsCount, const VertexBuffer& vertexColors)
 {
     if (vColsCount != mVerColCount)
@@ -103,16 +59,6 @@ void Lines::setVertexColors(uint vColsCount, const VertexBuffer& vertexColors)
     mVertexColors.setReferenced(&vertexColors);
 }
 
-/**
- * @brief Sets per-line colors by referencing an existing IndexBuffer.
- *
- * @param[in] lColorCount: Number of line colors in the IndexBuffer.
- * @param[in] lineColors: IndexBuffer containing per-line colors.
- * Expected layout: an array of `uint` with 4 channels per color in
- * ABGR order (A, B, G, R packed as a single 32-bit integer).
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setLineColors(uint lColorCount, const IndexBuffer& lineColors)
 {
     if (lColorCount != mLineColorCount)
@@ -121,17 +67,6 @@ void Lines::setLineColors(uint lColorCount, const IndexBuffer& lineColors)
     mLineColors.setReferenced(&lineColors);
 }
 
-/**
- * @brief Sets vertex normals by referencing an existing VertexBuffer.
- *
- * @param[in] vertexCount: Number of vertex normals in the VertexBuffer.
- * @param[in] verts: VertexBuffer containing vertex normals.
- * Expected layout: an array of `float` with 3 components per vertex (x, y,
- * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1].
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setVertexNormals(uint vNorCount, const VertexBuffer& vertexNormals)
 {
     if (vNorCount != mVerNorCount)
@@ -140,17 +75,6 @@ void Lines::setVertexNormals(uint vNorCount, const VertexBuffer& vertexNormals)
     mVertexNormals.setReferenced(&vertexNormals);
 }
 
-/**
- * @brief Sets per-line normals by referencing an existing VertexBuffer.
- *
- * @param[in] lNorCount: Number of line normals in the VertexBuffer.
- * @param[in] verts: VertexBuffer containing per-line normals.
- * Expected layout: an array of `float` with 3 components per line (x, y,
- * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
- * yn-1, zn-1].
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void Lines::setLineNormals(uint lNorCount, const VertexBuffer& lineNormals)
 {
     if (lNorCount != mLineNorCount)
@@ -217,6 +141,9 @@ void Lines::checkAndUpdateProgram() const
 
     uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
     std::string primstr = mIndices.isValid() ? "indices" : "vertices";
+
+    // Validate that buffer capacities match the expected topology rules.
+    // E.g., LINES requires pairs, and LINE_STRIP requires at least 2 points.
 
     if (mTopology == Topology::LINES && nv % 2 != 0) {
         throw std::runtime_error(

@@ -90,6 +90,11 @@ public:
         if (!mLineNormals.empty()) Lines::setLineNormals(mLineNormals);
 
         Lines::setWidth(other.width());
+        Lines::setTopology(other.topology());
+        Lines::setColorSetting(other.colorSetting());
+        Lines::setShading(other.shading());
+        Lines::setGeneralColor(other.generalColor());
+        Lines::setDepthOffset(other.depthOffset());
     }
 
     /**

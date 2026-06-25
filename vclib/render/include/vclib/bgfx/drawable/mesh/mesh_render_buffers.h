@@ -560,6 +560,7 @@ private:
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
+        // Update the vertex buffers (positions, colors, normals) required by lines
         updateLinesVertexBuffers(*this, mEdgeLines);
 
         const uint        ne = Base::numEdges();
@@ -569,7 +570,7 @@ private:
         mEdgeLines.setIndices(indices);
 
         // to avoid z-fighting with filled triangles
-        mWireframeLines.setDepthOffset(0.0001f);
+        mEdgeLines.setDepthOffset(0.0001f);
     }
 
     void setEdgeNormalsBuffer(const MeshType& mesh) // override
@@ -584,6 +585,7 @@ private:
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
+        // Update the vertex buffers (positions, colors, normals) required by lines
         updateLinesVertexBuffers(*this, mWireframeLines);
 
         const uint        nw = Base::numWireframeLines();
