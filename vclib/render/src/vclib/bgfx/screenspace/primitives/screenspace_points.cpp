@@ -163,19 +163,22 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
 {
     using enum VertFragProgram;
 
-    Context& ctx = Context::instance();
-    ProgramManager& pm = ctx.programManager();
+    Context&        ctx = Context::instance();
+    ProgramManager& pm  = ctx.programManager();
 
     if (mColorSetting == ColorSetting::PER_VERTEX) {
         if (mShape == Shape::SQUARE) {
             return pm.getProgram<SCREENSPACE_POINTS_PVC_SQ>();
-        } else {
+        }
+        else {
             return pm.getProgram<SCREENSPACE_POINTS_PVC_CIR>();
         }
-    } else {
+    }
+    else {
         if (mShape == Shape::SQUARE) {
             return pm.getProgram<SCREENSPACE_POINTS_GC_SQ>();
-        } else {
+        }
+        else {
             return pm.getProgram<SCREENSPACE_POINTS_GC_CIR>();
         }
     }

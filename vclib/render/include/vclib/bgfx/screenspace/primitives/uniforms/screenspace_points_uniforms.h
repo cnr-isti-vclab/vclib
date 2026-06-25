@@ -38,8 +38,9 @@ class ScreenSpacePointsUniforms
     // .y = general color
     // .z = unused
     // .w = unused
-    inline static std::array<float, 4> sPointsSettings = {1.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform              sPointsSettingsUniform;
+    inline static std::array<float, 4> sPointsSettings =
+        {1.0f, 0.0f, 0.0f, 0.0f};
+    inline static Uniform sPointsSettingsUniform;
 
 public:
     ScreenSpacePointsUniforms() = delete;
@@ -52,7 +53,8 @@ public:
 
     /**
      * @brief Sets the general color for points.
-     * @param color The uniform color to apply when per-vertex colors are not used.
+     * @param color The uniform color to apply when per-vertex colors are not
+     * used.
      */
     static void setGeneralColor(const vcl::Color& color)
     {

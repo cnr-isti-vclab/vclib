@@ -27,13 +27,13 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
-#include <QRadioButton>
 #include <QHBoxLayout>
+#include <QRadioButton>
 #include <QVBoxLayout>
 
 #include <vclib/algorithms.h>
-#include <vclib/meshes.h>
 #include <vclib/io.h>
+#include <vclib/meshes.h>
 
 std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
 {
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 
     QGroupBox* shapeGroup = new QGroupBox("Shape");
     shapeGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout* shapeLayout = new QHBoxLayout(shapeGroup);
+    QHBoxLayout*  shapeLayout   = new QHBoxLayout(shapeGroup);
     QRadioButton* rbShapeSquare = new QRadioButton("Square");
     QRadioButton* rbShapeCircle = new QRadioButton("Circle");
     rbShapeSquare->setChecked(true);
@@ -126,8 +126,8 @@ int main(int argc, char** argv)
 
     QGroupBox* shadingGroup = new QGroupBox("Shading");
     shadingGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout* shadingLayout = new QHBoxLayout(shadingGroup);
-    QRadioButton* rbShadingNone = new QRadioButton("None");
+    QHBoxLayout*  shadingLayout      = new QHBoxLayout(shadingGroup);
+    QRadioButton* rbShadingNone      = new QRadioButton("None");
     QRadioButton* rbShadingPerVertex = new QRadioButton("Per Vertex");
     rbShadingNone->setChecked(true);
     shadingLayout->addWidget(rbShadingNone);
@@ -151,7 +151,7 @@ int main(int argc, char** argv)
     tw->setDrawableObjectVector(vec);
     auto pts = getPoints(vec);
     tslider->setValue(pts->width());
-    
+
     shadingGroup->setEnabled(pts->hasNormals());
 
     QObject::connect(
@@ -193,12 +193,13 @@ int main(int argc, char** argv)
         }
     });
 
-    QObject::connect(rbShadingPerVertex, &QRadioButton::toggled, [=](bool checked) {
-        if (checked) {
-            getPoints(vec)->setShading(vcl::Points::Shading::PER_VERTEX);
-            tw->update();
-        }
-    });
+    QObject::connect(
+        rbShadingPerVertex, &QRadioButton::toggled, [=](bool checked) {
+            if (checked) {
+                getPoints(vec)->setShading(vcl::Points::Shading::PER_VERTEX);
+                tw->update();
+            }
+        });
 
     w.resize(1024, 768);
 
