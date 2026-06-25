@@ -37,6 +37,37 @@
 #define vcl_FrontFacing (!gl_FrontFacing)
 
 /**
+ * @brief Auxiliary macro to declare a function that fetches a vec3 from a vec4
+ * buffer.
+ *
+ * Buffers cannot be passed as arguments to functions, so we need to declare a
+ * function for each buffer that is declared of vec4 but actually contains vec3
+ * data.
+ * This macro makes easier to declare such functions.
+ *
+ * @param[in] funcName: The name of the function to be generated.
+ * @param[in] bufferName: The name of the vec4 buffer from which the vec3 will
+ * be fetched.
+ *
+ * @code
+ * BUFFER_RO(myBuffer, vec4, 0); // buffer of vec4, read only on stage 0
+ * DECLARE_FETCH_VEC3(fetchMyBuffer, myBuffer) // declare the function
+ * //...
+ * vec3 pos = fetchMyBuffer(10); // fetch the 10-th vec3 from myBuffer
+ * @endcode
+ */
+#define DECLARE_FETCH_VEC3(funcName, bufferName) \
+    vec3 funcName(uint index) { \
+        uint idx30 = index * 3u; \
+        uint idx31 = idx30 + 1u; \
+        uint idx32 = idx30 + 2u; \
+        return vec3( \
+            bufferName[idx30 / 4u][idx30 % 4u], \
+            bufferName[idx31 / 4u][idx31 % 4u], \
+            bufferName[idx32 / 4u][idx32 % 4u]); \
+    }
+
+/**
  * @brief Convert an uint color in ABGR format to a vec4 float color.
  * @param[in] color: The input color.
  * @return The output color.

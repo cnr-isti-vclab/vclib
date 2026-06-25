@@ -26,9 +26,11 @@ $output v_normal, v_texcoord1, v_color
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 
 BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
+DECLARE_FETCH_VEC3(fetchPosition, pointsBuffer);
 
 #if POINTS_SHADING_PER_VERTEX
 BUFFER_RO(normalsBuffer, vec4, 1); // 3D normals
+DECLARE_FETCH_VEC3(fetchNormal, normalsBuffer);
 #endif
 
 #if POINTS_COLOR_PER_VERTEX
@@ -37,22 +39,12 @@ BUFFER_RO(pointColors, uint, 2); // colors
 
 void main()
 {
-    // Calculate which point and which vertex of the quad we're processing
+    // Calculate which point and which vertex of the quad we are processing
     // Each point generates 6 vertices (2 triangles)
     uint pointIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
-    uint idx30 = pointIndex * 3u;
-    uint idx31 = idx30 + 1u;
-    uint idx32 = idx30 + 2u;
-
-    // Unroll a continuous stream of floats from a vec4 compute buffer.
-    // Each point's position takes 3 floats, but the SSBO is accessed as vec4 elements.
-    // idx/4u computes the vec4 index, and idx%4u selects the correct scalar component.
-    vec3 centerPos = vec3(
-        pointsBuffer[idx30/4u][idx30%4u],
-        pointsBuffer[idx31/4u][idx31%4u],
-        pointsBuffer[idx32/4u][idx32%4u]);
+    vec3 centerPos = fetchPosition(pointIndex);
 
     const vec2 offsets[6] = {
         vec2(-1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0, -1.0),
@@ -76,11 +68,7 @@ void main()
 
     // Normal calculation
 #if POINTS_SHADING_PER_VERTEX
-    // Same vec4 unrolling logic as point positions
-    v_normal = vec3(
-        normalsBuffer[idx30/4u][idx30%4u],
-        normalsBuffer[idx31/4u][idx31%4u],
-        normalsBuffer[idx32/4u][idx32%4u]);
+    v_normal = fetchNormal(pointIndex);
     v_normal = normalize(mul(u_normalMatrix, v_normal));
 #else
     v_normal = vec3(0.0, 0.0, 1.0);

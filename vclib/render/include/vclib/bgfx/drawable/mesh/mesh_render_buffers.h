@@ -67,8 +67,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     bool                mVertexQuadBufferGenerated = false;
 
     IndexBuffer mTriangleIndexBuffer;
-    IndexBuffer mTriangleNormalBuffer;
-    IndexBuffer mTriangleColorBuffer;
+    VertexBuffer mTriangleNormalBuffer;
+    VertexBuffer mTriangleColorBuffer;
 
     Lines mEdgeLines;
 
@@ -232,9 +232,9 @@ public:
                 chunk.startIndex * 3, chunk.indexCount * 3);
         }
 
-        mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+        mTriangleNormalBuffer.bindCompute(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+        mTriangleColorBuffer.bindCompute(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
@@ -513,7 +513,12 @@ private:
         Base::fillTriangleNormals(mesh, buffer);
 
         mTriangleNormalBuffer.create(
-            buffer, nt * 3, PrimitiveType::FLOAT, releaseFn);
+            buffer,
+            nt,
+            bgfx::Attrib::Normal,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
     }
 
     void setTriangleColorsBuffer(const MeshType& mesh) // override
@@ -525,7 +530,14 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.create(buffer, nt, releaseFn);
+        mTriangleColorBuffer.create(
+            buffer,
+            nt,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
