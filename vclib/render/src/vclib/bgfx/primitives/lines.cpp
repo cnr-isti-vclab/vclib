@@ -59,9 +59,10 @@ Lines::Lines(const uint vertexCount, const VertexBuffer& verts)
  */
 void Lines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
+    if (vertexCount != mVerPosCount)
+        mIsUpdateProgramNeeded = true;
     mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -78,9 +79,10 @@ void Lines::setVertices(uint vertexCount, const VertexBuffer& verts)
  */
 void Lines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
+    if (indexCount != mIndexCount)
+        mIsUpdateProgramNeeded = true;
     mIndexCount = indexCount;
     mIndices.setReferenced(&indices);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -95,9 +97,10 @@ void Lines::setIndices(uint indexCount, const IndexBuffer& indices)
  */
 void Lines::setVertexColors(uint vColsCount, const VertexBuffer& vertexColors)
 {
+    if (vColsCount != mVerColCount)
+        mIsUpdateProgramNeeded = true;
     mVerColCount = vColsCount;
     mVertexColors.setReferenced(&vertexColors);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -112,9 +115,10 @@ void Lines::setVertexColors(uint vColsCount, const VertexBuffer& vertexColors)
  */
 void Lines::setLineColors(uint lColorCount, const IndexBuffer& lineColors)
 {
+    if (lColorCount != mLineColorCount)
+        mIsUpdateProgramNeeded = true;
     mLineColorCount = lColorCount;
     mLineColors.setReferenced(&lineColors);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -130,9 +134,10 @@ void Lines::setLineColors(uint lColorCount, const IndexBuffer& lineColors)
  */
 void Lines::setVertexNormals(uint vNorCount, const VertexBuffer& vertexNormals)
 {
+    if (vNorCount != mVerNorCount)
+        mIsUpdateProgramNeeded = true;
     mVerNorCount = vNorCount;
     mVertexNormals.setReferenced(&vertexNormals);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -148,9 +153,10 @@ void Lines::setVertexNormals(uint vNorCount, const VertexBuffer& vertexNormals)
  */
 void Lines::setLineNormals(uint lNorCount, const VertexBuffer& lineNormals)
 {
+    if (lNorCount != mLineNorCount)
+        mIsUpdateProgramNeeded = true;
     mLineNorCount = lNorCount;
     mLineNormals.setReferenced(&lineNormals);
-    mIsUpdateProgramNeeded = true;
 }
 
 /**
