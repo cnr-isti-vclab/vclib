@@ -232,6 +232,9 @@ protected:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseMove(
             derived(),
             event->pos().x() * pixelRatio(),
@@ -242,6 +245,9 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mousePress(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -253,6 +259,9 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseRelease(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -264,6 +273,9 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseDoubleClick(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -275,6 +287,9 @@ protected:
 
     void wheelEvent(QWheelEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         // FIXME: this is not correct, define a proper equivalence
         if (!event->pixelDelta().isNull())
             DerivedRenderApp::WM::mouseScroll(

@@ -210,7 +210,7 @@ public:
     void create(
         const bgfx::Memory*       data,
         const bgfx::VertexLayout& layout,
-        uint64_t                  flags   = BGFX_BUFFER_NONE)
+        uint64_t                  flags = BGFX_BUFFER_NONE)
     {
         destroy();
 

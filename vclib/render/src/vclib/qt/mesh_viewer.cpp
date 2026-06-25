@@ -130,6 +130,8 @@ MeshViewer::MeshViewer(QWidget* parent) :
         new SelectionEditorFrame<ViewerType>(mSelectionEditor);
     mUI->toolBar->addWidget(selectionEditor);
 
+    disableFocus(mUI->toolBar);
+
     /** Render Settings Frame **/
 
     mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);

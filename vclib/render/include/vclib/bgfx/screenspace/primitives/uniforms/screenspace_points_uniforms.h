@@ -34,29 +34,38 @@ namespace vcl {
 
 class ScreenSpacePointsUniforms
 {
-    inline static std::array<float, 4> sPointsSettings;
-    inline static Uniform              sPointsSettingsUniform;
+    // .x = point width in pixels
+    // .y = general color
+    // .z = unused
+    // .w = unused
+    inline static std::array<float, 4> sPointsSettings =
+        {1.0f, 0.0f, 0.0f, 0.0f};
+    inline static Uniform sPointsSettingsUniform;
 
 public:
     ScreenSpacePointsUniforms() = delete;
 
-    static void setColorSetting(uint c)
+    /**
+     * @brief Sets the width of the points.
+     * @param width The point width in pixels.
+     */
+    static void setWidth(float width) { sPointsSettings[0] = width; }
+
+    /**
+     * @brief Sets the general color for points.
+     * @param color The uniform color to apply when per-vertex colors are not
+     * used.
+     */
+    static void setGeneralColor(const vcl::Color& color)
     {
-        sPointsSettings[0] = std::bit_cast<float>(c);
+        sPointsSettings[1] = std::bit_cast<float>(color.abgr());
     }
 
-    static void setShape(uint s)
-    {
-        sPointsSettings[1] = std::bit_cast<float>(s);
-    }
-
-    static void setWidth(float w) { sPointsSettings[2] = w; }
-
-    static void setGeneralColor(const vcl::Color& c)
-    {
-        sPointsSettings[3] = std::bit_cast<float>(c.abgr());
-    }
-
+    /**
+     * @brief Binds the uniform to the current bgfx context.
+     *
+     * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
+     */
     static void bind()
     {
         // lazy initialization

@@ -37,6 +37,14 @@ using RegisteredTypesSet = std::set<std::type_index>;
 
 inline RegisteredTypesSet registeredTypes;
 
+inline RandomConfig toRConfig(std::optional<uint> seed)
+{
+    if (seed.has_value())
+        return seed.value();
+    else
+        return std::monostate();
+}
+
 template<typename Class>
 void defCopy(pybind11::class_<Class>& c)
 {

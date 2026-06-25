@@ -54,12 +54,9 @@ namespace vcl {
  * the WindowManagerConcept.
  */
 template<
-    template<typename>
-    typename WindowManagerT,
-    template<typename>
-    typename CanvasT,
-    template<typename>
-    typename... Drawers>
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
 class RenderApp :
         public WindowManagerT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
         public CanvasT<RenderApp<WindowManagerT, CanvasT, Drawers...>>,
@@ -394,12 +391,9 @@ private:
  * @endcode
  */
 template<
-    template<typename>
-    typename WindowManagerT,
-    template<typename>
-    typename CanvasT,
-    template<typename>
-    typename... Drawers>
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
 {
     using WindowManagerType = WindowManagerT<RenderApp>;
@@ -583,12 +577,9 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
  * @endcode
  */
 template<
-    template<typename>
-    typename WindowManagerT,
-    template<typename>
-    typename CanvasT,
-    template<typename>
-    typename... Drawers>
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
 {
     using CanvasType = CanvasT<RenderApp>;
@@ -640,12 +631,9 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
  * @endcode
  */
 template<
-    template<typename>
-    typename WindowManagerT,
-    template<typename>
-    typename CanvasT,
-    template<typename>
-    typename... Drawers>
+    template<typename> typename WindowManagerT,
+    template<typename> typename CanvasT,
+    template<typename> typename... Drawers>
 class RenderApp<WindowManagerT, CanvasT, Drawers...>::DRW
 {
     // TODO: right now all the function in this inner class are public,

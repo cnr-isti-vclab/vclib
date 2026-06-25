@@ -31,18 +31,15 @@ namespace vcl {
 /**
  * @brief Constructs a point set by referencing existing VertexBuffers.
  *
- * @param[in] vertexCount: Number of points (length of verts).
+ * @param[in] vertexCount: Number of points.
  * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 2 components per point (x, y),
  * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
- * buffer must be created for compute access and must remain valid for the
- * lifetime of this object.
+ * buffer must remain valid for the lifetime of this object.
  * @param[in] vertColors: Optional VertexBuffer containing per-point
- * colors.
- * Expected layout: an array of `uint` with 4 channels per color in
+ * colors. Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
- * must be created for compute access and must remain valid for the lifetime
- * of this object.
+ * must remain valid for the lifetime of this object.
  */
 ScreenSpacePoints::ScreenSpacePoints(
     const uint          vertexCount,
@@ -62,16 +59,16 @@ ScreenSpacePoints::ScreenSpacePoints(
  * @param[in] verts: VertexBuffer containing point positions.
  * Expected layout: an array of `float` with 2 components per point (x, y),
  * stored as consecutive floats: [x0, y0, x1, y1, ..., xn-1, yn-1]. The
- * buffer must be created for compute access and must remain valid for the
- * lifetime of this object.
+ * buffer must remain valid for the lifetime of this object.
  */
 void ScreenSpacePoints::setVertices(
     const uint          vertexCount,
     const VertexBuffer& verts)
 {
-    mVertexCount = vertexCount;
+    mVerPosCount = vertexCount;
 
     mVertexPositions.setReferenced(&verts);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -80,12 +77,12 @@ void ScreenSpacePoints::setVertices(
  * @param[in] vertColors: VertexBuffer containing per-point colors.
  * Expected layout: an array of `uint` with 4 channels per color in
  * ABGR order (A, B, G, R packed as a single 32-bit integer). The buffer
- * must be created for compute access and must remain valid for the lifetime
- * of this object.
+ * must remain valid for the lifetime of this object.
  */
 void ScreenSpacePoints::setVertexColors(const VertexBuffer& vertColors)
 {
     mVertexColors.setReferenced(&vertColors);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -101,21 +98,12 @@ void ScreenSpacePoints::setVertexColors(const VertexBuffer& vertColors)
  */
 void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 {
-    if (mVertexCount == 0 || !mVertexPositions.isValid()) {
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
     }
 
-    Context& ctx = Context::instance();
+    checkAndUpdateProgram();
 
-    ProgramManager& pm = ctx.programManager();
-
-    ColorSetting colorToUse = mColorToUse;
-    if (colorToUse == ColorSetting::PER_VERTEX && !mVertexColors.isValid()) {
-        colorToUse = ColorSetting::GENERAL;
-    }
-
-    ScreenSpacePointsUniforms::setColorSetting(static_cast<uint>(colorToUse));
-    ScreenSpacePointsUniforms::setShape(static_cast<uint>(mShape));
     ScreenSpacePointsUniforms::setWidth(mWidth);
     ScreenSpacePointsUniforms::setGeneralColor(mGeneralColor);
 
@@ -131,14 +119,69 @@ void ScreenSpacePoints::draw(bgfx::ViewId viewId) const
 
     // Set the number of vertices to generate procedurally
     // Each point generates 6 vertices (2 triangles)
-    bgfx::setVertexCount(mVertexCount * 6);
+    bgfx::setVertexCount(mVerPosCount * 6);
 
     bgfx::setState(
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
         BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
 
     ScreenSpacePointsUniforms::bind();
-    bgfx::submit(viewId, pm.getProgram<VertFragProgram::SCREENSPACE_POINTS>());
+    bgfx::submit(viewId, mProgram);
+}
+
+/**
+ * @brief Checks if the shader program needs to be updated and updates it.
+ *
+ * Validates that required buffers (colors) are available based on
+ * the current color settings, throwing an exception if invalid.
+ * Then it selects the appropriate shader program.
+ */
+void ScreenSpacePoints::checkAndUpdateProgram() const
+{
+    if (!mIsUpdateProgramNeeded) {
+        return;
+    }
+
+    if (mColorSetting == ColorSetting::PER_VERTEX) {
+        if (!mVertexColors.isValid()) {
+            throw std::runtime_error(
+                "ScreenSpacePoints: PER_VERTEX color setting requires a valid "
+                "vertex color buffer.");
+        }
+    }
+
+    mProgram               = screenspacePointsProgramSelector();
+    mIsUpdateProgramNeeded = false;
+}
+
+/**
+ * @brief Selects the correct bgfx shader program based on current settings.
+ *
+ * @return The appropriate bgfx::ProgramHandle for the current configuration.
+ */
+bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
+{
+    using enum VertFragProgram;
+
+    Context&        ctx = Context::instance();
+    ProgramManager& pm  = ctx.programManager();
+
+    if (mColorSetting == ColorSetting::PER_VERTEX) {
+        if (mShape == Shape::SQUARE) {
+            return pm.getProgram<SCREENSPACE_POINTS_PVC_SQ>();
+        }
+        else {
+            return pm.getProgram<SCREENSPACE_POINTS_PVC_CIR>();
+        }
+    }
+    else {
+        if (mShape == Shape::SQUARE) {
+            return pm.getProgram<SCREENSPACE_POINTS_GC_SQ>();
+        }
+        else {
+            return pm.getProgram<SCREENSPACE_POINTS_GC_CIR>();
+        }
+    }
 }
 
 } // namespace vcl

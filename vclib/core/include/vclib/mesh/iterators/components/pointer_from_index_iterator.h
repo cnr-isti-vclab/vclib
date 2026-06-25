@@ -84,11 +84,12 @@ public:
      * @brief Constructor from a non-const iterator
      * @param oi
      */
-    PointerFromIndexIterator(const PointerFromIndexIterator<
-                             Iterator,
-                             ElementType,
-                             ParentElement,
-                             false>& oi) requires (CNST == true)
+    PointerFromIndexIterator(
+        const PointerFromIndexIterator<
+            Iterator,
+            ElementType,
+            ParentElement,
+            false>& oi) requires (CNST == true)
             : mIt(oi.mIt), parentElement(oi.parentElement) {};
 
     value_type operator*() const

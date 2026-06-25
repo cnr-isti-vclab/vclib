@@ -29,8 +29,7 @@
 namespace vcl {
 
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     bool CNST = false>
 class ElementContainerIterator
@@ -314,8 +313,7 @@ private:
 };
 
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     bool C = false>
 ElementContainerIterator<Container, T, C> operator+(

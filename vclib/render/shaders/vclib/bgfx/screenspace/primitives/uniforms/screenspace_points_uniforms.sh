@@ -25,17 +25,7 @@
 
 uniform vec4 u_pointsSettings;
 
-#define u_pointsColorToUse floatBitsToUint(u_pointsSettings.x)
-#define u_pointsShadeMode floatBitsToUint(u_pointsSettings.y)
-#define u_pointsWidth u_pointsSettings.z
-#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.w))
-
-bool usePerPointColor() {
-    return u_pointsColorToUse == 0u;
-}
-
-bool useQuadShape() {
-    return u_pointsShadeMode == 0u;
-}
+#define u_pointsWidth u_pointsSettings.x
+#define u_pointsGeneralColor uintABGRToVec4Color(floatBitsToUint(u_pointsSettings.y))
 
 #endif // VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_POINTS_UNIFORMS_SH

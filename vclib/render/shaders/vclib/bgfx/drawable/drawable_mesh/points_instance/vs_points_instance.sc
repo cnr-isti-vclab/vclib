@@ -36,11 +36,10 @@ void main()
     vec2 quadUv = vec2(idx & 1u, (idx >> 1) & 1u);
     vec4 offset = vec4(
         // {-1, +1} * width * texel
-        (2.0 * quadUv.x - 1.0) * u_pointWidth * u_viewTexel.x, // is divided by 2
-        (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y, // is divided by 2
+        (2.0 * quadUv.x - 1.0) * u_pointWidth * u_viewTexel.x * pos.w, // is divided by 2
+        (2.0 * quadUv.y - 1.0) * u_pointWidth * u_viewTexel.y * pos.w, // is divided by 2
         0, 0);
 
-    pos = pos / pos.w;
     gl_Position = pos + offset;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
 

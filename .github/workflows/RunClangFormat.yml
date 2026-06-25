@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
@@ -25,7 +25,7 @@ jobs:
       with:
         source: '.'
         extensions: 'h,cpp'
-        clangFormatVersion: 18
+        clangFormatVersion: 20
         inplace: True
     - uses: EndBug/add-and-commit@v10
       with:

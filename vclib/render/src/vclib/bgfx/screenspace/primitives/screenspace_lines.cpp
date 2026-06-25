@@ -62,6 +62,7 @@ void ScreenSpaceLines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
     mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -80,6 +81,7 @@ void ScreenSpaceLines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
     mIndexCount = indexCount;
     mIndices.setReferenced(&indices);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -98,6 +100,7 @@ void ScreenSpaceLines::setVertexColors(
 {
     mVerColCount = vColsCount;
     mVertexColors.setReferenced(&vertexColors);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -116,6 +119,7 @@ void ScreenSpaceLines::setLineColors(
 {
     mLineColorCount = lColorCount;
     mLineColors.setReferenced(&lineColors);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -135,7 +139,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         return;
     }
 
-    validityCheck();
+    checkAndUpdateProgram();
 
     ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
@@ -164,11 +168,22 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
 
     ScreenSpaceLinesUniforms::bind();
-    bgfx::submit(viewId, screenspaceLinesProgramSelector());
+    bgfx::submit(viewId, mProgram);
 }
 
-void ScreenSpaceLines::validityCheck() const
+/**
+ * @brief Checks if the shader program needs to be updated and updates it.
+ *
+ * Validates that required buffers (colors) are available based on
+ * the current topology and color settings, throwing an exception if invalid.
+ * Then it selects the appropriate shader program.
+ */
+void ScreenSpaceLines::checkAndUpdateProgram() const
 {
+    if (!mIsUpdateProgramNeeded) {
+        return;
+    }
+
     uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
     std::string primstr = mIndices.isValid() ? "indices" : "vertices";
 
@@ -215,6 +230,9 @@ void ScreenSpaceLines::validityCheck() const
                 "topology.");
         }
     }
+
+    mProgram               = screenspaceLinesProgramSelector();
+    mIsUpdateProgramNeeded = false;
 }
 
 uint ScreenSpaceLines::vertexPullingInstances() const

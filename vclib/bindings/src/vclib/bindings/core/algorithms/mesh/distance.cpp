@@ -55,26 +55,26 @@ void initDistanceAlgorithms(pybind11::module& m)
             HausdorffSamplingMethod::HAUSDORFF_MONTECARLO)
         .export_values();
 
-    auto fAllMeshes =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            // TODO: bind between different types of meshes
+    auto fAllMeshes = []<MeshConcept MeshType>(
+                          pybind11::module& m, MeshType = MeshType()) {
+        // TODO: bind between different types of meshes
 
-            m.def(
-                "hausdorff_distance",
-                [](const MeshType&         m1,
-                   const MeshType&         m2,
-                   HausdorffSamplingMethod sampMethod,
-                   uint                    nSamples,
-                   std::optional<uint>     seed) -> HausdorffDistResult {
-                    return hausdorffDistance(
-                        m1, m2, nullLogger, sampMethod, nSamples, seed);
-                },
-                "mesh1"_a,
-                "mesh2"_a,
-                "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
-                "n_samples"_a   = 0,
-                "seed"_a        = py::none());
-        };
+        m.def(
+            "hausdorff_distance",
+            [](const MeshType&         m1,
+               const MeshType&         m2,
+               HausdorffSamplingMethod sampMethod,
+               uint                    nSamples,
+               std::optional<uint>     seed) -> HausdorffDistResult {
+                return hausdorffDistance(
+                    m1, m2, nullLogger, sampMethod, nSamples, toRConfig(seed));
+            },
+            "mesh1"_a,
+            "mesh2"_a,
+            "samp_method"_a = HAUSDORFF_VERTEX_UNIFORM,
+            "n_samples"_a   = 0,
+            "seed"_a        = py::none());
+    };
 
     defForAllMeshTypes(m, fAllMeshes);
 }
