@@ -46,8 +46,8 @@ def replace_cmake_headers_in_dir(folder_path, recursive=True):
     # Read in the file
     with open(path + '/templates/headings.txt', 'r') as file :
         header_string = file.read()
-        # replace the first char of the line with a #
-        header_string = re.sub(r'^.', '#', header_string, flags=re.MULTILINE)
+        # replace // with #
+        header_string = re.sub(r'^//', '#', header_string, flags=re.MULTILINE)
 
     for file_path in glob.glob(os.path.join(folder_path, '*')):
         if os.path.isdir(file_path) and recursive:
@@ -62,8 +62,8 @@ def replace_python_headers_in_dir(folder_path, recursive=True):
     # Read in the file
     with open(path + '/templates/headings.txt', 'r') as file :
         header_string = file.read()
-        # replace the first char of the line with a #
-        header_string = re.sub(r'^.', '#', header_string, flags=re.MULTILINE)
+        # replace // with #
+        header_string = re.sub(r'^//', '#', header_string, flags=re.MULTILINE)
 
     for file_path in glob.glob(os.path.join(folder_path, '*')):
         if os.path.isdir(file_path) and recursive:
