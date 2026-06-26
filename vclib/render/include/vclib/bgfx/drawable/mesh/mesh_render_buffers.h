@@ -66,7 +66,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     DynamicVertexBuffer mVertexQuadBuffer;
     bool                mVertexQuadBufferGenerated = false;
 
-    IndexBuffer mTriangleIndexBuffer;
+    IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
     VertexBuffer mTriangleColorBuffer;
 
