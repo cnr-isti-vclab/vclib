@@ -757,13 +757,16 @@ void loadGltfMeshPrimitive(
         info.setPerVertexTexCoord();
     }
 
-    loadGltfAttribute(
+    bool lvtan = loadGltfAttribute(
         m,
         firstVertex,
         settings.enableOptionalComponents,
         model,
         p,
         GltfAttrType::TANGENT);
+    if (lvtan) {
+        info.setPerVertexTangent();
+    }
 
     if constexpr (HasPerVertexMaterialIndex<MeshType>) {
         if (settings.enableOptionalComponents) {
