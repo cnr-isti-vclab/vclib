@@ -87,7 +87,12 @@ function(add_standalone_example module name)
     add_test(NAME run-${TARGET_NAME} COMMAND ${TARGET_NAME})
 endfunction()
 
-# Add a few manual examples to test for now
-add_standalone_example(core 000-mesh-io)
-add_standalone_example(core 001-mesh-basics)
-add_standalone_example(core 002-mesh-iteration)
+# Add all core examples automatically
+file(GLOB CORE_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_SOURCE_DIR}/../core/*")
+foreach(dir IN LISTS CORE_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../core/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../core/${dir}/main.cpp")
+            add_standalone_example(core "${dir}")
+        endif()
+    endif()
+endforeach()
