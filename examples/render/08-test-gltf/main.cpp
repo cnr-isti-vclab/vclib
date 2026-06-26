@@ -43,6 +43,7 @@ int main(int argc, char** argv)
         DUCK,
         FLOWER_POINT_CLOUD,
         ORIENTATION_TEST,
+        NORMAL_TANGENT_MIRROR_TEST,
         BUNNY_EDGES,
         COUNT
     };
@@ -55,6 +56,7 @@ int main(int argc, char** argv)
         "/gltf/Duck/Duck.gltf",
         "/gltf/FlowerPointCloud/scene.gltf",
         "/gltf/OrientationTest/OrientationTest.gltf",
+        "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/bunny_edge_sections.gltf"};
 
     const bool LOAD_CUSTOM_CAMERA = false;
