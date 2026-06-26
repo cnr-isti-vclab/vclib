@@ -130,7 +130,7 @@ def replace_shader_headers_in_dir(folder_path, exclude_paths = []):
             replace_header(file_path, header_string)
 
 if __name__ == "__main__":
-    replace_headers_in_dir('../examples/bindings/')
+    replace_headers_in_dir('../examples/')
     replace_headers_in_dir('../tests/')
     replace_cmake_headers_in_dir('../', recursive=False)
     replace_cmake_headers_in_dir('../3rdparty/')
