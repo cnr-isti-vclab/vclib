@@ -19,16 +19,49 @@
 #* Mozilla Public License Version 2.0                                        *
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
+#
+# VCLib Template Project
+#
+# This is a standalone template CMake project that demonstrates how to use VCLib
+# via FetchContent.
+#
+# To build this example independently:
+#   mkdir build && cd build
+#   cmake .. -DCMAKE_BUILD_TYPE=Release
+#   cmake --build . --config Release
+#############################################################################
 
-set(EXAMPLE_NAME 02-mesh-viewer-qt)
-project(vclib-render-example-${EXAMPLE_NAME})
+cmake_minimum_required(VERSION 3.24)
+project(standalone-vclib-template LANGUAGES CXX)
 
-set(SOURCES
-    main.cpp)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-vclib_add_example(${EXAMPLE_NAME}
-    MODULE render
-    SOURCES ${SOURCES})
+# Enable FetchContent to download VCLib at configure time
+include(FetchContent)
 
-target_include_directories(vclib-render-example-${EXAMPLE_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR})
+# Alteratively, if VCLib is installed on your system, you can use find_package:
+# find_package(vclib REQUIRED)
+
+# Set VCLib options BEFORE calling FetchContent_Declare
+set(VCLIB_BUILD_MODULE_EXTERNAL OFF CACHE STRING "" FORCE)
+set(VCLIB_BUILD_MODULE_RENDER OFF CACHE STRING "" FORCE)
+set(VCLIB_BUILD_MODULE_BINDINGS OFF CACHE STRING "" FORCE)
+set(VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS ON CACHE STRING "" FORCE)
+
+FetchContent_Declare(
+    vclib
+    GIT_REPOSITORY https://github.com/cnr-isti-vclab/vclib.git
+    GIT_TAG        origin/main
+)
+
+FetchContent_MakeAvailable(vclib)
+
+# Create the standalone executable
+add_executable(${PROJECT_NAME} main.cpp)
+
+# Link with VCLib - this will automatically pull in all dependencies
+target_link_libraries(${PROJECT_NAME} PRIVATE vclib::vclib)
+
+# Print configuration info
+message(STATUS "VCLib Standalone Template Project")

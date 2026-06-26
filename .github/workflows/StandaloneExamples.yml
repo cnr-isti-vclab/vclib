@@ -1,0 +1,88 @@
+name: Standalone Examples - Build and Run
+
+on:
+  [push, pull_request]
+
+jobs:
+  build_and_run_standalone_examples:
+    name: Standalone Examples (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        integration_mode: ['find_package', 'FetchContent']
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build libtbb-dev
+
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install cmake ninja tbb
+
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco install -y cmake ninja
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ github.ref_name }}
+
+    - name: Build and Install VCLib
+      if: matrix.integration_mode == 'find_package'
+      shell: bash
+      run: |
+        # In find_package mode, we must first build and install VCLib
+        cmake -S . -B build-vclib --preset=vclib-core-install
+        cmake --build build-vclib
+        cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
+
+    - name: Configure Standalone Examples
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        
+        cmake -S examples/standalone -B examples/standalone/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+
+    - name: Build Standalone Examples
+      run: cmake --build examples/standalone/build
+
+    - name: Run Tests
+      working-directory: examples/standalone/build
+      run: ctest --output-on-failure
+
+    - name: Build Template Project
+      if: matrix.integration_mode == 'FetchContent'
+      shell: bash
+      run: |
+        # Quick check that the template project is valid and builds
+        # Note: this will fetch VCLib from origin/main
+        cmake -S examples/standalone/template-project -B examples/standalone/template-project/build -G Ninja
+        cmake --build examples/standalone/template-project/build
