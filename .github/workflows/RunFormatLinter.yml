@@ -1,4 +1,4 @@
-name: Run clang-format Linter
+name: Run format Linter
 
 # run it every day at midnight, or manually
 on:
@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  run_clang_format_linter:
+  run_format_linter:
     if: github.repository == 'cnr-isti-vclab/vclib'
-    name: Run clang-format Linter
+    name: Run format Linter
     runs-on: ubuntu-latest
 
     steps:
@@ -17,10 +17,16 @@ jobs:
     - uses: actions/setup-python@v6
       with:
         python-version: '3.12'
+    # install gersemi
+    - run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake
+        pip install gersemi
     - run: |
         cd scripts
         python3 replace_header_guards.py
         python3 replace_headings.py
+        python3 format_cmake_with_gersemi.py
     - uses: DoozyX/clang-format-lint-action@v0.20
       with:
         source: '.'

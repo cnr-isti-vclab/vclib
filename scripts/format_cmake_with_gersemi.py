@@ -75,7 +75,7 @@ def format_with_gersemi(files: list[Path]) -> int:
     failures = 0
 
     for file_path in files:
-        cmd = ["gersemi", "--in-place", str(file_path)]
+        cmd = ["gersemi", "--in-place", "--definitions", str(file_path)]
         result = subprocess.run(cmd, check=False)
         if result.returncode != 0:
             failures += 1
