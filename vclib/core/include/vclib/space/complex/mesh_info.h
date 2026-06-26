@@ -99,6 +99,7 @@ public:
         VREFS,
         BIT_FLAGS,
         NORMAL,
+        TANGENT,
         COLOR,
         QUALITY,
         TEXCOORD,
@@ -177,6 +178,14 @@ public:
                     true,
                     getType<
                         typename Mesh::VertexType::NormalType::ScalarType>());
+            }
+        }
+        if constexpr (HasPerVertexTangent<Mesh>) {
+            if (isPerVertexTangentAvailable(m)) {
+                setPerVertexTangent(
+                    true,
+                    getType<
+                        typename Mesh::VertexType::TangentType::ScalarType>());
             }
         }
         if constexpr (HasPerVertexColor<Mesh>) {
@@ -379,6 +388,15 @@ public:
     bool hasPerVertexNormal() const
     {
         return hasPerElementComponent(VERTEX, NORMAL);
+    }
+
+    /**
+     * @brief Returns true if the current object has Vertex Tangents.
+     * @return true if the current object has Vertex Tangents.
+     */
+    bool hasPerVertexTangent() const
+    {
+        return hasPerElementComponent(VERTEX, TANGENT);
     }
 
     /**
@@ -585,6 +603,11 @@ public:
         setPerElementComponent(VERTEX, NORMAL, b, t);
     }
 
+    void setPerVertexTangent(bool b = true, DataType t = PrimitiveType::FLOAT)
+    {
+        setPerElementComponent(VERTEX, TANGENT, b, t);
+    }
+
     void setPerVertexColor(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
         setPerElementComponent(VERTEX, COLOR, b, t);
@@ -766,6 +789,11 @@ public:
     DataType perVertexNormalType() const
     {
         return perElementComponentType(VERTEX, NORMAL);
+    }
+
+    DataType perVertexTangentType() const
+    {
+        return perElementComponentType(VERTEX, TANGENT);
     }
 
     DataType perVertexColorType() const
@@ -1037,6 +1065,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         if (info.hasPerVertexQuality()) {
             if (!enableIfPerVertexQualityOptional(m)) {
                 info.setPerVertexQuality(false);
+            }
+        }
+        if (info.hasPerVertexTangent()) {
+            if (!enableIfPerVertexTangentOptional(m)) {
+                info.setPerVertexTangent(false);
             }
         }
         if (info.hasPerVertexTexCoord()) {
