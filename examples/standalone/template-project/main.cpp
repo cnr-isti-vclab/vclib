@@ -24,8 +24,8 @@
  * \file main.cpp
  * \brief VCLib Standalone Template Project
  *
- * This standalone template project demonstrates how to create basic mesh structures
- * using VCLib when included via FetchContent.
+ * This standalone template project demonstrates how to create basic mesh
+ * structures using VCLib when included via FetchContent.
  *
  * It creates:
  * - An icosahedron mesh
@@ -41,13 +41,14 @@
  */
 
 #include <iostream>
-#include <vclib/meshes.h>
 #include <vclib/algorithms.h>
+#include <vclib/meshes.h>
 #include <vclib/version.h>
 
 int main()
 {
-    std::cout << "=== VCLib Standalone Example 001: Basic Mesh Creation ===" << std::endl;
+    std::cout << "=== VCLib Standalone Example 001: Basic Mesh Creation ==="
+              << std::endl;
     std::cout << "VCLib Version: " << VCLIB_VERSION_STRING << std::endl;
     std::cout << "  Major: " << VCLIB_VERSION_MAJOR << std::endl;
     std::cout << "  Minor: " << VCLIB_VERSION_MINOR << std::endl;
@@ -64,7 +65,8 @@ int main()
     // Verify icosahedron properties (V = 12, E = 30, F = 20)
     if (icosahedron.vertexCount() == 12 && icosahedron.faceCount() == 20) {
         std::cout << "  ✓ Icosahedron created successfully!" << std::endl;
-    } else {
+    }
+    else {
         std::cout << "  ✗ Unexpected icosahedron properties!" << std::endl;
         return 1;
     }
