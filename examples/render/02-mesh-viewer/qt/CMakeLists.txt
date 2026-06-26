@@ -26,9 +26,9 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(SOURCES
     main.cpp)
 
-target_include_directories(vclib-render PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR})
-
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
     SOURCES ${SOURCES})
+
+target_include_directories(vclib-render-example-${EXAMPLE_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR})

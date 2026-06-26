@@ -152,6 +152,92 @@ if (VCLIB_BUILD_MODULE_BINDINGS)
     include(pybind.cmake)
 endif()
 
+set(ALL_3RDPARTY_TARGETS "")
+if(VCLIB_INSTALL_MODULE_CORE)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_CORE_3RDPARTY_LIBRARIES})
+endif()
+if(VCLIB_INSTALL_MODULE_EXTERNAL)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES})
+endif()
+if(VCLIB_INSTALL_MODULE_RENDER)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_RENDER_3RDPARTY_LIBRARIES})
+endif()
+
+set(EXPORT_QUEUE ${ALL_3RDPARTY_TARGETS})
+set(EXPORTED_TARGETS "")
+
+while(EXPORT_QUEUE)
+    list(POP_FRONT EXPORT_QUEUE tgt)
+    if(NOT TARGET ${tgt})
+        continue()
+    endif()
+    
+    get_target_property(aliased ${tgt} ALIASED_TARGET)
+    if(aliased)
+        set(tgt ${aliased})
+    endif()
+    
+    if(tgt IN_LIST EXPORTED_TARGETS)
+        continue()
+    endif()
+    
+    get_target_property(is_imported ${tgt} IMPORTED)
+    if(is_imported)
+        continue()
+    endif()
+
+    list(APPEND EXPORTED_TARGETS ${tgt})
+    
+    get_target_property(linked_libs ${tgt} INTERFACE_LINK_LIBRARIES)
+    if(linked_libs)
+        foreach(lib IN LISTS linked_libs)
+            if(lib MATCHES "\\$<LINK_ONLY:(.+)>")
+                set(lib "${CMAKE_MATCH_1}")
+            endif()
+            if(TARGET ${lib})
+                list(APPEND EXPORT_QUEUE ${lib})
+            endif()
+        endforeach()
+    endif()
+    
+    get_target_property(type ${tgt} TYPE)
+    if(NOT type STREQUAL "INTERFACE_LIBRARY")
+        get_target_property(linked_libs ${tgt} LINK_LIBRARIES)
+        if(linked_libs)
+            foreach(lib IN LISTS linked_libs)
+                if(lib MATCHES "\\$<LINK_ONLY:(.+)>")
+                    set(lib "${CMAKE_MATCH_1}")
+                endif()
+                if(TARGET ${lib})
+                    list(APPEND EXPORT_QUEUE ${lib})
+                endif()
+            endforeach()
+        endif()
+    endif()
+endwhile()
+
+foreach(tgt IN LISTS EXPORTED_TARGETS)
+    get_target_property(inc_dirs ${tgt} INTERFACE_INCLUDE_DIRECTORIES)
+    if(inc_dirs)
+        set(new_inc_dirs "")
+        foreach(inc_dir IN LISTS inc_dirs)
+            if(inc_dir MATCHES "\\$<")
+                list(APPEND new_inc_dirs "${inc_dir}")
+            else()
+                list(APPEND new_inc_dirs "$<BUILD_INTERFACE:${inc_dir}>")
+            endif()
+        endforeach()
+        set_target_properties(${tgt} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${new_inc_dirs}")
+    endif()
+    
+    install(TARGETS ${tgt} EXPORT vclibTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endforeach()
+
 set(VCLIB_CORE_3RDPARTY_LIBRARIES
     ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES

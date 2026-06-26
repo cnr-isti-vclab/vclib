@@ -92,16 +92,28 @@ add_library(${PROJECT_NAME} INTERFACE)
 add_library(vclib::vclib ALIAS ${PROJECT_NAME})
 
 add_subdirectory(vclib/core ${VCLIB_CORE_EXCLUDE_FROM_ALL_OPTION})
-target_link_libraries(vclib INTERFACE vclib::core)
+if(VCLIB_INSTALL_MODULE_CORE)
+    target_link_libraries(vclib INTERFACE vclib-core)
+else()
+    target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-core>)
+endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
     add_subdirectory(vclib/external ${VCLIB_EXTERNAL_EXCLUDE_FROM_ALL_OPTION})
-    target_link_libraries(vclib INTERFACE vclib::external)
+    if(VCLIB_INSTALL_MODULE_EXTERNAL)
+        target_link_libraries(vclib INTERFACE vclib-external)
+    else()
+        target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-external>)
+    endif()
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render ${VCLIB_RENDER_EXCLUDE_FROM_ALL_OPTION})
-    target_link_libraries(vclib INTERFACE vclib::render)
+    if(VCLIB_INSTALL_MODULE_RENDER)
+        target_link_libraries(vclib INTERFACE vclib-render)
+    else()
+        target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-render>)
+    endif()
 endif()
 
 if (VCLIB_BUILD_MODULE_BINDINGS)
@@ -130,5 +142,36 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 add_subdirectory(${VCLIB_TESTS_DIR})
 
 # Install
+if(VCLIB_INSTALL_MODULE_CORE OR VCLIB_INSTALL_MODULE_EXTERNAL OR VCLIB_INSTALL_MODULE_RENDER)
+    install(TARGETS ${PROJECT_NAME}
+        EXPORT vclibTargets
+    )
+
+    install(EXPORT vclibTargets
+        FILE vclibTargets.cmake
+        NAMESPACE vclib::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclibConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+endif()
+
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/licenses/vclib)
