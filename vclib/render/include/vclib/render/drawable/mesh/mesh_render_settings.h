@@ -687,6 +687,8 @@ public:
                             }
                         }
 
+                        // Normal mapping requires normal and tangent vectors, texture coordinates,
+                        // and materials (which may contain the normal map texture).
                         if (hasTexCoords && 
                             m.materialCount() > 0 &&
                             vcl::isPerVertexNormalAvailable(m) &&

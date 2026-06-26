@@ -69,9 +69,15 @@ void main()
 #ifdef SURF_TEX_WEDGE
         texcoord = v_texcoord1;
 #endif
+        // Calculate the Tangent, Bitangent, Normal (TBN) matrix 
+        // to transform from tangent space to view space.
         vec3 t = normalize(v_tangent.xyz);
         vec3 b = normalize(cross(normal, t)) * v_tangent.w;
+
+        // Sample the normal map and remap from [0, 1] to [-1, 1].
         vec3 nMap = normalTex(texcoord).xyz * 2.0 - 1.0;
+
+        // Transform the sampled normal to view space using the TBN matrix.
         normal = normalize(t * nMap.x + b * nMap.y + normal * nMap.z);
     }
 #endif
