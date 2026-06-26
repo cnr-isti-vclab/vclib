@@ -40,6 +40,7 @@ set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+option(VCLIB_ALLOW_INSTALL_EIGEN "Allow install Eigen source" ON)
 include(eigen.cmake)
 
 # MapBox earcut
@@ -166,6 +167,8 @@ endif()
 set(EXPORT_QUEUE ${ALL_3RDPARTY_TARGETS})
 set(EXPORTED_TARGETS "")
 
+# Iterate through the dependency graph of all 3rdparty targets to export them.
+# We use a queue to traverse the dependencies (INTERFACE_LINK_LIBRARIES and LINK_LIBRARIES).
 while(EXPORT_QUEUE)
     list(POP_FRONT EXPORT_QUEUE tgt)
     if(NOT TARGET ${tgt})
@@ -220,11 +223,16 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
     get_target_property(inc_dirs ${tgt} INTERFACE_INCLUDE_DIRECTORIES)
     if(inc_dirs)
         set(new_inc_dirs "")
+        set(added_install_interface FALSE)
         foreach(inc_dir IN LISTS inc_dirs)
             if(inc_dir MATCHES "\\$<")
                 list(APPEND new_inc_dirs "${inc_dir}")
             else()
                 list(APPEND new_inc_dirs "$<BUILD_INTERFACE:${inc_dir}>")
+                if(NOT added_install_interface)
+                    list(APPEND new_inc_dirs "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+                    set(added_install_interface TRUE)
+                endif()
             endif()
         endforeach()
         set_target_properties(${tgt} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${new_inc_dirs}")

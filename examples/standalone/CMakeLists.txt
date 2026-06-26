@@ -1,3 +1,25 @@
+#*****************************************************************************
+#* VCLib                                                                     *
+#* Visual Computing Library                                                  *
+#*                                                                           *
+#* Copyright(C) 2021-2026                                                    *
+#* Visual Computing Lab                                                      *
+#* ISTI - Italian National Research Council                                  *
+#*                                                                           *
+#* All rights reserved.                                                      *
+#*                                                                           *
+#* This program is free software; you can redistribute it and/or modify      *
+#* it under the terms of the Mozilla Public License Version 2.0 as published *
+#* by the Mozilla Foundation; either version 2 of the License, or            *
+#* (at your option) any later version.                                       *
+#*                                                                           *
+#* This program is distributed in the hope that it will be useful,           *
+#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+#* Mozilla Public License Version 2.0                                        *
+#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+#****************************************************************************/
+
 cmake_minimum_required(VERSION 3.24)
 project(vclib-standalone-examples LANGUAGES CXX)
 
@@ -43,12 +65,6 @@ target_compile_definitions(vclib-standalone-examples-common INTERFACE
     VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external"
 )
 
-if (NOT VCLIB_USE_FETCHCONTENT)
-    # As requested by the user, add the embedded Eigen version when using find_package
-    target_include_directories(vclib-standalone-examples-common INTERFACE
-        "${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/eigen-5.0.1"
-    )
-endif()
 
 # Function to add a standalone example linking to the original source code
 function(add_standalone_example module name)

@@ -1,18 +1,44 @@
 /*****************************************************************************
- * VCLib Standalone Template Project
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2026                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
+
+/*!
+ * \file main.cpp
+ * \brief VCLib Standalone Template Project
  *
  * This standalone template project demonstrates how to create basic mesh structures
  * using VCLib when included via FetchContent.
  *
  * It creates:
  * - An icosahedron mesh
- * - A cube mesh (via subdivision)
+ * - A simple point cloud
+ * - A polygonal mesh
  *
  * Build instructions:
+ * \code
  *   mkdir build && cd build
  *   cmake .. -DCMAKE_BUILD_TYPE=Release
  *   cmake --build . --config Release
- ****************************************************************************/
+ * \endcode
+ */
 
 #include <iostream>
 #include <vclib/meshes.h>
