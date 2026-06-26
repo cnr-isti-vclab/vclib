@@ -2,23 +2,64 @@ import os
 import glob
 import re
 
-def replace_first_between(s, start, end, replacement):
-    try:
-        start_index = s.index(start)
-        end_index = s.index(end, start_index + len(start))
-        return s[:start_index] + replacement + s[end_index + len(end):]
-    except ValueError:
-        return s
-
-def replace_header(file_path, header_string, start='/*', end='*/'):
-    # Read in the file
+def replace_header(file_path, header_string, old_start='/*', old_end='*/', line_comment_prefix='//'):
     with open(file_path, 'r') as file :
         file_string = file.read()
 
-    file_string = replace_first_between(file_string, start, end, header_string)
+    # Handle shebang (must remain at the top)
+    lines = file_string.split('\n')
+    shebang = ""
+    if lines and lines[0].startswith('#!'):
+        shebang = lines[0] + '\n'
+        file_string = '\n'.join(lines[1:])
+
+    # We operate on the text after the shebang, ignoring leading empty lines
+    stripped_file_string = file_string.lstrip()
+    
+    replaced = False
+    keywords = ['Copyright', 'Mozilla']
+    
+    # 1. Check for old block header AT THE TOP
+    if stripped_file_string.startswith(old_start):
+        end_idx = stripped_file_string.find(old_end)
+        if end_idx != -1:
+            block = stripped_file_string[:end_idx + len(old_end)]
+            if any(kw in block for kw in keywords):
+                file_string = header_string + '\n\n' + stripped_file_string[end_idx + len(old_end):].lstrip()
+                replaced = True
+
+    # 2. Check for new line comment header AT THE TOP
+    if not replaced:
+        escaped_prefix = re.escape(line_comment_prefix)
+        # Match a contiguous block of line comments
+        pattern = r'^([ \t]*' + escaped_prefix + r'.*(?:\n|$))+'
+        match = re.match(pattern, stripped_file_string)
+        if match:
+            matched_text = match.group(0)
+            if any(kw in matched_text for kw in keywords):
+                file_string = header_string + '\n\n' + stripped_file_string[match.end():].lstrip()
+                replaced = True
+
+    # 3. Check for old block header within the first 1000 characters as fallback
+    if not replaced and old_start in file_string:
+        start_idx = file_string.find(old_start)
+        if 0 <= start_idx < 1000:
+            end_idx = file_string.find(old_end, start_idx + len(old_start))
+            if end_idx != -1:
+                block = file_string[start_idx:end_idx + len(old_end)]
+                if any(kw in block for kw in keywords):
+                    file_string = file_string[:start_idx] + header_string + '\n\n' + file_string[end_idx + len(old_end):].lstrip()
+                    replaced = True
+
+    # 4. If no license header found, just insert the new header at the top
+    if not replaced:
+        file_string = header_string + '\n\n' + stripped_file_string
+    
+    # Prepend shebang back if it was there
+    final_content = shebang + file_string
 
     with open(file_path, 'w') as file:
-        file.write(file_string)
+        file.write(final_content)
 
 def replace_headers_in_dir(folder_path, exclude_paths = []):
     # get the path where this script is located
@@ -53,7 +94,7 @@ def replace_cmake_headers_in_dir(folder_path, recursive=True):
         if os.path.isdir(file_path) and recursive:
             replace_cmake_headers_in_dir(file_path)
         elif file_path.endswith(('CMakeLists.txt', '.cmake')):
-            replace_header(file_path, header_string, start='#*', end='*/')
+            replace_header(file_path, header_string, old_start='#*', old_end='*/', line_comment_prefix='#')
 
 def replace_python_headers_in_dir(folder_path, recursive=True):
     # get the path where this script is located
@@ -69,7 +110,7 @@ def replace_python_headers_in_dir(folder_path, recursive=True):
         if os.path.isdir(file_path) and recursive:
             replace_python_headers_in_dir(file_path)
         elif file_path.endswith(('.py',)):
-            replace_header(file_path, header_string, start='#*', end='*/')
+            replace_header(file_path, header_string, old_start='#*', old_end='*/', line_comment_prefix='#')
 
 def replace_shader_headers_in_dir(folder_path, exclude_paths = []):
     # get the path where this script is located
@@ -101,7 +142,7 @@ if __name__ == "__main__":
     vcl_modules = ['bindings', 'core', 'external', 'render']
 
     # paths in which headings should not be replaced
-    exclude_paths = ['bgfx/text/font', 'bgfx_imgui']
+    exclude_paths = ['bgfx/text/font', 'bgfx/font', 'bgfx_imgui']
 
     os.chdir('../vclib/')
     for module in vcl_modules:
