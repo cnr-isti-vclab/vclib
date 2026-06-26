@@ -63,6 +63,19 @@ void main()
     normal = normalize(mul(u_normalMatrix, normal));
 #endif
 
+#ifdef SURF_SHADING_NORMAL_MAP
+    if (isNormalTextureAvailable()) {
+        vec2 texcoord = v_texcoord0;
+#ifdef SURF_TEX_WEDGE
+        texcoord = v_texcoord1;
+#endif
+        vec3 t = normalize(v_tangent.xyz);
+        vec3 b = normalize(cross(normal, t)) * v_tangent.w;
+        vec3 nMap = normalTex(texcoord).xyz * 2.0 - 1.0;
+        normal = normalize(t * nMap.x + b * nMap.y + normal * nMap.z);
+    }
+#endif
+
 
 #ifndef SURF_SHADING_NONE
     // if flat or smooth shading, compute light

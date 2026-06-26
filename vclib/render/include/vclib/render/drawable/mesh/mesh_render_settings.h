@@ -669,11 +669,29 @@ public:
                         }
                     }
 
+                    // shading normal map check
                     if constexpr (
                         vcl::HasPerVertexNormal<MeshType> &&
-                        vcl::HasPerVertexTangent<MeshType>) {
-                        if (vcl::isPerVertexNormalAvailable(m) &&
+                        vcl::HasPerVertexTangent<MeshType> &&
+                        vcl::HasMaterials<MeshType>) {
+                        
+                        bool hasTexCoords = false;
+                        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
+                            if (vcl::isPerVertexTexCoordAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+                        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+
+                        if (hasTexCoords && 
+                            m.materialCount() > 0 &&
+                            vcl::isPerVertexNormalAvailable(m) &&
                             vcl::isPerVertexTangentAvailable(m)) {
+                            
                             setSurfaceCapability(
                                 MRI::Surface::SHADING_NORMAL_MAP);
                         }
