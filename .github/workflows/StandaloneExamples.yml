@@ -5,13 +5,17 @@ on:
 
 jobs:
   build_and_run_standalone_examples:
-    name: Standalone Examples (${{ matrix.os }})
+    name: Standalone Examples (${{ matrix.os }}, ${{ matrix.module }}, ${{ matrix.integration_mode }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
         integration_mode: ['find_package', 'FetchContent']
+        module: ['core', 'external']
+        exclude:
+          - module: 'external'
+            integration_mode: 'find_package'
     steps:
     - uses: actions/checkout@v6
       with:
@@ -28,22 +32,32 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y cmake ninja-build libtbb-dev
+        if [ "${{ matrix.module }}" == "external" ]; then
+          sudo apt-get install -y libcgal-dev libembree-dev
+        fi
 
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
         brew install cmake ninja tbb
+        if [ "${{ matrix.module }}" == "external" ]; then
+          brew install embree cgal
+        fi
 
     - name: Install dependencies
       if: runner.os == 'Windows'
+      shell: bash
       run: |
         choco install -y cmake ninja
+        if [ "${{ matrix.module }}" == "external" ]; then
+          choco install -y embree boost-msvc-14.3
+        fi
 
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ github.ref_name }}
+        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}-${{ github.ref_name }}
 
     - name: Build and Install VCLib
       if: matrix.integration_mode == 'find_package'
@@ -64,6 +78,16 @@ jobs:
           EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
         fi
         
+        if [ "${{ matrix.module }}" == "core" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=ON -DVCLIB_STANDALONE_BUILD_EXTERNAL=OFF"
+        else
+          EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=ON"
+        fi
+        
+        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
+          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
+        fi
+        
         cmake -S examples/standalone -B examples/standalone/build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
@@ -76,10 +100,17 @@ jobs:
 
     - name: Run Tests
       working-directory: examples/standalone/build
-      run: ctest --output-on-failure
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
+          CURRENT_PATH=$(pwd)
+          export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/embree-4.4.1.x64.windows/bin:$PATH"
+          export PATH="$CURRENT_PATH/_deps/cgal-src/auxiliary/gmp/bin:$PATH"
+        fi
+        ctest --output-on-failure
 
     - name: Build Template Project
-      if: matrix.integration_mode == 'FetchContent'
+      if: matrix.integration_mode == 'FetchContent' && matrix.module == 'core'
       shell: bash
       run: |
         # Quick check that the template project is valid and builds

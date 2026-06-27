@@ -11,7 +11,14 @@ project(vclib-standalone-examples LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(VCLIB_USE_FETCHCONTENT "If true, VCLib is downloaded via FetchContent instead of using find_package" OFF)
+option(VCLIB_USE_FETCHCONTENT "If true, VCLib is downloaded via FetchContent instead of using find_package" ON)
+
+option(VCLIB_STANDALONE_BUILD_CORE "Build standalone core examples" ON)
+option(VCLIB_STANDALONE_BUILD_EXTERNAL "Build standalone external examples" OFF)
+
+if (VCLIB_STANDALONE_BUILD_EXTERNAL AND NOT VCLIB_USE_FETCHCONTENT)
+    message(FATAL_ERROR "Building standalone external examples is currently only supported with FetchContent. Please set VCLIB_USE_FETCHCONTENT=ON")
+endif()
 
 if (VCLIB_USE_FETCHCONTENT)
     message(STATUS "VCLib Standalone: Using FetchContent")
@@ -22,8 +29,12 @@ if (VCLIB_USE_FETCHCONTENT)
     
     set(VCLIB_EXCLUDE_EXAMPLES_AND_TESTS_TARGETS ON CACHE STRING "" FORCE)
     
-    # We configure CMake to build only the core module to keep things fast during our tests
-    set(VCLIB_BUILD_MODULE_EXTERNAL OFF CACHE STRING "" FORCE)
+    # We configure CMake to build only the required modules to keep things fast during our tests
+    if(VCLIB_STANDALONE_BUILD_EXTERNAL)
+        set(VCLIB_BUILD_MODULE_EXTERNAL ON CACHE STRING "" FORCE)
+    else()
+        set(VCLIB_BUILD_MODULE_EXTERNAL OFF CACHE STRING "" FORCE)
+    endif()
     set(VCLIB_BUILD_MODULE_RENDER OFF CACHE STRING "" FORCE)
     set(VCLIB_BUILD_MODULE_BINDINGS OFF CACHE STRING "" FORCE)
 
@@ -72,12 +83,10 @@ function(add_standalone_example module name)
     add_test(NAME run-${TARGET_NAME} COMMAND ${TARGET_NAME})
 endfunction()
 
-# Add all core examples automatically
-file(GLOB CORE_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../core" "${CMAKE_CURRENT_SOURCE_DIR}/../core/*")
-foreach(dir IN LISTS CORE_EXAMPLE_DIRS)
-    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../core/${dir}")
-        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../core/${dir}/main.cpp")
-            add_standalone_example(core "${dir}")
-        endif()
-    endif()
-endforeach()
+if(VCLIB_STANDALONE_BUILD_CORE)
+    include(core.cmake)
+endif()
+
+if(VCLIB_STANDALONE_BUILD_EXTERNAL)
+    include(external.cmake)
+endif()
