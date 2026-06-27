@@ -62,7 +62,15 @@ target_compile_definitions(vclib-standalone-examples-common INTERFACE
 )
 
 
-# Function to add a standalone example linking to the original source code
+# example of call of this function
+# add_standalone_example(
+#     core # module name (e.g., core, external)
+#     000-mesh-basic # name of the example directory
+# )
+#
+# Function to add a standalone example linking to the original source code.
+# It sets up the executable, links it against vclib and common example properties,
+# adds the required include paths, and registers a CTest to run the example.
 function(add_standalone_example module name)
     set(TARGET_NAME "standalone-${module}-${name}")
     set(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/main.cpp")
