@@ -8,8 +8,10 @@
 #ifndef VCL_GLFW_VIEWER_WINDOW_H
 #define VCL_GLFW_VIEWER_WINDOW_H
 
-#include <vclib/glfw/window_manager.h>
+// need this include before for X11 incompatibility with Qt...
 #include <vclib/render/canvas.h>
+
+#include <vclib/glfw/window_manager.h>
 #include <vclib/render/drawers/trackball_viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
