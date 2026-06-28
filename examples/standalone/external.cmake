@@ -1,3 +1,10 @@
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+
 # Automatically find and add all standalone external examples if dependencies are met.
 # For each directory, we check if it's a valid example by looking for a main.cpp file.
 # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
