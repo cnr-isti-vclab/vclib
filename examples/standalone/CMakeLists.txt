@@ -15,9 +15,14 @@ option(VCLIB_USE_FETCHCONTENT "If true, VCLib is downloaded via FetchContent ins
 
 option(VCLIB_STANDALONE_BUILD_CORE "Build standalone core examples" ON)
 option(VCLIB_STANDALONE_BUILD_EXTERNAL "Build standalone external examples" OFF)
+option(VCLIB_STANDALONE_BUILD_RENDER "Build standalone render examples" OFF)
 
 if (VCLIB_STANDALONE_BUILD_EXTERNAL AND NOT VCLIB_USE_FETCHCONTENT)
     message(FATAL_ERROR "Building standalone external examples is currently only supported with FetchContent. Please set VCLIB_USE_FETCHCONTENT=ON")
+endif()
+
+if (VCLIB_STANDALONE_BUILD_RENDER AND NOT VCLIB_USE_FETCHCONTENT)
+    message(FATAL_ERROR "Building standalone render examples is currently only supported with FetchContent. Please set VCLIB_USE_FETCHCONTENT=ON")
 endif()
 
 if (VCLIB_USE_FETCHCONTENT)
@@ -35,7 +40,13 @@ if (VCLIB_USE_FETCHCONTENT)
     else()
         set(VCLIB_BUILD_MODULE_EXTERNAL OFF CACHE STRING "" FORCE)
     endif()
-    set(VCLIB_BUILD_MODULE_RENDER OFF CACHE STRING "" FORCE)
+    
+    if(VCLIB_STANDALONE_BUILD_RENDER)
+        set(VCLIB_BUILD_MODULE_RENDER ON CACHE STRING "" FORCE)
+    else()
+        set(VCLIB_BUILD_MODULE_RENDER OFF CACHE STRING "" FORCE)
+    endif()
+    
     set(VCLIB_BUILD_MODULE_BINDINGS OFF CACHE STRING "" FORCE)
 
     FetchContent_Declare(
@@ -73,6 +84,7 @@ target_compile_definitions(vclib-standalone-examples-common INTERFACE
 # adds the required include paths, and registers a CTest to run the example.
 function(add_standalone_example module name)
     set(TARGET_NAME "standalone-${module}-${name}")
+    string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
     set(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/main.cpp")
     
     if (NOT EXISTS "${SOURCE_FILE}")
@@ -87,6 +99,11 @@ function(add_standalone_example module name)
     # Add the example directory to include path in case it uses local headers
     target_include_directories(${TARGET_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}")
     
+    # Add any extra includes passed to the function
+    foreach(extra_inc IN LISTS ARGN)
+        target_include_directories(${TARGET_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/${extra_inc}")
+    endforeach()
+    
     # Register the test for CTest
     add_test(NAME run-${TARGET_NAME} COMMAND ${TARGET_NAME})
 endfunction()
@@ -97,4 +114,16 @@ endif()
 
 if(VCLIB_STANDALONE_BUILD_EXTERNAL)
     include(external.cmake)
+endif()
+
+if(VCLIB_STANDALONE_BUILD_RENDER)
+    if (TARGET vclib-3rd-qt)
+        target_compile_definitions(vclib-standalone-examples-common INTERFACE VCLIB_RENDER_EXAMPLES_WITH_QT)
+    elseif(TARGET vclib-3rd-glfw)
+        target_compile_definitions(vclib-standalone-examples-common INTERFACE VCLIB_RENDER_EXAMPLES_WITH_GLFW)
+    else()
+        message(FATAL_ERROR "Render standalone examples require either vclib-3rd-qt or vclib-3rd-glfw to be built.")
+    endif()
+    target_include_directories(vclib-standalone-examples-common INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/../render/common")
+    include(render.cmake)
 endif()

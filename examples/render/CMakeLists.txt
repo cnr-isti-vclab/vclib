@@ -23,26 +23,39 @@ endif()
 if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
-    add_subdirectory(00-hello-triangle)
-    add_subdirectory(01-viewer)
-    add_subdirectory(02-mesh-viewer)
-    add_subdirectory(03-viewer-with-text)
-    add_subdirectory(04-hello-triangle-imgui)
-    add_subdirectory(05-two-window-viewers)
-    add_subdirectory(06-viewer-imgui)
-    add_subdirectory(07-test-texcoords)
-    add_subdirectory(08-test-gltf)
+    # Automatically find and add all render examples.
+    # For each directory, we check if it's a valid example by looking for a main.cpp file.
+    # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
+    # and ensure all required targets are available before adding the subdirectory.
+    file(GLOB RENDER_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*")
+    foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
+        if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
+                # Reset required targets for this iteration
+                set(EXAMPLE_REQUIRED_TARGETS "")
+                if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                    include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                endif()
 
-    add_subdirectory(801-camera-viewer)
-    add_subdirectory(808-test-lines)
+                # Verify if all the required targets (e.g., 3rd party libraries) exist
+                set(REQUIREMENTS_MET TRUE)
+                set(UNMET_REQ_PRINT "")
+                foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                    if(NOT TARGET ${req})
+                        set(REQUIREMENTS_MET FALSE)
+                        string(REPLACE "vclib-3rd-" "" req_print ${req})
+                        list(APPEND UNMET_REQ_PRINT ${req_print})
+                    endif()
+                endforeach()
 
-    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-        add_subdirectory(09-drawable-points)
-        add_subdirectory(800-screenspace)
-        add_subdirectory(950-pbr)
-    endif()
-
-    add_subdirectory(999-misc)
+                if(REQUIREMENTS_MET)
+                    add_subdirectory("${dir}")
+                else()
+                    message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                endif()
+            endif()
+        endif()
+    endforeach()
 
     add_subdirectory(core)
 
