@@ -27,6 +27,7 @@ void main()
         0, 0);
 
     gl_Position = pos + offset;
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
 
     // quad parametrization
     v_texcoord0 = quadUv;
