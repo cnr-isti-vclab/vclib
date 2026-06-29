@@ -21,7 +21,7 @@ if(TARGET vclib-3rd-glfw)
 endif()
 
 set (EXCLUDE_EXAMPLES
-    980-benchmark
+    #980-benchmark
     982-split-shader-benchmarking
     983-mesh-viewer-benchmarking)
 

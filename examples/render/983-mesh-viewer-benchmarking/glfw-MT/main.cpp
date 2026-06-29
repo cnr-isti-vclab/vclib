@@ -31,8 +31,8 @@
 #include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/automation/printers.h>
-#include <vclib/render/drawers/benchmark_drawer.h>
-#include <vclib/render/drawers/benchmark_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/editors/benchmark_editor.h>
 
 #include <vclib/imgui/imgui_drawer.h>
 
@@ -63,7 +63,9 @@ int main(int argc, char** argv)
     using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::BenchmarkViewerDrawer>;
+        vcl::ViewerDrawer>;
+
+    using BenchmarkEditorT = vcl::BenchmarkEditor<BenchmarkViewer>;
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 
@@ -72,6 +74,9 @@ int main(int argc, char** argv)
 #endif
 
     BenchmarkViewer tw("Benchmark Viewer GLFW");
+    
+    std::shared_ptr<BenchmarkEditorT> benchmarkEditor = std::make_shared<BenchmarkEditorT>();
+    tw.addEditor(benchmarkEditor);
 
     // Create the ObjectBenchmarkPrinter instance
     vcl::ObjectBenchmarkPrinter obp;
@@ -85,37 +90,37 @@ int main(int argc, char** argv)
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<vcl::BenchmarkDrawer<BenchmarkViewer>> aaf;
+    vcl::AutomationActionFactory<BenchmarkEditorT> aaf;
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(3);
+    benchmarkEditor->setRepeatTimes(3);
 
     // Change the measured metric to FPS
-    tw.setMetric(vcl::FpsBenchmarkMetric());
+    benchmarkEditor->setMetric(vcl::FpsBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(aaf.createTimeLimited(
+    benchmarkEditor->addAutomation(aaf.createTimeLimited(
         aaf.createSimultaneous(
             {aaf.createRotation(5.f, {0.f, 0.f, 1.f}),
              aaf.createChangeScaleMultiplicative(-0.2f)}),
         2.f));
 
     // Change the measured metric to time (seconds)
-    tw.setMetric(vcl::TimeBenchmarkMetric());
+    benchmarkEditor->setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(aaf.createSequential(
+    benchmarkEditor->addAutomation(aaf.createSequential(
         {aaf.createFrameLimited(
              aaf.createPerFrameRotation(1e-3f, {0.f, -1.f, 0.f}), 5000),
          aaf.createFrameLimited(
              aaf.createPerFrameChangeScaleMultiplicative(2e-4f), 5000)}));
 
     // Print the results to a vector
-    tw.setPrinter(obp);
+    benchmarkEditor->setPrinter(obp);
 
     tw.fitScene();
 

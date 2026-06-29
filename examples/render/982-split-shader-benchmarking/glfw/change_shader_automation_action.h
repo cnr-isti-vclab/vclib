@@ -30,11 +30,11 @@
 
 namespace vcl {
 
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class ChangeShaderAutomationAction :
-        public AbstractAutomationAction<BmarkDrawer>
+        public AbstractAutomationAction<BmarkEditor>
 {
-    using Base    = AbstractAutomationAction<BmarkDrawer>;
+    using Base    = AbstractAutomationAction<BmarkEditor>;
     using SrfPrgs = DrawableMesh<TriMesh>::SurfaceProgramsType;
 
     SrfPrgs                               prg;
@@ -76,16 +76,16 @@ public:
 
     using Base::end;
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<ChangeShaderAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ChangeShaderAutomationAction<BmarkEditor>>(
             *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<ChangeShaderAutomationAction<BmarkDrawer>>(
+        return std::make_shared<ChangeShaderAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

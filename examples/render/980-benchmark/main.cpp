@@ -35,8 +35,8 @@
 #include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/automation/printers.h>
-#include <vclib/render/drawers/benchmark_drawer.h>
-#include <vclib/render/drawers/benchmark_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/editors/benchmark_editor.h>
 
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
@@ -131,10 +131,9 @@ int main(int argc, char** argv)
     using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::BenchmarkViewerDrawer>;
+        vcl::TrackBallViewerDrawer>;
 
-    using BenchmarkDrawerT       = vcl::BenchmarkDrawer<BenchmarkViewer>;
-    using BenchmarkViewerDrawerT = vcl::BenchmarkViewerDrawer<BenchmarkViewer>;
+    using BenchmarkEditorT = vcl::BenchmarkEditor<BenchmarkViewer>;
 
     using enum vcl::MeshRenderInfo::Buffers;
 #ifdef VCLIB_RENDER_BACKEND_BGFX
@@ -368,6 +367,10 @@ int main(int argc, char** argv)
     }
 
     BenchmarkViewer tw("Benchmark", width, height);
+    
+    auto be = tw.pushEditor<vcl::BenchmarkEditor>();
+
+    auto benchmarkEditor = std::dynamic_pointer_cast<BenchmarkEditorT>(be);
 
     tw.resize(
         vcl::uint(width / tw.dpiScale().x()),
@@ -417,19 +420,19 @@ int main(int argc, char** argv)
         }
 
         // --split and --uber-static-if options implementation
-        if (options.contains("--split")) {
-            msh.setSurfaceProgramType(
-                vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
-        }
-        else if (options.contains("--uber-static-if")) {
-            msh.setSurfaceProgramType(
-                vcl::DrawableMesh<
-                    vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
-        }
-        else {
-            msh.setSurfaceProgramType(
-                vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::UBER);
-        }
+        // if (options.contains("--split")) {
+        //     msh.setSurfaceProgramType(
+        //         vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
+        // }
+        // else if (options.contains("--uber-static-if")) {
+        //     msh.setSurfaceProgramType(
+        //         vcl::DrawableMesh<
+        //             vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
+        // }
+        // else {
+        //     msh.setSurfaceProgramType(
+        //         vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::UBER);
+        // }
         vec->pushBack(std::move(msh));
     }
 
@@ -437,11 +440,11 @@ int main(int argc, char** argv)
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<BenchmarkDrawerT> aaf;
+    vcl::AutomationActionFactory<BenchmarkEditorT> aaf;
 
-    tw.setRepeatTimes(repetitions);
+    benchmarkEditor->setRepeatTimes(repetitions);
 
-    tw.setMetric(vcl::FpsBenchmarkMetric());
+    benchmarkEditor->setMetric(vcl::FpsBenchmarkMetric());
 
     bool isOnTheFly = options.contains("--on-the-fly");
     if (isOnTheFly) {
@@ -465,21 +468,19 @@ int main(int argc, char** argv)
             if (reps[i] == 0) {
                 continue;
             }
-            tw.addAutomation(
+            benchmarkEditor->addAutomation(
                 aaf.createStartCountDelay(
                     aaf.createStartCountLimited(
                         vcl::ShadingChangerAutomationAction<
-                            BenchmarkDrawerT,
-                            BenchmarkViewerDrawerT>(shadTypes[i % 2], &tw),
+                            BenchmarkEditorT>(shadTypes[i % 2]),
                         1),
                     tot),
                 vcl::ShadingChangerMetric(shadTypes[i%2], tot));
-            tw.addAutomation(
+            benchmarkEditor->addAutomation(
                 aaf.createStartCountDelay(
                     aaf.createStartCountLimited(
                         vcl::ShadingChangerAutomationAction<
-                            BenchmarkDrawerT,
-                            BenchmarkViewerDrawerT>(colTypes[i / 2], &tw),
+                            BenchmarkEditorT>(colTypes[i / 2]),
                         1),
                     tot),
                 vcl::ShadingChangerMetric(colTypes[i / 2], tot));
@@ -489,25 +490,25 @@ int main(int argc, char** argv)
     }
 
     // Rotation around Z axis
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarkDrawerT>::fromFramesPerRotation(frames, {0.f, 0.f, 1.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(frames, {0.f, 0.f, 1.f}),
         frames));
 
     // Rotation around Y axis
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarkDrawerT>::fromFramesPerRotation(frames, {0.f, 1.f, 0.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(frames, {0.f, 1.f, 0.f}),
         frames));
 
     // Rotation around X axis
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarkDrawerT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(frames, {1.f, 0.f, 0.f}),
         frames));
 
     // Do nothing
-    tw.addAutomation(aaf.createFrameLimited(aaf.createNull(), frames));
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(aaf.createNull(), frames));
 
     std::string shadingType = "smooth";
     if (options.contains("--flat")) {
@@ -528,7 +529,7 @@ int main(int argc, char** argv)
 
     if (options.contains("--stdout")) {
         vcl::StdoutBenchmarkPrinter prntr;
-        tw.setPrinter(vcl::StdoutBenchmarkPrinter(prntr));
+        benchmarkEditor->setPrinter(vcl::StdoutBenchmarkPrinter(prntr));
     }
     else if (options.contains("-o")) {
         std::vector<std::string> optArgs = options["-o"];
@@ -541,7 +542,7 @@ int main(int argc, char** argv)
             meshColoring,
             resolution,
             isOnTheFly);
-        tw.setPrinter(*prntr);
+        benchmarkEditor->setPrinter(*prntr);
     }
     else if (options.contains("--output-dir")) {
         std::string folderString = options["--output-dir"][0];
@@ -554,10 +555,10 @@ int main(int argc, char** argv)
             meshColoring,
             resolution,
             isOnTheFly);
-        tw.setPrinter(*prntr);
+        benchmarkEditor->setPrinter(*prntr);
     }
     else if (options.contains("--no-print")) {
-        tw.setPrinter(vcl::NullBenchmarkPrinter());
+        benchmarkEditor->setPrinter(vcl::NullBenchmarkPrinter());
     }
     else {
         auto prntr = vcl::get980Printer(
@@ -569,10 +570,10 @@ int main(int argc, char** argv)
             meshColoring,
             resolution,
             isOnTheFly);
-        tw.setPrinter(*prntr);
+        benchmarkEditor->setPrinter(*prntr);
     }
 
-    tw.terminateUponCompletion();
+    benchmarkEditor->terminateUponCompletion();
     if (options.contains("--scale")) {
         float deltaS = std::strtof(options["--scale"][0].c_str(), nullptr);
         if (deltaS == 0.0F) {
@@ -580,7 +581,7 @@ int main(int argc, char** argv)
                          "put 0 as its value). Scaling will be the default.\n";
         }
         else {
-            tw.changeScaleMultiplicative(deltaS);
+            benchmarkEditor->scale(deltaS);
         }
     }
     tw.show();

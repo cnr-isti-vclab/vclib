@@ -38,18 +38,18 @@ namespace vcl {
  * to add a maximum duration (in terms of time) to an automation, so that after
  * the chosen duration has elapsed the automation is guaranteed to be over
  */
-template<typename BmarkDrawer>
-class TimeLimitedAutomationAction : public WrapperAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class TimeLimitedAutomationAction : public WrapperAutomationAction<BmarkEditor>
 {
-    using Parent = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = WrapperAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     using Parent::innerAction;
     float mDurationSeconds;
     Timer mTimer;
 
 public:
     TimeLimitedAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& innerAction,
+        const AbstractAutomationAction<BmarkEditor>& innerAction,
         float                                        durationSeconds) :
             Parent(innerAction), mDurationSeconds {durationSeconds} {};
 
@@ -69,7 +69,7 @@ public:
 
     void doAction() override
     {
-        AbstractAutomationAction<BmarkDrawer>::doAction();
+        AbstractAutomationAction<BmarkEditor>::doAction();
         if (mTimer.delay() >= mDurationSeconds) {
             end();
             return;
@@ -83,16 +83,16 @@ public:
         mTimer.stop();
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<TimeLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<TimeLimitedAutomationAction<BmarkEditor>>(
             *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<TimeLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<TimeLimitedAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

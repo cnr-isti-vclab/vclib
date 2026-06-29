@@ -239,6 +239,16 @@ public:
 
 protected:
     /**
+     * @brief Returns the ViewerDrawer associated with this editor.
+     * @return a pointer to the ViewerDrawer.
+     */
+    ViewerDrawerType* viewer() { return mViewer; }
+    const ViewerDrawerType* viewer() const { return mViewer; }
+
+    auto& viewerTrackball() { return viewer()->trackball(); }
+    const auto& viewerTrackball() const { return viewer()->trackball(); }
+
+    /**
      * @brief Returns the shared drawable object vector of the viewer.
      * @return a shared pointer to the DrawableObjectVector.
      */

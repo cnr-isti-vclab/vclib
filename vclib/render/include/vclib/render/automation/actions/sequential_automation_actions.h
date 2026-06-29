@@ -38,22 +38,22 @@ namespace vcl {
  * @note Since this counts as a single automation, the metrics will work as they
  * do for a single automation even though they are multiple
  */
-template<typename BmarkDrawer>
-class SequentialAutomationActions : public AbstractAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class SequentialAutomationActions : public AbstractAutomationAction<BmarkEditor>
 {
-    PolymorphicObjectVector<AbstractAutomationAction<BmarkDrawer>> mAutomations;
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    PolymorphicObjectVector<AbstractAutomationAction<BmarkEditor>> mAutomations;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
 
     uint mCurrentIndex = 0;
 
 public:
     SequentialAutomationActions(
         std::initializer_list<
-            std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>> init)
+            std::shared_ptr<AbstractAutomationAction<BmarkEditor>>> init)
     {
         for (auto el = init.begin(); el < init.end(); el++) {
-            (*el)->setBenchmarkDrawer(this->benchmarkDrawer);
+            (*el)->setBenchmarkEditor(this->benchmarkEditor);
             mAutomations.pushBack(*el);
         }
     };
@@ -77,9 +77,9 @@ public:
         return temp.str();
     }
 
-    void addAutomation(const AbstractAutomationAction<BmarkDrawer>& automation)
+    void addAutomation(const AbstractAutomationAction<BmarkEditor>& automation)
     {
-        automation.setBenchmarkDrawer(this->benchmarkDrawer);
+        automation.setBenchmarkEditor(this->benchmarkEditor);
         mAutomations.pushBack(automation);
     }
 
@@ -114,24 +114,24 @@ public:
         mCurrentIndex = 0;
     }
 
-    void setBenchmarkDrawer(BmarkDrawer* drawer) override
+    void setBenchmarkEditor(BmarkEditor* drawer) override
     {
-        this->benchmarkDrawer = drawer;
+        this->benchmarkEditor = drawer;
         for (auto& automation : mAutomations) {
-            automation->setBenchmarkDrawer(this->benchmarkDrawer);
+            automation->setBenchmarkEditor(this->benchmarkEditor);
         }
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<SequentialAutomationActions<BmarkDrawer>>(
+        return std::make_shared<SequentialAutomationActions<BmarkEditor>>(
             *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<SequentialAutomationActions<BmarkDrawer>>(
+        return std::make_shared<SequentialAutomationActions<BmarkEditor>>(
             std::move(*this));
     }
 };

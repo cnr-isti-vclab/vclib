@@ -37,24 +37,24 @@ namespace vcl {
  * (in terms of time) to an action, so that it can be started only after the
  * delay has elapsed
  */
-template<typename BmarkDrawer>
-class TimeDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class TimeDelayAutomationAction : public WrapperAutomationAction<BmarkEditor>
 {
     Timer mTimer;
     float mDelaySeconds;
     bool  mInnerStarted = false;
-    using Parent        = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent        = WrapperAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     using Parent::innerAction;
 
 public:
     TimeDelayAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& action,
+        const AbstractAutomationAction<BmarkEditor>& action,
         float delaySeconds) : Parent(action), mDelaySeconds {delaySeconds} {};
 
     void start() override
     {
-        AbstractAutomationAction<BmarkDrawer>::start();
+        AbstractAutomationAction<BmarkEditor>::start();
         mTimer.start();
     }
 
@@ -68,7 +68,7 @@ public:
 
     void doAction() override
     {
-        AbstractAutomationAction<BmarkDrawer>::doAction();
+        AbstractAutomationAction<BmarkEditor>::doAction();
         if (mTimer.delay() < mDelaySeconds) {
             return;
         }
@@ -90,15 +90,15 @@ public:
         mInnerStarted = false;
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<TimeDelayAutomationAction<BmarkDrawer>>(*this);
+        return std::make_shared<TimeDelayAutomationAction<BmarkEditor>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<TimeDelayAutomationAction<BmarkDrawer>>(
+        return std::make_shared<TimeDelayAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

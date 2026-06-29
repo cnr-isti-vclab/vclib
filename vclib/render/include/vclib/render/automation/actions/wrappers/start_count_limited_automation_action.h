@@ -39,12 +39,12 @@ namespace vcl {
  * @note This is substantially the same as "executing only for a limited number
  * of loops"
  */
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class StartCountLimitedAutomationAction :
-        public WrapperAutomationAction<BmarkDrawer>
+        public WrapperAutomationAction<BmarkEditor>
 {
-    using Parent = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = WrapperAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     using Parent::innerAction;
 
     uint mMaximumStarts;
@@ -52,14 +52,14 @@ class StartCountLimitedAutomationAction :
 
 public:
     StartCountLimitedAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& innerAction,
+        const AbstractAutomationAction<BmarkEditor>& innerAction,
         uint                                         maximumStarts) :
             Parent(innerAction), mMaximumStarts {maximumStarts} {};
 
     void start() override
     {
         if (mCurrentStarts >= mMaximumStarts) {
-            AbstractAutomationAction<BmarkDrawer>::start();
+            AbstractAutomationAction<BmarkEditor>::start();
             return;
         }
         Parent::start();
@@ -85,16 +85,16 @@ public:
 
     void end() override { Parent::end(); }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<StartCountLimitedAutomationAction<BmarkEditor>>(
             *this);
     };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<StartCountLimitedAutomationAction<BmarkDrawer>>(
+        return std::make_shared<StartCountLimitedAutomationAction<BmarkEditor>>(
             std::move(*this));
     };
 };

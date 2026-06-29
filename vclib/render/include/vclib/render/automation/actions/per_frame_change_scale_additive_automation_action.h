@@ -38,12 +38,12 @@ namespace vcl {
  * @note Additive scaling is represented by the following formula: finalScale
  * = initialScale + (deltaScale * duration)
  */
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class PerFrameChangeScaleAdditiveAutomationAction :
-        public AbstractAutomationAction<BmarkDrawer>
+        public AbstractAutomationAction<BmarkEditor>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     float mPixelDeltaPerFrame;
 
 public:
@@ -63,22 +63,22 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->changeScaleAdditive(mPixelDeltaPerFrame);
+        benchmarkEditor->scale(mPixelDeltaPerFrame);
     };
 
     void end() override { Parent::end(); };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
         return std::make_shared<
-            PerFrameChangeScaleAdditiveAutomationAction<BmarkDrawer>>(*this);
+            PerFrameChangeScaleAdditiveAutomationAction<BmarkEditor>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
         return std::make_shared<
-            PerFrameChangeScaleAdditiveAutomationAction<BmarkDrawer>>(
+            PerFrameChangeScaleAdditiveAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

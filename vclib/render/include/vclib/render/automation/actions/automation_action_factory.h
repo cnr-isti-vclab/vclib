@@ -25,7 +25,7 @@
 
 #include <vclib/render/automation/actions.h>
 #include <vclib/render/automation/metrics/benchmark_metric.h>
-#include <vclib/render/drawers/benchmark_drawer.h>
+//#include <vclib/render/drawers/benchmark_drawer.h>
 
 namespace vcl {
 

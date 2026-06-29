@@ -38,12 +38,12 @@ namespace vcl {
  * @note Multiplicative scaling is represented by the following formula:
  * finalScale = initialScale * (1 + (deltaScale * duration))
  */
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class PerFrameChangeScaleMultiplicativeAutomationAction :
-        public AbstractAutomationAction<BmarkDrawer>
+        public AbstractAutomationAction<BmarkEditor>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     float mOriginalScale;
     float mPixelDeltaPerFrame;
 
@@ -56,7 +56,6 @@ public:
     void start() override
     {
         Parent::start();
-        mOriginalScale = benchmarkDrawer->getScale();
     }
 
     std::string getDescription() override
@@ -70,8 +69,7 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        benchmarkDrawer->changeScaleMultiplicative(
-            mPixelDeltaPerFrame, mOriginalScale);
+        benchmarkEditor->scale(mPixelDeltaPerFrame);
     };
 
     void end() override
@@ -79,18 +77,18 @@ public:
         Parent::end();
     };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
         return std::make_shared<
-            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(
+            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkEditor>>(
             *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
         return std::make_shared<
-            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkDrawer>>(
+            PerFrameChangeScaleMultiplicativeAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

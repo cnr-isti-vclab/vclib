@@ -33,8 +33,8 @@ namespace vcl {
 /**
  * The NullAutomationAction is an automation that does nothing
  */
-template<typename BmarkDrawer>
-class NullAutomationAction : public AbstractAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class NullAutomationAction : public AbstractAutomationAction<BmarkEditor>
 {
 public:
     std::string getDescription() override { return std::string("Do nothing"); }
@@ -44,15 +44,15 @@ public:
         return true;
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<NullAutomationAction<BmarkDrawer>>(*this);
+        return std::make_shared<NullAutomationAction<BmarkEditor>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<NullAutomationAction<BmarkDrawer>>(
+        return std::make_shared<NullAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

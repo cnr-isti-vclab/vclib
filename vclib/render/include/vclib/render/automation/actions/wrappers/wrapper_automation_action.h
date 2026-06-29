@@ -31,28 +31,28 @@ namespace vcl {
  * The WrapperAutomationAction is a class that represents an automation whose
  * only purpose is to add functionality to another automation
  */
-template<typename BmarkDrawer>
-class WrapperAutomationAction : public AbstractAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class WrapperAutomationAction : public AbstractAutomationAction<BmarkEditor>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
 
 protected:
-    using Parent::benchmarkDrawer;
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> innerAction;
+    using Parent::benchmarkEditor;
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> innerAction;
 
 public:
     using Parent::getDescription;
 
     WrapperAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& action) :
+        const AbstractAutomationAction<BmarkEditor>& action) :
             innerAction {action.clone()}
     {
     }
 
-    void setBenchmarkDrawer(BmarkDrawer* drawer) override
+    void setBenchmarkEditor(BmarkEditor* drawer) override
     {
-        this->benchmarkDrawer = drawer;
-        innerAction->setBenchmarkDrawer(drawer);
+        this->benchmarkEditor = drawer;
+        innerAction->setBenchmarkEditor(drawer);
     }
 
     void start() override

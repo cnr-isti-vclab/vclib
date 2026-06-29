@@ -37,11 +37,11 @@ namespace vcl {
  * rotation, with the strength of the rotation measured
  * per-second
  */
-template<typename BmarkDrawer>
-class RotationAutomationAction : public AbstractAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class RotationAutomationAction : public AbstractAutomationAction<BmarkEditor>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     float   mRadiansPerSecond;
     Point3f mAround;
     Timer   mTimer;
@@ -93,11 +93,7 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        auto rotation =
-            Quaternion<float>(mRadiansPerSecond * mTimer.delay(), mAround);
-
-        benchmarkDrawer->rotate(rotation);
-
+        benchmarkEditor->rotate(mAround, mRadiansPerSecond * mTimer.delay());
         mTimer.start();
     };
 
@@ -107,15 +103,15 @@ public:
         mTimer.stop();
     };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<RotationAutomationAction<BmarkDrawer>>(*this);
+        return std::make_shared<RotationAutomationAction<BmarkEditor>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<RotationAutomationAction<BmarkDrawer>>(
+        return std::make_shared<RotationAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

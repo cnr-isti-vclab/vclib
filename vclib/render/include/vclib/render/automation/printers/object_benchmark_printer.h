@@ -25,9 +25,10 @@
 
 #include "../metrics/benchmark_metric.h"
 #include "benchmark_printer.h"
-#include <vclib/render/drawers/benchmark_drawer.h>
+//#include <vclib/render/drawers/benchmark_drawer.h>
 
 #include <condition_variable>
+#include <optional>
 #include <mutex>
 #include <optional>
 #include <utility>

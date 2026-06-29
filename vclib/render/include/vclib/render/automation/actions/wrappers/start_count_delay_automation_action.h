@@ -38,12 +38,12 @@ namespace vcl {
  * @note This is substantially the same as "executing only after a certain
  * number of loops have passed"
  */
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class StartCountDelayAutomationAction :
-        public WrapperAutomationAction<BmarkDrawer>
+        public WrapperAutomationAction<BmarkEditor>
 {
-    using Parent = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent = WrapperAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     using Parent::innerAction;
 
     uint mWaitStarts;
@@ -51,13 +51,13 @@ class StartCountDelayAutomationAction :
 
 public:
     StartCountDelayAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& innerAction,
+        const AbstractAutomationAction<BmarkEditor>& innerAction,
         uint waitStarts) : Parent(innerAction), mWaitStarts {waitStarts} {};
 
     void start() override
     {
         if (mCurrentStarts < mWaitStarts) {
-            AbstractAutomationAction<BmarkDrawer>::start();
+            AbstractAutomationAction<BmarkEditor>::start();
             mCurrentStarts++;
             return;
         }
@@ -83,16 +83,16 @@ public:
 
     void end() override { Parent::end(); }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<StartCountDelayAutomationAction<BmarkDrawer>>(
+        return std::make_shared<StartCountDelayAutomationAction<BmarkEditor>>(
             *this);
     };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<StartCountDelayAutomationAction<BmarkDrawer>>(
+        return std::make_shared<StartCountDelayAutomationAction<BmarkEditor>>(
             std::move(*this));
     };
 };

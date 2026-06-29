@@ -31,9 +31,9 @@ namespace vcl {
 
 /**
  * The AbstractAutomationAction is a class that represents something to be done
- * by a BenchmarkDrawer.
+ * by a BenchmarkEditor.
  */
-template<typename BmarkDrawer>
+template<typename BmarkEditor>
 class AbstractAutomationAction
 {
     bool mActive = false;
@@ -48,12 +48,12 @@ class AbstractAutomationAction
     };
 
 protected:
-    BmarkDrawer* benchmarkDrawer = NULL;
+    BmarkEditor* benchmarkEditor = NULL;
 
 public:
-    virtual void setBenchmarkDrawer(BmarkDrawer* drawer)
+    virtual void setBenchmarkEditor(BmarkEditor* editor)
     {
-        benchmarkDrawer = drawer;
+        benchmarkEditor = editor;
     }
 
     virtual std::string getDescription() = 0;
@@ -95,16 +95,16 @@ public:
 
     virtual bool isActive() const { return mActive; }
 
-    operator std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>()
+    operator std::shared_ptr<AbstractAutomationAction<BmarkEditor>>()
     {
         return clone();
     };
 
     virtual bool isNull() const { return false; }
 
-    virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    virtual std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& = 0;
-    virtual std::shared_ptr<AbstractAutomationAction<BmarkDrawer>>
+    virtual std::shared_ptr<AbstractAutomationAction<BmarkEditor>>
     clone() && = 0;
 };
 

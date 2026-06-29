@@ -36,8 +36,8 @@
 #include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/automation/printers.h>
-#include <vclib/render/drawers/benchmark_drawer.h>
-#include <vclib/render/drawers/benchmark_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/editors/benchmark_editor.h>
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/mesh/update/transform.h>
@@ -50,9 +50,9 @@ int main(void)
     using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::MaximizedWindowManager,
         vcl::Canvas,
-        vcl::BenchmarkViewerDrawer>;
+        vcl::ViewerDrawer>;
 
-    using BenchmarDrawerT = vcl::BenchmarkDrawer<BenchmarkViewer>;
+    using BenchmarkEditorT = vcl::BenchmarkEditor<BenchmarkViewer>;
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 
@@ -61,6 +61,9 @@ int main(void)
 #endif
 
     BenchmarkViewer tw("Benchmark Viewer GLFW");
+    
+    std::shared_ptr<BenchmarkEditorT> benchmarkEditor = std::make_shared<BenchmarkEditorT>();
+    tw.addEditor(benchmarkEditor);
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>(
@@ -78,11 +81,11 @@ int main(void)
 
     // An automation action factory, to shorten the length of Automation
     // declarations
-    vcl::AutomationActionFactory<BenchmarDrawerT> aaf;
+    vcl::AutomationActionFactory<BenchmarkEditorT> aaf;
 
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa(
+    vcl::ChangeShaderAutomationAction<BenchmarkEditorT> csaa(
         vec, vcl::DrawableMesh<vcl::TriMesh>::SurfaceProgramsType::SPLIT);
-    vcl::ChangeShaderAutomationAction<BenchmarDrawerT> csaa2(
+    vcl::ChangeShaderAutomationAction<BenchmarkEditorT> csaa2(
         vec,
         vcl::DrawableMesh<
             vcl::TriMesh>::SurfaceProgramsType::UBER_WITH_STATIC_IF);
@@ -92,38 +95,38 @@ int main(void)
     tw.pushDrawableObject(std::move(drawable));
 
     // Repeat all automations 2 times
-    tw.setRepeatTimes(6);
+    benchmarkEditor->setRepeatTimes(6);
 
-    tw.setMetric(vcl::TimeBenchmarkMetric());
+    benchmarkEditor->setMetric(vcl::TimeBenchmarkMetric());
 
     // Rotate and scale at the same time for 2 seconds
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {0.f, 0.f, 1.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(1000.f, {0.f, 0.f, 1.f}),
         1000.f));
 
     // Rotate for 5000 frames and then scale for 5000 frames
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {0.f, 1.f, 0.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(1000.f, {0.f, 1.f, 0.f}),
         1000.f));
 
-    tw.addAutomation(aaf.createFrameLimited(
+    benchmarkEditor->addAutomation(aaf.createFrameLimited(
         vcl::PerFrameRotationAutomationAction<
-            BenchmarDrawerT>::fromFramesPerRotation(1000.f, {1.f, 0.f, 0.f}),
+            BenchmarkEditorT>::fromFramesPerRotation(1000.f, {1.f, 0.f, 0.f}),
         1000.f));
 
-    tw.addAutomationNoMetric(
+    benchmarkEditor->addAutomationNoMetric(
         aaf.createStartCountDelay(aaf.createStartCountLimited(csaa, 1), 1));
-    tw.addAutomationNoMetric(
+    benchmarkEditor->addAutomationNoMetric(
         aaf.createStartCountDelay(aaf.createStartCountLimited(csaa2, 1), 3));
 
     // Print the results in a json file
-    tw.setPrinter(
+    benchmarkEditor->setPrinter(
         vcl::CsvBenchmarkPrinterShaderChange(
             "C:/Users/Giacomo/Desktop/results_uber.csv", "C:/Users/Giacomo/Desktop/results_split.csv", "C:/Users/Giacomo/Desktop/results_uber_if.csv", 6));
 
-    tw.terminateUponCompletion();
+    benchmarkEditor->terminateUponCompletion();
 
     tw.fitScene();
 

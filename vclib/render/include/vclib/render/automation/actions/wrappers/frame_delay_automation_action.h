@@ -35,22 +35,22 @@ namespace vcl {
  * delay (in terms of frames) to an action, so that it can be started only after
  * the delay has elapsed
  */
-template<typename BmarkDrawer>
-class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkDrawer>
+template<typename BmarkEditor>
+class FrameDelayAutomationAction : public WrapperAutomationAction<BmarkEditor>
 {
     uint mCurrentFrames = 0;
     uint mDelayFrames;
     bool     mInnerStarted = false;
-    using Parent           = WrapperAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
+    using Parent           = WrapperAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
     using Parent::innerAction;
 
 public:
     FrameDelayAutomationAction(
-        const AbstractAutomationAction<BmarkDrawer>& action,
+        const AbstractAutomationAction<BmarkEditor>& action,
         uint delayFrames) : Parent(action), mDelayFrames {delayFrames} {};
 
-    void start() override { AbstractAutomationAction<BmarkDrawer>::start(); }
+    void start() override { AbstractAutomationAction<BmarkEditor>::start(); }
 
     std::string getDescription() override
     {
@@ -62,7 +62,7 @@ public:
 
     void doAction() override
     {
-        AbstractAutomationAction<BmarkDrawer>::doAction();
+        AbstractAutomationAction<BmarkEditor>::doAction();
         if (mCurrentFrames < mDelayFrames) {
             mCurrentFrames++;
             return;
@@ -85,15 +85,15 @@ public:
         mInnerStarted  = false;
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<FrameDelayAutomationAction<BmarkDrawer>>(*this);
+        return std::make_shared<FrameDelayAutomationAction<BmarkEditor>>(*this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<FrameDelayAutomationAction<BmarkDrawer>>(
+        return std::make_shared<FrameDelayAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };

@@ -25,7 +25,6 @@
 
 #include <vclib/render/automation/actions/abstract_automation_action.h>
 #include <vclib/render/automation/metrics/null_benchmark_metric.h>
-#include <vclib/render/drawers/benchmark_viewer_drawer.h>
 
 #include <vclib/space/core/quaternion.h>
 
@@ -43,7 +42,7 @@ class ShadingChangerMetric: public NullBenchmarkMetric {
     ShadingChangerMetric(MeshRenderInfo::Surface shad, uint printWaitCount) : mShad(shad), mPrintWaitCount(printWaitCount) {};
 
     std::string getUnitOfMeasure() const override {
-        if (mPrintWaitCount >= 0) {
+        if (mPrintWaitCount > 0) {
             mPrintWaitCount --;
         }
         if (mPrintWaitCount != -1) {
@@ -107,20 +106,16 @@ class ShadingChangerMetric: public NullBenchmarkMetric {
  * rotation, with the strength of the rotation measured
  * per-frame
  */
-template<typename BmarkDrawer, typename BmarkViewerDrawer>
+template<typename BmarkEditor>
 class ShadingChangerAutomationAction :
-        public AbstractAutomationAction<BmarkDrawer>
+        public AbstractAutomationAction<BmarkEditor>
 {
-    using Parent = AbstractAutomationAction<BmarkDrawer>;
-    using Parent::benchmarkDrawer;
-    std::shared_ptr<DrawableObjectVector> mVec;
-    MeshRenderInfo::Surface               mShad;
-    BmarkViewerDrawer*                    mViewerDrawer;
+    using Parent = AbstractAutomationAction<BmarkEditor>;
+    using Parent::benchmarkEditor;
+    MeshRenderInfo::Surface mShad;
 
 public:
-    ShadingChangerAutomationAction(MeshRenderInfo::Surface shad, BmarkViewerDrawer* viewerDrawer): mShad(shad), mViewerDrawer(viewerDrawer) {}
-
-    
+    ShadingChangerAutomationAction(MeshRenderInfo::Surface shad): mShad(shad) {}
 
     std::string getDescription() override
     {
@@ -169,20 +164,28 @@ public:
     void doAction() override
     {
         Parent::doAction();
-        mViewerDrawer->setShading(mShad);
+        // if (benchmarkEditor && benchmarkEditor->drawList()) {
+        //     for (auto& obj : *benchmarkEditor->drawList()) {
+        //         if (obj->renderSettings().canSurface(mShad)) {
+        //             auto rs = obj->renderSettings();
+        //             rs.setSurface(mShad);
+        //             obj->setRenderSettings(rs);
+        //         }
+        //     }
+        // }
         Parent::end();
     };
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone()
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone()
         const& override
     {
-        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer, BmarkViewerDrawer>>(
+        return std::make_shared<ShadingChangerAutomationAction<BmarkEditor>>(
             *this);
     }
 
-    std::shared_ptr<AbstractAutomationAction<BmarkDrawer>> clone() && override
+    std::shared_ptr<AbstractAutomationAction<BmarkEditor>> clone() && override
     {
-        return std::make_shared<ShadingChangerAutomationAction<BmarkDrawer, BmarkViewerDrawer>>(
+        return std::make_shared<ShadingChangerAutomationAction<BmarkEditor>>(
             std::move(*this));
     }
 };
