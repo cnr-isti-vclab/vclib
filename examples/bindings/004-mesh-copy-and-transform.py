@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -32,7 +17,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh creation in VCLib:
 # 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
@@ -261,11 +246,11 @@ if __name__ == "__main__":
 
     try:
         # Save the meshes to files
-        vcl.save_mesh(transform_mesh, VCLIB_RESULTS_PATH + "/004_transformed_icosahedron.ply")
-        vcl.save_mesh(scale_mesh, VCLIB_RESULTS_PATH + "/004_scaled_cube.ply")
-        vcl.save_mesh(rotate_mesh, VCLIB_RESULTS_PATH + "/004_rotated_cube.ply")
-        vcl.save_mesh(matrix_mesh, VCLIB_RESULTS_PATH + "/004_matrix_transformed.ply")
-        vcl.save_mesh(combined_mesh, VCLIB_RESULTS_PATH + "/004_combined_scene.ply")
+        vcl.save_mesh(transform_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_transformed_icosahedron.ply")
+        vcl.save_mesh(scale_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_scaled_cube.ply")
+        vcl.save_mesh(rotate_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_rotated_cube.ply")
+        vcl.save_mesh(matrix_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_matrix_transformed.ply")
+        vcl.save_mesh(combined_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_combined_scene.ply")
         print("Meshes saved successfully.")
     except Exception as e:
         print(f"Error saving meshes: {e}")

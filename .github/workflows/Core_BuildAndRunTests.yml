@@ -10,13 +10,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
     - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
@@ -29,9 +32,9 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
-        winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
+        choco install ninja ccache
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         key: core-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build

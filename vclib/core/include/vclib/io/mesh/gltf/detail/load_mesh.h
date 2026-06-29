@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
 #define VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
@@ -42,7 +27,8 @@ enum class GltfAttrType {
     COLOR_0,
     TEXCOORD_0,
     TANGENT,
-    INDICES
+    TRI_INDICES,
+    LINE_INDICES,
 };
 inline const std::array<std::string, 5>
     GLTF_ATTR_STR {"POSITION", "NORMAL", "COLOR_0", "TEXCOORD_0", "TANGENT"};
@@ -466,6 +452,37 @@ bool populateGltfTriangles(
     }
 }
 
+template<MeshConcept MeshType, typename Scalar>
+bool populateGltfLines(
+    MeshType&     m,
+    uint          firstVertex,
+    const Scalar* lineArray,
+    uint          lineCount)
+{
+    if constexpr (HasEdges<MeshType>) {
+        if (lineArray != nullptr) {
+            uint ei = m.addEdges(lineCount);
+            for (unsigned int i = 0; i < lineCount * 2; i += 2, ++ei) {
+                auto& e = m.edge(ei);
+                e.setVertices(
+                    firstVertex + lineArray[i], firstVertex + lineArray[i + 1]);
+            }
+        }
+        else {
+            lineCount = m.vertexCount() / 2 - firstVertex;
+            uint ei   = m.addEdges(lineCount);
+            for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
+                auto& e = m.edge(ei);
+                e.setVertices(firstVertex + i, firstVertex + i + 1);
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 /**
  * @brief given the attribute and the pointer to the data,
  * it calls the appropriate functions that put the data into the mesh
@@ -512,8 +529,10 @@ bool populateGltfAttr(
     case TANGENT:
         return populateGltfVTangents(
             m, firstVertex, enableOptionalComponents, array, stride, number);
-    case INDICES:
+    case TRI_INDICES:
         return populateGltfTriangles(m, firstVertex, array, number / 3);
+    case LINE_INDICES:
+        return populateGltfLines(m, firstVertex, array, number / 2);
     default: return false;
     }
 }
@@ -548,7 +567,7 @@ bool loadGltfAttribute(
     const tinygltf::Accessor* accessor = nullptr;
 
     // get the accessor associated to the attribute
-    if (attr != INDICES) {
+    if (attr != TRI_INDICES && attr != LINE_INDICES) {
         auto it = p.attributes.find(GLTF_ATTR_STR[toUnderlying(attr)]);
 
         if (it != p.attributes.end()) { // accessor found
@@ -559,10 +578,12 @@ bool loadGltfAttribute(
             throw std::runtime_error("File has not 'Position' attribute");
         }
     }
-    else { // if the attribute is triangle indices
-        // if the mode is GL_TRIANGLES and we have triangle indices
-        if (p.mode == TINYGLTF_MODE_TRIANGLES && p.indices >= 0 &&
-            (uint) p.indices < model.accessors.size()) {
+    else { // if the attribute is triangle/lines indices
+        // if the mode is GL_TRIANGLES/GL_LINES and we have triangle/lines
+        // indices
+        if ((p.mode == TINYGLTF_MODE_TRIANGLES ||
+             p.mode == TINYGLTF_MODE_LINE) &&
+            p.indices >= 0 && (uint) p.indices < model.accessors.size()) {
             accessor = &model.accessors[p.indices];
         }
     }
@@ -675,7 +696,7 @@ bool loadGltfAttribute(
     // if accessor not found and attribute is indices, it means that
     // the mesh is not indexed, and triplets of contiguous vertices
     // generate triangles
-    else if (attr == INDICES) {
+    else if (attr == TRI_INDICES) {
         // avoid explicitly the point clouds
         if (p.mode != TINYGLTF_MODE_POINTS) {
             // this case is managed when passing nullptr as data
@@ -778,18 +799,39 @@ void loadGltfMeshPrimitive(
     }
 
     if constexpr (HasFaces<MeshType>) {
-        uint firstFace = m.faceCount();
-        bool lti       = loadGltfAttribute(
-            m,
-            firstVertex,
-            settings.enableOptionalComponents,
-            model,
-            p,
-            GltfAttrType::INDICES);
-        if (lti) {
-            info.setTriangleMesh();
-            info.setFaces();
-            info.setPerFaceVertexReferences();
+        // if primitive mode is GL_TRIANGLES
+        if (p.mode == TINYGLTF_MODE_TRIANGLES) {
+            uint firstFace = m.faceCount();
+            bool lti       = loadGltfAttribute(
+                m,
+                firstVertex,
+                settings.enableOptionalComponents,
+                model,
+                p,
+                GltfAttrType::TRI_INDICES);
+            if (lti) {
+                info.setTriangleMesh();
+                info.setFaces();
+                info.setPerFaceVertexReferences();
+            }
+        }
+    }
+
+    if constexpr (HasEdges<MeshType>) {
+        // if primitive mode is GL_LINES, we can load edges
+        if (p.mode == TINYGLTF_MODE_LINE) {
+            uint firstEdge = m.edgeCount();
+            bool lti       = loadGltfAttribute(
+                m,
+                firstVertex,
+                settings.enableOptionalComponents,
+                model,
+                p,
+                GltfAttrType::LINE_INDICES);
+            if (lti) {
+                info.setEdges();
+                info.setPerEdgeVertexReferences();
+            }
         }
     }
 

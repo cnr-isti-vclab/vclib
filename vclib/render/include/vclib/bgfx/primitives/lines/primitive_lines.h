@@ -1,32 +1,15 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_PRIMITIVE_LINES_H
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
-
-#include <variant>
 
 namespace vcl::detail {
 
@@ -39,18 +22,12 @@ class PrimitiveLines
             .programManager()
             .getProgram<VertFragProgram::PRIMITIVE_LINES>();
 
-    enum Ownership { OWNED = 0, NOT_OWNED = 1 };
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexCoords;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
+    vcl::OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    vcl::OwnedOrRefBuffer<IndexBuffer>  mLineColors;
 
-    // true if the buffers are created and managed internally
-    // by default, all variants are owned (first element of the variant)
-    bool mOwnsBuffers = true;
-
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexCoords;
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexNormals;
-    std::variant<VertexBuffer, const VertexBuffer*> mVertexColors;
-    std::variant<IndexBuffer, const IndexBuffer*>   mLineColors;
-
-    std::variant<IndexBuffer, const IndexBuffer*> mIndices;
+    vcl::OwnedOrRefBuffer<IndexBuffer> mIndices;
 
 public:
     PrimitiveLines() = default;
@@ -118,8 +95,6 @@ public:
     void draw(uint viewId) const;
 
 private:
-    void reinitBuffers(Ownership owned);
-
     void setPoints(
         bool                      setLineIndices,
         const std::vector<float>& vertCoords,

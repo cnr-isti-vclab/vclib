@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_TRIANGLE_BIT_FLAGS_H
@@ -31,7 +16,7 @@
 namespace vcl::comp {
 
 /**
- * @brief The TriangleBitFlags class represents a collection of 16 bits that
+ * @brief The TriangleBitFlags class represents a collection of 32 bits that
  * will be part of a Triangle of a Mesh.
  *
  * This is a specialization class of the BitFlags component, meaning that it can
@@ -44,18 +29,18 @@ namespace vcl::comp {
  * - 1: selected: if the current Triangle has been selected
  * - 2: visited: if the current Triangle has been visited (useful for some visit
  *               algorithms)
- * - from 3 to 5: edge border: if the current Triangle has the i-th edge (i in
- *                             [0, 2]) on border
- * - from 6 to 8: edge selection: if the current Triangle has the i-th edge (i
- *                                in [0, 2]) selected
- * - from 9 to 11: edge visited: if the current Triangle has the i-th edge (i
- *                               in [0, 2]) visited
- * - from 12 to 14: edge faux: if the current Triangle has the i-th edge (i in
+ * - from 3 to 5: edge faux: if the current Triangle has the i-th edge (i in
  *                            [0, 2]) marked as faux
- * - 15: user bit that can have custom meanings to the user
+ * - from 6 to 8: edge border: if the current Triangle has the i-th edge (i in
+ *                             [0, 2]) on border
+ * - from 9 to 11: edge selection: if the current Triangle has the i-th edge (i
+ *                                in [0, 2]) selected
+ * - from 12 to 14: edge visited: if the current Triangle has the i-th edge (i
+ *                               in [0, 2]) visited
+ * - from 15 to 31: user bits that can have custom meanings to the user
  *
- * This class provides 1 user bit, that can be accessed using the member
- * function userBit(uint i) with position 0.
+ * This class provides 17 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 16].
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -82,7 +67,7 @@ class TriangleBitFlags :
         public Component<
             TriangleBitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
-            BitSet<short>,
+            BitSet<uint>,
             ParentElemType,
             !std::is_same_v<ParentElemType, void>,
             OPT>
@@ -90,12 +75,10 @@ class TriangleBitFlags :
     using Base = Component<
         TriangleBitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
-        BitSet<short>,
+        BitSet<uint>,
         ParentElemType,
         !std::is_same_v<ParentElemType, void>,
         OPT>;
-
-    using FT = short; // FlagsType, the integral type used for the flags
 
     static const uint FIRST_USER_BIT = 15;
 
@@ -104,22 +87,28 @@ class TriangleBitFlags :
         DELETED  = 0, // bit 0
         SELECTED = 1, // bit 1
         VISITED  = 2, // bit 2
-        // Edge border
-        BORDER0 = 3, // bits [3, 5]
-        // Edge selection
-        EDGESEL0 = 6, // bits [6, 8]
-        EDGEVIS0 = 9, // bits [9, 11]
         // Faux edges: when representing polygonal meshes on triangle meshes,
         // some triangle edges can be marked as "faux", meaning that they are
         // internal on the polygon
-        FAUX0 = 12 // bits [12, 14]
+        FAUX0 = 3, // bits [3, 5]
+        // Edge border
+        BORDER0 = 6, // bits [6, 8]
+        // Edge selection
+        EDGESEL0 = 9,  // bits [9, 11]
+        EDGEVIS0 = 12, // bits [12, 14]
     };
 
 public:
     /**
+     * @brief Expose the underlying type of the BitFlags.
+     */
+    using FlagsType = uint;
+
+    /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    inline static const uint USER_BIT_COUNT = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BIT_COUNT =
+        sizeof(FlagsType) * 8 - FIRST_USER_BIT;
 
     /* Constructors */
 
@@ -158,7 +147,7 @@ public:
      * reference to it.
      * @return a reference to the 'selected' bit of this Triangle.
      */
-    BitProxy<FT> selected() { return flags()[SELECTED]; }
+    BitProxy<FlagsType> selected() { return flags()[SELECTED]; }
 
     /**
      * @brief Returns whether the current Triangle is selected or not.
@@ -171,7 +160,7 @@ public:
      * to it.
      * @return a reference to the 'visited' bit of this Triangle.
      */
-    BitProxy<FT> visited() { return flags()[VISITED]; }
+    BitProxy<FlagsType> visited() { return flags()[VISITED]; }
 
     /**
      * @brief Returns whether the current Triangle has been visited or not.
@@ -197,7 +186,7 @@ public:
      * @return a reference to the 'onBorder' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeOnBorder(uint i)
+    BitProxy<FlagsType> edgeOnBorder(uint i)
     {
         assert(i < 3);
         return flags()[BORDER0 + i];
@@ -223,7 +212,7 @@ public:
      * @return a reference to the 'selected' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeSelected(uint i)
+    BitProxy<FlagsType> edgeSelected(uint i)
     {
         assert(i < 3);
         return flags()[EDGESEL0 + i];
@@ -249,7 +238,7 @@ public:
      * @return a reference to the 'visited' bit of the i-th edge of the
      * triangle.
      */
-    BitProxy<FT> edgeVisited(uint i)
+    BitProxy<FlagsType> edgeVisited(uint i)
     {
         assert(i < 3);
         return flags()[EDGEVIS0 + i];
@@ -274,7 +263,7 @@ public:
      * @param[in] i: the index of the edge, it must be less than 3.
      * @return a reference to the 'faux' bit of the i-th edge of the triangle.
      */
-    BitProxy<FT> edgeFaux(uint i)
+    BitProxy<FlagsType> edgeFaux(uint i)
     {
         assert(i < 3);
         return flags()[FAUX0 + i];
@@ -295,9 +284,9 @@ public:
     /**
      * @brief Returns a reference to the value of the user bit of this Triangle
      * given in input. The bit is checked to be less than the total number of
-     * assigned user bits, which in this class is 4.
+     * assigned user bits, which in this class is 17.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3].
+     * @param[in] bit: the position of the bit, in the interval [0 - 16].
      * @return a reference to the desired user bit.
      */
     bool userBit(uint bit) const
@@ -309,13 +298,13 @@ public:
     /**
      * @brief Returns the boolean value of the user bit of this Triangle given
      * in input. The bit is checked to be less than the total number of assigned
-     * user bits, which in this class is 4.
+     * user bits, which in this class is 17.
      *
-     * @param[in] bit: the position of the bit, in the interval [0 - 3], that
+     * @param[in] bit: the position of the bit, in the interval [0 - 16], that
      * will be returned by reference.
      * @return `true` if the required bit is enabled, `false` otherwise.
      */
-    BitProxy<FT> userBit(uint bit)
+    BitProxy<FlagsType> userBit(uint bit)
     {
         assert(bit < USER_BIT_COUNT);
         return flags()[bit + FIRST_USER_BIT];
@@ -329,6 +318,28 @@ public:
     {
         bool isD = deleted();
         flags().reset();
+        deletedBit() = isD;
+    }
+
+    /**
+     * @brief Returns the underlying integral value of the BitFlags.
+     * @return the underlying integral value of the BitFlags.
+     */
+    FlagsType underlyingBitFlags() const { return flags().underlying(); }
+
+    /**
+     * @brief Sets the underlying integral value of the BitFlags.
+     *
+     * @note The deleted flag will be preserved and won't be overridden by the
+     * input integral value.
+     *
+     * @param[in] bits: the integral value to set as the underlying value of the
+     * BitFlags
+     */
+    void setUnderlyingBitFlags(FlagsType bits)
+    {
+        bool isD = deleted();
+        flags().setUnderlying(bits);
         deletedBit() = isD;
     }
 
@@ -375,32 +386,32 @@ public:
     {
         int f = 0;
         if (visited())
-            f &= 0x00000010;
+            f |= 0x00000010;
         if (selected())
-            f &= 0x00000020;
+            f |= 0x00000020;
         if (edgeOnBorder(0))
-            f &= 0x00000040;
+            f |= 0x00000040;
         if (edgeOnBorder(1))
-            f &= 0x00000080;
+            f |= 0x00000080;
         if (edgeOnBorder(2))
-            f &= 0x00000100;
+            f |= 0x00000100;
         if (edgeSelected(0))
-            f &= 0x00008000;
+            f |= 0x00008000;
         if (edgeSelected(1))
-            f &= 0x00010000;
+            f |= 0x00010000;
         if (edgeSelected(2))
-            f &= 0x00020000;
+            f |= 0x00020000;
         if (edgeFaux(0))
-            f &= 0x00040000;
+            f |= 0x00040000;
         if (edgeFaux(1))
-            f &= 0x00080000;
+            f |= 0x00080000;
         if (edgeFaux(2))
-            f &= 0x00100000;
+            f |= 0x00100000;
         return f;
     }
 
 protected:
-    BitProxy<FT> deletedBit() { return flags()[DELETED]; }
+    BitProxy<FlagsType> deletedBit() { return flags()[DELETED]; }
 
     // Component interface functions
     template<typename Element>
@@ -438,9 +449,9 @@ protected:
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags() { return Base::data(); }
+    BitSet<FlagsType>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const { return Base::data(); }
+    BitSet<FlagsType> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp

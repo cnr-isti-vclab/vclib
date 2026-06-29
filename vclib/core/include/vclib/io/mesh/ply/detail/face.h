@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_PLY_DETAIL_FACE_H
 #define VCL_IO_MESH_PLY_DETAIL_FACE_H
@@ -129,7 +114,8 @@ void readPlyFaceProperty(
     FaceType&   f,
     PlyProperty p,
     MeshInfo&   loadedInfo,
-    std::endian end = std::endian::little)
+    bool        vcgGenerated = false,
+    std::endian end          = std::endian::little)
 {
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
@@ -143,6 +129,20 @@ void readPlyFaceProperty(
         hasBeenRead = true;
         // will manage the case of loading a polygon in a triangle mesh
         setPlyFaceIndices(f, mesh, vids);
+    }
+    else if (p.name == ply::bit_flags) { // loading the flags of the face
+        if (vcgGenerated) {
+            int fval = io::readPrimitiveType<int>(file, p.type, end);
+            f.importFlagsFromVCGFormat(fval);
+            hasBeenRead = true;
+        }
+        else {
+            using FlagsType = FaceType::FlagsType;
+            FlagsType fval =
+                io::readPrimitiveType<FlagsType>(file, p.type, end);
+            f.setUnderlyingBitFlags(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name == ply::texcoord) { // loading wedge texcoords
         if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
@@ -253,7 +253,8 @@ void readPlyFaceTxt(
     FaceType&                     f,
     MeshType&                     mesh,
     MeshInfo&                     loadedInfo,
-    const std::list<PlyProperty>& faceProperties)
+    const std::list<PlyProperty>& faceProperties,
+    bool                          vcgGenerated = false)
 {
     Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token          = spaceTokenizer.begin();
@@ -261,7 +262,7 @@ void readPlyFaceTxt(
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");
         }
-        readPlyFaceProperty(token, mesh, f, p, loadedInfo);
+        readPlyFaceProperty(token, mesh, f, p, loadedInfo, vcgGenerated);
     }
 }
 
@@ -272,10 +273,11 @@ void readPlyFaceBin(
     MeshType&                     mesh,
     MeshInfo&                     loadedInfo,
     const std::list<PlyProperty>& faceProperties,
-    std::endian                   end)
+    std::endian                   end,
+    bool                          vcgGenerated = false)
 {
     for (const PlyProperty& p : faceProperties) {
-        readPlyFaceProperty(file, mesh, f, p, loadedInfo, end);
+        readPlyFaceProperty(file, mesh, f, p, loadedInfo, vcgGenerated, end);
     }
 }
 
@@ -303,6 +305,10 @@ void writePlyFaces(
             bool hasBeenWritten = false;
             if (p.name == ply::vertex_indices) {
                 detail::writePlyFaceIndices(file, p, mesh, vIndices, f, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, f.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -380,14 +386,25 @@ void readPlyFaces(
         FaceType& f    = mesh.face(ffid);
         if (header.format() == ply::ASCII) {
             detail::readPlyFaceTxt(
-                file, f, mesh, loadedInfo, header.faceProperties());
+                file,
+                f,
+                mesh,
+                loadedInfo,
+                header.faceProperties(),
+                header.isVcgGenerated());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyFaceBin(
-                file, f, mesh, loadedInfo, header.faceProperties(), end);
+                file,
+                f,
+                mesh,
+                loadedInfo,
+                header.faceProperties(),
+                end,
+                header.isVcgGenerated());
         }
 
         log.progress(fid);

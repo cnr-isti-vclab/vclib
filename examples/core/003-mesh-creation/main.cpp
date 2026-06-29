@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "mesh_creation.h"
 
@@ -50,29 +35,28 @@ int main()
     std::cout << "\n=== Saving Meshes ===" << std::endl;
 
     try {
-        vcl::saveMesh(
-            tetrahedron, VCLIB_RESULTS_PATH "/003_tetrahedron.ply", settings);
-
-        vcl::saveMesh(cube, VCLIB_RESULTS_PATH "/003_cube_tri.ply", settings);
+        std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
         vcl::saveMesh(
-            dodecahedron,
-            VCLIB_RESULTS_PATH "/003_dodecahedron_tri.ply",
-            settings);
+            tetrahedron, resultsPath + "/003_tetrahedron.ply", settings);
+
+        vcl::saveMesh(cube, resultsPath + "/003_cube_tri.ply", settings);
 
         vcl::saveMesh(
-            customCube, VCLIB_RESULTS_PATH "/003_custom_cube.ply", settings);
+            dodecahedron, resultsPath + "/003_dodecahedron_tri.ply", settings);
 
         vcl::saveMesh(
-            cubeQuads, VCLIB_RESULTS_PATH "/003_cube_poly.ply", settings);
+            customCube, resultsPath + "/003_custom_cube.ply", settings);
+
+        vcl::saveMesh(cubeQuads, resultsPath + "/003_cube_poly.ply", settings);
 
         vcl::saveMesh(
             dodecahedronPoly,
-            VCLIB_RESULTS_PATH "/003_dodecahedron_poly.ply",
+            resultsPath + "/003_dodecahedron_poly.ply",
             settings);
 
         vcl::saveMesh(
-            sphereQuads, VCLIB_RESULTS_PATH "/003_sphere_poly.ply", settings);
+            sphereQuads, resultsPath + "/003_sphere_poly.ply", settings);
 
         std::cout << "\nAll meshes have been saved to the results directory."
                   << std::endl;

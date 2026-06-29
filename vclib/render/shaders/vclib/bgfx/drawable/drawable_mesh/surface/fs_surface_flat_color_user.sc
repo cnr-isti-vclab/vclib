@@ -1,12 +1,12 @@
-$input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "flat.sh"
-#include "color_user.sh"
+#define SURF_SHADING_FLAT 1
+#define SURF_COLOR_USER   1
 
-void main()
-{
-    SHADING
-    COLORING
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
-}
+
+#include "surface_uber_in.sh"

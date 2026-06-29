@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_COMPLEX_MESH_INFO_H
 #define VCL_SPACE_COMPLEX_MESH_INFO_H
@@ -97,6 +82,7 @@ public:
     enum Component {
         POSITION,
         VREFS,
+        BIT_FLAGS,
         NORMAL,
         COLOR,
         QUALITY,
@@ -169,6 +155,7 @@ public:
         setPerVertexPosition(
             true,
             getType<typename Mesh::VertexType::PositionType::ScalarType>());
+        setPerVertexBitFlags();
         if constexpr (HasPerVertexNormal<Mesh>) {
             if (isPerVertexNormalAvailable(m)) {
                 setPerVertexNormal(
@@ -214,6 +201,7 @@ public:
         if constexpr (HasFaces<Mesh>) {
             setFaces();
             setPerFaceVertexReferences();
+            setPerFaceBitFlags();
             if (HasTriangles<Mesh>) {
                 setTriangleMesh();
             }
@@ -269,6 +257,7 @@ public:
         if constexpr (HasEdges<Mesh>) {
             setEdges();
             setPerEdgeVertexReferences();
+            setPerEdgeBitFlags();
             // if constexpr (HasPerEdgeColor<Mesh>)
             //     if (isPerEdgeColorAvailable(m))
             //         setEdgeColors(true, UCHAR);
@@ -360,6 +349,15 @@ public:
     }
 
     /**
+     * @brief Returns true if the current object has Vertex Bit Flags.
+     * @return true if the current object has Vertex Bit Flags.
+     */
+    bool hasPerVertexBitFlags() const
+    {
+        return hasPerElementComponent(VERTEX, BIT_FLAGS);
+    }
+
+    /**
      * @brief Returns true if the current object has Vertex Normals.
      * @return true if the current object has Vertex Normals.
      */
@@ -428,6 +426,15 @@ public:
         return hasPerElementComponent(FACE, VREFS);
     }
 
+    /**
+     * @brief Returns true if the current object has Face Bit Flags.
+     * @return true if the current object has Face Bit Flags.
+     */
+    bool hasPerFaceBitFlags() const
+    {
+        return hasPerElementComponent(FACE, BIT_FLAGS);
+    }
+
     bool hasPerFaceNormal() const
     {
         return hasPerElementComponent(FACE, NORMAL);
@@ -468,6 +475,15 @@ public:
     bool hasPerEdgeVertexReferences() const
     {
         return hasPerElementComponent(EDGE, VREFS);
+    }
+
+    /**
+     * @brief Returns true if the current object has Edge Bit Flags.
+     * @return true if the current object has Edge Bit Flags.
+     */
+    bool hasPerEdgeBitFlags() const
+    {
+        return hasPerElementComponent(EDGE, BIT_FLAGS);
     }
 
     bool hasPerEdgeColor() const { return hasPerElementComponent(EDGE, COLOR); }
@@ -544,6 +560,11 @@ public:
         setPerElementComponent(VERTEX, POSITION, b, t);
     }
 
+    void setPerVertexBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(VERTEX, BIT_FLAGS, b, t);
+    }
+
     void setPerVertexNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setPerElementComponent(VERTEX, NORMAL, b, t);
@@ -582,6 +603,11 @@ public:
     void setPerFaceVertexReferences(bool b = true)
     {
         setPerElementComponent(FACE, VREFS, b, PrimitiveType::NONE);
+    }
+
+    void setPerFaceBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(FACE, BIT_FLAGS, b, t);
     }
 
     void setPerFaceNormal(bool b = true, DataType t = PrimitiveType::FLOAT)
@@ -623,6 +649,11 @@ public:
     void setPerEdgeVertexReferences(bool b = true)
     {
         setPerElementComponent(EDGE, VREFS, b, PrimitiveType::NONE);
+    }
+
+    void setPerEdgeBitFlags(bool b = true, DataType t = PrimitiveType::UINT)
+    {
+        setPerElementComponent(EDGE, BIT_FLAGS, b, t);
     }
 
     void setPerEdgeColor(bool b = true, DataType t = PrimitiveType::UCHAR)
@@ -712,6 +743,11 @@ public:
         return perElementComponentType(VERTEX, POSITION);
     }
 
+    DataType perVertexBitFlagsType() const
+    {
+        return perElementComponentType(VERTEX, BIT_FLAGS);
+    }
+
     DataType perVertexNormalType() const
     {
         return perElementComponentType(VERTEX, NORMAL);
@@ -737,6 +773,11 @@ public:
         return perElementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
+    DataType perFaceBitFlagsType() const
+    {
+        return perElementComponentType(FACE, BIT_FLAGS);
+    }
+
     DataType perFaceNormalType() const
     {
         return perElementComponentType(FACE, NORMAL);
@@ -760,6 +801,11 @@ public:
     DataType perFaceMaterialIndexType() const
     {
         return perElementComponentType(FACE, MATERIAL_INDEX);
+    }
+
+    DataType perEdgeBitFlagsType() const
+    {
+        return perElementComponentType(EDGE, BIT_FLAGS);
     }
 
     DataType perEdgeNormalType() const

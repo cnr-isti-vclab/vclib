@@ -1,36 +1,17 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
-#endif
-
 int main(int argc, char** argv)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
+    auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
     auto viewer = defaultViewer();
@@ -41,6 +22,7 @@ int main(int argc, char** argv)
         BUNNY,
         QUAD_OBJ,
         TEXTURE_DOUBLE_OBJ,
+        SPOT,
         COUNT
     };
 
@@ -49,12 +31,13 @@ int main(int argc, char** argv)
         "VertTextureDouble.ply",
         "bunny_textured.ply",
         "TextureDoubleQuad.obj",
-        "TextureDouble.obj"};
+        "TextureDouble.obj",
+        "spot/spot_quadrangulated.obj"};
 
     uint selectedExample = SPONZA;
 
-    vcl::DrawableMesh<vcl::TriMesh> drawable =
-        getDrawableMesh<vcl::TriMesh>(exampleFilenames[selectedExample]);
+    vcl::DrawableMesh<vcl::PolyMesh> drawable =
+        getDrawableMesh<vcl::PolyMesh>(exampleFilenames[selectedExample]);
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
