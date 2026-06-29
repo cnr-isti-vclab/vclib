@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 project(vclib-render)
 
@@ -132,9 +117,10 @@ add_library(${PROJECT_NAME}
     ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS} ${RESOURCES})
 add_library(vclib::render ALIAS ${PROJECT_NAME})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${VCLIB_RENDER_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_CURRENT_BINARY_DIR}/include)
+    $<BUILD_INTERFACE:${VCLIB_RENDER_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_RENDER_MODULE)
 
@@ -176,13 +162,17 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     ${VCLIB_RENDER_3RDPARTY_LIBRARIES} vclib::core)
 
 # Install
-install(DIRECTORY ${VCLIB_RENDER_INCLUDE_DIR}/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(VCLIB_INSTALL_MODULE_RENDER)
+    install(DIRECTORY ${VCLIB_RENDER_INCLUDE_DIR}/vclib
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/)
 
-install(TARGETS ${PROJECT_NAME}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(TARGETS ${PROJECT_NAME}
+        EXPORT vclibTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
