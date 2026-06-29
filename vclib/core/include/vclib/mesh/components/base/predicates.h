@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_BASE_PREDICATES_H
 #define VCL_MESH_COMPONENTS_BASE_PREDICATES_H
@@ -94,8 +79,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<int, typename, bool>
-    class Template,
+    template<int, typename, bool> class Template,
     int I,
     typename T,
     bool B>
@@ -135,8 +119,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<typename, typename, bool>
-    class Template,
+    template<typename, typename, bool> class Template,
     typename T1,
     typename T2,
     bool B>
@@ -176,8 +159,7 @@ struct IsSpecializationOfComp : std::false_type
 };
 
 template<
-    template<typename, int, typename, bool>
-    class Template,
+    template<typename, int, typename, bool> class Template,
     typename T1,
     int I,
     typename T2,
@@ -214,15 +196,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, int, typename, bool>
-    class Template,
+    template<bool, typename, int, typename, bool> class Template,
     bool B1,
     typename T1,
     int I,
@@ -235,8 +215,7 @@ struct IsSpecializationOfComp<Template<B1, T1, I, T2, B2>, Template> :
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -253,8 +232,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, int, typename, bool>
-    class Template>
+    template<bool, typename, int, typename, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
@@ -267,15 +245,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, typename, bool, bool>
-    class Template,
+    template<bool, typename, typename, bool, bool> class Template,
     bool B1,
     typename T1,
     typename T2,
@@ -288,8 +264,7 @@ struct IsSpecializationOfComp<Template<B1, T1, T2, B2, B3>, Template> :
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -306,8 +281,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, typename, bool, bool>
-    class Template>
+    template<bool, typename, typename, bool, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 
@@ -320,15 +294,13 @@ namespace detail {
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 struct IsSpecializationOfComp : std::false_type
 {
 };
 
 template<
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template,
+    template<bool, typename, int, bool, typename, bool, bool> class Template,
     bool B1,
     typename T1,
     int  I,
@@ -343,8 +315,7 @@ struct IsSpecializationOfComp<Template<B1, T1, I, B2, T2, B3, B4>, Template> :
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 struct IsDerivedFromSpecializationOfComp
 {
 private:
@@ -368,8 +339,7 @@ public:
 
 template<
     typename T,
-    template<bool, typename, int, bool, typename, bool, bool>
-    class Template>
+    template<bool, typename, int, bool, typename, bool, bool> class Template>
 constexpr bool IsDerivedFromSpecializationOfV =
     detail::IsDerivedFromSpecializationOfComp<T, Template>::value;
 

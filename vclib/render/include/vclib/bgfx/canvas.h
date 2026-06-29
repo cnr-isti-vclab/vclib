@@ -1,31 +1,16 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_CANVAS_H
 #define VCL_BGFX_CANVAS_H
 
 #include <vclib/base.h>
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/read_framebuffer_request.h>
+#include <vclib/bgfx/read_from_gpu_buffer.h>
 #include <vclib/bgfx/system/native_window_handle.h>
 #include <vclib/io/image.h>
 #include <vclib/render/concepts/render_app.h>
@@ -43,7 +28,7 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class CanvasBGFX
 {
-    using ReadFramebufferRequest = detail::ReadFramebufferRequest;
+    using ReadFromGPUBuffer = detail::ReadFromGPUBuffer;
 
 protected:
     using FloatData = ReadBufferTypes::FloatData;
@@ -70,7 +55,7 @@ private:
     uint32_t mCurrFrame = 0;
 
     // offscreen readback request
-    std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
+    std::optional<ReadFromGPUBuffer> mReadRequest = std::nullopt;
 
 public:
     CanvasBGFX(
@@ -173,7 +158,7 @@ public:
         DerivedRenderApp::CNV::postDraw(derived());
 
         const bool newReadRequested =
-            (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+            (mReadRequest != std::nullopt && mReadRequest->isPending());
 
         if (newReadRequested) {
             // draw offscreen frame
@@ -223,7 +208,9 @@ public:
             return false;
         }
 
-        mReadRequest.emplace(point, mSize, callback);
+        mReadRequest.emplace(
+            ReadFromGPUBuffer::Target::DEPTH, mSize, mDefaultClearColor);
+        mReadRequest->setPendingRead(point, callback);
         return true;
     }
 
@@ -248,9 +235,8 @@ public:
 
         // color data callback
         CallbackReadBuffer callback = [=](const ReadData& data) {
-            assert(
-                std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
-            const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
+            assert(std::holds_alternative<ReadFromGPUBuffer::ByteData>(data));
+            const auto& d = std::get<ReadFromGPUBuffer::ByteData>(data);
 
             // save rgb image data into file using stb depending on file
             // TODO: maybe useful to save it asynchronously
@@ -262,7 +248,9 @@ public:
             }
         };
 
-        mReadRequest.emplace(size, callback, mDefaultClearColor);
+        mReadRequest.emplace(
+            ReadFromGPUBuffer::Target::COLOR, size, mDefaultClearColor);
+        mReadRequest->setPendingRead(callback);
         return true;
     }
 
@@ -287,7 +275,9 @@ public:
             return false;
         }
 
-        mReadRequest.emplace(point, mSize, true, callback);
+        mReadRequest.emplace(
+            ReadFromGPUBuffer::Target::ID, mSize, mDefaultClearColor);
+        mReadRequest->setPendingRead(point, callback);
         return true;
     }
 
@@ -295,7 +285,7 @@ private:
     // draw offscreen frame
     void offscreenFrame()
     {
-        assert(mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
+        assert(mReadRequest != std::nullopt && mReadRequest->isPending());
 
         // render offscren
         bgfx::setViewFrameBuffer(
@@ -305,12 +295,12 @@ private:
         // render changing the view
         auto tmpId = mViewId;
         mViewId    = mReadRequest->viewId();
-        switch (mReadRequest->type()) {
-        case ReadFramebufferRequest::Type::COLOR:
-        case ReadFramebufferRequest::Type::DEPTH:
+        switch (mReadRequest->target()) {
+        case ReadFromGPUBuffer::Target::COLOR:
+        case ReadFromGPUBuffer::Target::DEPTH:
             DerivedRenderApp::CNV::drawContent(derived());
             break;
-        case ReadFramebufferRequest::Type::ID:
+        case ReadFromGPUBuffer::Target::ID:
             DerivedRenderApp::CNV::drawId(derived());
             break;
         default: assert(false && "unsupported readback type"); break;

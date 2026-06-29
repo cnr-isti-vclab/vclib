@@ -1,29 +1,16 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_APPEND_REPLACE_TO_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_APPEND_REPLACE_TO_BUFFER_H
 
 #include "detail.h"
+
+#include <vclib/algorithms/mesh/sort.h>
 
 #include <vclib/mesh.h>
 #include <vclib/space/complex.h>
@@ -54,8 +41,8 @@
  * 3. Use the algorithms defined in this module to append the duplicated
  * vertices and the texture coordinates.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh/import_export.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 namespace vcl {
@@ -298,6 +285,92 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
 }
 
 /**
+ * @brief Permute the face vertex indices in the given buffer according to the
+ * given face comparator function.
+ *
+ * This function is useful to reorder the triangles of a (triangulated) mesh
+ * according to a given face comparator function, that can be for example the
+ * sorting by material ID.
+ *
+ * The function works also with triangulated buffers, meaning that it also
+ * updates the index map from polygonal faces to triangles, to keep it
+ * consistent with the new order of the triangles in the buffer. If the input
+ * index map is empty, the function assumes that the buffer contains only
+ * triangles in the same order of the faces in the mesh.
+ *
+ * @param[in] mesh: The input mesh.
+ * @param[in/out] buffer: The buffer where the face vertex indices are stored
+ * and must be permuted. The buffer is modified in place.
+ * @param[in] func: The face comparator function that defines the new order of
+ * the faces. The function must take as input two faces and return true if the
+ * first face must be placed before the second face in the new order.
+ * @param[in/out] indexMap: The map from triangle index to face index. The
+ * function updates the map to keep it consistent with the new order of the
+ * triangles in the buffer.
+ */
+template<FaceMeshConcept MeshType>
+void permuteFaceVertexIndicesByFunctionToBuffer(
+    const MeshType&                           mesh,
+    auto*                                     buffer,
+    const std::function<bool(
+        const typename MeshType::FaceType&,
+        const typename MeshType::FaceType&)>& func,
+    TriPolyIndexBiMap&                        indexMap = detail::indexMap)
+{
+    // get the list of face indices sorted by material ID and using the given
+    // face comparator function. The result contains original container indices
+    // of non-deleted faces in sorted order:
+    std::vector<uint> sortedFaceContainerIndices =
+        sortFaceIndicesByFunction(mesh, func, false);
+
+    // sortedFaceContainerIndices[newPos] = originalContainerIndex
+    // (only non-deleted faces, in the desired new order)
+
+    bool isIndexMapEmpty = indexMap.triangleCount() == 0;
+
+    // temporary copy of the buffer
+    uint buffSize =
+        isIndexMapEmpty ? mesh.faceCount() : indexMap.triangleCount();
+    std::vector<uint> bufferCopy(buffSize * 3);
+
+    // temporary indexmap (not used if input map is empty)
+    TriPolyIndexBiMap indexMapCopy;
+
+    if (!isIndexMapEmpty)
+        indexMapCopy.reserve(indexMap.triangleCount(), indexMap.polygonCount());
+
+    uint copiedTriangles = 0;
+
+    for (uint i = 0; i < sortedFaceContainerIndices.size(); ++i) {
+        // place the triangles associated to the face at new position i
+        uint polyIndex = sortedFaceContainerIndices[i];
+        uint firstTri =
+            isIndexMapEmpty ? polyIndex : indexMap.triangleBegin(polyIndex);
+        uint nTris = isIndexMapEmpty ? 1 : indexMap.triangleCount(polyIndex);
+
+        std::copy(
+            buffer + firstTri * 3,
+            buffer + (firstTri + nTris) * 3,
+            bufferCopy.data() + copiedTriangles * 3);
+
+        if (!isIndexMapEmpty) {
+            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
+                indexMapCopy.insert(t, polyIndex);
+            }
+        }
+
+        copiedTriangles += nTris;
+    }
+
+    // copy back
+    std::copy(
+        bufferCopy.begin(), bufferCopy.begin() + copiedTriangles * 3, buffer);
+
+    if (!isIndexMapEmpty)
+        indexMap = std::move(indexMapCopy);
+}
+
+/**
  * @brief Append the selection of the duplicated vertices to the given buffer.
  *
  * Given the list of vertices to duplicate, this function appends to the given
@@ -383,6 +456,8 @@ void appendDuplicateVertexSelectionToBuffer(
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
  * @param[out] buffer: The buffer where to append the duplicated vertex normals.
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
@@ -392,7 +467,8 @@ void appendDuplicateVertexNormalsToBuffer(
     const MeshType&        mesh,
     const std::list<uint>& vertsToDuplicate,
     auto*                  buffer,
-    MatrixStorageType      storage = MatrixStorageType::ROW_MAJOR)
+    bool                   normalize = false,
+    MatrixStorageType      storage   = MatrixStorageType::ROW_MAJOR)
 {
     using namespace detail;
 
@@ -405,7 +481,9 @@ void appendDuplicateVertexNormalsToBuffer(
     const uint NUM_ROWS = mesh.vertexCount() + vertsToDuplicate.size();
 
     for (uint i = mesh.vertexCount(); const auto& v : vertsToDuplicate) {
-        const auto& normal                     = mesh.vertex(v).normal();
+        auto normal = mesh.vertex(v).normal();
+        if (normalize)
+            normal.normalize();
         at(buffer, i, 0, NUM_ROWS, 3, storage) = normal.x();
         at(buffer, i, 1, NUM_ROWS, 3, storage) = normal.y();
         at(buffer, i, 2, NUM_ROWS, 3, storage) = normal.z();

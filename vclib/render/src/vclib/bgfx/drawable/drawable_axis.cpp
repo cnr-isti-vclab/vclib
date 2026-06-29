@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/drawable/drawable_axis.h>
 
@@ -28,6 +13,12 @@
 
 namespace vcl {
 
+/**
+ * @brief Constructs a DrawableAxis with the specified size.
+ *
+ * @param[in] size: The scale factor for the axis indicator. Larger values
+ * produce longer axes. Default is 1.
+ */
 DrawableAxis::DrawableAxis(double size)
 {
     createAxis();
@@ -35,12 +26,32 @@ DrawableAxis::DrawableAxis(double size)
     updateMatrices(size);
 }
 
+/**
+ * @brief Sets the size of the axis indicator.
+ *
+ * Updates the scale of all three axes uniformly. This modifies the
+ * transformation matrices used during rendering.
+ *
+ * @param[in] size: The new scale factor for the axis indicator.
+ */
 void DrawableAxis::setSize(double size)
 {
     updateMatrices(size);
 }
 
-void DrawableAxis::draw(const DrawObjectSettings& settings) const
+/**
+ * @brief Draws the axis indicator if it is currently visible.
+ *
+ * Renders three colored axes (X=red, Y=green, Z=blue), each composed of
+ * a cylinder body and a cone tip. The axis is drawn at the origin using
+ * the current transformation matrices.
+ *
+ * @param[in] settings: The drawing settings, including view ID and other
+ * render parameters.
+ *
+ * @see DrawableObject::draw()
+ */
+void DrawableAxis::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 
@@ -69,6 +80,14 @@ void DrawableAxis::draw(const DrawObjectSettings& settings) const
     }
 }
 
+/**
+ * @brief Updates the transformation matrices for all three axes.
+ *
+ * Computes the scale and rotation matrices that position each axis
+ * along its corresponding principal direction (X, Y, Z).
+ *
+ * @param[in] size: The scale factor to apply to all axes.
+ */
 void DrawableAxis::updateMatrices(double size)
 {
     mMatrices[0](0, 1) = size;
@@ -87,6 +106,12 @@ void DrawableAxis::updateMatrices(double size)
     mMatrices[2](3, 3) = 1;
 }
 
+/**
+ * @brief Initializes GPU render buffers for the axis meshes.
+ *
+ * Creates and binds vertex/index buffers for the cylinder and cone
+ * components of the axis indicator using the static axis meshes.
+ */
 void DrawableAxis::createAxis()
 {
     using MRI = MeshRenderInfo;
