@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "../01-hello-triangle-imgui-common/demo_imgui_drawer.h"
 #include "../01-hello-triangle-imgui-bgfx-common/hello_triangle_drawer.h"
+#include "../01-hello-triangle-imgui-common/demo_imgui_drawer.h"
 
 #include <vclib/imgui/imgui_stats_drawer.h>
 

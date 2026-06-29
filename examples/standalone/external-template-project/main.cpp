@@ -76,7 +76,8 @@ int main()
         std::cout << "  ✓ Hit successful!" << std::endl;
         std::cout << "  Face ID: " << faceId << std::endl;
         std::cout << "  Distance: " << dist << std::endl;
-    } else {
+    }
+    else {
         std::cout << "  ✗ Missed the cube!" << std::endl;
         return 1;
     }

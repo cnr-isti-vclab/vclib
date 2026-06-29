@@ -16,23 +16,28 @@
 #include <vclib/space/core/color.h>
 
 // A simple Vertex struct for our quad
-struct Vertex {
-    float pos[2];
+struct Vertex
+{
+    float    pos[2];
     uint32_t abgr;
 };
 
 // Define 4 vertices for a quad
 static const Vertex vertices[] = {
-    {{-0.5f, -0.5f}, vcl::Color(vcl::Color::Red).abgr()},
-    {{0.5f, -0.5f}, vcl::Color(vcl::Color::Green).abgr()},
-    {{-0.5f, 0.5f}, vcl::Color(vcl::Color::Blue).abgr()},
-    {{0.5f, 0.5f}, vcl::Color(vcl::Color::Yellow).abgr()},
+    {{-0.5f, -0.5f}, vcl::Color(vcl::Color::Red).abgr()   },
+    {{0.5f, -0.5f},  vcl::Color(vcl::Color::Green).abgr() },
+    {{-0.5f, 0.5f},  vcl::Color(vcl::Color::Blue).abgr()  },
+    {{0.5f, 0.5f},   vcl::Color(vcl::Color::Yellow).abgr()},
 };
 
 // Define 6 indices for the 2 triangles of the quad
 static const uint16_t indices[] = {
-    0, 1, 2, // First triangle
-    1, 3, 2  // Second triangle
+    0,
+    1,
+    2, // First triangle
+    1,
+    3,
+    2 // Second triangle
 };
 
 /*!
@@ -47,9 +52,12 @@ public:
 
     ~QuadDrawer()
     {
-        if (bgfx::isValid(m_vbh)) bgfx::destroy(m_vbh);
-        if (bgfx::isValid(m_ibh)) bgfx::destroy(m_ibh);
-        if (bgfx::isValid(m_program)) bgfx::destroy(m_program);
+        if (bgfx::isValid(m_vbh))
+            bgfx::destroy(m_vbh);
+        if (bgfx::isValid(m_ibh))
+            bgfx::destroy(m_ibh);
+        if (bgfx::isValid(m_program))
+            bgfx::destroy(m_program);
     }
 
     void onInit(vcl::uint viewId) override
@@ -75,8 +83,8 @@ public:
             bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
         // Create Index Buffer
-        m_ibh = bgfx::createIndexBuffer(
-            bgfx::makeRef(indices, sizeof(indices)));
+        m_ibh =
+            bgfx::createIndexBuffer(bgfx::makeRef(indices, sizeof(indices)));
 
         // Load shaders compiled by CMake via vclib_target_add_shaders()
         m_program = vcl::loadProgram(
@@ -99,8 +107,8 @@ public:
 
 private:
     bgfx::VertexBufferHandle m_vbh;
-    bgfx::IndexBufferHandle m_ibh;
-    bgfx::ProgramHandle m_program;
+    bgfx::IndexBufferHandle  m_ibh;
+    bgfx::ProgramHandle      m_program;
 };
 
 int main(int argc, char** argv)
@@ -108,8 +116,10 @@ int main(int argc, char** argv)
     std::cout << "=== VCLib Standalone Render Example: Custom Shader ==="
               << std::endl;
 
-    // Define a Window Type using GLFW as Window Manager, a Canvas, and our QuadDrawer
-    using WindowGLFW = vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, QuadDrawer>;
+    // Define a Window Type using GLFW as Window Manager, a Canvas, and our
+    // QuadDrawer
+    using WindowGLFW =
+        vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, QuadDrawer>;
 
     // Create and show the window
     WindowGLFW window("VCLib Custom Shader Quad Example");
