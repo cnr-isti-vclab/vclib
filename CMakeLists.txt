@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.24)
 
@@ -26,6 +11,8 @@ file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" VCLIB_VERSION)
 string(STRIP "${VCLIB_VERSION}" VCLIB_VERSION)
 
 project(vclib VERSION ${VCLIB_VERSION})
+
+message(STATUS "VCLib version: ${PROJECT_VERSION}")
 
 ### Options
 
@@ -90,16 +77,28 @@ add_library(${PROJECT_NAME} INTERFACE)
 add_library(vclib::vclib ALIAS ${PROJECT_NAME})
 
 add_subdirectory(vclib/core ${VCLIB_CORE_EXCLUDE_FROM_ALL_OPTION})
-target_link_libraries(vclib INTERFACE vclib::core)
+if(VCLIB_INSTALL_MODULE_CORE)
+    target_link_libraries(vclib INTERFACE vclib-core)
+else()
+    target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-core>)
+endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
     add_subdirectory(vclib/external ${VCLIB_EXTERNAL_EXCLUDE_FROM_ALL_OPTION})
-    target_link_libraries(vclib INTERFACE vclib::external)
+    if(VCLIB_INSTALL_MODULE_EXTERNAL)
+        target_link_libraries(vclib INTERFACE vclib-external)
+    else()
+        target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-external>)
+    endif()
 endif()
 
 if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render ${VCLIB_RENDER_EXCLUDE_FROM_ALL_OPTION})
-    target_link_libraries(vclib INTERFACE vclib::render)
+    if(VCLIB_INSTALL_MODULE_RENDER)
+        target_link_libraries(vclib INTERFACE vclib-render)
+    else()
+        target_link_libraries(vclib INTERFACE $<BUILD_INTERFACE:vclib-render>)
+    endif()
 endif()
 
 if (VCLIB_BUILD_MODULE_BINDINGS)
@@ -128,5 +127,36 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 add_subdirectory(${VCLIB_TESTS_DIR})
 
 # Install
+if(VCLIB_INSTALL_MODULE_CORE OR VCLIB_INSTALL_MODULE_EXTERNAL OR VCLIB_INSTALL_MODULE_RENDER)
+    install(TARGETS ${PROJECT_NAME}
+        EXPORT vclibTargets
+    )
+
+    install(EXPORT vclibTargets
+        FILE vclibTargets.cmake
+        NAMESPACE vclib::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclibConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+
+    write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
+
+    install(FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/vclibConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+endif()
+
 install(FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/licenses/vclib)

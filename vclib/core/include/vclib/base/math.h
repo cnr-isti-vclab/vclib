@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BASE_MATH_H
 #define VCL_BASE_MATH_H
@@ -67,6 +52,29 @@ bool epsilonEquals(
     Scalar epsilon = std::numeric_limits<Scalar>::epsilon())
 {
     return (std::abs(n1 - n2) <= epsilon);
+}
+
+/**
+ * @brief Rounds up an integer to the nearest multiple of another integer.
+ *
+ * This function takes an integer numToRound and rounds it up to the nearest
+ * multiple of the specified multiple. If numToRound is already a multiple of
+ * multiple, it is returned unchanged.
+ *
+ * @note this function works for both positive and negative integers, and it
+ * rounds towards positive.
+ *
+ * @param[in] numToRound: the integer to round up
+ * @param[in] multiple: the multiple to which numToRound should be rounded up
+ * @return the smallest integer greater than or equal to numToRound that is a
+ * multiple of multiple.
+ *
+ * @ingroup base
+ */
+inline int roundUp(int numToRound, int multiple)
+{
+    int isPositive = (int) (numToRound >= 0);
+    return ((numToRound + isPositive * (multiple - 1)) / multiple) * multiple;
 }
 
 /**

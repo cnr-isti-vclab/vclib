@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/io.h>
 #include <vclib/meshes.h>
@@ -31,6 +16,7 @@ std::istringstream objPolyCube()
     // string containing a cube in OBJ format
 
     std::string s =
+        "# a comment\n"
         "v -0.500000 -0.500000 0.500000\n"
         "v 0.500000 -0.500000 0.500000\n"
         "v -0.500000 0.500000 0.500000\n"
@@ -39,6 +25,7 @@ std::istringstream objPolyCube()
         "v 0.500000 0.500000 -0.500000\n"
         "v -0.500000 -0.500000 -0.500000\n"
         "v 0.500000 -0.500000 -0.500000\n"
+        "# another comment\n"
         "f 1 2 4 3\n"
         "f 3 4 6 5\n"
         "f 5 6 8 7\n"
@@ -158,7 +145,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
             // first two faces have material index 0, the other two have index 1
-            REQUIRE(f.materialIndex() == f.index() / 2);
+            REQUIRE(f.materialIndex() == f.index() % 2);
         }
 
         REQUIRE(info.hasVertices());

@@ -1,26 +1,10 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
-cmake_minimum_required(VERSION 3.24)
 project(vclib-render-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
@@ -39,42 +23,43 @@ endif()
 if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
-    add_subdirectory(00-hello-triangle)
-    add_subdirectory(01-viewer)
-    add_subdirectory(02-mesh-viewer)
-    add_subdirectory(03-viewer-with-text)
-    add_subdirectory(04-hello-triangle-imgui)
-    add_subdirectory(05-two-window-viewers)
-    add_subdirectory(06-viewer-imgui)
-    add_subdirectory(07-test-texcoords)
-    add_subdirectory(08-test-gltf)
+    # Automatically find and add all render examples.
+    # For each directory, we check if it's a valid example by looking for a main.cpp file.
+    # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
+    # and ensure all required targets are available before adding the subdirectory.
+    file(GLOB RENDER_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*")
+    foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
+        if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
+                # Reset required targets for this iteration
+                set(EXAMPLE_REQUIRED_TARGETS "")
+                if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                    include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                endif()
 
-    add_subdirectory(801-camera-viewer)
-    add_subdirectory(808-test-lines)
+                # Verify if all the required targets (e.g., 3rd party libraries) exist
+                set(REQUIREMENTS_MET TRUE)
+                set(UNMET_REQ_PRINT "")
+                foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                    if(NOT TARGET ${req})
+                        set(REQUIREMENTS_MET FALSE)
+                        string(REPLACE "vclib-3rd-" "" req_print ${req})
+                        list(APPEND UNMET_REQ_PRINT ${req_print})
+                    endif()
+                endforeach()
 
-    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-        add_subdirectory(950-pbr)
-        add_subdirectory(984-mesh-viewer-imgui-test-split-shaders)
+                if(REQUIREMENTS_MET)
+                    add_subdirectory("${dir}")
+                else()
+                    message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                endif()
+            endif()
+        endif()
+    endforeach()
+
+    add_subdirectory(core)
+
+    if (VCLIB_BUILD_MODULE_EXTERNAL)
+        add_subdirectory(external)
     endif()
-
-    add_subdirectory(999-misc)
-
-    # the following examples are the same of the ones in the core module,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(9000-mesh-io)
-    add_subdirectory(9001-mesh-basics)
-    add_subdirectory(9003-mesh-creation)
-    add_subdirectory(9004-mesh-copy-and-transform)
-    add_subdirectory(9008-polymesh-specifics)
-    add_subdirectory(9009-mesh-custom-components)
-    add_subdirectory(9010-mesh-matrix-conversion)
-    add_subdirectory(9011-mesh-texture-and-texcoords)
-    add_subdirectory(9013-mesh-clean)
-    add_subdirectory(9014-mesh-smoothing)
-    add_subdirectory(9015-mesh-curvature)
-    add_subdirectory(9016-face-flooding)
-    add_subdirectory(9017-mesh-convex-hull)
-    add_subdirectory(9019-mesh-point-sampling)
-    add_subdirectory(9020-mesh-crease-edges)
-    add_subdirectory(9021-mesh-sphere-intersection)
 endif()

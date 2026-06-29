@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BASE_LOGGER_ABSTRACT_LOGGER_H
 #define VCL_BASE_LOGGER_ABSTRACT_LOGGER_H
@@ -26,6 +11,7 @@
 #include <vclib/base/base.h>
 #include <vclib/base/pointers.h>
 
+#include <sstream>
 #include <string>
 
 namespace vcl {
@@ -147,6 +133,43 @@ public:
     virtual void log(uint perc, const std::string& msg, LogLevel lvl) = 0;
 
     /**
+     * @brief Streams a value to the logger.
+     *
+     * Content is buffered internally. The virtual `log(msg)` member function
+     * is called once per complete line (i.e., whenever a `'\n'` character is
+     * encountered in the streamed output).
+     *
+     * Supported for any type that supports `operator<<` with `std::ostream`.
+     *
+     * @param[in] val: The value to stream.
+     * @return A reference to this logger, to allow chaining.
+     */
+    template<typename T>
+    requires requires (std::ostream& os, const T& val) { os << val; }
+    AbstractLogger& operator<<(const T& val)
+    {
+        std::ostringstream ss;
+        ss << val;
+        appendToStreamBuffer(ss.str());
+        return *this;
+    }
+
+    /**
+     * @brief Handles stream manipulators (e.g. `std::endl`, `std::flush`).
+     *
+     * Flushes the current internal line buffer by calling `log()`, even if no
+     * newline character has been received yet.
+     *
+     * @return A reference to this logger, to allow chaining.
+     */
+    AbstractLogger& operator<<(std::ostream& (*) (std::ostream&) )
+    {
+        log(mStreamBuffer);
+        mStreamBuffer.clear();
+        return *this;
+    }
+
+    /**
      * @brief Allows to easily manage progresses with the logger, along with the
      * `progress` and `endProgress` member functions.
      *
@@ -240,6 +263,22 @@ public:
      * than the `progressSize` argument of the `startProgress` member function.
      */
     virtual void progress(uint n) = 0;
+
+private:
+    std::string mStreamBuffer;
+
+    void appendToStreamBuffer(const std::string& s)
+    {
+        for (char c : s) {
+            if (c == '\n') {
+                log(mStreamBuffer);
+                mStreamBuffer.clear();
+            }
+            else {
+                mStreamBuffer += c;
+            }
+        }
+    }
 };
 
 /* Concepts */

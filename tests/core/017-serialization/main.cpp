@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -28,85 +13,27 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#include <filesystem>
 #include <random>
 
-template<typename Scalar>
-using DistrType = std::conditional_t<
-    std::is_integral_v<Scalar>,
-    std::uniform_int_distribution<Scalar>,
-    std::uniform_real_distribution<Scalar>>;
-
-template<typename Scalar, unsigned int N>
-vcl::Point<Scalar, N> randomPoint()
-{
-    std::random_device rd;
-    std::mt19937       gen(rd());
-
-    DistrType<Scalar> dis((Scalar) -100, (Scalar) 100);
-
-    vcl::Point<Scalar, N> p;
-    for (unsigned int i = 0; i < N; i++)
-        p[i] = dis(gen);
-    return p;
-}
-
-template<typename Scalar, unsigned int N>
-vcl::Box<vcl::Point<Scalar, N>> randomBox()
-{
-    vcl::Box<vcl::Point<Scalar, N>> b(
-        randomPoint<Scalar, N>(), randomPoint<Scalar, N>());
-    return b;
-}
-
-vcl::Color randomColor()
-{
-    // generate random color using std::mt19937
-
-    std::mt19937                                gen;
-    std::uniform_int_distribution<unsigned int> dist(0, 255);
-    return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
-}
-
-template<std::integral T>
-vcl::BitSet<T> randomBitSet()
-{
-    std::random_device              rd;
-    std::mt19937                    gen(rd());
-    std::uniform_int_distribution<> dis(0, 1);
-
-    vcl::BitSet<T> bs;
-    for (unsigned int i = 0; i < bs.size(); i++)
-        bs.set(i, dis(gen));
-    return bs;
-}
-
-template<typename Scalar>
-vcl::Plane<Scalar> randomPlane()
-{
-    std::random_device rd;
-    std::mt19937       gen(rd());
-
-    DistrType<Scalar> dis((Scalar) -100, (Scalar) 100);
-
-    return vcl::Plane<Scalar>(randomPoint<Scalar, 3>(), dis(gen));
-}
+static const std::string resultsPath =
+    std::string(VCLIB_CORE_RESULTS_PATH) + "/serialization";
 
 TEMPLATE_TEST_CASE("Point Serialization", "", int, float, double)
 {
     using Scalar = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/point3.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/point3.bin");
 
-    vcl::Point3<Scalar> p1 = randomPoint<Scalar, 3>();
+    vcl::Point3<Scalar> p1 =
+        vcl::random<vcl::Point3<Scalar>>(std::pair {-100, 100});
 
     p1.serialize(fo);
     fo.close();
 
     vcl::Point3<Scalar> p2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/point3.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/point3.bin");
 
     p2.deserialize(fi);
     fi.close();
@@ -118,18 +45,17 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 {
     using Scalar = TestType;
 
-    std::ofstream fo =
-        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/box3.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/box3.bin");
 
-    vcl::Box3<Scalar> b1 = randomBox<Scalar, 3>();
+    vcl::Box3<Scalar> b1 =
+        vcl::random<vcl::Box3<Scalar>>(std::pair {-100, 100});
 
     b1.serialize(fo);
     fo.close();
 
     vcl::Box3<Scalar> b2;
 
-    std::ifstream fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/box3.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/box3.bin");
 
     b2.deserialize(fi);
     fi.close();
@@ -139,11 +65,10 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 
 TEST_CASE("Colors Serialization")
 {
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/color.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/color.bin");
 
-    vcl::Color c1 = randomColor();
-    vcl::Color c2 = randomColor();
+    vcl::Color c1 = vcl::random<vcl::Color>();
+    vcl::Color c2 = vcl::random<vcl::Color>();
 
     vcl::serialize(fo, c1, c2);
     fo.close();
@@ -151,8 +76,7 @@ TEST_CASE("Colors Serialization")
     vcl::Color c3;
     vcl::Color c4;
 
-    std::ifstream fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/color.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/color.bin");
 
     vcl::deserialize(fi, c3, c4);
     fi.close();
@@ -165,18 +89,17 @@ TEMPLATE_TEST_CASE("Plane Serialization", "", float, double)
 {
     using Scalar = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/plane.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/plane.bin");
 
-    vcl::Plane<Scalar> p1 = randomPlane<Scalar>();
+    vcl::Plane<Scalar> p1 =
+        vcl::random<vcl::Plane<Scalar>>(std::pair {-100, 100});
 
     p1.serialize(fo);
     fo.close();
 
     vcl::Plane<Scalar> p2;
 
-    std::ifstream fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/plane.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/plane.bin");
 
     p2.deserialize(fi);
     fi.close();
@@ -194,18 +117,16 @@ TEMPLATE_TEST_CASE(
 {
     using T = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/bitset.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/bitset.bin");
 
-    vcl::BitSet<T> bs1 = randomBitSet<T>();
+    vcl::BitSet<T> bs1 = vcl::random<vcl::BitSet<T>>();
 
     bs1.serialize(fo);
     fo.close();
 
     vcl::BitSet<T> bs2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/bitset.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/bitset.bin");
 
     bs2.deserialize(fi);
     fi.close();
@@ -226,13 +147,12 @@ TEST_CASE("Vector serialization")
     unsigned int randSizeCol = distInt(gen);
     unsigned int randSizeDbl = distInt(gen);
     for (unsigned int i = 0; i < randSizeCol; i++)
-        vecColor1.pushBack(randomColor());
+        vecColor1.pushBack(vcl::random<vcl::Color>());
 
     for (unsigned int i = 0; i < randSizeDbl; i++)
         vecDouble1.pushBack(distDouble(gen));
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/vectors.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/vectors.bin");
 
     vcl::serialize(fo, vecColor1, vecDouble1);
     fo.close();
@@ -240,8 +160,7 @@ TEST_CASE("Vector serialization")
     vcl::Vector<vcl::Color, -1> vecColor2;
     vcl::Vector<double, -1>     vecDouble2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/vectors.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/vectors.bin");
     vcl::deserialize(fi, vecColor2, vecDouble2);
     fi.close();
 
@@ -279,8 +198,7 @@ TEST_CASE("Array serialization")
             for (unsigned int k = 0; k < array3D1.size(2); k++)
                 array3D1(i, j, k) = distFloat(gen);
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/arrays.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/arrays.bin");
     array2D1.serialize(fo);
     array3D1.serialize(fo);
     fo.close();
@@ -288,8 +206,7 @@ TEST_CASE("Array serialization")
     vcl::Array<double, 2> array2D2;
     vcl::Array<float, 3>  array3D2;
 
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/arrays.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/arrays.bin");
     array2D2.deserialize(fi);
     array3D2.deserialize(fi);
     fi.close();
@@ -313,21 +230,22 @@ TEST_CASE("Array serialization")
 
 TEST_CASE("std map and unordered map serialization")
 {
+    std::pair minMax {-100, 100};
+
     // Create and populate std::map
     std::map<std::string, vcl::Point3f> map1;
-    map1["p1"] = randomPoint<float, 3>();
-    map1["p2"] = randomPoint<float, 3>();
-    map1["p3"] = randomPoint<float, 3>();
+    map1["p1"] = vcl::random<vcl::Point3f>(minMax);
+    map1["p2"] = vcl::random<vcl::Point3f>(minMax);
+    map1["p3"] = vcl::random<vcl::Point3f>(minMax);
 
     // Create and populate std::unordered_map
     std::unordered_map<std::string, vcl::Color> umap1;
-    umap1["c1"] = randomColor();
-    umap1["c2"] = randomColor();
-    umap1["c3"] = randomColor();
+    umap1["c1"] = vcl::random<vcl::Color>();
+    umap1["c2"] = vcl::random<vcl::Color>();
+    umap1["c3"] = vcl::random<vcl::Color>();
 
     // Serialize
-    std::ofstream fo =
-        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/maps.bin");
     vcl::serialize(fo, map1);
     vcl::serialize(fo, umap1);
     fo.close();
@@ -335,8 +253,7 @@ TEST_CASE("std map and unordered map serialization")
     // Deserialize
     std::map<std::string, vcl::Point3f>         map2;
     std::unordered_map<std::string, vcl::Color> umap2;
-    std::ifstream                               fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/maps.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/maps.bin");
     vcl::deserialize(fi, map2);
     vcl::deserialize(fi, umap2);
     fi.close();
@@ -363,14 +280,12 @@ TEST_CASE("std vector of strings serialization")
     vecStr1.push_back("World");
     vecStr1.push_back("!");
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/vecStr.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/vecStr.bin");
     vcl::serialize(fo, vecStr1);
     fo.close();
 
     std::vector<std::string> vecStr2;
-    std::ifstream            fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/vecStr.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/vecStr.bin");
     vcl::deserialize(fi, vecStr2);
     fi.close();
 
@@ -386,22 +301,18 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
     std::random_device rd;
     std::mt19937       gen(rd());
 
-    DistrType<Scalar> dis(0.0, 1.0);
-
     vcl::Matrix<Scalar, 2, 2> mat1;
 
     for (unsigned int i = 0; i < 2; i++)
         for (unsigned int j = 0; j < 2; j++)
-            mat1(i, j) = dis(gen);
+            mat1(i, j) = vcl::random<Scalar>();
 
-    std::ofstream fo =
-        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mat.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/mat.bin");
     mat1.serialize(fo);
     fo.close();
 
     vcl::Matrix<Scalar, 2, 2> mat2;
-    std::ifstream             fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/mat.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/mat.bin");
     mat2.deserialize(fi);
     fi.close();
 
@@ -418,16 +329,14 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 
     mesh1.enablePerVertexColor();
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++)
-        mesh1.vertex(i).color() = randomColor();
+        mesh1.vertex(i).color() = vcl::random<vcl::Color>();
 
-    std::ofstream fo =
-        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/mesh.bin");
     mesh1.serialize(fo);
     fo.close();
 
     Mesh          mesh2;
-    std::ifstream fi =
-        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/mesh.bin");
     mesh2.deserialize(fi);
     fi.close();
 
@@ -475,7 +384,7 @@ TEMPLATE_TEST_CASE(
         "rand");
 
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
-        vh[i] = randomPoint<double, 3>();
+        vh[i] = vcl::random<vcl::Point3d>(std::pair {-100, 100});
     }
 
     auto fh = mesh1.template perElementCustomComponentVectorHandle<
@@ -483,11 +392,10 @@ TEMPLATE_TEST_CASE(
         vcl::Color>("rand_color");
 
     for (unsigned int i = 0; i < mesh1.faceCount(); i++) {
-        fh[i] = randomColor();
+        fh[i] = vcl::random<vcl::Color>();
     }
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/mesh_cc.bin");
+    std::ofstream fo = vcl::openOutputFileStream(resultsPath + "/mesh_cc.bin");
     mesh1.serialize(fo);
     mesh1.template serializeCustomComponentsOfType<double>(fo);
     mesh1.template serializeCustomComponentsOfType<vcl::Point3d>(fo);
@@ -498,8 +406,7 @@ TEMPLATE_TEST_CASE(
     fo.close();
 
     Mesh          mesh2;
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/mesh_cc.bin");
+    std::ifstream fi = vcl::openInputFileStream(resultsPath + "/mesh_cc.bin");
     mesh2.deserialize(fi);
     mesh2.template deserializeCustomComponentsOfType<double>(fi);
     mesh2.template deserializeCustomComponentsOfType<vcl::Point3d>(fi);

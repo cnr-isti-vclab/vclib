@@ -5,7 +5,8 @@
 
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
 
-#include <vclib/bgfx_imgui/imgui_shaders.h>
+#include <vclib/bgfx/context.h>
+#include <vclib/bgfx/programs/vert_frag_loader.h>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
@@ -400,8 +401,8 @@ struct OcornutImguiContext
 		m_keyMap[entry::Key::GamepadThumbR]    = ImGuiKey_GamepadR3;
 #endif // USE_ENTRY
 
-		bgfx::RendererType::Enum type = bgfx::getRendererType();
-		m_program = vcl::loadProgram(vcl::ImGuiShaders::ORCONUT_IMGUI, type);
+		vcl::ProgramManager& pm = vcl::Context::instance().programManager();
+		m_program = pm.getProgram<vcl::VertFragProgram::ORCONUT_IMGUI>();
 			/*bgfx::createProgram(
 			  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_ocornut_imgui")
 			, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_ocornut_imgui")
@@ -409,7 +410,7 @@ struct OcornutImguiContext
 			);*/
 
 		u_imageLodEnabled = bgfx::createUniform("u_imageLodEnabled", bgfx::UniformType::Vec4);
-		m_imageProgram = vcl::loadProgram(vcl::ImGuiShaders::IMGUI_IMAGE, type);
+		m_imageProgram = pm.getProgram<vcl::VertFragProgram::IMGUI_IMAGE>();
 			/*bgfx::createProgram(
 			  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_imgui_image")
 			, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_imgui_image")
