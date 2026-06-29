@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
 #define VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
@@ -263,25 +248,28 @@ public:
         resizeViewer(width, height);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         keyPress(key);
+        return false;
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         keyRelease(key);
+        return false;
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
+        return false;
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -290,9 +278,10 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         pressMouse(button);
+        return false;
     }
 
-    void onMouseRelease(
+    bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -301,13 +290,15 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         releaseMouse(button);
+        return false;
     }
 
-    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+    bool onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
         override
     {
         setKeyModifiers(modifiers);
         scroll(dx, dy);
+        return false;
     }
 
 protected:

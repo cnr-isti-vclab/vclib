@@ -1,37 +1,22 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_EXT_BGFX_PBR_COMMON_SH
-#define VCL_EXT_BGFX_PBR_COMMON_SH
+#ifndef VCL_BGFX_PBR_COMMON_SH
+#define VCL_BGFX_PBR_COMMON_SH
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-#include <vclib/bgfx/drawable/mesh/pbr_macros.h>
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 // Constants
 
-#define PI                                            3.141592653589793
-#define GAMMA                                         2.2
+#define PI    3.141592653589793
+#define GAMMA 2.2
 
 // Settings
 
@@ -42,12 +27,6 @@
 #define isAlphaModeMask(settings)             checkSetting(settings, VCL_PBR_IS_ALPHA_MODE_MASK)
 #define useImageBasedLighting(settings)       checkSetting(settings, VCL_PBR_IMAGE_BASED_LIGHTING)
 
-#define isBaseColorTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_BASE_COLOR)
-#define isMetallicRoughnessTextureAvailable(settings) checkSetting(settings, VCL_PBR_TEXTURE_METALLIC_ROUGHNESS)
-#define isNormalTextureAvailable(settings)            checkSetting(settings, VCL_PBR_TEXTURE_NORMAL)
-#define isOcclusionTextureAvailable(settings)         checkSetting(settings, VCL_PBR_TEXTURE_OCCLUSION)
-#define isEmissiveTextureAvailable(settings)          checkSetting(settings, VCL_PBR_TEXTURE_EMISSIVE)
-
 // Lighting settings, may not be definitive
 
 #define LIGHT_COUNT                                   1
@@ -57,13 +36,13 @@
 
 // precomputed default light directions from https://github.com/KhronosGroup/glTF-Sample-Viewer
 
-#define LIGHT_KEY_DIR                                 vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
-#define LIGHT_FILL_DIR                                vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
-#define LIGHT_KEY_DIR_VIEW                            mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
-#define LIGHT_FILL_DIR_VIEW                           mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
+#define LIGHT_KEY_DIR       vec3(0.5000000108991332,-0.7071067857071073,-0.49999999460696354)
+#define LIGHT_FILL_DIR      vec3(-0.4999998538661192,0.7071068849655084,0.500000052966632)
+#define LIGHT_KEY_DIR_VIEW  mul(vec4(0.5000000108991332,-0.7071067857071073,-0.49999999460696354,0.0), u_invView).xyz
+#define LIGHT_FILL_DIR_VIEW mul(vec4(-0.4999998538661192,0.7071068849655084,0.500000052966632,0.0), u_invView).xyz
 
-#define DISTRIBUTION_LAMBERTIAN                     0u
-#define DISTRIBUTION_GGX                            1u
+#define DISTRIBUTION_LAMBERTIAN 0u
+#define DISTRIBUTION_GGX        1u
 
 #define TONEMAP_NONE                     0
 #define TONEMAP_BASIC                    1
@@ -877,4 +856,4 @@ vec4 pbrColorIbl(
 }
 
 
-#endif // VCL_EXT_BGFX_PBR_COMMON_SH
+#endif // VCL_BGFX_PBR_COMMON_SH

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/context.h>
 
@@ -140,18 +125,26 @@ bool Context::supportsCompute() const
     return (capabilites().supported & BGFX_CAPS_COMPUTE) == BGFX_CAPS_COMPUTE;
 }
 
-bgfx::ViewId Context::requestViewId()
+bgfx::ViewId Context::requestViewId(bool highPriority)
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    bgfx::ViewId                viewId = mViewStack.top();
-    mViewStack.pop();
+    bgfx::ViewId                viewId = BGFX_INVALID_HANDLE;
+    if (mViewSet.size() > 0) {
+        std::set<bgfx::ViewId>::iterator it;
+        if (highPriority)
+            it = mViewSet.begin();
+        else
+            it = std::prev(mViewSet.end());
+        viewId = *it;
+        mViewSet.erase(it);
+    }
     return viewId;
 }
 
 void Context::releaseViewId(bgfx::ViewId viewId)
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    instance().mViewStack.push(viewId);
+    instance().mViewSet.insert(viewId);
 }
 
 bool Context::isDefaultWindow(void* windowHandle) const
@@ -333,9 +326,12 @@ Context::Context(void* windowHandle, void* displayHandle)
 #endif // __APPLE__
 
     bgfx::Init init;
-    init.platformData.nwh  = mWindowHandle;
-    init.type              = sRenderType;
-    init.platformData.ndt  = mDisplayHandle;
+    init.platformData.nwh = mWindowHandle;
+    init.type             = sRenderType;
+    init.platformData.ndt = mDisplayHandle;
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
+#endif
     init.resolution.width  = 1;
     init.resolution.height = 1;
     init.resolution.reset  = sResetFlags;
@@ -349,9 +345,8 @@ Context::Context(void* windowHandle, void* displayHandle)
     // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
 
-    // the view id is a 0-based index, so we start from maxViews - 1
-    while (mv != 0) {
-        mViewStack.push((bgfx::ViewId) --mv);
+    for (bgfx::ViewId viewId = 0; viewId < mv; viewId++) {
+        mViewSet.insert(viewId);
     }
 
     // font manager must be created after bgfx::init

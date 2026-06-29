@@ -1,32 +1,18 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/mesh_viewer.h>
 
-#include "ui_mesh_viewer.h"
-
+#include <vclib/qt/gui/screen_shot_dialog.h>
+#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+
+#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
@@ -72,29 +58,68 @@ DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
  * @param parent
  */
 MeshViewer::MeshViewer(QWidget* parent) :
-        QWidget(parent), mUI(new Ui::MeshViewer)
+        QMainWindow(parent), mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
 
+    // give keyboard focus to the viewer widget immediately
+    mUI->viewer->setFocus();
+
+    // prevent any widget in the right area from stealing keyboard focus
+    mUI->rightArea->setFocusPolicy(Qt::NoFocus);
+    std::function<void(QWidget*)> disableFocus = [&disableFocus](QWidget* w) {
+        w->setFocusPolicy(Qt::NoFocus);
+        for (auto* child : w->findChildren<QWidget*>(
+                 QString(), Qt::FindChildrenRecursively)) {
+            disableFocus(child);
+        }
+    };
+    disableFocus(mUI->rightArea);
+
+    /** Drawable Object Vector **/
+
     mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
-
-    // create the vector of DrawableObjects
-    mDrawableObjectVector->resize(2, DrawableObjectVector());
-
-    mListedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
-        mDrawableObjectVector->at(0));
-
-    mUnlistedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
-        mDrawableObjectVector->at(1));
 
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
+
+    /** Editors **/
+
+    // no toolbar editors
+    mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
+    mMeshSelectorEditor->setActive(true);
+    auto callback = [this](uint id) {
+        drawableObjectVectorTree().setSelectedItem(id);
+    };
+    mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
+
+    // toolbar editors and frames
+    mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
+        viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
+    assert(mAxisEditor);
+    AxisEditorFrame<ViewerType>* axisEditor =
+        new AxisEditorFrame<ViewerType>(mAxisEditor);
+    mUI->toolBar->addWidget(axisEditor);
+
+    auto* trackballEditor = new TrackBallFrame(viewer());
+    mUI->toolBar->addWidget(trackballEditor);
+
+    mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
+    BoundingBoxEditorFrame<ViewerType>* bboxEditor =
+        new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
+    mUI->toolBar->addWidget(bboxEditor);
+
+    disableFocus(mUI->toolBar);
+
+    /** Render Settings Frame **/
+
+    mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+
+    /** Events **/
 
     // install the key filter
     mUI->viewer->installEventFilter(new KeyFilter(this));
-
-    mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
@@ -136,25 +161,24 @@ MeshViewer::~MeshViewer()
 void MeshViewer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
-    mDrawableObjectVector->set(0, v);
-    mListedDrawableObjects = v;
+    mDrawableObjectVector = v;
 
     // order here is important: drawVectorTree must have the drawVector before
     // the renderSettingsFrame!
     mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
 
     updateGUI();
-}
-
-void MeshViewer::setUnlistedDrawableObjectVector(
-    const std::shared_ptr<DrawableObjectVector>& v)
-{
 }
 
 uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
+}
+
+void MeshViewer::refreshEditors()
+{
+    viewer().refreshEditors();
 }
 
 TextEditLogger& MeshViewer::logger()
@@ -224,7 +248,7 @@ void MeshViewer::visibilityDrawableObjectChanged()
     uint i = mUI->drawVectorTree->selectedDrawableObject();
     if (i != UINT_NULL) {
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(i));
+            mDrawableObjectVector->at(i));
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
@@ -244,8 +268,9 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 {
     // take the newly selected DrawableObject and check whether it is a
     // AbstractDrawableMesh
+    mDrawableObjectVector->setSelectedObjectId(i);
     auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-        mListedDrawableObjects->at(i));
+        mDrawableObjectVector->at(i));
     if (m) {
         // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
@@ -258,6 +283,7 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         // disabled
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
+    mUI->viewer->update();
 }
 
 /**
@@ -272,12 +298,12 @@ void MeshViewer::renderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorTree->selectedDrawableObject();
-    if (i != UINT_NULL && mListedDrawableObjects->size() > 0) {
+    if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
         // The selected object must always be a AbstractDrawableMesh, because
         // the RenderSettingsFrame (which called this member function) is
         // visible only when the selected Object is a AbstractDrawableMesh
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(i));
+            mDrawableObjectVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // AbstractDrawableMesh
         m->setRenderSettings(
@@ -306,7 +332,7 @@ void MeshViewer::updateGUI()
 
     if (selected != UINT_NULL) {
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mListedDrawableObjects->at(selected));
+            mDrawableObjectVector->at(selected));
         if (m) {
             mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);

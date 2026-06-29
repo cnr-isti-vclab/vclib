@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/mesh_render_settings_frame/surface_frame.h>
 
@@ -69,9 +54,9 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
 
     connect(
         mUI->colorDialogPushButton,
-        SIGNAL(clicked()),
+        SIGNAL(colorChanged(const QColor&)),
         this,
-        SLOT(onColorDialogButtonClicked()));
+        SLOT(onUserColorChanged(const QColor&)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -163,7 +148,7 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     mUI->userColorFrame->setEnabled(mMRS.isSurface(COLOR_USER));
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->colorDialogPushButton, c);
+    mUI->colorDialogPushButton->setBackgroundColor(c);
 }
 
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -210,18 +195,10 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
     emit settingsUpdated();
 }
 
-void SurfaceFrame::onColorDialogButtonClicked()
+void SurfaceFrame::onUserColorChanged(const QColor& c)
 {
-    QColor color =
-        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-
-    if (color.isValid()) {
-        setButtonBackGround(mUI->colorDialogPushButton, color);
-
-        mMRS.setSurfaceUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
+    mMRS.setSurfaceUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
@@ -671,6 +656,42 @@ public:
     {
         *this = *this * m;
         return *this;
+    }
+
+    /**
+     * @brief Returns a Point object with all components set to the lowest
+     * representable value of the Scalar type.
+     *
+     * The function returns a Point object where each component is initialized
+     * to the lowest representable value of the Scalar type, which is typically
+     * the most negative value for signed types. This can be useful for
+     * initializing a Point object to a known minimum value before performing
+     * comparisons or other operations.
+     *
+     * @return A Point object with all components set to the lowest
+     * representable value of the Scalar type.
+     */
+    static Point min()
+    {
+        return Point::Constant(std::numeric_limits<Scalar>::lowest());
+    }
+
+    /**
+     * @brief Returns a Point object with all components set to the highest
+     * representable value of the Scalar type.
+     *
+     * The function returns a Point object where each component is initialized
+     * to the highest representable value of the Scalar type, which is typically
+     * the most positive value for signed types. This can be useful for
+     * initializing a Point object to a known maximum value before performing
+     * comparisons or other operations.
+     *
+     * @return A Point object with all components set to the highest
+     * representable value of the Scalar type.
+     */
+    static Point max()
+    {
+        return Point::Constant(std::numeric_limits<Scalar>::max());
     }
 
 private:

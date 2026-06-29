@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_PRIMITIVES_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_H
@@ -77,7 +62,8 @@ public:
     };
 
 private:
-    float mThickness = 5.0f;
+    float mThickness   = 5.0f;
+    float mDepthOffset = 0.0f;
 
     // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
     // NONE
@@ -343,6 +329,19 @@ public:
     float& thickness() { return mThickness; }
 
     /**
+     * @brief Returns the depth offset applied to the lines.
+     * @return The depth offset applied to the lines.
+     */
+    float depthOffset() const { return mDepthOffset; }
+
+    /**
+     * @brief Returns a reference to the depth offset applied to the lines.
+     * This allows to modify the depth offset directly.
+     * @return A reference to the depth offset applied to the lines.
+     */
+    float& depthOffset() { return mDepthOffset; }
+
+    /**
      * @brief Returns true if shading is computed per vertex using vertex
      * normals, false if no shading is applied.
      * @return true if shading is computed per vertex using vertex normals.
@@ -506,13 +505,18 @@ private:
         // lazy initialization
         // to avoid creating uniforms before bgfx is initialized
         if (!sSettingUH.isValid())
-            sSettingUH = Uniform("u_settings", bgfx::UniformType::Vec4);
+            sSettingUH = Uniform("u_linesSettings", bgfx::UniformType::Vec4);
+
+        // most significative bytes used for shading per vertex option, the
+        // bytes store color to use
+        uint colorShadingPack = toUnderlying(mColorToUse) & 0x00FFFFFF;
+        colorShadingPack |= (mShadingPerVertex ? 1 : 0) << 24;
 
         float data[] = {
             mThickness,
-            static_cast<float>(mColorToUse),
+            std::bit_cast<float>(colorShadingPack),
             std::bit_cast<float>(mGeneralColor.abgr()),
-            static_cast<float>(mShadingPerVertex)};
+            mDepthOffset};
         sSettingUH.bind(data);
     }
 };

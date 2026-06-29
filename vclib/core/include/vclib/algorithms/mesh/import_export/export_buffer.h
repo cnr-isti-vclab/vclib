@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_BUFFER_H
@@ -42,12 +27,6 @@
  */
 
 namespace vcl {
-
-namespace detail {
-
-inline TriPolyIndexBiMap indexMap;
-
-} // namespace detail
 
 /**
  * @brief Export the vertex positions of a mesh to a buffer.
@@ -418,6 +397,12 @@ void triangulatedFaceVertexIndicesToBuffer(
             }
         }
     }
+
+    if (&indexMap == &detail::indexMap) {
+        // if the user did not give an indexMap, we clear it at the end of the
+        // function to keep the global one empty for the next call.
+        indexMap.clear();
+    }
 }
 
 /**
@@ -683,6 +668,8 @@ void edgeSelectionToBuffer(const MeshType& mesh, auto* buffer)
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of elements in the mesh) - used only when storage is column major
@@ -693,8 +680,9 @@ template<uint ELEM_ID, MeshConcept MeshType>
 void elementNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
     using namespace detail;
 
@@ -703,8 +691,10 @@ void elementNormalsToBuffer(
     const uint NUM_ROWS =
         numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
 
-    for (uint        i = 0;
-         const auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+    for (uint i = 0;
+         auto n : mesh.template elements<ELEM_ID>() | views::normals) {
+        if (normalize)
+            n.normalize();
         at(buffer, i, 0, NUM_ROWS, 3, storage) = n.x();
         at(buffer, i, 1, NUM_ROWS, 3, storage) = n.y();
         at(buffer, i, 2, NUM_ROWS, 3, storage) = n.z();
@@ -728,6 +718,8 @@ void elementNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of vertices in the mesh) - used only when storage is column major
@@ -738,10 +730,12 @@ template<MeshConcept MeshType>
 void vertexNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::VERTEX>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::VERTEX>(
+        mesh, buffer, normalize, storage, numRows);
 }
 
 /**
@@ -758,6 +752,8 @@ void vertexNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of faces in the mesh) - used only when storage is column major
@@ -768,10 +764,12 @@ template<FaceMeshConcept MeshType>
 void faceNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::FACE>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::FACE>(
+        mesh, buffer, storage, normalize, numRows);
 }
 
 /**
@@ -792,6 +790,8 @@ void faceNormalsToBuffer(
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
  * @param[in] indexMap: map from triangle index to face index
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of triangles in the map) - used only when storage is column major
@@ -803,8 +803,9 @@ void triangulatedFaceNormalsToBuffer(
     const MeshType&          mesh,
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap,
-    MatrixStorageType        storage = MatrixStorageType::ROW_MAJOR,
-    uint                     numRows = UINT_NULL)
+    bool                     normalize = false,
+    MatrixStorageType        storage   = MatrixStorageType::ROW_MAJOR,
+    uint                     numRows   = UINT_NULL)
 {
     using namespace detail;
 
@@ -814,9 +815,11 @@ void triangulatedFaceNormalsToBuffer(
         numRows == UINT_NULL ? indexMap.triangleCount() : numRows;
 
     for (const auto& f : mesh.faces()) {
-        const auto& n     = f.normal();
-        uint        first = indexMap.triangleBegin(f.index());
-        uint        last  = first + indexMap.triangleCount(f.index());
+        auto n = f.normal();
+        if (normalize)
+            n.normalize();
+        uint first = indexMap.triangleBegin(f.index());
+        uint last  = first + indexMap.triangleCount(f.index());
         for (uint t = first; t < last; ++t) {
             at(buffer, t, 0, NUM_ROWS, 3, storage) = n.x();
             at(buffer, t, 1, NUM_ROWS, 3, storage) = n.y();
@@ -839,6 +842,8 @@ void triangulatedFaceNormalsToBuffer(
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the buffer
  * @param[in] storage: storage type of the matrix (row or column major)
  * @param[in] numRows: number of rows of the matrix (if different from the
  * number of edges in the mesh) - used only when storage is column major
@@ -849,10 +854,12 @@ template<EdgeMeshConcept MeshType>
 void edgeNormalsToBuffer(
     const MeshType&   mesh,
     auto*             buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    bool              normalize = false,
+    MatrixStorageType storage   = MatrixStorageType::ROW_MAJOR,
+    uint              numRows   = UINT_NULL)
 {
-    elementNormalsToBuffer<ElemId::EDGE>(mesh, buffer, storage, numRows);
+    elementNormalsToBuffer<ElemId::EDGE>(
+        mesh, buffer, normalize, storage, numRows);
 }
 
 /**

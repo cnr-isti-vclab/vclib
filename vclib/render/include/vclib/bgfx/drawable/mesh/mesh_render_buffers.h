@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
@@ -64,11 +49,11 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
     DynamicVertexBuffer mVertexQuadBuffer;
-    mutable bool        mVertexQuadBufferGenerated = false;
+    bool                mVertexQuadBufferGenerated = false;
 
-    IndexBuffer mTriangleIndexBuffer;
-    IndexBuffer mTriangleNormalBuffer;
-    IndexBuffer mTriangleColorBuffer;
+    IndexBuffer  mTriangleIndexBuffer;
+    VertexBuffer mTriangleNormalBuffer;
+    VertexBuffer mTriangleColorBuffer;
 
     Lines mEdgeLines;
 
@@ -130,7 +115,7 @@ public:
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,
-        const bgfx::ViewId viewId) const
+        const bgfx::ViewId viewId)
     {
         if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
             return;
@@ -141,8 +126,6 @@ public:
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         mVertexNormalsBuffer.bindCompute(
             VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
-        mVertexColorsBuffer.bindCompute(
-            VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
 
         mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
 
@@ -171,12 +154,12 @@ public:
 
         // streams MUST be consecutive starting from 0
         // otherwise on metal it won't work
-        mVertexPositionsBuffer.bindVertex(stream++);
+        mVertexPositionsBuffer.bind(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexNormalsBuffer.bindVertex(stream++);
+            mVertexNormalsBuffer.bind(stream++);
         }
 
         if (mVertexTangentsBuffer.isValid()) {
@@ -188,7 +171,7 @@ public:
         if (mVertexColorsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexColorsBuffer.bindVertex(stream++);
+            mVertexColorsBuffer.bind(stream++);
         }
 
         if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
@@ -211,6 +194,14 @@ public:
         mVertexQuadIndexBuffer.bind();
     }
 
+    void bindPointsVertexColorBuffer() const
+    {
+        if (mVertexColorsBuffer.isValid()) {
+            mVertexColorsBuffer.bindCompute(
+                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
+        }
+    }
+
     void bindIndexBuffers(
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
@@ -226,21 +217,36 @@ public:
                 chunk.startIndex * 3, chunk.indexCount * 3);
         }
 
-        mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+        mTriangleNormalBuffer.bindCompute(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+        mTriangleColorBuffer.bindCompute(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
-    void bindTextures(
+    /**
+     * @brief Binds the textures associated to the material of the given
+     * triangle chunk. Returns the number of bound textures.
+     *
+     * @param[in] mrs: the mesh render settings, needed to identify the material
+     * index to use (per vertex or per face)
+     * @param[in] chunkNumber: the triangle chunk number
+     * @param[in] m: the mesh
+     * @return the number of bound textures
+     */
+    uint bindTextures(
         const MeshRenderSettings& mrs,
         uint                      chunkNumber,
         const MeshType&           m) const
     {
         uint materialId = Base::materialIndex(mrs, chunkNumber);
+
+        uint boundTextures = 0;
+
+        DrawableMeshUniforms::TextureType tt =
+            DrawableMeshUniforms::TextureType::BASE_COLOR;
 
         if (materialId != UINT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
@@ -251,37 +257,19 @@ public:
                     if (tex.isValid()) {
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
-                            VCL_MRB_TEXTURE0 + j,
+                            boundTextures,
                             sTextureSamplerUniforms[j].handle(),
                             flags);
+
+                        tt = static_cast<DrawableMeshUniforms::TextureType>(j);
+                        DrawableMeshUniforms::setTextureStage(
+                            tt, boundTextures);
+                        boundTextures++;
                     }
                 }
             }
         }
-    }
-
-    std::array<bool, N_TEXTURE_TYPES> textureAvailableArray(
-        const MeshType& m,
-        uint            materialId) const
-    {
-        std::array<bool, N_TEXTURE_TYPES> textureAvailable = {false};
-        if (materialId == UINT_NULL) {
-            return textureAvailable;
-        }
-        else {
-            assert(materialId < m.materialCount());
-            const Material& mat = m.material(materialId);
-
-            for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
-                const auto& td = m.material(materialId).textureDescriptor(j);
-                const std::string& path = td.path();
-                if (!path.empty()) {
-                    const Texture& tex  = mMaterialTextures.at(path);
-                    textureAvailable[j] = tex.isValid();
-                }
-            }
-        }
-        return textureAvailable;
+        return boundTextures;
     }
 
     void updateEdgeSettings(const MeshRenderSettings& mrs)
@@ -339,14 +327,12 @@ private:
 
         Base::fillVertexPositions(mesh, buffer);
 
-        mVertexPositionsBuffer.createForCompute(
+        mVertexPositionsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
 
         // Creates the buffers to be used with compute for splatting
@@ -388,7 +374,7 @@ private:
 
         Base::fillVertexQuadIndices(mesh, buffer);
 
-        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
+        mVertexQuadIndexBuffer.create(buffer, totalIndices, releaseFn);
 
         // if number of vertices is not zero, the index buffer must be valid
         assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
@@ -403,14 +389,12 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.createForCompute(
+        mVertexNormalsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -423,14 +407,13 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.createForCompute(
+        mVertexColorsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -449,7 +432,6 @@ private:
             bgfx::Attrib::TexCoord0,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -468,7 +450,6 @@ private:
             bgfx::Attrib::Tangent,
             4,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -487,7 +468,6 @@ private:
             bgfx::Attrib::TexCoord1,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -500,7 +480,12 @@ private:
 
         Base::fillTriangleIndices(mesh, buffer);
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        // Re-read the actual triangle count: fillTriangleIndices() updates
+        // mNumTris to the real earCut result, which may be smaller than the
+        // pre-triangulation estimate for meshes with degenerate faces.
+        nt = Base::numTris();
+
+        mTriangleIndexBuffer.create(buffer, nt * 3, releaseFn);
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
@@ -512,11 +497,12 @@ private:
 
         Base::fillTriangleNormals(mesh, buffer);
 
-        mTriangleNormalBuffer.createForCompute(
+        mTriangleNormalBuffer.create(
             buffer,
-            nt * 3,
+            nt,
+            bgfx::Attrib::Normal,
+            3,
             PrimitiveType::FLOAT,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -529,8 +515,14 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        mTriangleColorBuffer.create(
+            buffer,
+            nt,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
@@ -744,6 +736,9 @@ private:
 
         mEdgeLines.setPoints(positions, indices, normals, vcolors, ecolors);
 
+        // to avoid z-fighting with filled triangles
+        mEdgeLines.depthOffset() = 0.0001f;
+
         // otherwise, already computed buffers should do the job
     }
 
@@ -778,6 +773,9 @@ private:
 
         mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
 
+        // to avoid z-fighting with filled triangles
+        mWireframeLines.depthOffset() = 0.0001f;
+
         // otherwise, already computed buffers should do the job
     }
 
@@ -788,7 +786,7 @@ private:
         if (!sTextureSamplerUniforms[0].isValid()) {
             for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
                 sTextureSamplerUniforms[i] = Uniform(
-                    Material::TEXTURE_TYPE_NAMES[i].c_str(),
+                    ("s_tex" + std::to_string(i)).c_str(),
                     bgfx::UniformType::Sampler);
             }
         }

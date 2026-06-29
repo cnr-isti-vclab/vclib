@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 $input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1
 $output v_color, v_normal
@@ -26,26 +11,23 @@ $output v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
+#include <vclib/bgfx/primitives/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
-
-uniform vec4 u_settings;
 
 #define NEAR_EPSILON 0.001
 #define LENGTH_EPSILON 0.0001
 
-#define thickness             u_settings.x
+#define p0           a_position
+#define p1           a_texcoord0
 
-#define p0                    a_position
-#define p1                    a_texcoord0
+#define color0       a_color0
+#define color1       a_color1
 
-#define color0                a_color0
-#define color1                a_color1
+#define normal0      a_normal
+#define normal1      a_texcoord1
 
-#define normal0               a_normal
-#define normal1               a_texcoord1
-
-#define screenWidth           u_viewRect.z
-#define screenHeight          u_viewRect.w
+#define screenWidth  u_viewRect.z
+#define screenHeight u_viewRect.w
 
 void main() {
     int generalIndex = gl_VertexID % 4;
@@ -111,5 +93,7 @@ void main() {
 
     v_color = color;
     v_normal = normal;
+    // nudge towards camera to avoid z-fighting with other geometry
+    p.z += -u_depthOffset * p.w;
     gl_Position = p;
 }
