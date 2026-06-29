@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -30,7 +15,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to export meshes to matrices and import
 # matrices back to meshes, including:
@@ -179,15 +164,15 @@ def mesh_matrix_conversion():
 def save_results(imported_mesh, cube_mesh):
     """Save the resulting meshes"""
     # Create results directory if it doesn't exist
-    os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+    os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
     # Save the imported mesh
-    vcl.save_mesh(imported_mesh, VCLIB_RESULTS_PATH + "/010_imported_mesh.ply")
-    print(f"Saved imported mesh to: {VCLIB_RESULTS_PATH}/010_imported_mesh.ply")
+    vcl.save_mesh(imported_mesh, VCLIB_PYTHON_RESULTS_PATH + "/010_imported_mesh.ply")
+    print(f"Saved imported mesh to: {VCLIB_PYTHON_RESULTS_PATH}/010_imported_mesh.ply")
 
     # Save the created cube mesh
-    vcl.save_mesh(cube_mesh, VCLIB_RESULTS_PATH + "/010_created_cube.ply")
-    print(f"Saved created cube to: {VCLIB_RESULTS_PATH}/010_created_cube.ply")
+    vcl.save_mesh(cube_mesh, VCLIB_PYTHON_RESULTS_PATH + "/010_created_cube.ply")
+    print(f"Saved created cube to: {VCLIB_PYTHON_RESULTS_PATH}/010_created_cube.ply")
 
 
 if __name__ == "__main__":

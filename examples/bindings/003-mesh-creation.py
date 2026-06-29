@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -29,7 +14,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh creation in VCLib:
 # 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
@@ -143,13 +128,13 @@ if __name__ == "__main__":
     print("\n=== Saving Meshes ===")
     
     try:
-        vcl.save_mesh(tetrahedron, VCLIB_RESULTS_PATH + "/003_tetrahedron.ply", info = save_info)
-        vcl.save_mesh(cube, VCLIB_RESULTS_PATH + "/003_cube_tri.ply", info = save_info)
-        vcl.save_mesh(dodecahedron, VCLIB_RESULTS_PATH + "/003_dodecahedron_tri.ply", info = save_info)
-        vcl.save_mesh(custom_cube, VCLIB_RESULTS_PATH + "/003_custom_cube.ply", info = save_info)
-        vcl.save_mesh(cube_quads, VCLIB_RESULTS_PATH + "/003_cube_poly.ply", info = save_info)
-        vcl.save_mesh(dodecahedron_poly, VCLIB_RESULTS_PATH + "/003_dodecahedron_poly.ply", info = save_info)
-        vcl.save_mesh(sphere_quads, VCLIB_RESULTS_PATH + "/003_sphere_poly.ply", info = save_info)
+        vcl.save_mesh(tetrahedron, VCLIB_PYTHON_RESULTS_PATH + "/003_tetrahedron.ply", info = save_info)
+        vcl.save_mesh(cube, VCLIB_PYTHON_RESULTS_PATH + "/003_cube_tri.ply", info = save_info)
+        vcl.save_mesh(dodecahedron, VCLIB_PYTHON_RESULTS_PATH + "/003_dodecahedron_tri.ply", info = save_info)
+        vcl.save_mesh(custom_cube, VCLIB_PYTHON_RESULTS_PATH + "/003_custom_cube.ply", info = save_info)
+        vcl.save_mesh(cube_quads, VCLIB_PYTHON_RESULTS_PATH + "/003_cube_poly.ply", info = save_info)
+        vcl.save_mesh(dodecahedron_poly, VCLIB_PYTHON_RESULTS_PATH + "/003_dodecahedron_poly.ply", info = save_info)
+        vcl.save_mesh(sphere_quads, VCLIB_PYTHON_RESULTS_PATH + "/003_sphere_poly.ply", info = save_info)
 
         print("\nAll meshes have been saved to the results directory.")
     except Exception as e:

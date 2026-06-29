@@ -1,26 +1,10 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2024                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
-cmake_minimum_required(VERSION 3.24)
 project(vclib-core)
 
 ### vclib-core target
@@ -30,7 +14,9 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::core ALIAS ${PROJECT_NAME})
-target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} INTERFACE
+    $<BUILD_INTERFACE:${VCLIB_CORE_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_CORE_MODULE)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -41,9 +27,17 @@ target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES}
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 
 if (MSVC)
+    target_compile_definitions(${PROJECT_NAME} INTERFACE _USE_MATH_DEFINES)
     target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
 endif()
 
 # Install
-install(DIRECTORY ${VCLIB_CORE_INCLUDE_DIR}/vclib
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(VCLIB_INSTALL_MODULE_CORE)
+    install(TARGETS ${PROJECT_NAME}
+        EXPORT vclibTargets
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+    install(DIRECTORY ${VCLIB_CORE_INCLUDE_DIR}/vclib
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()

@@ -1,31 +1,15 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_TRACKBALL_VIEWER_DRAWER_BGFX_H
 
 #include "viewer_drawer_bgfx.h"
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
 #include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
@@ -39,9 +23,13 @@ class TrackBallViewerDrawerBGFX :
     using ParentViewer =
         ViewerDrawerBGFX<TrackBallEventDrawer<DerivedRenderApp>>;
 
-    DrawableAxis             mAxis;
     DrawableTrackBall        mDrawTrackBall;
     DrawableDirectionalLight mDrawableDirectionalLight;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
 public:
     using ParentViewer::ParentViewer;
@@ -49,7 +37,6 @@ public:
     void onInit(uint viewId) override
     {
         ParentViewer::onInit(viewId);
-        mAxis.init();
         mDrawTrackBall.init();
         mDrawableDirectionalLight.init();
     }
@@ -64,10 +51,6 @@ public:
         setDirectionalLightVisibility(
             ParentViewer::currentMotion() ==
             ParentViewer::TrackBallType::DIR_LIGHT_ARC);
-
-        if (mAxis.isVisible()) {
-            mAxis.draw(settings);
-        }
 
         if (mDrawTrackBall.isVisible()) {
             mDrawTrackBall.draw(settings);
@@ -92,21 +75,36 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
         if (!block) {
             switch (key) {
-            case Key::A: toggleAxisVisibility(); break;
-
-            case Key::T: toggleTrackBallVisibility(); break;
-
+            case Key::T:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    mCustomShortcutToggleTrackballCallback();
+                break;
             default: break;
             }
         }
         return block;
     }
 
-    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
+    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
 
     void toggleTrackBallVisibility()
     {
         mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    /**
+     * @brief Sets the callback function that will be called when the user
+     * presses the shortcut to toggle the trackball visibility (by default, the
+     * shortcut is T).
+     *
+     * This is useful when the user wants to execute some custom code when the
+     * trackball visibility is toggled trough the shortcut.
+     *
+     * @param callback
+     */
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
     }
 
 private:

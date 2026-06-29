@@ -1,28 +1,13 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+
+set(BGFX_VERSION 1.146.9306-550)
 
 find_package(bgfx QUIET)
-
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
 
 if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
@@ -64,9 +49,6 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_DIR})
-
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
@@ -88,7 +70,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     FetchContent_Declare(bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v1.136.9114-510
+        GIT_TAG        v${BGFX_VERSION}
         EXCLUDE_FROM_ALL)
 
     FetchContent_MakeAvailable(bgfx)
@@ -105,13 +87,17 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
 
     set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_CMAKE_SCRIPTS_PATH ${bgfx_SOURCE_DIR}/cmake)
-
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
         BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 else()
     message(FATAL_ERROR
         "bgfx is required - be sure to clone recursively the vclib repository.")
+endif()
+
+if (TARGET vclib-3rd-bgfx)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
 endif()
