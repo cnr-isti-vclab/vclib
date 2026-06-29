@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/screenspace/primitives/screenspace_lines.h>
 
@@ -62,6 +47,7 @@ void ScreenSpaceLines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
     mVerPosCount = vertexCount;
     mVertexPositions.setReferenced(&verts);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -80,6 +66,7 @@ void ScreenSpaceLines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
     mIndexCount = indexCount;
     mIndices.setReferenced(&indices);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -98,6 +85,7 @@ void ScreenSpaceLines::setVertexColors(
 {
     mVerColCount = vColsCount;
     mVertexColors.setReferenced(&vertexColors);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -116,6 +104,7 @@ void ScreenSpaceLines::setLineColors(
 {
     mLineColorCount = lColorCount;
     mLineColors.setReferenced(&lineColors);
+    mIsUpdateProgramNeeded = true;
 }
 
 /**
@@ -135,7 +124,7 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         return;
     }
 
-    validityCheck();
+    checkAndUpdateProgram();
 
     ScreenSpaceLinesUniforms::setWidth(mWidth);
     ScreenSpaceLinesUniforms::setGeneralColor(mGeneralColor);
@@ -164,11 +153,22 @@ void ScreenSpaceLines::draw(bgfx::ViewId viewId) const
         BGFX_STATE_DEPTH_TEST_ALWAYS | BGFX_STATE_BLEND_ALPHA);
 
     ScreenSpaceLinesUniforms::bind();
-    bgfx::submit(viewId, screenspaceLinesProgramSelector());
+    bgfx::submit(viewId, mProgram);
 }
 
-void ScreenSpaceLines::validityCheck() const
+/**
+ * @brief Checks if the shader program needs to be updated and updates it.
+ *
+ * Validates that required buffers (colors) are available based on
+ * the current topology and color settings, throwing an exception if invalid.
+ * Then it selects the appropriate shader program.
+ */
+void ScreenSpaceLines::checkAndUpdateProgram() const
 {
+    if (!mIsUpdateProgramNeeded) {
+        return;
+    }
+
     uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
     std::string primstr = mIndices.isValid() ? "indices" : "vertices";
 
@@ -215,6 +215,9 @@ void ScreenSpaceLines::validityCheck() const
                 "topology.");
         }
     }
+
+    mProgram               = screenspaceLinesProgramSelector();
+    mIsUpdateProgramNeeded = false;
 }
 
 uint ScreenSpaceLines::vertexPullingInstances() const

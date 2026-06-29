@@ -18,7 +18,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
     - name: Setup env
@@ -39,7 +39,7 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         cache: 'true'
-        version: '6.8.2'
+        version: '6.10.*'
     - name: Install Python ${{ steps.envs.outputs.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -83,7 +83,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
     - name: Setup env

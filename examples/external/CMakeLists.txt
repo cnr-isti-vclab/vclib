@@ -1,39 +1,44 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 project(vclib-external-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (TARGET vclib-3rd-embree)
-    add_subdirectory(010-embree)
+# Automatically find and add all external examples.
+# For each directory, we check if it's a valid example by looking for a main.cpp file.
+# If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
+# and ensure all required targets are available before adding the subdirectory.
+file(GLOB EXTERNAL_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*")
+foreach(dir IN LISTS EXTERNAL_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
+            # Reset required targets for this iteration
+            set(EXAMPLE_REQUIRED_TARGETS "")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+            endif()
 
-    add_subdirectory(011-best-heightfield-orientation)
-endif()
+            # Verify if all the required targets (e.g., 3rd party libraries) exist
+            set(REQUIREMENTS_MET TRUE)
+            set(UNMET_REQ_PRINT "")
+            foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                if(NOT TARGET ${req})
+                    set(REQUIREMENTS_MET FALSE)
+                    string(REPLACE "vclib-3rd-" "" req_print ${req})
+                    list(APPEND UNMET_REQ_PRINT ${req_print})
+                endif()
+            endforeach()
 
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
-endif()
-
-if (TARGET vclib-3rd-poisson-recon)
-    add_subdirectory(030-poisson-recon)
-endif()
+            if(REQUIREMENTS_MET)
+                add_subdirectory("${dir}")
+            else()
+                message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+            endif()
+        endif()
+    endif()
+endforeach()

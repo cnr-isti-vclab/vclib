@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_POINT_SAMPLING_H
 #define VCL_ALGORITHMS_MESH_POINT_SAMPLING_H
@@ -215,54 +200,55 @@ auto allFacesPointSampling(const MeshType& m, bool onlySelected = false)
  * @param[in] nSamples The number of samples to take.
  * @param[out] birthVertices: A vector of indices of the birth vertices.
  * @param[in] onlySelected: Whether to only sample from the selected vertices.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return A PointSampler object containing the sampled vertices.
  *
  * @ingroup point_sampling
  */
 template<MeshConcept MeshType>
 auto vertexUniformPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::vector<uint>&  birthVertices,
-    bool                onlySelected = false,
-    std::optional<uint> seed         = std::nullopt)
+    const MeshType&    m,
+    uint               nSamples,
+    std::vector<uint>& birthVertices,
+    bool               onlySelected = false,
+    RandomConfig       config       = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint vn = onlySelected ? vertexSelectionCount(m) : m.vertexCount();
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        uint vn = onlySelected ? vertexSelectionCount(m) : m.vertexCount();
 
-    if (nSamples >= vn) {
-        return allVerticesPointSampling(m, birthVertices, onlySelected);
-    }
-
-    PointSampler<PointType> ps;
-
-    // Reserve space in the sampler and birthVertices vectors
-    ps.reserve(vn);
-    birthVertices.reserve(vn);
-    birthVertices.clear();
-
-    std::uniform_int_distribution<uint> dist(0, m.vertexContainerSize() - 1);
-
-    std::mt19937 gen = randomGenerator(seed);
-
-    std::vector<bool> visited(m.vertexContainerSize(), false);
-    uint              nVisited = 0;
-
-    while (nVisited < nSamples) {
-        uint vi = dist(gen);
-        if (!m.vertex(vi).deleted() && !visited[vi] &&
-            (!onlySelected || m.vertex(vi).selected())) {
-            visited[vi] = true;
-            nVisited++;
-            ps.add(m.vertex(vi));
-            birthVertices.push_back(vi);
+        if (nSamples >= vn) {
+            return allVerticesPointSampling(m, birthVertices, onlySelected);
         }
-    }
 
-    return ps;
+        PointSampler<PointType> ps;
+
+        // Reserve space in the sampler and birthVertices vectors
+        ps.reserve(vn);
+        birthVertices.reserve(vn);
+        birthVertices.clear();
+
+        std::uniform_int_distribution<uint> dist(
+            0, m.vertexContainerSize() - 1);
+
+        std::vector<bool> visited(m.vertexContainerSize(), false);
+        uint              nVisited = 0;
+
+        while (nVisited < nSamples) {
+            uint vi = dist(gen);
+            if (!m.vertex(vi).deleted() && !visited[vi] &&
+                (!onlySelected || m.vertex(vi).selected())) {
+                visited[vi] = true;
+                nVisited++;
+                ps.add(m.vertex(vi));
+                birthVertices.push_back(vi);
+            }
+        }
+
+        return ps;
+    });
 }
 
 /**
@@ -276,21 +262,21 @@ auto vertexUniformPointSampling(
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples The number of samples to take.
  * @param[in] onlySelected: Whether to only sample from the selected vertices.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return A PointSampler object containing the sampled vertices.
  *
  * @ingroup point_sampling
  */
 template<MeshConcept MeshType>
 auto vertexUniformPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    bool                onlySelected = false,
-    std::optional<uint> seed         = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    bool            onlySelected = false,
+    RandomConfig    config       = std::monostate())
 {
     std::vector<uint> v;
-    return vertexUniformPointSampling(m, nSamples, v, onlySelected, seed);
+    return vertexUniformPointSampling(m, nSamples, v, onlySelected, config);
 }
 
 /**
@@ -308,8 +294,8 @@ auto vertexUniformPointSampling(
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector of indices of the birth faces.
  * @param[in] onlySelected: Whether to only sample from the selected faces.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -317,46 +303,46 @@ auto vertexUniformPointSampling(
  */
 template<FaceMeshConcept MeshType>
 auto faceUniformPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::vector<uint>&  birthFaces,
-    bool                onlySelected = false,
-    std::optional<uint> seed         = std::nullopt)
+    const MeshType&    m,
+    uint               nSamples,
+    std::vector<uint>& birthFaces,
+    bool               onlySelected = false,
+    RandomConfig       config       = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    uint fn = onlySelected ? faceSelectionCount(m) : m.faceCount();
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        uint fn = onlySelected ? faceSelectionCount(m) : m.faceCount();
 
-    if (nSamples >= fn) {
-        return allFacesPointSampling(m, birthFaces, onlySelected);
-    }
-
-    PointSampler<PointType> ps;
-
-    // Reserve space in the sampler and birthFaces vectors
-    ps.reserve(fn);
-    birthFaces.reserve(fn);
-    birthFaces.clear();
-
-    std::uniform_int_distribution<uint> dist(0, m.faceContainerSize() - 1);
-
-    std::mt19937 gen = randomGenerator(seed);
-
-    std::vector<bool> visited(m.faceContainerSize(), false);
-    uint              nVisited = 0;
-
-    while (nVisited < nSamples) {
-        uint fi = dist(gen);
-        if (!m.face(fi).deleted() && !visited[fi] &&
-            (!onlySelected || m.face(fi).selected())) {
-            visited[fi] = true;
-            nVisited++;
-            ps.add(m.face(fi));
-            birthFaces.push_back(fi);
+        if (nSamples >= fn) {
+            return allFacesPointSampling(m, birthFaces, onlySelected);
         }
-    }
 
-    return ps;
+        PointSampler<PointType> ps;
+
+        // Reserve space in the sampler and birthFaces vectors
+        ps.reserve(fn);
+        birthFaces.reserve(fn);
+        birthFaces.clear();
+
+        std::uniform_int_distribution<uint> dist(0, m.faceContainerSize() - 1);
+
+        std::vector<bool> visited(m.faceContainerSize(), false);
+        uint              nVisited = 0;
+
+        while (nVisited < nSamples) {
+            uint fi = dist(gen);
+            if (!m.face(fi).deleted() && !visited[fi] &&
+                (!onlySelected || m.face(fi).selected())) {
+                visited[fi] = true;
+                nVisited++;
+                ps.add(m.face(fi));
+                birthFaces.push_back(fi);
+            }
+        }
+
+        return ps;
+    });
 }
 
 /**
@@ -372,8 +358,8 @@ auto faceUniformPointSampling(
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
  * @param[in] onlySelected: Whether to only sample from the selected faces.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -381,13 +367,13 @@ auto faceUniformPointSampling(
  */
 template<FaceMeshConcept MeshType>
 auto faceUniformPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    bool                onlySelected = false,
-    std::optional<uint> seed         = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    bool            onlySelected = false,
+    RandomConfig    config       = std::monostate())
 {
     std::vector<uint> v;
-    return faceUniformPointSampling(m, nSamples, v, onlySelected, seed);
+    return faceUniformPointSampling(m, nSamples, v, onlySelected, config);
 }
 
 /**
@@ -406,8 +392,8 @@ auto faceUniformPointSampling(
  * @param[in] nSamples: The number of vertices to sample.
  * @param[out] birthVertices: A vector to store the indices of the vertices that
  * were sampled.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object containing the samples selected from the input
  * mesh.
@@ -420,38 +406,39 @@ auto vertexWeightedPointSampling(
     const std::vector<ScalarType>& weights,
     uint                           nSamples,
     std::vector<uint>&             birthVertices,
-    std::optional<uint>            seed = std::nullopt)
+    RandomConfig                   config = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    if (nSamples >= m.vertexCount()) {
-        return allVerticesPointSampling(m, birthVertices);
-    }
-
-    PointSampler<PointType> ps;
-    ps.reserve(nSamples);
-    birthVertices.reserve(nSamples);
-    birthVertices.clear();
-
-    std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
-
-    std::mt19937 gen = randomGenerator(seed);
-
-    std::vector<bool> visited(m.vertexContainerSize(), false);
-    uint              nVisited = 0;
-
-    while (nVisited < nSamples) {
-        uint vi = dist(gen);
-        if (vi < m.vertexContainerSize() && !m.vertex(vi).deleted() &&
-            !visited[vi]) {
-            visited[vi] = true;
-            nVisited++;
-            ps.add(m.vertex(vi));
-            birthVertices.push_back(vi);
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        if (nSamples >= m.vertexCount()) {
+            return allVerticesPointSampling(m, birthVertices);
         }
-    }
 
-    return ps;
+        PointSampler<PointType> ps;
+        ps.reserve(nSamples);
+        birthVertices.reserve(nSamples);
+        birthVertices.clear();
+
+        std::discrete_distribution<> dist(
+            std::begin(weights), std::end(weights));
+
+        std::vector<bool> visited(m.vertexContainerSize(), false);
+        uint              nVisited = 0;
+
+        while (nVisited < nSamples) {
+            uint vi = dist(gen);
+            if (vi < m.vertexContainerSize() && !m.vertex(vi).deleted() &&
+                !visited[vi]) {
+                visited[vi] = true;
+                nVisited++;
+                ps.add(m.vertex(vi));
+                birthVertices.push_back(vi);
+            }
+        }
+
+        return ps;
+    });
 }
 
 /**
@@ -467,8 +454,8 @@ auto vertexWeightedPointSampling(
  * @param[in] weights: A vector of scalars having the i-th entry associated to
  * the vertex having index i. Note: weights.size() == m.vertexContainerSize().
  * @param[in] nSamples: The number of vertices to sample.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object containing the samples selected from the input
  * mesh.
@@ -480,10 +467,10 @@ auto vertexWeightedPointSampling(
     const MeshType&                m,
     const std::vector<ScalarType>& weights,
     uint                           nSamples,
-    std::optional<uint>            seed = std::nullopt)
+    RandomConfig                   config = std::monostate())
 {
     std::vector<uint> v;
-    return vertexWeightedPointSampling(m, weights, nSamples, v, seed);
+    return vertexWeightedPointSampling(m, weights, nSamples, v, config);
 }
 
 /**
@@ -504,8 +491,8 @@ auto vertexWeightedPointSampling(
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector to store the indices of the faces that were
  * sampled.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -517,40 +504,41 @@ auto faceWeightedPointSampling(
     const std::vector<ScalarType>& weights,
     uint                           nSamples,
     std::vector<uint>&             birthFaces,
-    std::optional<uint>            seed = std::nullopt)
+    RandomConfig                   config = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
 
-    if (nSamples >= m.faceCount()) {
-        return allFacesPointSampling(m);
-    }
-
-    PointSampler<PointType> ps;
-
-    // Reserve space in the sampler and birthFaces vectors
-    ps.reserve(nSamples);
-    birthFaces.reserve(nSamples);
-    birthFaces.clear();
-
-    std::discrete_distribution<> dist(std::begin(weights), std::end(weights));
-
-    std::mt19937 gen = randomGenerator(seed);
-
-    std::vector<bool> visited(m.faceContainerSize(), false);
-    uint              nVisited = 0;
-
-    while (nVisited < nSamples) {
-        uint fi = dist(gen);
-        if (fi < m.faceContainerSize() && !m.face(fi).deleted() &&
-            !visited[fi]) {
-            visited[fi] = true;
-            nVisited++;
-            ps.add(m.face(fi));
-            birthFaces.push_back(fi);
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        if (nSamples >= m.faceCount()) {
+            return allFacesPointSampling(m);
         }
-    }
 
-    return ps;
+        PointSampler<PointType> ps;
+
+        // Reserve space in the sampler and birthFaces vectors
+        ps.reserve(nSamples);
+        birthFaces.reserve(nSamples);
+        birthFaces.clear();
+
+        std::discrete_distribution<> dist(
+            std::begin(weights), std::end(weights));
+
+        std::vector<bool> visited(m.faceContainerSize(), false);
+        uint              nVisited = 0;
+
+        while (nVisited < nSamples) {
+            uint fi = dist(gen);
+            if (fi < m.faceContainerSize() && !m.face(fi).deleted() &&
+                !visited[fi]) {
+                visited[fi] = true;
+                nVisited++;
+                ps.add(m.face(fi));
+                birthFaces.push_back(fi);
+            }
+        }
+
+        return ps;
+    });
 }
 
 /**
@@ -568,8 +556,8 @@ auto faceWeightedPointSampling(
  * @param[in] weights: A vector of scalars having the i-th entry associated to
  * the face having index i. Note: weights.size() == m.faceContainerSize().
  * @param[in] nSamples: The number of samples to take.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -580,10 +568,10 @@ auto faceWeightedPointSampling(
     const MeshType&                m,
     const std::vector<ScalarType>& weights,
     uint                           nSamples,
-    std::optional<uint>            seed = std::nullopt)
+    RandomConfig                   config = std::monostate())
 {
     std::vector<uint> v;
-    return faceWeightedPointSampling(m, weights, nSamples, v, seed);
+    return faceWeightedPointSampling(m, weights, nSamples, v, config);
 }
 
 /**
@@ -593,17 +581,17 @@ auto faceWeightedPointSampling(
  *
  * @param m
  * @param nSamples
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return
  *
  * @ingroup point_sampling
  */
 template<MeshConcept MeshType>
 auto vertexQualityWeightedPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     requirePerVertexQuality(m);
 
@@ -616,7 +604,7 @@ auto vertexQualityWeightedPointSampling(
         weights[m.index(v)] = v.quality();
     }
 
-    return vertexWeightedPointSampling(m, weights, nSamples, seed);
+    return vertexWeightedPointSampling(m, weights, nSamples, config);
 }
 
 /**
@@ -626,17 +614,17 @@ auto vertexQualityWeightedPointSampling(
  *
  * @param m
  * @param nSamples
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return
  *
  * @ingroup point_sampling
  */
 template<FaceMeshConcept MeshType>
 auto faceQualityWeightedPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     requirePerFaceQuality(m);
 
@@ -649,7 +637,7 @@ auto faceQualityWeightedPointSampling(
         weights[m.index(f)] = f.quality();
     }
 
-    return faceWeightedPointSampling(m, weights, nSamples, seed);
+    return faceWeightedPointSampling(m, weights, nSamples, config);
 }
 
 /**
@@ -659,17 +647,17 @@ auto faceQualityWeightedPointSampling(
  *
  * @param m
  * @param nSamples
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return
  *
  * @ingroup point_sampling
  */
 template<FaceMeshConcept MeshType>
 auto vertexAreaWeightedPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     using VertexType = MeshType::VertexType;
     using ScalarType = VertexType::ScalarType;
@@ -695,7 +683,7 @@ auto vertexAreaWeightedPointSampling(
     }
 
     // use these weights to create a sapler
-    return vertexWeightedPointSampling(m, weights, nSamples, seed);
+    return vertexWeightedPointSampling(m, weights, nSamples, config);
 }
 
 /**
@@ -704,17 +692,17 @@ auto vertexAreaWeightedPointSampling(
  *
  * @param m
  * @param nSamples
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return
  *
  * @ingroup point_sampling
  */
 template<FaceMeshConcept MeshType>
 auto faceAreaWeightedPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     using FaceType = MeshType::FaceType;
 
@@ -724,7 +712,7 @@ auto faceAreaWeightedPointSampling(
         weights[m.index(f)] = faceArea(f);
     }
 
-    return faceWeightedPointSampling(m, weights, nSamples, seed);
+    return faceWeightedPointSampling(m, weights, nSamples, config);
 }
 
 /**
@@ -739,8 +727,8 @@ auto faceAreaWeightedPointSampling(
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector to store the indices of the faces that were
  * sampled.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -748,10 +736,10 @@ auto faceAreaWeightedPointSampling(
  */
 template<FaceMeshConcept MeshType>
 auto montecarloPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::vector<uint>&  birthFaces,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType&    m,
+    uint               nSamples,
+    std::vector<uint>& birthFaces,
+    RandomConfig       config = std::monostate())
 {
     using VertexType = MeshType::VertexType;
     using PointType  = VertexType::PositionType;
@@ -759,48 +747,48 @@ auto montecarloPointSampling(
     using FaceType   = MeshType::FaceType;
     using Interval   = std::pair<ScalarType, const FaceType*>;
 
-    FirstElementPairComparator<Interval> comparator;
-    PointSampler<PointType>              sampler;
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        FirstElementPairComparator<Interval> comparator;
+        PointSampler<PointType>              sampler;
 
-    // Reserve space in the sampler and birthFaces vectors
-    sampler.reserve(nSamples);
-    birthFaces.reserve(nSamples);
-    birthFaces.clear();
+        // Reserve space in the sampler and birthFaces vectors
+        sampler.reserve(nSamples);
+        birthFaces.reserve(nSamples);
+        birthFaces.clear();
 
-    std::uniform_real_distribution<ScalarType> dist(0, 1);
+        std::uniform_real_distribution<ScalarType> dist(0, 1);
 
-    std::mt19937 gen = randomGenerator(seed);
+        std::vector<Interval> intervals(m.faceCount());
+        uint                  i    = 0;
+        ScalarType            area = 0;
+        for (const FaceType& f : m.faces()) {
+            area += faceArea(f);
+            intervals[i] = std::make_pair(area, &f);
+            i++;
+        }
 
-    std::vector<Interval> intervals(m.faceCount());
-    uint                  i    = 0;
-    ScalarType            area = 0;
-    for (const FaceType& f : m.faces()) {
-        area += faceArea(f);
-        intervals[i] = std::make_pair(area, &f);
-        i++;
-    }
+        ScalarType meshArea = intervals.back().first;
+        for (uint i = 0; i < nSamples; i++) {
+            ScalarType val = meshArea * dist(gen);
+            // lower_bound returns the furthermost iterator i in [first, last)
+            // such that, for every iterator j in [first, i), *j < value. E.g.
+            // An iterator pointing to the first element "not less than" val, or
+            // end() if every element is less than val.
+            typename std::vector<Interval>::iterator it = std::lower_bound(
+                intervals.begin(),
+                intervals.end(),
+                std::make_pair(val, nullptr),
+                comparator);
 
-    ScalarType meshArea = intervals.back().first;
-    for (uint i = 0; i < nSamples; i++) {
-        ScalarType val = meshArea * dist(gen);
-        // lower_bound returns the furthermost iterator i in [first, last) such
-        // that, for every iterator j in [first, i), *j < value. E.g. An
-        // iterator pointing to the first element "not less than" val, or end()
-        // if every element is less than val.
-        typename std::vector<Interval>::iterator it = std::lower_bound(
-            intervals.begin(),
-            intervals.end(),
-            std::make_pair(val, nullptr),
-            comparator);
+            sampler.add(
+                *it->second,
+                randomPolygonBarycentricCoordinate<ScalarType>(
+                    it->second->vertexCount(), gen));
+            birthFaces.push_back(it->second->index());
+        }
 
-        sampler.add(
-            *it->second,
-            randomPolygonBarycentricCoordinate<ScalarType>(
-                it->second->vertexCount(), gen));
-        birthFaces.push_back(it->second->index());
-    }
-
-    return sampler;
+        return sampler;
+    });
 }
 
 /**
@@ -812,8 +800,8 @@ auto montecarloPointSampling(
  *
  * @param[in] m: The mesh to sample from.
  * @param[in] nSamples: The number of samples to take.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  *
  * @return A PointSampler object that contains the sampled points on the faces.
  *
@@ -821,19 +809,19 @@ auto montecarloPointSampling(
  */
 template<FaceMeshConcept MeshType>
 auto montecarloPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     std::vector<uint> birthFaces;
-    return montecarloPointSampling(m, nSamples, birthFaces, seed);
+    return montecarloPointSampling(m, nSamples, birthFaces, config);
 }
 
 template<FaceMeshConcept MeshType>
 auto stratifiedMontecarloPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     using FaceType   = MeshType::FaceType;
     using PointType  = MeshType::VertexType::PositionType;
@@ -841,28 +829,28 @@ auto stratifiedMontecarloPointSampling(
 
     PointSampler<PointType> ps;
 
-    std::mt19937 gen = randomGenerator(seed);
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        double area              = surfaceArea(m);
+        double samplePerAreaUnit = nSamples / area;
+        // Montecarlo sampling.
+        double floatSampleNum = 0.0;
 
-    double area              = surfaceArea(m);
-    double samplePerAreaUnit = nSamples / area;
-    // Montecarlo sampling.
-    double floatSampleNum = 0.0;
+        for (const FaceType& f : m.faces()) {
+            // compute # samples in the current face (taking into account of the
+            // remainders)
+            floatSampleNum += faceArea(f) * samplePerAreaUnit;
+            int faceSampleNum = (int) floatSampleNum;
+            // for every sample p_i in T...
+            for (int i = 0; i < faceSampleNum; i++)
+                ps.add(
+                    f,
+                    randomPolygonBarycentricCoordinate<ScalarType>(
+                        f.vertexCount(), gen));
+            floatSampleNum -= (double) faceSampleNum;
+        }
 
-    for (const FaceType& f : m.faces()) {
-        // compute # samples in the current face (taking into account of the
-        // remainders)
-        floatSampleNum += faceArea(f) * samplePerAreaUnit;
-        int faceSampleNum = (int) floatSampleNum;
-        // for every sample p_i in T...
-        for (int i = 0; i < faceSampleNum; i++)
-            ps.add(
-                f,
-                randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexCount(), gen));
-        floatSampleNum -= (double) faceSampleNum;
-    }
-
-    return ps;
+        return ps;
+    });
 }
 
 /**
@@ -882,42 +870,43 @@ auto stratifiedMontecarloPointSampling(
  *
  * @param m
  * @param nSamples
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @return
  *
  * @ingroup point_sampling
  */
 template<FaceMeshConcept MeshType>
 auto montecarloPoissonPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     using FaceType   = MeshType::FaceType;
     using PointType  = MeshType::VertexType::PositionType;
     using ScalarType = PointType::ScalarType;
 
-    PointSampler<PointType> ps;
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        PointSampler<PointType> ps;
 
-    std::mt19937 gen = randomGenerator(seed);
+        ScalarType area              = surfaceArea(m);
+        ScalarType samplePerAreaUnit = nSamples / area;
 
-    ScalarType area              = surfaceArea(m);
-    ScalarType samplePerAreaUnit = nSamples / area;
+        for (const FaceType& f : m.faces()) {
+            ScalarType                     areaT = faceArea(f);
+            std::poisson_distribution<int> poisson(areaT * samplePerAreaUnit);
+            int                            faceSampleCnt = poisson(gen);
 
-    for (const FaceType& f : m.faces()) {
-        ScalarType areaT  = faceArea(f);
-        int faceSampleCnt = poissonRandomNumber(areaT * samplePerAreaUnit, gen);
+            // for every sample p_i in T...
+            for (int i = 0; i < faceSampleCnt; i++)
+                ps.add(
+                    f,
+                    randomPolygonBarycentricCoordinate<ScalarType>(
+                        f.vertexCount(), gen));
+        }
 
-        // for every sample p_i in T...
-        for (int i = 0; i < faceSampleCnt; i++)
-            ps.add(
-                f,
-                randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexCount(), gen));
-    }
-
-    return ps;
+        return ps;
+    });
 }
 
 template<FaceMeshConcept MeshType, typename ScalarType>
@@ -926,7 +915,7 @@ auto vertexWeightedMontecarloPointSampling(
     const std::vector<ScalarType>& weights,
     uint                           nSamples,
     double                         variance,
-    std::optional<uint>            seed = std::nullopt)
+    RandomConfig                   config = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
     using FaceType  = MeshType::FaceType;
@@ -943,45 +932,45 @@ auto vertexWeightedMontecarloPointSampling(
         return averageQ * averageQ * faceArea(f);
     };
 
-    PointSampler<PointType> ps;
+    return callWithRandomGenerator(config, [&](std::mt19937& gen) {
+        PointSampler<PointType> ps;
 
-    std::mt19937 gen = randomGenerator(seed);
+        std::vector<ScalarType> radius =
+            vertexRadiusFromWeights(m, weights, 1.0, variance, true);
 
-    std::vector<ScalarType> radius =
-        vertexRadiusFromWeights(m, weights, 1.0, variance, true);
+        ScalarType wArea = 0;
+        for (const FaceType& f : m.faces())
+            wArea += weightedArea(f, m, radius);
 
-    ScalarType wArea = 0;
-    for (const FaceType& f : m.faces())
-        wArea += weightedArea(f, m, radius);
+        ScalarType samplePerAreaUnit = nSamples / wArea;
+        // Montecarlo sampling.
+        double floatSampleNum = 0.0;
+        for (const FaceType& f : m.faces()) {
+            // compute # samples in the current face (taking into account of the
+            // remainders)
+            floatSampleNum += weightedArea(f, m, radius) * samplePerAreaUnit;
+            uint faceSampleNum = (uint) floatSampleNum;
 
-    ScalarType samplePerAreaUnit = nSamples / wArea;
-    // Montecarlo sampling.
-    double floatSampleNum = 0.0;
-    for (const FaceType& f : m.faces()) {
-        // compute # samples in the current face (taking into account of the
-        // remainders)
-        floatSampleNum += weightedArea(f, m, radius) * samplePerAreaUnit;
-        uint faceSampleNum = (uint) floatSampleNum;
+            // for every sample p_i in T...
+            for (uint i = 0; i < faceSampleNum; i++)
+                ps.add(
+                    f,
+                    randomPolygonBarycentricCoordinate<ScalarType>(
+                        f.vertexCount(), gen));
 
-        // for every sample p_i in T...
-        for (uint i = 0; i < faceSampleNum; i++)
-            ps.add(
-                f,
-                randomPolygonBarycentricCoordinate<ScalarType>(
-                    f.vertexCount(), gen));
+            floatSampleNum -= (double) faceSampleNum;
+        }
 
-        floatSampleNum -= (double) faceSampleNum;
-    }
-
-    return ps;
+        return ps;
+    });
 }
 
 template<FaceMeshConcept MeshType>
 auto vertexQualityWeightedMontecarloPointSampling(
-    const MeshType&     m,
-    uint                nSamples,
-    double              variance,
-    std::optional<uint> seed = std::nullopt)
+    const MeshType& m,
+    uint            nSamples,
+    double          variance,
+    RandomConfig    config = std::monostate())
 {
     requirePerVertexQuality(m);
 
@@ -995,7 +984,7 @@ auto vertexQualityWeightedMontecarloPointSampling(
     }
 
     return vertexWeightedMontecarloPointSampling(
-        m, weights, nSamples, variance, seed);
+        m, weights, nSamples, variance, config);
 }
 
 } // namespace vcl

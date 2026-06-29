@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 cmake_minimum_required(VERSION 3.24)
 project(vclib-3rdparty)
@@ -40,6 +25,7 @@ set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+option(VCLIB_ALLOW_INSTALL_EIGEN "Allow install Eigen source" ON)
 include(eigen.cmake)
 
 # MapBox earcut
@@ -151,6 +137,99 @@ if (VCLIB_BUILD_MODULE_BINDINGS)
         "Allow use of downloaded pybind11 source" ON)
     include(pybind.cmake)
 endif()
+
+set(ALL_3RDPARTY_TARGETS "")
+if(VCLIB_INSTALL_MODULE_CORE)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_CORE_3RDPARTY_LIBRARIES})
+endif()
+if(VCLIB_INSTALL_MODULE_EXTERNAL)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES})
+endif()
+if(VCLIB_INSTALL_MODULE_RENDER)
+    list(APPEND ALL_3RDPARTY_TARGETS ${VCLIB_RENDER_3RDPARTY_LIBRARIES})
+endif()
+
+set(EXPORT_QUEUE ${ALL_3RDPARTY_TARGETS})
+set(EXPORTED_TARGETS "")
+
+# Iterate through the dependency graph of all 3rdparty targets to export them.
+# We use a queue to traverse the dependencies (INTERFACE_LINK_LIBRARIES and LINK_LIBRARIES).
+while(EXPORT_QUEUE)
+    list(POP_FRONT EXPORT_QUEUE tgt)
+    if(NOT TARGET ${tgt})
+        continue()
+    endif()
+    
+    get_target_property(aliased ${tgt} ALIASED_TARGET)
+    if(aliased)
+        set(tgt ${aliased})
+    endif()
+    
+    if(tgt IN_LIST EXPORTED_TARGETS)
+        continue()
+    endif()
+    
+    get_target_property(is_imported ${tgt} IMPORTED)
+    if(is_imported)
+        continue()
+    endif()
+
+    list(APPEND EXPORTED_TARGETS ${tgt})
+    
+    get_target_property(linked_libs ${tgt} INTERFACE_LINK_LIBRARIES)
+    if(linked_libs)
+        foreach(lib IN LISTS linked_libs)
+            if(lib MATCHES "\\$<LINK_ONLY:(.+)>")
+                set(lib "${CMAKE_MATCH_1}")
+            endif()
+            if(TARGET ${lib})
+                list(APPEND EXPORT_QUEUE ${lib})
+            endif()
+        endforeach()
+    endif()
+    
+    get_target_property(type ${tgt} TYPE)
+    if(NOT type STREQUAL "INTERFACE_LIBRARY")
+        get_target_property(linked_libs ${tgt} LINK_LIBRARIES)
+        if(linked_libs)
+            foreach(lib IN LISTS linked_libs)
+                if(lib MATCHES "\\$<LINK_ONLY:(.+)>")
+                    set(lib "${CMAKE_MATCH_1}")
+                endif()
+                if(TARGET ${lib})
+                    list(APPEND EXPORT_QUEUE ${lib})
+                endif()
+            endforeach()
+        endif()
+    endif()
+endwhile()
+
+foreach(tgt IN LISTS EXPORTED_TARGETS)
+    get_target_property(inc_dirs ${tgt} INTERFACE_INCLUDE_DIRECTORIES)
+    if(inc_dirs)
+        set(new_inc_dirs "")
+        set(added_install_interface FALSE)
+        foreach(inc_dir IN LISTS inc_dirs)
+            if(inc_dir MATCHES "\\$<")
+                list(APPEND new_inc_dirs "${inc_dir}")
+            else()
+                list(APPEND new_inc_dirs "$<BUILD_INTERFACE:${inc_dir}>")
+                if(NOT added_install_interface)
+                    list(APPEND new_inc_dirs "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+                    set(added_install_interface TRUE)
+                endif()
+            endif()
+        endforeach()
+        set_target_properties(${tgt} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${new_inc_dirs}")
+    endif()
+    
+    install(TARGETS ${tgt} EXPORT vclibTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endforeach()
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES
     ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
