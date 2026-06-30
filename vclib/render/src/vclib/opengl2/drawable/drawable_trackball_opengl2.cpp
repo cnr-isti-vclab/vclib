@@ -19,9 +19,9 @@
 #include <GL/gl.h>
 #endif
 
-#include <vector>
-#include <utility>
 #include <concepts>
+#include <utility>
+#include <vector>
 
 namespace vcl {
 

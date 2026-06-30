@@ -448,7 +448,7 @@ protected:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        static const std::array<bgfx::ProgramHandle, 18> surfaceProgramHandles =
+        static const std::array<bgfx::ProgramHandle, 24> surfaceProgramHandles =
             {pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),
              pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH>(),
              pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>(),
@@ -466,8 +466,13 @@ protected:
              pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE>(),
              pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_USER>(),
              pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE>()};
-
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_WEDGE>()};
         uint mul = 0;
         uint off = 0;
 
@@ -478,6 +483,9 @@ protected:
             }
             if (mMRS.isSurface(SHADING_SMOOTH)) {
                 mul = 2;
+            }
+            if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
+                mul = 3;
             }
             if (mMRS.isSurface(COLOR_MESH)) {
                 off = 1;

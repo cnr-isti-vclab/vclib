@@ -93,8 +93,6 @@ public:
         }
         return block;
     }
-
-
 };
 
 } // namespace vcl

@@ -10,11 +10,11 @@
 
 #include "event_drawer.h"
 
-#include <vclib/render/input.h>
-#include <vclib/render/viewer/trackball.h>
-#include <vclib/render/settings/draw_object_settings.h>
-#include <vclib/render/drawable/drawable_trackball.h>
 #include <vclib/render/drawable/drawable_directional_light.h>
+#include <vclib/render/drawable/drawable_trackball.h>
+#include <vclib/render/input.h>
+#include <vclib/render/settings/draw_object_settings.h>
+#include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
 
 #include <map>
@@ -262,10 +262,7 @@ public:
      *
      * @return true if the trackball is visible, false otherwise.
      */
-    bool isTrackBallVisible() const
-    {
-        return mDrawTrackBall.isVisible();
-    }
+    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
 
     /**
      * @brief Toggles the visibility of the trackball.
@@ -285,8 +282,7 @@ public:
      *
      * @param callback The function to execute.
      */
-    void setShortcutToggleTrackballCallback(
-        std::function<void(void)> callback)
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
     {
         mCustomShortcutToggleTrackballCallback = callback;
     }

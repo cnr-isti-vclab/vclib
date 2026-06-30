@@ -52,6 +52,7 @@ private slots:
     void onShadingSmoothToggled(bool checked);
     void onShadingFlatToggled(bool checked);
     void onShadingNoneToggled(bool checked);
+    void onShadingNormalMapToggled(bool checked);
     void onColorComboBoxChanged(int index);
     void onUserColorChanged(const QColor& c);
     void onSelectionVisibilityChanged(Qt::CheckState arg1);

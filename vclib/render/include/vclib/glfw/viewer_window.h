@@ -17,10 +17,8 @@
 
 namespace vcl::glfw {
 
-using ViewerWindow = vcl::RenderApp<
-    vcl::glfw::WindowManager,
-    vcl::Canvas,
-    vcl::ViewerDrawer>;
+using ViewerWindow =
+    vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::glfw
 

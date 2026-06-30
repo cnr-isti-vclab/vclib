@@ -22,20 +22,21 @@
 #define VCL_MRS_POINTS_COLOR_VERTEX   6 // vert colors for points
 #define VCL_MRS_POINTS_COLOR_MESH     7 // mesh color for points
 #define VCL_MRS_POINTS_COLOR_USER     8 // user color for points
-#define VCL_MRS_POINTS_DRAW_SELECTION 9 // draw points with selection color
+#define VCL_MRS_POINTS_DRAW_SELECTION 9 // points with selection color
 
 // surface
-#define VCL_MRS_DRAW_SURF           0 // surface visibility
-#define VCL_MRS_SURF_SHADING_NONE   1 // no shading
-#define VCL_MRS_SURF_SHADING_FLAT   2 // flat shading
-#define VCL_MRS_SURF_SHADING_SMOOTH 3 // smooth shading
-#define VCL_MRS_SURF_COLOR_VERTEX   4 // vert color for surface
-#define VCL_MRS_SURF_COLOR_FACE     5 // face color for surface
-#define VCL_MRS_SURF_TEX_VERTEX     6 // per vertex texcoords
-#define VCL_MRS_SURF_TEX_WEDGE      7 // per wedge texcoords
-#define VCL_MRS_SURF_COLOR_MESH     8 // mesh color for surface
-#define VCL_MRS_SURF_COLOR_USER     9 // user color for surface
-#define VCL_MRS_SURF_DRAW_SELECTION 10 // draw surface with selection color
+#define VCL_MRS_DRAW_SURF               0  // surface visibility
+#define VCL_MRS_SURF_SHADING_NONE       1  // no shading
+#define VCL_MRS_SURF_SHADING_FLAT       2  // flat shading
+#define VCL_MRS_SURF_SHADING_SMOOTH     3  // smooth shading
+#define VCL_MRS_SURF_SHADING_NORMAL_MAP 4  // normal map shading
+#define VCL_MRS_SURF_COLOR_VERTEX       5  // vert color for surface
+#define VCL_MRS_SURF_COLOR_FACE         6  // face color for surface
+#define VCL_MRS_SURF_TEX_VERTEX         7  // per vertex texcoords
+#define VCL_MRS_SURF_TEX_WEDGE          8  // per wedge texcoords
+#define VCL_MRS_SURF_COLOR_MESH         9  // mesh color for surface
+#define VCL_MRS_SURF_COLOR_USER         10 // user color for surface
+#define VCL_MRS_SURF_DRAW_SELECTION     11 // surface with selection color
 
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe

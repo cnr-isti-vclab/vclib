@@ -157,8 +157,6 @@ public:
         Base::fitView(sceneCenter);
     }
 
-
-
     // events
     void onInit(uint) override
     {

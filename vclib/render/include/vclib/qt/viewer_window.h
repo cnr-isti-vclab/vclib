@@ -15,8 +15,8 @@
 
 namespace vcl::qt {
 
-using ViewerWindow = vcl::
-    RenderApp<vcl::qt::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
+using ViewerWindow =
+    vcl::RenderApp<vcl::qt::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::qt
 
