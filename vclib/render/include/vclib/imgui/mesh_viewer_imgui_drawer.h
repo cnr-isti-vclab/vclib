@@ -12,7 +12,7 @@
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
@@ -24,10 +24,9 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
-class MeshViewerDrawerImgui :
-        public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
-    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
     std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
@@ -530,6 +529,7 @@ private:
         // shading
         assert(
             (settings.isSurface(SHADING_SMOOTH) +
+             settings.isSurface(SHADING_NORMAL_MAP) +
              settings.isSurface(SHADING_FLAT) +
              settings.isSurface(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
@@ -543,6 +543,18 @@ private:
                 if (vis)
                     settings.setSurface(SHADING_SMOOTH);
             });
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canSurface(SHADING_NORMAL_MAP));
+        ImGui::RadioButton(
+            "Normal Map",
+            [&] {
+                return settings.isSurface(SHADING_NORMAL_MAP);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(SHADING_NORMAL_MAP);
+            });
+        ImGui::EndDisabled();
         ImGui::SameLine();
         ImGui::RadioButton(
             "Flat",
@@ -566,7 +578,7 @@ private:
 
         // color
         const uint CS_COUNT =
-            toUnderlying(COUNT) - 4; // exclude shading options
+            toUnderlying(COUNT) - 5; // exclude shading options
 
         ImGui::Text("Color:");
         ImGui::SameLine();

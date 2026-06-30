@@ -47,6 +47,12 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SLOT(onShadingNoneToggled(bool)));
 
     connect(
+        mUI->shadingNormalMapRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onShadingNormalMapToggled(bool)));
+
+    connect(
         mUI->colorComboBox,
         SIGNAL(currentIndexChanged(int)),
         this,
@@ -87,9 +93,14 @@ void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
     if (!mMRS.canSurface(SHADING_FLAT)) {
         mUI->shadingFlatRadioButton->setEnabled(false);
     }
+    if (!mMRS.canSurface(SHADING_NORMAL_MAP)) {
+        mUI->shadingNormalMapRadioButton->setEnabled(false);
+    }
     mUI->shadingNoneRadioButton->setChecked(mMRS.isSurface(SHADING_NONE));
     mUI->shadingFlatRadioButton->setChecked(mMRS.isSurface(SHADING_FLAT));
     mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurface(SHADING_SMOOTH));
+    mUI->shadingNormalMapRadioButton->setChecked(
+        mMRS.isSurface(SHADING_NORMAL_MAP));
 }
 
 void SurfaceFrame::updateColorComboBoxFromSettings()
@@ -178,6 +189,14 @@ void SurfaceFrame::onShadingNoneToggled(bool checked)
     if (checked) {
         mMRS.setSurface(SHADING_NONE);
         emit meshRenderSettingsUpdated();
+    }
+}
+
+void SurfaceFrame::onShadingNormalMapToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(SHADING_NORMAL_MAP);
+        emit settingsUpdated();
     }
 }
 
