@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.146.9306-550)
+set(BGFX_VERSION 1.147.9336-554)
 
 find_package(bgfx QUIET)
 
