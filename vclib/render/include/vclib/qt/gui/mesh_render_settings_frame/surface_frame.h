@@ -55,6 +55,8 @@ private slots:
     void onShadingNormalMapToggled(bool checked);
     void onColorComboBoxChanged(int index);
     void onUserColorChanged(const QColor& c);
+    void onSelectionVisibilityChanged(Qt::CheckState arg1);
+    void onSelectionColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt

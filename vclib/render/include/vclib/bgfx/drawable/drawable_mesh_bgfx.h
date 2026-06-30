@@ -78,6 +78,18 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
+    void computeSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        if constexpr(!HasFaces<MeshType>)
+            if (params.mode.primitive == SelectionPrimitive::FACE)
+                return;
+
+        mMRB.computeSelection(params, modelMatrix().template cast<float>());
+    }
+
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -201,6 +213,7 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+                mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
@@ -248,6 +261,7 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -264,6 +278,7 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 mMRB.bindPointsVertexColorBuffer();
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);
@@ -274,6 +289,8 @@ public:
                     pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
             }
         }
+
+        mMRB.selectionReadback(*this);
     }
 
     void drawId(const DrawObjectSettings& settings) override

@@ -49,6 +49,8 @@ class MeshViewer : public QMainWindow
         mMeshSelectorEditor;
     std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>
         mBoundingBoxEditor;
+    std::shared_ptr<vcl::SelectionEditor<MeshViewerRenderApp::ViewerType>>
+        mSelectionEditor;
 
 protected:
     MeshViewerRenderApp& viewer() const;
