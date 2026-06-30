@@ -257,16 +257,34 @@ public:
 
     // drawable trackball
 
+    /**
+     * @brief Check if the trackball is visible.
+     *
+     * @return true if the trackball is visible, false otherwise.
+     */
     bool isTrackBallVisible() const
     {
         return mDrawTrackBall.isVisible();
     }
 
+    /**
+     * @brief Toggles the visibility of the trackball.
+     */
     void toggleTrackBallVisibility()
     {
         mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
     }
 
+    /**
+     * @brief Sets the callback function that will be called when the user
+     * presses the shortcut to toggle the trackball visibility (by default, the
+     * shortcut is T).
+     *
+     * This is useful when the user wants to execute some custom code when the
+     * trackball visibility is toggled through the shortcut.
+     *
+     * @param callback The function to execute.
+     */
     void setShortcutToggleTrackballCallback(
         std::function<void(void)> callback)
     {
@@ -315,10 +333,11 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
+        // handle shortcut for trackball visibility
         if (key == Key::T && modifiers[KeyModifier::NO_MODIFIER]) {
             if (mCustomShortcutToggleTrackballCallback)
                 mCustomShortcutToggleTrackballCallback();
-            return false;
+            return true;
         }
         keyPress(key);
         return false;

@@ -14,6 +14,12 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableTrackBallOpenGL2 class is a drawable object that
+ * renders a trackball using the OpenGL2 backend.
+ *
+ * It draws a 3D gizmo composed of three circles.
+ */
 class DrawableTrackBallOpenGL2 : public DrawableObject
 {
     bool mVisible = true;

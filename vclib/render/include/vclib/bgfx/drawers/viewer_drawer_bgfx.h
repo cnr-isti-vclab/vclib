@@ -15,12 +15,17 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
 #include <array>
 
 namespace vcl {
 
+/**
+ * @brief The ViewerDrawerBGFX class is a concrete viewer drawer
+ * implementation for the BGFX backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using BGFX.
+ */
 template<typename DerivedRenderApp>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {

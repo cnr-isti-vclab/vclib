@@ -14,6 +14,12 @@
 #include <vclib/space/core.h>
 
 namespace vcl {
+/**
+ * @brief The DrawableTrackBallBGFX class is a drawable object that
+ * renders a trackball using the BGFX backend.
+ *
+ * It draws a 3D gizmo composed of three circles.
+ */
 class DrawableTrackBallBGFX : public DrawableObject
 {
     bool mVisible = true;

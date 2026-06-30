@@ -14,6 +14,12 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableDirectionalLightOpenGL2 class is a drawable object that
+ * renders a directional light using the OpenGL2 backend.
+ *
+ * It draws a set of lines representing the light rays.
+ */
 class DrawableDirectionalLightOpenGL2 : public DrawableObject
 {
     bool mVisible = false;

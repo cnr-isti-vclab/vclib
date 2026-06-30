@@ -19,6 +19,12 @@
 
 namespace vcl {
 
+/**
+ * @brief The DrawableDirectionalLightBGFX class is a drawable object that
+ * renders a directional light using the BGFX backend.
+ *
+ * It draws a set of lines representing the light rays.
+ */
 class DrawableDirectionalLightBGFX : public DrawableObject
 {
     bool mVisible = false;

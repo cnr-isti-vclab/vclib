@@ -24,6 +24,12 @@
 
 namespace vcl {
 
+/**
+ * @brief The ViewerDrawerOpenGL2 class is a concrete viewer drawer
+ * implementation for the OpenGL2 backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using OpenGL2.
+ */
 template<typename DerivedRenderApp>
 class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderApp>
 {
@@ -59,9 +65,6 @@ public:
 
     void onDrawContent(uint) override
     {
-        ParentViewer::onDrawContent(0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         auto         tmp = ParentViewer::light().direction();
         vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
