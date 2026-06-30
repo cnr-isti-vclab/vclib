@@ -10,7 +10,6 @@
 
 #include "trackball_event_drawer.h"
 
-#include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
@@ -66,14 +65,8 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        static_assert(
-            ViewProjectionEventDrawerConcept<Base>,
-            "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
-            "base class");
-
         // push built-in editors - the order of the editors in the vector is
         // important, as it is used to retrieve the editor by its enum value
-
         [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
         axisEd->setActive(true);
         assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);

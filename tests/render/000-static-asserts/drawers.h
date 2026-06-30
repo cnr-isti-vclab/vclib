@@ -9,7 +9,6 @@
 #define DRAWERS_H
 
 #include <vclib/render/canvas.h>
-#include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/render_app.h>
 
 #ifdef VCLIB_WITH_IMGUI
@@ -237,29 +236,6 @@ void drawersStaticAssertsWM()
     static_assert(
         !BlockerEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
         "TrackBallEventDrawer&& does satisfy the BlockerEventDrawerConcept");
-
-    static_assert(
-        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>>,
-        "TrackBallEventDrawer does not satisfy the "
-        "ViewProjectionEventDrawerConcept");
-    static_assert(
-        ViewProjectionEventDrawerConcept<
-            const TrackBallEventDrawer<RenderAppTED>>,
-        "const TrackBallEventDrawer does not satisfy the "
-        "ViewProjectionEventDrawerConcept");
-    static_assert(
-        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&>,
-        "TrackBallEventDrawer& does not satisfy the "
-        "ViewProjectionEventDrawerConcept");
-    static_assert(
-        ViewProjectionEventDrawerConcept<
-            const TrackBallEventDrawer<RenderAppTED>&>,
-        "const TrackBallEventDrawer& does not satisfy the "
-        "ViewProjectionEventDrawerConcept");
-    static_assert(
-        ViewProjectionEventDrawerConcept<TrackBallEventDrawer<RenderAppTED>&&>,
-        "TrackBallEventDrawer&& does not satisfy the "
-        "ViewProjectionEventDrawerConcept");
 
     // ViewerDrawer
     static_assert(
