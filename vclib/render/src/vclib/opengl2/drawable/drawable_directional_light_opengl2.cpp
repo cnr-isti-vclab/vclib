@@ -53,12 +53,15 @@ void DrawableDirectionalLightOpenGL2::setLinesColor(const vcl::Color& c)
     mColor = c;
 }
 
-void DrawableDirectionalLightOpenGL2::draw(const DrawObjectSettings& /*settings*/)
+void DrawableDirectionalLightOpenGL2::draw(
+    const DrawObjectSettings& /*settings*/)
 {
-    if (!isVisible()) return;
+    if (!isVisible())
+        return;
 
-    glPushAttrib(GL_ENABLE_BIT | GL_CURRENT_BIT | GL_LINE_BIT | GL_DEPTH_BUFFER_BIT);
-    
+    glPushAttrib(
+        GL_ENABLE_BIT | GL_CURRENT_BIT | GL_LINE_BIT | GL_DEPTH_BUFFER_BIT);
+
     glDisable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -76,7 +79,7 @@ void DrawableDirectionalLightOpenGL2::draw(const DrawObjectSettings& /*settings*
     glDisableClientState(GL_VERTEX_ARRAY);
 
     glPopMatrix();
-    
+
     glPopAttrib();
 }
 
