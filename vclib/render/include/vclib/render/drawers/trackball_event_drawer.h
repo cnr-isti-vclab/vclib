@@ -12,6 +12,8 @@
 
 #include <vclib/render/input.h>
 #include <vclib/render/viewer/trackball.h>
+#include <vclib/render/settings/draw_object_settings.h>
+#include <vclib/render/drawable/drawable_trackball.h>
 #include <vclib/space/core/bit_set.h>
 
 #include <map>
@@ -52,6 +54,14 @@ private:
     // current mouse button (automatically updated)
     // if dragging holds the current mouse button
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
+
+    // drawable trackball
+    DrawableTrackBall        mDrawTrackBall;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         mDragMotionMap = {
@@ -241,7 +251,45 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
+    // drawable trackball
+
+    bool isTrackBallVisible() const
+    {
+        return mDrawTrackBall.isVisible();
+    }
+
+    void toggleTrackBallVisibility()
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    void setShortcutToggleTrackballCallback(
+        std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
+    }
+
     // events
+
+    void onInit(uint viewId) override
+    {
+        Base::onInit(viewId);
+        mDrawTrackBall.init();
+    }
+
+    void onDraw(uint viewId) override
+    {
+        Base::onDraw(viewId);
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.setTransform(gizmoMatrix());
+            mDrawTrackBall.updateDragging(isDragging());
+
+            DrawObjectSettings settings;
+            settings.viewId = viewId;
+            mDrawTrackBall.draw(settings);
+        }
+    }
 
     void onResize(unsigned int width, unsigned int height) override
     {
@@ -251,6 +299,11 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
+        if (key == Key::T && modifiers[KeyModifier::NO_MODIFIER]) {
+            if (mCustomShortcutToggleTrackballCallback)
+                mCustomShortcutToggleTrackballCallback();
+            return false;
+        }
         keyPress(key);
         return false;
     }

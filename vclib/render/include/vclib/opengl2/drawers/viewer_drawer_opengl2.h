@@ -92,15 +92,7 @@ public:
         return block;
     }
 
-    // drawable trackball
-    bool isTrackBallVisible() const override { return false; }
 
-    void toggleTrackBallVisibility() override {}
-
-    void setShortcutToggleTrackballCallback(
-        std::function<void(void)> callback) override
-    {
-    }
 };
 
 } // namespace vcl

@@ -34,6 +34,8 @@ class LinesDrawer : public vcl::ViewerDrawer<DerivedRenderApp>
 public:
     using ParentDrawer::ParentDrawer;
 
+    LinesDrawer() = default;
+
     LinesDrawer(vcl::uint w, vcl::uint h) : ParentDrawer(w, h)
     {
         // initialize the drawable object vector with CPU generated lines

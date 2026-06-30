@@ -157,14 +157,7 @@ public:
         Base::fitView(sceneCenter);
     }
 
-    // drawable trackball
 
-    virtual bool isTrackBallVisible() const = 0;
-
-    virtual void toggleTrackBallVisibility() = 0;
-
-    virtual void setShortcutToggleTrackballCallback(
-        std::function<void(void)> cb) = 0;
 
     // events
     void onInit(uint) override
