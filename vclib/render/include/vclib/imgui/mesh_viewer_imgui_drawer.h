@@ -530,6 +530,7 @@ private:
         // shading
         assert(
             (settings.isSurface(SHADING_SMOOTH) +
+             settings.isSurface(SHADING_NORMAL_MAP) +
              settings.isSurface(SHADING_FLAT) +
              settings.isSurface(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
@@ -543,6 +544,18 @@ private:
                 if (vis)
                     settings.setSurface(SHADING_SMOOTH);
             });
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canSurface(SHADING_NORMAL_MAP));
+        ImGui::RadioButton(
+            "Normal Map",
+            [&] {
+                return settings.isSurface(SHADING_NORMAL_MAP);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(SHADING_NORMAL_MAP);
+            });
+        ImGui::EndDisabled();
         ImGui::SameLine();
         ImGui::RadioButton(
             "Flat",
@@ -566,7 +579,7 @@ private:
 
         // color
         const uint CS_COUNT =
-            toUnderlying(COUNT) - 4; // exclude shading options
+            toUnderlying(COUNT) - 5; // exclude shading options
 
         ImGui::Text("Color:");
         ImGui::SameLine();

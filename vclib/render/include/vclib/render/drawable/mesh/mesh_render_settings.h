@@ -654,6 +654,36 @@ public:
                         }
                     }
 
+                    // shading normal map check
+                    if constexpr (
+                        vcl::HasPerVertexNormal<MeshType> &&
+                        vcl::HasPerVertexTangent<MeshType> &&
+                        vcl::HasMaterials<MeshType>) {
+                        
+                        bool hasTexCoords = false;
+                        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
+                            if (vcl::isPerVertexTexCoordAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+                        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+
+                        // Normal mapping requires normal and tangent vectors, texture coordinates,
+                        // and materials (which may contain the normal map texture).
+                        if (hasTexCoords && 
+                            m.materialCount() > 0 &&
+                            vcl::isPerVertexNormalAvailable(m) &&
+                            vcl::isPerVertexTangentAvailable(m)) {
+                            
+                            setSurfaceCapability(
+                                MRI::Surface::SHADING_NORMAL_MAP);
+                        }
+                    }
+
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {
                         if (vcl::isPerFaceColorAvailable(m))
                             setSurfaceCapability(MRI::Surface::COLOR_FACE);
@@ -801,7 +831,10 @@ private:
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
             // shading
-            if (canSurface(SHADING_SMOOTH)) {
+            if (canSurface(SHADING_NORMAL_MAP)) {
+                setSurface(SHADING_NORMAL_MAP);
+            }
+            else if (canSurface(SHADING_SMOOTH)) {
                 setSurface(SHADING_SMOOTH);
             }
             else if (canSurface(SHADING_FLAT)) {
