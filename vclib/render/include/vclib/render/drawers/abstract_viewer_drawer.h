@@ -8,6 +8,8 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
+#include "trackball_event_drawer.h"
+
 #include <vclib/render/concepts/view_projection_event_drawer.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
@@ -27,8 +29,8 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename ViewProjEventDrawer>
-class AbstractViewerDrawer : public ViewProjEventDrawer
+template<typename DerivedRenderApp>
+class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
 public:
     enum class BuiltInEditors { AXIS = 0, COUNT };
@@ -36,8 +38,8 @@ public:
 private:
     friend Editor<AbstractViewerDrawer>;
 
-    using Base = ViewProjEventDrawer;
-    using DRA  = ViewProjEventDrawer::DRA;
+    using Base = TrackBallEventDrawer<DerivedRenderApp>;
+    using DRA  = DerivedRenderApp;
 
     bool mReadRequested = false;
 
@@ -161,6 +163,15 @@ public:
 
         Base::fitView(sceneCenter);
     }
+
+    // drawable trackball
+
+    virtual bool isTrackBallVisible() const = 0;
+
+    virtual void toggleTrackBallVisibility() = 0;
+
+    virtual void setShortcutToggleTrackballCallback(
+        std::function<void(void)> cb) = 0;
 
     // events
     void onInit(uint) override

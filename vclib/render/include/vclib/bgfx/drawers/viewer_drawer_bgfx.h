@@ -13,23 +13,36 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/drawable_directional_light.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
+#include <vclib/bgfx/drawable/drawable_trackball.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
 #include <array>
 
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
+template<typename DerivedRenderApp>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
     inline static const uint N_ADDITIONAL_VIEWS =
         DrawObjectSettings::N_ADDITIONAL_VIEWS;
 
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
-    using DRA          = ViewProjEventDrawer::DRA;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DRA          = DerivedRenderApp;
 
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
+
+    // drawable trackball
+    DrawableTrackBall        mDrawTrackBall;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
+
+    // drawable directional light
+    DrawableDirectionalLight mDrawableDirectionalLight;
 
     // flags
     bool mStatsEnabled = false;
@@ -69,6 +82,13 @@ public:
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
     }
 
+    void onInit(uint viewId) override
+    {
+        ParentViewer::onInit(viewId);
+        mDrawTrackBall.init();
+        mDrawableDirectionalLight.init();
+    }
+
     void onResize(uint width, uint height) override
     {
         ParentViewer::onResize(width, height);
@@ -76,6 +96,26 @@ public:
             bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
             bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
             bgfx::touch(mAdditionalViewIds[i]);
+        }
+    }
+
+    void onDraw(uint viewId) override
+    {
+        DrawObjectSettings settings;
+        settings.viewId = viewId;
+
+        ParentViewer::onDraw(viewId);
+
+        setDirectionalLightVisibility(
+            ParentViewer::currentMotion() ==
+            ParentViewer::TrackBallType::DIR_LIGHT_ARC);
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.draw(settings);
+        }
+
+        if (mDrawableDirectionalLight.isVisible()) {
+            mDrawableDirectionalLight.draw(settings);
         }
     }
 
@@ -111,6 +151,9 @@ public:
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
+
+        updateDrawableTrackball();
+        updateDrawableDirectionalLight();
     }
 
     void onDrawId(uint viewId) override
@@ -128,16 +171,23 @@ public:
     {
         bool block = ParentViewer::onKeyPress(key, modifiers);
 
-        if (!block && key == Key::F1) {
-            if (mStatsEnabled) {
-                mStatsEnabled = false;
-                bgfx::setDebug(BGFX_DEBUG_NONE);
-            }
-            else {
-                mStatsEnabled = true;
-                bgfx::setDebug(BGFX_DEBUG_STATS);
+        if (!block) {
+            switch(key) {
+            case Key::F1:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    mStatsEnabled = !mStatsEnabled;
+                    bgfx::setDebug(
+                        mStatsEnabled ? BGFX_DEBUG_STATS : BGFX_DEBUG_NONE);
+                }
+                break;
+            case Key::T:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    mCustomShortcutToggleTrackballCallback();
+                break;
+            default: break;
             }
         }
+
         return block;
     }
 
@@ -158,6 +208,24 @@ public:
         return block;
     }
 
+    // drawable trackball
+
+    bool isTrackBallVisible() const override
+    {
+        return mDrawTrackBall.isVisible();
+    }
+
+    void toggleTrackBallVisibility() override
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    void setShortcutToggleTrackballCallback(
+        std::function<void(void)> callback) override
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
+    }
+
 private:
     void setViewTransform(uint viewId)
     {
@@ -171,6 +239,29 @@ private:
         for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
             bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
         }
+    }
+
+    void updateDrawableTrackball()
+    {
+        auto v = ParentViewer::gizmoMatrix();
+        mDrawTrackBall.setTransform(v);
+        mDrawTrackBall.updateDragging(ParentViewer::isDragging());
+    }
+
+    bool isDirectionalLightVisible() const
+    {
+        return mDrawableDirectionalLight.isVisible();
+    }
+
+    void setDirectionalLightVisibility(bool b)
+    {
+        mDrawableDirectionalLight.setVisibility(b);
+    }
+
+    void updateDrawableDirectionalLight()
+    {
+        auto v = ParentViewer::lightGizmoMatrix();
+        mDrawableDirectionalLight.updateRotation(v);
     }
 
     auto* derived() { return static_cast<DRA*>(this); }

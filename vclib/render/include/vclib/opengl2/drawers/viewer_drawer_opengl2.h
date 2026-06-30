@@ -24,10 +24,10 @@
 
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<ViewProjEventDrawer>
+template<typename DerivedRenderApp>
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
@@ -90,6 +90,16 @@ public:
             ParentViewer::readDepthRequest(x, y);
         }
         return block;
+    }
+
+    // drawable trackball
+    bool isTrackBallVisible() const override { return false; }
+
+    void toggleTrackBallVisibility() override {}
+
+    void setShortcutToggleTrackballCallback(
+        std::function<void(void)> callback) override
+    {
     }
 };
 

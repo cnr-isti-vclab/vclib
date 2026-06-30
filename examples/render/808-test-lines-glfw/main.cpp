@@ -10,7 +10,7 @@
 
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 #include <imgui.h>
@@ -18,9 +18,9 @@
 #include "../808-test-lines-common/lines_common.h"
 
 template<typename DerivedRenderApp>
-class LinesDrawer : public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+class LinesDrawer : public vcl::ViewerDrawer<DerivedRenderApp>
 {
-    using ParentDrawer = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    using ParentDrawer = vcl::ViewerDrawer<DerivedRenderApp>;
     // lines
     const vcl::uint                     N_LINES = 8;
     std::shared_ptr<vcl::DrawableLines> mLines;

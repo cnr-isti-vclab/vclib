@@ -27,7 +27,7 @@
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/drawers/plain_drawer.h>
 #include <vclib/render/drawers/trackball_event_drawer.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 #include <vclib/bgfx/drawers/text_drawer.h>
@@ -52,7 +52,7 @@ void drawersStaticAssertsWM()
     using RenderAppED  = RenderApp<WM, Canvas, EventDrawer>;
     using RenderAppBED = RenderApp<WM, Canvas, BlockerEventDrawer>;
     using RenderAppTED = RenderApp<WM, Canvas, TrackBallEventDrawer>;
-    using RenderAppVD  = RenderApp<WM, Canvas, TrackBallViewerDrawer>;
+    using RenderAppVD  = RenderApp<WM, Canvas, ViewerDrawer>;
 
     // PlainDrawer
     static_assert(
@@ -261,53 +261,53 @@ void drawersStaticAssertsWM()
         "TrackBallEventDrawer&& does not satisfy the "
         "ViewProjectionEventDrawerConcept");
 
-    // TrackBallViewerDrawer
+    // ViewerDrawer
     static_assert(
-        DrawerConcept<TrackBallViewerDrawer<RenderAppVD>>,
+        DrawerConcept<ViewerDrawer<RenderAppVD>>,
         "ViewerDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const TrackBallViewerDrawer<RenderAppVD>>,
+        DrawerConcept<const ViewerDrawer<RenderAppVD>>,
         "const ViewerDrawer does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<TrackBallViewerDrawer<RenderAppVD>&>,
+        DrawerConcept<ViewerDrawer<RenderAppVD>&>,
         "ViewerDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<const TrackBallViewerDrawer<RenderAppVD>&>,
+        DrawerConcept<const ViewerDrawer<RenderAppVD>&>,
         "const ViewerDrawer& does not satisfy the DrawerConcept");
     static_assert(
-        DrawerConcept<TrackBallViewerDrawer<RenderAppVD>&&>,
+        DrawerConcept<ViewerDrawer<RenderAppVD>&&>,
         "ViewerDrawer&& does not satisfy the DrawerConcept");
 
     static_assert(
-        EventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>>,
+        EventDrawerConcept<ViewerDrawer<RenderAppVD>>,
         "ViewerDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const TrackBallViewerDrawer<RenderAppVD>>,
+        EventDrawerConcept<const ViewerDrawer<RenderAppVD>>,
         "const ViewerDrawer does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>&>,
+        EventDrawerConcept<ViewerDrawer<RenderAppVD>&>,
         "ViewerDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<const TrackBallViewerDrawer<RenderAppVD>&>,
+        EventDrawerConcept<const ViewerDrawer<RenderAppVD>&>,
         "const ViewerDrawer& does not satisfy the EventDrawerConcept");
     static_assert(
-        EventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>&&>,
+        EventDrawerConcept<ViewerDrawer<RenderAppVD>&&>,
         "ViewerDrawer&& does not satisfy the EventDrawerConcept");
 
     static_assert(
-        !BlockerEventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>>,
+        !BlockerEventDrawerConcept<ViewerDrawer<RenderAppVD>>,
         "ViewerDrawer does satisfy the BlockerEventDrawerConcept");
     static_assert(
-        !BlockerEventDrawerConcept<const TrackBallViewerDrawer<RenderAppVD>>,
+        !BlockerEventDrawerConcept<const ViewerDrawer<RenderAppVD>>,
         "const ViewerDrawer does satisfy the BlockerEventDrawerConcept");
     static_assert(
-        !BlockerEventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>&>,
+        !BlockerEventDrawerConcept<ViewerDrawer<RenderAppVD>&>,
         "ViewerDrawer& does satisfy the BlockerEventDrawerConcept");
     static_assert(
-        !BlockerEventDrawerConcept<const TrackBallViewerDrawer<RenderAppVD>&>,
+        !BlockerEventDrawerConcept<const ViewerDrawer<RenderAppVD>&>,
         "const ViewerDrawer& does satisfy the BlockerEventDrawerConcept");
     static_assert(
-        !BlockerEventDrawerConcept<TrackBallViewerDrawer<RenderAppVD>&&>,
+        !BlockerEventDrawerConcept<ViewerDrawer<RenderAppVD>&&>,
         "ViewerDrawer&& does satisfy the BlockerEventDrawerConcept");
 
 #ifdef VCLIB_WITH_IMGUI

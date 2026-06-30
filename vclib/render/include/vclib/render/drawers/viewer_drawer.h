@@ -21,13 +21,13 @@
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-template<typename ViewProjEventDrawer>
-using ViewerDrawer = ViewerDrawerBGFX<ViewProjEventDrawer>;
+template<typename DerivedRenderApp>
+using ViewerDrawer = ViewerDrawerBGFX<DerivedRenderApp>;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<typename ViewProjEventDrawer>
-using ViewerDrawer = ViewerDrawerOpenGL2<ViewProjEventDrawer>;
+template<typename DerivedRenderApp>
+using ViewerDrawer = ViewerDrawerOpenGL2<DerivedRenderApp>;
 #endif
 
 } // namespace vcl
