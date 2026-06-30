@@ -13,7 +13,6 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/drawable_directional_light_bgfx.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
@@ -32,11 +31,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
     using DRA          = DerivedRenderApp;
 
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
-
-
-
-    // drawable directional light
-    DrawableDirectionalLightBGFX mDrawableDirectionalLight;
 
     // flags
     bool mStatsEnabled = false;
@@ -76,12 +70,6 @@ public:
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
     }
 
-    void onInit(uint viewId) override
-    {
-        ParentViewer::onInit(viewId);
-        mDrawableDirectionalLight.init();
-    }
-
     void onResize(uint width, uint height) override
     {
         ParentViewer::onResize(width, height);
@@ -89,22 +77,6 @@ public:
             bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
             bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
             bgfx::touch(mAdditionalViewIds[i]);
-        }
-    }
-
-    void onDraw(uint viewId) override
-    {
-        DrawObjectSettings settings;
-        settings.viewId = viewId;
-
-        ParentViewer::onDraw(viewId);
-
-        setDirectionalLightVisibility(
-            ParentViewer::currentMotion() ==
-            ParentViewer::TrackBallType::DIR_LIGHT_ARC);
-
-        if (mDrawableDirectionalLight.isVisible()) {
-            mDrawableDirectionalLight.draw(settings);
         }
     }
 
@@ -140,9 +112,6 @@ public:
         mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
-
-
-        updateDrawableDirectionalLight();
     }
 
     void onDrawId(uint viewId) override
@@ -207,22 +176,6 @@ private:
         for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
             bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
         }
-    }
-
-    bool isDirectionalLightVisible() const
-    {
-        return mDrawableDirectionalLight.isVisible();
-    }
-
-    void setDirectionalLightVisibility(bool b)
-    {
-        mDrawableDirectionalLight.setVisibility(b);
-    }
-
-    void updateDrawableDirectionalLight()
-    {
-        auto v = ParentViewer::lightGizmoMatrix();
-        mDrawableDirectionalLight.updateRotation(v);
     }
 
     auto* derived() { return static_cast<DRA*>(this); }

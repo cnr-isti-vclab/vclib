@@ -14,6 +14,7 @@
 #include <vclib/render/viewer/trackball.h>
 #include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/render/drawable/drawable_trackball.h>
+#include <vclib/render/drawable/drawable_directional_light.h>
 #include <vclib/space/core/bit_set.h>
 
 #include <map>
@@ -57,6 +58,9 @@ private:
 
     // drawable trackball
     DrawableTrackBall mDrawTrackBall;
+
+    // drawable directional light
+    DrawableDirectionalLight mDrawableDirectionalLight;
 
     std::function<void(void)> mCustomShortcutToggleTrackballCallback =
         [this]() {
@@ -275,20 +279,30 @@ public:
     {
         Base::onInit(viewId);
         mDrawTrackBall.init();
+        mDrawableDirectionalLight.init();
     }
 
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
 
+        DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
+
+        mDrawableDirectionalLight.setVisibility(
+            currentMotion() == TrackBallType::DIR_LIGHT_ARC);
+
+        if (mDrawableDirectionalLight.isVisible()) {
+            auto v = lightGizmoMatrix();
+            mDrawableDirectionalLight.updateRotation(v);
+            mDrawableDirectionalLight.draw(settings);
+        }
+
         if (mDrawTrackBall.isVisible()) {
             mDrawTrackBall.setTransform(gizmoMatrix());
             mDrawTrackBall.updateDragging(isDragging());
-
-            DrawObjectSettings settings;
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-            settings.viewId = viewId;
-#endif // VCLIB_RENDER_BACKEND_BGFX
             mDrawTrackBall.draw(settings);
         }
     }
