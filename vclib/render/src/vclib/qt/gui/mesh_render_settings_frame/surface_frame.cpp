@@ -99,7 +99,8 @@ void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
     mUI->shadingNoneRadioButton->setChecked(mMRS.isSurface(SHADING_NONE));
     mUI->shadingFlatRadioButton->setChecked(mMRS.isSurface(SHADING_FLAT));
     mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurface(SHADING_SMOOTH));
-    mUI->shadingNormalMapRadioButton->setChecked(mMRS.isSurface(SHADING_NORMAL_MAP));
+    mUI->shadingNormalMapRadioButton->setChecked(
+        mMRS.isSurface(SHADING_NORMAL_MAP));
 }
 
 void SurfaceFrame::updateColorComboBoxFromSettings()

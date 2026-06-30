@@ -24,8 +24,7 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
-class MeshViewerDrawerImgui :
-        public vcl::ViewerDrawer<DerivedRenderApp>
+class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 

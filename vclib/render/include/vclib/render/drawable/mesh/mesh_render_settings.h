@@ -659,7 +659,6 @@ public:
                         vcl::HasPerVertexNormal<MeshType> &&
                         vcl::HasPerVertexTangent<MeshType> &&
                         vcl::HasMaterials<MeshType>) {
-                        
                         bool hasTexCoords = false;
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m)) {
@@ -672,13 +671,12 @@ public:
                             }
                         }
 
-                        // Normal mapping requires normal and tangent vectors, texture coordinates,
-                        // and materials (which may contain the normal map texture).
-                        if (hasTexCoords && 
-                            m.materialCount() > 0 &&
+                        // Normal mapping requires normal and tangent vectors,
+                        // texture coordinates, and materials (which may contain
+                        // the normal map texture).
+                        if (hasTexCoords && m.materialCount() > 0 &&
                             vcl::isPerVertexNormalAvailable(m) &&
                             vcl::isPerVertexTangentAvailable(m)) {
-                            
                             setSurfaceCapability(
                                 MRI::Surface::SHADING_NORMAL_MAP);
                         }
