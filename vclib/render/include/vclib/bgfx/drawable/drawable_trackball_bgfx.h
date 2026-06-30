@@ -14,7 +14,7 @@
 #include <vclib/space/core.h>
 
 namespace vcl {
-class DrawableTrackBall : public DrawableObject
+class DrawableTrackBallBGFX : public DrawableObject
 {
     bool mVisible = true;
 
@@ -25,25 +25,28 @@ class DrawableTrackBall : public DrawableObject
     bool           mIsDragging = false;
 
 public:
-    DrawableTrackBall();
+    DrawableTrackBallBGFX();
 
-    DrawableTrackBall(const DrawableTrackBall& other);
+    DrawableTrackBallBGFX(const DrawableTrackBallBGFX& other);
 
     // default move constructor - buffers can be moved
-    DrawableTrackBall(DrawableTrackBall&& other) = default;
+    DrawableTrackBallBGFX(DrawableTrackBallBGFX&& other) = default;
 
     // default destructor - buffers are destroyed by their destructor
-    ~DrawableTrackBall() = default;
+    ~DrawableTrackBallBGFX() = default;
 
     /**
-     * @brief Swap the content of this object with another DrawableTrackBall
+     * @brief Swap the content of this object with another DrawableTrackBallBGFX
      * object.
      *
-     * @param[in] other: the other DrawableTrackBall object.
+     * @param[in] other: the other DrawableTrackBallBGFX object.
      */
-    void swap(DrawableTrackBall& other);
+    void swap(DrawableTrackBallBGFX& other);
 
-    friend void swap(DrawableTrackBall& a, DrawableTrackBall& b) { a.swap(b); }
+    friend void swap(DrawableTrackBallBGFX& a, DrawableTrackBallBGFX& b)
+    {
+        a.swap(b);
+    }
 
     /**
      * @brief Update the dragging status of the trackball.
@@ -55,7 +58,7 @@ public:
     void setTransform(const vcl::Matrix44f& mtx);
 
     // copy and swap idiom
-    DrawableTrackBall& operator=(DrawableTrackBall other);
+    DrawableTrackBallBGFX& operator=(DrawableTrackBallBGFX other);
 
     // DrawableObject interface
 

@@ -13,9 +13,9 @@
 #include <vclib/render/drawers/abstract_viewer_drawer.h>
 
 #include <vclib/bgfx/context.h>
-#include <vclib/bgfx/drawable/drawable_directional_light.h>
+#include <vclib/bgfx/drawable/drawable_directional_light_bgfx.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
-#include <vclib/bgfx/drawable/drawable_trackball.h>
+#include <vclib/bgfx/drawable/drawable_trackball_bgfx.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
 #include <array>
@@ -34,7 +34,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
     // drawable trackball
-    DrawableTrackBall        mDrawTrackBall;
+    DrawableTrackBallBGFX        mDrawTrackBall;
 
     std::function<void(void)> mCustomShortcutToggleTrackballCallback =
         [this]() {
@@ -42,7 +42,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
         };
 
     // drawable directional light
-    DrawableDirectionalLight mDrawableDirectionalLight;
+    DrawableDirectionalLightBGFX mDrawableDirectionalLight;
 
     // flags
     bool mStatsEnabled = false;

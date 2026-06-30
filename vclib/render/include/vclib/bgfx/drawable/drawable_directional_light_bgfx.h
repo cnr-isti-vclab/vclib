@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_BGFX_H
 
 #include <vclib/render/drawable/drawable_object.h>
 #include <vclib/render/viewer/lights/directional_light.h>
@@ -19,7 +19,7 @@
 
 namespace vcl {
 
-class DrawableDirectionalLight : public DrawableObject
+class DrawableDirectionalLightBGFX : public DrawableObject
 {
     bool mVisible = false;
 
@@ -31,19 +31,21 @@ class DrawableDirectionalLight : public DrawableObject
     VertexBuffer mVertexPosBuffer;
 
 public:
-    DrawableDirectionalLight();
+    DrawableDirectionalLightBGFX();
 
-    DrawableDirectionalLight(const DrawableDirectionalLight& other);
+    DrawableDirectionalLightBGFX(const DrawableDirectionalLightBGFX& other);
 
-    DrawableDirectionalLight(DrawableDirectionalLight&& other);
+    DrawableDirectionalLightBGFX(DrawableDirectionalLightBGFX&& other);
 
-    ~DrawableDirectionalLight();
+    ~DrawableDirectionalLightBGFX();
 
-    DrawableDirectionalLight& operator=(DrawableDirectionalLight other);
+    DrawableDirectionalLightBGFX& operator=(DrawableDirectionalLightBGFX other);
 
-    void swap(DrawableDirectionalLight& other);
+    void swap(DrawableDirectionalLightBGFX& other);
 
-    friend void swap(DrawableDirectionalLight& a, DrawableDirectionalLight& b)
+    friend void swap(
+        DrawableDirectionalLightBGFX& a,
+        DrawableDirectionalLightBGFX& b)
     {
         a.swap(b);
     }
@@ -74,4 +76,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_BGFX_H
