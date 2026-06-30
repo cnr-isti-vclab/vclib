@@ -56,7 +56,7 @@ private:
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
 
     // drawable trackball
-    DrawableTrackBall        mDrawTrackBall;
+    DrawableTrackBall mDrawTrackBall;
 
     std::function<void(void)> mCustomShortcutToggleTrackballCallback =
         [this]() {
@@ -286,7 +286,9 @@ public:
             mDrawTrackBall.updateDragging(isDragging());
 
             DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
             settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
             mDrawTrackBall.draw(settings);
         }
     }

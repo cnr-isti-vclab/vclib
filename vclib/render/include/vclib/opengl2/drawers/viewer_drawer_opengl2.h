@@ -57,10 +57,9 @@ public:
         }
     }
 
-    void onDraw(uint viewId) override { onDrawContent(viewId); }
-
     void onDrawContent(uint) override
     {
+        ParentViewer::onDrawContent(0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         auto         tmp = ParentViewer::light().direction();
