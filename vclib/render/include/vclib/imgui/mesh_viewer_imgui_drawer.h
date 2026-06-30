@@ -12,7 +12,7 @@
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
@@ -25,9 +25,9 @@ namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
 class MeshViewerDrawerImgui :
-        public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+        public vcl::ViewerDrawer<DerivedRenderApp>
 {
-    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
     std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
