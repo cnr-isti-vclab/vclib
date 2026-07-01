@@ -13,7 +13,7 @@
 #include <vclib/bgfx/drawers/text_drawer.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
     using ViewerWidget = vcl::RenderApp<
         vcl::qt::WidgetManager,
         vcl::Canvas,
-        vcl::TrackBallViewerDrawer,
+        vcl::ViewerDrawer,
         vcl::TextDrawer>;
 
     auto app = vcl::qt::qAppl(argc, argv);

@@ -11,7 +11,6 @@
 #include "directional_light.h"
 #include "drawable_object.h"
 #include "render_app.h"
-#include "view_projection.h"
 #include "window_manager.h"
 
 int main()
@@ -21,7 +20,6 @@ int main()
     drawableObjectStaticAsserts();
     drawersStaticAsserts();
     renderAppStaticAsserts();
-    viewProjectionStaticAsserts();
     windowManagerStaticAsserts();
 
     return 0;

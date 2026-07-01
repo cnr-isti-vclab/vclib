@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/drawable_trackball.h>
+#include <vclib/bgfx/drawable/drawable_trackball_bgfx.h>
 
 #include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.h>
 
@@ -93,12 +93,13 @@ static const uint16_t N_POINTS = 128;
 static const auto     TRACKBALL_DATA =
     detail::createTrackballData<float, uint16_t>(1.0, N_POINTS);
 
-DrawableTrackBall::DrawableTrackBall()
+DrawableTrackBallBGFX::DrawableTrackBallBGFX()
 {
     createBuffers();
 }
 
-DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
+DrawableTrackBallBGFX::DrawableTrackBallBGFX(
+    const DrawableTrackBallBGFX& other) :
         mVisible(other.mVisible), mTransform(other.mTransform)
 {
     // copy all the members that can be copied, and then re-create the
@@ -106,7 +107,7 @@ DrawableTrackBall::DrawableTrackBall(const DrawableTrackBall& other) :
     createBuffers();
 }
 
-void DrawableTrackBall::swap(DrawableTrackBall& other)
+void DrawableTrackBallBGFX::swap(DrawableTrackBallBGFX& other)
 {
     using std::swap;
     swap(mVisible, other.mVisible);
@@ -121,23 +122,24 @@ void DrawableTrackBall::swap(DrawableTrackBall& other)
  * @param[in] isDragging: true if the trackball is being dragged, false
  * otherwise.
  */
-void DrawableTrackBall::updateDragging(bool isDragging)
+void DrawableTrackBallBGFX::updateDragging(bool isDragging)
 {
     mIsDragging = isDragging;
 }
 
-void DrawableTrackBall::setTransform(const vcl::Matrix44f& mtx)
+void DrawableTrackBallBGFX::setTransform(const vcl::Matrix44f& mtx)
 {
     mTransform = mtx;
 }
 
-DrawableTrackBall& DrawableTrackBall::operator=(DrawableTrackBall other)
+DrawableTrackBallBGFX& DrawableTrackBallBGFX::operator=(
+    DrawableTrackBallBGFX other)
 {
     swap(other);
     return *this;
 }
 
-void DrawableTrackBall::draw(const DrawObjectSettings& settings)
+void DrawableTrackBallBGFX::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 
@@ -161,32 +163,32 @@ void DrawableTrackBall::draw(const DrawObjectSettings& settings)
     }
 }
 
-Box3d DrawableTrackBall::boundingBox() const
+Box3d DrawableTrackBallBGFX::boundingBox() const
 {
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableTrackBall::clone() const&
+std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() const&
 {
-    return std::make_shared<DrawableTrackBall>(*this);
+    return std::make_shared<DrawableTrackBallBGFX>(*this);
 }
 
-std::shared_ptr<DrawableObject> DrawableTrackBall::clone() &&
+std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() &&
 {
-    return std::make_shared<DrawableTrackBall>(std::move(*this));
+    return std::make_shared<DrawableTrackBallBGFX>(std::move(*this));
 }
 
-bool DrawableTrackBall::isVisible() const
+bool DrawableTrackBallBGFX::isVisible() const
 {
     return mVisible;
 }
 
-void DrawableTrackBall::setVisibility(bool vis)
+void DrawableTrackBallBGFX::setVisibility(bool vis)
 {
     mVisible = vis;
 }
 
-void DrawableTrackBall::createBuffers()
+void DrawableTrackBallBGFX::createBuffers()
 {
     // vertex layout
     bgfx::VertexLayout layout;
