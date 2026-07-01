@@ -373,82 +373,80 @@ function(_vclib_embedded_program_ensure_template_exists TEMPLATE_PATH)
 endfunction()
 
 function(_vclib_embedded_program_update_main_header PROGRAM_TYPE PROGRAM_TYPE_LC TARGET_BIN_DIR ENUM_NAME_LC)
-    set(MAIN_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs.h")
-
-    set(INCLUDES_LIST "")
-    if (EXISTS ${MAIN_HEADER_FILE})
-        file(READ ${MAIN_HEADER_FILE} EXISTING_HEADER_CONTENT)
-        string(REGEX MATCHALL "#include \"[^\"]+\"" EXISTING_INCLUDES "${EXISTING_HEADER_CONTENT}")
-        foreach(INC ${EXISTING_INCLUDES})
-            list(FIND INCLUDES_LIST "${INC}" INC_INDEX)
-            if (INC_INDEX EQUAL -1)
-                list(APPEND INCLUDES_LIST "${INC}")
-            endif()
-        endforeach()
-    endif()
-
-    set(NEW_INCLUDE "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\"")
-    list(FIND INCLUDES_LIST "${NEW_INCLUDE}" NEW_INC_INDEX)
-    if (NEW_INC_INDEX EQUAL -1)
-        list(APPEND INCLUDES_LIST "${NEW_INCLUDE}")
-    endif()
-
-    list(JOIN INCLUDES_LIST "\n" INCLUDES_STR)
-
     if (PROGRAM_TYPE STREQUAL "VF")
-        set(VF_INCLUDES "${INCLUDES_STR}")
-        configure_file(
-            "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs.h.in"
-            ${MAIN_HEADER_FILE}
-            @ONLY
-        )
+        set(PROP_NAME "VCLIB_VF_INCLUDES")
     else()
-        set(C_INCLUDES "${INCLUDES_STR}")
-        configure_file(
-            "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_c_programs.h.in"
-            ${MAIN_HEADER_FILE}
-            @ONLY
-        )
+        set(PROP_NAME "VCLIB_C_INCLUDES")
+    endif()
+
+    get_property(INCLUDES GLOBAL PROPERTY ${PROP_NAME})
+    set(NEW_INCLUDE "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\"")
+    list(FIND INCLUDES "${NEW_INCLUDE}" NEW_INC_INDEX)
+    if (NEW_INC_INDEX EQUAL -1)
+        list(APPEND INCLUDES "${NEW_INCLUDE}")
+        set_property(GLOBAL PROPERTY ${PROP_NAME} "${INCLUDES}")
     endif()
 endfunction()
 
 function(_vclib_embedded_program_update_enum_header PROGRAM_TYPE TARGET_BIN_DIR ENUM_NAME)
     if (PROGRAM_TYPE STREQUAL "VF")
-        set(ENUM_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/vert_frag_program.h")
+        set(PROP_NAME "VCLIB_VF_ENUM_ENTRIES")
     else()
-        set(ENUM_HEADER_FILE "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/compute_program.h")
+        set(PROP_NAME "VCLIB_C_ENUM_ENTRIES")
     endif()
 
-    set(EXISTING_ENUM_ENTRIES "")
-    if (EXISTS ${ENUM_HEADER_FILE})
-        file(READ ${ENUM_HEADER_FILE} EXISTING_ENUM_CONTENT)
-        string(REGEX MATCHALL "    [A-Z_][A-Z0-9_]*," EXISTING_ENUM_ENTRIES "${EXISTING_ENUM_CONTENT}")
-    endif()
-
+    get_property(EXISTING_ENUM_ENTRIES GLOBAL PROPERTY ${PROP_NAME})
     set(NEW_ENUM_ENTRY "    ${ENUM_NAME},")
     list(FIND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}" ENTRY_FOUND)
     if (ENTRY_FOUND EQUAL -1)
-        if (EXISTING_ENUM_ENTRIES STREQUAL "")
-            set(EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}")
-        else()
-            list(APPEND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}")
-        endif()
+        list(APPEND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}")
+        set_property(GLOBAL PROPERTY ${PROP_NAME} "${EXISTING_ENUM_ENTRIES}")
     endif()
+endfunction()
 
-    list(JOIN EXISTING_ENUM_ENTRIES "\n" ENUM_ENTRIES_STR)
+function(vclib_generate_embedded_programs_headers)
+    get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
 
-    if (PROGRAM_TYPE STREQUAL "VF")
-        set(VF_ENUM_ENTRIES "${ENUM_ENTRIES_STR}")
+    # VF Enums
+    get_property(VF_ENTRIES GLOBAL PROPERTY VCLIB_VF_ENUM_ENTRIES)
+    if (VF_ENTRIES)
+        list(JOIN VF_ENTRIES "\n" VF_ENUM_ENTRIES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs/vert_frag_program_enum.h.in"
-            ${ENUM_HEADER_FILE}
+            "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/vert_frag_program.h"
             @ONLY
         )
-    else()
-        set(C_ENUM_ENTRIES "${ENUM_ENTRIES_STR}")
+    endif()
+
+    # C Enums
+    get_property(C_ENTRIES GLOBAL PROPERTY VCLIB_C_ENUM_ENTRIES)
+    if (C_ENTRIES)
+        list(JOIN C_ENTRIES "\n" C_ENUM_ENTRIES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_c_programs/compute_program_enum.h.in"
-            ${ENUM_HEADER_FILE}
+            "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/compute_program.h"
+            @ONLY
+        )
+    endif()
+
+    # VF Includes
+    get_property(VF_INCS GLOBAL PROPERTY VCLIB_VF_INCLUDES)
+    if (VF_INCS)
+        list(JOIN VF_INCS "\n" VF_INCLUDES)
+        configure_file(
+            "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs.h.in"
+            "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_vf_programs.h"
+            @ONLY
+        )
+    endif()
+
+    # C Includes
+    get_property(C_INCS GLOBAL PROPERTY VCLIB_C_INCLUDES)
+    if (C_INCS)
+        list(JOIN C_INCS "\n" C_INCLUDES)
+        configure_file(
+            "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_c_programs.h.in"
+            "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_c_programs.h"
             @ONLY
         )
     endif()
