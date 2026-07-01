@@ -5,31 +5,29 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
-#define VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#define VCL_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 
 #include <vclib/render/config.h>
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/drawers/viewer_drawer_bgfx.h>
+#include <vclib/bgfx/drawable/drawable_directional_light_bgfx.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/drawers/viewer_drawer_opengl2.h>
+#include <vclib/opengl2/drawable/drawable_directional_light_opengl2.h>
 #endif
 
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-template<typename DerivedRenderApp>
-using ViewerDrawer = ViewerDrawerBGFX<DerivedRenderApp>;
+using DrawableDirectionalLight = DrawableDirectionalLightBGFX;
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-template<typename DerivedRenderApp>
-using ViewerDrawer = ViewerDrawerOpenGL2<DerivedRenderApp>;
+using DrawableDirectionalLight = DrawableDirectionalLightOpenGL2;
 #endif
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWERS_VIEWER_DRAWER_H
+#endif // VCL_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H

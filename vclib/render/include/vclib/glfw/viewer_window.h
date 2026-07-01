@@ -12,15 +12,13 @@
 #include <vclib/render/canvas.h>
 
 #include <vclib/glfw/window_manager.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
 namespace vcl::glfw {
 
-using ViewerWindow = vcl::RenderApp<
-    vcl::glfw::WindowManager,
-    vcl::Canvas,
-    vcl::TrackBallViewerDrawer>;
+using ViewerWindow =
+    vcl::RenderApp<vcl::glfw::WindowManager, vcl::Canvas, vcl::ViewerDrawer>;
 
 } // namespace vcl::glfw
 

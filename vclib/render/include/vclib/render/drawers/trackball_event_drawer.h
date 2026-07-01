@@ -10,7 +10,10 @@
 
 #include "event_drawer.h"
 
+#include <vclib/render/drawable/drawable_directional_light.h>
+#include <vclib/render/drawable/drawable_trackball.h>
 #include <vclib/render/input.h>
+#include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
 
@@ -52,6 +55,17 @@ private:
     // current mouse button (automatically updated)
     // if dragging holds the current mouse button
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
+
+    // drawable trackball
+    DrawableTrackBall mDrawTrackBall;
+
+    // drawable directional light
+    DrawableDirectionalLight mDrawableDirectionalLight;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         mDragMotionMap = {
@@ -241,7 +255,71 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
+    // drawable trackball
+
+    /**
+     * @brief Check if the trackball is visible.
+     *
+     * @return true if the trackball is visible, false otherwise.
+     */
+    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
+
+    /**
+     * @brief Toggles the visibility of the trackball.
+     */
+    void toggleTrackBallVisibility()
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    /**
+     * @brief Sets the callback function that will be called when the user
+     * presses the shortcut to toggle the trackball visibility (by default, the
+     * shortcut is T).
+     *
+     * This is useful when the user wants to execute some custom code when the
+     * trackball visibility is toggled through the shortcut.
+     *
+     * @param callback The function to execute.
+     */
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
+    }
+
     // events
+
+    void onInit(uint viewId) override
+    {
+        Base::onInit(viewId);
+        mDrawTrackBall.init();
+        mDrawableDirectionalLight.init();
+    }
+
+    void onDraw(uint viewId) override
+    {
+        Base::onDraw(viewId);
+
+        DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
+
+        mDrawableDirectionalLight.setVisibility(
+            currentMotion() == TrackBallType::DIR_LIGHT_ARC);
+
+        if (mDrawableDirectionalLight.isVisible()) {
+            auto v = lightGizmoMatrix();
+            mDrawableDirectionalLight.updateRotation(v);
+            mDrawableDirectionalLight.draw(settings);
+        }
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.setTransform(gizmoMatrix());
+            mDrawTrackBall.updateDragging(isDragging());
+            mDrawTrackBall.draw(settings);
+        }
+    }
 
     void onResize(unsigned int width, unsigned int height) override
     {
@@ -251,6 +329,12 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
+        // handle shortcut for trackball visibility
+        if (key == Key::T && modifiers[KeyModifier::NO_MODIFIER]) {
+            if (mCustomShortcutToggleTrackballCallback)
+                mCustomShortcutToggleTrackballCallback();
+            return true;
+        }
         keyPress(key);
         return false;
     }
