@@ -5,6 +5,8 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+include(${CMAKE_CURRENT_LIST_DIR}/vclib_shader_combinations.cmake)
+
 # Replace original bgfx profile names with the ones used by vclib
 function(_bgfx_get_profile_path_ext PROFILE PROFILE_PATH_EXT)
     string(REPLACE 100_es essl PROFILE ${PROFILE})
@@ -48,7 +50,22 @@ endfunction()
 
 function(_vclib_target_ide_add_shaders target_name)
     list(REMOVE_AT ARGV 0)
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${ARGV})
+    set(SRC_FILES "")
+    set(BIN_FILES "")
+    foreach(FILE ${ARGV})
+        string(FIND "${FILE}" "${CMAKE_CURRENT_BINARY_DIR}" IS_IN_BIN_DIR)
+        if(IS_IN_BIN_DIR EQUAL 0)
+            list(APPEND BIN_FILES ${FILE})
+        else()
+            list(APPEND SRC_FILES ${FILE})
+        endif()
+    endforeach()
+    if(SRC_FILES)
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${SRC_FILES})
+    endif()
+    if(BIN_FILES)
+        source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX "Shaders" FILES ${BIN_FILES})
+    endif()
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
@@ -70,7 +87,7 @@ function(vclib_build_shader)
     # options: AS_HEADER
     set(options AS_HEADER)
     set(oneValueArgs SHADER OUT_DIR VARYING_DEF)
-    set(multiValueArgs)
+    set(multiValueArgs INCLUDE_DIRS)
     cmake_parse_arguments(ARG
         "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
 
@@ -159,7 +176,7 @@ function(vclib_build_shader)
             SHADERS ${ARG_SHADER}
             ${VARYING_DEF_ARGUMENT}
             OUTPUT_DIR ${ARG_OUT_DIR}
-            INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR}"
+            INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR};${VCLIB_RENDER_DIR};${ARG_INCLUDE_DIRS}"
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
             NO_SOURCE_GROUP
@@ -179,15 +196,33 @@ function(vclib_build_shaders_to_headers)
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
 
     foreach(SHADER ${ARGV})
-        file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
-        get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
+        string(FIND "${SHADER}" "${TARGET_BIN_DIR}" IS_IN_BIN_DIR)
+        if(IS_IN_BIN_DIR EQUAL 0)
+            file(RELATIVE_PATH SHADER_REL "${TARGET_BIN_DIR}/shaders/vclib/bgfx" ${SHADER})
+            get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
+            set(VARYING_DEF_FILE "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc")
+        else()
+            file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
+            get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
+            set(VARYING_DEF_FILE "")
+        endif()
         set(OUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
 
-        vclib_build_shader(
-            SHADER ${SHADER}
-            OUT_DIR ${OUT_DIR}
-            AS_HEADER
-        )
+        if(VARYING_DEF_FILE AND EXISTS "${VARYING_DEF_FILE}")
+            vclib_build_shader(
+                SHADER ${SHADER}
+                OUT_DIR ${OUT_DIR}
+                VARYING_DEF "${VARYING_DEF_FILE}"
+                INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}"
+                AS_HEADER
+            )
+        else()
+            vclib_build_shader(
+                SHADER ${SHADER}
+                OUT_DIR ${OUT_DIR}
+                AS_HEADER
+            )
+        endif()
     endforeach()
 endfunction()
 
@@ -207,6 +242,8 @@ function(vclib_build_assets_to_headers)
         get_filename_component(FILENAME_WE "${ASSET}" NAME_WE)
         get_filename_component(ABSOLUTE_PATH_ASSET ${ASSET} ABSOLUTE)
         get_filename_component(ABSOLUTE_DIR_PATH ${DIR_PATH} ABSOLUTE)
+        
+        file(MAKE_DIRECTORY "${BGFX_ASSETS_OUTPUT_DIR}/${DIR_PATH}")
 
         bgfx_compile_binary_to_header(
             INPUT_FILE ${ABSOLUTE_PATH_ASSET}
@@ -516,7 +553,12 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
         return()
     endif()
 
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+    string(FIND "${FILE_PATH}" "${CMAKE_CURRENT_BINARY_DIR}" IS_IN_BIN_DIR)
+    if(IS_IN_BIN_DIR EQUAL 0)
+        source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+    else()
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+    endif()
     target_sources(vclib-render PRIVATE ${FILE_PATH})
 
     # Read file line by line using file(STRINGS ...) which returns a proper CMake list
