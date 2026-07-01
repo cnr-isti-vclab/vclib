@@ -100,4 +100,6 @@ if (TARGET vclib-3rd-bgfx)
 
     install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_shader_combinations.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
 endif()
