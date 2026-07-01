@@ -196,7 +196,7 @@ void SurfaceFrame::onShadingNormalMapToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(SHADING_NORMAL_MAP);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
