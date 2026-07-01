@@ -35,8 +35,14 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         list(APPEND SOURCES ${SOURCES_MM})
     endif()
 
+    vclib_generate_all_shaders_from_configs(
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib"
+    )
+
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
-        "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc")
+        "shaders/vclib/bgfx/*.sh" "shaders/vclib/bgfx/*.sc"
+        "${CMAKE_CURRENT_BINARY_DIR}/shaders/vclib/bgfx/*.sh" 
+        "${CMAKE_CURRENT_BINARY_DIR}/shaders/vclib/bgfx/*.sc")
     list(APPEND SHADERS ${SHADERS_BGFX})
 
     if (TARGET vclib-3rd-imgui)
@@ -134,6 +140,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_BGFX)
 
+
+
     vclib_build_shaders_to_headers(${SHADERS})
     vclib_build_assets_to_headers(${ASSETS})
 
@@ -143,9 +151,18 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         VERT_FRAG
     )
     vclib_add_embedded_programs_from_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/shaders/embedded_vf_combo_programs.config"
+        VERT_FRAG
+    )
+    vclib_add_embedded_programs_from_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/shaders/embedded_c_programs.config"
         COMPUTE
     )
+    
+    if (VCLIB_GENERATED_SHADER_CONFIGS)
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${VCLIB_GENERATED_SHADER_CONFIGS})
+        target_sources(${PROJECT_NAME} PRIVATE ${VCLIB_GENERATED_SHADER_CONFIGS})
+    endif()
 endif()
 
 if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")

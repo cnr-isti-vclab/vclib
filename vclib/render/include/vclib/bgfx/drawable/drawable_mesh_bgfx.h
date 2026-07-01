@@ -224,7 +224,7 @@ public:
                 if (pbrSettings.pbrMode) {
                     bgfx::submit(
                         settings.viewId,
-                        pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
+                        pm.getProgram<DRAWABLE_MESH_SURFACE_PBR>());
                 }
                 else {
                     bgfx::submit(settings.viewId, surfaceProgramSelector());
@@ -432,30 +432,30 @@ protected:
         ProgramManager& pm = Context::instance().programManager();
 
         static const std::array<bgfx::ProgramHandle, 24> surfaceProgramHandles =
-            {pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_WEDGE>()};
+            {pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE>()};
         uint mul = 0;
         uint off = 0;
 
