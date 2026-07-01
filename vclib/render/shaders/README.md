@@ -59,9 +59,11 @@ A combo config file must define basic information for prefixes and input files, 
   - `VS_IN <filename>`: The base file to `#include` in the generated vertex shaders.
   - `VS_PREFIX <prefix>`: The prefix for the generated `.sc` files.
 
-**Fragment Shader (Always Dynamic):**
-- `FS_IN <filename>`: The base file to `#include` in the generated fragment shaders.
-- `FS_PREFIX <prefix>`: The prefix for the generated `.sc` files.
+**Fragment Shader:**
+- `FS_FILE <filename>`: If the fragment shader is static (no variations), provide its file name.
+- *Alternatively, for dynamically generated fragment shaders:*
+  - `FS_IN <filename>`: The base file to `#include` in the generated fragment shaders.
+  - `FS_PREFIX <prefix>`: The prefix for the generated `.sc` files.
 
 **Dimensions:**
 Dimensions define the variants. For each combination, CMake generates the required `#define <DEFINE_PREFIX>_<DIMENSION>_<VALUE> 1` macros and creates a unique shader file.
