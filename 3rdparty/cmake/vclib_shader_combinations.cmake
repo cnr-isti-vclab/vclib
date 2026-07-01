@@ -5,6 +5,17 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+##
+# @brief Recursively generates shader files for all combinations of the remaining dimensions.
+#
+# This function is used internally to recursively build combinations of macro definitions,
+# generate the corresponding fragment shader (.sc) files, and append the combinations to the combo registry.
+#
+# @param DIMS_REMAINING A list of dimensions yet to be processed.
+# @param CURRENT_COMBINATION The string representing the combination of dimensions processed so far.
+# @param CURRENT_DEFINES The macro definitions string accumulated so far.
+# @param CONFIG_VARS A list containing configuration variables in the format: 
+#                    CONFIG_DIR;FS_IN;FS_PREFIX;DEFINE_PREFIX;COMBO_OUT_FILE;ENUM_PREFIX;VS_FILE
 function(vclib_generate_shader_combinations_recursive DIMS_REMAINING CURRENT_COMBINATION CURRENT_DEFINES CONFIG_VARS)
     list(LENGTH DIMS_REMAINING NUM_DIMS)
     
@@ -78,7 +89,14 @@ function(vclib_generate_shader_combinations_recursive DIMS_REMAINING CURRENT_COM
     endforeach()
 endfunction()
 
-# vclib_generate_shaders_from_config(CONFIG_FILE)
+##
+# @brief Parses a shader configuration file to generate shader permutations.
+#
+# Reads the given `.config` file to extract dimensions (e.g., SHADING, COLOR), their values,
+# and prefixes. It generates a new fragment shader file for each possible combination of the
+# dimensions, and appends the new configuration entry to the `embedded_vf_combo_programs.config` registry.
+#
+# @param CONFIG_FILE The absolute path to the `.config` file to be parsed.
 function(vclib_generate_shaders_from_config CONFIG_FILE)
     if(NOT EXISTS "${CONFIG_FILE}")
         message(FATAL_ERROR "Config file not found: ${CONFIG_FILE}")
@@ -94,13 +112,10 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
     file(MAKE_DIRECTORY "${BIN_CONFIG_DIR}")
     
     set(COMBO_OUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/shaders/embedded_vf_combo_programs.config")
-    
-    # Initialize the output file
-    # We must make sure the directory for combo output exists
-    get_filename_component(COMBO_OUT_DIR "${COMBO_OUT_FILE}" DIRECTORY)
-    file(MAKE_DIRECTORY "${COMBO_OUT_DIR}")
-    file(WRITE "${COMBO_OUT_FILE}" "# Auto-generated combinations from ${CONFIG_FILE}\n\n")
-    
+
+    # Append to the output file (which is initialized by vclib_generate_all_shaders_from_configs)
+    file(APPEND "${COMBO_OUT_FILE}" "# Auto-generated combinations from ${CONFIG_FILE}\n\n")
+
     # Initialize variables
     set(ENUM_PREFIX "")
     set(DEFINE_PREFIX "")
@@ -174,9 +189,22 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
     set(VCLIB_GENERATED_SHADER_CONFIGS ${VCLIB_GENERATED_SHADER_CONFIGS} "${CONFIG_FILE}" PARENT_SCOPE)
 endfunction()
 
-# vclib_generate_all_shaders_from_configs(DIR_PATH)
-# Recursively finds all .config files in the given directory and calls vclib_generate_shaders_from_config on each
+##
+# @brief Finds and processes all shader `.config` files in a given directory.
+#
+# Recursively searches for `.config` files within `DIR_PATH`, initializes the common output 
+# combination registry `embedded_vf_combo_programs.config`, and calls `vclib_generate_shaders_from_config` 
+# on each found file.
+#
+# @param DIR_PATH The absolute path to the directory containing shader `.config` files.
 function(vclib_generate_all_shaders_from_configs DIR_PATH)
+    set(COMBO_OUT_FILE "${CMAKE_CURRENT_BINARY_DIR}/shaders/embedded_vf_combo_programs.config")
+    
+    # Initialize the output combo file once
+    get_filename_component(COMBO_OUT_DIR "${COMBO_OUT_FILE}" DIRECTORY)
+    file(MAKE_DIRECTORY "${COMBO_OUT_DIR}")
+    file(WRITE "${COMBO_OUT_FILE}" "# Auto-generated combinations\n\n")
+
     file(GLOB_RECURSE ALL_CONFIGS "${DIR_PATH}/*.config")
     foreach(CONFIG_FILE ${ALL_CONFIGS})
         vclib_generate_shaders_from_config("${CONFIG_FILE}")
