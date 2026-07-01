@@ -18,7 +18,6 @@ void main()
 {
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
     v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
-    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     v_normal = normalize(mul(u_normalMatrix, a_normal));
     v_texcoord0 = a_texcoord0;
     v_texcoord1 = a_texcoord1;
@@ -28,6 +27,11 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
+#ifdef SURFACE_SECTION_ENABLED
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     // discard flag - used to discard the whole vertex, but in fragment shader
     v_discardFlag = computeDiscardFlag(v_worldPos);
+#else
+    v_discardFlag = 1;
+#endif
 }

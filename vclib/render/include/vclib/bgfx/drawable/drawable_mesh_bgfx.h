@@ -460,63 +460,101 @@ protected:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        static const std::array<bgfx::ProgramHandle, 24> surfaceProgramHandles =
-            {pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE>()};
-        uint mul = 0;
-        uint off = 0;
+        static const std::array<bgfx::ProgramHandle, 48> surfaceProgramHandles =
+            {pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE>(),
+
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_TEX_WEDGE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_MESH>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_FACE>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_USER>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX>(),
+             pm.getProgram<DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE>()};
+
+
+        uint section = 0;
+        uint shading = 0;
+        uint color = 0;
+
+        const uint N_SECTION_TYPES = 2;
+        const uint N_SHADING_TYPES = 4;
+        const uint N_COLOR_TYPES = 6;
 
         {
+            if (mCSS.isEnabled()) {
+                section = 1;
+            }
+
             using enum MeshRenderInfo::Surface;
             if (mMRS.isSurface(SHADING_FLAT)) {
-                mul = 1;
+                shading = 1;
             }
             if (mMRS.isSurface(SHADING_SMOOTH)) {
-                mul = 2;
+                shading = 2;
             }
             if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
-                mul = 3;
+                shading = 3;
             }
             if (mMRS.isSurface(COLOR_MESH)) {
-                off = 1;
+                color = 1;
             }
             if (mMRS.isSurface(COLOR_FACE)) {
-                off = 2;
+                color = 2;
             }
             if (mMRS.isSurface(COLOR_USER)) {
-                off = 3;
+                color = 3;
             }
             if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
-                off = 4;
+                color = 4;
             }
             if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
-                off = 5;
+                color = 5;
             }
         }
 
-        VertFragProgram p = static_cast<VertFragProgram>(6 * mul + off);
+        uint program = section * N_SHADING_TYPES * N_COLOR_TYPES + shading * N_COLOR_TYPES + color;
+
+        VertFragProgram p = static_cast<VertFragProgram>(program);
 
         return surfaceProgramHandles[toUnderlying(p)];
     }

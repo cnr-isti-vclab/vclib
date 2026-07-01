@@ -36,7 +36,9 @@ DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 
 void main()
 {
+#ifdef SURFACE_SECTION_ENABLED
     discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#endif
 
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
