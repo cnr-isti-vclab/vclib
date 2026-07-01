@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#define SURF_SHADING_NONE 1
-#define SURF_COLOR_MESH   1
+#define SURFACE_SHADING_NONE 1
+#define SURFACE_COLOR_USER   1
 
-#include "surface_uber_in.sh"
+#include "surface_in.sh"
