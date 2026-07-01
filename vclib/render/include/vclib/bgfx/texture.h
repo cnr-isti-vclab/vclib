@@ -223,13 +223,13 @@ public:
             1,
             // there is correspondence between bimg and bgfx texture formats
             static_cast<bimg::TextureFormat::Enum>(toUnderlying(format)));
-        set(bgfx::makeRef(data, sz, releaseFn),
-            size,
-            hasMips,
-            1,
-            format,
-            isCubemap,
-            flags);
+
+        const bgfx::Memory* mem = nullptr;
+        if (data != nullptr) {
+            mem = bgfx::makeRef(data, sz, releaseFn);
+        }
+
+        set(mem, size, hasMips, 1, format, isCubemap, flags);
     }
 
     /**

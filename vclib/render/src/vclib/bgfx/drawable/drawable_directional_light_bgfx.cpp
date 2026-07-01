@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/drawable_directional_light.h>
+#include <vclib/bgfx/drawable/drawable_directional_light_bgfx.h>
 
 #include <vclib/bgfx/drawable/uniforms/drawable_directional_light_uniforms.h>
 
@@ -13,7 +13,7 @@
 
 namespace vcl {
 
-DrawableDirectionalLight::DrawableDirectionalLight()
+DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX()
 {
     // create a vertex buffer that will contain the endpoints of the lines that
     // describe the light
@@ -44,8 +44,8 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     createVertexBuffer();
 }
 
-DrawableDirectionalLight::DrawableDirectionalLight(
-    const DrawableDirectionalLight& other) :
+DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX(
+    const DrawableDirectionalLightBGFX& other) :
         DrawableObject(other), mVisible(other.mVisible),
         mTransform(other.mTransform), mVertices(other.mVertices),
         mColor(other.mColor)
@@ -53,24 +53,24 @@ DrawableDirectionalLight::DrawableDirectionalLight(
     createVertexBuffer();
 }
 
-DrawableDirectionalLight::DrawableDirectionalLight(
-    DrawableDirectionalLight&& other)
+DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX(
+    DrawableDirectionalLightBGFX&& other)
 {
     swap(other);
 }
 
-DrawableDirectionalLight::~DrawableDirectionalLight()
+DrawableDirectionalLightBGFX::~DrawableDirectionalLightBGFX()
 {
 }
 
-DrawableDirectionalLight& DrawableDirectionalLight::operator=(
-    DrawableDirectionalLight other)
+DrawableDirectionalLightBGFX& DrawableDirectionalLightBGFX::operator=(
+    DrawableDirectionalLightBGFX other)
 {
     swap(other);
     return *this;
 }
 
-void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
+void DrawableDirectionalLightBGFX::swap(DrawableDirectionalLightBGFX& other)
 {
     using std::swap;
     swap(mVisible, other.mVisible);
@@ -80,17 +80,17 @@ void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
     swap(mVertexPosBuffer, other.mVertexPosBuffer);
 }
 
-void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)
+void DrawableDirectionalLightBGFX::updateRotation(const Matrix44f& rot)
 {
     mTransform = rot;
 }
 
-void DrawableDirectionalLight::setLinesColor(const Color& c)
+void DrawableDirectionalLightBGFX::setLinesColor(const Color& c)
 {
     mColor = c;
 }
 
-void DrawableDirectionalLight::draw(const DrawObjectSettings& settings)
+void DrawableDirectionalLightBGFX::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 
@@ -113,22 +113,22 @@ void DrawableDirectionalLight::draw(const DrawObjectSettings& settings)
     }
 }
 
-Box3d DrawableDirectionalLight::boundingBox() const
+Box3d DrawableDirectionalLightBGFX::boundingBox() const
 {
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() const&
+std::shared_ptr<DrawableObject> DrawableDirectionalLightBGFX::clone() const&
 {
-    return std::make_shared<DrawableDirectionalLight>(*this);
+    return std::make_shared<DrawableDirectionalLightBGFX>(*this);
 }
 
-std::shared_ptr<DrawableObject> DrawableDirectionalLight::clone() &&
+std::shared_ptr<DrawableObject> DrawableDirectionalLightBGFX::clone() &&
 {
-    return std::make_shared<DrawableDirectionalLight>(std::move(*this));
+    return std::make_shared<DrawableDirectionalLightBGFX>(std::move(*this));
 }
 
-void DrawableDirectionalLight::createVertexBuffer()
+void DrawableDirectionalLightBGFX::createVertexBuffer()
 {
     mVertexPosBuffer.create(
         mVertices.data(),

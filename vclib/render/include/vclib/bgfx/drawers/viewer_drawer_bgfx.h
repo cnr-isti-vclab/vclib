@@ -20,14 +20,20 @@
 
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
+/**
+ * @brief The ViewerDrawerBGFX class is a concrete viewer drawer
+ * implementation for the BGFX backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using BGFX.
+ */
+template<typename DerivedRenderApp>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
     inline static const uint N_ADDITIONAL_VIEWS =
         DrawObjectSettings::N_ADDITIONAL_VIEWS;
 
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
-    using DRA          = ViewProjEventDrawer::DRA;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DRA          = DerivedRenderApp;
 
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
@@ -128,16 +134,20 @@ public:
     {
         bool block = ParentViewer::onKeyPress(key, modifiers);
 
-        if (!block && key == Key::F1) {
-            if (mStatsEnabled) {
-                mStatsEnabled = false;
-                bgfx::setDebug(BGFX_DEBUG_NONE);
-            }
-            else {
-                mStatsEnabled = true;
-                bgfx::setDebug(BGFX_DEBUG_STATS);
+        if (!block) {
+            switch (key) {
+            case Key::F1:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    mStatsEnabled = !mStatsEnabled;
+                    bgfx::setDebug(
+                        mStatsEnabled ? BGFX_DEBUG_STATS : BGFX_DEBUG_NONE);
+                }
+                break;
+
+            default: break;
             }
         }
+
         return block;
     }
 

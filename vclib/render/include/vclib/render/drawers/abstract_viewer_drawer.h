@@ -8,7 +8,8 @@
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
-#include <vclib/render/concepts/view_projection_event_drawer.h>
+#include "trackball_event_drawer.h"
+
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
@@ -27,8 +28,8 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename ViewProjEventDrawer>
-class AbstractViewerDrawer : public ViewProjEventDrawer
+template<typename DerivedRenderApp>
+class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
 public:
     enum class BuiltInEditors { AXIS = 0, COUNT };
@@ -36,8 +37,8 @@ public:
 private:
     friend Editor<AbstractViewerDrawer>;
 
-    using Base = ViewProjEventDrawer;
-    using DRA  = ViewProjEventDrawer::DRA;
+    using Base = TrackBallEventDrawer<DerivedRenderApp>;
+    using DRA  = DerivedRenderApp;
 
     bool mReadRequested = false;
 
@@ -64,14 +65,8 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        static_assert(
-            ViewProjectionEventDrawerConcept<Base>,
-            "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
-            "base class");
-
         // push built-in editors - the order of the editors in the vector is
         // important, as it is used to retrieve the editor by its enum value
-
         [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
         axisEd->setActive(true);
         assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
