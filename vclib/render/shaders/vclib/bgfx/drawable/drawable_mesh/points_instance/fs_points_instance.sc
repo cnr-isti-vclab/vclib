@@ -5,10 +5,14 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_normal, v_texcoord1
+$input v_normal, v_texcoord0
+
+// cross section
+$input v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 /*
 TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
@@ -20,6 +24,8 @@ BUFFER_RO(vertexColors, uint, 2); // colors (rgba as float bits)
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // defaul color and light
     vec4 light = vec4(1, 1, 1, 1);
     vec4 color = uintABGRToVec4Color(floatBitsToUint(u_userPointColorFloat));
@@ -28,7 +34,7 @@ void main()
     bool isCircle = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE));
     bool isSphere = bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SPHERE));
     if (isCircle || isSphere) {
-        vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
+        vec2 uv = v_texcoord0 * 2.0 - vec2(1.0, 1.0);
         if (length(uv) > 1.0) {
             discard;
         }

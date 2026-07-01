@@ -8,7 +8,11 @@
 $input a_position, a_normal, a_tangent, a_color0, a_texcoord0, a_texcoord1
 $output v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$output v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
@@ -22,4 +26,12 @@ void main()
 
     // default case - color is taken from buffer
     v_color = a_color0;
+
+#ifdef SURFACE_SECTION_ENABLED
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
+    // discard flag - used to discard the whole vertex, but in fragment shader
+    v_discardFlag = computeDiscardFlag(v_worldPos);
+#else
+    v_discardFlag = 1;
+#endif
 }

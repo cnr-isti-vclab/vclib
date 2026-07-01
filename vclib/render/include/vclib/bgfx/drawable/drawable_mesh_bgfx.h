@@ -14,6 +14,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 #include <bgfx/bgfx.h>
@@ -93,6 +94,9 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         setRenderSettings(mMRS);
+
+        mCSS.setBoundingBox(*this);
+        mMRB.updateCrossSectionSettings(mCSS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs) override
@@ -100,6 +104,12 @@ public:
         AbstractDrawableMesh::setRenderSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
+    }
+
+    void setCrossSectionSettings(const CrossSectionSettings& css) override
+    {
+        AbstractDrawableMesh::setCrossSectionSettings(css);
+        mMRB.updateCrossSectionSettings(css);
     }
 
     uint vertexCount() const override { return MeshType::vertexCount(); }
@@ -171,6 +181,8 @@ public:
 
         DrawableMeshUniforms::setColor(*this);
         MeshRenderSettingsUniforms::set(mMRS);
+
+        updateCrossSectionUniforms();
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
@@ -294,6 +306,8 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        updateCrossSectionUniforms();
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
@@ -364,6 +378,21 @@ protected:
     {
         MeshRenderSettingsUniforms::bind();
         DrawableMeshUniforms::bind();
+        CrossSectionUniforms::bind();
+    }
+
+    void updateCrossSectionUniforms() const
+    {
+        if (AbstractDrawableMesh::mCSS.isEnabled()) {
+            using enum CrossSectionSettings::CrossSectionType;
+            CrossSectionUniforms::set(
+                AbstractDrawableMesh::mCSS.lower(),
+                AbstractDrawableMesh::mCSS.upper(),
+                AbstractDrawableMesh::mCSS.type() == PER_FRAGMENT);
+        }
+        else {
+            CrossSectionUniforms::set();
+        }
     }
 
     /**
@@ -431,39 +460,70 @@ protected:
 
         ProgramManager& pm = Context::instance().programManager();
 
-        static const std::array<VertFragProgram, 24> surfacePrograms =
-            {DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH,
-             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE,
-             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_USER,
-             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_WEDGE,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_MESH,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_USER,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_WEDGE,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_MESH,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_FACE,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_USER,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_WEDGE,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_MESH,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_FACE,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_USER,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX,
-             DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE};
+        static const std::array<VertFragProgram, 48> surfacePrograms = {
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NONE_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_FLAT_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_SMOOTH_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_DISABLED_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE,
 
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NONE_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_SMOOTH_COLOR_TEX_WEDGE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_MESH,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_FACE,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_USER,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX,
+            DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE};
+
+        uint section = 0;
         uint shading = 0;
-        uint color = 0;
+        uint color   = 0;
 
+        const uint N_SECTION_TYPES = 2;
         const uint N_SHADING_TYPES = 4;
-        const uint N_COLOR_TYPES = 6;
+        const uint N_COLOR_TYPES   = 6;
 
         {
+            if (mCSS.isEnabled()) {
+                section = 1;
+            }
+
             using enum MeshRenderInfo::Surface;
             if (mMRS.isSurface(SHADING_FLAT)) {
                 shading = 1;
@@ -491,7 +551,8 @@ protected:
             }
         }
 
-        uint program = shading * N_COLOR_TYPES + color;
+        uint program = section * N_SHADING_TYPES * N_COLOR_TYPES +
+                       shading * N_COLOR_TYPES + color;
 
         return pm.getProgram(surfacePrograms[program]);
     }

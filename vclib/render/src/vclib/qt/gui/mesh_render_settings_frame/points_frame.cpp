@@ -139,14 +139,14 @@ void PointsFrame::updateColorComboBoxFromSettings()
 void PointsFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setPoints(VISIBLE, arg1 == Qt::CheckState::Checked);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void PointsFrame::onShapeCircleToggled(bool checked)
 {
     if (checked) {
         mMRS.setPoints(SHAPE_CIRCLE);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -154,7 +154,7 @@ void PointsFrame::onShapePixelToggled(bool checked)
 {
     if (checked) {
         mMRS.setPoints(SHAPE_PIXEL);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -162,7 +162,7 @@ void PointsFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
         mMRS.setPoints(SHADING_VERT);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -170,7 +170,7 @@ void PointsFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
         mMRS.setPoints(SHADING_NONE);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -182,19 +182,19 @@ void PointsFrame::onColorComboBoxChanged(int index)
     case P_USER: mMRS.setPoints(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == P_USER);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void PointsFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setPointsUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void PointsFrame::onSizeChanged(int value)
 {
     mMRS.setPointsWidth(value);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 } // namespace vcl::qt

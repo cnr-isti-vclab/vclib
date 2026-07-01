@@ -7,8 +7,12 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$input v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
@@ -32,6 +36,10 @@ DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 
 void main()
 {
+#ifdef SURFACE_SECTION_ENABLED
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#endif
+
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 

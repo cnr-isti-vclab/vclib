@@ -122,12 +122,18 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
-    // renderSettingsUpdated() member function
+    // meshRenderSettingsUpdated() member function
     connect(
         mUI->meshRenderSettingsFrame,
-        SIGNAL(settingsUpdated()),
+        SIGNAL(meshRenderSettingsUpdated()),
         this,
-        SLOT(renderSettingsUpdated()));
+        SLOT(meshRenderSettingsUpdated()));
+
+    connect(
+        mUI->meshRenderSettingsFrame,
+        SIGNAL(crossSectionSettingsUpdated()),
+        this,
+        SLOT(crossSectionSettingsUpdated()));
 
     // each time that the drawVectorTree changes the visibility of an object,
     // we update the current settings of the RenderSettingsFrame, and we update
@@ -254,6 +260,8 @@ void MeshViewer::visibilityDrawableObjectChanged()
         if (m) {
             mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings());
+            mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                m->crossSectionSettings());
         }
         mUI->viewer->update();
     }
@@ -276,6 +284,8 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         // set it enabled
         mUI->meshRenderSettingsFrame->setMeshRenderSettings(
             m->renderSettings());
+        mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+            m->crossSectionSettings());
         mUI->meshRenderSettingsFrame->setEnabled(true);
     }
     else {
@@ -288,13 +298,13 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 
 /**
  * @brief Slot called every time that the MeshRenderSettingsFrame emits
- * 'settingsUpdated()', that is when the user changes render settings of a
- * GeneriDrawableMesh.
+ * 'meshRenderSettingsUpdated()', that is when the user changes render settings
+ * of an AbstractDrawableMesh.
  *
- * We need to get the selected GeneriDrawableMesh first, and then update the
+ * We need to get the selected AbstractDrawableMesh first, and then update the
  * settings to it.
  */
-void MeshViewer::renderSettingsUpdated()
+void MeshViewer::meshRenderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorTree->selectedDrawableObject();
@@ -304,11 +314,33 @@ void MeshViewer::renderSettingsUpdated()
         // visible only when the selected Object is a AbstractDrawableMesh
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(i));
-        // get RenderSettings from the RenderSettingsFrame, and set it to the
-        // AbstractDrawableMesh
-        m->setRenderSettings(
-            mUI->meshRenderSettingsFrame->meshRenderSettings());
-        mUI->viewer->update();
+        if (m) { // just to be sure, but it should always be true
+            // get RenderSettings from the RenderSettingsFrame, and set it to
+            // the AbstractDrawableMesh
+            m->setRenderSettings(
+                mUI->meshRenderSettingsFrame->meshRenderSettings());
+            mUI->viewer->update();
+        }
+    }
+}
+
+void MeshViewer::crossSectionSettingsUpdated()
+{
+    // The user changed the CrossSectionSettings of the ith object.
+    uint i = mUI->drawVectorTree->selectedDrawableObject();
+    if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
+        // The selected object must always be a AbstractDrawableMesh, because
+        // the CrossSectionSettingsFrame (which called this member function) is
+        // visible only when the selected Object is a AbstractDrawableMesh
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+            mDrawableObjectVector->at(i));
+        if (m) { // just to be sure, but it should always be true
+            // get CrossSectionSettings from the CrossSectionSettingsFrame, and
+            // set it to the AbstractDrawableMesh
+            m->setCrossSectionSettings(
+                mUI->meshRenderSettingsFrame->crossSectionSettings());
+            mUI->viewer->update();
+        }
     }
 }
 
@@ -337,6 +369,8 @@ void MeshViewer::updateGUI()
             mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);
             mUI->meshRenderSettingsFrame->setEnabled(true);
+            mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                m->crossSectionSettings());
         }
         else {
             mUI->meshRenderSettingsFrame->setEnabled(false);

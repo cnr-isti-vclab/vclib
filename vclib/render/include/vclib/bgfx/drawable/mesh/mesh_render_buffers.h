@@ -317,6 +317,12 @@ public:
         }
     }
 
+    void updateCrossSectionSettings(const CrossSectionSettings& css)
+    {
+        mEdgeLines.crossSectionSettings() = css;
+        mWireframeLines.crossSectionSettings() = css;
+    }
+
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
