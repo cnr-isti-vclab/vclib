@@ -16,68 +16,91 @@
 
 namespace vcl {
 
-class DrawableLines : public Lines, public vcl::DrawableObject
+/**
+ * @brief A DrawableObject that renders a set of 3D lines.
+ *
+ * This class wraps the `vcl::Lines` primitive to be used within the VCLib
+ * rendering framework as a `DrawableObject`. It maintains a local CPU copy
+ * of the vertices, indices, normals, and colors to support `DrawableObject` 
+ * interfaces such as bounding box computation and cloning.
+ */
+class DrawableLines : public DrawableObject, public Lines
 {
-    bool mVisible        = true;
-    bool mUseLineIndices = false; // true whether a vector of line indices has
-                                  // been provided (even if empty)
+    bool mVisible = true;
 
-    std::vector<float> mVertCoords;
-    std::vector<uint>  mVertColors;
-    std::vector<float> mVertNormals;
-    std::vector<uint>  mLineColors;
-    std::vector<uint>  mLineIndices;
+    std::vector<vcl::Point3d> mPositions;
+    std::vector<uint>         mIndices;
+    std::vector<vcl::Color>   mVertexColors;
+    std::vector<vcl::Color>   mLineColors;
+    std::vector<vcl::Point3d> mVertexNormals;
+    std::vector<vcl::Point3d> mLineNormals;
+
+    using Lines::setVertices;
+    using Lines::setIndices;
+    using Lines::setVertexColors;
+    using Lines::setLineColors;
+    using Lines::setVertexNormals;
+    using Lines::setLineNormals;
+    using Lines::draw;
 
 public:
+    using Lines::ColorSetting;
+    using Lines::Topology;
+    using Lines::Shading;
+
+    /**
+     * @brief Default constructor. Creates an empty drawable line set.
+     */
     DrawableLines() = default;
 
-    DrawableLines(
-        const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<uint>&  lineColors  = std::vector<uint>())
-    {
-        setPoints(vertCoords, vertNormals, vertColors, lineColors);
-    }
-
-    DrawableLines(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
-        const std::vector<float>& vertNormals = std::vector<float>(),
-        const std::vector<uint>&  vertColors  = std::vector<uint>(),
-        const std::vector<uint>&  lineColors  = std::vector<uint>())
-    {
-        setPoints(vertCoords, lineIndices, vertNormals, vertColors, lineColors);
-    }
-
+    /**
+     * @brief Copy constructor. Creates a deep copy of the line set.
+     */
     DrawableLines(const DrawableLines& other) :
-            DrawableObject(other), mVertCoords(other.mVertCoords),
-            Lines(
-                other.mVertCoords,
-                other.mLineIndices,
-                other.mVertNormals,
-                other.mVertColors,
-                other.mLineColors,
-                other.thickness(),
-                other.shadingPerVertex(),
-                other.colorToUse(),
-                other.implementationType()),
-            mVisible(other.mVisible), mUseLineIndices(other.mUseLineIndices),
-            mVertColors(other.mVertColors), mVertNormals(other.mVertNormals),
-            mLineColors(other.mLineColors), mLineIndices(other.mLineIndices)
+            DrawableObject(other),
+            Lines(),
+            mVisible(other.mVisible), 
+            mPositions(other.mPositions),
+            mIndices(other.mIndices),
+            mVertexColors(other.mVertexColors),
+            mLineColors(other.mLineColors),
+            mVertexNormals(other.mVertexNormals),
+            mLineNormals(other.mLineNormals)
     {
+        if (!mPositions.empty()) Lines::setVertices(mPositions);
+        if (!mIndices.empty()) Lines::setIndices(mIndices);
+        if (!mVertexColors.empty()) Lines::setVertexColors(mVertexColors);
+        if (!mLineColors.empty()) Lines::setLineColors(mLineColors);
+        if (!mVertexNormals.empty()) Lines::setVertexNormals(mVertexNormals);
+        if (!mLineNormals.empty()) Lines::setLineNormals(mLineNormals);
+
+        Lines::setWidth(other.width());
+        Lines::setTopology(other.topology());
+        Lines::setColorSetting(other.colorSetting());
+        Lines::setShading(other.shading());
+        Lines::setGeneralColor(other.generalColor());
+        Lines::setDepthOffset(other.depthOffset());
     }
 
+    /**
+     * @brief Move constructor.
+     */
     DrawableLines(DrawableLines&& other) { swap(other); }
 
     ~DrawableLines() = default;
 
+    /**
+     * @brief Copy assignment operator.
+     */
     DrawableLines& operator=(DrawableLines other)
     {
         swap(other);
         return *this;
     }
 
+    /**
+     * @brief Swaps the contents of this object with another.
+     */
     void swap(DrawableLines& other)
     {
         using std::swap;
@@ -85,49 +108,101 @@ public:
         swap(static_cast<Lines&>(*this), static_cast<Lines&>(other));
 
         swap(mVisible, other.mVisible);
-        swap(mUseLineIndices, other.mUseLineIndices);
 
-        swap(mVertCoords, other.mVertCoords);
-        swap(mLineIndices, other.mLineIndices);
-        swap(mVertColors, other.mVertColors);
-        swap(mVertNormals, other.mVertNormals);
+        swap(mPositions, other.mPositions);
+        swap(mIndices, other.mIndices);
+        swap(mVertexColors, other.mVertexColors);
         swap(mLineColors, other.mLineColors);
+        swap(mVertexNormals, other.mVertexNormals);
+        swap(mLineNormals, other.mLineNormals);
     }
 
-    friend void swap(DrawableLines& first, DrawableLines& second)
+    /**
+     * @brief Sets line coordinates from a range of 3D points and stores a local copy.
+     *
+     * @tparam R Range type satisfying Point3Concept.
+     * @param verts Range of 3D points.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertices(R&& verts)
     {
-        first.swap(second);
+        Lines::setVertices(verts);
+        mPositions.assign(std::ranges::begin(verts), std::ranges::end(verts));
     }
 
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors)
+    /**
+     * @brief Sets line indices from a range of indices and stores a local copy.
+     *
+     * @tparam R Range type satisfying integral concept.
+     * @param indices Range of indices.
+     */
+    template<Range R>
+    requires std::integral<std::ranges::range_value_t<R>>
+    void setIndices(R&& indices)
     {
-        mUseLineIndices = false;
-        mVertCoords     = vertCoords;
-        mVertColors     = vertColors;
-        mVertNormals    = vertNormals;
-        mLineColors     = lineColors;
-        Lines::setPoints(vertCoords, vertNormals, vertColors, mLineColors);
+        Lines::setIndices(indices);
+        mIndices.assign(std::ranges::begin(indices), std::ranges::end(indices));
     }
 
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors)
+    /**
+     * @brief Sets per-vertex colors and stores a local copy.
+     *
+     * @tparam R Range type satisfying ColorConcept.
+     * @param vertColors Range of Colors.
+     */
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setVertexColors(R&& vertColors)
     {
-        mUseLineIndices = true;
-        mVertCoords     = vertCoords;
-        mLineIndices    = lineIndices;
-        mVertColors     = vertColors;
-        mVertNormals    = vertNormals;
-        mLineColors     = lineColors;
-        Lines::setPoints(
-            vertCoords, lineIndices, vertNormals, vertColors, mLineColors);
+        Lines::setVertexColors(vertColors);
+        mVertexColors.assign(
+            std::ranges::begin(vertColors), std::ranges::end(vertColors));
+    }
+
+    /**
+     * @brief Sets per-line colors and stores a local copy.
+     *
+     * @tparam R Range type satisfying ColorConcept.
+     * @param linColors Range of Colors.
+     */
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setLineColors(R&& linColors)
+    {
+        Lines::setLineColors(linColors);
+        mLineColors.assign(
+            std::ranges::begin(linColors), std::ranges::end(linColors));
+    }
+
+    /**
+     * @brief Sets per-vertex normals and stores a local copy.
+     *
+     * @tparam R Range type satisfying Point3Concept.
+     * @param vertNormals Range of 3D points representing normals.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertexNormals(R&& vertNormals)
+    {
+        Lines::setVertexNormals(vertNormals);
+        mVertexNormals.assign(
+            std::ranges::begin(vertNormals), std::ranges::end(vertNormals));
+    }
+
+    /**
+     * @brief Sets per-line normals and stores a local copy.
+     *
+     * @tparam R Range type satisfying Point3Concept.
+     * @param lineNormals Range of 3D points representing normals.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setLineNormals(R&& lineNormals)
+    {
+        Lines::setLineNormals(lineNormals);
+        mLineNormals.assign(
+            std::ranges::begin(lineNormals), std::ranges::end(lineNormals));
     }
 
     // DrawableObject interface
@@ -139,7 +214,7 @@ public:
 
     vcl::Box3d boundingBox() const override
     {
-        return vcl::Box3d(vcl::Point3d(-1, -1, -1), vcl::Point3d(1, 1, 1));
+        return vcl::boundingBox(mPositions);
     }
 
     std::shared_ptr<DrawableObject> clone() const& override
@@ -155,23 +230,6 @@ public:
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }
-
-    void setImplementationType(ImplementationType type)
-    {
-        if (mUseLineIndices) {
-            Lines::setPoints(
-                mVertCoords,
-                mLineIndices,
-                mVertNormals,
-                mVertColors,
-                mLineColors,
-                type);
-        }
-        else {
-            Lines::setPoints(
-                mVertCoords, mVertNormals, mVertColors, mLineColors, type);
-        }
-    }
 };
 
 } // namespace vcl

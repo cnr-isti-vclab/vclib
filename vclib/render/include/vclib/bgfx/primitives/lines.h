@@ -8,325 +8,131 @@
 #ifndef VCL_BGFX_PRIMITIVES_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
-#include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
-#include <vclib/bgfx/primitives/lines/primitive_lines.h>
-#include <vclib/bgfx/uniform.h>
-
-#include <vclib/base.h>
-#include <vclib/space/core.h>
-
-#include <variant>
-
-#include <bgfx/bgfx.h>
+#include <vclib/bgfx/buffers.h>
 
 namespace vcl {
 
-// TODO: add shading per-line (flat, per-line normal) (?)
 /**
- * @brief The Lines class provides an abstraction for rendering 3D lines
- * with variable thickness and different implementation strategies.
+ * @brief Renders a set of 3D lines as line segments with variable width.
  *
- * The Lines class supports several implementation types that are generally
- * determined by the hardware capabilities. Each implementation type has its
- * own advantages and disadvantages in terms of performance and memory usage.
+ * Each line segment is rendered using programmable vertex pulling.
  *
- * A line can be instantiated using std::vectors or bgfx buffers (VertexBuffer
- * and IndexBuffer). When using std::vectors, the buffers are created and
- * managed internally by the Lines class. When using bgfx buffers, the user
- * is responsible for creating and managing the buffers, and they must remain
- * valid for the lifetime of the Lines object (this is especially valid when
- * the implementation type is PRIMITIVE).
+ * Lines are rendered using either consecutive vertex pairs or a strip topology.
+ * Optional indices can be provided to define the vertex order; if omitted,
+ * vertices are used in declaration order.
  */
 class Lines
 {
 public:
-    enum class ColorToUse {
-        PER_VERTEX, // Select color form vertex color
-        PER_EDGE,   // Select color from edge buffer color
-        GENERAL     // Use general color in uniform data
+    /**
+     * @brief Specifies how line colors are determined during rendering.
+     */
+    enum class ColorSetting {
+        PER_VERTEX = 0, ///< Each vertex uses color from per-vertex color buffer
+        PER_LINE   = 1, ///< Each line uses color from per-line color buffer
+        GENERAL    = 2  ///< All vertices use a single general color
     };
 
-    enum class ImplementationType {
-        PRIMITIVE     = 0, // Use bgfx primitive lines (not implemented)
-        CPU_GENERATED = 1, // Buffers pre-generated in CPU
+    /**
+     * @brief Specifies the topology used for rendering lines.
+     *
+     * - LINES: Lines are defined by consecutive pairs of vertices in the vertex
+     *     buffer. (vertices 0-1 form line 1, vertices 2-3 form line 2, etc.)
+     * - LINE_STRIP: Lines are defined by a strip of vertices, where each vertex
+     *     after the first forms a line segment with the previous vertex.
+     *     (vertices 0-1 form line 1, vertices 1-2 form line 2, etc.)
+     *
+     * The topology determines how the vertex data is interpreted to form lines.
+     * The default is LINES.
+     */
+    enum class Topology { LINES = 0, LINE_STRIP = 1 };
 
-        // TODO: uncomment when they will be implemented
-        // GPU_GENERATED,     // Buffers pre-generated in GPU with computes
-        // CPU_INSTANCING,    // Using Instancing with buffers generated in CPU
-        // GPU_INSTANCING,    // Using Instancing with buffer generated in GPU
-        //                    // computes
-        // TEXTURE_INSTANCING, // Using Instancing with textures generated in
-        // GPU computes
-
-        COUNT
+    /**
+     * @brief Specifies how lines are shaded.
+     */
+    enum class Shading {
+        NONE       = 0, ///< No shading applied to lines.
+        PER_VERTEX = 1, ///< Lighting computed using vertex normals.
+        PER_LINE   = 2  ///< Lighting computed using line normals.
     };
 
 private:
-    float mThickness   = 5.0f;
-    float mDepthOffset = 0.0f;
+    uint mVerPosCount    = 0;
+    uint mIndexCount     = 0;
+    uint mVerColCount    = 0;
+    uint mLineColorCount = 0;
+    uint mVerNorCount    = 0;
+    uint mLineNorCount   = 0;
 
-    // TODO: shading should become a enum with options: PER_VERTEX, PER_EDGE,
-    // NONE
-    // PER_EDGE means that we use a buffer of normals for each edge
-    bool mShadingPerVertexCapability = false; // true if normals provided
-    bool mShadingPerVertex           = false;
+    float        mWidth        = 1.0f;
+    Topology     mTopology     = Topology::LINES;
+    ColorSetting mColorSetting = ColorSetting::GENERAL;
+    Shading      mShading      = Shading::NONE;
+    Color        mGeneralColor = Color::Black;
+    float        mDepthOffset  = 0.0f;
 
-    BitSet8    mColorCapability = {false, false, true}; // general color only
-    ColorToUse mColorToUse      = ColorToUse::GENERAL;
-    Color      mGeneralColor    = Color::ColorABGR::LightGray;
+    OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
+    OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
 
-    ImplementationType mType = ImplementationType::COUNT;
+    OwnedOrRefBuffer<IndexBuffer>  mIndices;
+    OwnedOrRefBuffer<IndexBuffer>  mLineColors;
+    OwnedOrRefBuffer<VertexBuffer> mLineNormals;
 
-    std::variant<detail::PrimitiveLines, detail::CPUGeneratedLines>
-        mLinesImplementation;
-
-    static inline Uniform sSettingUH;
+    mutable bool mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
 
 public:
     /**
-     * @brief Creates a Lines object with default parameters and without
-     * points.
-     *
-     * If the implementation type is not specified, it will be chosen
-     * depending on the capabilities of the current hardware.
-     *
-     * @param[in] type: implementation type to use. If the provided type is
-     * not supported by the current hardware, an exception is thrown. If the
-     * type is COUNT, the default implementation type will be chosen
-     * depending on the capabilities of the current hardware.
+     * @brief Default constructor — creates an empty line set with no lines.
      */
-    Lines(ImplementationType type = ImplementationType::COUNT)
-    {
-        if (type == ImplementationType::COUNT)
-            type = defaultImplementationType(false);
-        setImplementationType(type);
-    };
+    Lines() = default;
 
     /**
-     * @brief Creates a Lines object with given points and parameters.
+     * @brief Constructs a line set from ranges of 3D coordinates.
      *
-     * Each line is defined by two consecutive vertices in the vertCoords
-     * vector (and related buffers). So the number of lines is equal to
-     * vertCoords.size()/6.
+     * @param[in] verts: Range of elements convertible to Point3 (must
+     * provide x(), y(), and z()).
      *
-     * If the implementation type is not specified, it will be chosen
-     * depending on the capabilities of the current hardware.
-     *
-     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
-     * vertex).
-     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
-     * it can be empty.
-     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
-     * it can be empty.
-     * @param[in] lineColors: vector of line colors (1 uint per line),
-     * it can be empty.
-     * @param[in] thickness: thickness of the lines (in pixels).
-     * @param[in] shadingPerVertex: if true, the lighting is computed using
-     * the vertex normals, otherwise no lighting is applied. If this settings
-     * is not consistent with the provided buffers, an exception is thrown.
-     * @param[in] colorToUse: specifies which color to use for rendering the
-     * lines. If this settings is not consistent with the provided buffers,
-     * an exception is thrown.
-     * @param[in] type: implementation type to use. If the provided type is
-     * not supported by the current hardware, an exception is thrown. If the
-     * type is COUNT, the default implementation type will be chosen
-     * depending on the capabilities of the current hardware.
+     * @note This constructor creates an owned buffer copy of the input data.
+     * The original ranges are not referenced after construction.
      */
-    Lines(
-        const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors,
-        float                     thickness        = 5.0f,
-        bool                      shadingPerVertex = false,
-        ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::COUNT) :
-            mThickness(thickness)
+    template<Range RV>
+    requires Point3Concept<std::ranges::range_value_t<RV>>
+    Lines(RV&& verts)
     {
-        setPoints(vertCoords, vertNormals, vertColors, lineColors, type);
-        setShading(shadingPerVertex);
-        setColorToUse(colorToUse);
+        setVertices(verts);
     }
 
-    /**
-     * @brief Creates a Lines object with given points and parameters.
-     *
-     * Each line is defined by two consecutive indices in the lineIndices
-     * vector, which refer to vertices in the vertCoords vector (and related
-     * buffers). So the number of lines is equal to lineIndices.size()/2.
-     *
-     * If the implementation type is not specified, it will be chosen
-     * depending on the capabilities of the current hardware.
-     *
-     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
-     * vertex).
-     * @param[in] lineIndices: vector of line indices (2 uint per line).
-     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
-     * it can be empty.
-     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
-     * it can be empty.
-     * @param[in] lineColors: vector of line colors (1 uint per line),
-     * it can be empty.
-     * @param[in] thickness: thickness of the lines (in pixels).
-     * @param[in] shadingPerVertex: if true, the lighting is computed using
-     * the vertex normals, otherwise no lighting is applied. If this settings
-     * is not consistent with the provided buffers, an exception is thrown.
-     * @param[in] colorToUse: specifies which color to use for rendering the
-     * lines. If this settings is not consistent with the provided buffers,
-     * an exception is thrown.
-     * @param[in] type: implementation type to use. If the provided type is
-     * not supported by the current hardware, an exception is thrown. If the
-     * type is COUNT, the default implementation type will be chosen
-     * depending on the capabilities of the current hardware.
-     */
-    Lines(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors,
-        float                     thickness        = 5.0f,
-        bool                      shadingPerVertex = false,
-        ColorToUse                colorToUse       = ColorToUse::GENERAL,
-        ImplementationType        type = ImplementationType::COUNT) :
-            mThickness(thickness)
-    {
-        setPoints(
-            vertCoords, lineIndices, vertNormals, vertColors, lineColors, type);
-        setShading(shadingPerVertex);
-        setColorToUse(colorToUse);
-    }
+    Lines(const uint vertexCount, const VertexBuffer& verts);
 
     /**
-     * @brief Sets the points of the lines.
+     * @brief Returns the width of line segments.
      *
-     * Each line is defined by two consecutive vertices in the vertCoords
-     * vector (and related buffers). So the number of lines is equal to
-     * vertCoords.size()/6.
-     *
-     * If the implementation type is not specified, it will be chosen
-     * depending on the capabilities of the current hardware.
-     *
-     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
-     * vertex).
-     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
-     * it can be empty.
-     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
-     * it can be empty.
-     * @param[in] lineColors: vector of line colors (1 uint per line),
-     * it can be empty.
-     * @param[in] type: implementation type to use. If the provided type is
-     * not supported by the current hardware, an exception is thrown. If the
-     * type is COUNT, the default implementation type will be chosen
-     * depending on the capabilities of the current hardware.
+     * @return The width of the line segments in pixels.
      */
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors,
-        ImplementationType        type = ImplementationType::COUNT)
-    {
-        using enum ImplementationType;
-        using namespace detail;
-
-        if (type == COUNT)
-            type = defaultImplementationType(true);
-        setImplementationType(type);
-
-        switch (mType) {
-        case PRIMITIVE: // always supported
-            std::get<PrimitiveLines>(mLinesImplementation)
-                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
-            break;
-
-        case CPU_GENERATED: // always supported
-            std::get<CPUGeneratedLines>(mLinesImplementation)
-                .setPoints(vertCoords, vertNormals, vertColors, lineColors);
-            break;
-        default: break;
-        }
-        updateShadingCapability(vertNormals);
-        updateColorCapability(vertColors, lineColors);
-    }
+    float width() const { return mWidth; }
 
     /**
-     * @brief Sets the points of the lines.
-     *
-     * Each line is defined by two consecutive indices in the lineIndices
-     * vector, which refer to vertices in the vertCoords vector (and related
-     * buffers). So the number of lines is equal to lineIndices.size()/2.
-     *
-     * If the implementation type is not specified, it will be chosen
-     * depending on the capabilities of the current hardware.
-     *
-     * @param[in] vertCoords: vector of vertex coordinates (3 floats per
-     * vertex).
-     * @param[in] lineIndices: vector of line indices (2 uint per line).
-     * @param[in] vertNormals: vector of vertex normals (3 floats per vertex),
-     * it can be empty.
-     * @param[in] vertColors: vector of vertex colors (1 uint per vertex),
-     * it can be empty.
-     * @param[in] lineColors: vector of line colors (1 uint per line),
-     * it can be empty.
-     * @param[in] type: implementation type to use. If the provided type is
-     * not supported by the current hardware, an exception is thrown. If the
-     * type is COUNT, the default implementation type will be chosen
-     * depending on the capabilities of the current hardware.
+     * @brief Returns the topology used for rendering lines.
      */
-    void setPoints(
-        const std::vector<float>& vertCoords,
-        const std::vector<uint>&  lineIndices,
-        const std::vector<float>& vertNormals,
-        const std::vector<uint>&  vertColors,
-        const std::vector<uint>&  lineColors,
-        ImplementationType        type = ImplementationType::COUNT)
-    {
-        using enum ImplementationType;
-        using namespace detail;
-
-        if (type == COUNT)
-            type = defaultImplementationType(true);
-        setImplementationType(type);
-
-        switch (mType) {
-        case PRIMITIVE: // always supported
-            std::get<PrimitiveLines>(mLinesImplementation)
-                .setPoints(
-                    vertCoords,
-                    lineIndices,
-                    vertNormals,
-                    vertColors,
-                    lineColors);
-            break;
-
-        case CPU_GENERATED: // always supported
-            std::get<CPUGeneratedLines>(mLinesImplementation)
-                .setPoints(
-                    vertCoords,
-                    lineIndices,
-                    vertNormals,
-                    vertColors,
-                    lineColors);
-            break;
-        default: break;
-        }
-        updateShadingCapability(vertNormals);
-        updateColorCapability(vertColors, lineColors);
-    }
+    Topology topology() const { return mTopology; }
 
     /**
-     * @brief Returns the thickness of the lines (in pixels).
-     * @return The thickness of the lines (in pixels).
+     * @brief Returns the color setting used for rendering lines.
      */
-    float thickness() const { return mThickness; }
+    ColorSetting colorSetting() const { return mColorSetting; }
 
     /**
-     * @brief Returns a reference to the thickness of the lines (in pixels).
-     * This allows to modify the thickness directly.
-     * @return A reference to the thickness of the lines (in pixels).
+     * @brief Returns the shading mode used for rendering lines.
      */
-    float& thickness() { return mThickness; }
+    Shading shading() const { return mShading; }
+
+    /**
+     * @brief Returns the general color used for rendering lines when
+     * ColorSetting is GENERAL.
+     */
+    Color generalColor() const { return mGeneralColor; }
 
     /**
      * @brief Returns the depth offset applied to the lines.
@@ -335,190 +141,389 @@ public:
     float depthOffset() const { return mDepthOffset; }
 
     /**
-     * @brief Returns a reference to the depth offset applied to the lines.
-     * This allows to modify the depth offset directly.
-     * @return A reference to the depth offset applied to the lines.
+     * @brief Returns whether the line set has valid vertex positions.
      */
-    float& depthOffset() { return mDepthOffset; }
+    bool hasPositions() const { return mVertexPositions.isValid(); }
 
     /**
-     * @brief Returns true if shading is computed per vertex using vertex
-     * normals, false if no shading is applied.
-     * @return true if shading is computed per vertex using vertex normals.
+     * @brief Returns whether the line set has valid indices.
      */
-    bool shadingPerVertex() const { return mShadingPerVertex; }
+    bool hasIndices() const { return mIndices.isValid(); }
 
     /**
-     * @brief Returns the color that is used to render the lines.
-     * @return The color that is used to render the lines.
+     * @brief Returns whether the line set has valid vertex colors.
      */
-    ColorToUse colorToUse() const { return mColorToUse; }
+    bool hasVertexColors() const { return mVertexColors.isValid(); }
 
     /**
-     * @brief Returns the general color that is used to render the lines
-     * when colorToUse() is set to ColorToUse::GENERAL.
-     * @return The general color that is used to render the lines.
+     * @brief Returns whether the line set has valid line colors.
      */
-    Color generalColor() const { return mGeneralColor; }
+    bool hasLineColors() const { return mLineColors.isValid(); }
 
     /**
-     * @brief Returns a reference to the general color that is used to render
-     * the lines when colorToUse() is set to ColorToUse::GENERAL. This allows
-     * to modify the color directly.
-     * @return A reference to the general color that is used to render the
-     * lines.
+     * @brief Returns whether the line set has valid vertex normals.
      */
-    Color& generalColor() { return mGeneralColor; }
+    bool hasVertexNormals() const { return mVertexNormals.isValid(); }
 
     /**
-     * @brief Returns the current implementation type that is used to render
-     * the lines.
-     * @return The current implementation type that is used to render the
-     * lines.
+     * @brief Returns whether the line set has valid line normals.
      */
-    ImplementationType implementationType() const { return mType; }
+    bool hasLineNormals() const { return mLineNormals.isValid(); }
 
     /**
-     * @brief Sets wether to use per vertex shading (using vertex normals) or
-     * not.
+     * @brief Returns the number of vertices in the set.
+     */
+    uint vertexCount() const { return mVerPosCount; }
+
+    /**
+     * @brief Returns the number of indices in the set.
+     */
+    uint indexCount() const { return mIndexCount; }
+
+    /**
+     * @brief Sets line coordinates from a range of 3D points.
      *
-     * If the provided setting is not consistent with the provided buffers,
-     * an exception is thrown.
+     * If no indices are set, the interpretation depends on the topology:
+     * - For LINES topology, each pair of vertices defines one line segment.
+     * - For LINE_STRIP topology, each vertex after the first forms a line
+     *   segment with the previous vertex.
      *
-     * @param[in] perVertex: if true, the lighting is computed using the vertex
-     * normals, otherwise no lighting is applied. If this settings
+     * @tparam R: Range whose value type satisfies Point3Concept (must provide
+     * x(), y(), z()).
+     * @param[in] verts: Range of 3D points.
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
      */
-    void setShading(bool perVertex)
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertices(R&& verts)
     {
-        if (!mShadingPerVertexCapability && perVertex) {
-            throw std::runtime_error(
-                "Lines::setShading(): shading per vertex not supported by the "
-                "current buffers.");
+        mVerPosCount = std::ranges::size(verts);
+
+        uint padding = (4 - (mVerPosCount % 4)) % 4;
+        uint nv = mVerPosCount + padding;
+
+        VertexBuffer vertBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
+
+        size_t i = 0;
+        for (const auto& v : verts) {
+            buffer[i * 3 + 0] = v.x();
+            buffer[i * 3 + 1] = v.y();
+            buffer[i * 3 + 2] = v.z();
+            ++i;
         }
-        else {
-            mShadingPerVertex = perVertex;
-        }
+
+        // Use create for compute binding (vertex pulling)
+        vertBuff.create(
+            buffer,
+            nv,
+            bgfx::Attrib::Position,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mVertexPositions.setOwned(std::move(vertBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
-     * @brief Sets which color to use for rendering the lines.
-     *
-     * If the provided setting is not consistent with the provided buffers,
-     * an exception is thrown.
-     *
-     * @param[in] color: specifies which color to use for rendering the lines.
+     * @brief Sets line indices from a range of unsigned integers.
      */
-    void setColorToUse(ColorToUse color)
+    template<Range R>
+    requires std::integral<std::ranges::range_value_t<R>>
+    void setIndices(R&& indices)
     {
-        if (!mColorCapability[toUnderlying(color)]) {
-            throw std::runtime_error(
-                "Lines::setColorToUse(): color option not supported by the "
-                "current buffers.");
+        mIndexCount = std::ranges::size(indices);
+
+        IndexBuffer indexBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(mIndexCount);
+
+        size_t i = 0;
+        for (const auto& idx : indices) {
+            buffer[i] = idx;
+            ++i;
         }
-        else {
-            mColorToUse = color;
-        }
+
+        indexBuff.create(buffer, mIndexCount, releaseFn);
+
+        mIndices.setOwned(std::move(indexBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
-     * @brief Draws in the given view the lines with the current settings.
-     * @param[in] viewId: the view in which to draw the lines.
+     * @brief Sets per-vertex colors from a range of Color elements.
      */
-    void draw(uint viewId) const
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setVertexColors(R&& vertColors)
     {
-        using enum ImplementationType;
-        using namespace detail;
+        mVerColCount = std::ranges::size(vertColors);
 
-        bindSettingsUniform();
-        if (mType == PRIMITIVE)
-            std::get<PrimitiveLines>(mLinesImplementation).draw(viewId);
+        uint padding = (4 - (mVerColCount % 4)) % 4;
+        uint nc = mVerColCount + padding;
 
-        if (mType == CPU_GENERATED)
-            std::get<CPUGeneratedLines>(mLinesImplementation).draw(viewId);
+        VertexBuffer vColsBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nc);
+
+        uint i = 0;
+        for (const auto& c : vertColors) {
+            buffer[i] = c.abgr();
+            ++i;
+        }
+
+        vColsBuff.create(
+            buffer,
+            nc,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
+        mVertexColors.setOwned(std::move(vColsBuff));
+        mIsUpdateProgramNeeded = true;
     }
+
+    /**
+     * @brief Sets per-line colors from a range of Color elements.
+     */
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setLineColors(R&& linColors)
+    {
+        mLineColorCount = std::ranges::size(linColors);
+
+        IndexBuffer lColsBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(mLineColorCount);
+
+        uint i = 0;
+        for (const auto& c : linColors) {
+            buffer[i] = c.abgr();
+            ++i;
+        }
+
+        lColsBuff.create(buffer, mLineColorCount, releaseFn);
+        mLineColors.setOwned(std::move(lColsBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets per-vertex normals from a range of 3D points.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertexNormals(R&& vertNormals)
+    {
+        mVerNorCount = std::ranges::size(vertNormals);
+
+        uint padding = (4 - (mVerNorCount % 4)) % 4;
+        uint nn = mVerNorCount + padding;
+
+        VertexBuffer vNormsBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nn * 3);
+
+        size_t i = 0;
+        for (const auto& n : vertNormals) {
+            buffer[i * 3 + 0] = n.x();
+            buffer[i * 3 + 1] = n.y();
+            buffer[i * 3 + 2] = n.z();
+            ++i;
+        }
+
+        vNormsBuff.create(
+            buffer,
+            nn,
+            bgfx::Attrib::Normal,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mVertexNormals.setOwned(std::move(vNormsBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets per-line normals from a range of 3D points.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setLineNormals(R&& lineNormals)
+    {
+        mLineNorCount = std::ranges::size(lineNormals);
+
+        uint padding = (4 - (mLineNorCount % 4)) % 4;
+        uint nn = mLineNorCount + padding;
+
+        VertexBuffer lNormsBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nn * 3);
+
+        size_t i = 0;
+        for (const auto& n : lineNormals) {
+            buffer[i * 3 + 0] = n.x();
+            buffer[i * 3 + 1] = n.y();
+            buffer[i * 3 + 2] = n.z();
+            ++i;
+        }
+
+        lNormsBuff.create(
+            buffer,
+            nn,
+            bgfx::Attrib::Normal,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mLineNormals.setOwned(std::move(lNormsBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets vertex positions by referencing an existing VertexBuffer.
+     *
+     * @param[in] vertexCount: Number of vertices in the VertexBuffer.
+     * @param[in] verts: VertexBuffer containing vertex positions.
+     * Expected layout: an array of `float` with 3 components per vertex (x, y,
+     * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
+     * yn-1, zn-1].
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setVertices(uint vertexCount, const VertexBuffer& verts);
+
+    /**
+     * @brief Sets line indices by referencing an existing IndexBuffer.
+     *
+     * @param[in] indexCount: Number of indices in the IndexBuffer.
+     * @param[in] indices: IndexBuffer to use for lines.
+     * The interpretation of indices depends on the topology:
+     * - For LINES topology, each pair of indices defines one line segment.
+     * - For LINE_STRIP topology, each index after the first forms a line
+     *   segment with the previous index.
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setIndices(uint indexCount, const IndexBuffer& indices);
+
+    /**
+     * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
+     *
+     * @param[in] vColsCount: Number of vertex colors in the VertexBuffer.
+     * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
+     * Expected layout: an array of `uint` with 4 channels per color in
+     * ABGR order (A, B, G, R packed as a single 32-bit integer).
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setVertexColors(uint vColsCount, const VertexBuffer& vertexColors);
+
+    /**
+     * @brief Sets per-line colors by referencing an existing IndexBuffer.
+     *
+     * @param[in] lColorCount: Number of line colors in the IndexBuffer.
+     * @param[in] lineColors: IndexBuffer containing per-line colors.
+     * Expected layout: an array of `uint` with 4 channels per color in
+     * ABGR order (A, B, G, R packed as a single 32-bit integer).
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setLineColors(uint lColorCount, const IndexBuffer& lineColors);
+
+    /**
+     * @brief Sets vertex normals by referencing an existing VertexBuffer.
+     *
+     * @param[in] vNorCount: Number of vertex normals in the VertexBuffer.
+     * @param[in] vertexNormals: VertexBuffer containing vertex normals.
+     * Expected layout: an array of `float` with 3 components per vertex (x, y,
+     * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
+     * yn-1, zn-1].
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setVertexNormals(uint vNorCount, const VertexBuffer& vertexNormals);
+
+    /**
+     * @brief Sets per-line normals by referencing an existing VertexBuffer.
+     *
+     * @param[in] lNorCount: Number of line normals in the VertexBuffer.
+     * @param[in] lineNormals: VertexBuffer containing per-line normals.
+     * Expected layout: an array of `float` with 3 components per line (x, y,
+     * z), stored as consecutive floats: [x0, y0, z0, x1, y1, z1, ..., xn-1,
+     * yn-1, zn-1].
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
+    void setLineNormals(uint lNorCount, const VertexBuffer& lineNormals);
+
+    /**
+     * @brief Sets the width of line segments.
+     * @param[in] width: The line width value.
+     */
+    void setWidth(float width) { mWidth = width; }
+
+    /**
+     * @brief Sets the topology used for rendering lines.
+     * @param[in] topo: The desired line topology (LINES or LINE_STRIP).
+     */
+    void setTopology(Topology topo)
+    {
+        mTopology              = topo;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets the color mode for line rendering.
+     * @param[in] colorToUse: Whether to use per-vertex colors, per-line colors, or general color.
+     */
+    void setColorSetting(ColorSetting colorToUse)
+    {
+        mColorSetting          = colorToUse;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets the shading mode for line rendering.
+     * @param[in] shading: Whether to apply no shading, per-vertex, or per-line shading.
+     */
+    void setShading(Shading shading)
+    {
+        mShading               = shading;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets the general (uniform) color used when color mode is GENERAL.
+     * @param[in] generalColor: The fallback color for all lines.
+     */
+    void setGeneralColor(const Color& generalColor)
+    {
+        mGeneralColor = generalColor;
+    }
+
+    /**
+     * @brief Sets the depth offset applied to the lines.
+     * @param[in] depthOffset: The depth offset value.
+     */
+    void setDepthOffset(float depthOffset)
+    {
+        mDepthOffset = depthOffset;
+    }
+
+    void draw(bgfx::ViewId viewId) const;
 
 private:
-    /**
-     * @brief Returns the default supported implementation type that can be
-     * used, depending on the capabilities of the current hardware.
-     * @param[in] cpuMemPointsProvided: true if point info of the lines is
-     * provided trough CPU memory, false if it is provided through GPU buffers.
-     * @return the default supported implementation type
-     */
-    ImplementationType defaultImplementationType(
-        bool cpuMemPointsProvided) const
-    {
-        using enum ImplementationType;
+    static constexpr uint V_POS_STAGE = 0;
+    static constexpr uint V_COL_STAGE = 1;
+    static constexpr uint L_IND_STAGE = 2;
+    static constexpr uint L_COL_STAGE = 3;
+    static constexpr uint V_NOR_STAGE = 4;
+    static constexpr uint L_NOR_STAGE = 5;
 
-        if (cpuMemPointsProvided)
-            return CPU_GENERATED;
-        else
-            return PRIMITIVE;
-    }
-
-    bool setImplementationType(ImplementationType type)
-    {
-        using enum ImplementationType;
-
-        if (mType == type)
-            return false; // no change
-
-        // TODO: check whether caps allow the new implementation type
-        // then set the implementation and the type
-        switch (type) {
-        case PRIMITIVE: // always supported
-            mLinesImplementation = detail::PrimitiveLines();
-            mType                = type;
-            return true;
-
-        case CPU_GENERATED: // always supported
-            mLinesImplementation = detail::CPUGeneratedLines();
-            mType                = type;
-            return true;
-
-        default: return false; // not supported
-        }
-    }
-
-    void updateShadingCapability(const std::vector<float>& vertNormals)
-    {
-        mShadingPerVertexCapability = !vertNormals.empty();
-        if (!mShadingPerVertexCapability)
-            mShadingPerVertex = false;
-    }
-
-    void updateColorCapability(
-        const std::vector<uint>& vertColors,
-        const std::vector<uint>& lineColors)
-    {
-        using enum ColorToUse;
-
-        mColorCapability[toUnderlying(PER_VERTEX)] = !vertColors.empty();
-        mColorCapability[toUnderlying(PER_EDGE)]   = !lineColors.empty();
-
-        if (!mColorCapability[toUnderlying(mColorToUse)])
-            mColorToUse = GENERAL;
-    }
-
-    void bindSettingsUniform() const
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sSettingUH.isValid())
-            sSettingUH = Uniform("u_linesSettings", bgfx::UniformType::Vec4);
-
-        // most significative bytes used for shading per vertex option, the
-        // bytes store color to use
-        uint colorShadingPack = toUnderlying(mColorToUse) & 0x00FFFFFF;
-        colorShadingPack |= (mShadingPerVertex ? 1 : 0) << 24;
-
-        float data[] = {
-            mThickness,
-            std::bit_cast<float>(colorShadingPack),
-            std::bit_cast<float>(mGeneralColor.abgr()),
-            mDepthOffset};
-        sSettingUH.bind(data);
-    }
+    void checkAndUpdateProgram() const;
+    uint vertexPullingInstances() const;
 };
 
 } // namespace vcl
