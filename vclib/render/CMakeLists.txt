@@ -159,6 +159,9 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         COMPUTE
     )
     
+    # Generate the combined headers
+    vclib_generate_embedded_programs_headers()
+    
     if (VCLIB_GENERATED_SHADER_CONFIGS)
         source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${VCLIB_GENERATED_SHADER_CONFIGS})
         target_sources(${PROJECT_NAME} PRIVATE ${VCLIB_GENERATED_SHADER_CONFIGS})
