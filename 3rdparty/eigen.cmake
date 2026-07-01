@@ -15,6 +15,7 @@ elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
     message(STATUS "- Eigen - using bundled source")
     add_library(vclib-3rd-eigen INTERFACE)
     target_include_directories(vclib-3rd-eigen INTERFACE ${VCLIB_EIGEN_DIR})
+    add_library(Eigen3::Eigen ALIAS vclib-3rd-eigen)
 else()
     message(
         FATAL_ERROR
