@@ -354,10 +354,10 @@ function(vclib_generate_all_shaders_from_configs DIR_PATH)
 
     # Initialize the output combo file once
     get_filename_component(COMBO_OUT_DIR "${COMBO_OUT_FILE}" DIRECTORY)
-    
+
     # Clean up old generated shaders to prevent issues when changing branches
     file(REMOVE_RECURSE "${COMBO_OUT_DIR}")
-    
+
     file(MAKE_DIRECTORY "${COMBO_OUT_DIR}")
     file(WRITE "${COMBO_OUT_FILE}" "# Auto-generated combinations\n\n")
 
