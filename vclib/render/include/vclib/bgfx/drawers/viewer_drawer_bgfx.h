@@ -135,7 +135,7 @@ public:
         bool block = ParentViewer::onKeyPress(key, modifiers);
 
         if (!block) {
-            switch(key) {
+            switch (key) {
             case Key::F1:
                 if (modifiers[KeyModifier::NO_MODIFIER]) {
                     mStatsEnabled = !mStatsEnabled;

@@ -11,18 +11,20 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(HEADERS
     ../01-hello-triangle-imgui-bgfx-common/common.h
     ../01-hello-triangle-imgui-bgfx-common/hello_triangle_drawer.h
-    ../01-hello-triangle-imgui-common/demo_imgui_drawer.h)
+    ../01-hello-triangle-imgui-common/demo_imgui_drawer.h
+)
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 set(SHADERS
     shaders/vs_vertex_shader.sc
     shaders/fs_fragment_shader.sc
-    shaders/varying.def.sc)
+    shaders/varying.def.sc
+)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${HEADERS} ${SOURCES}
+)
 
 vclib_target_add_shaders(${PROJECT_NAME} ${SHADERS})

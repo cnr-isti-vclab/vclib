@@ -9,7 +9,6 @@ project(vclib-render-tests)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (TARGET vclib-3rd-qt OR TARGET vclib-3rd-glfw)
+if(TARGET vclib-3rd-qt OR TARGET vclib-3rd-glfw)
     add_subdirectory(000-static-asserts)
 endif()
-

@@ -7,14 +7,14 @@
 
 set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
-        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
+if(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
     message(STATUS "- ZipViews - using bundled source")
 else()
     message(
         FATAL_ERROR
         "ZipViews is required -
-        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
+        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found."
+    )
 endif()
 
 set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
@@ -29,7 +29,9 @@ target_link_libraries(vclib-3rd-zip-views INTERFACE zip-view)
 list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-zip-views)
 
 # Install
-if (VCLIB_ALLOW_INSTALL_ZIP_VIEWS)
-    install(FILES ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(VCLIB_ALLOW_INSTALL_ZIP_VIEWS)
+    install(
+        FILES ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
 endif()

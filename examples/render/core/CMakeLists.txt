@@ -23,4 +23,3 @@ add_subdirectory(017-mesh-convex-hull)
 add_subdirectory(019-mesh-point-sampling)
 add_subdirectory(020-mesh-crease-edges)
 add_subdirectory(021-mesh-sphere-intersection)
-

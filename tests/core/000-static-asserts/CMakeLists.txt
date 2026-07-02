@@ -76,11 +76,10 @@ set(HEADERS
     space/triangle.h
 )
 
-set(SOURCES
-    main.cpp
-)
+set(SOURCES main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)

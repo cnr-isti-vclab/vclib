@@ -8,9 +8,9 @@
 set(EXAMPLE_NAME 03-viewer-imgui-stats-glfw)
 project(vclib-render-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)

@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
 
 #include <vclib/algorithms/core.h>
 #include <vclib/bgfx/buffers.h>
@@ -86,4 +86,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
