@@ -47,7 +47,7 @@ void main()
         0.0,
         1.0);
 
-#if POINTS_COLOR_PER_VERTEX
+#ifdef POINTS_COLOR_PER_VERTEX
     v_color = uintABGRToVec4Color(pointColors[pointIndex]);
 #else
     v_color = u_pointsGeneralColor;
