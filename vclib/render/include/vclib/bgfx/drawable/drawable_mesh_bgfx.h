@@ -429,9 +429,12 @@ protected:
     {
         using enum VertFragProgram;
 
-        ProgramManager& pm = Context::instance().programManager();
+        constexpr uint N_SHADING_MODES = 4;
+        constexpr uint N_COLOR_MODES   = 6;
 
-        static const std::array<VertFragProgram, 24> surfacePrograms = {
+        constexpr uint N_PROGRAMS = N_SHADING_MODES * N_COLOR_MODES;
+
+        static const std::array<VertFragProgram, N_PROGRAMS> surfacePrograms = {
             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX,
             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH,
             DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE,
@@ -459,9 +462,6 @@ protected:
 
         uint shading = 0;
         uint color   = 0;
-
-        const uint N_SHADING_TYPES = 4;
-        const uint N_COLOR_TYPES   = 6;
 
         {
             using enum MeshRenderInfo::Surface;
@@ -491,8 +491,9 @@ protected:
             }
         }
 
-        uint program = shading * N_COLOR_TYPES + color;
+        uint program = shading * N_COLOR_MODES + color;
 
+        ProgramManager& pm = Context::instance().programManager();
         return pm.getProgram(surfacePrograms[program]);
     }
 };

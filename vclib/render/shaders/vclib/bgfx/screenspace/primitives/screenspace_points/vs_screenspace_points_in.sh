@@ -12,7 +12,7 @@ $output v_color, v_texcoord1
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(pointsBuffer, vec2, 0); // 2D point positions
-#if POINTS_COLOR_PER_VERTEX
+#if SCREENSPACE_POINTS_COLOR_PER_VERTEX
 BUFFER_RO(pointColors, uint, 1); // colors
 #endif
 
@@ -47,7 +47,7 @@ void main()
         0.0,
         1.0);
 
-#ifdef POINTS_COLOR_PER_VERTEX
+#ifdef SCREENSPACE_POINTS_COLOR_PER_VERTEX
     v_color = uintABGRToVec4Color(pointColors[pointIndex]);
 #else
     v_color = u_pointsGeneralColor;

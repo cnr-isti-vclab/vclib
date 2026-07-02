@@ -254,60 +254,41 @@ bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
 {
     using enum VertFragProgram;
 
-    Context& ctx = Context::instance();
+    constexpr uint N_INDEX_MODES = 2;
+    constexpr uint N_TOPO_MODES  = 2;
+    constexpr uint N_COLOR_MODES = 3;
 
-    ProgramManager& pm = ctx.programManager();
+    constexpr uint N_PROGRAMS = N_INDEX_MODES * N_TOPO_MODES * N_COLOR_MODES;
 
-    bool isIndexed = mIndices.isValid();
-    bool isLines   = (mTopology == Topology::LINES);
+    static const std::array<VertFragProgram, N_PROGRAMS> programs = {
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX,
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_LINE,
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_GENERAL,
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_PER_VERTEX,
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_PER_LINE,
+        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_GENERAL,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_PER_VERTEX,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_PER_LINE,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_GENERAL,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_PER_VERTEX,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_PER_LINE,
+        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_GENERAL};
 
-    if (isIndexed) {
-        if (isLines) {
-            switch (mColorSetting) {
-            case ColorSetting::PER_VERTEX:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PVC>();
-            case ColorSetting::PER_LINE:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_PLC>();
-            case ColorSetting::GENERAL:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_LINES_GC>();
-            }
-        }
-        else {
-            switch (mColorSetting) {
-            case ColorSetting::PER_VERTEX:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PVC>();
-            case ColorSetting::PER_LINE:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_PLC>();
-            case ColorSetting::GENERAL:
-                return pm.getProgram<SCREENSPACE_LINES_IDX_STRIP_GC>();
-            }
-        }
+    uint indexMode = mIndices.isValid() ? 0 : 1;
+    uint topoMode  = (mTopology == Topology::LINES) ? 0 : 1;
+    uint colorMode = 0;
+    if (mColorSetting == ColorSetting::PER_LINE) {
+        colorMode = 1;
     }
-    else {
-        if (isLines) {
-            switch (mColorSetting) {
-            case ColorSetting::PER_VERTEX:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PVC>();
-            case ColorSetting::PER_LINE:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_PLC>();
-            case ColorSetting::GENERAL:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
-            }
-        }
-        else {
-            switch (mColorSetting) {
-            case ColorSetting::PER_VERTEX:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PVC>();
-            case ColorSetting::PER_LINE:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_PLC>();
-            case ColorSetting::GENERAL:
-                return pm.getProgram<SCREENSPACE_LINES_NOIDX_STRIP_GC>();
-            }
-        }
+    else if (mColorSetting == ColorSetting::GENERAL) {
+        colorMode = 2;
     }
 
-    // Fallback (should never reach here due to validityCheck)
-    return pm.getProgram<SCREENSPACE_LINES_NOIDX_LINES_GC>();
+    uint program = indexMode * (N_TOPO_MODES * N_COLOR_MODES) +
+                   topoMode * N_COLOR_MODES + colorMode;
+
+    ProgramManager& pm = Context::instance().programManager();
+    return pm.getProgram(programs[program]);
 }
 
 } // namespace vcl

@@ -14,7 +14,7 @@ void main()
 {
     vec4 color = v_color;
 
-#ifdef POINTS_SHAPE_CIRCLE
+#ifdef SCREENSPACE_POINTS_SHAPE_CIRCLE
     // Circle shape discards fragments outside the unit disk.
     vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
     if (length(uv) > 1.0) {
