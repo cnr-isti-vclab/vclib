@@ -27,7 +27,7 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
-#ifdef SURFACE_SECTION_ENABLED
+#ifdef SURFACE_SECTION_ON
     v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     // discard flag - used to discard the whole vertex, but in fragment shader
     v_discardFlag = computeDiscardFlag(v_worldPos);

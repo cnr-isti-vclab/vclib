@@ -36,7 +36,7 @@ DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 
 void main()
 {
-#ifdef SURFACE_SECTION_ENABLED
+#ifdef SURFACE_SECTION_ON
     discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
 #endif
 

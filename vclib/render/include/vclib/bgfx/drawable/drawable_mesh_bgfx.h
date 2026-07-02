@@ -505,7 +505,7 @@ protected:
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SECTION_ENABLED_SHADING_FLAT_COLOR_FACE);
+                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE);
 
         // matrix is generated from surface.config:
         // SECTION x SHADING x COLOR x SELECTION
