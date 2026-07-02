@@ -14,20 +14,20 @@ $output v_color
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(vertexPosBuffer, vec2, 0); // vertices
-#if SCREENSPACE_LINES_COLOR_PER_VERTEX
+#ifdef SCREENSPACE_LINES_COLOR_PER_VERTEX
 BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
 #endif
-#if SCREENSPACE_LINES_INDEXED
+#ifdef SCREENSPACE_LINES_INDICES_ON
 BUFFER_RO(indexBuffer, uint, 2);     // line indices
 #endif
-#if SCREENSPACE_LINES_COLOR_PER_LINE
+#ifdef SCREENSPACE_LINES_COLOR_PER_LINE
 BUFFER_RO(lineColBuffer, uint, 3);   // line colors
 #endif
 
 // Helper function to get vertex index based on indexing mode
 uint getVind(uint vind)
 {
-#if SCREENSPACE_LINES_INDEXED
+#ifdef SCREENSPACE_LINES_INDICES_ON
     return indexBuffer[vind];
 #else
     return vind;
@@ -42,7 +42,7 @@ void main()
     uint localVertex = gl_VertexID % 6u;
 
     // Topology-based vertex indexing
-#if SCREENSPACE_LINES_TOPO_LINES
+#ifdef SCREENSPACE_LINES_TOPO_LINES
     uint vertexIndex0 = getVind(lineIndex * 2u);
     uint vertexIndex1 = getVind(lineIndex * 2u + 1u);
 #else
@@ -114,7 +114,7 @@ void main()
     v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
 #elif SCREENSPACE_LINES_COLOR_PER_LINE
     v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
-    #else
+#else
     v_color = u_linesGeneralColor;
 #endif
 }
