@@ -8,15 +8,14 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(
     ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)
 
-if (TARGET pybind11::pybind11)
-    target_link_libraries(${PROJECT_NAME}
-        PRIVATE pybind11::embed)
+if(TARGET pybind11::pybind11)
+    target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::embed)
 endif()

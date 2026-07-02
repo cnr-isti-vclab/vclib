@@ -9,32 +9,41 @@ project(vclib-render-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (TARGET vclib-3rd-qt)
+if(TARGET vclib-3rd-qt)
     add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
     set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
 endif()
 if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_RENDER_EXAMPLES)
+    if(NOT CAN_BUILD_VCLIB_RENDER_EXAMPLES)
         add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
         set(CAN_BUILD_VCLIB_RENDER_EXAMPLES true)
     endif()
 endif()
 
-if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
+if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
     # Automatically find and add all render examples.
     # For each directory, we check if it's a valid example by looking for a main.cpp file.
     # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
     # and ensure all required targets are available before adding the subdirectory.
-    file(GLOB RENDER_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*")
+    file(
+        GLOB RENDER_EXAMPLE_DIRS
+        RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*"
+    )
     foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
         if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
             if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
                 # Reset required targets for this iteration
                 set(EXAMPLE_REQUIRED_TARGETS "")
-                if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
-                    include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                if(
+                    EXISTS
+                        "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake"
+                )
+                    include(
+                        "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake"
+                    )
                 endif()
 
                 # Verify if all the required targets (e.g., 3rd party libraries) exist
@@ -51,7 +60,11 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
                 if(REQUIREMENTS_MET)
                     add_subdirectory("${dir}")
                 else()
-                    message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                    message(
+                        STATUS
+                        "Skipping ${dir} due to missing req: "
+                        "${UNMET_REQ_PRINT}"
+                    )
                 endif()
             endif()
         endif()
@@ -59,7 +72,7 @@ if (CAN_BUILD_VCLIB_RENDER_EXAMPLES)
 
     add_subdirectory(core)
 
-    if (VCLIB_BUILD_MODULE_EXTERNAL)
+    if(VCLIB_BUILD_MODULE_EXTERNAL)
         add_subdirectory(external)
     endif()
 endif()
