@@ -198,49 +198,31 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
 {
     using enum VertFragProgram;
 
-    Context&        ctx = Context::instance();
-    ProgramManager& pm  = ctx.programManager();
+    constexpr uint N_SHADING_MODES = 2;
+    constexpr uint N_COLOR_MODES   = 2;
+    constexpr uint N_SHAPE_MODES   = 2;
 
-    // Select the program from 8 possible permutations based on:
-    // 1. Color: Per-Vertex Color (PVC) vs General Color (GC)
-    // 2. Shading: Per-Vertex Shading (PVS) vs No Shading (NS)
-    // 3. Shape: Square (SQ) vs Circle (CIR)
-    if (mColorSetting == ColorSetting::PER_VERTEX) {
-        if (mShading == Shading::NONE) {
-            if (mShape == Shape::SQUARE) {
-                return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_SQ>();
-            }
-            else {
-                return pm.getProgram<PRIMITIVE_POINTS_PVC_NS_CIR>();
-            }
-        }
-        else {
-            if (mShape == Shape::SQUARE) {
-                return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_SQ>();
-            }
-            else {
-                return pm.getProgram<PRIMITIVE_POINTS_PVC_PVS_CIR>();
-            }
-        }
-    }
-    else {
-        if (mShading == Shading::NONE) {
-            if (mShape == Shape::SQUARE) {
-                return pm.getProgram<PRIMITIVE_POINTS_GC_NS_SQ>();
-            }
-            else {
-                return pm.getProgram<PRIMITIVE_POINTS_GC_NS_CIR>();
-            }
-        }
-        else {
-            if (mShape == Shape::SQUARE) {
-                return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_SQ>();
-            }
-            else {
-                return pm.getProgram<PRIMITIVE_POINTS_GC_PVS_CIR>();
-            }
-        }
-    }
+    constexpr uint N_PROGRAMS = N_SHADING_MODES * N_COLOR_MODES * N_SHAPE_MODES;
+
+    static const std::array<VertFragProgram, N_PROGRAMS> pointsPrograms = {
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_CIRCLE,
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE,
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_PER_VERTEX_SHAPE_CIRCLE,
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_PER_VERTEX_SHAPE_SQUARE,
+        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_GENERAL_SHAPE_CIRCLE,
+        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_GENERAL_SHAPE_SQUARE,
+        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_PER_VERTEX_SHAPE_CIRCLE,
+        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_PER_VERTEX_SHAPE_SQUARE};
+
+    uint shading = (mShading == Shading::PER_VERTEX) ? 1 : 0;
+    uint color   = (mColorSetting == ColorSetting::PER_VERTEX) ? 1 : 0;
+    uint shape   = (mShape == Shape::SQUARE) ? 1 : 0;
+
+    uint program = shading * N_COLOR_MODES * N_SHAPE_MODES +
+                        color * N_SHAPE_MODES + shape;
+
+    ProgramManager& pm = Context::instance().programManager();
+    return pm.getProgram(pointsPrograms[program]);
 }
 
 } // namespace vcl

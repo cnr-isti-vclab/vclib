@@ -55,8 +55,6 @@ void main()
 #if POINTS_SHADING_PER_VERTEX
     v_normal = fetchNormal(pointIndex);
     v_normal = normalize(mul(u_normalMatrix, v_normal));
-#else
-    v_normal = vec3(0.0, 0.0, 1.0);
 #endif
 
     // Color calculation

@@ -15,7 +15,7 @@ void main()
 {
     vec4 color = v_color;
 
-#if !POINTS_SHAPE_SQUARE
+#if POINTS_SHAPE_CIRCLE
     // circle mode (if outside of the circle, discard)
     vec2 uv = v_texcoord1 * 2.0 - vec2(1.0, 1.0);
     if (length(uv) > 1.0) {
