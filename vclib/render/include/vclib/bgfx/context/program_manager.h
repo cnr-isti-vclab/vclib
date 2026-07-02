@@ -70,7 +70,7 @@ public:
     {
         return getProgramImpl(
             p,
-            std::make_index_sequence<toUnderlying(VertFragProgram::COUNT)>{});
+            std::make_index_sequence<toUnderlying(VertFragProgram::COUNT)> {});
     }
 
     template<ComputeProgram PROGRAM>
@@ -88,13 +88,14 @@ public:
     bgfx::ProgramHandle getComputeProgram(ComputeProgram p)
     {
         return getComputeProgramImpl(
-            p, std::make_index_sequence<toUnderlying(ComputeProgram::COUNT)>{});
+            p,
+            std::make_index_sequence<toUnderlying(ComputeProgram::COUNT)> {});
     }
 
 private:
     template<size_t... Is>
     bgfx::ProgramHandle getProgramImpl(
-        VertFragProgram          p,
+        VertFragProgram p,
         std::index_sequence<Is...>)
     {
         using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
@@ -105,13 +106,13 @@ private:
 
     template<size_t... Is>
     bgfx::ProgramHandle getComputeProgramImpl(
-        ComputeProgram           p,
+        ComputeProgram p,
         std::index_sequence<Is...>)
     {
         using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
         static constexpr std::array<GetProgramFn, sizeof...(Is)> funcs = {
-            &ProgramManager::getComputeProgram<
-                static_cast<ComputeProgram>(Is)>...};
+            &ProgramManager::getComputeProgram<static_cast<ComputeProgram>(
+                Is)>...};
         return (this->*(funcs[toUnderlying(p)]))();
     }
 };
