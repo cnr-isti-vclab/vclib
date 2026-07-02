@@ -9,22 +9,37 @@ set(BGFX_VERSION 1.147.9336-554)
 
 find_package(bgfx QUIET)
 
-if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
+if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
-    target_link_libraries(vclib-3rd-bgfx INTERFACE
-        bgfx::bx bgfx::bgfx bgfx::bimg bgfx::bimg_decode bgfx::bimg_encode)
+    target_link_libraries(
+        vclib-3rd-bgfx
+        INTERFACE
+            bgfx::bx
+            bgfx::bgfx
+            bgfx::bimg
+            bgfx::bimg_decode
+            bgfx::bimg_encode
+    )
 
-    target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include)
-    target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include)
-    target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb/include)
-    target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include)
+    target_include_directories(
+        vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include
+    )
+    target_include_directories(
+        vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
+    )
+    target_include_directories(
+        vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb/include
+    )
+    target_include_directories(
+        vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include
+    )
 
     # make sure that the imported targets are global
     set_target_properties(bgfx::bin2c PROPERTIES IMPORTED_GLOBAL TRUE)
@@ -35,19 +50,25 @@ if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     set_target_properties(bgfx::shaderc PROPERTIES IMPORTED_GLOBAL TRUE)
 
     # get bgfx include path
-    get_target_property(BGFX_INCLUDE_PATH bgfx::bgfx INTERFACE_INCLUDE_DIRECTORIES)
+    get_target_property(
+        BGFX_INCLUDE_PATH
+        bgfx::bgfx
+        INTERFACE_INCLUDE_DIRECTORIES
+    )
 
     # for each path in BGFX_INCLUDE_PATH:
     foreach(PATH ${BGFX_INCLUDE_PATH})
         # if $PATH/bgfx_shader.sh exists
-        if (EXISTS ${PATH}/bgfx_shader.sh)
+        if(EXISTS ${PATH}/bgfx_shader.sh)
             # set BGFX_SHADER_INCLUDE_PATH to $PATH/bgfx
-            set (BGFX_SHADER_INCLUDE_PATH ${PATH}/bgfx)
+            set(BGFX_SHADER_INCLUDE_PATH ${PATH}/bgfx)
         endif()
     endforeach(PATH ${BGFX_INCLUDE_PATH})
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
+    set_target_properties(
+        vclib-3rd-bgfx
+        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH}
+    )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 
@@ -60,7 +81,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
     set(BGFX_OPENGL_VERSION 44)
-    if (BUILD_SHARED_LIBS)
+    if(BUILD_SHARED_LIBS)
         set(BGFX_LIBRARY_TYPE SHARED CACHE STRING "bgfx library type" FORCE)
     endif()
 
@@ -68,10 +89,12 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     set(BIMG_DECODE ON CACHE BOOL "" FORCE)
     set(BIMG_CUBEMAP ON CACHE BOOL "" FORCE)
 
-    FetchContent_Declare(bgfx
+    FetchContent_Declare(
+        bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
-        GIT_TAG        v${BGFX_VERSION}
-        EXCLUDE_FROM_ALL)
+        GIT_TAG v${BGFX_VERSION}
+        EXCLUDE_FROM_ALL
+    )
 
     FetchContent_MakeAvailable(bgfx)
 
@@ -80,24 +103,38 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     # there are three warnings on gcc that we need to ignore
     set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
-    target_link_libraries(vclib-3rd-bgfx INTERFACE
-        bx bgfx bimg bimg_decode bimg_encode)
+    target_link_libraries(
+        vclib-3rd-bgfx
+        INTERFACE bx bgfx bimg bimg_decode bimg_encode
+    )
 
-    target_include_directories(vclib-3rd-bgfx
-        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty)
+    target_include_directories(
+        vclib-3rd-bgfx
+        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty
+    )
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES
-        BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src)
+    set_target_properties(
+        vclib-3rd-bgfx
+        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src
+    )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 else()
-    message(FATAL_ERROR
-        "bgfx is required - be sure to clone recursively the vclib repository.")
+    message(
+        FATAL_ERROR
+        "bgfx is required - be sure to clone recursively the vclib repository."
+    )
 endif()
 
-if (TARGET vclib-3rd-bgfx)
+if(TARGET vclib-3rd-bgfx)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
-    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib)
+    install(
+        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
+    install(
+        FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_shader_combinations.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+    )
 endif()

@@ -8,12 +8,14 @@
 set(EXAMPLE_NAME 05-mesh-viewer-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)
 
-target_include_directories(vclib-render-example-${EXAMPLE_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(
+    vclib-render-example-${EXAMPLE_NAME}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+)

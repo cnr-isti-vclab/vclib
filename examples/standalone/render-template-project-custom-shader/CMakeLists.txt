@@ -35,7 +35,7 @@ set(VCLIB_BUILD_MODULE_RENDER ON CACHE STRING "" FORCE)
 FetchContent_Declare(
     vclib
     GIT_REPOSITORY https://github.com/cnr-isti-vclab/vclib.git
-    GIT_TAG        origin/main
+    GIT_TAG origin/main
 )
 
 FetchContent_MakeAvailable(vclib)

@@ -9,4 +9,5 @@ set(SOURCES main.cpp)
 
 vclib_add_example(999-misc-bgfx-qt
     MODULE render
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)

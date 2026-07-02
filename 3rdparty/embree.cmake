@@ -12,7 +12,7 @@ set(EMBREE_VER "${EMBREE_MAJOR}.${EMBREE_MINOR}.${EMBREE_PATCH}")
 
 find_package(embree ${EMBREE_MAJOR} QUIET)
 
-if (VCLIB_ALLOW_SYSTEM_EMBREE AND embree_FOUND)
+if(VCLIB_ALLOW_SYSTEM_EMBREE AND embree_FOUND)
     message(STATUS "- Embree - using system-provided library")
 
     add_library(vclib-3rd-embree INTERFACE)

@@ -36,6 +36,6 @@ add_subdirectory(024-space-core)
 add_subdirectory(025-mesh-convex-hull)
 add_subdirectory(026-random)
 
-if (TARGET vclib-3rd-tinygltf)
+if(TARGET vclib-3rd-tinygltf)
     add_subdirectory(023-load-mesh-gltf)
 endif()

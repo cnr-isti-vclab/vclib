@@ -6,17 +6,26 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 # Add all render examples automatically if dependencies are met
-file(GLOB RENDER_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render" "${CMAKE_CURRENT_SOURCE_DIR}/../render/*")
+file(
+    GLOB RENDER_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../render/*"
+)
 foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
     if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}")
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/main.cpp")
             set(EXAMPLE_REQUIRED_TARGETS "")
             set(EXAMPLE_EXTRA_INCLUDES "")
-            
-            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake")
-                include("${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake")
+
+            if(
+                EXISTS
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake"
+            )
+                include(
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake"
+                )
             endif()
-            
+
             set(REQUIREMENTS_MET TRUE)
             set(UNMET_REQ_PRINT "")
             foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
@@ -30,14 +39,22 @@ foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
             if(REQUIREMENTS_MET)
                 add_standalone_example(render "${dir}" ${EXAMPLE_EXTRA_INCLUDES})
             else()
-                message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                message(
+                    STATUS
+                    "Skipping ${dir} due to missing req: "
+                    "${UNMET_REQ_PRINT}"
+                )
             endif()
         endif()
     endif()
 endforeach()
 
 # Add core render examples
-file(GLOB RENDER_CORE_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/core" "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/*")
+file(
+    GLOB RENDER_CORE_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/core"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/*"
+)
 foreach(dir IN LISTS RENDER_CORE_EXAMPLE_DIRS)
     if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/${dir}")
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/${dir}/main.cpp")
@@ -48,17 +65,29 @@ endforeach()
 
 # Add external render examples
 if(VCLIB_BUILD_MODULE_EXTERNAL)
-    file(GLOB RENDER_EXTERNAL_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/external" "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/*")
+    file(
+        GLOB RENDER_EXTERNAL_EXAMPLE_DIRS
+        RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/external"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/*"
+    )
     foreach(dir IN LISTS RENDER_EXTERNAL_EXAMPLE_DIRS)
         if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}")
-            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/main.cpp")
+            if(
+                EXISTS
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/main.cpp"
+            )
                 set(EXAMPLE_REQUIRED_TARGETS "")
                 set(EXAMPLE_EXTRA_INCLUDES "")
-                
-                if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake")
-                    include("${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake")
+
+                if(
+                    EXISTS
+                        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake"
+                )
+                    include(
+                        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake"
+                    )
                 endif()
-                
+
                 set(REQUIREMENTS_MET TRUE)
                 set(UNMET_REQ_PRINT "")
                 foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
@@ -72,7 +101,11 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
                 if(REQUIREMENTS_MET)
                     add_standalone_example("render/external" "${dir}" "../../../external/${dir}" ${EXAMPLE_EXTRA_INCLUDES})
                 else()
-                    message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                    message(
+                        STATUS
+                        "Skipping ${dir} due to missing req: "
+                        "${UNMET_REQ_PRINT}"
+                    )
                 endif()
             endif()
         endif()

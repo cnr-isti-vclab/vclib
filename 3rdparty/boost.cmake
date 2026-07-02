@@ -7,7 +7,7 @@
 
 find_package(Boost QUIET)
 
-if (VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
+if(VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
     message(STATUS "- boost - using system-provided library")
 
     add_library(vclib-3rd-boost INTERFACE)
@@ -15,8 +15,7 @@ if (VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-boost)
 
-    target_compile_definitions(vclib-3rd-boost INTERFACE
-        VCLIB_WITH_BOOST)
+    target_compile_definitions(vclib-3rd-boost INTERFACE VCLIB_WITH_BOOST)
 else()
     message(STATUS "- boost - not found, skipping")
 endif()

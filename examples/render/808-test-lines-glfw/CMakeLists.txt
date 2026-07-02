@@ -8,10 +8,9 @@
 set(EXAMPLE_NAME 808-test-lines-glfw)
 project(vclib-render-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    ../808-test-lines-common/lines_common.h
-    main.cpp)
+set(SOURCES ../808-test-lines-common/lines_common.h main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)

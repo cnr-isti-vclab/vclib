@@ -7,19 +7,24 @@
 
 find_package(OpenGL QUIET)
 
-if (OpenGL_FOUND)
+if(OpenGL_FOUND)
     message(STATUS "- OpenGL - using system-provided library")
 
     add_library(vclib-3rd-opengl INTERFACE)
-    target_link_libraries(vclib-3rd-opengl INTERFACE
-        OpenGL::GL OpenGL::GLU)
+    target_link_libraries(vclib-3rd-opengl INTERFACE OpenGL::GL OpenGL::GLU)
 
     if(APPLE)
-        target_compile_definitions(vclib-3rd-opengl
-            INTERFACE GL_SILENCE_DEPRECATION)
+        target_compile_definitions(
+            vclib-3rd-opengl
+            INTERFACE GL_SILENCE_DEPRECATION
+        )
     endif()
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-opengl)
 else()
-    message(FATAL ERROR "- OpenGL is required - system-provided library not found.")
+    message(
+        FATAL
+        ERROR
+        "- OpenGL is required - system-provided library not found."
+    )
 endif()

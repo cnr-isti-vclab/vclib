@@ -8,12 +8,11 @@
 set(EXAMPLE_NAME 800-screenspace-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
-set(HEADERS
-    screenspace_drawer.h)
+set(HEADERS screenspace_drawer.h)
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${HEADERS} ${SOURCES}
+)
