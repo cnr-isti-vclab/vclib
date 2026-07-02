@@ -153,18 +153,22 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
 
     if (mColorSetting == ColorSetting::PER_VERTEX) {
         if (mShape == Shape::SQUARE) {
-            return pm.getProgram<SCREENSPACE_POINTS_PVC_SQ>();
+            return pm
+                .getProgram<SCREENSPACE_POINTS_COLOR_PER_VERTEX_SHAPE_SQUARE>();
         }
         else {
-            return pm.getProgram<SCREENSPACE_POINTS_PVC_CIR>();
+            return pm
+                .getProgram<SCREENSPACE_POINTS_COLOR_PER_VERTEX_SHAPE_CIRCLE>();
         }
     }
     else {
         if (mShape == Shape::SQUARE) {
-            return pm.getProgram<SCREENSPACE_POINTS_GC_SQ>();
+            return pm
+                .getProgram<SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_SQUARE>();
         }
         else {
-            return pm.getProgram<SCREENSPACE_POINTS_GC_CIR>();
+            return pm
+                .getProgram<SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_CIRCLE>();
         }
     }
 }
