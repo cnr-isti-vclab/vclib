@@ -8,11 +8,10 @@
 # the following examples are the same of the ones in the external module,
 # but they add a viewer at the end in order to visualize the results
 
-if (TARGET vclib-3rd-embree)
+if(TARGET vclib-3rd-embree)
     add_subdirectory(011-best-heightfield-orientation)
 endif()
 
-if (TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
+if(TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
     add_subdirectory(020-igl-booleans)
 endif()
-

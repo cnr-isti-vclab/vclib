@@ -29,10 +29,16 @@ option(VCLIB_ALLOW_INSTALL_EIGEN "Allow install Eigen source" ON)
 include(eigen.cmake)
 
 # MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
-    "Allow use of bundled Mapbox-Eaurcut source" ON)
-option(VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT
-    "Allow install Mapbox-Eaurcut source" ON)
+option(
+    VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
+    "Allow use of bundled Mapbox-Eaurcut source"
+    ON
+)
+option(
+    VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT
+    "Allow install Mapbox-Eaurcut source"
+    ON
+)
 include(mapbox.cmake)
 
 # poolSTL (not required if C++17 parallel algorithms are available) and TBB
@@ -42,32 +48,33 @@ option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 include(poolstl_tbb.cmake)
 
 # Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
-    "Allow use of bundled ZipViews source" ON)
-option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS
-    "Allow install ZipViews source" ON)
+option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS "Allow use of bundled ZipViews source" ON)
+option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS "Allow install ZipViews source" ON)
 include(zip-views.cmake)
 
 # === OPTIONAL === #
 
 # IO or RENDER 3rd Party libraries
-if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
+if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
     include(qt.cmake)
 endif()
 
 # IO - 3rd Party libraries
-if (VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
+if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # tinygltf
-    option(VCLIB_ALLOW_DOWNLOAD_TINYGTLF
+    option(
+        VCLIB_ALLOW_DOWNLOAD_TINYGTLF
         "Allow use of downloaded tinygltf source
-        (brings stb and nlohmann-json)" ON)
+        (brings stb and nlohmann-json)"
+        ON
+    )
     option(VCLIB_ALLOW_INSTALL_TINYGTLF "Allow install tinygltf source" ON)
     include(tinygltf.cmake)
 endif()
 
-if (VCLIB_BUILD_MODULE_EXTERNAL)
+if(VCLIB_BUILD_MODULE_EXTERNAL)
     # boost
     option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
     include(boost.cmake)
@@ -79,19 +86,29 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
     include(cgal.cmake)
 
     # embree
-    option(VCLIB_ALLOW_SYSTEM_EMBREE
-        "Allow use of system-provided Embree" ON)
+    option(VCLIB_ALLOW_SYSTEM_EMBREE "Allow use of system-provided Embree" ON)
     include(embree.cmake)
 
     # libigl
     option(VCLIB_ALLOW_SYSTEM_LIBIGL "Allow use of system-provided libigl" ON)
-    option(VCLIB_ALLOW_DOWNLOAD_LIBIGL
-        "Allow use of downloaded libigl source" ON)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_LIBIGL
+        "Allow use of downloaded libigl source"
+        ON
+    )
     include(libigl.cmake)
 
     # PoissonRecon
-    option(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON "Allow use of downloaded PoissonRecon source" ON)
-    option(VCLIB_ALLOW_INSTALL_POISSON_RECON "Allow install PoissonRecon source" ON)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_POISSON_RECON
+        "Allow use of downloaded PoissonRecon source"
+        ON
+    )
+    option(
+        VCLIB_ALLOW_INSTALL_POISSON_RECON
+        "Allow install PoissonRecon source"
+        ON
+    )
     include(poisson-recon.cmake)
 
     # VCG
@@ -100,24 +117,29 @@ if (VCLIB_BUILD_MODULE_EXTERNAL)
     include(vcg.cmake)
 endif()
 
-if (VCLIB_BUILD_MODULE_RENDER)
+if(VCLIB_BUILD_MODULE_RENDER)
     ### bgfx
-    if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    if(VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         # Wayland (optional)
-        option(VCLIB_RENDER_WITH_WAYLAND
-            "Linux only - build vclib-render for wayland" OFF)
+        option(
+            VCLIB_RENDER_WITH_WAYLAND
+            "Linux only - build vclib-render for wayland"
+            OFF
+        )
         include(wayland.cmake)
 
         # bgfx
-        option(VCLIB_ALLOW_SYSTEM_BGFX
-            "Allow use of system-provided bgfx" ON)
-        option(VCLIB_ALLOW_DOWNLOAD_BGFX
-            "Allow use of downloaded BGFX source" ON)
+        option(VCLIB_ALLOW_SYSTEM_BGFX "Allow use of system-provided bgfx" ON)
+        option(
+            VCLIB_ALLOW_DOWNLOAD_BGFX
+            "Allow use of downloaded BGFX source"
+            ON
+        )
         include(bgfx.cmake)
     endif()
 
     ### OpenGL
-    if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+    if(VCLIB_RENDER_BACKEND STREQUAL "opengl2")
         include(opengl.cmake)
     endif()
 
@@ -131,10 +153,13 @@ if (VCLIB_BUILD_MODULE_RENDER)
     include(imgui.cmake)
 endif()
 
-if (VCLIB_BUILD_MODULE_BINDINGS)
+if(VCLIB_BUILD_MODULE_BINDINGS)
     # pybind11
-    option(VCLIB_ALLOW_DOWNLOAD_PYBIND
-        "Allow use of downloaded pybind11 source" ON)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_PYBIND
+        "Allow use of downloaded pybind11 source"
+        ON
+    )
     include(pybind.cmake)
 endif()
 
@@ -159,23 +184,23 @@ while(EXPORT_QUEUE)
     if(NOT TARGET ${tgt})
         continue()
     endif()
-    
+
     get_target_property(aliased ${tgt} ALIASED_TARGET)
     if(aliased)
         set(tgt ${aliased})
     endif()
-    
+
     if(tgt IN_LIST EXPORTED_TARGETS)
         continue()
     endif()
-    
+
     get_target_property(is_imported ${tgt} IMPORTED)
     if(is_imported)
         continue()
     endif()
 
     list(APPEND EXPORTED_TARGETS ${tgt})
-    
+
     get_target_property(linked_libs ${tgt} INTERFACE_LINK_LIBRARIES)
     if(linked_libs)
         foreach(lib IN LISTS linked_libs)
@@ -187,7 +212,7 @@ while(EXPORT_QUEUE)
             endif()
         endforeach()
     endif()
-    
+
     get_target_property(type ${tgt} TYPE)
     if(NOT type STREQUAL "INTERFACE_LIBRARY")
         get_target_property(linked_libs ${tgt} LINK_LIBRARIES)
@@ -215,15 +240,23 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
             else()
                 list(APPEND new_inc_dirs "$<BUILD_INTERFACE:${inc_dir}>")
                 if(NOT added_install_interface)
-                    list(APPEND new_inc_dirs "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+                    list(
+                        APPEND new_inc_dirs
+                        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+                    )
                     set(added_install_interface TRUE)
                 endif()
             endif()
         endforeach()
-        set_target_properties(${tgt} PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${new_inc_dirs}")
+        set_target_properties(
+            ${tgt}
+            PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${new_inc_dirs}"
+        )
     endif()
-    
-    install(TARGETS ${tgt} EXPORT vclibTargets
+
+    install(
+        TARGETS ${tgt}
+        EXPORT vclibTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -231,9 +264,12 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
     )
 endforeach()
 
-set(VCLIB_CORE_3RDPARTY_LIBRARIES
-    ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES
-    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES}
+    PARENT_SCOPE
+)
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES
-    ${VCLIB_RENDER_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+    ${VCLIB_RENDER_3RDPARTY_LIBRARIES}
+    PARENT_SCOPE
+)

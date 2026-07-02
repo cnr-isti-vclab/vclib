@@ -8,16 +8,12 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-test-${TEST_NAME})
 
-set(HEADERS
-    common.h
-    k_nearest.h
-    nearest.h
-    sphere.h)
+set(HEADERS common.h k_nearest.h nearest.h sphere.h)
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)

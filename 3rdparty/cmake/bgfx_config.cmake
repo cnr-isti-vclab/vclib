@@ -61,10 +61,18 @@ function(_vclib_target_ide_add_shaders target_name)
         endif()
     endforeach()
     if(SRC_FILES)
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${SRC_FILES})
+        source_group(
+            TREE ${CMAKE_CURRENT_SOURCE_DIR}
+            PREFIX "Shaders"
+            FILES ${SRC_FILES}
+        )
     endif()
     if(BIN_FILES)
-        source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX "Shaders" FILES ${BIN_FILES})
+        source_group(
+            TREE ${CMAKE_CURRENT_BINARY_DIR}
+            PREFIX "Shaders"
+            FILES ${BIN_FILES}
+        )
     endif()
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
@@ -72,7 +80,11 @@ endfunction()
 # Function to add a list of assets to a target
 function(_vclib_target_ide_add_assets target_name)
     list(REMOVE_AT ARGV 0)
-    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Asset Files" FILES ${ARGV})
+    source_group(
+        TREE ${CMAKE_CURRENT_SOURCE_DIR}
+        PREFIX "Asset Files"
+        FILES ${ARGV}
+    )
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
@@ -88,64 +100,79 @@ function(vclib_build_shader)
     set(options AS_HEADER)
     set(oneValueArgs SHADER OUT_DIR VARYING_DEF)
     set(multiValueArgs INCLUDE_DIRS)
-    cmake_parse_arguments(ARG
-        "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+    cmake_parse_arguments(
+        ARG
+        "${options}"
+        "${oneValueArgs}"
+        "${multiValueArgs}"
+        "${ARGN}"
+    )
 
-    if (NOT ARG_SHADER)
+    if(NOT ARG_SHADER)
         message(FATAL_ERROR "vclib_build_shader: missing SHADER argument")
     endif()
-    if (NOT ARG_OUT_DIR)
+    if(NOT ARG_OUT_DIR)
         message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
     endif()
 
     set(BGFX_VF_PROFILES
-        140    # glsl
+        140 # glsl
         320_es # essl
-        spirv  # spirv
+        spirv # spirv
     )
     set(BGFX_COMPUTE_PROFILES
-        400    # glsl
+        400 # glsl
         320_es # essl
-        spirv  # spirv
+        spirv # spirv
     )
-    if (APPLE)
-        list(APPEND BGFX_VF_PROFILES
+    if(APPLE)
+        list(
+            APPEND BGFX_VF_PROFILES
             metal22-11 # metal
         )
-        list(APPEND BGFX_COMPUTE_PROFILES
+        list(
+            APPEND BGFX_COMPUTE_PROFILES
             metal22-11 # metal
         )
     endif()
-    if (WIN32)
-        list(APPEND BGFX_VF_PROFILES
+    if(WIN32)
+        list(
+            APPEND BGFX_VF_PROFILES
             s_5_0 # dxbc, dx11
         )
-        list(APPEND BGFX_COMPUTE_PROFILES
+        list(
+            APPEND BGFX_COMPUTE_PROFILES
             s_5_0 # dxbc, dx11
         )
     endif()
 
-    if (ARG_AS_HEADER)
+    if(ARG_AS_HEADER)
         set(AS_HEADER_OPTION AS_HEADERS)
     else()
         set(AS_HEADER_OPTION "")
     endif()
 
-    get_property(VCLIB_RENDER_DIR
+    get_property(
+        VCLIB_RENDER_DIR
         TARGET vclib::render
-        PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR
+        PROPERTY VCLIB_RENDER_INCLUDE_DIR
+    )
+    get_property(
+        VCLIB_RENDER_SHADER_DIR
         TARGET vclib::render
-        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR
+    )
 
     get_filename_component(FILENAME "${ARG_SHADER}" NAME_WE)
     get_filename_component(ABSOLUTE_PATH_SHADER ${ARG_SHADER} ABSOLUTE)
     get_filename_component(ABSOLUTE_DIR_PATH ${ABSOLUTE_PATH_SHADER} DIRECTORY)
 
     # used by bgfx_compile_shaders to resolve includes in shaders
-    get_property(BGFX_SHADER_INCLUDE_PATH
+    get_property(
+        BGFX_SHADER_INCLUDE_PATH
         TARGET vclib-3rd-bgfx
-        PROPERTY BGFX_SHADER_INCLUDE_PATH)
+        PROPERTY BGFX_SHADER_INCLUDE_PATH
+    )
 
     string(SUBSTRING "${FILENAME}" 0 2 TYPE)
     if("${TYPE}" STREQUAL "fs")
@@ -158,14 +185,17 @@ function(vclib_build_shader)
         set(TYPE "")
     endif()
 
-    if ("${TYPE}" STREQUAL "COMPUTE")
+    if("${TYPE}" STREQUAL "COMPUTE")
         set(VARYING_DEF_ARGUMENT "")
         set(PROFILES_ARGUMENT PROFILES ${BGFX_COMPUTE_PROFILES})
     else()
         if(ARG_VARYING_DEF)
             set(VARYING_DEF_ARGUMENT VARYING_DEF ${ARG_VARYING_DEF})
         else()
-            set(VARYING_DEF_ARGUMENT VARYING_DEF ${ABSOLUTE_DIR_PATH}/varying.def.sc)
+            set(VARYING_DEF_ARGUMENT
+                VARYING_DEF
+                ${ABSOLUTE_DIR_PATH}/varying.def.sc
+            )
         endif()
         set(PROFILES_ARGUMENT PROFILES ${BGFX_VF_PROFILES})
     endif()
@@ -189,20 +219,34 @@ function(vclib_build_shaders_to_headers)
     _vclib_target_ide_add_shaders(vclib-render ${ARGV})
 
     get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR
+    get_property(
+        VCLIB_RENDER_SHADER_DIR
         TARGET vclib::render
-        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
+        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR
+    )
 
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib/shaders")
 
     foreach(SHADER ${ARGV})
         string(FIND "${SHADER}" "${TARGET_BIN_DIR}" IS_IN_BIN_DIR)
         if(IS_IN_BIN_DIR EQUAL 0)
-            file(RELATIVE_PATH SHADER_REL "${TARGET_BIN_DIR}/shaders/vclib/bgfx" ${SHADER})
+            file(
+                RELATIVE_PATH
+                SHADER_REL
+                "${TARGET_BIN_DIR}/shaders/vclib/bgfx"
+                ${SHADER}
+            )
             get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
-            set(VARYING_DEF_FILE "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc")
+            set(VARYING_DEF_FILE
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc"
+            )
         else()
-            file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx" ${SHADER})
+            file(
+                RELATIVE_PATH
+                SHADER_REL
+                "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/bgfx"
+                ${SHADER}
+            )
             get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
             set(VARYING_DEF_FILE "")
         endif()
@@ -230,7 +274,11 @@ endfunction()
 function(vclib_build_assets_to_headers)
     _vclib_target_ide_add_assets(vclib-render ${ARGV})
 
-    get_property(VCLIB_RENDER_DIR TARGET vclib::render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+    get_property(
+        VCLIB_RENDER_DIR
+        TARGET vclib::render
+        PROPERTY VCLIB_RENDER_INCLUDE_DIR
+    )
     get_property(TARGET_BIN_DIR TARGET vclib::render PROPERTY BINARY_DIR)
 
     set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/vclib")
@@ -242,7 +290,7 @@ function(vclib_build_assets_to_headers)
         get_filename_component(FILENAME_WE "${ASSET}" NAME_WE)
         get_filename_component(ABSOLUTE_PATH_ASSET ${ASSET} ABSOLUTE)
         get_filename_component(ABSOLUTE_DIR_PATH ${DIR_PATH} ABSOLUTE)
-        
+
         file(MAKE_DIRECTORY "${BGFX_ASSETS_OUTPUT_DIR}/${DIR_PATH}")
 
         bgfx_compile_binary_to_header(
@@ -270,11 +318,11 @@ function(vclib_target_add_shaders target_name)
         get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
 
         # if DIR_PATH begins with "shaders/", remove it
-        if (DIR_PATH MATCHES "^shaders/")
+        if(DIR_PATH MATCHES "^shaders/")
             string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
         endif()
         # if DIR_PATH is "shaders", replace it with "./"
-        if (DIR_PATH STREQUAL "shaders")
+        if(DIR_PATH STREQUAL "shaders")
             set(DIR_PATH "./")
         endif()
 
@@ -282,46 +330,71 @@ function(vclib_target_add_shaders target_name)
 
         vclib_build_shader(
             SHADER "${ABSOLUTE_PATH_SHADER}"
-            OUT_DIR "${OUT_DIR}")
+            OUT_DIR "${OUT_DIR}"
+        )
     endforeach()
     _vclib_target_ide_add_shaders(${target_name} ${ARGV})
 endfunction()
 
 function(_vclib_embedded_program_validate_args ENUM_NAME TYPE FILES)
-    if (NOT ENUM_NAME)
-        message(FATAL_ERROR "vclib_add_embedded_program: missing ENUM_NAME argument")
+    if(NOT ENUM_NAME)
+        message(
+            FATAL_ERROR
+            "vclib_add_embedded_program: missing ENUM_NAME argument"
+        )
     endif()
 
-    if (NOT TYPE)
+    if(NOT TYPE)
         message(FATAL_ERROR "vclib_add_embedded_program: missing TYPE argument")
     endif()
 
-    if (NOT FILES)
-        message(FATAL_ERROR "vclib_add_embedded_program: missing FILES argument")
+    if(NOT FILES)
+        message(
+            FATAL_ERROR
+            "vclib_add_embedded_program: missing FILES argument"
+        )
     endif()
 endfunction()
 
-function(_vclib_embedded_program_resolve_type TYPE OUT_PROGRAM_TYPE OUT_PROGRAM_TYPE_LC)
+function(
+    _vclib_embedded_program_resolve_type
+    TYPE
+    OUT_PROGRAM_TYPE
+    OUT_PROGRAM_TYPE_LC
+)
     string(TOUPPER "${TYPE}" TYPE_UC)
-    if (TYPE_UC STREQUAL "VERT_FRAG")
+    if(TYPE_UC STREQUAL "VERT_FRAG")
         set(PROGRAM_TYPE "VF")
         set(PROGRAM_TYPE_LC "vf")
-    elseif (TYPE_UC STREQUAL "COMPUTE")
+    elseif(TYPE_UC STREQUAL "COMPUTE")
         set(PROGRAM_TYPE "C")
         set(PROGRAM_TYPE_LC "c")
     else()
-        message(FATAL_ERROR "vclib_add_embedded_program: TYPE must be VERT_FRAG or COMPUTE")
+        message(
+            FATAL_ERROR
+            "vclib_add_embedded_program: TYPE must be VERT_FRAG or COMPUTE"
+        )
     endif()
 
     set(${OUT_PROGRAM_TYPE} "${PROGRAM_TYPE}" PARENT_SCOPE)
     set(${OUT_PROGRAM_TYPE_LC} "${PROGRAM_TYPE_LC}" PARENT_SCOPE)
 endfunction()
 
-function(_vclib_embedded_program_prepare_output_dirs PROGRAM_TYPE_LC OUT_TARGET_BIN_DIR OUT_HEADER_DIR OUT_SOURCE_DIR)
+function(
+    _vclib_embedded_program_prepare_output_dirs
+    PROGRAM_TYPE_LC
+    OUT_TARGET_BIN_DIR
+    OUT_HEADER_DIR
+    OUT_SOURCE_DIR
+)
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
 
-    set(GENERATED_HEADER_DIR "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs")
-    set(GENERATED_SOURCE_DIR "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs")
+    set(GENERATED_HEADER_DIR
+        "${TARGET_BIN_DIR}/include/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs"
+    )
+    set(GENERATED_SOURCE_DIR
+        "${TARGET_BIN_DIR}/src/vclib/bgfx/programs/embedded_${PROGRAM_TYPE_LC}_programs"
+    )
 
     file(MAKE_DIRECTORY ${GENERATED_HEADER_DIR})
     file(MAKE_DIRECTORY ${GENERATED_SOURCE_DIR})
@@ -331,16 +404,27 @@ function(_vclib_embedded_program_prepare_output_dirs PROGRAM_TYPE_LC OUT_TARGET_
     set(${OUT_SOURCE_DIR} "${GENERATED_SOURCE_DIR}" PARENT_SCOPE)
 endfunction()
 
-function(_vclib_embedded_program_collect_shader_info PROGRAM_TYPE FILES OUT_SHADER_PATH OUT_VS_NAME OUT_FS_NAME OUT_CS_NAME)
+function(
+    _vclib_embedded_program_collect_shader_info
+    PROGRAM_TYPE
+    FILES
+    OUT_SHADER_PATH
+    OUT_VS_NAME
+    OUT_FS_NAME
+    OUT_CS_NAME
+)
     set(SHADER_PATH "")
     set(VS_NAME "")
     set(FS_NAME "")
     set(CS_NAME "")
 
-    if (PROGRAM_TYPE STREQUAL "VF")
+    if(PROGRAM_TYPE STREQUAL "VF")
         list(LENGTH FILES NUM_FILES)
-        if (NUM_FILES GREATER 2)
-            message(FATAL_ERROR "vclib_add_embedded_program: VERT_FRAG programs require exactly 2 files (vertex and fragment)")
+        if(NUM_FILES GREATER 2)
+            message(
+                FATAL_ERROR
+                "vclib_add_embedded_program: VERT_FRAG programs require exactly 2 files (vertex and fragment)"
+            )
         endif()
 
         list(GET FILES 0 VERTEX_SHADER_FILE)
@@ -358,7 +442,12 @@ function(_vclib_embedded_program_collect_shader_info PROGRAM_TYPE FILES OUT_SHAD
     endif()
 
     get_filename_component(ABSOLUTE_SHADER_DIR ${SHADER_DIR} ABSOLUTE)
-    file(RELATIVE_PATH SHADER_PATH ${CMAKE_CURRENT_SOURCE_DIR} ${ABSOLUTE_SHADER_DIR})
+    file(
+        RELATIVE_PATH
+        SHADER_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${ABSOLUTE_SHADER_DIR}
+    )
 
     set(${OUT_SHADER_PATH} "${SHADER_PATH}" PARENT_SCOPE)
     set(${OUT_VS_NAME} "${VS_NAME}" PARENT_SCOPE)
@@ -367,29 +456,42 @@ function(_vclib_embedded_program_collect_shader_info PROGRAM_TYPE FILES OUT_SHAD
 endfunction()
 
 function(_vclib_embedded_program_ensure_template_exists TEMPLATE_PATH)
-    if (NOT EXISTS ${TEMPLATE_PATH})
+    if(NOT EXISTS ${TEMPLATE_PATH})
         message(FATAL_ERROR "Template file not found: ${TEMPLATE_PATH}")
     endif()
 endfunction()
 
-function(_vclib_embedded_program_update_main_header PROGRAM_TYPE PROGRAM_TYPE_LC TARGET_BIN_DIR ENUM_NAME_LC)
-    if (PROGRAM_TYPE STREQUAL "VF")
+function(
+    _vclib_embedded_program_update_main_header
+    PROGRAM_TYPE
+    PROGRAM_TYPE_LC
+    TARGET_BIN_DIR
+    ENUM_NAME_LC
+)
+    if(PROGRAM_TYPE STREQUAL "VF")
         set(PROP_NAME "VCLIB_VF_INCLUDES")
     else()
         set(PROP_NAME "VCLIB_C_INCLUDES")
     endif()
 
     get_property(INCLUDES GLOBAL PROPERTY ${PROP_NAME})
-    set(NEW_INCLUDE "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\"")
+    set(NEW_INCLUDE
+        "#include \"embedded_${PROGRAM_TYPE_LC}_programs/${ENUM_NAME_LC}.h\""
+    )
     list(FIND INCLUDES "${NEW_INCLUDE}" NEW_INC_INDEX)
-    if (NEW_INC_INDEX EQUAL -1)
+    if(NEW_INC_INDEX EQUAL -1)
         list(APPEND INCLUDES "${NEW_INCLUDE}")
         set_property(GLOBAL PROPERTY ${PROP_NAME} "${INCLUDES}")
     endif()
 endfunction()
 
-function(_vclib_embedded_program_update_enum_header PROGRAM_TYPE TARGET_BIN_DIR ENUM_NAME)
-    if (PROGRAM_TYPE STREQUAL "VF")
+function(
+    _vclib_embedded_program_update_enum_header
+    PROGRAM_TYPE
+    TARGET_BIN_DIR
+    ENUM_NAME
+)
+    if(PROGRAM_TYPE STREQUAL "VF")
         set(PROP_NAME "VCLIB_VF_ENUM_ENTRIES")
     else()
         set(PROP_NAME "VCLIB_C_ENUM_ENTRIES")
@@ -398,7 +500,7 @@ function(_vclib_embedded_program_update_enum_header PROGRAM_TYPE TARGET_BIN_DIR 
     get_property(EXISTING_ENUM_ENTRIES GLOBAL PROPERTY ${PROP_NAME})
     set(NEW_ENUM_ENTRY "    ${ENUM_NAME},")
     list(FIND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}" ENTRY_FOUND)
-    if (ENTRY_FOUND EQUAL -1)
+    if(ENTRY_FOUND EQUAL -1)
         list(APPEND EXISTING_ENUM_ENTRIES "${NEW_ENUM_ENTRY}")
         set_property(GLOBAL PROPERTY ${PROP_NAME} "${EXISTING_ENUM_ENTRIES}")
     endif()
@@ -409,7 +511,7 @@ function(vclib_generate_embedded_programs_headers)
 
     # VF Enums
     get_property(VF_ENTRIES GLOBAL PROPERTY VCLIB_VF_ENUM_ENTRIES)
-    if (VF_ENTRIES)
+    if(VF_ENTRIES)
         list(JOIN VF_ENTRIES "\n" VF_ENUM_ENTRIES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs/vert_frag_program_enum.h.in"
@@ -420,7 +522,7 @@ function(vclib_generate_embedded_programs_headers)
 
     # C Enums
     get_property(C_ENTRIES GLOBAL PROPERTY VCLIB_C_ENUM_ENTRIES)
-    if (C_ENTRIES)
+    if(C_ENTRIES)
         list(JOIN C_ENTRIES "\n" C_ENUM_ENTRIES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_c_programs/compute_program_enum.h.in"
@@ -431,7 +533,7 @@ function(vclib_generate_embedded_programs_headers)
 
     # VF Includes
     get_property(VF_INCS GLOBAL PROPERTY VCLIB_VF_INCLUDES)
-    if (VF_INCS)
+    if(VF_INCS)
         list(JOIN VF_INCS "\n" VF_INCLUDES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_vf_programs.h.in"
@@ -442,7 +544,7 @@ function(vclib_generate_embedded_programs_headers)
 
     # C Includes
     get_property(C_INCS GLOBAL PROPERTY VCLIB_C_INCLUDES)
-    if (C_INCS)
+    if(C_INCS)
         list(JOIN C_INCS "\n" C_INCLUDES)
         configure_file(
             "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_c_programs.h.in"
@@ -464,7 +566,13 @@ function(vclib_add_embedded_program)
     set(options)
     set(oneValueArgs ENUM_NAME TYPE)
     set(multiValueArgs FILES)
-    cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+    cmake_parse_arguments(
+        ARG
+        "${options}"
+        "${oneValueArgs}"
+        "${multiValueArgs}"
+        "${ARGN}"
+    )
 
     _vclib_embedded_program_validate_args("${ARG_ENUM_NAME}" "${ARG_TYPE}" "${ARG_FILES}")
     _vclib_embedded_program_resolve_type("${ARG_TYPE}" PROGRAM_TYPE PROGRAM_TYPE_LC)
@@ -488,7 +596,9 @@ function(vclib_add_embedded_program)
     )
 
     # Generate header file using configure_file(@ONLY) to preserve semicolons
-    set(HEADER_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/header.h.in")
+    set(HEADER_TEMPLATE
+        "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/header.h.in"
+    )
     set(HEADER_OUTPUT "${GENERATED_HEADER_DIR}/${ENUM_NAME_LC}.h")
 
     _vclib_embedded_program_ensure_template_exists(${HEADER_TEMPLATE})
@@ -498,7 +608,7 @@ function(vclib_add_embedded_program)
     set(PR_NAME_LC ${ENUM_NAME_LC})
     set(PR_PATH ${SHADER_PATH})
 
-    if (PROGRAM_TYPE STREQUAL "VF")
+    if(PROGRAM_TYPE STREQUAL "VF")
         set(PR_VS_NAME ${VERTEX_SHADER_NAME})
         set(PR_FS_NAME ${FRAGMENT_SHADER_NAME})
         set(PR_CS_NAME "")
@@ -511,7 +621,9 @@ function(vclib_add_embedded_program)
     configure_file(${HEADER_TEMPLATE} ${HEADER_OUTPUT} @ONLY)
 
     # Generate source file using configure_file(@ONLY) to preserve semicolons
-    set(SOURCE_TEMPLATE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/source.cpp.in")
+    set(SOURCE_TEMPLATE
+        "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/templates/embedded_${PROGRAM_TYPE_LC}_programs/source.cpp.in"
+    )
     set(SOURCE_OUTPUT "${GENERATED_SOURCE_DIR}/${ENUM_NAME_LC}.cpp")
 
     _vclib_embedded_program_ensure_template_exists(${SOURCE_TEMPLATE})
@@ -533,7 +645,6 @@ function(vclib_add_embedded_program)
 
     # Add generated files to vclib::render target
     target_sources(vclib-render PRIVATE ${HEADER_OUTPUT} ${SOURCE_OUTPUT})
-
 endfunction()
 
 # vclib_add_embedded_programs_from_file(<file_path> <TYPE>)
@@ -553,9 +664,17 @@ function(vclib_add_embedded_programs_from_file FILE_PATH TYPE)
 
     string(FIND "${FILE_PATH}" "${CMAKE_CURRENT_BINARY_DIR}" IS_IN_BIN_DIR)
     if(IS_IN_BIN_DIR EQUAL 0)
-        source_group(TREE ${CMAKE_CURRENT_BINARY_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+        source_group(
+            TREE ${CMAKE_CURRENT_BINARY_DIR}
+            PREFIX "Shaders"
+            FILES ${FILE_PATH}
+        )
     else()
-        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${FILE_PATH})
+        source_group(
+            TREE ${CMAKE_CURRENT_SOURCE_DIR}
+            PREFIX "Shaders"
+            FILES ${FILE_PATH}
+        )
     endif()
     target_sources(vclib-render PRIVATE ${FILE_PATH})
 

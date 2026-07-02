@@ -14,16 +14,14 @@ set(HEADERS
     drawable_object.h
     drawers.h
     render_app.h
-
     window_manager.h
 )
 
-set(SOURCES
-    main.cpp
-)
+set(SOURCES main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     MODULE render
     SOURCES ${HEADERS} ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)
