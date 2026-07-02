@@ -7,14 +7,13 @@
 
 project(common)
 
-set(HEADERS
-    get_drawable_mesh.h
-    default_viewer.h)
+set(HEADERS get_drawable_mesh.h default_viewer.h)
 
 add_library(vclib-render-examples-common INTERFACE)
 
-target_include_directories(vclib-render-examples-common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(
+    vclib-render-examples-common
+    INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 target_sources(vclib-render-examples-common PRIVATE ${HEADERS})
-
-
