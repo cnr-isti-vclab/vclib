@@ -427,74 +427,58 @@ protected:
 
     bgfx::ProgramHandle surfaceProgramSelector() const
     {
-        using enum VertFragProgram;
-
-        constexpr uint N_SHADING_MODES = 4;
-        constexpr uint N_COLOR_MODES   = 6;
-
-        constexpr uint N_PROGRAMS = N_SHADING_MODES * N_COLOR_MODES;
-
-        static const std::array<VertFragProgram, N_PROGRAMS> surfacePrograms = {
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE};
+        using enum MeshRenderInfo::Surface;
 
         uint shading = 0;
         uint color   = 0;
 
-        {
-            using enum MeshRenderInfo::Surface;
-            if (mMRS.isSurface(SHADING_FLAT)) {
-                shading = 1;
-            }
-            if (mMRS.isSurface(SHADING_SMOOTH)) {
-                shading = 2;
-            }
-            if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
-                shading = 3;
-            }
-            if (mMRS.isSurface(COLOR_MESH)) {
-                color = 1;
-            }
-            if (mMRS.isSurface(COLOR_FACE)) {
-                color = 2;
-            }
-            if (mMRS.isSurface(COLOR_USER)) {
-                color = 3;
-            }
-            if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
-                color = 4;
-            }
-            if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
-                color = 5;
-            }
+        if (mMRS.isSurface(SHADING_FLAT)) {
+            shading = 0;
+        }
+        if (mMRS.isSurface(SHADING_NONE)) {
+            shading = 1;
+        }
+        if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
+            shading = 2;
+        }
+        if (mMRS.isSurface(SHADING_SMOOTH)) {
+            shading = 3;
         }
 
-        uint program = shading * N_COLOR_MODES + color;
+        if (mMRS.isSurface(COLOR_FACE)) {
+            color = 0;
+        }
+        if (mMRS.isSurface(COLOR_MESH)) {
+            color = 1;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
+            color = 2;
+        }
+        if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
+            color = 3;
+        }
+        if (mMRS.isSurface(COLOR_USER)) {
+            color = 4;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX)) {
+            color = 5;
+        }
+
+        constexpr uint N_SHADING_MODES   = 4;
+        constexpr uint N_COLOR_MODES     = 6;
+
+        // the first shader of all the combinations
+        uint base = toUnderlying(
+            VertFragProgram::
+                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE);
+
+        // matrix is generated from surface.config:
+        // SHADING x COLOR x SELECTION
+
+        uint program = base + shading * N_COLOR_MODES + color;
 
         ProgramManager& pm = Context::instance().programManager();
-        return pm.getProgram(surfacePrograms[program]);
+        return pm.getProgram(VertFragProgram(program));
     }
 };
 
