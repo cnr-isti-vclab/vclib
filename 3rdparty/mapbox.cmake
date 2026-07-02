@@ -7,26 +7,34 @@
 
 set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
 
-if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND
-        EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
+if(
+    VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
+    AND EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp
+)
     message(STATUS "- Mapbox-Eaurcut - using bundled source")
 else()
-    message(FATAL_ERROR
+    message(
+        FATAL_ERROR
         "MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT"
-        "must be enabled and found.")
+        "must be enabled and found."
+    )
 endif()
 
 set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
 
 add_library(vclib-3rd-mapbox-earcut INTERFACE)
 
-target_include_directories(vclib-3rd-mapbox-earcut
-    INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
+target_include_directories(
+    vclib-3rd-mapbox-earcut
+    INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS}
+)
 
 list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-mapbox-earcut)
 
 # Install
-if (VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT)
-    install(DIRECTORY ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(VCLIB_ALLOW_INSTALL_MAPBOX_EARCUT)
+    install(
+        DIRECTORY ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
 endif()
