@@ -112,14 +112,12 @@ void main()
 #endif
 
     color = light * color + vec4(specular, 0);
-    // TODO - make additional macro
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_DRAW_SELECTION))) {
+#ifdef SURFACE_SELECTION_ON
         float selWeight =
             u_selectionSurfaceColor.a * float(bitSetValueAt(faceSelected, primitiveID));
         vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
         gl_FragColor = vec4(tmp, color.a);
-    }
-    else {
+#else
         gl_FragColor = color;
-    }
+#endif
 }

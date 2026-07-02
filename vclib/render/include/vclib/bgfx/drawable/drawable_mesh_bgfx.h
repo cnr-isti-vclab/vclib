@@ -448,6 +448,7 @@ protected:
 
         uint shading = 0;
         uint color   = 0;
+        uint selection = 0;
 
         if (mMRS.isSurface(SHADING_FLAT)) {
             shading = 0;
@@ -481,18 +482,24 @@ protected:
             color = 5;
         }
 
+        if (!mMRS.isSurface(SELECTION)) {
+            selection = 1;
+        }
+
         constexpr uint N_SHADING_MODES   = 4;
         constexpr uint N_COLOR_MODES     = 6;
+        constexpr uint N_SELECTION_MODES = 2;
 
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE);
+                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
 
         // matrix is generated from surface.config:
         // SHADING x COLOR x SELECTION
 
-        uint program = base + shading * N_COLOR_MODES + color;
+        uint program = base + shading * N_COLOR_MODES * N_SELECTION_MODES +
+                       color * N_SELECTION_MODES + selection;
 
         ProgramManager& pm = Context::instance().programManager();
         return pm.getProgram(VertFragProgram(program));
