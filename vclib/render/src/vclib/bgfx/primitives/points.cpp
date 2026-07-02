@@ -218,8 +218,8 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     uint color   = (mColorSetting == ColorSetting::PER_VERTEX) ? 1 : 0;
     uint shape   = (mShape == Shape::SQUARE) ? 1 : 0;
 
-    uint program = shading * N_COLOR_MODES * N_SHAPE_MODES +
-                        color * N_SHAPE_MODES + shape;
+    uint program =
+        shading * N_COLOR_MODES * N_SHAPE_MODES + color * N_SHAPE_MODES + shape;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(pointsPrograms[program]);
