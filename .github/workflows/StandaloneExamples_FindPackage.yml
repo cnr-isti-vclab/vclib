@@ -1,0 +1,10 @@
+name: Standalone Examples - find_package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-findpackage:
+    uses: ./.github/workflows/_standalone_examples_template.yml
+    with:
+      integration_mode: 'find_package'

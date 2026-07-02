@@ -8,15 +8,15 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-external-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(
     ${EXAMPLE_NAME}
     MODULE external
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)
 
-set_property(TARGET vclib-external-example-${EXAMPLE_NAME}
-    PROPERTY COMPILE_WARNING_AS_ERROR OFF)
-
-
+set_property(
+    TARGET vclib-external-example-${EXAMPLE_NAME}
+    PROPERTY COMPILE_WARNING_AS_ERROR OFF
+)

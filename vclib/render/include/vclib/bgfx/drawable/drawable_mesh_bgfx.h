@@ -224,7 +224,7 @@ public:
                 if (pbrSettings.pbrMode) {
                     bgfx::submit(
                         settings.viewId,
-                        pm.getProgram<DRAWABLE_MESH_SURFACE_UBER_PBR>());
+                        pm.getProgram<DRAWABLE_MESH_SURFACE_PBR>());
                 }
                 else {
                     bgfx::submit(settings.viewId, surfaceProgramSelector());
@@ -427,69 +427,58 @@ protected:
 
     bgfx::ProgramHandle surfaceProgramSelector() const
     {
-        using enum VertFragProgram;
+        using enum MeshRenderInfo::Surface;
 
-        ProgramManager& pm = Context::instance().programManager();
+        uint shading = 0;
+        uint color   = 0;
 
-        static const std::array<bgfx::ProgramHandle, 24> surfaceProgramHandles =
-            {pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NONE_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_FLAT_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_SMOOTH_TEX_WEDGE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_MESH>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_FACE>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_COLOR_USER>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_VERTEX>(),
-             pm.getProgram<DRAWABLE_MESH_SURFACE_NORMALMAP_TEX_WEDGE>()};
-        uint mul = 0;
-        uint off = 0;
-
-        {
-            using enum MeshRenderInfo::Surface;
-            if (mMRS.isSurface(SHADING_FLAT)) {
-                mul = 1;
-            }
-            if (mMRS.isSurface(SHADING_SMOOTH)) {
-                mul = 2;
-            }
-            if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
-                mul = 3;
-            }
-            if (mMRS.isSurface(COLOR_MESH)) {
-                off = 1;
-            }
-            if (mMRS.isSurface(COLOR_FACE)) {
-                off = 2;
-            }
-            if (mMRS.isSurface(COLOR_USER)) {
-                off = 3;
-            }
-            if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
-                off = 4;
-            }
-            if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
-                off = 5;
-            }
+        if (mMRS.isSurface(SHADING_FLAT)) {
+            shading = 0;
+        }
+        if (mMRS.isSurface(SHADING_NONE)) {
+            shading = 1;
+        }
+        if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
+            shading = 2;
+        }
+        if (mMRS.isSurface(SHADING_SMOOTH)) {
+            shading = 3;
         }
 
-        VertFragProgram p = static_cast<VertFragProgram>(6 * mul + off);
+        if (mMRS.isSurface(COLOR_FACE)) {
+            color = 0;
+        }
+        if (mMRS.isSurface(COLOR_MESH)) {
+            color = 1;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
+            color = 2;
+        }
+        if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
+            color = 3;
+        }
+        if (mMRS.isSurface(COLOR_USER)) {
+            color = 4;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX)) {
+            color = 5;
+        }
 
-        return surfaceProgramHandles[toUnderlying(p)];
+        constexpr uint N_SHADING_MODES   = 4;
+        constexpr uint N_COLOR_MODES     = 6;
+
+        // the first shader of all the combinations
+        uint base = toUnderlying(
+            VertFragProgram::
+                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE);
+
+        // matrix is generated from surface.config:
+        // SHADING x COLOR x SELECTION
+
+        uint program = base + shading * N_COLOR_MODES + color;
+
+        ProgramManager& pm = Context::instance().programManager();
+        return pm.getProgram(VertFragProgram(program));
     }
 };
 

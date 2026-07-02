@@ -8,10 +8,10 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-external-test-${TEST_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     MODULE external
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)

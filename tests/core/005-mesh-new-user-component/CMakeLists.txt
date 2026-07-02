@@ -8,11 +8,11 @@
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-test-${TEST_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     SOURCES ${SOURCES}
     CORE_EXAMPLE 023-mesh-custom-user-component
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)

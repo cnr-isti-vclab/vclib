@@ -13,7 +13,11 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 # For each directory, we check if it's a valid example by looking for a main.cpp file.
 # If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
 # and ensure all required targets are available before adding the subdirectory.
-file(GLOB EXTERNAL_EXAMPLE_DIRS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/*")
+file(
+    GLOB EXTERNAL_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*"
+)
 foreach(dir IN LISTS EXTERNAL_EXAMPLE_DIRS)
     if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
@@ -37,7 +41,11 @@ foreach(dir IN LISTS EXTERNAL_EXAMPLE_DIRS)
             if(REQUIREMENTS_MET)
                 add_subdirectory("${dir}")
             else()
-                message(STATUS "Skipping ${dir} due to missing req: " "${UNMET_REQ_PRINT}")
+                message(
+                    STATUS
+                    "Skipping ${dir} due to missing req: "
+                    "${UNMET_REQ_PRINT}"
+                )
             endif()
         endif()
     endif()

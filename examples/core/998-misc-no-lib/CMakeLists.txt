@@ -8,7 +8,6 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 add_executable(vclib-core-example-${EXAMPLE_NAME} ${SOURCES})

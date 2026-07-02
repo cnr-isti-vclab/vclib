@@ -11,11 +11,12 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(HEADERS
     ../01-hello-triangle-imgui-opengl2-common/common.h
     ../01-hello-triangle-imgui-opengl2-common/hello_triangle_drawer.h
-    ../01-hello-triangle-imgui-common/demo_imgui_drawer.h)
+    ../01-hello-triangle-imgui-common/demo_imgui_drawer.h
+)
 
-set(SOURCES
-    main.cpp)
+set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${HEADERS} ${SOURCES}
+)

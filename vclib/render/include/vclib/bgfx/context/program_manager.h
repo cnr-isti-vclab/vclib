@@ -14,6 +14,7 @@
 #include <vclib/bgfx/programs/load_program.h>
 
 #include <array>
+#include <utility>
 
 namespace vcl {
 
@@ -65,6 +66,13 @@ public:
         return mVFPrograms[p];
     }
 
+    bgfx::ProgramHandle getProgram(VertFragProgram p)
+    {
+        return getProgramImpl(
+            p,
+            std::make_index_sequence<toUnderlying(VertFragProgram::COUNT)> {});
+    }
+
     template<ComputeProgram PROGRAM>
     bgfx::ProgramHandle getComputeProgram()
     {
@@ -75,6 +83,37 @@ public:
                     ComputeLoader<PROGRAM>::computeShader(mRenderType)));
         }
         return mCPrograms[p];
+    }
+
+    bgfx::ProgramHandle getComputeProgram(ComputeProgram p)
+    {
+        return getComputeProgramImpl(
+            p,
+            std::make_index_sequence<toUnderlying(ComputeProgram::COUNT)> {});
+    }
+
+private:
+    template<size_t... Is>
+    bgfx::ProgramHandle getProgramImpl(
+        VertFragProgram p,
+        std::index_sequence<Is...>)
+    {
+        using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
+        static constexpr std::array<GetProgramFn, sizeof...(Is)> funcs = {
+            &ProgramManager::getProgram<static_cast<VertFragProgram>(Is)>...};
+        return (this->*(funcs[toUnderlying(p)]))();
+    }
+
+    template<size_t... Is>
+    bgfx::ProgramHandle getComputeProgramImpl(
+        ComputeProgram p,
+        std::index_sequence<Is...>)
+    {
+        using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
+        static constexpr std::array<GetProgramFn, sizeof...(Is)> funcs = {
+            &ProgramManager::getComputeProgram<static_cast<ComputeProgram>(
+                Is)>...};
+        return (this->*(funcs[toUnderlying(p)]))();
     }
 };
 
