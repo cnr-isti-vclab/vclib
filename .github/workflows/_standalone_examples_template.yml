@@ -1,7 +1,12 @@
-name: Standalone Examples - Build and Run
+name: Reusable Standalone Examples Template
 
 on:
-  workflow_dispatch
+  workflow_call:
+    inputs:
+      integration_mode:
+        required: true
+        type: string
+        description: "Integration mode: 'find_package' or 'FetchContent'"
 
 jobs:
   build_and_run_standalone_examples:
@@ -11,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
-        integration_mode: ['find_package', 'FetchContent']
         module: ['core', 'external', 'render']
+        integration_mode: ['${{ inputs.integration_mode }}']
         exclude:
           - module: 'external'
             integration_mode: 'find_package'
