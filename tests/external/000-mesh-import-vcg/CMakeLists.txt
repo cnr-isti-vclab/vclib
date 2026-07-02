@@ -11,20 +11,19 @@ project(vclib-test-${TEST_NAME})
 # vcg generates a lot of warnings
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
-set(SOURCES
-    mesh.h
-    main.cpp)
+set(SOURCES mesh.h main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     MODULE external
     SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+    ${HEADER_ONLY_OPTION}
+)
 
-get_property(VCG_INCLUDE_DIRS
-    TARGET vclib-3rd-vcg
-    PROPERTY VCG_INCLUDE_DIRS)
+get_property(VCG_INCLUDE_DIRS TARGET vclib-3rd-vcg PROPERTY VCG_INCLUDE_DIRS)
 
 # add plylib.cpp source from vcg
-target_sources(vclib-external-test-${TEST_NAME} PRIVATE
-    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)
+target_sources(
+    vclib-external-test-${TEST_NAME}
+    PRIVATE ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp
+)

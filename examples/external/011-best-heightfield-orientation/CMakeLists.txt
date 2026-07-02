@@ -8,11 +8,10 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-external-example-${EXAMPLE_NAME})
 
-set(SOURCES
-    best_heightfield_orientation.h
-    main.cpp)
+set(SOURCES best_heightfield_orientation.h main.cpp)
 
 vclib_add_example(
     ${EXAMPLE_NAME}
     MODULE external
-    SOURCES ${SOURCES})
+    SOURCES ${SOURCES}
+)

@@ -6,16 +6,19 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 # Try to find TBB first
-if (UNIX)
+if(UNIX)
     find_package(Threads QUIET)
     find_package(TBB QUIET)
 
-    if (VCLIB_ALLOW_SYSTEM_TBB)
-        if (TARGET TBB::tbb AND TARGET Threads::Threads)
+    if(VCLIB_ALLOW_SYSTEM_TBB)
+        if(TARGET TBB::tbb AND TARGET Threads::Threads)
             message(STATUS "- TBB - using system-provided library")
 
             add_library(vclib-3rd-tbb INTERFACE)
-            target_link_libraries(vclib-3rd-tbb INTERFACE TBB::tbb Threads::Threads)
+            target_link_libraries(
+                vclib-3rd-tbb
+                INTERFACE TBB::tbb Threads::Threads
+            )
 
             list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tbb)
         else()
@@ -27,32 +30,44 @@ endif()
 set(POOLSTL_VERSION 0.3.5)
 set(VCLIB_POOLSTL_DIR ${CMAKE_CURRENT_LIST_DIR}/poolSTL-${POOLSTL_VERSION})
 
-if (VCLIB_ALLOW_BUNDLED_POOLSTL AND 
-        EXISTS ${VCLIB_POOLSTL_DIR}/include/poolstl/poolstl.hpp)
-
+if(
+    VCLIB_ALLOW_BUNDLED_POOLSTL
+    AND EXISTS ${VCLIB_POOLSTL_DIR}/include/poolstl/poolstl.hpp
+)
     message(STATUS "- poolstl - using bundled source")
 
     set(POOLSTL_INCLUDE_DIRS ${VCLIB_POOLSTL_DIR}/include)
 
     add_library(vclib-3rd-poolstl INTERFACE)
 
-    target_include_directories(vclib-3rd-poolstl INTERFACE
-        ${POOLSTL_INCLUDE_DIRS})
+    target_include_directories(
+        vclib-3rd-poolstl
+        INTERFACE ${POOLSTL_INCLUDE_DIRS}
+    )
 
     # in case of non MSVC (which supports c++17 parallel algorithms) and no TBB,
     # we need to force the usage of the poolSTL std::execution::parallel policy
-    if (NOT TARGET vclib-3rd-tbb AND NOT MSVC)
-        target_compile_definitions(vclib-3rd-poolstl INTERFACE
-            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE -DPOOLSTL_STD_SUPPLEMENT_FORCE)
+    if(NOT TARGET vclib-3rd-tbb AND NOT MSVC)
+        target_compile_definitions(
+            vclib-3rd-poolstl
+            INTERFACE
+                -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE
+                -DPOOLSTL_STD_SUPPLEMENT_FORCE
+        )
     endif()
 
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-poolstl)
 
     # Install
-    if (VCLIB_ALLOW_INSTALL_POOLSTL)
-        install(DIRECTORY ${POOLSTL_INCLUDE_DIRS}/poolstl
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    if(VCLIB_ALLOW_INSTALL_POOLSTL)
+        install(
+            DIRECTORY ${POOLSTL_INCLUDE_DIRS}/poolstl
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
     endif()
 else()
-    message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
+    message(
+        FATAL_ERROR
+        "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found."
+    )
 endif()

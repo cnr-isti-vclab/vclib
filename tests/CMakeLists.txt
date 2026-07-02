@@ -7,22 +7,36 @@
 
 project(vclib-tests)
 
-option(VCLIB_CORE_BUILD_TESTS
-    "If true, the tests of VCLib-core will be built." OFF)
+option(
+    VCLIB_CORE_BUILD_TESTS
+    "If true, the tests of VCLib-core will be built."
+    OFF
+)
 
-option(VCLIB_EXTERNAL_BUILD_TESTS
-    "If true, the tests of VCLib-external will be built." OFF)
+option(
+    VCLIB_EXTERNAL_BUILD_TESTS
+    "If true, the tests of VCLib-external will be built."
+    OFF
+)
 
-option(VCLIB_RENDER_BUILD_TESTS
-    "If true, the tests of VCLib-render will be built." OFF)
+option(
+    VCLIB_RENDER_BUILD_TESTS
+    "If true, the tests of VCLib-render will be built."
+    OFF
+)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (${VCLIB_CORE_BUILD_TESTS} OR
-        ${VCLIB_EXTERNAL_BUILD_TESTS} OR
-        ${VCLIB_RENDER_BUILD_TESTS})
-    option(VCLIB_ALLOW_DOWNLOAD_CATCH2
-        "Allow use of downloaded Catch2 source" ON)
+if(
+    ${VCLIB_CORE_BUILD_TESTS}
+    OR ${VCLIB_EXTERNAL_BUILD_TESTS}
+    OR ${VCLIB_RENDER_BUILD_TESTS}
+)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_CATCH2
+        "Allow use of downloaded Catch2 source"
+        ON
+    )
     option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 
     ### Catch2
@@ -30,16 +44,14 @@ if (${VCLIB_CORE_BUILD_TESTS} OR
 endif()
 
 # examples
-if (VCLIB_CORE_BUILD_TESTS)
+if(VCLIB_CORE_BUILD_TESTS)
     add_subdirectory(core)
 endif()
 
-if (VCLIB_BUILD_MODULE_EXTERNAL AND VCLIB_EXTERNAL_BUILD_TESTS)
+if(VCLIB_BUILD_MODULE_EXTERNAL AND VCLIB_EXTERNAL_BUILD_TESTS)
     add_subdirectory(external)
 endif()
 
-if (VCLIB_BUILD_MODULE_RENDER AND VCLIB_RENDER_BUILD_TESTS)
+if(VCLIB_BUILD_MODULE_RENDER AND VCLIB_RENDER_BUILD_TESTS)
     add_subdirectory(render)
 endif()
-
-
