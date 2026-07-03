@@ -18,9 +18,17 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # === REQUIRED === #
 
+# Optional system libraries used by VCLib modules.
+# These lists track system dependencies (like Qt) so they can be
+# exported to vclibConfig.cmake and properly re-linked by find_dependency().
 set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
+set(VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES "")
+
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES "")
+set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES "")
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
+set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES "")
 
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
@@ -135,6 +143,7 @@ if(VCLIB_BUILD_MODULE_RENDER)
             "Allow use of downloaded BGFX source"
             ON
         )
+        option(VCLIB_ALLOW_INSTALL_BGFX "Allow install bgfx source" ON)
         include(bgfx.cmake)
     endif()
 
@@ -146,10 +155,12 @@ if(VCLIB_BUILD_MODULE_RENDER)
     ### GLFW
     option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
     option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
+    option(VCLIB_ALLOW_INSTALL_GLFW "Allow install GLFW source" ON)
     include(glfw.cmake)
 
     ### ImGui
     option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
+    option(VCLIB_ALLOW_INSTALL_IMGUI "Allow install ImGui source" ON)
     include(imgui.cmake)
 endif()
 
@@ -265,11 +276,22 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
 endforeach()
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES ${VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES} PARENT_SCOPE)
+
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES
     ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES}
     PARENT_SCOPE
 )
+set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES
+    ${VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES}
+    PARENT_SCOPE
+)
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES
     ${VCLIB_RENDER_3RDPARTY_LIBRARIES}
+    PARENT_SCOPE
+)
+set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES
+    ${VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES}
     PARENT_SCOPE
 )

@@ -8,7 +8,7 @@
 #ifndef VCL_IMGUI_IMGUI_STATS_DRAWER_H
 #define VCL_IMGUI_IMGUI_STATS_DRAWER_H
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <vclib/render/drawers/plain_drawer.h>
 
 #include <algorithm>

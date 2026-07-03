@@ -11,6 +11,7 @@ find_package(bgfx QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     message(STATUS "- bgfx - using system-provided library")
+    set(VCLIB_USED_SYSTEM_BGFX ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
@@ -89,11 +90,16 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     set(BIMG_DECODE ON CACHE BOOL "" FORCE)
     set(BIMG_CUBEMAP ON CACHE BOOL "" FORCE)
 
+    set(BGFX_EXCLUDE_FROM_ALL_OPTION "")
+    if (NOT VCLIB_ALLOW_INSTALL_BGFX)
+        set(BGFX_EXCLUDE_FROM_ALL_OPTION EXCLUDE_FROM_ALL)
+    endif()
+
     FetchContent_Declare(
         bgfx
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
         GIT_TAG v${BGFX_VERSION}
-        EXCLUDE_FROM_ALL
+        ${BGFX_EXCLUDE_FROM_ALL_OPTION}
     )
 
     FetchContent_MakeAvailable(bgfx)

@@ -11,6 +11,7 @@ find_package(libigl QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
     message(STATUS "- libigl - using system-provided library")
+    set(VCLIB_USED_SYSTEM_LIBIGL ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-libigl INTERFACE)
     target_link_libraries(

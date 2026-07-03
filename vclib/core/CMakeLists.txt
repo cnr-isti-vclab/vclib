@@ -32,6 +32,12 @@ target_link_libraries(
     INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES}
 )
 
+# Ensure optional system libraries (e.g., Qt) are linked against the core target.
+# This relies on BUILD_INTERFACE to avoid exposing absolute paths in the export.
+foreach(lib IN LISTS VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${lib}>)
+endforeach()
+
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 
 if(MSVC)

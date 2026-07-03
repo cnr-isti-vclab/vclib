@@ -12,6 +12,7 @@ find_package(CGAL QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_CGAL AND CGAL_FOUND)
     message(STATUS "- CGAL - using system-provided library")
+    set(VCLIB_USED_SYSTEM_CGAL ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-cgal INTERFACE)
     target_link_libraries(vclib-3rd-cgal INTERFACE CGAL::CGAL)

@@ -9,6 +9,7 @@ find_package(glfw3 3 QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
     message(STATUS "- GLFW - using system-provided library")
+    set(VCLIB_USED_SYSTEM_GLFW ON CACHE INTERNAL "")
 
     set(VCLIB_USES_GLFW TRUE)
 
@@ -25,11 +26,16 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
         endif()
     endif()
 
+    set(GLFW_EXCLUDE_FROM_ALL_OPTION "")
+    if (NOT VCLIB_ALLOW_INSTALL_GLFW)
+        set(GLFW_EXCLUDE_FROM_ALL_OPTION EXCLUDE_FROM_ALL)
+    endif()
+
     FetchContent_Declare(
         glfw3
         GIT_REPOSITORY https://github.com/glfw/glfw.git
         GIT_TAG 3.4
-        EXCLUDE_FROM_ALL
+        ${GLFW_EXCLUDE_FROM_ALL_OPTION}
     )
 
     FetchContent_MakeAvailable(glfw3)

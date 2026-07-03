@@ -9,7 +9,80 @@ on:
         description: "Integration mode: 'find_package' or 'FetchContent'"
 
 jobs:
+  build_vclib_packages:
+    if: inputs.integration_mode == 'find_package'
+    name: Build VCLib Package (${{ matrix.os }}, ${{ matrix.package_type }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        package_type: ['core']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        cache: 'true'
+        version: '6.10.*'
+
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build libtbb-dev
+        sudo apt-get install -y libcgal-dev libembree-dev
+        sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
+
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install cmake ninja tbb
+        brew install embree cgal
+        brew install glfw
+
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        choco install -y cmake ninja
+        choco install -y embree boost-msvc-14.3
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: package-${{ matrix.os }}-${{ matrix.package_type }}-${{ github.ref_name }}
+
+    - name: Build and Install VCLib
+      shell: bash
+      run: |
+        PRESET="vclib-${{ matrix.package_type }}-install"
+        cmake -S . -B build-vclib --preset=$PRESET
+        cmake --build build-vclib
+        cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
+
+    - name: Upload VCLib Package
+      uses: actions/upload-artifact@v4
+      with:
+        name: vclib-package-${{ matrix.package_type }}-${{ runner.os }}-${{ runner.arch }}
+        path: install-vclib
+        include-hidden-files: true
+        retention-days: 1
+
+
   build_and_run_standalone_examples:
+    needs: [build_vclib_packages]
+    if: ${{ !failure() && !cancelled() }}
     name: Standalone Examples (${{ matrix.os }}, ${{ matrix.module }}, ${{ matrix.integration_mode }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -18,11 +91,6 @@ jobs:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
         module: ['core', 'external', 'render']
         integration_mode: ['${{ inputs.integration_mode }}']
-        exclude:
-          - module: 'external'
-            integration_mode: 'find_package'
-          - module: 'render'
-            integration_mode: 'find_package'
     steps:
     - uses: actions/checkout@v7
       with:
@@ -79,14 +147,12 @@ jobs:
       with:
         key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}-${{ github.ref_name }}
 
-    - name: Build and Install VCLib
+    - name: Download VCLib Package
       if: matrix.integration_mode == 'find_package'
-      shell: bash
-      run: |
-        # In find_package mode, we must first build and install VCLib
-        cmake -S . -B build-vclib --preset=vclib-core-install
-        cmake --build build-vclib
-        cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
+      uses: actions/download-artifact@v4
+      with:
+        name: vclib-package-core-${{ runner.os }}-${{ runner.arch }}
+        path: install-vclib
 
     - name: Configure Standalone Examples
       shell: bash

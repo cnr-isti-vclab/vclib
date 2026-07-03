@@ -17,7 +17,7 @@
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 int main(int argc, char** argv)
 {

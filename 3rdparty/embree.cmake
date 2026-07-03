@@ -14,6 +14,7 @@ find_package(embree ${EMBREE_MAJOR} QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_EMBREE AND embree_FOUND)
     message(STATUS "- Embree - using system-provided library")
+    set(VCLIB_USED_SYSTEM_EMBREE ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-embree INTERFACE)
     target_link_libraries(vclib-3rd-embree INTERFACE embree)

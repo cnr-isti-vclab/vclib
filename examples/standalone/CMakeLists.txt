@@ -135,12 +135,12 @@ if(VCLIB_STANDALONE_BUILD_EXTERNAL)
 endif()
 
 if(VCLIB_STANDALONE_BUILD_RENDER)
-    if(TARGET vclib-3rd-qt)
+    if(TARGET vclib-3rd-qt OR TARGET vclib::vclib-3rd-qt)
         target_compile_definitions(
             vclib-standalone-examples-common
             INTERFACE VCLIB_RENDER_EXAMPLES_WITH_QT
         )
-    elseif(TARGET vclib-3rd-glfw)
+    elseif(TARGET vclib-3rd-glfw OR TARGET vclib::vclib-3rd-glfw)
         target_compile_definitions(
             vclib-standalone-examples-common
             INTERFACE VCLIB_RENDER_EXAMPLES_WITH_GLFW

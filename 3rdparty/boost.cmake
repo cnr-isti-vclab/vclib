@@ -9,6 +9,7 @@ find_package(Boost QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
     message(STATUS "- boost - using system-provided library")
+    set(VCLIB_USED_SYSTEM_BOOST ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-boost INTERFACE)
     target_link_libraries(vclib-3rd-boost INTERFACE Boost::boost)
