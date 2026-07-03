@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     using BenchmarkViewer = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
-        vcl::TrackBallViewerDrawer>;
+        vcl::ViewerDrawer>;
 
 
 
