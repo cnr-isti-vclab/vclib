@@ -464,13 +464,12 @@ protected:
             color = 5;
         }
 
-        constexpr uint N_SHADING_MODES   = 4;
-        constexpr uint N_COLOR_MODES     = 6;
+        constexpr uint N_SHADING_MODES = 4;
+        constexpr uint N_COLOR_MODES   = 6;
 
         // the first shader of all the combinations
         uint base = toUnderlying(
-            VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE);
+            VertFragProgram::DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE);
 
         // matrix is generated from surface.config:
         // SHADING x COLOR x SELECTION
