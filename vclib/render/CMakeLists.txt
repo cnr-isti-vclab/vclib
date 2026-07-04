@@ -235,6 +235,10 @@ target_link_libraries(
     PUBLIC ${VCLIB_RENDER_3RDPARTY_LIBRARIES} vclib::core
 )
 
+foreach(lib IN LISTS VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${lib}>)
+endforeach()
+
 # Install
 if(VCLIB_INSTALL_MODULE_RENDER)
     install(

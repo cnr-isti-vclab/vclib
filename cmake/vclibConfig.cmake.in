@@ -2,71 +2,166 @@
 
 include(CMakeFindDependencyMacro)
 
-set(VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES "@VCLIB_CORE_3RDPARTY_LIBRARIES@")
-set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@"
-)
-set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES "@VCLIB_RENDER_3RDPARTY_LIBRARIES@")
+set(VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES "@VCLIB_CORE_3RDPARTY_LIBRARIES@" "@VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES@")
+set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@" "@VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES@")
+set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES "@VCLIB_RENDER_3RDPARTY_LIBRARIES@" "@VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES@")
 
 if(@VCLIB_INSTALL_MODULE_CORE@)
     # Restore upstream system dependencies used by the CORE module
-    if(
-        "@VCLIB_USED_SYSTEM_EIGEN@"
-        AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
-    )
+    if("@VCLIB_USED_SYSTEM_EIGEN@" AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
         find_dependency(Eigen3)
     endif()
 endif()
 
 if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
     # Restore upstream system dependencies used by the EXTERNAL module
-    if(
-        "@VCLIB_USED_SYSTEM_BOOST@"
-        AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    )
-        find_dependency(Boost)
+    if("@VCLIB_USED_SYSTEM_BOOST@" AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        find_package(Boost QUIET)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_CGAL@"
-        AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    )
-        find_dependency(CGAL)
+    if("@VCLIB_USED_SYSTEM_CGAL@" AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        find_package(CGAL QUIET)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_EMBREE@"
-        AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    )
-        find_dependency(embree 4)
+    if("@VCLIB_USED_SYSTEM_EMBREE@" AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        find_package(embree 4 QUIET)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_LIBIGL@"
-        AND "vclib-3rd-libigl" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    )
-        find_dependency(libigl)
+    if("@VCLIB_USED_SYSTEM_LIBIGL@" AND "vclib-3rd-libigl" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        find_package(libigl QUIET)
     endif()
     # VCG is header only and its include directories are wrapped in $<BUILD_INTERFACE>
 endif()
 
 if(@VCLIB_INSTALL_MODULE_RENDER@)
-    # Restore upstream system dependencies used by the RENDER module
     if("vclib-3rd-opengl" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
         find_dependency(OpenGL)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_BGFX@"
-        AND "vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
-    )
-        find_dependency(bgfx)
+    if("vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        find_package(bgfx QUIET)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_GLFW@"
-        AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
-    )
-        find_dependency(glfw3)
+    if("@VCLIB_USED_SYSTEM_GLFW@" AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        find_package(glfw3 QUIET)
     endif()
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/vclibTargets.cmake")
+
+if(@VCLIB_INSTALL_MODULE_RENDER@)
+    include("${CMAKE_CURRENT_LIST_DIR}/bgfx_config.cmake" OPTIONAL)
+endif()
+
+if(@VCLIB_INSTALL_MODULE_CORE@)
+    # Re-create the vclib::vclib-3rd-* alias targets for system dependencies.
+    # These are needed to maintain consistent target names regardless of whether 
+    # the library is built from source or provided by the system.
+    if("@VCLIB_USED_SYSTEM_EIGEN@" AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
+        if(TARGET Eigen3::Eigen AND NOT TARGET vclib::vclib-3rd-eigen)
+            add_library(vclib::vclib-3rd-eigen INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-eigen APPEND PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen)
+            if(TARGET vclib::vclib-core)
+                set_property(TARGET vclib::vclib-core APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-eigen)
+            endif()
+        endif()
+    endif()
+endif()
+
+if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
+    if("@VCLIB_USED_SYSTEM_BOOST@" AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        if(TARGET Boost::boost AND NOT TARGET vclib::vclib-3rd-boost)
+            add_library(vclib::vclib-3rd-boost INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-boost APPEND PROPERTY INTERFACE_LINK_LIBRARIES Boost::boost)
+            set_property(TARGET vclib::vclib-3rd-boost APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_BOOST)
+            if(TARGET vclib::vclib-external)
+                set_property(TARGET vclib::vclib-external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-boost)
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_CGAL@" AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        if(TARGET CGAL::CGAL AND NOT TARGET vclib::vclib-3rd-cgal)
+            add_library(vclib::vclib-3rd-cgal INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-cgal APPEND PROPERTY INTERFACE_LINK_LIBRARIES CGAL::CGAL)
+            set_property(TARGET vclib::vclib-3rd-cgal APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_CGAL)
+            if(TARGET vclib::vclib-external)
+                set_property(TARGET vclib::vclib-external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-cgal)
+            endif()
+        endif()
+    elseif(NOT "@VCLIB_USED_SYSTEM_CGAL@" AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        # If CGAL was bundled and built from source, we must also expose the bundled 
+        # GMP/MPFR DLLs on Windows so that consumers can link against them correctly.
+        if(WIN32)
+            if(NOT TARGET gmp)
+                add_library(gmp SHARED IMPORTED GLOBAL)
+                set_property(TARGET gmp PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/gmp.lib")
+                set_property(TARGET gmp PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/libgmp-10.dll")
+                set_property(TARGET gmp PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include")
+            endif()
+            if(NOT TARGET gmpxx)
+                add_library(gmpxx SHARED IMPORTED GLOBAL)
+                set_property(TARGET gmpxx PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/gmpxx.lib")
+                set_property(TARGET gmpxx PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/libgmpxx-4.dll")
+                set_property(TARGET gmpxx PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include")
+            endif()
+            if(NOT TARGET mpfr)
+                add_library(mpfr SHARED IMPORTED GLOBAL)
+                set_property(TARGET mpfr PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/mpfr.lib")
+                set_property(TARGET mpfr PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/mpfr-6.dll")
+                set_property(TARGET mpfr PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include")
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_EMBREE@" AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        if(TARGET embree AND NOT TARGET vclib::vclib-3rd-embree)
+            add_library(vclib::vclib-3rd-embree INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-embree APPEND PROPERTY INTERFACE_LINK_LIBRARIES embree)
+            set_property(TARGET vclib::vclib-3rd-embree APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_EMBREE)
+            if(TARGET vclib::vclib-external)
+                set_property(TARGET vclib::vclib-external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-embree)
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_LIBIGL@" AND "vclib-3rd-libigl" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        if(TARGET igl::core AND NOT TARGET vclib::vclib-3rd-libigl)
+            add_library(vclib::vclib-3rd-libigl INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-libigl APPEND PROPERTY INTERFACE_LINK_LIBRARIES igl::core)
+            set_property(TARGET vclib::vclib-3rd-libigl APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_LIBIGL)
+            if(TARGET vclib::vclib-external)
+                set_property(TARGET vclib::vclib-external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-libigl)
+            endif()
+        endif()
+    endif()
+endif()
+
+if(@VCLIB_INSTALL_MODULE_RENDER@)
+    if("vclib-3rd-opengl" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        if(TARGET OpenGL::GL AND NOT TARGET vclib::vclib-3rd-opengl)
+            add_library(vclib::vclib-3rd-opengl INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-opengl APPEND PROPERTY INTERFACE_LINK_LIBRARIES OpenGL::GL)
+            if(TARGET OpenGL::GLU)
+                set_property(TARGET vclib::vclib-3rd-opengl APPEND PROPERTY INTERFACE_LINK_LIBRARIES OpenGL::GLU)
+            endif()
+            if(TARGET vclib::vclib-render)
+                set_property(TARGET vclib::vclib-render APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-opengl)
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_BGFX@" AND "vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        if(TARGET bgfx::bgfx AND NOT TARGET vclib::vclib-3rd-bgfx)
+            add_library(vclib::vclib-3rd-bgfx INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-bgfx APPEND PROPERTY INTERFACE_LINK_LIBRARIES bgfx::bx bgfx::bgfx bgfx::bimg bgfx::bimg_decode bgfx::bimg_encode)
+            if(TARGET vclib::vclib-render)
+                set_property(TARGET vclib::vclib-render APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-bgfx)
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_GLFW@" AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        if(TARGET glfw AND NOT TARGET vclib::vclib-3rd-glfw)
+            add_library(vclib::vclib-3rd-glfw INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-glfw APPEND PROPERTY INTERFACE_LINK_LIBRARIES glfw)
+            set_property(TARGET vclib::vclib-3rd-glfw APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW)
+            if(TARGET vclib::vclib-render)
+                set_property(TARGET vclib::vclib-render APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-glfw)
+            endif()
+        endif()
+    endif()
+endif()
 
 # --- Dynamic Optional Dependencies ---
 
@@ -119,19 +214,6 @@ endif()
 
 find_package(Qt6 6.7 COMPONENTS ${VCLIB_CONFIG_QT_COMPONENTS} QUIET)
 if(TARGET Qt6::Core AND TARGET Qt6::Gui)
-    if(TARGET vclib::vclib-core)
-        set_property(
-            TARGET vclib::vclib-core
-            APPEND
-            PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_QT
-        )
-        set_property(
-            TARGET vclib::vclib-core
-            APPEND
-            PROPERTY INTERFACE_LINK_LIBRARIES Qt6::Core Qt6::Gui
-        )
-    endif()
-
     if(NOT TARGET vclib::vclib-3rd-qt)
         add_library(vclib::vclib-3rd-qt INTERFACE IMPORTED)
         set_property(
@@ -167,6 +249,14 @@ if(TARGET Qt6::Core AND TARGET Qt6::Gui)
                 )
             endif()
         endif()
+    endif()
+
+    if(TARGET vclib::vclib-core AND TARGET vclib::vclib-3rd-qt)
+        set_property(
+            TARGET vclib::vclib-core
+            APPEND
+            PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-qt
+        )
     endif()
 endif()
 

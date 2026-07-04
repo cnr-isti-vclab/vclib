@@ -47,7 +47,11 @@ if(VCLIB_USES_GLFW)
     add_library(vclib-3rd-glfw INTERFACE)
     target_link_libraries(vclib-3rd-glfw INTERFACE glfw)
 
-    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
+    if(VCLIB_USED_SYSTEM_GLFW)
+        list(APPEND VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-glfw)
+    else()
+        list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
+    endif()
 
     target_compile_definitions(vclib-3rd-glfw INTERFACE VCLIB_WITH_GLFW)
 else()

@@ -61,11 +61,19 @@ function(_vclib_target_ide_add_shaders target_name)
         endif()
     endforeach()
     if(SRC_FILES)
-        source_group(
-            TREE ${CMAKE_CURRENT_SOURCE_DIR}
-            PREFIX "Shaders"
-            FILES ${SRC_FILES}
-        )
+        foreach(FILE ${SRC_FILES})
+            get_filename_component(ABS_FILE "${FILE}" ABSOLUTE)
+            string(FIND "${ABS_FILE}" "${CMAKE_CURRENT_SOURCE_DIR}" IS_IN_SRC_DIR)
+            if(IS_IN_SRC_DIR EQUAL 0)
+                source_group(
+                    TREE ${CMAKE_CURRENT_SOURCE_DIR}
+                    PREFIX "Shaders"
+                    FILES ${FILE}
+                )
+            else()
+                source_group("Shaders" FILES ${FILE})
+            endif()
+        endforeach()
     endif()
     if(BIN_FILES)
         source_group(
@@ -93,12 +101,13 @@ endfunction()
 #   OUT_DIR <output_directory>
 #   [VARYING_DEF <varying_def_file>]
 #   [AS_HEADER]
+#   [OUT_FILES_VAR <variable_name>]
 # )
 function(vclib_build_shader)
-    # single value arguments: SHADER, OUT_DIR, [VARYING_DEF]
+    # single value arguments: SHADER, OUT_DIR, [VARYING_DEF], [OUT_FILES_VAR]
     # options: AS_HEADER
     set(options AS_HEADER)
-    set(oneValueArgs SHADER OUT_DIR VARYING_DEF)
+    set(oneValueArgs SHADER OUT_DIR VARYING_DEF OUT_FILES_VAR)
     set(multiValueArgs INCLUDE_DIRS)
     cmake_parse_arguments(
         ARG
@@ -152,27 +161,70 @@ function(vclib_build_shader)
         set(AS_HEADER_OPTION "")
     endif()
 
-    get_property(
-        VCLIB_RENDER_DIR
-        TARGET vclib::render
-        PROPERTY VCLIB_RENDER_INCLUDE_DIR
-    )
-    get_property(
-        VCLIB_RENDER_SHADER_DIR
-        TARGET vclib::render
-        PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR
-    )
+    if(TARGET vclib::render)
+        set(RENDER_TARGET vclib::render)
+    elseif(TARGET vclib::vclib-render)
+        set(RENDER_TARGET vclib::vclib-render)
+    endif()
+
+    if(DEFINED RENDER_TARGET)
+        # Attempt to retrieve specific include directories first (typical in the build tree)
+        get_property(
+            VCLIB_RENDER_DIR
+            TARGET ${RENDER_TARGET}
+            PROPERTY VCLIB_RENDER_INCLUDE_DIR
+        )
+        get_property(
+            VCLIB_RENDER_SHADER_DIR
+            TARGET ${RENDER_TARGET}
+            PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR
+        )
+        
+        # Fallback to the standard INTERFACE_INCLUDE_DIRECTORIES property (typical in the install tree)
+        if(NOT VCLIB_RENDER_DIR AND NOT VCLIB_RENDER_SHADER_DIR)
+            get_property(
+                VCLIB_RENDER_INCLUDE_DIRS
+                TARGET ${RENDER_TARGET}
+                PROPERTY INTERFACE_INCLUDE_DIRECTORIES
+            )
+            set(VCLIB_RENDER_DIR ${VCLIB_RENDER_INCLUDE_DIRS})
+            set(VCLIB_RENDER_SHADER_DIR ${VCLIB_RENDER_INCLUDE_DIRS})
+        endif()
+    endif()
 
     get_filename_component(FILENAME "${ARG_SHADER}" NAME_WE)
     get_filename_component(ABSOLUTE_PATH_SHADER ${ARG_SHADER} ABSOLUTE)
     get_filename_component(ABSOLUTE_DIR_PATH ${ABSOLUTE_PATH_SHADER} DIRECTORY)
 
-    # used by bgfx_compile_shaders to resolve includes in shaders
-    get_property(
-        BGFX_SHADER_INCLUDE_PATH
-        TARGET vclib-3rd-bgfx
-        PROPERTY BGFX_SHADER_INCLUDE_PATH
-    )
+    if(TARGET vclib-3rd-bgfx)
+        set(BGFX_TARGET vclib-3rd-bgfx)
+    elseif(TARGET vclib::vclib-3rd-bgfx)
+        set(BGFX_TARGET vclib::vclib-3rd-bgfx)
+    endif()
+
+    if(DEFINED BGFX_TARGET)
+        # used by bgfx_compile_shaders to resolve includes in shaders
+        get_property(
+            BGFX_SHADER_INCLUDE_PATH
+            TARGET ${BGFX_TARGET}
+            PROPERTY BGFX_SHADER_INCLUDE_PATH
+        )
+        if(NOT BGFX_SHADER_INCLUDE_PATH)
+            # When consuming VCLib from an installation, the bgfx_shader.sh path 
+            # might not be explicitly exposed via target properties. We search for it
+            # using paths relative to the vclib package directory or install prefix.
+            find_path(
+                BGFX_SHADER_INCLUDE_PATH_REAL
+                NAMES "bgfx_shader.sh"
+                PATHS "${vclib_DIR}/../../../include/bgfx" "${vclib_DIR}/../../../include" "${CMAKE_INSTALL_PREFIX}/include/bgfx"
+            )
+            if(BGFX_SHADER_INCLUDE_PATH_REAL)
+                set(BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH_REAL})
+            endif()
+        endif()
+    else()
+        set(BGFX_SHADER_INCLUDE_PATH "")
+    endif()
 
     string(SUBSTRING "${FILENAME}" 0 2 TYPE)
     if("${TYPE}" STREQUAL "fs")
@@ -201,6 +253,12 @@ function(vclib_build_shader)
     endif()
 
     if(NOT "${TYPE}" STREQUAL "")
+        if(DEFINED ARG_OUT_FILES_VAR)
+            set(OUT_FILES_ARG OUT_FILES_VAR ${ARG_OUT_FILES_VAR})
+        else()
+            set(OUT_FILES_ARG "")
+        endif()
+        
         bgfx_compile_shaders(
             TYPE ${TYPE}
             SHADERS ${ARG_SHADER}
@@ -210,7 +268,13 @@ function(vclib_build_shader)
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
             NO_SOURCE_GROUP
+            ${OUT_FILES_ARG}
         )
+        
+        if(DEFINED ARG_OUT_FILES_VAR)
+            message(STATUS "vclib_build_shader generated: ${${ARG_OUT_FILES_VAR}}")
+            set(${ARG_OUT_FILES_VAR} ${${ARG_OUT_FILES_VAR}} PARENT_SCOPE)
+        endif()
     endif()
 endfunction()
 
@@ -312,6 +376,7 @@ function(vclib_target_add_shaders target_name)
     get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
 
     list(REMOVE_AT ARGV 0)
+    set(ALL_GENERATED_FILES "")
 
     foreach(SHADER ${ARGV})
         get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)
@@ -331,8 +396,16 @@ function(vclib_target_add_shaders target_name)
         vclib_build_shader(
             SHADER "${ABSOLUTE_PATH_SHADER}"
             OUT_DIR "${OUT_DIR}"
+            OUT_FILES_VAR COMPILED_SHADERS
         )
+        list(APPEND ALL_GENERATED_FILES ${COMPILED_SHADERS})
     endforeach()
+    
+    if(ALL_GENERATED_FILES)
+        message(STATUS "vclib_target_add_shaders: Attaching generated files to ${target_name}: ${ALL_GENERATED_FILES}")
+        target_sources(${target_name} PRIVATE ${ALL_GENERATED_FILES})
+    endif()
+
     _vclib_target_ide_add_shaders(${target_name} ${ARGV})
 endfunction()
 

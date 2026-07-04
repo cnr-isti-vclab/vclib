@@ -58,6 +58,10 @@ target_link_libraries(
     INTERFACE ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib::core
 )
 
+foreach(lib IN LISTS VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${lib}>)
+endforeach()
+
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 
 # Install

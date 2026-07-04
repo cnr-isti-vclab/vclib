@@ -17,7 +17,7 @@ if(VCLIB_ALLOW_SYSTEM_CGAL AND CGAL_FOUND)
     add_library(vclib-3rd-cgal INTERFACE)
     target_link_libraries(vclib-3rd-cgal INTERFACE CGAL::CGAL)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-cgal)
 
     target_compile_definitions(vclib-3rd-cgal INTERFACE VCLIB_WITH_CGAL)
 
@@ -116,6 +116,20 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)
 
     target_compile_definitions(vclib-3rd-cgal INTERFACE VCLIB_WITH_CGAL)
+
+    # Install
+    if(VCLIB_ALLOW_INSTALL_CGAL)
+        install(
+            DIRECTORY "${cgal_SOURCE_DIR}/include/CGAL"
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+        if(WIN32)
+            install(
+                DIRECTORY "${cgal_SOURCE_DIR}/auxiliary"
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGAL
+            )
+        endif()
+    endif()
 
 else()
     message(STATUS "- CGAL - not found, skipping")

@@ -40,9 +40,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(vclib)
 
-# Since we use GLFW in this render template, we must provide the compile definition
-add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-
 # Create the standalone executable
 add_executable(${PROJECT_NAME} main.cpp)
 

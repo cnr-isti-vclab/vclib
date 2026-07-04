@@ -19,7 +19,7 @@ if(VCLIB_ALLOW_SYSTEM_EMBREE AND embree_FOUND)
     add_library(vclib-3rd-embree INTERFACE)
     target_link_libraries(vclib-3rd-embree INTERFACE embree)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-embree)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-embree)
     target_compile_definitions(vclib-3rd-embree INTERFACE VCLIB_WITH_EMBREE)
 else()
     message(STATUS "- Embree - not found, skipping")

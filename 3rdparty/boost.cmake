@@ -14,7 +14,7 @@ if(VCLIB_ALLOW_SYSTEM_BOOST AND TARGET Boost::boost)
     add_library(vclib-3rd-boost INTERFACE)
     target_link_libraries(vclib-3rd-boost INTERFACE Boost::boost)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-boost)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-boost)
 
     target_compile_definitions(vclib-3rd-boost INTERFACE VCLIB_WITH_BOOST)
 else()

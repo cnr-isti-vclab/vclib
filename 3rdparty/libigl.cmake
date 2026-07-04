@@ -21,7 +21,7 @@ if(VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
 
     target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-libigl)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     message(STATUS "- libigl - using downloaded source")

@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(
-    VCLIB_USE_FETCHCONTENT
+    VCLIB_STANDALONE_USE_FETCHCONTENT
     "If true, VCLib is downloaded via FetchContent instead of using find_package"
     ON
 )
@@ -21,21 +21,7 @@ option(VCLIB_STANDALONE_BUILD_CORE "Build standalone core examples" ON)
 option(VCLIB_STANDALONE_BUILD_EXTERNAL "Build standalone external examples" OFF)
 option(VCLIB_STANDALONE_BUILD_RENDER "Build standalone render examples" OFF)
 
-if(VCLIB_STANDALONE_BUILD_EXTERNAL AND NOT VCLIB_USE_FETCHCONTENT)
-    message(
-        FATAL_ERROR
-        "Building standalone external examples is currently only supported with FetchContent. Please set VCLIB_USE_FETCHCONTENT=ON"
-    )
-endif()
-
-if(VCLIB_STANDALONE_BUILD_RENDER AND NOT VCLIB_USE_FETCHCONTENT)
-    message(
-        FATAL_ERROR
-        "Building standalone render examples is currently only supported with FetchContent. Please set VCLIB_USE_FETCHCONTENT=ON"
-    )
-endif()
-
-if(VCLIB_USE_FETCHCONTENT)
+if(VCLIB_STANDALONE_USE_FETCHCONTENT)
     message(STATUS "VCLib Standalone: Using FetchContent")
     include(FetchContent)
 
@@ -124,6 +110,30 @@ function(add_standalone_example module name)
 
     # Register the test for CTest
     add_test(NAME run-${TARGET_NAME} COMMAND ${TARGET_NAME})
+
+    # Detect and compile custom shaders if the example has any
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders")
+        file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders/*.sc")
+        message(STATUS "Found shaders for ${TARGET_NAME}: ${SHADERS}")
+        if(SHADERS AND COMMAND vclib_target_add_shaders)
+            vclib_target_add_shaders(${TARGET_NAME} ${SHADERS})
+            
+            # vclib_target_add_shaders resolves the output directory based on the relative path 
+            # of the shader source. Since the examples are built from a different directory
+            # relative to the standalone CMakeLists, we copy the compiled shaders to the 
+            # executable's expected directory so they can be loaded at runtime.
+            get_property(TARGET_BIN_DIR TARGET ${TARGET_NAME} PROPERTY BINARY_DIR)
+            set(COMPILED_SHADERS_DIR "${TARGET_BIN_DIR}/shaders/../${module}/${name}/shaders")
+            
+            add_custom_command(
+                TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_directory
+                "${COMPILED_SHADERS_DIR}"
+                "$<TARGET_FILE_DIR:${TARGET_NAME}>/shaders"
+                COMMENT "Copying compiled shaders for standalone example ${TARGET_NAME}"
+            )
+        endif()
+    endif()
 endfunction()
 
 if(VCLIB_STANDALONE_BUILD_CORE)

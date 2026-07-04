@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
-        package_type: ['core']
+        package_type: ['core', 'all']
     steps:
     - uses: actions/checkout@v7
       with:
@@ -72,13 +72,11 @@ jobs:
         cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
 
     - name: Upload VCLib Package
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: vclib-package-${{ matrix.package_type }}-${{ runner.os }}-${{ runner.arch }}
         path: install-vclib
         include-hidden-files: true
-        retention-days: 1
-
 
   build_and_run_standalone_examples:
     needs: [build_vclib_packages]
@@ -151,17 +149,25 @@ jobs:
       if: matrix.integration_mode == 'find_package'
       uses: actions/download-artifact@v4
       with:
-        name: vclib-package-core-${{ runner.os }}-${{ runner.arch }}
+        name: vclib-package-${{ matrix.module == 'core' && 'core' || 'all' }}-${{ runner.os }}-${{ runner.arch }}
         path: install-vclib
+    
+    - name: VCLib Package Permissions
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        if [ -d "install-vclib/bin" ]; then
+          chmod -R +x install-vclib/bin/*
+        fi
 
     - name: Configure Standalone Examples
       shell: bash
       run: |
         EXTRA_ARGS=""
         if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
-          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=ON"
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
         else
-          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
         fi
         
         if [ "${{ matrix.module }}" == "core" ]; then
