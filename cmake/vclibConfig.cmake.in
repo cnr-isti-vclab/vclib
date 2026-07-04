@@ -3,28 +3,45 @@
 include(CMakeFindDependencyMacro)
 
 set(VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES "@VCLIB_CORE_3RDPARTY_LIBRARIES@")
-set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@")
+set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@"
+)
 set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES "@VCLIB_RENDER_3RDPARTY_LIBRARIES@")
 
 if(@VCLIB_INSTALL_MODULE_CORE@)
     # Restore upstream system dependencies used by the CORE module
-    if("@VCLIB_USED_SYSTEM_EIGEN@" AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_EIGEN@"
+        AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
+    )
         find_dependency(Eigen3)
     endif()
 endif()
 
 if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
     # Restore upstream system dependencies used by the EXTERNAL module
-    if("@VCLIB_USED_SYSTEM_BOOST@" AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_BOOST@"
+        AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
         find_dependency(Boost)
     endif()
-    if("@VCLIB_USED_SYSTEM_CGAL@" AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_CGAL@"
+        AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
         find_dependency(CGAL)
     endif()
-    if("@VCLIB_USED_SYSTEM_EMBREE@" AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_EMBREE@"
+        AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
         find_dependency(embree 4)
     endif()
-    if("@VCLIB_USED_SYSTEM_LIBIGL@" AND "vclib-3rd-libigl" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_LIBIGL@"
+        AND "vclib-3rd-libigl" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
         find_dependency(libigl)
     endif()
     # VCG is header only and its include directories are wrapped in $<BUILD_INTERFACE>
@@ -35,10 +52,16 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
     if("vclib-3rd-opengl" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
         find_dependency(OpenGL)
     endif()
-    if("@VCLIB_USED_SYSTEM_BGFX@" AND "vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_BGFX@"
+        AND "vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
+    )
         find_dependency(bgfx)
     endif()
-    if("@VCLIB_USED_SYSTEM_GLFW@" AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_GLFW@"
+        AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
+    )
         find_dependency(glfw3)
     endif()
 endif()
@@ -111,12 +134,37 @@ if(TARGET Qt6::Core AND TARGET Qt6::Gui)
 
     if(NOT TARGET vclib::vclib-3rd-qt)
         add_library(vclib::vclib-3rd-qt INTERFACE IMPORTED)
-        set_property(TARGET vclib::vclib-3rd-qt APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_QT)
-        set_property(TARGET vclib::vclib-3rd-qt APPEND PROPERTY INTERFACE_LINK_LIBRARIES Qt6::Core Qt6::Gui)
-        if(@VCLIB_INSTALL_MODULE_RENDER@ AND TARGET Qt6::Widgets AND TARGET Qt6::Xml)
-            set_property(TARGET vclib::vclib-3rd-qt APPEND PROPERTY INTERFACE_LINK_LIBRARIES Qt6::Widgets Qt6::Xml)
-            if("@VCLIB_RENDER_BACKEND@" STREQUAL "opengl2" AND TARGET Qt6::OpenGL AND TARGET Qt6::OpenGLWidgets)
-                set_property(TARGET vclib::vclib-3rd-qt APPEND PROPERTY INTERFACE_LINK_LIBRARIES Qt6::OpenGL Qt6::OpenGLWidgets)
+        set_property(
+            TARGET vclib::vclib-3rd-qt
+            APPEND
+            PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_QT
+        )
+        set_property(
+            TARGET vclib::vclib-3rd-qt
+            APPEND
+            PROPERTY INTERFACE_LINK_LIBRARIES Qt6::Core Qt6::Gui
+        )
+        if(
+            @VCLIB_INSTALL_MODULE_RENDER@
+            AND TARGET Qt6::Widgets
+            AND TARGET Qt6::Xml
+        )
+            set_property(
+                TARGET vclib::vclib-3rd-qt
+                APPEND
+                PROPERTY INTERFACE_LINK_LIBRARIES Qt6::Widgets Qt6::Xml
+            )
+            if(
+                "@VCLIB_RENDER_BACKEND@" STREQUAL "opengl2"
+                AND TARGET Qt6::OpenGL
+                AND TARGET Qt6::OpenGLWidgets
+            )
+                set_property(
+                    TARGET vclib::vclib-3rd-qt
+                    APPEND
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES Qt6::OpenGL Qt6::OpenGLWidgets
+                )
             endif()
         endif()
     endif()

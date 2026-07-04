@@ -11,7 +11,7 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
     set(IMGUI_VERSION 1.92.0)
 
     set(IMGUI_EXCLUDE_FROM_ALL_OPTION "")
-    if (NOT VCLIB_ALLOW_INSTALL_IMGUI)
+    if(NOT VCLIB_ALLOW_INSTALL_IMGUI)
         set(IMGUI_EXCLUDE_FROM_ALL_OPTION EXCLUDE_FROM_ALL)
     endif()
 
@@ -65,9 +65,11 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
 
     add_library(vclib-3rd-imgui INTERFACE)
     target_link_libraries(vclib-3rd-imgui INTERFACE imgui)
-    target_include_directories(vclib-3rd-imgui INTERFACE 
-        $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/..>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/imgui>
+    target_include_directories(
+        vclib-3rd-imgui
+        INTERFACE
+            $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/..>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/imgui>
     )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
