@@ -63,7 +63,11 @@ function(_vclib_target_ide_add_shaders target_name)
     if(SRC_FILES)
         foreach(FILE ${SRC_FILES})
             get_filename_component(ABS_FILE "${FILE}" ABSOLUTE)
-            string(FIND "${ABS_FILE}" "${CMAKE_CURRENT_SOURCE_DIR}" IS_IN_SRC_DIR)
+            string(
+                FIND "${ABS_FILE}"
+                "${CMAKE_CURRENT_SOURCE_DIR}"
+                IS_IN_SRC_DIR
+            )
             if(IS_IN_SRC_DIR EQUAL 0)
                 source_group(
                     TREE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -179,7 +183,7 @@ function(vclib_build_shader)
             TARGET ${RENDER_TARGET}
             PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR
         )
-        
+
         # Fallback to the standard INTERFACE_INCLUDE_DIRECTORIES property (typical in the install tree)
         if(NOT VCLIB_RENDER_DIR AND NOT VCLIB_RENDER_SHADER_DIR)
             get_property(
@@ -210,13 +214,16 @@ function(vclib_build_shader)
             PROPERTY BGFX_SHADER_INCLUDE_PATH
         )
         if(NOT BGFX_SHADER_INCLUDE_PATH)
-            # When consuming VCLib from an installation, the bgfx_shader.sh path 
+            # When consuming VCLib from an installation, the bgfx_shader.sh path
             # might not be explicitly exposed via target properties. We search for it
             # using paths relative to the vclib package directory or install prefix.
             find_path(
                 BGFX_SHADER_INCLUDE_PATH_REAL
                 NAMES "bgfx_shader.sh"
-                PATHS "${vclib_DIR}/../../../include/bgfx" "${vclib_DIR}/../../../include" "${CMAKE_INSTALL_PREFIX}/include/bgfx"
+                PATHS
+                    "${vclib_DIR}/../../../include/bgfx"
+                    "${vclib_DIR}/../../../include"
+                    "${CMAKE_INSTALL_PREFIX}/include/bgfx"
             )
             if(BGFX_SHADER_INCLUDE_PATH_REAL)
                 set(BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH_REAL})
@@ -258,7 +265,7 @@ function(vclib_build_shader)
         else()
             set(OUT_FILES_ARG "")
         endif()
-        
+
         bgfx_compile_shaders(
             TYPE ${TYPE}
             SHADERS ${ARG_SHADER}
@@ -270,9 +277,12 @@ function(vclib_build_shader)
             NO_SOURCE_GROUP
             ${OUT_FILES_ARG}
         )
-        
+
         if(DEFINED ARG_OUT_FILES_VAR)
-            message(STATUS "vclib_build_shader generated: ${${ARG_OUT_FILES_VAR}}")
+            message(
+                STATUS
+                "vclib_build_shader generated: ${${ARG_OUT_FILES_VAR}}"
+            )
             set(${ARG_OUT_FILES_VAR} ${${ARG_OUT_FILES_VAR}} PARENT_SCOPE)
         endif()
     endif()
@@ -400,9 +410,12 @@ function(vclib_target_add_shaders target_name)
         )
         list(APPEND ALL_GENERATED_FILES ${COMPILED_SHADERS})
     endforeach()
-    
+
     if(ALL_GENERATED_FILES)
-        message(STATUS "vclib_target_add_shaders: Attaching generated files to ${target_name}: ${ALL_GENERATED_FILES}")
+        message(
+            STATUS
+            "vclib_target_add_shaders: Attaching generated files to ${target_name}: ${ALL_GENERATED_FILES}"
+        )
         target_sources(${target_name} PRIVATE ${ALL_GENERATED_FILES})
     endif()
 

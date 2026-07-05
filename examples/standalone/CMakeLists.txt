@@ -113,24 +113,36 @@ function(add_standalone_example module name)
 
     # Detect and compile custom shaders if the example has any
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders")
-        file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders/*.sc")
+        file(
+            GLOB_RECURSE SHADERS
+            RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders/*.sc"
+        )
         message(STATUS "Found shaders for ${TARGET_NAME}: ${SHADERS}")
         if(SHADERS AND COMMAND vclib_target_add_shaders)
             vclib_target_add_shaders(${TARGET_NAME} ${SHADERS})
-            
-            # vclib_target_add_shaders resolves the output directory based on the relative path 
+
+            # vclib_target_add_shaders resolves the output directory based on the relative path
             # of the shader source. Since the examples are built from a different directory
-            # relative to the standalone CMakeLists, we copy the compiled shaders to the 
+            # relative to the standalone CMakeLists, we copy the compiled shaders to the
             # executable's expected directory so they can be loaded at runtime.
-            get_property(TARGET_BIN_DIR TARGET ${TARGET_NAME} PROPERTY BINARY_DIR)
-            set(COMPILED_SHADERS_DIR "${TARGET_BIN_DIR}/shaders/../${module}/${name}/shaders")
-            
+            get_property(
+                TARGET_BIN_DIR
+                TARGET ${TARGET_NAME}
+                PROPERTY BINARY_DIR
+            )
+            set(COMPILED_SHADERS_DIR
+                "${TARGET_BIN_DIR}/shaders/../${module}/${name}/shaders"
+            )
+
             add_custom_command(
-                TARGET ${TARGET_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_directory
-                "${COMPILED_SHADERS_DIR}"
-                "$<TARGET_FILE_DIR:${TARGET_NAME}>/shaders"
-                COMMENT "Copying compiled shaders for standalone example ${TARGET_NAME}"
+                TARGET ${TARGET_NAME}
+                POST_BUILD
+                COMMAND
+                    ${CMAKE_COMMAND} -E copy_directory "${COMPILED_SHADERS_DIR}"
+                    "$<TARGET_FILE_DIR:${TARGET_NAME}>/shaders"
+                COMMENT
+                    "Copying compiled shaders for standalone example ${TARGET_NAME}"
             )
         endif()
     endif()
