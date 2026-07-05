@@ -84,7 +84,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             TARGET gmp
             PROPERTY
                 IMPORTED_LOCATION
-                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/libgmp-10.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
         )
         target_include_directories(
             gmp
@@ -100,7 +100,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             TARGET gmpxx
             PROPERTY
                 IMPORTED_LOCATION
-                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/libgmpxx-4.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
         )
         target_include_directories(
             gmpxx
@@ -124,9 +124,26 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
         )
         if(WIN32)
+            # Install headers
             install(
-                DIRECTORY "${cgal_SOURCE_DIR}/auxiliary"
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/CGAL
+                DIRECTORY "${cgal_SOURCE_DIR}/auxiliary/gmp/include/"
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            )
+            # Install .lib files
+            install(
+                FILES 
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmp.lib"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmpxx.lib"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/mpfr.lib"
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            )
+            # Install .dll files
+            install(
+                FILES 
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/mpfr-6.dll"
+                DESTINATION ${CMAKE_INSTALL_BINDIR}
             )
         endif()
     endif()

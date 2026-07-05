@@ -159,6 +159,7 @@ add_library(
     ${RESOURCES}
 )
 add_library(vclib::render ALIAS ${PROJECT_NAME})
+add_library(vclib::vclib-render ALIAS ${PROJECT_NAME})
 
 target_include_directories(
     ${PROJECT_NAME}

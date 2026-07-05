@@ -105,6 +105,7 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
         "Allow use of downloaded libigl source"
         ON
     )
+    option(VCLIB_ALLOW_INSTALL_LIBIGL "Allow install libigl source" ON)
     include(libigl.cmake)
 
     # PoissonRecon
@@ -123,6 +124,7 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+    option(VCLIB_ALLOW_INSTALL_VCG "Allow install VCG source" ON)
     include(vcg.cmake)
 endif()
 

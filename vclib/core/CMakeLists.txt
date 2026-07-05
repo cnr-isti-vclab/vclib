@@ -14,6 +14,7 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::core ALIAS ${PROJECT_NAME})
+add_library(vclib::vclib-core ALIAS ${PROJECT_NAME})
 target_include_directories(
     ${PROJECT_NAME}
     INTERFACE

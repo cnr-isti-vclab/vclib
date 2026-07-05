@@ -2,35 +2,21 @@
 
 include(CMakeFindDependencyMacro)
 
-set(VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
-    "@VCLIB_CORE_3RDPARTY_LIBRARIES@"
-    "@VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES@"
-)
-set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@"
-    "@VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES@"
-)
-set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
-    "@VCLIB_RENDER_3RDPARTY_LIBRARIES@"
-    "@VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES@"
-)
+# Always find Threads as it's a common dependency for several 3rdparty targets (CGAL, libigl, etc.)
+find_dependency(Threads)
+
+set(VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES "@VCLIB_CORE_3RDPARTY_LIBRARIES@" "@VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES@")
+set(VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES "@VCLIB_EXTERNAL_3RDPARTY_LIBRARIES@" "@VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES@")
+set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES "@VCLIB_RENDER_3RDPARTY_LIBRARIES@" "@VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES@")
 
 if(@VCLIB_INSTALL_MODULE_CORE@)
-    # Restore upstream system dependencies used by the CORE module
-    if(
-        "@VCLIB_USED_SYSTEM_EIGEN@"
-        AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
-    )
+    if("@VCLIB_USED_SYSTEM_EIGEN@" AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
         find_dependency(Eigen3)
     endif()
 endif()
 
 if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
-    # Restore upstream system dependencies used by the EXTERNAL module
-    if(
-        "@VCLIB_USED_SYSTEM_BOOST@"
-        AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
-    )
+    if("@VCLIB_USED_SYSTEM_BOOST@" AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
         find_package(Boost QUIET)
     endif()
     if(
@@ -51,7 +37,6 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
     )
         find_package(libigl QUIET)
     endif()
-    # VCG is header only and its include directories are wrapped in $<BUILD_INTERFACE>
 endif()
 
 if(@VCLIB_INSTALL_MODULE_RENDER@)
@@ -160,66 +145,21 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
         if(WIN32)
             if(NOT TARGET gmp)
                 add_library(gmp SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/gmp.lib"
-                )
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/libgmp-10.dll"
-                )
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include"
-                )
+                set_property(TARGET gmp PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmp.lib")
+                set_property(TARGET gmp PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmp-10.dll")
+                set_property(TARGET gmp PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
             endif()
             if(NOT TARGET gmpxx)
                 add_library(gmpxx SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/gmpxx.lib"
-                )
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/libgmpxx-4.dll"
-                )
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include"
-                )
+                set_property(TARGET gmpxx PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmpxx.lib")
+                set_property(TARGET gmpxx PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmpxx-4.dll")
+                set_property(TARGET gmpxx PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
             endif()
             if(NOT TARGET mpfr)
                 add_library(mpfr SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/lib/mpfr.lib"
-                )
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/bin/mpfr-6.dll"
-                )
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include/CGAL/auxiliary/gmp/include"
-                )
+                set_property(TARGET mpfr PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/mpfr.lib")
+                set_property(TARGET mpfr PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/mpfr-6.dll")
+                set_property(TARGET mpfr PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
             endif()
         endif()
     endif()
@@ -270,6 +210,18 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-libigl
                 )
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_VCG@" AND "vclib-3rd-vcg" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        # For system VCG, we need to find its include directory again since it wasn't installed with vclib
+        find_path(VCG_INCLUDE_DIRS NAMES vcg/complex/complex.h)
+        if(VCG_INCLUDE_DIRS AND NOT TARGET vclib::vclib-3rd-vcg)
+            add_library(vclib::vclib-3rd-vcg INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${VCG_INCLUDE_DIRS})
+            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_VCG)
+            if(TARGET vclib::vclib-external)
+                set_property(TARGET vclib::vclib-external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-vcg)
             endif()
         endif()
     endif()
