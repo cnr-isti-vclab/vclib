@@ -159,7 +159,6 @@ add_library(
     ${RESOURCES}
 )
 add_library(vclib::render ALIAS ${PROJECT_NAME})
-add_library(vclib::vclib-render ALIAS ${PROJECT_NAME})
 
 target_include_directories(
     ${PROJECT_NAME}
@@ -173,7 +172,9 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_RENDER_MODULE)
 
 set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR}
+    PROPERTIES
+        VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR}
+        EXPORT_NAME render
 )
 
 set_target_properties(

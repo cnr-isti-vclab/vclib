@@ -90,9 +90,9 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
                 APPEND
                 PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
             )
-            if(TARGET vclib::vclib-core)
+            if(TARGET vclib::core)
                 set_property(
-                    TARGET vclib::vclib-core
+                    TARGET vclib::core
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-eigen
                 )
@@ -118,9 +118,9 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_BOOST
             )
-            if(TARGET vclib::vclib-external)
+            if(TARGET vclib::external)
                 set_property(
-                    TARGET vclib::vclib-external
+                    TARGET vclib::external
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-boost
                 )
@@ -143,9 +143,9 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_CGAL
             )
-            if(TARGET vclib::vclib-external)
+            if(TARGET vclib::external)
                 set_property(
-                    TARGET vclib::vclib-external
+                    TARGET vclib::external
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-cgal
                 )
@@ -239,9 +239,9 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_EMBREE
             )
-            if(TARGET vclib::vclib-external)
+            if(TARGET vclib::external)
                 set_property(
-                    TARGET vclib::vclib-external
+                    TARGET vclib::external
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-embree
                 )
@@ -264,9 +264,9 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_LIBIGL
             )
-            if(TARGET vclib::vclib-external)
+            if(TARGET vclib::external)
                 set_property(
-                    TARGET vclib::vclib-external
+                    TARGET vclib::external
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-libigl
                 )
@@ -291,12 +291,24 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_VCG
             )
-            if(TARGET vclib::vclib-external)
+            if(TARGET vclib::external)
                 set_property(
-                    TARGET vclib::vclib-external
+                    TARGET vclib::external
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-vcg
                 )
+            endif()
+        endif()
+    endif()
+    if("@VCLIB_USED_SYSTEM_VCG@" AND "vclib-3rd-vcg" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+        # For system VCG, we need to find its include directory again since it wasn't installed with vclib
+        find_path(VCG_INCLUDE_DIRS NAMES vcg/complex/complex.h)
+        if(VCG_INCLUDE_DIRS AND NOT TARGET vclib::vclib-3rd-vcg)
+            add_library(vclib::vclib-3rd-vcg INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${VCG_INCLUDE_DIRS})
+            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_VCG)
+            if(TARGET vclib::external)
+                set_property(TARGET vclib::external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-vcg)
             endif()
         endif()
     endif()
@@ -318,9 +330,9 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
                     PROPERTY INTERFACE_LINK_LIBRARIES OpenGL::GLU
                 )
             endif()
-            if(TARGET vclib::vclib-render)
+            if(TARGET vclib::render)
                 set_property(
-                    TARGET vclib::vclib-render
+                    TARGET vclib::render
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-opengl
                 )
@@ -344,9 +356,9 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
                         bgfx::bimg_decode
                         bgfx::bimg_encode
             )
-            if(TARGET vclib::vclib-render)
+            if(TARGET vclib::render)
                 set_property(
-                    TARGET vclib::vclib-render
+                    TARGET vclib::render
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-bgfx
                 )
@@ -369,9 +381,9 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
                 APPEND
                 PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW
             )
-            if(TARGET vclib::vclib-render)
+            if(TARGET vclib::render)
                 set_property(
-                    TARGET vclib::vclib-render
+                    TARGET vclib::render
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-glfw
                 )
@@ -383,37 +395,35 @@ endif()
 # --- Dynamic Optional Dependencies ---
 
 # 1. TBB
-if(UNIX)
+if(UNIX AND NOT MSVC)
     find_package(Threads QUIET)
     find_package(TBB QUIET)
 
     if(TARGET TBB::tbb AND TARGET Threads::Threads)
-        if(TARGET vclib::vclib-core)
+        if(NOT TARGET vclib::vclib-3rd-tbb)
+            add_library(vclib::vclib-3rd-tbb INTERFACE IMPORTED)
             set_property(
-                TARGET vclib::vclib-core
+                TARGET vclib::vclib-3rd-tbb
                 APPEND
                 PROPERTY INTERFACE_LINK_LIBRARIES TBB::tbb Threads::Threads
             )
-        endif()
-
-        # Remove poolstl fallback macros if present
-        if(TARGET vclib::vclib-3rd-poolstl)
-            get_property(
-                poolstl_defs
-                TARGET vclib::vclib-3rd-poolstl
-                PROPERTY INTERFACE_COMPILE_DEFINITIONS
-            )
-            if(poolstl_defs)
-                list(
-                    REMOVE_ITEM poolstl_defs
-                    "POOLSTL_STD_SUPPLEMENT_NO_INCLUDE"
-                    "POOLSTL_STD_SUPPLEMENT_FORCE"
-                )
+            if(TARGET vclib::core)
                 set_property(
-                    TARGET vclib::vclib-3rd-poolstl
-                    PROPERTY INTERFACE_COMPILE_DEFINITIONS "${poolstl_defs}"
+                    TARGET vclib::core
+                    APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-tbb
                 )
             endif()
+        endif()
+    else()
+        if(TARGET vclib::vclib-3rd-poolstl)
+            set_property(
+                TARGET vclib::vclib-3rd-poolstl
+                APPEND
+                PROPERTY INTERFACE_COMPILE_DEFINITIONS
+                    POOLSTL_STD_SUPPLEMENT_NO_INCLUDE
+                    POOLSTL_STD_SUPPLEMENT_FORCE
+            )
         endif()
     endif()
 endif()
@@ -468,9 +478,9 @@ if(TARGET Qt6::Core AND TARGET Qt6::Gui)
         endif()
     endif()
 
-    if(TARGET vclib::vclib-core AND TARGET vclib::vclib-3rd-qt)
+    if(TARGET vclib::core AND TARGET vclib::vclib-3rd-qt)
         set_property(
-            TARGET vclib::vclib-core
+            TARGET vclib::core
             APPEND
             PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-qt
         )

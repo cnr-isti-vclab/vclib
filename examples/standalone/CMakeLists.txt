@@ -93,7 +93,7 @@ function(add_standalone_example module name)
     # Link to vclib and the common definitions
     target_link_libraries(
         ${TARGET_NAME}
-        PRIVATE vclib::vclib-${BASE_MODULE} vclib-standalone-examples-common
+        PRIVATE vclib::${BASE_MODULE} vclib-standalone-examples-common
     )
 
     # Add the example directory to include path in case it uses local headers
@@ -121,7 +121,6 @@ function(add_standalone_example module name)
             RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
             "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/shaders/*.sc"
         )
-        message(STATUS "Found shaders for ${TARGET_NAME}: ${SHADERS}")
         if(SHADERS AND COMMAND vclib_target_add_shaders)
             vclib_target_add_shaders(${TARGET_NAME} ${SHADERS})
 

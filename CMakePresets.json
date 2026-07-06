@@ -344,7 +344,6 @@
                 "VCLIB_INSTALL_MODULE_RENDER": "OFF",
                 "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
                 "VCLIB_CORE_BUILD_TESTS": "OFF",
-                "VCLIB_ALLOW_SYSTEM_TBB": "OFF",
                 "VCLIB_REQUIRES_QT": "ON"
             }
         },

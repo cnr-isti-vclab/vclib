@@ -167,8 +167,6 @@ function(vclib_build_shader)
 
     if(TARGET vclib::render)
         set(RENDER_TARGET vclib::render)
-    elseif(TARGET vclib::vclib-render)
-        set(RENDER_TARGET vclib::vclib-render)
     endif()
 
     if(DEFINED RENDER_TARGET)

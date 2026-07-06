@@ -45,7 +45,6 @@ endif()
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 add_library(vclib::external ALIAS ${PROJECT_NAME})
-add_library(vclib::vclib-external ALIAS ${PROJECT_NAME})
 target_include_directories(
     ${PROJECT_NAME}
     INTERFACE
@@ -53,6 +52,13 @@ target_include_directories(
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_EXTERNAL_MODULE)
+
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+        VCLIB_EXTERNAL_INCLUDE_DIR ${VCLIB_EXTERNAL_INCLUDE_DIR}
+        EXPORT_NAME external
+)
 
 target_link_libraries(
     ${PROJECT_NAME}
