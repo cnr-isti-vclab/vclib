@@ -41,7 +41,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
-    
+
     # Install
     if(VCLIB_ALLOW_INSTALL_LIBIGL)
         install(

@@ -131,7 +131,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             )
             # Install .lib files
             install(
-                FILES 
+                FILES
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmp.lib"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmpxx.lib"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/mpfr.lib"
@@ -139,7 +139,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             )
             # Install .dll files
             install(
-                FILES 
+                FILES
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/mpfr-6.dll"

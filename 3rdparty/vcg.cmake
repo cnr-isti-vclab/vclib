@@ -14,7 +14,6 @@ if(VCLIB_ALLOW_SYSTEM_VCG AND (DEFINED VCG_INCLUDE_DIRS OR DEFINED VCG_DIR))
     set(VCLIB_USES_VCG TRUE)
 else()
     if(VCLIB_ALLOW_DOWNLOAD_VCG)
-
         set(VCG_USE_OPENMP OFF)
 
         message(STATUS "- VCG - using downloaded source")
@@ -42,14 +41,17 @@ endif()
 
 if(VCLIB_USES_VCG)
     add_library(vclib-3rd-vcg INTERFACE)
-    
+
     if(VCLIB_USED_SYSTEM_VCG)
         # Hide system include from export so it doesn't pollute the install interface
-        target_include_directories(vclib-3rd-vcg INTERFACE $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>)
+        target_include_directories(
+            vclib-3rd-vcg
+            INTERFACE $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
+        )
     else()
         target_include_directories(vclib-3rd-vcg INTERFACE ${VCG_INCLUDE_DIRS})
     endif()
-    
+
     set_target_properties(
         vclib-3rd-vcg
         PROPERTIES VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS}
