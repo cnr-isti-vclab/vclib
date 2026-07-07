@@ -2,6 +2,11 @@ name: Reusable Build Docs
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
 
 jobs:
   build_docs:
@@ -10,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - name: Install dependencies
         run: | 
           sudo apt-get install doxygen graphviz

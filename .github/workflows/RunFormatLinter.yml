@@ -14,25 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
-    - uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-    # install gersemi
-    - run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake
-        pip install gersemi
-    - run: |
-        cd scripts
-        python3 replace_header_guards.py
-        python3 replace_headings.py
-        python3 format_cmake_with_gersemi.py
-    - uses: DoozyX/clang-format-lint-action@v0.20
-      with:
-        source: '.'
-        extensions: 'h,cpp'
-        clangFormatVersion: 20
-        inplace: True
+    - name: Run Linter
+      uses: ./.github/actions/run-linter
     - uses: EndBug/add-and-commit@v10
       with:
         committer_name: GitHub Actions

@@ -1,0 +1,147 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g. 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  prepare_release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    outputs:
+      new_sha: ${{ steps.commit.outputs.commit_long_sha || github.sha }}
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    
+    - name: Update VERSION file
+      run: |
+        echo "${{ github.event.inputs.version }}" > VERSION
+
+    - name: Run Linter
+      uses: ./.github/actions/run-linter
+        
+    - name: Commit changes
+      id: commit
+      uses: EndBug/add-and-commit@v10
+      with:
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
+        message: '[release] Bump version to ${{ github.event.inputs.version }} and format code'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test_core:
+    needs: prepare_release
+    uses: ./.github/workflows/Core_BuildAndRunTests.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  test_external:
+    needs: prepare_release
+    uses: ./.github/workflows/External_BuildAndRunTests.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  test_render:
+    needs: prepare_release
+    uses: ./.github/workflows/Render_BuildAndRunTests.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  build_packages:
+    needs: prepare_release
+    uses: ./.github/workflows/_build_packages.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  build_wheels:
+    needs: prepare_release
+    uses: ./.github/workflows/_build_wheels.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  build_docs:
+    needs: prepare_release
+    uses: ./.github/workflows/_build_docs.yml
+    with:
+      ref: ${{ needs.prepare_release.outputs.new_sha }}
+
+  create_release:
+    needs: [prepare_release, test_core, test_external, test_render, build_packages, build_wheels, build_docs]
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v8
+      with:
+        path: artifacts
+
+    - name: Prepare Release Assets
+      run: |
+        mkdir -p release_assets
+        VERSION="${{ github.event.inputs.version }}"
+        
+        # Process Packages
+        for pkg in artifacts/vclib-package-*; do
+          if [ -d "$pkg" ]; then
+            PKG_NAME=$(basename "$pkg")
+            IFS='-' read -r p1 p2 TYPE OS ARCH <<< "$PKG_NAME"
+            
+            if [ "$OS" == "Linux" ]; then FINAL_OS="linux";
+            elif [ "$OS" == "macOS" ]; then FINAL_OS="macos";
+            elif [ "$OS" == "Windows" ]; then FINAL_OS="windows";
+            fi
+            
+            if [ "$ARCH" == "X64" ]; then FINAL_ARCH="x86_64";
+            elif [ "$ARCH" == "ARM64" ]; then FINAL_ARCH="arm64";
+            fi
+            
+            FINAL_PREFIX="vclib-${TYPE}-${VERSION}-${FINAL_OS}-${FINAL_ARCH}"
+            
+            cd "$pkg"
+            if [ "$OS" == "Linux" ] || [ "$OS" == "macOS" ]; then
+              if [ -d "install-vclib/bin" ]; then
+                chmod -R +x install-vclib/bin/*
+              fi
+              mv install-vclib "$FINAL_PREFIX"
+              tar -czvf "../../release_assets/${FINAL_PREFIX}.tar.gz" "$FINAL_PREFIX"
+            else
+              mv install-vclib "$FINAL_PREFIX"
+              zip -r "../../release_assets/${FINAL_PREFIX}.zip" "$FINAL_PREFIX"
+            fi
+            cd ../..
+          fi
+        done
+        
+        # Process Wheels
+        for whl_dir in artifacts/vclib-wheel-*; do
+          if [ -d "$whl_dir" ]; then
+            cp "$whl_dir"/*.whl release_assets/ 2>/dev/null || true
+          fi
+        done
+        
+        # Process Docs
+        if [ -d "artifacts/vclib_docs" ]; then
+          cd artifacts
+          mv vclib_docs vclib-docs-${VERSION}
+          zip -r "../release_assets/vclib-docs-${VERSION}.zip" vclib-docs-${VERSION}
+          cd ..
+        fi
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        name: Release v${{ github.event.inputs.version }}
+        draft: false
+        prerelease: false
+        files: release_assets/*
+        target_commitish: ${{ needs.prepare_release.outputs.new_sha }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
