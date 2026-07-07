@@ -89,9 +89,10 @@ jobs:
         VERSION="${{ github.event.inputs.version }}"
         
         # Process Packages
-        for pkg in artifacts/vclib-package-*; do
+        cd artifacts
+        for pkg in vclib-package-*; do
           if [ -d "$pkg" ]; then
-            PKG_NAME=$(basename "$pkg")
+            PKG_NAME="$pkg"
             IFS='-' read -r p1 p2 TYPE OS ARCH <<< "$PKG_NAME"
             
             if [ "$OS" == "Linux" ]; then FINAL_OS="linux";
@@ -105,20 +106,19 @@ jobs:
             
             FINAL_PREFIX="vclib-${TYPE}-${VERSION}-${FINAL_OS}-${FINAL_ARCH}"
             
-            cd "$pkg"
+            mv "$pkg" "$FINAL_PREFIX"
+            
             if [ "$OS" == "Linux" ] || [ "$OS" == "macOS" ]; then
-              if [ -d "install-vclib/bin" ]; then
-                chmod -R +x install-vclib/bin/*
+              if [ -d "$FINAL_PREFIX/bin" ]; then
+                chmod -R +x "$FINAL_PREFIX/bin"/*
               fi
-              mv install-vclib "$FINAL_PREFIX"
-              tar -czvf "../../release_assets/${FINAL_PREFIX}.tar.gz" "$FINAL_PREFIX"
+              tar -czvf "../release_assets/${FINAL_PREFIX}.tar.gz" "$FINAL_PREFIX"
             else
-              mv install-vclib "$FINAL_PREFIX"
-              zip -r "../../release_assets/${FINAL_PREFIX}.zip" "$FINAL_PREFIX"
+              zip -r "../release_assets/${FINAL_PREFIX}.zip" "$FINAL_PREFIX"
             fi
-            cd ../..
           fi
         done
+        cd ..
         
         # Process Wheels
         for whl_dir in artifacts/vclib-wheel-*; do
