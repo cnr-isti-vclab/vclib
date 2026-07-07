@@ -24,9 +24,7 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_CORE_MODULE)
 
 set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES
-        VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR}
-        EXPORT_NAME core
+    PROPERTIES VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR} EXPORT_NAME core
 )
 
 target_link_libraries(

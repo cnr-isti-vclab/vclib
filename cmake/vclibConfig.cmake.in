@@ -300,15 +300,30 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
             endif()
         endif()
     endif()
-    if("@VCLIB_USED_SYSTEM_VCG@" AND "vclib-3rd-vcg" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES)
+    if(
+        "@VCLIB_USED_SYSTEM_VCG@"
+        AND "vclib-3rd-vcg" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
         # For system VCG, we need to find its include directory again since it wasn't installed with vclib
         find_path(VCG_INCLUDE_DIRS NAMES vcg/complex/complex.h)
         if(VCG_INCLUDE_DIRS AND NOT TARGET vclib::vclib-3rd-vcg)
             add_library(vclib::vclib-3rd-vcg INTERFACE IMPORTED)
-            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${VCG_INCLUDE_DIRS})
-            set_property(TARGET vclib::vclib-3rd-vcg APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_VCG)
+            set_property(
+                TARGET vclib::vclib-3rd-vcg
+                APPEND
+                PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${VCG_INCLUDE_DIRS}
+            )
+            set_property(
+                TARGET vclib::vclib-3rd-vcg
+                APPEND
+                PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_VCG
+            )
             if(TARGET vclib::external)
-                set_property(TARGET vclib::external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-vcg)
+                set_property(
+                    TARGET vclib::external
+                    APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-vcg
+                )
             endif()
         endif()
     endif()
@@ -420,9 +435,10 @@ if(UNIX AND NOT MSVC)
             set_property(
                 TARGET vclib::vclib-3rd-poolstl
                 APPEND
-                PROPERTY INTERFACE_COMPILE_DEFINITIONS
-                    POOLSTL_STD_SUPPLEMENT_NO_INCLUDE
-                    POOLSTL_STD_SUPPLEMENT_FORCE
+                PROPERTY
+                    INTERFACE_COMPILE_DEFINITIONS
+                        POOLSTL_STD_SUPPLEMENT_NO_INCLUDE
+                        POOLSTL_STD_SUPPLEMENT_FORCE
             )
         endif()
     endif()
