@@ -85,6 +85,8 @@ endif()
 if(VCLIB_BUILD_MODULE_EXTERNAL)
     # boost
     option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_BOOST "Allow use of downloaded Boost source" ON)
+    option(VCLIB_ALLOW_INSTALL_BOOST "Allow install Boost source" ON)
     include(boost.cmake)
 
     # CGAL

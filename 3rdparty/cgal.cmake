@@ -111,6 +111,21 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             vclib-3rd-cgal
             INTERFACE gmp gmpxx mpfr Threads::Threads
         )
+    else()
+        # On Linux and macOS, we rely on the system-provided GMP and MPFR libraries.
+        # We use the FindGMP and FindMPFR modules provided by CGAL.
+        list(APPEND CMAKE_MODULE_PATH "${cgal_SOURCE_DIR}/cmake/modules")
+        find_package(GMP REQUIRED)
+        find_package(MPFR REQUIRED)
+
+        target_include_directories(
+            vclib-3rd-cgal
+            INTERFACE "${GMP_INCLUDE_DIR}" "${MPFR_INCLUDE_DIR}"
+        )
+        target_link_libraries(
+            vclib-3rd-cgal
+            INTERFACE "${GMP_LIBRARIES}" "${MPFR_LIBRARIES}" Threads::Threads
+        )
     endif()
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)

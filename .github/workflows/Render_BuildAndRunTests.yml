@@ -29,13 +29,13 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get install cmake ninja-build libtbb-dev catch2
+        sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install catch2 glfw
+        brew install catch2 glfw gmp mpfr
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |

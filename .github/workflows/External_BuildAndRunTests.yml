@@ -35,7 +35,6 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         choco install ninja ccache
-        choco install boost-msvc-14.3
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:

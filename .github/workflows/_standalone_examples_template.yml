@@ -38,24 +38,22 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libtbb-dev
-        sudo apt-get install -y libcgal-dev libembree-dev
-        sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
+        sudo apt-get install cmake ninja-build libtbb-dev
+        sudo apt-get install libembree-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
 
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
         brew install cmake ninja
-        brew install embree cgal
+        brew install embree gmp mpfr
 
     - name: Install dependencies
       if: runner.os == 'Windows'
       shell: bash
       run: |
         choco install -y cmake ninja
-        choco install -y boost-msvc-14.3
 
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
@@ -110,13 +108,12 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libtbb-dev
+        sudo apt-get install cmake ninja-build libtbb-dev
         if [ "${{ matrix.module }}" == "external" ]; then
-          sudo apt-get install -y libcgal-dev libembree-dev
+          sudo apt-get install libembree-dev libgmp-dev libmpfr-dev
         fi
         if [ "${{ matrix.module }}" == "render" ]; then
-          sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
+          sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
         fi
 
     - name: Install dependencies
@@ -125,10 +122,7 @@ jobs:
       run: |
         brew install cmake ninja tbb
         if [ "${{ matrix.module }}" == "external" ]; then
-          brew install embree cgal
-        fi
-        if [ "${{ matrix.module }}" == "render" ]; then
-          brew install glfw
+          brew install embree gmp mpfr
         fi
 
     - name: Install dependencies
@@ -136,9 +130,6 @@ jobs:
       shell: bash
       run: |
         choco install -y cmake ninja
-        if [ "${{ matrix.module }}" == "external" ]; then
-          choco install -y boost-msvc-14.3
-        fi
 
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
@@ -193,6 +184,11 @@ jobs:
       shell: bash
       run: |
         if [ "${{ matrix.module }}" != "render" ]; then
+          if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
+            if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
+              export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
+            fi
+          fi
           ctest --output-on-failure
         else
           echo "Skipping tests for render module"
