@@ -9,7 +9,7 @@
 #define VCL_IMGUI_IMGUI_HELPERS_H
 
 #include <functional>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include <vclib/space/core/color.h>
 

@@ -1,0 +1,101 @@
+name: Reusable Bindings - Build and test Wheel
+
+on:
+  workflow_call:
+
+jobs:
+  bindings_build_wheel:
+    name: Bindings - Build Wheel
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        python-version: ['3.12', '3.13', '3.14']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        cache: 'true'
+        version: '6.10.*'
+    - name: Install Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install cmake ninja-build
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco install ninja ccache
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: bindings-${{ matrix.os }}-${{ github.ref_name }}
+    - name: Build Wheel
+      shell: bash
+      run: |
+        python3 -m venv venv
+        if [[ "${{ runner.os }}" == "Windows" ]]; then
+          venv/Scripts/activate
+        else
+          source venv/bin/activate
+        fi
+        python -m pip install --upgrade pip setuptools wheel build
+        python -m build --wheel --outdir dist
+    - name: Upload Wheel
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-wheel-${{ matrix.os }}-python-${{ matrix.python-version }}
+        path: dist/*.whl
+  
+  run_python_examples:
+    name: Run Python Examples
+    runs-on: ${{ matrix.os }}
+    needs: bindings_build_wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        python-version: ['3.12', '3.13', '3.14']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update && sudo apt-get upgrade
+        sudo apt-get install freeglut3-dev
+    - name: Install Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+    - uses: actions/download-artifact@v8
+      with:
+        name: vclib-wheel-${{ matrix.os }}-python-${{ matrix.python-version }}
+        path: dist/
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        python3 -m pip install dist/*.whl
+    - name: Run examples
+      shell: bash
+      run: |
+        for f in examples/bindings/*.py; do
+          printf "=== Running $f ===\n"
+          python "$f"
+          printf "\n"
+        done

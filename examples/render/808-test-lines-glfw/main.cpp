@@ -13,7 +13,7 @@
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/render_app.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include "../808-test-lines-common/lines_common.h"
 

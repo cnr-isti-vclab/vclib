@@ -16,7 +16,7 @@
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include <algorithm>
 #include <iterator>
