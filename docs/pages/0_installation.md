@@ -4,137 +4,125 @@ The library can be used both as a C++ library and as a Python library.
 
 ## C++
 
-In order to work easily with VCLib, you can use the CMake configuration, but you can also use the core module of the library as a header-only library.
+VCLib requires a compiler that supports C++20 and **CMake >= 3.24**.
 
-### CMake
+### Supported Compilers
 
-The minimum required version is 3.24.
+VCLib uses modern C++20 features. The supported compilers are:
+- **GCC 13.3** (default in Ubuntu 24.04) or later
+- **Apple Clang 16** (Xcode 16.2 on macOS) / **Clang 17** or later
+- **MSVC 19.36** (Visual Studio 2022) or later
 
-CMake will take care to find and download all the required and optional dependencies for each module of the library that you want to build and use.
-By default, the library is built with the `Core` module only, but you can enable the other modules by setting the `VCLIB_BUILD_MODULE_<module>` CMake variable to `ON`, before adding the VCLib directory to your project or in your CMake configuration.
+### Requirements & System Dependencies
 
-There are two very easy ways to include VCLib in your project.
+VCLib bundles some core dependencies (like Eigen, MapBox Earcut, STB). For other dependencies, the requirements vary depending on your Operating System and the modules you want to use.
 
-#### Using FetchContent
+**Windows Users**: You do not need to install any system dependencies manually. CMake will automatically download and build everything that is needed (including heavy libraries like CGAL and Embree).
 
-If you don't want to clone the repository, you can use `FetchContent` to download the library at configuration time. This is an example of `CMakeLists.txt` that uses vclib as a dependency:
+**Linux and macOS Users**: VCLib relies on the system package manager (e.g., `apt` on Ubuntu/Debian, `brew` on macOS) to provide some libraries. Below is the exhaustive list of system dependencies:
+
+#### Core Module
+- **Linux Only (Recommended)**: `libtbb-dev` (Ubuntu/Debian)
+  *VCLib uses C++17 Parallel STL for performance. Since `libstdc++` requires TBB for parallel STL, installing it is highly recommended on Linux. On macOS and Windows, parallel STL is supported without TBB. If TBB is not found, VCLib will fallback to a thread-pool implementation ([poolSTL](https://github.com/alugowski/poolSTL)).*
+
+#### Render Module
+- **Linux Only (Mandatory)**: `freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev` (Ubuntu/Debian)
+  *Required for windowing and BGFX rendering. On macOS and Windows, the necessary windowing frameworks are already provided natively by the OS.*
+
+#### External Module
+If you enable the External module, you must install the following dependencies on both Linux and macOS:
+- **For CGAL and libigl (Mandatory)**:
+  - Ubuntu/Debian: `libgmp-dev libmpfr-dev`
+  - macOS: `gmp mpfr`
+- **For Embree (Mandatory)**:
+  - Ubuntu/Debian: `libembree-dev`
+  - macOS: `embree`
+
+### CMake Integration
+
+By default, the library is built with the **Core** module only. You can enable the other modules by setting the `VCLIB_BUILD_MODULE_<module>` CMake variable to `ON` *before* finding or adding VCLib. You can also disable the automatic download of dependencies setting `VCLIB_ALLOW_<dependency>` to `OFF`.
+
+There are three main ways to include VCLib in your CMake project.
+
+#### 1. Using `find_package` (Pre-compiled Archive)
+
+You can download a pre-compiled archive of VCLib from the [GitHub Releases](https://github.com/cnr-isti-vclab/vclib/releases) page. We provide archives for both the `core` version (only the Core module) and the `all` version (Core, Render, and External modules).
+
+Once downloaded and extracted, you can use `find_package`:
 
 ```cmake
 cmake_minimum_required(VERSION 3.24)
-
 project(my_project LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# enable any of the vclib modules you require here:
+set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
+set(VCLIB_BUILD_MODULE_RENDER OFF)
+
+find_package(vclib REQUIRED)
+
+add_executable(my_project main.cpp)
+target_link_libraries(my_project PRIVATE vclib::vclib)
+```
+
+*Note: If you extracted the archive in a non-standard location, you will need to pass `-Dvclib_DIR=/path/to/extracted/vclib/lib/cmake/vclib` when configuring your project.*
+
+#### 2. Using `FetchContent` (Build from Source)
+
+If you prefer to download and build the library at configuration time without dealing with archives, you can use `FetchContent`:
+
+```cmake
+cmake_minimum_required(VERSION 3.24)
+project(my_project LANGUAGES CXX)
 
 include(FetchContent)
 
 # enable any of the vclib modules you require here:
 set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
-set(VCLIB_BUILD_MODULE_PROCESSING OFF)
 set(VCLIB_BUILD_MODULE_RENDER OFF)
 
 FetchContent_Declare(
     vclib
     GIT_REPOSITORY https://github.com/cnr-isti-vclab/vclib.git
-    GIT_TAG        origin/main)
+    GIT_TAG        origin/main) # or a specific tag
 
 FetchContent_MakeAvailable(vclib)
 
 add_executable(my_project main.cpp)
-
 target_link_libraries(my_project PRIVATE vclib::vclib)
 ```
 
-This will download the library and all its dependencies at configuration time, and it will make the `vclib::vclib` target available for linking.
+#### 3. Using `add_subdirectory`
 
-You can enable any of the VCLib modules you require by setting the corresponding `VCLIB_BUILD_MODULE_<module>` variable to `ON` before calling `FetchContent_MakeAvailable(vclib)`.
-
-#### Using add_subdirectory
-
-To include VCLib in your CMake project, first clone (recursively) the VCLib repository into your project directory:
+Alternatively, you can clone the repository directly into your project directory (or add it as a git submodule) and include it:
 
 ```bash
 cd /path/to/your/project
 git clone --recursive https://github.com/cnr-isti-vclab/vclib
 ```
 
-(alternatively, you can use [git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)).
-
-Then, in your `CMakeLists.txt`:
-
 ```cmake
 # enable any of the vclib modules you require here:
 set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
-set(VCLIB_BUILD_MODULE_PROCESSING OFF)
 set(VCLIB_BUILD_MODULE_RENDER OFF)
 
 add_subdirectory(vclib)
 
-[...]
 add_executable(my_target main.cpp)
 target_link_libraries(my_target PRIVATE vclib::vclib)
 ```
 
-Where `my_target` is the target of your project.
+### Header-only Usage (Core Module)
 
-#### Setting INCLUDE_PATH
+If you only need the **Core** module, you can also use VCLib as a header-only library without involving CMake targets.
 
-You can also use the VCLib Core module just as a header-only library.
-
-In order to work with VCLib, you must ensure that Eigen is accessible in your `INCLUDE_PATH`.
-MapBox Earcut, STB, and poolSTL are already included automatically by VCLib, so you don't need to include them manually. Eigen is also provided within the `external` directory of VCLib.
-
-To set your `INCLUDE_PATH` correctly, follow these steps:
+You just need to add the VCLib `include` directory and the bundled Eigen directory to your project's include path. MapBox Earcut, STB, and poolSTL are included automatically.
 
 ```cmake
-INCLUDE_PATH += path/to/vclib/external/eigen-3.4.0/ # or your favorite Eigen version
-INCLUDE_PATH += path/to/vclib/include/
+target_include_directories(my_target PRIVATE 
+    path/to/vclib/external/eigen-3.4.0/ # or your favorite Eigen version
+    path/to/vclib/include/
+)
 ```
-
-and you are ready to go.
-
-### Supported Compilers
-
-VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers:
-
-  - GCC 13.3 (default in Ubuntu 24.04)
-  - Apple CLang 16 (XCode 16.2 on MacOS) or CLang 17
-  - MSVC 19.36 (Visual Studio 2022)
-
-#### C++17 Parallel STL
-
-The lack of support for C++17 parallel STL in some compilers is still a problem.
-
-To allow the use of C++17 parallel STL, VCLib uses [poolSTL](https://github.com/alugowski/poolSTL) 
-as a fallback. poolSTL will use the parallel STL if it is available, and otherwise, it implements 
-the parallel algorithms using a thread pool.
-
-In the case of libstdc++, the parallel STL is available only if the `Threading Building Blocks`
-library is installed. If you are using libstdc++, we suggest to install TBB in 
-order to bypass poolSTL and use the parallel STL.
-
-On Ubuntu, you can install it by running the following command in the terminal:
-
-```bash
-sudo apt install libtbb-dev
-```
-
-#### Dependencies
-
-VCLib has several dependencies that depend on the module you want to use. 
-Along with TBB or poolSTL for parallelism, the Core module depends on the following libraries:
-
-   * [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
-   * [MapBox Earcut](https://github.com/mapbox/earcut.hpp)
-   * [STB](https://github.com/nothings/stb)
-
-All these libraries are bundled with VCLib, so you don't need to install them separately.
-
-All the other dependencies can be required or optional, and they are needed by the other modules of the library.
-The CMake configuration, when possible, will take care to download them for you using `FetchContent`.
-You can always enable or disable the usage of a dependency by setting the corresponding CMake variable called
-`VCLIB_ALLOW_<dependency>` to `ON` or `OFF`.
 
 ## Python
 

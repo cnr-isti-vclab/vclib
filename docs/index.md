@@ -10,7 +10,6 @@ The library is divided in several modules, each one with a specific purpose:
     - **IO**: the `Core` module contains an inner module for input/output operations (loading from and saving to files) that can use 3rd party libraries. It can be configured in order to avoid 3rd party libraries and be used in header-only mode.
   - [Render](pages/2_render.md): contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
-  - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black box actions.
   - **Bindings**: contains the python bindings of the library.
 
 You can refer to the User Guide documentation to learn how to install and use the library.
