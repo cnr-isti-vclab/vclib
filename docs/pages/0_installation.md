@@ -2,6 +2,9 @@
 
 The library can be used both as a C++ library and as a Python library.
 
+> [!WARNING]
+> **License Disclaimer:** While VCLib is licensed under the MPL2 license, please note that when using the `External` module or the `IO` module of `Core`, you are implicitly accepting the licenses of the underlying external third-party libraries, which may differ from MPL2.
+
 ## C++
 
 VCLib requires a compiler that supports C++20 and **CMake >= 3.24**.

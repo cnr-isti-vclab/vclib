@@ -17,3 +17,6 @@ You can refer to the User Guide documentation to learn how to install and use th
 The library is developed by the [Visual Computing Lab](https://vcg.isti.cnr.it) of the [ISTI Institute](https://www.isti.cnr.it) of the [National Research Council of Italy](https://www.cnr.it).
 
 The library is under the [MPL2 license](https://github.com/cnr-isti-vclab/vclib/blob/main/LICENSE).
+
+> [!WARNING]
+> **License Disclaimer:** Please note that when using the `External` module or the `IO` module of `Core`, you are also accepting the licenses of the external third-party libraries they depend on, which may differ from the MPL2 license.
