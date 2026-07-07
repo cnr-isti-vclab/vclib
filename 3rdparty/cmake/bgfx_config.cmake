@@ -406,10 +406,6 @@ function(vclib_target_add_shaders target_name)
     endforeach()
 
     if(ALL_GENERATED_FILES)
-        message(
-            STATUS
-            "vclib_target_add_shaders: Attaching generated files to ${target_name}: ${ALL_GENERATED_FILES}"
-        )
         target_sources(${target_name} PRIVATE ${ALL_GENERATED_FILES})
     endif()
 
