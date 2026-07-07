@@ -53,6 +53,12 @@ class CMakeBuild(build_ext):
             f"--preset=vclib-python-wheel"
         ]
 
+        if os.environ.get("VCLIB_USE_CCACHE") == "1":
+            cmake_args.extend([
+                "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+            ])
+
         build_args = ["--target", "install"]
 
         # Run CMake configure
