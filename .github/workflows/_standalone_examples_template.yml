@@ -207,26 +207,42 @@ jobs:
       if: matrix.integration_mode == 'FetchContent' && matrix.module == 'core'
       shell: bash
       run: |
-        cmake -S examples/standalone/core-template-project -B examples/standalone/core-template-project/build -G Ninja
+        cmake -S examples/standalone/core-template-project -B examples/standalone/core-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build examples/standalone/core-template-project/build
 
     - name: Build Template Project (External)
       if: matrix.integration_mode == 'FetchContent' && matrix.module == 'external'
       shell: bash
       run: |
-        cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build -G Ninja
+        cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build examples/standalone/external-template-project/build
 
     - name: Build Template Project (Render - Custom Shader)
       if: matrix.integration_mode == 'FetchContent' && matrix.module == 'render'
       shell: bash
       run: |
-        cmake -S examples/standalone/render-template-project-custom-shader -B examples/standalone/render-template-project-custom-shader/build -G Ninja
+        cmake -S examples/standalone/render-template-project-custom-shader -B examples/standalone/render-template-project-custom-shader/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build examples/standalone/render-template-project-custom-shader/build
 
     - name: Build Template Project (Render - Mesh Viewer)
       if: matrix.integration_mode == 'FetchContent' && matrix.module == 'render'
       shell: bash
       run: |
-        cmake -S examples/standalone/render-template-project-mesh-viewer -B examples/standalone/render-template-project-mesh-viewer/build -G Ninja
+        cmake -S examples/standalone/render-template-project-mesh-viewer -B examples/standalone/render-template-project-mesh-viewer/build  \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build examples/standalone/render-template-project-mesh-viewer/build
