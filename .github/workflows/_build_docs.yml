@@ -7,6 +7,11 @@ on:
         required: false
         type: string
         description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
+      single_version:
+        required: false
+        type: boolean
+        default: false
+        description: "If true, generates only the documentation for the current version, without historical tags."
 
 jobs:
   build_docs:
@@ -22,7 +27,13 @@ jobs:
           sudo apt-get install doxygen graphviz
       - name: Build Docs
         run: |
-          python3 scripts/generate_versioned_docs.py --verbose
+          if [ "${{ inputs.single_version }}" == "true" ]; then
+            VERSION=$(cat VERSION)
+            sed -i "s/^PROJECT_NUMBER\s*=.*/PROJECT_NUMBER = \"$VERSION\"/" docs/Doxyfile
+            doxygen docs/Doxyfile
+          else
+            python3 scripts/generate_versioned_docs.py --verbose
+          fi
       - name: Upload Docs
         uses: actions/upload-artifact@v7
         with:

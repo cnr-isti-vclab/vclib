@@ -71,6 +71,7 @@ jobs:
     uses: ./.github/workflows/_build_docs.yml
     with:
       ref: ${{ needs.prepare_release.outputs.new_sha }}
+      single_version: true
 
   create_release:
     needs: [prepare_release, test_core, test_external, test_render, build_packages, build_wheels, build_docs]
