@@ -192,11 +192,6 @@ jobs:
       working-directory: examples/standalone/build
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
-            export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
-          fi
-        fi
         if [ "${{ matrix.module }}" != "render" ]; then
           ctest --output-on-failure
         else
