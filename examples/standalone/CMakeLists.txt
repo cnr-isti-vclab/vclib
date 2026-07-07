@@ -148,6 +148,21 @@ function(add_standalone_example module name)
             )
         endif()
     endif()
+
+    if(WIN32)
+        set(COPY_DLLS_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/copy_dlls_${TARGET_NAME}.cmake")
+        file(GENERATE OUTPUT "${COPY_DLLS_SCRIPT}" CONTENT "
+set(DLLS \"$<TARGET_RUNTIME_DLLS:${TARGET_NAME}>\")
+if(DLLS)
+    execute_process(COMMAND \${CMAKE_COMMAND} -E copy_if_different \${DLLS} \"$<TARGET_FILE_DIR:${TARGET_NAME}>\")
+endif()
+")
+        add_custom_command(
+            TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -P "${COPY_DLLS_SCRIPT}"
+            COMMENT "Copying runtime DLLs for ${TARGET_NAME}"
+        )
+    endif()
 endfunction()
 
 if(VCLIB_STANDALONE_BUILD_CORE)

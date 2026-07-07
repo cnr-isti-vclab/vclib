@@ -55,7 +55,7 @@ jobs:
       shell: bash
       run: |
         choco install -y cmake ninja
-        choco install -y embree boost-msvc-14.3
+        choco install -y boost-msvc-14.3
 
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
@@ -65,11 +65,9 @@ jobs:
     - name: Build and Install VCLib
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
-        fi
         PRESET="vclib-${{ matrix.package_type }}-install"
-        cmake -S . -B build-vclib --preset=$PRESET
+        cmake -S . -B build-vclib --preset=$PRESET \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build-vclib
         cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
 
@@ -139,7 +137,7 @@ jobs:
       run: |
         choco install -y cmake ninja
         if [ "${{ matrix.module }}" == "external" ]; then
-          choco install -y embree boost-msvc-14.3
+          choco install -y boost-msvc-14.3
         fi
 
     - name: Ccache
@@ -180,10 +178,6 @@ jobs:
           EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=OFF -DVCLIB_STANDALONE_BUILD_RENDER=ON -DVCLIB_RENDER_BACKEND=bgfx"
         fi
         
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
-        fi
-        
         cmake -S examples/standalone -B examples/standalone/build \
           -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
@@ -198,13 +192,9 @@ jobs:
       working-directory: examples/standalone/build
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          CURRENT_PATH=$(pwd)
-          export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/embree-4.4.1.x64.windows/bin:$PATH"
+        if [ "$RUNNER_OS" == "Windows" ]; then
           if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
             export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
-          else
-            export PATH="$CURRENT_PATH/_deps/cgal-src/auxiliary/gmp/bin:$PATH"
           fi
         fi
         if [ "${{ matrix.module }}" != "render" ]; then
@@ -224,9 +214,6 @@ jobs:
       if: matrix.integration_mode == 'FetchContent' && matrix.module == 'external'
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
-        fi
         cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build -G Ninja
         cmake --build examples/standalone/external-template-project/build
 

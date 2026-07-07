@@ -69,6 +69,29 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
     endif()
 endif()
 
+# Define imported targets for downloaded precompiled libraries BEFORE vclibTargets.cmake
+# so that they are correctly resolved when vclibTargets.cmake is evaluated.
+if(NOT "@VCLIB_USED_SYSTEM_CGAL@" AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES AND WIN32)
+    if(NOT TARGET gmp)
+        add_library(gmp SHARED IMPORTED GLOBAL)
+        set_property(TARGET gmp PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmp.lib")
+        set_property(TARGET gmp PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmp-10.dll")
+        set_property(TARGET gmp PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
+    endif()
+    if(NOT TARGET gmpxx)
+        add_library(gmpxx SHARED IMPORTED GLOBAL)
+        set_property(TARGET gmpxx PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmpxx.lib")
+        set_property(TARGET gmpxx PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmpxx-4.dll")
+        set_property(TARGET gmpxx PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
+    endif()
+    if(NOT TARGET mpfr)
+        add_library(mpfr SHARED IMPORTED GLOBAL)
+        set_property(TARGET mpfr PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/mpfr.lib")
+        set_property(TARGET mpfr PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/mpfr-6.dll")
+        set_property(TARGET mpfr PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include")
+    endif()
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/vclibTargets.cmake")
 
 if(@VCLIB_INSTALL_MODULE_RENDER@)
@@ -126,6 +149,17 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                 )
             endif()
         endif()
+    elseif(
+        NOT "@VCLIB_USED_SYSTEM_BOOST@"
+        AND "vclib-3rd-boost" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
+        if(NOT TARGET vclib::vclib-3rd-boost)
+            add_library(vclib::vclib-3rd-boost INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-boost APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_BOOST)
+            if(TARGET vclib::external)
+                set_property(TARGET vclib::external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-boost)
+            endif()
+        endif()
     endif()
     if(
         "@VCLIB_USED_SYSTEM_CGAL@"
@@ -155,72 +189,19 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
         NOT "@VCLIB_USED_SYSTEM_CGAL@"
         AND "vclib-3rd-cgal" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
     )
-        # If CGAL was bundled and built from source, we must also expose the bundled
-        # GMP/MPFR DLLs on Windows so that consumers can link against them correctly.
-        if(WIN32)
-            if(NOT TARGET gmp)
-                add_library(gmp SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmp.lib"
-                )
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmp-10.dll"
-                )
-                set_property(
-                    TARGET gmp
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include"
-                )
+        if(NOT TARGET vclib::vclib-3rd-cgal)
+            add_library(vclib::vclib-3rd-cgal INTERFACE IMPORTED)
+            set_property(TARGET vclib::vclib-3rd-cgal APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_CGAL)
+            
+            # If CGAL was bundled and built from source, we must also expose the bundled
+            # GMP/MPFR DLLs on Windows so that consumers can link against them correctly.
+            if(WIN32)
+                set_property(TARGET vclib::vclib-3rd-cgal APPEND PROPERTY INTERFACE_LINK_LIBRARIES gmp gmpxx mpfr)
             endif()
-            if(NOT TARGET gmpxx)
-                add_library(gmpxx SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmpxx.lib"
-                )
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmpxx-4.dll"
-                )
-                set_property(
-                    TARGET gmpxx
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include"
-                )
-            endif()
-            if(NOT TARGET mpfr)
-                add_library(mpfr SHARED IMPORTED GLOBAL)
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        IMPORTED_IMPLIB
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../lib/mpfr.lib"
-                )
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        IMPORTED_LOCATION
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../bin/mpfr-6.dll"
-                )
-                set_property(
-                    TARGET mpfr
-                    PROPERTY
-                        INTERFACE_INCLUDE_DIRECTORIES
-                            "${CMAKE_CURRENT_LIST_DIR}/../../../include"
-                )
-            endif()
+            
+            if(TARGET vclib::external)
+            set_property(TARGET vclib::external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-cgal)
+        endif()
         endif()
     endif()
     if(
@@ -245,6 +226,26 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-embree
                 )
+            endif()
+        endif()
+    elseif(
+        NOT "@VCLIB_USED_SYSTEM_EMBREE@"
+        AND "vclib-3rd-embree" IN_LIST VCLIB_CONFIG_EXTERNAL_3RDPARTY_LIBRARIES
+    )
+        if(NOT TARGET vclib::vclib-3rd-embree)
+            add_library(vclib::vclib-3rd-embree INTERFACE IMPORTED)
+            if(WIN32)
+                if(NOT TARGET embree)
+                    add_library(embree SHARED IMPORTED GLOBAL)
+                    set_property(TARGET embree PROPERTY IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/embree4.lib")
+                    set_property(TARGET embree PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_LIST_DIR}/../../../bin/embree4.dll")
+                    set_property(TARGET embree PROPERTY INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_LIST_DIR}/../../../include/embree4")
+                endif()
+                set_property(TARGET vclib::vclib-3rd-embree APPEND PROPERTY INTERFACE_LINK_LIBRARIES embree)
+            endif()
+            set_property(TARGET vclib::vclib-3rd-embree APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_EMBREE)
+            if(TARGET vclib::external)
+                set_property(TARGET vclib::external APPEND PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-embree)
             endif()
         endif()
     endif()

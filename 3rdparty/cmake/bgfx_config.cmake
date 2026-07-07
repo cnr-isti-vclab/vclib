@@ -277,10 +277,6 @@ function(vclib_build_shader)
         )
 
         if(DEFINED ARG_OUT_FILES_VAR)
-            message(
-                STATUS
-                "vclib_build_shader generated: ${${ARG_OUT_FILES_VAR}}"
-            )
             set(${ARG_OUT_FILES_VAR} ${${ARG_OUT_FILES_VAR}} PARENT_SCOPE)
         endif()
     endif()
