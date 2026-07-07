@@ -58,7 +58,7 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: package-${{ matrix.os }}-${{ matrix.package_type }}-${{ inputs.ref || github.ref_name }}
+        key: package-${{ matrix.os }}-${{ matrix.package_type }}-${{ github.ref_name }}
 
     - name: Build and Install VCLib
       shell: bash
