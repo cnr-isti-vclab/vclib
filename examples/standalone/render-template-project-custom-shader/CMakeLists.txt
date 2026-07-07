@@ -50,8 +50,8 @@ endif()
 # Create the standalone executable
 add_executable(${PROJECT_NAME} main.cpp)
 
-# Link with VCLib
-target_link_libraries(${PROJECT_NAME} PRIVATE vclib::vclib)
+# Link with VCLib - this will automatically pull in all dependencies
+target_link_libraries(${PROJECT_NAME} PRIVATE vclib::render)
 
 # Add shaders
 vclib_target_add_shaders(${PROJECT_NAME}

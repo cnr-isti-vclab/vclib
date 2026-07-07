@@ -48,7 +48,7 @@ endif()
 add_executable(${PROJECT_NAME} main.cpp)
 
 # Link with VCLib - this will automatically pull in all dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE vclib::vclib)
+target_link_libraries(${PROJECT_NAME} PRIVATE vclib::core)
 
 # Print configuration info
 message(STATUS "VCLib Standalone Template Project")
