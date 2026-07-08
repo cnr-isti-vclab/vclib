@@ -61,6 +61,12 @@ public:
     using EditorType = MeshViewerRenderApp::EditorType;
     using ViewerType = MeshViewerRenderApp::ViewerType;
 
+    template<template<typename> typename EditorT>
+    auto pushEditor()
+    {
+        return viewer().template pushEditor<EditorT>();
+    }
+
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
