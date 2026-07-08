@@ -35,6 +35,7 @@ find_package(
 if(VCLIB_ALLOW_SYSTEM_QT)
     if(Qt6_FOUND)
         message(STATUS "- Qt6 - using system-provided library")
+        set(VCLIB_USED_SYSTEM_QT ON CACHE INTERNAL "")
 
         if(NOT TARGET vclib-3rd-qt)
             add_library(vclib-3rd-qt INTERFACE)
@@ -51,8 +52,7 @@ if(VCLIB_ALLOW_SYSTEM_QT)
                 )
             endif()
         endif()
-
-        list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-qt)
+        list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-qt)
     else()
         message(STATUS "- Qt - not found, skipping")
     endif()

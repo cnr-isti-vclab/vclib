@@ -13,7 +13,7 @@
 
 // Include the render backand imgui implementation
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <imgui_impl_opengl2.h>
+#include <imgui/backends/imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
@@ -21,7 +21,7 @@
 
 // Include the event backend imgui implementations
 #ifdef VCLIB_WITH_GLFW
-#include <imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 #endif
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt_imgui/imgui_impl_qt.h>

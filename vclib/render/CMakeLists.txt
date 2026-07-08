@@ -172,7 +172,9 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_RENDER_MODULE)
 
 set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR}
+    PROPERTIES
+        VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR}
+        EXPORT_NAME render
 )
 
 set_target_properties(
@@ -234,6 +236,10 @@ target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC ${VCLIB_RENDER_3RDPARTY_LIBRARIES} vclib::core
 )
+
+foreach(lib IN LISTS VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${lib}>)
+endforeach()
 
 # Install
 if(VCLIB_INSTALL_MODULE_RENDER)

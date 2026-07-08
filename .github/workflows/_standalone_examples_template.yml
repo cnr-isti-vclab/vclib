@@ -9,7 +9,15 @@ on:
         description: "Integration mode: 'find_package' or 'FetchContent'"
 
 jobs:
+  build_vclib_packages:
+    if: inputs.integration_mode == 'find_package'
+    uses: ./.github/workflows/_build_packages.yml
+    with:
+      ref: ${{ github.ref }}
+
   build_and_run_standalone_examples:
+    needs: [build_vclib_packages]
+    if: ${{ !failure() && !cancelled() }}
     name: Standalone Examples (${{ matrix.os }}, ${{ matrix.module }}, ${{ matrix.integration_mode }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -18,11 +26,6 @@ jobs:
         os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
         module: ['core', 'external', 'render']
         integration_mode: ['${{ inputs.integration_mode }}']
-        exclude:
-          - module: 'external'
-            integration_mode: 'find_package'
-          - module: 'render'
-            integration_mode: 'find_package'
     steps:
     - uses: actions/checkout@v7
       with:
@@ -44,13 +47,12 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libtbb-dev
+        sudo apt-get install cmake ninja-build libtbb-dev
         if [ "${{ matrix.module }}" == "external" ]; then
-          sudo apt-get install -y libcgal-dev libembree-dev
+          sudo apt-get install libembree-dev libgmp-dev libmpfr-dev
         fi
         if [ "${{ matrix.module }}" == "render" ]; then
-          sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
+          sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
         fi
 
     - name: Install dependencies
@@ -59,10 +61,7 @@ jobs:
       run: |
         brew install cmake ninja tbb
         if [ "${{ matrix.module }}" == "external" ]; then
-          brew install embree cgal
-        fi
-        if [ "${{ matrix.module }}" == "render" ]; then
-          brew install glfw
+          brew install embree gmp mpfr
         fi
 
     - name: Install dependencies
@@ -70,32 +69,35 @@ jobs:
       shell: bash
       run: |
         choco install -y cmake ninja
-        if [ "${{ matrix.module }}" == "external" ]; then
-          choco install -y embree boost-msvc-14.3
-        fi
 
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}-${{ github.ref_name }}
 
-    - name: Build and Install VCLib
+    - name: Download VCLib Package
       if: matrix.integration_mode == 'find_package'
+      uses: actions/download-artifact@v8
+      with:
+        name: vclib-package-${{ matrix.module == 'core' && 'core' || 'all' }}-${{ runner.os }}-${{ runner.arch }}
+        path: install-vclib
+    
+    - name: VCLib Package Permissions
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: |
-        # In find_package mode, we must first build and install VCLib
-        cmake -S . -B build-vclib --preset=vclib-core-install
-        cmake --build build-vclib
-        cmake --install build-vclib --prefix "${{ github.workspace }}/install-vclib"
+        if [ -d "install-vclib/bin" ]; then
+          chmod -R +x install-vclib/bin/*
+        fi
 
     - name: Configure Standalone Examples
       shell: bash
       run: |
         EXTRA_ARGS=""
         if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
-          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=ON"
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
         else
-          EXTRA_ARGS="-DVCLIB_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
         fi
         
         if [ "${{ matrix.module }}" == "core" ]; then
@@ -104,10 +106,6 @@ jobs:
           EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=ON -DVCLIB_STANDALONE_BUILD_RENDER=OFF"
         elif [ "${{ matrix.module }}" == "render" ]; then
           EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=OFF -DVCLIB_STANDALONE_BUILD_RENDER=ON -DVCLIB_RENDER_BACKEND=bgfx"
-        fi
-        
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
         fi
         
         cmake -S examples/standalone -B examples/standalone/build \
@@ -124,44 +122,86 @@ jobs:
       working-directory: examples/standalone/build
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          CURRENT_PATH=$(pwd)
-          export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/embree-4.4.1.x64.windows/bin:$PATH"
-          export PATH="$CURRENT_PATH/_deps/cgal-src/auxiliary/gmp/bin:$PATH"
-        fi
         if [ "${{ matrix.module }}" != "render" ]; then
+          if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
+            if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
+              export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
+            fi
+          fi
           ctest --output-on-failure
         else
           echo "Skipping tests for render module"
         fi
 
     - name: Build Template Project (Core)
-      if: matrix.integration_mode == 'FetchContent' && matrix.module == 'core'
+      if: matrix.module == 'core'
       shell: bash
       run: |
-        cmake -S examples/standalone/core-template-project -B examples/standalone/core-template-project/build -G Ninja
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+
+        cmake -S examples/standalone/core-template-project -B examples/standalone/core-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
         cmake --build examples/standalone/core-template-project/build
 
     - name: Build Template Project (External)
-      if: matrix.integration_mode == 'FetchContent' && matrix.module == 'external'
+      if: matrix.module == 'external'
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
         fi
-        cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build -G Ninja
+        cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
         cmake --build examples/standalone/external-template-project/build
 
     - name: Build Template Project (Render - Custom Shader)
-      if: matrix.integration_mode == 'FetchContent' && matrix.module == 'render'
+      if: matrix.module == 'render'
       shell: bash
       run: |
-        cmake -S examples/standalone/render-template-project-custom-shader -B examples/standalone/render-template-project-custom-shader/build -G Ninja
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        cmake -S examples/standalone/render-template-project-custom-shader -B examples/standalone/render-template-project-custom-shader/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
         cmake --build examples/standalone/render-template-project-custom-shader/build
 
     - name: Build Template Project (Render - Mesh Viewer)
-      if: matrix.integration_mode == 'FetchContent' && matrix.module == 'render'
+      if: matrix.module == 'render'
       shell: bash
       run: |
-        cmake -S examples/standalone/render-template-project-mesh-viewer -B examples/standalone/render-template-project-mesh-viewer/build -G Ninja
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        cmake -S examples/standalone/render-template-project-mesh-viewer -B examples/standalone/render-template-project-mesh-viewer/build  \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
         cmake --build examples/standalone/render-template-project-mesh-viewer/build

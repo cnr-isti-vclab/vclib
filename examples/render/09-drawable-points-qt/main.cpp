@@ -55,7 +55,7 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
     points->setVertexColors(colors);
 
     points->setSize(10);
-    points->setColorSetting(vcl::Points::ColorSetting::PER_VERTEX);
+    points->setColorSetting(vcl::Points::ColorSetting::GENERAL);
     points->setShading(vcl::Points::Shading::NONE);
     points->setShape(vcl::Points::Shape::SQUARE);
     points->setGeneralColor(vcl::Color::Magenta);
@@ -68,7 +68,7 @@ class ColorToUseComboBox : public QComboBox
 public:
     ColorToUseComboBox(QWidget* parent = nullptr) : QComboBox(parent)
     {
-        addItems({"Per Vertex", "General"});
+        addItems({"General", "Per Vertex"});
     }
 };
 

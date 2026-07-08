@@ -9,6 +9,7 @@ set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-5.0.1)
 
 if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)
     message(STATUS "- Eigen - using system-provided library")
+    set(VCLIB_USED_SYSTEM_EIGEN ON CACHE INTERNAL "")
     add_library(vclib-3rd-eigen INTERFACE)
     target_link_libraries(vclib-3rd-eigen INTERFACE Eigen3::Eigen)
 elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
