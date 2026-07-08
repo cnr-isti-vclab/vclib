@@ -118,6 +118,7 @@ public:
             return;
         }
         if (mFirstCall) {
+            Parent::viewerSetContinuousRedraw(true);
             mAutomations[0]->start();
             mMetrics[0]->start();
             mFirstCall = false;
@@ -128,6 +129,7 @@ public:
             if (mAllDone) {
                 mRepeatCount++;
                 if (isLastLoop()) {
+                    Parent::viewerSetContinuousRedraw(false);
                     std::cerr << "All benchmarks done." << std::endl;
                     mPrinter->finish();
                     return;
