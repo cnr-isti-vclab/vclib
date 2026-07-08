@@ -191,6 +191,8 @@ public:
     // internally the loop.
     void update() {}
 
+    void setContinuousRedraw(bool enabled) { (void)enabled; }
+
     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
 
     void* winId() const

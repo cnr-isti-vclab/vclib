@@ -316,6 +316,15 @@ protected:
         mViewer->requestUpdate();
     }
 
+    /**
+     * @brief Requests the viewer to enable/disable continuous redraw.
+     */
+    void viewerSetContinuousRedraw(bool enabled) const
+    {
+        assert(mViewer);
+        mViewer->setContinuousRedraw(enabled);
+    }
+
 private:
     // functions called by the (friend) viewer to set up the Editor
     void setViewer(ViewerDrawer* viewer) { mViewer = viewer; }
