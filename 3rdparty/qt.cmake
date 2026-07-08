@@ -53,6 +53,16 @@ if(VCLIB_ALLOW_SYSTEM_QT)
             endif()
         endif()
         list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-qt)
+
+        if(WIN32)
+            find_program(
+                VCLIB_WINDEPLOYQT_EXECUTABLE windeployqt
+                HINTS "${Qt6_DIR}/../../../bin"
+            )
+            if(VCLIB_WINDEPLOYQT_EXECUTABLE)
+                set(VCLIB_WINDEPLOYQT_EXECUTABLE ${VCLIB_WINDEPLOYQT_EXECUTABLE} CACHE INTERNAL "Path to windeployqt")
+            endif()
+        endif()
     else()
         message(STATUS "- Qt - not found, skipping")
     endif()
