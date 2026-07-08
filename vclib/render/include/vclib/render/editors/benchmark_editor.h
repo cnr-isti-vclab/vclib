@@ -136,10 +136,9 @@ public:
                 }
                 benchmarkLoop();
                 mPrinter->onBenchmarkLoop();
-            } else {
-                mMetrics[mCurrentAutomationIndex]->start();
-                mAutomations[mCurrentAutomationIndex]->start();
             }
+            mMetrics[mCurrentAutomationIndex]->start();
+            mAutomations[mCurrentAutomationIndex]->start();
         }
         if (!mAllDone && mAutomations[mCurrentAutomationIndex]->isActive()) {
             mMetrics[mCurrentAutomationIndex]->measure();

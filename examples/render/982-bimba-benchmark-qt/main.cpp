@@ -46,7 +46,7 @@ int main(int argc, char** argv)
     vcl::AutomationActionFactory<BenchmarkEditorT> aaf;
 
     // Run the automation 1 time
-    benchmarkEditor->setRepeatTimes(100);
+    benchmarkEditor->setRepeatTimes(1);
 
     // Measure FPS
     benchmarkEditor->setMetric(vcl::FpsBenchmarkMetric());
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     // Rotate 360 degrees (2*PI) around the Y axis over 3 seconds
     benchmarkEditor->addAutomation(aaf.createTimeLimited(
         aaf.createRotation(2.0f * M_PI, {0.f, 1.f, 0.f}),
-        3.0f));
+        1.0f));
 
     // Print the results to stdout
     vcl::StdoutBenchmarkPrinter prntr;
