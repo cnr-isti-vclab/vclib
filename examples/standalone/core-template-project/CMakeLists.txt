@@ -29,7 +29,7 @@ option(
     ON
 )
 
-if (VCLIB_STANDALONE_USE_FETCHCONTENT)
+if(VCLIB_STANDALONE_USE_FETCHCONTENT)
     # Enable FetchContent to download VCLib at configure time
     include(FetchContent)
 

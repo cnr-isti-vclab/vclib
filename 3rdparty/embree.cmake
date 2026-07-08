@@ -16,28 +16,31 @@ endif()
 
 if(NOT embree_FOUND AND WIN32 AND VCLIB_ALLOW_DOWNLOAD_EMBREE)
     include(FetchContent)
-    
+
     FetchContent_Declare(
         vclib_embree_win
-        URL "https://github.com/embree/embree/releases/download/v${EMBREE_VER}/embree-${EMBREE_VER}.x64.windows.zip"
+        URL
+            "https://github.com/embree/embree/releases/download/v${EMBREE_VER}/embree-${EMBREE_VER}.x64.windows.zip"
     )
-    
+
     FetchContent_MakeAvailable(vclib_embree_win)
-    
-    set(embree_DIR "${vclib_embree_win_SOURCE_DIR}/lib/cmake/embree-${EMBREE_VER}")
+
+    set(embree_DIR
+        "${vclib_embree_win_SOURCE_DIR}/lib/cmake/embree-${EMBREE_VER}"
+    )
     find_package(embree ${EMBREE_MAJOR} QUIET)
-    
+
     if(embree_FOUND)
         set(VCLIB_DOWNLOADED_EMBREE ON)
         if(VCLIB_INSTALL_MODULE_EXTERNAL)
             install(
-                FILES 
+                FILES
                     "${vclib_embree_win_SOURCE_DIR}/bin/embree${EMBREE_MAJOR}.dll"
                     "${vclib_embree_win_SOURCE_DIR}/bin/tbb12.dll"
                 DESTINATION ${CMAKE_INSTALL_BINDIR}
             )
             install(
-                FILES 
+                FILES
                     "${vclib_embree_win_SOURCE_DIR}/lib/embree${EMBREE_MAJOR}.lib"
                     "${vclib_embree_win_SOURCE_DIR}/lib/tbb12.lib"
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -66,9 +69,11 @@ if(embree_FOUND)
     # so that CMake's TARGET_RUNTIME_DLLS feature can detect and copy tbb12.dll automatically.
     if(VCLIB_DOWNLOADED_EMBREE AND WIN32)
         add_library(vclib-3rd-embree-tbb SHARED IMPORTED)
-        set_target_properties(vclib-3rd-embree-tbb PROPERTIES
-            IMPORTED_IMPLIB "${vclib_embree_win_SOURCE_DIR}/lib/tbb12.lib"
-            IMPORTED_LOCATION "${vclib_embree_win_SOURCE_DIR}/bin/tbb12.dll"
+        set_target_properties(
+            vclib-3rd-embree-tbb
+            PROPERTIES
+                IMPORTED_IMPLIB "${vclib_embree_win_SOURCE_DIR}/lib/tbb12.lib"
+                IMPORTED_LOCATION "${vclib_embree_win_SOURCE_DIR}/bin/tbb12.dll"
         )
         target_link_libraries(vclib-3rd-embree INTERFACE vclib-3rd-embree-tbb)
     endif()
