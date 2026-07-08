@@ -22,8 +22,8 @@ endif()
 
 set(EXCLUDE_EXAMPLES
     980-benchmark
-    982-split-shader-benchmarking
-    983-mesh-viewer-benchmarking)
+    983-split-shader-benchmarking
+    984-mesh-viewer-benchmarking)
 
 if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
