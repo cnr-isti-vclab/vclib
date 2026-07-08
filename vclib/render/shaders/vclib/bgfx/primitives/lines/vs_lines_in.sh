@@ -18,7 +18,7 @@ DECLARE_FETCH_VEC3(getVertexPos, vertexPosBuffer)
 BUFFER_RO(vertexColBuffer, uint, 1);
 #endif
 
-#if LINES_INDEXED
+#if LINES_INDICES_ON
 BUFFER_RO(indexBuffer, uint, 2);
 #endif
 
@@ -37,7 +37,7 @@ DECLARE_FETCH_VEC3(getLineNor, lineNorBuffer)
 #endif
 
 uint getVind(uint vind) {
-#if LINES_INDEXED
+#if LINES_INDICES_ON
     return indexBuffer[vind];
 #else
     return vind;

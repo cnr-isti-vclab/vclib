@@ -515,15 +515,16 @@ public:
     void draw(bgfx::ViewId viewId) const;
 
 private:
+    void checkAndUpdateProgram() const;
+    uint vertexPullingInstances() const;
+    bgfx::ProgramHandle linesProgramSelector() const;
+
     static constexpr uint V_POS_STAGE = 0;
     static constexpr uint V_COL_STAGE = 1;
     static constexpr uint L_IND_STAGE = 2;
     static constexpr uint L_COL_STAGE = 3;
     static constexpr uint V_NOR_STAGE = 4;
     static constexpr uint L_NOR_STAGE = 5;
-
-    void checkAndUpdateProgram() const;
-    uint vertexPullingInstances() const;
 };
 
 } // namespace vcl
