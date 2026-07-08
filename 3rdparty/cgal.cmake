@@ -12,11 +12,12 @@ find_package(CGAL QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_CGAL AND CGAL_FOUND)
     message(STATUS "- CGAL - using system-provided library")
+    set(VCLIB_USED_SYSTEM_CGAL ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-cgal INTERFACE)
     target_link_libraries(vclib-3rd-cgal INTERFACE CGAL::CGAL)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-cgal)
 
     target_compile_definitions(vclib-3rd-cgal INTERFACE VCLIB_WITH_CGAL)
 
@@ -83,7 +84,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             TARGET gmp
             PROPERTY
                 IMPORTED_LOCATION
-                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/libgmp-10.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
         )
         target_include_directories(
             gmp
@@ -99,7 +100,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             TARGET gmpxx
             PROPERTY
                 IMPORTED_LOCATION
-                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/libgmpxx-4.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
         )
         target_include_directories(
             gmpxx
@@ -110,11 +111,57 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
             vclib-3rd-cgal
             INTERFACE gmp gmpxx mpfr Threads::Threads
         )
+    else()
+        # On Linux and macOS, we rely on the system-provided GMP and MPFR libraries.
+        # We use the FindGMP and FindMPFR modules provided by CGAL.
+        list(APPEND CMAKE_MODULE_PATH "${cgal_SOURCE_DIR}/cmake/modules")
+        find_package(GMP REQUIRED)
+        find_package(MPFR REQUIRED)
+
+        target_include_directories(
+            vclib-3rd-cgal
+            INTERFACE "${GMP_INCLUDE_DIR}" "${MPFR_INCLUDE_DIR}"
+        )
+        target_link_libraries(
+            vclib-3rd-cgal
+            INTERFACE "${GMP_LIBRARIES}" "${MPFR_LIBRARIES}" Threads::Threads
+        )
     endif()
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-cgal)
 
     target_compile_definitions(vclib-3rd-cgal INTERFACE VCLIB_WITH_CGAL)
+
+    # Install
+    if(VCLIB_ALLOW_INSTALL_CGAL)
+        install(
+            DIRECTORY "${cgal_SOURCE_DIR}/include/CGAL"
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+        if(WIN32)
+            # Install headers
+            install(
+                DIRECTORY "${cgal_SOURCE_DIR}/auxiliary/gmp/include/"
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            )
+            # Install .lib files
+            install(
+                FILES
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmp.lib"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmpxx.lib"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/mpfr.lib"
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            )
+            # Install .dll files
+            install(
+                FILES
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
+                    "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/mpfr-6.dll"
+                DESTINATION ${CMAKE_INSTALL_BINDIR}
+            )
+        endif()
+    endif()
 
 else()
     message(STATUS "- CGAL - not found, skipping")
