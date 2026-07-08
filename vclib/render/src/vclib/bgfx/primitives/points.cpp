@@ -202,27 +202,22 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     constexpr uint N_COLOR_MODES   = 2;
     constexpr uint N_SHAPE_MODES   = 2;
 
-    constexpr uint N_PROGRAMS = N_SHADING_MODES * N_COLOR_MODES * N_SHAPE_MODES;
+    uint shading = toUnderlying(mShading);
+    uint color   = toUnderlying(mColorSetting);
+    uint shape   = toUnderlying(mShape);
 
-    static const std::array<VertFragProgram, N_PROGRAMS> pointsPrograms = {
-        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_CIRCLE,
-        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE,
-        PRIMITIVE_POINTS_SHADING_NONE_COLOR_PER_VERTEX_SHAPE_CIRCLE,
-        PRIMITIVE_POINTS_SHADING_NONE_COLOR_PER_VERTEX_SHAPE_SQUARE,
-        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_GENERAL_SHAPE_CIRCLE,
-        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_GENERAL_SHAPE_SQUARE,
-        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_PER_VERTEX_SHAPE_CIRCLE,
-        PRIMITIVE_POINTS_SHADING_PER_VERTEX_COLOR_PER_VERTEX_SHAPE_SQUARE};
+    // the first shader of all the combinations
+    uint base =
+        toUnderlying(PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
 
-    uint shading = (mShading == Shading::PER_VERTEX) ? 1 : 0;
-    uint color   = (mColorSetting == ColorSetting::PER_VERTEX) ? 1 : 0;
-    uint shape   = (mShape == Shape::SQUARE) ? 1 : 0;
+    // matrix is generated from points.config
+    // SHADING x COLOR x SHAPE
 
-    uint program =
-        shading * N_COLOR_MODES * N_SHAPE_MODES + color * N_SHAPE_MODES + shape;
+    uint program = base + shading * N_COLOR_MODES * N_SHAPE_MODES +
+                   color * N_SHAPE_MODES + shape;
 
     ProgramManager& pm = Context::instance().programManager();
-    return pm.getProgram(pointsPrograms[program]);
+    return pm.getProgram(VertFragProgram(program));
 }
 
 } // namespace vcl
