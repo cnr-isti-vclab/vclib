@@ -389,6 +389,11 @@ protected:
 
     void requestUpdate() { derived()->update(); }
 
+    void setContinuousRedraw(bool enabled)
+    {
+        DRA::DRW::setContinuousRedraw(derived(), enabled);
+    }
+
 private:
     auto* derived() { return static_cast<DRA*>(this); }
 
