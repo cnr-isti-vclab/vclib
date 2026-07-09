@@ -16,7 +16,8 @@
 
 #ifdef VCLIB_WITH_GLFW
 #ifdef VCLIB_WITH_IMGUI
-
+#include <vclib/imgui/imgui_drawer.h>
+#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #endif
 #include <vclib/glfw/viewer_window.h>
 #endif
@@ -44,6 +45,31 @@ void viewerStaticAsserts()
 #endif
 
 #ifdef VCLIB_WITH_GLFW
+
+#ifdef VCLIB_WITH_IMGUI
+    using ImguiViewer = RenderApp<
+        vcl::glfw::WindowManager,
+        vcl::Canvas,
+        vcl::imgui::ImGuiDrawer,
+        vcl::imgui::MeshViewerDrawerImgui>;
+
+    static_assert(
+        ViewerConcept<ImguiViewer>,
+        "ImguiViewer does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<const ImguiViewer>,
+        "const ImguiViewer does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<ImguiViewer&>,
+        "ImguiViewer& does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<const ImguiViewer&>,
+        "const ImguiViewer& does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<ImguiViewer&&>,
+        "ImguiViewer&& does not satisfy the ViewerConcept");
+#endif
+
     static_assert(
         ViewerConcept<glfw::ViewerWindow>,
         "glfw::ViewerWindow does not satisfy the ViewerConcept");

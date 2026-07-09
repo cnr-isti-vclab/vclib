@@ -15,7 +15,7 @@
 #include <vclib/imgui/imgui_drawer.h>
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #endif // VCLIB_WITH_IMGUI
-#include <vclib/glfw/viewer_window.h> // leave this after the ImGui includes..
+#include <vclib/glfw/viewer_window.h>
 #endif // VCLIB_WITH_GLFW
 
 namespace vcl {
