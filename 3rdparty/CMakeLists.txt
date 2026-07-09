@@ -98,7 +98,11 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
 
     # embree
     option(VCLIB_ALLOW_SYSTEM_EMBREE "Allow use of system-provided Embree" ON)
-    option(VCLIB_ALLOW_DOWNLOAD_EMBREE "Allow download and use of embree (Windows only)" ON)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_EMBREE
+        "Allow download and use of embree (Windows only)"
+        ON
+    )
     include(embree.cmake)
 
     # libigl

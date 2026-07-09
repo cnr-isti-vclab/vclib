@@ -254,41 +254,21 @@ bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
 {
     using enum VertFragProgram;
 
-    constexpr uint N_INDEX_MODES = 2;
     constexpr uint N_TOPO_MODES  = 2;
     constexpr uint N_COLOR_MODES = 3;
 
-    constexpr uint N_PROGRAMS = N_INDEX_MODES * N_TOPO_MODES * N_COLOR_MODES;
-
-    static const std::array<VertFragProgram, N_PROGRAMS> programs = {
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX,
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_LINE,
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_GENERAL,
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_PER_VERTEX,
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_PER_LINE,
-        SCREENSPACE_LINES_INDICES_ON_TOPO_LINE_STRIP_COLOR_GENERAL,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_PER_VERTEX,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_PER_LINE,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINES_COLOR_GENERAL,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_PER_VERTEX,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_PER_LINE,
-        SCREENSPACE_LINES_INDICES_OFF_TOPO_LINE_STRIP_COLOR_GENERAL};
-
     uint indexMode = mIndices.isValid() ? 0 : 1;
-    uint topoMode  = (mTopology == Topology::LINES) ? 0 : 1;
-    uint colorMode = 0;
-    if (mColorSetting == ColorSetting::PER_LINE) {
-        colorMode = 1;
-    }
-    else if (mColorSetting == ColorSetting::GENERAL) {
-        colorMode = 2;
-    }
+    uint topoMode  = toUnderlying(mTopology);
+    uint colorMode = toUnderlying(mColorSetting);
 
-    uint program = indexMode * (N_TOPO_MODES * N_COLOR_MODES) +
+    uint base =
+        toUnderlying(SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX);
+
+    uint program = base + indexMode * (N_TOPO_MODES * N_COLOR_MODES) +
                    topoMode * N_COLOR_MODES + colorMode;
 
     ProgramManager& pm = Context::instance().programManager();
-    return pm.getProgram(programs[program]);
+    return pm.getProgram(VertFragProgram(program));
 }
 
 } // namespace vcl

@@ -22,18 +22,14 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BOOST)
 
     FetchContent_Declare(
         boost
-        URL
-            https://archives.boost.io/release/1.91.0/source/boost_1_91_0.zip
+        URL https://archives.boost.io/release/1.91.0/source/boost_1_91_0.zip
         SOURCE_SUBDIR "include" # trick to avoid add_subdir
     )
 
     FetchContent_MakeAvailable(boost)
 
     add_library(vclib-3rd-boost INTERFACE)
-    target_include_directories(
-        vclib-3rd-boost
-        INTERFACE "${boost_SOURCE_DIR}"
-    )
+    target_include_directories(vclib-3rd-boost INTERFACE "${boost_SOURCE_DIR}")
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-boost)
 

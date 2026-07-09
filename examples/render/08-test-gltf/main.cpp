@@ -5,20 +5,15 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/render/drawable/drawable_mesh.h>
-
-#include <vclib/io.h>
-
-#include <default_viewer.h>
 #include <get_drawable_mesh.h>
+
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    auto application = vcl::qt::qAppl(argc, argv);
-#endif
+    vcl::Application app(argc, argv);
 
-    auto viewer = defaultViewer();
+    vcl::MeshViewer viewer;
 
     enum GLTFExamples {
         CAMERAS = 0,
@@ -56,14 +51,14 @@ int main(int argc, char** argv)
                 VCLIB_EXAMPLE_MESHES_PATH +
                     GLTFExampleFilenames[selectedExample],
                 false);
-        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
+        showOnMeshViewer(argc, argv, viewer, std::move(drawable));
     }
     else {
         std::vector<vcl::TriEdgeMesh> meshes =
             vcl::loadMeshes<vcl::TriEdgeMesh>(
                 VCLIB_EXAMPLE_MESHES_PATH +
                 GLTFExampleFilenames[selectedExample]);
-        showMeshesOnViewer(argc, argv, viewer, std::move(meshes));
+        showOnMeshViewer(argc, argv, viewer, std::move(meshes));
     }
 
     viewer.fitScene();
@@ -92,12 +87,7 @@ int main(int argc, char** argv)
     // fit view to use the trackball decently
     viewer.fitView();
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+
+    return app.exec();
 }

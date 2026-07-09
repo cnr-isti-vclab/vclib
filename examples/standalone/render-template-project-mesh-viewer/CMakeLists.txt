@@ -29,12 +29,12 @@ option(
     ON
 )
 
-if (VCLIB_STANDALONE_USE_FETCHCONTENT)
+if(VCLIB_STANDALONE_USE_FETCHCONTENT)
     # Enable FetchContent to download VCLib at configure time
     include(FetchContent)
 
     # Set VCLib options BEFORE calling FetchContent_Declare
-    set(VCLIB_BUILD_MODULE_RENDER ON CACHE STRING "" FORCE) 
+    set(VCLIB_BUILD_MODULE_RENDER ON CACHE STRING "" FORCE)
 
     FetchContent_Declare(
         vclib

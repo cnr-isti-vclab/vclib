@@ -7,7 +7,7 @@
 
 #include "best_heightfield_orientation.h"
 
-#include <default_viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     auto allMeshes = std::tuple_cat(brainMeshes, bunnyMeshes);
 
     auto closure = [&](auto&&... meshes) {
-        return showMeshesOnDefaultViewer(argc, argv, meshes...);
+        return vcl::showOnMeshViewer(argc, argv, meshes...);
     };
 
     std::apply(closure, allMeshes);

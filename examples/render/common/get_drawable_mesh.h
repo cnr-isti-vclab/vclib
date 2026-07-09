@@ -37,10 +37,7 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
         }
     }
 
-    // create a DrawableMesh object from the mesh
-    vcl::DrawableMesh<MeshType> drawable(m);
-
-    return drawable;
+    return vcl::makeDrawable(std::move(m));
 }
 
 #endif // VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
