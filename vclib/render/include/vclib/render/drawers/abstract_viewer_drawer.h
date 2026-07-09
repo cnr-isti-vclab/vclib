@@ -165,6 +165,7 @@ public:
         if (id >= mDrawList->size()) return false;
         mDrawList->erase(id);
         refreshEditors();
+        requestUpdate();
         return true;
     }
 
@@ -173,6 +174,20 @@ public:
         if (id >= mDrawList->size()) return false;
         mDrawList->at(id)->init();
         requestUpdate();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a DrawableObject at a specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls `refreshEditors()`.
+     */
+    bool insertDrawableObject(uint pos, const DrawableObject& obj)
+    {
+        if (pos > mDrawList->size()) return false;
+        mDrawList->insert(pos, obj);
+        mDrawList->at(pos)->init();
+        refreshEditors();
         return true;
     }
 

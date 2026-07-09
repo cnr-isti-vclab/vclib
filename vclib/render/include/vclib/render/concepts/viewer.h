@@ -15,6 +15,16 @@
 
 namespace vcl {
 
+/**
+ * @brief Concept that verifies if a class provides the standard viewer interface.
+ *
+ * A type satisfies ViewerConcept if it provides the base types `ViewerType` and 
+ * `EditorType`, exposes a `drawableObjectVector`, and provides methods to set 
+ * the drawable object vector, push a drawable object, refresh editors, and 
+ * fit the scene.
+ *
+ * @tparam T: The type to be checked against the ViewerConcept.
+ */
 template<typename T>
 concept ViewerConcept =
     requires (

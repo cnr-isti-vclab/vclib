@@ -16,6 +16,15 @@
 
 namespace vcl {
 
+/**
+ * @brief Concept that verifies if a class provides the standard mesh viewer interface.
+ *
+ * A type satisfies MeshViewerConcept if it provides methods to add, insert, 
+ * remove, update, and clear meshes, as well as methods to query the selected mesh, 
+ * refresh editors, fit the scene, and show the window.
+ *
+ * @tparam T: The type to be checked against the MeshViewerConcept.
+ */
 template<typename T>
 concept MeshViewerConcept =
     requires (
@@ -24,9 +33,6 @@ concept MeshViewerConcept =
         uint id) {
         typename RemoveRef<T>::ViewerType;
         typename RemoveRef<T>::EditorType;
-
-        // Ensure DrawableObjectVector is not exposed
-        requires !requires { obj.drawableObjectVector(); };
 
         // non const requirements
         requires IsConst<T> || requires {

@@ -183,21 +183,16 @@ uint MeshViewer::selectedMesh() const
 
 bool MeshViewer::removeMesh(uint id)
 {
-    if (id >= mDrawableObjectVector->size()) return false;
-    mDrawableObjectVector->erase(id);
-    
-    // Refresh GUI elements
-    updateGUI();
-    return true;
+    bool res = viewer().removeDrawableObject(id);
+    if (res) updateGUI();
+    return res;
 }
 
 bool MeshViewer::updateMesh(uint id)
 {
-    if (id >= mDrawableObjectVector->size()) return false;
-    mDrawableObjectVector->at(id)->init();
-    mUI->viewer->update();
-    updateGUI();
-    return true;
+    bool res = viewer().updateDrawableObject(id);
+    if (res) updateGUI();
+    return res;
 }
 
 void MeshViewer::clearMeshes()

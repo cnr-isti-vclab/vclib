@@ -19,6 +19,12 @@
 
 namespace vcl::imgui {
 
+/**
+ * @brief The MeshViewer class for the ImGui backend.
+ *
+ * This class provides a complete GUI for manipulating and rendering meshes
+ * using GLFW and ImGui. It manages an internal `RenderApp` instance.
+ */
 class MeshViewer
 {
     using ViewerApp = vcl::RenderApp<
@@ -38,11 +44,19 @@ public:
     {
     }
 
+    /**
+     * @brief Returns the ID of the currently selected mesh.
+     */
     uint selectedMesh() const
     {
         return mApp.drawableObjectVector().selectedObjectId();
     }
 
+    /**
+     * @brief Adds a mesh to the end of the scene.
+     * @param mesh The mesh to add.
+     * @return The ID assigned to the new mesh.
+     */
     template<typename MeshType>
     uint pushMesh(MeshType&& mesh)
     {
@@ -56,13 +70,29 @@ public:
         return id;
     }
 
+    /**
+     * @brief Removes a mesh from the scene by its ID.
+     * @param id The ID of the mesh to remove.
+     * @return True if the mesh was successfully removed, false otherwise.
+     */
     bool removeMesh(uint id) { return mApp.removeDrawableObject(id); }
 
+    /**
+     * @brief Triggers an update of the mesh with the given ID.
+     * @param id The ID of the mesh to update.
+     * @return True if the update was successful, false otherwise.
+     */
     bool updateMesh(uint id)
     {
         return mApp.updateDrawableObject(id);
     }
 
+    /**
+     * @brief Inserts a mesh at a specific position in the scene.
+     * @param pos The position to insert the mesh at.
+     * @param mesh The mesh to insert.
+     * @return True if the insertion was successful, false otherwise.
+     */
     template<typename MeshType>
     bool insertMesh(uint pos, MeshType&& mesh)
     {
@@ -76,6 +106,9 @@ public:
         return success;
     }
 
+    /**
+     * @brief Clears all meshes from the scene.
+     */
     void clearMeshes()
     {
         mApp.clearDrawableObjects();

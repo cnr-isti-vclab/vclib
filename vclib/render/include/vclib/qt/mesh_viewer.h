@@ -73,8 +73,16 @@ private:
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
 public:
+    /**
+     * @brief Returns the ID of the currently selected mesh.
+     */
     uint selectedMesh() const;
 
+    /**
+     * @brief Adds a mesh to the end of the scene.
+     * @param[in] mesh: The mesh to add.
+     * @return The ID assigned to the new mesh.
+     */
     template<typename MeshType>
     uint pushMesh(MeshType&& mesh)
     {
@@ -89,10 +97,26 @@ public:
         return id;
     }
 
+    /**
+     * @brief Removes a mesh from the scene by its ID.
+     * @param[in] id: The ID of the mesh to remove.
+     * @return True if the mesh was successfully removed, false otherwise.
+     */
     bool removeMesh(uint id);
 
+    /**
+     * @brief Triggers an update of the mesh with the given ID.
+     * @param[in] id: The ID of the mesh to update.
+     * @return True if the update was successful, false otherwise.
+     */
     bool updateMesh(uint id);
 
+    /**
+     * @brief Inserts a mesh at a specific position in the scene.
+     * @param[in] pos: The position to insert the mesh at.
+     * @param[in] mesh: The mesh to insert.
+     * @return True if the insertion was successful, false otherwise.
+     */
     template<typename MeshType>
     bool insertMesh(uint pos, MeshType&& mesh)
     {
@@ -107,6 +131,9 @@ public:
         return success;
     }
 
+    /**
+     * @brief Clears all meshes from the scene.
+     */
     void clearMeshes();
 
     template<template<typename> typename EditorT>
