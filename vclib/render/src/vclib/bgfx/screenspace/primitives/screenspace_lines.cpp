@@ -267,8 +267,6 @@ bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
     uint program = base + indexMode * (N_TOPO_MODES * N_COLOR_MODES) +
                    topoMode * N_COLOR_MODES + colorMode;
 
-
-
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));
 }

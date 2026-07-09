@@ -56,11 +56,16 @@ if(VCLIB_ALLOW_SYSTEM_QT)
 
         if(WIN32)
             find_program(
-                VCLIB_WINDEPLOYQT_EXECUTABLE windeployqt
+                VCLIB_WINDEPLOYQT_EXECUTABLE
+                windeployqt
                 HINTS "${Qt6_DIR}/../../../bin"
             )
             if(VCLIB_WINDEPLOYQT_EXECUTABLE)
-                set(VCLIB_WINDEPLOYQT_EXECUTABLE ${VCLIB_WINDEPLOYQT_EXECUTABLE} CACHE INTERNAL "Path to windeployqt")
+                set(VCLIB_WINDEPLOYQT_EXECUTABLE
+                    ${VCLIB_WINDEPLOYQT_EXECUTABLE}
+                    CACHE INTERNAL
+                    "Path to windeployqt"
+                )
             endif()
         endif()
     else()

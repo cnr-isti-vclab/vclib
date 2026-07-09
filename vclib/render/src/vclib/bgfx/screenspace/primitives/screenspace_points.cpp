@@ -153,8 +153,7 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
     uint colorMode = toUnderlying(mColorSetting);
     uint shapeMode = toUnderlying(mShape);
 
-    uint base =
-        toUnderlying(SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_SQUARE);
+    uint base = toUnderlying(SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_SQUARE);
 
     uint program = base + colorMode * N_SHAPE_MODES + shapeMode;
 
