@@ -45,6 +45,9 @@ concept MeshViewerConcept =
             { obj.refreshEditors() } -> std::same_as<void>;
 
             { obj.fitScene() } -> std::same_as<void>;
+
+            { obj.show() } -> std::same_as<void>;
+            { obj.showMaximized() } -> std::same_as<void>;
         };
     };
 

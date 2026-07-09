@@ -163,6 +163,12 @@ public:
         cleanup();
     }
 
+    void showMaximized()
+    {
+        glfwMaximizeWindow(mWindow);
+        show();
+    }
+
     /**
      * @brief Returns true if the window is minimized (i.e. iconified), false
      * otherwise.

@@ -123,6 +123,8 @@ public:
     void fitView() { mApp.fitView(); }
     
     void show() { mApp.show(); }
+
+    void showMaximized() { mApp.showMaximized(); }
 };
 
 } // namespace vcl::imgui

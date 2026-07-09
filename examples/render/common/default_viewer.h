@@ -8,14 +8,10 @@
 #ifndef VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 #define VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 
-#include <vclib/mesh.h>
+#include <vclib/render/application.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/mesh_viewer.h>
-
-#ifdef VCLIB_WITH_QT
-#include <QApplication>
-#endif
 
 template<vcl::MeshConcept... MeshTypes>
 void showMeshesOnViewer(
@@ -30,7 +26,7 @@ void showMeshesOnViewer(
     viewer.fitScene();
 #endif
 
-    viewer.show();
+    viewer.showMaximized();
 }
 
 template<vcl::MeshConcept MeshTypes>
@@ -61,28 +57,19 @@ void showMeshesOnViewer(
     viewer.fitScene();
 #endif
 
-    viewer.show();
+    viewer.showMaximized();
 }
 
 template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    auto application = vcl::qt::qAppl(argc, argv);
-#endif
+    vcl::Application app(argc, argv);
 
     vcl::MeshViewer viewer;
 
     showMeshesOnViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    viewer.showMaximized();
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+    return app.exec();
 }
 
 template<vcl::MeshConcept MeshTypes>
@@ -93,23 +80,14 @@ int showMeshesOnDefaultViewer(
     bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    auto application = vcl::qt::qAppl(argc, argv);
-#endif
+    vcl::Application app(argc, argv);
 
     vcl::MeshViewer viewer;
 
     showMeshesOnViewer(
         argc, argv, viewer, std::move(meshes), pbrMode, panorama);
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    viewer.showMaximized();
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+    return app.exec();
 }
 
 #endif // VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H

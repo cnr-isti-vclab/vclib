@@ -10,9 +10,7 @@
 
 int main(int argc, char** argv)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    auto application = vcl::qt::qAppl(argc, argv);
-#endif
+    vcl::Application app(argc, argv);
 
     vcl::MeshViewer viewer;
 
@@ -40,12 +38,5 @@ int main(int argc, char** argv)
         getDrawableMesh<vcl::PolyMesh>(exampleFilenames[selectedExample]);
     showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    viewer.showMaximized();
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+    return app.exec();
 }

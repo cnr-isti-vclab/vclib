@@ -5,18 +5,12 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/render/drawable/drawable_mesh.h>
-
-#include <vclib/io.h>
-
 #include <default_viewer.h>
 #include <get_drawable_mesh.h>
 
 int main(int argc, char** argv)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    auto application = vcl::qt::qAppl(argc, argv);
-#endif
+    vcl::Application app(argc, argv);
 
     vcl::MeshViewer viewer;
 
@@ -92,12 +86,7 @@ int main(int argc, char** argv)
     // fit view to use the trackball decently
     viewer.fitView();
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+
+    return app.exec();
 }
