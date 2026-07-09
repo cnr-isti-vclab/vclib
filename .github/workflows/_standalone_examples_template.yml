@@ -73,7 +73,8 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}-${{ github.ref_name }}
+        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}
+        max-size: 1G
 
     - name: Download VCLib Package
       if: matrix.integration_mode == 'find_package'

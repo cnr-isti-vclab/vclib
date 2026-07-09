@@ -51,7 +51,8 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref_name }}
+        key: render-${{ matrix.os }}-${{matrix.render_backend}}
+        max-size: 1G
     - name: Build
       shell: bash
       run: |
