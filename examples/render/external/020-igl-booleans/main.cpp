@@ -7,7 +7,7 @@
 
 #include "igl_booleans.h"
 
-#include <default_viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
@@ -18,7 +18,7 @@ int main(int argc, char** argv)
     vcl::updatePerVertexAndFaceNormals(mUnion);
     vcl::updatePerVertexAndFaceNormals(mIntersection);
 
-    return showMeshesOnDefaultViewer(
+    return vcl::showOnMeshViewer(
         argc,
         argv,
         std::move(m1),

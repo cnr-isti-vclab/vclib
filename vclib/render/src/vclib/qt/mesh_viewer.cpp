@@ -153,6 +153,11 @@ MeshViewer::~MeshViewer()
     delete mUI;
 }
 
+const DrawableObjectVector& MeshViewer::drawableObjectVector() const
+{
+    return *mDrawableObjectVector;
+}
+
 /**
  * @brief Sets the current DrawableObjectVector, and updates the GUI
  * accordingly.
@@ -171,9 +176,29 @@ void MeshViewer::setDrawableObjectVector(
     updateGUI();
 }
 
-uint MeshViewer::selectedDrawableObject() const
+uint MeshViewer::selectedMesh() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
+}
+
+bool MeshViewer::removeMesh(uint id)
+{
+    bool res = viewer().removeDrawableObject(id);
+    if (res) updateGUI();
+    return res;
+}
+
+bool MeshViewer::updateMesh(uint id)
+{
+    bool res = viewer().updateDrawableObject(id);
+    if (res) updateGUI();
+    return res;
+}
+
+void MeshViewer::clearMeshes()
+{
+    viewer().clearDrawableObjects();
+    updateGUI();
 }
 
 void MeshViewer::refreshEditors()

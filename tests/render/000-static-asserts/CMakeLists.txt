@@ -14,6 +14,7 @@ set(HEADERS
     drawable_object.h
     drawers.h
     render_app.h
+    viewer.h
     window_manager.h
 )
 
