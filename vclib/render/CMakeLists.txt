@@ -115,6 +115,9 @@ endif()
 if(TARGET vclib-3rd-imgui)
     file(GLOB_RECURSE HEADERS_IMGUI CONFIGURE_DEPENDS "include/vclib/imgui/*.h")
     list(APPEND HEADERS ${HEADERS_IMGUI})
+
+    file(GLOB_RECURSE SOURCES_IMGUI CONFIGURE_DEPENDS "src/vclib/imgui/*.cpp")
+    list(APPEND SOURCES ${SOURCES_IMGUI})
 endif()
 
 if(TARGET vclib-3rd-qt)

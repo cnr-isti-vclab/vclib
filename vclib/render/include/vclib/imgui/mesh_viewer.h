@@ -38,7 +38,10 @@ public:
     {
     }
 
-    uint selectedMesh() const { return mApp.drawableObjectVector().selectedObjectId(); }
+    uint selectedMesh() const
+    {
+        return mApp.drawableObjectVector().selectedObjectId();
+    }
 
     template<typename MeshType>
     uint pushMesh(MeshType&& mesh)
@@ -53,10 +56,7 @@ public:
         return id;
     }
 
-    bool removeMesh(uint id)
-    {
-        return mApp.removeDrawableObject(id);
-    }
+    bool removeMesh(uint id) { return mApp.removeDrawableObject(id); }
 
     bool updateMesh(uint id)
     {
@@ -96,28 +96,6 @@ public:
 
     void setCamera(const Camera<float>& c) { mApp.setCamera(c); }
 
-    void setPbrSettings(const PBRViewerSettings& settings)
-    {
-        if constexpr (PBRViewerConcept<ViewerApp>) {
-            mApp.setPbrSettings(settings);
-        }
-    }
-
-    PBRViewerSettings pbrSettings() const
-    {
-        if constexpr (PBRViewerConcept<ViewerApp>) {
-            return mApp.pbrSettings();
-        }
-        return PBRViewerSettings{};
-    }
-
-    void setPanorama(const std::string& panorama)
-    {
-        if constexpr (PBRViewerConcept<ViewerApp>) {
-            mApp.setPanorama(panorama);
-        }
-    }
-
     void fitScene() { mApp.fitScene(); }
 
     void fitView() { mApp.fitView(); }
@@ -125,6 +103,12 @@ public:
     void show() { mApp.show(); }
 
     void showMaximized() { mApp.showMaximized(); }
+
+    void setPbrSettings(const PBRViewerSettings& settings);
+
+    PBRViewerSettings pbrSettings() const;
+
+    void setPanorama(const std::string& panorama);
 };
 
 } // namespace vcl::imgui
