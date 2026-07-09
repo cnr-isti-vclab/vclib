@@ -1,29 +1,15 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_QT_WIDGET_MANAGER_H
 #define VCL_QT_WIDGET_MANAGER_H
 
 #include "input.h"
+#include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
@@ -33,8 +19,10 @@
 #include <QWidget>
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 #include <QOpenGLWidget>
+#include <QSurfaceFormat>
 #endif
 
+#include <QAbstractEventDispatcher>
 #include <QGuiApplication>
 #include <QMouseEvent>
 
@@ -132,6 +120,53 @@ public:
     }
 
     QPaintEngine* paintEngine() const override { return nullptr; }
+
+    /**
+     * @brief Enables or disables continuous (as-fast-as-possible) redrawing.
+     *
+     * When enabled, the widget hooks into the Qt event loop's idle notification
+     * (`QAbstractEventDispatcher::aboutToBlock`) to schedule a repaint every
+     * time the event loop would otherwise block waiting for events. This
+     * produces a render loop equivalent to GLFW's unconditional draw-every-
+     * iteration loop, making the widget suitable for benchmarking.
+     *
+     * When disabled (the default), painting only happens in response to
+     * explicit `update()` calls triggered by input events or application
+     * logic.
+     *
+     * @note For the OpenGL2 backend, this function also disables vsync
+     * (`swapInterval = 0`) when enabling continuous redraw, so that the
+     * driver does not cap the frame rate to the screen refresh rate.
+     *
+     * @param[in] enabled: if true, enable continuous redraw; if false,
+     *            disconnect the idle hook and restore event-driven behaviour.
+     */
+    void setContinuousRedraw(bool enabled)
+    {
+        if (enabled) {
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
+            // Disable vsync so the driver does not cap frame rate
+            QSurfaceFormat fmt = format();
+            fmt.setSwapInterval(0);
+            setFormat(fmt);
+#endif
+            if (!mContinuousRedrawConn) {
+                mContinuousRedrawConn = connect(
+                    QAbstractEventDispatcher::instance(),
+                    &QAbstractEventDispatcher::aboutToBlock,
+                    this,
+                    [this]() {
+                        update();
+                    });
+            }
+        }
+        else {
+            if (mContinuousRedrawConn) {
+                disconnect(mContinuousRedrawConn);
+                mContinuousRedrawConn = QMetaObject::Connection {};
+            }
+        }
+    }
 
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
@@ -231,6 +266,9 @@ protected:
 
     void mouseMoveEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseMove(
             derived(),
             event->pos().x() * pixelRatio(),
@@ -241,6 +279,9 @@ protected:
 
     void mousePressEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mousePress(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -252,6 +293,9 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseRelease(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -263,6 +307,9 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         DerivedRenderApp::WM::mouseDoubleClick(
             derived(),
             vcl::qt::fromQt(event->button()),
@@ -274,6 +321,9 @@ protected:
 
     void wheelEvent(QWheelEvent* event) override
     {
+        DerivedRenderApp::WM::setModifiers(
+            derived(), vcl::qt::fromQt(event->modifiers()));
+
         // FIXME: this is not correct, define a proper equivalence
         if (!event->pixelDelta().isNull())
             DerivedRenderApp::WM::mouseScroll(
@@ -293,6 +343,10 @@ protected:
     }
 
 private:
+    // Connection handle for the continuous-redraw idle hook.
+    // A default-constructed QMetaObject::Connection is falsy (not connected).
+    QMetaObject::Connection mContinuousRedrawConn;
+
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override
     {

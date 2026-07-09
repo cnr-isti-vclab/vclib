@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_STAT_SELECTION_H
 #define VCL_ALGORITHMS_MESH_STAT_SELECTION_H
@@ -37,7 +22,7 @@ namespace vcl {
  * @return The number of selected elements.
  */
 template<uint ELEM_ID, MeshConcept MeshType>
-uint elementSelectionNumber(const MeshType& m)
+uint elementSelectionCount(const MeshType& m)
 {
     return std::ranges::distance(
         m.template elements<ELEM_ID>() | views::selected);
@@ -49,9 +34,9 @@ uint elementSelectionNumber(const MeshType& m)
  * @return The number of selected vertices.
  */
 template<MeshConcept MeshType>
-uint vertexSelectionNumber(const MeshType& m)
+uint vertexSelectionCount(const MeshType& m)
 {
-    return elementSelectionNumber<ElemId::VERTEX>(m);
+    return elementSelectionCount<ElemId::VERTEX>(m);
 }
 
 /**
@@ -60,9 +45,9 @@ uint vertexSelectionNumber(const MeshType& m)
  * @return The number of selected faces.
  */
 template<FaceMeshConcept MeshType>
-uint faceSelectionNumber(const MeshType& m)
+uint faceSelectionCount(const MeshType& m)
 {
-    return elementSelectionNumber<ElemId::FACE>(m);
+    return elementSelectionCount<ElemId::FACE>(m);
 }
 
 /**
@@ -76,11 +61,11 @@ uint faceSelectionNumber(const MeshType& m)
  * @return The number of selected edges.
  */
 template<FaceMeshConcept MeshType>
-uint faceEdgesSelectionNumber(const MeshType& m)
+uint faceEdgesSelectionCount(const MeshType& m)
 {
     uint cnt = 0;
     for (const auto& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeSelected(i)) {
                 ++cnt;
             }
@@ -96,9 +81,9 @@ uint faceEdgesSelectionNumber(const MeshType& m)
  * @return The number of selected edges.
  */
 template<EdgeMeshConcept MeshType>
-uint edgeSelectionNumber(const MeshType& m)
+uint edgeSelectionCount(const MeshType& m)
 {
-    return elementSelectionNumber<ElemId::EDGE>(m);
+    return elementSelectionCount<ElemId::EDGE>(m);
 }
 
 } // namespace vcl

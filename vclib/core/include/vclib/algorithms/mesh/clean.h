@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_CLEAN_H
 #define VCL_ALGORITHMS_MESH_CLEAN_H
@@ -43,8 +28,8 @@
  * algorithms for checking the mesh topology that allow to identify issues
  * in the mesh structure.
  *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/clean.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/mesh.h>`
  */
 
 namespace vcl {
@@ -166,7 +151,7 @@ uint removeUnreferencedVertices(MeshType& m)
 
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
-    if (n < m.vertexNumber()) {
+    if (n < m.vertexCount()) {
         // will store on this vector only the indices of the referenced vertices
         std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
         // Iterate over all vertices in the mesh, and mark any unreferenced
@@ -213,18 +198,18 @@ uint removeDuplicateVertices(MeshType& m)
     using VertexType    = MeshType::VertexType;
     using VertexPointer = MeshType::VertexType*;
 
-    if (m.vertexNumber() == 0)
+    if (m.vertexCount() == 0)
         return 0;
 
     // a map that will be used to keep track of deleted vertices and their
     // corresponding pointers.
-    std::vector<uint> newVertexIndices(m.vertexNumber());
+    std::vector<uint> newVertexIndices(m.vertexCount());
     // assigning each vertex index to itself.
     std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
     uint deleted = 0;
 
-    std::vector<VertexPointer> perm(m.vertexNumber());
+    std::vector<VertexPointer> perm(m.vertexCount());
 
     // put all the vertices into a vector for sorting.
     uint k = 0;
@@ -303,7 +288,7 @@ uint removeDuplicateFaces(MeshType& m)
     std::vector<detail::SortedIndexContainer<
         VertexType*,
         FaceType*,
-        FaceType::VERTEX_NUMBER>>
+        FaceType::VERTEX_COUNT>>
         fvec;
 
     for (FaceType& f : m.faces()) {
@@ -417,7 +402,7 @@ uint removeDegenerateFaces(MeshType& m)
     // deleted.
     for (FaceType& f : m.faces()) {
         bool deg = false; // flag to check if a face is degenerate
-        for (uint i = 0; i < f.vertexNumber() && !deg; ++i) {
+        for (uint i = 0; i < f.vertexCount() && !deg; ++i) {
             if (f.vertex(i) == f.vertexMod(i + 1)) {
                 deg = true;
                 m.deleteFace(m.index(f));

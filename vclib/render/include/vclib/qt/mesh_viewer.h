@@ -1,36 +1,23 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_QT_MESH_VIEWER_H
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
+#include "utils.h"
 
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
-#include <QWidget>
+#include <QMainWindow>
 
 namespace vcl::qt {
 
@@ -46,7 +33,7 @@ protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
 };
 
-class MeshViewer : public QWidget
+class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
@@ -56,8 +43,12 @@ class MeshViewer : public QWidget
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
+    std::shared_ptr<vcl::AxisEditor<MeshViewerRenderApp::ViewerType>>
+        mAxisEditor;
+    std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
+        mMeshSelectorEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>
+        mBoundingBoxEditor;
 
 protected:
     MeshViewerRenderApp& viewer() const;
@@ -67,16 +58,18 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 
 public:
+    using EditorType = MeshViewerRenderApp::EditorType;
+    using ViewerType = MeshViewerRenderApp::ViewerType;
+
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
     uint selectedDrawableObject() const;
+
+    void refreshEditors();
 
     TextEditLogger& logger();
 

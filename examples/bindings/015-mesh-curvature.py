@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -31,7 +16,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh curvature computation algorithms:
 # 1. Principal curvature using Taubin95 algorithm
@@ -50,8 +35,8 @@ def mesh_curvature():
     original_mesh.set_name("Original Bunny Mesh")
 
     print("Original mesh loaded:")
-    print(f"  Vertices: {original_mesh.vertex_number()}")
-    print(f"  Faces: {original_mesh.face_number()}")
+    print(f"  Vertices: {original_mesh.vertex_count()}")
+    print(f"  Faces: {original_mesh.face_count()}")
 
     # Enable required components
     original_mesh.enable_per_vertex_adjacent_faces()
@@ -86,7 +71,7 @@ def mesh_curvature():
         h.value_at_percentile(0.9))
 
     print("Taubin95 curvature computed.")
-    print(f"  Mean curvature range: {h.min_range_value()} to {h.max_range_value()}")
+    print(f"  Mean curvature range: {h.range_value_min()} to {h.range_value_max()}")
 
     # Principal Curvature with PCA Method
     print("\n=== Principal Curvature (PCA) ===")
@@ -112,7 +97,7 @@ def mesh_curvature():
         h2.value_at_percentile(0.95))
 
     print(f"PCA curvature computed (radius: {radius}).")
-    print(f"  Gaussian curvature range: {h2.min_range_value()} to {h2.max_range_value()}")
+    print(f"  Gaussian curvature range: {h2.range_value_min()} to {h2.range_value_max()}")
 
     # General Principal Curvature Function
     print("\n=== Principal Curvature (General Function) ===")
@@ -140,7 +125,7 @@ def mesh_curvature():
         h3.value_at_percentile(0.9))
 
     print("General curvature computed.")
-    print(f"  Maximum curvature range: {h3.min_range_value()} to {h3.max_range_value()}")
+    print(f"  Maximum curvature range: {h3.range_value_min()} to {h3.range_value_max()}")
 
     # Display statistics
     print("\n=== Curvature Statistics ===")
@@ -164,13 +149,13 @@ def main():
         print("\n=== Saving Meshes ===")
 
         # Create results directory if it doesn't exist
-        os.makedirs(VCLIB_RESULTS_PATH, exist_ok=True)
+        os.makedirs(VCLIB_PYTHON_RESULTS_PATH, exist_ok=True)
 
-        vcl.save_mesh(taubin_mesh, f"{VCLIB_RESULTS_PATH}/015_taubin_curvature.ply")
-        vcl.save_mesh(pca_mesh, f"{VCLIB_RESULTS_PATH}/015_pca_curvature.ply")
-        vcl.save_mesh(general_mesh, f"{VCLIB_RESULTS_PATH}/015_general_curvature.ply")
+        vcl.save_mesh(taubin_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_taubin_curvature.ply")
+        vcl.save_mesh(pca_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_pca_curvature.ply")
+        vcl.save_mesh(general_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/015_general_curvature.ply")
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}")
         print("Files saved:")
         print("  - 015_taubin_curvature.ply (colored by mean curvature)")
         print("  - 015_pca_curvature.ply (colored by Gaussian curvature)")

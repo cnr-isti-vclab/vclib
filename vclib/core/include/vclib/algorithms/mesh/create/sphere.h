@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
 #define VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
@@ -175,7 +160,7 @@ MeshType createSphereUV(
         VertexType* a = &mesh.vertex(i + meridians * (parallels - 2) + 1);
         VertexType* b =
             &mesh.vertex((i + 1) % meridians + meridians * (parallels - 2) + 1);
-        VertexType* v = &mesh.vertex(mesh.vertexNumber() - 1);
+        VertexType* v = &mesh.vertex(mesh.vertexCount() - 1);
         mesh.addFace(v, a, b);
     }
 
@@ -375,7 +360,7 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
     MeshType mesh = createIcosahedron<MeshType>(true);
 
     for (uint d = 0; d < divisions; d++) {
-        uint nf = mesh.faceNumber();
+        uint nf = mesh.faceCount();
         for (uint f = 0; f < nf; f++) {
             FaceType&   f0   = mesh.face(f);
             VertexType& v0   = *f0.vertex(0);
@@ -466,7 +451,7 @@ MeshType createSphere(
 template<FaceMeshConcept MeshType>
 MeshType createSphere()
 {
-    return createSphere<MeshType, double>({Point3d(), 1});
+    return createSphere<MeshType>(Sphere(Point3d(), 1.0));
 }
 
 } // namespace vcl

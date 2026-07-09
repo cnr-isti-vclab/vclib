@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -42,8 +27,8 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     THEN("Filter vertices")
@@ -55,8 +40,8 @@ TEMPLATE_TEST_CASE(
 
         THEN("The mesh has been filtered")
         {
-            REQUIRE(anotherMesh.vertexNumber() == 4);
-            REQUIRE(anotherMesh.faceNumber() == 0);
+            REQUIRE(anotherMesh.vertexCount() == 4);
+            REQUIRE(anotherMesh.faceCount() == 0);
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(
@@ -98,8 +83,8 @@ TEMPLATE_TEST_CASE(
 
         THEN("The mesh has been filtered")
         {
-            REQUIRE(anotherMesh.vertexNumber() == 8);
-            REQUIRE(anotherMesh.faceNumber() == 5);
+            REQUIRE(anotherMesh.vertexCount() == 8);
+            REQUIRE(anotherMesh.faceCount() == 5);
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(
@@ -176,6 +161,6 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh has 36 * 2 crease edges")
     {
-        REQUIRE(creaseEdges.edgeNumber() == 36 * 2);
+        REQUIRE(creaseEdges.edgeCount() == 36 * 2);
     }
 }

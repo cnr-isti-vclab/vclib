@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2025                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BINDINGS_CORE_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_BINDINGS_CORE_MESH_COMPONENTS_ADJACENT_FACES_H
@@ -42,10 +27,10 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
 
     namespace py = pybind11;
 
-    static const int  N    = ElementType::ADJ_FACE_NUMBER;
-    static const bool TTVN = CompType::TIED_TO_VERTEX_NUMBER;
+    static const int  N    = ElementType::ADJ_FACE_COUNT;
+    static const bool TTVC = CompType::TIED_TO_VERTEX_COUNT;
 
-    c.def("adj_faces_number", &ElementType::adjFacesNumber);
+    c.def("adj_face_count", &ElementType::adjFaceCount);
 
     c.def(
         "adj_face",
@@ -97,7 +82,7 @@ void initAdjacentFaces(pybind11::class_<ElementType>& c)
         "index_of_adj_face",
         py::overload_cast<uint>(&ElementType::indexOfAdjFace, py::const_));
 
-    if constexpr (N < 0 && !TTVN) {
+    if constexpr (N < 0 && !TTVC) {
         c.def("resize_adj_faces", &ElementType::resizeAdjFaces);
         c.def(
             "push_adj_face",

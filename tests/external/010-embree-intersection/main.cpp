@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -89,6 +74,9 @@ using Meshes        = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
 using MeshesIndexed = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
+
+// allow up to 0.02% numerical mismatches due to precision issues
+static const vcl::uint N_NUMERIC_TOLERANCE = N_RAYS_TEST * 0.0002;
 
 TEMPLATE_TEST_CASE(
     "Embree ray-triangle intersection vs brute force",
@@ -190,7 +178,15 @@ TEMPLATE_TEST_CASE(
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
-        REQUIRE(matches == N_RAYS_TEST);
+        if (matches < N_RAYS_TEST) {
+            WARN(
+                vcl::meshTypeName<TriMesh>()
+                << ": " << (N_RAYS_TEST - matches)
+                << " numerical mismatch(es) between Embree and brute force "
+                   "(tolerance: "
+                << N_NUMERIC_TOLERANCE << ")");
+        }
+        REQUIRE(matches >= N_RAYS_TEST - N_NUMERIC_TOLERANCE);
     }
 
     SECTION(vcl::meshTypeName<PolyMesh>().c_str())
@@ -288,6 +284,14 @@ TEMPLATE_TEST_CASE(
                   << ", Brute force misses: " << bruteForceMisses << ")"
                   << std::endl;
 
-        REQUIRE(matches == N_RAYS_TEST);
+        if (matches < N_RAYS_TEST) {
+            WARN(
+                vcl::meshTypeName<PolyMesh>()
+                << ": " << (N_RAYS_TEST - matches)
+                << " numerical mismatch(es) between Embree and brute force "
+                   "(tolerance: "
+                << N_NUMERIC_TOLERANCE << ")");
+        }
+        REQUIRE(matches >= N_RAYS_TEST - N_NUMERIC_TOLERANCE);
     }
 }

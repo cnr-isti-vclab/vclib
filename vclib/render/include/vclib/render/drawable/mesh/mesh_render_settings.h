@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
@@ -613,7 +598,7 @@ public:
     {
         mCapability.reset();
 
-        if (m.vertexNumber() > 0) {
+        if (m.vertexCount() > 0) {
             mCapability.visible() = true;
 
             // -- Points --
@@ -642,7 +627,7 @@ public:
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
-                if (m.faceNumber() > 0) {
+                if (m.faceCount() > 0) {
                     setSurfaceCapability(MRI::Surface::VISIBLE);
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
@@ -669,6 +654,34 @@ public:
                         }
                     }
 
+                    // shading normal map check
+                    if constexpr (
+                        vcl::HasPerVertexNormal<MeshType> &&
+                        vcl::HasPerVertexTangent<MeshType> &&
+                        vcl::HasMaterials<MeshType>) {
+                        bool hasTexCoords = false;
+                        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
+                            if (vcl::isPerVertexTexCoordAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+                        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+                            if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                                hasTexCoords = true;
+                            }
+                        }
+
+                        // Normal mapping requires normal and tangent vectors,
+                        // texture coordinates, and materials (which may contain
+                        // the normal map texture).
+                        if (hasTexCoords && m.materialCount() > 0 &&
+                            vcl::isPerVertexNormalAvailable(m) &&
+                            vcl::isPerVertexTangentAvailable(m)) {
+                            setSurfaceCapability(
+                                MRI::Surface::SHADING_NORMAL_MAP);
+                        }
+                    }
+
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {
                         if (vcl::isPerFaceColorAvailable(m))
                             setSurfaceCapability(MRI::Surface::COLOR_FACE);
@@ -685,14 +698,14 @@ public:
                     if constexpr (vcl::HasMaterials<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m) &&
-                                m.materialsNumber() > 0)
+                                m.materialCount() > 0)
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_VERTEX_TEX);
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m) &&
-                                m.materialsNumber() > 0) {
+                                m.materialCount() > 0) {
                                 setSurfaceCapability(
                                     MRI::Surface::COLOR_WEDGE_TEX);
                             }
@@ -703,7 +716,7 @@ public:
 
             // -- Edges --
             if constexpr (vcl::HasEdges<MeshType>) {
-                if (m.edgeNumber() > 0) {
+                if (m.edgeCount() > 0) {
                     setEdgesCapability(MRI::Edges::VISIBLE);
                     setEdgesCapability(MRI::Edges::SHADING_NONE);
                     setEdgesCapability(MRI::Edges::COLOR_USER);
@@ -816,7 +829,10 @@ private:
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
             // shading
-            if (canSurface(SHADING_SMOOTH)) {
+            if (canSurface(SHADING_NORMAL_MAP)) {
+                setSurface(SHADING_NORMAL_MAP);
+            }
+            else if (canSurface(SHADING_SMOOTH)) {
                 setSurface(SHADING_SMOOTH);
             }
             else if (canSurface(SHADING_FLAT)) {

@@ -1,31 +1,19 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
 #define VCL_RENDER_DRAWERS_TRACKBALL_EVENT_DRAWER_H
 
 #include "event_drawer.h"
 
+#include <vclib/render/drawable/drawable_directional_light.h>
+#include <vclib/render/drawable/drawable_trackball.h>
 #include <vclib/render/input.h>
+#include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/render/viewer/trackball.h>
 #include <vclib/space/core/bit_set.h>
 
@@ -67,6 +55,17 @@ private:
     // current mouse button (automatically updated)
     // if dragging holds the current mouse button
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
+
+    // drawable trackball
+    DrawableTrackBall mDrawTrackBall;
+
+    // drawable directional light
+    DrawableDirectionalLight mDrawableDirectionalLight;
+
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         mDragMotionMap = {
@@ -256,32 +255,105 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
+    // drawable trackball
+
+    /**
+     * @brief Check if the trackball is visible.
+     *
+     * @return true if the trackball is visible, false otherwise.
+     */
+    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
+
+    /**
+     * @brief Toggles the visibility of the trackball.
+     */
+    void toggleTrackBallVisibility()
+    {
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+    }
+
+    /**
+     * @brief Sets the callback function that will be called when the user
+     * presses the shortcut to toggle the trackball visibility (by default, the
+     * shortcut is T).
+     *
+     * This is useful when the user wants to execute some custom code when the
+     * trackball visibility is toggled through the shortcut.
+     *
+     * @param callback The function to execute.
+     */
+    void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleTrackballCallback = callback;
+    }
+
     // events
+
+    void onInit(uint viewId) override
+    {
+        Base::onInit(viewId);
+        mDrawTrackBall.init();
+        mDrawableDirectionalLight.init();
+    }
+
+    void onDraw(uint viewId) override
+    {
+        Base::onDraw(viewId);
+
+        DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
+
+        mDrawableDirectionalLight.setVisibility(
+            currentMotion() == TrackBallType::DIR_LIGHT_ARC);
+
+        if (mDrawableDirectionalLight.isVisible()) {
+            auto v = lightGizmoMatrix();
+            mDrawableDirectionalLight.updateRotation(v);
+            mDrawableDirectionalLight.draw(settings);
+        }
+
+        if (mDrawTrackBall.isVisible()) {
+            mDrawTrackBall.setTransform(gizmoMatrix());
+            mDrawTrackBall.updateDragging(isDragging());
+            mDrawTrackBall.draw(settings);
+        }
+    }
 
     void onResize(unsigned int width, unsigned int height) override
     {
         resizeViewer(width, height);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
+        // handle shortcut for trackball visibility
+        if (key == Key::T && modifiers[KeyModifier::NO_MODIFIER]) {
+            if (mCustomShortcutToggleTrackballCallback)
+                mCustomShortcutToggleTrackballCallback();
+            return true;
+        }
         keyPress(key);
+        return false;
     }
 
-    void onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         keyRelease(key);
+        return false;
     }
 
-    void onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
+        return false;
     }
 
-    void onMousePress(
+    bool onMousePress(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -290,9 +362,10 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         pressMouse(button);
+        return false;
     }
 
-    void onMouseRelease(
+    bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,
         double              y,
@@ -301,13 +374,15 @@ public:
         setKeyModifiers(modifiers);
         moveMouse(x, y);
         releaseMouse(button);
+        return false;
     }
 
-    void onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
+    bool onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
         override
     {
         setKeyModifiers(modifiers);
         scroll(dx, dy);
+        return false;
     }
 
 protected:

@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -30,7 +15,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to analyze mesh topology and compute statistics:
 # 1. Finding connected components in a mesh
@@ -53,8 +38,8 @@ def mesh_topology_statistics():
     range_mesh.enable_per_face_adjacent_faces()
     vcl.update_per_face_adjacent_faces(range_mesh)
 
-    print(f"Range mesh: {range_mesh.vertex_number()} vertices, "
-          f"{range_mesh.face_number()} faces")
+    print(f"Range mesh: {range_mesh.vertex_count()} vertices, "
+          f"{range_mesh.face_count()} faces")
 
     # Find connected components
     components = vcl.connected_components(range_mesh)
@@ -83,11 +68,11 @@ def mesh_topology_statistics():
     print(f"Is water tight: {'Yes' if water_tight else 'No'}")
 
     # Count non-manifold vertices
-    non_manifold = vcl.number_non_manifold_vertices(mesh)
+    non_manifold = vcl.non_manifold_vertex_count(mesh)
     print(f"Non-manifold vertices: {non_manifold}")
 
     # Count holes
-    holes = vcl.number_holes(mesh)
+    holes = vcl.hole_count(mesh)
     print(f"Number of holes: {holes}")
 
     print("\nExample completed successfully!")

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/meshes.h>
@@ -70,8 +55,8 @@ TEMPLATE_TEST_CASE(
         // The convex hull of a cube should have 8 vertices (the corners)
         // and 12 triangular faces (6 quad faces of the cube, each split into 2
         // triangles)
-        REQUIRE(hull.vertexNumber() == 8);
-        REQUIRE(hull.faceNumber() == 12);
+        REQUIRE(hull.vertexCount() == 8);
+        REQUIRE(hull.faceCount() == 12);
 
         // Verify that the hull is valid and closed
         REQUIRE(vcl::isWaterTight(hull));
@@ -124,8 +109,8 @@ TEMPLATE_TEST_CASE(
         TriMesh hull = vcl::convexHull<TriMesh>(points, seed);
 
         // The convex hull of a tetrahedron should have 4 vertices and 4 faces
-        REQUIRE(hull.vertexNumber() == 4);
-        REQUIRE(hull.faceNumber() == 4);
+        REQUIRE(hull.vertexCount() == 4);
+        REQUIRE(hull.faceCount() == 4);
 
         // Verify that the hull is valid and closed
         REQUIRE(vcl::isWaterTight(hull));

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_CORE_BOX_H
 #define VCL_SPACE_CORE_BOX_H
@@ -44,14 +29,19 @@ namespace vcl {
 template<PointConcept PointT>
 class Box
 {
-    PointT mMin;
-    PointT mMax;
+    PointT mMin = PointT::max();
+    PointT mMax = PointT::min();
 
 public:
     /**
      * @brief The type of point used to represent the corners of the box.
      */
     using PointType = PointT;
+
+    /**
+     * @brief The scalar type used for the coordinates of the box.
+     */
+    using ScalarType = PointT::ScalarType;
 
     /**
      * @brief The dimensionality of the box.
@@ -62,7 +52,7 @@ public:
      * @brief The Empty constructor of a box, initializes a null box.
      * @see setNull
      */
-    Box() { setNull(); }
+    Box() = default;
 
     /**
      * @brief Initializes the box with the given point. The box is a valid empty
@@ -134,6 +124,27 @@ public:
     {
         for (uint i = 0; i < PointT::DIM; ++i) {
             if (mMin[i] > mMax[i])
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * @brief Checks whether the box is degenerate or not.
+     * A box is considered degenerate if at least one minimum component is equal
+     * to the corresponding maximum component, and the box is not null.
+     * (A null box is not degenerate, since it does not represent a valid box.)
+     * @return true if the box is degenerate, false otherwise.
+     * @note A degenerate box has zero volume, since at least one dimension has
+     * zero length, i.e. is flat.
+     */
+    bool isDegenerate() const
+    {
+        if (isNull())
+            return false;
+
+        for (uint i = 0; i < PointT::DIM; ++i) {
+            if (mMin[i] == mMax[i])
                 return true;
         }
         return false;
@@ -367,10 +378,8 @@ public:
      */
     void setNull()
     {
-        mMin.setConstant(
-            std::numeric_limits<typename PointT::ScalarType>::max());
-        mMax.setConstant(
-            std::numeric_limits<typename PointT::ScalarType>::lowest());
+        mMin = PointT::max();
+        mMax = PointT::min();
     }
 
     /**

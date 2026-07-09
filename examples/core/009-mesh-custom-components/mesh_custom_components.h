@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_CUSTOM_COMPONENTS_H
 #define MESH_CUSTOM_COMPONENTS_H
@@ -47,8 +32,8 @@ auto meshCustomComponents()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n\n";
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces\n\n";
 
     // ========================================
     // PART 2: VERTEX CUSTOM COMPONENTS
@@ -142,7 +127,7 @@ auto meshCustomComponents()
         mesh.perFaceCustomComponentVectorHandle<double>("area");
     double totalArea =
         std::accumulate(faceAreaHandle.begin(), faceAreaHandle.end(), 0.0);
-    double avgArea = totalArea / mesh.faceNumber();
+    double avgArea = totalArea / mesh.faceCount();
 
     for (auto& face : mesh.faces()) {
         double area       = face.customComponent<double>("area");
@@ -180,7 +165,7 @@ auto meshCustomComponents()
     }
 
     std::cout << "First 3 face labels: ";
-    for (int i = 0; i < 3 && i < mesh.faceNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.faceCount(); ++i) {
         std::cout << "\"" << mesh.face(i).customComponent<std::string>("label")
                   << "\" ";
     }
@@ -242,7 +227,7 @@ auto meshCustomComponents()
     }
 
     // Simple Laplacian smoothing for flagged vertices only
-    std::vector<vcl::Point3d> newPositions(mesh.vertexNumber());
+    std::vector<vcl::Point3d> newPositions(mesh.vertexCount());
 
     // Copy current positions
     for (const auto& vertex : mesh.vertices()) {
@@ -287,7 +272,7 @@ auto meshCustomComponents()
         double displacement = (vertex.position() - originalPos).norm();
         totalDisplacement += displacement;
     }
-    double avgDisplacement = totalDisplacement / mesh.vertexNumber();
+    double avgDisplacement = totalDisplacement / mesh.vertexCount();
 
     std::cout << "Average vertex displacement: " << avgDisplacement << "\n";
     mesh.addCustomComponent<double>("averageDisplacement", avgDisplacement);

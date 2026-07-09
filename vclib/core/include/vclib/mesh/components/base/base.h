@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_BASE_BASE_H
 #define VCL_MESH_COMPONENTS_BASE_BASE_H
@@ -70,7 +55,7 @@ struct CompId
         CUSTOM_COMPONENTS,
         // Additional components here
 
-        COMPONENTS_NUMBER,
+        COMPONENT_COUNT,
     };
 };
 
@@ -80,7 +65,7 @@ struct CompId
  *
  * @ingroup base
  */
-constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
+constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENT_COUNT] = {
     "BitFlags",         "Position",
     "Normal",           "Color",
     "Quality",          "Mark",
@@ -99,7 +84,7 @@ constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
  * to a COMP_ID value, trough its member 'str'.
  *
  * If you use a custom component class, you should specialize this struct with
- * your COMP_ID value (that is >= COMPONENTS_NUMBER).
+ * your COMP_ID value (that is >= COMPONENT_COUNT).
  *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  *
@@ -111,7 +96,7 @@ struct ComponentString
     /**
      * @brief The string associated to the COMPONENT_ID.
      */
-    const char* str = COMP_ID < CompId::COMPONENTS_NUMBER ?
+    const char* str = COMP_ID < CompId::COMPONENT_COUNT ?
                           COMPONENT_ENUM_STRINGS[COMP_ID] :
                           nullptr;
 };

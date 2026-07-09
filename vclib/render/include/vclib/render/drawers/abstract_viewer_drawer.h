@@ -1,31 +1,18 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 #define VCL_RENDER_DRAWERS_ABSTRACT_VIEWER_DRAWER_H
 
-#include <vclib/render/concepts/view_projection_event_drawer.h>
+#include "trackball_event_drawer.h"
+
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
+#include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/space/core/color.h>
 
@@ -41,11 +28,17 @@ namespace vcl {
  * rendering functionalities. It is meant to be subclassed by a concrete viewer
  * drawer implementation.
  */
-template<typename ViewProjEventDrawer>
-class AbstractViewerDrawer : public ViewProjEventDrawer
+template<typename DerivedRenderApp>
+class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
-    using Base = ViewProjEventDrawer;
-    using DRA  = ViewProjEventDrawer::DRA;
+public:
+    enum class BuiltInEditors { AXIS = 0, COUNT };
+
+private:
+    friend Editor<AbstractViewerDrawer>;
+
+    using Base = TrackBallEventDrawer<DerivedRenderApp>;
+    using DRA  = DerivedRenderApp;
 
     bool mReadRequested = false;
 
@@ -60,17 +53,23 @@ protected:
     std::shared_ptr<DrawableObjectVector> mDrawList =
         std::make_shared<DrawableObjectVector>();
 
+    std::vector<std::shared_ptr<Editor<AbstractViewerDrawer>>> mEditors;
+
     // the drawer id
     uint& id() { return mId; }
 
 public:
+    using EditorType = Editor<AbstractViewerDrawer>;
+    using ViewerType = AbstractViewerDrawer;
+
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        static_assert(
-            ViewProjectionEventDrawerConcept<Base>,
-            "AbstractViewerDrawer requires a ViewProjectionEventDrawer as a "
-            "base class");
+        // push built-in editors - the order of the editors in the vector is
+        // important, as it is used to retrieve the editor by its enum value
+        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
+        axisEd->setActive(true);
+        assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
 
     ~AbstractViewerDrawer() = default;
@@ -87,13 +86,44 @@ public:
         for (auto obj : *mDrawList) {
             obj->init();
         }
+
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
+            if (editor) {
+                editor->setDrawableObjectVector(mDrawList);
+            }
+        }
+
         fitScene();
+    }
+
+    template<template<typename> typename ET>
+    auto pushEditor()
+    {
+        auto editor = std::make_shared<ET<ViewerType>>();
+        mEditors.push_back(editor);
+        editor->setViewer(this);
+        editor->setDrawableObjectVector(mDrawList);
+        return editor;
+    }
+
+    std::shared_ptr<EditorType> getEditor(BuiltInEditors editor) const
+    {
+        assert(mEditors[toUnderlying(editor)]);
+        return mEditors[toUnderlying(editor)];
+    }
+
+    void refreshEditors()
+    {
+        for (std::shared_ptr<EditorType>& editor : mEditors) {
+            editor->refresh();
+        }
     }
 
     uint pushDrawableObject(const DrawableObject& obj)
     {
         mDrawList->pushBack(obj);
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
@@ -101,6 +131,7 @@ public:
     {
         mDrawList->pushBack(std::move(obj));
         mDrawList->back()->init();
+        refreshEditors();
         return mDrawList->size() - 1;
     }
 
@@ -130,25 +161,155 @@ public:
     void onInit(uint) override
     {
         DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
+        mDrawList->init();
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    void onDraw(uint viewId) override
     {
-        Base::onKeyPress(key, modifiers);
-
-        switch (key) {
-        case Key::R: fitScene(); break;
-        case Key::S:
-            if (modifiers[KeyModifier::CONTROL])
-                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-            break;
-
-        default: break;
+        Base::onDraw(viewId);
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->draw(viewId);
         }
     }
 
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onKeyPress(key, modifiers);
+        }
+
+        if (!block)
+            block = Base::onKeyPress(key, modifiers);
+
+        if (!block) {
+            switch (key) {
+            case Key::R:
+                if (modifiers[KeyModifier::NO_MODIFIER])
+                    fitScene();
+                break;
+            case Key::S:
+                if (modifiers[KeyModifier::CONTROL])
+                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+                break;
+            default: break;
+            }
+        }
+        return block;
+    }
+
+    bool onKeyRelease(Key::Enum key, const KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onKeyRelease(key, modifiers);
+        }
+
+        if (!block)
+            block = Base::onKeyRelease(key, modifiers);
+
+        return block;
+    }
+
+    bool onMouseMove(double x, double y, const KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseMove(x, y, modifiers);
+        }
+
+        if (!block)
+            block = Base::onMouseMove(x, y, modifiers);
+
+        return block;
+    }
+
+    bool onMousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMousePress(button, x, y, modifiers);
+        }
+
+        if (!block)
+            block = Base::onMousePress(button, x, y, modifiers);
+
+        return block;
+    }
+
+    bool onMouseRelease(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseRelease(button, x, y, modifiers);
+        }
+
+        if (!block)
+            block = Base::onMouseRelease(button, x, y, modifiers);
+
+        return block;
+    }
+
+    bool onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseDoubleClick(button, x, y, modifiers);
+        }
+
+        if (!block)
+            block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
+        return block;
+    }
+
+    bool onMouseScroll(double x, double y, const KeyModifiers& modifiers)
+        override
+    {
+        bool block = false;
+
+        for (const auto& editor : mEditors) {
+            if (!block && editor->isActive())
+                block = editor->onMouseScroll(x, y, modifiers);
+        }
+
+        if (!block)
+            block = Base::onMouseScroll(x, y, modifiers);
+
+        return block;
+    }
+
 protected:
+    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
+
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
+
+    auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
@@ -224,6 +385,13 @@ protected:
             DRA::DRW::readId(derived(), Point2i(p.x(), p.y()), callback);
         if (mReadRequested)
             derived()->update();
+    }
+
+    void requestUpdate() { derived()->update(); }
+
+    void setContinuousRedraw(bool enabled)
+    {
+        DRA::DRW::setContinuousRedraw(derived(), enabled);
     }
 
 private:

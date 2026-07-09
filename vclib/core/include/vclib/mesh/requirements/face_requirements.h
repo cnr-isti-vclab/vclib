@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
@@ -50,15 +35,15 @@ namespace vcl {
 
 template<typename MeshType>
 concept HasTriangles =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 3;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == 3;
 
 template<typename MeshType>
 concept HasQuads =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == 4;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == 4;
 
 template<typename MeshType>
 concept HasPolygons =
-    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_NUMBER == -1;
+    HasFaces<MeshType> && RemoveRef<MeshType>::FaceType::VERTEX_COUNT == -1;
 
 /**
  * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it

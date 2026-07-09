@@ -8,11 +8,11 @@ def replace(element_file_string, new_element, start, end):
 
     element_list = element_file_string[start_index + len(start):(end_index - 1)].split('\n')
 
-    # if element_list contains ELEMENTS_NUMBER
-    if '        ELEMENTS_NUMBER,' in element_list:
-        element_list.remove('        ELEMENTS_NUMBER,')
+    # if element_list contains ELEMENT_COUNT
+    if '        ELEMENT_COUNT,' in element_list:
+        element_list.remove('        ELEMENT_COUNT,')
         element_list.append('        ' + new_element + ',')
-        element_list.append('        ELEMENTS_NUMBER,')
+        element_list.append('        ELEMENT_COUNT,')
     else:
         element_list.append('    ' + new_element + ',')
 
@@ -47,7 +47,7 @@ def update_element_list(element):
     end = '    };'
     element_file = replace(element_file, element.name_upper, start, end)
 
-    start = 'ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {'
+    start = 'ELEMENT_ENUM_STRINGS[ElemId::ELEMENT_COUNT] = {'
     end = '};'
     element_file = replace(element_file, '"' + element.name_upper_camel + '"', start, end)
 

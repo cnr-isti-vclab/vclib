@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#*****************************************************************************
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 import vclib as vcl
 import os
@@ -37,7 +22,7 @@ def mesh_statistics():
     # PART 1: BASIC GEOMETRIC PROPERTIES
     print("PART 1: Basic Geometric Properties\n-----------------------------------")
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bimba_simplified.obj")
-    print(f"Loaded mesh: {mesh.vertex_number()} vertices, {mesh.face_number()} faces\n")
+    print(f"Loaded mesh: {mesh.vertex_count()} vertices, {mesh.face_count()} faces\n")
     vcl.update_bounding_box(mesh)
     bbox = mesh.bounding_box()
     print(f"Bounding Box:\n  Min: {bbox.min()}\n  Max: {bbox.max()}\n  Size: {bbox.size()}\n  Diagonal: {bbox.diagonal()}\n")
@@ -134,7 +119,7 @@ def mesh_statistics():
     # PART 6: COMPARISON WITH DIFFERENT MESH
     print("\n\nPART 6: Comparison with Different Mesh\n--------------------------------------")
     mesh2 = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
-    print(f"Comparison mesh (cube): {mesh2.vertex_number()} vertices, {mesh2.face_number()} faces")
+    print(f"Comparison mesh (cube): {mesh2.vertex_count()} vertices, {mesh2.face_count()} faces")
     surface_area2 = vcl.surface_area(mesh2)
     barycenter2 = vcl.barycenter(mesh2)
     print(f"Cube surface area: {surface_area2}")

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_PLY_DETAIL_VERTEX_H
 #define VCL_IO_MESH_PLY_DETAIL_VERTEX_H
@@ -38,7 +23,8 @@ void readPlyVertexProperty(
     MeshType&   mesh,
     VertexType& v,
     PlyProperty p,
-    std::endian end = std::endian::little)
+    bool        vcgGenerated = false,
+    std::endian end          = std::endian::little)
 {
     bool hasBeenRead = false;
     if (p.name >= ply::x && p.name <= ply::z) {
@@ -46,6 +32,20 @@ void readPlyVertexProperty(
         int a           = p.name - ply::x;
         v.position()[a] = io::readPrimitiveType<Scalar>(file, p.type, end);
         hasBeenRead     = true;
+    }
+    else if (p.name == ply::bit_flags) {
+        if (vcgGenerated) {
+            int fval = io::readPrimitiveType<int>(file, p.type, end);
+            v.importFlagsFromVCGFormat(fval);
+            hasBeenRead = true;
+        }
+        else {
+            using FlagsType = VertexType::FlagsType;
+            FlagsType fval =
+                io::readPrimitiveType<FlagsType>(file, p.type, end);
+            v.setUnderlyingBitFlags(fval);
+            hasBeenRead = true;
+        }
     }
     else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -124,7 +124,8 @@ void readPlyVertexTxt(
     std::istream&                 file,
     VertexType&                   v,
     MeshType&                     mesh,
-    const std::list<PlyProperty>& vertexProperties)
+    const std::list<PlyProperty>& vertexProperties,
+    bool                          vcgGenerated = false)
 {
     Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token          = spaceTokenizer.begin();
@@ -132,7 +133,7 @@ void readPlyVertexTxt(
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");
         }
-        readPlyVertexProperty(token, mesh, v, p);
+        readPlyVertexProperty(token, mesh, v, p, vcgGenerated);
     }
 }
 
@@ -142,10 +143,11 @@ void readPlyVertexBin(
     VertexType&                   v,
     MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties,
-    std::endian                   end)
+    std::endian                   end,
+    bool                          vcgGenerated = false)
 {
     for (const PlyProperty& p : vertexProperties) {
-        readPlyVertexProperty(file, mesh, v, p, end);
+        readPlyVertexProperty(file, mesh, v, p, vcgGenerated, end);
     }
 }
 
@@ -171,6 +173,10 @@ void writePlyVertices(
             if (p.name >= ply::x && p.name <= ply::z) {
                 io::writeProperty(
                     file, v.position()[p.name - ply::x], p.type, format);
+                hasBeenWritten = true;
+            }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, v.underlyingBitFlags(), p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -234,21 +240,27 @@ void readPlyVertices(
     MeshType&        m,
     LogType&         log)
 {
-    m.addVertices(header.numberVertices());
+    m.addVertices(header.vertexCount());
 
-    log.startProgress("Reading vertices", header.numberVertices());
+    log.startProgress("Reading vertices", header.vertexCount());
 
-    for (uint vid = 0; vid < header.numberVertices(); ++vid) {
+    for (uint vid = 0; vid < header.vertexCount(); ++vid) {
         auto& v = m.vertex(vid);
         if (header.format() == ply::ASCII) {
-            detail::readPlyVertexTxt(file, v, m, header.vertexProperties());
+            detail::readPlyVertexTxt(
+                file, v, m, header.vertexProperties(), header.isVcgGenerated());
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
                                   std::endian::big :
                                   std::endian::little;
             detail::readPlyVertexBin(
-                file, v, m, header.vertexProperties(), end);
+                file,
+                v,
+                m,
+                header.vertexProperties(),
+                end,
+                header.isVcgGenerated());
         }
         log.progress(vid);
     }

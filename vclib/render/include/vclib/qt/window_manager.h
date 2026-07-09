@@ -1,34 +1,21 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_QT_WINDOW_MANAGER_H
 #define VCL_QT_WINDOW_MANAGER_H
 
 #include "input.h"
+#include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
+#include <QAbstractEventDispatcher>
 #include <QGuiApplication>
 #include <QMouseEvent>
 #include <QWindow>
@@ -78,6 +65,31 @@ public:
         setTitle(QString::fromStdString(title));
     }
 
+    void setContinuousRedraw(bool enabled)
+    {
+        if (enabled) {
+            // Disable vsync so the driver does not cap frame rate
+            QSurfaceFormat fmt = format();
+            fmt.setSwapInterval(0);
+            setFormat(fmt);
+            if (!mContinuousRedrawConn) {
+                mContinuousRedrawConn = connect(
+                    QAbstractEventDispatcher::instance(),
+                    &QAbstractEventDispatcher::aboutToBlock,
+                    this,
+                    [this]() {
+                        update();
+                    });
+            }
+        }
+        else {
+            if (mContinuousRedrawConn) {
+                disconnect(mContinuousRedrawConn);
+                mContinuousRedrawConn = QMetaObject::Connection {};
+            }
+        }
+    }
+
     Point2f dpiScale() const
     {
         auto* screen = this->screen();
@@ -114,7 +126,7 @@ public:
     void update() { QWindow::requestUpdate(); }
 
 protected:
-    bool event(QEvent* event)
+    bool event(QEvent* event) override
     {
         if (event->type() == QEvent::UpdateRequest) {
             DerivedRenderApp::WM::paint(derived());
@@ -221,6 +233,8 @@ protected:
     }
 
 private:
+    QMetaObject::Connection mContinuousRedrawConn;
+
     void paintEvent(QPaintEvent* event) override
     {
         DerivedRenderApp::WM::paint(derived());

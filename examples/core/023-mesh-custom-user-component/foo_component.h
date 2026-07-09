@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef FOO_COMPONENT_H
 #define FOO_COMPONENT_H
@@ -51,7 +36,7 @@ class FooComponent
 {
 public:
     // Unique component ID: must not conflict with VCLib's built-in components
-    static const unsigned int COMPONENT_ID = vcl::CompId::COMPONENTS_NUMBER + 0;
+    static const unsigned int COMPONENT_ID = vcl::CompId::COMPONENT_COUNT + 0;
 
     // Component data accessors
     int& foo() { return data; }
@@ -164,8 +149,8 @@ inline void demonstrateFooComponent()
     // The Foo component will NOT be copied because TriMesh doesn't have it
     // Only common components (position, normal, etc.) are transferred
     standardMesh.importFrom(mesh);
-    std::cout << "TriMesh now has " << standardMesh.vertexNumber()
-              << " vertices" << std::endl;
+    std::cout << "TriMesh now has " << standardMesh.vertexCount() << " vertices"
+              << std::endl;
 
     std::cout << "\nImporting back from TriMesh to FooMesh..." << std::endl;
     // This works but Foo component values will be initialized to default (0)

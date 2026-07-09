@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_STATISTICS_H
 #define MESH_STATISTICS_H
@@ -47,8 +32,8 @@ inline void meshStatistics()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/bimba_simplified.obj");
 
-    std::cout << "Loaded mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n\n";
+    std::cout << "Loaded mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces\n\n";
 
     // Update bounding box for geometric calculations
     vcl::updateBoundingBox(mesh);
@@ -263,8 +248,8 @@ inline void meshStatistics()
     vcl::TriMesh mesh2;
     vcl::loadMesh(mesh2, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Comparison mesh (cube): " << mesh2.vertexNumber()
-              << " vertices, " << mesh2.faceNumber() << " faces\n";
+    std::cout << "Comparison mesh (cube): " << mesh2.vertexCount()
+              << " vertices, " << mesh2.faceCount() << " faces\n";
 
     double surfaceArea2 = vcl::surfaceArea(mesh2);
     auto   barycenter2  = vcl::barycenter(mesh2);

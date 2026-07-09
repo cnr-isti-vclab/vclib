@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_TOPOLOGY_STATISTICS_H
 #define MESH_TOPOLOGY_STATISTICS_H
@@ -42,8 +27,8 @@ void meshTopologyStatistics()
     rangeMesh.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(rangeMesh);
 
-    std::cout << "Range mesh: " << rangeMesh.vertexNumber() << " vertices, "
-              << rangeMesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Range mesh: " << rangeMesh.vertexCount() << " vertices, "
+              << rangeMesh.faceCount() << " faces" << std::endl;
 
     // Find connected components
     auto components = vcl::connectedComponents(rangeMesh);
@@ -77,11 +62,11 @@ void meshTopologyStatistics()
     std::cout << "Is water tight: " << (waterTight ? "Yes" : "No") << std::endl;
 
     // Count non-manifold vertices
-    vcl::uint nonManifold = vcl::numberNonManifoldVertices(mesh);
+    vcl::uint nonManifold = vcl::nonManifoldVertexCount(mesh);
     std::cout << "Non-manifold vertices: " << nonManifold << std::endl;
 
     // Count holes
-    vcl::uint holes = vcl::numberHoles(mesh);
+    vcl::uint holes = vcl::holeCount(mesh);
     std::cout << "Number of holes: " << holes << std::endl;
 
     std::cout << "Example completed successfully!\n";

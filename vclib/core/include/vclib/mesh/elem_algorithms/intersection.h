@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
 #define VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
@@ -126,7 +111,7 @@ bool intersect(
             res);
     }
     else {
-        if (f.vertexNumber() == 3) {
+        if (f.vertexCount() == 3) {
             return intersect(
                 TriangleWrapper(
                     f.vertex(0)->position(),
@@ -252,7 +237,7 @@ std::optional<typename RayType::PointType> intersection(
         return triangleIntersection(face, ray, t);
     }
     else {
-        if (face.vertexNumber() == 3) {
+        if (face.vertexCount() == 3) {
             return triangleIntersection(face, ray, t);
         }
         else {

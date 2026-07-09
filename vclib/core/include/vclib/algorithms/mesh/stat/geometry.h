@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_STAT_GEOMETRY_H
 #define VCL_ALGORITHMS_MESH_STAT_GEOMETRY_H
@@ -85,7 +70,7 @@ double borderLength(const MeshType& m)
 
     double l = 0;
     for (const FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.adjFace(i) == nullptr) {
                 l += f.vertex(i)->position().dist(
                     f.vertexMod(i + 1)->position());
@@ -214,7 +199,7 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 {
     using VertexType = MeshType::VertexType;
 
-    assert(std::ranges::size(weights) == m.vertexNumber());
+    assert(std::ranges::size(weights) == m.vertexCount());
 
     std::vector<ScalarType> radius(m.vertexContainerSize());
     const auto [min, max] = std::ranges::minmax_element(weights);
@@ -258,7 +243,7 @@ std::vector<std::pair<uint, uint>> creaseFaceEdges(
     std::vector<std::pair<uint, uint>> creaseEdges;
 
     for (const auto& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.adjFace(i) == nullptr) {
                 // border edge
                 if (alsoBorderEdges) {

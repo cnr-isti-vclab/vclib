@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_SMOOTH_H
 #define VCL_ALGORITHMS_MESH_SMOOTH_H
@@ -54,7 +39,7 @@ void accumulateLaplacianInfo(
     ScalarType weight = 1.0f;
 
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (!f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -77,7 +62,7 @@ void accumulateLaplacianInfo(
     }
     // si azzaera i dati per i vertici di bordo
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -93,7 +78,7 @@ void accumulateLaplacianInfo(
 
     // se l'edge j e' di bordo si deve mediare solo con gli adiacenti
     for (const FaceType& f : m.faces()) {
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (f.edgeOnBorder(j)) {
                 const VertexType&   v0 = *f.vertex(j);
                 const VertexType&   v1 = *f.vertexMod(j + 1);
@@ -203,15 +188,15 @@ void taubinSmoothing(
  *
  * @param m
  * @param tree
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType, PointConcept PointType>
 void smoothPerVertexNormalsPointCloud(
     MeshType&                m,
     const KDTree<PointType>& tree,
-    uint                     neighborNum,
-    uint                     iterNum)
+    uint                     neighborCount,
+    uint                     iterCount)
 {
     requirePerVertexNormal(m);
 
@@ -221,12 +206,12 @@ void smoothPerVertexNormalsPointCloud(
 
     std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0, 0, 0));
 
-    for (uint ii = 0; ii < iterNum; ++ii) {
+    for (uint ii = 0; ii < iterCount; ++ii) {
         for (const VertexType& v : m.vertices()) {
             std::vector<Scalar> distances;
 
             std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
-                v.position(), neighborNum, distances);
+                v.position(), neighborCount, distances);
 
             for (uint nid : neighbors) {
                 if (m.vertex(nid).normal() * v.normal() > 0) {
@@ -252,18 +237,18 @@ void smoothPerVertexNormalsPointCloud(
  *     - Normal
  *
  * @param m
- * @param neighborNum
- * @param iterNum
+ * @param neighborCount
+ * @param iterCount
  */
 template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(
     MeshType& m,
-    uint      neighborNum,
-    uint      iterNum)
+    uint      neighborCount,
+    uint      iterCount)
 {
     using PointType = MeshType::VertexType::PositionType;
     KDTree<PointType> tree(m);
-    smoothPerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
+    smoothPerVertexNormalsPointCloud(m, tree, neighborCount, iterCount);
 }
 
 } // namespace vcl

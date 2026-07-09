@@ -1,0 +1,27 @@
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
+
+#ifndef VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H
+#define VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H
+
+#include <vclib/bgfx/programs/vert_frag_loader.h>
+
+namespace vcl {
+
+template<>
+struct VertFragLoader<VertFragProgram::@PR_NAME_UC@>
+{
+    static bgfx::EmbeddedShader::Data vertexShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data fragmentShader(
+        bgfx::RendererType::Enum type);
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PROGRAMS_EMBEDDED_VF_PROGRAMS_@PR_NAME_UC@_H

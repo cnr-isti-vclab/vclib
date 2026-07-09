@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_H
@@ -146,16 +131,17 @@ public:
      * @brief List of possible settings for the surface primitive.
      */
     enum class Surface {
-        VISIBLE          = VCL_MRS_DRAW_SURF,
-        SHADING_NONE     = VCL_MRS_SURF_SHADING_NONE,
-        SHADING_FLAT     = VCL_MRS_SURF_SHADING_FLAT,
-        SHADING_SMOOTH   = VCL_MRS_SURF_SHADING_SMOOTH,
-        COLOR_VERTEX     = VCL_MRS_SURF_COLOR_VERTEX,
-        COLOR_FACE       = VCL_MRS_SURF_COLOR_FACE,
-        COLOR_VERTEX_TEX = VCL_MRS_SURF_TEX_VERTEX,
-        COLOR_WEDGE_TEX  = VCL_MRS_SURF_TEX_WEDGE,
-        COLOR_MESH       = VCL_MRS_SURF_COLOR_MESH,
-        COLOR_USER       = VCL_MRS_SURF_COLOR_USER,
+        VISIBLE            = VCL_MRS_DRAW_SURF,
+        SHADING_NONE       = VCL_MRS_SURF_SHADING_NONE,
+        SHADING_FLAT       = VCL_MRS_SURF_SHADING_FLAT,
+        SHADING_SMOOTH     = VCL_MRS_SURF_SHADING_SMOOTH,
+        SHADING_NORMAL_MAP = VCL_MRS_SURF_SHADING_NORMAL_MAP,
+        COLOR_VERTEX       = VCL_MRS_SURF_COLOR_VERTEX,
+        COLOR_FACE         = VCL_MRS_SURF_COLOR_FACE,
+        COLOR_VERTEX_TEX   = VCL_MRS_SURF_TEX_VERTEX,
+        COLOR_WEDGE_TEX    = VCL_MRS_SURF_TEX_WEDGE,
+        COLOR_MESH         = VCL_MRS_SURF_COLOR_MESH,
+        COLOR_USER         = VCL_MRS_SURF_COLOR_USER,
 
         COUNT
     };
@@ -436,10 +422,10 @@ private:
 
     inline static constexpr const auto SURFACE_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Surface>(
-            Surface::SHADING_NONE,   // first
-            Surface::SHADING_SMOOTH, // last
-            Surface::COLOR_VERTEX,   // first
-            Surface::COLOR_USER);    // last
+            Surface::SHADING_NONE,       // first
+            Surface::SHADING_NORMAL_MAP, // last
+            Surface::COLOR_VERTEX,       // first
+            Surface::COLOR_USER);        // last
 
     inline static constexpr const auto WIREFRAME_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Wireframe>(

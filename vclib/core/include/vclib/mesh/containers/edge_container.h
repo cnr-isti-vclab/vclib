@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
 #define VCL_MESH_CONTAINERS_EDGE_CONTAINER_H
@@ -98,18 +83,18 @@ public:
      * @brief Returns the number of **non-deleted** Edges contained in the
      * Edge container of the Mesh.
      *
-     * If edgeNumber() != edgeContainerSize(), it means that there are some
+     * If edgeCount() != edgeContainerSize(), it means that there are some
      * Edges that are flagged as deleted.
      *
      * @return the number of non-deleted Edges of the Mesh.
      */
-    uint edgeNumber() const { return Base::elementNumber(); }
+    uint edgeCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of Edges (also deleted) contained in the
      * Edge container of the Mesh.
      *
-     * If edgeNumber() != edgeContainerSize(), it means that there are some
+     * If edgeCount() != edgeContainerSize(), it means that there are some
      * Edges that are flagged as deleted.
      *
      * @return the number of all the Edges contained in the Mesh.
@@ -118,11 +103,11 @@ public:
 
     /**
      * @brief Returns the number of deleted Edges in the Edge container,
-     * that is edgeContainerSize() - edgeNumber().
+     * that is edgeContainerSize() - edgeCount().
      *
      * @return The number of deleted Edges in the container.
      */
-    uint deletedEdgeNumber() const { return Base::deletedElementNumber(); }
+    uint deletedEdgeCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add an Edge to the container, returning its index.

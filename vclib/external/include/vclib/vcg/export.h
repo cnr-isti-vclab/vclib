@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_VCG_EXPORT_H
 #define VCL_VCG_EXPORT_H
@@ -33,7 +18,7 @@ namespace vcl::vc {
 template<MeshConcept MeshType, typename VCGMeshType>
 void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
 {
-    vcg::tri::Allocator<VCGMeshType>::AddVertices(vcgMesh, mesh.vertexNumber());
+    vcg::tri::Allocator<VCGMeshType>::AddVertices(vcgMesh, mesh.vertexCount());
 
     uint vi = 0;
     for (const auto& v : mesh.vertices()) {
@@ -92,7 +77,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
     }
 
     if constexpr (HasFaces<MeshType>) {
-        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceNumber());
+        vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceCount());
 
         uint fi = 0;
         for (const auto& f : mesh.faces()) {

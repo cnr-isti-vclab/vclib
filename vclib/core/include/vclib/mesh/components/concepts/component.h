@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
 #define VCL_MESH_COMPONENTS_CONCEPTS_COMPONENT_H
@@ -113,18 +98,18 @@ concept HasIsAvailableMemberFunction =
  * @brief Evaluates to true if the type `T` is tied to the number of vertices in
  * the face.
  *
- * A component that is tied to the vertex number if it belongs to a face element
+ * A component that is tied to the vertex count if it belongs to a face element
  * and its data is composed of a number of elements that must be equal to the
  * number of vertices in the face.
  *
  * To be evaluated as true, the component must have a static constexpr member
- * `TIED_TO_VERTEX_NUMBER` of type `bool` set to `true`.
+ * `TIED_TO_VERTEX_COUNT` of type `bool` set to `true`.
  *
  * @tparam T the type to be evaluated.
  */
 template<typename T>
-concept IsTiedToVertexNumber =
-    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_NUMBER;
+concept IsTiedToVertexCount =
+    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_COUNT;
 
 /**
  * @private

@@ -1,34 +1,19 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IMGUI_IMGUI_DRAWER_H
 #define VCL_IMGUI_IMGUI_DRAWER_H
 
-#include <vclib/render/drawers/blocker_event_drawer.h>
+#include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/window_managers.h>
 
 // Include the render backand imgui implementation
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <imgui_impl_opengl2.h>
+#include <imgui/backends/imgui_impl_opengl2.h>
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx_imgui/imgui_impl_bgfx.h>
@@ -36,7 +21,7 @@
 
 // Include the event backend imgui implementations
 #ifdef VCLIB_WITH_GLFW
-#include <imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_glfw.h>
 #endif
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt_imgui/imgui_impl_qt.h>
@@ -63,7 +48,7 @@ public:
             "ImGuiDrawer supports only GLFW or Qt window managers.");
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-        mImguiViewId = vcl::Context::instance().requestViewId();
+        mImguiViewId = vcl::Context::instance().requestViewId(false);
         assert(vcl::Context::instance().isValidViewId(mImguiViewId));
 #endif
     }

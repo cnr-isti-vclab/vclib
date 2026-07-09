@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 #define VCL_ALGORITHMS_MESH_CONVEX_HULL_H
@@ -83,14 +68,14 @@ void firstTetOptimization(R&& points)
  *
  * @tparam R
  * @param points
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  */
 template<Range R>
-void shufflePoints(R&& points, std::optional<uint> seed = std::nullopt)
+void shufflePoints(R&& points, RandomConfig config = std::monostate())
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    shuffle(points, seed);
+    shuffle(points, config);
 
     firstTetOptimization(points);
 
@@ -389,8 +374,8 @@ void updateNewConflicts(
  *
  * @tparam PointType: The type of the points.
  * @param[in] points: The set of points.
- * @param[in] seed: optional value of seed, to get deterministic results. If not
- * provided, a random seed is used.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
  * @param[in] log: The logger.
  * @return The convex hull of the points.
  *
@@ -398,9 +383,9 @@ void updateNewConflicts(
  */
 template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(
-    const R&            points,
-    std::optional<uint> seed = std::nullopt,
-    LogType&            log  = nullLogger)
+    const R&     points,
+    RandomConfig config = std::monostate(),
+    LogType&     log    = nullLogger)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
@@ -416,7 +401,7 @@ MeshType convexHull(
     std::vector<PointType> pointsCopy(
         std::ranges::begin(points), std::ranges::end(points));
 
-    detail::shufflePoints(pointsCopy, seed);
+    detail::shufflePoints(pointsCopy, config);
 
     log.log(0, "Making first tetrahedron...");
 
@@ -434,7 +419,7 @@ MeshType convexHull(
     // for each point in the conflict graph (still not in the convex hull)
     for (const auto& point : conflictGraph.leftNodes()) {
         // if the point is visible from a face in the convex hull
-        if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
+        if (conflictGraph.adjacentLeftNodeCount(point) != 0) {
             // store the faces that are visible from (conflict with) the point
             // these faces will be deleted from the convex hull
             std::set<const FaceType*> visibleFaces;
@@ -498,7 +483,7 @@ template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(const R& points, LogType& log)
     requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    return convexHull<MeshType>(points, std::nullopt, log);
+    return convexHull<MeshType>(points, std::monostate(), log);
 }
 
 } // namespace vcl

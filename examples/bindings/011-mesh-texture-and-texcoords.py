@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -30,7 +15,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates how to work with textures and texture coordinates:
 # 1. Loading meshes with vertex texture coordinates
@@ -54,8 +39,8 @@ def mesh_texture_and_texcoords():
     # example of loading also the textures shown below (wedges)
     vcl.load_mesh(mesh_vertex_texcoords, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny_verttexcoords.ply")
 
-    print(f"   Loaded {mesh_vertex_texcoords.vertex_number()} vertices, "
-          f"{mesh_vertex_texcoords.face_number()} faces")
+    print(f"   Loaded {mesh_vertex_texcoords.vertex_count()} vertices, "
+          f"{mesh_vertex_texcoords.face_count()} faces")
 
     # Check if mesh has vertex texture coordinates
     if mesh_vertex_texcoords.is_per_vertex_tex_coord_enabled():
@@ -63,7 +48,7 @@ def mesh_texture_and_texcoords():
 
         # Access first few vertex texture coordinates
         print("   First 3 vertex texture coordinates:")
-        for i in range(min(3, mesh_vertex_texcoords.vertex_number())):
+        for i in range(min(3, mesh_vertex_texcoords.vertex_count())):
             tex_coord = mesh_vertex_texcoords.vertex(i).tex_coord()
             print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()})")
             if mesh_vertex_texcoords.is_per_vertex_material_index_enabled():
@@ -77,8 +62,8 @@ def mesh_texture_and_texcoords():
 
     vcl.load_mesh(mesh_wedge_texcoords, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny_textured.ply", load_texture_images = True)
 
-    print(f"   Loaded {mesh_wedge_texcoords.vertex_number()} vertices, "
-          f"{mesh_wedge_texcoords.face_number()} faces")
+    print(f"   Loaded {mesh_wedge_texcoords.vertex_count()} vertices, "
+          f"{mesh_wedge_texcoords.face_count()} faces")
 
     # Check if mesh has wedge texture coordinates
     if mesh_wedge_texcoords.is_per_face_wedge_tex_coords_enabled():
@@ -86,11 +71,11 @@ def mesh_texture_and_texcoords():
 
         # Access first few face wedge texture coordinates
         print("   First face wedge texture coordinates:")
-        if mesh_wedge_texcoords.face_number() > 0:
+        if mesh_wedge_texcoords.face_count() > 0:
             face = mesh_wedge_texcoords.face(0)
             if mesh_wedge_texcoords.is_per_face_material_index_enabled():
                 print(f"     material_id: {face.material_index()}")
-            for i in range(face.vertex_number()):
+            for i in range(face.vertex_count()):
                 tex_coord = face.wedge_tex_coord(i)
                 print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()})")
 
@@ -99,9 +84,9 @@ def mesh_texture_and_texcoords():
 
     # Example 3: Working with materials and texture images
     print("\n3. Working with materials and texture images...")
-    print(f"   - Mesh has {mesh_wedge_texcoords.materials_number()} materials")
+    print(f"   - Mesh has {mesh_wedge_texcoords.material_count()} materials")
 
-    for i in range(mesh_wedge_texcoords.materials_number()):
+    for i in range(mesh_wedge_texcoords.material_count()):
         # access to the base_color texture descriptor
         texture = mesh_wedge_texcoords.material(i).base_color_texture_descriptor()
         print(f"     Base Color Texture {i}: {texture.path()}")
@@ -155,8 +140,8 @@ def mesh_texture_and_texcoords():
     )
     custom_mesh.push_texture_image("custom_texture_path.png", image)
 
-    print(f"   Created custom mesh with {custom_mesh.vertex_number()} vertices "
-          f"and {custom_mesh.face_number()} faces")
+    print(f"   Created custom mesh with {custom_mesh.vertex_count()} vertices "
+          f"and {custom_mesh.face_count()} faces")
     print(f"   - Has vertex texture coordinates: {custom_mesh.is_per_vertex_tex_coord_enabled()}")
     print(f"   - Has wedge texture coordinates: {custom_mesh.is_per_face_wedge_tex_coords_enabled()}")
 
@@ -193,9 +178,9 @@ def main():
         # Save the created meshes
         print("\n=== Saving Meshes ===")
 
-        vcl.save_mesh(custom_mesh, f"{VCLIB_RESULTS_PATH}/011_custom_textured.ply", save_texture_images = True)
+        vcl.save_mesh(custom_mesh, f"{VCLIB_PYTHON_RESULTS_PATH}/011_custom_textured.ply", save_texture_images = True)
 
-        print(f"\nAll files have been saved to: {VCLIB_RESULTS_PATH}\n")
+        print(f"\nAll files have been saved to: {VCLIB_PYTHON_RESULTS_PATH}\n")
 
     except Exception as e:
         print(f"Error in main: {e}", file=sys.stderr)

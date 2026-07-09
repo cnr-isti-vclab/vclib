@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -29,7 +14,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates various ways to iterate over mesh elements:
 # 1. Basic iteration over vertices and faces
@@ -46,7 +31,7 @@ def mesh_iteration():
 
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
 
-    print(f"Loaded mesh with {mesh.vertex_number()} vertices and {mesh.face_number()} faces")
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and {mesh.face_count()} faces")
 
     # /****** Basic iteration ******/
 
@@ -63,7 +48,7 @@ def mesh_iteration():
 
     # Iterate with traditional for loop using indices
     print("\nFirst 3 faces (using indices):")
-    for i in range(min(3, mesh.face_number())):
+    for i in range(min(3, mesh.face_count())):
         face = mesh.face(i)
         print(f"  Face {i}: vertices [", end="")
         for j in range(3):
@@ -138,20 +123,20 @@ def mesh_iteration():
     # Load a polygon mesh
     poly_mesh = vcl.load_poly_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
 
-    print(f"Loaded polygon mesh with {poly_mesh.vertex_number()} vertices and {poly_mesh.face_number()} faces")
+    print(f"Loaded polygon mesh with {poly_mesh.vertex_count()} vertices and {poly_mesh.face_count()} faces")
 
     # Iterate over polygon faces (variable number of vertices)
     for face in poly_mesh.faces():
-        print(f"Polygon face {face.index()} has {face.vertex_number()} vertices: ", end="")
-        for i in range(face.vertex_number()):
+        print(f"Polygon face {face.index()} has {face.vertex_count()} vertices: ", end="")
+        for i in range(face.vertex_count()):
             print(f"{face.vertex(i).index()} ", end="")
         print()
 
         # Calculate polygon centroid
         centroid = vcl.Point3(0, 0, 0)
-        for i in range(face.vertex_number()):
+        for i in range(face.vertex_count()):
             centroid += face.vertex(i).position()
-        centroid /= face.vertex_number()
+        centroid /= face.vertex_count()
         print(f"  Centroid: {centroid}")
 
     # /****** Computing mesh statistics through iteration ******/
@@ -159,7 +144,7 @@ def mesh_iteration():
     print("\n=== Mesh Statistics ===")
 
     # Compute bounding box
-    if mesh.vertex_number() > 0:
+    if mesh.vertex_count() > 0:
         min_point = mesh.vertex(0).position()
         max_point = mesh.vertex(0).position()
 
@@ -171,7 +156,7 @@ def mesh_iteration():
 
         # Compute average edge length
         total_edge_length = 0.0
-        edge_count = mesh.face_number() * 3
+        edge_count = mesh.face_count() * 3
 
         for face in mesh.faces():
             for i in range(3):

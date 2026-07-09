@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_SORT_H
 #define VCL_ALGORITHMS_MESH_SORT_H
@@ -42,12 +27,12 @@ std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(
 
     int n_edges = 0;
     for (const FaceType& f : m.faces())
-        n_edges += f.vertexNumber();
+        n_edges += f.vertexCount();
 
     vec.reserve(n_edges);
 
     for (FaceType& f : m.faces()) { // fill it with face data
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (includeFauxEdges || !f.edgeFaux(j)) {
                 vec.emplace_back(f, j);
             }
@@ -71,12 +56,12 @@ std::vector<ConstMeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(
 
     int n_edges = 0;
     for (const FaceType& f : m.faces())
-        n_edges += f.vertexNumber();
+        n_edges += f.vertexCount();
 
     vec.reserve(n_edges);
 
     for (const FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
-        for (uint j = 0; j < f.vertexNumber(); ++j) {
+        for (uint j = 0; j < f.vertexCount(); ++j) {
             if (includeFauxEdges || !f.edgeFaux(j)) {
                 vec.emplace_back(f, j);
             }
@@ -126,10 +111,12 @@ std::vector<uint> sortElemIndicesByFunction(
         mesh, getIndicesAsIfContainerCompact);
 
     std::vector<uint> indices;
+    indices.reserve(mesh.template count<ELEM_ID>());
 
-    // Initialize indices with sequential values
-    indices.resize(mesh.template number<ELEM_ID>());
-    std::iota(indices.begin(), indices.end(), 0u);
+    // Initialize indices with the actual non-deleted element container indices
+    for (const auto& el : mesh.template elements<ELEM_ID>()) {
+        indices.push_back(el.index());
+    }
 
     std::sort(indices.begin(), indices.end(), [&](uint a, uint b) {
         return func(

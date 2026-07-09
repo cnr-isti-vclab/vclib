@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -30,7 +15,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh distance calculation in VCLib:
 # 1. Computing Hausdorff distance between two meshes
@@ -47,8 +32,8 @@ def mesh_distance():
     mesh = vcl.TriMesh()
     vcl.load_mesh(mesh, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny.obj")
 
-    print(f"Loaded mesh with {mesh.vertex_number()} vertices and "
-          f"{mesh.face_number()} faces")
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and "
+          f"{mesh.face_count()} faces")
 
     # Prepare mesh for distance computation
     vcl.update_bounding_box(mesh)

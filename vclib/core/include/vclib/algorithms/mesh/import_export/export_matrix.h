@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
@@ -71,7 +56,7 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexPositionsMatrix(const MeshType& mesh)
 {
-    Matrix vM(mesh.vertexNumber(), 3);
+    Matrix vM(mesh.vertexCount(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -117,7 +102,7 @@ Vect faceSizesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Vect fM(mesh.faceNumber());
+    Vect fM(mesh.faceCount());
 
     faceSizesToBuffer(mesh, fM.data());
 
@@ -160,7 +145,7 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    uint nIndices = countPerFaceVertexReferences(mesh);
+    uint nIndices = faceVertexReferencesCount(mesh);
 
     Vect fV(nIndices);
 
@@ -210,7 +195,7 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
 
     uint fMaxSize = largestFaceSize(mesh);
 
-    Matrix fM(mesh.faceNumber(), fMaxSize);
+    Matrix fM(mesh.faceCount(), fMaxSize);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -253,14 +238,14 @@ Matrix triangulatedFaceVertexIndicesMatrix(
 {
     requireVertexContainerCompactness(mesh);
 
-    uint tNumber = vcl::countTriangulatedTriangles(mesh);
+    uint tCount = vcl::triangulatedFaceCount(mesh);
 
-    Matrix tM(tNumber, 3);
+    Matrix tM(tCount, 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
     triangulatedFaceVertexIndicesToBuffer(
-        mesh, tM.data(), indexMap, stg, tNumber);
+        mesh, tM.data(), indexMap, stg, tCount);
 
     return tM;
 }
@@ -300,7 +285,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 {
     requireVertexContainerCompactness(mesh);
 
-    Matrix eM(mesh.edgeNumber(), 2);
+    Matrix eM(mesh.edgeCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -341,7 +326,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-    Vect sV(mesh.template number<ELEM_ID>());
+    Vect sV(mesh.template count<ELEM_ID>());
 
     vcl::elementSelectionToBuffer<ELEM_ID>(mesh, sV.data());
     return sV;
@@ -473,18 +458,20 @@ Vect edgeSelectionVector(const MeshType& mesh)
  *
  * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the matrix
  * @return \#E*3 matrix of scalars (element normals)
  *
  * @ingroup export_matrix
  */
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
-Matrix elementNormalsMatrix(const MeshType& mesh)
+Matrix elementNormalsMatrix(const MeshType& mesh, bool normalize = false)
 {
-    Matrix eNM(mesh.template number<ELEM_ID>(), 3);
+    Matrix eNM(mesh.template count<ELEM_ID>(), 3);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
-    elementNormalsToBuffer<ELEM_ID>(mesh, eNM.data(), stg);
+    elementNormalsToBuffer<ELEM_ID>(mesh, eNM.data(), normalize, stg);
 
     return eNM;
 }
@@ -511,14 +498,16 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
  * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the matrix
  * @return \#V*3 matrix of scalars (vertex normals)
  *
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexNormalsMatrix(const MeshType& mesh)
+Matrix vertexNormalsMatrix(const MeshType& mesh, bool normalize = false)
 {
-    return elementNormalsMatrix<ElemId::VERTEX, Matrix>(mesh);
+    return elementNormalsMatrix<ElemId::VERTEX, Matrix>(mesh, normalize);
 }
 
 /**
@@ -543,14 +532,16 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
  * correspondence, compact the face container before calling this function.
  *
  * @param[in] mesh: input mesh
+ * @param[in] normalize: if true, the normals will be normalized before being
+ * stored in the matrix
  * @return \#F*3 matrix of scalars (face normals)
  *
  * @ingroup export_matrix
  */
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceNormalsMatrix(const MeshType& mesh)
+Matrix faceNormalsMatrix(const MeshType& mesh, bool normalize = false)
 {
-    return elementNormalsMatrix<ElemId::FACE, Matrix>(mesh);
+    return elementNormalsMatrix<ElemId::FACE, Matrix>(mesh, normalize);
 }
 
 /**
@@ -585,7 +576,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-    Matrix eCM(mesh.template number<ELEM_ID>(), 4);
+    Matrix eCM(mesh.template count<ELEM_ID>(), 4);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -629,7 +620,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementColorsVector(const MeshType& mesh, Color::Format colorFormat)
 {
-    Vect eCV(mesh.template number<ELEM_ID>());
+    Vect eCV(mesh.template count<ELEM_ID>());
 
     elementColorsToBuffer<ELEM_ID>(mesh, eCV.data(), colorFormat);
 
@@ -873,7 +864,7 @@ Vect edgeColorsVector(const MeshType& mesh, Color::Format colorFormat)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-    Vect eQV(mesh.template number<ELEM_ID>());
+    Vect eQV(mesh.template count<ELEM_ID>());
 
     elementQualityToBuffer<ELEM_ID>(mesh, eQV.data());
 
@@ -1008,7 +999,7 @@ Vect edgeQualityVector(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 {
-    Matrix vTCM(mesh.vertexNumber(), 2);
+    Matrix vTCM(mesh.vertexCount(), 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1048,7 +1039,7 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect vTCI(mesh.vertexNumber());
+    Vect vTCI(mesh.vertexCount());
 
     vertexMaterialIndicesToBuffer(mesh, vTCI.data());
 
@@ -1088,7 +1079,7 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 {
     uint lfs = vcl::largestFaceSize(mesh);
 
-    Matrix fTCM(mesh.faceNumber(), lfs * 2);
+    Matrix fTCM(mesh.faceCount(), lfs * 2);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1128,7 +1119,7 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceMaterialIndicesVector(const MeshType& mesh)
 {
-    Vect fTCI(mesh.faceNumber());
+    Vect fTCI(mesh.faceCount());
 
     faceMaterialIndicesToBuffer(mesh, fTCI.data());
 
@@ -1167,8 +1158,7 @@ Vect faceMaterialIndicesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     MeshConcept MeshType>
 Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
@@ -1176,13 +1166,13 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
     requireVertexContainerCompactness(mesh);
     requirePerVertexAdjacentVertices(mesh);
 
-    Container<Container<T>> vv(mesh.vertexNumber());
+    Container<Container<T>> vv(mesh.vertexCount());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.vertices()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjVerticesNumber());
+        vec.resize(v.adjVertexCount());
         auto vecIt = vec.begin();
         for (const auto* ve : v.adjVertices()) {
             uint idx = ve ? ve->index() : UINT_NULL;
@@ -1228,9 +1218,9 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
 {
-    uint lva = vcl::largestPerVertexAdjacentVerticesNumber(mesh);
+    uint lva = vcl::largestPerVertexAdjacentVerticesCount(mesh);
 
-    Matrix vAVM(mesh.vertexNumber(), lva);
+    Matrix vAVM(mesh.vertexCount(), lva);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1280,8 +1270,7 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
@@ -1289,13 +1278,13 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
     requireFaceContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjFacesNumber());
+        vec.resize(v.adjFaceCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjFaces()) {
             uint idx = fe ? fe->index() : UINT_NULL;
@@ -1348,9 +1337,9 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
 {
-    uint lfa = vcl::largestPerElementAdjacentFacesNumber<ELEM_ID>(mesh);
+    uint lfa = vcl::largestPerElementAdjacentFacesCount<ELEM_ID>(mesh);
 
-    Matrix eAFM(mesh.template number<ELEM_ID>(), lfa);
+    Matrix eAFM(mesh.template count<ELEM_ID>(), lfa);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1397,8 +1386,7 @@ Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
@@ -1480,8 +1468,7 @@ Matrix vertexAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
@@ -1563,8 +1550,7 @@ Matrix faceAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
@@ -1656,8 +1642,7 @@ Matrix edgeAdjacentFacesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
@@ -1665,13 +1650,13 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
     requireEdgeContainerCompactness(mesh);
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
-    Container<Container<T>> vv(mesh.template number<ELEM_ID>());
+    Container<Container<T>> vv(mesh.template count<ELEM_ID>());
 
     auto vvIt = vv.begin();
     for (const auto& v : mesh.template elements<ELEM_ID>()) {
         auto& vec = *vvIt;
 
-        vec.resize(v.adjEdgesNumber());
+        vec.resize(v.adjEdgeCount());
         auto vecIt = vec.begin();
         for (const auto* fe : v.adjEdges()) {
             uint idx = fe ? fe->index() : UINT_NULL;
@@ -1724,9 +1709,9 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
 {
-    uint lea = vcl::largestPerElementAdjacentEdgesNumber<ELEM_ID>(mesh);
+    uint lea = vcl::largestPerElementAdjacentEdgesCount<ELEM_ID>(mesh);
 
-    Matrix eAEM(mesh.template number<ELEM_ID>(), lea);
+    Matrix eAEM(mesh.template count<ELEM_ID>(), lea);
 
     MatrixStorageType stg = matrixStorageType<Matrix>();
 
@@ -1773,8 +1758,7 @@ Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
@@ -1861,8 +1845,7 @@ Matrix vertexAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
@@ -1946,8 +1929,7 @@ Matrix faceAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)

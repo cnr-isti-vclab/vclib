@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_TEXTURE_AND_TEXCOORDS_H
 #define MESH_TEXTURE_AND_TEXCOORDS_H
@@ -52,8 +37,8 @@ auto meshTextureAndTexCoords()
         meshVertexTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_verttexcoords.ply");
 
-    std::cout << "   Loaded " << meshVertexTexCoords.vertexNumber()
-              << " vertices, " << meshVertexTexCoords.faceNumber() << " faces"
+    std::cout << "   Loaded " << meshVertexTexCoords.vertexCount()
+              << " vertices, " << meshVertexTexCoords.faceCount() << " faces"
               << std::endl;
 
     // Check if mesh has vertex texture coordinates
@@ -63,7 +48,7 @@ auto meshTextureAndTexCoords()
         // Access first few vertex texture coordinates
         std::cout << "   First 3 vertex texture coordinates:" << std::endl;
         for (vcl::uint i = 0;
-             i < std::min(3u, meshVertexTexCoords.vertexNumber());
+             i < std::min(3u, meshVertexTexCoords.vertexCount());
              ++i) {
             auto& texCoord = meshVertexTexCoords.vertex(i).texCoord();
             std::cout << "     Vertex " << i << ": (" << texCoord.u() << ", "
@@ -91,8 +76,8 @@ auto meshTextureAndTexCoords()
         meshWedgeTexCoords,
         VCLIB_EXAMPLE_MESHES_PATH "/bunny_textured.ply",
         settings);
-    std::cout << "   Loaded " << meshWedgeTexCoords.vertexNumber()
-              << " vertices, " << meshWedgeTexCoords.faceNumber() << " faces"
+    std::cout << "   Loaded " << meshWedgeTexCoords.vertexCount()
+              << " vertices, " << meshWedgeTexCoords.faceCount() << " faces"
               << std::endl;
 
     // Check if mesh has wedge texture coordinates
@@ -101,12 +86,12 @@ auto meshTextureAndTexCoords()
 
         // Access first few face wedge texture coordinates
         std::cout << "   First face wedge texture coordinates:" << std::endl;
-        if (meshWedgeTexCoords.faceNumber() > 0) {
+        if (meshWedgeTexCoords.faceCount() > 0) {
             auto& face = meshWedgeTexCoords.face(0);
             if (meshWedgeTexCoords.isPerFaceMaterialIndexEnabled()) {
                 std::cout << "     material_id " << face.materialIndex();
             }
-            for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+            for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
                 auto& texCoord = face.wedgeTexCoord(i);
                 std::cout << "     Wedge " << i << ": (" << texCoord.u() << ", "
                           << texCoord.v() << ") ";
@@ -122,10 +107,10 @@ auto meshTextureAndTexCoords()
     // Example 3: Working with materials and texture images
     std::cout << "\n3. Working with materials and texture images..."
               << std::endl;
-    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialsNumber()
+    std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialCount()
               << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialsNumber(); ++i) {
+    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
         // access to the baseColor texture descriptor
         const auto& texture =
             meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
@@ -184,8 +169,8 @@ auto meshTextureAndTexCoords()
 
     customMesh.pushTextureImage("custom_texture_path.png", image);
 
-    std::cout << "   Created custom mesh with " << customMesh.vertexNumber()
-              << " vertices and " << customMesh.faceNumber() << " faces"
+    std::cout << "   Created custom mesh with " << customMesh.vertexCount()
+              << " vertices and " << customMesh.faceCount() << " faces"
               << std::endl;
     std::cout << "   ✓ Has vertex texture coordinates: "
               << customMesh.isPerVertexTexCoordEnabled() << std::endl;

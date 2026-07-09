@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_VCG_IMPORT_H
 #define VCL_VCG_IMPORT_H
@@ -67,7 +52,7 @@ template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
     if (p._type == std::type_index(typeid(T))) {
-        if constexpr (ELEM_ID < vcl::ElemId::ELEMENTS_NUMBER) {
+        if constexpr (ELEM_ID < vcl::ElemId::ELEMENT_COUNT) {
             mesh.template addPerElementCustomComponent<
                 ELEM_ID,
                 typename TypeMapping<T>::type>(p._name);
@@ -91,7 +76,7 @@ void addCustomComponentsOfTypeFromVCGMesh(
     switch (ELEM_ID) {
     case ElemId::VERTEX: ps = &vcgMesh.vert_attr; break;
     case ElemId::FACE: ps = &vcgMesh.face_attr; break;
-    case ElemId::ELEMENTS_NUMBER: ps = &vcgMesh.mesh_attr;
+    case ElemId::ELEMENT_COUNT: ps = &vcgMesh.mesh_attr;
     default: break;
     }
 
@@ -145,7 +130,7 @@ void importCustomComponentsOfTypeFromVCGMesh(
     }
 
     // Here el is the mesh!
-    if constexpr (ELEM_ID == ElemId::ELEMENTS_NUMBER) {
+    if constexpr (ELEM_ID == ElemId::ELEMENT_COUNT) {
         for (auto& p : vcgMesh.mesh_attr) {
             if (p._type == std::type_index(typeid(T))) {
                 const auto& h = vcg::tri::Allocator<VCGMeshType>::
@@ -281,7 +266,7 @@ void importMeshFromVCGMesh(
 
                 auto& face = mesh.face(fi);
 
-                if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                if constexpr (FaceType::VERTEX_COUNT < 0) {
                     face.resizeVertices(3);
                 }
                 for (uint j = 0; j < 3; ++j) {
@@ -395,14 +380,14 @@ void importMeshFromVCGMesh(
         // custom components of the type T that are in the vcgMesh
         vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
             [&mesh, &vcgMesh]<typename T>() {
-                // ELEMENTS_NUMBER is used here to indicate the custom
+                // ELEMENT_COUNT is used here to indicate the custom
                 // components of the mesh
                 detail::addCustomComponentsOfTypeFromVCGMesh<
-                    ElemId::ELEMENTS_NUMBER,
+                    ElemId::ELEMENT_COUNT,
                     T>(mesh, vcgMesh);
 
                 detail::importCustomComponentsOfTypeFromVCGMesh<
-                    ElemId::ELEMENTS_NUMBER,
+                    ElemId::ELEMENT_COUNT,
                     T>(mesh, vcgMesh, 0);
             });
     }

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
@@ -93,12 +78,12 @@ void addTriangleFacesFromPolygon(
     for (uint i = 0; i < polygon.size(); ++i)
         unorderedEdges.emplace(i, (i + 1) % (uint) polygon.size());
 
-    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+    if constexpr (FaceType::VERTEX_COUNT < 0) {
         f.resizeVertices(3);
     }
 
     // set the first triangle of the loaded polygon
-    for (uint i = 0; i < f.vertexNumber(); ++i) {
+    for (uint i = 0; i < f.vertexCount(); ++i) {
         f.setVertex(i, polygon[tris[i]]);
     }
 
@@ -118,11 +103,11 @@ void addTriangleFacesFromPolygon(
     for (uint i = 3; i < tris.size(); i += 3) {
         uint ff = m.addFace();
 
-        if constexpr (FaceType::VERTEX_NUMBER < 0) {
+        if constexpr (FaceType::VERTEX_COUNT < 0) {
             m.face(ff).resizeVertices(3);
         }
 
-        for (uint j = 0; j < m.face(ff).vertexNumber(); ++j) {
+        for (uint j = 0; j < m.face(ff).vertexCount(); ++j) {
             m.face(ff).setVertex(j, polygon[tris[i + j]]);
         }
 
@@ -271,7 +256,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
 
     using VertexType = FaceType::VertexType;
 
-    if (f.vertexNumber() > 3)
+    if (f.vertexCount() > 3)
         return false;
 
     if (isFaceEdgeOnBorder(f, edge))
@@ -327,7 +312,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
  * @return the number of adjacent faces to the given edge of the face \p f
  */
 template<FaceConcept FaceType>
-uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
+uint edgeAdjacentFaceCount(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
     if (!comp::isAdjacentFacesAvailableOn(f)) {
@@ -360,7 +345,7 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
  * @return The number of edges on the border of the face.
  */
 template<FaceConcept FaceType>
-uint faceEdgesOnBorderNumber(const FaceType& f)
+uint faceOnBorderEdgeCount(const FaceType& f)
     requires comp::HasAdjacentFaces<FaceType>
 {
     if (!comp::isAdjacentFacesAvailableOn(f)) {
@@ -369,7 +354,7 @@ uint faceEdgesOnBorderNumber(const FaceType& f)
     }
 
     uint cnt = 0;
-    for (uint i = 0; i < f.vertexNumber(); ++i)
+    for (uint i = 0; i < f.vertexCount(); ++i)
         if (isFaceEdgeOnBorder(f, i))
             cnt++;
 
@@ -531,7 +516,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 
     using VertexType = FaceType::VertexType;
 
-    for (uint e = 0; e < f.vertexNumber(); ++e) {
+    for (uint e = 0; e < f.vertexCount(); ++e) {
         detachAdjacentFacesOnEdge(f, e);
 
         // if the vertices have adjacent faces

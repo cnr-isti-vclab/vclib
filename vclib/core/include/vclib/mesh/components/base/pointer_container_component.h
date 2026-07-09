@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_BASE_POINTER_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASE_POINTER_CONTAINER_COMPONENT_H
@@ -65,11 +50,11 @@ namespace vcl::comp {
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
- * @tparam TTVN: "Tied To Vertex Number", this boolean tells whether the
+ * @tparam TTVC: "Tied To Vertex Count", this boolean tells whether the
  * component should leave liberty to control the size of the Container to the
- * user, or it should be tied to the vertex number and changed automatically
+ * user, or it should be tied to the vertex count and changed automatically
  * when the number of vertices changes. E.g. a AdjacentFaces component, if part
- * of a Face element, should be tied to the vertex number of the Face, meaning
+ * of a Face element, should be tied to the vertex count of the Face, meaning
  * that the number of face pointers should be always be the same of the number
  * of vertices. Setting this value to true will tie the size of this container
  * to the number of vertices.
@@ -82,7 +67,7 @@ template<
     typename ParentElemType,   // parent element type
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
-    bool TTVN>                 // true if container size tied to vertex number
+    bool TTVC>                 // true if container size tied to vertex count
 class PointerContainerComponent :
         public ContainerComponent<
             DerivedComponent,
@@ -93,7 +78,7 @@ class PointerContainerComponent :
             ParentElemType,
             VERT,
             OPT,
-            TTVN,
+            TTVC,
             Elem>
 {
     using Base = ContainerComponent<
@@ -105,7 +90,7 @@ class PointerContainerComponent :
         ParentElemType,
         VERT,
         OPT,
-        TTVN,
+        TTVC,
         Elem>;
 
 public:

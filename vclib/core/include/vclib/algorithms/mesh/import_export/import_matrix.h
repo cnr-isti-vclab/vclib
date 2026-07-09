@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_IMPORT_MATRIX_H
@@ -199,7 +184,7 @@ void meshFromMatrices(
  * std::vector).
  *
  * @throws vcl::WrongSizeException if the sizes of the input matrix are not
- * valid (e.g. columns != 3 or rows != mesh.vertexNumber()).
+ * valid (e.g. columns != 3 or rows != mesh.vertexCount()).
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
@@ -363,7 +348,7 @@ void edgeIndicesFromMatrix(
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
 void elementSelectionFromRange(MeshType& mesh, R&& selection)
 {
-    if (std::ranges::size(selection) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(selection) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input selection range must have the same number of elements "
             "as the number of " +
@@ -472,7 +457,7 @@ void elementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
             "The input " + elementEnumString<ELEM_ID>() +
             " normal matrix must have 3 columns");
 
-    if (normals.rows() != mesh.template number<ELEM_ID>())
+    if (normals.rows() != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input normal matrix must have the same number of rows as the "
             "number of " +
@@ -596,7 +581,7 @@ void elementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
                                      Color::Representation::INT_0_255 :
                                      Color::Representation::FLOAT_0_1;
 
-    if (colors.rows() != mesh.template number<ELEM_ID>())
+    if (colors.rows() != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input colors matrix must have the same number of rows as the "
             "number of " +
@@ -637,7 +622,7 @@ void elementColorsFromRange(
     R&&           colors,
     Color::Format colorFormat)
 {
-    if (std::ranges::size(colors) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(colors) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input color range must have the same number of elements "
             "as the number of " +
@@ -871,7 +856,7 @@ void edgeColorsFromRange(MeshType& mesh, R&& colors, Color::Format colorFormat)
 template<uint ELEM_ID, MeshConcept MeshType, Range R>
 void elementQualityFromRange(MeshType& mesh, R&& quality)
 {
-    if (std::ranges::size(quality) != mesh.template number<ELEM_ID>())
+    if (std::ranges::size(quality) != mesh.template count<ELEM_ID>())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of " +
@@ -991,7 +976,7 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
         throw WrongSizeException(
             "The input vertex texcoords matrix must have 2 columns");
 
-    if (vertexTexCoords.rows() != mesh.vertexNumber())
+    if (vertexTexCoords.rows() != mesh.vertexCount())
         throw WrongSizeException(
             "The input vertex texcoords must have the same number of rows as "
             "the number of vertices in the mesh");
@@ -1023,7 +1008,7 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
 template<MeshConcept MeshType, Range R>
 void vertexMaterialIndicesFromRange(MeshType& mesh, R&& materialIndices)
 {
-    if (std::ranges::size(materialIndices) != mesh.vertexNumber())
+    if (std::ranges::size(materialIndices) != mesh.vertexCount())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of vertices in the mesh");
@@ -1070,7 +1055,7 @@ void faceWedgeTexCoordsFromMatrix(
 {
     MatrixStorageType stg = matrixStorageType<FTMatrix>();
 
-    if (faceWedgeTexCoords.rows() != mesh.faceNumber())
+    if (faceWedgeTexCoords.rows() != mesh.faceCount())
         throw WrongSizeException(
             "The input face wedge texcoords must have the same number of rows "
             "as the number of faces in the mesh");
@@ -1103,7 +1088,7 @@ void faceWedgeTexCoordsFromMatrix(
 template<FaceMeshConcept MeshType, Range R>
 void faceMaterialIndicesFromRange(MeshType& mesh, R&& texCoordIndices)
 {
-    if (std::ranges::size(texCoordIndices) != mesh.faceNumber())
+    if (std::ranges::size(texCoordIndices) != mesh.faceCount())
         throw WrongSizeException(
             "The input quality range must have the same number of elements "
             "as the number of faces in the mesh");

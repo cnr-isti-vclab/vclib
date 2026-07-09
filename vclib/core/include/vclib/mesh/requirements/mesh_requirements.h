@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
@@ -134,7 +119,7 @@ bool isTriangleMesh(const MeshType& m)
     else if constexpr (HasFaces<MeshType>) {
         using F = MeshType::FaceType;
         for (const F& f : m.faces()) {
-            if (f.vertexNumber() != 3)
+            if (f.vertexCount() != 3)
                 return false;
         }
         return true;
@@ -170,7 +155,7 @@ bool isQuadMesh(const MeshType& m)
     else if constexpr (HasFaces<MeshType>) {
         using F = MeshType::FaceType;
         for (const F& f : m.faces()) {
-            if (f.vertexNumber() != 4)
+            if (f.vertexCount() != 4)
                 return false;
         }
         return true;
@@ -225,7 +210,7 @@ void requireTriangleMesh(const MeshType& m)
 {
     if constexpr (!HasTriangles<MeshType>) {
         for (const auto& f : m.faces()) {
-            if (f.vertexNumber() != 3) {
+            if (f.vertexCount() != 3) {
                 throw MissingTriangularRequirementException(
                     "Triangle Mesh Required.");
             }
@@ -258,7 +243,7 @@ void requireQuadMesh(const MeshType& m)
 {
     if constexpr (!HasQuads<MeshType>) {
         for (const auto& f : m.faces()) {
-            if (f.vertexNumber() != 4) {
+            if (f.vertexCount() != 4) {
                 throw MissingQuadRequirementException("Quad Mesh Required.");
             }
         }

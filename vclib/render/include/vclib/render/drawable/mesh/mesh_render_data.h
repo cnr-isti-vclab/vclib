@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
@@ -164,67 +149,6 @@ public:
     }
 
     /**
-     * @brief Returns the number of triangle chunks.
-     *
-     * Each chunk corresponds to a set of triangles associated that can be
-     * rendered with the same material.
-     *
-     * @return The number of triangle chunks.
-     */
-    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
-
-    /**
-     * @brief Returns the triangle material chunk at the given index.
-     *
-     * @param[in] chunkIndex: The index of the triangle material chunk to
-     * retrieve. Must be less than `triangleChunksNumber()`.
-     * @return The triangle material chunk at the given index.
-     */
-    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
-    {
-        return mMaterialChunks[chunkIndex];
-    }
-
-    /**
-     * @brief Returns the material index for the given triangle chunk,
-     * according to the current render settings.
-     *
-     * @param[in] mrs: the mesh render settings
-     * @param[in] chunkNumber: the triangle chunk number
-     * @return the material index for the given triangle chunk
-     */
-    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
-    {
-        using enum MeshRenderInfo::Surface;
-
-        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].faceMaterialId;
-        else
-            return mMaterialChunks[chunkNumber].vertMaterialId;
-    }
-
-protected:
-    MeshRenderData() = default;
-
-    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
-            mBuffersToFill(buffersToFill)
-    {
-    }
-
-    void swap(MeshRenderData& other)
-    {
-        using std::swap;
-        swap(mNumVerts, other.mNumVerts);
-        swap(mNumTris, other.mNumTris);
-        swap(mVertWedgeMap, other.mVertWedgeMap);
-        swap(mVertsToDuplicate, other.mVertsToDuplicate);
-        swap(mFacesToReassign, other.mFacesToReassign);
-        swap(mIndexMap, other.mIndexMap);
-        swap(mBuffersToFill, other.mBuffersToFill);
-        swap(mMaterialChunks, other.mMaterialChunks);
-    }
-
-    /**
      * @brief Returns the number of vertices that will be used to render the
      * mesh.
      *
@@ -305,6 +229,67 @@ protected:
     uint numEdges() const { return mNumEdges; }
 
     /**
+     * @brief Returns the number of triangle chunks.
+     *
+     * Each chunk corresponds to a set of triangles associated that can be
+     * rendered with the same material.
+     *
+     * @return The number of triangle chunks.
+     */
+    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
+
+    /**
+     * @brief Returns the triangle material chunk at the given index.
+     *
+     * @param[in] chunkIndex: The index of the triangle material chunk to
+     * retrieve. Must be less than `triangleChunksNumber()`.
+     * @return The triangle material chunk at the given index.
+     */
+    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
+    {
+        return mMaterialChunks[chunkIndex];
+    }
+
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
+
+protected:
+    MeshRenderData() = default;
+
+    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
+            mBuffersToFill(buffersToFill)
+    {
+    }
+
+    void swap(MeshRenderData& other)
+    {
+        using std::swap;
+        swap(mNumVerts, other.mNumVerts);
+        swap(mNumTris, other.mNumTris);
+        swap(mVertWedgeMap, other.mVertWedgeMap);
+        swap(mVertsToDuplicate, other.mVertsToDuplicate);
+        swap(mFacesToReassign, other.mFacesToReassign);
+        swap(mIndexMap, other.mIndexMap);
+        swap(mBuffersToFill, other.mBuffersToFill);
+        swap(mMaterialChunks, other.mMaterialChunks);
+    }
+
+    /**
      * @brief Returns the number of wireframe lines that will be used to render
      * the mesh.
      *
@@ -332,6 +317,19 @@ protected:
      * mesh.
      */
     uint numWireframeLines() const { return nWireframeLines; }
+
+    /**
+     * @brief Returns the map that stores the correspondence between the
+     * original polygonal faces and the triangle faces.
+     *
+     * The map is a bidirectional map that allows to get, for each original
+     * polygonal face, the list of triangle faces that correspond to it, and for
+     * each triangle face, the original polygonal face it corresponds to.
+     *
+     * @return The map that stores the correspondence between the original
+     * polygonal faces and the triangle faces.
+     */
+    const TriPolyIndexBiMap& triPolyIndexMap() const { return mIndexMap; }
 
     // utility functions to fill the buffers
 
@@ -463,6 +461,16 @@ protected:
         using MeshType = std::decay_t<decltype(mesh)>;
         using FaceType = MeshType::FaceType;
 
+        triangulatedFaceVertexIndicesToBuffer(
+            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
+        // Update mNumTris to the actual triangle count produced by earCut.
+        // For degenerate faces, earCut may produce fewer than vertexCount()-2
+        // triangles, making the pre-triangulation estimate from
+        // triangulatedFaceCount() too large.
+        mNumTris = mIndexMap.triangleCount();
+        replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+            mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
+
         // comparator of faces
         // ordering first by per-vertex material index (if available),
         // then by per-face material index (if available)
@@ -491,22 +499,12 @@ protected:
             return f1.index() < f2.index();
         };
 
-        // get the list of face indices sorted by material ID and
-        // using the face comparator defined above
-        std::vector<uint> faceIndicesSortedByMaterialID =
-            sortFaceIndicesByFunction(mesh, faceComp, true);
-
-        triangulatedFaceVertexIndicesToBuffer(
-            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR, mNumTris);
-        replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
-            mesh, mVertsToDuplicate, mFacesToReassign, mIndexMap, buffer);
-
         // permute the triangulated face vertex indices according to the face
         // sorting by material ID (the function also edits the index map from
         // polygonal faces (which still refers to the mesh ones) to the
         // triangulated faces (which refers to the sorted triangles))
-        permuteTriangulatedFaceVertexIndices(
-            buffer, mIndexMap, faceIndicesSortedByMaterialID);
+        permuteFaceVertexIndicesByFunctionToBuffer(
+            mesh, buffer, faceComp, mIndexMap);
 
         fillChuncks(mesh);
     }
@@ -522,8 +520,7 @@ protected:
      */
     void fillTriangleNormals(const FaceMeshConcept auto& mesh, auto* buffer)
     {
-        triangulatedFaceNormalsToBuffer(
-            mesh, buffer, mIndexMap, MatrixStorageType::ROW_MAJOR);
+        triangulatedFaceNormalsToBuffer(mesh, buffer, mIndexMap);
     }
 
     /**
@@ -968,7 +965,7 @@ private:
 
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (mesh.isPerFaceWedgeTexCoordsEnabled()) {
-                    countVerticesToDuplicateByWedgeTexCoords(
+                    verticesToDuplicateByWedgeTexCoordsCount(
                         mesh,
                         mVertWedgeMap,
                         mVertsToDuplicate,
@@ -976,19 +973,19 @@ private:
                 }
             }
 
-            mNumVerts = mesh.vertexNumber() + mVertsToDuplicate.size();
+            mNumVerts = mesh.vertexCount() + mVertsToDuplicate.size();
         }
 
         if constexpr (HasFaces<MeshType>) {
             if (btu[toUnderlying(TRIANGLES)])
-                mNumTris = countTriangulatedTriangles(mesh);
+                mNumTris = triangulatedFaceCount(mesh);
             if (btu[toUnderlying(WIREFRAME)])
-                nWireframeLines = countPerFaceVertexReferences(mesh);
+                nWireframeLines = faceVertexReferencesCount(mesh);
         }
 
         if constexpr (HasEdges<MeshType>) {
             if (btu[toUnderlying(EDGES)])
-                mNumEdges = mesh.edgeNumber();
+                mNumEdges = mesh.edgeCount();
         }
     }
 
@@ -1168,56 +1165,6 @@ private:
         }
     }
 
-    static void permuteTriangulatedFaceVertexIndices(
-        auto*                    buffer,
-        TriPolyIndexBiMap&       indexMap,
-        const std::vector<uint>& newFaceIndices)
-    {
-        // newFaceIndices tells for each face, which is its new position
-        // we need the inverse mapping: for each new position, which is the old
-        // face index
-        std::vector<uint> oldFaceIndices(newFaceIndices.size());
-        for (uint i = 0; i < newFaceIndices.size(); ++i) {
-            oldFaceIndices[newFaceIndices[i]] = static_cast<uint>(i);
-        }
-
-        // temporary copy of the buffer
-        std::vector<uint> bufferCopy(indexMap.triangleNumber() * 3);
-
-        // temporary bimbap
-        TriPolyIndexBiMap indexMapCopy;
-        indexMapCopy.reserve(
-            indexMap.triangleNumber(), indexMap.polygonNumber());
-
-        uint copiedTriangles = 0;
-
-        for (uint i = 0; i < oldFaceIndices.size(); ++i) {
-            // need to place the k triangles associated to the i-th face
-            // of oldFaceIndices
-            uint polyIndex = oldFaceIndices[i];
-            uint firstTri  = indexMap.triangleBegin(polyIndex);
-            uint nTris     = indexMap.triangleNumber(polyIndex);
-
-            std::copy(
-                buffer + firstTri * 3,
-                buffer + (firstTri + nTris) * 3,
-                bufferCopy.data() + copiedTriangles * 3);
-
-            for (uint t = copiedTriangles; t < copiedTriangles + nTris; ++t) {
-                indexMapCopy.insert(t, polyIndex);
-            }
-
-            copiedTriangles += nTris;
-        }
-
-        // copy back
-        std::copy(
-            bufferCopy.begin(),
-            bufferCopy.begin() + copiedTriangles * 3,
-            buffer);
-        indexMap = std::move(indexMapCopy);
-    }
-
     void fillChuncks(const FaceMeshConcept auto& mesh)
     {
         using MeshType = std::decay_t<decltype(mesh)>;
@@ -1230,7 +1177,7 @@ private:
         uint currentVertMatID = UINT_NULL;
         uint currentFaceMatID = UINT_NULL;
 
-        for (uint i = 0; i < mIndexMap.triangleNumber(); ++i) {
+        for (uint i = 0; i < mIndexMap.triangleCount(); ++i) {
             uint fIndex = mIndexMap.polygon(i);
 
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {

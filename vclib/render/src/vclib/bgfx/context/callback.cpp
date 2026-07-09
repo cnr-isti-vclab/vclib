@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/context/callback.h>
 
@@ -106,15 +91,27 @@ void Callback::cacheWrite(uint64_t id, const void* data, uint32_t size)
 }
 
 void Callback::screenShot(
-    const char* filePath,
-    uint32_t    width,
-    uint32_t    height,
-    uint32_t    pitch,
-    const void* data,
-    uint32_t    size,
-    bool        yflip)
+    const char*               filePath,
+    uint32_t                  width,
+    uint32_t                  height,
+    uint32_t                  pitch,
+    bgfx::TextureFormat::Enum format,
+    const void*               data,
+    uint32_t                  size,
+    bool                      yflip)
 {
-    vcl::Image img(data, width, height, yflip, vcl::Color::Format::ARGB);
+    vcl::Color::Format colorFormat = vcl::Color::Format::BGRA;
+    switch (format) {
+    case bgfx::TextureFormat::BGRA8: break;
+    case bgfx::TextureFormat::RGBA8:
+        colorFormat = vcl::Color::Format::ARGB;
+        break;
+    default:
+        std::cerr << "Unsupported texture format for screenshot: " << std::endl;
+        return;
+    }
+
+    vcl::Image img(data, width, height, yflip, colorFormat);
     vcl::saveImage(img, filePath);
 }
 

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H
@@ -37,7 +22,7 @@ namespace vcl {
  *
  * If the number of adjacent faces is tied to the number of vertices of the
  * element (i.e., the case of the Face), each element will have
- * f->vertexNumber() adjacent faces set to nullptr at the end of this
+ * f->vertexCount() adjacent faces set to nullptr at the end of this
  * function.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -55,8 +40,8 @@ void clearPerElementAdjacentFaces(MeshType& mesh)
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
-        if constexpr (comp::IsTiedToVertexNumber<AdjacentFacesType>) {
-            for (uint i = 0; i < e.adjFacesNumber(); ++i) {
+        if constexpr (comp::IsTiedToVertexCount<AdjacentFacesType>) {
+            for (uint i = 0; i < e.adjFaceCount(); ++i) {
                 e.setAdjFace(i, nullptr);
             }
         }
@@ -73,7 +58,7 @@ void clearPerElementAdjacentFaces(MeshType& mesh)
  * each element will have 0 adjacent edges at the end of this function.
  *
  * If the number of adjacent edges is tied to the number of vertices of the
- * element, each element will have e->vertexNumber() adjacent edges set to
+ * element, each element will have e->vertexCount() adjacent edges set to
  * nullptr at the end of this function.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -91,8 +76,8 @@ void clearPerElementAdjacentEdges(MeshType& mesh)
         typename MeshType::template ElementType<ELEM_ID>::Components>;
 
     for (auto& e : mesh.template elements<ELEM_ID>()) {
-        if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
-            for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+        if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
+            for (uint i = 0; i < e.adjEdgeCount(); ++i) {
                 e.setAdjEdges(i, nullptr);
             }
         }
@@ -288,7 +273,7 @@ void updatePerVertexAdjacentEdges(MeshType& mesh)
  *
  * Since the number of adjacent faces per face is tied to the number of vertices
  * of the face, at the end of this function each face will have
- * f->vertexNumber() adjacent faces set to nullptr.
+ * f->vertexCount() adjacent faces set to nullptr.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * adjacent faces available.
@@ -398,7 +383,7 @@ void updatePerFaceAdjacentFaces(MeshType& mesh)
  * of a face can be different from the number of its vertices).
  * If the number of adjacent edges is dynamic, each face will have 0 adjacent
  * edges at the end of this function. If the number of adjacent edges is tied to
- * the number of vertices of the face, each face will have f->vertexNumber()
+ * the number of vertices of the face, each face will have f->vertexCount()
  * adjacent edges set to nullptr at the end of this function.
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
@@ -456,7 +441,7 @@ void updatePerFaceAdjacentEdges(MeshType& mesh)
 
         while (it != vec.end() && *it == meu) {
             auto* f = it->f; // the face adjacent to the edge e
-            if constexpr (comp::IsTiedToVertexNumber<AdjacentEdgesType>) {
+            if constexpr (comp::IsTiedToVertexCount<AdjacentEdgesType>) {
                 f->setAdjEdges(it->e, &e);
             }
             else {

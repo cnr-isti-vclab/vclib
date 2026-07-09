@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
 #define VCL_IO_MESH_GLTF_DETAIL_LOAD_MESH_H
@@ -42,7 +27,8 @@ enum class GltfAttrType {
     COLOR_0,
     TEXCOORD_0,
     TANGENT,
-    INDICES
+    TRI_INDICES,
+    LINE_INDICES,
 };
 inline const std::array<std::string, 5>
     GLTF_ATTR_STR {"POSITION", "NORMAL", "COLOR_0", "TEXCOORD_0", "TANGENT"};
@@ -208,7 +194,7 @@ int loadGltfPrimitiveMaterial(
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
             m.pushMaterial(mat);
-            idx = m.materialsNumber() - 1; // index of the added material
+            idx = m.materialCount() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {
                 // set mesh color to white when materials are used
                 m.color() = Color::White;
@@ -229,13 +215,13 @@ bool populateGltfVertices(
     MeshType&     m,
     const Scalar* posArray,
     uint          stride,
-    uint          vertNumber)
+    uint          vertCount)
 {
     using PositionType = typename MeshType::VertexType::PositionType;
 
-    uint base = m.addVertices(vertNumber);
+    uint base = m.addVertices(vertCount);
 
-    for (uint i = 0; i < vertNumber; ++i) {
+    for (uint i = 0; i < vertCount; ++i) {
         const Scalar* posBase = reinterpret_cast<const Scalar*>(
             reinterpret_cast<const char*>(posArray) + (i) *stride);
         m.vertex(base + i).position() =
@@ -251,7 +237,7 @@ bool populateGltfVNormals(
     bool          enableOptionalComponents,
     const Scalar* normArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexNormal<MeshType>) {
         using NormalType = typename MeshType::VertexType::NormalType;
@@ -260,7 +246,7 @@ bool populateGltfVNormals(
             enableIfPerVertexNormalOptional(m);
 
         if (isPerVertexNormalAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* normBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(normArray) + i * stride);
                 m.vertex(firstVertex + i).normal() =
@@ -284,7 +270,7 @@ bool populateGltfVTangents(
     bool          enableOptionalComponents,
     const Scalar* tangArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexTangent<MeshType>) {
         using TangentType = typename MeshType::VertexType::TangentType;
@@ -293,7 +279,7 @@ bool populateGltfVTangents(
             enableIfPerVertexTangentOptional(m);
 
         if (isPerVertexTangentAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* tangBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(tangArray) + i * stride);
                 m.vertex(firstVertex + i).tangent() =
@@ -319,7 +305,7 @@ bool populateGltfVColors(
     bool          enableOptionalComponents,
     const Scalar* colorArray,
     unsigned int  stride,
-    unsigned int  vertNumber,
+    unsigned int  vertCount,
     bool          colorWithAlpha)
 {
     unsigned int nElemns = colorWithAlpha ? 4 : 3;
@@ -328,7 +314,7 @@ bool populateGltfVColors(
             enableIfPerVertexColorOptional(m);
 
         if (isPerVertexColorAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber * nElemns; i += nElemns) {
+            for (unsigned int i = 0; i < vertCount * nElemns; i += nElemns) {
                 const Scalar* colorBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(colorArray) +
                     (i / nElemns) * stride);
@@ -367,7 +353,7 @@ bool populateGltfVTextCoords(
     bool          enableOptionalComponents,
     const Scalar* textCoordArray,
     unsigned int  stride,
-    unsigned int  vertNumber)
+    unsigned int  vertCount)
 {
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         using TexCoordType = typename MeshType::VertexType::TexCoordType;
@@ -376,7 +362,7 @@ bool populateGltfVTextCoords(
             enableIfPerVertexTexCoordOptional(m);
 
         if (isPerVertexTexCoordAvailable(m)) {
-            for (unsigned int i = 0; i < vertNumber; i++) {
+            for (unsigned int i = 0; i < vertCount; i++) {
                 const Scalar* textCoordBase = reinterpret_cast<const Scalar*>(
                     reinterpret_cast<const char*>(textCoordArray) + i * stride);
 
@@ -399,12 +385,12 @@ bool populateGltfTriangles(
     MeshType&     m,
     uint          firstVertex,
     const Scalar* triArray,
-    uint          triNumber)
+    uint          triCount)
 {
     if constexpr (HasFaces<MeshType>) {
         if (triArray != nullptr) {
-            uint fi = m.addFaces(triNumber);
-            for (unsigned int i = 0; i < triNumber * 3; i += 3, ++fi) {
+            uint fi = m.addFaces(triCount);
+            for (unsigned int i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 if constexpr (HasPolygons<MeshType>) {
                     f.resizeVertices(3);
@@ -415,13 +401,44 @@ bool populateGltfTriangles(
             }
         }
         else {
-            triNumber = m.vertexNumber() / 3 - firstVertex;
-            uint fi   = m.addFaces(triNumber);
-            for (uint i = 0; i < triNumber * 3; i += 3, ++fi) {
+            triCount = m.vertexCount() / 3 - firstVertex;
+            uint fi  = m.addFaces(triCount);
+            for (uint i = 0; i < triCount * 3; i += 3, ++fi) {
                 auto& f = m.face(fi);
                 for (uint j = 0; j < 3; ++j) {
                     f.setVertex(j, firstVertex + i + j);
                 }
+            }
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+template<MeshConcept MeshType, typename Scalar>
+bool populateGltfLines(
+    MeshType&     m,
+    uint          firstVertex,
+    const Scalar* lineArray,
+    uint          lineCount)
+{
+    if constexpr (HasEdges<MeshType>) {
+        if (lineArray != nullptr) {
+            uint ei = m.addEdges(lineCount);
+            for (unsigned int i = 0; i < lineCount * 2; i += 2, ++ei) {
+                auto& e = m.edge(ei);
+                e.setVertices(
+                    firstVertex + lineArray[i], firstVertex + lineArray[i + 1]);
+            }
+        }
+        else {
+            lineCount = m.vertexCount() / 2 - firstVertex;
+            uint ei   = m.addEdges(lineCount);
+            for (uint i = 0; i < lineCount * 2; i += 2, ++ei) {
+                auto& e = m.edge(ei);
+                e.setVertices(firstVertex + i, firstVertex + i + 1);
             }
         }
         return true;
@@ -477,8 +494,10 @@ bool populateGltfAttr(
     case TANGENT:
         return populateGltfVTangents(
             m, firstVertex, enableOptionalComponents, array, stride, number);
-    case INDICES:
+    case TRI_INDICES:
         return populateGltfTriangles(m, firstVertex, array, number / 3);
+    case LINE_INDICES:
+        return populateGltfLines(m, firstVertex, array, number / 2);
     default: return false;
     }
 }
@@ -513,7 +532,7 @@ bool loadGltfAttribute(
     const tinygltf::Accessor* accessor = nullptr;
 
     // get the accessor associated to the attribute
-    if (attr != INDICES) {
+    if (attr != TRI_INDICES && attr != LINE_INDICES) {
         auto it = p.attributes.find(GLTF_ATTR_STR[toUnderlying(attr)]);
 
         if (it != p.attributes.end()) { // accessor found
@@ -524,10 +543,12 @@ bool loadGltfAttribute(
             throw std::runtime_error("File has not 'Position' attribute");
         }
     }
-    else { // if the attribute is triangle indices
-        // if the mode is GL_TRIANGLES and we have triangle indices
-        if (p.mode == TINYGLTF_MODE_TRIANGLES && p.indices >= 0 &&
-            (uint) p.indices < model.accessors.size()) {
+    else { // if the attribute is triangle/lines indices
+        // if the mode is GL_TRIANGLES/GL_LINES and we have triangle/lines
+        // indices
+        if ((p.mode == TINYGLTF_MODE_TRIANGLES ||
+             p.mode == TINYGLTF_MODE_LINE) &&
+            p.indices >= 0 && (uint) p.indices < model.accessors.size()) {
             accessor = &model.accessors[p.indices];
         }
     }
@@ -640,7 +661,7 @@ bool loadGltfAttribute(
     // if accessor not found and attribute is indices, it means that
     // the mesh is not indexed, and triplets of contiguous vertices
     // generate triangles
-    else if (attr == INDICES) {
+    else if (attr == TRI_INDICES) {
         // avoid explicitly the point clouds
         if (p.mode != TINYGLTF_MODE_POINTS) {
             // this case is managed when passing nullptr as data
@@ -678,7 +699,7 @@ void loadGltfMeshPrimitive(
 {
     int materialId = loadGltfPrimitiveMaterial(m, model, p);
 
-    uint firstVertex = m.vertexNumber();
+    uint firstVertex = m.vertexCount();
 
     // load vertex position attribute
     loadGltfAttribute(
@@ -721,20 +742,23 @@ void loadGltfMeshPrimitive(
         info.setPerVertexTexCoord();
     }
 
-    loadGltfAttribute(
+    bool lvtan = loadGltfAttribute(
         m,
         firstVertex,
         settings.enableOptionalComponents,
         model,
         p,
         GltfAttrType::TANGENT);
+    if (lvtan) {
+        info.setPerVertexTangent();
+    }
 
     if constexpr (HasPerVertexMaterialIndex<MeshType>) {
         if (settings.enableOptionalComponents) {
             enableIfPerVertexMaterialIndexOptional(m);
         }
         if (isPerVertexMaterialIndexAvailable(m)) {
-            uint vnum = m.vertexNumber();
+            uint vnum = m.vertexCount();
             for (uint v = firstVertex; v < vnum; ++v) {
                 m.vertex(v).materialIndex() = materialId;
             }
@@ -743,18 +767,39 @@ void loadGltfMeshPrimitive(
     }
 
     if constexpr (HasFaces<MeshType>) {
-        uint firstFace = m.faceNumber();
-        bool lti       = loadGltfAttribute(
-            m,
-            firstVertex,
-            settings.enableOptionalComponents,
-            model,
-            p,
-            GltfAttrType::INDICES);
-        if (lti) {
-            info.setTriangleMesh();
-            info.setFaces();
-            info.setPerFaceVertexReferences();
+        // if primitive mode is GL_TRIANGLES
+        if (p.mode == TINYGLTF_MODE_TRIANGLES) {
+            uint firstFace = m.faceCount();
+            bool lti       = loadGltfAttribute(
+                m,
+                firstVertex,
+                settings.enableOptionalComponents,
+                model,
+                p,
+                GltfAttrType::TRI_INDICES);
+            if (lti) {
+                info.setTriangleMesh();
+                info.setFaces();
+                info.setPerFaceVertexReferences();
+            }
+        }
+    }
+
+    if constexpr (HasEdges<MeshType>) {
+        // if primitive mode is GL_LINES, we can load edges
+        if (p.mode == TINYGLTF_MODE_LINE) {
+            uint firstEdge = m.edgeCount();
+            bool lti       = loadGltfAttribute(
+                m,
+                firstVertex,
+                settings.enableOptionalComponents,
+                model,
+                p,
+                GltfAttrType::LINE_INDICES);
+            if (lti) {
+                info.setEdges();
+                info.setPerEdgeVertexReferences();
+            }
         }
     }
 

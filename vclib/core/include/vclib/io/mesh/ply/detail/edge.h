@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_PLY_DETAIL_EDGE_H
 #define VCL_IO_MESH_PLY_DETAIL_EDGE_H
@@ -45,7 +30,7 @@ void readPlyEdgeProperty(
         vids.resize(eSize);
         for (uint i = 0; i < eSize; ++i) {
             vids[i] = io::readPrimitiveType<size_t>(file, p.type, end);
-            if (vids[i] >= mesh.vertexNumber()) {
+            if (vids[i] >= mesh.vertexCount()) {
                 throw MalformedFileException(
                     "Bad vertex index for edge " + std::to_string(e.index()));
             }
@@ -54,18 +39,24 @@ void readPlyEdgeProperty(
         e.setVertex(0u, vids[0]);
         e.setVertex(1u, vids[1]);
     }
-    if (p.name == ply::vertex1) { // loading vertex1 index
+    else if (p.name == ply::vertex1) { // loading vertex1 index
         uint v0     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(0u, v0);
     }
-    if (p.name == ply::vertex2) { // loading vertex2 index
+    else if (p.name == ply::vertex2) { // loading vertex2 index
         uint v1     = io::readPrimitiveType<uint>(file, p.type, end);
         hasBeenRead = true;
         e.setVertex(1u, v1);
     }
+    else if (p.name == ply::bit_flags) { // loading the flags of the edge
+        using FlagsType = EdgeType::FlagsType;
+        FlagsType eval  = io::readPrimitiveType<FlagsType>(file, p.type, end);
+        e.setUnderlyingBitFlags(eval);
+        hasBeenRead = true;
+    }
     // loading one of the normal components
-    if (p.name >= ply::nx && p.name <= ply::nz) {
+    else if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (HasPerEdgeNormal<MeshType>) {
             if (isPerEdgeNormalAvailable(mesh)) {
                 using Scalar = EdgeType::NormalType::ScalarType;
@@ -181,6 +172,10 @@ void writePlyEdges(
                     file, vIndices[mesh.index(e.vertex(1))], p.type, format);
                 hasBeenWritten = true;
             }
+            else if (p.name == ply::bit_flags) {
+                io::writeProperty(file, e.underlyingBitFlags(), p.type, format);
+                hasBeenWritten = true;
+            }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
                 if constexpr (HasPerEdgeNormal<MeshType>) {
                     io::writeProperty(
@@ -220,11 +215,11 @@ void readPlyEdges(
     LogType&         log)
 {
     using EdgeType = MeshType::EdgeType;
-    m.reserveEdges(header.numberEdges());
+    m.reserveEdges(header.edgeCount());
 
-    log.startProgress("Reading edges", header.numberEdges());
+    log.startProgress("Reading edges", header.edgeCount());
 
-    for (uint eid = 0; eid < header.numberEdges(); ++eid) {
+    for (uint eid = 0; eid < header.edgeCount(); ++eid) {
         uint      eeid = m.addEdge();
         EdgeType& e    = m.edge(eeid);
         if (header.format() == ply::ASCII) {

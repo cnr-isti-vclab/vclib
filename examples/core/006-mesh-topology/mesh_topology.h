@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_TOPOLOGY_H
 #define MESH_TOPOLOGY_H
@@ -47,9 +32,9 @@ inline void meshTopology()
     vcl::TriMesh mesh;
     vcl::loadMesh(mesh, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Loaded triangular mesh: " << mesh.vertexNumber()
-              << " vertices, " << mesh.faceNumber() << " faces\n";
-    std::cout << "Expected edges: ~" << (mesh.faceNumber() * 3 / 2)
+    std::cout << "Loaded triangular mesh: " << mesh.vertexCount()
+              << " vertices, " << mesh.faceCount() << " faces\n";
+    std::cout << "Expected edges: ~" << (mesh.faceCount() * 3 / 2)
               << " (Euler's formula approximation)\n\n";
 
     // ========================================
@@ -67,7 +52,7 @@ inline void meshTopology()
 
     // Show adjacency for first few vertices
     std::cout << "Adjacent faces for first 3 vertices:\n";
-    for (int i = 0; i < 3 && i < mesh.vertexNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.vertexCount(); ++i) {
         const auto& vertex = mesh.vertex(i);
         std::cout << "  Vertex " << i << " is adjacent to faces: ";
 
@@ -108,7 +93,7 @@ inline void meshTopology()
 
     // Show adjacency for first few vertices
     std::cout << "Adjacent vertices for first 3 vertices:\n";
-    for (int i = 0; i < 3 && i < mesh.vertexNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.vertexCount(); ++i) {
         const auto& vertex = mesh.vertex(i);
         std::cout << "  Vertex " << i << " is adjacent to vertices: ";
 
@@ -131,7 +116,7 @@ inline void meshTopology()
         maxDegree        = std::max(maxDegree, degree);
         avgDegree += degree;
     }
-    avgDegree /= mesh.vertexNumber();
+    avgDegree /= mesh.vertexCount();
 
     std::cout << "\nVertex degree statistics:\n";
     std::cout << "  Minimum degree: " << minDegree << "\n";
@@ -153,7 +138,7 @@ inline void meshTopology()
 
     // Show adjacency for first few faces
     std::cout << "Adjacent faces for first 3 faces:\n";
-    for (int i = 0; i < 3 && i < mesh.faceNumber(); ++i) {
+    for (int i = 0; i < 3 && i < mesh.faceCount(); ++i) {
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << " is adjacent to faces: ";
 
@@ -187,7 +172,7 @@ inline void meshTopology()
     std::cout << "-----------------------\n";
 
     // Navigate around a vertex using adjacency information
-    if (mesh.vertexNumber() > 0) {
+    if (mesh.vertexCount() > 0) {
         vcl::uint   startVertex = 0;
         const auto& vertex      = mesh.vertex(startVertex);
 
@@ -234,8 +219,8 @@ inline void meshTopology()
     std::cout << "-------------------------\n";
 
     // Verify Euler's formula: V - E + F = 2 (for a closed surface)
-    vcl::uint V = mesh.vertexNumber();
-    vcl::uint F = mesh.faceNumber();
+    vcl::uint V = mesh.vertexCount();
+    vcl::uint F = mesh.faceCount();
 
     // Count edges by examining face adjacencies
     vcl::uint E = F * 3; // Each triangle has 3 edges

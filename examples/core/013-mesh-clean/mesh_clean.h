@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_CLEAN_H
 #define MESH_CLEAN_H
@@ -50,8 +35,8 @@ auto meshClean()
     vcl::TriMesh mesh = originalMesh;
     mesh.name()       = "Cleaned Brain Mesh";
 
-    std::cout << "Original mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Original mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces" << std::endl;
 
     // Remove unreferenced vertices
     vcl::uint removedUnref = vcl::removeUnreferencedVertices(mesh);
@@ -76,8 +61,8 @@ auto meshClean()
     // Compact the mesh to remove deleted elements
     mesh.compact();
 
-    std::cout << "Cleaned mesh: " << mesh.vertexNumber() << " vertices, "
-              << mesh.faceNumber() << " faces\n"
+    std::cout << "Cleaned mesh: " << mesh.vertexCount() << " vertices, "
+              << mesh.faceCount() << " faces\n"
               << std::endl;
 
     /****** Removing degenerate vertices with NaN positions ******/
@@ -101,9 +86,8 @@ auto meshClean()
     testMesh.addFace(v0, v1, v2);
     testMesh.addFace(v0, v1, v3); // This face will be affected
 
-    std::cout << "Test mesh before cleaning: " << testMesh.vertexNumber()
-              << " vertices, " << testMesh.faceNumber() << " faces"
-              << std::endl;
+    std::cout << "Test mesh before cleaning: " << testMesh.vertexCount()
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     // Remove degenerate vertices and associated faces
     vcl::uint removedDegVerts = vcl::removeDegenerateVertices(testMesh, true);
@@ -111,9 +95,8 @@ auto meshClean()
               << std::endl;
 
     testMesh.compact();
-    std::cout << "Test mesh after cleaning: " << testMesh.vertexNumber()
-              << " vertices, " << testMesh.faceNumber() << " faces"
-              << std::endl;
+    std::cout << "Test mesh after cleaning: " << testMesh.vertexCount()
+              << " vertices, " << testMesh.faceCount() << " faces" << std::endl;
 
     std::cout << "Example completed successfully!\n";
 

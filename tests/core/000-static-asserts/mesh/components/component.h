@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef COMP_COMPONENT_H
 #define COMP_COMPONENT_H
@@ -165,8 +150,7 @@ void componentStaticAsserts()
     // IsOptionalComponent
     static_assert(
         !comp::IsOptionalComponent<vert::Color>,
-        "vert::Color doesIsTiedToVertexNumber satisfy the OptionalComponent "
-        "concept");
+        "vert::Color does satisfy the OptionalComponent concept");
     static_assert(
         !comp::IsOptionalComponent<const vert::Color>,
         "const vert::Color does satisfy the OptionalComponent concept");
@@ -275,47 +259,41 @@ void componentStaticAsserts()
         "vert::Color&& does not satisfy the HasIsAvailableMemberFunction "
         "concept");
 
-    // IsTiedToVertexNumber
+    // IsTiedToVertexCount
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges>,
-        "OptionalAdjEdges does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges>,
+        "OptionalAdjEdges does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<const OptionalAdjEdges>,
-        "const OptionalAdjEdges does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<const OptionalAdjEdges>,
+        "const OptionalAdjEdges does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges&>,
-        "OptionalAdjEdges& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges&>,
+        "OptionalAdjEdges& does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<const OptionalAdjEdges&>,
-        "const OptionalAdjEdges& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<const OptionalAdjEdges&>,
+        "const OptionalAdjEdges& does satisfy the IsTiedToVertexCount concept");
     static_assert(
-        !comp::IsTiedToVertexNumber<OptionalAdjEdges&&>,
-        "OptionalAdjEdges&& does satisfy the IsTiedToVertexNumber "
-        "concept");
+        !comp::IsTiedToVertexCount<OptionalAdjEdges&&>,
+        "OptionalAdjEdges&& does satisfy the IsTiedToVertexCount concept");
 
     static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors>,
-        "OptionalWedgeColors does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors>,
+        "OptionalWedgeColors does not satisfy the IsTiedToVertexCount concept");
+    static_assert(
+        comp::IsTiedToVertexCount<const OptionalWedgeColors>,
+        "const OptionalWedgeColors does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<const OptionalWedgeColors>,
-        "const OptionalWedgeColors does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors&>,
+        "OptionalWedgeColors& does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors&>,
-        "OptionalWedgeColors& does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<const OptionalWedgeColors&>,
+        "const OptionalWedgeColors& does not satisfy the IsTiedToVertexCount "
         "concept");
     static_assert(
-        comp::IsTiedToVertexNumber<const OptionalWedgeColors&>,
-        "const OptionalWedgeColors& does not satisfy the IsTiedToVertexNumber "
-        "concept");
-    static_assert(
-        comp::IsTiedToVertexNumber<OptionalWedgeColors&&>,
-        "OptionalWedgeColors&& does not satisfy the IsTiedToVertexNumber "
+        comp::IsTiedToVertexCount<OptionalWedgeColors&&>,
+        "OptionalWedgeColors&& does not satisfy the IsTiedToVertexCount "
         "concept");
 
     // HasReferencesOfType

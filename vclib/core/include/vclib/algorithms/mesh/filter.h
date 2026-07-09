@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_FILTER_H
 #define VCL_ALGORITHMS_MESH_FILTER_H
@@ -118,7 +103,7 @@ OutMeshType perElementMeshFilterWithVRefs(
     for (const auto& [birthF, filter] :
          std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng)) {
         if (filter) {
-            std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
+            std::vector<uint> verts(birthF.vertexCount(), UINT_NULL);
             uint vi = 0; // incremented with vertices of the element
             // set all the vertex indices in the verts vector
             // two cases here:
@@ -156,7 +141,7 @@ OutMeshType perElementMeshFilterWithVRefs(
             // import all the components from the input mesh
             res.template element<ELEM_ID>(f).importFrom(birthF, false);
 
-            if constexpr (OutElemType::VERTEX_NUMBER < 0) {
+            if constexpr (OutElemType::VERTEX_COUNT < 0) {
                 res.template element<ELEM_ID>(f).resizeVertices(verts.size());
             }
 
@@ -604,7 +589,7 @@ OutMeshType perFaceEdgeMeshFilter(
         unorderedEdges;
 
     for (const auto& f : m.faces()) {
-        for (uint ei = 0; ei < f.vertexNumber(); ++ei) {
+        for (uint ei = 0; ei < f.vertexCount(); ++ei) {
             if (faceEdgeFilter(f, ei)) {
                 std::array<uint, 2> verts = {UINT_NULL, UINT_NULL};
                 for (uint i = 0; i < 2; ++i) {

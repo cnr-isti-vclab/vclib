@@ -1,3 +1,10 @@
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
+
 #ifndef TRIMESH_H
 #define TRIMESH_H
 
@@ -33,9 +40,9 @@ void trimeshStaticAsserts()
 
     static_assert(HasMaterials<TriMesh>, "The TriMesh has no materials.");
 
-    static_assert(comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFaces>, "");
+    static_assert(comp::IsTiedToVertexCount<TriMesh::Face::AdjacentFaces>, "");
     static_assert(
-        !comp::IsTiedToVertexNumber<TriMesh::Vertex::AdjacentFaces>, "");
+        !comp::IsTiedToVertexCount<TriMesh::Vertex::AdjacentFaces>, "");
 
     static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
     static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");

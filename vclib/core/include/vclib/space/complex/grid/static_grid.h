@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_COMPLEX_GRID_STATIC_GRID_H
 #define VCL_SPACE_COMPLEX_GRID_STATIC_GRID_H
@@ -90,12 +75,12 @@ public:
 
     void build()
     {
-        uint totCellNumber = 1;
+        uint totCellCount = 1;
         for (uint i = 0; i < GridType::DIM; ++i) {
-            totCellNumber *= GridType::cellNumber(i);
+            totCellCount *= GridType::cellCount(i);
         }
 
-        mGrid.resize(totCellNumber);
+        mGrid.resize(totCellCount);
 
         std::sort(mValues.begin(), mValues.end(), mComparator);
 
@@ -238,28 +223,26 @@ using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 /* Deduction guides */
 
 template<PointIteratorConcept It>
-StaticGrid(It, It)
-    -> StaticGrid<
-        RegularGrid<typename It::value_type, It::value_type::DIM>,
-        typename It::value_type::ScalarType>;
+StaticGrid(It, It) -> StaticGrid<
+    RegularGrid<typename It::value_type, It::value_type::DIM>,
+    typename It::value_type::ScalarType>;
 
 template<PointIteratorConcept It, typename F>
-StaticGrid(It, It, F)
-    -> StaticGrid<
-        RegularGrid<typename It::value_type, It::value_type::DIM>,
-        typename It::value_type::ScalarType>;
+StaticGrid(It, It, F) -> StaticGrid<
+    RegularGrid<typename It::value_type, It::value_type::DIM>,
+    typename It::value_type::ScalarType>;
 
 template<VertexPointerRangeConcept Rng>
 StaticGrid(Rng) -> StaticGrid<
-                    RegularGrid<
-                        // scalar type used for the grid, the same of the
-                        // PositionType of the Vertex
-                        typename RemovePtr<typename std::ranges::iterator_t<
-                            Rng>::value_type>::PositionType::ScalarType,
-                        3>, // the dimension of the Grid
-                    // the ValueType of the StaticGrid, which is the iterated
-                    // type in the given range (pointer to vertex)
-                    typename std::ranges::iterator_t<Rng>::value_type>;
+    RegularGrid<
+        // scalar type used for the grid, the same of the
+        // PositionType of the Vertex
+        typename RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>::
+            PositionType::ScalarType,
+        3>, // the dimension of the Grid
+    // the ValueType of the StaticGrid, which is the iterated
+    // type in the given range (pointer to vertex)
+    typename std::ranges::iterator_t<Rng>::value_type>;
 
 } // namespace vcl
 

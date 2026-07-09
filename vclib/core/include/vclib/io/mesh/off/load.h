@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_OFF_LOAD_H
 #define VCL_IO_MESH_OFF_LOAD_H
@@ -229,7 +214,7 @@ inline void readOffHeader(
     uint&         ne)
 {
     fileInfo.clear();
-    Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
     Tokenizer::iterator token  = tokens.begin();
     std::string         header = *token;
 
@@ -255,7 +240,7 @@ inline void readOffHeader(
     // If the file is slightly malformed and it has nvert and nface AFTER the
     // OFF string instead of in the next line we manage it here...
     if (tokens.size() == 1) {
-        tokens = readAndTokenizeNextNonEmptyLine(file);
+        tokens = readAndTokenizeNextNonCommentLine(file);
         token  = tokens.begin();
     }
     else
@@ -325,7 +310,7 @@ void readOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+        Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
         Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
@@ -410,10 +395,10 @@ void readOffFaces(
         log.startProgress("Reading faces", nf);
 
         for (uint fid = 0; fid < nf; ++fid) {
-            Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
-            Tokenizer::iterator token  = tokens.begin();
+            Tokenizer tokens          = readAndTokenizeNextNonCommentLine(file);
+            Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
-            FaceType& f = mesh.face(mesh.faceNumber() - 1);
+            FaceType& f = mesh.face(mesh.faceCount() - 1);
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
@@ -429,11 +414,11 @@ void readOffFaces(
             // load vertex indices into face
             bool splitFace = false;
             // we have a polygonal mesh
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize to the right number of verts
                 f.resizeVertices(vids.size());
             }
-            else if (FaceType::VERTEX_NUMBER != vids.size()) {
+            else if (FaceType::VERTEX_COUNT != vids.size()) {
                 // we have faces with static sizes (triangles), but we are
                 // loading faces with number of verts > 3. Need to split the
                 // face we are loading in n faces!
@@ -441,7 +426,7 @@ void readOffFaces(
             }
             if (!splitFace) { // classic load, no split needed
                 for (uint i = 0; i < vids.size(); ++i) {
-                    if (vids[i] >= mesh.vertexNumber()) {
+                    if (vids[i] >= mesh.vertexCount()) {
                         throw MalformedFileException(
                             "Bad vertex index for face " + std::to_string(i));
                     }
@@ -463,7 +448,7 @@ void readOffFaces(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = mesh.index(f); ff < mesh.faceNumber();
+                        for (uint ff = mesh.index(f); ff < mesh.faceCount();
                              ++ff) {
                             mesh.face(ff).color() = f.color();
                         }
@@ -476,7 +461,7 @@ void readOffFaces(
     }
     else { // mesh does not have face, read nf lines and throw them away
         for (uint i = 0; i < nf; ++i)
-            readAndTokenizeNextNonEmptyLine(file);
+            readAndTokenizeNextNonCommentLine(file);
     }
 }
 

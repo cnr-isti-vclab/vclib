@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
@@ -31,12 +16,26 @@
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.h>
 
+#include <array>
+
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
+/**
+ * @brief The ViewerDrawerBGFX class is a concrete viewer drawer
+ * implementation for the BGFX backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using BGFX.
+ */
+template<typename DerivedRenderApp>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
+    inline static const uint N_ADDITIONAL_VIEWS =
+        DrawObjectSettings::N_ADDITIONAL_VIEWS;
+
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DRA          = DerivedRenderApp;
+
+    std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
     // flags
     bool mStatsEnabled = false;
@@ -49,14 +48,17 @@ public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
             ParentViewer(width, height)
     {
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            mAdditionalViewIds[i] = Context::instance().requestViewId();
+        }
+        this->onResize(width, height);
     }
 
-    ViewerDrawerBGFX(
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width = 1024,
-        uint height = 768) : ViewerDrawerBGFX(width, height)
+    ~ViewerDrawerBGFX()
     {
-        ParentViewer::setDrawableObjectVector(v);
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
+            Context::instance().releaseViewId(mAdditionalViewIds[i]);
+        }
     }
 
     const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
@@ -73,10 +75,28 @@ public:
         mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
     }
 
+    void onResize(uint width, uint height) override
+    {
+        ParentViewer::onResize(width, height);
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
+            bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+    }
+
     void onDrawContent(uint viewId) override
     {
+        auto fbh = DRA::DRW::canvasFrameBuffer(derived());
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewFrameBuffer(mAdditionalViewIds[i], fbh);
+            bgfx::touch(mAdditionalViewIds[i]);
+        }
+
         DrawObjectSettings settings;
         settings.viewId = viewId;
+
+        settings.additionalViewIds = mAdditionalViewIds;
 
         settings.pbrSettings = mPBRSettings;
 
@@ -110,35 +130,42 @@ public:
         ParentViewer::drawableObjectVector().drawId(settings);
     }
 
-    void onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
+    bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
-        if (key == Key::F1) {
-            if (mStatsEnabled) {
-                mStatsEnabled = false;
-                bgfx::setDebug(BGFX_DEBUG_NONE);
-            }
-            else {
-                mStatsEnabled = true;
-                bgfx::setDebug(BGFX_DEBUG_STATS);
+        bool block = ParentViewer::onKeyPress(key, modifiers);
+
+        if (!block) {
+            switch (key) {
+            case Key::F1:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    mStatsEnabled = !mStatsEnabled;
+                    bgfx::setDebug(
+                        mStatsEnabled ? BGFX_DEBUG_STATS : BGFX_DEBUG_NONE);
+                }
+                break;
+
+            default: break;
             }
         }
-        ParentViewer::onKeyPress(key, modifiers);
+
+        return block;
     }
 
-    void onMouseDoubleClick(
+    bool onMouseDoubleClick(
         MouseButton::Enum   button,
         double              x,
         double              y,
         const KeyModifiers& modifiers) override
     {
-        ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
+        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
 
-        if (button == MouseButton::LEFT) {
+        if (!block && button == MouseButton::LEFT) {
             const bool homogeneousNDC =
                 Context::instance().capabilites().homogeneousDepth;
 
             ParentViewer::readDepthRequest(x, y, homogeneousNDC);
         }
+        return block;
     }
 
 private:
@@ -150,7 +177,15 @@ private:
         Matrix44f pm = ParentViewer::projectionMatrix();
 
         bgfx::setViewTransform(viewId, vm.data(), pm.data());
+
+        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
+            bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
+        }
     }
+
+    auto* derived() { return static_cast<DRA*>(this); }
+
+    const auto* derived() const { return static_cast<const DRA*>(this); }
 };
 
 } // namespace vcl

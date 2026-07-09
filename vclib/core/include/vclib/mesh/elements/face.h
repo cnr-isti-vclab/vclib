@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_ELEMENTS_FACE_H
 #define VCL_MESH_ELEMENTS_FACE_H
@@ -51,7 +36,7 @@ class Face : public Element<ElemId::FACE, MeshType, Comps...>
     // VertexPointers or VertexIndices component of the Face
     using VRefs = typename Face::VertexReferences;
 
-    static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
+    static const int NV = VRefs::VERTEX_COUNT; // If dynamic, NV will be -1
 
 public:
     using VertexType = typename VRefs::VertexType;
@@ -78,9 +63,8 @@ public:
      *
      * If the Face size is static, the number of vertices of the input range
      * must be equal to the size of the Face (the value returned by
-     * vertexNumber()). If the Face size is dynamic, it will take care to update
-     * the also the size of the components tied to the vertex number of the
-     * face.
+     * vertexCount()). If the Face size is dynamic, it will take care to update
+     * the also the size of the components tied to the vertex count of the face.
      *
      * @tparam Rng: A range of vertex pointers or vertex indices in
      * counterclockwise order.
@@ -94,9 +78,9 @@ public:
     {
         VRefs::setVertices(r);
 
-        // if polygonal, I need to resize all the TTVN components
+        // if polygonal, I need to resize all the TTVC components
         if constexpr (NV < 0) {
-            (resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
+            (resizeTTVCComponent<Comps>(std::ranges::size(r)), ...);
         }
     }
 
@@ -104,9 +88,9 @@ public:
      * @brief Sets a list of Vertices to the face.
      *
      * If the Face size is static, the number of vertices of the list must be
-     * equal to the size of the Face (the value returned by vertexNumber()). If
+     * equal to the size of the Face (the value returned by vertexCount()). If
      * the Face size is dynamic, it will take care to update the also the size
-     * of the components tied to the vertex number of the face.
+     * of the components tied to the vertex count of the face.
      *
      * @tparam V: A list of vertex pointers or vertex indices in
      * counterclockwise order.
@@ -141,65 +125,65 @@ public:
     {
         VRefs::resizeVertices(n);
 
-        // Now I need to resize all the TTVN components
-        (resizeTTVNComponent<Comps>(n), ...);
+        // Now I need to resize all the TTVC components
+        (resizeTTVCComponent<Comps>(n), ...);
     }
 
     void pushVertex(VertexType* v) requires (NV < 0)
     {
         VRefs::pushVertex(v);
 
-        // Now I need to pushBack in all the TTVN components
-        (pushBackTTVNComponent<Comps>(), ...);
+        // Now I need to pushBack in all the TTVC components
+        (pushBackTTVCComponent<Comps>(), ...);
     }
 
     void pushVertex(uint vi) requires (NV < 0)
     {
         VRefs::pushVertex(vi);
 
-        // Now I need to pushBack in all the TTVN components
-        (pushBackTTVNComponent<Comps>(), ...);
+        // Now I need to pushBack in all the TTVC components
+        (pushBackTTVCComponent<Comps>(), ...);
     }
 
     void insertVertex(uint i, VertexType* v) requires (NV < 0)
     {
         VRefs::insertVertex(i, v);
 
-        // Now I need to insert in all the TTVN components
-        (insertTTVNComponent<Comps>(i), ...);
+        // Now I need to insert in all the TTVC components
+        (insertTTVCComponent<Comps>(i), ...);
     }
 
     void insertVertex(uint i, uint vi) requires (NV < 0)
     {
         VRefs::insertVertex(i, vi);
 
-        // Now I need to insert in all the TTVN components
-        (insertTTVNComponent<Comps>(i), ...);
+        // Now I need to insert in all the TTVC components
+        (insertTTVCComponent<Comps>(i), ...);
     }
 
     void eraseVertex(uint i) requires (NV < 0)
     {
         VRefs::eraseVertex(i);
 
-        // Now I need to erase in all the TTVN components
-        (eraseTTVNComponent<Comps>(i), ...);
+        // Now I need to erase in all the TTVC components
+        (eraseTTVCComponent<Comps>(i), ...);
     }
 
     void clearVertices() requires (NV < 0)
     {
         VRefs::clearVertices();
 
-        // Now I need to clear all the TTVN components
-        (clearTTVNComponent<Comps>(), ...);
+        // Now I need to clear all the TTVC components
+        (clearTTVCComponent<Comps>(), ...);
     }
 
     template<typename ElType>
     void importFrom(const ElType& v, bool importRefs = true)
     {
         if constexpr (comp::HasVertexReferences<ElType> && NV < 0) {
-            VRefs::resizeVertices(v.vertexNumber());
-            // Now I need to resize all the TTVN components
-            (resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
+            VRefs::resizeVertices(v.vertexCount());
+            // Now I need to resize all the TTVC components
+            (resizeTTVCComponent<Comps>(v.vertexCount()), ...);
         }
 
         Base::importFrom(v, importRefs);
@@ -208,12 +192,12 @@ public:
 private:
     /**
      * Calls the resize(n) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
-    void resizeTTVNComponent(uint n)
+    void resizeTTVCComponent(uint n)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::resize(n);
         }
@@ -221,12 +205,12 @@ private:
 
     /**
      * Calls the pushBack() on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
-    void pushBackTTVNComponent()
+    void pushBackTTVCComponent()
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::pushBack();
         }
@@ -234,12 +218,12 @@ private:
 
     /**
      * Calls the insert(i) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
-    void insertTTVNComponent(uint i)
+    void insertTTVCComponent(uint i)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::insert(i);
         }
@@ -247,12 +231,12 @@ private:
 
     /**
      * Calls the erase(i) on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
-    void eraseTTVNComponent(uint i)
+    void eraseTTVCComponent(uint i)
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::erase(i);
         }
@@ -260,12 +244,12 @@ private:
 
     /**
      * Calls the clear() on all the component containers that are tied to the
-     * vertex number
+     * vertex count
      */
     template<typename Comp>
-    void clearTTVNComponent()
+    void clearTTVCComponent()
     {
-        if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+        if constexpr (comp::IsTiedToVertexCount<Comp>) {
             if (Comp::isAvailable())
                 Comp::clear();
         }
@@ -292,8 +276,8 @@ class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
  *    (static size);
  *  - if the Face has the TriangleBitFlags component, the number of vertices
  *    must be 3 (static size);
- *  - all the components tied to the vertex number of the Face are
- *    consistent with the number of vertices;
+ *  - all the components tied to the vertex count of the Face are consistent
+ *    437387with the number of vertices;
  *
  * @tparam T: The type to be tested for conformity to the EdgeConcept.
  *
@@ -304,14 +288,13 @@ concept FaceConcept =
     IsDerivedFromSpecializationOfV<T, Face> &&
     RemoveRef<T>::ELEMENT_ID == ElemId::FACE && face::HasBitFlags<T> &&
     face::HasVertexReferences<T> &&
-    (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
-    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
+    (RemoveRef<T>::VERTEX_COUNT < 0 || RemoveRef<T>::VERTEX_COUNT >= 3) &&
+    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_COUNT == 3) &&
     comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
     comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
-concept TriangleFaceConcept =
-    RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
+concept TriangleFaceConcept = RemoveRef<T>::VERTEX_COUNT == 3 && FaceConcept<T>;
 
 /**
  * @brief A concpet that checks whether a class has (inherits from) a
@@ -323,7 +306,7 @@ concept TriangleFaceConcept =
  * @ingroup face_concepts
  */
 template<typename T>
-concept PolygonFaceConcept = RemoveRef<T>::VERTEX_NUMBER < 0 && FaceConcept<T>;
+concept PolygonFaceConcept = RemoveRef<T>::VERTEX_COUNT < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

@@ -1,7 +1,14 @@
 name: External - Build and run Tests
 
 on:
-  [push, pull_request]
+  push:
+  pull_request:
+  workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
 
 jobs:
   external_build_and_run_tests:
@@ -10,49 +17,45 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-latest']
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
+        ref: ${{ inputs.ref || github.ref }}
     - name: Setup MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install cmake ninja-build libtbb-dev catch2
-        sudo apt-get install libembree-dev
+        sudo apt-get install libcgal-dev libembree-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
         brew install catch2
-        brew install embree
+        brew install embree cgal
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
-        winget install Ccache.Ccache Ninja-build.Ninja --accept-source-agreements --accept-package-agreements
-        # embree not available with winget
-        choco install embree
+        choco install ninja ccache
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+      uses: hendrikmuhs/ccache-action@v1.2.23
       with:
         key: external-${{ matrix.os }}-${{ github.ref_name }}
     - name: Build
       shell: bash
       run: |
         mkdir build
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          export CMAKE_PREFIX_PATH="C:/ProgramData/chocolatey/lib/embree.install/tools"
-        fi
         cmake -B build --preset=vclib-external-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
     - name: Run Tests
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          export PATH="/c/ProgramData/chocolatey/lib/embree.install/tools/bin:$PATH"
-        fi
         cd build
         ctest --verbose

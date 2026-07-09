@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_STL_LOAD_H
 #define VCL_IO_MESH_STL_LOAD_H
@@ -153,7 +138,7 @@ void readStlBin(
             uint      fi = m.addFace();
             FaceType& f  = m.face(fi);
             // we have a polygonal mesh
-            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            if constexpr (FaceType::VERTEX_COUNT < 0) {
                 // need to resize the face to the right number of verts
                 f.resizeVertices(3);
             }
@@ -246,7 +231,7 @@ void readStlAscii(
 
                     FaceType& f = m.face(fi);
                     // we have a polygonal mesh
-                    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                    if constexpr (FaceType::VERTEX_COUNT < 0) {
                         // need to resize the face to the right number of verts
                         f.resizeVertices(3);
                     }
@@ -266,7 +251,7 @@ void readStlAscii(
         } while (fp);
 
         if constexpr (HasFaces<MeshType>) {
-            if (m.faceNumber() > 0)
+            if (m.faceCount() > 0)
                 loadedInfo.setTriangleMesh();
         }
     }

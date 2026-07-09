@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_GRID_H
 #define MESH_GRID_H
@@ -163,8 +148,8 @@ void meshGridExamples()
     vcl::TriMesh mesh = vcl::createHexahedron<vcl::TriMesh>();
     using ScalarType  = vcl::TriMesh::ScalarType;
 
-    std::cout << "Created hexahedron mesh with " << mesh.faceNumber()
-              << " faces" << std::endl;
+    std::cout << "Created hexahedron mesh with " << mesh.faceCount() << " faces"
+              << std::endl;
 
     // Create intersection function for faces and bounding boxes
     auto intersectionFunc =
@@ -212,7 +197,7 @@ void meshGridExamples()
     try {
         mesh =
             vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
-        std::cout << "Loaded bone mesh with " << mesh.vertexNumber()
+        std::cout << "Loaded bone mesh with " << mesh.vertexCount()
                   << " vertices" << std::endl;
 
         // Create StaticGrid with mesh vertices

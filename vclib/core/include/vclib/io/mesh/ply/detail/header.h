@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_PLY_DETAIL_HEADER_H
 #define VCL_IO_MESH_PLY_DETAIL_HEADER_H
@@ -30,6 +15,7 @@
 #include <vclib/io/read.h>
 
 #include <vclib/space/complex.h>
+#include <vclib/version.h>
 
 #include <clocale>
 #include <string>
@@ -44,7 +30,8 @@ namespace vcl::detail {
  */
 class PlyHeader
 {
-    bool mValid = false;
+    bool mValid        = false;
+    bool mVcgGenerated = false;
 
     ply::Format mFormat = ply::UNKNOWN;
 
@@ -102,7 +89,15 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (containsCaseInsensitive(*token, "texture")) {
+                            if (*token == "VCGLIB") {
+                                ++token;
+                                if (token != spaceTokenizer.end() &&
+                                    *token == "generated") {
+                                    mVcgGenerated = true;
+                                }
+                            }
+                            else if (containsCaseInsensitive(
+                                         *token, "texture")) {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
@@ -171,7 +166,8 @@ public:
 
     void clear()
     {
-        mFormat = ply::UNKNOWN;
+        mFormat       = ply::UNKNOWN;
+        mVcgGenerated = false;
         mElements.clear();
         mTextureFiles.clear();
         mValid = false;
@@ -183,6 +179,8 @@ public:
     }
 
     bool isValid() const { return mValid; }
+
+    bool isVcgGenerated() const { return mVcgGenerated; }
 
     ply::Format format() const { return mFormat; }
 
@@ -198,6 +196,7 @@ public:
                 case ply::x:
                 case ply::y:
                 case ply::z: mod.setPerVertexPosition(); break;
+                case ply::bit_flags: mod.setPerVertexBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerVertexNormal(); break;
@@ -226,6 +225,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerFaceVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerFaceBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -273,6 +273,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerEdgeVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerEdgeBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerEdgeNormal(); break;
@@ -301,37 +302,37 @@ public:
 
     bool hasMaterials() const { return mMaterialElemPos != UINT_NULL; }
 
-    uint numberVertices() const
+    uint vertexCount() const
     {
         assert(hasVertices());
-        return mElements[mVertElemPos].numberElements;
+        return mElements[mVertElemPos].elementCount;
     }
 
-    uint numberFaces() const
+    uint faceCount() const
     {
         assert(hasFaces());
-        return mElements[mFaceElemPos].numberElements;
+        return mElements[mFaceElemPos].elementCount;
     }
 
-    uint numberEdges() const
+    uint edgeCount() const
     {
         assert(hasEdges());
-        return mElements[mEdgeElemPos].numberElements;
+        return mElements[mEdgeElemPos].elementCount;
     }
 
-    uint numberTriStrips() const
+    uint triStripCount() const
     {
         assert(hasTriStrips());
-        return mElements[mTriStripElemPos].numberElements;
+        return mElements[mTriStripElemPos].elementCount;
     }
 
-    uint numberMaterials() const
+    uint materialCount() const
     {
         assert(hasMaterials());
-        return mElements[mMaterialElemPos].numberElements;
+        return mElements[mMaterialElemPos].elementCount;
     }
 
-    uint numberTextureFileNames() const { return mTextureFiles.size(); }
+    uint textureFileNameCount() const { return mTextureFiles.size(); }
 
     const std::list<PlyProperty>& vertexProperties() const
     {
@@ -370,28 +371,28 @@ public:
 
     bool errorWhileLoading() const { return !mValid; }
 
-    void setNumberVertices(unsigned long int nV)
+    void setVertexCount(unsigned long int nV)
     {
         assert(hasVertices());
-        mElements[mVertElemPos].numberElements = nV;
+        mElements[mVertElemPos].elementCount = nV;
     }
 
-    void setNumberFaces(unsigned long int nF)
+    void setFaceCount(unsigned long int nF)
     {
         assert(hasFaces());
-        mElements[mFaceElemPos].numberElements = nF;
+        mElements[mFaceElemPos].elementCount = nF;
     }
 
-    void setNumberEdges(unsigned long int nE)
+    void setEdgeCount(unsigned long int nE)
     {
         assert(hasEdges());
-        mElements[mEdgeElemPos].numberElements = nE;
+        mElements[mEdgeElemPos].elementCount = nE;
     }
 
-    void setNumberMaterials(unsigned long int nM)
+    void setMaterialCount(unsigned long int nM)
     {
         assert(hasMaterials());
-        mElements[mMaterialElemPos].numberElements = nM;
+        mElements[mMaterialElemPos].elementCount = nM;
     }
 
     void pushTextureFileName(const std::string& tn)
@@ -421,6 +422,12 @@ public:
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
+            }
+            if (info.hasPerVertexBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perVertexBitFlagsType();
+                vElem.properties.push_back(bf);
             }
             if (info.hasPerVertexNormal()) {
                 PlyProperty vnx, vny, vnz;
@@ -495,6 +502,12 @@ public:
                 vids.listSizeType = PrimitiveType::UCHAR;
                 fElem.properties.push_back(vids);
             }
+            if (info.hasPerFaceBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perFaceBitFlagsType();
+                fElem.properties.push_back(bf);
+            }
             if (info.hasPerFaceNormal()) {
                 PlyProperty fnx, fny, fnz;
                 fnx.name = ply::nx;
@@ -568,6 +581,12 @@ public:
                 v2.name = ply::vertex2;
                 v2.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v2);
+            }
+            if (info.hasPerEdgeBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perEdgeBitFlagsType();
+                eElem.properties.push_back(bf);
             }
             mElements.push_back(eElem);
         }
@@ -669,7 +688,8 @@ public:
         default: s += "binary_little_endian 1.0\n"; break;
         }
 
-        s += "comment Generated by vclib\n";
+        s += "comment Generated by VCLib " + std::string(VCLIB_VERSION_STRING) +
+             "\n";
         if (settings.meshlabCompatibility) {
             for (const std::string& str : mTextureFiles) {
                 s += "comment TextureFile " + str + "\n";
@@ -679,23 +699,23 @@ public:
             s += "element ";
             switch (e.type) {
             case ply::VERTEX:
-                s += "vertex " + std::to_string(e.numberElements) + "\n";
+                s += "vertex " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::FACE:
-                s += "face " + std::to_string(e.numberElements) + "\n";
+                s += "face " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::EDGE:
-                s += "edge " + std::to_string(e.numberElements) + "\n";
+                s += "edge " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::TRISTRIP:
-                s += "tristrips " + std::to_string(e.numberElements) + "\n";
+                s += "tristrips " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::MATERIAL:
-                s += "material " + std::to_string(e.numberElements) + "\n";
+                s += "material " + std::to_string(e.elementCount) + "\n";
                 break;
             case ply::OTHER:
                 s += e.unknownElementType + " " +
-                     std::to_string(e.numberElements) + "\n";
+                     std::to_string(e.elementCount) + "\n";
                 break;
             }
             for (const PlyProperty& p : e.properties) {
@@ -730,28 +750,28 @@ private:
         Tokenizer::iterator token = lineTokenizer.begin();
         std::string         s     = *(++token);
         if (s == "vertex") {
-            e.type           = ply::VERTEX;
-            e.numberElements = std::stoi(*(++token));
+            e.type         = ply::VERTEX;
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "face") {
-            e.type           = ply::FACE;
-            e.numberElements = std::stoi(*(++token));
+            e.type         = ply::FACE;
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "edge") {
-            e.type           = ply::EDGE;
-            e.numberElements = std::stoi(*(++token));
+            e.type         = ply::EDGE;
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "tristrips") {
-            e.type           = ply::TRISTRIP;
-            e.numberElements = std::stoi(*(++token));
+            e.type         = ply::TRISTRIP;
+            e.elementCount = std::stoi(*(++token));
         }
         else if (s == "material") {
-            e.type           = ply::MATERIAL;
-            e.numberElements = std::stoi(*(++token));
+            e.type         = ply::MATERIAL;
+            e.elementCount = std::stoi(*(++token));
         }
         else {
             e.type               = ply::OTHER;
-            e.numberElements     = std::stoi(*(++token));
+            e.elementCount       = std::stoi(*(++token));
             e.unknownElementType = s;
         }
         return e;
@@ -824,6 +844,8 @@ private:
             pn = ply::vertex1;
         if (name == "vertex2")
             pn = ply::vertex2;
+        if (name == "flags" || name == "bit_flags")
+            pn = ply::bit_flags;
         if (name == "name")
             pn = ply::name;
         if (name == "metallic")
@@ -906,6 +928,7 @@ private:
         case ply::texcoord: return "texcoord";
         case ply::vertex1: return "vertex1";
         case ply::vertex2: return "vertex2";
+        case ply::bit_flags: return "bit_flags";
         case ply::name: return "name";
         case ply::metallic: return "metallic";
         case ply::roughness: return "roughness";

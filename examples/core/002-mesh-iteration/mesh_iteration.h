@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_ITERATION_H
 #define MESH_ITERATION_H
@@ -44,8 +29,8 @@ void meshIteration()
     vcl::TriMesh mesh =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
-    std::cout << "Loaded mesh with " << mesh.vertexNumber() << " vertices and "
-              << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Loaded mesh with " << mesh.vertexCount() << " vertices and "
+              << mesh.faceCount() << " faces" << std::endl;
 
     /****** Basic iteration ******/
 
@@ -63,7 +48,7 @@ void meshIteration()
 
     // Iterate with traditional for loop using indices
     std::cout << "\nFirst 3 faces (using indices):" << std::endl;
-    for (vcl::uint i = 0; i < std::min(3u, mesh.faceNumber()); ++i) {
+    for (vcl::uint i = 0; i < std::min(3u, mesh.faceCount()); ++i) {
         const auto& face = mesh.face(i);
         std::cout << "  Face " << i << ": vertices [";
         for (int j = 0; j < 3; ++j) {
@@ -208,25 +193,25 @@ void meshIteration()
     vcl::PolyMesh polyMesh = vcl::loadMesh<vcl::PolyMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
-    std::cout << "Loaded polygon mesh with " << polyMesh.vertexNumber()
-              << " vertices and " << polyMesh.faceNumber() << " faces"
+    std::cout << "Loaded polygon mesh with " << polyMesh.vertexCount()
+              << " vertices and " << polyMesh.faceCount() << " faces"
               << std::endl;
 
     // Iterate over polygon faces (variable number of vertices)
     for (const auto& face : polyMesh.faces()) {
         std::cout << "Polygon face " << face.index() << " has "
-                  << face.vertexNumber() << " vertices: ";
-        for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+                  << face.vertexCount() << " vertices: ";
+        for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
             std::cout << face.vertexIndex(i) << " ";
         }
         std::cout << std::endl;
 
         // Calculate polygon centroid
         vcl::Point3d centroid(0, 0, 0);
-        for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+        for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
             centroid += face.vertex(i)->position();
         }
-        centroid /= face.vertexNumber();
+        centroid /= face.vertexCount();
         std::cout << "  Centroid: " << centroid << std::endl;
     }
 
@@ -248,7 +233,7 @@ void meshIteration()
 
     // Compute average edge length
     double    totalEdgeLength = 0.0;
-    vcl::uint edgeCount       = mesh.faceNumber() * 3;
+    vcl::uint edgeCount       = mesh.faceCount() * 3;
 
     for (const auto& face : mesh.faces()) {
         for (int i = 0; i < 3; ++i) {

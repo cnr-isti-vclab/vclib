@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_COMPLEX_MESH_POS_H
 #define VCL_SPACE_COMPLEX_MESH_POS_H
@@ -69,7 +54,7 @@ public:
 
     MeshPos(const FaceType* f, const VertexType* v) : mFace(f), mVertex(v)
     {
-        for (uint i = 0; i < f->vertexNumber(); i++)
+        for (uint i = 0; i < f->vertexCount(); i++)
             if (f->vertex(i) == v)
                 mEdge = i;
         assert(isValid(mFace, mVertex, mEdge));
@@ -82,7 +67,7 @@ public:
      *
      * @param[in] f: the Face pointer on which place the MeshPos.
      * @param[in] v: the Vertex pointer on which place the MeshPos.
-     * @param[in] e: the Edge (an positive index < f.vertexNumber() on which
+     * @param[in] e: the Edge (an positive index < f.vertexCount() on which
      * place the MeshPos.
      */
     MeshPos(const FaceType* f, const VertexType* v, short e) :
@@ -97,7 +82,7 @@ public:
      * - the type of f has AdjacentFaces
      * - e is less than the number of vertices of f (that is the number of edges
      *   of f)
-     * - v is the vertex of f in position e or (e+1)%f->numberVertices()
+     * - v is the vertex of f in position e or (e+1)%f->vertexCount()
      *
      * @param f: a face pointer
      * @param v: a vertex pointer
@@ -110,7 +95,7 @@ public:
             return false;
         if (!comp::isAdjacentFacesAvailableOn(*f))
             return false;
-        return (ushort) e < f->vertexNumber() &&
+        return (ushort) e < f->vertexCount() &&
                (v == f->vertex(e) || v == f->vertexMod(e + 1));
     }
 
@@ -196,7 +181,7 @@ public:
                 mEdge          = nf->indexOfEdge(v0, v1);
                 // if this assert fails, it means that the edge was not found.
                 // you probably need to update adjacency information of the mesh
-                assert(mEdge >= 0 && mEdge < nf->vertexNumber());
+                assert(mEdge >= 0 && mEdge < nf->vertexCount());
                 if (mEdge < 0) {
                     *this = MeshPos<FaceType>(); // reset to null
                     return false;
@@ -231,10 +216,10 @@ public:
     void flipEdge()
     {
         if (mFace->vertexMod(mEdge + 1) == mVertex) {
-            mEdge = (mEdge + 1) % (short) mFace->vertexNumber();
+            mEdge = (mEdge + 1) % (short) mFace->vertexCount();
         }
         else {
-            short n = mFace->vertexNumber();
+            short n = mFace->vertexCount();
             mEdge   = ((mEdge - 1) % n + n) %
                     n; // be sure to get the right index of the previous edge
         }

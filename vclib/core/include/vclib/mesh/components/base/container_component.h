@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_COMPONENTS_BASE_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASE_CONTAINER_COMPONENT_H
@@ -94,11 +79,11 @@ using ContCompBase = std::conditional_t<
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
- * @tparam TTVN: "Tied To Vertex Number", this boolean tells whether the
+ * @tparam TTVC: "Tied To Vertex Count", this boolean tells whether the
  * component should leave liberty to control the size of the Container to the
- * user, or it should be tied to the vertex number and changed automatically
+ * user, or it should be tied to the vertex count and changed automatically
  * when the number of vertices changes. E.g. a WedgeTexCoord component is a
- * Container that should be tied to the vertex number, meaning that the number
+ * Container that should be tied to the vertex count, meaning that the number
  * of texture coordinates should be always be the same of the number of
  * vertices. Setting this value to true will tie the size of this container to
  * the number of vertices.
@@ -115,7 +100,7 @@ template<
     typename ParentElemType,   // parent element type
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
-    bool TTVN,                 // true if container size tied to vertex number
+    bool TTVC,                 // true if container size tied to vertex count
     typename... PointedTypes>  // types of pointers stored by the component
 class ContainerComponent :
         public detail::ContCompBase<
@@ -127,7 +112,7 @@ class ContainerComponent :
             ParentElemType,
             VERT,
             OPT,
-            TTVN,
+            TTVC,
             PointedTypes...>
 {
     static constexpr bool HAS_ADDITIONAL_DATA =
@@ -142,7 +127,7 @@ class ContainerComponent :
         ParentElemType,
         VERT,
         OPT,
-        TTVN,
+        TTVC,
         PointedTypes...>;
 
 public:
@@ -154,9 +139,9 @@ public:
      * having 5 vertices (and 5 edges). This means that if the Face has the
      * AdjacentFaces component, then it should store 5 adjacent faces (the same
      * number of the vertices). In this case, the AdjacentFaces component will
-     * have the boolean TIED_TO_VERTEX_NUMBER set to true.
+     * have the boolean TIED_TO_VERTEX_COUNT set to true.
      */
-    static const bool TIED_TO_VERTEX_NUMBER = TTVN;
+    static const bool TIED_TO_VERTEX_COUNT = TTVC;
 
     static const int SIZE = N;
 

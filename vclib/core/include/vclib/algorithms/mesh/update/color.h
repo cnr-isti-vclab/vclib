@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
 #define VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
@@ -52,7 +37,7 @@ void setPerElemColorFromVertexColor(MeshType& m)
         for (const auto* v : e.vertices()) {
             avg += v->color().template cast<uint>();
         }
-        avg /= e.vertexNumber();
+        avg /= e.vertexCount();
         e.color() = avg.template cast<uint8_t>();
     }
 }
@@ -92,7 +77,7 @@ void setPerElemColorFromMaterial(MeshType& m)
 
     for (auto& e : m.template elements<ELEM_ID>()) {
         uint matIndex = e.materialIndex();
-        if (matIndex < m.materialsNumber()) {
+        if (matIndex < m.materialCount()) {
             e.color() = m.materials()[matIndex].baseColor();
         }
     }
@@ -449,7 +434,7 @@ void setPerVertexColorFromFaceBorderFlag(
     setPerVertexColor(m, baseColor);
 
     for (FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeOnBorder(i)) {
                 if (f.vertex(i)->color() == baseColor)
                     f.vertex(i)->color() = borderColor;
@@ -580,7 +565,7 @@ void setPerFaceColorScattering(
         }
         if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
             if (checkFauxEdges && isPerFaceAdjacentFacesAvailable(m)) {
-                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                for (uint i = 0; i < f.vertexCount(); ++i) {
                     if (f.edgeFaux(i)) {
                         assert(f.adjFace(i) != nullptr);
                         f.adjFace(i)->color() = f.color();

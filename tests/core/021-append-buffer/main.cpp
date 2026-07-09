@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -107,7 +92,7 @@ void testPositionsMatrix(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     MatrixType verts(nRows, 3);
 
     auto stg = vcl::matrixStorageType<MatrixType>();
@@ -144,7 +129,7 @@ void testTriangleMatrix(
     using MeshType   = vcl::RemoveRef<decltype(tm)>;
     using ScalarType = MeshType::VertexType::PositionType::ScalarType;
 
-    vcl::uint               nVerts = tm.vertexNumber() + vtd.size();
+    vcl::uint               nVerts = tm.vertexCount() + vtd.size();
     vcl::Array2<ScalarType> verts(nVerts, 3);
     vcl::vertexPositionsToBuffer(tm, verts.data());
     vcl::appendDuplicateVertexPositionsToBuffer(tm, vtd, verts.data());
@@ -155,7 +140,7 @@ void testTriangleMatrix(
     vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
         tm, vtd, ftr, tris.data(), 3, stg);
 
-    REQUIRE(tris.rows() == tm.faceNumber());
+    REQUIRE(tris.rows() == tm.faceCount());
     REQUIRE(tris.cols() == 3);
 
     for (vcl::uint i = 0; const auto& f : tm.faces()) {
@@ -177,7 +162,7 @@ void testVertexSelectionVector(
     const auto& vtd,
     const auto& ftr)
 {
-    vcl::uint  nRows = tm.vertexNumber() + vtd.size();
+    vcl::uint  nRows = tm.vertexCount() + vtd.size();
     VectorType sel(nRows);
 
     vcl::vertexSelectionToBuffer(tm, sel.data());
@@ -221,7 +206,7 @@ TEMPLATE_TEST_CASE(
     std::vector<std::pair<vcl::uint, vcl::uint>>          vertWedgeMap;
     std::list<vcl::uint>                                  vertsToDuplicate;
     std::list<std::list<std::pair<vcl::uint, vcl::uint>>> facesToReassign;
-    vcl::uint nV = vcl::countVerticesToDuplicateByWedgeTexCoords(
+    vcl::uint nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
         tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
 
     SECTION("Append duplicated vertex positions...")

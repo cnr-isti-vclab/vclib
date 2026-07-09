@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
 #define VCL_OPENGL2_DRAWABLE_MESH_MESH_RENDER_VECTORS_H
@@ -99,15 +84,15 @@ public:
         swap(mMeshColor, other.mMeshColor);
     }
 
-    uint vertexNumber() const { return mVerts.size() / 3; }
+    uint vertexCount() const { return mVerts.size() / 3; }
 
-    uint triangleNumber() const { return mTris.size() / 3; }
+    uint triangleCount() const { return mTris.size() / 3; }
 
-    uint edgeNumber() const { return mEdges.size() / 2; }
+    uint edgeCount() const { return mEdges.size() / 2; }
 
-    uint wireframeEdgeNumber() const { return mWireframe.size() / 2; }
+    uint wireframeEdgeCount() const { return mWireframe.size() / 2; }
 
-    uint textureNumber() const { return mTextures.size(); }
+    uint textureCount() const { return mTextures.size(); }
 
     vcl::Point2i textureSize(uint ti) const
     {
@@ -361,8 +346,8 @@ private:
         mTextures.clear();
 
         if constexpr (vcl::HasMaterials<MeshType>) {
-            mTextures.reserve(mesh.materialsNumber());
-            for (uint i = 0; i < mesh.materialsNumber(); ++i) {
+            mTextures.reserve(mesh.materialCount());
+            for (uint i = 0; i < mesh.materialCount(); ++i) {
                 const auto& texture =
                     mesh.material(i).baseColorTextureDescriptor();
 

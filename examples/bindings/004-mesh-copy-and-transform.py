@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2025                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
@@ -32,7 +17,7 @@ current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
 
 VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
 
 # This example demonstrates mesh creation in VCLib:
 # 1. Creating basic geometric primitives (tetrahedron, cube, sphere, etc.)
@@ -53,14 +38,14 @@ def mesh_copy_and_transform():
 
     original_mesh = vcl.create_icosahedron_tri_mesh()
 
-    print(f"Original mesh created: icosahedron with {original_mesh.vertex_number()} vertices and {original_mesh.face_number()} faces\n")
+    print(f"Original mesh created: icosahedron with {original_mesh.vertex_count()} vertices and {original_mesh.face_count()} faces\n")
 
     # Copy via deepcopy
 
     print("\nCopy via deepcopy:\n")
 
     copied_mesh = copy.deepcopy(original_mesh)
-    print(f"   Mesh copied with {copied_mesh.vertex_number()} vertices\n")
+    print(f"   Mesh copied with {copied_mesh.vertex_count()} vertices\n")
 
     # Verify that copies are independent
     print("\nVerifying independence of copies:\n")
@@ -68,8 +53,8 @@ def mesh_copy_and_transform():
     print(f"   ID of copied mesh: {id(copied_mesh)}")
 
     original_mesh.clear()
-    print(f"   Original mesh cleared: {original_mesh.vertex_number()} vertices\n")
-    print(f"   Copied mesh maintains: {copied_mesh.vertex_number()} vertices\n")
+    print(f"   Original mesh cleared: {original_mesh.vertex_count()} vertices\n")
+    print(f"   Copied mesh maintains: {copied_mesh.vertex_count()} vertices\n")
 
     # ========================================
     # PART 2: GEOMETRIC TRANSFORMATIONS
@@ -207,7 +192,7 @@ def mesh_copy_and_transform():
     print("---------------------------------\n")
 
     combined_mesh = vcl.create_cube_tri_mesh()
-    print (f"   Main Mesh (cube): {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
+    print (f"   Main Mesh (cube): {combined_mesh.vertex_count()} vertices, {combined_mesh.face_count()} faces\n")
     combined_mesh.set_name("Combined Scene")
 
     # Create different primitives to add
@@ -225,26 +210,26 @@ def mesh_copy_and_transform():
     vcl.scale(tetrahedron, 1.5)
 
     print("\nPrimitives to add:\n")
-    print(f"- Icosphere (3 subdivisions): {sphere1.vertex_number()} vertices, {sphere1.face_number()} faces")
-    print(f"- UV Sphere (16x16): {sphere2.vertex_number()} vertices, {sphere2.face_number()} faces")
-    print(f"- Tetrahedron: {tetrahedron.vertex_number()} vertices, {tetrahedron.face_number()} faces")
+    print(f"- Icosphere (3 subdivisions): {sphere1.vertex_count()} vertices, {sphere1.face_count()} faces")
+    print(f"- UV Sphere (16x16): {sphere2.vertex_count()} vertices, {sphere2.face_count()} faces")
+    print(f"- Tetrahedron: {tetrahedron.vertex_count()} vertices, {tetrahedron.face_count()} faces")
 
     print("\nCombination through append:\n")
 
-    original_count = combined_mesh.vertex_number()
+    original_count = combined_mesh.vertex_count()
     combined_mesh.append(sphere1)
-    print(f"After appending sphere 1: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending sphere 1: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
     combined_mesh.append(sphere2)
-    print(f"After appending sphere 2: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending sphere 2: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
     combined_mesh.append(tetrahedron)
-    print(f"After appending tetrahedron: {combined_mesh.vertex_number()} vertices (+" \
-          f"{combined_mesh.vertex_number() - original_count} from original)\n")
+    print(f"After appending tetrahedron: {combined_mesh.vertex_count()} vertices (+" \
+          f"{combined_mesh.vertex_count() - original_count} from original)\n")
 
-    print(f"\nFinal combined mesh: {combined_mesh.vertex_number()} vertices, {combined_mesh.face_number()} faces\n")
+    print(f"\nFinal combined mesh: {combined_mesh.vertex_count()} vertices, {combined_mesh.face_count()} faces\n")
 
     vcl.update_bounding_box(combined_mesh)
     bb_combined = combined_mesh.bounding_box()
@@ -261,11 +246,11 @@ if __name__ == "__main__":
 
     try:
         # Save the meshes to files
-        vcl.save_mesh(transform_mesh, VCLIB_RESULTS_PATH + "/004_transformed_icosahedron.ply")
-        vcl.save_mesh(scale_mesh, VCLIB_RESULTS_PATH + "/004_scaled_cube.ply")
-        vcl.save_mesh(rotate_mesh, VCLIB_RESULTS_PATH + "/004_rotated_cube.ply")
-        vcl.save_mesh(matrix_mesh, VCLIB_RESULTS_PATH + "/004_matrix_transformed.ply")
-        vcl.save_mesh(combined_mesh, VCLIB_RESULTS_PATH + "/004_combined_scene.ply")
+        vcl.save_mesh(transform_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_transformed_icosahedron.ply")
+        vcl.save_mesh(scale_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_scaled_cube.ply")
+        vcl.save_mesh(rotate_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_rotated_cube.ply")
+        vcl.save_mesh(matrix_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_matrix_transformed.ply")
+        vcl.save_mesh(combined_mesh, VCLIB_PYTHON_RESULTS_PATH + "/004_combined_scene.ply")
         print("Meshes saved successfully.")
     except Exception as e:
         print(f"Error saving meshes: {e}")

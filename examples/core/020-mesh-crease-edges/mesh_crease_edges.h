@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_CREASE_EDGES_H
 #define MESH_CREASE_EDGES_H
@@ -51,11 +36,10 @@ auto meshCreaseEdges()
     icosahedron.name()       = "Icosahedron";
     vcl::updatePerVertexAndFaceNormals(icosahedron);
 
-    std::cout << "Created cylinder: " << cylinder.vertexNumber()
-              << " vertices, " << cylinder.faceNumber() << " faces"
-              << std::endl;
-    std::cout << "Created icosahedron: " << icosahedron.vertexNumber()
-              << " vertices, " << icosahedron.faceNumber() << " faces"
+    std::cout << "Created cylinder: " << cylinder.vertexCount() << " vertices, "
+              << cylinder.faceCount() << " faces" << std::endl;
+    std::cout << "Created icosahedron: " << icosahedron.vertexCount()
+              << " vertices, " << icosahedron.faceCount() << " faces"
               << std::endl;
 
     /****** Method 1: Crease Edge Selection ******/
@@ -71,12 +55,12 @@ auto meshCreaseEdges()
 
     // Select crease edges with different angle thresholds
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(60.0), vcl::toRad(60.0));
-    vcl::uint cylinderCreaseEdges = vcl::faceEdgesSelectionNumber(cylinder);
+    vcl::uint cylinderCreaseEdges = vcl::faceEdgesSelectionCount(cylinder);
 
     vcl::selectCreaseFaceEdges(
         icosahedron, -vcl::toRad(30.0), vcl::toRad(30.0));
     vcl::uint icosahedronCreaseEdges =
-        vcl::faceEdgesSelectionNumber(icosahedron);
+        vcl::faceEdgesSelectionCount(icosahedron);
 
     std::cout << "Cylinder crease edges (±60°): " << cylinderCreaseEdges
               << std::endl;
@@ -127,11 +111,11 @@ auto meshCreaseEdges()
     icosaCreaseMesh.name() = "Icosahedron Crease Edge Mesh";
 
     std::cout << "Cylinder crease edge mesh: "
-              << cylinderCreaseMesh.vertexNumber() << " vertices, "
-              << cylinderCreaseMesh.edgeNumber() << " edges" << std::endl;
+              << cylinderCreaseMesh.vertexCount() << " vertices, "
+              << cylinderCreaseMesh.edgeCount() << " edges" << std::endl;
     std::cout << "Icosahedron crease edge mesh: "
-              << icosaCreaseMesh.vertexNumber() << " vertices, "
-              << icosaCreaseMesh.edgeNumber() << " edges" << std::endl;
+              << icosaCreaseMesh.vertexCount() << " vertices, "
+              << icosaCreaseMesh.edgeCount() << " edges" << std::endl;
 
     // color edges of cylinderCreaseMesh
 
@@ -162,7 +146,7 @@ auto meshCreaseEdges()
         vcl::perFaceEdgeMeshFilter<vcl::EdgeMesh>(cylinder, sharpEdgeFilter);
     sharpEdgesMesh.name() = "Sharp Edges Mesh";
 
-    std::cout << "Sharp edges only (>75°): " << sharpEdgesMesh.edgeNumber()
+    std::cout << "Sharp edges only (>75°): " << sharpEdgesMesh.edgeCount()
               << " edges" << std::endl;
 
     /****** Method 5: Different Angle Thresholds ******/
@@ -176,7 +160,7 @@ auto meshCreaseEdges()
     for (double thresh : thresholds) {
         vcl::selectCreaseFaceEdges(
             cylinder, -vcl::toRad(thresh), vcl::toRad(thresh));
-        vcl::uint count = vcl::faceEdgesSelectionNumber(cylinder);
+        vcl::uint count = vcl::faceEdgesSelectionCount(cylinder);
         std::cout << "  ±" << thresh << "°: " << count << " edges" << std::endl;
     }
 

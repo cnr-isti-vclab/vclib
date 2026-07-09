@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BASE_LOGGER_LOGGER_H
 #define VCL_BASE_LOGGER_LOGGER_H
@@ -50,7 +35,7 @@ class Logger : public AbstractLogger
 
     enum InternalLogLevel { START = DEBUG_LOG + 1, END };
 
-    static const uint TIMER_MAX_CHAR_NUMBER = 12;
+    static const uint TIMER_MAX_CHAR_COUNT = 12;
 
     uint mPercPrecision = 0;
 
@@ -318,7 +303,7 @@ private:
     {
         uint maxMsgSize = mLineWidth - n;
         if (mPrintTimer)
-            maxMsgSize -= TIMER_MAX_CHAR_NUMBER;
+            maxMsgSize -= TIMER_MAX_CHAR_COUNT;
         switch (lvl) {
         case LogLevel::ERROR_LOG:
             maxMsgSize -= 8;
@@ -354,7 +339,7 @@ private:
     {
         if (mPrintTimer) {
             o << "[";
-            setWidth(o, TIMER_MAX_CHAR_NUMBER - 3);
+            setWidth(o, TIMER_MAX_CHAR_COUNT - 3);
             alignRight(o);
             o << mTimer.delay() << "s]";
         }

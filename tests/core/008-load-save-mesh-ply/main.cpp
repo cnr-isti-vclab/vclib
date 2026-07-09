@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/io.h>
 #include <vclib/meshes.h>
@@ -69,7 +54,7 @@ std::istringstream plyPolyCube()
 
 std::istringstream plyTriCube()
 {
-    // string containing a triangulted cube in OBJ format
+    // string containing a triangulted cube in PLY format
 
     std::string s =
         "ply\n"
@@ -121,7 +106,7 @@ using MeshesIndexed =
 using MeshesIndexedf = std::
     tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
-// Test to load obj from a istringstream
+// Test to load ply from a istringstream
 TEMPLATE_TEST_CASE(
     "Load PLY cube from istringstream",
     "",
@@ -141,8 +126,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = plyPolyCube();
         vcl::loadPly(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - TriCube")
@@ -150,8 +135,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = plyTriCube();
         vcl::loadPly(tm, ss, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
     }
 
     SECTION("TriMesh - VertTextureDouble")
@@ -159,9 +144,9 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         vcl::loadPly(
             tm, VCLIB_EXAMPLE_MESHES_PATH "/VertTextureDouble.ply", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerVertexTexCoordEnabled());
         REQUIRE(tm.isPerVertexMaterialIndexEnabled());
         for (const auto& v : tm.vertices()) {
@@ -174,9 +159,9 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm;
         vcl::loadPly(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         // TODO
@@ -191,8 +176,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = plyPolyCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 6);
     }
 
     SECTION("PolyMesh - TriCube")
@@ -200,8 +185,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 12);
     }
 
     SECTION("EdgeMesh - PolyCube")
@@ -209,8 +194,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh em;
         auto     ss = plyPolyCube();
         vcl::loadPly(em, ss, info);
-        REQUIRE(em.vertexNumber() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.vertexCount() == 8);
+        REQUIRE(em.edgeCount() == 4);
     }
 
     SECTION("EdgeMesh - TriCube")
@@ -218,7 +203,7 @@ TEMPLATE_TEST_CASE(
         EdgeMesh pm;
         auto     ss = plyTriCube();
         vcl::loadPly(pm, ss, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.edgeCount() == 4);
     }
 }

@@ -197,6 +197,7 @@ cython_debug/
 *.exe
 *.out
 *.app
+*.pdb
 
 # CMake gitignore
 
@@ -213,12 +214,14 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 build/*
+out/*
 
 # Local History for Visual Studio Code
 */.history/
 
 # Built Visual Studio Code Extensions
 */*.vsix
+./vscode/tasks.json
 
 # QtCreator
 *.autosave
@@ -236,5 +239,8 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+# qwen
+.qwen/*
 
 *_qmlcache.qrc

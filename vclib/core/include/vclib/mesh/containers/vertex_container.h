@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
 #define VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
@@ -96,18 +81,18 @@ public:
      * @brief Returns the number of **non-deleted** vertices contained in the
      * Vertex container of the Mesh.
      *
-     * If vertexNumber() != vertexContainerSize(), it means that there are some
+     * If vertexCount() != vertexContainerSize(), it means that there are some
      * vertices that are flagged as deleted.
      *
      * @return The number of non-deleted vertices of the Mesh.
      */
-    uint vertexNumber() const { return Base::elementNumber(); }
+    uint vertexCount() const { return Base::elementCount(); }
 
     /**
      * @brief Returns the number of vertices (also deleted) contained in the
      * Vertex container of the Mesh.
      *
-     * If vertexNumber() != vertexContainerSize(), it means that there are some
+     * If vertexCount() != vertexContainerSize(), it means that there are some
      * vertices that are flagged as deleted.
      *
      * @return The number of all the vertices contained in the Mesh.
@@ -116,11 +101,11 @@ public:
 
     /**
      * @brief Returns the number of deleted vertices in the Vertex container,
-     * that is vertexContainerSize() - vertexNumber().
+     * that is vertexContainerSize() - vertexCount().
      *
      * @return The number of deleted vertices in the container.
      */
-    uint deletedVertexNumber() const { return Base::deletedElementNumber(); }
+    uint deletedVertexCount() const { return Base::deletedElementCount(); }
 
     /**
      * @brief Add a new vertex into the vertex container, returning the index of

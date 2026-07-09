@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef COPY_AND_TRASNFORM_H
 #define COPY_AND_TRASNFORM_H
@@ -53,30 +38,30 @@ auto meshCopyAndTransform()
     vcl::TriMesh originalMesh = vcl::createIcosahedron<vcl::TriMesh>();
 
     std::cout << "Original mesh created: icosahedron with "
-              << originalMesh.vertexNumber() << " vertices and "
-              << originalMesh.faceNumber() << " faces\n";
+              << originalMesh.vertexCount() << " vertices and "
+              << originalMesh.faceCount() << " faces\n";
 
     // METHOD 1: Copy via copy constructor
     std::cout << "\n1. Copy via copy constructor:\n";
     vcl::TriMesh copiedMesh1(originalMesh);
-    std::cout << "   Mesh copied with " << copiedMesh1.vertexNumber()
+    std::cout << "   Mesh copied with " << copiedMesh1.vertexCount()
               << " vertices\n";
 
     // METHOD 2: Copy via assignment operator
     std::cout << "\n2. Copy via assignment operator:\n";
     vcl::TriMesh copiedMesh2;
     copiedMesh2 = originalMesh;
-    std::cout << "   Mesh copied with " << copiedMesh2.vertexNumber()
+    std::cout << "   Mesh copied with " << copiedMesh2.vertexCount()
               << " vertices\n";
 
     // Verify that copies are independent
     std::cout << "\nVerifying independence of copies:\n";
     originalMesh.clear();
-    std::cout << "   Original mesh cleared: " << originalMesh.vertexNumber()
+    std::cout << "   Original mesh cleared: " << originalMesh.vertexCount()
               << " vertices\n";
-    std::cout << "   Copy 1 maintains: " << copiedMesh1.vertexNumber()
+    std::cout << "   Copy 1 maintains: " << copiedMesh1.vertexCount()
               << " vertices\n";
-    std::cout << "   Copy 2 maintains: " << copiedMesh2.vertexNumber()
+    std::cout << "   Copy 2 maintains: " << copiedMesh2.vertexCount()
               << " vertices\n";
 
     // ========================================
@@ -239,8 +224,8 @@ auto meshCopyAndTransform()
 
     // Create a main mesh
     vcl::TriMesh combinedMesh = vcl::createCube<vcl::TriMesh>();
-    std::cout << "Main mesh (cube): " << combinedMesh.vertexNumber()
-              << " vertices, " << combinedMesh.faceNumber() << " faces\n";
+    std::cout << "Main mesh (cube): " << combinedMesh.vertexCount()
+              << " vertices, " << combinedMesh.faceCount() << " faces\n";
     combinedMesh.name() = "Combined Scene";
 
     // Create different primitives to add
@@ -265,36 +250,36 @@ auto meshCopyAndTransform()
     vcl::scale(tetrahedron, 1.5);                  // Enlarge the tetrahedron
 
     std::cout << "\nPrimitives to add:\n";
-    std::cout << "- Icosphere (3 subdivisions): " << sphere1.vertexNumber()
-              << " vertices, " << sphere1.faceNumber() << " faces\n";
-    std::cout << "- UV Sphere (16x16): " << sphere2.vertexNumber()
-              << " vertices, " << sphere2.faceNumber() << " faces\n";
-    std::cout << "- Tetrahedron: " << tetrahedron.vertexNumber()
-              << " vertices, " << tetrahedron.faceNumber() << " faces\n";
+    std::cout << "- Icosphere (3 subdivisions): " << sphere1.vertexCount()
+              << " vertices, " << sphere1.faceCount() << " faces\n";
+    std::cout << "- UV Sphere (16x16): " << sphere2.vertexCount()
+              << " vertices, " << sphere2.faceCount() << " faces\n";
+    std::cout << "- Tetrahedron: " << tetrahedron.vertexCount() << " vertices, "
+              << tetrahedron.faceCount() << " faces\n";
 
     // Combine meshes using append
     std::cout << "\nCombination through append:\n";
 
-    auto originalCount = combinedMesh.vertexNumber();
+    auto originalCount = combinedMesh.vertexCount();
     combinedMesh.append(sphere1);
-    std::cout << "After appending sphere 1: " << combinedMesh.vertexNumber()
-              << " vertices (+" << (combinedMesh.vertexNumber() - originalCount)
+    std::cout << "After appending sphere 1: " << combinedMesh.vertexCount()
+              << " vertices (+" << (combinedMesh.vertexCount() - originalCount)
               << " from original)\n";
 
-    auto afterSphere1 = combinedMesh.vertexNumber();
+    auto afterSphere1 = combinedMesh.vertexCount();
     combinedMesh.append(sphere2);
-    std::cout << "After appending sphere 2: " << combinedMesh.vertexNumber()
-              << " vertices (+" << (combinedMesh.vertexNumber() - afterSphere1)
+    std::cout << "After appending sphere 2: " << combinedMesh.vertexCount()
+              << " vertices (+" << (combinedMesh.vertexCount() - afterSphere1)
               << " from sphere 2)\n";
 
-    auto afterSphere2 = combinedMesh.vertexNumber();
+    auto afterSphere2 = combinedMesh.vertexCount();
     combinedMesh.append(tetrahedron);
-    std::cout << "After appending tetrahedron: " << combinedMesh.vertexNumber()
-              << " vertices (+" << (combinedMesh.vertexNumber() - afterSphere2)
+    std::cout << "After appending tetrahedron: " << combinedMesh.vertexCount()
+              << " vertices (+" << (combinedMesh.vertexCount() - afterSphere2)
               << " from tetrahedron)\n";
 
-    std::cout << "\nFinal combined mesh: " << combinedMesh.vertexNumber()
-              << " vertices, " << combinedMesh.faceNumber() << " faces\n";
+    std::cout << "\nFinal combined mesh: " << combinedMesh.vertexCount()
+              << " vertices, " << combinedMesh.faceCount() << " faces\n";
 
     vcl::updateBoundingBox(combinedMesh);
     auto bbCombined = combinedMesh.boundingBox();

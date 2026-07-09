@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_SPHERE_INTERSECTION_H
 #define MESH_SPHERE_INTERSECTION_H
@@ -45,8 +30,8 @@ auto meshSphereIntersection()
     vcl::updatePerFaceNormals(originalMesh);
     vcl::updatePerVertexNormals(originalMesh);
 
-    std::cout << "Loaded bunny mesh: " << originalMesh.vertexNumber()
-              << " vertices, " << originalMesh.faceNumber() << " faces"
+    std::cout << "Loaded bunny mesh: " << originalMesh.vertexCount()
+              << " vertices, " << originalMesh.faceCount() << " faces"
               << std::endl;
 
     /****** Define spheres for intersection ******/
@@ -93,14 +78,14 @@ auto meshSphereIntersection()
     largeSphereIntersection.name() = "Bunny-Large Sphere Intersection";
 
     std::cout << "Center sphere intersection: "
-              << centerSphereIntersection.vertexNumber() << " vertices, "
-              << centerSphereIntersection.faceNumber() << " faces" << std::endl;
+              << centerSphereIntersection.vertexCount() << " vertices, "
+              << centerSphereIntersection.faceCount() << " faces" << std::endl;
     std::cout << "Ear sphere intersection: "
-              << earSphereIntersection.vertexNumber() << " vertices, "
-              << earSphereIntersection.faceNumber() << " faces" << std::endl;
+              << earSphereIntersection.vertexCount() << " vertices, "
+              << earSphereIntersection.faceCount() << " faces" << std::endl;
     std::cout << "Large sphere intersection: "
-              << largeSphereIntersection.vertexNumber() << " vertices, "
-              << largeSphereIntersection.faceNumber() << " faces" << std::endl;
+              << largeSphereIntersection.vertexCount() << " vertices, "
+              << largeSphereIntersection.faceCount() << " faces" << std::endl;
 
     /****** Optional: Create sphere meshes for visualization ******/
 

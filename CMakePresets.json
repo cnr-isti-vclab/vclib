@@ -332,6 +332,43 @@
                 "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
                 "VCLIB_INSTALL_MODULE_RENDER": "OFF"
             }
+        },
+        {
+            "name": "vclib-core-install",
+            "displayName": "VCLib::Core - Install",
+            "description": "Configure for installing only the core module",
+            "inherits": "release",
+            "cacheVariables": {
+                "VCLIB_INSTALL_MODULE_CORE": "ON",
+                "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
+                "VCLIB_INSTALL_MODULE_RENDER": "OFF",
+                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
+                "VCLIB_CORE_BUILD_TESTS": "OFF",
+                "VCLIB_REQUIRES_QT": "ON"
+            }
+        },
+        {
+            "name": "vclib-all-install",
+            "displayName": "VCLib - All Modules - Install",
+            "description": "Configure for installing core, external, and render modules",
+            "inherits": [
+                "release",
+                "build-external-module",
+                "build-render-module"
+            ],
+            "cacheVariables": {
+                "VCLIB_INSTALL_MODULE_CORE": "ON",
+                "VCLIB_INSTALL_MODULE_EXTERNAL": "ON",
+                "VCLIB_INSTALL_MODULE_RENDER": "ON",
+                "VCLIB_CORE_BUILD_EXAMPLES": "OFF",
+                "VCLIB_CORE_BUILD_TESTS": "OFF",
+                "VCLIB_EXTERNAL_BUILD_EXAMPLES": "OFF",
+                "VCLIB_EXTERNAL_BUILD_TESTS": "OFF",
+                "VCLIB_RENDER_BUILD_EXAMPLES": "OFF",
+                "VCLIB_RENDER_BUILD_TESTS": "OFF",
+                "VCLIB_ALLOW_SYSTEM_TBB": "OFF",
+                "VCLIB_REQUIRES_QT": "ON"
+            }
         }
     ]
 }

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/algorithms.h>
 #include <vclib/io.h>
@@ -86,7 +71,7 @@ void testMeshFromMatrices()
     MeshType mesh = vcl::meshFromMatrices<MeshType>(vertices, faces);
 
     // Verify vertices
-    REQUIRE(mesh.vertexNumber() == 8);
+    REQUIRE(mesh.vertexCount() == 8);
     for (vcl::uint i = 0; i < 8; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == vertices(i, 0));
@@ -96,7 +81,7 @@ void testMeshFromMatrices()
 
     // Verify faces
     if constexpr (vcl::HasFaces<MeshType>) {
-        REQUIRE(mesh.faceNumber() == 12);
+        REQUIRE(mesh.faceCount() == 12);
         for (vcl::uint i = 0; i < 12; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -124,7 +109,7 @@ void testVertexPositionsFromMatrix()
     vcl::vertexPositionsFromMatrix(mesh, vertices, false);
 
     // Verify vertices
-    REQUIRE(mesh.vertexNumber() == 3);
+    REQUIRE(mesh.vertexCount() == 3);
     for (vcl::uint i = 0; i < 3; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == vertices(i, 0));
@@ -138,7 +123,7 @@ void testVertexPositionsFromMatrix()
 
     vcl::vertexPositionsFromMatrix(mesh, newVertices, true);
 
-    REQUIRE(mesh.vertexNumber() == 4);
+    REQUIRE(mesh.vertexCount() == 4);
     for (vcl::uint i = 0; i < 4; ++i) {
         const auto& v = mesh.vertex(i).position();
         REQUIRE(v.x() == newVertices(i, 0));
@@ -163,7 +148,7 @@ void testFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 2);
+        REQUIRE(mesh.faceCount() == 2);
         for (vcl::uint i = 0; i < 2; ++i) {
             const auto& f = mesh.face(i);
             for (vcl::uint j = 0; j < 3; ++j) {
@@ -195,7 +180,7 @@ void testPolyFaceIndicesFromMatrix()
         vcl::faceIndicesFromMatrix(mesh, faces);
 
         // Verify faces
-        REQUIRE(mesh.faceNumber() == 3);
+        REQUIRE(mesh.faceCount() == 3);
 
         // Verify faces using loops
         for (vcl::uint i = 0; i < 3; ++i) {
@@ -209,7 +194,7 @@ void testPolyFaceIndicesFromMatrix()
                 }
             }
 
-            REQUIRE(f.vertexNumber() == expectedVertexCount);
+            REQUIRE(f.vertexCount() == expectedVertexCount);
 
             // Check vertex indices (only non-null ones)
             for (vcl::uint j = 0; j < faces.cols(); ++j) {

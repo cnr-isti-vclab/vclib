@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/drawable_object_item.h>
 
@@ -83,23 +68,23 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     makeItemNotSelectable(meshInfoItem);
 
     // vertex number item
-    auto vertexNumberItem = new QTreeWidgetItem(meshInfoItem);
-    vertexNumberItem->setText(0, "# Vertices");
-    vertexNumberItem->setText(1, QString::number(mesh.vertexNumber()));
-    makeItemNotSelectable(vertexNumberItem);
+    auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
+    vertexCountItem->setText(0, "# Vertices");
+    vertexCountItem->setText(1, QString::number(mesh.vertexCount()));
+    makeItemNotSelectable(vertexCountItem);
 
-    if (mesh.faceNumber() > 0) {
-        auto faceNumberItem = new QTreeWidgetItem(meshInfoItem);
-        faceNumberItem->setText(0, "# Faces");
-        faceNumberItem->setText(1, QString::number(mesh.faceNumber()));
-        makeItemNotSelectable(faceNumberItem);
+    if (mesh.faceCount() > 0) {
+        auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
+        faceCountItem->setText(0, "# Faces");
+        faceCountItem->setText(1, QString::number(mesh.faceCount()));
+        makeItemNotSelectable(faceCountItem);
     }
 
-    if (mesh.edgeNumber() > 0) {
-        auto edgeNumberItem = new QTreeWidgetItem(meshInfoItem);
-        edgeNumberItem->setText(0, "# Edges");
-        edgeNumberItem->setText(1, QString::number(mesh.edgeNumber()));
-        makeItemNotSelectable(edgeNumberItem);
+    if (mesh.edgeCount() > 0) {
+        auto edgeCountItem = new QTreeWidgetItem(meshInfoItem);
+        edgeCountItem->setText(0, "# Edges");
+        edgeCountItem->setText(1, QString::number(mesh.edgeCount()));
+        makeItemNotSelectable(edgeCountItem);
     }
 }
 
@@ -120,7 +105,7 @@ void DrawableObjectItem::addTransformMatrixItem(
         rowItem->setText(0, "");
         QString rowLabel = "";
         for (int j = 0; j < 4; ++j) {
-            rowLabel += QString::number(mesh.transformMatrix()(i, j), 'f', 3);
+            rowLabel += QString::number(mesh.modelMatrix()(i, j), 'f', 3);
             if (j < 3)
                 rowLabel += "\t";
         }

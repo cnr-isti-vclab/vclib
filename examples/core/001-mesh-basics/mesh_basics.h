@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_BASICS_H
 #define MESH_BASICS_H
@@ -53,13 +38,13 @@ auto meshBasics()
     mesh.addVertex(vcl::Point3d(0, 1, 0)); // vertex 2
     mesh.addVertex(vcl::Point3d(1, 1, 0)); // vertex 3
 
-    std::cout << "Added " << mesh.vertexNumber() << " vertices" << std::endl;
+    std::cout << "Added " << mesh.vertexCount() << " vertices" << std::endl;
 
     // Add faces (triangles) using vertex indices
     mesh.addFace(0, 1, 2); // first triangle
     mesh.addFace(1, 3, 2); // second triangle
 
-    std::cout << "Added " << mesh.faceNumber() << " faces" << std::endl;
+    std::cout << "Added " << mesh.faceCount() << " faces" << std::endl;
 
     /****** Accessing mesh elements ******/
 
@@ -166,12 +151,12 @@ auto meshBasics()
     face.pushVertex(&polyMesh.vertex(2));
     face.pushVertex(&polyMesh.vertex(3));
 
-    std::cout << "Created polygon with " << face.vertexNumber() << " vertices"
+    std::cout << "Created polygon with " << face.vertexCount() << " vertices"
               << std::endl;
 
     // Iterate over vertices of the polygon face
     std::cout << "Polygon vertices: ";
-    for (vcl::uint i = 0; i < face.vertexNumber(); ++i) {
+    for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
         std::cout << face.vertexIndex(i) << " ";
     }
     std::cout << std::endl;
@@ -181,14 +166,14 @@ auto meshBasics()
     std::cout << "\n=== Mesh Statistics ===" << std::endl;
 
     std::cout << "TriMesh:" << std::endl;
-    std::cout << "  Vertices: " << mesh.vertexNumber() << std::endl;
-    std::cout << "  Faces: " << mesh.faceNumber() << std::endl;
+    std::cout << "  Vertices: " << mesh.vertexCount() << std::endl;
+    std::cout << "  Faces: " << mesh.faceCount() << std::endl;
     std::cout << "  Container sizes - Vertices: " << mesh.vertexContainerSize()
               << ", Faces: " << mesh.faceContainerSize() << std::endl;
 
     std::cout << "PolyMesh:" << std::endl;
-    std::cout << "  Vertices: " << polyMesh.vertexNumber() << std::endl;
-    std::cout << "  Faces: " << polyMesh.faceNumber() << std::endl;
+    std::cout << "  Vertices: " << polyMesh.vertexCount() << std::endl;
+    std::cout << "  Faces: " << polyMesh.faceCount() << std::endl;
 
     /****** Computing and displaying barycenter and bounding box ******/
 
@@ -199,7 +184,7 @@ auto meshBasics()
     for (const auto& vertex : mesh.vertices()) {
         barycenter += vertex.position();
     }
-    barycenter /= mesh.vertexNumber();
+    barycenter /= mesh.vertexCount();
 
     std::cout << "Mesh barycenter: " << barycenter << std::endl;
 

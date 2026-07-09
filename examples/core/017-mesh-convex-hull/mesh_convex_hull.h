@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef MESH_CONVEX_HULL_H
 #define MESH_CONVEX_HULL_H
@@ -39,8 +24,8 @@ auto meshConvexHull()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     inputMesh.name() = "Input Mesh";
 
-    std::cout << "Input mesh loaded: " << inputMesh.vertexNumber()
-              << " vertices, " << inputMesh.faceNumber() << " faces\n";
+    std::cout << "Input mesh loaded: " << inputMesh.vertexCount()
+              << " vertices, " << inputMesh.faceCount() << " faces\n";
 
     // Create logger for timing information
     vcl::ConsoleLogger log;
@@ -52,8 +37,8 @@ auto meshConvexHull()
         inputMesh.vertices() | vcl::views::positions, log);
     hullMesh.name() = "Convex Hull";
 
-    std::cout << "Convex hull computed: " << hullMesh.vertexNumber()
-              << " vertices, " << hullMesh.faceNumber() << " faces\n";
+    std::cout << "Convex hull computed: " << hullMesh.vertexCount()
+              << " vertices, " << hullMesh.faceCount() << " faces\n";
 
     // Also demonstrate computing hull from a simple point set
     std::cout << "\nComputing convex hull from point set...\n";
@@ -73,8 +58,8 @@ auto meshConvexHull()
     vcl::TriMesh cubeHull = vcl::convexHull<vcl::TriMesh>(points, log);
     cubeHull.name()       = "Cube Convex Hull";
 
-    std::cout << "Cube convex hull: " << cubeHull.vertexNumber()
-              << " vertices, " << cubeHull.faceNumber() << " faces\n";
+    std::cout << "Cube convex hull: " << cubeHull.vertexCount() << " vertices, "
+              << cubeHull.faceCount() << " faces\n";
 
     return std::make_tuple(inputMesh, hullMesh, cubeHull);
 }

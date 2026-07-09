@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/io.h>
 #include <vclib/meshes.h>
@@ -31,6 +16,7 @@ std::istringstream objPolyCube()
     // string containing a cube in OBJ format
 
     std::string s =
+        "# a comment\n"
         "v -0.500000 -0.500000 0.500000\n"
         "v 0.500000 -0.500000 0.500000\n"
         "v -0.500000 0.500000 0.500000\n"
@@ -39,6 +25,7 @@ std::istringstream objPolyCube()
         "v 0.500000 0.500000 -0.500000\n"
         "v -0.500000 -0.500000 -0.500000\n"
         "v 0.500000 -0.500000 -0.500000\n"
+        "# another comment\n"
         "f 1 2 4 3\n"
         "f 3 4 6 5\n"
         "f 5 6 8 7\n"
@@ -118,8 +105,8 @@ TEMPLATE_TEST_CASE(
         auto    ss = objPolyCube();
 
         vcl::loadObj(tm, ss, {}, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -135,8 +122,8 @@ TEMPLATE_TEST_CASE(
         TriMesh tm;
         auto    ss = objTriCube();
         vcl::loadObj(tm, ss, {}, info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -151,14 +138,14 @@ TEMPLATE_TEST_CASE(
 
         TriMesh tm;
         vcl::loadObj(tm, VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.obj", info);
-        REQUIRE(tm.vertexNumber() == 8);
-        REQUIRE(tm.faceNumber() == 4);
-        REQUIRE(tm.materialsNumber() == 2);
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 4);
+        REQUIRE(tm.materialCount() == 2);
         REQUIRE(tm.isPerFaceMaterialIndexEnabled());
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         for (const auto& f : tm.faces()) {
             // first two faces have material index 0, the other two have index 1
-            REQUIRE(f.materialIndex() == f.index() / 2);
+            REQUIRE(f.materialIndex() == f.index() % 2);
         }
 
         REQUIRE(info.hasVertices());
@@ -178,8 +165,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = objPolyCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 6);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 6);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -195,8 +182,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         auto     ss = objTriCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.faceNumber() == 12);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.faceCount() == 12);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -212,8 +199,8 @@ TEMPLATE_TEST_CASE(
         TriMesh pm;
         vcl::loadObj(
             pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
-        REQUIRE(pm.vertexNumber() == 60);
-        REQUIRE(pm.faceNumber() == 116);
+        REQUIRE(pm.vertexCount() == 60);
+        REQUIRE(pm.faceCount() == 116);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -229,8 +216,8 @@ TEMPLATE_TEST_CASE(
         PolyMesh pm;
         vcl::loadObj(
             pm, VCLIB_EXAMPLE_MESHES_PATH "/rhombicosidodecahedron.obj", info);
-        REQUIRE(pm.vertexNumber() == 60);
-        REQUIRE(pm.faceNumber() == 62);
+        REQUIRE(pm.vertexCount() == 60);
+        REQUIRE(pm.faceCount() == 62);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -246,8 +233,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh em;
         auto     ss = objPolyCube();
         vcl::loadObj(em, ss, {}, info);
-        REQUIRE(em.vertexNumber() == 8);
-        REQUIRE(em.edgeNumber() == 4);
+        REQUIRE(em.vertexCount() == 8);
+        REQUIRE(em.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());
@@ -261,8 +248,8 @@ TEMPLATE_TEST_CASE(
         EdgeMesh pm;
         auto     ss = objTriCube();
         vcl::loadObj(pm, ss, {}, info);
-        REQUIRE(pm.vertexNumber() == 8);
-        REQUIRE(pm.edgeNumber() == 4);
+        REQUIRE(pm.vertexCount() == 8);
+        REQUIRE(pm.edgeCount() == 4);
 
         REQUIRE(info.hasVertices());
         REQUIRE(info.hasFaces());

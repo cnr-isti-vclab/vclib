@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 #define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
@@ -29,6 +14,7 @@
 #include <vclib/bgfx/programs/load_program.h>
 
 #include <array>
+#include <utility>
 
 namespace vcl {
 
@@ -80,15 +66,54 @@ public:
         return mVFPrograms[p];
     }
 
+    bgfx::ProgramHandle getProgram(VertFragProgram p)
+    {
+        return getProgramImpl(
+            p,
+            std::make_index_sequence<toUnderlying(VertFragProgram::COUNT)> {});
+    }
+
     template<ComputeProgram PROGRAM>
     bgfx::ProgramHandle getComputeProgram()
     {
         uint p = toUnderlying(PROGRAM);
         if (!bgfx::isValid(mCPrograms[p])) {
-            mCPrograms[p] = vcl::createProgram(vcl::loadShader(
-                ComputeLoader<PROGRAM>::computeShader(mRenderType)));
+            mCPrograms[p] = vcl::createProgram(
+                vcl::loadShader(
+                    ComputeLoader<PROGRAM>::computeShader(mRenderType)));
         }
         return mCPrograms[p];
+    }
+
+    bgfx::ProgramHandle getComputeProgram(ComputeProgram p)
+    {
+        return getComputeProgramImpl(
+            p,
+            std::make_index_sequence<toUnderlying(ComputeProgram::COUNT)> {});
+    }
+
+private:
+    template<size_t... Is>
+    bgfx::ProgramHandle getProgramImpl(
+        VertFragProgram p,
+        std::index_sequence<Is...>)
+    {
+        using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
+        static constexpr std::array<GetProgramFn, sizeof...(Is)> funcs = {
+            &ProgramManager::getProgram<static_cast<VertFragProgram>(Is)>...};
+        return (this->*(funcs[toUnderlying(p)]))();
+    }
+
+    template<size_t... Is>
+    bgfx::ProgramHandle getComputeProgramImpl(
+        ComputeProgram p,
+        std::index_sequence<Is...>)
+    {
+        using GetProgramFn = bgfx::ProgramHandle (ProgramManager::*)();
+        static constexpr std::array<GetProgramFn, sizeof...(Is)> funcs = {
+            &ProgramManager::getComputeProgram<static_cast<ComputeProgram>(
+                Is)>...};
+        return (this->*(funcs[toUnderlying(p)]))();
     }
 };
 
