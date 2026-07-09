@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include "default_viewer.h"
+#include <vclib/render/mesh_viewer.h>
 
 #include <vclib/io.h>
 
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
         std::cout << "------------------------" << std::endl;
     }
 
-    return showMeshesOnDefaultViewer(
+    return vcl::showOnMeshViewer(
         argc,
         argv,
         std::move(meshes),

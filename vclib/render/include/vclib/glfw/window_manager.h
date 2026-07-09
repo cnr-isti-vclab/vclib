@@ -8,26 +8,14 @@
 #ifndef VCL_GLFW_WINDOW_MANAGER_H
 #define VCL_GLFW_WINDOW_MANAGER_H
 
+#include "detail/window_manager_native.h"
 #include "input.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
-#if defined(__linux__)
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-#define GLFW_EXPOSE_NATIVE_WAYLAND
-#else
-#define GLFW_EXPOSE_NATIVE_X11
-#endif
-#elif defined(_WIN32)
-#define GLFW_EXPOSE_NATIVE_WIN32
-#elif defined(__APPLE__)
-#define GLFW_EXPOSE_NATIVE_COCOA
-#endif
-
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 
 #include <iostream>
 
@@ -175,6 +163,12 @@ public:
         cleanup();
     }
 
+    void showMaximized()
+    {
+        glfwMaximizeWindow(mWindow);
+        show();
+    }
+
     /**
      * @brief Returns true if the window is minimized (i.e. iconified), false
      * otherwise.
@@ -191,38 +185,18 @@ public:
     // internally the loop.
     void update() {}
 
+    void setContinuousRedraw(bool enabled) { (void) enabled; }
+
     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
 
     void* winId() const
     {
-        void* nwh = nullptr;
-
-#if defined(__linux__)
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-        nwh = (void*) (uintptr_t) glfwGetWaylandWindow(mWindow);
-#else
-        nwh = (void*) (uintptr_t) glfwGetX11Window(mWindow);
-#endif
-#elif defined(_WIN32)
-        nwh = glfwGetWin32Window(mWindow);
-#elif defined(__APPLE__)
-        nwh = glfwGetCocoaWindow(mWindow);
-#endif
-
-        return nwh;
+        return detail::WindowManagerNative::winId(mWindow);
     }
 
     void* displayId() const
     {
-        void* ndt = nullptr;
-#ifdef __linux__
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-        ndt = (void*) (uintptr_t) glfwGetWaylandDisplay();
-#else
-        ndt = (void*) (uintptr_t) glfwGetX11Display();
-#endif
-#endif
-        return ndt;
+        return detail::WindowManagerNative::displayId();
     }
 
 protected:
@@ -254,7 +228,7 @@ protected:
         int action,
         int mods)
     {
-#if defined GLFW_EXPOSE_NATIVE_X11
+#if defined(__linux__) && !defined(VCLIB_RENDER_WITH_WAYLAND)
         // Fix modifiers on X11
         // maybe it will be fixed https://github.com/glfw/glfw/issues/1630
         mods = fixKeyboardMods(key, action, mods);
