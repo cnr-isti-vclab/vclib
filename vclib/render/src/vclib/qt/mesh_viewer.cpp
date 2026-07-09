@@ -153,6 +153,11 @@ MeshViewer::~MeshViewer()
     delete mUI;
 }
 
+const DrawableObjectVector& MeshViewer::drawableObjectVector() const
+{
+    return *mDrawableObjectVector;
+}
+
 /**
  * @brief Sets the current DrawableObjectVector, and updates the GUI
  * accordingly.

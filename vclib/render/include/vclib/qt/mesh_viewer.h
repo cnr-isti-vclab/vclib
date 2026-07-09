@@ -64,6 +64,8 @@ public:
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
+    const DrawableObjectVector& drawableObjectVector() const;
+
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
