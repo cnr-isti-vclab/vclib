@@ -9,6 +9,7 @@
 #define VCL_RENDER_CONCEPTS_VIEWER_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/editors.h>
 
 #include <utility>
 
@@ -16,7 +17,12 @@ namespace vcl {
 
 template<typename T>
 concept ViewerConcept =
-    requires (T&& obj, std::shared_ptr<vcl::DrawableObjectVector> vec) {
+    requires (
+        T&& obj,
+        std::shared_ptr<vcl::DrawableObjectVector> vec) {
+        typename RemoveRef<T>::ViewerType;
+        typename RemoveRef<T>::EditorType;
+
         {
             std::as_const(obj).drawableObjectVector()
         } -> std::same_as<const vcl::DrawableObjectVector&>;
@@ -24,6 +30,10 @@ concept ViewerConcept =
         // non const requirements
         requires IsConst<T> || requires {
             { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
+
+            { obj.refreshEditors() } -> std::same_as<void>;
+
+            { obj.fitScene() } -> std::same_as<void>;
         };
     };
 

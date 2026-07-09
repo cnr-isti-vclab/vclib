@@ -71,6 +71,12 @@ public:
 
     uint selectedDrawableObject() const;
 
+    template<template<typename> typename EditorT>
+    auto pushEditor()
+    {
+        return viewer().template pushEditor<EditorT>();
+    }
+
     void refreshEditors();
 
     TextEditLogger& logger();
