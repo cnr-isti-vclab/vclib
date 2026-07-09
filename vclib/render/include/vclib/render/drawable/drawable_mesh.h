@@ -30,6 +30,18 @@ template<MeshConcept MeshType>
 using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
 #endif
 
+template<MeshConcept MeshType>
+auto makeDrawable(const MeshType& m)
+{
+    return DrawableMesh<MeshType>(m);
+}
+
+template<MeshConcept MeshType>
+auto makeDrawable(MeshType&& m)
+{
+    return DrawableMesh<MeshType>(std::move(m));
+}
+
 } // namespace vcl
 
 #endif // VCL_RENDER_DRAWABLE_DRAWABLE_MESH_H
