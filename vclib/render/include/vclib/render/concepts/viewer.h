@@ -19,7 +19,8 @@ template<typename T>
 concept ViewerConcept =
     requires (
         T&& obj,
-        std::shared_ptr<vcl::DrawableObjectVector> vec) {
+        std::shared_ptr<vcl::DrawableObjectVector> vec,
+        vcl::DrawableObject&& drawableObj) {
         typename RemoveRef<T>::ViewerType;
         typename RemoveRef<T>::EditorType;
 
@@ -30,6 +31,8 @@ concept ViewerConcept =
         // non const requirements
         requires IsConst<T> || requires {
             { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
+
+            { obj.pushDrawableObject(std::move(drawableObj)) } -> std::same_as<uint>;
 
             { obj.refreshEditors() } -> std::same_as<void>;
 

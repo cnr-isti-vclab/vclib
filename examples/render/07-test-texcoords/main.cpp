@@ -14,7 +14,7 @@ int main(int argc, char** argv)
     auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
-    vcl::Viewer viewer;
+    vcl::MeshViewer viewer;
 
     enum TexCoordsExamples {
         SPONZA = 0,

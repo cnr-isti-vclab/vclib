@@ -8,7 +8,7 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
-#include <vclib/render/concepts/viewer.h>
+#include <vclib/render/concepts/mesh_viewer.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
@@ -28,63 +28,20 @@ void viewerStaticAsserts()
 
 #ifdef VCLIB_WITH_QT
     static_assert(
-        ViewerConcept<qt::MeshViewer>,
-        "qt::MeshViewer does not satisfy the ViewerConcept");
+        MeshViewerConcept<qt::MeshViewer>,
+        "qt::MeshViewer does not satisfy the MeshViewerConcept");
     static_assert(
-        ViewerConcept<const qt::MeshViewer>,
-        "const qt::MeshViewer does not satisfy the ViewerConcept");
+        MeshViewerConcept<const qt::MeshViewer>,
+        "const qt::MeshViewer does not satisfy the MeshViewerConcept");
     static_assert(
-        ViewerConcept<qt::MeshViewer&>,
-        "qt::MeshViewer& does not satisfy the ViewerConcept");
+        MeshViewerConcept<qt::MeshViewer&>,
+        "qt::MeshViewer& does not satisfy the MeshViewerConcept");
     static_assert(
-        ViewerConcept<const qt::MeshViewer&>,
-        "const qt::MeshViewer& does not satisfy the ViewerConcept");
+        MeshViewerConcept<const qt::MeshViewer&>,
+        "const qt::MeshViewer& does not satisfy the MeshViewerConcept");
     static_assert(
-        ViewerConcept<qt::MeshViewer&&>,
-        "qt::MeshViewer&& does not satisfy the ViewerConcept");
-#endif
-
-#ifdef VCLIB_WITH_GLFW
-
-#ifdef VCLIB_WITH_IMGUI
-    using ImguiViewer = RenderApp<
-        vcl::glfw::WindowManager,
-        vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::MeshViewerDrawerImgui>;
-
-    static_assert(
-        ViewerConcept<ImguiViewer>,
-        "ImguiViewer does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<const ImguiViewer>,
-        "const ImguiViewer does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<ImguiViewer&>,
-        "ImguiViewer& does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<const ImguiViewer&>,
-        "const ImguiViewer& does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<ImguiViewer&&>,
-        "ImguiViewer&& does not satisfy the ViewerConcept");
-#endif
-
-    static_assert(
-        ViewerConcept<glfw::ViewerWindow>,
-        "glfw::ViewerWindow does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<const glfw::ViewerWindow>,
-        "const glfw::ViewerWindow does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<glfw::ViewerWindow&>,
-        "glfw::ViewerWindow& does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<const glfw::ViewerWindow&>,
-        "const glfw::ViewerWindow& does not satisfy the ViewerConcept");
-    static_assert(
-        ViewerConcept<glfw::ViewerWindow&&>,
-        "glfw::ViewerWindow&& does not satisfy the ViewerConcept");
+        MeshViewerConcept<qt::MeshViewer&&>,
+        "qt::MeshViewer&& does not satisfy the MeshViewerConcept");
 #endif
 
 }

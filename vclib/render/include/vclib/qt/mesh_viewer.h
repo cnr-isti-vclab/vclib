@@ -13,6 +13,8 @@
 
 #include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
+#include <vclib/render/concepts/drawable_object.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
@@ -64,12 +66,48 @@ public:
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
+private:
     const DrawableObjectVector& drawableObjectVector() const;
 
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
-    uint selectedDrawableObject() const;
+public:
+    uint selectedMesh() const;
+
+    template<typename MeshType>
+    uint pushMesh(MeshType&& mesh)
+    {
+        uint id = 0;
+        if constexpr (vcl::DrawableObjectConcept<MeshType>) {
+            id = viewer().pushDrawableObject(std::forward<MeshType>(mesh));
+        } else {
+            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
+            id = viewer().pushDrawableObject(DType(std::forward<MeshType>(mesh)));
+        }
+        updateGUI();
+        return id;
+    }
+
+    bool removeMesh(uint id);
+
+    bool updateMesh(uint id);
+
+    template<typename MeshType>
+    bool insertMesh(uint pos, MeshType&& mesh)
+    {
+        bool success = false;
+        if constexpr (vcl::DrawableObjectConcept<MeshType>) {
+            success = viewer().insertDrawableObject(pos, std::forward<MeshType>(mesh));
+        } else {
+            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
+            success = viewer().insertDrawableObject(pos, DType(std::forward<MeshType>(mesh)));
+        }
+        if (success) updateGUI();
+        return success;
+    }
+
+    void clearMeshes();
 
     template<template<typename> typename EditorT>
     auto pushEditor()

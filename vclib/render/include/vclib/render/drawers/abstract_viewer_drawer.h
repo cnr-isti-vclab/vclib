@@ -79,6 +79,11 @@ public:
         return *mDrawList;
     }
 
+    DrawableObjectVector& drawableObjectVector()
+    {
+        return *mDrawList;
+    }
+
     void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
         mDrawList = v;
@@ -119,6 +124,16 @@ public:
         }
     }
 
+    /**
+     * @brief Helper function to add a DrawableObject to the scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI components.
+     *
+     * If you choose to manually manipulate the vector via `drawableObjectVector()`,
+     * you are responsible for calling `init()` on new elements and `refreshEditors()`.
+     */
     uint pushDrawableObject(const DrawableObject& obj)
     {
         mDrawList->pushBack(obj);
@@ -127,12 +142,64 @@ public:
         return mDrawList->size() - 1;
     }
 
+    /**
+     * @brief Helper function to add a DrawableObject to the scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI components.
+     *
+     * If you choose to manually manipulate the vector via `drawableObjectVector()`,
+     * you are responsible for calling `init()` on new elements and `refreshEditors()`.
+     */
     uint pushDrawableObject(DrawableObject&& obj)
     {
         mDrawList->pushBack(std::move(obj));
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
+    }
+
+    bool removeDrawableObject(uint id)
+    {
+        if (id >= mDrawList->size()) return false;
+        mDrawList->erase(id);
+        refreshEditors();
+        return true;
+    }
+
+    bool updateDrawableObject(uint id)
+    {
+        if (id >= mDrawList->size()) return false;
+        mDrawList->at(id)->init();
+        requestUpdate();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a DrawableObject at a specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls `refreshEditors()`.
+     */
+    bool insertDrawableObject(uint pos, DrawableObject&& obj)
+    {
+        if (pos > mDrawList->size()) return false;
+        mDrawList->insert(pos, std::move(obj));
+        mDrawList->at(pos)->init();
+        refreshEditors();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to clear all objects from the scene.
+     *
+     * Clears the underlying vector and safely calls `refreshEditors()`.
+     */
+    void clearDrawableObjects()
+    {
+        mDrawList->clear();
+        refreshEditors();
+        requestUpdate();
     }
 
     void fitScene()
@@ -303,9 +370,6 @@ public:
 
         return block;
     }
-
-protected:
-    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 

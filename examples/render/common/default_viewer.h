@@ -11,24 +11,11 @@
 #include <vclib/mesh.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 #ifdef VCLIB_WITH_QT
 #include <QApplication>
 #endif
-
-template<vcl::MeshConcept MeshType>
-void pushMeshOnVector(
-    std::shared_ptr<vcl::DrawableObjectVector>& vector,
-    MeshType&&                                  mesh)
-{
-    if constexpr (vcl::DrawableObjectConcept<MeshType>)
-        vector->pushBack(std::forward<MeshType>(mesh));
-    else {
-        using DrawableMesh = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-        vector->pushBack(DrawableMesh(std::forward<MeshType>(mesh)));
-    }
-}
 
 template<vcl::MeshConcept... MeshTypes>
 void showMeshesOnViewer(
@@ -37,12 +24,7 @@ void showMeshesOnViewer(
     auto&  viewer,
     MeshTypes&&... meshes)
 {
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-
-    (pushMeshOnVector(vector, std::forward<MeshTypes>(meshes)), ...);
-
-    viewer.setDrawableObjectVector(vector);
+    (viewer.pushMesh(std::forward<MeshTypes>(meshes)), ...);
 
 #if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
@@ -60,13 +42,8 @@ void showMeshesOnViewer(
     bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-
     for (auto&& mesh : meshes)
-        (pushMeshOnVector(vector, std::move(mesh)));
-
-    viewer.setDrawableObjectVector(vector);
+        viewer.pushMesh(std::move(mesh));
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     auto sts = viewer.pbrSettings();
@@ -94,7 +71,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, MeshTypes&&... meshes)
     auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
-    vcl::Viewer viewer;
+    vcl::MeshViewer viewer;
 
     showMeshesOnViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
@@ -120,7 +97,7 @@ int showMeshesOnDefaultViewer(
     auto application = vcl::qt::qAppl(argc, argv);
 #endif
 
-    vcl::Viewer viewer;
+    vcl::MeshViewer viewer;
 
     showMeshesOnViewer(
         argc, argv, viewer, std::move(meshes), pbrMode, panorama);

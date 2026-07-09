@@ -9,14 +9,10 @@
 #define VCL_RENDER_VIEWER_H
 
 #ifdef VCLIB_WITH_QT
-#include <vclib/qt/mesh_viewer.h>
+#include <vclib/qt/viewer_window.h>
 #elif VCLIB_WITH_GLFW
-#ifdef VCLIB_WITH_IMGUI
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
-#endif // VCLIB_WITH_IMGUI
 #include <vclib/glfw/viewer_window.h>
-#endif // VCLIB_WITH_GLFW
+#endif
 
 namespace vcl {
 
@@ -26,9 +22,7 @@ namespace vcl {
  *
  * Depending on the available window managers, the Viewer class is aliased to
  * one of the following classes:
- * - If Qt is available, it is aliased to `vcl::qt::MeshViewer`.
- * - Else if GLFW is available and ImGui is enabled, it is aliased to
- *   a MeshViewer with ImGui mesh widgets.
+ * - If Qt is available, it is aliased to `vcl::qt::ViewerWindow`.
  * - Else if GLFW is available, it is aliased to `vcl::glfw::ViewerWindow`.
  * - Else, a compilation error is triggered if no window manager is available
  *   and a Viewer instance is created.
@@ -56,19 +50,11 @@ namespace vcl {
 
 #ifdef VCLIB_WITH_QT
 
-using Viewer = qt::MeshViewer;
+using Viewer = qt::ViewerWindow;
 
 #elif VCLIB_WITH_GLFW
 
-#ifdef VCLIB_WITH_IMGUI
-using Viewer = RenderApp<
-    vcl::glfw::WindowManager,
-    vcl::Canvas,
-    vcl::imgui::ImGuiDrawer,
-    vcl::imgui::MeshViewerDrawerImgui>;
-#else // VCLIB_WITH_IMGUI
-using Viewer = vcl::glfw::ViewerWindow;
-#endif // VCLIB_WITH_IMGUI
+using Viewer = glfw::ViewerWindow;
 
 #else // No Qt and no GLFW
 

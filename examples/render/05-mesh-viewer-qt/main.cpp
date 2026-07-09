@@ -37,8 +37,7 @@ int main(int argc, char** argv)
     }
     m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
-    auto v = std::make_shared<vcl::DrawableObjectVector>();
-    v->pushBack(std::move(m));
+    mv.pushMesh(std::move(m));
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
@@ -62,10 +61,9 @@ int main(int argc, char** argv)
     drawable.transformMatrix() = translation * scale * rot;
 
     drawable.updateBuffers({MESH_ADDITIONAL_DATA});
-    v->pushBack(std::move(drawable));
+    mv.pushMesh(std::move(drawable));
 
-    mv.setDrawableObjectVector(v);
-
+    mv.fitScene();
     mv.show();
     mv.showMaximized();
 

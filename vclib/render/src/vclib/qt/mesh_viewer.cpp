@@ -176,9 +176,34 @@ void MeshViewer::setDrawableObjectVector(
     updateGUI();
 }
 
-uint MeshViewer::selectedDrawableObject() const
+uint MeshViewer::selectedMesh() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
+}
+
+bool MeshViewer::removeMesh(uint id)
+{
+    if (id >= mDrawableObjectVector->size()) return false;
+    mDrawableObjectVector->erase(id);
+    
+    // Refresh GUI elements
+    updateGUI();
+    return true;
+}
+
+bool MeshViewer::updateMesh(uint id)
+{
+    if (id >= mDrawableObjectVector->size()) return false;
+    mDrawableObjectVector->at(id)->init();
+    mUI->viewer->update();
+    updateGUI();
+    return true;
+}
+
+void MeshViewer::clearMeshes()
+{
+    viewer().clearDrawableObjects();
+    updateGUI();
 }
 
 void MeshViewer::refreshEditors()
