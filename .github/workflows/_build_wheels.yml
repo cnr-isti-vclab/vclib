@@ -48,7 +48,8 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: bindings-${{ matrix.os }}-${{ github.ref_name }}
+        key: bindings-${{ matrix.os }}
+        max-size: 1G
 
     - name: Build Wheel 3.12
       uses: ./.github/actions/build-python-wheel
