@@ -14,6 +14,9 @@
 #include <vclib/imgui/mesh_viewer.h>
 #endif
 
+#include "application.h"
+#include "concepts/mesh_viewer.h"
+
 namespace vcl {
 
 /**
@@ -52,6 +55,79 @@ struct MeshViewer
 };
 
 #endif // VCLIB_WITH_QT
+
+template<vcl::MeshConcept... MeshTypes>
+void showOnMeshViewer(
+    int                     argc,
+    char**                  argv,
+    MeshViewerConcept auto& viewer,
+    MeshTypes&&... meshes)
+{
+    (viewer.pushMesh(std::forward<MeshTypes>(meshes)), ...);
+
+    viewer.fitScene();
+
+    viewer.showMaximized();
+}
+
+template<vcl::MeshConcept MeshTypes>
+void showOnMeshViewer(
+    int                      argc,
+    char**                   argv,
+    MeshViewerConcept auto&  viewer,
+    std::vector<MeshTypes>&& meshes,
+    bool                     pbrMode  = false,
+    const std::string&       panorama = "")
+{
+    for (auto&& mesh : meshes)
+        viewer.pushMesh(std::move(mesh));
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+    auto sts = viewer.pbrSettings();
+
+    if (!panorama.empty()) {
+        viewer.setPanorama(panorama);
+        sts.imageBasedLighting       = true;
+        sts.renderBackgroundPanorama = true;
+    }
+    sts.pbrMode = pbrMode;
+    viewer.setPbrSettings(sts);
+#endif
+
+    viewer.fitScene();
+
+    viewer.showMaximized();
+}
+
+template<vcl::MeshConcept... MeshTypes>
+int showOnMeshViewer(int argc, char** argv, MeshTypes&&... meshes)
+{
+    vcl::Application app(argc, argv);
+
+    vcl::MeshViewer viewer;
+
+    showOnMeshViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
+
+    return app.exec();
+}
+
+template<vcl::MeshConcept MeshTypes>
+int showOnMeshViewer(
+    int                      argc,
+    char**                   argv,
+    std::vector<MeshTypes>&& meshes,
+    bool                     pbrMode  = false,
+    const std::string&       panorama = "")
+{
+    vcl::Application app(argc, argv);
+
+    vcl::MeshViewer viewer;
+
+    showOnMeshViewer(
+        argc, argv, viewer, std::move(meshes), pbrMode, panorama);
+
+    return app.exec();
+}
 
 } // namespace vcl
 

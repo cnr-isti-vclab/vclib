@@ -5,8 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <default_viewer.h>
 #include <get_drawable_mesh.h>
+
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
@@ -50,14 +51,14 @@ int main(int argc, char** argv)
                 VCLIB_EXAMPLE_MESHES_PATH +
                     GLTFExampleFilenames[selectedExample],
                 false);
-        showMeshesOnViewer(argc, argv, viewer, std::move(drawable));
+        showOnMeshViewer(argc, argv, viewer, std::move(drawable));
     }
     else {
         std::vector<vcl::TriEdgeMesh> meshes =
             vcl::loadMeshes<vcl::TriEdgeMesh>(
                 VCLIB_EXAMPLE_MESHES_PATH +
                 GLTFExampleFilenames[selectedExample]);
-        showMeshesOnViewer(argc, argv, viewer, std::move(meshes));
+        showOnMeshViewer(argc, argv, viewer, std::move(meshes));
     }
 
     viewer.fitScene();
