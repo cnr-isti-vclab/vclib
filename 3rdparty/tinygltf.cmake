@@ -22,7 +22,6 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
         GIT_TAG v${TINYGLTF_VERSION}
     )
     FetchContent_MakeAvailable(tinygltf)
-    set_property(TARGET tinygltf PROPERTY POSITION_INDEPENDENT_CODE ON)
 
     add_library(vclib-3rd-tinygltf INTERFACE)
     target_link_libraries(vclib-3rd-tinygltf INTERFACE tinygltf)
