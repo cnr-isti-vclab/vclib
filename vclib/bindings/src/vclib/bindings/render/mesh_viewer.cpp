@@ -23,6 +23,18 @@ void initMeshViewer(pybind11::module& m)
     auto bindMeshFunctions = []<MeshConcept MeshType>(
                                  pybind11::class_<vcl::qt::MeshViewer>& c,
                                  MeshType = MeshType()) {
+        // order of definition is crucial here: first the DrawableMesh version
+        // (first match, first call), then the Mesh version
+        // if Mesh is defined first, DrawableMeshes (that are still Meshes) will
+        // be caught by the Mesh overload and not the DrawableMesh overload
+
+        c.def(
+            "push_mesh",
+            [](vcl::qt::MeshViewer&               self,
+               const vcl::DrawableMesh<MeshType>& mesh) {
+                return self.pushMesh(mesh);
+            },
+            py::arg("mesh"));
         c.def(
             "push_mesh",
             [](vcl::qt::MeshViewer& self, const MeshType& mesh) {
@@ -30,21 +42,17 @@ void initMeshViewer(pybind11::module& m)
             },
             py::arg("mesh"));
         c.def(
-            "push_mesh",
-            [](vcl::qt::MeshViewer& self, const vcl::DrawableMesh<MeshType>& mesh) {
-                return self.pushMesh(mesh);
-            },
-            py::arg("mesh"));
-        c.def(
             "insert_mesh",
-            [](vcl::qt::MeshViewer& self, uint pos, const MeshType& mesh) {
+            [](vcl::qt::MeshViewer&               self,
+               uint                               pos,
+               const vcl::DrawableMesh<MeshType>& mesh) {
                 return self.insertMesh(pos, mesh);
             },
             py::arg("pos"),
             py::arg("mesh"));
         c.def(
             "insert_mesh",
-            [](vcl::qt::MeshViewer& self, uint pos, const vcl::DrawableMesh<MeshType>& mesh) {
+            [](vcl::qt::MeshViewer& self, uint pos, const MeshType& mesh) {
                 return self.insertMesh(pos, mesh);
             },
             py::arg("pos"),
