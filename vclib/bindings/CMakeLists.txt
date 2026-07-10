@@ -20,7 +20,7 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
 endif()
 
 if(VCLIB_BUILD_MODULE_RENDER)
-    #    list(APPEND PYTHON_MODULES render)
+    list(APPEND PYTHON_MODULES render)
 endif()
 
 # copy the __init__.py
