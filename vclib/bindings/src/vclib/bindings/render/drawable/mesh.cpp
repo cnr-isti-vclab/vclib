@@ -41,7 +41,9 @@ void initDrawableMeshes(pybind11::module& m)
                                pybind11::module_& m, MeshType = MeshType()) {
         m.def(
             "make_drawable",
-            py::overload_cast<const MeshType&>(&vcl::makeDrawable<MeshType>),
+            [](const MeshType& mesh) {
+                return vcl::makeDrawable(mesh);
+            },
             pybind11::arg("mesh"));
     };
     defForAllMeshTypes(m, defMakeDrawable);

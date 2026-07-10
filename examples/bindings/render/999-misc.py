@@ -32,6 +32,8 @@ if __name__ == "__main__":
 
     viewer = vcl.MeshViewer()
 
+    #dm = vcl.make_drawable(m)
+
     viewer.push_mesh(m)
 
     viewer.show()
