@@ -12,6 +12,8 @@ import os
 import numpy as np
 
 import sys
+import faulthandler
+faulthandler.enable()
 
 current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
@@ -26,11 +28,11 @@ if __name__ == "__main__":
 
     m = vcl.load_tri_mesh('/home/alessandro/devel/3DMeshes/3DMeshes/abstract_sculpture.obj')
 
+    vcl.update_per_vertex_and_face_normals(m)
+
     viewer = vcl.MeshViewer()
 
-    dm = vcl.make_drawable(m)
-
-    viewer.push_mesh(dm)
+    viewer.push_mesh(m)
 
     viewer.show()
 

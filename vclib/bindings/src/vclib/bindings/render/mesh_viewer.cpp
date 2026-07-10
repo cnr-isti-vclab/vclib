@@ -8,6 +8,7 @@
 #include <vclib/bindings/render/mesh_viewer.h>
 #include <vclib/bindings/utils.h>
 #include <vclib/qt/mesh_viewer.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
 namespace vcl::bind {
 
@@ -29,8 +30,21 @@ void initMeshViewer(pybind11::module& m)
             },
             py::arg("mesh"));
         c.def(
+            "push_mesh",
+            [](vcl::qt::MeshViewer& self, const vcl::DrawableMesh<MeshType>& mesh) {
+                return self.pushMesh(mesh);
+            },
+            py::arg("mesh"));
+        c.def(
             "insert_mesh",
             [](vcl::qt::MeshViewer& self, uint pos, const MeshType& mesh) {
+                return self.insertMesh(pos, mesh);
+            },
+            py::arg("pos"),
+            py::arg("mesh"));
+        c.def(
+            "insert_mesh",
+            [](vcl::qt::MeshViewer& self, uint pos, const vcl::DrawableMesh<MeshType>& mesh) {
                 return self.insertMesh(pos, mesh);
             },
             py::arg("pos"),
