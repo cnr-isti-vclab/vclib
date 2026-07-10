@@ -21,7 +21,8 @@ namespace vcl {
 
 /**
  * @brief The MeshViewer class is an alias to the default mesh viewer class
- * used in VCLib, providing a complete GUI for manipulating and rendering meshes.
+ * used in VCLib, providing a complete GUI for manipulating and rendering
+ * meshes.
  *
  * Depending on the available window managers and GUI libraries, the MeshViewer
  * class is aliased to one of the following classes:
@@ -123,8 +124,7 @@ int showOnMeshViewer(
 
     vcl::MeshViewer viewer;
 
-    showOnMeshViewer(
-        argc, argv, viewer, std::move(meshes), pbrMode, panorama);
+    showOnMeshViewer(argc, argv, viewer, std::move(meshes), pbrMode, panorama);
 
     return app.exec();
 }

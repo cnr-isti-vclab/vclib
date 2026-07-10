@@ -89,9 +89,11 @@ public:
         uint id = 0;
         if constexpr (vcl::DrawableObjectConcept<MeshType>) {
             id = viewer().pushDrawableObject(std::forward<MeshType>(mesh));
-        } else {
+        }
+        else {
             using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-            id = viewer().pushDrawableObject(DType(std::forward<MeshType>(mesh)));
+            id          = viewer().pushDrawableObject(
+                DType(std::forward<MeshType>(mesh)));
         }
         updateGUI();
         return id;
@@ -122,12 +124,16 @@ public:
     {
         bool success = false;
         if constexpr (vcl::DrawableObjectConcept<MeshType>) {
-            success = viewer().insertDrawableObject(pos, std::forward<MeshType>(mesh));
-        } else {
-            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-            success = viewer().insertDrawableObject(pos, DType(std::forward<MeshType>(mesh)));
+            success = viewer().insertDrawableObject(
+                pos, std::forward<MeshType>(mesh));
         }
-        if (success) updateGUI();
+        else {
+            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
+            success     = viewer().insertDrawableObject(
+                pos, DType(std::forward<MeshType>(mesh)));
+        }
+        if (success)
+            updateGUI();
         return success;
     }
 

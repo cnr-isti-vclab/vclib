@@ -63,7 +63,8 @@ public:
         uint id = 0;
         if constexpr (vcl::DrawableObjectConcept<MeshType>) {
             id = mApp.pushDrawableObject(std::forward<MeshType>(mesh));
-        } else {
+        }
+        else {
             using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
             id = mApp.pushDrawableObject(DType(std::forward<MeshType>(mesh)));
         }
@@ -82,10 +83,7 @@ public:
      * @param id The ID of the mesh to update.
      * @return True if the update was successful, false otherwise.
      */
-    bool updateMesh(uint id)
-    {
-        return mApp.updateDrawableObject(id);
-    }
+    bool updateMesh(uint id) { return mApp.updateDrawableObject(id); }
 
     /**
      * @brief Inserts a mesh at a specific position in the scene.
@@ -98,10 +96,13 @@ public:
     {
         bool success = false;
         if constexpr (vcl::DrawableObjectConcept<MeshType>) {
-            success = mApp.insertDrawableObject(pos, std::forward<MeshType>(mesh));
-        } else {
+            success =
+                mApp.insertDrawableObject(pos, std::forward<MeshType>(mesh));
+        }
+        else {
             using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-            success = mApp.insertDrawableObject(pos, DType(std::forward<MeshType>(mesh)));
+            success     = mApp.insertDrawableObject(
+                pos, DType(std::forward<MeshType>(mesh)));
         }
         return success;
     }
@@ -109,10 +110,7 @@ public:
     /**
      * @brief Clears all meshes from the scene.
      */
-    void clearMeshes()
-    {
-        mApp.clearDrawableObjects();
-    }
+    void clearMeshes() { mApp.clearDrawableObjects(); }
 
     template<template<typename> typename EditorT>
     auto pushEditor()
@@ -120,10 +118,7 @@ public:
         return mApp.template pushEditor<EditorT>();
     }
 
-    void refreshEditors()
-    {
-        mApp.refreshEditors();
-    }
+    void refreshEditors() { mApp.refreshEditors(); }
 
     Camera<float> camera() const { return mApp.camera(); }
 
@@ -132,7 +127,7 @@ public:
     void fitScene() { mApp.fitScene(); }
 
     void fitView() { mApp.fitView(); }
-    
+
     void show() { mApp.show(); }
 
     void showMaximized() { mApp.showMaximized(); }
