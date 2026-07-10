@@ -184,14 +184,16 @@ uint MeshViewer::selectedMesh() const
 bool MeshViewer::removeMesh(uint id)
 {
     bool res = viewer().removeDrawableObject(id);
-    if (res) updateGUI();
+    if (res)
+        updateGUI();
     return res;
 }
 
 bool MeshViewer::updateMesh(uint id)
 {
     bool res = viewer().updateDrawableObject(id);
-    if (res) updateGUI();
+    if (res)
+        updateGUI();
     return res;
 }
 
