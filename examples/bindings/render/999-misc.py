@@ -12,7 +12,6 @@ import os
 import numpy as np
 
 import sys
-from PyQt6.QtWidgets import QApplication
 
 current_file_path = os.path.abspath(__file__)
 current_file_path = os.path.dirname(current_file_path)
@@ -23,7 +22,7 @@ VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../../assets/results/python
 if __name__ == "__main__":
     print("=== VCLib Example 999: Miscellaneous ===\n")
 
-    app = QApplication(sys.argv)
+    app = vcl.Application(sys.argv)
 
     m = vcl.load_tri_mesh('/home/alessandro/devel/3DMeshes/3DMeshes/abstract_sculpture.obj')
 
@@ -31,9 +30,8 @@ if __name__ == "__main__":
 
     dm = vcl.make_drawable(m)
 
-    viewer.add_mesh(dm)
+    viewer.push_mesh(dm)
 
     viewer.show()
 
     sys.exit(app.exec())
-

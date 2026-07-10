@@ -5,25 +5,15 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bindings/render/application.h>
-#include <vclib/bindings/render/drawable/mesh.h>
-#include <vclib/bindings/render/mesh_viewer.h>
-
-#include <vclib/base.h>
+#ifndef VCL_BINDINGS_RENDER_MESH_VIEWER_H
+#define VCL_BINDINGS_RENDER_MESH_VIEWER_H
 
 #include <pybind11/pybind11.h>
 
 namespace vcl::bind {
 
-// creation of a python module
-PYBIND11_MODULE(render, m)
-{
-    // import the bindings
-    using namespace vcl::bind;
-
-    initApplication(m);
-    initDrawableMeshes(m);
-    initMeshViewer(m);
-}
+void initMeshViewer(pybind11::module& m);
 
 } // namespace vcl::bind
+
+#endif // VCL_BINDINGS_RENDER_MESH_VIEWER_H
