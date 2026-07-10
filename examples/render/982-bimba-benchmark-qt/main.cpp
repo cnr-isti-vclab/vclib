@@ -11,21 +11,22 @@
 #include <vclib/render/automation/actions/automation_action_factory.h>
 #include <vclib/render/automation/metrics.h>
 #include <vclib/render/automation/printers.h>
-#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/application.h>
 #include <vclib/render/editors/benchmark_editor.h>
+#include <vclib/render/mesh_viewer.h>
 
 #include <vclib/qt/mesh_viewer.h>
 #include <vclib/qt/utils/qapplication.h>
 
 int main(int argc, char** argv)
 {
-    QApplication app = vcl::qt::qAppl(argc, argv);
+    vcl::Application app(argc, argv);
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     vcl::Context::setResetFlags(BGFX_RESET_NONE);
 #endif
 
-    vcl::qt::MeshViewer mv;
+    vcl::MeshViewer mv;
     mv.setWindowTitle("982 - Bimba Benchmark Qt");
 
     auto be = mv.pushEditor<vcl::BenchmarkEditor>();
@@ -38,9 +39,7 @@ int main(int argc, char** argv)
 
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>("bimba.obj");
 
-    auto vec = std::make_shared<vcl::DrawableObjectVector>();
-    vec->pushBack(std::move(drawable));
-    mv.setDrawableObjectVector(vec);
+    mv.pushMesh(drawable);
 
     // An automation action factory
     vcl::AutomationActionFactory<BenchmarkEditorT> aaf;
