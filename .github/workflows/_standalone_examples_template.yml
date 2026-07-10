@@ -1,0 +1,208 @@
+name: Reusable Standalone Examples Template
+
+on:
+  workflow_call:
+    inputs:
+      integration_mode:
+        required: true
+        type: string
+        description: "Integration mode: 'find_package' or 'FetchContent'"
+
+jobs:
+  build_vclib_packages:
+    if: inputs.integration_mode == 'find_package'
+    uses: ./.github/workflows/_build_packages.yml
+    with:
+      ref: ${{ github.ref }}
+
+  build_and_run_standalone_examples:
+    needs: [build_vclib_packages]
+    if: ${{ !failure() && !cancelled() }}
+    name: Standalone Examples (${{ matrix.os }}, ${{ matrix.module }}, ${{ matrix.integration_mode }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        module: ['core', 'external', 'render']
+        integration_mode: ['${{ inputs.integration_mode }}']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+
+    - name: Install Qt
+      if: matrix.module == 'render'
+      uses: jurplel/install-qt-action@v4
+      with:
+        cache: 'true'
+        version: '6.10.*'
+
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install cmake ninja-build libtbb-dev
+        if [ "${{ matrix.module }}" == "external" ]; then
+          sudo apt-get install libembree-dev libgmp-dev libmpfr-dev
+        fi
+        if [ "${{ matrix.module }}" == "render" ]; then
+          sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
+        fi
+
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install cmake ninja tbb
+        if [ "${{ matrix.module }}" == "external" ]; then
+          brew install embree gmp mpfr
+        fi
+
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        choco install -y cmake ninja
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: standalone-${{ matrix.os }}-${{ matrix.integration_mode }}-${{ matrix.module }}
+        max-size: 1G
+
+    - name: Download VCLib Package
+      if: matrix.integration_mode == 'find_package'
+      uses: actions/download-artifact@v8
+      with:
+        name: vclib-package-${{ matrix.module == 'core' && 'core' || 'all' }}-${{ runner.os }}-${{ runner.arch }}
+        path: install-vclib
+    
+    - name: VCLib Package Permissions
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
+        if [ -d "install-vclib/bin" ]; then
+          chmod -R +x install-vclib/bin/*
+        fi
+
+    - name: Configure Standalone Examples
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        
+        if [ "${{ matrix.module }}" == "core" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=ON -DVCLIB_STANDALONE_BUILD_EXTERNAL=OFF -DVCLIB_STANDALONE_BUILD_RENDER=OFF"
+        elif [ "${{ matrix.module }}" == "external" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=ON -DVCLIB_STANDALONE_BUILD_RENDER=OFF"
+        elif [ "${{ matrix.module }}" == "render" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -DVCLIB_STANDALONE_BUILD_CORE=OFF -DVCLIB_STANDALONE_BUILD_EXTERNAL=OFF -DVCLIB_STANDALONE_BUILD_RENDER=ON -DVCLIB_RENDER_BACKEND=bgfx"
+        fi
+        
+        cmake -S examples/standalone -B examples/standalone/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+
+    - name: Build Standalone Examples
+      run: cmake --build examples/standalone/build
+
+    - name: Run Tests
+      working-directory: examples/standalone/build
+      shell: bash
+      run: |
+        if [ "${{ matrix.module }}" != "render" ]; then
+          if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
+            if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
+              export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
+            fi
+          fi
+          ctest --output-on-failure
+        else
+          echo "Skipping tests for render module"
+        fi
+
+    - name: Build Template Project (Core)
+      if: matrix.module == 'core'
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+
+        cmake -S examples/standalone/core-template-project -B examples/standalone/core-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+        cmake --build examples/standalone/core-template-project/build
+
+    - name: Build Template Project (External)
+      if: matrix.module == 'external'
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        cmake -S examples/standalone/external-template-project -B examples/standalone/external-template-project/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+        cmake --build examples/standalone/external-template-project/build
+
+    - name: Build Template Project (Render - Custom Shader)
+      if: matrix.module == 'render'
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        cmake -S examples/standalone/render-template-project-custom-shader -B examples/standalone/render-template-project-custom-shader/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+        cmake --build examples/standalone/render-template-project-custom-shader/build
+
+    - name: Build Template Project (Render - Mesh Viewer)
+      if: matrix.module == 'render'
+      shell: bash
+      run: |
+        EXTRA_ARGS=""
+        if [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=ON"
+        else
+          EXTRA_ARGS="-DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF -DCMAKE_PREFIX_PATH=${{ github.workspace }}/install-vclib"
+        fi
+        cmake -S examples/standalone/render-template-project-mesh-viewer -B examples/standalone/render-template-project-mesh-viewer/build  \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          $EXTRA_ARGS
+        cmake --build examples/standalone/render-template-project-mesh-viewer/build

@@ -67,6 +67,31 @@ function(_vclib_add_test_example name)
 
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
 
+    if(WIN32)
+        set(COPY_DLLS_SCRIPT
+            "${CMAKE_CURRENT_BINARY_DIR}/copy_dlls_${TARGET_NAME}.cmake"
+        )
+        file(
+            GENERATE OUTPUT "${COPY_DLLS_SCRIPT}"
+            CONTENT
+                "
+set(DLLS \"$<TARGET_RUNTIME_DLLS:${TARGET_NAME}>\")
+if(DLLS)
+    execute_process(COMMAND \${CMAKE_COMMAND} -E copy_if_different \${DLLS} \"$<TARGET_FILE_DIR:${TARGET_NAME}>\")
+    if(\"${VCLIB_WINDEPLOYQT_EXECUTABLE}\" AND DLLS MATCHES \"Qt.*Core\")
+        execute_process(COMMAND \"${VCLIB_WINDEPLOYQT_EXECUTABLE}\" \"$<TARGET_FILE:${TARGET_NAME}>\")
+    endif()
+endif()
+"
+        )
+        add_custom_command(
+            TARGET ${TARGET_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -P "${COPY_DLLS_SCRIPT}"
+            COMMENT "Copying runtime DLLs for ${TARGET_NAME}"
+        )
+    endif()
+
     # for each module in LINK_MODULES, link the example/test with it
     foreach(module IN LISTS ARG_LINK_MODULES)
         target_link_libraries(${TARGET_NAME} PRIVATE vclib::${module})

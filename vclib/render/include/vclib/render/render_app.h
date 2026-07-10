@@ -357,6 +357,11 @@ private:
     {
         CanvasType::onScreenshot(filename, multiplier);
     }
+
+    void dSetContinuousRedraw(bool enabled)
+    {
+        WindowManagerType::setContinuousRedraw(enabled);
+    }
 };
 
 /*** Inner classes: Attorneys ***/
@@ -756,6 +761,14 @@ public: // TODO - remove this when C++26 is supported
         uint               multiplier = 1)
     {
         r->dScreenshot(filename, multiplier);
+    }
+
+    /**
+     * @brief A Drawer object can request to enable/disable continuous redraw.
+     */
+    static void setContinuousRedraw(RenderApp* r, bool enabled)
+    {
+        r->dSetContinuousRedraw(enabled);
     }
 };
 

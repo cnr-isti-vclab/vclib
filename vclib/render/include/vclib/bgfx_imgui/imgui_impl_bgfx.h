@@ -7,9 +7,7 @@
 #define VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H
 
 #include <bgfx/bgfx.h>
-#include <imgui.h>
-#include <iconfontheaders/icons_kenney.h>
-#include <iconfontheaders/icons_font_awesome.h>
+#include <imgui/imgui.h>
 
 #define IMGUI_MBUT_LEFT   0x01
 #define IMGUI_MBUT_RIGHT  0x02

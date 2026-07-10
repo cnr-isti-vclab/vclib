@@ -28,8 +28,8 @@ public:
      * @brief Specifies how point colors are determined during rendering.
      */
     enum class ColorSetting {
+        GENERAL,    ///< All points use a single general color.
         PER_VERTEX, ///< Each point uses color from per-vertex color buffer.
-        GENERAL     ///< All points use a single general color.
     };
 
     enum class Shading {

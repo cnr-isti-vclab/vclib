@@ -10,7 +10,7 @@
 
 #include <vclib/imgui/imgui_drawer.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 template<typename DerivedRenderApp>
 class DemoImGuiDrawer : public vcl::imgui::ImGuiDrawer<DerivedRenderApp>

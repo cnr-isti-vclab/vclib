@@ -15,6 +15,7 @@
 #include <vclib/render/window_managers.h>
 #include <vclib/space/core/point.h>
 
+#include <QAbstractEventDispatcher>
 #include <QGuiApplication>
 #include <QMouseEvent>
 #include <QWindow>
@@ -62,6 +63,31 @@ public:
     {
         mTitle = title;
         setTitle(QString::fromStdString(title));
+    }
+
+    void setContinuousRedraw(bool enabled)
+    {
+        if (enabled) {
+            // Disable vsync so the driver does not cap frame rate
+            QSurfaceFormat fmt = format();
+            fmt.setSwapInterval(0);
+            setFormat(fmt);
+            if (!mContinuousRedrawConn) {
+                mContinuousRedrawConn = connect(
+                    QAbstractEventDispatcher::instance(),
+                    &QAbstractEventDispatcher::aboutToBlock,
+                    this,
+                    [this]() {
+                        update();
+                    });
+            }
+        }
+        else {
+            if (mContinuousRedrawConn) {
+                disconnect(mContinuousRedrawConn);
+                mContinuousRedrawConn = QMetaObject::Connection {};
+            }
+        }
     }
 
     Point2f dpiScale() const
@@ -207,6 +233,8 @@ protected:
     }
 
 private:
+    QMetaObject::Connection mContinuousRedrawConn;
+
     void paintEvent(QPaintEvent* event) override
     {
         DerivedRenderApp::WM::paint(derived());

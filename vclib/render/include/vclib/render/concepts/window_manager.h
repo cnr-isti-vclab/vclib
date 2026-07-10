@@ -108,6 +108,8 @@ concept WindowManagerConcept = requires (
         { obj.setWindowTitle(std::string()) } -> std::same_as<void>;
 
         { obj.update() } -> std::same_as<void>;
+
+        { obj.setContinuousRedraw(bool()) } -> std::same_as<void>;
     };
 };
 

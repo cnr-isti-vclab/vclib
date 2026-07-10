@@ -7,7 +7,7 @@
 
 #include "mesh_copy_and_trasnform.h"
 
-#include <default_viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
     return std::apply(
         [&](auto&&... args) {
-            return showMeshesOnDefaultViewer(argc, argv, args...);
+            return vcl::showOnMeshViewer(argc, argv, args...);
         },
         meshes);
 }

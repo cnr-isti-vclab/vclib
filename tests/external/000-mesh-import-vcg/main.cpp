@@ -13,7 +13,11 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
+#if __has_include(<wrap/io_trimesh/import_ply.h>)
 #include <wrap/io_trimesh/import_ply.h>
+#else
+#include <vcg/wrap/io_trimesh/import_ply.h>
+#endif
 
 #include "mesh.h"
 

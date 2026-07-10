@@ -18,9 +18,17 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # === REQUIRED === #
 
+# Optional system libraries used by VCLib modules.
+# These lists track system dependencies (like Qt) so they can be
+# exported to vclibConfig.cmake and properly re-linked by find_dependency().
 set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
+set(VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES "")
+
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES "")
+set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES "")
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
+set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES "")
 
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
@@ -77,16 +85,24 @@ endif()
 if(VCLIB_BUILD_MODULE_EXTERNAL)
     # boost
     option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_BOOST "Allow use of downloaded Boost source" ON)
+    option(VCLIB_ALLOW_INSTALL_BOOST "Allow install Boost source" ON)
     include(boost.cmake)
 
     # CGAL
     option(VCLIB_ALLOW_DOWNLOAD_CGAL "Allow use of downloaded CGAL source" ON)
     option(VCLIB_ALLOW_SYSTEM_CGAL "Allow use of system-provided CGAL" ON)
+    option(VCLIB_ALLOW_INSTALL_CGAL "Allow install CGAL source" ON)
 
     include(cgal.cmake)
 
     # embree
     option(VCLIB_ALLOW_SYSTEM_EMBREE "Allow use of system-provided Embree" ON)
+    option(
+        VCLIB_ALLOW_DOWNLOAD_EMBREE
+        "Allow download and use of embree (Windows only)"
+        ON
+    )
     include(embree.cmake)
 
     # libigl
@@ -96,6 +112,7 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
         "Allow use of downloaded libigl source"
         ON
     )
+    option(VCLIB_ALLOW_INSTALL_LIBIGL "Allow install libigl source" ON)
     include(libigl.cmake)
 
     # PoissonRecon
@@ -114,6 +131,7 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+    option(VCLIB_ALLOW_INSTALL_VCG "Allow install VCG source" ON)
     include(vcg.cmake)
 endif()
 
@@ -135,6 +153,7 @@ if(VCLIB_BUILD_MODULE_RENDER)
             "Allow use of downloaded BGFX source"
             ON
         )
+        option(VCLIB_ALLOW_INSTALL_BGFX "Allow install bgfx source" ON)
         include(bgfx.cmake)
     endif()
 
@@ -146,10 +165,12 @@ if(VCLIB_BUILD_MODULE_RENDER)
     ### GLFW
     option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
     option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
+    option(VCLIB_ALLOW_INSTALL_GLFW "Allow install GLFW source" ON)
     include(glfw.cmake)
 
     ### ImGui
     option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
+    option(VCLIB_ALLOW_INSTALL_IMGUI "Allow install ImGui source" ON)
     include(imgui.cmake)
 endif()
 
@@ -265,11 +286,25 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
 endforeach()
 
 set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)
+set(VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES
+    ${VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES}
+    PARENT_SCOPE
+)
+
 set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES
     ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES}
     PARENT_SCOPE
 )
+set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES
+    ${VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES}
+    PARENT_SCOPE
+)
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES
     ${VCLIB_RENDER_3RDPARTY_LIBRARIES}
+    PARENT_SCOPE
+)
+set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES
+    ${VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES}
     PARENT_SCOPE
 )
