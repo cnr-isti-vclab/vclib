@@ -30,10 +30,7 @@ jobs:
       with:
         arch: x64
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        cache: 'true'
-        version: '6.10.*'
+      uses: ./.github/actions/install-qt
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
