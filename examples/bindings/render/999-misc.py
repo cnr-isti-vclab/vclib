@@ -32,10 +32,8 @@ if __name__ == "__main__":
 
     viewer = vcl.MeshViewer()
 
-    dm = vcl.make_drawable(m)
+    viewer.push_drawable_object(vcl.make_drawable(m))
 
-    viewer.push_mesh(dm)
-
-    viewer.show()
+    viewer.show_maximized()
 
     sys.exit(app.exec())

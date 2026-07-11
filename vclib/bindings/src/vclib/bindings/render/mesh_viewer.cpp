@@ -16,59 +16,45 @@ void initMeshViewer(pybind11::module& m)
 {
     namespace py = pybind11;
 
-    py::class_<vcl::qt::MeshViewer> c(m, "MeshViewer");
+    py::class_<qt::MeshViewer> c(m, "MeshViewer");
 
     c.def(py::init<>());
 
     auto bindMeshFunctions = []<MeshConcept MeshType>(
-                                 pybind11::class_<vcl::qt::MeshViewer>& c,
+                                 pybind11::class_<qt::MeshViewer>& c,
                                  MeshType = MeshType()) {
-        // order of definition is crucial here: first the DrawableMesh version
-        // (first match, first call), then the Mesh version
-        // if Mesh is defined first, DrawableMeshes (that are still Meshes) will
-        // be caught by the Mesh overload and not the DrawableMesh overload
-
         c.def(
-            "push_mesh",
-            [](vcl::qt::MeshViewer&               self,
-               const vcl::DrawableMesh<MeshType>& mesh) {
-                return self.pushMesh(mesh);
+            "push_drawable_object",
+            [](qt::MeshViewer& self, const DrawableMesh<MeshType>& mesh) {
+                return self.pushDrawableObject(mesh);
             },
-            py::arg("mesh"));
+            py::arg("obj"));
         c.def(
-            "push_mesh",
-            [](vcl::qt::MeshViewer& self, const MeshType& mesh) {
-                return self.pushMesh(mesh);
-            },
-            py::arg("mesh"));
-        c.def(
-            "insert_mesh",
-            [](vcl::qt::MeshViewer&               self,
-               uint                               pos,
-               const vcl::DrawableMesh<MeshType>& mesh) {
-                return self.insertMesh(pos, mesh);
+            "insert_drawable_object",
+            [](qt::MeshViewer&               self,
+               uint                          pos,
+               const DrawableMesh<MeshType>& mesh) {
+                return self.insertDrawableObject(pos, mesh);
             },
             py::arg("pos"),
-            py::arg("mesh"));
-        c.def(
-            "insert_mesh",
-            [](vcl::qt::MeshViewer& self, uint pos, const MeshType& mesh) {
-                return self.insertMesh(pos, mesh);
-            },
-            py::arg("pos"),
-            py::arg("mesh"));
+            py::arg("obj"));
     };
     defForAllMeshTypes(c, bindMeshFunctions);
-    c.def("remove_mesh", &vcl::qt::MeshViewer::removeMesh, py::arg("id"));
-    c.def("update_mesh", &vcl::qt::MeshViewer::updateMesh, py::arg("id"));
-    c.def("clear_meshes", &vcl::qt::MeshViewer::clearMeshes);
-    c.def("selected_mesh", &vcl::qt::MeshViewer::selectedMesh);
-    c.def("update_gui", &vcl::qt::MeshViewer::updateGUI);
-    c.def("fit_scene", &vcl::qt::MeshViewer::fitScene);
-    c.def("fit_view", &vcl::qt::MeshViewer::fitView);
-    c.def("show", [](vcl::qt::MeshViewer& self) {
-        self.show();
-    });
+    c.def(
+        "remove_drawable_object",
+        &qt::MeshViewer::removeDrawableObject,
+        py::arg("id"));
+    c.def(
+        "update_drawable_object",
+        &qt::MeshViewer::updateDrawableObject,
+        py::arg("id"));
+    c.def("clear_drawable_objects", &qt::MeshViewer::clearDrawableObjects);
+    c.def("selected_drawable_object", &qt::MeshViewer::selectedDrawableObject);
+    c.def("update_gui", &qt::MeshViewer::updateGUI);
+    c.def("fit_scene", &qt::MeshViewer::fitScene);
+    c.def("fit_view", &qt::MeshViewer::fitView);
+    c.def("show", &qt::MeshViewer::show);
+    c.def("show_maximized", &qt::MeshViewer::showMaximized);
 }
 
 } // namespace vcl::bind
