@@ -209,14 +209,6 @@ bool MeshViewer::removeDrawableObject(uint id)
     return res;
 }
 
-bool MeshViewer::updateDrawableObject(uint id)
-{
-    bool res = viewer().updateDrawableObject(id);
-    if (res)
-        updateGUI();
-    return res;
-}
-
 void MeshViewer::clearDrawableObjects()
 {
     viewer().clearDrawableObjects();

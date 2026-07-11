@@ -105,13 +105,6 @@ public:
     bool removeDrawableObject(uint id) { return mApp.removeDrawableObject(id); }
 
     /**
-     * @brief Triggers an update of the drawable object with the given ID.
-     * @param id The ID of the object to update.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool updateDrawableObject(uint id) { return mApp.updateDrawableObject(id); }
-
-    /**
      * @brief Inserts a drawable object at a specific position in the scene.
      * @param pos The position to insert the object at.
      * @param obj The object to insert.

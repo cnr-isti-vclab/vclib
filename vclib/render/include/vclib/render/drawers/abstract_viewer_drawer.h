@@ -171,15 +171,6 @@ public:
         return true;
     }
 
-    bool updateDrawableObject(uint id)
-    {
-        if (id >= mDrawList->size())
-            return false;
-        mDrawList->at(id)->init();
-        requestUpdate();
-        return true;
-    }
-
     /**
      * @brief Helper function to insert a DrawableObject at a specific position.
      *
