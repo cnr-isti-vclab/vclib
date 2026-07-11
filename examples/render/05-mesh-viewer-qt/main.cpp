@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     }
     m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
-    mv.pushMesh(std::move(m));
+    mv.pushDrawableObject(std::move(m));
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     drawable.transformMatrix() = translation * scale * rot;
 
     drawable.updateBuffers({MESH_ADDITIONAL_DATA});
-    mv.pushMesh(std::move(drawable));
+    mv.pushDrawableObject(std::move(drawable));
 
     mv.fitScene();
     mv.show();

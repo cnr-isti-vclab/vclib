@@ -17,6 +17,8 @@
 #include "application.h"
 #include "concepts/mesh_viewer.h"
 
+#include <vclib/render/drawable/drawable_mesh.h>
+
 namespace vcl {
 
 /**
@@ -57,21 +59,21 @@ struct MeshViewer
 
 #endif // VCLIB_WITH_QT
 
-template<vcl::MeshConcept... MeshTypes>
+template<MeshConcept... MeshTypes>
 void showOnMeshViewer(
     int                     argc,
     char**                  argv,
     MeshViewerConcept auto& viewer,
     MeshTypes&&... meshes)
 {
-    (viewer.pushMesh(std::forward<MeshTypes>(meshes)), ...);
+    (viewer.pushDrawableObject(vcl::makeDrawable(std::forward<MeshTypes>(meshes))), ...);
 
     viewer.fitScene();
 
     viewer.showMaximized();
 }
 
-template<vcl::MeshConcept MeshTypes>
+template<MeshConcept MeshTypes>
 void showOnMeshViewer(
     int                      argc,
     char**                   argv,
@@ -81,7 +83,7 @@ void showOnMeshViewer(
     const std::string&       panorama = "")
 {
     for (auto&& mesh : meshes)
-        viewer.pushMesh(std::move(mesh));
+        viewer.pushDrawableObject(vcl::makeDrawable(std::move(mesh)));
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     auto sts = viewer.pbrSettings();
@@ -100,12 +102,12 @@ void showOnMeshViewer(
     viewer.showMaximized();
 }
 
-template<vcl::MeshConcept... MeshTypes>
+template<MeshConcept... MeshTypes>
 int showOnMeshViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
-    vcl::Application app(argc, argv);
+    Application app(argc, argv);
 
-    vcl::MeshViewer viewer;
+    MeshViewer viewer;
 
     showOnMeshViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
@@ -120,9 +122,9 @@ int showOnMeshViewer(
     bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
-    vcl::Application app(argc, argv);
+    Application app(argc, argv);
 
-    vcl::MeshViewer viewer;
+    MeshViewer viewer;
 
     showOnMeshViewer(argc, argv, viewer, std::move(meshes), pbrMode, panorama);
 

@@ -21,14 +21,14 @@ int main(int argc, char** argv)
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
-    tw.pushMesh(drawable);
+    tw.pushDrawableObject(drawable);
 
     // update the mesh to be displayed in the scene
     const auto bb = vcl::boundingBox(drawable);
     vcl::scale(drawable, 0.5f);
     vcl::translate(drawable, vcl::Point3d(bb.size().x(), 0, 0));
 
-    tw.pushMesh(drawable);
+    tw.pushDrawableObject(drawable);
 
     tw.refreshEditors();
 

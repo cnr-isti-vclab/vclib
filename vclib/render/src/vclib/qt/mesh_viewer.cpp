@@ -176,12 +176,12 @@ void MeshViewer::setDrawableObjectVector(
     updateGUI();
 }
 
-uint MeshViewer::selectedMesh() const
+uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
 }
 
-bool MeshViewer::removeMesh(uint id)
+bool MeshViewer::removeDrawableObject(uint id)
 {
     bool res = viewer().removeDrawableObject(id);
     if (res)
@@ -189,7 +189,7 @@ bool MeshViewer::removeMesh(uint id)
     return res;
 }
 
-bool MeshViewer::updateMesh(uint id)
+bool MeshViewer::updateDrawableObject(uint id)
 {
     bool res = viewer().updateDrawableObject(id);
     if (res)
@@ -197,7 +197,7 @@ bool MeshViewer::updateMesh(uint id)
     return res;
 }
 
-void MeshViewer::clearMeshes()
+void MeshViewer::clearDrawableObjects()
 {
     viewer().clearDrawableObjects();
     updateGUI();
