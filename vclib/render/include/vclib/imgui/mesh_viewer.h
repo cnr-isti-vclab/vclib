@@ -45,72 +45,54 @@ public:
     }
 
     /**
-     * @brief Returns the ID of the currently selected mesh.
+     * @brief Returns the ID of the currently selected drawable object.
      */
-    uint selectedMesh() const
+    uint selectedDrawableObject() const
     {
         return mApp.drawableObjectVector().selectedObjectId();
     }
 
     /**
-     * @brief Adds a mesh to the end of the scene.
-     * @param mesh The mesh to add.
-     * @return The ID assigned to the new mesh.
+     * @brief Adds a drawable object to the end of the scene.
+     * @param obj The drawable object to add.
+     * @return The ID assigned to the new object.
      */
-    template<typename MeshType>
-    uint pushMesh(MeshType&& mesh)
+    template<vcl::DrawableObjectConcept ObjType>
+    uint pushDrawableObject(ObjType&& obj)
     {
-        uint id = 0;
-        if constexpr (vcl::DrawableObjectConcept<MeshType>) {
-            id = mApp.pushDrawableObject(std::forward<MeshType>(mesh));
-        }
-        else {
-            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-            id = mApp.pushDrawableObject(DType(std::forward<MeshType>(mesh)));
-        }
-        return id;
+        return mApp.pushDrawableObject(std::forward<ObjType>(obj));
     }
 
     /**
-     * @brief Removes a mesh from the scene by its ID.
-     * @param id The ID of the mesh to remove.
-     * @return True if the mesh was successfully removed, false otherwise.
+     * @brief Removes a drawable object from the scene by its ID.
+     * @param id The ID of the object to remove.
+     * @return True if the object was successfully removed, false otherwise.
      */
-    bool removeMesh(uint id) { return mApp.removeDrawableObject(id); }
+    bool removeDrawableObject(uint id) { return mApp.removeDrawableObject(id); }
 
     /**
-     * @brief Triggers an update of the mesh with the given ID.
-     * @param id The ID of the mesh to update.
+     * @brief Triggers an update of the drawable object with the given ID.
+     * @param id The ID of the object to update.
      * @return True if the update was successful, false otherwise.
      */
-    bool updateMesh(uint id) { return mApp.updateDrawableObject(id); }
+    bool updateDrawableObject(uint id) { return mApp.updateDrawableObject(id); }
 
     /**
-     * @brief Inserts a mesh at a specific position in the scene.
-     * @param pos The position to insert the mesh at.
-     * @param mesh The mesh to insert.
+     * @brief Inserts a drawable object at a specific position in the scene.
+     * @param pos The position to insert the object at.
+     * @param obj The object to insert.
      * @return True if the insertion was successful, false otherwise.
      */
-    template<typename MeshType>
-    bool insertMesh(uint pos, MeshType&& mesh)
+    template<vcl::DrawableObjectConcept ObjType>
+    bool insertDrawableObject(uint pos, ObjType&& obj)
     {
-        bool success = false;
-        if constexpr (vcl::DrawableObjectConcept<MeshType>) {
-            success =
-                mApp.insertDrawableObject(pos, std::forward<MeshType>(mesh));
-        }
-        else {
-            using DType = vcl::DrawableMesh<vcl::RemoveRef<MeshType>>;
-            success     = mApp.insertDrawableObject(
-                pos, DType(std::forward<MeshType>(mesh)));
-        }
-        return success;
+        return mApp.insertDrawableObject(pos, std::forward<ObjType>(obj));
     }
 
     /**
-     * @brief Clears all meshes from the scene.
+     * @brief Clears all drawable objects from the scene.
      */
-    void clearMeshes() { mApp.clearDrawableObjects(); }
+    void clearDrawableObjects() { mApp.clearDrawableObjects(); }
 
     template<template<typename> typename EditorT>
     auto pushEditor()
