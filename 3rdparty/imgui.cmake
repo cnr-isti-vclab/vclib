@@ -60,8 +60,6 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
     # this is the way to include the custom imconfig.h
     # target_compile_definitions(imgui PRIVATE IMGUI_USER_CONFIG="<vclib/bgfx/imgui/imconfig.h>")
 
-
-
     add_library(vclib-3rd-imgui INTERFACE)
     target_link_libraries(vclib-3rd-imgui INTERFACE imgui)
     target_include_directories(

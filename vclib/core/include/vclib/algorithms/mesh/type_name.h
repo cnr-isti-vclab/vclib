@@ -54,7 +54,7 @@ constexpr std::string meshTypeName()
                 isIndexed = true;
             }
         }
-        
+
         if (isIndexed) {
             name += "Indexed";
         }
