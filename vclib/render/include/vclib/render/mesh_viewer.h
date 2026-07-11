@@ -8,17 +8,19 @@
 #ifndef VCL_RENDER_MESH_VIEWER_H
 #define VCL_RENDER_MESH_VIEWER_H
 
+#include "application.h"
+#include "concepts/mesh_viewer.h"
+
+#include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
+
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
 #elif VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
 #include <vclib/imgui/mesh_viewer.h>
 #endif
 
-#include "application.h"
-#include "concepts/mesh_viewer.h"
-
-#include <vclib/render/drawable/drawable_mesh.h>
-
+#include <type_traits>
 namespace vcl {
 
 /**
@@ -66,7 +68,16 @@ void showOnMeshViewer(
     MeshViewerConcept auto& viewer,
     MeshTypes&&... meshes)
 {
-    (viewer.pushDrawableObject(vcl::makeDrawable(std::forward<MeshTypes>(meshes))), ...);
+    auto prepare = [](auto&& m) -> decltype(auto) {
+        using MType = std::remove_cvref_t<decltype(m)>;
+        if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MType>) {
+            return std::forward<decltype(m)>(m);
+        } else {
+            return vcl::makeDrawable(std::forward<decltype(m)>(m));
+        }
+    };
+
+    (viewer.pushDrawableObject(prepare(std::forward<MeshTypes>(meshes))), ...);
 
     viewer.fitScene();
 
@@ -82,8 +93,13 @@ void showOnMeshViewer(
     bool                     pbrMode  = false,
     const std::string&       panorama = "")
 {
-    for (auto&& mesh : meshes)
-        viewer.pushDrawableObject(vcl::makeDrawable(std::move(mesh)));
+    for (auto&& mesh : meshes) {
+        if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
+            viewer.pushDrawableObject(std::move(mesh));
+        } else {
+            viewer.pushDrawableObject(vcl::makeDrawable(std::move(mesh)));
+        }
+    }
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
     auto sts = viewer.pbrSettings();

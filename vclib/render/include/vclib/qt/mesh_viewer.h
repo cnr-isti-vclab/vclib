@@ -79,6 +79,28 @@ public:
     uint selectedDrawableObject() const;
 
     /**
+     * @brief Returns a shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<vcl::DrawableObject> drawableObject(uint i);
+
+    /**
+     * @brief Returns a const shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<const vcl::DrawableObject> drawableObject(uint i) const;
+
+    /**
+     * @brief Returns the number of drawable objects currently in the scene.
+     */
+    uint drawableObjectsCount() const;
+
+    /**
+     * @brief Returns a const reference to the underlying DrawableObjectVector.
+     */
+    const vcl::DrawableObjectVector& drawableObjects() const;
+
+    /**
      * @brief Adds a drawable object to the end of the scene.
      * @param[in] obj: The object to add.
      * @return The ID assigned to the new object.

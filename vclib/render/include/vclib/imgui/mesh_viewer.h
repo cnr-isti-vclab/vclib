@@ -53,6 +53,40 @@ public:
     }
 
     /**
+     * @brief Returns a shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<vcl::DrawableObject> drawableObject(uint i)
+    {
+        return mApp.drawableObjectVector().at(i);
+    }
+
+    /**
+     * @brief Returns a const shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<const vcl::DrawableObject> drawableObject(uint i) const
+    {
+        return mApp.drawableObjectVector().at(i);
+    }
+
+    /**
+     * @brief Returns the number of drawable objects currently in the scene.
+     */
+    uint drawableObjectsCount() const
+    {
+        return mApp.drawableObjectVector().size();
+    }
+
+    /**
+     * @brief Returns a const reference to the underlying DrawableObjectVector.
+     */
+    const vcl::DrawableObjectVector& drawableObjects() const
+    {
+        return mApp.drawableObjectVector();
+    }
+
+    /**
      * @brief Adds a drawable object to the end of the scene.
      * @param obj The drawable object to add.
      * @return The ID assigned to the new object.
@@ -69,13 +103,6 @@ public:
      * @return True if the object was successfully removed, false otherwise.
      */
     bool removeDrawableObject(uint id) { return mApp.removeDrawableObject(id); }
-
-    /**
-     * @brief Triggers an update of the drawable object with the given ID.
-     * @param id The ID of the object to update.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool updateDrawableObject(uint id) { return mApp.updateDrawableObject(id); }
 
     /**
      * @brief Inserts a drawable object at a specific position in the scene.

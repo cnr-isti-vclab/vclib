@@ -181,17 +181,29 @@ uint MeshViewer::selectedDrawableObject() const
     return mUI->drawVectorTree->selectedDrawableObject();
 }
 
+std::shared_ptr<vcl::DrawableObject> MeshViewer::drawableObject(uint i)
+{
+    return viewer().drawableObjectVector().at(i);
+}
+
+std::shared_ptr<const vcl::DrawableObject> MeshViewer::drawableObject(uint i) const
+{
+    return viewer().drawableObjectVector().at(i);
+}
+
+uint MeshViewer::drawableObjectsCount() const
+{
+    return viewer().drawableObjectVector().size();
+}
+
+const vcl::DrawableObjectVector& MeshViewer::drawableObjects() const
+{
+    return viewer().drawableObjectVector();
+}
+
 bool MeshViewer::removeDrawableObject(uint id)
 {
     bool res = viewer().removeDrawableObject(id);
-    if (res)
-        updateGUI();
-    return res;
-}
-
-bool MeshViewer::updateDrawableObject(uint id)
-{
-    bool res = viewer().updateDrawableObject(id);
     if (res)
         updateGUI();
     return res;
