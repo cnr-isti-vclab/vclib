@@ -44,12 +44,26 @@ void initMeshViewer(pybind11::module& m)
         "remove_drawable_object",
         &qt::MeshViewer::removeDrawableObject,
         py::arg("id"));
-    c.def(
-        "update_drawable_object",
-        &qt::MeshViewer::updateDrawableObject,
-        py::arg("id"));
     c.def("clear_drawable_objects", &qt::MeshViewer::clearDrawableObjects);
     c.def("selected_drawable_object", &qt::MeshViewer::selectedDrawableObject);
+
+    c.def(
+        "drawable_object",
+        py::overload_cast<uint>(&qt::MeshViewer::drawableObject),
+        py::arg("i"));
+    c.def("drawable_objects_count", &qt::MeshViewer::drawableObjectsCount);
+
+    c.def("__len__", &qt::MeshViewer::drawableObjectsCount);
+    c.def("__getitem__", [](qt::MeshViewer& self, int i) {
+        if (i < 0) {
+            i += self.drawableObjectsCount();
+        }
+        if (i < 0 || i >= (int) self.drawableObjectsCount()) {
+            throw py::index_error();
+        }
+        return self.drawableObject(i);
+    });
+
     c.def("update_gui", &qt::MeshViewer::updateGUI);
     c.def("fit_scene", &qt::MeshViewer::fitScene);
     c.def("fit_view", &qt::MeshViewer::fitView);

@@ -34,6 +34,10 @@ if __name__ == "__main__":
 
     viewer.push_drawable_object(vcl.make_drawable(m))
 
+    print(f"Number of drawable objects: {len(viewer)}")
+    # for obj in viewer:
+    #     print(f"Object: {obj.name()}")
+
     viewer.show_maximized()
 
     sys.exit(app.exec())
