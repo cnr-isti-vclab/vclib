@@ -45,7 +45,6 @@ concept MeshViewerConcept = requires (
         { obj.insertDrawableObject(0, std::move(obj2)) } -> std::same_as<bool>;
 
         { obj.removeDrawableObject(id) } -> std::same_as<bool>;
-        { obj.updateDrawableObject(id) } -> std::same_as<bool>;
         { obj.clearDrawableObjects() } -> std::same_as<void>;
 
         { obj.drawableObject(id) } -> std::same_as<std::shared_ptr<vcl::DrawableObject>>;
