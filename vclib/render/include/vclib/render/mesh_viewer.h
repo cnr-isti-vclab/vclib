@@ -11,8 +11,8 @@
 #include "application.h"
 #include "concepts/mesh_viewer.h"
 
-#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
@@ -21,6 +21,7 @@
 #endif
 
 #include <type_traits>
+
 namespace vcl {
 
 /**
@@ -72,7 +73,8 @@ void showOnMeshViewer(
         using MType = std::remove_cvref_t<decltype(m)>;
         if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MType>) {
             return std::forward<decltype(m)>(m);
-        } else {
+        }
+        else {
             return vcl::makeDrawable(std::forward<decltype(m)>(m));
         }
     };
@@ -96,7 +98,8 @@ void showOnMeshViewer(
     for (auto&& mesh : meshes) {
         if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
             viewer.pushDrawableObject(std::move(mesh));
-        } else {
+        }
+        else {
             viewer.pushDrawableObject(vcl::makeDrawable(std::move(mesh)));
         }
     }

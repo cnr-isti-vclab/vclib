@@ -47,13 +47,19 @@ concept MeshViewerConcept = requires (
         { obj.removeDrawableObject(id) } -> std::same_as<bool>;
         { obj.clearDrawableObjects() } -> std::same_as<void>;
 
-        { obj.drawableObject(id) } -> std::same_as<std::shared_ptr<vcl::DrawableObject>>;
+        {
+            obj.drawableObject(id)
+        } -> std::same_as<std::shared_ptr<vcl::DrawableObject>>;
 
         { std::as_const(obj).selectedDrawableObject() } -> std::same_as<uint>;
 
-        { std::as_const(obj).drawableObject(id) } -> std::same_as<std::shared_ptr<const vcl::DrawableObject>>;
+        {
+            std::as_const(obj).drawableObject(id)
+        } -> std::same_as<std::shared_ptr<const vcl::DrawableObject>>;
         { std::as_const(obj).drawableObjectsCount() } -> std::same_as<uint>;
-        { std::as_const(obj).drawableObjects() } -> std::same_as<const vcl::DrawableObjectVector&>;
+        {
+            std::as_const(obj).drawableObjects()
+        } -> std::same_as<const vcl::DrawableObjectVector&>;
 
         { obj.refreshEditors() } -> std::same_as<void>;
 

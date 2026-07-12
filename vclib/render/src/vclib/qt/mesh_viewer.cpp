@@ -186,7 +186,8 @@ std::shared_ptr<vcl::DrawableObject> MeshViewer::drawableObject(uint i)
     return viewer().drawableObjectVector().at(i);
 }
 
-std::shared_ptr<const vcl::DrawableObject> MeshViewer::drawableObject(uint i) const
+std::shared_ptr<const vcl::DrawableObject> MeshViewer::drawableObject(
+    uint i) const
 {
     return viewer().drawableObjectVector().at(i);
 }
