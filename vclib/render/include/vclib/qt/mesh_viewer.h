@@ -136,8 +136,8 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     bool insertDrawableObject(uint pos, ObjType&& obj)
     {
-        bool success = viewer().insertDrawableObject(
-            pos, std::forward<ObjType>(obj));
+        bool success =
+            viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
         if (success)
             updateGUI();
         return success;
