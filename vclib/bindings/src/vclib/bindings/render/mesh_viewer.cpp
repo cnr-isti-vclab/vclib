@@ -21,7 +21,7 @@ void initMeshViewer(pybind11::module& m)
     c.def(py::init<>());
 
     auto bindMeshFunctions = []<MeshConcept MeshType>(
-                                 pybind11::class_<qt::MeshViewer>& c,
+                                 auto& c,
                                  MeshType = MeshType()) {
         c.def(
             "push_drawable_object",

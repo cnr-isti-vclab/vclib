@@ -21,7 +21,10 @@ void initDrawableMesh(pybind11::module& m)
 {
     std::string typeName = "Drawable" + vcl::meshTypeName<MeshType>();
 
-    pybind11::class_<vcl::DrawableMesh<MeshType>, MeshType> c(
+    pybind11::class_<vcl::DrawableMesh<MeshType>,
+                     MeshType,
+                     vcl::DrawableObject,
+                     std::shared_ptr<vcl::DrawableMesh<MeshType>>> c(
         m, typeName.c_str());
 }
 

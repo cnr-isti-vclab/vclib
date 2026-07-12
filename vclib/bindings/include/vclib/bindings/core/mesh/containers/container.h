@@ -16,9 +16,8 @@ namespace vcl::bind {
 
 namespace detail {
 
-template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
-void addOptionalComponentFunctions(
-    pybind11::class_<MeshType>& c,
+template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType, typename... Options>
+void addOptionalComponentFunctions(pybind11::class_<MeshType, Options...>& c,
     const std::string&          name,
     const std::string&          compName)
 {
@@ -45,9 +44,8 @@ void addOptionalComponentFunctions(
 
 } // namespace detail
 
-template<ElementConcept Element, MeshConcept MeshType>
-void initContainer(
-    pybind11::class_<MeshType>& c,
+template<ElementConcept Element, MeshConcept MeshType, typename... Options>
+void initContainer(pybind11::class_<MeshType, Options...>& c,
     const std::string&          name,
     std::string                 namePlural = "")
 {

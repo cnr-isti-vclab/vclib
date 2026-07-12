@@ -6,6 +6,7 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bindings/render/application.h>
+#include <vclib/bindings/render/drawable/drawable_object.h>
 #include <vclib/bindings/render/drawable/mesh.h>
 #include <vclib/bindings/render/mesh_viewer.h>
 
@@ -22,6 +23,7 @@ PYBIND11_MODULE(render, m)
     using namespace vcl::bind;
 
     initApplication(m);
+    initDrawableObject(m);
     initDrawableMeshes(m);
     initMeshViewer(m);
 }
