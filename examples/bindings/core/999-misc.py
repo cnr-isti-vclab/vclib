@@ -8,14 +8,12 @@
 # This example assumes that vclib is installed and available in the PYTHONPATH.
 
 import vclib as vcl
-import os
 import numpy as np
+import os
+import sys
 
-current_file_path = os.path.abspath(__file__)
-current_file_path = os.path.dirname(current_file_path)
-
-VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../../assets/example_meshes"
-VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../../assets/results/python"
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 
 if __name__ == "__main__":
     print("=== VCLib Example 999: Miscellaneous ===\n")
