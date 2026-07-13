@@ -6,6 +6,9 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bindings/render/drawable/abstract_mesh.h>
+
+#include <vclib/bindings/render/drawable/mesh/mesh_render_info.h>
+
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
 
@@ -14,6 +17,8 @@ namespace vcl::bind {
 void initAbstractDrawableMesh(pybind11::module& m)
 {
     namespace py = pybind11;
+
+    initMeshRenderInfo(m);
 
     py::class_<vcl::AbstractDrawableMesh,
                vcl::DrawableObject,
