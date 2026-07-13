@@ -28,11 +28,15 @@ if __name__ == "__main__":
 
     m = vcl.load_tri_mesh('/home/alessandro/devel/3DMeshes/3DMeshes/abstract_sculpture.obj')
 
-    vcl.update_per_vertex_and_face_normals(m)
-
     viewer = vcl.MeshViewer()
 
     viewer.push_drawable_object(vcl.make_drawable(m))
+
+    dm = viewer.drawable_object(0)
+
+    vcl.update_per_vertex_and_face_normals(dm)
+
+    dm.update_buffers()
 
     print(f"Number of drawable objects: {len(viewer)}")
     for obj in viewer:

@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bindings/render/drawable/drawable_object.h>
+#include <vclib/bindings/render/drawable/object.h>
 
 #include <vclib/render/drawable/drawable_object.h>
 
