@@ -32,6 +32,7 @@ concept MeshViewerConcept = requires (
     T&&                                obj,
     vcl::DrawableMesh<vcl::PolyMesh>&  obj1,
     vcl::DrawableMesh<vcl::PolyMesh>&& obj2,
+    std::shared_ptr<vcl::DrawableObject> obj3,
     uint                               id) {
     typename RemoveRef<T>::ViewerType;
     typename RemoveRef<T>::EditorType;
@@ -40,9 +41,11 @@ concept MeshViewerConcept = requires (
     requires IsConst<T> || requires {
         { obj.pushDrawableObject(obj1) } -> std::same_as<uint>;
         { obj.pushDrawableObject(std::move(obj2)) } -> std::same_as<uint>;
+        { obj.pushDrawableObject(obj3) } -> std::same_as<uint>;
 
         { obj.insertDrawableObject(0, obj1) } -> std::same_as<bool>;
         { obj.insertDrawableObject(0, std::move(obj2)) } -> std::same_as<bool>;
+        { obj.insertDrawableObject(0, obj3) } -> std::same_as<bool>;
 
         { obj.removeDrawableObject(id) } -> std::same_as<bool>;
         { obj.clearDrawableObjects() } -> std::same_as<void>;

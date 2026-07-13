@@ -114,6 +114,18 @@ public:
     }
 
     /**
+     * @brief Adds a shared_ptr to a drawable object to the end of the scene.
+     * @param[in] obj: The object to add.
+     * @return The ID assigned to the new object.
+     */
+    uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
+    {
+        uint id = viewer().pushDrawableObject(std::move(obj));
+        updateGUI();
+        return id;
+    }
+
+    /**
      * @brief Removes a drawable object from the scene by its ID.
      * @param[in] id: The ID of the object to remove.
      * @return True if the object was successfully removed, false otherwise.
@@ -138,6 +150,21 @@ public:
     {
         bool success =
             viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
+        if (success)
+            updateGUI();
+        return success;
+    }
+
+    /**
+     * @brief Inserts a shared_ptr to a drawable object at a specific position in the scene.
+     * @param[in] pos: The position to insert the object at.
+     * @param[in] obj: The object to insert.
+     * @return True if the insertion was successful, false otherwise.
+     */
+    bool insertDrawableObject(uint pos, std::shared_ptr<vcl::DrawableObject> obj)
+    {
+        bool success =
+            viewer().insertDrawableObject(pos, std::move(obj));
         if (success)
             updateGUI();
         return success;

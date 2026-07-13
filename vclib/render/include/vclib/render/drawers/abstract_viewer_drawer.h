@@ -161,6 +161,22 @@ public:
         return mDrawList->size() - 1;
     }
 
+    /**
+     * @brief Helper function to add a shared_ptr of DrawableObject to the scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
+     */
+    uint pushDrawableObject(std::shared_ptr<DrawableObject> obj)
+    {
+        mDrawList->pushBack(std::move(obj));
+        mDrawList->back()->init();
+        refreshEditors();
+        return mDrawList->size() - 1;
+    }
+
     bool removeDrawableObject(uint id)
     {
         if (id >= mDrawList->size())
@@ -194,6 +210,22 @@ public:
      * `refreshEditors()`.
      */
     bool insertDrawableObject(uint pos, DrawableObject&& obj)
+    {
+        if (pos > mDrawList->size())
+            return false;
+        mDrawList->insert(pos, std::move(obj));
+        mDrawList->at(pos)->init();
+        refreshEditors();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a shared_ptr of DrawableObject at a specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
+     */
+    bool insertDrawableObject(uint pos, std::shared_ptr<DrawableObject> obj)
     {
         if (pos > mDrawList->size())
             return false;
