@@ -44,10 +44,10 @@ protected:
     template<typename SettingsFrame>
     [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
     {
-        QWidgetAction* wa = new QWidgetAction(this);
+        QMenu* popupMenu = new QMenu(this);
+        QWidgetAction* wa = new QWidgetAction(popupMenu);
         SettingsFrame* sf = new SettingsFrame(sts);
         wa->setDefaultWidget(sf);
-        QMenu* popupMenu = new QMenu(this);
         popupMenu->addAction(wa);
         settingsButton()->setMenu(popupMenu);
         // Make the arrow centered trough a style sheet
