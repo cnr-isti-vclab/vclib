@@ -11,11 +11,7 @@ import vclib as vcl
 import os
 import sys
 
-current_file_path = os.path.abspath(__file__)
-current_file_path = os.path.dirname(current_file_path)
-
-VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
-VCLIB_PYTHON_RESULTS_PATH = current_file_path + "/../../assets/results/python"
+from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 
 # This example demonstrates how to compute the convex hull of a point set
 # using the incremental convex hull algorithm provided by VCLib.

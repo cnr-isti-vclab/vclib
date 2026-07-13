@@ -10,10 +10,7 @@ import os
 import math
 import numpy as np
 
-current_file_path = os.path.abspath(__file__)
-current_file_path = os.path.dirname(current_file_path)
-
-VCLIB_EXAMPLE_MESHES_PATH = current_file_path + "/../../assets/example_meshes"
+from paths import VCLIB_EXAMPLE_MESHES_PATH
 
 
 def mesh_statistics():
