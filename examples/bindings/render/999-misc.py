@@ -40,4 +40,9 @@ if __name__ == "__main__":
     viewer.fit_scene()
     viewer.show_maximized()
 
-    sys.exit(app.exec())
+    ret = app.exec()
+
+    # Explicitly delete viewer before QApplication to avoid annoying warning messages
+    del viewer
+
+    sys.exit(ret)
