@@ -31,7 +31,23 @@ if __name__ == "__main__":
 
     vcl.update_per_vertex_and_face_normals(dm)
 
+    settings = dm.render_settings
+
+    # Set points to visible and change their size
+    settings.set_points(vcl.MeshRenderInfo.Points.VISIBLE)
+    settings.set_point_width(5.0)
+
+    # Set wireframe to visible, change its size and color (magenta)
+    settings.set_wireframe(vcl.MeshRenderInfo.Wireframe.VISIBLE)
+    settings.set_wireframe_width(2)
+    settings.set_wireframe_user_color(1.0, 0.0, 1.0, 1.0)
+
+    dm.render_settings = settings
+
     dm.update_buffers()
+
+    # need to call this to update the render settings gui after modification   
+    viewer.update_gui()
 
     print(f"Number of drawable objects: {len(viewer)}")
     for obj in viewer:

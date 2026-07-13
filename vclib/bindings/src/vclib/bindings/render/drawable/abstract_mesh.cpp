@@ -13,6 +13,8 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
 
+#include <pybind11/stl.h>
+
 namespace vcl::bind {
 
 void initAbstractDrawableMesh(pybind11::module& m)
@@ -27,6 +29,12 @@ void initAbstractDrawableMesh(pybind11::module& m)
                std::shared_ptr<vcl::AbstractDrawableMesh>>
         c(m, "AbstractDrawableMesh");
 
+    c.def_property(
+        "render_settings",
+        &vcl::AbstractDrawableMesh::renderSettings,
+        &vcl::AbstractDrawableMesh::setRenderSettings,
+        "The render settings of the mesh.");
+
     c.def(
         "update_buffers",
         [](vcl::AbstractDrawableMesh& self) {
@@ -36,12 +44,16 @@ void initAbstractDrawableMesh(pybind11::module& m)
 
     c.def(
         "update_buffers",
-        [](vcl::AbstractDrawableMesh& self/*, uint16_t buffersToUpdate*/) {
-            self.updateBuffers(
-                /*vcl::MeshRenderInfo::BuffersBitSet(buffersToUpdate)*/);
+        [](vcl::AbstractDrawableMesh& self,
+           const std::vector<vcl::MeshRenderInfo::Buffers>& buffers) {
+            vcl::MeshRenderInfo::BuffersBitSet bs;
+            for (auto b : buffers) {
+                bs.set(true, static_cast<uint>(b));
+            }
+            self.updateBuffers(bs);
         },
-        "Updates the mesh buffers."
-        /*py::arg("buffers_to_update")*/);
+        "Updates the specified mesh buffers.",
+        py::arg("buffers_to_update"));
 
     c.def("vertex_count", &vcl::AbstractDrawableMesh::vertexCount);
     c.def("face_count", &vcl::AbstractDrawableMesh::faceCount);
