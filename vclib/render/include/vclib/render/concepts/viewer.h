@@ -46,6 +46,10 @@ concept ViewerConcept = requires (
             obj.pushDrawableObject(std::move(drawableObj))
         } -> std::same_as<uint>;
 
+        {
+            obj.pushDrawableObject(std::shared_ptr<vcl::DrawableObject>())
+        } -> std::same_as<uint>;
+
         { obj.refreshEditors() } -> std::same_as<void>;
 
         { obj.fitScene() } -> std::same_as<void>;
