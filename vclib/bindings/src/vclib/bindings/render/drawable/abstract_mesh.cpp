@@ -8,6 +8,7 @@
 #include <vclib/bindings/render/drawable/abstract_mesh.h>
 
 #include <vclib/bindings/render/drawable/mesh/mesh_render_info.h>
+#include <vclib/bindings/render/drawable/mesh/mesh_render_settings.h>
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/mesh/mesh_render_info.h>
@@ -19,6 +20,7 @@ void initAbstractDrawableMesh(pybind11::module& m)
     namespace py = pybind11;
 
     initMeshRenderInfo(m);
+    initMeshRenderSettings(m);
 
     py::class_<vcl::AbstractDrawableMesh,
                vcl::DrawableObject,
