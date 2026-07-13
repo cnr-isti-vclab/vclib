@@ -1007,7 +1007,12 @@ private:
         if (size == 0)
             return sizes;
 
-        uint dim = uint(std::ceil(std::cbrt(size)));
+        // cut the size considering the compute thread counts
+        size = static_cast<uint>(
+            std::ceil(double(size) / VCL_COMPUTE_THREAD_COUNT_X));
+        // At the moment we assume Y and Z compute thread count == 1
+
+        const uint dim = uint(std::ceil(std::cbrt(double(size))));
 
         sizes[0] = std::min(dim, MAX_COMPUTE_WORKGROUP_SIZE);
 
@@ -1028,7 +1033,7 @@ private:
             return;
         }
         mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(mNumVerts);
-        mVertexSelectionAtomicWorkgroupSize =
+        mVertexSelectionAtomicWorkgroupSize = 
             workGroupSizesFrom1DSize(mSelectedVerticesBufferSize);
     }
 

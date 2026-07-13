@@ -42,13 +42,13 @@ uint texVec4ToUint(vec4 pixel) {
 // Polygon-level selection: if a visible pixel belongs to triangle T, select or
 // deselect all triangles of T's polygon based on u_selectionAction (0 = ADD,
 // 1 = SUBTRACT).
-NUM_THREADS(1, 1, 1)
+NUM_THREADS(VCL_COMPUTE_THREAD_COUNT_X, VCL_COMPUTE_THREAD_COUNT_Y, VCL_COMPUTE_THREAD_COUNT_Z)
 void main() {
     // NOTE: u_meshID == UINT_MAX is reserved to indicate that no data is available
     if(u_meshID == uint(0xFFFFFFFF)) {
         return;
     }
-    uint tex1DCoord = getPrimitiveID(gl_WorkGroupID);
+    uint tex1DCoord = linearIndex(gl_GlobalInvocationID);
     uvec2 imSz = imageSize(s_primIds).xy;
     ivec2 tex2DCoord = ivec2(int(tex1DCoord % imSz.x), int(tex1DCoord / imSz.x));
 

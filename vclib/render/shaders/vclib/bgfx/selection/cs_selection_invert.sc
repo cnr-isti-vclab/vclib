@@ -24,12 +24,13 @@
 
 BUFFER_RW(primitive_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
-NUM_THREADS(1, 1, 1) // 1 'thread' per uint in the buffer,
-// each thread will set 32 vertices as not selected
+NUM_THREADS(VCL_COMPUTE_THREAD_COUNT_X, VCL_COMPUTE_THREAD_COUNT_Y, VCL_COMPUTE_THREAD_COUNT_Z)
+// 1 'thread' per uint in the buffer,
+// each thread will invert 32 primitives selection state
 void main()
 {
-    uint bufferIndex = getPrimitiveID(gl_WorkGroupID);
-    // u_primitiveCount here is the size of the primitive_selected buffer
+    uint bufferIndex = linearIndex(gl_GlobalInvocationID);
+    // u_primitiveCount here is the number of uints in the buffer
     if(bufferIndex >= u_primitiveCount) { 
         return;
     }

@@ -22,7 +22,6 @@
 
 #include "selection_common.sh"
 
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/bgfx/selection/uniforms.sh>
 
 /*
@@ -43,11 +42,14 @@ BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of
 // Polygon-level ADD selection:
 // If any triangle of a polygon intersects the selection box, all triangles of
 // that polygon are marked as selected.
-NUM_THREADS(1, 1, 1) // 1 thread per triangle
+NUM_THREADS(VCL_COMPUTE_THREAD_COUNT_X, VCL_COMPUTE_THREAD_COUNT_Y, VCL_COMPUTE_THREAD_COUNT_Z)
+// 1 thread per triangle
+
 void main()
 {
-    uint faceIndex = getPrimitiveID(gl_WorkGroupID);
-    if(faceIndex >= u_primitiveCount) {
+    uint faceIndex = linearIndex(gl_GlobalInvocationID);
+
+        if(faceIndex >= u_primitiveCount) {
         return;
     }
 
