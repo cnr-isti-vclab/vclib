@@ -30,9 +30,9 @@ if __name__ == "__main__":
 
     viewer = vcl.MeshViewer()
 
-    viewer.push_drawable_object(vcl.make_drawable(m))
+    dm = vcl.make_drawable(m)
 
-    dm = viewer.drawable_object(0)
+    viewer.push_drawable_object(dm)
 
     vcl.update_per_vertex_and_face_normals(dm)
 

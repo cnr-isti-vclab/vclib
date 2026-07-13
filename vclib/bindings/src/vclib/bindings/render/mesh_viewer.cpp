@@ -25,16 +25,16 @@ void initMeshViewer(pybind11::module& m)
                                  MeshType = MeshType()) {
         c.def(
             "push_drawable_object",
-            [](qt::MeshViewer& self, const DrawableMesh<MeshType>& mesh) {
-                return self.pushDrawableObject(mesh);
+            [](qt::MeshViewer& self, std::shared_ptr<DrawableMesh<MeshType>> mesh) {
+                return self.pushDrawableObject(std::move(mesh));
             },
             py::arg("obj"));
         c.def(
             "insert_drawable_object",
-            [](qt::MeshViewer&               self,
-               uint                          pos,
-               const DrawableMesh<MeshType>& mesh) {
-                return self.insertDrawableObject(pos, mesh);
+            [](qt::MeshViewer& self,
+               uint            pos,
+               std::shared_ptr<DrawableMesh<MeshType>> mesh) {
+                return self.insertDrawableObject(pos, std::move(mesh));
             },
             py::arg("pos"),
             py::arg("obj"));
