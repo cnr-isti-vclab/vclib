@@ -700,7 +700,8 @@ private:
 
         // color
         const uint CS_COUNT =
-            toUnderlying(COUNT) - 5; // exclude shading options
+            toUnderlying(COLOR_USER) - toUnderlying(COLOR_VERTEX) + 1;
+             // exclude shading and selection options
 
         ImGui::Text("Color:");
         ImGui::SameLine();
