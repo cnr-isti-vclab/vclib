@@ -44,9 +44,9 @@ protected:
     template<typename SettingsFrame>
     [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
     {
-        QMenu* popupMenu = new QMenu(this);
-        QWidgetAction* wa = new QWidgetAction(popupMenu);
-        SettingsFrame* sf = new SettingsFrame(sts);
+        QMenu*         popupMenu = new QMenu(this);
+        QWidgetAction* wa        = new QWidgetAction(popupMenu);
+        SettingsFrame* sf        = new SettingsFrame(sts);
         wa->setDefaultWidget(sf);
         popupMenu->addAction(wa);
         settingsButton()->setMenu(popupMenu);

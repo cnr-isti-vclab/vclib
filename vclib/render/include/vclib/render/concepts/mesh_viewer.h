@@ -29,11 +29,11 @@ namespace vcl {
  */
 template<typename T>
 concept MeshViewerConcept = requires (
-    T&&                                obj,
-    vcl::DrawableMesh<vcl::PolyMesh>&  obj1,
-    vcl::DrawableMesh<vcl::PolyMesh>&& obj2,
+    T&&                                  obj,
+    vcl::DrawableMesh<vcl::PolyMesh>&    obj1,
+    vcl::DrawableMesh<vcl::PolyMesh>&&   obj2,
     std::shared_ptr<vcl::DrawableObject> obj3,
-    uint                               id) {
+    uint                                 id) {
     typename RemoveRef<T>::ViewerType;
     typename RemoveRef<T>::EditorType;
 

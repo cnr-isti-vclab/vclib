@@ -156,15 +156,17 @@ public:
     }
 
     /**
-     * @brief Inserts a shared_ptr to a drawable object at a specific position in the scene.
+     * @brief Inserts a shared_ptr to a drawable object at a specific position
+     * in the scene.
      * @param[in] pos: The position to insert the object at.
      * @param[in] obj: The object to insert.
      * @return True if the insertion was successful, false otherwise.
      */
-    bool insertDrawableObject(uint pos, std::shared_ptr<vcl::DrawableObject> obj)
+    bool insertDrawableObject(
+        uint                                 pos,
+        std::shared_ptr<vcl::DrawableObject> obj)
     {
-        bool success =
-            viewer().insertDrawableObject(pos, std::move(obj));
+        bool success = viewer().insertDrawableObject(pos, std::move(obj));
         if (success)
             updateGUI();
         return success;

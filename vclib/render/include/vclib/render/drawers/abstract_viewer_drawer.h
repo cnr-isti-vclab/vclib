@@ -162,7 +162,8 @@ public:
     }
 
     /**
-     * @brief Helper function to add a shared_ptr of DrawableObject to the scene.
+     * @brief Helper function to add a shared_ptr of DrawableObject to the
+     * scene.
      *
      * In addition to pushing the object to the underlying vector, this helper
      * safely calls `init()` on the newly added object (required to initialize
@@ -220,7 +221,8 @@ public:
     }
 
     /**
-     * @brief Helper function to insert a shared_ptr of DrawableObject at a specific position.
+     * @brief Helper function to insert a shared_ptr of DrawableObject at a
+     * specific position.
      *
      * Safely calls `init()` on the newly added object and calls
      * `refreshEditors()`.

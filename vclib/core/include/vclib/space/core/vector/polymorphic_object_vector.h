@@ -256,8 +256,8 @@ public:
      * @param[in] i: The position of the element.
      * @param[in] e: The new value of the element.
      */
-    template <typename U>
-        requires std::derived_from<std::remove_cvref_t<U>, T>
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T>
     void set(uint i, U&& e)
     {
         assert(i < Base::size());
@@ -273,8 +273,8 @@ public:
      * @param[in] it: The iterator pointing to the position of the element.
      * @param[in] e: The new value of the element.
      */
-    template <typename U>
-        requires std::derived_from<std::remove_cvref_t<U>, T>
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T>
     void set(Base::ConstIterator it, U&& e)
     {
         assert(it < Base::end());
@@ -380,8 +380,8 @@ public:
      *
      * @param[in] v: The value to add to the end of the Vector.
      */
-    template <typename U>
-        requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
     void pushBack(U&& v)
     {
         Base::pushBack(std::forward<U>(v).clone());
@@ -403,8 +403,8 @@ public:
      * @param[in] i: The index at which to insert the element.
      * @param[in] v: The value to insert into the Vector.
      */
-    template <typename U>
-        requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
     void insert(uint i, U&& v)
     {
         assert(i < Base::size() + 1);

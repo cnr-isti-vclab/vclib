@@ -30,12 +30,20 @@ set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES "")
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES "")
 
-option(VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES "Allow install 3rdparty libraries source" ON)
+option(
+    VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES
+    "Allow install 3rdparty libraries source"
+    ON
+)
 
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
-option(VCLIB_ALLOW_INSTALL_EIGEN "Allow install Eigen source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+option(
+    VCLIB_ALLOW_INSTALL_EIGEN
+    "Allow install Eigen source"
+    ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+)
 include(eigen.cmake)
 
 # MapBox earcut
@@ -53,13 +61,21 @@ include(mapbox.cmake)
 
 # poolSTL (not required if C++17 parallel algorithms are available) and TBB
 option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
-option(VCLIB_ALLOW_INSTALL_POOLSTL "Allow install poolSTL source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+option(
+    VCLIB_ALLOW_INSTALL_POOLSTL
+    "Allow install poolSTL source"
+    ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+)
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 include(poolstl_tbb.cmake)
 
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS "Allow use of bundled ZipViews source" ON)
-option(VCLIB_ALLOW_INSTALL_ZIP_VIEWS "Allow install ZipViews source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+option(
+    VCLIB_ALLOW_INSTALL_ZIP_VIEWS
+    "Allow install ZipViews source"
+    ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+)
 include(zip-views.cmake)
 
 # === OPTIONAL === #
@@ -80,7 +96,11 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
         (brings stb and nlohmann-json)"
         ON
     )
-    option(VCLIB_ALLOW_INSTALL_TINYGTLF "Allow install tinygltf source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_TINYGTLF
+        "Allow install tinygltf source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(tinygltf.cmake)
 endif()
 
@@ -88,13 +108,21 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
     # boost
     option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
     option(VCLIB_ALLOW_DOWNLOAD_BOOST "Allow use of downloaded Boost source" ON)
-    option(VCLIB_ALLOW_INSTALL_BOOST "Allow install Boost source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_BOOST
+        "Allow install Boost source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(boost.cmake)
 
     # CGAL
     option(VCLIB_ALLOW_DOWNLOAD_CGAL "Allow use of downloaded CGAL source" ON)
     option(VCLIB_ALLOW_SYSTEM_CGAL "Allow use of system-provided CGAL" ON)
-    option(VCLIB_ALLOW_INSTALL_CGAL "Allow install CGAL source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_CGAL
+        "Allow install CGAL source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
 
     include(cgal.cmake)
 
@@ -114,7 +142,11 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
         "Allow use of downloaded libigl source"
         ON
     )
-    option(VCLIB_ALLOW_INSTALL_LIBIGL "Allow install libigl source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_LIBIGL
+        "Allow install libigl source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(libigl.cmake)
 
     # PoissonRecon
@@ -133,7 +165,11 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
-    option(VCLIB_ALLOW_INSTALL_VCG "Allow install VCG source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_VCG
+        "Allow install VCG source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(vcg.cmake)
 endif()
 
@@ -155,7 +191,11 @@ if(VCLIB_BUILD_MODULE_RENDER)
             "Allow use of downloaded BGFX source"
             ON
         )
-        option(VCLIB_ALLOW_INSTALL_BGFX "Allow install bgfx source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+        option(
+            VCLIB_ALLOW_INSTALL_BGFX
+            "Allow install bgfx source"
+            ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+        )
         include(bgfx.cmake)
     endif()
 
@@ -167,12 +207,20 @@ if(VCLIB_BUILD_MODULE_RENDER)
     ### GLFW
     option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
     option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
-    option(VCLIB_ALLOW_INSTALL_GLFW "Allow install GLFW source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_GLFW
+        "Allow install GLFW source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(glfw.cmake)
 
     ### ImGui
     option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
-    option(VCLIB_ALLOW_INSTALL_IMGUI "Allow install ImGui source" ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES})
+    option(
+        VCLIB_ALLOW_INSTALL_IMGUI
+        "Allow install ImGui source"
+        ${VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES}
+    )
     include(imgui.cmake)
 endif()
 
