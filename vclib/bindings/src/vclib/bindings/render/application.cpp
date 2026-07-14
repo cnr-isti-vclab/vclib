@@ -16,6 +16,9 @@
 
 namespace vcl::bind {
 
+// ApplicationWrapper is needed to manage the lifetime of argc, args_str, and argv.
+// QApplication (used under the hood by vcl::Application) expects argc to be passed 
+// by reference and both argc and argv must remain valid for the entire application duration.
 struct ApplicationWrapper {
     int argc;
     std::vector<std::string> args_str;
@@ -29,6 +32,9 @@ struct ApplicationWrapper {
         for (auto& s : args_str) {
             argv.push_back(s.data());
         }
+        // Qt sometimes expects argv to be null-terminated at the end.
+        argv.push_back(nullptr);
+        
         app = std::make_unique<vcl::Application>(argc, argv.data());
     }
 
@@ -37,6 +43,9 @@ struct ApplicationWrapper {
         argc = 1;
         args_str.push_back("vclib_app");
         argv.push_back(args_str[0].data());
+        // Qt sometimes expects argv to be null-terminated at the end.
+        argv.push_back(nullptr);
+
         app = std::make_unique<vcl::Application>(argc, argv.data());
     }
 

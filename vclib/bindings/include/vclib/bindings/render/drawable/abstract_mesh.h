@@ -12,6 +12,10 @@
 
 namespace vcl::bind {
 
+/**
+ * @brief Initializes the AbstractDrawableMesh Python bindings.
+ * @param[in,out] m: The pybind11 module where the bindings will be registered.
+ */
 void initAbstractDrawableMesh(pybind11::module& m);
 
 } // namespace vcl::bind
