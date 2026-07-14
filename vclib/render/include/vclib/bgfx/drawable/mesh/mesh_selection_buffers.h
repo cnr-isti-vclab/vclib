@@ -576,8 +576,9 @@ public:
 
     // called on draw
     template<MeshConcept MeshType>
-    void selectionReadback(MeshType& m, const TriPolyIndexBiMap& indexMap)
+    bool selectionReadback(MeshType& m, const TriPolyIndexBiMap& indexMap)
     {
+        bool readbackCompletedThisFrame = false;
         switch (mBufToTexRemainingFrames) {
         case 0: {
             auto vec = getSelectionBufferCopy();
@@ -590,6 +591,7 @@ public:
 
             // Update CPU-side selection flags from GPU readback
             updateCPUSelectionFromGPU(m, indexMap);
+            readbackCompletedThisFrame = true;
 
             // TODO: right now, only one additional readback can be queued. If
             // multiple selection actions are performed in a single frame.
@@ -609,6 +611,12 @@ public:
         case UINT_NULL: break;
         default: mBufToTexRemainingFrames--;
         }
+        return readbackCompletedThisFrame;
+    }
+
+    bool isSelectionReadbackPending() const
+    {
+        return mBufToTexRemainingFrames != UINT_NULL || mHasPendingReadback;
     }
 
     /**

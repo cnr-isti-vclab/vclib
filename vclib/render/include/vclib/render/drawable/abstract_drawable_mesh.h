@@ -15,6 +15,8 @@
 
 #include <vclib/space/core/matrix.h>
 
+#include <functional>
+
 namespace vcl {
 
 /**
@@ -32,6 +34,8 @@ protected:
     MeshRenderSettings mMRS;
 
     Box3d mBoundingBox;
+
+    std::function<void()> mOnSelectionUpdated;
 
 public:
     using MatIt = std::vector<Material>::const_iterator;
@@ -73,6 +77,13 @@ public:
     virtual uint selectedFaceCount() const { return 0; }
 
     virtual void computeSelection(const SelectionParameters& params) {}
+
+    void setOnSelectionUpdatedCallback(std::function<void()> cb)
+    {
+        mOnSelectionUpdated = std::move(cb);
+    }
+
+    virtual bool isSelectionReadbackPending() const { return false; }
 
     // DrawableObject implementation
 

@@ -59,11 +59,6 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool                       mSelectionCalcRequired = false;
     bool                       mSelectionInProgress   = false;
 
-    // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
-    uint mPendingReadbackFrames = 0;
-
-    std::function<void()> mOnSelectionChanged;
-
 public:
     SelectionEditorBGFX()
     {
@@ -162,11 +157,6 @@ public:
         mScreenSpaceBox.setColor(color);
     }
 
-    void setOnSelectionChangedCallback(std::function<void()> cb)
-    {
-        mOnSelectionChanged = std::move(cb);
-    }
-
     void draw(uint viewId) override
     {
         if (!isSelectionActive()) {
@@ -210,22 +200,19 @@ public:
         // 2) Compute GPU selections with current parameters, if pending
         if (mSelectionCalcRequired) {
             computeSelections(viewId);
-
-            // Trigger continuous updates for GPU-to-CPU selection readback
-            // (Qt widgets only redraw on interaction, but readback needs 2
-            // frames)
-            mPendingReadbackFrames = 2;
+            // Trigger continuous updates to initiate GPU-to-CPU selection readback
+            Base::viewerUpdate();
 
             // Computation request done — reset flag
             mSelectionCalcRequired = false;
         }
 
-        // Request continuous updates until GPU-to-CPU readback completes
-        if (mPendingReadbackFrames > 0) {
-            mPendingReadbackFrames--;
-            Base::viewerUpdate();
-            if (mPendingReadbackFrames == 0 && mOnSelectionChanged) {
-                mOnSelectionChanged();
+        // Request continuous updates until GPU-to-CPU readback completes for all meshes
+        for (const auto& obj : *Base::drawList()) {
+            auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
+            if (mesh && mesh->isSelectionReadbackPending()) {
+                Base::viewerUpdate();
+                break;
             }
         }
     }
@@ -307,9 +294,6 @@ public:
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
-            if (mPendingReadbackFrames == 0 && mOnSelectionChanged) {
-                mOnSelectionChanged();
-            }
         }
         return isSelectionActive();
     }

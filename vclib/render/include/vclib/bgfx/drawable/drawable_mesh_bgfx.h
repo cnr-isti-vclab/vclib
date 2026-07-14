@@ -90,6 +90,11 @@ public:
         mMRB.computeSelection(params, modelMatrix().template cast<float>());
     }
 
+    bool isSelectionReadbackPending() const override
+    {
+        return mMRB.isSelectionReadbackPending();
+    }
+
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -297,7 +302,11 @@ public:
             }
         }
 
-        mMRB.selectionReadback(*this);
+        if (mMRB.selectionReadback(*this)) {
+            if (mOnSelectionUpdated) {
+                mOnSelectionUpdated();
+            }
+        }
     }
 
     void drawId(const DrawObjectSettings& settings) override

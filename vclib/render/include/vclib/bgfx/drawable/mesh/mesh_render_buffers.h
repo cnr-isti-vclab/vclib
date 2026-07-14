@@ -160,9 +160,14 @@ public:
 
     // called on draw
     template<MeshConcept MeshType>
-    void selectionReadback(MeshType& m)
+    bool selectionReadback(MeshType& m)
     {
-        mSelection.selectionReadback(m, Base::triPolyIndexMap());
+        return mSelection.selectionReadback(m, Base::triPolyIndexMap());
+    }
+
+    bool isSelectionReadbackPending() const
+    {
+        return mSelection.isSelectionReadbackPending();
     }
 
     void bindSelectedVerticesBuffer() const
