@@ -25,6 +25,7 @@
 
 #include "mesh_render_buffers_macros.h"
 
+#include <vclib/bgfx/buffers/boolean_buffer.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/selection_uniforms.h>
@@ -65,37 +66,21 @@ namespace vcl {
  */
 class MeshSelectionBuffers
 {
-    // vertex selection
-    IndexBuffer          mSelectedVerticesBuffer;
-    std::vector<uint8_t> mVertexSelectionBackup;
-
-    // Workgroup size xyz for selection dispatches.
-    uint                mNumVerts                     = 0;
+    BooleanBuffer       mVertexSelection;
     uint                mNumSelectedVertices          = 0;
     std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
-    // Atomic workgroup sizes, instead, are computed on the number of uints in
-    // the buffer, which is the number of vertices divided by 32 (bits per uint)
-    // i.e. the selection buffer size, rounded up.
-    uint                mSelectedVerticesBufferSize         = 0;
     std::array<uint, 3> mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // face selection (invalid if mesh has no faces)
-    IndexBuffer          mSelectedFacesBuffer;
-    std::vector<uint8_t> mFaceSelectionBackup;
-
-    uint                mNumTris                          = 0;
+    BooleanBuffer       mFaceSelection;
     uint                mNumSelectedFaces                 = 0;
     std::array<uint, 3> mFaceSelectionWorkgroupSize       = {0, 0, 0};
-    uint                mSelectedFacesBufferSize          = 0;
     std::array<uint, 3> mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // Polygon-to-triangle mapping buffers for polygon-level face selection
     IndexBuffer mTriToPolyBuffer;
     IndexBuffer mPolyToTriBeginBuffer;
     IndexBuffer mPolyToTriCountBuffer;
-
-    // Handler used to copy selection buffers to CPU
-    detail::ReadFromGPUBuffer mSelectionToCPUBufferHandler;
 
     uint mBufToTexRemainingFrames = UINT_NULL; // NULL means no frames remaining
     SelectionMode mLastReadbackMode;
@@ -112,27 +97,22 @@ public:
     void swap(MeshSelectionBuffers& other)
     {
         using std::swap;
-        swap(mSelectedVerticesBuffer, other.mSelectedVerticesBuffer);
-        swap(mVertexSelectionBackup, other.mVertexSelectionBackup);
+        swap(mVertexSelection, other.mVertexSelection);
+        swap(mNumSelectedVertices, other.mNumSelectedVertices);
         swap(
             mVertexSelectionWorkgroupSize, other.mVertexSelectionWorkgroupSize);
-        swap(mNumVerts, other.mNumVerts);
-        swap(mSelectedVerticesBufferSize, other.mSelectedVerticesBufferSize);
         swap(
             mVertexSelectionAtomicWorkgroupSize,
             other.mVertexSelectionAtomicWorkgroupSize);
-        swap(mSelectedFacesBuffer, other.mSelectedFacesBuffer);
-        swap(mFaceSelectionBackup, other.mFaceSelectionBackup);
+        swap(mFaceSelection, other.mFaceSelection);
+        swap(mNumSelectedFaces, other.mNumSelectedFaces);
         swap(mFaceSelectionWorkgroupSize, other.mFaceSelectionWorkgroupSize);
-        swap(mSelectedFacesBufferSize, other.mSelectedFacesBufferSize);
         swap(
             mFaceSelectionAtomicWorkgroupSize,
             other.mFaceSelectionAtomicWorkgroupSize);
-        swap(mNumTris, other.mNumTris);
         swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
         swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
         swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
-        swap(mSelectionToCPUBufferHandler, other.mSelectionToCPUBufferHandler);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
         swap(mLastReadbackMode, other.mLastReadbackMode);
         swap(mHasPendingReadback, other.mHasPendingReadback);
@@ -156,24 +136,7 @@ public:
      */
     void initVertexSelectionBitfield(uint numVerts)
     {
-        mNumVerts = numVerts;
-
-        mSelectedVerticesBufferSize = uint(std::ceil(double(numVerts) / 32.0));
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(
-                mSelectedVerticesBufferSize);
-
-        // clear the buffer with zeroes (no vertex selected)
-        std::fill(buffer, buffer + mSelectedVerticesBufferSize, 0);
-
-        mSelectedVerticesBuffer.create(
-            buffer,
-            mSelectedVerticesBufferSize,
-            vcl::PrimitiveType::UINT,
-            bgfx::Access::ReadWrite,
-            releaseFn);
-
+        mVertexSelection.init(numVerts);
         calculateVertexSelectionWorkgroupSize();
     }
 
@@ -188,30 +151,7 @@ public:
      */
     void initFaceSelectionBitfield(uint numTris)
     {
-        mNumTris = numTris;
-
-        if (numTris == 0) {
-            mSelectedFacesBuffer.destroy();
-            mFaceSelectionWorkgroupSize = {0, 0, 0};
-            return;
-        }
-
-        mSelectedFacesBufferSize = uint(std::ceil(double(numTris) / 32.0));
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(
-                mSelectedFacesBufferSize);
-
-        // clear the buffer with zeroes (no face selected)
-        std::fill(buffer, buffer + mSelectedFacesBufferSize, 0);
-
-        mSelectedFacesBuffer.create(
-            buffer,
-            mSelectedFacesBufferSize,
-            vcl::PrimitiveType::UINT,
-            bgfx::Access::ReadWrite,
-            releaseFn);
-
+        mFaceSelection.init(numTris);
         calculateFaceSelectionWorkgroupSize();
     }
 
@@ -290,12 +230,7 @@ public:
      *
      * @param[in] maxElements: max(numVerts, numTris).
      */
-    void initReadbackHandler(uint maxElements)
-    {
-        mSelectionToCPUBufferHandler = std::move(
-            detail::ReadFromGPUBuffer(
-                uint(std::ceil(double(maxElements) / 8.0))));
-    }
+    void initReadbackHandler(uint) {}
 
     // --- Set calls
 
@@ -307,7 +242,7 @@ public:
             return;
 
         // Compute number of bits rounded to 32 needed to store vertex selection
-        // We use mMRB.numVerts() which includes duplicated vertices
+        // We use mesh.vertexCount() which includes duplicated vertices
         uint                 bitNumber = vcl::roundUp(numVerts, 32);
         std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
 
@@ -331,8 +266,7 @@ public:
         if (vidx % 8 != 0)
             vertexBackup[byteIdx] = flags.underlying();
 
-        mVertexSelectionBackup = vertexBackup;
-        setSelectionBufferFromCPUBuffer(vertexBackup, mSelectedVerticesBuffer);
+        mVertexSelection.setFromCPUBuffer(vertexBackup);
     }
 
     template<MeshConcept MeshType>
@@ -374,8 +308,7 @@ public:
         if (tIdx % 8 != 0)
             faceBackup[byteIdx] = flags.underlying();
 
-        mFaceSelectionBackup = faceBackup;
-        setSelectionBufferFromCPUBuffer(faceBackup, mSelectedFacesBuffer);
+        mFaceSelection.setFromCPUBuffer(faceBackup);
     }
 
     // ---- Selection operations -------------------------------------------
@@ -443,8 +376,7 @@ public:
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setSelectionBufferFromCPUBuffer(
-                mVertexSelectionBackup, mSelectedVerticesBuffer);
+            mVertexSelection.setFromCPUBuffer(mVertexSelection.cpuBackup());
         }
         if (params.mode.isAtomicAction())
             return vertexSelectionAtomic(params);
@@ -477,8 +409,7 @@ public:
         if (params.isTemporary &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setSelectionBufferFromCPUBuffer(
-                mFaceSelectionBackup, mSelectedFacesBuffer);
+            mFaceSelection.setFromCPUBuffer(mFaceSelection.cpuBackup());
         }
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
@@ -509,8 +440,7 @@ public:
         if (params.isTemporary && params.mode.visible &&
             (params.mode.action == SelectionAction::ADD ||
              params.mode.action == SelectionAction::SUBTRACT)) {
-            setSelectionBufferFromCPUBuffer(
-                mFaceSelectionBackup, mSelectedFacesBuffer);
+            mFaceSelection.setFromCPUBuffer(mFaceSelection.cpuBackup());
         }
 
         if (params.mode.primitive == SelectionPrimitive::FACE &&
@@ -558,7 +488,7 @@ public:
             0,
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA8);
-        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(6, bgfx::Access::ReadWrite);
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
         mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
@@ -581,12 +511,11 @@ public:
         bool readbackCompletedThisFrame = false;
         switch (mBufToTexRemainingFrames) {
         case 0: {
-            auto vec = getSelectionBufferCopy();
             if (mLastReadbackMode.isVertexSelection()) {
-                mVertexSelectionBackup = std::move(vec);
+                mVertexSelection.getResultsCopy();
             }
             else if (mLastReadbackMode.isFaceSelection()) {
-                mFaceSelectionBackup = std::move(vec);
+                mFaceSelection.getResultsCopy();
             }
 
             // Update CPU-side selection flags from GPU readback
@@ -637,15 +566,15 @@ public:
     {
         // Update vertex selection
         if (mLastReadbackMode.isVertexSelection() &&
-            !mVertexSelectionBackup.empty()) {
+            !mVertexSelection.cpuBackup().empty()) {
             mNumSelectedVertices            = 0;
             uint                       vidx = 0;
             vcl::BitSet<uint8_t, true> flags;
             for (auto& v : m.vertices()) {
                 uint byteIdx = vidx / 8;
-                if (byteIdx < mVertexSelectionBackup.size()) {
+                if (byteIdx < mVertexSelection.cpuBackup().size()) {
                     if (vidx % 8 == 0)
-                        flags.setUnderlying(mVertexSelectionBackup[byteIdx]);
+                        flags.setUnderlying(mVertexSelection.cpuBackup()[byteIdx]);
                     v.selected() = flags[vidx % 8];
                     if (v.selected())
                         ++mNumSelectedVertices;
@@ -657,7 +586,7 @@ public:
         // Update face selection
         if constexpr (HasFaces<MeshType>) {
             if (mLastReadbackMode.isFaceSelection() &&
-                !mFaceSelectionBackup.empty()) {
+                !mFaceSelection.cpuBackup().empty()) {
                 mNumSelectedFaces = 0;
                 // First, clear all face selections
                 for (auto& f : m.faces()) {
@@ -672,8 +601,8 @@ public:
                     const uint faceIdx     = f.index();
                     const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
                     uint       byteIdx     = firstTriIdx / 8;
-                    if (byteIdx < mFaceSelectionBackup.size()) {
-                        flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
+                    if (byteIdx < mFaceSelection.cpuBackup().size()) {
+                        flags.setUnderlying(mFaceSelection.cpuBackup()[byteIdx]);
                         f.selected() = flags[firstTriIdx % 8];
                         if (f.selected())
                             ++mNumSelectedFaces;
@@ -692,28 +621,16 @@ public:
      */
     uint requestCPUCopyOfSelectionBuffer(const SelectionMode& mode)
     {
-        constexpr uint elementBitSize = 1;
-        uint           elementCount;
-        IndexBuffer*   idxBuf;
-
         if (mode.isFaceSelection()) {
-            idxBuf       = &(mSelectedFacesBuffer);
-            elementCount = mNumTris;
+            mFaceSelection.requestCPUCopy();
         }
         else {
-            idxBuf       = &mSelectedVerticesBuffer;
-            elementCount = mNumVerts;
+            mVertexSelection.requestCPUCopy();
         }
-
-        mSelectionToCPUBufferHandler.submit(
-            *idxBuf, elementCount, elementBitSize, nullptr);
         return 2;
     }
 
-    std::vector<uint8_t> getSelectionBufferCopy() const
-    {
-        return std::move(mSelectionToCPUBufferHandler.getResultsCopy());
-    }
+
 
     // ---- State queries --------------------------------------------------
 
@@ -723,19 +640,19 @@ public:
 
     bool hasVertexSelectionBuffer() const
     {
-        return mSelectedVerticesBuffer.isValid();
+        return mVertexSelection.isValid();
     }
 
     bool hasFaceSelectionBuffer() const
     {
-        return mSelectedFacesBuffer.isValid();
+        return mFaceSelection.isValid();
     }
 
     // ---- Bind -----------------------------------------------------------
 
-    void bindSelectedVerticesBuffer() const { mSelectedVerticesBuffer.bind(4); }
+    void bindSelectedVerticesBuffer() const { mVertexSelection.bind(4); }
 
-    void bindSelectedFacesBuffer() const { mSelectedFacesBuffer.bind(6); }
+    void bindSelectedFacesBuffer() const { mFaceSelection.bind(6); }
 
 private:
     /**
@@ -795,9 +712,9 @@ private:
         SelectionUniforms::setSelectionBox(params.box);
         SelectionUniforms::setSelectionWorkgroupSize(
             mVertexSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumVerts);
+        SelectionUniforms::setNumPrimitivesForSelection(mVertexSelection.size());
         SelectionUniforms::bind();
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        mVertexSelection.bind(4, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         bgfx::setTransform(model.data());
@@ -817,9 +734,9 @@ private:
         SelectionUniforms::setSelectionWorkgroupSize(
             mVertexSelectionAtomicWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(
-            mSelectedVerticesBufferSize);
+            mVertexSelection.bufferSize());
         SelectionUniforms::bind();
-        mSelectedVerticesBuffer.bind(4, bgfx::Access::ReadWrite);
+        mVertexSelection.bind(4, bgfx::Access::ReadWrite);
         dispatchAtomicSelection(
             params.drawViewId, prog, mVertexSelectionAtomicWorkgroupSize);
         return true;
@@ -859,9 +776,9 @@ private:
         SelectionUniforms::setSelectionBox(params.box);
         SelectionUniforms::setSelectionWorkgroupSize(
             mFaceSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mNumTris);
+        SelectionUniforms::setNumPrimitivesForSelection(mFaceSelection.size());
         SelectionUniforms::bind();
-        mSelectedFacesBuffer.bind(6, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(6, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);
@@ -885,9 +802,9 @@ private:
         SelectionUniforms::setSelectionWorkgroupSize(
             mFaceSelectionAtomicWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(
-            mSelectedFacesBufferSize);
+            mFaceSelection.bufferSize());
         SelectionUniforms::bind();
-        mSelectedFacesBuffer.bind(4, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(4, bgfx::Access::ReadWrite);
         dispatchAtomicSelection(
             params.drawViewId, prog, mFaceSelectionAtomicWorkgroupSize);
         return true;
@@ -932,46 +849,7 @@ private:
             mFaceSelectionWorkgroupSize[2]);
     }
 
-    static void setSelectionBufferFromCPUBuffer(
-        const std::vector<uint8_t>& backup,
-        IndexBuffer&                sBuffer)
-    {
-        if (backup.empty() || !sBuffer.isValid())
-            return;
 
-        const uint elementCount =
-            (uint(backup.size()) + uint(sizeof(uint32_t)) - 1u) /
-            uint(sizeof(uint32_t));
-        if (elementCount == 0)
-            return;
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint32_t>(elementCount);
-
-        // The backup bytes are big-endian (uintRGBAToVec4Color stores MSB
-        // in the R channel). Reconstruct each uint32 with proper byte order.
-        for (uint i = 0; i < elementCount; i++) {
-            const uint base = 4u * i;
-            uint32_t   val  = 0;
-            if (base + 0u < uint(backup.size()))
-                val |= uint32_t(backup[base + 0u]) << 24;
-            if (base + 1u < uint(backup.size()))
-                val |= uint32_t(backup[base + 1u]) << 16;
-            if (base + 2u < uint(backup.size()))
-                val |= uint32_t(backup[base + 2u]) << 8;
-            if (base + 3u < uint(backup.size()))
-                val |= uint32_t(backup[base + 3u]);
-            buffer[i] = val;
-        }
-
-        sBuffer.destroy();
-        sBuffer.create(
-            buffer,
-            elementCount,
-            vcl::PrimitiveType::UINT,
-            bgfx::Access::ReadWrite,
-            releaseFn);
-    }
 
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
         ProgramManager& pm,
@@ -1047,26 +925,26 @@ private:
 
     void calculateVertexSelectionWorkgroupSize()
     {
-        if (mNumVerts == 0) {
+        if (mVertexSelection.size() == 0) {
             mVertexSelectionWorkgroupSize       = {0, 0, 0};
             mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
-        mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(mNumVerts);
+        mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(mVertexSelection.size());
         mVertexSelectionAtomicWorkgroupSize = 
-            workGroupSizesFrom1DSize(mSelectedVerticesBufferSize);
+            workGroupSizesFrom1DSize(mVertexSelection.bufferSize());
     }
 
     void calculateFaceSelectionWorkgroupSize()
     {
-        if (mNumTris == 0) {
+        if (mFaceSelection.size() == 0) {
             mFaceSelectionWorkgroupSize       = {0, 0, 0};
             mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
-        mFaceSelectionWorkgroupSize = workGroupSizesFrom1DSize(mNumTris);
+        mFaceSelectionWorkgroupSize = workGroupSizesFrom1DSize(mFaceSelection.size());
         mFaceSelectionAtomicWorkgroupSize =
-            workGroupSizesFrom1DSize(mSelectedFacesBufferSize);
+            workGroupSizesFrom1DSize(mFaceSelection.bufferSize());
     }
 };
 

@@ -22,5 +22,5 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
-    v_selected = float(bitSetValueAt(vertex_selected, gl_VertexID));
+    v_selected = float(getBoolFromBuffer(vertex_selected, gl_VertexID));
 }

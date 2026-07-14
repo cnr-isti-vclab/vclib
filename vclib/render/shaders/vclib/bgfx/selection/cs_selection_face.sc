@@ -119,12 +119,10 @@ void main()
         uint count = poly_to_tri_count[polyIdx];
         uint _useless;
         for (uint t = firstTri; t < firstTri + count; t++) {
-            uint tBufIndex = t / 32;
-            uint tBitMask = 0x1 << (31 - (t % 32));
             if (u_selectionAction > 0.0) { // subtract
-                atomicFetchAndAnd(face_selected[tBufIndex], ~tBitMask, _useless);
+                atomicClearBoolInBuffer(face_selected, t);
             } else {
-                atomicFetchAndOr(face_selected[tBufIndex], tBitMask, _useless);
+                atomicSetBoolInBuffer(face_selected, t);
             }
         }
     }

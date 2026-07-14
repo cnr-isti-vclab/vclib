@@ -16,5 +16,6 @@
 #include "buffers/owned_or_ref_buffer.h"
 #include "buffers/texture_buffer.h"
 #include "buffers/vertex_buffer.h"
+#include "buffers/boolean_buffer.h"
 
 #endif // VCL_BGFX_BUFFERS_H

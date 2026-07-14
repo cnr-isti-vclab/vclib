@@ -32,5 +32,5 @@ void main()
     v_texcoord1 = quadUv;
 
     // vertex selection: 4 vertices per point, so point index = gl_VertexID / 4
-    v_selected = float(bitSetValueAt(vertex_selected, gl_VertexID / 4));
+    v_selected = float(getBoolFromBuffer(vertex_selected, gl_VertexID / 4));
 }

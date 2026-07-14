@@ -65,14 +65,11 @@ void main() {
     uint polyIdx = tri_to_poly[texPrimId];
     uint firstTri = poly_to_tri_begin[polyIdx];
     uint count = poly_to_tri_count[polyIdx];
-    uint _useless;
     for (uint t = firstTri; t < firstTri + count; t++) {
-        uint bufferIndex = t / 32;
-        uint bitMask = 0x1 << (31 - (t % 32));
         if (u_selectionAction > 0.0) { // subtract
-            atomicFetchAndAnd(face_selected[bufferIndex], ~bitMask, _useless);
+            atomicClearBoolInBuffer(face_selected, t);
         } else {
-            atomicFetchAndOr(face_selected[bufferIndex], bitMask, _useless);
+            atomicSetBoolInBuffer(face_selected, t);
         }
     }
 }

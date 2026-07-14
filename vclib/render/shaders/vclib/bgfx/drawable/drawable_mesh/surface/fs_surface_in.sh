@@ -114,7 +114,7 @@ void main()
     color = light * color + vec4(specular, 0);
 #ifdef SURFACE_SELECTION_ON
         float selWeight =
-            u_selectionSurfaceColor.a * float(bitSetValueAt(faceSelected, primitiveID));
+            u_selectionSurfaceColor.a * float(getBoolFromBuffer(faceSelected, primitiveID));
         vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
         gl_FragColor = vec4(tmp, color.a);
 #else

@@ -10,13 +10,11 @@
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
+#include <vclib/bgfx/buffers/boolean_buffer.sh>
 
 #define posToBitFlag(pos) (1u << pos)
 
-// given a buffer composed of uints, each bit represents a boolean, returns the
-// value of the bit at the given index (bits are ordered MSB first: bit 31 = index 0)
-#define bitSetValueAt(buffer, index) \
-    ( (((buffer)[(index) / 32u] & (0x1u << (31u - ((index) % 32u)))) != 0u) )
+
 
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
