@@ -19,7 +19,7 @@ runs:
         python -m pip install --upgrade pip setuptools wheel
         PY_VER_CLEAN=$(echo "${{ inputs.python-version }}" | tr -d '.')
         python -m pip install dist/*cp${PY_VER_CLEAN}*.whl
-        for f in examples/bindings/*.py; do
+        for f in examples/bindings/core/*.py; do
           printf "=== Running $f ===\n"
           python "$f"
           printf "\n"

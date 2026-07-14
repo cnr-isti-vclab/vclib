@@ -12,6 +12,7 @@ import os
 import sys
 import time
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 
 # This example demonstrates mesh curvature computation algorithms:

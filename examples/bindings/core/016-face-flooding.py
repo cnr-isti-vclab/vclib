@@ -11,6 +11,7 @@ import vclib as vcl
 import os
 import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 
 # This example demonstrates how to flood a mesh starting from a seed face

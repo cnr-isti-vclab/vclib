@@ -30,8 +30,8 @@ inline RandomConfig toRConfig(std::optional<uint> seed)
         return std::monostate();
 }
 
-template<typename Class>
-void defCopy(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defCopy(pybind11::class_<Class, Options...>& c)
 {
     using namespace pybind11::literals;
 
@@ -46,8 +46,8 @@ void defCopy(pybind11::class_<Class>& c)
         "memo"_a);
 }
 
-template<typename Class>
-void defRepr(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defRepr(pybind11::class_<Class, Options...>& c)
 {
     c.def("__repr__", [](const Class& self) {
         std::stringstream ss;
@@ -56,8 +56,8 @@ void defRepr(pybind11::class_<Class>& c)
     });
 }
 
-template<typename Class>
-void defComparisonOperators(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defComparisonOperators(pybind11::class_<Class, Options...>& c)
 {
     namespace py = pybind11;
 
@@ -69,8 +69,8 @@ void defComparisonOperators(pybind11::class_<Class>& c)
     c.def(py::self >= py::self);
 }
 
-template<typename Class>
-void defArithmeticOperators(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defArithmeticOperators(pybind11::class_<Class, Options...>& c)
 {
     namespace py = pybind11;
 
@@ -318,8 +318,8 @@ void defForAllMeshTypes(pybind11::module_& pymod, auto&& function)
  * @param pyclass
  * @param function
  */
-template<typename C>
-void defForAllMeshTypes(pybind11::class_<C>& pyclass, auto&& function)
+template<typename C, typename... Options>
+void defForAllMeshTypes(pybind11::class_<C, Options...>& pyclass, auto&& function)
 {
     using FType = decltype(function);
 
