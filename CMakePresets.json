@@ -330,7 +330,8 @@
             "cacheVariables": {
                 "VCLIB_INSTALL_MODULE_CORE": "OFF",
                 "VCLIB_INSTALL_MODULE_EXTERNAL": "OFF",
-                "VCLIB_INSTALL_MODULE_RENDER": "OFF"
+                "VCLIB_INSTALL_MODULE_RENDER": "OFF",
+                "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES": "OFF"
             }
         },
         {

@@ -10,6 +10,7 @@
 
 #include <vclib/base.h>
 #include <vclib/meshes.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/editors.h>
 
 #include <utility>
@@ -27,23 +28,41 @@ namespace vcl {
  * @tparam T: The type to be checked against the MeshViewerConcept.
  */
 template<typename T>
-concept MeshViewerConcept = requires (T&& obj, vcl::PolyMesh& mesh, uint id) {
+concept MeshViewerConcept = requires (
+    T&&                                  obj,
+    vcl::DrawableMesh<vcl::PolyMesh>&    obj1,
+    vcl::DrawableMesh<vcl::PolyMesh>&&   obj2,
+    std::shared_ptr<vcl::DrawableObject> obj3,
+    uint                                 id) {
     typename RemoveRef<T>::ViewerType;
     typename RemoveRef<T>::EditorType;
 
     // non const requirements
     requires IsConst<T> || requires {
-        { obj.pushMesh(mesh) } -> std::same_as<uint>;
-        { obj.pushMesh(std::move(mesh)) } -> std::same_as<uint>;
+        { obj.pushDrawableObject(obj1) } -> std::same_as<uint>;
+        { obj.pushDrawableObject(std::move(obj2)) } -> std::same_as<uint>;
+        { obj.pushDrawableObject(obj3) } -> std::same_as<uint>;
 
-        { obj.insertMesh(0, mesh) } -> std::same_as<bool>;
-        { obj.insertMesh(0, std::move(mesh)) } -> std::same_as<bool>;
+        { obj.insertDrawableObject(0, obj1) } -> std::same_as<bool>;
+        { obj.insertDrawableObject(0, std::move(obj2)) } -> std::same_as<bool>;
+        { obj.insertDrawableObject(0, obj3) } -> std::same_as<bool>;
 
-        { obj.removeMesh(id) } -> std::same_as<bool>;
-        { obj.updateMesh(id) } -> std::same_as<bool>;
-        { obj.clearMeshes() } -> std::same_as<void>;
+        { obj.removeDrawableObject(id) } -> std::same_as<bool>;
+        { obj.clearDrawableObjects() } -> std::same_as<void>;
 
-        { std::as_const(obj).selectedMesh() } -> std::same_as<uint>;
+        {
+            obj.drawableObject(id)
+        } -> std::same_as<std::shared_ptr<vcl::DrawableObject>>;
+
+        { std::as_const(obj).selectedDrawableObject() } -> std::same_as<uint>;
+
+        {
+            std::as_const(obj).drawableObject(id)
+        } -> std::same_as<std::shared_ptr<const vcl::DrawableObject>>;
+        { std::as_const(obj).drawableObjectsCount() } -> std::same_as<uint>;
+        {
+            std::as_const(obj).drawableObjects()
+        } -> std::same_as<const vcl::DrawableObjectVector&>;
 
         { obj.refreshEditors() } -> std::same_as<void>;
 

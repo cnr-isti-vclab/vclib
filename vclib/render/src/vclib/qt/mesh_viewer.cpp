@@ -181,12 +181,33 @@ void MeshViewer::setDrawableObjectVector(
     updateGUI();
 }
 
-uint MeshViewer::selectedMesh() const
+uint MeshViewer::selectedDrawableObject() const
 {
     return mUI->drawVectorTree->selectedDrawableObject();
 }
 
-bool MeshViewer::removeMesh(uint id)
+std::shared_ptr<vcl::DrawableObject> MeshViewer::drawableObject(uint i)
+{
+    return viewer().drawableObjectVector().at(i);
+}
+
+std::shared_ptr<const vcl::DrawableObject> MeshViewer::drawableObject(
+    uint i) const
+{
+    return viewer().drawableObjectVector().at(i);
+}
+
+uint MeshViewer::drawableObjectsCount() const
+{
+    return viewer().drawableObjectVector().size();
+}
+
+const vcl::DrawableObjectVector& MeshViewer::drawableObjects() const
+{
+    return viewer().drawableObjectVector();
+}
+
+bool MeshViewer::removeDrawableObject(uint id)
 {
     bool res = viewer().removeDrawableObject(id);
     if (res)
@@ -194,15 +215,7 @@ bool MeshViewer::removeMesh(uint id)
     return res;
 }
 
-bool MeshViewer::updateMesh(uint id)
-{
-    bool res = viewer().updateDrawableObject(id);
-    if (res)
-        updateGUI();
-    return res;
-}
-
-void MeshViewer::clearMeshes()
+void MeshViewer::clearDrawableObjects()
 {
     viewer().clearDrawableObjects();
     updateGUI();
