@@ -114,6 +114,13 @@ public:
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
+    uint selectedVertexCount() const
+    {
+        return mSelection.selectedVertexCount();
+    }
+
+    uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
+
     // to generate splats
     void computeQuadVertexBuffers(
         const MeshType&    mesh,

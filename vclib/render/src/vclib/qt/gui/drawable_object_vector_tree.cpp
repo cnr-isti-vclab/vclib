@@ -11,6 +11,8 @@
 
 #include "ui_drawable_object_vector_tree.h"
 
+#include <set>
+
 namespace vcl::qt {
 
 DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
@@ -83,6 +85,16 @@ void DrawableObjectVectorTree::update()
     }
 }
 
+void DrawableObjectVectorTree::updateSelectionCounters()
+{
+    for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+        auto item = dynamic_cast<DrawableObjectItem*>(mUI->treeWidget->topLevelItem(i));
+        if (item) {
+            item->updateMeshInfo();
+        }
+    }
+}
+
 bool DrawableObjectVectorTree::setSelectedItem(uint i)
 {
     if (i >= mDrawList->size()) {
@@ -111,8 +123,16 @@ void DrawableObjectVectorTree::setDrawableObjectVector(
 
 void DrawableObjectVectorTree::updateDrawableVectorTree()
 {
+    std::set<uint> expandedItems;
+    for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+        if (mUI->treeWidget->topLevelItem(i)->isExpanded()) {
+            expandedItems.insert(i);
+        }
+    }
+
     mUI->treeWidget->clear();
 
+    uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
             new DrawableObjectItem(d, mIconFunction, mUI->treeWidget);
@@ -121,6 +141,11 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
 
         // if d is visible, set the check state to checked
         item->setCheckState(0, d->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+        if (expandedItems.count(i) > 0) {
+            item->setExpanded(true);
+        }
+        ++i;
     }
 }
 

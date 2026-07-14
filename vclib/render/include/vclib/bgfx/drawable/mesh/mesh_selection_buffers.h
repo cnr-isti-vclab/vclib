@@ -71,6 +71,7 @@ class MeshSelectionBuffers
 
     // Workgroup size xyz for selection dispatches.
     uint                mNumVerts                     = 0;
+    uint                mNumSelectedVertices          = 0;
     std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
     // Atomic workgroup sizes, instead, are computed on the number of uints in
     // the buffer, which is the number of vertices divided by 32 (bits per uint)
@@ -83,6 +84,7 @@ class MeshSelectionBuffers
     std::vector<uint8_t> mFaceSelectionBackup;
 
     uint                mNumTris                          = 0;
+    uint                mNumSelectedFaces                 = 0;
     std::array<uint, 3> mFaceSelectionWorkgroupSize       = {0, 0, 0};
     uint                mSelectedFacesBufferSize          = 0;
     std::array<uint, 3> mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
@@ -628,6 +630,7 @@ public:
         // Update vertex selection
         if (mLastReadbackMode.isVertexSelection() &&
             !mVertexSelectionBackup.empty()) {
+            mNumSelectedVertices            = 0;
             uint                       vidx = 0;
             vcl::BitSet<uint8_t, true> flags;
             for (auto& v : m.vertices()) {
@@ -636,6 +639,8 @@ public:
                     if (vidx % 8 == 0)
                         flags.setUnderlying(mVertexSelectionBackup[byteIdx]);
                     v.selected() = flags[vidx % 8];
+                    if (v.selected())
+                        ++mNumSelectedVertices;
                 }
                 ++vidx;
             }
@@ -645,6 +650,7 @@ public:
         if constexpr (HasFaces<MeshType>) {
             if (mLastReadbackMode.isFaceSelection() &&
                 !mFaceSelectionBackup.empty()) {
+                mNumSelectedFaces = 0;
                 // First, clear all face selections
                 for (auto& f : m.faces()) {
                     f.selected() = false;
@@ -661,6 +667,8 @@ public:
                     if (byteIdx < mFaceSelectionBackup.size()) {
                         flags.setUnderlying(mFaceSelectionBackup[byteIdx]);
                         f.selected() = flags[firstTriIdx % 8];
+                        if (f.selected())
+                            ++mNumSelectedFaces;
                     }
                 }
             }
@@ -700,6 +708,10 @@ public:
     }
 
     // ---- State queries --------------------------------------------------
+
+    uint selectedVertexCount() const { return mNumSelectedVertices; }
+
+    uint selectedFaceCount() const { return mNumSelectedFaces; }
 
     bool hasVertexSelectionBuffer() const
     {

@@ -162,6 +162,13 @@ public:
         }
     }
 
+    uint selectedVertexCount() const override
+    {
+        return mMRB.selectedVertexCount();
+    }
+
+    uint selectedFaceCount() const override { return mMRB.selectedFaceCount(); }
+
     // DrawableObject implementation
 
     void init() override {}

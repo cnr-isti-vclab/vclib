@@ -111,6 +111,9 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->toolBar->addWidget(bboxEditor);
 
     mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
+    mSelectionEditor->setOnSelectionChangedCallback([this]() {
+        mUI->drawVectorTree->updateSelectionCounters();
+    });
     SelectionEditorFrame<ViewerType>* selectionEditor =
         new SelectionEditorFrame<ViewerType>(mSelectionEditor);
     mUI->toolBar->addWidget(selectionEditor);

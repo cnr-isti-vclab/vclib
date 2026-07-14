@@ -46,6 +46,7 @@ template<typename ViewerDrawer>
 class SelectionEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+    std::function<void()> mOnSelectionChanged;
 public:
     SelectionEditor()
     {
@@ -57,6 +58,11 @@ public:
     }
 
     void draw(uint) override {}
+
+    void setOnSelectionChangedCallback(std::function<void()> cb)
+    {
+        mOnSelectionChanged = std::move(cb);
+    }
 };
 #endif
 

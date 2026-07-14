@@ -68,7 +68,11 @@ public:
         return EMPTY_IMAGE;
     }
 
-    virtual void computeSelection(const SelectionParameters& params) {};
+    virtual uint selectedVertexCount() const { return 0; }
+
+    virtual uint selectedFaceCount() const { return 0; }
+
+    virtual void computeSelection(const SelectionParameters& params) {}
 
     // DrawableObject implementation
 

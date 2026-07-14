@@ -62,6 +62,8 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     // GPU-to-CPU readback tracking for Qt (requires continuous frame updates)
     uint mPendingReadbackFrames = 0;
 
+    std::function<void()> mOnSelectionChanged;
+
 public:
     SelectionEditorBGFX()
     {
@@ -160,6 +162,11 @@ public:
         mScreenSpaceBox.setColor(color);
     }
 
+    void setOnSelectionChangedCallback(std::function<void()> cb)
+    {
+        mOnSelectionChanged = std::move(cb);
+    }
+
     void draw(uint viewId) override
     {
         if (!isSelectionActive()) {
@@ -217,6 +224,9 @@ public:
         if (mPendingReadbackFrames > 0) {
             mPendingReadbackFrames--;
             Base::viewerUpdate();
+            if (mPendingReadbackFrames == 0 && mOnSelectionChanged) {
+                mOnSelectionChanged();
+            }
         }
     }
 
@@ -297,6 +307,9 @@ public:
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
+            if (mPendingReadbackFrames == 0 && mOnSelectionChanged) {
+                mOnSelectionChanged();
+            }
         }
         return isSelectionActive();
     }
