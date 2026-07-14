@@ -124,6 +124,10 @@ jobs:
           if [ "$RUNNER_OS" == "Windows" ] && [ "${{ matrix.module }}" == "external" ]; then
             if [ "${{ matrix.integration_mode }}" == "find_package" ]; then
               export PATH="${{ github.workspace }}/install-vclib/bin:$PATH"
+            elif [ "${{ matrix.integration_mode }}" == "FetchContent" ]; then
+              if [ -d "_deps" ]; then
+                export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
+              fi
             fi
           fi
           ctest --output-on-failure

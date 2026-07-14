@@ -59,4 +59,7 @@ jobs:
       shell: bash
       run: |
         cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
+        fi
         ctest --verbose
