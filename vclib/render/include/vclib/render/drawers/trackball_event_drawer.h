@@ -385,6 +385,10 @@ public:
         return false;
     }
 
+    // TODO: this should made protected!!
+    TrackBallType& trackball() { return mTrackball; }
+    const TrackBallType& trackball() const { return mTrackball; }
+
 protected:
     bool isDragging() const { return mTrackball.isDragging(); }
 

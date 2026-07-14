@@ -20,6 +20,11 @@ if(TARGET vclib-3rd-glfw)
     endif()
 endif()
 
+set(EXCLUDE_EXAMPLES
+    980-benchmark
+    983-split-shader-benchmarking
+    984-mesh-viewer-benchmarking)
+
 if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
     add_subdirectory(common)
 
@@ -58,7 +63,11 @@ if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
                 endforeach()
 
                 if(REQUIREMENTS_MET)
-                    add_subdirectory("${dir}")
+                    # if dir is not in EXCLUDE_EXAMPLES, add it
+                    list(FIND EXCLUDE_EXAMPLES ${dir} EXCLUDE_INDEX)
+                    if(EXCLUDE_INDEX EQUAL -1)
+                        add_subdirectory("${dir}")
+                    endif()
                 else()
                     message(
                         STATUS
