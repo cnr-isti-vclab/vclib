@@ -98,17 +98,17 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
         viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
     assert(mAxisEditor);
-    AxisEditorFrame<ViewerType>* axisEditor =
+    AxisEditorFrame<ViewerType>* axisEditorFrame =
         new AxisEditorFrame<ViewerType>(mAxisEditor);
-    mUI->toolBar->addWidget(axisEditor);
+    mUI->toolBar->addWidget(axisEditorFrame);
 
-    auto* trackballEditor = new TrackBallFrame(viewer());
-    mUI->toolBar->addWidget(trackballEditor);
+    auto* trackballFrame = new TrackBallFrame(viewer());
+    mUI->toolBar->addWidget(trackballFrame);
 
     mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
-    BoundingBoxEditorFrame<ViewerType>* bboxEditor =
+    BoundingBoxEditorFrame<ViewerType>* bboxEditorFrame =
         new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
-    mUI->toolBar->addWidget(bboxEditor);
+    mUI->toolBar->addWidget(bboxEditorFrame);
 
     disableFocus(mUI->toolBar);
 
