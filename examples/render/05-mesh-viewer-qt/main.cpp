@@ -16,15 +16,17 @@ int main(int argc, char** argv)
     vcl::qt::MeshViewer mv;
 
     // load and set up a drawable mesh
-    auto m = getDrawableMesh<vcl::TriMesh>();
+    auto mesh = getDrawableMesh<vcl::TriMesh>();
+
+    auto mesh_scaled = mesh;
 
     using enum vcl::MeshRenderInfo::Buffers;
 
     // to test the per-vertex and per-face color rendering, we set both of them
-    m.enablePerVertexColor();
-    m.enablePerFaceColor();
+    mesh.enablePerVertexColor();
+    mesh.enablePerFaceColor();
 
-    for (auto& f : m.faces()) {
+    for (auto& f : mesh.faces()) {
         f.vertex(0)->color() = vcl::Color::Red;
         f.vertex(1)->color() = vcl::Color::Green;
         f.vertex(2)->color() = vcl::Color::Blue;
@@ -35,17 +37,15 @@ int main(int argc, char** argv)
         else
             f.color() = vcl::Color::Blue;
     }
-    m.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
+    mesh.updateBuffers({VERT_COLORS, TRI_COLORS, WIREFRAME});
 
-    mv.pushDrawableObject(std::move(m));
+    mv.pushDrawableObject(std::move(mesh));
 
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
-
-    drawable.name() = "bimba_scaled";
+    mesh_scaled.name() = "bimba_scaled";
 
     // update the mesh to be displayed in the scene
-    const auto bb = vcl::boundingBox(drawable);
+    const auto bb = vcl::boundingBox(mesh_scaled);
 
     vcl::Matrix44d rot         = vcl::Matrix44d::Identity();
     vcl::Matrix44d scale       = vcl::Matrix44d::Identity();
@@ -58,10 +58,10 @@ int main(int argc, char** argv)
     vcl::setTransformMatrixTranslation(
         translation, vcl::Point3d(bb.size().x(), 0, 0));
 
-    drawable.transformMatrix() = translation * scale * rot;
+    mesh_scaled.transformMatrix() = translation * scale * rot;
 
-    drawable.updateBuffers({MESH_ADDITIONAL_DATA});
-    mv.pushDrawableObject(std::move(drawable));
+    mesh_scaled.updateBuffers({MESH_ADDITIONAL_DATA});
+    mv.pushDrawableObject(std::move(mesh_scaled));
 
     mv.fitScene();
     mv.show();
