@@ -7,12 +7,12 @@
 
 #include <vclib/qt/mesh_viewer.h>
 
+#include "ui_mesh_viewer.h"
+
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-
-#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
