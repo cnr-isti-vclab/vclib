@@ -732,6 +732,12 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
+    // This must be called after a swap to update the internal buffer references
+    // in Points. OwnedOrRefBuffer stores a pointer to the VertexBuffer object,
+    // so after swapping MeshRenderBuffers, the pointers in Points would still
+    // point to the other MeshRenderBuffers's members. We must unconditionally
+    // update them, even if they are invalid, to ensure they point to the correct
+    // memory addresses within this object.
     static void updatePointsVertexBuffers(
         const MeshRenderBuffers<MeshType>& mrb,
         Points&                             points)
