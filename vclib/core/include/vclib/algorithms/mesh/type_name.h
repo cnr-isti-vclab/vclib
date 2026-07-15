@@ -29,27 +29,34 @@ constexpr std::string meshTypeName()
         name = "PointCloud";
     }
     else {
-        if constexpr (vcl::HasTriangles<MeshType>)
-            name = "Tri";
-        else if constexpr (vcl::HasQuads<MeshType>)
-            name = "Quad";
-        else
-            name = "Poly";
+        if constexpr (HasFaces<MeshType>) {
+            if constexpr (vcl::HasTriangles<MeshType>)
+                name = "Tri";
+            else if constexpr (vcl::HasQuads<MeshType>)
+                name = "Quad";
+            else
+                name = "Poly";
+        }
 
         if constexpr (vcl::HasEdges<MeshType>)
             name += "Edge";
 
         name += "Mesh";
 
+        bool isIndexed = false;
         if constexpr (HasFaces<MeshType>) {
             if constexpr (MeshType::FaceType::INDEXED) {
-                name += "Indexed";
+                isIndexed = true;
             }
         }
         if constexpr (HasEdges<MeshType>) {
             if constexpr (MeshType::EdgeType::INDEXED) {
-                name += "Indexed";
+                isIndexed = true;
             }
+        }
+
+        if (isIndexed) {
+            name += "Indexed";
         }
     }
 

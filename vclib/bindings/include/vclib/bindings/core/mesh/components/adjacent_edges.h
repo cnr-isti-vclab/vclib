@@ -16,8 +16,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initAdjacentEdges(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initAdjacentEdges(pybind11::class_<ElementType, Options...>& c)
 {
     using EdgeType = ElementType::AdjacentEdgeType;
 

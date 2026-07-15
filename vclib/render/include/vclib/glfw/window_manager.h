@@ -189,15 +189,9 @@ public:
 
     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
 
-    void* winId() const
-    {
-        return detail::WindowManagerNative::winId(mWindow);
-    }
+    void* winId() const { return detail::WindowManagerNative::winId(mWindow); }
 
-    void* displayId() const
-    {
-        return detail::WindowManagerNative::displayId();
-    }
+    void* displayId() const { return detail::WindowManagerNative::displayId(); }
 
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(mWindow); }

@@ -16,39 +16,45 @@
 namespace vcl {
 
 /**
- * @brief Concept that verifies if a class provides the standard viewer interface.
+ * @brief Concept that verifies if a class provides the standard viewer
+ * interface.
  *
- * A type satisfies ViewerConcept if it provides the base types `ViewerType` and 
- * `EditorType`, exposes a `drawableObjectVector`, and provides methods to set 
- * the drawable object vector, push a drawable object, refresh editors, and 
+ * A type satisfies ViewerConcept if it provides the base types `ViewerType` and
+ * `EditorType`, exposes a `drawableObjectVector`, and provides methods to set
+ * the drawable object vector, push a drawable object, refresh editors, and
  * fit the scene.
  *
  * @tparam T: The type to be checked against the ViewerConcept.
  */
 template<typename T>
-concept ViewerConcept =
-    requires (
-        T&& obj,
-        std::shared_ptr<vcl::DrawableObjectVector> vec,
-        vcl::DrawableObject&& drawableObj) {
-        typename RemoveRef<T>::ViewerType;
-        typename RemoveRef<T>::EditorType;
+concept ViewerConcept = requires (
+    T&&                                        obj,
+    std::shared_ptr<vcl::DrawableObjectVector> vec,
+    vcl::DrawableObject&&                      drawableObj) {
+    typename RemoveRef<T>::ViewerType;
+    typename RemoveRef<T>::EditorType;
+
+    {
+        std::as_const(obj).drawableObjectVector()
+    } -> std::same_as<const vcl::DrawableObjectVector&>;
+
+    // non const requirements
+    requires IsConst<T> || requires {
+        { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
 
         {
-            std::as_const(obj).drawableObjectVector()
-        } -> std::same_as<const vcl::DrawableObjectVector&>;
+            obj.pushDrawableObject(std::move(drawableObj))
+        } -> std::same_as<uint>;
 
-        // non const requirements
-        requires IsConst<T> || requires {
-            { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
+        {
+            obj.pushDrawableObject(std::shared_ptr<vcl::DrawableObject>())
+        } -> std::same_as<uint>;
 
-            { obj.pushDrawableObject(std::move(drawableObj)) } -> std::same_as<uint>;
+        { obj.refreshEditors() } -> std::same_as<void>;
 
-            { obj.refreshEditors() } -> std::same_as<void>;
-
-            { obj.fitScene() } -> std::same_as<void>;
-        };
+        { obj.fitScene() } -> std::same_as<void>;
     };
+};
 
 } // namespace vcl
 

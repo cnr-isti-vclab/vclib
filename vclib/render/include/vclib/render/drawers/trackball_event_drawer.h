@@ -289,13 +289,6 @@ public:
 
     // events
 
-    void onInit(uint viewId) override
-    {
-        Base::onInit(viewId);
-        mDrawTrackBall.init();
-        mDrawableDirectionalLight.init();
-    }
-
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);

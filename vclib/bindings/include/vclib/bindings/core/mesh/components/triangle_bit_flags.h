@@ -12,8 +12,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initTriangleBitFlags(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initTriangleBitFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 

@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_GLFW_WINDOW_MANAGER_NATIVE_H
-#define VCL_GLFW_WINDOW_MANAGER_NATIVE_H
+#ifndef VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
+#define VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
 
 #include <GLFW/glfw3.h>
 
@@ -21,4 +21,4 @@ public:
 
 } // namespace vcl::glfw::detail
 
-#endif // VCL_GLFW_WINDOW_MANAGER_NATIVE_H
+#endif // VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H

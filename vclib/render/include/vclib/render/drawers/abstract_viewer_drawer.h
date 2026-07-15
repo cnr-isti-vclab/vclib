@@ -67,7 +67,7 @@ public:
     {
         // push built-in editors - the order of the editors in the vector is
         // important, as it is used to retrieve the editor by its enum value
-        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
+        auto axisEd = pushEditor<AxisEditor>();
         axisEd->setActive(true);
         assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
@@ -79,10 +79,7 @@ public:
         return *mDrawList;
     }
 
-    DrawableObjectVector& drawableObjectVector()
-    {
-        return *mDrawList;
-    }
+    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
@@ -129,10 +126,12 @@ public:
      *
      * In addition to pushing the object to the underlying vector, this helper
      * safely calls `init()` on the newly added object (required to initialize
-     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI components.
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
      *
-     * If you choose to manually manipulate the vector via `drawableObjectVector()`,
-     * you are responsible for calling `init()` on new elements and `refreshEditors()`.
+     * If you choose to manually manipulate the vector via
+     * `drawableObjectVector()`, you are responsible for calling `init()` on new
+     * elements and `refreshEditors()`.
      */
     uint pushDrawableObject(const DrawableObject& obj)
     {
@@ -147,10 +146,12 @@ public:
      *
      * In addition to pushing the object to the underlying vector, this helper
      * safely calls `init()` on the newly added object (required to initialize
-     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI components.
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
      *
-     * If you choose to manually manipulate the vector via `drawableObjectVector()`,
-     * you are responsible for calling `init()` on new elements and `refreshEditors()`.
+     * If you choose to manually manipulate the vector via
+     * `drawableObjectVector()`, you are responsible for calling `init()` on new
+     * elements and `refreshEditors()`.
      */
     uint pushDrawableObject(DrawableObject&& obj)
     {
@@ -160,19 +161,29 @@ public:
         return mDrawList->size() - 1;
     }
 
-    bool removeDrawableObject(uint id)
+    /**
+     * @brief Helper function to add a shared_ptr of DrawableObject to the
+     * scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
+     */
+    uint pushDrawableObject(std::shared_ptr<DrawableObject> obj)
     {
-        if (id >= mDrawList->size()) return false;
-        mDrawList->erase(id);
+        mDrawList->pushBack(std::move(obj));
+        mDrawList->back()->init();
         refreshEditors();
-        requestUpdate();
-        return true;
+        return mDrawList->size() - 1;
     }
 
-    bool updateDrawableObject(uint id)
+    bool removeDrawableObject(uint id)
     {
-        if (id >= mDrawList->size()) return false;
-        mDrawList->at(id)->init();
+        if (id >= mDrawList->size())
+            return false;
+        mDrawList->erase(id);
+        refreshEditors();
         requestUpdate();
         return true;
     }
@@ -180,11 +191,13 @@ public:
     /**
      * @brief Helper function to insert a DrawableObject at a specific position.
      *
-     * Safely calls `init()` on the newly added object and calls `refreshEditors()`.
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
      */
     bool insertDrawableObject(uint pos, const DrawableObject& obj)
     {
-        if (pos > mDrawList->size()) return false;
+        if (pos > mDrawList->size())
+            return false;
         mDrawList->insert(pos, obj);
         mDrawList->at(pos)->init();
         refreshEditors();
@@ -194,11 +207,30 @@ public:
     /**
      * @brief Helper function to insert a DrawableObject at a specific position.
      *
-     * Safely calls `init()` on the newly added object and calls `refreshEditors()`.
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
      */
     bool insertDrawableObject(uint pos, DrawableObject&& obj)
     {
-        if (pos > mDrawList->size()) return false;
+        if (pos > mDrawList->size())
+            return false;
+        mDrawList->insert(pos, std::move(obj));
+        mDrawList->at(pos)->init();
+        refreshEditors();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a shared_ptr of DrawableObject at a
+     * specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
+     */
+    bool insertDrawableObject(uint pos, std::shared_ptr<DrawableObject> obj)
+    {
+        if (pos > mDrawList->size())
+            return false;
         mDrawList->insert(pos, std::move(obj));
         mDrawList->at(pos)->init();
         refreshEditors();

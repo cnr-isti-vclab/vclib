@@ -14,8 +14,8 @@
 
 namespace vcl::bind {
 
-template<FaceMeshConcept MeshType>
-void initFaceContainer(pybind11::class_<MeshType>& ct)
+template<FaceMeshConcept MeshType, typename... Options>
+void initFaceContainer(pybind11::class_<MeshType, Options...>& ct)
 {
     namespace py = pybind11;
 

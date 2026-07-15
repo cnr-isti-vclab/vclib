@@ -16,8 +16,8 @@ namespace vcl::bind {
 
 namespace detail {
 
-template<ElementConcept ElementType>
-void initCommonFlags(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initCommonFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 
@@ -42,8 +42,8 @@ void initCommonFlags(pybind11::class_<ElementType>& c)
 
 } // namespace detail
 
-template<ElementConcept ElementType>
-void initBitFlags(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initBitFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 

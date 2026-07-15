@@ -27,6 +27,16 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="applyToAllCheckBox">
+     <property name="text">
+      <string>Apply to all meshes</string>
+     </property>
+     <property name="toolTip">
+      <string>Apply these settings to all meshes in the scene, respecting their capabilities.</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

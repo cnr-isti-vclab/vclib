@@ -31,15 +31,10 @@ using DrawableMesh = DrawableMeshOpenGL2<MeshType>;
 #endif
 
 template<MeshConcept MeshType>
-auto makeDrawable(const MeshType& m)
-{
-    return DrawableMesh<MeshType>(m);
-}
-
-template<MeshConcept MeshType>
 auto makeDrawable(MeshType&& m)
 {
-    return DrawableMesh<MeshType>(std::move(m));
+    using CleanMeshType = std::remove_cvref_t<MeshType>;
+    return DrawableMesh<CleanMeshType>(std::forward<MeshType>(m));
 }
 
 } // namespace vcl
