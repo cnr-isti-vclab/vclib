@@ -196,17 +196,18 @@ public:
     void setPanorama(const std::string& panorama);
 
 public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void meshRenderSettingsUpdated();
-
     void fitScene();
 
     void fitView();
 
     void updateGUI();
+
+private slots:
+    void visibilityDrawableObjectChanged();
+
+    void selectedDrawableObjectChanged(uint i);
+
+    void meshRenderSettingsUpdated();
 };
 
 } // namespace vcl::qt

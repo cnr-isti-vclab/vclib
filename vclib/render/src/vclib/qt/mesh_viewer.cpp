@@ -255,6 +255,42 @@ void MeshViewer::keyPressEvent(QKeyEvent* event)
     }
 }
 
+void MeshViewer::fitScene()
+{
+    mUI->viewer->fitScene();
+    mUI->viewer->update();
+}
+
+void MeshViewer::fitView()
+{
+    mUI->viewer->fitView();
+    mUI->viewer->update();
+}
+
+void MeshViewer::updateGUI()
+{
+    mUI->drawVectorTree->update();
+
+    uint selected = mUI->drawVectorTree->selectedDrawableObject();
+
+    if (selected != UINT_NULL) {
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+            mDrawableObjectVector->at(selected));
+        if (m) {
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings(), true);
+            mUI->meshRenderSettingsFrame->setEnabled(true);
+        }
+        else {
+            mUI->meshRenderSettingsFrame->setEnabled(false);
+        }
+    }
+    else {
+        mUI->meshRenderSettingsFrame->setEnabled(false);
+    }
+    mUI->viewer->update();
+}
+
 /**
  * @brief Slot called when the user changed the visibility of an object in the
  * DrawableObjectVectorTree
@@ -327,42 +363,6 @@ void MeshViewer::meshRenderSettingsUpdated()
             mUI->meshRenderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
-}
-
-void MeshViewer::fitScene()
-{
-    mUI->viewer->fitScene();
-    mUI->viewer->update();
-}
-
-void MeshViewer::fitView()
-{
-    mUI->viewer->fitView();
-    mUI->viewer->update();
-}
-
-void MeshViewer::updateGUI()
-{
-    mUI->drawVectorTree->update();
-
-    uint selected = mUI->drawVectorTree->selectedDrawableObject();
-
-    if (selected != UINT_NULL) {
-        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mDrawableObjectVector->at(selected));
-        if (m) {
-            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings(), true);
-            mUI->meshRenderSettingsFrame->setEnabled(true);
-        }
-        else {
-            mUI->meshRenderSettingsFrame->setEnabled(false);
-        }
-    }
-    else {
-        mUI->meshRenderSettingsFrame->setEnabled(false);
-    }
-    mUI->viewer->update();
 }
 
 } // namespace vcl::qt
