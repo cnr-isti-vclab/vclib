@@ -49,6 +49,9 @@ jobs:
         key: bindings-${{ matrix.os }}
         max-size: 1G
 
+    - name: Build and Install bgfx
+      uses: ./.github/actions/build-install-bgfx
+
     - name: Build Wheel 3.12
       uses: ./.github/actions/build-python-wheel
       with:
