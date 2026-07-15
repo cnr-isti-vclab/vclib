@@ -63,6 +63,7 @@ private:
 
     mutable bool                mIsUpdateProgramNeeded = true;
     mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
+    mutable bgfx::ProgramHandle mIdProgram             = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -347,9 +348,12 @@ public:
 
     void draw(bgfx::ViewId viewId) const;
 
+    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+
 private:
     void                checkAndUpdateProgram() const;
     bgfx::ProgramHandle pointsProgramSelector() const;
+    bgfx::ProgramHandle pointsIdProgramSelector() const;
 
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_NORMALS_STAGE   = 1;

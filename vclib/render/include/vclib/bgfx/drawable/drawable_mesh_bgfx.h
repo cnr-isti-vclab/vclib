@@ -287,7 +287,10 @@ public:
 
         // TODO: manage ID for edges
 
-        // TODO: manage ID for points
+        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawPointsId(settings.viewId, settings.objectId);
+        }
     }
 
     std::shared_ptr<DrawableObject> clone() const& override

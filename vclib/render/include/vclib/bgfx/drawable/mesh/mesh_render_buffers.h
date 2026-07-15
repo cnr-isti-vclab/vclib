@@ -184,6 +184,8 @@ public:
 
     void drawPoints(uint viewId) const { mPoints.draw(viewId); }
 
+    void drawPointsId(uint viewId, uint32_t id) const { mPoints.drawId(viewId, id); }
+
     /**
      * @brief Binds the textures associated to the material of the given
      * triangle chunk. Returns the number of bound textures.

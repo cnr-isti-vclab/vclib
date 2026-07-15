@@ -148,6 +148,46 @@ void Points::draw(bgfx::ViewId viewId) const
 }
 
 /**
+ * @brief Draws the point splats in ID mode on the specified view.
+ *
+ * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
+ * @param[in] id: The ID to render the points with.
+ */
+void Points::drawId(
+    bgfx::ViewId viewId,
+    uint32_t     id) const
+{
+    // Skip rendering if there are no vertices or the position buffer is invalid
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
+        return;
+    }
+
+    checkAndUpdateProgram();
+
+    // Upload rendering settings to the shader via uniform.
+    PointsUniforms::setWidth(mWidth);
+    PointsUniforms::setDepthOffset(mDepthOffset);
+    PointsUniforms::setId(id);
+
+    // Bind the position buffer as a compute buffer (SSBO) for vertex shader
+    // access. The point positions are read by the vertex pulling mechanism.
+    mVertexPositions.get().bindCompute(
+        POINTS_POSITIONS_STAGE, bgfx::Access::Read);
+
+    bgfx::setVertexCount(mVerPosCount * 6);
+
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
+
+    // Bind the updated uniforms to the shader stage.
+    PointsUniforms::bind();
+
+    bgfx::submit(viewId, mIdProgram);
+}
+
+/**
  * @brief Checks if the shader program needs to be updated and updates it.
  *
  * Validates that required buffers (normals, colors) are available based on
@@ -186,6 +226,7 @@ void Points::checkAndUpdateProgram() const
     }
 
     mProgram               = pointsProgramSelector();
+    mIdProgram             = pointsIdProgramSelector();
     mIsUpdateProgramNeeded = false;
 }
 
@@ -215,6 +256,27 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
 
     uint program = base + shading * N_COLOR_MODES * N_SHAPE_MODES +
                    color * N_SHAPE_MODES + shape;
+
+    ProgramManager& pm = Context::instance().programManager();
+    return pm.getProgram(VertFragProgram(program));
+}
+
+/**
+ * @brief Selects the correct bgfx shader program for ID picking based on current settings.
+ *
+ * @return The appropriate bgfx::ProgramHandle for the current configuration.
+ */
+bgfx::ProgramHandle Points::pointsIdProgramSelector() const
+{
+    using enum VertFragProgram;
+
+    uint shape = toUnderlying(mShape);
+
+    // the first shader of all the combinations
+    uint base =
+        toUnderlying(PRIMITIVE_POINTS_ID_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
+
+    uint program = base + shape;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));

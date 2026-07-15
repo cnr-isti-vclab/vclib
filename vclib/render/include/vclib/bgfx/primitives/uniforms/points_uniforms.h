@@ -62,6 +62,15 @@ public:
     }
 
     /**
+     * @brief Sets the object ID for points.
+     * @param id The object ID.
+     */
+    static void setId(uint32_t id)
+    {
+        sPointsSettings[3] = std::bit_cast<float>(id);
+    }
+
+    /**
      * @brief Binds the uniform to the current bgfx context.
      *
      * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
