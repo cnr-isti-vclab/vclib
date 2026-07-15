@@ -16,11 +16,11 @@ class FloatRangeSlider : public RangeSlider
 {
     Q_OBJECT
 
-    const float STEP = 0.01f;
+    float mStep = 0.01f;
 
 public:
     FloatRangeSlider(float step, QWidget* parent = nullptr) :
-            RangeSlider(parent), STEP(step)
+            RangeSlider(parent), mStep(step)
     {
         connect(
             dynamic_cast<RangeSlider*>(this),
@@ -39,42 +39,60 @@ public:
     {
     }
 
-    float step() const { return STEP; }
+    float step() const { return mStep; }
+    
+    void setStep(float step)
+    {
+        if (step <= 0.0f) return;
+        
+        float currMin = minimum();
+        float currMax = maximum();
+        float currLower = lowerValue();
+        float currUpper = upperValue();
+        
+        mStep = step;
+        
+        this->blockSignals(true);
+        setRange(currMin, currMax);
+        setLowerValue(currLower);
+        setUpperValue(currUpper);
+        this->blockSignals(false);
+    }
 
-    float minimum() const { return RangeSlider::minimum() * STEP; }
+    float minimum() const { return RangeSlider::minimum() * mStep; }
 
-    float maximum() const { return RangeSlider::maximum() * STEP; }
+    float maximum() const { return RangeSlider::maximum() * mStep; }
 
-    float lowerValue() const { return RangeSlider::lowerValue() * STEP; }
+    float lowerValue() const { return RangeSlider::lowerValue() * mStep; }
 
-    float upperValue() const { return RangeSlider::upperValue() * STEP; }
+    float upperValue() const { return RangeSlider::upperValue() * mStep; }
 
     void setMinimum(float min)
     {
-        RangeSlider::setMinimum(static_cast<int>(min / STEP));
+        RangeSlider::setMinimum(static_cast<int>(min / mStep));
     }
 
     void setMaximum(float max)
     {
-        RangeSlider::setMaximum(static_cast<int>(max / STEP));
+        RangeSlider::setMaximum(static_cast<int>(max / mStep));
     }
 
 public slots:
 
     void setLowerValue(float lowerValue)
     {
-        RangeSlider::setLowerValue(static_cast<int>(lowerValue / STEP));
+        RangeSlider::setLowerValue(static_cast<int>(lowerValue / mStep));
     }
 
     void setUpperValue(float upperValue)
     {
-        RangeSlider::setUpperValue(static_cast<int>(upperValue / STEP));
+        RangeSlider::setUpperValue(static_cast<int>(upperValue / mStep));
     }
 
     void setRange(float min, float max)
     {
         RangeSlider::setRange(
-            static_cast<int>(min / STEP), static_cast<int>(max / STEP));
+            static_cast<int>(min / mStep), static_cast<int>(max / mStep));
     }
 
 signals:
@@ -85,13 +103,13 @@ private slots:
 
     void notifyLowerValueChanged(int value)
     {
-        float floatValue = value * STEP;
+        float floatValue = value * mStep;
         emit lowerValueChanged(floatValue);
     }
 
     void notifyUpperValueChanged(int value)
     {
-        float floatValue = value * STEP;
+        float floatValue = value * mStep;
         emit upperValueChanged(floatValue);
     }
 };

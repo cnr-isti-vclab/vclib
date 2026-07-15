@@ -37,6 +37,10 @@ private:
     int             mUpperValue          = 100;
     bool            mFirstHandlePressed  = false;
     bool            mSecondHandlePressed = false;
+    bool            mRangePressed        = false;
+    int             mRangeDragStartPos   = 0;
+    int             mRangeDragStartLower = 0;
+    int             mRangeDragStartUpper = 0;
     int             mInterval            = 100;
     int             mDelta               = 0;
     Qt::Orientation mOrientation         = Qt::Horizontal;

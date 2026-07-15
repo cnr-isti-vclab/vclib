@@ -223,31 +223,10 @@ void RangeSlider::mousePressEvent(QMouseEvent* event)
                  !mType.testFlag(LeftHandle)) &&
                 ((posValue < secondHandleRectPosValue) ||
                  !mType.testFlag(RightHandle))) {
-                if (mType.testFlag(DoubleHandles))
-                    if (posValue -
-                            (firstHandleRectPosValue + HANDLE_SIDE_LENGTH) <
-                        (secondHandleRectPosValue -
-                         (firstHandleRectPosValue + HANDLE_SIDE_LENGTH)) /
-                            2)
-                        setLowerValue(
-                            (mLowerValue + step < mUpperValue) ?
-                                mLowerValue + step :
-                                mUpperValue);
-                    else
-                        setUpperValue(
-                            (mUpperValue - step > mLowerValue) ?
-                                mUpperValue - step :
-                                mLowerValue);
-                else if (mType.testFlag(LeftHandle))
-                    setLowerValue(
-                        (mLowerValue + step < mUpperValue) ?
-                            mLowerValue + step :
-                            mUpperValue);
-                else if (mType.testFlag(RightHandle))
-                    setUpperValue(
-                        (mUpperValue - step > mLowerValue) ?
-                            mUpperValue - step :
-                            mLowerValue);
+                mRangePressed = true;
+                mRangeDragStartPos = posValue;
+                mRangeDragStartLower = mLowerValue;
+                mRangeDragStartUpper = mUpperValue;
             }
             else if (posValue > secondHandleRectPosValue + HANDLE_SIDE_LENGTH)
                 setUpperValue(mUpperValue + step);
@@ -297,6 +276,26 @@ void RangeSlider::mouseMoveEvent(QMouseEvent* event)
                 setUpperValue(mLowerValue);
             }
         }
+        else if (mRangePressed) {
+            int deltaPos = posValue - mRangeDragStartPos;
+            int deltaValue = deltaPos * 1.0 / validLength() * mInterval;
+            
+            int newLower = mRangeDragStartLower + deltaValue;
+            int newUpper = mRangeDragStartUpper + deltaValue;
+            
+            // Clamp both to limits while preserving range width
+            if (newLower < mMinimum) {
+                newUpper += (mMinimum - newLower);
+                newLower = mMinimum;
+            }
+            if (newUpper > mMaximum) {
+                newLower -= (newUpper - mMaximum);
+                newUpper = mMaximum;
+            }
+            
+            setLowerValue(newLower);
+            setUpperValue(newUpper);
+        }
     }
 }
 
@@ -306,6 +305,7 @@ void RangeSlider::mouseReleaseEvent(QMouseEvent* event)
 
     mFirstHandlePressed  = false;
     mSecondHandlePressed = false;
+    mRangePressed        = false;
 }
 
 void RangeSlider::changeEvent(QEvent* event)
