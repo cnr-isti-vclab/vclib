@@ -122,12 +122,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
-    // renderSettingsUpdated() member function
+    // meshRenderSettingsUpdated() member function
     connect(
         mUI->meshRenderSettingsFrame,
         SIGNAL(settingsUpdated()),
         this,
-        SLOT(renderSettingsUpdated()));
+        SLOT(meshRenderSettingsUpdated()));
 
     // each time that the drawVectorTree changes the visibility of an object,
     // we update the current settings of the RenderSettingsFrame, and we update
@@ -151,29 +151,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
 MeshViewer::~MeshViewer()
 {
     delete mUI;
-}
-
-const DrawableObjectVector& MeshViewer::drawableObjectVector() const
-{
-    return *mDrawableObjectVector;
-}
-
-/**
- * @brief Sets the current DrawableObjectVector, and updates the GUI
- * accordingly.
- * @param v
- */
-void MeshViewer::setDrawableObjectVector(
-    const std::shared_ptr<DrawableObjectVector>& v)
-{
-    mDrawableObjectVector = v;
-
-    // order here is important: drawVectorTree must have the drawVector before
-    // the renderSettingsFrame!
-    mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
-
-    updateGUI();
 }
 
 uint MeshViewer::selectedDrawableObject() const
@@ -329,12 +306,12 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
 /**
  * @brief Slot called every time that the MeshRenderSettingsFrame emits
  * 'settingsUpdated()', that is when the user changes render settings of a
- * GeneriDrawableMesh.
+ * AbstractDrawableMesh.
  *
- * We need to get the selected GeneriDrawableMesh first, and then update the
+ * We need to get the selected AbstractDrawableMesh first, and then update the
  * settings to it.
  */
-void MeshViewer::renderSettingsUpdated()
+void MeshViewer::meshRenderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorTree->selectedDrawableObject();
@@ -386,16 +363,6 @@ void MeshViewer::updateGUI()
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
-}
-
-template<typename V>
-void setPBRModef(V* v, bool b)
-{
-    if constexpr (PBRViewerConcept<V>) {
-        auto s    = v->pbrSettings();
-        s.pbrMode = b;
-        return v->setPbrSettings(s);
-    }
 }
 
 } // namespace vcl::qt

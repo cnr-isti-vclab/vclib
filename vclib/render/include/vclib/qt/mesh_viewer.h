@@ -66,13 +66,6 @@ public:
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
-private:
-    const DrawableObjectVector& drawableObjectVector() const;
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-public:
     /**
      * @brief Returns the ID of the currently selected drawable object.
      */
@@ -207,7 +200,7 @@ public slots:
 
     void selectedDrawableObjectChanged(uint i);
 
-    void renderSettingsUpdated();
+    void meshRenderSettingsUpdated();
 
     void fitScene();
 
