@@ -292,10 +292,23 @@ void MeshViewer::updateGUI()
             if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
                 mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                     m->renderSettings(), true);
+                mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                    m->crossSectionSettings());
+            }
+            else {
+                vcl::Box3f globalBox;
+                for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+                    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                        mDrawableObjectVector->at(j));
+                    if (mesh) {
+                        globalBox.add(mesh->crossSectionSettings().boundingBox());
+                    }
+                }
+                auto css = mUI->meshRenderSettingsFrame->crossSectionSettings();
+                css.setBoundingBox(globalBox);
+                mUI->meshRenderSettingsFrame->setCrossSectionSettings(css);
             }
             mUI->meshRenderSettingsFrame->setEnabled(true);
-            mUI->meshRenderSettingsFrame->setCrossSectionSettings(
-                m->crossSectionSettings());
         }
         else {
             mUI->meshRenderSettingsFrame->setEnabled(false);
@@ -324,6 +337,8 @@ void MeshViewer::visibilityDrawableObjectChanged()
             if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
                 mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                     m->renderSettings());
+                mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                    m->crossSectionSettings());
             }
         }
         mUI->viewer->update();
@@ -348,6 +363,8 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
             mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings());
+            mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                m->crossSectionSettings());
         }
         mUI->meshRenderSettingsFrame->setEnabled(true);
     }
@@ -412,10 +429,21 @@ void MeshViewer::crossSectionSettingsUpdated()
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(i));
         if (m) { // just to be sure, but it should always be true
-            // get CrossSectionSettings from the CrossSectionSettingsFrame, and
-            // set it to the AbstractDrawableMesh
-            m->setCrossSectionSettings(
-                mUI->meshRenderSettingsFrame->crossSectionSettings());
+            bool applyToAll = mUI->meshRenderSettingsFrame->isApplyToAllEnabled();
+            const auto& newSettings = mUI->meshRenderSettingsFrame->crossSectionSettings();
+
+            if (applyToAll) {
+                for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+                    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                        mDrawableObjectVector->at(j));
+                    if (mesh) {
+                        mesh->setCrossSectionSettings(newSettings);
+                    }
+                }
+            }
+            else {
+                m->setCrossSectionSettings(newSettings);
+            }
             mUI->viewer->update();
         }
     }
@@ -424,6 +452,23 @@ void MeshViewer::crossSectionSettingsUpdated()
 void MeshViewer::applyToAllToggled(bool checked)
 {
     if (!checked) {
+        // Restore individual bounding boxes for all meshes
+        for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+            auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                mDrawableObjectVector->at(j));
+            if (mesh) {
+                auto css = mesh->crossSectionSettings();
+                auto bbox = mesh->boundingBox().cast<float>();
+                if (!bbox.isNull()) {
+                    float eps = bbox.diagonal() * 0.02f;
+                    bbox.min() -= eps;
+                    bbox.max() += eps;
+                }
+                css.setBoundingBox(bbox);
+                mesh->setCrossSectionSettings(css);
+            }
+        }
+
         uint i = mUI->drawVectorTree->selectedDrawableObject();
         if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
             auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
@@ -431,11 +476,26 @@ void MeshViewer::applyToAllToggled(bool checked)
             if (m) {
                 mUI->meshRenderSettingsFrame->setMeshRenderSettings(
                     m->renderSettings());
+                mUI->meshRenderSettingsFrame->setCrossSectionSettings(
+                    m->crossSectionSettings());
             }
         }
     }
     else {
+        vcl::Box3f globalBox;
+        for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+            auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                mDrawableObjectVector->at(j));
+            if (mesh) {
+                globalBox.add(mesh->crossSectionSettings().boundingBox());
+            }
+        }
+        auto css = mUI->meshRenderSettingsFrame->crossSectionSettings();
+        css.setBoundingBox(globalBox);
+        mUI->meshRenderSettingsFrame->setCrossSectionSettings(css);
+
         meshRenderSettingsUpdated();
+        crossSectionSettingsUpdated();
     }
 }
 

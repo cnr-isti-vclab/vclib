@@ -74,8 +74,14 @@ public:
     void setBoundingBox(const Box3f& bbox)
     {
         if (!bbox.isNull()) {
-            mLower = Point3f::min();
-            mUpper = Point3f::max();
+            for (int i = 0; i < 3; ++i) {
+                if (mLower[i] <= mBBox.min()[i]) {
+                    mLower[i] = bbox.min()[i];
+                }
+                if (mUpper[i] >= mBBox.max()[i]) {
+                    mUpper[i] = bbox.max()[i];
+                }
+            }
 
             mBBox = bbox;
 
