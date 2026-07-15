@@ -175,6 +175,9 @@ endfunction()
 # and prefixes. It generates a new fragment shader file for each possible combination of the
 # dimensions, and appends the new configuration entry to the `embedded_vf_combo_programs.config` registry.
 #
+# A single `.config` file can contain multiple configuration blocks separated by `ENUM_PREFIX` lines.
+# Each block will independently generate its permutations and append them to the registry.
+#
 # @param CONFIG_FILE The absolute path to the `.config` file to be parsed.
 function(vclib_generate_shaders_from_config CONFIG_FILE)
     if(NOT EXISTS "${CONFIG_FILE}")

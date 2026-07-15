@@ -277,6 +277,11 @@ public:
         }
     }
 
+    /**
+     * @brief Updates the points primitive settings based on the mesh render settings.
+     *
+     * @param[in] mrs: The mesh render settings to extract point settings from.
+     */
     void updatePointsSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Points;
@@ -734,12 +739,19 @@ private:
         // otherwise, already computed buffers should do the job
     }
 
-    // This must be called after a swap to update the internal buffer references
-    // in Points. OwnedOrRefBuffer stores a pointer to the VertexBuffer object,
-    // so after swapping MeshRenderBuffers, the pointers in Points would still
-    // point to the other MeshRenderBuffers's members. We must unconditionally
-    // update them, even if they are invalid, to ensure they point to the correct
-    // memory addresses within this object.
+    /**
+     * @brief Updates the internal buffer references in the given Points object.
+     *
+     * This must be called after a swap to update the internal buffer references
+     * in Points. OwnedOrRefBuffer stores a pointer to the VertexBuffer object,
+     * so after swapping MeshRenderBuffers, the pointers in Points would still
+     * point to the other MeshRenderBuffers's members. We must unconditionally
+     * update them, even if they are invalid, to ensure they point to the correct
+     * memory addresses within this object.
+     *
+     * @param[in] mrb: The mesh render buffers object to read vertices from.
+     * @param[in,out] points: The points primitive object to update.
+     */
     static void updatePointsVertexBuffers(
         const MeshRenderBuffers<MeshType>& mrb,
         Points&                             points)
