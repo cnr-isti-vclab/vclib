@@ -34,6 +34,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
 
