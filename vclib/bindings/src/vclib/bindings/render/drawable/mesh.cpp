@@ -21,11 +21,12 @@ void initDrawableMesh(pybind11::module& m)
 {
     std::string typeName = "Drawable" + vcl::meshTypeName<MeshType>();
 
-    pybind11::class_<vcl::DrawableMesh<MeshType>,
-                     MeshType,
-                     vcl::AbstractDrawableMesh,
-                     std::shared_ptr<vcl::DrawableMesh<MeshType>>> c(
-        m, typeName.c_str());
+    pybind11::class_<
+        vcl::DrawableMesh<MeshType>,
+        MeshType,
+        vcl::AbstractDrawableMesh,
+        std::shared_ptr<vcl::DrawableMesh<MeshType>>>
+        c(m, typeName.c_str());
 }
 
 void initDrawableMeshes(pybind11::module& m)
@@ -40,17 +41,16 @@ void initDrawableMeshes(pybind11::module& m)
     defForAllMeshTypes(m, defDM);
 
     // define make_drawable function
-    auto defMakeDrawable = []<MeshConcept MeshType>(
-                               pybind11::module_& m, MeshType = MeshType()) {
-        m.def(
-            "make_drawable",
-            [](const MeshType& mesh) {
-                return vcl::makeDrawable(mesh);
-            },
-            pybind11::arg("mesh"));
-    };
+    auto defMakeDrawable =
+        []<MeshConcept MeshType>(pybind11::module_& m, MeshType = MeshType()) {
+            m.def(
+                "make_drawable",
+                [](const MeshType& mesh) {
+                    return vcl::makeDrawable(mesh);
+                },
+                pybind11::arg("mesh"));
+        };
     defForAllMeshTypes(m, defMakeDrawable);
 }
 
 } // namespace vcl::bind
-

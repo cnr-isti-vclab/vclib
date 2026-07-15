@@ -17,9 +17,10 @@ namespace vcl::bind {
 namespace detail {
 
 template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType, typename... Options>
-void addOptionalComponentFunctions(pybind11::class_<MeshType, Options...>& c,
-    const std::string&          name,
-    const std::string&          compName)
+void addOptionalComponentFunctions(
+    pybind11::class_<MeshType, Options...>& c,
+    const std::string&                      name,
+    const std::string&                      compName)
 {
     if constexpr (mesh::HasPerElementOptionalComponent<
                       MeshType,
@@ -45,9 +46,10 @@ void addOptionalComponentFunctions(pybind11::class_<MeshType, Options...>& c,
 } // namespace detail
 
 template<ElementConcept Element, MeshConcept MeshType, typename... Options>
-void initContainer(pybind11::class_<MeshType, Options...>& c,
-    const std::string&          name,
-    std::string                 namePlural = "")
+void initContainer(
+    pybind11::class_<MeshType, Options...>& c,
+    const std::string&                      name,
+    std::string                             namePlural = "")
 {
     namespace py = pybind11;
 

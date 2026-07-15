@@ -19,11 +19,14 @@ void initDrawableObject(pybind11::module& m)
         m, "DrawableObject");
 
     c.def("is_visible", &vcl::DrawableObject::isVisible);
-    c.def("set_visibility", &vcl::DrawableObject::setVisibility, py::arg("vis"));
-    c.def_property("name",
+    c.def(
+        "set_visibility", &vcl::DrawableObject::setVisibility, py::arg("vis"));
+    c.def_property(
+        "name",
         py::overload_cast<>(&vcl::DrawableObject::name, py::const_),
         py::overload_cast<>(&vcl::DrawableObject::name));
-    c.def_property("info",
+    c.def_property(
+        "info",
         py::overload_cast<>(&vcl::DrawableObject::info, py::const_),
         py::overload_cast<>(&vcl::DrawableObject::info));
     c.def("init", &vcl::DrawableObject::init);

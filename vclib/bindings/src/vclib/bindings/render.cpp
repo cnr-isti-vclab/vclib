@@ -7,8 +7,8 @@
 
 #include <vclib/bindings/render/application.h>
 #include <vclib/bindings/render/drawable/abstract_mesh.h>
-#include <vclib/bindings/render/drawable/object.h>
 #include <vclib/bindings/render/drawable/mesh.h>
+#include <vclib/bindings/render/drawable/object.h>
 #include <vclib/bindings/render/mesh_viewer.h>
 
 #include <vclib/base.h>

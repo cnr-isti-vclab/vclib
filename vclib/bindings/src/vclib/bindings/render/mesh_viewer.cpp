@@ -20,25 +20,25 @@ void initMeshViewer(pybind11::module& m)
 
     c.def(py::init<>());
 
-    auto bindMeshFunctions = []<MeshConcept MeshType>(
-                                 auto& c,
-                                 MeshType = MeshType()) {
-        c.def(
-            "push_drawable_object",
-            [](qt::MeshViewer& self, std::shared_ptr<DrawableMesh<MeshType>> mesh) {
-                return self.pushDrawableObject(std::move(mesh));
-            },
-            py::arg("obj"));
-        c.def(
-            "insert_drawable_object",
-            [](qt::MeshViewer& self,
-               uint            pos,
-               std::shared_ptr<DrawableMesh<MeshType>> mesh) {
-                return self.insertDrawableObject(pos, std::move(mesh));
-            },
-            py::arg("pos"),
-            py::arg("obj"));
-    };
+    auto bindMeshFunctions =
+        []<MeshConcept MeshType>(auto& c, MeshType = MeshType()) {
+            c.def(
+                "push_drawable_object",
+                [](qt::MeshViewer&                         self,
+                   std::shared_ptr<DrawableMesh<MeshType>> mesh) {
+                    return self.pushDrawableObject(std::move(mesh));
+                },
+                py::arg("obj"));
+            c.def(
+                "insert_drawable_object",
+                [](qt::MeshViewer&                         self,
+                   uint                                    pos,
+                   std::shared_ptr<DrawableMesh<MeshType>> mesh) {
+                    return self.insertDrawableObject(pos, std::move(mesh));
+                },
+                py::arg("pos"),
+                py::arg("obj"));
+        };
     defForAllMeshTypes(c, bindMeshFunctions);
     c.def(
         "remove_drawable_object",

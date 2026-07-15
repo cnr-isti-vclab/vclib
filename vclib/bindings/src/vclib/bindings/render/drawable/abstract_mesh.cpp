@@ -24,9 +24,10 @@ void initAbstractDrawableMesh(pybind11::module& m)
     initMeshRenderInfo(m);
     initMeshRenderSettings(m);
 
-    py::class_<vcl::AbstractDrawableMesh,
-               vcl::DrawableObject,
-               std::shared_ptr<vcl::AbstractDrawableMesh>>
+    py::class_<
+        vcl::AbstractDrawableMesh,
+        vcl::DrawableObject,
+        std::shared_ptr<vcl::AbstractDrawableMesh>>
         c(m, "AbstractDrawableMesh");
 
     c.def_property(
@@ -44,7 +45,7 @@ void initAbstractDrawableMesh(pybind11::module& m)
 
     c.def(
         "update_buffers",
-        [](vcl::AbstractDrawableMesh& self,
+        [](vcl::AbstractDrawableMesh&                       self,
            const std::vector<vcl::MeshRenderInfo::Buffers>& buffers) {
             vcl::MeshRenderInfo::BuffersBitSet bs;
             for (auto b : buffers) {

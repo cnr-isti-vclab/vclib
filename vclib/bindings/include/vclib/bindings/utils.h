@@ -319,7 +319,9 @@ void defForAllMeshTypes(pybind11::module_& pymod, auto&& function)
  * @param function
  */
 template<typename C, typename... Options>
-void defForAllMeshTypes(pybind11::class_<C, Options...>& pyclass, auto&& function)
+void defForAllMeshTypes(
+    pybind11::class_<C, Options...>& pyclass,
+    auto&&                           function)
 {
     using FType = decltype(function);
 
