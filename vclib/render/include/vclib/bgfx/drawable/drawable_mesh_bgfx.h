@@ -100,6 +100,7 @@ public:
         AbstractDrawableMesh::setRenderSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
+        mMRB.updatePointsSettings(rs);
     }
 
     uint vertexCount() const override { return MeshType::vertexCount(); }
@@ -245,34 +246,8 @@ public:
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (!Context::instance().supportsCompute()) {
-                // 1 px vertices
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.additionalViewIds[1],
-                    pm.getProgram<DRAWABLE_MESH_POINTS>());
-            }
-            else {
-                // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
-
-                // render splats
-                mMRB.bindVertexQuadBuffer();
-                mMRB.bindPointsVertexColorBuffer();
-                bindUniforms();
-
-                bgfx::setState(state);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.additionalViewIds[1],
-                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
-            }
+            bgfx::setTransform(model.data());
+            mMRB.drawPoints(settings.additionalViewIds[1]);
         }
     }
 
@@ -312,37 +287,7 @@ public:
 
         // TODO: manage ID for edges
 
-        if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (!Context::instance().supportsCompute()) {
-                // 1 px vertices
-                mMRB.bindVertexBuffers(mMRS);
-
-                DrawableMeshUniforms::setMeshId(settings.objectId);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
-            }
-            else {
-                // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
-
-                // render splats
-                mMRB.bindVertexQuadBuffer();
-                DrawableMeshUniforms::setMeshId(settings.objectId);
-                bindUniforms();
-
-                bgfx::setState(state);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.viewId,
-                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
-            }
-        }
+        // TODO: manage ID for points
     }
 
     std::shared_ptr<DrawableObject> clone() const& override
