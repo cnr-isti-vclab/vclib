@@ -208,6 +208,8 @@ private slots:
     void selectedDrawableObjectChanged(uint i);
 
     void meshRenderSettingsUpdated();
+
+    void applyToAllToggled(bool checked);
 };
 
 } // namespace vcl::qt

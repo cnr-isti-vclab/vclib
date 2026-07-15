@@ -44,6 +44,12 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
         connect(
             frame, SIGNAL(settingsUpdated()), this, SIGNAL(settingsUpdated()));
     }
+
+    connect(
+        mUI->applyToAllCheckBox,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onApplyToAllToggled(bool)));
 }
 
 MeshRenderSettingsFrame::~MeshRenderSettingsFrame()
@@ -56,11 +62,28 @@ const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
     return mMRS;
 }
 
+bool MeshRenderSettingsFrame::isApplyToAllEnabled() const
+{
+    return mUI->applyToAllCheckBox->isChecked();
+}
+
+void MeshRenderSettingsFrame::onApplyToAllToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setAllCapabilities(true);
+        updateGuiFromSettings(false);
+    }
+    emit applyToAllToggled(checked);
+}
+
 void MeshRenderSettingsFrame::setMeshRenderSettings(
     const MeshRenderSettings& settings,
     bool                      changeCurrentTab /*= false*/)
 {
     mMRS = settings;
+    if (isApplyToAllEnabled()) {
+        mMRS.setAllCapabilities(true);
+    }
     updateGuiFromSettings(changeCurrentTab);
 }
 
