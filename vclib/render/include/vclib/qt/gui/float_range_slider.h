@@ -52,9 +52,11 @@ public:
         
         mStep = step;
         
+        this->blockSignals(true);
         setRange(currMin, currMax);
         setLowerValue(currLower);
         setUpperValue(currUpper);
+        this->blockSignals(false);
     }
 
     float minimum() const { return RangeSlider::minimum() * mStep; }
