@@ -78,10 +78,13 @@ private:
         float lower,
         float upper);
 
+    float mStep = -1.0f;
+
 private slots:
     void onCrossSectionEnabledChanged(Qt::CheckState arg1);
     void onPerVertexToggled(bool checked);
     void onPerFragmentToggled(bool checked);
+    void onStepSpinBoxValueChanged(int value);
 
     void onFloatRangeSliderLowerValueChanged(Axis axis, float value);
     void onFloatRangeSliderUpperValueChanged(Axis axis, float value);

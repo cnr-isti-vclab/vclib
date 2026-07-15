@@ -63,6 +63,12 @@ CrossSectionSettingsFrame::CrossSectionSettingsFrame(
         this,
         SLOT(onPerFragmentToggled(bool)));
 
+    connect(
+        mUI->stepSpinBox,
+        SIGNAL(valueChanged(int)),
+        this,
+        SLOT(onStepSpinBoxValueChanged(int)));
+
     for (uint i = X; i < AXIS_COUNT; ++i) {
         connect(
             mFloatSliders[i],
@@ -95,6 +101,8 @@ CrossSectionSettingsFrame::CrossSectionSettingsFrame(
             });
     }
 
+    onStepSpinBoxValueChanged(mUI->stepSpinBox->value());
+    
     updateFrameFromSettings();
 }
 
@@ -156,6 +164,20 @@ void CrossSectionSettingsFrame::updateFrameFromSettings()
     const auto& bb = mCSS.boundingBox();
     const auto& l  = mCSS.lower();
     const auto& u  = mCSS.upper();
+
+    if (!bb.isNull()) {
+        float minSize = std::numeric_limits<float>::max();
+        for (int i=0; i<3; ++i) {
+            if (bb.dim(i) > 1e-6f && bb.dim(i) < minSize) {
+                minSize = bb.dim(i);
+            }
+        }
+        if (minSize != std::numeric_limits<float>::max()) {
+            int order = static_cast<int>(std::floor(std::log10(minSize)));
+            int maxExp = order - 1;
+            mUI->stepSpinBox->setMaximum(maxExp);
+        }
+    }
 
     for (uint i = X; i < AXIS_COUNT; ++i) {
         updateSlider(
@@ -251,7 +273,10 @@ void CrossSectionSettingsFrame::onFloatRangeSliderLowerValueChanged(
     mMinSpinBoxes[axis]->blockSignals(true);
     mMinSpinBoxes[axis]->setValue(value);
     mMinSpinBoxes[axis]->blockSignals(false);
+    
+    mMaxSpinBoxes[axis]->blockSignals(true);
     mMaxSpinBoxes[axis]->setMinimum(value);
+    mMaxSpinBoxes[axis]->blockSignals(false);
 
     emit crossSectionSettingsUpdated();
 }
@@ -267,7 +292,10 @@ void CrossSectionSettingsFrame::onFloatRangeSliderUpperValueChanged(
     mMaxSpinBoxes[axis]->blockSignals(true);
     mMaxSpinBoxes[axis]->setValue(value);
     mMaxSpinBoxes[axis]->blockSignals(false);
+    
+    mMinSpinBoxes[axis]->blockSignals(true);
     mMinSpinBoxes[axis]->setMaximum(value);
+    mMinSpinBoxes[axis]->blockSignals(false);
 
     emit crossSectionSettingsUpdated();
 }
@@ -284,6 +312,27 @@ void CrossSectionSettingsFrame::onMaxSpinBoxValueChanged(
     double value)
 {
     mFloatSliders[axis]->setUpperValue(static_cast<float>(value));
+}
+
+void CrossSectionSettingsFrame::onStepSpinBoxValueChanged(int exp)
+{
+    mStep = std::pow(10.0f, static_cast<float>(exp));
+    
+    int decimals = std::max(2, -exp + 1);
+
+    for (uint i = X; i < AXIS_COUNT; ++i) {
+        mFloatSliders[i]->setStep(mStep);
+        
+        mMinSpinBoxes[i]->blockSignals(true);
+        mMinSpinBoxes[i]->setSingleStep(mStep);
+        mMinSpinBoxes[i]->setDecimals(decimals);
+        mMinSpinBoxes[i]->blockSignals(false);
+        
+        mMaxSpinBoxes[i]->blockSignals(true);
+        mMaxSpinBoxes[i]->setSingleStep(mStep);
+        mMaxSpinBoxes[i]->setDecimals(decimals);
+        mMaxSpinBoxes[i]->blockSignals(false);
+    }
 }
 
 } // namespace vcl::qt
