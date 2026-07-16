@@ -40,18 +40,19 @@ public:
     }
 
     float step() const { return mStep; }
-    
+
     void setStep(float step)
     {
-        if (step <= 0.0f) return;
-        
-        float currMin = minimum();
-        float currMax = maximum();
+        if (step <= 0.0f)
+            return;
+
+        float currMin   = minimum();
+        float currMax   = maximum();
         float currLower = lowerValue();
         float currUpper = upperValue();
-        
+
         mStep = step;
-        
+
         this->blockSignals(true);
         setRange(currMin, currMax);
         setLowerValue(currLower);

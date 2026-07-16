@@ -627,7 +627,8 @@ public:
         }
 
         // Surface
-        setSurface(MRI::Surface::VISIBLE, other.isSurface(MRI::Surface::VISIBLE));
+        setSurface(
+            MRI::Surface::VISIBLE, other.isSurface(MRI::Surface::VISIBLE));
         for (uint i = toUnderlying(MRI::Surface::SHADING_NONE);
              i < toUnderlying(MRI::Surface::COUNT);
              ++i) {
@@ -636,7 +637,9 @@ public:
         }
 
         // Wireframe
-        setWireframe(MRI::Wireframe::VISIBLE, other.isWireframe(MRI::Wireframe::VISIBLE));
+        setWireframe(
+            MRI::Wireframe::VISIBLE,
+            other.isWireframe(MRI::Wireframe::VISIBLE));
         for (uint i = toUnderlying(MRI::Wireframe::SHADING_NONE);
              i < toUnderlying(MRI::Wireframe::COUNT);
              ++i) {
