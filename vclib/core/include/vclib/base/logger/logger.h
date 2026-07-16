@@ -16,8 +16,8 @@
 #include <cmath>
 #include <iomanip>
 #include <mutex>
-#include <stack>
 #include <sstream>
+#include <stack>
 
 namespace vcl {
 
@@ -29,14 +29,15 @@ class Logger : public AbstractLogger
         std::string message;
         uint        step = 1;
         uint        perc;
-        uint        percStep = 10;
-        uint        size = 1;
+        uint        percStep     = 10;
+        uint        size         = 1;
         uint        lastProgress = 0;
-        uint        startPerc = 0;
-        uint        endPerc = 100;
-        bool        isActive = false;
+        uint        currentN     = 0;
+        uint        startPerc    = 0;
+        uint        endPerc      = 100;
+        bool        isActive     = false;
 
-        ProgressMode mode = ProgressMode::TIME;
+        ProgressMode mode        = ProgressMode::TIME;
         double       secondsStep = 1.0;
         Timer        progressTimer;
         uint         throttleCounter = 0;
@@ -47,6 +48,22 @@ class Logger : public AbstractLogger
     static const uint TIMER_MAX_CHAR_COUNT = 12;
 
     std::recursive_mutex mMutex;
+
+    uint mPercPrecision = 0;
+
+    // on top of the stack, we save the interval percentages of the current task
+    // values are between 0 and 100
+    std::stack<std::pair<double, double>> mIntervals;
+
+    // actual percentage (0 - 100), that is in the interval in top of the stack
+    double mGlobalPercProgress = 0;
+
+    double mStep = 1; // the value that corresponds to 1% on the current task
+
+    Timer mTimer;
+
+    // progress status stack
+    std::stack<ProgressStatus> mProgresses;
 
 public:
     Logger()
@@ -102,7 +119,8 @@ public:
 
     double percentage() const override final
     {
-        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
+        std::lock_guard<std::recursive_mutex> lock(
+            const_cast<std::recursive_mutex&>(mMutex));
         double k = std::pow(10, mPercPrecision);
         uint   c = mGlobalPercProgress * k;
         return c / k;
@@ -118,13 +136,15 @@ public:
 
     void log(const std::string& msg) const override final
     {
-        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
+        std::lock_guard<std::recursive_mutex> lock(
+            const_cast<std::recursive_mutex&>(mMutex));
         printLine(msg, PROGRESS_LOG);
     }
 
     void log(const std::string& msg, LogLevel lvl) const override final
     {
-        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
+        std::lock_guard<std::recursive_mutex> lock(
+            const_cast<std::recursive_mutex&>(mMutex));
         printLine(msg, lvl);
     }
 
@@ -146,89 +166,132 @@ public:
     void startProgress(
         const std::string& msg,
         uint               progressSize,
-        ProgressMode       mode              = ProgressMode::TIME,
-        double             printInterval     = 1.0,
-        uint               startPerc         = 0,
-        uint               endPerc           = 100) override final
+        ProgressMode       mode          = ProgressMode::TIME,
+        double             printInterval = 1.0,
+        uint               startPerc     = 0,
+        uint               endPerc       = 100) override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         assert(printInterval > 0);
         assert((endPerc - startPerc) > 0);
-        mProgress.isActive = true;
-        mProgress.message  = msg;
-        mProgress.size     = progressSize;
-        mProgress.perc     = startPerc;
-        mProgress.startPerc = startPerc;
-        mProgress.endPerc   = endPerc;
-        mProgress.mode      = mode;
 
-        if (mode == ProgressMode::PERCENTAGE) {
-            mProgress.percStep = static_cast<uint>(printInterval);
-            if (mProgress.percStep == 0) mProgress.percStep = 1;
-            mProgress.step =
-                (progressSize + 1) / ((endPerc - startPerc) / mProgress.percStep);
-            if (mProgress.step == 0)
-                mProgress.step = progressSize;
-        } else {
-            mProgress.secondsStep = printInterval;
-            mProgress.progressTimer.start();
-            mProgress.throttleCounter = 0;
+        ProgressStatus prog;
+        prog.isActive  = true;
+        prog.message   = msg;
+        prog.size      = progressSize;
+        prog.startPerc = startPerc;
+        prog.endPerc   = endPerc;
+        prog.perc      = startPerc;
+        prog.mode      = mode;
+        prog.currentN  = 0;
+
+        if (!mProgresses.empty() && mProgresses.top().isActive) {
+            auto& parent = mProgresses.top();
+            uint  p_start =
+                parent.startPerc +
+                (parent.currentN * (parent.endPerc - parent.startPerc)) /
+                    parent.size;
+            uint p_end =
+                parent.startPerc +
+                ((parent.currentN + 1) * (parent.endPerc - parent.startPerc)) /
+                    parent.size;
+
+            prog.startPerc = p_start + (startPerc * (p_end - p_start)) / 100;
+            prog.endPerc   = p_start + (endPerc * (p_end - p_start)) / 100;
+            prog.perc      = prog.startPerc;
         }
 
-        mProgress.lastProgress = 0;
+        if (mode == ProgressMode::PERCENTAGE) {
+            uint unscaledDiff     = endPerc - startPerc;
+            uint unscaledPercStep = static_cast<uint>(printInterval);
+            if (unscaledPercStep == 0)
+                unscaledPercStep = 1;
+
+            if (unscaledDiff == 0) {
+                prog.step = progressSize;
+            }
+            else {
+                uint diff_step = unscaledDiff / unscaledPercStep;
+                if (diff_step == 0)
+                    diff_step = 1;
+                prog.step = (progressSize + 1) / diff_step;
+                if (prog.step == 0)
+                    prog.step = progressSize;
+            }
+        }
+        else {
+            prog.secondsStep = printInterval;
+            prog.progressTimer.start();
+            prog.throttleCounter = 0;
+        }
+
+        prog.lastProgress = 0;
+        mProgresses.push(prog);
     }
 
     void endProgress() override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
-        if (mProgress.isActive) {
-            if (mProgress.perc < mProgress.endPerc) {
-                mProgress.perc = mProgress.endPerc;
-                if (mPrintMsgDuringProgress)
-                    log(mProgress.perc, mProgress.message, PROGRESS_LOG);
-                else
-                    setPercentage(mProgress.perc);
+        if (!mProgresses.empty()) {
+            ProgressStatus& prog = mProgresses.top();
+            if (prog.isActive) {
+                if (prog.perc < prog.endPerc) {
+                    prog.perc = prog.endPerc;
+                    if (mPrintMsgDuringProgress)
+                        log(prog.perc, prog.message, PROGRESS_LOG);
+                    else
+                        setPercentage(prog.perc);
+                }
+                prog.isActive = false;
             }
-            mProgress.isActive = false;
+            mProgresses.pop();
         }
     }
 
     void progress(uint n) override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
-        if (!mProgress.isActive)
+        if (mProgresses.empty())
             return;
-        if (n > mProgress.size)
-            n = mProgress.size;
+        ProgressStatus& prog = mProgresses.top();
+        if (!prog.isActive)
+            return;
+        prog.currentN = n;
+        if (n > prog.size)
+            n = prog.size;
 
-        if (mProgress.mode == ProgressMode::TIME) {
-            if (++mProgress.throttleCounter >= 64) {
-                mProgress.throttleCounter = 0;
-                double elapsed = mProgress.progressTimer.delay();
-                if (elapsed >= mProgress.secondsStep) {
-                    mProgress.perc = mProgress.startPerc + (n * (mProgress.endPerc - mProgress.startPerc)) / mProgress.size;
-                    if (mProgress.perc > mProgress.endPerc)
-                        mProgress.perc = mProgress.endPerc;
+        if (prog.mode == ProgressMode::TIME) {
+            if (++prog.throttleCounter >= 64) {
+                prog.throttleCounter = 0;
+                double elapsed       = prog.progressTimer.delay();
+                if (elapsed >= prog.secondsStep) {
+                    prog.perc =
+                        prog.startPerc +
+                        (n * (prog.endPerc - prog.startPerc)) / prog.size;
+                    if (prog.perc > prog.endPerc)
+                        prog.perc = prog.endPerc;
 
                     if (mPrintMsgDuringProgress)
-                        log(mProgress.perc, mProgress.message, PROGRESS_LOG);
+                        log(prog.perc, prog.message, PROGRESS_LOG);
                     else
-                        setPercentage(mProgress.perc);
+                        setPercentage(prog.perc);
 
-                    mProgress.progressTimer.start();
+                    prog.progressTimer.start();
                 }
             }
-        } else {
-            uint progress = n / mProgress.step;
-            if (mProgress.lastProgress < progress) {
-                mProgress.perc = mProgress.startPerc + progress * mProgress.percStep;
-                if (mProgress.perc > mProgress.endPerc)
-                    mProgress.perc = mProgress.endPerc;
+        }
+        else {
+            uint progress = n / prog.step;
+            if (prog.lastProgress < progress) {
+                prog.perc = prog.startPerc +
+                            (n * (prog.endPerc - prog.startPerc)) / prog.size;
+                if (prog.perc > prog.endPerc)
+                    prog.perc = prog.endPerc;
                 if (mPrintMsgDuringProgress)
-                    log(mProgress.perc, mProgress.message, PROGRESS_LOG);
+                    log(prog.perc, prog.message, PROGRESS_LOG);
                 else
-                    setPercentage(mProgress.perc);
-                mProgress.lastProgress = progress;
+                    setPercentage(prog.perc);
+                prog.lastProgress = progress;
             }
         }
     }
@@ -247,22 +310,6 @@ protected:
     virtual void flush(Stream& o) const {}
 
 private:
-    uint mPercPrecision = 0;
-
-    // on top of the stack, we save the interval percentages of the current task
-    // values are between 0 and 100
-    std::stack<std::pair<double, double>> mIntervals;
-
-    // actual percentage (0 - 100), that is in the interval in top of the stack
-    double mGlobalPercProgress = 0;
-
-    double mStep = 1; // the value that corresponds to 1% on the current task
-
-    Timer mTimer;
-
-    // progress status members
-    ProgressStatus mProgress;
-
     void updateStep()
     {
         mStep = (mIntervals.top().second - mIntervals.top().first) / 100;
@@ -284,7 +331,7 @@ private:
 
         if (stream) {
             std::ostringstream ss;
-            uint s = 0;
+            uint               s = 0;
 
             if (mPrintPerc) {
                 s = printPercentage(ss);
@@ -324,7 +371,8 @@ private:
         return s;
     }
 
-    void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n) const
+    void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
+        const
     {
         uint maxMsgSize = mLineWidth - n;
         if (mPrintTimer)
@@ -338,6 +386,7 @@ private:
             maxMsgSize -= 10;
             o << " WARNING: ";
             break;
+        case LogLevel::MESSAGE_LOG:
         case LogLevel::PROGRESS_LOG:
             maxMsgSize -= 1;
             o << " ";

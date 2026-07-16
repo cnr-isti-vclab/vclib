@@ -38,6 +38,16 @@ public:
         PERCENTAGE
     };
 
+protected:
+    bool     mIndent                 = true;
+    bool     mPrintPerc              = true;
+    bool     mPrintMsgDuringProgress = true;
+    bool     mPrintTimer             = false;
+    uint     mLineWidth              = 80;
+    LogLevel mPrintLevel             = PROGRESS_LOG;
+
+public:
+
     AbstractLogger()          = default;
     virtual ~AbstractLogger() = default;
 
@@ -241,13 +251,7 @@ public:
      */
     virtual void progress(uint n) = 0;
 
-protected:
-    bool     mIndent                 = true;
-    bool     mPrintPerc              = true;
-    bool     mPrintMsgDuringProgress = true;
-    bool     mPrintTimer             = false;
-    uint     mLineWidth              = 80;
-    LogLevel mPrintLevel             = PROGRESS_LOG;
+
 };
 
 class AbstractLogger::LogStreamProxy
