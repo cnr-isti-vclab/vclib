@@ -21,6 +21,8 @@
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
+#include <vclib/io.h>
+
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 
