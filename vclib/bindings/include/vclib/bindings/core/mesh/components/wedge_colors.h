@@ -16,8 +16,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initWedgeColors(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initWedgeColors(pybind11::class_<ElementType, Options...>& c)
 {
     using WedgeColorType = ElementType::WedgeColorType;
 

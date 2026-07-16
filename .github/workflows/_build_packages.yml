@@ -30,14 +30,12 @@ jobs:
         arch: x64
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        cache: 'true'
-        version: '6.10.*'
+      uses: ./.github/actions/install-qt
 
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build libtbb-dev
         sudo apt-get install libembree-dev
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev

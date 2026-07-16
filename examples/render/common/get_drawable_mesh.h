@@ -26,7 +26,14 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
 
     vcl::MeshInfo info;
 
-    MeshType m = vcl::loadMesh<MeshType>(filename, info);
+    vcl::ConsoleLogger log;
+
+    log.startTimer();
+
+    MeshType m = vcl::loadMesh<MeshType>(filename, info, log);
+
+    log.stopTimer();
+    log.log("Loaded mesh in " + std::to_string(log.time()) + " seconds.");
 
     if constexpr (vcl::FaceMeshConcept<MeshType>) {
         if (!info.hasPerFaceNormal()) {

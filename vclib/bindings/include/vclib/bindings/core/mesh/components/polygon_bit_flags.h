@@ -12,8 +12,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initPolygonBitFlags(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initPolygonBitFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 
