@@ -28,19 +28,23 @@ class MeshRenderSettingsUniforms
     // sDrawPack[1] -> draw mode1
     // sDrawPack[2] -> unused
     // sDrawPack[3] -> unused
-    inline static std::array<float, 4> sDrawPack = {0.0, 0.0, 0.0, 0.0};
+    inline static std::array<float, 4> sDrawPack = {0.0};
 
     // sWidthPack[0] -> point width
     // sWidthPack[1] -> wireframe width
     // sWidthPack[2] -> edge width
     // sWidthPack[3] -> unused
-    inline static std::array<float, 4> sWidthPack = {0.0, 0.0, 0.0, 0.0};
+    inline static std::array<float, 4> sWidthPack = {0.0};
 
     // sColorPack[0] -> point user color
     // sColorPack[1] -> surface user color
     // sColorPack[2] -> wireframe user color
     // sColorPack[3] -> edge user color
-    inline static std::array<float, 4> sColorPack = {0.0, 0.0, 0.0, 0.0};
+    // sColorPack[4] -> point selection color
+    // sColorPack[5] -> surface selection color
+    // sColorPack[6] -> unused
+    // sColorPack[7] -> unused
+    inline static std::array<float, 8> sColorPack = {0.0};
 
     inline static Uniform sDrawModeUniform;
     inline static Uniform sWidthUniform;
@@ -70,6 +74,10 @@ public:
         sColorPack[2] =
             std::bit_cast<float>(settings.wireframeUserColor().abgr());
         sColorPack[3] = std::bit_cast<float>(settings.edgesUserColor().abgr());
+        sColorPack[4] =
+            std::bit_cast<float>(settings.pointSelectionColor().abgr());
+        sColorPack[5] =
+            std::bit_cast<float>(settings.surfaceSelectionColor().abgr());
     }
 
     static void bind()
@@ -82,10 +90,10 @@ public:
         if (!sWidthUniform.isValid())
             sWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
         if (!sColorUniform.isValid())
-            sColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4);
+            sColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4, 2);
         sDrawModeUniform.bind(sDrawPack.data());
         sWidthUniform.bind(sWidthPack.data());
-        sColorUniform.bind(sColorPack.data());
+        sColorUniform.bind(sColorPack.data(), 2);
     }
 };
 

@@ -10,8 +10,11 @@
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
+#include <vclib/bgfx/buffers/boolean_buffer.sh>
 
 #define posToBitFlag(pos) (1u << pos)
+
+
 
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)

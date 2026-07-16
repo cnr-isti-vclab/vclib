@@ -32,6 +32,8 @@ public:
 
     std::shared_ptr<DrawableObject> drawableObject() const;
 
+    void updateMeshInfo();
+
 private:
     void addMeshItem();
 
@@ -44,6 +46,7 @@ private:
         QTreeWidgetItem*            parent);
 
     static void makeItemNotSelectable(QTreeWidgetItem* item);
+    static void updateElementCountItem(QTreeWidgetItem* item, uint count, uint selectedCount);
 };
 
 } // namespace vcl::qt

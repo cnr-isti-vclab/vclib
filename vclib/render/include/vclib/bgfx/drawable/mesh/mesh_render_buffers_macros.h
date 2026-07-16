@@ -40,4 +40,10 @@
 #define VCL_PBR_IS_ALPHA_MODE_MASK   2
 #define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
+/* Constants - Compute (just for selection at the moment) */
+
+#define VCL_COMPUTE_THREAD_COUNT_X 64
+#define VCL_COMPUTE_THREAD_COUNT_Y 1
+#define VCL_COMPUTE_THREAD_COUNT_Z 1
+
 #endif // VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
