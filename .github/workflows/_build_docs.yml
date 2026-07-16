@@ -23,7 +23,8 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.ref }}
       - name: Install dependencies
-        run: | 
+        run: |
+          sudo apt-get update
           sudo apt-get install doxygen graphviz
       - name: Build Docs
         run: |

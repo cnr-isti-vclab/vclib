@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <string>
+#include <mutex>
 
 namespace vcl {
 
@@ -33,6 +34,11 @@ public:
         MESSAGE_LOG,
         PROGRESS_LOG,
         DEBUG_LOG
+    };
+
+    enum class ProgressMode {
+        TIME,
+        PERCENTAGE
     };
 
     AbstractLogger()          = default;
@@ -150,6 +156,7 @@ public:
     {
         std::ostringstream ss;
         ss << val;
+        std::lock_guard<std::mutex> lock(mStreamMutex);
         appendToStreamBuffer(ss.str());
         return *this;
     }
@@ -164,6 +171,7 @@ public:
      */
     AbstractLogger& operator<<(std::ostream& (*) (std::ostream&) )
     {
+        std::lock_guard<std::mutex> lock(mStreamMutex);
         log(mStreamBuffer);
         mStreamBuffer.clear();
         return *this;
@@ -196,15 +204,19 @@ public:
      * @param[in] msg: the message that will be printed during the progress
      * @param[in] progressSize: the number of iterations made during the
      * progress
-     * @param[in] percPrintProgress: interval of percentage on which print a
-     * progress message, default 10%
+     * @param[in] mode: the mode of the progress, either `ProgressMode::TIME` or
+     * `ProgressMode::PERCENTAGE`, default `ProgressMode::TIME`
+     * @param[in] printInterval: interval of time (in seconds) or percentage on
+     * which print a progress message, depending on the `mode` argument, default
+     * 1.0 seconds
      * @param[in] startPerc: start percentage of the progress, default 0%
      * @param[in] endPerc: end percentage of the progress, default 100%
      */
     virtual void startProgress(
         const std::string& msg,
         uint               progressSize,
-        uint               percPrintProgress = 10,
+        ProgressMode       mode              = ProgressMode::TIME,
+        double             printInterval     = 1.0,
         uint               startPerc         = 0,
         uint               endPerc           = 100) = 0;
 
@@ -266,6 +278,7 @@ public:
 
 private:
     std::string mStreamBuffer;
+    std::mutex mStreamMutex;
 
     void appendToStreamBuffer(const std::string& s)
     {

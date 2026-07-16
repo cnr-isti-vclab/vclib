@@ -7,12 +7,12 @@
 
 #include <vclib/qt/mesh_viewer.h>
 
+#include "ui_mesh_viewer.h"
+
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-
-#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
@@ -98,17 +98,17 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
         viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
     assert(mAxisEditor);
-    AxisEditorFrame<ViewerType>* axisEditor =
+    AxisEditorFrame<ViewerType>* axisEditorFrame =
         new AxisEditorFrame<ViewerType>(mAxisEditor);
-    mUI->toolBar->addWidget(axisEditor);
+    mUI->toolBar->addWidget(axisEditorFrame);
 
-    auto* trackballEditor = new TrackBallFrame(viewer());
-    mUI->toolBar->addWidget(trackballEditor);
+    auto* trackballFrame = new TrackBallFrame(viewer());
+    mUI->toolBar->addWidget(trackballFrame);
 
     mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
-    BoundingBoxEditorFrame<ViewerType>* bboxEditor =
+    BoundingBoxEditorFrame<ViewerType>* bboxEditorFrame =
         new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
-    mUI->toolBar->addWidget(bboxEditor);
+    mUI->toolBar->addWidget(bboxEditorFrame);
 
     mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
     SelectionEditorFrame<ViewerType>* selectionEditor =
@@ -127,12 +127,18 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
-    // renderSettingsUpdated() member function
+    // meshRenderSettingsUpdated() member function
     connect(
         mUI->meshRenderSettingsFrame,
         SIGNAL(settingsUpdated()),
         this,
-        SLOT(renderSettingsUpdated()));
+        SLOT(meshRenderSettingsUpdated()));
+
+    connect(
+        mUI->meshRenderSettingsFrame,
+        SIGNAL(applyToAllToggled(bool)),
+        this,
+        SLOT(applyToAllToggled(bool)));
 
     // each time that the drawVectorTree changes the visibility of an object,
     // we update the current settings of the RenderSettingsFrame, and we update
@@ -156,29 +162,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
 MeshViewer::~MeshViewer()
 {
     delete mUI;
-}
-
-const DrawableObjectVector& MeshViewer::drawableObjectVector() const
-{
-    return *mDrawableObjectVector;
-}
-
-/**
- * @brief Sets the current DrawableObjectVector, and updates the GUI
- * accordingly.
- * @param v
- */
-void MeshViewer::setDrawableObjectVector(
-    const std::shared_ptr<DrawableObjectVector>& v)
-{
-    mDrawableObjectVector = v;
-
-    // order here is important: drawVectorTree must have the drawVector before
-    // the renderSettingsFrame!
-    mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
-    mUI->drawVectorTree->setDrawableObjectVector(mDrawableObjectVector);
-
-    updateGUI();
 }
 
 uint MeshViewer::selectedDrawableObject() const
@@ -283,80 +266,6 @@ void MeshViewer::keyPressEvent(QKeyEvent* event)
     }
 }
 
-/**
- * @brief Slot called when the user changed the visibility of an object in the
- * DrawableObjectVectorTree
- */
-void MeshViewer::visibilityDrawableObjectChanged()
-{
-    // get the selected drawable object
-    uint i = mUI->drawVectorTree->selectedDrawableObject();
-    if (i != UINT_NULL) {
-        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mDrawableObjectVector->at(i));
-        // if it is a AbstractDrawableMesh, we must be sure that its render
-        // settings are updated accordingly.
-        if (m) {
-            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings());
-        }
-        mUI->viewer->update();
-    }
-}
-
-/**
- * @brief Slot called when the user selected a different DrawableObject in the
- * DrawableObjectVectorFrame
- * @param i
- */
-void MeshViewer::selectedDrawableObjectChanged(uint i)
-{
-    // take the newly selected DrawableObject and check whether it is a
-    // AbstractDrawableMesh
-    mDrawableObjectVector->setSelectedObjectId(i);
-    auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-        mDrawableObjectVector->at(i));
-    if (m) {
-        // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
-        // set it enabled
-        mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-            m->renderSettings());
-        mUI->meshRenderSettingsFrame->setEnabled(true);
-    }
-    else {
-        // it is not a AbstractDrawableMesh, RenderSettingsFrame must be
-        // disabled
-        mUI->meshRenderSettingsFrame->setEnabled(false);
-    }
-    mUI->viewer->update();
-}
-
-/**
- * @brief Slot called every time that the MeshRenderSettingsFrame emits
- * 'settingsUpdated()', that is when the user changes render settings of a
- * GeneriDrawableMesh.
- *
- * We need to get the selected GeneriDrawableMesh first, and then update the
- * settings to it.
- */
-void MeshViewer::renderSettingsUpdated()
-{
-    // The user changed the RenderSettings of the ith object.
-    uint i = mUI->drawVectorTree->selectedDrawableObject();
-    if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
-        // The selected object must always be a AbstractDrawableMesh, because
-        // the RenderSettingsFrame (which called this member function) is
-        // visible only when the selected Object is a AbstractDrawableMesh
-        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
-            mDrawableObjectVector->at(i));
-        // get RenderSettings from the RenderSettingsFrame, and set it to the
-        // AbstractDrawableMesh
-        m->setRenderSettings(
-            mUI->meshRenderSettingsFrame->meshRenderSettings());
-        mUI->viewer->update();
-    }
-}
-
 void MeshViewer::fitScene()
 {
     mUI->viewer->fitScene();
@@ -388,8 +297,10 @@ void MeshViewer::updateGUI()
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(selected));
         if (m) {
-            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings(), true);
+            if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings(), true);
+            }
             mUI->meshRenderSettingsFrame->setEnabled(true);
         }
         else {
@@ -402,13 +313,117 @@ void MeshViewer::updateGUI()
     mUI->viewer->update();
 }
 
-template<typename V>
-void setPBRModef(V* v, bool b)
+/**
+ * @brief Slot called when the user changed the visibility of an object in the
+ * DrawableObjectVectorTree
+ */
+void MeshViewer::visibilityDrawableObjectChanged()
 {
-    if constexpr (PBRViewerConcept<V>) {
-        auto s    = v->pbrSettings();
-        s.pbrMode = b;
-        return v->setPbrSettings(s);
+    // get the selected drawable object
+    uint i = mUI->drawVectorTree->selectedDrawableObject();
+    if (i != UINT_NULL) {
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+            mDrawableObjectVector->at(i));
+        // if it is a AbstractDrawableMesh, we must be sure that its render
+        // settings are updated accordingly.
+        if (m) {
+            if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings());
+            }
+        }
+        mUI->viewer->update();
+    }
+}
+
+/**
+ * @brief Slot called when the user selected a different DrawableObject in the
+ * DrawableObjectVectorFrame
+ * @param i
+ */
+void MeshViewer::selectedDrawableObjectChanged(uint i)
+{
+    // take the newly selected DrawableObject and check whether it is a
+    // AbstractDrawableMesh
+    mDrawableObjectVector->setSelectedObjectId(i);
+    auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+        mDrawableObjectVector->at(i));
+    if (m) {
+        // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
+        // set it enabled
+        if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings());
+        }
+        mUI->meshRenderSettingsFrame->setEnabled(true);
+    }
+    else {
+        // it is not a AbstractDrawableMesh, RenderSettingsFrame must be
+        // disabled
+        mUI->meshRenderSettingsFrame->setEnabled(false);
+    }
+    mUI->viewer->update();
+}
+
+/**
+ * @brief Slot called every time that the MeshRenderSettingsFrame emits
+ * 'settingsUpdated()', that is when the user changes render settings of a
+ * AbstractDrawableMesh.
+ *
+ * We need to get the selected AbstractDrawableMesh first, and then update the
+ * settings to it.
+ */
+void MeshViewer::meshRenderSettingsUpdated()
+{
+    // The user changed the RenderSettings of the ith object.
+    uint i = mUI->drawVectorTree->selectedDrawableObject();
+    if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
+        // The selected object must always be a AbstractDrawableMesh, because
+        // the RenderSettingsFrame (which called this member function) is
+        // visible only when the selected Object is a AbstractDrawableMesh
+        auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+            mDrawableObjectVector->at(i));
+
+        if (m) {
+            bool applyToAll =
+                mUI->meshRenderSettingsFrame->isApplyToAllEnabled();
+            const auto& newSettings =
+                mUI->meshRenderSettingsFrame->meshRenderSettings();
+
+            if (applyToAll) {
+                for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+                    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                        mDrawableObjectVector->at(j));
+                    if (mesh) {
+                        MeshRenderSettings rs = mesh->renderSettings();
+                        rs.updateIfCapable(newSettings);
+                        mesh->setRenderSettings(rs);
+                    }
+                }
+            }
+            else {
+                m->setRenderSettings(newSettings);
+            }
+            mUI->viewer->update();
+        }
+    }
+}
+
+void MeshViewer::applyToAllToggled(bool checked)
+{
+    if (!checked) {
+        uint i = mUI->drawVectorTree->selectedDrawableObject();
+        if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
+            auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                mDrawableObjectVector->at(i));
+            if (m) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings());
+            }
+        }
+    }
+    else {
+        meshRenderSettingsUpdated();
     }
 }
 

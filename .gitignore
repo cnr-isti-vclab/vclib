@@ -28,6 +28,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+vclib_build_venv/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -240,7 +241,7 @@ compile_commands.json
 # QtCreator local machine specific files for imported projects
 *creator.user*
 
-# qwen
-.qwen/*
-
 *_qmlcache.qrc
+
+# examples results
+assets/results/**

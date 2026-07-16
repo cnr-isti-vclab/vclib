@@ -6,9 +6,11 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 import vclib as vcl
-import os
 import math
+import os
+import sys
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 
 

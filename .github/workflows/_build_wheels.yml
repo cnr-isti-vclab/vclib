@@ -34,6 +34,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
 
@@ -47,6 +48,9 @@ jobs:
       with:
         key: bindings-${{ matrix.os }}
         max-size: 1G
+
+    - name: Build and Install bgfx
+      uses: ./.github/actions/build-install-bgfx
 
     - name: Build Wheel 3.12
       uses: ./.github/actions/build-python-wheel

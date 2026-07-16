@@ -653,6 +653,70 @@ public:
         }
     }
 
+    void setAllCapabilities(bool b = true)
+    {
+        mCapability.visible() = b;
+        for (uint i = 0; i < toUnderlying(MRI::Points::COUNT); ++i)
+            setPointsCapability(static_cast<MRI::Points>(i), b);
+        for (uint i = 0; i < toUnderlying(MRI::Surface::COUNT); ++i)
+            setSurfaceCapability(static_cast<MRI::Surface>(i), b);
+        for (uint i = 0; i < toUnderlying(MRI::Wireframe::COUNT); ++i)
+            setWireframeCapability(static_cast<MRI::Wireframe>(i), b);
+        for (uint i = 0; i < toUnderlying(MRI::Edges::COUNT); ++i)
+            setEdgesCapability(static_cast<MRI::Edges>(i), b);
+    }
+
+    void updateIfCapable(const MeshRenderSettings& other)
+    {
+        // colors and widths
+        setPointsWidth(other.pointWidth());
+        setPointsUserColor(other.pointUserColor());
+        setSurfaceUserColor(other.surfaceUserColor());
+        setWireframeWidth(other.wireframeWidth());
+        setWireframeUserColor(other.wireframeUserColor());
+        setEdgesWidth(other.edgesWidth());
+        setEdgesUserColor(other.edgesUserColor());
+
+        // Points
+        setPoints(MRI::Points::VISIBLE, other.isPoints(MRI::Points::VISIBLE));
+        for (uint i = toUnderlying(MRI::Points::SHAPE_PIXEL);
+             i < toUnderlying(MRI::Points::COUNT);
+             ++i) {
+            if (other.isPoints(static_cast<MRI::Points>(i)))
+                setPoints(static_cast<MRI::Points>(i));
+        }
+
+        // Surface
+        setSurface(
+            MRI::Surface::VISIBLE, other.isSurface(MRI::Surface::VISIBLE));
+        for (uint i = toUnderlying(MRI::Surface::SHADING_NONE);
+             i < toUnderlying(MRI::Surface::COUNT);
+             ++i) {
+            if (other.isSurface(static_cast<MRI::Surface>(i)))
+                setSurface(static_cast<MRI::Surface>(i));
+        }
+
+        // Wireframe
+        setWireframe(
+            MRI::Wireframe::VISIBLE,
+            other.isWireframe(MRI::Wireframe::VISIBLE));
+        for (uint i = toUnderlying(MRI::Wireframe::SHADING_NONE);
+             i < toUnderlying(MRI::Wireframe::COUNT);
+             ++i) {
+            if (other.isWireframe(static_cast<MRI::Wireframe>(i)))
+                setWireframe(static_cast<MRI::Wireframe>(i));
+        }
+
+        // Edges
+        setEdges(MRI::Edges::VISIBLE, other.isEdges(MRI::Edges::VISIBLE));
+        for (uint i = toUnderlying(MRI::Edges::SHADING_NONE);
+             i < toUnderlying(MRI::Edges::COUNT);
+             ++i) {
+            if (other.isEdges(static_cast<MRI::Edges>(i)))
+                setEdges(static_cast<MRI::Edges>(i));
+        }
+    }
+
     template<MeshConcept MeshType>
     void setRenderCapabilityFrom(const MeshType& m)
     {

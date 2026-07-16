@@ -67,7 +67,7 @@ public:
     {
         // push built-in editors - the order of the editors in the vector is
         // important, as it is used to retrieve the editor by its enum value
-        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
+        auto axisEd = pushEditor<AxisEditor>();
         axisEd->setActive(true);
         assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }

@@ -67,7 +67,7 @@ function(_vclib_add_test_example name)
 
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
 
-    if(WIN32)
+    if(WIN32 AND VCLIB_DEPLOY_EXECUTABLES)
         set(COPY_DLLS_SCRIPT
             "${CMAKE_CURRENT_BINARY_DIR}/copy_dlls_${TARGET_NAME}.cmake"
         )

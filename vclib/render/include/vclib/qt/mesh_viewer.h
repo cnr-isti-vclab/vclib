@@ -68,13 +68,6 @@ public:
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
-private:
-    const DrawableObjectVector& drawableObjectVector() const;
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-public:
     /**
      * @brief Returns the ID of the currently selected drawable object.
      */
@@ -205,17 +198,20 @@ public:
     void setPanorama(const std::string& panorama);
 
 public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
     void fitScene();
 
     void fitView();
 
     void updateGUI();
+
+private slots:
+    void visibilityDrawableObjectChanged();
+
+    void selectedDrawableObjectChanged(uint i);
+
+    void meshRenderSettingsUpdated();
+
+    void applyToAllToggled(bool checked);
 };
 
 } // namespace vcl::qt
