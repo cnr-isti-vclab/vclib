@@ -30,6 +30,8 @@ class Logger : public AbstractLogger
         uint        percStep;
         uint        size;
         uint        lastProgress;
+        uint        startPerc = 0;
+        uint        endPerc = 100;
         bool        isActive = false;
     };
 
@@ -191,6 +193,8 @@ public:
         mProgress.size     = progressSize;
         mProgress.perc     = startPerc;
         mProgress.percStep = percPrintProgress;
+        mProgress.startPerc = startPerc;
+        mProgress.endPerc   = endPerc;
         mProgress.step =
             (progressSize + 1) / ((endPerc - startPerc) / percPrintProgress);
         if (mProgress.step == 0)
@@ -200,17 +204,31 @@ public:
 
     void endProgress() override final
     {
-        progress(mProgress.size);
-        mProgress.isActive = false;
+        mMutex.lock();
+        if (mProgress.isActive) {
+            if (mProgress.perc < mProgress.endPerc) {
+                mProgress.perc = mProgress.endPerc;
+                if (mPrintMsgDuringProgress)
+                    log(mProgress.perc, mProgress.message, PROGRESS_LOG);
+                else
+                    setPercentage(mProgress.perc);
+            }
+            mProgress.isActive = false;
+        }
+        mMutex.unlock();
     }
 
     void progress(uint n) override final
     {
         mMutex.lock();
         assert(mProgress.isActive);
+        if (n > mProgress.size)
+            n = mProgress.size;
         uint progress = n / mProgress.step;
         if (mProgress.lastProgress < progress) {
-            mProgress.perc = progress * mProgress.percStep;
+            mProgress.perc = mProgress.startPerc + progress * mProgress.percStep;
+            if (mProgress.perc > mProgress.endPerc)
+                mProgress.perc = mProgress.endPerc;
             if (mPrintMsgDuringProgress)
                 log(mProgress.perc, mProgress.message, PROGRESS_LOG);
             else
