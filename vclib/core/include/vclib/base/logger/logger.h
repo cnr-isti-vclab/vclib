@@ -14,8 +14,10 @@
 
 #include <cassert>
 #include <cmath>
+#include <iomanip>
 #include <mutex>
 #include <stack>
+#include <sstream>
 
 namespace vcl {
 
@@ -44,32 +46,6 @@ class Logger : public AbstractLogger
 
     static const uint TIMER_MAX_CHAR_COUNT = 12;
 
-    uint mPercPrecision = 0;
-
-    // on top of the stack, we save the interval percentages of the current task
-    // values are between 0 and 100
-    std::stack<std::pair<double, double>> mIntervals;
-
-    // actual percentage (0 - 100), that is in the interval in top of the stack
-    double mGlobalPercProgress = 0;
-
-    double mStep = 1; // the value that corresponds to 1% on the current task
-
-    uint mLineWidth = 80;
-
-    Timer mTimer;
-
-    LogLevel mPrintLevel = PROGRESS_LOG;
-
-    // progress status members
-    ProgressStatus mProgress;
-
-    // settings
-    bool mPrintPerc              = true;
-    bool mPrintMsgDuringProgress = true;
-    bool mIndent                 = true;
-    bool mPrintTimer             = false;
-
     std::recursive_mutex mMutex;
 
 public:
@@ -79,30 +55,6 @@ public:
         updateStep();
     }
 
-    void enableIndentation() override final { mIndent = true; }
-
-    void disableIndentation() override final { mIndent = false; }
-
-    void enablePrintPercentage() override final { mPrintPerc = true; }
-
-    void disablePrintPercentage() override final { mPrintPerc = false; }
-
-    void setPrintLevel(LogLevel level) override final { mPrintLevel = level; }
-
-    void enablePrintMessageDuringProgress() override final
-    {
-        mPrintMsgDuringProgress = true;
-    }
-
-    void disablePrintMessageDuringProgress() override final
-    {
-        mPrintMsgDuringProgress = false;
-    }
-
-    void enablePrintTimer() override final { mPrintTimer = true; }
-
-    void disablePrintTimer() override final { mPrintTimer = false; }
-
     void reset() override final
     {
         while (!mIntervals.empty())
@@ -110,8 +62,6 @@ public:
         mIntervals.push({0, 100});
         updateStep();
     }
-
-    void setMaxLineWidth(uint w) override final { mLineWidth = w; }
 
     void startTimer() override final { mTimer.start(); }
 
@@ -294,15 +244,25 @@ protected:
      */
     virtual Stream* levelStream(LogLevel lvl) const = 0;
 
-    virtual void alignLeft(Stream& o) const {}
-
-    virtual void alignRight(Stream& o) const {}
-
-    virtual void setWidth(Stream& o, uint w) const {}
-
     virtual void flush(Stream& o) const {}
 
 private:
+    uint mPercPrecision = 0;
+
+    // on top of the stack, we save the interval percentages of the current task
+    // values are between 0 and 100
+    std::stack<std::pair<double, double>> mIntervals;
+
+    // actual percentage (0 - 100), that is in the interval in top of the stack
+    double mGlobalPercProgress = 0;
+
+    double mStep = 1; // the value that corresponds to 1% on the current task
+
+    Timer mTimer;
+
+    // progress status members
+    ProgressStatus mProgress;
+
     void updateStep()
     {
         mStep = (mIntervals.top().second - mIntervals.top().first) / 100;
@@ -323,33 +283,35 @@ private:
         Stream* stream = levelStream(l);
 
         if (stream) {
+            std::ostringstream ss;
             uint s = 0;
 
             if (mPrintPerc) {
-                s = printPercentage(*stream);
+                s = printPercentage(ss);
             }
-            s += printIndentation(*stream);
-            printMessage(*stream, msg, lvl, s);
-            printElapsedTime(*stream);
-            *stream << "\n";
+            s += printIndentation(ss);
+            printMessage(ss, msg, lvl, s);
+            printElapsedTime(ss);
+            ss << "\n";
+            *stream << ss.str().c_str();
+            flush(*stream);
         }
-        flush(*stream);
     }
 
-    uint printPercentage(Stream& o) const
+    uint printPercentage(std::ostream& o) const
     {
         uint size = 3;
         if (mPercPrecision > 0)
             size += 1 + mPercPrecision;
 
         o << "[";
-        alignRight(o);
-        setWidth(o, size);
+        o << std::right;
+        o << std::setw(size);
         o << percentage() << "%]";
         return size + 3;
     }
 
-    uint printIndentation(Stream& o) const
+    uint printIndentation(std::ostream& o) const
     {
         uint s = 0;
         if (mIndent) {
@@ -362,7 +324,7 @@ private:
         return s;
     }
 
-    void printMessage(Stream& o, const std::string& msg, uint lvl, uint n) const
+    void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n) const
     {
         uint maxMsgSize = mLineWidth - n;
         if (mPrintTimer)
@@ -393,17 +355,17 @@ private:
             o << " End ";
             break;
         }
-        setWidth(o, maxMsgSize);
-        alignLeft(o);
+        o << std::setw(maxMsgSize);
+        o << std::left;
         o << msg.c_str();
     }
 
-    void printElapsedTime(Stream& o) const
+    void printElapsedTime(std::ostream& o) const
     {
         if (mPrintTimer) {
             o << "[";
-            setWidth(o, TIMER_MAX_CHAR_COUNT - 3);
-            alignRight(o);
+            o << std::setw(TIMER_MAX_CHAR_COUNT - 3);
+            o << std::right;
             o << mTimer.delay() << "s]";
         }
     }

@@ -28,27 +28,7 @@ class NullLogger : public AbstractLogger
 public:
     NullLogger() = default;
 
-    void enableIndentation() override final {}
-
-    void disableIndentation() override final {}
-
-    void enablePrintPercentage() override final {}
-
-    void disablePrintPercentage() override final {}
-
-    void setPrintLevel(LogLevel) override final {}
-
-    void enablePrintMessageDuringProgress() override final {}
-
-    void disablePrintMessageDuringProgress() override final {}
-
-    void enablePrintTimer() override final {}
-
-    void disablePrintTimer() override final {}
-
     void reset() override final {}
-
-    void setMaxLineWidth(uint) override final {}
 
     void startTimer() override final {}
 
