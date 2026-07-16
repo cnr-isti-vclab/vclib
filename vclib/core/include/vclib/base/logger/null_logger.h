@@ -72,8 +72,13 @@ public:
 
     void log(uint, const std::string&, LogLevel) override final {}
 
-    void startProgress(const std::string&, uint, uint = 0, uint = 0, uint = 0)
-        override final
+    void startProgress(
+        const std::string&,
+        uint,
+        ProgressMode = ProgressMode::TIME,
+        double = 1.0,
+        uint = 0,
+        uint = 0) override final
     {
     }
 

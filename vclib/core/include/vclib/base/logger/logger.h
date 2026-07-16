@@ -33,6 +33,11 @@ class Logger : public AbstractLogger
         uint        startPerc = 0;
         uint        endPerc = 100;
         bool        isActive = false;
+
+        ProgressMode mode = ProgressMode::TIME;
+        double       secondsStep = 1.0;
+        Timer        progressTimer;
+        uint         throttleCounter = 0;
     };
 
     enum InternalLogLevel { START = DEBUG_LOG + 1, END };
@@ -182,23 +187,34 @@ public:
     void startProgress(
         const std::string& msg,
         uint               progressSize,
-        uint               percPrintProgress = 10,
+        ProgressMode       mode              = ProgressMode::TIME,
+        double             printInterval     = 1.0,
         uint               startPerc         = 0,
         uint               endPerc           = 100) override final
     {
-        assert(percPrintProgress > 0);
+        assert(printInterval > 0);
         assert((endPerc - startPerc) > 0);
         mProgress.isActive = true;
         mProgress.message  = msg;
         mProgress.size     = progressSize;
         mProgress.perc     = startPerc;
-        mProgress.percStep = percPrintProgress;
         mProgress.startPerc = startPerc;
         mProgress.endPerc   = endPerc;
-        mProgress.step =
-            (progressSize + 1) / ((endPerc - startPerc) / percPrintProgress);
-        if (mProgress.step == 0)
-            mProgress.step = progressSize;
+        mProgress.mode      = mode;
+
+        if (mode == ProgressMode::PERCENTAGE) {
+            mProgress.percStep = static_cast<uint>(printInterval);
+            if (mProgress.percStep == 0) mProgress.percStep = 1;
+            mProgress.step =
+                (progressSize + 1) / ((endPerc - startPerc) / mProgress.percStep);
+            if (mProgress.step == 0)
+                mProgress.step = progressSize;
+        } else {
+            mProgress.secondsStep = printInterval;
+            mProgress.progressTimer.start();
+            mProgress.throttleCounter = 0;
+        }
+
         mProgress.lastProgress = 0;
     }
 
@@ -224,16 +240,36 @@ public:
         assert(mProgress.isActive);
         if (n > mProgress.size)
             n = mProgress.size;
-        uint progress = n / mProgress.step;
-        if (mProgress.lastProgress < progress) {
-            mProgress.perc = mProgress.startPerc + progress * mProgress.percStep;
-            if (mProgress.perc > mProgress.endPerc)
-                mProgress.perc = mProgress.endPerc;
-            if (mPrintMsgDuringProgress)
-                log(mProgress.perc, mProgress.message, PROGRESS_LOG);
-            else
-                setPercentage(mProgress.perc);
-            mProgress.lastProgress = progress;
+
+        if (mProgress.mode == ProgressMode::TIME) {
+            if (++mProgress.throttleCounter >= 64) {
+                mProgress.throttleCounter = 0;
+                double elapsed = mProgress.progressTimer.delay();
+                if (elapsed >= mProgress.secondsStep) {
+                    mProgress.perc = mProgress.startPerc + (n * (mProgress.endPerc - mProgress.startPerc)) / mProgress.size;
+                    if (mProgress.perc > mProgress.endPerc)
+                        mProgress.perc = mProgress.endPerc;
+
+                    if (mPrintMsgDuringProgress)
+                        log(mProgress.perc, mProgress.message, PROGRESS_LOG);
+                    else
+                        setPercentage(mProgress.perc);
+
+                    mProgress.progressTimer.start();
+                }
+            }
+        } else {
+            uint progress = n / mProgress.step;
+            if (mProgress.lastProgress < progress) {
+                mProgress.perc = mProgress.startPerc + progress * mProgress.percStep;
+                if (mProgress.perc > mProgress.endPerc)
+                    mProgress.perc = mProgress.endPerc;
+                if (mPrintMsgDuringProgress)
+                    log(mProgress.perc, mProgress.message, PROGRESS_LOG);
+                else
+                    setPercentage(mProgress.perc);
+                mProgress.lastProgress = progress;
+            }
         }
         mMutex.unlock();
     }
