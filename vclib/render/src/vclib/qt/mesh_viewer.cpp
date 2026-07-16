@@ -394,10 +394,12 @@ void MeshViewer::meshRenderSettingsUpdated()
         // visible only when the selected Object is a AbstractDrawableMesh
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(i));
-        
+
         if (m) {
-            bool applyToAll = mUI->meshRenderSettingsFrame->isApplyToAllEnabled();
-            const auto& newSettings = mUI->meshRenderSettingsFrame->meshRenderSettings();
+            bool applyToAll =
+                mUI->meshRenderSettingsFrame->isApplyToAllEnabled();
+            const auto& newSettings =
+                mUI->meshRenderSettingsFrame->meshRenderSettings();
 
             if (applyToAll) {
                 for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {

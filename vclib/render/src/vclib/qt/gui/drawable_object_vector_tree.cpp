@@ -121,7 +121,6 @@ bool DrawableObjectVectorTree::eventFilter(QObject* obj, QEvent* event)
             event->type() == QEvent::MouseButtonRelease ||
             event->type() == QEvent::MouseButtonDblClick ||
             event->type() == QEvent::MouseMove) {
-
             QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
             QModelIndex  index = mUI->treeWidget->indexAt(mouseEvent->pos());
 
@@ -139,26 +138,30 @@ bool DrawableObjectVectorTree::eventFilter(QObject* obj, QEvent* event)
             }
             else if (event->type() == QEvent::MouseMove) {
                 if (mCheckboxPressed) {
-                    return true; // Consume drag so QTreeView doesn't start selection drag
+                    return true; // Consume drag so QTreeView doesn't start
+                                 // selection drag
                 }
             }
             else if (event->type() == QEvent::MouseButtonRelease) {
                 if (mCheckboxPressed) {
                     mCheckboxPressed = false;
 
-                    // Only toggle if we released over the same item's checkbox area
+                    // Only toggle if we released over the same item's checkbox
+                    // area
                     if (index.isValid() && index.column() == 0) {
-                        QTreeWidgetItem* item = mUI->treeWidget->itemFromIndex(index);
+                        QTreeWidgetItem* item =
+                            mUI->treeWidget->itemFromIndex(index);
                         if (item && item == mPressedItem) {
-                            QRect visualRect = mUI->treeWidget->visualRect(index);
+                            QRect visualRect =
+                                mUI->treeWidget->visualRect(index);
                             if (mouseEvent->pos().x() >= visualRect.left() &&
-                                mouseEvent->pos().x() <= visualRect.left() + 26) {
-
+                                mouseEvent->pos().x() <=
+                                    visualRect.left() + 26) {
                                 Qt::CheckState state = item->checkState(0);
                                 item->setCheckState(
                                     0,
-                                    state == Qt::Checked ? Qt::Unchecked
-                                                           : Qt::Checked);
+                                    state == Qt::Checked ? Qt::Unchecked :
+                                                           Qt::Checked);
                             }
                         }
                     }

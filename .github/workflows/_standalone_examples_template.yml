@@ -44,6 +44,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build libtbb-dev
         if [ "${{ matrix.module }}" == "external" ]; then
           sudo apt-get install libembree-dev libgmp-dev libmpfr-dev

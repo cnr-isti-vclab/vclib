@@ -37,8 +37,8 @@ private:
     // icon function
     IconFunction mIconFunction = nullptr;
 
-    bool mCheckboxPressed = false;
-    QTreeWidgetItem* mPressedItem = nullptr;
+    bool             mCheckboxPressed = false;
+    QTreeWidgetItem* mPressedItem     = nullptr;
 
 public:
     explicit DrawableObjectVectorTree(QWidget* parent = nullptr);
@@ -72,8 +72,6 @@ private:
 private slots:
     void itemSelectionChanged();
     void itemCheckStateChanged(QTreeWidgetItem* item, int column);
-
-
 };
 
 } // namespace vcl::qt
