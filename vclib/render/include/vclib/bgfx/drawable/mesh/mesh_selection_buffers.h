@@ -567,47 +567,64 @@ public:
         // Update vertex selection
         if (mLastReadbackMode.isVertexSelection() &&
             !mVertexSelection.cpuBackup().empty()) {
-            mNumSelectedVertices            = 0;
-            uint                       vidx = 0;
+            const auto& cpuBackup = mVertexSelection.cpuBackup();
+
+            uint numSelectedVertices = 0;
+            uint vidx                = 0;
+
             vcl::BitSet<uint8_t, true> flags;
+
             for (auto& v : m.vertices()) {
-                uint byteIdx = vidx / 8;
-                if (byteIdx < mVertexSelection.cpuBackup().size()) {
+                const uint byteIdx = vidx / 8;
+                if (byteIdx < cpuBackup.size()) {
                     if (vidx % 8 == 0)
-                        flags.setUnderlying(mVertexSelection.cpuBackup()[byteIdx]);
-                    v.selected() = flags[vidx % 8];
-                    if (v.selected())
-                        ++mNumSelectedVertices;
+                        flags.setUnderlying(cpuBackup[byteIdx]);
+
+                    bool selected = flags[vidx % 8];
+                    v.selected()  = selected;
+                    if (selected)
+                        ++numSelectedVertices;
                 }
                 ++vidx;
             }
+            mNumSelectedVertices = numSelectedVertices;
         }
 
         // Update face selection
         if constexpr (HasFaces<MeshType>) {
             if (mLastReadbackMode.isFaceSelection() &&
                 !mFaceSelection.cpuBackup().empty()) {
-                mNumSelectedFaces = 0;
-                // First, clear all face selections
-                for (auto& f : m.faces()) {
-                    f.selected() = false;
-                }
+                const auto& cpuBackup = mFaceSelection.cpuBackup();
 
+                const bool isTriMesh =
+                    indexMap.triangleCount() == m.faceCount();
+
+                uint numSelectedFaces = 0;
                 // For each face, check if its first triangle is selected
                 // (compute shaders ensure all triangles of a face have the same
                 // selection state)
                 vcl::BitSet<uint8_t, true> flags;
+                uint                       lastByteIdx = UINT_NULL;
+
                 for (auto& f : m.faces()) {
-                    const uint faceIdx     = f.index();
-                    const uint firstTriIdx = indexMap.triangleBegin(faceIdx);
-                    uint       byteIdx     = firstTriIdx / 8;
-                    if (byteIdx < mFaceSelection.cpuBackup().size()) {
-                        flags.setUnderlying(mFaceSelection.cpuBackup()[byteIdx]);
-                        f.selected() = flags[firstTriIdx % 8];
-                        if (f.selected())
-                            ++mNumSelectedFaces;
+                    const uint faceIdx = f.index();
+                    const uint firstTriIdx =
+                        isTriMesh ? faceIdx : indexMap.triangleBegin(faceIdx);
+                    const uint byteIdx = firstTriIdx / 8;
+
+                    if (byteIdx < cpuBackup.size()) {
+                        if (byteIdx != lastByteIdx) {
+                            flags.setUnderlying(cpuBackup[byteIdx]);
+                            lastByteIdx = byteIdx;
+                        }
+
+                        bool selected = flags[firstTriIdx % 8];
+                        f.selected()  = selected;
+                        if (selected)
+                            ++numSelectedFaces;
                     }
                 }
+                mNumSelectedFaces = numSelectedFaces;
             }
         }
     }
