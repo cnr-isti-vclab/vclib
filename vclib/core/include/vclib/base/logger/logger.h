@@ -25,11 +25,11 @@ class Logger : public AbstractLogger
     struct ProgressStatus
     {
         std::string message;
-        uint        step;
+        uint        step = 1;
         uint        perc;
-        uint        percStep;
-        uint        size;
-        uint        lastProgress;
+        uint        percStep = 10;
+        uint        size = 1;
+        uint        lastProgress = 0;
         uint        startPerc = 0;
         uint        endPerc = 100;
         bool        isActive = false;
@@ -70,7 +70,7 @@ class Logger : public AbstractLogger
     bool mIndent                 = true;
     bool mPrintTimer             = false;
 
-    std::mutex mMutex;
+    std::recursive_mutex mMutex;
 
 public:
     Logger()
@@ -122,6 +122,7 @@ public:
     void startNewTask(double fromPerc, double toPerc, const std::string& action)
         override final
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         printLine(action, START);
 
         assert(fromPerc >= 0);
@@ -130,7 +131,8 @@ public:
         std::pair<double, double> newP;
         newP.first =
             actualP.first + (actualP.second - actualP.first) * (fromPerc / 100);
-        newP.second         = (actualP.second - actualP.first) * (toPerc / 100);
+        newP.second =
+            actualP.first + (actualP.second - actualP.first) * (toPerc / 100);
         mGlobalPercProgress = newP.first;
         mIntervals.push(newP);
         updateStep();
@@ -138,6 +140,7 @@ public:
 
     void endTask(const std::string& action) override final
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         mGlobalPercProgress = mIntervals.top().second;
         if (mIntervals.size() > 1) {
             mIntervals.pop();
@@ -149,6 +152,7 @@ public:
 
     double percentage() const override final
     {
+        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
         double k = std::pow(10, mPercPrecision);
         uint   c = mGlobalPercProgress * k;
         return c / k;
@@ -156,6 +160,7 @@ public:
 
     virtual void setPercentage(uint newPerc) override
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         if (newPerc >= 0 && newPerc <= 100) {
             mGlobalPercProgress = (mIntervals.top().first) + mStep * newPerc;
         }
@@ -163,21 +168,25 @@ public:
 
     void log(const std::string& msg) const override final
     {
+        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
         printLine(msg, PROGRESS_LOG);
     }
 
     void log(const std::string& msg, LogLevel lvl) const override final
     {
+        std::lock_guard<std::recursive_mutex> lock(const_cast<std::recursive_mutex&>(mMutex));
         printLine(msg, lvl);
     }
 
     void log(uint perc, const std::string& msg) override final
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         log(perc, msg, PROGRESS_LOG);
     }
 
     void log(uint perc, const std::string& msg, LogLevel lvl) override final
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         if (perc >= 0 && perc <= 100)
             setPercentage(perc);
 
@@ -192,6 +201,7 @@ public:
         uint               startPerc         = 0,
         uint               endPerc           = 100) override final
     {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         assert(printInterval > 0);
         assert((endPerc - startPerc) > 0);
         mProgress.isActive = true;
@@ -220,7 +230,7 @@ public:
 
     void endProgress() override final
     {
-        mMutex.lock();
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         if (mProgress.isActive) {
             if (mProgress.perc < mProgress.endPerc) {
                 mProgress.perc = mProgress.endPerc;
@@ -231,13 +241,13 @@ public:
             }
             mProgress.isActive = false;
         }
-        mMutex.unlock();
     }
 
     void progress(uint n) override final
     {
-        mMutex.lock();
-        assert(mProgress.isActive);
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
+        if (!mProgress.isActive)
+            return;
         if (n > mProgress.size)
             n = mProgress.size;
 
@@ -271,7 +281,6 @@ public:
                 mProgress.lastProgress = progress;
             }
         }
-        mMutex.unlock();
     }
 
 protected:

@@ -13,6 +13,7 @@
 
 #include <sstream>
 #include <string>
+#include <mutex>
 
 namespace vcl {
 
@@ -155,6 +156,7 @@ public:
     {
         std::ostringstream ss;
         ss << val;
+        std::lock_guard<std::mutex> lock(mStreamMutex);
         appendToStreamBuffer(ss.str());
         return *this;
     }
@@ -169,6 +171,7 @@ public:
      */
     AbstractLogger& operator<<(std::ostream& (*) (std::ostream&) )
     {
+        std::lock_guard<std::mutex> lock(mStreamMutex);
         log(mStreamBuffer);
         mStreamBuffer.clear();
         return *this;
@@ -275,6 +278,7 @@ public:
 
 private:
     std::string mStreamBuffer;
+    std::mutex mStreamMutex;
 
     void appendToStreamBuffer(const std::string& s)
     {
