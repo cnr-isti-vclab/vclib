@@ -42,14 +42,14 @@ public:
 
     /**
      * @brief Sets the width of the points.
-     * @param width The point width in pixels.
+     * @param[in] width: The point width in pixels.
      */
     static void setWidth(float width) { sPointsSettings[0] = width; }
 
     /**
      * @brief Sets the general color for points.
-     * @param color The uniform color to apply when per-vertex colors are not
-     * used.
+     * @param[in] color: The uniform color to apply when per-vertex colors are
+     * not used.
      */
     static void setGeneralColor(const vcl::Color& color)
     {
@@ -58,7 +58,7 @@ public:
 
     /**
      * @brief Sets the depth offset for points.
-     * @param depthOffset The depth offset value.
+     * @param[in] depthOffset: The depth offset value.
      */
     static void setDepthOffset(float depthOffset)
     {
@@ -67,7 +67,7 @@ public:
 
     /**
      * @brief Sets the object ID for points.
-     * @param id The object ID.
+     * @param[in] id: The object ID.
      */
     static void setId(uint32_t id)
     {
@@ -76,7 +76,7 @@ public:
 
     /**
      * @brief Sets the selection color for points.
-     * @param color The uniform selection color.
+     * @param[in] color: The uniform selection color.
      */
     static void setSelectionColor(const vcl::Color& color)
     {

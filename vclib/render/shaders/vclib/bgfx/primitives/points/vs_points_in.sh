@@ -23,7 +23,7 @@ DECLARE_FETCH_VEC3(fetchNormal, normalsBuffer);
 BUFFER_RO(pointColors, uint, 2); // colors
 #endif
 
-#if POINTS_SELECTION_ON || POINTS_ID_SELECTION_ON
+#if POINTS_SELECTION_ON
 BUFFER_RO(vertexSelected, uint, 3);
 #endif
 
@@ -72,7 +72,7 @@ void main()
     // Pass UV coordinates to fragment shader
     v_texcoord0 = quadUv;
 
-#if POINTS_SELECTION_ON || POINTS_ID_SELECTION_ON
+#if POINTS_SELECTION_ON
     v_selected = float(getBoolFromBuffer(vertexSelected, pointIndex));
 #endif
 }
