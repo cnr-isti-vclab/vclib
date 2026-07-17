@@ -229,7 +229,7 @@ public:
         // Compute number of bits rounded to 32 needed to store vertex selection
         // We use mesh.vertexCount() which includes duplicated vertices
         uint                 bitNumber = vcl::roundUp(numVerts, 32);
-        std::vector<uint8_t> vertexBackup(bitNumber / 4, 0);
+        std::vector<uint8_t> vertexBackup(bitNumber / 8, 0);
 
         // Build bitfield from mesh vertex selection flags
         // Note: For duplicated vertices (indices >= numVerts), they will
@@ -267,7 +267,7 @@ public:
         // selection
         const uint wordCount = (indexMap.triangleCount() + 31) / 32;
         uint       bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
-        std::vector<uint8_t> faceBackup(bitNumber / 4, 0);
+        std::vector<uint8_t> faceBackup(bitNumber / 8, 0);
 
         // For each face, set selection for all its triangles
         uint                       tIdx    = 0;
@@ -641,6 +641,8 @@ public:
     bool hasVertexSelectionBuffer() const { return mVertexSelection.isValid(); }
 
     bool hasFaceSelectionBuffer() const { return mFaceSelection.isValid(); }
+
+    const BooleanBuffer& vertexSelectionBuffer() const { return mVertexSelection; }
 
     // ---- Bind -----------------------------------------------------------
 

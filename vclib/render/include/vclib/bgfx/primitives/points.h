@@ -10,6 +10,9 @@
 
 #include <vclib/bgfx/buffers.h>
 
+#include <vclib/base.h>
+#include <vclib/space/core.h>
+
 namespace vcl {
 
 /**
@@ -45,24 +48,34 @@ public:
         CIRCLE  ///< Circular splats (disk-shaped in screen space).
     };
 
+    struct Settings
+    {
+        float        width          = 1.0f;
+        ColorSetting colorSetting   = ColorSetting::GENERAL;
+        Shading      shading        = Shading::NONE;
+        Shape        shape          = Shape::SQUARE;
+        Color        generalColor   = Color::Black;
+        float        depthOffset    = 0.0f;
+        Color        selectionColor = Color(0x88FF9732, Color::Format::ABGR);
+        bool         selectionVisibility = false;
+    };
+
 private:
     uint mVerPosCount = 0;
     uint mVerNorCount = 0;
     uint mVerColCount = 0;
+    uint mVerSelCount = 0;
 
-    float        mWidth        = 1.0f;
-    ColorSetting mColorSetting = ColorSetting::GENERAL;
-    Shading      mShading      = Shading::NONE;
-    Shape        mShape        = Shape::SQUARE;
-    Color        mGeneralColor = Color::Black;
-    float        mDepthOffset  = 0.0f;
+    Settings mSettings;
 
-    OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
-    OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
-    OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    OwnedOrRefBuffer<VertexBuffer>  mVertexPositions;
+    OwnedOrRefBuffer<VertexBuffer>  mVertexNormals;
+    OwnedOrRefBuffer<VertexBuffer>  mVertexColors;
+    OwnedOrRefBuffer<BooleanBuffer> mSelectionBuffer;
 
     mutable bool                mIsUpdateProgramNeeded = true;
     mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
+    mutable bgfx::ProgramHandle mIdProgram             = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -84,14 +97,20 @@ public:
      * @note This constructor creates an owned buffer copy of the input data.
      * The original ranges are not referenced after construction.
      */
-    template<Range RV, Range RN, Range RC>
+    template<
+        Range RV,
+        Range RN = std::vector<Point3d>,
+        Range RC = std::vector<Color>,
+        Range RB = std::vector<bool>>
     requires Point3Concept<std::ranges::range_value_t<RV>> &&
              Point3Concept<std::ranges::range_value_t<RN>> &&
-             ColorConcept<std::ranges::range_value_t<RC>>
+             ColorConcept<std::ranges::range_value_t<RC>> &&
+             std::convertible_to<std::ranges::range_value_t<RB>, bool>
     Points(
         RV&& verts,
-        RN&& vertNormals = std::vector<Point3d>(),
-        RC&& vertColors  = std::vector<Color>())
+        RN&& vertNormals    = std::vector<Point3d>(),
+        RC&& vertColors     = std::vector<Color>(),
+        RB&& vertSelections = std::vector<bool>())
     {
         setVertices(verts);
         if (!vertNormals.empty()) {
@@ -99,6 +118,9 @@ public:
         }
         if (!vertColors.empty()) {
             setVertexColors(vertColors);
+        }
+        if (!vertSelections.empty()) {
+            setVertexSelection(vertSelections);
         }
     }
 
@@ -113,13 +135,13 @@ public:
      *
      * @return The width of the point splats in pixels.
      */
-    float width() const { return mWidth; }
+    float width() const { return mSettings.width; }
 
     /**
      * @brief Returns the depth offset applied to the points.
      * @return The depth offset applied to the points.
      */
-    float depthOffset() const { return mDepthOffset; }
+    float depthOffset() const { return mSettings.depthOffset; }
 
     /**
      * @brief Returns whether the point set has valid vertex positions.
@@ -281,18 +303,61 @@ public:
         mIsUpdateProgramNeeded = true;
     }
 
+    /**
+     * @brief Sets per-point selection state from a range of booleans.
+     *
+     * @tparam R: Range whose value type is bool.
+     * @param[in] selections: A range of booleans (size must match vertexCount).
+     */
+    template<Range R>
+    requires std::convertible_to<std::ranges::range_value_t<R>, bool>
+    void setVertexSelection(R&& selections)
+    {
+        mVerSelCount = std::ranges::size(selections);
+        BooleanBuffer buf;
+        buf.init(mVerSelCount);
+
+        uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
+        std::vector<uint8_t> backup(bitNumber / 8, 0);
+
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+
+        for (bool sel : selections) {
+            flags[vidx % 8] = sel;
+            ++vidx;
+
+            if (vidx % 8 == 0) {
+                backup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
+        }
+
+        if (vidx % 8 != 0) {
+            backup[byteIdx] = flags.underlying();
+        }
+
+        buf.setFromCPUBuffer(backup);
+        mSelectionBuffer.setOwned(std::move(buf));
+        mIsUpdateProgramNeeded = true;
+    }
+
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
 
     void setVertexNormals(uint vNorCount, const VertexBuffer& vertNormals);
 
     void setVertexColors(uint vColsCount, const VertexBuffer& vertColors);
 
+    void setSelection(uint vSelCount, const BooleanBuffer& vertSels);
+
     /**
      * @brief Sets the size of point splats.
      *
      * @param[in] size: The point splat size.
      */
-    void setSize(float size) { mWidth = size; }
+    void setSize(float size) { mSettings.width = size; }
 
     /**
      * @brief Sets the color mode for point rendering.
@@ -302,9 +367,15 @@ public:
      */
     void setColorSetting(ColorSetting colorToUse)
     {
-        mColorSetting          = colorToUse;
+        mSettings.colorSetting = colorToUse;
         mIsUpdateProgramNeeded = true;
     }
+
+    /**
+     * @brief Returns the color mode for point rendering.
+     * @return The color mode used.
+     */
+    ColorSetting colorSetting() const { return mSettings.colorSetting; }
 
     /**
      * @brief Sets the shading mode for point rendering.
@@ -314,9 +385,15 @@ public:
      */
     void setShading(Shading shading)
     {
-        mShading               = shading;
+        mSettings.shading      = shading;
         mIsUpdateProgramNeeded = true;
     }
+
+    /**
+     * @brief Returns the shading mode for point rendering.
+     * @return The shading mode used.
+     */
+    Shading shading() const { return mSettings.shading; }
 
     /**
      * @brief Sets the visual shape of each point splat.
@@ -325,9 +402,15 @@ public:
      */
     void setShape(Shape shape)
     {
-        mShape                 = shape;
+        mSettings.shape        = shape;
         mIsUpdateProgramNeeded = true;
     }
+
+    /**
+     * @brief Returns the visual shape of each point splat.
+     * @return The shape of the points.
+     */
+    Shape shape() const { return mSettings.shape; }
 
     /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
@@ -336,24 +419,85 @@ public:
      */
     void setGeneralColor(const Color& generalColor)
     {
-        mGeneralColor = generalColor;
+        mSettings.generalColor = generalColor;
     }
+
+    /**
+     * @brief Returns the general (uniform) color used when color mode is
+     * GENERAL.
+     * @return The general color.
+     */
+    Color generalColor() const { return mSettings.generalColor; }
 
     /**
      * @brief Sets the depth offset applied to the points.
      * @param[in] depthOffset: The depth offset value.
      */
-    void setDepthOffset(float depthOffset) { mDepthOffset = depthOffset; }
+    void setDepthOffset(float depthOffset)
+    {
+        mSettings.depthOffset = depthOffset;
+    }
+
+    /**
+     * @brief Sets the selection color.
+     * @param[in] color: The selection highlight color.
+     */
+    void setSelectionColor(const Color& color)
+    {
+        mSettings.selectionColor = color;
+    }
+
+    /**
+     * @brief Returns the selection color.
+     * @return The selection highlight color.
+     */
+    Color selectionColor() const { return mSettings.selectionColor; }
+
+    /**
+     * @brief Sets whether the selection should be visible.
+     * @param[in] visible: True to visualize selection, false otherwise.
+     */
+    void setSelectionVisibility(bool visible)
+    {
+        mSettings.selectionVisibility = visible;
+        mIsUpdateProgramNeeded        = true;
+    }
+
+    /**
+     * @brief Returns whether the selection visibility is enabled.
+     * @return True if selection visibility is enabled, false otherwise.
+     */
+    bool isSelectionVisible() const { return mSettings.selectionVisibility; }
+
+    /**
+     * @brief Sets all visual settings at once.
+     * @param[in] settings: The settings to apply.
+     */
+    void setSettings(const Settings& settings)
+    {
+        mSettings              = settings;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns the visual settings.
+     * @return The current visual settings.
+     */
+    const Settings& settings() const { return mSettings; }
 
     void draw(bgfx::ViewId viewId) const;
+
+    void drawId(bgfx::ViewId viewId, uint32_t id) const;
 
 private:
     void                checkAndUpdateProgram() const;
     bgfx::ProgramHandle pointsProgramSelector() const;
+    bgfx::ProgramHandle pointsIdProgramSelector() const;
 
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_NORMALS_STAGE   = 1;
     static constexpr uint POINTS_COLORS_STAGE    = 2;
+    static constexpr uint POINTS_SELECTION_STAGE = 3;
 };
 
 } // namespace vcl

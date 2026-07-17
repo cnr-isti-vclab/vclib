@@ -5,20 +5,20 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-// cross section
-$input v_worldPos, v_discardFlag
+$input v_normal, v_texcoord0, v_color, v_selected
 
+#include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
-
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
-#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
-    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#if POINTS_ID_SHAPE_CIRCLE
+    // circle mode (if outside of the circle, discard)
+    vec2 uv = v_texcoord0 * 2.0 - vec2(1.0, 1.0);
+    if (length(uv) > 1.0) {
+        discard;
+    }
+#endif
 
-    /***** render ID to color ******/
-    vec4 color = uintABGRToVec4Color(u_meshId);
-
-    gl_FragColor = color;
+    gl_FragColor = u_pointsId;
 }

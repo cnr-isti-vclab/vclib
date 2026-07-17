@@ -175,6 +175,9 @@ endfunction()
 # and prefixes. It generates a new fragment shader file for each possible combination of the
 # dimensions, and appends the new configuration entry to the `embedded_vf_combo_programs.config` registry.
 #
+# A single `.config` file can contain multiple configuration blocks separated by `ENUM_PREFIX` lines.
+# Each block will independently generate its permutations and append them to the registry.
+#
 # @param CONFIG_FILE The absolute path to the `.config` file to be parsed.
 function(vclib_generate_shaders_from_config CONFIG_FILE)
     if(NOT EXISTS "${CONFIG_FILE}")
@@ -254,6 +257,56 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
             string(STRIP "${LINE}" STRIPPED_LINE)
 
             if("${STRIPPED_LINE}" MATCHES "^ENUM_PREFIX (.+)")
+                # If we already have an ENUM_PREFIX parsed, generate its permutations
+                # before starting the new one
+                if(NOT "${ENUM_PREFIX}" STREQUAL "")
+                    if(NOT FS_FILE AND (NOT FS_IN OR NOT FS_PREFIX))
+                        message(
+                            FATAL_ERROR
+                            "Must provide either FS_FILE or (FS_IN and FS_PREFIX) in ${CONFIG_FILE}"
+                        )
+                    endif()
+                    if(NOT VS_FILE AND (NOT VS_IN OR NOT VS_PREFIX))
+                        message(
+                            FATAL_ERROR
+                            "Must provide either VS_FILE or (VS_IN and VS_PREFIX) in ${CONFIG_FILE}"
+                        )
+                    endif()
+
+                    set(CONFIG_VARS
+                        "${CONFIG_DIR}"
+                        "${FS_IN}"
+                        "${FS_PREFIX}"
+                        "${DEFINE_PREFIX}"
+                        "${COMBO_OUT_FILE}"
+                        "${ENUM_PREFIX}"
+                        "${VS_FILE}"
+                        "${VS_IN}"
+                        "${VS_PREFIX}"
+                        "${FS_FILE}"
+                    )
+
+                    vclib_generate_shader_combinations_recursive(
+                        "${DIMS}"
+                        ""
+                        ""
+                        ""
+                        ""
+                        ""
+                        "${CONFIG_VARS}"
+                    )
+
+                    # Reset variables for the new block
+                    set(DEFINE_PREFIX "")
+                    set(VS_FILE "")
+                    set(FS_FILE "")
+                    set(FS_IN "")
+                    set(FS_PREFIX "")
+                    set(VS_IN "")
+                    set(VS_PREFIX "")
+                    set(DIMS "")
+                    set(CURRENT_DIM "")
+                endif()
                 set(ENUM_PREFIX "${CMAKE_MATCH_1}")
             elseif("${STRIPPED_LINE}" MATCHES "^DEFINE_PREFIX (.+)")
                 set(DEFINE_PREFIX "${CMAKE_MATCH_1}")

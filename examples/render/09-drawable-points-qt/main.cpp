@@ -10,9 +10,11 @@
 #include <vclib/qt/viewer_widget.h>
 
 #include <QCheckBox>
+#include <QColorDialog>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
 
@@ -34,6 +36,12 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
 
         points->setVertices(m.vertices() | vcl::views::positions);
         points->setVertexNormals(m.vertices() | vcl::views::normals);
+
+        std::vector<bool> selections(nPoints);
+        for (vcl::uint i = 0; i < nPoints; ++i) {
+            selections[i] = m.vertex(i).position().x() > 0.3;
+        }
+        points->setVertexSelection(selections);
     }
     else {
         std::vector<vcl::Point3d> positions(nPoints);
@@ -43,6 +51,12 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
         }
 
         points->setVertices(positions);
+
+        std::vector<bool> selections(nPoints);
+        for (vcl::uint i = 0; i < nPoints; ++i) {
+            selections[i] = positions[i].x() > 0.3;
+        }
+        points->setVertexSelection(selections);
     }
 
     std::vector<vcl::Color> colors(nPoints);
@@ -118,9 +132,18 @@ int main(int argc, char** argv)
     shadingLayout->addWidget(rbShadingNone);
     shadingLayout->addWidget(rbShadingPerVertex);
 
+    QGroupBox* selectionGroup = new QGroupBox("Selection");
+    selectionGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+    QHBoxLayout* selectionLayout = new QHBoxLayout(selectionGroup);
+    QCheckBox*   cbShowSelection = new QCheckBox("Show Selection");
+    QPushButton* btnSelectionColor = new QPushButton("Selection Color...");
+    selectionLayout->addWidget(cbShowSelection);
+    selectionLayout->addWidget(btnSelectionColor);
+
     QHBoxLayout* radioLayout = new QHBoxLayout();
     radioLayout->addWidget(shapeGroup);
     radioLayout->addWidget(shadingGroup);
+    radioLayout->addWidget(selectionGroup);
     layout->addLayout(radioLayout);
 
     vcl::qt::ViewerWidget* tw = new vcl::qt::ViewerWidget(&w);
@@ -136,6 +159,7 @@ int main(int argc, char** argv)
     tw->setDrawableObjectVector(vec);
     auto pts = getPoints(vec);
     tslider->setValue(pts->width());
+    cbShowSelection->setChecked(pts->isSelectionVisible());
 
     shadingGroup->setEnabled(pts->hasNormals());
 
@@ -185,6 +209,28 @@ int main(int argc, char** argv)
                 tw->update();
             }
         });
+
+    QObject::connect(cbShowSelection, &QCheckBox::toggled, [=](bool checked) {
+        getPoints(vec)->setSelectionVisibility(checked);
+        tw->update();
+    });
+
+    QObject::connect(btnSelectionColor, &QPushButton::clicked, [=]() {
+        vcl::Color currentSelectionCol = getPoints(vec)->selectionColor();
+        QColor     qtCurrentCol(
+            currentSelectionCol.red(),
+            currentSelectionCol.green(),
+            currentSelectionCol.blue(),
+            currentSelectionCol.alpha());
+
+        QColor col = QColorDialog::getColor(
+            qtCurrentCol, tw, "Select Selection Color", QColorDialog::ShowAlphaChannel);
+        if (col.isValid()) {
+            getPoints(vec)->setSelectionColor(
+                vcl::Color(col.red(), col.green(), col.blue(), 128));
+            tw->update();
+        }
+    });
 
     w.resize(1024, 768);
 
