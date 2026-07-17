@@ -47,10 +47,10 @@ Combo config files can be placed inside the `shaders/vclib` directory and will b
 
 ### Combo Config Syntax
 
-A combo config file must define basic information for prefixes and input files, followed by the dimensions (features) to combine.
+A combo config file can define one or more "combo programs". Each combo program block must begin with the `ENUM_PREFIX` directive, which defines basic information for prefixes and input files, followed by the dimensions (features) to combine. You can declare multiple independent combo programs in the same `.config` file by simply starting a new block with `ENUM_PREFIX`.
 
 **Basic Setup:**
-- `ENUM_PREFIX <Prefix>`: The prefix used for the generated enum names (e.g., `DRAWABLE_MESH_SURFACE`).
+- `ENUM_PREFIX <Prefix>`: The prefix used for the generated enum names (e.g., `DRAWABLE_MESH_SURFACE`). **This directive marks the beginning of a combo program block.**
 - `DEFINE_PREFIX <Prefix>`: The prefix used for the generated macro definitions (e.g., `SURFACE`).
 
 **Vertex Shader:**

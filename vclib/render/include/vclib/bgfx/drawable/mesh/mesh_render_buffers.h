@@ -16,6 +16,7 @@
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/points.h>
 #include <vclib/bgfx/texture.h>
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -47,12 +48,9 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
     VertexBuffer mVertexTangentsBuffer;
 
-    MeshSelectionBuffers mSelection;
+    Points mPoints;
 
-    // point splatting
-    IndexBuffer         mVertexQuadIndexBuffer;
-    DynamicVertexBuffer mVertexQuadBuffer;
-    bool                mVertexQuadBufferGenerated = false;
+    MeshSelectionBuffers mSelection;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -102,9 +100,7 @@ public:
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
         swap(mVertexTangentsBuffer, other.mVertexTangentsBuffer);
-        swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
-        swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
-        swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
+        swap(mPoints, other.mPoints);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
@@ -114,10 +110,14 @@ public:
         swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
 
+
         updateLinesVertexBuffers(*this, mEdgeLines);
         updateLinesVertexBuffers(other, other.mEdgeLines);
         updateLinesVertexBuffers(*this, mWireframeLines);
         updateLinesVertexBuffers(other, other.mWireframeLines);
+
+        updatePointsVertexBuffers(*this, mPoints);
+        updatePointsVertexBuffers(other, other.mPoints);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
@@ -128,34 +128,6 @@ public:
     }
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
-
-    // to generate splats
-    void computeQuadVertexBuffers(
-        const MeshType&    mesh,
-        const bgfx::ViewId viewId)
-    {
-        if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
-            return;
-        }
-
-        // fill the buffer using compute shader
-        mVertexPositionsBuffer.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mVertexNormalsBuffer.bindCompute(
-            VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
-
-        mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
-
-        auto& pm = Context::instance().programManager();
-        bgfx::dispatch(
-            viewId,
-            pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-            mesh.vertexCount(),
-            1,
-            1);
-
-        mVertexQuadBufferGenerated = true;
-    }
 
     // called on computeSelection
     void computeSelection(
@@ -235,21 +207,6 @@ public:
         }
     }
 
-    // to draw splats
-    void bindVertexQuadBuffer() const
-    {
-        mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexQuadIndexBuffer.bind();
-    }
-
-    void bindPointsVertexColorBuffer() const
-    {
-        if (mVertexColorsBuffer.isValid()) {
-            mVertexColorsBuffer.bindCompute(
-                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
-        }
-    }
-
     void bindIndexBuffers(
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
@@ -273,6 +230,10 @@ public:
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
+
+    void drawPoints(uint viewId) const { mPoints.draw(viewId); }
+
+    void drawPointsId(uint viewId, uint32_t id) const { mPoints.drawId(viewId, id); }
 
     /**
      * @brief Binds the textures associated to the material of the given
@@ -377,6 +338,49 @@ public:
         }
     }
 
+    /**
+     * @brief Updates the points primitive settings based on the mesh render settings.
+     *
+     * @param[in] mrs: The mesh render settings to extract point settings from.
+     */
+    void updatePointsSettings(const MeshRenderSettings& mrs)
+    {
+        using enum MeshRenderInfo::Points;
+        using enum Points::ColorSetting;
+
+        mPoints.setSize(mrs.pointWidth());
+        mPoints.setDepthOffset(0.00011f);
+
+        if (mrs.isPoints(SHADING_VERT)) {
+            mPoints.setShading(Points::Shading::PER_VERTEX);
+        }
+        else {
+            mPoints.setShading(Points::Shading::NONE);
+        }
+
+        if (mrs.isPoints(SHAPE_CIRCLE) || mrs.isPoints(SHAPE_SPHERE)) {
+            mPoints.setShape(Points::Shape::CIRCLE);
+        }
+        else {
+            mPoints.setShape(Points::Shape::SQUARE);
+        }
+
+        if (mrs.isPoints(COLOR_USER)) {
+            mPoints.setGeneralColor(mrs.pointUserColor());
+            mPoints.setColorSetting(GENERAL);
+        }
+        else if (mrs.isPoints(COLOR_MESH)) {
+            mPoints.setGeneralColor(mMeshColor);
+            mPoints.setColorSetting(GENERAL);
+        }
+        else if (mrs.isPoints(COLOR_VERTEX)) {
+            mPoints.setColorSetting(PER_VERTEX);
+        }
+
+        mPoints.setSelectionVisibility(mrs.isPoints(SELECTION));
+        mPoints.setSelectionColor(mrs.pointSelectionColor());
+    }
+
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
@@ -395,34 +399,14 @@ private:
             PrimitiveType::FLOAT,
             releaseFn);
 
-        // Creates the buffers to be used with compute for splatting
-        if (Context::instance().supportsCompute()) {
-            // create a layout <coordinates, colors, normals, float>
-            // 2 X vec4
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-                .end();
+        mPoints.setVertices(nv, mVertexPositionsBuffer);
 
-            // create the dynamic vertex buffer for splatting
-            mVertexQuadBuffer.create(
-                mesh.vertexCount() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
+        // create the vertex selection buffer
+        mSelection.initVertexSelectionBitfield(nv);
+        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
 
-            // create the index buffer for splatting
-            setVertexQuadIndexBuffer(mesh);
-
-            // record that the vertex quad buffer must be generated
-            mVertexQuadBufferGenerated = false;
-
-            // create the vertex selection buffer
-            mSelection.initVertexSelectionBitfield(Base::numVerts());
-
-            // create the face selection buffer
-            mSelection.initFaceSelectionBitfield(Base::numTris());
-        }
+        // create the face selection buffer
+        mSelection.initFaceSelectionBitfield(Base::numTris());
 
         mSelection.initReadbackHandler(
             uint(max(double(Base::numVerts()), double(Base::numTris()))));
@@ -431,27 +415,6 @@ private:
     void setVertexSelectionBuffer(const MeshType& mesh) // override
     {
         mSelection.setVertexSelectionFromMesh(mesh);
-    }
-
-    /**
-     * @brief The function allocates and fills a GPU index buffer to render
-     * a quad for each vertex of the mesh.
-     *
-     * @param[in] mesh: the input mesh from which to get the data
-     */
-    void setVertexQuadIndexBuffer(const MeshType& mesh)
-    {
-        const uint totalIndices = mesh.vertexCount() * 6;
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
-
-        Base::fillVertexQuadIndices(mesh, buffer);
-
-        mVertexQuadIndexBuffer.create(buffer, totalIndices, releaseFn);
-
-        // if number of vertices is not zero, the index buffer must be valid
-        assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override
@@ -470,6 +433,7 @@ private:
             3,
             PrimitiveType::FLOAT,
             releaseFn);
+        mPoints.setVertexNormals(nv, mVertexNormalsBuffer);
     }
 
     void setVertexColorsBuffer(const MeshType& mesh) // override
@@ -489,6 +453,7 @@ private:
             PrimitiveType::UCHAR,
             true,
             releaseFn);
+        mPoints.setVertexColors(nv, mVertexColorsBuffer);
     }
 
     void setVertexTexCoordsBuffer(const MeshType& mesh) // override
@@ -817,6 +782,30 @@ private:
         lines.setVertices(nv, mrb.mVertexPositionsBuffer);
         lines.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         lines.setVertexColors(nv, mrb.mVertexColorsBuffer);
+    }
+
+    /**
+     * @brief Updates the internal buffer references in the given Points object.
+     *
+     * This must be called after a swap to update the internal buffer references
+     * in Points. OwnedOrRefBuffer stores a pointer to the VertexBuffer object,
+     * so after swapping MeshRenderBuffers, the pointers in Points would still
+     * point to the other MeshRenderBuffers's members. We must unconditionally
+     * update them, even if they are invalid, to ensure they point to the correct
+     * memory addresses within this object.
+     *
+     * @param[in] mrb: The mesh render buffers object to read vertices from.
+     * @param[in,out] points: The points primitive object to update.
+     */
+    static void updatePointsVertexBuffers(
+        const MeshRenderBuffers<MeshType>& mrb,
+        Points&                             points)
+    {
+        uint nv = mrb.numVerts();
+        points.setVertices(nv, mrb.mVertexPositionsBuffer);
+        points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
+        points.setVertexColors(nv, mrb.mVertexColorsBuffer);
+        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 
     static void createTextureSamplerUniforms()
