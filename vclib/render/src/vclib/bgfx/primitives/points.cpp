@@ -283,13 +283,13 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     uint base = toUnderlying(
         PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF);
 
-    // matrix is generated from points.config
-    // SHADING x COLOR x SHAPE x SELECTION
+    uint offset = linearizeIndex<
+        N_SHADING_MODES,
+        N_COLOR_MODES,
+        N_SHAPE_MODES,
+        N_SELECTION_MODES>(shading, color, shape, select);
 
-    uint program = base +
-                   shading * N_COLOR_MODES * N_SHAPE_MODES * N_SELECTION_MODES +
-                   color * N_SHAPE_MODES * N_SELECTION_MODES +
-                   shape * N_SELECTION_MODES + select;
+    uint program = base + offset;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));

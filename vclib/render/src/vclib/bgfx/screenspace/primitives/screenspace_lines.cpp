@@ -254,6 +254,7 @@ bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
 {
     using enum VertFragProgram;
 
+    constexpr uint N_INDEX_MODES = 2;
     constexpr uint N_TOPO_MODES  = 2;
     constexpr uint N_COLOR_MODES = 3;
 
@@ -264,8 +265,10 @@ bgfx::ProgramHandle ScreenSpaceLines::screenspaceLinesProgramSelector() const
     uint base =
         toUnderlying(SCREENSPACE_LINES_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX);
 
-    uint program = base + indexMode * (N_TOPO_MODES * N_COLOR_MODES) +
-                   topoMode * N_COLOR_MODES + colorMode;
+    uint offset = linearizeIndex<N_INDEX_MODES, N_TOPO_MODES, N_COLOR_MODES>(
+        indexMode, topoMode, colorMode);
+
+    uint program = base + offset;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));
