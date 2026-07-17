@@ -100,7 +100,7 @@ void Points::setVertexColors(uint vColsCount, const VertexBuffer& vertColors)
  * @brief Sets per-point selection state by referencing an existing BooleanBuffer.
  *
  * @param[in] vSelCount: Number of selection states in the BooleanBuffer.
- * @param[in] buffer: The BooleanBuffer containing selection state.
+ * @param[in] vertSels: The BooleanBuffer containing selection state.
  */
 void Points::setSelection(uint vSelCount, const BooleanBuffer& vertSels)
 {

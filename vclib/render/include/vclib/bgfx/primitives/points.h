@@ -304,7 +304,7 @@ public:
         buf.init(mVerSelCount);
 
         uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
-        std::vector<uint8_t> backup(bitNumber / 4, 0);
+        std::vector<uint8_t> backup(bitNumber / 8, 0);
 
         uint                       vidx    = 0;
         uint                       byteIdx = 0;
