@@ -420,17 +420,17 @@ auto findBestOrientationByHeightfieldExteriorVolume(
             bestNormal  = fibNormals[i];
 
             log.setPercentage(i / static_cast<double>(fibNormals.size()) * 100);
-            log << "New best: Plane id: " << i << "/" << fibNormals.size() - 1
-                << ", normal: " << fibNormals[i]
-                << ", volume: " << std::to_string(vol) << "\n";
+            log.info() << "New best: Plane id: " << i << "/"
+                       << fibNormals.size() - 1 << ", normal: " << fibNormals[i]
+                       << ", volume: " << std::to_string(vol);
         }
     }
 
     log.setPercentage(100);
-    log << "Fibonacci planes tested: " << fibNormals.size() << "\n"
-        << "Best plane id: " << bestPlaneId << "\n"
-        << "Best plane normal: " << bestNormal << "\n"
-        << "Minimum volume: " << bestVolume << "\n";
+    log.info() << "Fibonacci planes tested: " << fibNormals.size()
+               << "\nBest plane id: " << bestPlaneId
+               << "\nBest plane normal: " << bestNormal
+               << "\nMinimum volume: " << bestVolume;
     log.endTask("Best orientation found.");
 
     return bestNormal;

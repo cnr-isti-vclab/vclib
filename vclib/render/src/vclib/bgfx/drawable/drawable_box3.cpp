@@ -7,6 +7,8 @@
 
 #include <vclib/bgfx/drawable/drawable_box3.h>
 
+#include <vclib/algorithms/core.h>
+
 namespace vcl {
 
 DrawableBox3::DrawableBox3(const DrawableBox3& other) :

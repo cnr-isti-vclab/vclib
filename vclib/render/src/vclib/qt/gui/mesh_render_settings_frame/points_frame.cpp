@@ -69,6 +69,18 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(valueChanged(int)),
         this,
         SLOT(onSizeChanged(int)));
+
+    connect(
+        mUI->selectionVisibilityCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSelectionVisibilityChanged(Qt::CheckState)));
+
+    connect(
+        mUI->selectionColorDialogPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onSelectionColorChanged(const QColor&)));
 }
 
 PointsFrame::~PointsFrame()
@@ -92,6 +104,9 @@ void PointsFrame::updateFrameFromSettings()
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue((uint) mMRS.pointWidth());
+
+        mUI->selectionVisibilityCheckBox->setEnabled(true);
+        mUI->selectionVisibilityCheckBox->setChecked(mMRS.isPoints(SELECTION));
     }
     else {
         this->setEnabled(false);
@@ -134,6 +149,12 @@ void PointsFrame::updateColorComboBoxFromSettings()
     vcl::Color vc = mMRS.pointUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     mUI->colorDialogPushButton->setBackgroundColor(c);
+    vcl::Color sc = mMRS.pointSelectionColor();
+    c.setRed(sc.red());
+    c.setGreen(sc.green());
+    c.setBlue(sc.blue());
+    c.setAlpha(sc.alpha());
+    mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
 void PointsFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -194,6 +215,19 @@ void PointsFrame::onUserColorChanged(const QColor& c)
 void PointsFrame::onSizeChanged(int value)
 {
     mMRS.setPointsWidth(value);
+    emit settingsUpdated();
+}
+
+void PointsFrame::onSelectionVisibilityChanged(Qt::CheckState arg1)
+{
+    mMRS.setPoints(SELECTION, arg1 == Qt::CheckState::Checked);
+    emit settingsUpdated();
+}
+
+void PointsFrame::onSelectionColorChanged(const QColor& c)
+{
+    // alpha is always 0.5
+    mMRS.setPointSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
     emit settingsUpdated();
 }
 

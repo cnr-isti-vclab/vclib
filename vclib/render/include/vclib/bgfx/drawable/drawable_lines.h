@@ -12,6 +12,8 @@
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/render/drawable/drawable_object.h>
 
+#include <vclib/algorithms/core.h>
+
 #include <bgfx/bgfx.h>
 
 namespace vcl {

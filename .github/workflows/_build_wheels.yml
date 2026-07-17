@@ -12,6 +12,8 @@ jobs:
   bindings_build_wheel:
     name: Bindings - Build Wheel (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    env:
+      VCLIB_WHEEL_BUILD_DIR: ${{ github.workspace }}/build_wheel
     strategy:
       fail-fast: false
       matrix:

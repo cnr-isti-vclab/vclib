@@ -42,7 +42,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 
     PBRViewerSettings mPBRSettings;
 
-    DrawableEnvironment mPanorama = DrawableEnvironment("");
+    std::string         mPanoramaPath;
+    DrawableEnvironment mEnvironment;
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
@@ -68,11 +69,16 @@ public:
         mPBRSettings = settings;
     }
 
-    std::string panoramaFileName() const { return mPanorama.imageFileName(); }
+    std::string panoramaFileName() const
+    {
+        return FileInfo::fileNameWithExtension(mPanoramaPath);
+    }
 
     void setPanorama(const std::string& panorama)
     {
-        mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
+        mPanoramaPath = panorama;
+        Panorama p(panorama);
+        mEnvironment = DrawableEnvironment(p, ParentViewer::canvasViewId());
     }
 
     void onResize(uint width, uint height) override
@@ -100,7 +106,7 @@ public:
 
         settings.pbrSettings = mPBRSettings;
 
-        settings.environment = &mPanorama;
+        settings.environment = &mEnvironment;
 
         setViewTransform(viewId);
 
@@ -110,11 +116,11 @@ public:
         ViewerDrawerUniforms::setExposure(mPBRSettings.exposure);
         ViewerDrawerUniforms::setToneMapping(mPBRSettings.toneMapping);
         ViewerDrawerUniforms::setSpecularMipsLevels(
-            mPanorama.specularMipLevels());
+            mEnvironment.specularMipLevels());
         ViewerDrawerUniforms::bind();
 
         // background will be drawn only if settings allow it
-        mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
+        mEnvironment.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
