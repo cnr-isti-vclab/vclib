@@ -5,21 +5,20 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_texcoord1
+$input v_normal, v_texcoord0, v_color, v_selected
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {
+#if POINTS_ID_SHAPE_CIRCLE
     // circle mode (if outside of the circle, discard)
-    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE))) {
-        if (length(2.0 * v_texcoord1 - vec2(1.0, 1.0)) > 1.0) {
-            discard;
-        }
+    vec2 uv = v_texcoord0 * 2.0 - vec2(1.0, 1.0);
+    if (length(uv) > 1.0) {
+        discard;
     }
-    
-    /***** render ID to color ******/
-    vec4 color = uintABGRToVec4Color(u_meshId);
+#endif
 
-    gl_FragColor = color;
+    gl_FragColor = u_pointsId;
 }
