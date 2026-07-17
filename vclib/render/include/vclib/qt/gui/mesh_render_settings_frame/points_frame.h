@@ -48,6 +48,8 @@ private slots:
     void onColorComboBoxChanged(int index);
     void onUserColorChanged(const QColor& c);
     void onSizeChanged(int value);
+    void onSelectionVisibilityChanged(Qt::CheckState arg1);
+    void onSelectionColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt

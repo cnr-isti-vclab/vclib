@@ -32,5 +32,5 @@ runs:
         
         export VCLIB_USE_CCACHE=1
         python -m pip install --upgrade pip setuptools wheel build
-        python -m build --wheel --outdir dist
+        python -m build --wheel --no-isolation --outdir dist
         deactivate || true

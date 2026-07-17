@@ -243,8 +243,7 @@
             "description": "Python Bindings module",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "OFF",
-                "VCLIB_REQUIRES_QT": "ON",
-                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF"
+                "VCLIB_REQUIRES_QT": "ON"
             }
         },
         {
@@ -259,8 +258,7 @@
             "description": "Python Bindings module",
             "cacheVariables": {
                 "BUILD_SHARED_LIBS": "OFF",
-                "VCLIB_REQUIRES_QT": "ON",
-                "VCLIB_RENDER_BUILD_SHARED_LIB": "OFF"
+                "VCLIB_REQUIRES_QT": "ON"
             }
         },
         {

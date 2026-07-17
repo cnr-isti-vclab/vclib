@@ -654,6 +654,24 @@ protected:
     void setVertexPositionsBuffer(const MeshConcept auto&) {}
 
     /**
+     * @brief Function that sets the content of vertex selection buffer and
+     * sends the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the vertex
+     * selection using the `numVerts()` and `fillVertexSelection()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-vertex
+     * selection since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexSelectionBuffer(const MeshConcept auto&) {}
+
+    /**
      * @brief Function that sets the content of vertex normals buffer and sends
      * the data to the GPU.
      *
@@ -765,6 +783,24 @@ protected:
      * @param[in] mesh: the input mesh from which to get the data
      */
     void setTriangleIndicesBuffer(const FaceMeshConcept auto&) {};
+
+    /**
+     * @brief Function that sets the content of triangle selection buffer and
+     * sends the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the triangle
+     * selection using the `numTris()` and `fillTriangleSelection()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-face selection
+     * since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setTriangleSelectionBuffer(const FaceMeshConcept auto&) {};
 
     /**
      * @brief Function that sets the content of triangle normals buffer and
@@ -999,6 +1035,7 @@ private:
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (positions)
             derived().setVertexPositionsBuffer(mesh);
+            derived().setVertexSelectionBuffer(mesh);
         }
 
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -1049,6 +1086,7 @@ private:
             if (btu[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
                 derived().setTriangleIndicesBuffer(mesh);
+                derived().setTriangleSelectionBuffer(mesh);
             }
 
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {

@@ -11,8 +11,13 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/render/selection/selection_parameters.h>
 #include <vclib/render/settings/cross_section_settings.h>
+
+#include <vclib/algorithms/mesh.h>
 #include <vclib/space/core/matrix.h>
+
+#include <functional>
 
 namespace vcl {
 
@@ -32,6 +37,8 @@ protected:
     CrossSectionSettings mCSS;
 
     Box3d mBoundingBox;
+
+    std::function<void()> mOnSelectionUpdated;
 
 public:
     using MatIt = std::vector<Material>::const_iterator;
@@ -74,6 +81,19 @@ public:
     {
         return EMPTY_IMAGE;
     }
+
+    virtual uint selectedVertexCount() const { return 0; }
+
+    virtual uint selectedFaceCount() const { return 0; }
+
+    virtual void computeSelection(const SelectionParameters& params) {}
+
+    void setOnSelectionUpdatedCallback(std::function<void()> cb)
+    {
+        mOnSelectionUpdated = std::move(cb);
+    }
+
+    virtual bool isSelectionReadbackPending() const { return false; }
 
     // DrawableObject implementation
 

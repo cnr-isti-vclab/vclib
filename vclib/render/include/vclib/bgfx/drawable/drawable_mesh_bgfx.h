@@ -79,6 +79,23 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
+    void computeSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        if constexpr (!HasFaces<MeshType>)
+            if (params.mode.primitive == SelectionPrimitive::FACE)
+                return;
+
+        mMRB.computeSelection(params, modelMatrix().template cast<float>());
+    }
+
+    bool isSelectionReadbackPending() const override
+    {
+        return mMRB.isSelectionReadbackPending();
+    }
+
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -160,6 +177,13 @@ public:
         }
     }
 
+    uint selectedVertexCount() const override
+    {
+        return mMRB.selectedVertexCount();
+    }
+
+    uint selectedFaceCount() const override { return mMRB.selectedFaceCount(); }
+
     // DrawableObject implementation
 
     void init() override {}
@@ -213,6 +237,7 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+                mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
@@ -260,6 +285,7 @@ public:
             if (!Context::instance().supportsCompute()) {
                 // 1 px vertices
                 mMRB.bindVertexBuffers(mMRS);
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -276,6 +302,7 @@ public:
                 // render splats
                 mMRB.bindVertexQuadBuffer();
                 mMRB.bindPointsVertexColorBuffer();
+                mMRB.bindSelectedVerticesBuffer();
                 bindUniforms();
 
                 bgfx::setState(state);
@@ -284,6 +311,12 @@ public:
                 bgfx::submit(
                     settings.additionalViewIds[1],
                     pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+            }
+        }
+
+        if (mMRB.selectionReadback(*this)) {
+            if (mOnSelectionUpdated) {
+                mOnSelectionUpdated();
             }
         }
     }
@@ -458,9 +491,10 @@ protected:
     {
         using enum MeshRenderInfo::Surface;
 
-        uint section = 0;
-        uint shading = 0;
-        uint color   = 0;
+        uint section   = 0;
+        uint shading   = 0;
+        uint color     = 0;
+        uint selection = 0;
 
         if (!mCSS.isEnabled()) {
             section = 1;
@@ -498,20 +532,25 @@ protected:
             color = 5;
         }
 
+        if (!mMRS.isSurface(SELECTION)) {
+            selection = 1;
+        }
+
         constexpr uint N_SECTION_MODES   = 2;
         constexpr uint N_SHADING_MODES   = 4;
         constexpr uint N_COLOR_MODES     = 6;
+        constexpr uint N_SELECTION_MODES = 2;
 
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE);
+                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
 
         // matrix is generated from surface.config:
         // SECTION x SHADING x COLOR x SELECTION
 
-        uint program = base + section * N_SHADING_MODES * N_COLOR_MODES +
-                       shading * N_COLOR_MODES + color;
+        uint program = base + section * N_SHADING_MODES * N_COLOR_MODES * N_SELECTION_MODES +
+                       shading * N_COLOR_MODES * N_SELECTION_MODES + color * N_SELECTION_MODES + selection;
 
         ProgramManager& pm = Context::instance().programManager();
         return pm.getProgram(VertFragProgram(program));

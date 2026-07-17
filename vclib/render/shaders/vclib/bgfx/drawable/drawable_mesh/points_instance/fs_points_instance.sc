@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_normal, v_texcoord0
+$input v_normal, v_texcoord0, v_selected
 
 // cross section
 $input v_worldPos, v_discardFlag
@@ -56,6 +56,14 @@ void main()
         color = u_meshColor;
     }
 
-    // NO depth writing (it kills performance)
-    gl_FragColor = light * color; // + vec4(specular, 0);
+    color = light * color; // + vec4(specular, 0);
+    if (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_DRAW_SELECTION))) {
+        if (v_selected > 0.5) {
+            vec3 tmp =
+                mix(color.rgb, u_selectionPointColor.rgb, u_selectionPointColor.a);
+            color = vec4(tmp, color.a);
+        }
+    }
+    // remember: NO depth writing (it kills performance)
+    gl_FragColor = color;
 }

@@ -13,10 +13,6 @@
 
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
-#include <bx/bx.h>
-#include <bx/file.h>
-#include <bx/math.h>
-#include <bx/readerwriter.h>
 
 namespace vcl {
 
@@ -28,17 +24,10 @@ constexpr uint ceilDiv(uint x, uint d)
 
 static const float VERTICES[9] {-3, -1, 1, 1, -1, 1, 1, 3, 1};
 
-static bx::DefaultAllocator bxAllocator;
-
-DrawableEnvironment::DrawableEnvironment(
-    const std::string& imagePath,
-    uint               viewId)
+DrawableEnvironment::DrawableEnvironment(const Panorama& panorama, uint viewId)
 {
-    bimg::ImageContainer* image = loadImage(imagePath);
-    if (image) {
-        mImagePath = imagePath;
-        setAndGenerateTextures(*image, viewId);
-        bimg::imageFree(image);
+    if (panorama.isValid()) {
+        setAndGenerateTextures(panorama, viewId);
     }
 }
 
@@ -100,107 +89,19 @@ void DrawableEnvironment::bindTexture(
 }
 
 /**
- * @brief Determines the file format of the given image based on its extension.
+ * @brief Sets up the environment textures based on the given panorama.
  *
- * Recognized formats are HDR, EXR, KTX, DDS otherwise the format is marked as
- * UNKNOWN.
+ * This function is called in the constructor after verifying validity.
  *
- * @param[in] imagePath: The path to the image file.
- * @return The determined file format.
- */
-DrawableEnvironment::FileFormat DrawableEnvironment::getFileFormat(
-    const std::string& imagePath)
-{
-    using enum DrawableEnvironment::FileFormat;
-    std::string fmt = vcl::toLower(FileInfo::extension(imagePath));
-
-    if (fmt == ".hdr")
-        return HDR;
-    if (fmt == ".exr")
-        return EXR;
-    if (fmt == ".ktx")
-        return KTX;
-    if (fmt == ".dds")
-        return DDS;
-    return UNKNOWN;
-}
-
-/**
- * @brief Loads the image from the specified file path.
- * @param[in] imagePath: The path to the image file.
- * @return A pointer to the loaded ImageContainer, can be nullptr.
- */
-bimg::ImageContainer* DrawableEnvironment::loadImage(std::string imagePath)
-{
-    /* Code from bimg texturec */
-
-    using enum DrawableEnvironment::FileFormat;
-    FileFormat sourceFormat = getFileFormat(imagePath);
-
-    if (sourceFormat == UNKNOWN)
-        return nullptr;
-
-    bx::Error      err;
-    bx::FileReader reader;
-
-    // open the file
-
-    if (!bx::open(&reader, imagePath.c_str(), &err))
-        return nullptr;
-
-    // read file size and allocate memory
-
-    uint32_t inputSize = (uint32_t) bx::getSize(&reader);
-
-    if (inputSize == 0)
-        return nullptr;
-
-    uint8_t* inputData = (uint8_t*) bx::alloc(&bxAllocator, inputSize);
-
-    // read the file and put it raw in inputData
-
-    uint rd = bx::read(&reader, inputData, inputSize, &err);
-    bx::close(&reader);
-
-    if (!err.isOk() || rd != inputSize) {
-        bx::free(&bxAllocator, inputData);
-        return nullptr;
-    }
-
-    // copy the data in the final container reading its characteristics
-
-    using enum bimg::TextureFormat::Enum;
-
-    bimg::ImageContainer* output =
-        bimg::imageParse(&bxAllocator, inputData, inputSize, RGBA32F, &err);
-
-    bx::free(&bxAllocator, inputData);
-
-    if (!output) {
-        return nullptr;
-    }
-
-    if (!err.isOk() ||
-        (!output->m_cubeMap && sourceFormat != HDR && sourceFormat != EXR)) {
-        // file is neither a cubemap nor an equirectangular map
-        bimg::imageFree(output);
-        return nullptr;
-    }
-
-    return output;
-}
-
-/**
- * @brief Sets up the environment textures based on the given image.
- *
- * This function is called in the constructor after loading the image.
- *
- * @param[in] image: The image container holding the environment map data.
+ * @param[in] panorama: The panorama object containing image data.
+ * @param[in] viewId: The view ID to use for dispatching computes.
  */
 void DrawableEnvironment::setAndGenerateTextures(
-    const bimg::ImageContainer& image,
-    uint                        viewId)
+    const Panorama& panorama,
+    uint            viewId)
 {
+    const bimg::ImageContainer& image = *panorama.image();
+
     // if it's not a cubemap it's equirectangular
     uint cubeSide = image.m_cubeMap ? image.m_width : ceilDiv(image.m_width, 4);
 

@@ -34,6 +34,9 @@ BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
 DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 #endif
 
+// is face selected? 1 bit per triangle (MSb first)
+BUFFER_RO(faceSelected, uint, 6);
+
 void main()
 {
 #ifdef SURFACE_SECTION_ON
@@ -116,5 +119,13 @@ void main()
         color = vec4(0.0, 0.0, 0.0, 1.0);
 #endif
 
-    gl_FragColor = light * color + vec4(specular, 0);
+    color = light * color + vec4(specular, 0);
+#ifdef SURFACE_SELECTION_ON
+        float selWeight =
+            u_selectionSurfaceColor.a * float(getBoolFromBuffer(faceSelected, primitiveID));
+        vec3 tmp = mix(color.rgb, u_selectionSurfaceColor.rgb, selWeight);
+        gl_FragColor = vec4(tmp, color.a);
+#else
+        gl_FragColor = color;
+#endif
 }

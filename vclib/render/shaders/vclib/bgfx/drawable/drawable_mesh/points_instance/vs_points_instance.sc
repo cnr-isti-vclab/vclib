@@ -6,13 +6,16 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 $input a_position, a_normal
-$output v_normal, v_texcoord0
+$output v_normal, v_texcoord0, v_selected
 
 // cross section
 $output v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
+
+// is vertex selected? 1 bit per vertex (MSb first)
+BUFFER_RO(vertex_selected, uint, 4);
 
 void main()
 {
@@ -32,6 +35,9 @@ void main()
 
     // quad parametrization
     v_texcoord0 = quadUv;
+
+    // vertex selection: 4 vertices per point, so point index = gl_VertexID / 4
+    v_selected = float(getBoolFromBuffer(vertex_selected, gl_VertexID / 4));
 
     // discard flag - used to discard the whole vertex, but in fragment shader
     v_discardFlag = computeDiscardFlag(v_worldPos);

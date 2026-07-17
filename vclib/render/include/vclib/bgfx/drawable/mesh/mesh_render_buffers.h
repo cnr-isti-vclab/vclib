@@ -9,18 +9,19 @@
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
 #include "mesh_render_buffers_macros.h"
+#include "mesh_selection_buffers.h"
 
-#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/texture.h>
-#include <vclib/io/image/load.h>
+
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/space/core/image.h>
+
+#include <vclib/io.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
@@ -45,6 +46,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexUVBuffer;
     VertexBuffer mVertexWedgeUVBuffer;
     VertexBuffer mVertexTangentsBuffer;
+
+    MeshSelectionBuffers mSelection;
 
     // point splatting
     IndexBuffer         mVertexQuadIndexBuffer;
@@ -107,10 +110,18 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
+        swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
+
+    uint selectedVertexCount() const
+    {
+        return mSelection.selectedVertexCount();
+    }
+
+    uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
     // to generate splats
     void computeQuadVertexBuffers(
@@ -138,6 +149,37 @@ public:
             1);
 
         mVertexQuadBufferGenerated = true;
+    }
+
+    // called on computeSelection
+    void computeSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
+    {
+        mSelection.computeSelection(
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+    }
+
+    // called on draw
+    template<MeshConcept MeshType>
+    bool selectionReadback(MeshType& m)
+    {
+        return mSelection.selectionReadback(m, Base::triPolyIndexMap());
+    }
+
+    bool isSelectionReadbackPending() const
+    {
+        return mSelection.isSelectionReadbackPending();
+    }
+
+    void bindSelectedVerticesBuffer() const
+    {
+        mSelection.bindSelectedVerticesBuffer();
+    }
+
+    void bindSelectedFacesBuffer() const
+    {
+        mSelection.bindSelectedFacesBuffer();
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -362,7 +404,21 @@ private:
 
             // record that the vertex quad buffer must be generated
             mVertexQuadBufferGenerated = false;
+
+            // create the vertex selection buffer
+            mSelection.initVertexSelectionBitfield(Base::numVerts());
+
+            // create the face selection buffer
+            mSelection.initFaceSelectionBitfield(Base::numTris());
         }
+
+        mSelection.initReadbackHandler(
+            uint(max(double(Base::numVerts()), double(Base::numTris()))));
+    }
+
+    void setVertexSelectionBuffer(const MeshType& mesh) // override
+    {
+        mSelection.setVertexSelectionFromMesh(mesh);
     }
 
     /**
@@ -492,6 +548,18 @@ private:
         nt = Base::numTris();
 
         mTriangleIndexBuffer.create(buffer, nt * 3, releaseFn);
+
+        // Build polygon mapping buffers for polygon-level face selection.
+        // fillTriangleIndices() above has already populated
+        // Base::triPolyIndexMap().
+        if (Context::instance().supportsCompute() && nt > 0) {
+            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
+        }
+    }
+
+    void setTriangleSelectionBuffer(const MeshType& mesh) // override
+    {
+        mSelection.setFaceSelectionFromMesh(mesh, Base::triPolyIndexMap());
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
