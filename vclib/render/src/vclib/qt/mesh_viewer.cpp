@@ -7,12 +7,12 @@
 
 #include <vclib/qt/mesh_viewer.h>
 
+#include "ui_mesh_viewer.h"
+
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-
-#include "ui_mesh_viewer.h"
 
 namespace vcl::qt {
 
@@ -128,6 +128,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(settingsUpdated()),
         this,
         SLOT(meshRenderSettingsUpdated()));
+
+    connect(
+        mUI->meshRenderSettingsFrame,
+        SIGNAL(applyToAllToggled(bool)),
+        this,
+        SLOT(applyToAllToggled(bool)));
 
     // each time that the drawVectorTree changes the visibility of an object,
     // we update the current settings of the RenderSettingsFrame, and we update
@@ -277,8 +283,10 @@ void MeshViewer::updateGUI()
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(selected));
         if (m) {
-            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings(), true);
+            if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings(), true);
+            }
             mUI->meshRenderSettingsFrame->setEnabled(true);
         }
         else {
@@ -305,8 +313,10 @@ void MeshViewer::visibilityDrawableObjectChanged()
         // if it is a AbstractDrawableMesh, we must be sure that its render
         // settings are updated accordingly.
         if (m) {
-            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings());
+            if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings());
+            }
         }
         mUI->viewer->update();
     }
@@ -327,8 +337,10 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
     if (m) {
         // if it is a AbstractDrawableMesh, update the RenderSettingsFrame, and
         // set it enabled
-        mUI->meshRenderSettingsFrame->setMeshRenderSettings(
-            m->renderSettings());
+        if (!mUI->meshRenderSettingsFrame->isApplyToAllEnabled()) {
+            mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings());
+        }
         mUI->meshRenderSettingsFrame->setEnabled(true);
     }
     else {
@@ -357,11 +369,47 @@ void MeshViewer::meshRenderSettingsUpdated()
         // visible only when the selected Object is a AbstractDrawableMesh
         auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
             mDrawableObjectVector->at(i));
-        // get RenderSettings from the RenderSettingsFrame, and set it to the
-        // AbstractDrawableMesh
-        m->setRenderSettings(
-            mUI->meshRenderSettingsFrame->meshRenderSettings());
-        mUI->viewer->update();
+
+        if (m) {
+            bool applyToAll =
+                mUI->meshRenderSettingsFrame->isApplyToAllEnabled();
+            const auto& newSettings =
+                mUI->meshRenderSettingsFrame->meshRenderSettings();
+
+            if (applyToAll) {
+                for (uint j = 0; j < mDrawableObjectVector->size(); ++j) {
+                    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                        mDrawableObjectVector->at(j));
+                    if (mesh) {
+                        MeshRenderSettings rs = mesh->renderSettings();
+                        rs.updateIfCapable(newSettings);
+                        mesh->setRenderSettings(rs);
+                    }
+                }
+            }
+            else {
+                m->setRenderSettings(newSettings);
+            }
+            mUI->viewer->update();
+        }
+    }
+}
+
+void MeshViewer::applyToAllToggled(bool checked)
+{
+    if (!checked) {
+        uint i = mUI->drawVectorTree->selectedDrawableObject();
+        if (i != UINT_NULL && mDrawableObjectVector->size() > 0) {
+            auto m = std::dynamic_pointer_cast<AbstractDrawableMesh>(
+                mDrawableObjectVector->at(i));
+            if (m) {
+                mUI->meshRenderSettingsFrame->setMeshRenderSettings(
+                    m->renderSettings());
+            }
+        }
+    }
+    else {
+        meshRenderSettingsUpdated();
     }
 }
 

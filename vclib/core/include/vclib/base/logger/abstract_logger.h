@@ -25,8 +25,6 @@ namespace vcl {
 class AbstractLogger
 {
 public:
-    // note: these constants have the _LOG suffix to avoid conflicts with some
-    // macros defined in windows.h headers
     enum LogLevel {
         ERROR_LOG = 0,
         WARNING_LOG,
@@ -35,16 +33,31 @@ public:
         DEBUG_LOG
     };
 
+    enum class ProgressMode {
+        TIME,
+        PERCENTAGE
+    };
+
+protected:
+    bool     mIndent                 = true;
+    bool     mPrintPerc              = true;
+    bool     mPrintMsgDuringProgress = true;
+    bool     mPrintTimer             = false;
+    uint     mLineWidth              = 80;
+    LogLevel mPrintLevel             = PROGRESS_LOG;
+
+public:
+
     AbstractLogger()          = default;
     virtual ~AbstractLogger() = default;
 
-    virtual void enableIndentation() = 0;
+    void enableIndentation() { mIndent = true; }
 
-    virtual void disableIndentation() = 0;
+    void disableIndentation() { mIndent = false; }
 
-    virtual void enablePrintPercentage() = 0;
+    void enablePrintPercentage() { mPrintPerc = true; }
 
-    virtual void disablePrintPercentage() = 0;
+    void disablePrintPercentage() { mPrintPerc = false; }
 
     /**
      * @brief Sets the maximum print level of the logger.
@@ -58,19 +71,19 @@ public:
      *
      * @param[in] level: The maximum print level of the logger.
      */
-    virtual void setPrintLevel(LogLevel level) = 0;
+    void setPrintLevel(LogLevel level) { mPrintLevel = level; }
 
-    virtual void enablePrintMessageDuringProgress() = 0;
+    void enablePrintMessageDuringProgress() { mPrintMsgDuringProgress = true; }
 
-    virtual void disablePrintMessageDuringProgress() = 0;
+    void disablePrintMessageDuringProgress() { mPrintMsgDuringProgress = false; }
 
-    virtual void enablePrintTimer() = 0;
+    void enablePrintTimer() { mPrintTimer = true; }
 
-    virtual void disablePrintTimer() = 0;
+    void disablePrintTimer() { mPrintTimer = false; }
 
     virtual void reset() = 0;
 
-    virtual void setMaxLineWidth(uint width) = 0;
+    void setMaxLineWidth(uint width) { mLineWidth = width; }
 
     virtual void startTimer() = 0;
 
@@ -132,42 +145,12 @@ public:
      */
     virtual void log(uint perc, const std::string& msg, LogLevel lvl) = 0;
 
-    /**
-     * @brief Streams a value to the logger.
-     *
-     * Content is buffered internally. The virtual `log(msg)` member function
-     * is called once per complete line (i.e., whenever a `'\n'` character is
-     * encountered in the streamed output).
-     *
-     * Supported for any type that supports `operator<<` with `std::ostream`.
-     *
-     * @param[in] val: The value to stream.
-     * @return A reference to this logger, to allow chaining.
-     */
-    template<typename T>
-    requires requires (std::ostream& os, const T& val) { os << val; }
-    AbstractLogger& operator<<(const T& val)
-    {
-        std::ostringstream ss;
-        ss << val;
-        appendToStreamBuffer(ss.str());
-        return *this;
-    }
+    class LogStreamProxy;
 
-    /**
-     * @brief Handles stream manipulators (e.g. `std::endl`, `std::flush`).
-     *
-     * Flushes the current internal line buffer by calling `log()`, even if no
-     * newline character has been received yet.
-     *
-     * @return A reference to this logger, to allow chaining.
-     */
-    AbstractLogger& operator<<(std::ostream& (*) (std::ostream&) )
-    {
-        log(mStreamBuffer);
-        mStreamBuffer.clear();
-        return *this;
-    }
+    LogStreamProxy error();
+    LogStreamProxy warning();
+    LogStreamProxy info();
+    LogStreamProxy debug();
 
     /**
      * @brief Allows to easily manage progresses with the logger, along with the
@@ -196,15 +179,19 @@ public:
      * @param[in] msg: the message that will be printed during the progress
      * @param[in] progressSize: the number of iterations made during the
      * progress
-     * @param[in] percPrintProgress: interval of percentage on which print a
-     * progress message, default 10%
+     * @param[in] mode: the mode of the progress, either `ProgressMode::TIME` or
+     * `ProgressMode::PERCENTAGE`, default `ProgressMode::TIME`
+     * @param[in] printInterval: interval of time (in seconds) or percentage on
+     * which print a progress message, depending on the `mode` argument, default
+     * 1.0 seconds
      * @param[in] startPerc: start percentage of the progress, default 0%
      * @param[in] endPerc: end percentage of the progress, default 100%
      */
     virtual void startProgress(
         const std::string& msg,
         uint               progressSize,
-        uint               percPrintProgress = 10,
+        ProgressMode       mode              = ProgressMode::TIME,
+        double             printInterval     = 1.0,
         uint               startPerc         = 0,
         uint               endPerc           = 100) = 0;
 
@@ -264,22 +251,72 @@ public:
      */
     virtual void progress(uint n) = 0;
 
-private:
-    std::string mStreamBuffer;
 
-    void appendToStreamBuffer(const std::string& s)
+};
+
+class AbstractLogger::LogStreamProxy
+{
+    AbstractLogger& mLogger;
+    LogLevel        mLevel;
+    std::ostringstream mStream;
+
+public:
+    LogStreamProxy(AbstractLogger& logger, LogLevel level)
+        : mLogger(logger),
+          mLevel(level)
     {
-        for (char c : s) {
-            if (c == '\n') {
-                log(mStreamBuffer);
-                mStreamBuffer.clear();
-            }
-            else {
-                mStreamBuffer += c;
-            }
+    }
+
+    LogStreamProxy(const LogStreamProxy&) = delete;
+    LogStreamProxy& operator=(const LogStreamProxy&) = delete;
+
+    LogStreamProxy(LogStreamProxy&& other) noexcept
+        : mLogger(other.mLogger),
+          mLevel(other.mLevel),
+          mStream(std::move(other.mStream))
+    {
+    }
+
+    ~LogStreamProxy()
+    {
+        if (!mStream.str().empty()) {
+            mLogger.log(mStream.str(), mLevel);
         }
     }
+
+    template<typename T>
+    LogStreamProxy& operator<<(const T& val)
+    {
+        mStream << val;
+        return *this;
+    }
+
+    LogStreamProxy& operator<<(std::ostream& (*manip)(std::ostream&))
+    {
+        mStream << manip;
+        return *this;
+    }
 };
+
+inline AbstractLogger::LogStreamProxy AbstractLogger::error()
+{
+    return LogStreamProxy(*this, ERROR_LOG);
+}
+
+inline AbstractLogger::LogStreamProxy AbstractLogger::warning()
+{
+    return LogStreamProxy(*this, WARNING_LOG);
+}
+
+inline AbstractLogger::LogStreamProxy AbstractLogger::info()
+{
+    return LogStreamProxy(*this, MESSAGE_LOG);
+}
+
+inline AbstractLogger::LogStreamProxy AbstractLogger::debug()
+{
+    return LogStreamProxy(*this, DEBUG_LOG);
+}
 
 /* Concepts */
 

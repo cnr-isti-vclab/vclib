@@ -28,27 +28,7 @@ class NullLogger : public AbstractLogger
 public:
     NullLogger() = default;
 
-    void enableIndentation() override final {}
-
-    void disableIndentation() override final {}
-
-    void enablePrintPercentage() override final {}
-
-    void disablePrintPercentage() override final {}
-
-    void setPrintLevel(LogLevel) override final {}
-
-    void enablePrintMessageDuringProgress() override final {}
-
-    void disablePrintMessageDuringProgress() override final {}
-
-    void enablePrintTimer() override final {}
-
-    void disablePrintTimer() override final {}
-
     void reset() override final {}
-
-    void setMaxLineWidth(uint) override final {}
 
     void startTimer() override final {}
 
@@ -72,8 +52,13 @@ public:
 
     void log(uint, const std::string&, LogLevel) override final {}
 
-    void startProgress(const std::string&, uint, uint = 0, uint = 0, uint = 0)
-        override final
+    void startProgress(
+        const std::string&,
+        uint,
+        ProgressMode = ProgressMode::TIME,
+        double = 1.0,
+        uint = 0,
+        uint = 0) override final
     {
     }
 
