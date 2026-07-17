@@ -33,6 +33,10 @@ class PointsUniforms
         {1.0f, 0.0f, 0.0f, 0.0f};
     inline static Uniform sPointsSettingsUniform;
 
+    inline static std::array<float, 4> sSelectionSettings =
+        {0.0f, 0.0f, 0.0f, 0.0f};
+    inline static Uniform sSelectionSettingsUniform;
+
 public:
     PointsUniforms() = delete;
 
@@ -71,6 +75,15 @@ public:
     }
 
     /**
+     * @brief Sets the selection color for points.
+     * @param color The uniform selection color.
+     */
+    static void setSelectionColor(const vcl::Color& color)
+    {
+        sSelectionSettings[0] = std::bit_cast<float>(color.abgr());
+    }
+
+    /**
      * @brief Binds the uniform to the current bgfx context.
      *
      * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
@@ -82,7 +95,12 @@ public:
         if (!sPointsSettingsUniform.isValid())
             sPointsSettingsUniform =
                 Uniform("u_pointsSettings", bgfx::UniformType::Vec4);
+        if (!sSelectionSettingsUniform.isValid())
+            sSelectionSettingsUniform =
+                Uniform("u_pointsSelectionSettings", bgfx::UniformType::Vec4);
+                
         sPointsSettingsUniform.bind(sPointsSettings.data());
+        sSelectionSettingsUniform.bind(sSelectionSettings.data());
     }
 };
 

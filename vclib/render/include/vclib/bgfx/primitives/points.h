@@ -10,6 +10,9 @@
 
 #include <vclib/bgfx/buffers.h>
 
+#include <vclib/base.h>
+#include <vclib/space/core.h>
+
 namespace vcl {
 
 /**
@@ -49,6 +52,7 @@ private:
     uint mVerPosCount = 0;
     uint mVerNorCount = 0;
     uint mVerColCount = 0;
+    uint mVerSelCount = 0;
 
     float        mWidth        = 1.0f;
     ColorSetting mColorSetting = ColorSetting::GENERAL;
@@ -56,10 +60,13 @@ private:
     Shape        mShape        = Shape::SQUARE;
     Color        mGeneralColor = Color::Black;
     float        mDepthOffset  = 0.0f;
+    Color        mSelectionColor = Color(0x88FF9732, Color::Format::ABGR);
+    bool         mSelectionVisibility = false;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
+    OwnedOrRefBuffer<BooleanBuffer> mSelectionBuffer;
 
     mutable bool                mIsUpdateProgramNeeded = true;
     mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
@@ -282,11 +289,54 @@ public:
         mIsUpdateProgramNeeded = true;
     }
 
+    /**
+     * @brief Sets per-point selection state from a range of booleans.
+     *
+     * @tparam R: Range whose value type is bool.
+     * @param[in] selections: A range of booleans (size must match vertexCount).
+     */
+    template<Range R>
+    requires std::convertible_to<std::ranges::range_value_t<R>, bool>
+    void setVertexSelection(R&& selections)
+    {
+        mVerSelCount = std::ranges::size(selections);
+        BooleanBuffer buf;
+        buf.init(mVerSelCount);
+
+        uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
+        std::vector<uint8_t> backup(bitNumber / 4, 0);
+
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+        
+        for (bool sel : selections) {
+            flags[vidx % 8] = sel;
+            ++vidx;
+
+            if (vidx % 8 == 0) {
+                backup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
+        }
+        
+        if (vidx % 8 != 0) {
+            backup[byteIdx] = flags.underlying();
+        }
+
+        buf.setFromCPUBuffer(backup);
+        mSelectionBuffer.setOwned(std::move(buf));
+        mIsUpdateProgramNeeded = true;
+    }
+
     void setVertices(const uint vertexCount, const VertexBuffer& verts);
 
     void setVertexNormals(uint vNorCount, const VertexBuffer& vertNormals);
 
     void setVertexColors(uint vColsCount, const VertexBuffer& vertColors);
+
+    void setSelection(uint vSelCount, const BooleanBuffer& vertSels);
 
     /**
      * @brief Sets the size of point splats.
@@ -346,6 +396,37 @@ public:
      */
     void setDepthOffset(float depthOffset) { mDepthOffset = depthOffset; }
 
+    /**
+     * @brief Sets the selection color.
+     * @param[in] color: The selection highlight color.
+     */
+    void setSelectionColor(const Color& color)
+    {
+        mSelectionColor = color;
+    }
+
+    /**
+     * @brief Returns the selection color.
+     * @return The selection highlight color.
+     */
+    Color selectionColor() const { return mSelectionColor; }
+
+    /**
+     * @brief Sets whether the selection should be visible.
+     * @param[in] visible: True to visualize selection, false otherwise.
+     */
+    void setSelectionVisibility(bool visible)
+    {
+        mSelectionVisibility   = visible;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns whether the selection visibility is enabled.
+     * @return True if selection visibility is enabled, false otherwise.
+     */
+    bool isSelectionVisible() const { return mSelectionVisibility; }
+
     void draw(bgfx::ViewId viewId) const;
 
     void drawId(bgfx::ViewId viewId, uint32_t id) const;
@@ -358,6 +439,7 @@ private:
     static constexpr uint POINTS_POSITIONS_STAGE = 0;
     static constexpr uint POINTS_NORMALS_STAGE   = 1;
     static constexpr uint POINTS_COLORS_STAGE    = 2;
+    static constexpr uint POINTS_SELECTION_STAGE = 3;
 };
 
 } // namespace vcl

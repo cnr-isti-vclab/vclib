@@ -97,6 +97,19 @@ void Points::setVertexColors(uint vColsCount, const VertexBuffer& vertColors)
 }
 
 /**
+ * @brief Sets per-point selection state by referencing an existing BooleanBuffer.
+ *
+ * @param[in] vSelCount: Number of selection states in the BooleanBuffer.
+ * @param[in] buffer: The BooleanBuffer containing selection state.
+ */
+void Points::setSelection(uint vSelCount, const BooleanBuffer& vertSels)
+{
+    mVerSelCount = vSelCount;
+    mSelectionBuffer.setReferenced(&vertSels);
+    mIsUpdateProgramNeeded = true;
+}
+
+/**
  * @brief Draws the point splats in world space on the specified view.
  *
  * Renders all 3D points as screen-space splats using programmable vertex
@@ -119,6 +132,7 @@ void Points::draw(bgfx::ViewId viewId) const
     PointsUniforms::setWidth(mWidth);
     PointsUniforms::setGeneralColor(mGeneralColor);
     PointsUniforms::setDepthOffset(mDepthOffset);
+    PointsUniforms::setSelectionColor(mSelectionColor);
 
     // Bind the position buffer as a compute buffer (SSBO) for vertex shader
     // access. The point positions are read by the vertex pulling mechanism.
@@ -133,6 +147,11 @@ void Points::draw(bgfx::ViewId viewId) const
     if (mVertexColors.isValid()) {
         mVertexColors.get().bindCompute(
             POINTS_COLORS_STAGE, bgfx::Access::Read);
+    }
+
+    if (mSelectionVisibility) {
+        mSelectionBuffer.get().bind(
+            POINTS_SELECTION_STAGE, bgfx::Access::Read);
     }
 
     bgfx::setVertexCount(mVerPosCount * 6);
@@ -224,6 +243,17 @@ void Points::checkAndUpdateProgram() const
                 "vertices.");
         }
     }
+    
+    if (mSelectionVisibility) {
+        if (!mSelectionBuffer.isValid()) {
+            throw std::runtime_error(
+                "Points: Selection visibility is ON but the selection buffer is invalid.");
+        }
+        if (mVerSelCount != mVerPosCount) {
+            throw std::runtime_error(
+                "Points: The number of selection elements must match the number of vertices.");
+        }
+    }
 
     mProgram               = pointsProgramSelector();
     mIdProgram             = pointsIdProgramSelector();
@@ -242,20 +272,25 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     constexpr uint N_SHADING_MODES = 2;
     constexpr uint N_COLOR_MODES   = 2;
     constexpr uint N_SHAPE_MODES   = 2;
+    constexpr uint N_SELECTION_MODES = 2;
 
     uint shading = toUnderlying(mShading);
     uint color   = toUnderlying(mColorSetting);
     uint shape   = toUnderlying(mShape);
+    uint select  = mSelectionVisibility ? 1 : 0;
 
     // the first shader of all the combinations
     uint base =
-        toUnderlying(PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
+        toUnderlying(PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF);
 
     // matrix is generated from points.config
-    // SHADING x COLOR x SHAPE
+    // SHADING x COLOR x SHAPE x SELECTION
 
-    uint program = base + shading * N_COLOR_MODES * N_SHAPE_MODES +
-                   color * N_SHAPE_MODES + shape;
+    uint program = base + 
+                   shading * N_COLOR_MODES * N_SHAPE_MODES * N_SELECTION_MODES +
+                   color * N_SHAPE_MODES * N_SELECTION_MODES + 
+                   shape * N_SELECTION_MODES +
+                   select;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));
@@ -269,7 +304,7 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
 bgfx::ProgramHandle Points::pointsIdProgramSelector() const
 {
     using enum VertFragProgram;
-
+    
     uint shape = toUnderlying(mShape);
 
     // the first shader of all the combinations

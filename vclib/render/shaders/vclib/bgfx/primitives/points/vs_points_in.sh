@@ -5,9 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$output v_normal, v_texcoord1, v_color
+$output v_normal, v_texcoord0, v_color, v_selected
 
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/buffers/boolean_buffer.sh>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 
 BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
@@ -20,6 +21,10 @@ DECLARE_FETCH_VEC3(fetchNormal, normalsBuffer);
 
 #if POINTS_COLOR_PER_VERTEX
 BUFFER_RO(pointColors, uint, 2); // colors
+#endif
+
+#if POINTS_SELECTION_ON || POINTS_ID_SELECTION_ON
+BUFFER_RO(vertexSelected, uint, 3);
 #endif
 
 void main()
@@ -65,5 +70,9 @@ void main()
 #endif
 
     // Pass UV coordinates to fragment shader
-    v_texcoord1 = quadUv;
+    v_texcoord0 = quadUv;
+
+#if POINTS_SELECTION_ON || POINTS_ID_SELECTION_ON
+    v_selected = float(getBoolFromBuffer(vertexSelected, pointIndex));
+#endif
 }
