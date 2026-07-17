@@ -123,5 +123,22 @@ int main()
     std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)"
               << std::endl;
 
+    // Test multiple materials
+
+    auto damagedHelmet = vcl::loadMesh<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf", loadSettings);
+    vcl::updatePerVertexAndFaceNormals(damagedHelmet);
+
+    saveSettings.binary = false;
+    saveSettings.saveTextureImages = true;
+    vcl::saveMesh(
+        damagedHelmet,
+        VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet.gltf",
+        saveSettings);
+
+    // NOTE: without an emissive texture, it should be rendered with emissive factor [0, 0, 0]
+    // otherwise the material will appear completely white
+    std::cout << "Saved Damaged Helmet in gltf format (ASCII)" << std::endl;
+
     return 0;
 }
