@@ -33,10 +33,7 @@ public:
         DEBUG_LOG
     };
 
-    enum class ProgressMode {
-        TIME,
-        PERCENTAGE
-    };
+    enum class ProgressMode { TIME, PERCENTAGE };
 
 protected:
     bool     mIndent                 = true;
@@ -47,7 +44,6 @@ protected:
     LogLevel mPrintLevel             = PROGRESS_LOG;
 
 public:
-
     AbstractLogger()          = default;
     virtual ~AbstractLogger() = default;
 
@@ -75,7 +71,10 @@ public:
 
     void enablePrintMessageDuringProgress() { mPrintMsgDuringProgress = true; }
 
-    void disablePrintMessageDuringProgress() { mPrintMsgDuringProgress = false; }
+    void disablePrintMessageDuringProgress()
+    {
+        mPrintMsgDuringProgress = false;
+    }
 
     void enablePrintTimer() { mPrintTimer = true; }
 
@@ -190,10 +189,10 @@ public:
     virtual void startProgress(
         const std::string& msg,
         uint               progressSize,
-        ProgressMode       mode              = ProgressMode::TIME,
-        double             printInterval     = 1.0,
-        uint               startPerc         = 0,
-        uint               endPerc           = 100) = 0;
+        ProgressMode       mode          = ProgressMode::TIME,
+        double             printInterval = 1.0,
+        uint               startPerc     = 0,
+        uint               endPerc       = 100) = 0;
 
     /**
      * @brief Allows to easily manage progresses with the logger, along with the
@@ -250,30 +249,26 @@ public:
      * than the `progressSize` argument of the `startProgress` member function.
      */
     virtual void progress(uint n) = 0;
-
-
 };
 
 class AbstractLogger::LogStreamProxy
 {
-    AbstractLogger& mLogger;
-    LogLevel        mLevel;
+    AbstractLogger&    mLogger;
+    LogLevel           mLevel;
     std::ostringstream mStream;
 
 public:
-    LogStreamProxy(AbstractLogger& logger, LogLevel level)
-        : mLogger(logger),
-          mLevel(level)
+    LogStreamProxy(AbstractLogger& logger, LogLevel level) :
+            mLogger(logger), mLevel(level)
     {
     }
 
-    LogStreamProxy(const LogStreamProxy&) = delete;
+    LogStreamProxy(const LogStreamProxy&)            = delete;
     LogStreamProxy& operator=(const LogStreamProxy&) = delete;
 
-    LogStreamProxy(LogStreamProxy&& other) noexcept
-        : mLogger(other.mLogger),
-          mLevel(other.mLevel),
-          mStream(std::move(other.mStream))
+    LogStreamProxy(LogStreamProxy&& other) noexcept :
+            mLogger(other.mLogger), mLevel(other.mLevel),
+            mStream(std::move(other.mStream))
     {
     }
 
@@ -291,7 +286,7 @@ public:
         return *this;
     }
 
-    LogStreamProxy& operator<<(std::ostream& (*manip)(std::ostream&))
+    LogStreamProxy& operator<<(std::ostream& (*manip)(std::ostream&) )
     {
         mStream << manip;
         return *this;

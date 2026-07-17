@@ -110,6 +110,11 @@ MeshViewer::MeshViewer(QWidget* parent) :
         new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
     mUI->toolBar->addWidget(bboxEditorFrame);
 
+    mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
+    SelectionEditorFrame<ViewerType>* selectionEditor =
+        new SelectionEditorFrame<ViewerType>(mSelectionEditor);
+    mUI->toolBar->addWidget(selectionEditor);
+
     disableFocus(mUI->toolBar);
 
     /** Render Settings Frame **/
@@ -275,6 +280,15 @@ void MeshViewer::fitView()
 
 void MeshViewer::updateGUI()
 {
+    for (auto& obj : *mDrawableObjectVector) {
+        auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
+        if (mesh) {
+            mesh->setOnSelectionUpdatedCallback([this]() {
+                mUI->drawVectorTree->updateSelectionCounters();
+            });
+        }
+    }
+
     mUI->drawVectorTree->update();
 
     uint selected = mUI->drawVectorTree->selectedDrawableObject();

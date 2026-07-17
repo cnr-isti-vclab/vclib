@@ -56,9 +56,9 @@ public:
         const std::string&,
         uint,
         ProgressMode = ProgressMode::TIME,
-        double = 1.0,
-        uint = 0,
-        uint = 0) override final
+        double       = 1.0,
+        uint         = 0,
+        uint         = 0) override final
     {
     }
 

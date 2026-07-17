@@ -63,6 +63,18 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onUserColorChanged(const QColor&)));
+
+    connect(
+        mUI->selectionVisibilityCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSelectionVisibilityChanged(Qt::CheckState)));
+
+    connect(
+        mUI->selectionColorDialogPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onSelectionColorChanged(const QColor&)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -78,6 +90,8 @@ void SurfaceFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
         updateColorComboBoxFromSettings();
+        mUI->selectionVisibilityCheckBox->setEnabled(true);
+        mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
     }
     else {
         this->setEnabled(false);
@@ -160,6 +174,12 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     mUI->colorDialogPushButton->setBackgroundColor(c);
+    vcl::Color sc = mMRS.surfaceSelectionColor();
+    c.setRed(sc.red());
+    c.setGreen(sc.green());
+    c.setBlue(sc.blue());
+    c.setAlpha(sc.alpha());
+    mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -217,6 +237,19 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
 void SurfaceFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setSurfaceUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
+}
+
+void SurfaceFrame::onSelectionVisibilityChanged(Qt::CheckState arg1)
+{
+    mMRS.setSurface(SELECTION, arg1 == Qt::CheckState::Checked);
+    emit settingsUpdated();
+}
+
+void SurfaceFrame::onSelectionColorChanged(const QColor& c)
+{
+    // alpha is always 0.5
+    mMRS.setSurfaceSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
     emit settingsUpdated();
 }
 
