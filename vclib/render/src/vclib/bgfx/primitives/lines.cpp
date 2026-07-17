@@ -245,6 +245,7 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
 {
     using enum VertFragProgram;
 
+    constexpr uint N_SHADING_MODES = 3;
     constexpr uint N_INDEX_MODES   = 2;
     constexpr uint N_TOPO_MODES    = 2;
     constexpr uint N_COLOR_MODES   = 3;
@@ -258,13 +259,13 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
     uint base = toUnderlying(
         PRIMITIVE_LINES_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX);
 
-    // matrix is generated from lines.config:
-    // SHADING x INDICES x TOPOLOGY x COLOR
+    uint offset = linearizeIndex<
+        N_SHADING_MODES,
+        N_INDEX_MODES,
+        N_TOPO_MODES,
+        N_COLOR_MODES>(shading, indices, topology, color);
 
-    uint program = base +
-                   shading * N_INDEX_MODES * N_TOPO_MODES * N_COLOR_MODES +
-                   indices * N_TOPO_MODES * N_COLOR_MODES +
-                   topology * N_COLOR_MODES + color;
+    uint program = base + offset;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(static_cast<VertFragProgram>(program));
