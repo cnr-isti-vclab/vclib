@@ -457,11 +457,11 @@ protected:
             VertFragProgram::
                 DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
 
-        // matrix is generated from surface.config:
-        // SHADING x COLOR x SELECTION
+        uint offset =
+            linearizeIndex<N_SHADING_MODES, N_COLOR_MODES, N_SELECTION_MODES>(
+                shading, color, selection);
 
-        uint program = base + shading * N_COLOR_MODES * N_SELECTION_MODES +
-                       color * N_SELECTION_MODES + selection;
+        uint program = base + offset;
 
         ProgramManager& pm = Context::instance().programManager();
         return pm.getProgram(VertFragProgram(program));

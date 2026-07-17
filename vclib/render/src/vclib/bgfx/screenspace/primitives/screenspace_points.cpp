@@ -148,6 +148,7 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
 {
     using enum VertFragProgram;
 
+    constexpr uint N_COLOR_MODES = 2;
     constexpr uint N_SHAPE_MODES = 2;
 
     uint colorMode = toUnderlying(mColorSetting);
@@ -155,7 +156,10 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
 
     uint base = toUnderlying(SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_SQUARE);
 
-    uint program = base + colorMode * N_SHAPE_MODES + shapeMode;
+    uint offset =
+        linearizeIndex<N_COLOR_MODES, N_SHAPE_MODES>(colorMode, shapeMode);
+
+    uint program = base + offset;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));
