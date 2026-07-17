@@ -366,6 +366,7 @@ public:
     {
         mEdgeLines.crossSectionSettings() = css;
         mWireframeLines.crossSectionSettings() = css;
+        mPoints.setCrossSectionSettings(css);
     }
 
 private:
