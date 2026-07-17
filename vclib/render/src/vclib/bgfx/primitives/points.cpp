@@ -97,7 +97,8 @@ void Points::setVertexColors(uint vColsCount, const VertexBuffer& vertColors)
 }
 
 /**
- * @brief Sets per-point selection state by referencing an existing BooleanBuffer.
+ * @brief Sets per-point selection state by referencing an existing
+ * BooleanBuffer.
  *
  * @param[in] vSelCount: Number of selection states in the BooleanBuffer.
  * @param[in] vertSels: The BooleanBuffer containing selection state.
@@ -129,10 +130,10 @@ void Points::draw(bgfx::ViewId viewId) const
     checkAndUpdateProgram();
 
     // Upload rendering settings to the shader via uniform.
-    PointsUniforms::setWidth(mWidth);
-    PointsUniforms::setGeneralColor(mGeneralColor);
-    PointsUniforms::setDepthOffset(mDepthOffset);
-    PointsUniforms::setSelectionColor(mSelectionColor);
+    PointsUniforms::setWidth(mSettings.width);
+    PointsUniforms::setGeneralColor(mSettings.generalColor);
+    PointsUniforms::setDepthOffset(mSettings.depthOffset);
+    PointsUniforms::setSelectionColor(mSettings.selectionColor);
 
     // Bind the position buffer as a compute buffer (SSBO) for vertex shader
     // access. The point positions are read by the vertex pulling mechanism.
@@ -149,9 +150,8 @@ void Points::draw(bgfx::ViewId viewId) const
             POINTS_COLORS_STAGE, bgfx::Access::Read);
     }
 
-    if (mSelectionVisibility) {
-        mSelectionBuffer.get().bind(
-            POINTS_SELECTION_STAGE, bgfx::Access::Read);
+    if (mSettings.selectionVisibility) {
+        mSelectionBuffer.get().bind(POINTS_SELECTION_STAGE, bgfx::Access::Read);
     }
 
     bgfx::setVertexCount(mVerPosCount * 6);
@@ -172,9 +172,7 @@ void Points::draw(bgfx::ViewId viewId) const
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  * @param[in] id: The ID to render the points with.
  */
-void Points::drawId(
-    bgfx::ViewId viewId,
-    uint32_t     id) const
+void Points::drawId(bgfx::ViewId viewId, uint32_t id) const
 {
     // Skip rendering if there are no vertices or the position buffer is invalid
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
@@ -184,8 +182,8 @@ void Points::drawId(
     checkAndUpdateProgram();
 
     // Upload rendering settings to the shader via uniform.
-    PointsUniforms::setWidth(mWidth);
-    PointsUniforms::setDepthOffset(mDepthOffset);
+    PointsUniforms::setWidth(mSettings.width);
+    PointsUniforms::setDepthOffset(mSettings.depthOffset);
     PointsUniforms::setId(id);
 
     // Bind the position buffer as a compute buffer (SSBO) for vertex shader
@@ -219,7 +217,7 @@ void Points::checkAndUpdateProgram() const
         return;
     }
 
-    if (mColorSetting == ColorSetting::PER_VERTEX) {
+    if (mSettings.colorSetting == ColorSetting::PER_VERTEX) {
         if (!mVertexColors.isValid()) {
             throw std::runtime_error(
                 "Points: PER_VERTEX color setting requires a valid vertex "
@@ -231,7 +229,7 @@ void Points::checkAndUpdateProgram() const
                 "vertices.");
         }
     }
-    if (mShading == Shading::PER_VERTEX) {
+    if (mSettings.shading == Shading::PER_VERTEX) {
         if (!mVertexNormals.isValid()) {
             throw std::runtime_error(
                 "Points: PER_VERTEX shading setting requires a valid vertex "
@@ -243,15 +241,17 @@ void Points::checkAndUpdateProgram() const
                 "vertices.");
         }
     }
-    
-    if (mSelectionVisibility) {
+
+    if (mSettings.selectionVisibility) {
         if (!mSelectionBuffer.isValid()) {
             throw std::runtime_error(
-                "Points: Selection visibility is ON but the selection buffer is invalid.");
+                "Points: Selection visibility is ON but the selection buffer "
+                "is invalid.");
         }
         if (mVerSelCount != mVerPosCount) {
             throw std::runtime_error(
-                "Points: The number of selection elements must match the number of vertices.");
+                "Points: The number of selection elements must match the "
+                "number of vertices.");
         }
     }
 
@@ -269,47 +269,47 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
 {
     using enum VertFragProgram;
 
-    constexpr uint N_SHADING_MODES = 2;
-    constexpr uint N_COLOR_MODES   = 2;
-    constexpr uint N_SHAPE_MODES   = 2;
+    constexpr uint N_SHADING_MODES   = 2;
+    constexpr uint N_COLOR_MODES     = 2;
+    constexpr uint N_SHAPE_MODES     = 2;
     constexpr uint N_SELECTION_MODES = 2;
 
-    uint shading = toUnderlying(mShading);
-    uint color   = toUnderlying(mColorSetting);
-    uint shape   = toUnderlying(mShape);
-    uint select  = mSelectionVisibility ? 1 : 0;
+    uint shading = toUnderlying(mSettings.shading);
+    uint color   = toUnderlying(mSettings.colorSetting);
+    uint shape   = toUnderlying(mSettings.shape);
+    uint select  = mSettings.selectionVisibility ? 1 : 0;
 
     // the first shader of all the combinations
-    uint base =
-        toUnderlying(PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF);
+    uint base = toUnderlying(
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF);
 
     // matrix is generated from points.config
     // SHADING x COLOR x SHAPE x SELECTION
 
-    uint program = base + 
+    uint program = base +
                    shading * N_COLOR_MODES * N_SHAPE_MODES * N_SELECTION_MODES +
-                   color * N_SHAPE_MODES * N_SELECTION_MODES + 
-                   shape * N_SELECTION_MODES +
-                   select;
+                   color * N_SHAPE_MODES * N_SELECTION_MODES +
+                   shape * N_SELECTION_MODES + select;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));
 }
 
 /**
- * @brief Selects the correct bgfx shader program for ID picking based on current settings.
+ * @brief Selects the correct bgfx shader program for ID picking based on
+ * current settings.
  *
  * @return The appropriate bgfx::ProgramHandle for the current configuration.
  */
 bgfx::ProgramHandle Points::pointsIdProgramSelector() const
 {
     using enum VertFragProgram;
-    
-    uint shape = toUnderlying(mShape);
+
+    uint shape = toUnderlying(mSettings.shape);
 
     // the first shader of all the combinations
-    uint base =
-        toUnderlying(PRIMITIVE_POINTS_ID_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
+    uint base = toUnderlying(
+        PRIMITIVE_POINTS_ID_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
 
     uint program = base + shape;
 

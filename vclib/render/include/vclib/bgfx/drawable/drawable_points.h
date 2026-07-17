@@ -56,15 +56,12 @@ public:
      */
     DrawablePoints(const DrawablePoints& other) :
             DrawableObject(other),
-            Points(other.mPositions, other.mNormals, other.mColors),
+            Points(other.mPositions, other.mNormals, other.mColors, other.mSelections),
             mVisible(other.mVisible), mPositions(other.mPositions),
             mNormals(other.mNormals), mColors(other.mColors),
             mSelections(other.mSelections)
     {
-        if (!mSelections.empty()) {
-            Points::setVertexSelection(mSelections);
-        }
-        Points::setSelectionVisibility(other.isSelectionVisible());
+        Points::setSettings(other.settings());
     }
 
     /**
