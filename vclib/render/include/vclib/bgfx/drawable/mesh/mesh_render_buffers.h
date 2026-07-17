@@ -357,6 +357,9 @@ public:
         else if (mrs.isPoints(COLOR_VERTEX)) {
             mPoints.setColorSetting(PER_VERTEX);
         }
+
+        mPoints.setSelectionVisibility(mrs.isPoints(SELECTION));
+        mPoints.setSelectionColor(mrs.pointSelectionColor());
     }
 
 private:
@@ -381,6 +384,7 @@ private:
 
         // create the vertex selection buffer
         mSelection.initVertexSelectionBitfield(nv);
+        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
 
         // create the face selection buffer
         mSelection.initFaceSelectionBitfield(Base::numTris());
@@ -828,6 +832,7 @@ private:
         points.setVertices(nv, mrb.mVertexPositionsBuffer);
         points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
+        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 
     static void createTextureSamplerUniforms()
