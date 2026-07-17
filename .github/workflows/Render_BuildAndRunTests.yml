@@ -51,6 +51,9 @@ jobs:
       with:
         key: render-${{ matrix.os }}-${{matrix.render_backend}}
         max-size: 1G
+    - name: Build and Install bgfx
+      if: matrix.render_backend == 'bgfx'
+      uses: ./.github/actions/build-install-bgfx
     - name: Build
       shell: bash
       run: |
