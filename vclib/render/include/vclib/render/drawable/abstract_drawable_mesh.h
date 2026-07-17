@@ -13,6 +13,7 @@
 
 #include <vclib/render/selection/selection_parameters.h>
 
+#include <vclib/algorithms/mesh.h>
 #include <vclib/space/core/matrix.h>
 
 #include <functional>
