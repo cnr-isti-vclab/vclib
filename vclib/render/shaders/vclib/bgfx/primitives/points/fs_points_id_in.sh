@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_normal, v_texcoord0, v_color
+$input v_normal, v_texcoord0, v_color, v_selected
 
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
