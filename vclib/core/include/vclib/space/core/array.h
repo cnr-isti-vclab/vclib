@@ -558,14 +558,12 @@ public:
 private:
     std::size_t getIndex(const std::size_t indices[]) const
     {
-        std::size_t ind = indices[0];
-        assert(indices[0] < mSizes[0]);
-        for (uint i = 1; i < N; i++) {
+#ifndef NDEBUG
+        for (uint i = 0; i < N; i++) {
             assert(indices[i] < mSizes[i]);
-            ind *= mSizes[i];
-            ind += indices[i];
         }
-        return ind;
+#endif
+        return linearizeIndex(mSizes.data(), indices, N);
     }
 
     std::array<std::size_t, N> reverseIndex(uint index)
@@ -582,14 +580,12 @@ private:
         const std::size_t indices[],
         const std::size_t sizes[])
     {
-        std::size_t ind = indices[0];
-        assert(indices[0] < sizes[0]);
-        for (uint i = 1; i < N; i++) {
+#ifndef NDEBUG
+        for (uint i = 0; i < N; i++) {
             assert(indices[i] < sizes[i]);
-            ind *= sizes[i];
-            ind += indices[i];
         }
-        return ind;
+#endif
+        return linearizeIndex(sizes, indices, N);
     }
 
     void initializeNestedLists(NestedInitializerLists<T, N> values)
