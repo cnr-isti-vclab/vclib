@@ -24,9 +24,7 @@ constexpr uint ceilDiv(uint x, uint d)
 
 static const float VERTICES[9] {-3, -1, 1, 1, -1, 1, 1, 3, 1};
 
-DrawableEnvironment::DrawableEnvironment(
-    const Panorama& panorama,
-    uint            viewId)
+DrawableEnvironment::DrawableEnvironment(const Panorama& panorama, uint viewId)
 {
     if (panorama.isValid()) {
         setAndGenerateTextures(panorama, viewId);

@@ -52,8 +52,7 @@ public:
         mBoundingBoxEditor =
             Base::template pushEditor<vcl::BoundingBoxEditor>();
 
-        mSelectionEditor =
-            Base::template pushEditor<vcl::SelectionEditor>();
+        mSelectionEditor = Base::template pushEditor<vcl::SelectionEditor>();
     }
 
     virtual void onDraw(vcl::uint viewId) override
@@ -268,7 +267,7 @@ private:
                 std::any_cast<bool>(selSettings.customSettings["selectFaces"]);
 
             if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
-                vSel = !vSel;
+                vSel                                         = !vSel;
                 selSettings.customSettings["selectVertices"] = vSel;
                 mSelectionEditor->setActive(vSel || fSel);
                 mSelectionEditor->refreshSettings();
@@ -278,7 +277,7 @@ private:
 
             ImGui::SameLine(0, 2);
             if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
-                fSel = !fSel;
+                fSel                                      = !fSel;
                 selSettings.customSettings["selectFaces"] = fSel;
                 mSelectionEditor->setActive(vSel || fSel);
                 mSelectionEditor->refreshSettings();
@@ -322,8 +321,7 @@ private:
                 if (n == 0 || n == 3)
                     ImGui::BeginDisabled();
                 if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode =
-                        static_cast<EditorSettings::EditMode>(n);
+                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
                     mSelectionEditor->refreshSettings();
                 }
                 if (n == 0 || n == 3)
@@ -340,7 +338,9 @@ private:
             std::any_cast<bool>(sts.customSettings["onlyVisible"]);
         ImGui::Checkbox(
             "Only Visible Faces",
-            [&] { return onlyVisible; },
+            [&] {
+                return onlyVisible;
+            },
             [&](bool v) {
                 sts.customSettings["onlyVisible"] = v;
                 mSelectionEditor->refreshSettings();
@@ -701,7 +701,7 @@ private:
         // color
         const uint CS_COUNT =
             toUnderlying(COLOR_USER) - toUnderlying(COLOR_VERTEX) + 1;
-             // exclude shading and selection options
+        // exclude shading and selection options
 
         ImGui::Text("Color:");
         ImGui::SameLine();

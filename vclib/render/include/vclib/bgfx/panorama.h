@@ -12,7 +12,7 @@
 
 namespace bimg {
 struct ImageContainer;
-}
+} // namespace bimg
 
 namespace vcl {
 
@@ -68,8 +68,10 @@ public:
     FileFormat format() const { return mFormat; }
 
 private:
-    static FileFormat getFileFormat(const std::string& imagePath);
-    static bimg::ImageContainer* loadImage(const std::string& imagePath, FileFormat format);
+    static FileFormat            getFileFormat(const std::string& imagePath);
+    static bimg::ImageContainer* loadImage(
+        const std::string& imagePath,
+        FileFormat         format);
 };
 
 } // namespace vcl

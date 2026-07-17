@@ -1,32 +1,17 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 
 #include "mesh_render_buffers_macros.h"
 
-#include <vclib/bgfx/buffers/boolean_buffer.h>
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/buffers/boolean_buffer.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/selection_uniforms.h>
 #include <vclib/bgfx/read_from_gpu_buffer.h>
@@ -67,8 +52,8 @@ namespace vcl {
 class MeshSelectionBuffers
 {
     BooleanBuffer       mVertexSelection;
-    uint                mNumSelectedVertices          = 0;
-    std::array<uint, 3> mVertexSelectionWorkgroupSize = {0, 0, 0};
+    uint                mNumSelectedVertices                = 0;
+    std::array<uint, 3> mVertexSelectionWorkgroupSize       = {0, 0, 0};
     std::array<uint, 3> mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
 
     // face selection (invalid if mesh has no faces)
@@ -647,23 +632,15 @@ public:
         return 2;
     }
 
-
-
     // ---- State queries --------------------------------------------------
 
     uint selectedVertexCount() const { return mNumSelectedVertices; }
 
     uint selectedFaceCount() const { return mNumSelectedFaces; }
 
-    bool hasVertexSelectionBuffer() const
-    {
-        return mVertexSelection.isValid();
-    }
+    bool hasVertexSelectionBuffer() const { return mVertexSelection.isValid(); }
 
-    bool hasFaceSelectionBuffer() const
-    {
-        return mFaceSelection.isValid();
-    }
+    bool hasFaceSelectionBuffer() const { return mFaceSelection.isValid(); }
 
     // ---- Bind -----------------------------------------------------------
 
@@ -729,7 +706,8 @@ private:
         SelectionUniforms::setSelectionBox(params.box);
         SelectionUniforms::setSelectionWorkgroupSize(
             mVertexSelectionWorkgroupSize);
-        SelectionUniforms::setNumPrimitivesForSelection(mVertexSelection.size());
+        SelectionUniforms::setNumPrimitivesForSelection(
+            mVertexSelection.size());
         SelectionUniforms::bind();
         mVertexSelection.bind(4, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
@@ -866,8 +844,6 @@ private:
             mFaceSelectionWorkgroupSize[2]);
     }
 
-
-
     bgfx::ProgramHandle getComputeProgramFromSelectionMode(
         ProgramManager& pm,
         SelectionMode   mode) const
@@ -947,8 +923,9 @@ private:
             mVertexSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
-        mVertexSelectionWorkgroupSize = workGroupSizesFrom1DSize(mVertexSelection.size());
-        mVertexSelectionAtomicWorkgroupSize = 
+        mVertexSelectionWorkgroupSize =
+            workGroupSizesFrom1DSize(mVertexSelection.size());
+        mVertexSelectionAtomicWorkgroupSize =
             workGroupSizesFrom1DSize(mVertexSelection.bufferSize());
     }
 
@@ -959,7 +936,8 @@ private:
             mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
             return;
         }
-        mFaceSelectionWorkgroupSize = workGroupSizesFrom1DSize(mFaceSelection.size());
+        mFaceSelectionWorkgroupSize =
+            workGroupSizesFrom1DSize(mFaceSelection.size());
         mFaceSelectionAtomicWorkgroupSize =
             workGroupSizesFrom1DSize(mFaceSelection.bufferSize());
     }

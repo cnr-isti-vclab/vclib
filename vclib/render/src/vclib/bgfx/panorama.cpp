@@ -11,11 +11,11 @@
 
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
+#include <bx/allocator.h>
 #include <bx/bx.h>
 #include <bx/file.h>
 #include <bx/math.h>
 #include <bx/readerwriter.h>
-#include <bx/allocator.h>
 
 namespace vcl {
 
@@ -23,7 +23,7 @@ static bx::DefaultAllocator bxAllocator;
 
 Panorama::Panorama(const std::string& imagePath) : mImagePath(imagePath)
 {
-    mFormat = getFileFormat(imagePath);
+    mFormat         = getFileFormat(imagePath);
     mImageContainer = loadImage(imagePath, mFormat);
 }
 
@@ -74,7 +74,9 @@ Panorama::FileFormat Panorama::getFileFormat(const std::string& imagePath)
     return UNKNOWN;
 }
 
-bimg::ImageContainer* Panorama::loadImage(const std::string& imagePath, FileFormat format)
+bimg::ImageContainer* Panorama::loadImage(
+    const std::string& imagePath,
+    FileFormat         format)
 {
     using enum Panorama::FileFormat;
 
@@ -117,8 +119,7 @@ bimg::ImageContainer* Panorama::loadImage(const std::string& imagePath, FileForm
         return nullptr;
     }
 
-    if (!err.isOk() ||
-        (!output->m_cubeMap && format != HDR && format != EXR)) {
+    if (!err.isOk() || (!output->m_cubeMap && format != HDR && format != EXR)) {
         // file is neither a cubemap nor an equirectangular map
         bimg::imageFree(output);
         return nullptr;

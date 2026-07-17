@@ -93,7 +93,8 @@ void DrawableObjectVectorTree::update()
 void DrawableObjectVectorTree::updateSelectionCounters()
 {
     for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
-        auto item = dynamic_cast<DrawableObjectItem*>(mUI->treeWidget->topLevelItem(i));
+        auto item =
+            dynamic_cast<DrawableObjectItem*>(mUI->treeWidget->topLevelItem(i));
         if (item) {
             item->updateMeshInfo();
         }

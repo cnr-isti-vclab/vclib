@@ -46,7 +46,10 @@ private:
         QTreeWidgetItem*            parent);
 
     static void makeItemNotSelectable(QTreeWidgetItem* item);
-    static void updateElementCountItem(QTreeWidgetItem* item, uint count, uint selectedCount);
+    static void updateElementCountItem(
+        QTreeWidgetItem* item,
+        uint             count,
+        uint             selectedCount);
 };
 
 } // namespace vcl::qt

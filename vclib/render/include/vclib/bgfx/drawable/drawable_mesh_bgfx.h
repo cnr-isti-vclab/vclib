@@ -83,7 +83,7 @@ public:
         if (!isVisible()) {
             return;
         }
-        if constexpr(!HasFaces<MeshType>)
+        if constexpr (!HasFaces<MeshType>)
             if (params.mode.primitive == SelectionPrimitive::FACE)
                 return;
 
@@ -462,8 +462,8 @@ protected:
     {
         using enum MeshRenderInfo::Surface;
 
-        uint shading = 0;
-        uint color   = 0;
+        uint shading   = 0;
+        uint color     = 0;
         uint selection = 0;
 
         if (mMRS.isSurface(SHADING_FLAT)) {

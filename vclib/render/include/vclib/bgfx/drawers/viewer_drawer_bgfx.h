@@ -42,7 +42,7 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 
     PBRViewerSettings mPBRSettings;
 
-    std::string mPanoramaPath;
+    std::string         mPanoramaPath;
     DrawableEnvironment mEnvironment;
 
 public:

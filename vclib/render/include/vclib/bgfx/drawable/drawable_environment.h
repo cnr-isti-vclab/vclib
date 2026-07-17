@@ -9,10 +9,10 @@
 #define VCL_BGFX_DRAWABLE_DRAWABLE_ENVIRONMENT_H
 
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/panorama.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
-#include <vclib/bgfx/panorama.h>
 
 #include <vclib/base.h>
 
@@ -96,7 +96,8 @@ public:
     /**
      * @brief Constructor that initializes the environment from a Panorama.
      * @param[in] panorama: The panorama image data.
-     * @param[in] viewId: The view ID to use for compute shaders during initialization.
+     * @param[in] viewId: The view ID to use for compute shaders during
+     * initialization.
      */
     DrawableEnvironment(const Panorama& panorama, uint viewId = UINT_NULL);
 

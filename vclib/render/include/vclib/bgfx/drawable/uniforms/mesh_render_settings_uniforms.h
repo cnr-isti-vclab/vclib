@@ -90,7 +90,8 @@ public:
         if (!sWidthUniform.isValid())
             sWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
         if (!sColorUniform.isValid())
-            sColorUniform = Uniform("u_mrsColorPack", bgfx::UniformType::Vec4, 2);
+            sColorUniform =
+                Uniform("u_mrsColorPack", bgfx::UniformType::Vec4, 2);
         sDrawModeUniform.bind(sDrawPack.data());
         sWidthUniform.bind(sWidthPack.data());
         sColorUniform.bind(sColorPack.data(), 2);
