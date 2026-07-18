@@ -55,8 +55,11 @@ public:
      * @brief Copy constructor. Creates a deep copy of the point set.
      */
     DrawablePoints(const DrawablePoints& other) :
-            DrawableObject(other),
-            Points(other.mPositions, other.mNormals, other.mColors, other.mSelections),
+            DrawableObject(other), Points(
+                                       other.mPositions,
+                                       other.mNormals,
+                                       other.mColors,
+                                       other.mSelections),
             mVisible(other.mVisible), mPositions(other.mPositions),
             mNormals(other.mNormals), mColors(other.mColors),
             mSelections(other.mSelections)

@@ -642,7 +642,10 @@ public:
 
     bool hasFaceSelectionBuffer() const { return mFaceSelection.isValid(); }
 
-    const BooleanBuffer& vertexSelectionBuffer() const { return mVertexSelection; }
+    const BooleanBuffer& vertexSelectionBuffer() const
+    {
+        return mVertexSelection;
+    }
 
     // ---- Bind -----------------------------------------------------------
 
