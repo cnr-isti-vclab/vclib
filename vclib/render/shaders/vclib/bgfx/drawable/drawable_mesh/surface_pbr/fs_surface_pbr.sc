@@ -31,8 +31,8 @@ BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
 DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 
-SAMPLERCUBE(s_irradiance, 10);
-SAMPLERCUBE(s_specular, 11);
+SAMPLERCUBE(s_irradiance, 9);
+SAMPLERCUBE(s_specular, 10);
 
 void main()
 {

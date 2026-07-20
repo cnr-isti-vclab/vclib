@@ -19,7 +19,7 @@ restore next lines with:
 SAMPLERCUBE(s_env0, VCL_MRB_CUBEMAP0);
 */
 // textures
-SAMPLERCUBE(s_env0, 10);
+SAMPLERCUBE(s_env0, 9);
 
 void main()
 {
