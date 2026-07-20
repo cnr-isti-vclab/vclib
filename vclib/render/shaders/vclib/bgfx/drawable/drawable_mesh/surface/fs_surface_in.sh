@@ -21,6 +21,9 @@ BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of 
 BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
 */
 
+// is face selected? 1 bit per triangle (MSb first)
+BUFFER_RO(faceSelected, uint, 12);
+
 #ifdef SURFACE_COLOR_FACE
 BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 #endif
@@ -29,9 +32,6 @@ BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
 DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
 #endif
-
-// is face selected? 1 bit per triangle (MSb first)
-BUFFER_RO(faceSelected, uint, 6);
 
 void main()
 {

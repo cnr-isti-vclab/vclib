@@ -778,7 +778,8 @@ private:
             mFaceSelectionWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(mFaceSelection.size());
         SelectionUniforms::bind();
-        mFaceSelection.bind(6, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(
+            VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);
