@@ -81,6 +81,7 @@ private:
 
     mutable bool mIsUpdateProgramNeeded = true;
     mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
+    mutable bgfx::ProgramHandle mIdProgram = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -514,10 +515,13 @@ public:
 
     void draw(bgfx::ViewId viewId) const;
 
+    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+
 private:
     void checkAndUpdateProgram() const;
     uint vertexPullingInstances() const;
     bgfx::ProgramHandle linesProgramSelector() const;
+    bgfx::ProgramHandle linesIdProgramSelector() const;
 
     static constexpr uint V_POS_STAGE = 0;
     static constexpr uint V_COL_STAGE = 1;

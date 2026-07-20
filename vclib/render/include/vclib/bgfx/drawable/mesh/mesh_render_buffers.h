@@ -229,7 +229,17 @@ public:
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
 
+    void drawEdgeLinesId(uint viewId, uint32_t id) const
+    {
+        mEdgeLines.drawId(viewId, id);
+    }
+
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
+
+    void drawWireframeLinesId(uint viewId, uint32_t id) const
+    {
+        mWireframeLines.drawId(viewId, id);
+    }
 
     void drawPoints(uint viewId) const { mPoints.draw(viewId); }
 

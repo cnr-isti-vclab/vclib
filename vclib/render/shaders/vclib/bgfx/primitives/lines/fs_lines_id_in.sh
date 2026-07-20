@@ -5,9 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-uniform vec4 u_linesSettings;
+$input v_color, v_normal
 
-#define u_linesWidth u_linesSettings.x
-#define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.y))
-#define u_depthOffset u_linesSettings.z
-#define u_linesId uintABGRToVec4Color(floatBitsToUint(u_linesSettings.w))
+#include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
+
+void main() {
+    gl_FragColor = u_linesId;
+}

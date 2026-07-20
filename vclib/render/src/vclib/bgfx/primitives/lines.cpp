@@ -133,6 +133,34 @@ void Lines::draw(bgfx::ViewId viewId) const
     bgfx::submit(viewId, mProgram);
 }
 
+void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
+{
+    if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
+        return;
+    }
+
+    checkAndUpdateProgram();
+
+    LinesUniforms::setWidth(mWidth);
+    LinesUniforms::setDepthOffset(mDepthOffset);
+    LinesUniforms::setId(id);
+
+    // Bind buffers for compute / vertex pulling
+    mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
+
+    if (mIndices.isValid()) {
+        mIndices.get().bind(L_IND_STAGE, bgfx::Access::Read);
+    }
+
+    bgfx::setVertexCount(vertexPullingInstances());
+    bgfx::setState(
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
+    LinesUniforms::bind();
+    bgfx::submit(viewId, mIdProgram);
+}
+
 void Lines::checkAndUpdateProgram() const
 {
     if (!mIsUpdateProgramNeeded) {
@@ -221,6 +249,7 @@ void Lines::checkAndUpdateProgram() const
     }
 
     mProgram               = linesProgramSelector();
+    mIdProgram             = linesIdProgramSelector();
     mIsUpdateProgramNeeded = false;
 }
 
@@ -264,6 +293,28 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
         N_INDEX_MODES,
         N_TOPO_MODES,
         N_COLOR_MODES>(shading, indices, topology, color);
+
+    uint program = base + offset;
+
+    ProgramManager& pm = Context::instance().programManager();
+    return pm.getProgram(static_cast<VertFragProgram>(program));
+}
+
+bgfx::ProgramHandle Lines::linesIdProgramSelector() const
+{
+    using enum VertFragProgram;
+
+    constexpr uint N_INDEX_MODES   = 2;
+    constexpr uint N_TOPO_MODES    = 2;
+
+    uint indices  = mIndices.isValid() ? 0 : 1;
+    uint topology = toUnderlying(mTopology);
+
+    // the first shader of all the combinations
+    uint base = toUnderlying(
+        PRIMITIVE_LINES_ID_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_GENERAL);
+
+    uint offset = linearizeIndex<N_INDEX_MODES, N_TOPO_MODES>(indices, topology);
 
     uint program = base + offset;
 
