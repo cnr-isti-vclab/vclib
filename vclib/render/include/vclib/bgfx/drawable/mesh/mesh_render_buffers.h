@@ -573,10 +573,79 @@ private:
 
     void setTextures(const MeshType& mesh) // override
     {
+        auto downsampleNormalMap2x2 = [](const uint8_t* src,
+                                         uint8_t*       dst,
+                                         uint           srcWidth,
+                                         uint           srcHeight,
+                                         uint           dstWidth,
+                                         uint           dstHeight) {
+            for (uint y = 0; y < dstHeight; ++y) {
+                for (uint x = 0; x < dstWidth; ++x) {
+                    uint sx = x * 2;
+                    uint sy = y * 2;
+
+                    uint sx1 = std::min(sx + 1, srcWidth - 1);
+                    uint sy1 = std::min(sy + 1, srcHeight - 1);
+
+                    // Fetch the 4 neighboring pixels from the higher resolution
+                    // mip level
+                    const uint8_t* p00 = src + (sy * srcWidth + sx) * 4;
+                    const uint8_t* p10 = src + (sy * srcWidth + sx1) * 4;
+                    const uint8_t* p01 = src + (sy1 * srcWidth + sx) * 4;
+                    const uint8_t* p11 = src + (sy1 * srcWidth + sx1) * 4;
+
+                    float nx = 0.0f, ny = 0.0f, nz = 0.0f, alpha = 0.0f;
+                    const uint8_t* pixels[4] = {p00, p10, p01, p11};
+
+                    for (int i = 0; i < 4; ++i) {
+                        // Remap from [0, 255] to [-1.0, 1.0] to get the true
+                        // normal vector direction
+                        nx += (pixels[i][0] / 255.0f) * 2.0f - 1.0f;
+                        ny += (pixels[i][1] / 255.0f) * 2.0f - 1.0f;
+                        nz += (pixels[i][2] / 255.0f) * 2.0f - 1.0f;
+                        // Accumulate alpha for standard bilinear interpolation
+                        alpha += pixels[i][3];
+                    }
+
+                    // Normalize the averaged normal vector to preserve unit
+                    // length
+                    float len = std::sqrt(nx * nx + ny * ny + nz * nz);
+                    if (len > 0.0001f) {
+                        nx /= len;
+                        ny /= len;
+                        nz /= len;
+                    }
+                    else {
+                        // Fallback to pointing upwards if the vector is
+                        // degenerate
+                        nx = 0.0f;
+                        ny = 0.0f;
+                        nz = 1.0f;
+                    }
+
+                    // Remap the normalized vector back to [0, 255] and write to
+                    // destination
+                    uint8_t* out = dst + (y * dstWidth + x) * 4;
+                    out[0]       = static_cast<uint8_t>(std::max(
+                        0.0f,
+                        std::min(255.0f, (nx * 0.5f + 0.5f) * 255.0f + 0.5f)));
+                    out[1]       = static_cast<uint8_t>(std::max(
+                        0.0f,
+                        std::min(255.0f, (ny * 0.5f + 0.5f) * 255.0f + 0.5f)));
+                    out[2]       = static_cast<uint8_t>(std::max(
+                        0.0f,
+                        std::min(255.0f, (nz * 0.5f + 0.5f) * 255.0f + 0.5f)));
+                    out[3]       = static_cast<uint8_t>(
+                        std::max(0.0f, std::min(255.0f, alpha / 4.0f + 0.5f)));
+                }
+            }
+        };
+
         // lambda that sets a texture
         auto setTexture = [&](const Image&       img,
                               const std::string& path,
-                              bool               generateMips) {
+                              bool               generateMips,
+                              bool               isNormalMap) {
             const uint size = img.width() * img.height();
             assert(size > 0);
 
@@ -590,7 +659,7 @@ private:
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
-            uint numMips = 1;
+            uint numMips      = 1;
             if (generateMips)
                 numMips = bimg::imageGetNumMips(
                     bimg::TextureFormat::RGBA8, img.width(), img.height());
@@ -606,18 +675,40 @@ private:
                 uint* source = buffer;
                 uint* dest;
                 uint  offset = size;
+
                 for (uint mip = 1; mip < numMips; mip++) {
-                    dest         = source + offset;
-                    uint mipSize = (img.width() >> mip) * (img.height() >> mip);
-                    bimg::imageRgba8Downsample2x2(
-                        dest,                      // output location
-                        img.width() >> (mip - 1),  // input width
-                        img.height() >> (mip - 1), // input height
-                        1, // depth, always 1 for 2D textures
-                        (img.width() >> (mip - 1)) * 4, // input pitch
-                        (img.width() >> mip) * 4,       // output pitch
-                        source                          // input location
-                    );
+                    dest = source + offset;
+
+                    uint srcWidth  = std::max(1, img.width() >> (mip - 1));
+                    uint srcHeight = std::max(1, img.height() >> (mip - 1));
+                    uint dstWidth  = std::max(1, img.width() >> mip);
+                    uint dstHeight = std::max(1, img.height() >> mip);
+                    uint mipSize   = dstWidth * dstHeight;
+
+                    if (isNormalMap) {
+                        const uint8_t* src8 =
+                            reinterpret_cast<const uint8_t*>(source);
+                        uint8_t* dst8 = reinterpret_cast<uint8_t*>(dest);
+                        downsampleNormalMap2x2(
+                            src8,
+                            dst8,
+                            srcWidth,
+                            srcHeight,
+                            dstWidth,
+                            dstHeight);
+                    }
+                    else {
+                        bimg::imageRgba8Downsample2x2(
+                            dest,         // output location
+                            srcWidth,     // input width
+                            srcHeight,    // input height
+                            1,            // depth, always 1 for 2D textures
+                            srcWidth * 4, // input pitch
+                            dstWidth * 4, // output pitch
+                            source        // input location
+                        );
+                    }
+
                     source = dest;
                     offset = mipSize;
                 }
@@ -642,48 +733,51 @@ private:
             mMaterialTextures.at(path) = std::move(tex);
         };
 
-        auto loadImageAndSetTexture =
-            [&](const std::pair<std::string, uint>& pathPair) {
-                const std::string& path = pathPair.first;
+        auto loadImageAndSetTexture = [&](const std::pair<std::string, uint>&
+                                              pathPair) {
+            const std::string& path = pathPair.first;
 
-                uint materialId  = pathPair.second / N_TEXTURE_TYPES;
-                uint textureType = pathPair.second % N_TEXTURE_TYPES;
-                // copy the image because it could be not loaded,
-                // and at the end it needs to be mirrored.
-                vcl::Image txtImg = mesh.textureImage(path);
-                if (txtImg.isNull()) { // try to load it just for rendering
-                    try {
-                        txtImg = vcl::loadImage(mesh.meshBasePath() + path);
-                        txtImg.colorSpace() = Material::textureTypeToColorSpace(
-                            static_cast<Material::TextureType>(textureType));
-                    }
-                    catch (...) {
-                        // do nothing
-                    }
-                    if (txtImg.isNull()) {
-                        // still null, use a dummy texture
-                        txtImg = createCheckBoardImage(512);
-                    }
+            uint materialId  = pathPair.second / N_TEXTURE_TYPES;
+            uint textureType = pathPair.second % N_TEXTURE_TYPES;
+            // copy the image because it could be not loaded,
+            // and at the end it needs to be mirrored.
+            vcl::Image txtImg = mesh.textureImage(path);
+            if (txtImg.isNull()) { // try to load it just for rendering
+                try {
+                    txtImg = vcl::loadImage(mesh.meshBasePath() + path);
+                    txtImg.colorSpace() = Material::textureTypeToColorSpace(
+                        static_cast<Material::TextureType>(textureType));
                 }
-
-                // if loading succeeded (or dummy texture has been created)
-                if (!txtImg.isNull()) {
-                    const TextureDescriptor& tex =
-                        mesh.material(materialId)
-                            .textureDescriptor(textureType);
-                    using enum TextureDescriptor::MinificationFilter;
-
-                    TextureDescriptor::MinificationFilter minFilter =
-                        tex.minFilter();
-
-                    bool hasMips =
-                        minFilter >= NEAREST_MIPMAP_NEAREST ||
-                        minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
-
-                    txtImg.mirror();
-                    setTexture(txtImg, path, hasMips);
+                catch (...) {
+                    // do nothing
                 }
-            };
+                if (txtImg.isNull()) {
+                    // still null, use a dummy texture
+                    txtImg = createCheckBoardImage(512);
+                }
+            }
+
+            // if loading succeeded (or dummy texture has been created)
+            if (!txtImg.isNull()) {
+                const TextureDescriptor& tex =
+                    mesh.material(materialId).textureDescriptor(textureType);
+                using enum TextureDescriptor::MinificationFilter;
+
+                TextureDescriptor::MinificationFilter minFilter =
+                    tex.minFilter();
+
+                bool hasMips =
+                    minFilter >= NEAREST_MIPMAP_NEAREST ||
+                    minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+
+                txtImg.mirror();
+                setTexture(
+                    txtImg,
+                    path,
+                    hasMips,
+                    textureType == toUnderlying(Material::TextureType::NORMAL));
+            }
+        };
 
         mMaterialTextures.clear();
 
