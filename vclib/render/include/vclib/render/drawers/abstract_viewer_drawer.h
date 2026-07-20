@@ -14,6 +14,7 @@
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/render/settings/viewer_settings.h>
 #include <vclib/space/core/color.h>
 
 #include <memory>
@@ -97,6 +98,20 @@ public:
 
         fitScene();
     }
+
+    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+
+    const ViewerSettings& viewerSettings() const
+    {
+        static const ViewerSettings defaultSettings;
+        return defaultSettings;
+    }
+
+    void setViewerSettings(const ViewerSettings&) {}
+
+    std::string panoramaFileName() const { return ""; }
+
+    void setPanorama(const std::string&) {}
 
     template<template<typename> typename ET>
     auto pushEditor()

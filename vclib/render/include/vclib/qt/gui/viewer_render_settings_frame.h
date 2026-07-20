@@ -9,7 +9,8 @@
 #define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
 
 #include <vclib/qt/mesh_viewer_render_app.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
+#include <vclib/render/settings/render_mode.h>
 
 #include <QFrame>
 
@@ -25,8 +26,6 @@ class ViewerRenderSettingsFrame : public QFrame
 {
     Q_OBJECT
 
-    enum class RenderMode { CLASSIC = 0, PBR = 1 };
-
     Ui::ViewerRenderSettingsFrame* mUI;
 
     MeshViewerRenderApp* mViewer;
@@ -37,11 +36,11 @@ public:
 
     void setViewer(MeshViewerRenderApp* viewer);
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
     void setPanorama(const std::string& panorama);
 
-    const PBRViewerSettings& pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
 private:
     void disableForm();

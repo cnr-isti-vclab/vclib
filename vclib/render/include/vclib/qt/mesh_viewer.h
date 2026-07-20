@@ -17,7 +17,7 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <QMainWindow>
 
@@ -191,9 +191,9 @@ public:
 
     // void showRenderModeSelector(bool show);
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
-    const PBRViewerSettings& pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
 

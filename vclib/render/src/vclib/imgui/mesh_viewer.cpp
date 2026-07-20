@@ -10,36 +10,36 @@
 namespace vcl::imgui {
 
 template<typename V>
-void setPbrSetts(V& v, const PBRViewerSettings& settings)
+void setViewerSetts(V& v, const ViewerSettings& settings)
 {
-    if constexpr (PBRViewerConcept<V>) {
-        v.setPbrSettings(settings);
+    if constexpr (ViewerConcept<V>) {
+        v.setViewerSettings(settings);
     }
 }
 
-void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
+void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
-    setPbrSetts(mApp, settings);
+    setViewerSetts(mApp, settings);
 }
 
 template<typename V>
-PBRViewerSettings pbrSetts(const V& v)
+ViewerSettings viewerSetts(const V& v)
 {
-    if constexpr (PBRViewerConcept<V>) {
-        return v.pbrSettings();
+    if constexpr (ViewerConcept<V>) {
+        return v.viewerSettings();
     }
-    return PBRViewerSettings {};
+    return ViewerSettings {};
 }
 
-PBRViewerSettings MeshViewer::pbrSettings() const
+ViewerSettings MeshViewer::viewerSettings() const
 {
-    return pbrSetts(mApp);
+    return viewerSetts(mApp);
 }
 
 template<typename V>
 void setPanor(V& v, const std::string& panorama)
 {
-    if constexpr (PBRViewerConcept<V>) {
+    if constexpr (ViewerConcept<V>) {
         v.setPanorama(panorama);
     }
 }

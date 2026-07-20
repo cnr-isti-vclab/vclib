@@ -10,7 +10,9 @@
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/settings/viewer_settings.h>
 
+#include <string>
 #include <utility>
 
 namespace vcl {
@@ -38,6 +40,14 @@ concept ViewerConcept = requires (
         std::as_const(obj).drawableObjectVector()
     } -> std::same_as<const vcl::DrawableObjectVector&>;
 
+    {
+        std::as_const(obj).viewerSettings()
+    } -> std::same_as<const vcl::ViewerSettings&>;
+
+    {
+        std::as_const(obj).panoramaFileName()
+    } -> std::same_as<std::string>;
+
     // non const requirements
     requires IsConst<T> || requires {
         { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
@@ -53,6 +63,10 @@ concept ViewerConcept = requires (
         { obj.refreshEditors() } -> std::same_as<void>;
 
         { obj.fitScene() } -> std::same_as<void>;
+
+        { obj.setViewerSettings(vcl::ViewerSettings()) } -> std::same_as<void>;
+
+        { obj.setPanorama(std::string()) } -> std::same_as<void>;
     };
 };
 

@@ -9,7 +9,7 @@
 
 #include "ui_viewer_render_settings_frame.h"
 
-#include <vclib/render/concepts/pbr_viewer.h>
+#include <vclib/render/concepts/viewer.h>
 
 #include <QColorDialog>
 #include <QFileDialog>
@@ -25,12 +25,12 @@ namespace vcl::qt {
 namespace detail {
 
 template<typename V>
-const PBRViewerSettings& pbrSettings(const V* v)
+const ViewerSettings& viewerSettings(const V* v)
 {
-    static vcl::PBRViewerSettings sts;
-    if constexpr (PBRViewerConcept<V>) {
+    static vcl::ViewerSettings sts;
+    if constexpr (ViewerConcept<V>) {
         if (v)
-            return v->pbrSettings();
+            return v->viewerSettings();
         else
             return sts;
     }
@@ -40,17 +40,17 @@ const PBRViewerSettings& pbrSettings(const V* v)
 }
 
 template<typename V>
-void setPbrSettings(V* v, const PBRViewerSettings& settings)
+void setViewerSettings(V* v, const ViewerSettings& settings)
 {
-    if constexpr (PBRViewerConcept<V>) {
-        v->setPbrSettings(settings);
+    if constexpr (ViewerConcept<V>) {
+        v->setViewerSettings(settings);
     }
 }
 
 template<typename V>
 std::string panoramaFileName(V* v)
 {
-    if constexpr (PBRViewerConcept<V>) {
+    if constexpr (ViewerConcept<V>) {
         return v->panoramaFileName();
     }
     else {
@@ -61,7 +61,7 @@ std::string panoramaFileName(V* v)
 template<typename V>
 void setPanorama(V* v, const std::string& panorama)
 {
-    if constexpr (PBRViewerConcept<V>) {
+    if constexpr (ViewerConcept<V>) {
         v->setPanorama(panorama);
     }
 }
@@ -76,11 +76,11 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
     // by default, render settings is classic, and PBR settings frame is hidden
     disableForm();
 
-    using enum PBRViewerSettings::ToneMapping;
+    using enum ViewerSettings::ToneMapping;
 
     for (uint i = 0; i < toUnderlying(COUNT); ++i) {
         mUI->toneMappingComboBox->addItem(
-            PBRViewerSettings::TONE_MAPPING_STRINGS[i]);
+            ViewerSettings::TONE_MAPPING_STRINGS[i]);
     }
 
     connect(
@@ -134,18 +134,17 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
         return;
     }
 
-    if constexpr (PBRViewerConcept<MeshViewerRenderApp>) {
+    if constexpr (ViewerConcept<MeshViewerRenderApp>) {
         using enum RenderMode;
 
-        auto settings = detail::pbrSettings(mViewer);
+        auto settings = detail::viewerSettings(mViewer);
 
-        mUI->pbrSettingsFrame->setVisible(settings.pbrMode);
+        mUI->pbrSettingsFrame->setVisible(settings.renderMode == RenderMode::PBR);
 
         mUI->renderModeLabel->setEnabled(true);
         mUI->renderModeComboBox->setEnabled(true);
 
-        mUI->renderModeComboBox->setCurrentIndex(
-            settings.pbrMode ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+        mUI->renderModeComboBox->setCurrentIndex(toUnderlying(settings.renderMode));
         mUI->exposureSpinBox->setValue(settings.exposure);
         mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
         mUI->drawBackgroundPanoramaCheckBox->setChecked(
@@ -158,20 +157,19 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
     }
 }
 
-void ViewerRenderSettingsFrame::setPbrSettings(
-    const PBRViewerSettings& settings)
+void ViewerRenderSettingsFrame::setViewerSettings(
+    const ViewerSettings& settings)
 {
     checkPtr(mViewer);
 
-    if constexpr (PBRViewerConcept<MeshViewerRenderApp>) {
+    if constexpr (ViewerConcept<MeshViewerRenderApp>) {
         using enum RenderMode;
-        mUI->renderModeComboBox->setCurrentIndex(
-            settings.pbrMode ? toUnderlying(PBR) : toUnderlying(CLASSIC));
+        mUI->renderModeComboBox->setCurrentIndex(toUnderlying(settings.renderMode));
         mUI->exposureSpinBox->setValue(settings.exposure);
         mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
         mUI->drawBackgroundPanoramaCheckBox->setChecked(
             settings.renderBackgroundPanorama);
-        detail::setPbrSettings(mViewer, settings);
+        detail::setViewerSettings(mViewer, settings);
     }
 }
 
@@ -184,9 +182,9 @@ void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
     updatePanoramaLabel();
 }
 
-const PBRViewerSettings& ViewerRenderSettingsFrame::pbrSettings() const
+const ViewerSettings& ViewerRenderSettingsFrame::viewerSettings() const
 {
-    return detail::pbrSettings(mViewer);
+    return detail::viewerSettings(mViewer);
 }
 
 void ViewerRenderSettingsFrame::disableForm()
@@ -216,13 +214,13 @@ void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
 {
     checkPtr(mViewer);
 
-    bool pbr = index == toUnderlying(RenderMode::PBR);
+    RenderMode mode = static_cast<RenderMode>(index);
 
-    auto sts    = detail::pbrSettings(mViewer);
-    sts.pbrMode = pbr;
-    detail::setPbrSettings(mViewer, sts);
+    auto sts    = detail::viewerSettings(mViewer);
+    sts.renderMode = mode;
+    detail::setViewerSettings(mViewer, sts);
 
-    mUI->pbrSettingsFrame->setVisible(pbr);
+    mUI->pbrSettingsFrame->setVisible(mode == RenderMode::PBR);
 
     mViewer->update();
 }
@@ -231,11 +229,11 @@ void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
     checkPtr(mViewer);
 
-    auto sts = detail::pbrSettings(mViewer);
+    auto sts = detail::viewerSettings(mViewer);
 
     sts.exposure = static_cast<float>(value);
 
-    detail::setPbrSettings(mViewer, sts);
+    detail::setViewerSettings(mViewer, sts);
     mViewer->update();
 }
 
@@ -244,11 +242,11 @@ void ViewerRenderSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
 {
     checkPtr(mViewer);
 
-    auto sts = detail::pbrSettings(mViewer);
+    auto sts = detail::viewerSettings(mViewer);
 
-    sts.toneMapping = static_cast<PBRViewerSettings::ToneMapping>(index);
+    sts.toneMapping = static_cast<ViewerSettings::ToneMapping>(index);
 
-    detail::setPbrSettings(mViewer, sts);
+    detail::setViewerSettings(mViewer, sts);
     mViewer->update();
 }
 
@@ -257,11 +255,11 @@ void ViewerRenderSettingsFrame::iblCheckBoxCheckStateChanged(
 {
     checkPtr(mViewer);
 
-    auto sts = detail::pbrSettings(mViewer);
+    auto sts = detail::viewerSettings(mViewer);
 
     sts.imageBasedLighting = (state == Qt::Checked);
 
-    detail::setPbrSettings(mViewer, sts);
+    detail::setViewerSettings(mViewer, sts);
     mViewer->update();
 }
 
@@ -270,11 +268,11 @@ void ViewerRenderSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
 {
     checkPtr(mViewer);
 
-    auto sts = detail::pbrSettings(mViewer);
+    auto sts = detail::viewerSettings(mViewer);
 
     sts.renderBackgroundPanorama = (state == Qt::Checked);
 
-    detail::setPbrSettings(mViewer, sts);
+    detail::setViewerSettings(mViewer, sts);
     mViewer->update();
 }
 

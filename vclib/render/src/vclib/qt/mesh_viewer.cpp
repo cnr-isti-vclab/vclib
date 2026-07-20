@@ -11,7 +11,6 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
-#include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 namespace vcl::qt {
@@ -234,14 +233,14 @@ void MeshViewer::setCamera(const Camera<float>& c)
 // {
 // }
 
-void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
+void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
-    mUI->viewerRenderSettingsFrame->setPbrSettings(settings);
+    mUI->viewerRenderSettingsFrame->setViewerSettings(settings);
 }
 
-const PBRViewerSettings& MeshViewer::pbrSettings() const
+const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mUI->viewerRenderSettingsFrame->pbrSettings();
+    return mUI->viewerRenderSettingsFrame->viewerSettings();
 }
 
 void MeshViewer::setPanorama(const std::string& panorama)

@@ -37,10 +37,9 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
-    // flags
     bool mStatsEnabled = false;
 
-    PBRViewerSettings mPBRSettings;
+    ViewerSettings mViewerSettings;
 
     std::string         mPanoramaPath;
     DrawableEnvironment mEnvironment;
@@ -62,11 +61,11 @@ public:
         }
     }
 
-    const PBRViewerSettings& pbrSettings() const { return mPBRSettings; }
+    const ViewerSettings& viewerSettings() const { return mViewerSettings; }
 
-    void setPbrSettings(const PBRViewerSettings& settings)
+    void setViewerSettings(const ViewerSettings& settings)
     {
-        mPBRSettings = settings;
+        mViewerSettings = settings;
     }
 
     std::string panoramaFileName() const
@@ -104,7 +103,8 @@ public:
 
         settings.additionalViewIds = mAdditionalViewIds;
 
-        settings.pbrSettings = mPBRSettings;
+        settings.renderMode = mViewerSettings.renderMode;
+        settings.imageBasedLighting = mViewerSettings.imageBasedLighting;
 
         settings.environment = &mEnvironment;
 
@@ -113,14 +113,14 @@ public:
         DirectionalLightUniforms::setLight(ParentViewer::light());
         DirectionalLightUniforms::bind();
 
-        ViewerDrawerUniforms::setExposure(mPBRSettings.exposure);
-        ViewerDrawerUniforms::setToneMapping(mPBRSettings.toneMapping);
+        ViewerDrawerUniforms::setExposure(mViewerSettings.exposure);
+        ViewerDrawerUniforms::setToneMapping(mViewerSettings.toneMapping);
         ViewerDrawerUniforms::setSpecularMipsLevels(
             mEnvironment.specularMipLevels());
         ViewerDrawerUniforms::bind();
 
         // background will be drawn only if settings allow it
-        mEnvironment.drawBackground(settings.viewId, settings.pbrSettings);
+        mEnvironment.drawBackground(settings.viewId, mViewerSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
