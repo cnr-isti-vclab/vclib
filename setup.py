@@ -46,12 +46,21 @@ class CMakeBuild(build_ext):
             raise RuntimeError("CMake must be installed to build the following extensions: " + ", ".join(e.name for e in self.extensions))
 
         # Configure and build the project
-        build_temp = os.path.abspath(self.build_temp)
+        build_temp = os.environ.get("VCLIB_WHEEL_BUILD_DIR", self.build_temp)
+        build_temp = os.path.abspath(build_temp)
         os.makedirs(build_temp, exist_ok=True)
 
         cmake_args = [
-            f"--preset=vclib-python-wheel"
+            f"--preset=vclib-python-wheel",
+            "-UPython*",
+            f"-DPython_EXECUTABLE={sys.executable}"
         ]
+
+        if os.environ.get("VCLIB_USE_CCACHE") == "1":
+            cmake_args.extend([
+                "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+            ])
 
         build_args = ["--target", "install"]
 

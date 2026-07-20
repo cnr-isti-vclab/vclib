@@ -12,6 +12,8 @@
 #include <vclib/bgfx/primitives/points.h>
 #include <vclib/render/drawable/drawable_object.h>
 
+#include <vclib/algorithms/core.h>
+
 #include <bgfx/bgfx.h>
 
 namespace vcl {
@@ -31,10 +33,12 @@ class DrawablePoints : public DrawableObject, public Points
     std::vector<vcl::Point3d> mPositions;
     std::vector<vcl::Point3d> mNormals;
     std::vector<vcl::Color>   mColors;
+    std::vector<bool>         mSelections;
 
     using Points::draw;
     using Points::setVertexColors;
     using Points::setVertexNormals;
+    using Points::setVertexSelection;
     using Points::setVertices;
 
 public:
@@ -51,11 +55,16 @@ public:
      * @brief Copy constructor. Creates a deep copy of the point set.
      */
     DrawablePoints(const DrawablePoints& other) :
-            DrawableObject(other),
-            Points(other.mPositions, other.mNormals, other.mColors),
+            DrawableObject(other), Points(
+                                       other.mPositions,
+                                       other.mNormals,
+                                       other.mColors,
+                                       other.mSelections),
             mVisible(other.mVisible), mPositions(other.mPositions),
-            mNormals(other.mNormals), mColors(other.mColors)
+            mNormals(other.mNormals), mColors(other.mColors),
+            mSelections(other.mSelections)
     {
+        Points::setSettings(other.settings());
     }
 
     /**
@@ -88,6 +97,7 @@ public:
         swap(mPositions, other.mPositions);
         swap(mNormals, other.mNormals);
         swap(mColors, other.mColors);
+        swap(mSelections, other.mSelections);
     }
 
     /**
@@ -135,6 +145,22 @@ public:
         Points::setVertexColors(vertColors);
         mColors.assign(
             std::ranges::begin(vertColors), std::ranges::end(vertColors));
+    }
+
+    /**
+     * @brief Sets per-point selections from a range of booleans and stores a
+     * local copy.
+     *
+     * @tparam R Range type satisfying boolean values.
+     * @param selections Range of booleans.
+     */
+    template<Range R>
+    requires std::convertible_to<std::ranges::range_value_t<R>, bool>
+    void setVertexSelection(R&& selections)
+    {
+        Points::setVertexSelection(selections);
+        mSelections.assign(
+            std::ranges::begin(selections), std::ranges::end(selections));
     }
 
     // DrawableObject interface

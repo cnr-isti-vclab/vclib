@@ -26,7 +26,7 @@ void initMesh(pybind11::module& m, const std::string& name)
     using namespace py::literals;
 
     // Create the class
-    pybind11::class_<MeshType> c(m, name.c_str());
+    pybind11::class_<MeshType, std::shared_ptr<MeshType>> c(m, name.c_str());
 
     c.def(py::init<>());
     c.def(py::init<MeshType>());
@@ -59,7 +59,7 @@ void initMesh(pybind11::module& m, const std::string& name)
 
     auto enableSameOptionalComponentsOfFun =
         []<MeshConcept OtherMeshType>(
-            pybind11::class_<MeshType>& c, OtherMeshType = OtherMeshType()) {
+            auto& c, OtherMeshType = OtherMeshType()) {
             c.def(
                 "enable_same_optional_components_of",
                 [](MeshType& m, const OtherMeshType& o) {
@@ -76,8 +76,7 @@ void initMesh(pybind11::module& m, const std::string& name)
         "other_mesh"_a);
 
     auto importFromFun = []<MeshConcept OtherMeshType>(
-                             pybind11::class_<MeshType>& c,
-                             OtherMeshType = OtherMeshType()) {
+                             auto& c, OtherMeshType = OtherMeshType()) {
         c.def("import_from", [](MeshType& m, const OtherMeshType& o) {
             m.importFrom(o);
         });

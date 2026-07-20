@@ -297,20 +297,25 @@ ProgramManager& Context::programManager()
 
 Context::Context(void* windowHandle, void* displayHandle)
 {
-    static const bool forceWindow = false;
-
     if (windowHandle == nullptr) {
         // Headless context
-        if (forceWindow) {
-            std::cerr << "WARNING: The first window used to create the bgfx "
-                         "context is a dummy window. This is not recommended."
-                      << std::endl;
-            std::cerr
-                << "Be sure to pass a valid window handle when requesting the "
-                   "context instance for the first time."
-                << std::endl;
-            mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
-        }
+        // TODO: right now, this is not supported.
+        // Throwing an exception to avoid segfaults. In the future, this should
+        // be supported.
+
+        throw std::runtime_error(
+            "BGFX is not initialized. Make sure to construct a RenderApp (e.g. "
+            "a Viewer) before constructing an object that requires a bgfx "
+            "context.");
+
+        // std::cerr << "WARNING: The first window used to create the bgfx "
+        //              "context is a dummy window. This is not recommended."
+        //           << std::endl;
+        // std::cerr
+        //     << "Be sure to pass a valid window handle when requesting the "
+        //        "context instance for the first time."
+        //     << std::endl;
+        // mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
     }
     else {
 #ifdef __linux__

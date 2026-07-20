@@ -37,6 +37,9 @@ private:
     // icon function
     IconFunction mIconFunction = nullptr;
 
+    bool             mCheckboxPressed = false;
+    QTreeWidgetItem* mPressedItem     = nullptr;
+
 public:
     explicit DrawableObjectVectorTree(QWidget* parent = nullptr);
     explicit DrawableObjectVectorTree(
@@ -52,6 +55,7 @@ public:
     uint selectedDrawableObject() const;
 
     void update(); // todo: rename this to refresh
+    void updateSelectionCounters();
 
     // function to set the selected item
     bool setSelectedItem(uint i);
@@ -59,6 +63,9 @@ public:
 signals:
     void drawableObjectSelectionChanged(uint i);
     void drawableObjectVisibilityChanged();
+
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     void updateDrawableVectorTree();

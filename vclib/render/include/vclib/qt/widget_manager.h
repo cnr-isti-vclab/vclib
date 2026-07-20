@@ -19,8 +19,10 @@
 #include <QWidget>
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 #include <QOpenGLWidget>
+#include <QSurfaceFormat>
 #endif
 
+#include <QAbstractEventDispatcher>
 #include <QGuiApplication>
 #include <QMouseEvent>
 
@@ -118,6 +120,53 @@ public:
     }
 
     QPaintEngine* paintEngine() const override { return nullptr; }
+
+    /**
+     * @brief Enables or disables continuous (as-fast-as-possible) redrawing.
+     *
+     * When enabled, the widget hooks into the Qt event loop's idle notification
+     * (`QAbstractEventDispatcher::aboutToBlock`) to schedule a repaint every
+     * time the event loop would otherwise block waiting for events. This
+     * produces a render loop equivalent to GLFW's unconditional draw-every-
+     * iteration loop, making the widget suitable for benchmarking.
+     *
+     * When disabled (the default), painting only happens in response to
+     * explicit `update()` calls triggered by input events or application
+     * logic.
+     *
+     * @note For the OpenGL2 backend, this function also disables vsync
+     * (`swapInterval = 0`) when enabling continuous redraw, so that the
+     * driver does not cap the frame rate to the screen refresh rate.
+     *
+     * @param[in] enabled: if true, enable continuous redraw; if false,
+     *            disconnect the idle hook and restore event-driven behaviour.
+     */
+    void setContinuousRedraw(bool enabled)
+    {
+        if (enabled) {
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
+            // Disable vsync so the driver does not cap frame rate
+            QSurfaceFormat fmt = format();
+            fmt.setSwapInterval(0);
+            setFormat(fmt);
+#endif
+            if (!mContinuousRedrawConn) {
+                mContinuousRedrawConn = connect(
+                    QAbstractEventDispatcher::instance(),
+                    &QAbstractEventDispatcher::aboutToBlock,
+                    this,
+                    [this]() {
+                        update();
+                    });
+            }
+        }
+        else {
+            if (mContinuousRedrawConn) {
+                disconnect(mContinuousRedrawConn);
+                mContinuousRedrawConn = QMetaObject::Connection {};
+            }
+        }
+    }
 
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(this); }
@@ -294,6 +343,10 @@ protected:
     }
 
 private:
+    // Connection handle for the continuous-redraw idle hook.
+    // A default-constructed QMetaObject::Connection is falsy (not connected).
+    QMetaObject::Connection mContinuousRedrawConn;
+
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override
     {
