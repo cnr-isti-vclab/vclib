@@ -14,9 +14,8 @@
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
-#include <QDockWidget>
-
 #include <QActionGroup>
+#include <QDockWidget>
 
 namespace vcl::qt {
 

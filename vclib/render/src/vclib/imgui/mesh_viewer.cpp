@@ -23,15 +23,16 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 }
 
 template<typename V>
-ViewerSettings viewerSetts(const V& v)
+const ViewerSettings& viewerSetts(const V& v)
 {
+    static ViewerSettings sts;
     if constexpr (ViewerConcept<V>) {
         return v.viewerSettings();
     }
-    return ViewerSettings {};
+    return sts;
 }
 
-ViewerSettings MeshViewer::viewerSettings() const
+const ViewerSettings& MeshViewer::viewerSettings() const
 {
     return viewerSetts(mApp);
 }

@@ -45,8 +45,8 @@ class MeshViewer : public QMainWindow
 
     Ui::MeshViewer* mUI;
 
-    ViewerSettingsFrame* mViewerSettingsFrame = nullptr;
-    QDockWidget*               mViewerSettingsDockWidget  = nullptr;
+    ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
+    QDockWidget*         mViewerSettingsDockWidget = nullptr;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 

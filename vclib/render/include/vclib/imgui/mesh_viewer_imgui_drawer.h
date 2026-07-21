@@ -188,8 +188,6 @@ public:
             }
         }
 
-
-
         ImGui::End();
 
         // floating editors toolbar

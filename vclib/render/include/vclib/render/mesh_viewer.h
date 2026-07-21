@@ -105,7 +105,6 @@ void showOnMeshViewer(
         }
     }
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
     auto sts = viewer.viewerSettings();
 
     if (!panorama.empty()) {
@@ -115,7 +114,6 @@ void showOnMeshViewer(
     }
     sts.renderMode = renderMode;
     viewer.setViewerSettings(sts);
-#endif
 
     viewer.fitScene();
 

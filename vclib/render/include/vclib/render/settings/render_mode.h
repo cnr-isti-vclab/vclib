@@ -10,8 +10,13 @@
 
 namespace vcl {
 
+/**
+ * @brief Specifies the render mode of the viewer.
+ */
 enum class RenderMode {
+    /** @brief Classic shading model (e.g., Phong, per-vertex colors). */
     CLASSIC,
+    /** @brief Physically Based Rendering (PBR) shading model. */
     PBR
 };
 

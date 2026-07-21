@@ -13,15 +13,29 @@
 
 namespace vcl {
 
+/**
+ * @brief Contains the settings for the viewer, such as the active render
+ * mode, exposure, and background visualization options.
+ */
 struct ViewerSettings
 {
+    /**
+     * @brief The tone mapping operators available when rendering.
+     */
     enum class ToneMapping {
+        /** @brief No tone mapping is applied. */
         NONE,
+        /** @brief Basic (Reinhard) tone mapping. */
         BASIC,
+        /** @brief ACES Filmic Tone Mapping (Hill). */
         ACES_HILL,
+        /** @brief ACES Filmic Tone Mapping (Hill) with pre-exposure boost. */
         ACES_HILL_EXPOSURE_BOOST,
+        /** @brief ACES Filmic Tone Mapping (Narkowicz). */
         ACES_NARKOWICZ,
+        /** @brief Khronos PBR Neutral tone mapping. */
         KHRONOS_PBR_NEUTRAL,
+        /** @brief Number of tone mapping operators. */
         COUNT
     };
 

@@ -167,7 +167,7 @@ public:
 
     void setViewerSettings(const ViewerSettings& settings);
 
-    ViewerSettings viewerSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
 };

@@ -24,7 +24,8 @@ namespace vcl {
  * A type satisfies ViewerConcept if it provides the base types `ViewerType` and
  * `EditorType`, exposes a `drawableObjectVector`, and provides methods to set
  * the drawable object vector, push a drawable object, refresh editors, and
- * fit the scene.
+ * fit the scene. Furthermore, it must expose methods to get and set
+ * `ViewerSettings` and the background panorama file name.
  *
  * @tparam T: The type to be checked against the ViewerConcept.
  */
