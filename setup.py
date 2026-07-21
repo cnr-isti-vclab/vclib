@@ -74,6 +74,8 @@ class CMakeBuild(build_ext):
         dist_lib = os.path.join("dist", f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages/vclib")
         build_lib = os.path.join(self.build_lib, "vclib")
         if os.path.exists(dist_lib):
+            if os.path.exists(build_lib):
+                shutil.rmtree(build_lib)
             os.makedirs(os.path.dirname(build_lib), exist_ok=True)
             shutil.copytree(dist_lib, build_lib, dirs_exist_ok=True)
 
