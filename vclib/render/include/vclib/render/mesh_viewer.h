@@ -13,6 +13,7 @@
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/settings/render_mode.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
@@ -92,8 +93,8 @@ void showOnMeshViewer(
     char**                   argv,
     MeshViewerConcept auto&  viewer,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode  = false,
-    const std::string&       panorama = "")
+    RenderMode               renderMode = RenderMode::CLASSIC,
+    const std::string&       panorama   = "")
 {
     for (auto&& mesh : meshes) {
         if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
@@ -104,17 +105,15 @@ void showOnMeshViewer(
         }
     }
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-    auto sts = viewer.pbrSettings();
+    auto sts = viewer.viewerSettings();
 
     if (!panorama.empty()) {
         viewer.setPanorama(panorama);
         sts.imageBasedLighting       = true;
         sts.renderBackgroundPanorama = true;
     }
-    sts.pbrMode = pbrMode;
-    viewer.setPbrSettings(sts);
-#endif
+    sts.renderMode = renderMode;
+    viewer.setViewerSettings(sts);
 
     viewer.fitScene();
 
@@ -138,14 +137,15 @@ int showOnMeshViewer(
     int                      argc,
     char**                   argv,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode  = false,
-    const std::string&       panorama = "")
+    RenderMode               renderMode = RenderMode::CLASSIC,
+    const std::string&       panorama   = "")
 {
     Application app(argc, argv);
 
     MeshViewer viewer;
 
-    showOnMeshViewer(argc, argv, viewer, std::move(meshes), pbrMode, panorama);
+    showOnMeshViewer(
+        argc, argv, viewer, std::move(meshes), renderMode, panorama);
 
     return app.exec();
 }

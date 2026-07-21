@@ -17,15 +17,19 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <QMainWindow>
+
+class QDockWidget;
 
 namespace vcl::qt {
 
 namespace Ui {
 class MeshViewer;
 } // namespace Ui
+
+class ViewerSettingsFrame;
 
 class KeyFilter : public QObject
 {
@@ -39,9 +43,10 @@ class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
-    enum class RenderMode { CLASSIC = 0, PBR = 1 };
-
     Ui::MeshViewer* mUI;
+
+    ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
+    QDockWidget*         mViewerSettingsDockWidget = nullptr;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
@@ -191,9 +196,9 @@ public:
 
     // void showRenderModeSelector(bool show);
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
-    const PBRViewerSettings& pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
 
@@ -212,6 +217,8 @@ private slots:
     void meshRenderSettingsUpdated();
 
     void applyToAllToggled(bool checked);
+
+    void renderModeChanged();
 };
 
 } // namespace vcl::qt

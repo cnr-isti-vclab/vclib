@@ -198,10 +198,9 @@ public:
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
-            const DrawableEnvironment* env         = settings.environment;
+            const DrawableEnvironment* env = settings.environment;
 
-            bool iblEnabled = pbrSettings.imageBasedLighting &&
+            bool iblEnabled = settings.imageBasedLighting &&
                               env != nullptr && env->canDraw();
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
@@ -212,7 +211,7 @@ public:
                 // tStage is the first stage from which we can bind new 2D
                 // textures
                 uint tStage = mMRB.bindTextures(mMRS, i, *this);
-                if (pbrSettings.pbrMode && iblEnabled) {
+                if (settings.renderMode == RenderMode::PBR && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
                     env->bindTexture(BRDF_LUT, tStage);
 
@@ -240,20 +239,23 @@ public:
 
                 /* STATE */
                 uint64_t surfaceState = state;
-                if (pbrSettings.pbrMode) {
+                if (settings.renderMode == RenderMode::PBR) {
                     surfaceState |= materialState;
                 }
 
                 bgfx::setState(surfaceState);
 
                 /* SUBMIT */
-                if (pbrSettings.pbrMode) {
+                switch (settings.renderMode) {
+                case RenderMode::PBR:
                     bgfx::submit(
                         settings.viewId,
                         pm.getProgram<DRAWABLE_MESH_SURFACE_PBR>());
-                }
-                else {
+                    break;
+                case RenderMode::CLASSIC:
+                default:
                     bgfx::submit(settings.viewId, surfaceProgramSelector());
+                    break;
                 }
             }
         }

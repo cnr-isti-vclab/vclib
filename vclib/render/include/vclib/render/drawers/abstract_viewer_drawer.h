@@ -14,6 +14,7 @@
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/render/settings/viewer_settings.h>
 #include <vclib/space/core/color.h>
 
 #include <memory>
@@ -46,6 +47,8 @@ private:
     uint mId = 0;
 
 protected:
+    ViewerSettings mViewerSettings;
+
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
     // objects (e.g. the window that contains the viewer along with other
@@ -97,6 +100,22 @@ public:
 
         fitScene();
     }
+
+    const ViewerSettings& viewerSettings() const
+    {
+        return mViewerSettings;
+    }
+
+    void setViewerSettings(const ViewerSettings& settings)
+    {
+        mViewerSettings = settings;
+    }
+
+    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+
+    std::string panoramaFileName() const { return ""; }
+
+    void setPanorama(const std::string&) {}
 
     template<template<typename> typename ET>
     auto pushEditor()
