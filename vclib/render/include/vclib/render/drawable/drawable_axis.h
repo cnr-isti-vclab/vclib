@@ -20,6 +20,13 @@
 
 namespace vcl {
 
+/**
+ * @brief Type alias for the backend-specific DrawableAxis implementation.
+ * 
+ * Depending on the active rendering backend, this alias resolves to 
+ * `DrawableAxisBGFX` (for BGFX) or `DrawableAxisOpenGL2` (for OpenGL 2.0).
+ * It represents an axis indicator (X=red, Y=green, Z=blue) in the 3D scene.
+ */
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 using DrawableAxis = DrawableAxisBGFX;
 #endif

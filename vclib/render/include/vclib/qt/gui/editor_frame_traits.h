@@ -13,7 +13,13 @@
 
 namespace vcl::qt {
 
-// Default trait: no frame associated
+/**
+ * @brief Traits struct to associate an Editor type with its Qt Frame type.
+ * 
+ * Specializations of this struct should define `FrameType` as the QWidget 
+ * subclass that implements the UI frame for the specific editor. If no frame 
+ * is associated, `FrameType` defaults to `void`.
+ */
 template <template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits {
     using FrameType = void;
