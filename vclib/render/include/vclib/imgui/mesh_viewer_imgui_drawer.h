@@ -37,6 +37,8 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
     std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
         mSelectionEditor;
 
+    bool mShowViewerSettings = false;
+
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -60,6 +62,79 @@ public:
     {
         // draw parent
         Base::onDraw(viewId);
+
+        if constexpr (ViewerConcept<Base>) {
+            ViewerSettings viewerSettings = Base::viewerSettings();
+
+            // Main Menu Bar
+            if (ImGui::BeginMainMenuBar()) {
+                if (ImGui::BeginMenu("Render")) {
+                    if (ImGui::BeginMenu("Render Mode")) {
+                        bool classicChecked = (viewerSettings.renderMode == RenderMode::CLASSIC);
+                        if (ImGui::MenuItem("Classic", nullptr, &classicChecked)) {
+                            viewerSettings.renderMode = RenderMode::CLASSIC;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        bool pbrChecked = (viewerSettings.renderMode == RenderMode::PBR);
+                        if (ImGui::MenuItem("PBR", nullptr, &pbrChecked)) {
+                            viewerSettings.renderMode = RenderMode::PBR;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        ImGui::EndMenu();
+                    }
+                    ImGui::MenuItem("Viewer Settings", nullptr, &mShowViewerSettings);
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }
+
+            // Viewer Settings Window
+            if (mShowViewerSettings) {
+                if (ImGui::Begin("Viewer Settings", &mShowViewerSettings)) {
+                    // exposure slider
+                    float exposure = viewerSettings.exposure;
+                    if (ImGui::SliderFloat(
+                            "Exposure",
+                            &exposure,
+                            0.001f,
+                            64.0f,
+                            "%.3f",
+                            ImGuiSliderFlags_Logarithmic))
+                        viewerSettings.exposure = exposure;
+
+                    // tone mapping combo box
+                    uint toneMapping = toUnderlying(viewerSettings.toneMapping);
+                    const auto* toneMappingNames = ViewerSettings::TONE_MAPPING_STRINGS;
+                    if (ImGui::BeginCombo("Tone mapping", toneMappingNames[toneMapping])) {
+                        const uint CNT = toUnderlying(ViewerSettings::ToneMapping::COUNT);
+                        for (uint n = 0; n < CNT; n++) {
+                            bool isSelected = toneMapping == n;
+                            if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                                viewerSettings.toneMapping = static_cast<ViewerSettings::ToneMapping>(n);
+                            }
+                            if (isSelected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    // image based lighting
+                    ImGui::Checkbox(
+                        "Image Based Lighting",
+                        [&]() { return viewerSettings.imageBasedLighting; },
+                        [&](bool ibl) { viewerSettings.imageBasedLighting = ibl; });
+
+                    // draw background checkbox
+                    ImGui::Checkbox(
+                        "Render Background Panorama",
+                        [&]() { return viewerSettings.renderBackgroundPanorama; },
+                        [&](bool renderBg) { viewerSettings.renderBackgroundPanorama = renderBg; });
+
+                    Base::setViewerSettings(viewerSettings);
+                }
+                ImGui::End();
+            }
+        }
 
         // draw imgui
         ImGui::Begin("Meshes");
@@ -88,101 +163,7 @@ public:
             }
         }
 
-        if constexpr (ViewerConcept<Base>) {
-            // combo box for render mode
-            ImGui::Separator();
-            ImGui::Text("Render Mode:");
-            ImGui::SameLine();
 
-            ViewerSettings viewerSettings = Base::viewerSettings();
-
-            const char* renderModeNames[] = {"Classic", "PBR"};
-            RenderMode  renderMode        = viewerSettings.renderMode;
-            ImGui::SetNextItemWidth(80);
-            if (ImGui::BeginCombo(
-                    "##ComboRenderMode",
-                    renderMode == RenderMode::PBR ? renderModeNames[1] : renderModeNames[0])) {
-                for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                    bool isSelected =
-                        (renderMode == RenderMode::PBR && n == 1) || (renderMode == RenderMode::CLASSIC && n == 0);
-                    if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                        viewerSettings.renderMode = (n == 1) ? RenderMode::PBR : RenderMode::CLASSIC;
-                    }
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-
-            // Update local state and persist any changes to the viewer.
-            renderMode = viewerSettings.renderMode;
-            Base::setViewerSettings(viewerSettings);
-
-            ImGui::BeginDisabled(renderMode != RenderMode::PBR);
-            {
-                // exposure slider
-                ImGui::Separator();
-                ImGui::Text("Exposure:");
-                ImGui::SameLine();
-                float exposure = viewerSettings.exposure;
-                if (ImGui::SliderFloat(
-                        "##Exposure",
-                        &exposure,
-                        0.001f,
-                        64.0f,
-                        "%.3f",
-                        ImGuiSliderFlags_Logarithmic))
-                    viewerSettings.exposure = exposure;
-
-                // tone mapping combo box
-                ImGui::Text("Tone mapping:");
-                ImGui::SameLine();
-                uint toneMapping = toUnderlying(viewerSettings.toneMapping);
-
-                const auto* toneMappingNames =
-                    ViewerSettings::TONE_MAPPING_STRINGS;
-                if (ImGui::BeginCombo(
-                        "##ComboToneMapping", toneMappingNames[toneMapping])) {
-                    const uint CNT =
-                        toUnderlying(ViewerSettings::ToneMapping::COUNT);
-                    for (uint n = 0; n < CNT; n++) {
-                        bool isSelected = toneMapping == n;
-                        if (ImGui::Selectable(
-                                toneMappingNames[n], isSelected)) {
-                            viewerSettings.toneMapping =
-                                static_cast<ViewerSettings::ToneMapping>(n);
-                        }
-                        if (isSelected)
-                            ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-
-                // image based lighting
-                ImGui::Checkbox(
-                    "Image Based Lighting",
-                    [&]() {
-                        return viewerSettings.imageBasedLighting;
-                    },
-                    [&](bool ibl) {
-                        viewerSettings.imageBasedLighting = ibl;
-                    });
-
-                // draw background checkbox
-                ImGui::Checkbox(
-                    "Render Background Panorama",
-                    [&]() {
-                        return viewerSettings.renderBackgroundPanorama;
-                    },
-                    [&](bool renderBg) {
-                        viewerSettings.renderBackgroundPanorama = renderBg;
-                    });
-            }
-            ImGui::EndDisabled();
-            if (viewerSettings.renderMode == RenderMode::PBR) {
-                Base::setViewerSettings(viewerSettings);
-            }
-        }
 
         ImGui::End();
 
