@@ -19,6 +19,7 @@
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
 #include <vclib/qt/gui/editor_frame_traits.h>
+#include <vclib/qt/gui/toolbar_frames.h>
 
 #include <QMainWindow>
 
@@ -172,13 +173,20 @@ public:
     void clearDrawableObjects();
 
     template<template<typename> typename EditorT>
-    auto pushEditor()
+    auto pushEditor(bool active = false)
     {
-        auto editor = viewer().template pushEditor<EditorT>();
+        auto editor = viewer().template pushEditor<EditorT>(active);
 
-        using FrameType = typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        using FrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
         if constexpr (!std::is_same_v<FrameType, void>) {
             addEditorFrame(new FrameType(editor));
+        }
+
+        if constexpr (std::is_same_v<EditorT<ViewerType>, vcl::MeshSelectorEditor<ViewerType>>) {
+            editor->setOnObjectSelectedFunction([this](uint id) {
+                drawableObjectVectorTree().setSelectedItem(id);
+            });
         }
 
         return editor;

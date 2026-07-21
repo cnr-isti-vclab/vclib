@@ -15,6 +15,8 @@ int main(int argc, char** argv)
 
     vcl::MeshViewer viewer;
 
+    vcl::pushDefaultEditors(viewer);
+
     enum TexCoordsExamples {
         SPONZA = 0,
         VERT_TEXTURE_PLY,

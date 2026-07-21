@@ -5,20 +5,22 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_EDITOR_FRAME_TRAITS_H
-#define VCL_QT_GUI_EDITOR_FRAME_TRAITS_H
+#ifndef VCL_IMGUI_GUI_EDITOR_FRAME_H
+#define VCL_IMGUI_GUI_EDITOR_FRAME_H
 
-#include <vclib/render/editors.h>
-#include <type_traits>
+namespace vcl::imgui {
 
-namespace vcl::qt {
+class EditorFrameImgui {
+public:
+    virtual void draw() = 0;
+    virtual ~EditorFrameImgui() = default;
+};
 
-// Default trait: no frame associated
 template <template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits {
     using FrameType = void;
 };
 
-} // namespace vcl::qt
+} // namespace vcl::imgui
 
-#endif // VCL_QT_GUI_EDITOR_FRAME_TRAITS_H
+#endif // VCL_IMGUI_GUI_EDITOR_FRAME_H

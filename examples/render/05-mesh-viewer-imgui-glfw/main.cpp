@@ -8,6 +8,7 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/imgui/mesh_viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/algorithms/mesh/update/transform.h>
@@ -15,6 +16,7 @@
 int main(int argc, char** argv)
 {
     vcl::imgui::MeshViewer tw;
+    vcl::pushDefaultEditors(tw);
 
     // load and set up a drawable mesh
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();

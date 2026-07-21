@@ -16,6 +16,9 @@
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/settings/render_mode.h>
+#include <vclib/imgui/gui/editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/bounding_box_editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/selection_editor_frame.h>
 
 #include <imgui/imgui.h>
 
@@ -30,29 +33,20 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
-    std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
-        mMeshSelectorEditor;
-    std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
-        mBoundingBoxEditor;
-    std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
-        mSelectionEditor;
-
     bool mShowViewerSettings       = false;
     char mPanoramaPathBuffer[1024] = "";
+
+    std::vector<std::shared_ptr<EditorFrameImgui>> mEditorFrames;
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        // install editors
-        mMeshSelectorEditor =
-            Base::template pushEditor<vcl::MeshSelectorEditor>();
-        mMeshSelectorEditor->setActive(true);
+    }
 
-        mBoundingBoxEditor =
-            Base::template pushEditor<vcl::BoundingBoxEditor>();
-
-        mSelectionEditor = Base::template pushEditor<vcl::SelectionEditor>();
+    void addEditorFrame(std::shared_ptr<EditorFrameImgui> frame)
+    {
+        mEditorFrames.push_back(frame);
     }
 
     virtual void onDraw(vcl::uint viewId) override
@@ -224,181 +218,12 @@ private:
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Trackball");
 
-            ImGui::SameLine();
-
-            // bounding box editor toggle
-            bool bbActive =
-                mBoundingBoxEditor && mBoundingBoxEditor->isActive();
-            // TODO: find a way to insert the assets/icons/bbox.png icon here
-            // instead of text
-            if (ImGui::Button(bbActive ? "[BB]" : " BB ")) {
-                if (mBoundingBoxEditor)
-                    mBoundingBoxEditor->setActive(!bbActive);
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Show Bounding Box");
-
-            // small settings popup button
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button("v##BBSettings")) {
-                ImGui::OpenPopup("##BBSettingsPopup");
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Bounding Box Settings");
-
-            if (ImGui::BeginPopup("##BBSettingsPopup")) {
-                drawBoundingBoxSettings();
-                ImGui::EndPopup();
-            }
-
-            ImGui::SameLine(0, 6);
-            // TODO: still no way to add vertical separator using imgui
-            // https://github.com/ocornut/imgui/issues/8321
-            // ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-            ImGui::SameLine(0, 6);
-
-            // selection editor toggles
-            auto& selSettings = mSelectionEditor->settings();
-
-            bool vSel = std::any_cast<bool>(
-                selSettings.customSettings["selectVertices"]);
-            bool fSel =
-                std::any_cast<bool>(selSettings.customSettings["selectFaces"]);
-
-            if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
-                vSel                                         = !vSel;
-                selSettings.customSettings["selectVertices"] = vSel;
-                mSelectionEditor->setActive(vSel || fSel);
-                mSelectionEditor->refreshSettings();
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Vertex Selection");
-
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
-                fSel                                      = !fSel;
-                selSettings.customSettings["selectFaces"] = fSel;
-                mSelectionEditor->setActive(vSel || fSel);
-                mSelectionEditor->refreshSettings();
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Face Selection");
-
-            // small settings popup button
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button("v##SelSettings")) {
-                ImGui::OpenPopup("##SelSettingsPopup");
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Selection Settings");
-
-            if (ImGui::BeginPopup("##SelSettingsPopup")) {
-                drawSelectionSettings();
-                ImGui::EndPopup();
+            for (auto& frame : mEditorFrames) {
+                ImGui::SameLine(0, 6);
+                frame->draw();
             }
         }
         ImGui::End();
-    }
-
-    void drawSelectionSettings()
-    {
-        if (!mSelectionEditor)
-            return;
-
-        EditorSettings& sts = mSelectionEditor->settings();
-
-        // Edit mode
-        static const char* editModeNames[] = {
-            "None", "Selected Object", "Visible Objects", "All Objects"};
-        int currentMode = toUnderlying(sts.editMode);
-        ImGui::Text("Apply to:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::BeginCombo("##SelEditMode", editModeNames[currentMode])) {
-            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
-                bool selected = (n == currentMode);
-                if (n == 0 || n == 3)
-                    ImGui::BeginDisabled();
-                if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
-                    mSelectionEditor->refreshSettings();
-                }
-                if (n == 0 || n == 3)
-                    ImGui::EndDisabled();
-                if (selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        // Only visible checkbox
-        assert(sts.customSettings["onlyVisible"].has_value());
-        bool onlyVisible =
-            std::any_cast<bool>(sts.customSettings["onlyVisible"]);
-        ImGui::Checkbox(
-            "Only Visible Faces",
-            [&] {
-                return onlyVisible;
-            },
-            [&](bool v) {
-                sts.customSettings["onlyVisible"] = v;
-                mSelectionEditor->refreshSettings();
-            });
-    }
-
-    void drawBoundingBoxSettings()
-    {
-        if (!mBoundingBoxEditor)
-            return;
-
-        EditorSettings& sts = mBoundingBoxEditor->settings();
-
-        // Edit mode
-        static const char* editModeNames[] = {
-            "None", "Selected Object", "Visible Objects", "All Objects"};
-        int currentMode = toUnderlying(sts.editMode);
-        ImGui::Text("Apply to:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::BeginCombo("##BBEditMode", editModeNames[currentMode])) {
-            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
-                bool selected = (n == currentMode);
-                if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
-                    mBoundingBoxEditor->refreshSettings();
-                }
-                if (selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        // Lines width
-        assert(sts.customSettings["thickness"].has_value());
-        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
-        ImGui::Text("Lines Width:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderFloat(
-                "##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
-            sts.customSettings["thickness"] = thickness;
-            mBoundingBoxEditor->refreshSettings();
-        }
-
-        // Lines color
-        assert(sts.customSettings["color"].has_value());
-        ImGui::Text("Lines Color:");
-        ImGui::SameLine();
-        ImGui::ColorEdit4(
-            "##BBColor",
-            [&] {
-                return std::any_cast<Color>(sts.customSettings["color"]);
-            },
-            [&](Color c) {
-                sts.customSettings["color"] = c;
-                mBoundingBoxEditor->refreshSettings();
-            },
-            ImGuiColorEditFlags_NoInputs);
     }
 
     void drawMeshList()

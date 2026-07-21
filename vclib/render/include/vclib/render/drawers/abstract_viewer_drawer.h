@@ -114,12 +114,13 @@ public:
     void setPanorama(const std::string&) {}
 
     template<template<typename> typename ET>
-    auto pushEditor()
+    auto pushEditor(bool active = false)
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
+        editor->setActive(active);
         return editor;
     }
 

@@ -16,6 +16,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
+#include <vclib/imgui/gui/editor_frame.h>
 
 namespace vcl::imgui {
 
@@ -146,9 +147,16 @@ public:
     void clearDrawableObjects() { mApp.clearDrawableObjects(); }
 
     template<template<typename> typename EditorT>
-    auto pushEditor()
+    auto pushEditor(bool active = false)
     {
-        return mApp.template pushEditor<EditorT>();
+        auto editor = mApp.template pushEditor<EditorT>(active);
+
+        using FrameType = typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        if constexpr (!std::is_same_v<FrameType, void>) {
+            mApp.addEditorFrame(std::make_shared<FrameType>(editor));
+        }
+
+        return editor;
     }
 
     void refreshEditors() { mApp.refreshEditors(); }
