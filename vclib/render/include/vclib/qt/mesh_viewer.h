@@ -21,11 +21,15 @@
 
 #include <QMainWindow>
 
+class QDockWidget;
+
 namespace vcl::qt {
 
 namespace Ui {
 class MeshViewer;
 } // namespace Ui
+
+class ViewerRenderSettingsFrame;
 
 class KeyFilter : public QObject
 {
@@ -39,9 +43,10 @@ class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
-    enum class RenderMode { CLASSIC = 0, PBR = 1 };
-
     Ui::MeshViewer* mUI;
+
+    ViewerRenderSettingsFrame* mViewerRenderSettingsFrame = nullptr;
+    QDockWidget*               mViewerSettingsDockWidget  = nullptr;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
@@ -212,6 +217,8 @@ private slots:
     void meshRenderSettingsUpdated();
 
     void applyToAllToggled(bool checked);
+
+    void renderModeChanged();
 };
 
 } // namespace vcl::qt

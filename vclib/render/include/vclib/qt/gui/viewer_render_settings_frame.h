@@ -43,12 +43,9 @@ public:
     const ViewerSettings& viewerSettings() const;
 
 private:
-    void disableForm();
-
     void updatePanoramaLabel();
 
 private slots:
-    void renderModeComboBoxCurrentIndexChanged(int index);
 
     void exposureSpinBoxValueChanged(double value);
 

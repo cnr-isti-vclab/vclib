@@ -73,21 +73,12 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
 {
     mUI->setupUi(this);
 
-    // by default, render settings is classic, and PBR settings frame is hidden
-    disableForm();
-
     using enum ViewerSettings::ToneMapping;
 
     for (uint i = 0; i < toUnderlying(COUNT); ++i) {
         mUI->toneMappingComboBox->addItem(
             ViewerSettings::TONE_MAPPING_STRINGS[i]);
     }
-
-    connect(
-        mUI->renderModeComboBox,
-        SIGNAL(currentIndexChanged(int)),
-        this,
-        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
 
     connect(
         mUI->exposureSpinBox,
@@ -129,32 +120,19 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 {
     mViewer = viewer;
 
-    if (!mViewer) {
-        disableForm();
-        return;
-    }
+    mUI->pbrSettingsFrame->setVisible(mViewer != nullptr);
 
-    if constexpr (ViewerConcept<MeshViewerRenderApp>) {
-        using enum RenderMode;
+    checkPtr(mViewer);
 
-        auto settings = detail::viewerSettings(mViewer);
+    auto settings = detail::viewerSettings(mViewer);
 
-        mUI->pbrSettingsFrame->setVisible(settings.renderMode == RenderMode::PBR);
+    mUI->exposureSpinBox->setValue(settings.exposure);
+    mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
+    mUI->drawBackgroundPanoramaCheckBox->setChecked(
+        settings.renderBackgroundPanorama);
 
-        mUI->renderModeLabel->setEnabled(true);
-        mUI->renderModeComboBox->setEnabled(true);
-
-        mUI->renderModeComboBox->setCurrentIndex(toUnderlying(settings.renderMode));
-        mUI->exposureSpinBox->setValue(settings.exposure);
-        mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
-        mUI->drawBackgroundPanoramaCheckBox->setChecked(
-            settings.renderBackgroundPanorama);
-
-        mUI->toneMappingComboBox->setCurrentIndex(
-            toUnderlying(settings.toneMapping));
-
-        updatePanoramaLabel();
-    }
+    mUI->toneMappingComboBox->setCurrentIndex(
+        toUnderlying(settings.toneMapping));
 }
 
 void ViewerRenderSettingsFrame::setViewerSettings(
@@ -162,15 +140,15 @@ void ViewerRenderSettingsFrame::setViewerSettings(
 {
     checkPtr(mViewer);
 
-    if constexpr (ViewerConcept<MeshViewerRenderApp>) {
-        using enum RenderMode;
-        mUI->renderModeComboBox->setCurrentIndex(toUnderlying(settings.renderMode));
-        mUI->exposureSpinBox->setValue(settings.exposure);
-        mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
-        mUI->drawBackgroundPanoramaCheckBox->setChecked(
-            settings.renderBackgroundPanorama);
-        detail::setViewerSettings(mViewer, settings);
-    }
+    mUI->exposureSpinBox->setValue(settings.exposure);
+    mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
+    mUI->drawBackgroundPanoramaCheckBox->setChecked(
+        settings.renderBackgroundPanorama);
+
+    mUI->toneMappingComboBox->setCurrentIndex(
+        toUnderlying(settings.toneMapping));
+
+    detail::setViewerSettings(mViewer, settings);
 }
 
 void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
@@ -187,15 +165,6 @@ const ViewerSettings& ViewerRenderSettingsFrame::viewerSettings() const
     return detail::viewerSettings(mViewer);
 }
 
-void ViewerRenderSettingsFrame::disableForm()
-{
-    mUI->pbrSettingsFrame->setVisible(false);
-
-    mUI->renderModeLabel->setEnabled(false);
-    mUI->renderModeComboBox->setCurrentIndex(0);
-    mUI->renderModeComboBox->setEnabled(false);
-}
-
 void ViewerRenderSettingsFrame::updatePanoramaLabel()
 {
     checkPtr(mViewer);
@@ -210,20 +179,6 @@ void ViewerRenderSettingsFrame::updatePanoramaLabel()
     }
 }
 
-void ViewerRenderSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
-{
-    checkPtr(mViewer);
-
-    RenderMode mode = static_cast<RenderMode>(index);
-
-    auto sts    = detail::viewerSettings(mViewer);
-    sts.renderMode = mode;
-    detail::setViewerSettings(mViewer, sts);
-
-    mUI->pbrSettingsFrame->setVisible(mode == RenderMode::PBR);
-
-    mViewer->update();
-}
 
 void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
