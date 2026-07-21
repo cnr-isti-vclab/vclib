@@ -118,6 +118,9 @@ public:
                         ImGui::EndCombo();
                     }
 
+                    bool hasPanorama = !Base::panoramaFileName().empty();
+                    ImGui::BeginDisabled(!hasPanorama);
+
                     // image based lighting
                     ImGui::Checkbox(
                         "Image Based Lighting",
@@ -129,6 +132,8 @@ public:
                         "Render Background Panorama",
                         [&]() { return viewerSettings.renderBackgroundPanorama; },
                         [&](bool renderBg) { viewerSettings.renderBackgroundPanorama = renderBg; });
+
+                    ImGui::EndDisabled();
 
                     Base::setViewerSettings(viewerSettings);
                 }

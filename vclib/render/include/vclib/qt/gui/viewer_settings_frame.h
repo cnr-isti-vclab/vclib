@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
-#define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H
+#define VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H
 
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
@@ -19,20 +19,20 @@ class QPushButton;
 namespace vcl::qt {
 
 namespace Ui {
-class ViewerRenderSettingsFrame;
+class ViewerSettingsFrame;
 } // namespace Ui
 
-class ViewerRenderSettingsFrame : public QFrame
+class ViewerSettingsFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::ViewerRenderSettingsFrame* mUI;
+    Ui::ViewerSettingsFrame* mUI;
 
     MeshViewerRenderApp* mViewer;
 
 public:
-    explicit ViewerRenderSettingsFrame(QWidget* parent = nullptr);
-    ~ViewerRenderSettingsFrame();
+    explicit ViewerSettingsFrame(QWidget* parent = nullptr);
+    ~ViewerSettingsFrame();
 
     void setViewer(MeshViewerRenderApp* viewer);
 
@@ -60,4 +60,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H

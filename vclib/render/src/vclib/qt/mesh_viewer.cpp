@@ -11,7 +11,7 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
-#include <vclib/qt/gui/viewer_render_settings_frame.h>
+#include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <QDockWidget>
@@ -123,11 +123,11 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     /** Render Settings Frame **/
 
-    mViewerRenderSettingsFrame = new ViewerRenderSettingsFrame(this);
-    mViewerRenderSettingsFrame->setViewer(mUI->viewer);
+    mViewerSettingsFrame = new ViewerSettingsFrame(this);
+    mViewerSettingsFrame->setViewer(mUI->viewer);
 
     mViewerSettingsDockWidget = new QDockWidget("Viewer Settings", this);
-    mViewerSettingsDockWidget->setWidget(mViewerRenderSettingsFrame);
+    mViewerSettingsDockWidget->setWidget(mViewerSettingsFrame);
     mViewerSettingsDockWidget->setFloating(true);
     mViewerSettingsDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
     mViewerSettingsDockWidget->setVisible(false);
@@ -257,7 +257,7 @@ void MeshViewer::setCamera(const Camera<float>& c)
 
 void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
-    mViewerRenderSettingsFrame->setViewerSettings(settings);
+    mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
     } else if (settings.renderMode == RenderMode::PBR) {
@@ -267,12 +267,12 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mViewerRenderSettingsFrame->viewerSettings();
+    return mViewerSettingsFrame->viewerSettings();
 }
 
 void MeshViewer::setPanorama(const std::string& panorama)
 {
-    mViewerRenderSettingsFrame->setPanorama(panorama);
+    mViewerSettingsFrame->setPanorama(panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)

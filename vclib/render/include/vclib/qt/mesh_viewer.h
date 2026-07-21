@@ -29,7 +29,7 @@ namespace Ui {
 class MeshViewer;
 } // namespace Ui
 
-class ViewerRenderSettingsFrame;
+class ViewerSettingsFrame;
 
 class KeyFilter : public QObject
 {
@@ -45,7 +45,7 @@ class MeshViewer : public QMainWindow
 
     Ui::MeshViewer* mUI;
 
-    ViewerRenderSettingsFrame* mViewerRenderSettingsFrame = nullptr;
+    ViewerSettingsFrame* mViewerSettingsFrame = nullptr;
     QDockWidget*               mViewerSettingsDockWidget  = nullptr;
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;

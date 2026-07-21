@@ -5,9 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/qt/gui/viewer_render_settings_frame.h>
+#include <vclib/qt/gui/viewer_settings_frame.h>
 
-#include "ui_viewer_render_settings_frame.h"
+#include "ui_viewer_settings_frame.h"
 
 #include <vclib/render/concepts/viewer.h>
 
@@ -68,8 +68,8 @@ void setPanorama(V* v, const std::string& panorama)
 
 } // namespace detail
 
-ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
-        QFrame(parent), mUI(new Ui::ViewerRenderSettingsFrame)
+ViewerSettingsFrame::ViewerSettingsFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::ViewerSettingsFrame)
 {
     mUI->setupUi(this);
 
@@ -111,18 +111,19 @@ ViewerRenderSettingsFrame::ViewerRenderSettingsFrame(QWidget* parent) :
         SLOT(loadPanoramaPushButtonClicked()));
 }
 
-ViewerRenderSettingsFrame::~ViewerRenderSettingsFrame()
+ViewerSettingsFrame::~ViewerSettingsFrame()
 {
     delete mUI;
 }
 
-void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
+void ViewerSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 {
     mViewer = viewer;
 
-    mUI->pbrSettingsFrame->setVisible(mViewer != nullptr);
-
-    checkPtr(mViewer);
+    if (!mViewer) {
+        mUI->pbrSettingsFrame->setVisible(false);
+        return;
+    }
 
     auto settings = detail::viewerSettings(mViewer);
 
@@ -133,9 +134,12 @@ void ViewerRenderSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
 
     mUI->toneMappingComboBox->setCurrentIndex(
         toUnderlying(settings.toneMapping));
+
+    mUI->pbrSettingsFrame->setVisible(true);
+    updatePanoramaLabel();
 }
 
-void ViewerRenderSettingsFrame::setViewerSettings(
+void ViewerSettingsFrame::setViewerSettings(
     const ViewerSettings& settings)
 {
     checkPtr(mViewer);
@@ -151,7 +155,7 @@ void ViewerRenderSettingsFrame::setViewerSettings(
     detail::setViewerSettings(mViewer, settings);
 }
 
-void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
+void ViewerSettingsFrame::setPanorama(const std::string& panorama)
 {
     checkPtr(mViewer);
 
@@ -160,27 +164,32 @@ void ViewerRenderSettingsFrame::setPanorama(const std::string& panorama)
     updatePanoramaLabel();
 }
 
-const ViewerSettings& ViewerRenderSettingsFrame::viewerSettings() const
+const ViewerSettings& ViewerSettingsFrame::viewerSettings() const
 {
     return detail::viewerSettings(mViewer);
 }
 
-void ViewerRenderSettingsFrame::updatePanoramaLabel()
+void ViewerSettingsFrame::updatePanoramaLabel()
 {
     checkPtr(mViewer);
 
     std::string panoramaFileName = detail::panoramaFileName(mViewer);
-    if (!panoramaFileName.empty()) {
+    bool hasPanorama = !panoramaFileName.empty();
+
+    if (hasPanorama) {
         mUI->panoramaLabel->setText(
             QString("Panorama: ") + panoramaFileName.c_str());
     }
     else {
         mUI->panoramaLabel->setText("Panorama: None");
     }
+
+    mUI->iblCheckBox->setEnabled(hasPanorama);
+    mUI->drawBackgroundPanoramaCheckBox->setEnabled(hasPanorama);
 }
 
 
-void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
+void ViewerSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
     checkPtr(mViewer);
 
@@ -192,7 +201,7 @@ void ViewerRenderSettingsFrame::exposureSpinBoxValueChanged(double value)
     mViewer->update();
 }
 
-void ViewerRenderSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
+void ViewerSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
     int index)
 {
     checkPtr(mViewer);
@@ -205,7 +214,7 @@ void ViewerRenderSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
     mViewer->update();
 }
 
-void ViewerRenderSettingsFrame::iblCheckBoxCheckStateChanged(
+void ViewerSettingsFrame::iblCheckBoxCheckStateChanged(
     Qt::CheckState state)
 {
     checkPtr(mViewer);
@@ -218,7 +227,7 @@ void ViewerRenderSettingsFrame::iblCheckBoxCheckStateChanged(
     mViewer->update();
 }
 
-void ViewerRenderSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
+void ViewerSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
     Qt::CheckState state)
 {
     checkPtr(mViewer);
@@ -231,7 +240,7 @@ void ViewerRenderSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
     mViewer->update();
 }
 
-void ViewerRenderSettingsFrame::loadPanoramaPushButtonClicked()
+void ViewerSettingsFrame::loadPanoramaPushButtonClicked()
 {
     // open a file dialog asking for a *.hdr file
     QString fileName = QFileDialog::getOpenFileName(

@@ -103,7 +103,6 @@
           </property>
          </widget>
         </item>
-
         <item>
          <widget class="vcl::qt::TextEditLogger" name="logger">
           <property name="sizePolicy">
@@ -214,12 +213,6 @@
    <class>vcl::qt::DrawableObjectVectorTree</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/drawable_object_vector_tree.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>vcl::qt::ViewerRenderSettingsFrame</class>
-   <extends>QFrame</extends>
-   <header>vclib/qt/gui/viewer_render_settings_frame.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

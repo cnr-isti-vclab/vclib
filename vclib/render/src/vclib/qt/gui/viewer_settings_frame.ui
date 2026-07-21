@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::qt::ViewerRenderSettingsFrame</class>
- <widget class="QFrame" name="vcl::qt::ViewerRenderSettingsFrame">
+ <class>vcl::qt::ViewerSettingsFrame</class>
+ <widget class="QFrame" name="vcl::qt::ViewerSettingsFrame">
   <property name="geometry">
    <rect>
     <x>0</x>
