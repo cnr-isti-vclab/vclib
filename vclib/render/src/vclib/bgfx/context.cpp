@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/context.h>
 
@@ -312,20 +297,25 @@ ProgramManager& Context::programManager()
 
 Context::Context(void* windowHandle, void* displayHandle)
 {
-    static const bool forceWindow = false;
-
     if (windowHandle == nullptr) {
         // Headless context
-        if (forceWindow) {
-            std::cerr << "WARNING: The first window used to create the bgfx "
-                         "context is a dummy window. This is not recommended."
-                      << std::endl;
-            std::cerr
-                << "Be sure to pass a valid window handle when requesting the "
-                   "context instance for the first time."
-                << std::endl;
-            mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
-        }
+        // TODO: right now, this is not supported.
+        // Throwing an exception to avoid segfaults. In the future, this should
+        // be supported.
+
+        throw std::runtime_error(
+            "BGFX is not initialized. Make sure to construct a RenderApp (e.g. "
+            "a Viewer) before constructing an object that requires a bgfx "
+            "context.");
+
+        // std::cerr << "WARNING: The first window used to create the bgfx "
+        //              "context is a dummy window. This is not recommended."
+        //           << std::endl;
+        // std::cerr
+        //     << "Be sure to pass a valid window handle when requesting the "
+        //        "context instance for the first time."
+        //     << std::endl;
+        // mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
     }
     else {
 #ifdef __linux__

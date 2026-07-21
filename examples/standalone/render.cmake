@@ -1,0 +1,113 @@
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+
+# Add all render examples automatically if dependencies are met
+file(
+    GLOB RENDER_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../render/*"
+)
+foreach(dir IN LISTS RENDER_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/main.cpp")
+            set(EXAMPLE_REQUIRED_TARGETS "")
+            set(EXAMPLE_EXTRA_INCLUDES "")
+
+            if(
+                EXISTS
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake"
+            )
+                include(
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/${dir}/requirements.cmake"
+                )
+            endif()
+
+            set(REQUIREMENTS_MET TRUE)
+            set(UNMET_REQ_PRINT "")
+            foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                if(NOT TARGET ${req} AND NOT TARGET vclib::${req})
+                    set(REQUIREMENTS_MET FALSE)
+                    string(REPLACE "vclib-3rd-" "" req_print ${req})
+                    list(APPEND UNMET_REQ_PRINT ${req_print})
+                endif()
+            endforeach()
+
+            if(REQUIREMENTS_MET)
+                add_standalone_example(render "${dir}" ${EXAMPLE_EXTRA_INCLUDES})
+            else()
+                message(
+                    STATUS
+                    "Skipping ${dir} due to missing req: "
+                    "${UNMET_REQ_PRINT}"
+                )
+            endif()
+        endif()
+    endif()
+endforeach()
+
+# Add core render examples
+file(
+    GLOB RENDER_CORE_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/core"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/*"
+)
+foreach(dir IN LISTS RENDER_CORE_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/../render/core/${dir}/main.cpp")
+            add_standalone_example("render/core" "${dir}" "../../../core/${dir}")
+        endif()
+    endif()
+endforeach()
+
+# Add external render examples
+if(VCLIB_BUILD_MODULE_EXTERNAL)
+    file(
+        GLOB RENDER_EXTERNAL_EXAMPLE_DIRS
+        RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../render/external"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/*"
+    )
+    foreach(dir IN LISTS RENDER_EXTERNAL_EXAMPLE_DIRS)
+        if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}")
+            if(
+                EXISTS
+                    "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/main.cpp"
+            )
+                set(EXAMPLE_REQUIRED_TARGETS "")
+                set(EXAMPLE_EXTRA_INCLUDES "")
+
+                if(
+                    EXISTS
+                        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake"
+                )
+                    include(
+                        "${CMAKE_CURRENT_SOURCE_DIR}/../render/external/${dir}/requirements.cmake"
+                    )
+                endif()
+
+                set(REQUIREMENTS_MET TRUE)
+                set(UNMET_REQ_PRINT "")
+                foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                    if(NOT TARGET ${req} AND NOT TARGET vclib::${req})
+                        set(REQUIREMENTS_MET FALSE)
+                        string(REPLACE "vclib-3rd-" "" req_print ${req})
+                        list(APPEND UNMET_REQ_PRINT ${req_print})
+                    endif()
+                endforeach()
+
+                if(REQUIREMENTS_MET)
+                    add_standalone_example("render/external" "${dir}" "../../../external/${dir}" ${EXAMPLE_EXTRA_INCLUDES})
+                else()
+                    message(
+                        STATUS
+                        "Skipping ${dir} due to missing req: "
+                        "${UNMET_REQ_PRINT}"
+                    )
+                endif()
+            endif()
+        endif()
+    endforeach()
+endif()

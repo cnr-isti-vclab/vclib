@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/mesh_render_settings_frame/surface_frame.h>
 
@@ -62,6 +47,12 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SLOT(onShadingNoneToggled(bool)));
 
     connect(
+        mUI->shadingNormalMapRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onShadingNormalMapToggled(bool)));
+
+    connect(
         mUI->colorComboBox,
         SIGNAL(currentIndexChanged(int)),
         this,
@@ -72,6 +63,18 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onUserColorChanged(const QColor&)));
+
+    connect(
+        mUI->selectionVisibilityCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSelectionVisibilityChanged(Qt::CheckState)));
+
+    connect(
+        mUI->selectionColorDialogPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onSelectionColorChanged(const QColor&)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -87,6 +90,8 @@ void SurfaceFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
         updateColorComboBoxFromSettings();
+        mUI->selectionVisibilityCheckBox->setEnabled(true);
+        mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
     }
     else {
         this->setEnabled(false);
@@ -102,9 +107,14 @@ void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
     if (!mMRS.canSurface(SHADING_FLAT)) {
         mUI->shadingFlatRadioButton->setEnabled(false);
     }
+    if (!mMRS.canSurface(SHADING_NORMAL_MAP)) {
+        mUI->shadingNormalMapRadioButton->setEnabled(false);
+    }
     mUI->shadingNoneRadioButton->setChecked(mMRS.isSurface(SHADING_NONE));
     mUI->shadingFlatRadioButton->setChecked(mMRS.isSurface(SHADING_FLAT));
     mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurface(SHADING_SMOOTH));
+    mUI->shadingNormalMapRadioButton->setChecked(
+        mMRS.isSurface(SHADING_NORMAL_MAP));
 }
 
 void SurfaceFrame::updateColorComboBoxFromSettings()
@@ -164,6 +174,12 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     mUI->colorDialogPushButton->setBackgroundColor(c);
+    vcl::Color sc = mMRS.surfaceSelectionColor();
+    c.setRed(sc.red());
+    c.setGreen(sc.green());
+    c.setBlue(sc.blue());
+    c.setAlpha(sc.alpha());
+    mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -196,6 +212,14 @@ void SurfaceFrame::onShadingNoneToggled(bool checked)
     }
 }
 
+void SurfaceFrame::onShadingNormalMapToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(SHADING_NORMAL_MAP);
+        emit settingsUpdated();
+    }
+}
+
 void SurfaceFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
@@ -213,6 +237,19 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
 void SurfaceFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setSurfaceUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
+    emit settingsUpdated();
+}
+
+void SurfaceFrame::onSelectionVisibilityChanged(Qt::CheckState arg1)
+{
+    mMRS.setSurface(SELECTION, arg1 == Qt::CheckState::Checked);
+    emit settingsUpdated();
+}
+
+void SurfaceFrame::onSelectionColorChanged(const QColor& c)
+{
+    // alpha is always 0.5
+    mMRS.setSurfaceSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
     emit settingsUpdated();
 }
 

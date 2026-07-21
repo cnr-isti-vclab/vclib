@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_OPENGL2_H
 #define VCL_OPENGL2_DRAWERS_VIEWER_DRAWER_OPENGL2_H
@@ -39,10 +24,16 @@
 
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<ViewProjEventDrawer>
+/**
+ * @brief The ViewerDrawerOpenGL2 class is a concrete viewer drawer
+ * implementation for the OpenGL2 backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using OpenGL2.
+ */
+template<typename DerivedRenderApp>
+class ViewerDrawerOpenGL2 : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
 
 public:
     ViewerDrawerOpenGL2(uint width = 1024, uint height = 768) :
@@ -72,12 +63,8 @@ public:
         }
     }
 
-    void onDraw(uint viewId) override { onDrawContent(viewId); }
-
     void onDrawContent(uint) override
     {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         auto         tmp = ParentViewer::light().direction();
         vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_COMPLEX_MESH_INFO_H
 #define VCL_SPACE_COMPLEX_MESH_INFO_H
@@ -99,6 +84,7 @@ public:
         VREFS,
         BIT_FLAGS,
         NORMAL,
+        TANGENT,
         COLOR,
         QUALITY,
         TEXCOORD,
@@ -177,6 +163,14 @@ public:
                     true,
                     getType<
                         typename Mesh::VertexType::NormalType::ScalarType>());
+            }
+        }
+        if constexpr (HasPerVertexTangent<Mesh>) {
+            if (isPerVertexTangentAvailable(m)) {
+                setPerVertexTangent(
+                    true,
+                    getType<
+                        typename Mesh::VertexType::TangentType::ScalarType>());
             }
         }
         if constexpr (HasPerVertexColor<Mesh>) {
@@ -379,6 +373,15 @@ public:
     bool hasPerVertexNormal() const
     {
         return hasPerElementComponent(VERTEX, NORMAL);
+    }
+
+    /**
+     * @brief Returns true if the current object has Vertex Tangents.
+     * @return true if the current object has Vertex Tangents.
+     */
+    bool hasPerVertexTangent() const
+    {
+        return hasPerElementComponent(VERTEX, TANGENT);
     }
 
     /**
@@ -585,6 +588,11 @@ public:
         setPerElementComponent(VERTEX, NORMAL, b, t);
     }
 
+    void setPerVertexTangent(bool b = true, DataType t = PrimitiveType::FLOAT)
+    {
+        setPerElementComponent(VERTEX, TANGENT, b, t);
+    }
+
     void setPerVertexColor(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
         setPerElementComponent(VERTEX, COLOR, b, t);
@@ -766,6 +774,11 @@ public:
     DataType perVertexNormalType() const
     {
         return perElementComponentType(VERTEX, NORMAL);
+    }
+
+    DataType perVertexTangentType() const
+    {
+        return perElementComponentType(VERTEX, TANGENT);
     }
 
     DataType perVertexColorType() const
@@ -1037,6 +1050,11 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         if (info.hasPerVertexQuality()) {
             if (!enableIfPerVertexQualityOptional(m)) {
                 info.setPerVertexQuality(false);
+            }
+        }
+        if (info.hasPerVertexTangent()) {
+            if (!enableIfPerVertexTangentOptional(m)) {
+                info.setPerVertexTangent(false);
             }
         }
         if (info.hasPerVertexTexCoord()) {

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 // Programmable Vertex Pulling: no vertex attributes, we pull data from SSBOs
 $output v_color
@@ -29,20 +14,20 @@ $output v_color
 
 // Input buffers (bound as compute buffers for vertex shader access)
 BUFFER_RO(vertexPosBuffer, vec2, 0); // vertices
-#if SCREENSPACE_LINES_COLOR_PER_VERTEX
+#ifdef SCREENSPACE_LINES_COLOR_PER_VERTEX
 BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
 #endif
-#if SCREENSPACE_LINES_INDEXED
+#ifdef SCREENSPACE_LINES_INDICES_ON
 BUFFER_RO(indexBuffer, uint, 2);     // line indices
 #endif
-#if SCREENSPACE_LINES_COLOR_PER_LINE
+#ifdef SCREENSPACE_LINES_COLOR_PER_LINE
 BUFFER_RO(lineColBuffer, uint, 3);   // line colors
 #endif
 
 // Helper function to get vertex index based on indexing mode
 uint getVind(uint vind)
 {
-#if SCREENSPACE_LINES_INDEXED
+#ifdef SCREENSPACE_LINES_INDICES_ON
     return indexBuffer[vind];
 #else
     return vind;
@@ -57,7 +42,7 @@ void main()
     uint localVertex = gl_VertexID % 6u;
 
     // Topology-based vertex indexing
-#if SCREENSPACE_LINES_TOPO_LINES
+#ifdef SCREENSPACE_LINES_TOPO_LINES
     uint vertexIndex0 = getVind(lineIndex * 2u);
     uint vertexIndex1 = getVind(lineIndex * 2u + 1u);
 #else
@@ -129,7 +114,7 @@ void main()
     v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
 #elif SCREENSPACE_LINES_COLOR_PER_LINE
     v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
-    #else
+#else
     v_color = u_linesGeneralColor;
 #endif
 }

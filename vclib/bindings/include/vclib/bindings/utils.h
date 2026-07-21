@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BINDINGS_UTILS_H
 #define VCL_BINDINGS_UTILS_H
@@ -45,8 +30,8 @@ inline RandomConfig toRConfig(std::optional<uint> seed)
         return std::monostate();
 }
 
-template<typename Class>
-void defCopy(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defCopy(pybind11::class_<Class, Options...>& c)
 {
     using namespace pybind11::literals;
 
@@ -61,8 +46,8 @@ void defCopy(pybind11::class_<Class>& c)
         "memo"_a);
 }
 
-template<typename Class>
-void defRepr(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defRepr(pybind11::class_<Class, Options...>& c)
 {
     c.def("__repr__", [](const Class& self) {
         std::stringstream ss;
@@ -71,8 +56,8 @@ void defRepr(pybind11::class_<Class>& c)
     });
 }
 
-template<typename Class>
-void defComparisonOperators(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defComparisonOperators(pybind11::class_<Class, Options...>& c)
 {
     namespace py = pybind11;
 
@@ -84,8 +69,8 @@ void defComparisonOperators(pybind11::class_<Class>& c)
     c.def(py::self >= py::self);
 }
 
-template<typename Class>
-void defArithmeticOperators(pybind11::class_<Class>& c)
+template<typename Class, typename... Options>
+void defArithmeticOperators(pybind11::class_<Class, Options...>& c)
 {
     namespace py = pybind11;
 
@@ -333,8 +318,10 @@ void defForAllMeshTypes(pybind11::module_& pymod, auto&& function)
  * @param pyclass
  * @param function
  */
-template<typename C>
-void defForAllMeshTypes(pybind11::class_<C>& pyclass, auto&& function)
+template<typename C, typename... Options>
+void defForAllMeshTypes(
+    pybind11::class_<C, Options...>& pyclass,
+    auto&&                           function)
 {
     using FType = decltype(function);
 

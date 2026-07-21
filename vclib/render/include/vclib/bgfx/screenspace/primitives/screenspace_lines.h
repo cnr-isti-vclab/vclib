@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_SCREENSPACE_PRIMITIVES_SCREENSPACE_LINES_H
 #define VCL_BGFX_SCREENSPACE_PRIMITIVES_SCREENSPACE_LINES_H
@@ -78,6 +63,9 @@ private:
     OwnedOrRefBuffer<IndexBuffer> mIndices;
     OwnedOrRefBuffer<IndexBuffer> mLineColors;
 
+    mutable bool                mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
+
 public:
     /**
      * @brief Default constructor — creates an empty line set with no lines.
@@ -102,6 +90,55 @@ public:
     }
 
     ScreenSpaceLines(const uint vertexCount, const VertexBuffer& verts);
+
+    /**
+     * @brief Returns the width of line segments.
+     *
+     * @return The width of the line segments in pixels.
+     */
+    float width() const { return mWidth; }
+
+    /**
+     * @brief Returns whether the line set has valid vertex positions.
+     *
+     * @return True if vertex positions are valid; false otherwise.
+     */
+    bool hasPositions() const { return mVertexPositions.isValid(); }
+
+    /**
+     * @brief Returns whether the line set has valid indices.
+     *
+     * @return True if indices are valid; false otherwise.
+     */
+    bool hasIndices() const { return mIndices.isValid(); }
+
+    /**
+     * @brief Returns whether the line set has valid vertex colors.
+     *
+     * @return True if vertex colors are valid; false otherwise.
+     */
+    bool hasVertexColors() const { return mVertexColors.isValid(); }
+
+    /**
+     * @brief Returns whether the line set has valid line colors.
+     *
+     * @return True if line colors are valid; false otherwise.
+     */
+    bool hasLineColors() const { return mLineColors.isValid(); }
+
+    /**
+     * @brief Returns the number of vertices in the set.
+     *
+     * @return The number of vertices in the set.
+     */
+    uint vertexCount() const { return mVerPosCount; }
+
+    /**
+     * @brief Returns the number of indices in the set.
+     *
+     * @return The number of indices in the set.
+     */
+    uint indexCount() const { return mIndexCount; }
 
     /**
      * @brief Sets line coordinates from a range of 2D points.
@@ -148,6 +185,7 @@ public:
             PrimitiveType::FLOAT,
             releaseFn);
         mVertexPositions.setOwned(std::move(vertBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -182,6 +220,7 @@ public:
         indexBuff.create(buffer, mIndexCount, releaseFn);
 
         mIndices.setOwned(std::move(indexBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -219,6 +258,7 @@ public:
             true,
             releaseFn);
         mVertexColors.setOwned(std::move(vColsBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     template<Range R>
@@ -240,6 +280,7 @@ public:
 
         lColsBuff.create(buffer, mLineColorCount, releaseFn);
         mLineColors.setOwned(std::move(lColsBuff));
+        mIsUpdateProgramNeeded = true;
     }
 
     void setVertices(uint vertexCount, const VertexBuffer& verts);
@@ -260,7 +301,11 @@ public:
      * @brief Sets the topology used for rendering lines.
      * @param[in] topo: The desired line topology (LINES or LINE_STRIP).
      */
-    void setTopology(Topology topo) { mTopology = topo; }
+    void setTopology(Topology topo)
+    {
+        mTopology              = topo;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Sets the color mode for line rendering.
@@ -269,7 +314,8 @@ public:
      */
     void setColorSetting(ColorSetting colorToUse)
     {
-        mColorSetting = colorToUse;
+        mColorSetting          = colorToUse;
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
@@ -290,7 +336,7 @@ private:
     static constexpr uint L_IND_STAGE = 2;
     static constexpr uint L_COL_STAGE = 3;
 
-    void validityCheck() const;
+    void checkAndUpdateProgram() const;
 
     uint vertexPullingInstances() const;
 

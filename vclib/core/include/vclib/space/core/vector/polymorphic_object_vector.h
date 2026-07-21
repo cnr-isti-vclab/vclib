@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_SPACE_CORE_VECTOR_POLYMORPHIC_OBJECT_VECTOR_H
 #define VCL_SPACE_CORE_VECTOR_POLYMORPHIC_OBJECT_VECTOR_H
@@ -271,10 +256,12 @@ public:
      * @param[in] i: The position of the element.
      * @param[in] e: The new value of the element.
      */
-    void set(uint i, const T& e)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T>
+    void set(uint i, U&& e)
     {
         assert(i < Base::size());
-        Base::at(i) = e.clone();
+        Base::at(i) = std::forward<U>(e).clone();
     }
 
     /**
@@ -286,10 +273,12 @@ public:
      * @param[in] it: The iterator pointing to the position of the element.
      * @param[in] e: The new value of the element.
      */
-    void set(Base::ConstIterator it, const T& e)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T>
+    void set(Base::ConstIterator it, U&& e)
     {
         assert(it < Base::end());
-        Base::at(it - Base::begin()) = e.clone();
+        Base::at(it - Base::begin()) = std::forward<U>(e).clone();
     }
 
     /**
@@ -380,23 +369,9 @@ public:
     /**
      * @brief Add an element to the end of the Vector.
      *
-     * Adds the clone of the  element `v` to the end of the Vector by calling
+     * Adds the clone of the element `v` to the end of the Vector by calling
      * the `push_back()` member function of the underlying `std::vector`.
-     *
-     * This member function is only available if the size of the Vector is not
-     * known at compile-time, as specified by the concept requirement `requires
-     * (N < 0)`.
-     *
-     * @param[in] v: The value to add to the end of the Vector.
-     */
-    void pushBack(const T& v) requires (N < 0) { Base::pushBack(v.clone()); }
-
-    /**
-     * @brief Add an element to the end of the Vector.
-     *
-     * Adds the clone of the  element `v` to the end of the Vector by calling
-     * the `push_back()` member function of the underlying `std::vector`.
-     * If the Cloneable type T implements the move clone, the element is moved
+     * If the type U implements the move clone, the element is moved
      * into the vector.
      *
      * This member function is only available if the size of the Vector is not
@@ -405,9 +380,11 @@ public:
      *
      * @param[in] v: The value to add to the end of the Vector.
      */
-    void pushBack(T&& v) requires (N < 0)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
+    void pushBack(U&& v)
     {
-        Base::pushBack(std::move(v).clone());
+        Base::pushBack(std::forward<U>(v).clone());
     }
 
     /**
@@ -416,27 +393,7 @@ public:
      * Inserts the clone of the element `v` at the position specified by `i` in
      * the Vector by calling the `insert()` member function of the underlying
      * `std::vector`.
-     *
-     * This member function is only available if the size of the Vector is not
-     * known at compile-time, as specified by the concept requirement `requires
-     * (N < 0)`.
-     *
-     * @param[in] i: The index at which to insert the element.
-     * @param[in] v: The value to insert into the Vector.
-     */
-    void insert(uint i, const T& v) requires (N < 0)
-    {
-        assert(i < Base::size() + 1);
-        Base::insert(i, v.clone());
-    }
-
-    /**
-     * @brief Insert an element at the specified position in the Vector.
-     *
-     * Inserts the clone of the element `v` at the position specified by `i` in
-     * the Vector by calling the `insert()` member function of the underlying
-     * `std::vector`.
-     * If the Cloneable type T implements the move clone, the element is moved
+     * If the type U implements the move clone, the element is moved
      * into the vector.
      *
      * This member function is only available if the size of the Vector is not
@@ -446,10 +403,12 @@ public:
      * @param[in] i: The index at which to insert the element.
      * @param[in] v: The value to insert into the Vector.
      */
-    void insert(uint i, T&& v) requires (N < 0)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, T> && (N < 0)
+    void insert(uint i, U&& v)
     {
         assert(i < Base::size() + 1);
-        Base::insert(i, std::move(v).clone());
+        Base::insert(i, std::forward<U>(v).clone());
     }
 
     /**

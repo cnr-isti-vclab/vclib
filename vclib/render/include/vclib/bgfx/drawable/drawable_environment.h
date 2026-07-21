@@ -1,52 +1,33 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_ENVIRONMENT_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_ENVIRONMENT_H
 
 #include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/panorama.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
 #include <vclib/base.h>
-#include <vclib/io.h>
 
 #include <bgfx/bgfx.h>
-#include <bx/allocator.h>
 
 namespace vcl {
 
 /**
  * @brief A class representing an environment for PBR rendering.
  *
- * It manages the loading and setup of environment maps, including
- * HDR images, cubemaps, irradiance maps, specular maps, and BRDF LUTs.
+ * It manages the setup of environment maps, including HDR textures, cubemaps,
+ * irradiance maps, specular maps, and BRDF LUTs initialized from a Panorama.
  */
 class DrawableEnvironment
 {
-    // Supported file formats for environment maps
-    enum class FileFormat { UNKNOWN, HDR, EXR, KTX, DDS };
-
     // Size of the BRDF lookup texture
     static const uint BRDF_LU_TEXTURE_SIZE = 1024;
 
@@ -66,9 +47,6 @@ class DrawableEnvironment
     const Uniform mBrdfLutSamplerUniform =
         Uniform("s_tex5", bgfx::UniformType::Sampler);
 
-    // The path of the environment image file provided as input.
-    std::string mImagePath;
-
     // The number of mip levels in the specular cubemap,
     // this value is needed by the shader to correctly sample the specular map.
     uint8_t mSpecularMipLevels = 0;
@@ -81,7 +59,7 @@ class DrawableEnvironment
     // The cubemap environment map,
     // this is either used directly if the input file is in the KTX or DDS
     // format or contains the cubemap generated from an equirectangular image.
-    // It is used for display in the background and for caluclating the
+    // It is used for display in the environment and for caluclating the
     // irradiance and specular maps for the image-based lighting.
     Texture mCubeMapTexture;
 
@@ -103,7 +81,7 @@ class DrawableEnvironment
     Texture mBrdfLuTexture;
 
     // Vertex buffer for rendering a full-screen triangle, used for drawing the
-    // background.
+    // environment.
     const vcl::VertexBuffer mVertexBuffer = fullScreenTriangle();
 
 public:
@@ -115,7 +93,13 @@ public:
 
     DrawableEnvironment() = default;
 
-    DrawableEnvironment(const std::string& imagePath, uint viewId = UINT_NULL);
+    /**
+     * @brief Constructor that initializes the environment from a Panorama.
+     * @param[in] panorama: The panorama image data.
+     * @param[in] viewId: The view ID to use for compute shaders during
+     * initialization.
+     */
+    DrawableEnvironment(const Panorama& panorama, uint viewId = UINT_NULL);
 
     DrawableEnvironment(const DrawableEnvironment& other) = delete;
 
@@ -134,7 +118,6 @@ public:
     void swap(DrawableEnvironment& other)
     {
         using std::swap;
-        swap(mImagePath, other.mImagePath);
         swap(mSpecularMipLevels, other.mSpecularMipLevels);
         swap(mHdrTexture, other.mHdrTexture);
         swap(mCubeMapTexture, other.mCubeMapTexture);
@@ -146,13 +129,6 @@ public:
     friend void swap(DrawableEnvironment& first, DrawableEnvironment& second)
     {
         first.swap(second);
-    }
-
-    const std::string& imagePath() const { return mImagePath; }
-
-    std::string imageFileName() const
-    {
-        return FileInfo::fileNameWithExtension(mImagePath);
     }
 
     uint8_t specularMipLevels() const { return mSpecularMipLevels; }
@@ -171,11 +147,7 @@ public:
     bool canDraw() const { return mCubeMapTexture.isValid(); }
 
 private:
-    FileFormat getFileFormat(const std::string& imagePath);
-
-    bimg::ImageContainer* loadImage(std::string imagePath);
-
-    void setAndGenerateTextures(const bimg::ImageContainer& image, uint viewId);
+    void setAndGenerateTextures(const Panorama& panorama, uint viewId);
 
     void generateTextures(
         const bimg::ImageContainer& image,

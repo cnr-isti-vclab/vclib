@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/drawable_object_item.h>
 
@@ -53,6 +38,33 @@ std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
     return mObj;
 }
 
+void DrawableObjectItem::updateMeshInfo()
+{
+    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(mObj);
+    if (!mesh)
+        return;
+
+    for (int i = 0; i < childCount(); ++i) {
+        auto childItem = child(i);
+        if (childItem->text(0) == "Mesh Info") {
+            for (int j = 0; j < childItem->childCount(); ++j) {
+                auto subChild = childItem->child(j);
+                if (subChild->text(0) == "# Vertices") {
+                    updateElementCountItem(
+                        subChild,
+                        mesh->vertexCount(),
+                        mesh->selectedVertexCount());
+                }
+                else if (subChild->text(0) == "# Faces") {
+                    updateElementCountItem(
+                        subChild, mesh->faceCount(), mesh->selectedFaceCount());
+                }
+            }
+            break;
+        }
+    }
+}
+
 void DrawableObjectItem::addMeshItem()
 {
     // clear any existing children
@@ -85,13 +97,15 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     // vertex number item
     auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
     vertexCountItem->setText(0, "# Vertices");
-    vertexCountItem->setText(1, QString::number(mesh.vertexCount()));
+    updateElementCountItem(
+        vertexCountItem, mesh.vertexCount(), mesh.selectedVertexCount());
     makeItemNotSelectable(vertexCountItem);
 
     if (mesh.faceCount() > 0) {
         auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
         faceCountItem->setText(0, "# Faces");
-        faceCountItem->setText(1, QString::number(mesh.faceCount()));
+        updateElementCountItem(
+            faceCountItem, mesh.faceCount(), mesh.selectedFaceCount());
         makeItemNotSelectable(faceCountItem);
     }
 
@@ -275,6 +289,22 @@ void DrawableObjectItem::addMaterialData(
 void DrawableObjectItem::makeItemNotSelectable(QTreeWidgetItem* item)
 {
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+}
+
+void DrawableObjectItem::updateElementCountItem(
+    QTreeWidgetItem* item,
+    uint             count,
+    uint             selectedCount)
+{
+    if (selectedCount == 0) {
+        item->setText(1, QString::number(count));
+    }
+    else {
+        item->setText(
+            1,
+            QString::number(count) + " (" + QString::number(selectedCount) +
+                " selected)");
+    }
 }
 
 } // namespace vcl::qt

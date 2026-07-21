@@ -1,0 +1,26 @@
+name: 'Run Python Examples'
+description: 'Set up Python, install the built wheel, and run examples'
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Run examples ${{ inputs.python-version }}
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        PY_VER_CLEAN=$(echo "${{ inputs.python-version }}" | tr -d '.')
+        python -m pip install dist/*cp${PY_VER_CLEAN}*.whl
+        for f in examples/bindings/core/*.py; do
+          printf "=== Running $f ===\n"
+          python "$f"
+          printf "\n"
+        done

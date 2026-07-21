@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
 #define VCL_IMGUI_MESH_VIEWER_IMGUI_DRAWER_H
@@ -27,11 +12,11 @@
 
 #include <vclib/render/concepts/pbr_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/drawers/trackball_viewer_drawer.h>
+#include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/pbr_viewer_settings.h>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 #include <algorithm>
 #include <iterator>
@@ -39,16 +24,17 @@
 namespace vcl::imgui {
 
 template<typename DerivedRenderApp>
-class MeshViewerDrawerImgui :
-        public vcl::TrackBallViewerDrawer<DerivedRenderApp>
+class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
-    using Base = vcl::TrackBallViewerDrawer<DerivedRenderApp>;
+    using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
     std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
         mMeshSelectorEditor;
     std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
         mBoundingBoxEditor;
+    std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
+        mSelectionEditor;
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
@@ -65,6 +51,8 @@ public:
 
         mBoundingBoxEditor =
             Base::template pushEditor<vcl::BoundingBoxEditor>();
+
+        mSelectionEditor = Base::template pushEditor<vcl::SelectionEditor>();
     }
 
     virtual void onDraw(vcl::uint viewId) override
@@ -263,8 +251,100 @@ private:
                 drawBoundingBoxSettings();
                 ImGui::EndPopup();
             }
+
+            ImGui::SameLine(0, 6);
+            // TODO: still no way to add vertical separator using imgui
+            // https://github.com/ocornut/imgui/issues/8321
+            // ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+            ImGui::SameLine(0, 6);
+
+            // selection editor toggles
+            auto& selSettings = mSelectionEditor->settings();
+
+            bool vSel = std::any_cast<bool>(
+                selSettings.customSettings["selectVertices"]);
+            bool fSel =
+                std::any_cast<bool>(selSettings.customSettings["selectFaces"]);
+
+            if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
+                vSel                                         = !vSel;
+                selSettings.customSettings["selectVertices"] = vSel;
+                mSelectionEditor->setActive(vSel || fSel);
+                mSelectionEditor->refreshSettings();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Vertex Selection");
+
+            ImGui::SameLine(0, 2);
+            if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
+                fSel                                      = !fSel;
+                selSettings.customSettings["selectFaces"] = fSel;
+                mSelectionEditor->setActive(vSel || fSel);
+                mSelectionEditor->refreshSettings();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Face Selection");
+
+            // small settings popup button
+            ImGui::SameLine(0, 2);
+            if (ImGui::Button("v##SelSettings")) {
+                ImGui::OpenPopup("##SelSettingsPopup");
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Selection Settings");
+
+            if (ImGui::BeginPopup("##SelSettingsPopup")) {
+                drawSelectionSettings();
+                ImGui::EndPopup();
+            }
         }
         ImGui::End();
+    }
+
+    void drawSelectionSettings()
+    {
+        if (!mSelectionEditor)
+            return;
+
+        EditorSettings& sts = mSelectionEditor->settings();
+
+        // Edit mode
+        static const char* editModeNames[] = {
+            "None", "Selected Object", "Visible Objects", "All Objects"};
+        int currentMode = toUnderlying(sts.editMode);
+        ImGui::Text("Apply to:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::BeginCombo("##SelEditMode", editModeNames[currentMode])) {
+            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
+                bool selected = (n == currentMode);
+                if (n == 0 || n == 3)
+                    ImGui::BeginDisabled();
+                if (ImGui::Selectable(editModeNames[n], selected)) {
+                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
+                    mSelectionEditor->refreshSettings();
+                }
+                if (n == 0 || n == 3)
+                    ImGui::EndDisabled();
+                if (selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+
+        // Only visible checkbox
+        assert(sts.customSettings["onlyVisible"].has_value());
+        bool onlyVisible =
+            std::any_cast<bool>(sts.customSettings["onlyVisible"]);
+        ImGui::Checkbox(
+            "Only Visible Faces",
+            [&] {
+                return onlyVisible;
+            },
+            [&](bool v) {
+                sts.customSettings["onlyVisible"] = v;
+                mSelectionEditor->refreshSettings();
+            });
     }
 
     void drawBoundingBoxSettings()
@@ -521,6 +601,32 @@ private:
             1.0f,
             32.0f);
 
+        // selection visibility
+        ImGui::Checkbox(
+            "Selection",
+            [&] {
+                return settings.isPoints(SELECTION);
+            },
+            [&](bool vis) {
+                settings.setPoints(SELECTION, vis);
+            });
+
+        // selection color picker
+        ImGui::SameLine();
+        ImGui::Text("Selection Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##PointSelectionColor",
+            [&] {
+                return settings.pointSelectionColor();
+            },
+            [&](vcl::Color c) {
+                // alpha is always 128
+                c.alpha() = 128;
+                settings.setPointSelectionColor(c);
+            },
+            ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
+
         ImGui::EndDisabled();
     }
 
@@ -545,6 +651,7 @@ private:
         // shading
         assert(
             (settings.isSurface(SHADING_SMOOTH) +
+             settings.isSurface(SHADING_NORMAL_MAP) +
              settings.isSurface(SHADING_FLAT) +
              settings.isSurface(SHADING_NONE)) == 1);
         ImGui::Text("Shading:");
@@ -558,6 +665,18 @@ private:
                 if (vis)
                     settings.setSurface(SHADING_SMOOTH);
             });
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canSurface(SHADING_NORMAL_MAP));
+        ImGui::RadioButton(
+            "Normal Map",
+            [&] {
+                return settings.isSurface(SHADING_NORMAL_MAP);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(SHADING_NORMAL_MAP);
+            });
+        ImGui::EndDisabled();
         ImGui::SameLine();
         ImGui::RadioButton(
             "Flat",
@@ -581,7 +700,8 @@ private:
 
         // color
         const uint CS_COUNT =
-            toUnderlying(COUNT) - 4; // exclude shading options
+            toUnderlying(COLOR_USER) - toUnderlying(COLOR_VERTEX) + 1;
+        // exclude shading and selection options
 
         ImGui::Text("Color:");
         ImGui::SameLine();
@@ -664,6 +784,32 @@ private:
             },
             ImGuiColorEditFlags_NoInputs);
         ImGui::EndDisabled();
+
+        // selection visibility
+        ImGui::Checkbox(
+            "Selection",
+            [&] {
+                return settings.isSurface(SELECTION);
+            },
+            [&](bool vis) {
+                settings.setSurface(SELECTION, vis);
+            });
+
+        // selection color picker
+        ImGui::SameLine();
+        ImGui::Text("Selection Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##SurfaceSelectionColor",
+            [&] {
+                return settings.surfaceSelectionColor();
+            },
+            [&](vcl::Color c) {
+                // alpha is always 128
+                c.alpha() = 128;
+                settings.setSurfaceSelectionColor(c);
+            },
+            ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
 
         ImGui::EndDisabled();
     }

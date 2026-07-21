@@ -1,24 +1,9 @@
-#*****************************************************************************
-#* VCLib                                                                     *
-#* Visual Computing Library                                                  *
-#*                                                                           *
-#* Copyright(C) 2021-2026                                                    *
-#* Visual Computing Lab                                                      *
-#* ISTI - Italian National Research Council                                  *
-#*                                                                           *
-#* All rights reserved.                                                      *
-#*                                                                           *
-#* This program is free software; you can redistribute it and/or modify      *
-#* it under the terms of the Mozilla Public License Version 2.0 as published *
-#* by the Mozilla Foundation; either version 2 of the License, or            *
-#* (at your option) any later version.                                       *
-#*                                                                           *
-#* This program is distributed in the hope that it will be useful,           *
-#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
-#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
-#* Mozilla Public License Version 2.0                                        *
-#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
-#****************************************************************************/
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 # Try to find Wayland.
 #
@@ -49,144 +34,184 @@ if(LINUX)
     # Use pkg-config to get the directories and then use these values
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
-    pkg_check_modules(PKG_WAYLAND QUIET
-        wayland-client wayland-server wayland-egl wayland-cursor)
+    pkg_check_modules(
+        PKG_WAYLAND
+        QUIET
+        wayland-client
+        wayland-server
+        wayland-egl
+        wayland-cursor
+    )
 
     set(WAYLAND_DEFINITIONS ${PKG_WAYLAND_CFLAGS})
 
-    find_path(WAYLAND_CLIENT_INCLUDE_DIR
+    find_path(
+        WAYLAND_CLIENT_INCLUDE_DIR
         NAMES wayland-client.h
-        HINTS ${PKG_WAYLAND_INCLUDE_DIRS})
+        HINTS ${PKG_WAYLAND_INCLUDE_DIRS}
+    )
 
-    find_path(WAYLAND_SERVER_INCLUDE_DIR
+    find_path(
+        WAYLAND_SERVER_INCLUDE_DIR
         NAMES wayland-server.h
-        HINTS ${PKG_WAYLAND_INCLUDE_DIRS})
+        HINTS ${PKG_WAYLAND_INCLUDE_DIRS}
+    )
 
-    find_path(WAYLAND_EGL_INCLUDE_DIR
+    find_path(
+        WAYLAND_EGL_INCLUDE_DIR
         NAMES wayland-egl.h
-        HINTS ${PKG_WAYLAND_INCLUDE_DIRS})
+        HINTS ${PKG_WAYLAND_INCLUDE_DIRS}
+    )
 
-    find_path(WAYLAND_CURSOR_INCLUDE_DIR
+    find_path(
+        WAYLAND_CURSOR_INCLUDE_DIR
         NAMES wayland-cursor.h
-        HINTS ${PKG_WAYLAND_INCLUDE_DIRS})
+        HINTS ${PKG_WAYLAND_INCLUDE_DIRS}
+    )
 
-    find_library(WAYLAND_CLIENT_LIBRARIES
+    find_library(
+        WAYLAND_CLIENT_LIBRARIES
         NAMES wayland-client
-        HINTS ${PKG_WAYLAND_LIBRARY_DIRS})
+        HINTS ${PKG_WAYLAND_LIBRARY_DIRS}
+    )
 
-    find_library(WAYLAND_SERVER_LIBRARIES
+    find_library(
+        WAYLAND_SERVER_LIBRARIES
         NAMES wayland-server
-        HINTS ${PKG_WAYLAND_LIBRARY_DIRS})
+        HINTS ${PKG_WAYLAND_LIBRARY_DIRS}
+    )
 
-    find_library(WAYLAND_EGL_LIBRARIES
+    find_library(
+        WAYLAND_EGL_LIBRARIES
         NAMES wayland-egl
-        HINTS ${PKG_WAYLAND_LIBRARY_DIRS})
+        HINTS ${PKG_WAYLAND_LIBRARY_DIRS}
+    )
 
-    find_library(WAYLAND_CURSOR_LIBRARIES
+    find_library(
+        WAYLAND_CURSOR_LIBRARIES
         NAMES wayland-cursor
-        HINTS ${PKG_WAYLAND_LIBRARY_DIRS})
+        HINTS ${PKG_WAYLAND_LIBRARY_DIRS}
+    )
 
     set(WAYLAND_INCLUDE_DIR
         ${WAYLAND_CLIENT_INCLUDE_DIR}
         ${WAYLAND_SERVER_INCLUDE_DIR}
         ${WAYLAND_EGL_INCLUDE_DIR}
-        ${WAYLAND_CURSOR_INCLUDE_DIR})
+        ${WAYLAND_CURSOR_INCLUDE_DIR}
+    )
 
     set(WAYLAND_LIBRARIES
         ${WAYLAND_CLIENT_LIBRARIES}
         ${WAYLAND_SERVER_LIBRARIES}
         ${WAYLAND_EGL_LIBRARIES}
-        ${WAYLAND_CURSOR_LIBRARIES})
+        ${WAYLAND_CURSOR_LIBRARIES}
+    )
 
     list(REMOVE_DUPLICATES WAYLAND_INCLUDE_DIR)
 
     include(FindPackageHandleStandardArgs)
 
-    find_package_handle_standard_args(WAYLAND_CLIENT
-        REQUIRED_VARS
-            WAYLAND_CLIENT_LIBRARIES
-            WAYLAND_CLIENT_INCLUDE_DIR
-        NAME_MISMATCHED)
+    find_package_handle_standard_args(
+        WAYLAND_CLIENT
+        REQUIRED_VARS WAYLAND_CLIENT_LIBRARIES WAYLAND_CLIENT_INCLUDE_DIR
+        NAME_MISMATCHED
+    )
 
-    find_package_handle_standard_args(WAYLAND_SERVER
-        REQUIRED_VARS
-            WAYLAND_SERVER_LIBRARIES
-            WAYLAND_SERVER_INCLUDE_DIR
-        NAME_MISMATCHED)
+    find_package_handle_standard_args(
+        WAYLAND_SERVER
+        REQUIRED_VARS WAYLAND_SERVER_LIBRARIES WAYLAND_SERVER_INCLUDE_DIR
+        NAME_MISMATCHED
+    )
 
-    find_package_handle_standard_args(WAYLAND_EGL
-        REQUIRED_VARS
-            WAYLAND_EGL_LIBRARIES
-            WAYLAND_EGL_INCLUDE_DIR
-        NAME_MISMATCHED)
+    find_package_handle_standard_args(
+        WAYLAND_EGL
+        REQUIRED_VARS WAYLAND_EGL_LIBRARIES WAYLAND_EGL_INCLUDE_DIR
+        NAME_MISMATCHED
+    )
 
-    find_package_handle_standard_args(WAYLAND_CURSOR
-        REQUIRED_VARS
-            WAYLAND_CURSOR_LIBRARIES
-            WAYLAND_CURSOR_INCLUDE_DIR
-        NAME_MISMATCHED)
+    find_package_handle_standard_args(
+        WAYLAND_CURSOR
+        REQUIRED_VARS WAYLAND_CURSOR_LIBRARIES WAYLAND_CURSOR_INCLUDE_DIR
+        NAME_MISMATCHED
+    )
 
-    find_package_handle_standard_args(Wayland
-        REQUIRED_VARS
-            WAYLAND_LIBRARIES
-            WAYLAND_INCLUDE_DIR
-        NAME_MISMATCHED)
+    find_package_handle_standard_args(
+        Wayland
+        REQUIRED_VARS WAYLAND_LIBRARIES WAYLAND_INCLUDE_DIR
+        NAME_MISMATCHED
+    )
 
     # create targets under Wayland namespace
     if(WAYLAND_CLIENT_LIBRARIES)
         add_library(Wayland::Client INTERFACE IMPORTED)
-        set_property(TARGET Wayland::Client
-            PROPERTY
-                INTERFACE_LINK_LIBRARIES ${WAYLAND_CLIENT_LIBRARIES})
-        set_property(TARGET Wayland::Client
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_CLIENT_INCLUDE_DIR})
+        set_property(
+            TARGET Wayland::Client
+            PROPERTY INTERFACE_LINK_LIBRARIES ${WAYLAND_CLIENT_LIBRARIES}
+        )
+        set_property(
+            TARGET Wayland::Client
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_CLIENT_INCLUDE_DIR}
+        )
     endif()
 
     if(WAYLAND_SERVER_LIBRARIES)
         add_library(Wayland::Server INTERFACE IMPORTED)
-        set_property(TARGET Wayland::Server
-            PROPERTY
-                INTERFACE_LINK_LIBRARIES ${WAYLAND_SERVER_LIBRARIES})
-        set_property(TARGET Wayland::Server
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_SERVER_INCLUDE_DIR})
+        set_property(
+            TARGET Wayland::Server
+            PROPERTY INTERFACE_LINK_LIBRARIES ${WAYLAND_SERVER_LIBRARIES}
+        )
+        set_property(
+            TARGET Wayland::Server
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_SERVER_INCLUDE_DIR}
+        )
     endif()
 
     if(WAYLAND_EGL_LIBRARIES)
         add_library(Wayland::EGL INTERFACE IMPORTED)
-        set_property(TARGET Wayland::EGL
-            PROPERTY
-                INTERFACE_LINK_LIBRARIES ${WAYLAND_EGL_LIBRARIES})
-        set_property(TARGET Wayland::EGL
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_EGL_INCLUDE_DIR})
+        set_property(
+            TARGET Wayland::EGL
+            PROPERTY INTERFACE_LINK_LIBRARIES ${WAYLAND_EGL_LIBRARIES}
+        )
+        set_property(
+            TARGET Wayland::EGL
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_EGL_INCLUDE_DIR}
+        )
     endif()
 
     if(WAYLAND_CURSOR_LIBRARIES)
         add_library(Wayland::Cursor INTERFACE IMPORTED)
-        set_property(TARGET Wayland::Cursor
-            PROPERTY
-                INTERFACE_LINK_LIBRARIES ${WAYLAND_CURSOR_LIBRARIES})
-        set_property(TARGET Wayland::Cursor
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_CURSOR_INCLUDE_DIR})
+        set_property(
+            TARGET Wayland::Cursor
+            PROPERTY INTERFACE_LINK_LIBRARIES ${WAYLAND_CURSOR_LIBRARIES}
+        )
+        set_property(
+            TARGET Wayland::Cursor
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_CURSOR_INCLUDE_DIR}
+        )
     endif()
 
     if(WAYLAND_LIBRARIES)
         add_library(Wayland::Wayland INTERFACE IMPORTED)
-        set_property(TARGET Wayland::Wayland
-            PROPERTY
-                INTERFACE_LINK_LIBRARIES ${WAYLAND_LIBRARIES})
-        set_property(TARGET Wayland::Wayland
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_INCLUDE_DIR})
+        set_property(
+            TARGET Wayland::Wayland
+            PROPERTY INTERFACE_LINK_LIBRARIES ${WAYLAND_LIBRARIES}
+        )
+        set_property(
+            TARGET Wayland::Wayland
+            PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${WAYLAND_INCLUDE_DIR}
+        )
     endif()
 
     mark_as_advanced(
-        WAYLAND_INCLUDE_DIR         WAYLAND_LIBRARIES
-        WAYLAND_CLIENT_INCLUDE_DIR  WAYLAND_CLIENT_LIBRARIES
-        WAYLAND_SERVER_INCLUDE_DIR  WAYLAND_SERVER_LIBRARIES
-        WAYLAND_EGL_INCLUDE_DIR     WAYLAND_EGL_LIBRARIES
-        WAYLAND_CURSOR_INCLUDE_DIR  WAYLAND_CURSOR_LIBRARIES)
+        WAYLAND_INCLUDE_DIR
+        WAYLAND_LIBRARIES
+        WAYLAND_CLIENT_INCLUDE_DIR
+        WAYLAND_CLIENT_LIBRARIES
+        WAYLAND_SERVER_INCLUDE_DIR
+        WAYLAND_SERVER_LIBRARIES
+        WAYLAND_EGL_INCLUDE_DIR
+        WAYLAND_EGL_LIBRARIES
+        WAYLAND_CURSOR_INCLUDE_DIR
+        WAYLAND_CURSOR_LIBRARIES
+    )
 endif()

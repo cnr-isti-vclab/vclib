@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
 #define VCL_BGFX_DRAWERS_VIEWER_DRAWER_BGFX_H
@@ -35,14 +20,20 @@
 
 namespace vcl {
 
-template<typename ViewProjEventDrawer>
-class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
+/**
+ * @brief The ViewerDrawerBGFX class is a concrete viewer drawer
+ * implementation for the BGFX backend.
+ *
+ * It provides the core rendering functionalities for a viewer, using BGFX.
+ */
+template<typename DerivedRenderApp>
+class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
     inline static const uint N_ADDITIONAL_VIEWS =
         DrawObjectSettings::N_ADDITIONAL_VIEWS;
 
-    using ParentViewer = AbstractViewerDrawer<ViewProjEventDrawer>;
-    using DRA          = ViewProjEventDrawer::DRA;
+    using ParentViewer = AbstractViewerDrawer<DerivedRenderApp>;
+    using DRA          = DerivedRenderApp;
 
     std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
@@ -51,7 +42,8 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<ViewProjEventDrawer>
 
     PBRViewerSettings mPBRSettings;
 
-    DrawableEnvironment mPanorama = DrawableEnvironment("");
+    std::string         mPanoramaPath;
+    DrawableEnvironment mEnvironment;
 
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) :
@@ -77,11 +69,16 @@ public:
         mPBRSettings = settings;
     }
 
-    std::string panoramaFileName() const { return mPanorama.imageFileName(); }
+    std::string panoramaFileName() const
+    {
+        return FileInfo::fileNameWithExtension(mPanoramaPath);
+    }
 
     void setPanorama(const std::string& panorama)
     {
-        mPanorama = DrawableEnvironment(panorama, ParentViewer::canvasViewId());
+        mPanoramaPath = panorama;
+        Panorama p(panorama);
+        mEnvironment = DrawableEnvironment(p, ParentViewer::canvasViewId());
     }
 
     void onResize(uint width, uint height) override
@@ -109,7 +106,7 @@ public:
 
         settings.pbrSettings = mPBRSettings;
 
-        settings.environment = &mPanorama;
+        settings.environment = &mEnvironment;
 
         setViewTransform(viewId);
 
@@ -119,11 +116,11 @@ public:
         ViewerDrawerUniforms::setExposure(mPBRSettings.exposure);
         ViewerDrawerUniforms::setToneMapping(mPBRSettings.toneMapping);
         ViewerDrawerUniforms::setSpecularMipsLevels(
-            mPanorama.specularMipLevels());
+            mEnvironment.specularMipLevels());
         ViewerDrawerUniforms::bind();
 
         // background will be drawn only if settings allow it
-        mPanorama.drawBackground(settings.viewId, settings.pbrSettings);
+        mEnvironment.drawBackground(settings.viewId, settings.pbrSettings);
 
         ParentViewer::drawableObjectVector().draw(settings);
     }
@@ -143,16 +140,20 @@ public:
     {
         bool block = ParentViewer::onKeyPress(key, modifiers);
 
-        if (!block && key == Key::F1) {
-            if (mStatsEnabled) {
-                mStatsEnabled = false;
-                bgfx::setDebug(BGFX_DEBUG_NONE);
-            }
-            else {
-                mStatsEnabled = true;
-                bgfx::setDebug(BGFX_DEBUG_STATS);
+        if (!block) {
+            switch (key) {
+            case Key::F1:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    mStatsEnabled = !mStatsEnabled;
+                    bgfx::setDebug(
+                        mStatsEnabled ? BGFX_DEBUG_STATS : BGFX_DEBUG_NONE);
+                }
+                break;
+
+            default: break;
             }
         }
+
         return block;
     }
 
