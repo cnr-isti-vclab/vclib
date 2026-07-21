@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/drawable_axis.h>
+#include <vclib/bgfx/drawable/drawable_axis_bgfx.h>
 
 #include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.h>
 
@@ -14,12 +14,12 @@
 namespace vcl {
 
 /**
- * @brief Constructs a DrawableAxis with the specified size.
+ * @brief Constructs a DrawableAxisBGFX with the specified size.
  *
  * @param[in] size: The scale factor for the axis indicator. Larger values
  * produce longer axes. Default is 1.
  */
-DrawableAxis::DrawableAxis(double size)
+DrawableAxisBGFX::DrawableAxisBGFX(double size)
 {
     createAxis();
 
@@ -34,7 +34,7 @@ DrawableAxis::DrawableAxis(double size)
  *
  * @param[in] size: The new scale factor for the axis indicator.
  */
-void DrawableAxis::setSize(double size)
+void DrawableAxisBGFX::setSize(double size)
 {
     updateMatrices(size);
 }
@@ -51,7 +51,7 @@ void DrawableAxis::setSize(double size)
  *
  * @see DrawableObject::draw()
  */
-void DrawableAxis::draw(const DrawObjectSettings& settings)
+void DrawableAxisBGFX::draw(const DrawObjectSettings& settings)
 {
     using enum VertFragProgram;
 
@@ -88,7 +88,7 @@ void DrawableAxis::draw(const DrawObjectSettings& settings)
  *
  * @param[in] size: The scale factor to apply to all axes.
  */
-void DrawableAxis::updateMatrices(double size)
+void DrawableAxisBGFX::updateMatrices(double size)
 {
     mMatrices[0](0, 1) = size;
     mMatrices[0](1, 0) = -size;
@@ -112,7 +112,7 @@ void DrawableAxis::updateMatrices(double size)
  * Creates and binds vertex/index buffers for the cylinder and cone
  * components of the axis indicator using the static axis meshes.
  */
-void DrawableAxis::createAxis()
+void DrawableAxisBGFX::createAxis()
 {
     using MRI = MeshRenderInfo;
     using enum MRI::Buffers;

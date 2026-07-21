@@ -50,8 +50,6 @@ class MeshViewer : public QMainWindow
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
-    std::shared_ptr<vcl::AxisEditor<MeshViewerRenderApp::ViewerType>>
-        mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
         mMeshSelectorEditor;
     std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>

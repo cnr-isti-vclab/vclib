@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_BGFX_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_BGFX_H
 
 #include "mesh/mesh_render_buffers.h"
 
@@ -42,7 +42,7 @@ namespace vcl {
  * viewer->addDrawable(axis);
  * @endcode
  */
-class DrawableAxis : public DrawableObject
+class DrawableAxisBGFX : public DrawableObject
 {
     inline static const std::pair<vcl::TriMesh, vcl::TriMesh> AXIS_MESHES =
         vcl::createAxisDisjoint<vcl::TriMesh>();
@@ -62,7 +62,7 @@ class DrawableAxis : public DrawableObject
     MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
 
 public:
-    DrawableAxis(double size = 1);
+    DrawableAxisBGFX(double size = 1);
 
     /**
      * @brief Copy constructor.
@@ -72,7 +72,7 @@ public:
      *
      * @param[in] other: The DrawableAxis to copy.
      */
-    DrawableAxis(const DrawableAxis& other) : mVisible(other.mVisible)
+    DrawableAxisBGFX(const DrawableAxisBGFX& other) : mVisible(other.mVisible)
     {
         for (uint i = 0; i < 3; i++) {
             mMatrices[i] = other.mMatrices[i];
@@ -88,9 +88,9 @@ public:
      *
      * @param[in] other: The DrawableAxis to move from.
      */
-    DrawableAxis(DrawableAxis&& other) { swap(other); }
+    DrawableAxisBGFX(DrawableAxisBGFX&& other) { swap(other); }
 
-    ~DrawableAxis() = default;
+    ~DrawableAxisBGFX() = default;
 
     /**
      * @brief Copy assignment operator (implemented via copy-and-swap idiom).
@@ -98,7 +98,7 @@ public:
      * @param[in] other: The DrawableAxis to assign from.
      * @return Reference to this DrawableAxis.
      */
-    DrawableAxis& operator=(DrawableAxis other)
+    DrawableAxisBGFX& operator=(DrawableAxisBGFX other)
     {
         swap(other);
         return *this;
@@ -109,7 +109,7 @@ public:
      *
      * @param[in] other: The DrawableAxis to swap with.
      */
-    void swap(DrawableAxis& other)
+    void swap(DrawableAxisBGFX& other)
     {
         using std::swap;
         swap(mVisible, other.mVisible);
@@ -121,7 +121,7 @@ public:
         }
     }
 
-    friend void swap(DrawableAxis& a, DrawableAxis& b) { a.swap(b); }
+    friend void swap(DrawableAxisBGFX& a, DrawableAxisBGFX& b) { a.swap(b); }
 
     void setSize(double size);
 
@@ -151,7 +151,7 @@ public:
      */
     std::shared_ptr<DrawableObject> clone() const& override
     {
-        return std::make_shared<DrawableAxis>(*this);
+        return std::make_shared<DrawableAxisBGFX>(*this);
     }
 
     /**
@@ -163,7 +163,7 @@ public:
      */
     std::shared_ptr<DrawableObject> clone() && override
     {
-        return std::make_shared<DrawableAxis>(std::move(*this));
+        return std::make_shared<DrawableAxisBGFX>(std::move(*this));
     }
 
     /**
@@ -192,4 +192,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_BGFX_H

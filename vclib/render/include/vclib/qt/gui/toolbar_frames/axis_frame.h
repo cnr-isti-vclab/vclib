@@ -5,29 +5,24 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H
+#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_FRAME_H
+#define VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_FRAME_H
 
 #include "generic_editor_frame.h"
-
-#include <vclib/render/editors/axis_editor.h>
 
 namespace vcl::qt {
 
 template<typename ViewerType>
-class AxisEditorFrame : public GenericEditorFrame
+class AxisFrame : public GenericEditorFrame
 {
     using Base = GenericEditorFrame;
 
-    std::shared_ptr<vcl::AxisEditor<ViewerType>> mAxisEditor;
+    ViewerType& mViewer;
 
 public:
-    explicit AxisEditorFrame(
-        std::shared_ptr<vcl::AxisEditor<ViewerType>> ptr,
-        QWidget* parent = nullptr) : GenericEditorFrame(parent)
+    explicit AxisFrame(ViewerType& viewer, QWidget* parent = nullptr) :
+            GenericEditorFrame(parent), mViewer(viewer)
     {
-        mAxisEditor = ptr;
-
         QIcon ic(":/icons/show_axis.png");
 
         QPushButton* editorButton = Base::addButton(ic);
@@ -36,18 +31,16 @@ public:
 
         Base::hideSettingsButton();
 
-        mAxisEditor->setShortcutCallback([editorButton]() {
+        mViewer.setShortcutToggleAxisCallback([editorButton]() {
             editorButton->click();
         });
 
         connect(editorButton, &QPushButton::clicked, this, [this]() {
-            if (mAxisEditor) {
-                mAxisEditor->toggleVisibility();
-            }
+            mViewer.toggleAxisVisibility();
         });
     }
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_EDITOR_FRAME_H
+#endif // VCL_QT_GUI_TOOLBAR_FRAMES_AXIS_FRAME_H

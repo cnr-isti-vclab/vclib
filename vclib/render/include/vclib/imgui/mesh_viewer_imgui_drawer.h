@@ -30,7 +30,6 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
-    std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
     std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
         mMeshSelectorEditor;
     std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
@@ -46,10 +45,6 @@ public:
             Base(width, height)
     {
         // install editors
-        mAxisEditor = std::dynamic_pointer_cast<
-            vcl::AxisEditor<typename Base::ViewerType>>(
-            Base::getEditor(Base::ViewerType::BuiltInEditors::AXIS));
-
         mMeshSelectorEditor =
             Base::template pushEditor<vcl::MeshSelectorEditor>();
         mMeshSelectorEditor->setActive(true);
@@ -211,11 +206,10 @@ private:
             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
         if (ImGui::Begin("Toolbar", nullptr, flags)) {
-            // axis editor toggle
-            bool axisActive = mAxisEditor && mAxisEditor->isVisible();
+            // axis toggle
+            bool axisActive = Base::isAxisVisible();
             if (ImGui::Button(axisActive ? "[Axis]" : " Axis ")) {
-                if (mAxisEditor)
-                    mAxisEditor->toggleVisibility();
+                Base::toggleAxisVisibility();
             }
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Axis");
