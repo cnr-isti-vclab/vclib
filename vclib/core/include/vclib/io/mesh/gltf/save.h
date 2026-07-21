@@ -366,12 +366,14 @@ void addMeshToTinygltfModel(
     }
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         if (meshInfo.hasPerVertexTexCoord()) {
-            //TODO does this work?
-
             auto texCoordBuf =
                 addGltfBuffer(tModel, 2 * m.vertexCount() * sizeof(float));
             fd = reinterpret_cast<float*>(texCoordBuf.second.data.data());
             vertexTexCoordsToBuffer(m, fd);
+
+            // Flips V coords
+            for (unsigned int i = 1; i < m.vertexCount() * 2; i += 2)
+                fd[i] = 1 - fd[i];
 
             auto texCoordBufView  = addGltfBufferView(tModel, texCoordBuf);
             auto texCoordAccessor = addGltfAccessor(
@@ -588,17 +590,6 @@ void addMeshToTinygltfModel(
     // scene
     tinygltf::Scene& scene = tModel.scenes.back();
     scene.nodes.push_back(nodeI);
-
-    // --- TODO LIST ---
-
-    // TODO save all materials
-    // TODO save all textures (textures, images, samplers)
-
-    // TODO a primitive per chunk (chunk split by material. Multiple chunks
-    // could be using the same material)
-    // TODO each primitive will then reference an accessor for:
-    // TODO - texture normals
-    // TODO each primitive will reference its material
 }
 
 } // namespace detail
@@ -629,6 +620,10 @@ void saveGltf(
     detail::addMeshToTinygltfModel(m, model, meshInfo);
 
     // TODO settings.saveTextureImages
+
+    // TODO settings to add
+    // embedImages: bool
+    // embedBuffers: bool
 
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
@@ -673,6 +668,10 @@ void saveGltf(
     }
 
     // TODO settings.saveTextureImages
+
+    // TODO settings to add
+    // embedImages: bool
+    // embedBuffers: bool
 
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
