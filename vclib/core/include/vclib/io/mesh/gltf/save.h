@@ -498,14 +498,6 @@ void addMeshToTinygltfModel(
                         continue;
                     }
 
-                    // the material is added to the model if not already present
-                    if (!modelMaterialIndices.contains(materialIndex)) {
-                        auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages);
-                        modelMaterialIndices[materialIndex] = material.first;
-                    }
-
-                    modelMaterialIndex = modelMaterialIndices.at(materialIndex);
-
                     // end previous chunk
                     if (lastMaterialIndex != UINT_NULL) {
                         // buffer view, accessor and primitive
@@ -522,6 +514,14 @@ void addMeshToTinygltfModel(
                         primitive.second.indices = indAccessor.first;
                         primitive.second.material = modelMaterialIndex;
                     }
+
+                    // the material is added to the model if not already present
+                    if (!modelMaterialIndices.contains(materialIndex)) {
+                        auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages);
+                        modelMaterialIndices[materialIndex] = material.first;
+                    }
+
+                    modelMaterialIndex = modelMaterialIndices.at(materialIndex);
 
                     // start new chunk
                     chunkByteOffset += chunkLength;
