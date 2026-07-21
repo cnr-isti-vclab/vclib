@@ -10,6 +10,7 @@
 
 #include "application.h"
 #include "concepts/mesh_viewer.h"
+#include "editors.h"
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -62,6 +63,13 @@ struct MeshViewer
 };
 
 #endif // VCLIB_WITH_QT
+
+inline void pushDefaultEditors(MeshViewerConcept auto& viewer)
+{
+    viewer.template pushEditor<MeshSelectorEditor>(true);
+    viewer.template pushEditor<BoundingBoxEditor>();
+    viewer.template pushEditor<SelectionEditor>();
+}
 
 template<MeshConcept... MeshTypes>
 void showOnMeshViewer(
@@ -127,6 +135,8 @@ int showOnMeshViewer(int argc, char** argv, MeshTypes&&... meshes)
 
     MeshViewer viewer;
 
+    pushDefaultEditors(viewer);
+
     showOnMeshViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
     return app.exec();
@@ -143,6 +153,8 @@ int showOnMeshViewer(
     Application app(argc, argv);
 
     MeshViewer viewer;
+
+    pushDefaultEditors(viewer);
 
     showOnMeshViewer(
         argc, argv, viewer, std::move(meshes), renderMode, panorama);

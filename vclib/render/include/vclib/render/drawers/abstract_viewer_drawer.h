@@ -10,6 +10,7 @@
 
 #include "trackball_event_drawer.h"
 
+#include <vclib/render/drawable/drawable_axis.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
@@ -32,12 +33,6 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
-public:
-    enum class BuiltInEditors { AXIS = 0, COUNT };
-
-private:
-    friend Editor<AbstractViewerDrawer>;
-
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
 
@@ -45,6 +40,12 @@ private:
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
+
+    DrawableAxis mDrawAxis;
+
+    std::function<void(void)> mCustomShortcutToggleAxisCallback = [this]() {
+        toggleAxisVisibility();
+    };
 
 protected:
     ViewerSettings mViewerSettings;
@@ -68,11 +69,6 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        // push built-in editors - the order of the editors in the vector is
-        // important, as it is used to retrieve the editor by its enum value
-        auto axisEd = pushEditor<AxisEditor>();
-        axisEd->setActive(true);
-        assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
 
     ~AbstractViewerDrawer() = default;
@@ -117,20 +113,24 @@ public:
 
     void setPanorama(const std::string&) {}
 
+    /**
+     * @brief Pushes a new editor of the specified type into the viewer's editor list.
+     * 
+     * The editor is instantiated and initialized with the viewer and drawable list.
+     * 
+     * @tparam ET The template type of the Editor to push.
+     * @param[in] active Whether the editor should be active upon creation.
+     * @return A shared pointer to the newly created editor.
+     */
     template<template<typename> typename ET>
-    auto pushEditor()
+    auto pushEditor(bool active = false)
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
+        editor->setActive(active);
         return editor;
-    }
-
-    std::shared_ptr<EditorType> getEditor(BuiltInEditors editor) const
-    {
-        assert(mEditors[toUnderlying(editor)]);
-        return mEditors[toUnderlying(editor)];
     }
 
     void refreshEditors()
@@ -268,6 +268,37 @@ public:
         requestUpdate();
     }
 
+    /**
+     * @brief Checks if the axis indicator is currently visible.
+     * 
+     * @return true if the axis indicator is visible, false otherwise.
+     */
+    bool isAxisVisible() const { return mDrawAxis.isVisible(); }
+
+    /**
+     * @brief Toggles the visibility of the axis indicator.
+     * 
+     * Flips the visibility state of the axis and requests a viewer update.
+     */
+    void toggleAxisVisibility()
+    {
+        mDrawAxis.setVisibility(!mDrawAxis.isVisible());
+        requestUpdate();
+    }
+
+    /**
+     * @brief Sets a custom callback for the axis visibility shortcut.
+     * 
+     * By default, pressing 'A' toggles the axis visibility. This method allows 
+     * replacing the default behaviour with custom logic (e.g. triggering UI buttons).
+     * 
+     * @param[in] callback A callable invoked when the shortcut key is pressed.
+     */
+    void setShortcutToggleAxisCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleAxisCallback = callback;
+    }
+
     void fitScene()
     {
         Point3f sceneCenter;
@@ -300,6 +331,15 @@ public:
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
+
+        if (mDrawAxis.isVisible()) {
+            DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+            settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
+            mDrawAxis.draw(settings);
+        }
+
         for (const auto& editor : mEditors) {
             if (editor->isActive())
                 editor->draw(viewId);
@@ -327,6 +367,12 @@ public:
             case Key::S:
                 if (modifiers[KeyModifier::CONTROL])
                     DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+                break;
+            case Key::A:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    if (mCustomShortcutToggleAxisCallback)
+                        mCustomShortcutToggleAxisCallback();
+                }
                 break;
             default: break;
             }
