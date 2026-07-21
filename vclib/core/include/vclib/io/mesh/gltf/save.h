@@ -212,14 +212,16 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
         material.baseColor().blueF(),
         material.baseColor().alphaF()};
 
-    //TODO optional?
     // baseColorTexture
-    if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
-        uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages);
-        addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
+    if (!material.baseColorTextureDescriptor().isNull()) {
+        if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
+            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages);
+            addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
+        }
+
+        tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
+        //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
     }
-    tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
-    tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
 
     // metallicFactor
     tMaterial.pbrMetallicRoughness.metallicFactor =
@@ -229,10 +231,17 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     tMaterial.pbrMetallicRoughness.roughnessFactor =
         material.roughness();
 
-    //TODO optional?
-    //TODO
-    //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = //TODO get index
-    //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord =
+    // metallicRoughnessTexture
+    auto metallicRoughnessTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::METALLIC_ROUGHNESS));
+    if (!metallicRoughnessTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(metallicRoughnessTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages);
+            addedTextures[metallicRoughnessTextureDescriptor.path()] = textureId;
+        }
+
+        tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = addedTextures[metallicRoughnessTextureDescriptor.path()];
+        //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord = 0; // default value
+    }
 
     // emissiveFactor
     tMaterial.emissiveFactor = {
@@ -240,25 +249,43 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
         material.emissiveColor().greenF(),
         material.emissiveColor().blueF()};
 
-    //TODO optional?
-    //TODO
     // emissiveTexture
-    //tMaterial.emissiveTexture.index = //TODO get index
-    //tMaterial.emissiveTexture.texCoord =
+    auto emissiveTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::EMISSIVE));
+    if (!emissiveTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(emissiveTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages);
+            addedTextures[emissiveTextureDescriptor.path()] = textureId;
+        }
 
-    //TODO optional?
-    //TODO
+        tMaterial.emissiveTexture.index = addedTextures[emissiveTextureDescriptor.path()];
+        //tMaterial.emissiveTexture.texCoord = 0; // default value
+    }
+
     // normalTexture
-    //tMaterial.normalTexture.index = //TODO get index
-    //tMaterial.normalTexture.texCoord =
-    //tMaterial.normalTexture.scale = material.normalScale;
+    auto normalTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::NORMAL));
+    if (!normalTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(normalTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages);
+            addedTextures[normalTextureDescriptor.path()] = textureId;
+        }
 
-    //TODO optional?
-    //TODO
+        tMaterial.normalTexture.index = addedTextures[normalTextureDescriptor.path()];
+        //tMaterial.normalTexture.texCoord = 0; // default value
+        tMaterial.normalTexture.scale = material.normalScale();
+    }
+
     // occlusionTexture
-    //tMaterial.occlusionTexture.index = //TODO get index
-    //tMaterial.occlusionTexture.texCoord =
-    //tMaterial.occlusionTexture.strength = material.occlusionStrength;
+    auto occlusionTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::OCCLUSION));
+    if (!occlusionTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(occlusionTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages);
+            addedTextures[occlusionTextureDescriptor.path()] = textureId;
+        }
+
+        tMaterial.occlusionTexture.index = addedTextures[occlusionTextureDescriptor.path()];
+        //tMaterial.occlusionTexture.texCoord = 0; // default value
+        tMaterial.occlusionTexture.strength = material.occlusionStrength();
+    }
 
     // doubleSided
     tMaterial.doubleSided =
