@@ -20,6 +20,7 @@
 #include <imgui/imgui.h>
 
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 
 namespace vcl::imgui {
@@ -37,7 +38,8 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
     std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
         mSelectionEditor;
 
-    bool mShowViewerSettings = false;
+    bool mShowViewerSettings       = false;
+    char mPanoramaPathBuffer[1024] = "";
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
@@ -82,7 +84,16 @@ public:
                         }
                         ImGui::EndMenu();
                     }
-                    ImGui::MenuItem("Viewer Settings", nullptr, &mShowViewerSettings);
+                    if (ImGui::MenuItem("Viewer Settings", nullptr, &mShowViewerSettings)) {
+                        if (mShowViewerSettings) {
+                            std::string panName = Base::panoramaFileName();
+                            std::strncpy(
+                                mPanoramaPathBuffer,
+                                panName.c_str(),
+                                sizeof(mPanoramaPathBuffer) - 1);
+                            mPanoramaPathBuffer[sizeof(mPanoramaPathBuffer) - 1] = '\0';
+                        }
+                    }
                     ImGui::EndMenu();
                 }
                 ImGui::EndMainMenuBar();
@@ -116,6 +127,15 @@ public:
                                 ImGui::SetItemDefaultFocus();
                         }
                         ImGui::EndCombo();
+                    }
+
+                    ImGui::InputText(
+                        "Panorama Path",
+                        mPanoramaPathBuffer,
+                        IM_ARRAYSIZE(mPanoramaPathBuffer));
+                    ImGui::SameLine();
+                    if (ImGui::Button("Load")) {
+                        Base::setPanorama(std::string(mPanoramaPathBuffer));
                     }
 
                     bool hasPanorama = !Base::panoramaFileName().empty();

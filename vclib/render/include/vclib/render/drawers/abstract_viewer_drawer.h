@@ -47,6 +47,8 @@ private:
     uint mId = 0;
 
 protected:
+    ViewerSettings mViewerSettings;
+
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
     // objects (e.g. the window that contains the viewer along with other
@@ -99,15 +101,17 @@ public:
         fitScene();
     }
 
-    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
-
     const ViewerSettings& viewerSettings() const
     {
-        static const ViewerSettings defaultSettings;
-        return defaultSettings;
+        return mViewerSettings;
     }
 
-    void setViewerSettings(const ViewerSettings&) {}
+    void setViewerSettings(const ViewerSettings& settings)
+    {
+        mViewerSettings = settings;
+    }
+
+    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
 
     std::string panoramaFileName() const { return ""; }
 
