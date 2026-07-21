@@ -131,6 +131,6 @@ int main(int argc, char** argv)
         argc,
         argv,
         std::move(meshes),
-        true,
+        vcl::RenderMode::PBR,
         VCLIB_ASSETS_PATH + panoramaExampleFilenames[selectedPanorama]);
 }

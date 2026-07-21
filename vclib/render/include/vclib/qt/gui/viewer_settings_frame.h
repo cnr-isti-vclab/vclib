@@ -5,11 +5,12 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
-#define VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H
+#define VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H
 
 #include <vclib/qt/mesh_viewer_render_app.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
+#include <vclib/render/settings/render_mode.h>
 
 #include <QFrame>
 
@@ -18,38 +19,33 @@ class QPushButton;
 namespace vcl::qt {
 
 namespace Ui {
-class ViewerRenderSettingsFrame;
+class ViewerSettingsFrame;
 } // namespace Ui
 
-class ViewerRenderSettingsFrame : public QFrame
+class ViewerSettingsFrame : public QFrame
 {
     Q_OBJECT
 
-    enum class RenderMode { CLASSIC = 0, PBR = 1 };
-
-    Ui::ViewerRenderSettingsFrame* mUI;
+    Ui::ViewerSettingsFrame* mUI;
 
     MeshViewerRenderApp* mViewer;
 
 public:
-    explicit ViewerRenderSettingsFrame(QWidget* parent = nullptr);
-    ~ViewerRenderSettingsFrame();
+    explicit ViewerSettingsFrame(QWidget* parent = nullptr);
+    ~ViewerSettingsFrame();
 
     void setViewer(MeshViewerRenderApp* viewer);
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
     void setPanorama(const std::string& panorama);
 
-    const PBRViewerSettings& pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
 private:
-    void disableForm();
-
     void updatePanoramaLabel();
 
 private slots:
-    void renderModeComboBoxCurrentIndexChanged(int index);
 
     void exposureSpinBoxValueChanged(double value);
 
@@ -64,4 +60,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_VIEWER_RENDER_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H

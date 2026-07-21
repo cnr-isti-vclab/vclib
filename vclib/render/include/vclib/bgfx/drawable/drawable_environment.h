@@ -12,7 +12,7 @@
 #include <vclib/bgfx/panorama.h>
 #include <vclib/bgfx/texture.h>
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <vclib/base.h>
 
@@ -133,7 +133,7 @@ public:
 
     uint8_t specularMipLevels() const { return mSpecularMipLevels; }
 
-    void drawBackground(uint viewId, const PBRViewerSettings& settings) const;
+    void drawBackground(uint viewId, const ViewerSettings& settings) const;
 
     void bindTexture(
         TextureType type,

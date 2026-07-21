@@ -10,7 +10,7 @@
 // INFO: the two textures MUST be of the same size
 IMAGE2D_RO(s_primIds, rgba8, 0);
 IMAGE2D_RO(s_meshIds, rgba8, 1);
-BUFFER_RW(face_selected, uint, 6);
+BUFFER_RW(face_selected, uint, 12);
 
 BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index

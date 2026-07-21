@@ -10,15 +10,17 @@
 
 #include "imgui_helpers.h"
 
-#include <vclib/render/concepts/pbr_viewer.h>
+#include <vclib/render/concepts/viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
+#include <vclib/render/settings/render_mode.h>
 
 #include <imgui/imgui.h>
 
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 
 namespace vcl::imgui {
@@ -35,6 +37,9 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
         mBoundingBoxEditor;
     std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
         mSelectionEditor;
+
+    bool mShowViewerSettings       = false;
+    char mPanoramaPathBuffer[1024] = "";
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
@@ -60,6 +65,102 @@ public:
         // draw parent
         Base::onDraw(viewId);
 
+        if constexpr (ViewerConcept<Base>) {
+            ViewerSettings viewerSettings = Base::viewerSettings();
+
+            // Main Menu Bar
+            if (ImGui::BeginMainMenuBar()) {
+                if (ImGui::BeginMenu("Render")) {
+                    if (ImGui::BeginMenu("Render Mode")) {
+                        bool classicChecked = (viewerSettings.renderMode == RenderMode::CLASSIC);
+                        if (ImGui::MenuItem("Classic", nullptr, &classicChecked)) {
+                            viewerSettings.renderMode = RenderMode::CLASSIC;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        bool pbrChecked = (viewerSettings.renderMode == RenderMode::PBR);
+                        if (ImGui::MenuItem("PBR", nullptr, &pbrChecked)) {
+                            viewerSettings.renderMode = RenderMode::PBR;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        ImGui::EndMenu();
+                    }
+                    if (ImGui::MenuItem("Viewer Settings", nullptr, &mShowViewerSettings)) {
+                        if (mShowViewerSettings) {
+                            std::string panName = Base::panoramaFileName();
+                            std::strncpy(
+                                mPanoramaPathBuffer,
+                                panName.c_str(),
+                                sizeof(mPanoramaPathBuffer) - 1);
+                            mPanoramaPathBuffer[sizeof(mPanoramaPathBuffer) - 1] = '\0';
+                        }
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }
+
+            // Viewer Settings Window
+            if (mShowViewerSettings) {
+                if (ImGui::Begin("Viewer Settings", &mShowViewerSettings)) {
+                    // exposure slider
+                    float exposure = viewerSettings.exposure;
+                    if (ImGui::SliderFloat(
+                            "Exposure",
+                            &exposure,
+                            0.001f,
+                            64.0f,
+                            "%.3f",
+                            ImGuiSliderFlags_Logarithmic))
+                        viewerSettings.exposure = exposure;
+
+                    // tone mapping combo box
+                    uint toneMapping = toUnderlying(viewerSettings.toneMapping);
+                    const auto* toneMappingNames = ViewerSettings::TONE_MAPPING_STRINGS;
+                    if (ImGui::BeginCombo("Tone mapping", toneMappingNames[toneMapping])) {
+                        const uint CNT = toUnderlying(ViewerSettings::ToneMapping::COUNT);
+                        for (uint n = 0; n < CNT; n++) {
+                            bool isSelected = toneMapping == n;
+                            if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
+                                viewerSettings.toneMapping = static_cast<ViewerSettings::ToneMapping>(n);
+                            }
+                            if (isSelected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    ImGui::InputText(
+                        "Panorama Path",
+                        mPanoramaPathBuffer,
+                        IM_ARRAYSIZE(mPanoramaPathBuffer));
+                    ImGui::SameLine();
+                    if (ImGui::Button("Load")) {
+                        Base::setPanorama(std::string(mPanoramaPathBuffer));
+                    }
+
+                    bool hasPanorama = !Base::panoramaFileName().empty();
+                    ImGui::BeginDisabled(!hasPanorama);
+
+                    // image based lighting
+                    ImGui::Checkbox(
+                        "Image Based Lighting",
+                        [&]() { return viewerSettings.imageBasedLighting; },
+                        [&](bool ibl) { viewerSettings.imageBasedLighting = ibl; });
+
+                    // draw background checkbox
+                    ImGui::Checkbox(
+                        "Render Background Panorama",
+                        [&]() { return viewerSettings.renderBackgroundPanorama; },
+                        [&](bool renderBg) { viewerSettings.renderBackgroundPanorama = renderBg; });
+
+                    ImGui::EndDisabled();
+
+                    Base::setViewerSettings(viewerSettings);
+                }
+                ImGui::End();
+            }
+        }
+
         // draw imgui
         ImGui::Begin("Meshes");
 
@@ -84,102 +185,6 @@ public:
                     Base::mDrawList->at(meshIndex));
             if (drawable) {
                 drawMeshSettings(*drawable);
-            }
-        }
-
-        if constexpr (PBRViewerConcept<Base>) {
-            // combo box for pbr mode
-            ImGui::Separator();
-            ImGui::Text("Render Mode:");
-            ImGui::SameLine();
-
-            PBRViewerSettings pbrSettings = Base::pbrSettings();
-
-            const char* renderModeNames[] = {"Classic", "PBR"};
-            bool        pbrMode           = pbrSettings.pbrMode;
-            ImGui::SetNextItemWidth(80);
-            if (ImGui::BeginCombo(
-                    "##ComboRenderMode",
-                    pbrMode ? renderModeNames[1] : renderModeNames[0])) {
-                for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                    bool isSelected =
-                        (pbrMode && n == 1) || (!pbrMode && n == 0);
-                    if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                        pbrSettings.pbrMode = (n == 1);
-                    }
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-
-            // Update local state and persist any changes to the viewer.
-            pbrMode = pbrSettings.pbrMode;
-            Base::setPbrSettings(pbrSettings);
-
-            ImGui::BeginDisabled(!pbrMode);
-            {
-                // exposure slider
-                ImGui::Separator();
-                ImGui::Text("Exposure:");
-                ImGui::SameLine();
-                float exposure = pbrSettings.exposure;
-                if (ImGui::SliderFloat(
-                        "##Exposure",
-                        &exposure,
-                        0.001f,
-                        64.0f,
-                        "%.3f",
-                        ImGuiSliderFlags_Logarithmic))
-                    pbrSettings.exposure = exposure;
-
-                // tone mapping combo box
-                ImGui::Text("Tone mapping:");
-                ImGui::SameLine();
-                uint toneMapping = toUnderlying(pbrSettings.toneMapping);
-
-                const auto* toneMappingNames =
-                    PBRViewerSettings::TONE_MAPPING_STRINGS;
-                if (ImGui::BeginCombo(
-                        "##ComboToneMapping", toneMappingNames[toneMapping])) {
-                    const uint CNT =
-                        toUnderlying(PBRViewerSettings::ToneMapping::COUNT);
-                    for (uint n = 0; n < CNT; n++) {
-                        bool isSelected = toneMapping == n;
-                        if (ImGui::Selectable(
-                                toneMappingNames[n], isSelected)) {
-                            pbrSettings.toneMapping =
-                                static_cast<PBRViewerSettings::ToneMapping>(n);
-                        }
-                        if (isSelected)
-                            ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-
-                // image based lighting
-                ImGui::Checkbox(
-                    "Image Based Lighting",
-                    [&]() {
-                        return pbrSettings.imageBasedLighting;
-                    },
-                    [&](bool ibl) {
-                        pbrSettings.imageBasedLighting = ibl;
-                    });
-
-                // draw background checkbox
-                ImGui::Checkbox(
-                    "Render Background Panorama",
-                    [&]() {
-                        return pbrSettings.renderBackgroundPanorama;
-                    },
-                    [&](bool renderBg) {
-                        pbrSettings.renderBackgroundPanorama = renderBg;
-                    });
-            }
-            ImGui::EndDisabled();
-            if (pbrSettings.pbrMode) {
-                Base::setPbrSettings(pbrSettings);
             }
         }
 

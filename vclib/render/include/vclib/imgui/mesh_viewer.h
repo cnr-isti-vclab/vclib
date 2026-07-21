@@ -15,7 +15,7 @@
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/render_app.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 namespace vcl::imgui {
 
@@ -165,9 +165,9 @@ public:
 
     void showMaximized() { mApp.showMaximized(); }
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
-    PBRViewerSettings pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
 };

@@ -11,8 +11,11 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
-#include <vclib/render/concepts/pbr_viewer.h>
+#include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+
+#include <QActionGroup>
+#include <QDockWidget>
 
 namespace vcl::qt {
 
@@ -119,7 +122,15 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     /** Render Settings Frame **/
 
-    mUI->viewerRenderSettingsFrame->setViewer(mUI->viewer);
+    mViewerSettingsFrame = new ViewerSettingsFrame(this);
+    mViewerSettingsFrame->setViewer(mUI->viewer);
+
+    mViewerSettingsDockWidget = new QDockWidget("Viewer Settings", this);
+    mViewerSettingsDockWidget->setWidget(mViewerSettingsFrame);
+    mViewerSettingsDockWidget->setFloating(true);
+    mViewerSettingsDockWidget->setAllowedAreas(Qt::AllDockWidgetAreas);
+    mViewerSettingsDockWidget->setVisible(false);
+    addDockWidget(Qt::RightDockWidgetArea, mViewerSettingsDockWidget);
 
     /** Events **/
 
@@ -157,6 +168,19 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
+
+    // Actions and Menus
+    QActionGroup* renderModeGroup = new QActionGroup(this);
+    renderModeGroup->addAction(mUI->actionClassic);
+    renderModeGroup->addAction(mUI->actionPBR);
+    
+    connect(mUI->actionClassic, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
+    connect(mUI->actionPBR, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
+
+    mViewerSettingsDockWidget->setVisible(false);
+    mUI->actionViewer_Settings->setChecked(false);
+    connect(mUI->actionViewer_Settings, &QAction::toggled, mViewerSettingsDockWidget, &QDockWidget::setVisible);
+    connect(mViewerSettingsDockWidget, &QDockWidget::visibilityChanged, mUI->actionViewer_Settings, &QAction::setChecked);
 }
 
 MeshViewer::~MeshViewer()
@@ -230,23 +254,24 @@ void MeshViewer::setCamera(const Camera<float>& c)
     mUI->viewer->setCamera(c);
 }
 
-// void MeshViewer::showRenderModeSelector(bool show)
-// {
-// }
-
-void MeshViewer::setPbrSettings(const PBRViewerSettings& settings)
+void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
-    mUI->viewerRenderSettingsFrame->setPbrSettings(settings);
+    mViewerSettingsFrame->setViewerSettings(settings);
+    if (settings.renderMode == RenderMode::CLASSIC) {
+        mUI->actionClassic->setChecked(true);
+    } else if (settings.renderMode == RenderMode::PBR) {
+        mUI->actionPBR->setChecked(true);
+    }
 }
 
-const PBRViewerSettings& MeshViewer::pbrSettings() const
+const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mUI->viewerRenderSettingsFrame->pbrSettings();
+    return mViewerSettingsFrame->viewerSettings();
 }
 
 void MeshViewer::setPanorama(const std::string& panorama)
 {
-    mUI->viewerRenderSettingsFrame->setPanorama(panorama);
+    mViewerSettingsFrame->setPanorama(panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)
@@ -425,6 +450,18 @@ void MeshViewer::applyToAllToggled(bool checked)
     else {
         meshRenderSettingsUpdated();
     }
+}
+
+void MeshViewer::renderModeChanged()
+{
+    auto sts = viewerSettings();
+    if (mUI->actionClassic->isChecked()) {
+        sts.renderMode = RenderMode::CLASSIC;
+    } else if (mUI->actionPBR->isChecked()) {
+        sts.renderMode = RenderMode::PBR;
+    }
+    setViewerSettings(sts);
+    mUI->viewer->update();
 }
 
 } // namespace vcl::qt
