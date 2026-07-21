@@ -18,6 +18,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
+#include <vclib/qt/gui/editor_frame_traits.h>
 
 #include <QMainWindow>
 
@@ -50,17 +51,12 @@ class MeshViewer : public QMainWindow
 
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
-    std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
-        mMeshSelectorEditor;
-    std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>
-        mBoundingBoxEditor;
-    std::shared_ptr<vcl::SelectionEditor<MeshViewerRenderApp::ViewerType>>
-        mSelectionEditor;
-
 protected:
     MeshViewerRenderApp& viewer() const;
 
     DrawableObjectVectorTree& drawableObjectVectorTree() const;
+
+    void addEditorFrame(QWidget* frame);
 
     void keyPressEvent(QKeyEvent* event) override;
 
@@ -178,7 +174,14 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor()
     {
-        return viewer().template pushEditor<EditorT>();
+        auto editor = viewer().template pushEditor<EditorT>();
+
+        using FrameType = typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        if constexpr (!std::is_same_v<FrameType, void>) {
+            addEditorFrame(new FrameType(editor));
+        }
+
+        return editor;
     }
 
     void refreshEditors();

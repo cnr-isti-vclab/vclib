@@ -89,14 +89,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     /** Editors **/
 
-    // no toolbar editors
-    mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
-    mMeshSelectorEditor->setActive(true);
-    auto callback = [this](uint id) {
-        drawableObjectVectorTree().setSelectedItem(id);
-    };
-    mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
-
     // toolbar editors and frames
     AxisFrame<ViewerType>* axisFrame =
         new AxisFrame<ViewerType>(viewer());
@@ -104,16 +96,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     auto* trackballFrame = new TrackBallFrame(viewer());
     mUI->toolBar->addWidget(trackballFrame);
-
-    mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
-    BoundingBoxEditorFrame<ViewerType>* bboxEditorFrame =
-        new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
-    mUI->toolBar->addWidget(bboxEditorFrame);
-
-    mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
-    SelectionEditorFrame<ViewerType>* selectionEditor =
-        new SelectionEditorFrame<ViewerType>(mSelectionEditor);
-    mUI->toolBar->addWidget(selectionEditor);
 
     disableFocus(mUI->toolBar);
 
@@ -178,6 +160,11 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mUI->actionViewer_Settings->setChecked(false);
     connect(mUI->actionViewer_Settings, &QAction::toggled, mViewerSettingsDockWidget, &QDockWidget::setVisible);
     connect(mViewerSettingsDockWidget, &QDockWidget::visibilityChanged, mUI->actionViewer_Settings, &QAction::setChecked);
+}
+
+void MeshViewer::addEditorFrame(QWidget* frame)
+{
+    mUI->toolBar->addWidget(frame);
 }
 
 MeshViewer::~MeshViewer()
