@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/toolbar_frames/generic_editor_frame.h>
 
@@ -38,6 +23,7 @@ GenericEditorFrame::GenericEditorFrame(QWidget* parent) :
 {
     mUI->setupUi(this);
     std::call_once(initIconsFlag, initIcons);
+    mUI->settingsPushButton->setFocusPolicy(Qt::NoFocus);
 }
 
 GenericEditorFrame::~GenericEditorFrame()
@@ -54,6 +40,7 @@ QPushButton* GenericEditorFrame::addButton(const QIcon& icon, bool checkable)
     button->setIconSize(QSize(32, 32));
     button->setFixedSize(QSize(40, 40));
     button->setCheckable(checkable);
+    button->setFocusPolicy(Qt::NoFocus);
     // Stylesheet overrides the native macOS QPushButton rendering (which has
     // a large internal bezel that clips icons) and keeps a consistent look
     // across platforms.

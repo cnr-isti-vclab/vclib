@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/mesh_render_settings_frame.h>
 
@@ -59,6 +44,12 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
         connect(
             frame, SIGNAL(settingsUpdated()), this, SIGNAL(settingsUpdated()));
     }
+
+    connect(
+        mUI->applyToAllCheckBox,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onApplyToAllToggled(bool)));
 }
 
 MeshRenderSettingsFrame::~MeshRenderSettingsFrame()
@@ -71,11 +62,28 @@ const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
     return mMRS;
 }
 
+bool MeshRenderSettingsFrame::isApplyToAllEnabled() const
+{
+    return mUI->applyToAllCheckBox->isChecked();
+}
+
+void MeshRenderSettingsFrame::onApplyToAllToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setAllCapabilities(true);
+        updateGuiFromSettings(false);
+    }
+    emit applyToAllToggled(checked);
+}
+
 void MeshRenderSettingsFrame::setMeshRenderSettings(
     const MeshRenderSettings& settings,
     bool                      changeCurrentTab /*= false*/)
 {
     mMRS = settings;
+    if (isApplyToAllEnabled()) {
+        mMRS.setAllCapabilities(true);
+    }
     updateGuiFromSettings(changeCurrentTab);
 }
 

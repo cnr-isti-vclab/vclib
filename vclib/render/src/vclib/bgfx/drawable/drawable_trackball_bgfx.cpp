@@ -1,0 +1,215 @@
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
+
+#include <vclib/bgfx/drawable/drawable_trackball_bgfx.h>
+
+#include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.h>
+
+#include <vclib/algorithms/core/create.h>
+#include <vclib/bgfx/context.h>
+
+namespace vcl {
+
+namespace detail {
+
+template<typename ScalarType>
+struct TrackballVertex
+{
+    ScalarType x, y, z;
+    uint32_t   color;
+};
+
+/**
+ * @brief Create a 3D trackball with 3 circles in the x, y, and z planes;
+ * each vertex is packed as 3 coordinates and a 32-bit color
+ * encoded into a float).
+ *
+ * @param pointsPerCircle: the number of points per circle,
+ * unsigned integer.
+ * @return a pair of vectors containing the vertices and edges of
+ * the trackball.
+ */
+template<typename ScalarType, std::unsigned_integral IndexType>
+std::pair<std::vector<TrackballVertex<ScalarType>>, std::vector<IndexType>>
+createTrackballData(ScalarType radius, IndexType pointsPerCircle)
+{
+    using Vertex = TrackballVertex<ScalarType>;
+    static_assert(
+        sizeof(Vertex) == 3 * sizeof(ScalarType) + sizeof(uint32_t),
+        "vertex struct size mismatch (not packed)");
+    assert(
+        pointsPerCircle > 0 &&
+        "number of points per circle must be greater than 0");
+    assert(radius > 0 && "radius must be greater than 0");
+
+    vcl::Polygon2<ScalarType> circle =
+        vcl::createCircle<vcl::Polygon2<ScalarType>>(pointsPerCircle, 1.0);
+
+    std::vector<IndexType> edges;
+    std::vector<Vertex>    vertexData;
+    vertexData.reserve(pointsPerCircle);
+
+    static const uint32_t COLOR_X = Color(Color::Red).abgr();
+    static const uint32_t COLOR_Y = Color(Color::Green).abgr();
+    static const uint32_t COLOR_Z = Color(Color::Blue).abgr();
+
+    // x
+    uint first = 0;
+    for (uint i = 0; i < circle.size(); ++i) {
+        const auto& p = circle.point(i);
+        vertexData.push_back({0, p.x(), p.y(), COLOR_X});
+        edges.push_back(first + i);
+        edges.push_back(first + (i + 1) % circle.size());
+    }
+
+    // y
+    first = circle.size();
+    for (uint i = 0; i < circle.size(); ++i) {
+        const auto& p = circle.point(i);
+        vertexData.push_back({p.x(), 0, p.y(), COLOR_Y});
+        edges.push_back(i + first);
+        edges.push_back((i + 1) % circle.size() + first);
+    }
+
+    // z
+    first = 2 * circle.size();
+    for (uint i = 0; i < circle.size(); ++i) {
+        const auto& p = circle.point(i);
+        vertexData.push_back({p.x(), p.y(), 0, COLOR_Z});
+        edges.push_back(i + first);
+        edges.push_back((i + 1) % circle.size() + first);
+    }
+
+    return std::make_pair(std::move(vertexData), std::move(edges));
+}
+
+} // namespace detail
+
+static const uint16_t N_POINTS = 128;
+static const auto     TRACKBALL_DATA =
+    detail::createTrackballData<float, uint16_t>(1.0, N_POINTS);
+
+DrawableTrackBallBGFX::DrawableTrackBallBGFX()
+{
+    createBuffers();
+}
+
+DrawableTrackBallBGFX::DrawableTrackBallBGFX(
+    const DrawableTrackBallBGFX& other) :
+        mVisible(other.mVisible), mTransform(other.mTransform)
+{
+    // copy all the members that can be copied, and then re-create the
+    // buffers
+    createBuffers();
+}
+
+void DrawableTrackBallBGFX::swap(DrawableTrackBallBGFX& other)
+{
+    using std::swap;
+    swap(mVisible, other.mVisible);
+    swap(mVertexPosColorBuffer, other.mVertexPosColorBuffer);
+    swap(mEdgeIndexBuffer, other.mEdgeIndexBuffer);
+    swap(mTransform, other.mTransform);
+    swap(mIsDragging, other.mIsDragging);
+}
+
+/**
+ * @brief Update the dragging status of the trackball.
+ * @param[in] isDragging: true if the trackball is being dragged, false
+ * otherwise.
+ */
+void DrawableTrackBallBGFX::updateDragging(bool isDragging)
+{
+    mIsDragging = isDragging;
+}
+
+void DrawableTrackBallBGFX::setTransform(const vcl::Matrix44f& mtx)
+{
+    mTransform = mtx;
+}
+
+DrawableTrackBallBGFX& DrawableTrackBallBGFX::operator=(
+    DrawableTrackBallBGFX other)
+{
+    swap(other);
+    return *this;
+}
+
+void DrawableTrackBallBGFX::draw(const DrawObjectSettings& settings)
+{
+    using enum VertFragProgram;
+
+    ProgramManager& pm = Context::instance().programManager();
+
+    if (isVisible()) {
+        bgfx::setState(
+            0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+            BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
+            BGFX_STATE_BLEND_ALPHA);
+
+        mVertexPosColorBuffer.bind(0);
+        mEdgeIndexBuffer.bind();
+
+        bgfx::setTransform(mTransform.data());
+
+        DrawableTrackballUniforms::setDragging(mIsDragging);
+        DrawableTrackballUniforms::bind();
+
+        bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
+    }
+}
+
+Box3d DrawableTrackBallBGFX::boundingBox() const
+{
+    return Box3d();
+}
+
+std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() const&
+{
+    return std::make_shared<DrawableTrackBallBGFX>(*this);
+}
+
+std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() &&
+{
+    return std::make_shared<DrawableTrackBallBGFX>(std::move(*this));
+}
+
+bool DrawableTrackBallBGFX::isVisible() const
+{
+    return mVisible;
+}
+
+void DrawableTrackBallBGFX::setVisibility(bool vis)
+{
+    mVisible = vis;
+}
+
+void DrawableTrackBallBGFX::createBuffers()
+{
+    // vertex layout
+    bgfx::VertexLayout layout;
+    layout.begin()
+        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+        .end();
+    // vertex buffer with color
+    mVertexPosColorBuffer.create(
+        bgfx::makeRef(
+            TRACKBALL_DATA.first.data(),
+            TRACKBALL_DATA.first.size() *
+                sizeof(detail::TrackballVertex<float>)),
+        layout,
+        BGFX_BUFFER_NONE);
+
+    // edge index buffer
+    mEdgeIndexBuffer.create(
+        TRACKBALL_DATA.second.data(),
+        TRACKBALL_DATA.second.size(),
+        PrimitiveType::USHORT);
+}
+
+} // namespace vcl

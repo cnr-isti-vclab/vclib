@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_EDITORS_EDITOR_H
 #define VCL_RENDER_EDITORS_EDITOR_H
@@ -260,6 +245,36 @@ protected:
     std::shared_ptr<DrawableObjectVector> drawList() const { return mDrawList; }
 
     /**
+     * @brief Returns the canvas size from the viewer.
+     * @return the canvas size as a 2D point (width, height).
+     */
+    auto viewerCanvasSize() const
+    {
+        assert(mViewer);
+        return mViewer->canvasSize();
+    }
+
+    /**
+     * @brief Returns the current view matrix from the viewer.
+     * @return the view matrix.
+     */
+    auto viewerViewMatrix() const
+    {
+        assert(mViewer);
+        return mViewer->viewMatrix();
+    }
+
+    /**
+     * @brief Returns the current projection matrix from the viewer.
+     * @return the projection matrix.
+     */
+    auto viewerProjectionMatrix() const
+    {
+        assert(mViewer);
+        return mViewer->projectionMatrix();
+    }
+
+    /**
      * @brief Requests the viewer to read the ID of the object at the given
      * screen coordinates.
      *
@@ -289,6 +304,15 @@ protected:
     {
         assert(mViewer);
         mViewer->requestUpdate();
+    }
+
+    /**
+     * @brief Requests the viewer to enable/disable continuous redraw.
+     */
+    void viewerSetContinuousRedraw(bool enabled) const
+    {
+        assert(mViewer);
+        mViewer->setContinuousRedraw(enabled);
     }
 
 private:

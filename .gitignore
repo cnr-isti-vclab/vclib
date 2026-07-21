@@ -28,6 +28,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+vclib_build_venv/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -241,3 +242,6 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# examples results
+assets/results/**

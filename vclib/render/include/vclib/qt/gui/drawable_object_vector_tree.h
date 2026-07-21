@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
 #define VCL_QT_GUI_DRAWABLE_OBJECT_VECTOR_TREE_H
@@ -52,6 +37,9 @@ private:
     // icon function
     IconFunction mIconFunction = nullptr;
 
+    bool             mCheckboxPressed = false;
+    QTreeWidgetItem* mPressedItem     = nullptr;
+
 public:
     explicit DrawableObjectVectorTree(QWidget* parent = nullptr);
     explicit DrawableObjectVectorTree(
@@ -67,6 +55,7 @@ public:
     uint selectedDrawableObject() const;
 
     void update(); // todo: rename this to refresh
+    void updateSelectionCounters();
 
     // function to set the selected item
     bool setSelectedItem(uint i);
@@ -74,6 +63,9 @@ public:
 signals:
     void drawableObjectSelectionChanged(uint i);
     void drawableObjectVisibilityChanged();
+
+protected:
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     void updateDrawableVectorTree();

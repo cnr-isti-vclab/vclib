@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_DISTANCE_H
 #define VCL_ALGORITHMS_MESH_DISTANCE_H
@@ -187,13 +172,13 @@ template<
     PointSamplerConcept SamplerType,
     LoggerConcept       LogType>
 HausdorffDistResult hausdorffDistance(
-    const MeshType1&    m1,
-    const MeshType2&    m2,
-    uint                nSamples,
-    std::optional<uint> seed,
-    SamplerType&        sampler,
-    std::vector<uint>&  birth,
-    LogType&            log)
+    const MeshType1&   m1,
+    const MeshType2&   m2,
+    uint               nSamples,
+    RandomConfig       config,
+    SamplerType&       sampler,
+    std::vector<uint>& birth,
+    LogType&           log)
 {
     std::string meshName1 = "first mesh";
     std::string meshName2 = "second mesh";
@@ -210,13 +195,14 @@ HausdorffDistResult hausdorffDistance(
             " samples...");
 
     if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
-        sampler = vertexUniformPointSampling(m2, nSamples, birth, false, seed);
+        sampler =
+            vertexUniformPointSampling(m2, nSamples, birth, false, config);
     }
     else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
         // todo
     }
     else {
-        sampler = montecarloPointSampling(m2, nSamples, birth, seed);
+        sampler = montecarloPointSampling(m2, nSamples, birth, config);
     }
 
     log.log(5, meshName2 + " sampled.");
@@ -242,7 +228,7 @@ HausdorffDistResult hausdorffDistance(
     LogType&                log        = nullLogger,
     HausdorffSamplingMethod sampMethod = HAUSDORFF_VERTEX_UNIFORM,
     uint                    nSamples   = 0,
-    std::optional<uint>     seed       = std::nullopt)
+    RandomConfig            config     = std::monostate())
 {
     if (nSamples == 0)
         nSamples = m2.vertexCount();
@@ -254,7 +240,7 @@ HausdorffDistResult hausdorffDistance(
         PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
-            m1, m2, nSamples, seed, sampler, birth, log);
+            m1, m2, nSamples, config, sampler, birth, log);
     }
 
     case HAUSDORFF_EDGE_UNIFORM: {
@@ -266,7 +252,7 @@ HausdorffDistResult hausdorffDistance(
             PointSampler<typename MeshType2::VertexType::PositionType> sampler;
 
             return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
-                m1, m2, nSamples, seed, sampler, birth, log);
+                m1, m2, nSamples, config, sampler, birth, log);
         }
         else {
             throw std::runtime_error(

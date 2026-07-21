@@ -1,0 +1,505 @@
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
+
+#ifndef VCL_BGFX_PRIMITIVES_POINTS_H
+#define VCL_BGFX_PRIMITIVES_POINTS_H
+
+#include <vclib/bgfx/buffers.h>
+
+#include <vclib/base.h>
+#include <vclib/space/core.h>
+
+namespace vcl {
+
+/**
+ * @brief Renders a set of 3D points in world space as point splats (squares
+ * or circles).
+ *
+ * Each point is positioned using its 3D coordinates and projected through the
+ * standard camera pipeline.
+ */
+class Points
+{
+    inline static const VertexBuffer NULL_VERTEX_BUFFER;
+
+public:
+    /**
+     * @brief Specifies how point colors are determined during rendering.
+     */
+    enum class ColorSetting {
+        GENERAL,    ///< All points use a single general color.
+        PER_VERTEX, ///< Each point uses color from per-vertex color buffer.
+    };
+
+    enum class Shading {
+        NONE,      ///< No shading applied to points.
+        PER_VERTEX ///< Lighting computed using vertex normals (if provided).
+    };
+
+    /**
+     * @brief Specifies the visual shape of each point splat.
+     */
+    enum class Shape {
+        SQUARE, ///< Square splats (axis-aligned quads in screen space).
+        CIRCLE  ///< Circular splats (disk-shaped in screen space).
+    };
+
+    struct Settings
+    {
+        float        width          = 1.0f;
+        ColorSetting colorSetting   = ColorSetting::GENERAL;
+        Shading      shading        = Shading::NONE;
+        Shape        shape          = Shape::SQUARE;
+        Color        generalColor   = Color::Black;
+        float        depthOffset    = 0.0f;
+        Color        selectionColor = Color(0x88FF9732, Color::Format::ABGR);
+        bool         selectionVisibility = false;
+    };
+
+private:
+    uint mVerPosCount = 0;
+    uint mVerNorCount = 0;
+    uint mVerColCount = 0;
+    uint mVerSelCount = 0;
+
+    Settings mSettings;
+
+    OwnedOrRefBuffer<VertexBuffer>  mVertexPositions;
+    OwnedOrRefBuffer<VertexBuffer>  mVertexNormals;
+    OwnedOrRefBuffer<VertexBuffer>  mVertexColors;
+    OwnedOrRefBuffer<BooleanBuffer> mSelectionBuffer;
+
+    mutable bool                mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
+    mutable bgfx::ProgramHandle mIdProgram             = BGFX_INVALID_HANDLE;
+
+public:
+    /**
+     * @brief Default constructor — creates an empty point set with no points.
+     */
+    Points() = default;
+
+    /**
+     * @brief Constructs a point set from ranges of 3D coordinates, per-point
+     * normals and per-point colors.
+     *
+     * @param[in] verts: Range of elements convertible to Point3 (must
+     * provide x(), y(), z()). Each element contributes one world-space point.
+     * @param[in] vertNormals: Optional range of elements convertible to Point3.
+     * @param[in] vertColors: Optional range of Color elements. If non-empty,
+     * per-point colors are enabled; the size must match vertCoords. Default is
+     * empty (falls back to general color).
+     *
+     * @note This constructor creates an owned buffer copy of the input data.
+     * The original ranges are not referenced after construction.
+     */
+    template<
+        Range RV,
+        Range RN = std::vector<Point3d>,
+        Range RC = std::vector<Color>,
+        Range RB = std::vector<bool>>
+    requires Point3Concept<std::ranges::range_value_t<RV>> &&
+             Point3Concept<std::ranges::range_value_t<RN>> &&
+             ColorConcept<std::ranges::range_value_t<RC>> &&
+             std::convertible_to<std::ranges::range_value_t<RB>, bool>
+    Points(
+        RV&& verts,
+        RN&& vertNormals    = std::vector<Point3d>(),
+        RC&& vertColors     = std::vector<Color>(),
+        RB&& vertSelections = std::vector<bool>())
+    {
+        setVertices(verts);
+        if (!vertNormals.empty()) {
+            setVertexNormals(vertNormals);
+        }
+        if (!vertColors.empty()) {
+            setVertexColors(vertColors);
+        }
+        if (!vertSelections.empty()) {
+            setVertexSelection(vertSelections);
+        }
+    }
+
+    Points(
+        const uint          vertexCount,
+        const VertexBuffer& verts,
+        const VertexBuffer& normals    = NULL_VERTEX_BUFFER,
+        const VertexBuffer& vertColors = NULL_VERTEX_BUFFER);
+
+    /**
+     * @brief Returns the width of point splats.
+     *
+     * @return The width of the point splats in pixels.
+     */
+    float width() const { return mSettings.width; }
+
+    /**
+     * @brief Returns the depth offset applied to the points.
+     * @return The depth offset applied to the points.
+     */
+    float depthOffset() const { return mSettings.depthOffset; }
+
+    /**
+     * @brief Returns whether the point set has valid vertex positions.
+     *
+     * @return True if vertex positions are valid; false otherwise.
+     */
+    bool hasPositions() const { return mVertexPositions.isValid(); }
+
+    /**
+     * @brief Returns whether the point set has valid vertex normals.
+     *
+     * @return True if vertex normals are valid; false otherwise.
+     */
+    bool hasNormals() const { return mVertexNormals.isValid(); }
+
+    /**
+     * @brief Returns whether the point set has valid vertex colors.
+     *
+     * @return True if vertex colors are valid; false otherwise.
+     */
+    bool hasColors() const { return mVertexColors.isValid(); }
+
+    /**
+     * @brief Returns the number of points in the set.
+     *
+     * @return The number of points (vertices) in the set.
+     */
+    uint vertexCount() const { return mVerPosCount; }
+
+    /**
+     * @brief Sets point positions from a range of 3D points.
+     *
+     * @tparam R: Range whose value type satisfies Point3Concept (must provide
+     * x(), y(), z()).
+     * @param[in] verts: Range of 3D points. Each element is read as a
+     * world-space coordinate (x, y, z). The size determines the number of
+     * rendered points.
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertices(R&& verts)
+    {
+        mVerPosCount = std::ranges::size(verts);
+
+        // Compute padding to ensure the buffer size is a multiple of 4 floats
+        // (16 bytes). This is required because the vertex shader reads the
+        // buffer as vec4 elements.
+        uint padding = (4 - (mVerPosCount % 4)) % 4;
+        uint nv      = mVerPosCount + padding;
+
+        VertexBuffer vertBuff;
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nv * 3);
+
+        for (size_t i = 0; const auto& v : verts) {
+            buffer[i * 3 + 0] = v.x();
+            buffer[i * 3 + 1] = v.y();
+            buffer[i * 3 + 2] = v.z();
+            ++i;
+        }
+
+        vertBuff.create(
+            buffer,
+            nv,
+            bgfx::Attrib::Position,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mVertexPositions.setOwned(std::move(vertBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets per-point normals from a range of 3D points.
+     *
+     * @tparam R: Range whose value type satisfies Point3Concept (must provide
+     * x(), y(), z()).
+     * @param[in] vertNormals: Range of 3D points representing normals. Each
+     * element is read as a normal vector (x, y, z) for the corresponding point.
+     * The size must match vertexCount().
+     *
+     * @note This creates an owned buffer copy. The original range is not
+     * referenced.
+     */
+    template<Range R>
+    requires Point3Concept<std::ranges::range_value_t<R>>
+    void setVertexNormals(R&& vertNormals)
+    {
+        mVerNorCount = std::ranges::size(vertNormals);
+
+        // Compute padding to ensure the buffer size is a multiple of 4 floats
+        // (16 bytes). This is required because the vertex shader reads the
+        // buffer as vec4 elements.
+        uint padding = (4 - (mVerNorCount % 4)) % 4;
+        uint nn      = mVerNorCount + padding;
+
+        VertexBuffer vNormsBuff;
+
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<float>(nn * 3);
+
+        for (size_t i = 0; const auto& n : vertNormals) {
+            buffer[i * 3 + 0] = n.x();
+            buffer[i * 3 + 1] = n.y();
+            buffer[i * 3 + 2] = n.z();
+            ++i;
+        }
+
+        vNormsBuff.create(
+            buffer,
+            nn,
+            bgfx::Attrib::Normal,
+            3,
+            PrimitiveType::FLOAT,
+            releaseFn);
+        mVertexNormals.setOwned(std::move(vNormsBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets per-point colors from a range of Color elements.
+     *
+     * @tparam R: Range whose value type satisfies ColorConcept.
+     * @param[in] vertColors: Range of Color objects. Must have exactly
+     * the vertexCount() size. Each color is converted to ABGR format (uint).
+     */
+    template<Range R>
+    requires ColorConcept<std::ranges::range_value_t<R>>
+    void setVertexColors(R&& vertColors)
+    {
+        mVerColCount = std::ranges::size(vertColors);
+
+        // Compute padding to ensure the buffer size is a multiple of 16 bytes.
+        uint padding = (4 - (mVerColCount % 4)) % 4;
+        uint nc      = mVerColCount + padding;
+
+        VertexBuffer vColsBuff;
+
+        auto [buffer, releaseFn] =
+            Context::getAllocatedBufferAndReleaseFn<uint>(nc);
+
+        for (uint i = 0; const auto& c : vertColors) {
+            buffer[i] = c.abgr();
+            ++i;
+        }
+
+        vColsBuff.create(
+            buffer,
+            nc,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
+        mVertexColors.setOwned(std::move(vColsBuff));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets per-point selection state from a range of booleans.
+     *
+     * @tparam R: Range whose value type is bool.
+     * @param[in] selections: A range of booleans (size must match vertexCount).
+     */
+    template<Range R>
+    requires std::convertible_to<std::ranges::range_value_t<R>, bool>
+    void setVertexSelection(R&& selections)
+    {
+        mVerSelCount = std::ranges::size(selections);
+        BooleanBuffer buf;
+        buf.init(mVerSelCount);
+
+        uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
+        std::vector<uint8_t> backup(bitNumber / 8, 0);
+
+        uint                       vidx    = 0;
+        uint                       byteIdx = 0;
+        vcl::BitSet<uint8_t, true> flags;
+
+        for (bool sel : selections) {
+            flags[vidx % 8] = sel;
+            ++vidx;
+
+            if (vidx % 8 == 0) {
+                backup[byteIdx] = flags.underlying();
+                byteIdx++;
+                flags.reset();
+            }
+        }
+
+        if (vidx % 8 != 0) {
+            backup[byteIdx] = flags.underlying();
+        }
+
+        buf.setFromCPUBuffer(backup);
+        mSelectionBuffer.setOwned(std::move(buf));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    void setVertices(const uint vertexCount, const VertexBuffer& verts);
+
+    void setVertexNormals(uint vNorCount, const VertexBuffer& vertNormals);
+
+    void setVertexColors(uint vColsCount, const VertexBuffer& vertColors);
+
+    void setSelection(uint vSelCount, const BooleanBuffer& vertSels);
+
+    /**
+     * @brief Sets the size of point splats.
+     *
+     * @param[in] size: The point splat size.
+     */
+    void setSize(float size) { mSettings.width = size; }
+
+    /**
+     * @brief Sets the color mode for point rendering.
+     *
+     * @param[in] colorToUse: Whether to use per-point colors or a general
+     * uniform color.
+     */
+    void setColorSetting(ColorSetting colorToUse)
+    {
+        mSettings.colorSetting = colorToUse;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns the color mode for point rendering.
+     * @return The color mode used.
+     */
+    ColorSetting colorSetting() const { return mSettings.colorSetting; }
+
+    /**
+     * @brief Sets the shading mode for point rendering.
+     *
+     * @param[in] shading: Whether to apply no shading or compute lighting per
+     * vertex using normals (if provided).
+     */
+    void setShading(Shading shading)
+    {
+        mSettings.shading      = shading;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns the shading mode for point rendering.
+     * @return The shading mode used.
+     */
+    Shading shading() const { return mSettings.shading; }
+
+    /**
+     * @brief Sets the visual shape of each point splat.
+     *
+     * @param[in] shape: The splat shape (SQUARE or CIRCLE).
+     */
+    void setShape(Shape shape)
+    {
+        mSettings.shape        = shape;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns the visual shape of each point splat.
+     * @return The shape of the points.
+     */
+    Shape shape() const { return mSettings.shape; }
+
+    /**
+     * @brief Sets the general (uniform) color used when color mode is GENERAL.
+     *
+     * @param[in] generalColor: The fallback color for all points.
+     */
+    void setGeneralColor(const Color& generalColor)
+    {
+        mSettings.generalColor = generalColor;
+    }
+
+    /**
+     * @brief Returns the general (uniform) color used when color mode is
+     * GENERAL.
+     * @return The general color.
+     */
+    Color generalColor() const { return mSettings.generalColor; }
+
+    /**
+     * @brief Sets the depth offset applied to the points.
+     * @param[in] depthOffset: The depth offset value.
+     */
+    void setDepthOffset(float depthOffset)
+    {
+        mSettings.depthOffset = depthOffset;
+    }
+
+    /**
+     * @brief Sets the selection color.
+     * @param[in] color: The selection highlight color.
+     */
+    void setSelectionColor(const Color& color)
+    {
+        mSettings.selectionColor = color;
+    }
+
+    /**
+     * @brief Returns the selection color.
+     * @return The selection highlight color.
+     */
+    Color selectionColor() const { return mSettings.selectionColor; }
+
+    /**
+     * @brief Sets whether the selection should be visible.
+     * @param[in] visible: True to visualize selection, false otherwise.
+     */
+    void setSelectionVisibility(bool visible)
+    {
+        mSettings.selectionVisibility = visible;
+        mIsUpdateProgramNeeded        = true;
+    }
+
+    /**
+     * @brief Returns whether the selection visibility is enabled.
+     * @return True if selection visibility is enabled, false otherwise.
+     */
+    bool isSelectionVisible() const { return mSettings.selectionVisibility; }
+
+    /**
+     * @brief Sets all visual settings at once.
+     * @param[in] settings: The settings to apply.
+     */
+    void setSettings(const Settings& settings)
+    {
+        mSettings              = settings;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Returns the visual settings.
+     * @return The current visual settings.
+     */
+    const Settings& settings() const { return mSettings; }
+
+    void draw(bgfx::ViewId viewId) const;
+
+    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+
+private:
+    void                checkAndUpdateProgram() const;
+    bgfx::ProgramHandle pointsProgramSelector() const;
+    bgfx::ProgramHandle pointsIdProgramSelector() const;
+
+    static constexpr uint POINTS_POSITIONS_STAGE = 0;
+    static constexpr uint POINTS_NORMALS_STAGE   = 1;
+    static constexpr uint POINTS_COLORS_STAGE    = 2;
+    static constexpr uint POINTS_SELECTION_STAGE = 3;
+};
+
+} // namespace vcl
+
+#endif // VCL_BGFX_PRIMITIVES_POINTS_H

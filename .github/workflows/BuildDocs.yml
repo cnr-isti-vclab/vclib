@@ -5,22 +5,7 @@ on:
 
 jobs:
   build_docs:
-    name: Build Docs
-    runs-on: ubuntu-24.04
-
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install dependencies
-        run: | 
-          sudo apt-get install doxygen graphviz
-      - name: Build Docs
-        run: |
-          python3 scripts/generate_versioned_docs.py --verbose
-      - name: Upload Docs
-        uses: actions/upload-artifact@v7
-        with:
-          name: vclib_docs
-          path: docs/_doxygen/html
+    uses: ./.github/workflows/_build_docs.yml
 
   upload_docs:
     needs: build_docs
@@ -28,7 +13,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: alemuntoni/alemuntoni.github.io
           token: ${{ secrets.PAT }}

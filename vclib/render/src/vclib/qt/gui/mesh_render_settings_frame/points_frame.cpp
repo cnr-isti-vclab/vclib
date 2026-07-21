@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/mesh_render_settings_frame/points_frame.h>
 
@@ -84,6 +69,18 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(valueChanged(int)),
         this,
         SLOT(onSizeChanged(int)));
+
+    connect(
+        mUI->selectionVisibilityCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSelectionVisibilityChanged(Qt::CheckState)));
+
+    connect(
+        mUI->selectionColorDialogPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onSelectionColorChanged(const QColor&)));
 }
 
 PointsFrame::~PointsFrame()
@@ -107,6 +104,9 @@ void PointsFrame::updateFrameFromSettings()
 
         updateColorComboBoxFromSettings();
         mUI->sizeSlider->setValue((uint) mMRS.pointWidth());
+
+        mUI->selectionVisibilityCheckBox->setEnabled(true);
+        mUI->selectionVisibilityCheckBox->setChecked(mMRS.isPoints(SELECTION));
     }
     else {
         this->setEnabled(false);
@@ -149,6 +149,12 @@ void PointsFrame::updateColorComboBoxFromSettings()
     vcl::Color vc = mMRS.pointUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     mUI->colorDialogPushButton->setBackgroundColor(c);
+    vcl::Color sc = mMRS.pointSelectionColor();
+    c.setRed(sc.red());
+    c.setGreen(sc.green());
+    c.setBlue(sc.blue());
+    c.setAlpha(sc.alpha());
+    mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
 void PointsFrame::onVisibilityChanged(Qt::CheckState arg1)
@@ -209,6 +215,19 @@ void PointsFrame::onUserColorChanged(const QColor& c)
 void PointsFrame::onSizeChanged(int value)
 {
     mMRS.setPointsWidth(value);
+    emit settingsUpdated();
+}
+
+void PointsFrame::onSelectionVisibilityChanged(Qt::CheckState arg1)
+{
+    mMRS.setPoints(SELECTION, arg1 == Qt::CheckState::Checked);
+    emit settingsUpdated();
+}
+
+void PointsFrame::onSelectionColorChanged(const QColor& c)
+{
+    // alpha is always 0.5
+    mMRS.setPointSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
     emit settingsUpdated();
 }
 

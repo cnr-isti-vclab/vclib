@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
 #define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_EXPORT_MATRIX_H
@@ -1173,8 +1158,7 @@ Vect faceMaterialIndicesVector(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     MeshConcept MeshType>
 Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
@@ -1286,8 +1270,7 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
@@ -1403,8 +1386,7 @@ Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
@@ -1486,8 +1468,7 @@ Matrix vertexAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
@@ -1569,8 +1550,7 @@ Matrix faceAdjacentFacesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     FaceMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
@@ -1662,8 +1642,7 @@ Matrix edgeAdjacentFacesMatrix(const MeshType& mesh)
  */
 template<
     uint ELEM_ID,
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
@@ -1779,8 +1758,7 @@ Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
@@ -1867,8 +1845,7 @@ Matrix vertexAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
@@ -1952,8 +1929,7 @@ Matrix faceAdjacentEdgesMatrix(const MeshType& mesh)
  * @ingroup export_matrix
  */
 template<
-    template<typename, typename...>
-    typename Container,
+    template<typename, typename...> typename Container,
     typename T,
     EdgeMeshConcept MeshType>
 Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)

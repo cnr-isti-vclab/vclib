@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_IO_MESH_PLY_DETAIL_HEADER_H
 #define VCL_IO_MESH_PLY_DETAIL_HEADER_H
@@ -211,6 +196,7 @@ public:
                 case ply::x:
                 case ply::y:
                 case ply::z: mod.setPerVertexPosition(); break;
+                case ply::bit_flags: mod.setPerVertexBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerVertexNormal(); break;
@@ -239,6 +225,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerFaceVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerFaceBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerFaceNormal(); break;
@@ -286,6 +273,7 @@ public:
                 case ply::vertex_indices:
                     mod.setPerEdgeVertexReferences();
                     break;
+                case ply::bit_flags: mod.setPerEdgeBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setPerEdgeNormal(); break;
@@ -514,6 +502,12 @@ public:
                 vids.listSizeType = PrimitiveType::UCHAR;
                 fElem.properties.push_back(vids);
             }
+            if (info.hasPerFaceBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perFaceBitFlagsType();
+                fElem.properties.push_back(bf);
+            }
             if (info.hasPerFaceNormal()) {
                 PlyProperty fnx, fny, fnz;
                 fnx.name = ply::nx;
@@ -587,6 +581,12 @@ public:
                 v2.name = ply::vertex2;
                 v2.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v2);
+            }
+            if (info.hasPerEdgeBitFlags()) {
+                PlyProperty bf;
+                bf.name = ply::bit_flags;
+                bf.type = info.perEdgeBitFlagsType();
+                eElem.properties.push_back(bf);
             }
             mElements.push_back(eElem);
         }

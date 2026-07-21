@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/drawable/drawable_environment.h>
 
@@ -28,10 +13,6 @@
 
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
-#include <bx/bx.h>
-#include <bx/file.h>
-#include <bx/math.h>
-#include <bx/readerwriter.h>
 
 namespace vcl {
 
@@ -43,17 +24,10 @@ constexpr uint ceilDiv(uint x, uint d)
 
 static const float VERTICES[9] {-3, -1, 1, 1, -1, 1, 1, 3, 1};
 
-static bx::DefaultAllocator bxAllocator;
-
-DrawableEnvironment::DrawableEnvironment(
-    const std::string& imagePath,
-    uint               viewId)
+DrawableEnvironment::DrawableEnvironment(const Panorama& panorama, uint viewId)
 {
-    bimg::ImageContainer* image = loadImage(imagePath);
-    if (image) {
-        mImagePath = imagePath;
-        setAndGenerateTextures(*image, viewId);
-        bimg::imageFree(image);
+    if (panorama.isValid()) {
+        setAndGenerateTextures(panorama, viewId);
     }
 }
 
@@ -73,7 +47,7 @@ void DrawableEnvironment::drawBackground(
         using enum TextureType;
         bindTexture(RAW_CUBE, VCL_MRB_CUBEMAP0);
 
-        mVertexBuffer.bindVertex(0);
+        mVertexBuffer.bind(0);
 
         bgfx::setState(BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LEQUAL);
 
@@ -115,107 +89,19 @@ void DrawableEnvironment::bindTexture(
 }
 
 /**
- * @brief Determines the file format of the given image based on its extension.
+ * @brief Sets up the environment textures based on the given panorama.
  *
- * Recognized formats are HDR, EXR, KTX, DDS otherwise the format is marked as
- * UNKNOWN.
+ * This function is called in the constructor after verifying validity.
  *
- * @param[in] imagePath: The path to the image file.
- * @return The determined file format.
- */
-DrawableEnvironment::FileFormat DrawableEnvironment::getFileFormat(
-    const std::string& imagePath)
-{
-    using enum DrawableEnvironment::FileFormat;
-    std::string fmt = vcl::toLower(FileInfo::extension(imagePath));
-
-    if (fmt == ".hdr")
-        return HDR;
-    if (fmt == ".exr")
-        return EXR;
-    if (fmt == ".ktx")
-        return KTX;
-    if (fmt == ".dds")
-        return DDS;
-    return UNKNOWN;
-}
-
-/**
- * @brief Loads the image from the specified file path.
- * @param[in] imagePath: The path to the image file.
- * @return A pointer to the loaded ImageContainer, can be nullptr.
- */
-bimg::ImageContainer* DrawableEnvironment::loadImage(std::string imagePath)
-{
-    /* Code from bimg texturec */
-
-    using enum DrawableEnvironment::FileFormat;
-    FileFormat sourceFormat = getFileFormat(imagePath);
-
-    if (sourceFormat == UNKNOWN)
-        return nullptr;
-
-    bx::Error      err;
-    bx::FileReader reader;
-
-    // open the file
-
-    if (!bx::open(&reader, imagePath.c_str(), &err))
-        return nullptr;
-
-    // read file size and allocate memory
-
-    uint32_t inputSize = (uint32_t) bx::getSize(&reader);
-
-    if (inputSize == 0)
-        return nullptr;
-
-    uint8_t* inputData = (uint8_t*) bx::alloc(&bxAllocator, inputSize);
-
-    // read the file and put it raw in inputData
-
-    uint rd = bx::read(&reader, inputData, inputSize, &err);
-    bx::close(&reader);
-
-    if (!err.isOk() || rd != inputSize) {
-        bx::free(&bxAllocator, inputData);
-        return nullptr;
-    }
-
-    // copy the data in the final container reading its characteristics
-
-    using enum bimg::TextureFormat::Enum;
-
-    bimg::ImageContainer* output =
-        bimg::imageParse(&bxAllocator, inputData, inputSize, RGBA32F, &err);
-
-    bx::free(&bxAllocator, inputData);
-
-    if (!output) {
-        return nullptr;
-    }
-
-    if (!err.isOk() ||
-        (!output->m_cubeMap && sourceFormat != HDR && sourceFormat != EXR)) {
-        // file is neither a cubemap nor an equirectangular map
-        bimg::imageFree(output);
-        return nullptr;
-    }
-
-    return output;
-}
-
-/**
- * @brief Sets up the environment textures based on the given image.
- *
- * This function is called in the constructor after loading the image.
- *
- * @param[in] image: The image container holding the environment map data.
+ * @param[in] panorama: The panorama object containing image data.
+ * @param[in] viewId: The view ID to use for dispatching computes.
  */
 void DrawableEnvironment::setAndGenerateTextures(
-    const bimg::ImageContainer& image,
-    uint                        viewId)
+    const Panorama& panorama,
+    uint            viewId)
 {
+    const bimg::ImageContainer& image = *panorama.image();
+
     // if it's not a cubemap it's equirectangular
     uint cubeSide = image.m_cubeMap ? image.m_width : ceilDiv(image.m_width, 4);
 
@@ -443,8 +329,7 @@ vcl::VertexBuffer DrawableEnvironment::fullScreenTriangle()
         3,
         bgfx::Attrib::Enum::Position,
         3,
-        vcl::PrimitiveType::FLOAT,
-        false);
+        vcl::PrimitiveType::FLOAT);
     return vb;
 }
 

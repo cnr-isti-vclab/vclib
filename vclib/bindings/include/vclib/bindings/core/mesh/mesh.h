@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2025                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BINDINGS_CORE_MESH_MESH_H
 #define VCL_BINDINGS_CORE_MESH_MESH_H
@@ -41,7 +26,7 @@ void initMesh(pybind11::module& m, const std::string& name)
     using namespace py::literals;
 
     // Create the class
-    pybind11::class_<MeshType> c(m, name.c_str());
+    pybind11::class_<MeshType, std::shared_ptr<MeshType>> c(m, name.c_str());
 
     c.def(py::init<>());
     c.def(py::init<MeshType>());
@@ -74,7 +59,7 @@ void initMesh(pybind11::module& m, const std::string& name)
 
     auto enableSameOptionalComponentsOfFun =
         []<MeshConcept OtherMeshType>(
-            pybind11::class_<MeshType>& c, OtherMeshType = OtherMeshType()) {
+            auto& c, OtherMeshType = OtherMeshType()) {
             c.def(
                 "enable_same_optional_components_of",
                 [](MeshType& m, const OtherMeshType& o) {
@@ -91,8 +76,7 @@ void initMesh(pybind11::module& m, const std::string& name)
         "other_mesh"_a);
 
     auto importFromFun = []<MeshConcept OtherMeshType>(
-                             pybind11::class_<MeshType>& c,
-                             OtherMeshType = OtherMeshType()) {
+                             auto& c, OtherMeshType = OtherMeshType()) {
         c.def("import_from", [](MeshType& m, const OtherMeshType& o) {
             m.importFrom(o);
         });

@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
@@ -164,67 +149,6 @@ public:
     }
 
     /**
-     * @brief Returns the number of triangle chunks.
-     *
-     * Each chunk corresponds to a set of triangles associated that can be
-     * rendered with the same material.
-     *
-     * @return The number of triangle chunks.
-     */
-    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
-
-    /**
-     * @brief Returns the triangle material chunk at the given index.
-     *
-     * @param[in] chunkIndex: The index of the triangle material chunk to
-     * retrieve. Must be less than `triangleChunksNumber()`.
-     * @return The triangle material chunk at the given index.
-     */
-    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
-    {
-        return mMaterialChunks[chunkIndex];
-    }
-
-    /**
-     * @brief Returns the material index for the given triangle chunk,
-     * according to the current render settings.
-     *
-     * @param[in] mrs: the mesh render settings
-     * @param[in] chunkNumber: the triangle chunk number
-     * @return the material index for the given triangle chunk
-     */
-    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
-    {
-        using enum MeshRenderInfo::Surface;
-
-        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
-            return mMaterialChunks[chunkNumber].faceMaterialId;
-        else
-            return mMaterialChunks[chunkNumber].vertMaterialId;
-    }
-
-protected:
-    MeshRenderData() = default;
-
-    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
-            mBuffersToFill(buffersToFill)
-    {
-    }
-
-    void swap(MeshRenderData& other)
-    {
-        using std::swap;
-        swap(mNumVerts, other.mNumVerts);
-        swap(mNumTris, other.mNumTris);
-        swap(mVertWedgeMap, other.mVertWedgeMap);
-        swap(mVertsToDuplicate, other.mVertsToDuplicate);
-        swap(mFacesToReassign, other.mFacesToReassign);
-        swap(mIndexMap, other.mIndexMap);
-        swap(mBuffersToFill, other.mBuffersToFill);
-        swap(mMaterialChunks, other.mMaterialChunks);
-    }
-
-    /**
      * @brief Returns the number of vertices that will be used to render the
      * mesh.
      *
@@ -303,6 +227,67 @@ protected:
      * @return The number of edges that will be used to render the mesh.
      */
     uint numEdges() const { return mNumEdges; }
+
+    /**
+     * @brief Returns the number of triangle chunks.
+     *
+     * Each chunk corresponds to a set of triangles associated that can be
+     * rendered with the same material.
+     *
+     * @return The number of triangle chunks.
+     */
+    uint triangleChunksNumber() const { return mMaterialChunks.size(); }
+
+    /**
+     * @brief Returns the triangle material chunk at the given index.
+     *
+     * @param[in] chunkIndex: The index of the triangle material chunk to
+     * retrieve. Must be less than `triangleChunksNumber()`.
+     * @return The triangle material chunk at the given index.
+     */
+    TriangleMaterialChunk triangleChunk(uint chunkIndex) const
+    {
+        return mMaterialChunks[chunkIndex];
+    }
+
+    /**
+     * @brief Returns the material index for the given triangle chunk,
+     * according to the current render settings.
+     *
+     * @param[in] mrs: the mesh render settings
+     * @param[in] chunkNumber: the triangle chunk number
+     * @return the material index for the given triangle chunk
+     */
+    uint materialIndex(const MeshRenderSettings& mrs, uint chunkNumber) const
+    {
+        using enum MeshRenderInfo::Surface;
+
+        if (mrs.isSurface(COLOR_FACE) || mrs.isSurface(COLOR_WEDGE_TEX))
+            return mMaterialChunks[chunkNumber].faceMaterialId;
+        else
+            return mMaterialChunks[chunkNumber].vertMaterialId;
+    }
+
+protected:
+    MeshRenderData() = default;
+
+    MeshRenderData(MRI::BuffersBitSet buffersToFill) :
+            mBuffersToFill(buffersToFill)
+    {
+    }
+
+    void swap(MeshRenderData& other)
+    {
+        using std::swap;
+        swap(mNumVerts, other.mNumVerts);
+        swap(mNumTris, other.mNumTris);
+        swap(mVertWedgeMap, other.mVertWedgeMap);
+        swap(mVertsToDuplicate, other.mVertsToDuplicate);
+        swap(mFacesToReassign, other.mFacesToReassign);
+        swap(mIndexMap, other.mIndexMap);
+        swap(mBuffersToFill, other.mBuffersToFill);
+        swap(mMaterialChunks, other.mMaterialChunks);
+    }
 
     /**
      * @brief Returns the number of wireframe lines that will be used to render
@@ -669,6 +654,24 @@ protected:
     void setVertexPositionsBuffer(const MeshConcept auto&) {}
 
     /**
+     * @brief Function that sets the content of vertex selection buffer and
+     * sends the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the vertex
+     * selection using the `numVerts()` and `fillVertexSelection()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-vertex
+     * selection since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setVertexSelectionBuffer(const MeshConcept auto&) {}
+
+    /**
      * @brief Function that sets the content of vertex normals buffer and sends
      * the data to the GPU.
      *
@@ -780,6 +783,24 @@ protected:
      * @param[in] mesh: the input mesh from which to get the data
      */
     void setTriangleIndicesBuffer(const FaceMeshConcept auto&) {};
+
+    /**
+     * @brief Function that sets the content of triangle selection buffer and
+     * sends the data to the GPU.
+     *
+     * The function should allocate and fill a cpu buffer to store the triangle
+     * selection using the `numTris()` and `fillTriangleSelection()` functions,
+     * and then send the data to the GPU using the rendering backend.
+     *
+     * There is no need to check whether the Mesh can provide per-face selection
+     * since the function is called only if the mesh has them.
+     *
+     * See the @ref MeshRenderData class documentation for an example of
+     * implementation.
+     *
+     * @param[in] mesh: the input mesh from which to get the data
+     */
+    void setTriangleSelectionBuffer(const FaceMeshConcept auto&) {};
 
     /**
      * @brief Function that sets the content of triangle normals buffer and
@@ -1014,6 +1035,7 @@ private:
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (positions)
             derived().setVertexPositionsBuffer(mesh);
+            derived().setVertexSelectionBuffer(mesh);
         }
 
         if constexpr (HasPerVertexNormal<MeshType>) {
@@ -1064,6 +1086,7 @@ private:
             if (btu[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
                 derived().setTriangleIndicesBuffer(mesh);
+                derived().setTriangleSelectionBuffer(mesh);
             }
 
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {

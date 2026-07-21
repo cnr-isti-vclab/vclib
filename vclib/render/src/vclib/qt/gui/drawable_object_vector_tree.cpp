@@ -1,30 +1,20 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/drawable_object_vector_tree.h>
 
+#include "ui_drawable_object_vector_tree.h"
+
 #include <vclib/qt/gui/drawable_object_item.h>
 
-#include "ui_drawable_object_vector_tree.h"
+#include <QApplication>
+#include <QMouseEvent>
+
+#include <set>
 
 namespace vcl::qt {
 
@@ -52,6 +42,8 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         &QTreeWidget::itemChanged,
         this,
         &DrawableObjectVectorTree::itemCheckStateChanged);
+
+    mUI->treeWidget->viewport()->installEventFilter(this);
 }
 
 DrawableObjectVectorTree::DrawableObjectVectorTree(
@@ -98,6 +90,17 @@ void DrawableObjectVectorTree::update()
     }
 }
 
+void DrawableObjectVectorTree::updateSelectionCounters()
+{
+    for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+        auto item =
+            dynamic_cast<DrawableObjectItem*>(mUI->treeWidget->topLevelItem(i));
+        if (item) {
+            item->updateMeshInfo();
+        }
+    }
+}
+
 bool DrawableObjectVectorTree::setSelectedItem(uint i)
 {
     if (i >= mDrawList->size()) {
@@ -124,10 +127,78 @@ void DrawableObjectVectorTree::setDrawableObjectVector(
     }
 }
 
+bool DrawableObjectVectorTree::eventFilter(QObject* obj, QEvent* event)
+{
+    if (obj == mUI->treeWidget->viewport()) {
+        if (event->type() == QEvent::MouseButtonPress ||
+            event->type() == QEvent::MouseButtonRelease ||
+            event->type() == QEvent::MouseButtonDblClick ||
+            event->type() == QEvent::MouseMove) {
+            QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+            QModelIndex  index = mUI->treeWidget->indexAt(mouseEvent->pos());
+
+            if (event->type() == QEvent::MouseButtonPress ||
+                event->type() == QEvent::MouseButtonDblClick) {
+                if (index.isValid() && index.column() == 0) {
+                    QRect visualRect = mUI->treeWidget->visualRect(index);
+                    if (mouseEvent->pos().x() >= visualRect.left() &&
+                        mouseEvent->pos().x() <= visualRect.left() + 26) {
+                        mCheckboxPressed = true;
+                        mPressedItem = mUI->treeWidget->itemFromIndex(index);
+                        return true; // Consume press
+                    }
+                }
+            }
+            else if (event->type() == QEvent::MouseMove) {
+                if (mCheckboxPressed) {
+                    return true; // Consume drag so QTreeView doesn't start
+                                 // selection drag
+                }
+            }
+            else if (event->type() == QEvent::MouseButtonRelease) {
+                if (mCheckboxPressed) {
+                    mCheckboxPressed = false;
+
+                    // Only toggle if we released over the same item's checkbox
+                    // area
+                    if (index.isValid() && index.column() == 0) {
+                        QTreeWidgetItem* item =
+                            mUI->treeWidget->itemFromIndex(index);
+                        if (item && item == mPressedItem) {
+                            QRect visualRect =
+                                mUI->treeWidget->visualRect(index);
+                            if (mouseEvent->pos().x() >= visualRect.left() &&
+                                mouseEvent->pos().x() <=
+                                    visualRect.left() + 26) {
+                                Qt::CheckState state = item->checkState(0);
+                                item->setCheckState(
+                                    0,
+                                    state == Qt::Checked ? Qt::Unchecked :
+                                                           Qt::Checked);
+                            }
+                        }
+                    }
+                    mPressedItem = nullptr;
+                    return true; // Consume release
+                }
+            }
+        }
+    }
+    return QFrame::eventFilter(obj, event);
+}
+
 void DrawableObjectVectorTree::updateDrawableVectorTree()
 {
+    std::set<uint> expandedItems;
+    for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+        if (mUI->treeWidget->topLevelItem(i)->isExpanded()) {
+            expandedItems.insert(i);
+        }
+    }
+
     mUI->treeWidget->clear();
 
+    uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
             new DrawableObjectItem(d, mIconFunction, mUI->treeWidget);
@@ -136,6 +207,11 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
 
         // if d is visible, set the check state to checked
         item->setCheckState(0, d->isVisible() ? Qt::Checked : Qt::Unchecked);
+
+        if (expandedItems.count(i) > 0) {
+            item->setExpanded(true);
+        }
+        ++i;
     }
 }
 
@@ -163,12 +239,37 @@ void DrawableObjectVectorTree::itemCheckStateChanged(
     int              column)
 {
     if (item && column == 0) {
-        // update the visibility of the drawable object
-        auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
-        if (drawableItem) {
-            auto obj = drawableItem->drawableObject();
-            if (obj) {
-                obj->setVisibility(item->checkState(column) == Qt::Checked);
+        bool isCtrlPressed =
+            QApplication::keyboardModifiers() & Qt::ControlModifier;
+
+        if (isCtrlPressed) {
+            mUI->treeWidget->blockSignals(true);
+
+            for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+                auto childItem = mUI->treeWidget->topLevelItem(i);
+                auto drawableItem =
+                    dynamic_cast<DrawableObjectItem*>(childItem);
+                if (drawableItem) {
+                    bool visible = (childItem == item);
+                    childItem->setCheckState(
+                        0, visible ? Qt::Checked : Qt::Unchecked);
+                    auto obj = drawableItem->drawableObject();
+                    if (obj) {
+                        obj->setVisibility(visible);
+                    }
+                }
+            }
+
+            mUI->treeWidget->blockSignals(false);
+        }
+        else {
+            // update the visibility of the drawable object
+            auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+            if (drawableItem) {
+                auto obj = drawableItem->drawableObject();
+                if (obj) {
+                    obj->setVisibility(item->checkState(column) == Qt::Checked);
+                }
             }
         }
 

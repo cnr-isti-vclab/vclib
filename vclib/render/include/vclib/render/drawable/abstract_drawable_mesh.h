@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
 #define VCL_RENDER_DRAWABLE_ABSTRACT_DRAWABLE_MESH_H
@@ -26,7 +11,12 @@
 #include "drawable_object.h"
 #include "mesh/mesh_render_settings.h"
 
+#include <vclib/render/selection/selection_parameters.h>
+
+#include <vclib/algorithms/mesh.h>
 #include <vclib/space/core/matrix.h>
+
+#include <functional>
 
 namespace vcl {
 
@@ -45,6 +35,8 @@ protected:
     MeshRenderSettings mMRS;
 
     Box3d mBoundingBox;
+
+    std::function<void()> mOnSelectionUpdated;
 
 public:
     using MatIt = std::vector<Material>::const_iterator;
@@ -72,7 +64,7 @@ public:
 
     virtual uint edgeCount() const = 0;
 
-    virtual vcl::Matrix44d transformMatrix() const = 0;
+    virtual vcl::Matrix44d modelMatrix() const = 0;
 
     virtual View<MatIt> materials() const { return View<MatIt>(); }
 
@@ -80,6 +72,19 @@ public:
     {
         return EMPTY_IMAGE;
     }
+
+    virtual uint selectedVertexCount() const { return 0; }
+
+    virtual uint selectedFaceCount() const { return 0; }
+
+    virtual void computeSelection(const SelectionParameters& params) {}
+
+    void setOnSelectionUpdatedCallback(std::function<void()> cb)
+    {
+        mOnSelectionUpdated = std::move(cb);
+    }
+
+    virtual bool isSelectionReadbackPending() const { return false; }
 
     // DrawableObject implementation
 

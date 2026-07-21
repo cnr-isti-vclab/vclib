@@ -1,0 +1,25 @@
+name: Run format Linter
+
+# run it every day at midnight, or manually
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  run_format_linter:
+    if: github.repository == 'cnr-isti-vclab/vclib'
+    name: Run format Linter
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+    - name: Run Linter
+      uses: ./.github/actions/run-linter
+    - uses: EndBug/add-and-commit@v10
+      with:
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
+        message: '[clang-format] Committing clang-format changes'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

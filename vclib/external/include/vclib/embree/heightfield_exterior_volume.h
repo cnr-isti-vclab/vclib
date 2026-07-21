@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_EMBREE_HEIGHTFIELD_EXTERIOR_VOLUME_H
 #define VCL_EMBREE_HEIGHTFIELD_EXTERIOR_VOLUME_H
@@ -435,17 +420,17 @@ auto findBestOrientationByHeightfieldExteriorVolume(
             bestNormal  = fibNormals[i];
 
             log.setPercentage(i / static_cast<double>(fibNormals.size()) * 100);
-            log << "New best: Plane id: " << i << "/" << fibNormals.size() - 1
-                << ", normal: " << fibNormals[i]
-                << ", volume: " << std::to_string(vol) << "\n";
+            log.info() << "New best: Plane id: " << i << "/"
+                       << fibNormals.size() - 1 << ", normal: " << fibNormals[i]
+                       << ", volume: " << std::to_string(vol);
         }
     }
 
     log.setPercentage(100);
-    log << "Fibonacci planes tested: " << fibNormals.size() << "\n"
-        << "Best plane id: " << bestPlaneId << "\n"
-        << "Best plane normal: " << bestNormal << "\n"
-        << "Minimum volume: " << bestVolume << "\n";
+    log.info() << "Fibonacci planes tested: " << fibNormals.size()
+               << "\nBest plane id: " << bestPlaneId
+               << "\nBest plane normal: " << bestNormal
+               << "\nMinimum volume: " << bestVolume;
     log.endTask("Best orientation found.");
 
     return bestNormal;

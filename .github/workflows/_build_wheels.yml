@@ -1,0 +1,119 @@
+name: Reusable Bindings - Build and test Wheel
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
+
+jobs:
+  bindings_build_wheel:
+    name: Bindings - Build Wheel (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    env:
+      VCLIB_WHEEL_BUILD_DIR: ${{ github.workspace }}/build_wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref || github.ref }}
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      if: runner.os == 'Windows'
+      with:
+        arch: x64
+
+    - name: Install Qt
+      uses: ./.github/actions/install-qt
+
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install cmake ninja-build
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
+
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco install ninja ccache
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.23
+      with:
+        key: bindings-${{ matrix.os }}
+        max-size: 1G
+
+    - name: Build and Install bgfx
+      uses: ./.github/actions/build-install-bgfx
+
+    - name: Build Wheel 3.12
+      uses: ./.github/actions/build-python-wheel
+      with:
+        python-version: '3.12'
+        os: ${{ runner.os }}
+
+    - name: Build Wheel 3.13
+      uses: ./.github/actions/build-python-wheel
+      with:
+        python-version: '3.13'
+        os: ${{ runner.os }}
+
+    - name: Build Wheel 3.14
+      uses: ./.github/actions/build-python-wheel
+      with:
+        python-version: '3.14'
+        os: ${{ runner.os }}
+
+    - name: Upload Wheels
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-wheel-${{ matrix.os }}
+        path: dist/*.whl
+
+  run_python_examples:
+    name: Run Python Examples (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: bindings_build_wheel
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref || github.ref }}
+
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install freeglut3-dev
+
+    - uses: actions/download-artifact@v8
+      with:
+        name: vclib-wheel-${{ matrix.os }}
+        path: dist/
+
+    - name: Run Examples 3.12
+      uses: ./.github/actions/run-python-examples
+      with:
+        python-version: '3.12'
+
+    - name: Run Examples 3.13
+      uses: ./.github/actions/run-python-examples
+      with:
+        python-version: '3.13'
+
+    - name: Run Examples 3.14
+      uses: ./.github/actions/run-python-examples
+      with:
+        python-version: '3.14'

@@ -1,41 +1,28 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
 #include "mesh_render_buffers_macros.h"
+#include "mesh_selection_buffers.h"
 
-#include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/points.h>
 #include <vclib/bgfx/texture.h>
-#include <vclib/io/image/load.h>
+
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
-#include <vclib/space/core/image.h>
+
+#include <vclib/io.h>
 
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
@@ -61,14 +48,13 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     VertexBuffer mVertexWedgeUVBuffer;
     VertexBuffer mVertexTangentsBuffer;
 
-    // point splatting
-    IndexBuffer         mVertexQuadIndexBuffer;
-    DynamicVertexBuffer mVertexQuadBuffer;
-    bool                mVertexQuadBufferGenerated = false;
+    Points mPoints;
 
-    IndexBuffer mTriangleIndexBuffer;
-    IndexBuffer mTriangleNormalBuffer;
-    IndexBuffer mTriangleColorBuffer;
+    MeshSelectionBuffers mSelection;
+
+    IndexBuffer  mTriangleIndexBuffer;
+    VertexBuffer mTriangleNormalBuffer;
+    VertexBuffer mTriangleColorBuffer;
 
     Lines mEdgeLines;
 
@@ -114,45 +100,57 @@ public:
         swap(mVertexUVBuffer, other.mVertexUVBuffer);
         swap(mVertexWedgeUVBuffer, other.mVertexWedgeUVBuffer);
         swap(mVertexTangentsBuffer, other.mVertexTangentsBuffer);
-        swap(mVertexQuadIndexBuffer, other.mVertexQuadIndexBuffer);
-        swap(mVertexQuadBuffer, other.mVertexQuadBuffer);
-        swap(mVertexQuadBufferGenerated, other.mVertexQuadBufferGenerated);
+        swap(mPoints, other.mPoints);
         swap(mTriangleIndexBuffer, other.mTriangleIndexBuffer);
         swap(mTriangleNormalBuffer, other.mTriangleNormalBuffer);
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
+        swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
+
+        updatePointsVertexBuffers(*this, mPoints);
+        updatePointsVertexBuffers(other, other.mPoints);
     }
 
     friend void swap(MeshRenderBuffers& a, MeshRenderBuffers& b) { a.swap(b); }
 
-    // to generate splats
-    void computeQuadVertexBuffers(
-        const MeshType&    mesh,
-        const bgfx::ViewId viewId)
+    uint selectedVertexCount() const
     {
-        if (!mVertexQuadBuffer.isValid() || mVertexQuadBufferGenerated) {
-            return;
-        }
+        return mSelection.selectedVertexCount();
+    }
 
-        // fill the buffer using compute shader
-        mVertexPositionsBuffer.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
-        mVertexNormalsBuffer.bindCompute(
-            VCL_MRB_VERTEX_NORMAL_STREAM, bgfx::Access::Read);
+    uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
-        mVertexQuadBuffer.bindCompute(4, bgfx::Access::Write);
+    // called on computeSelection
+    void computeSelection(
+        const SelectionParameters& params,
+        const Matrix44f&           model)
+    {
+        mSelection.computeSelection(
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+    }
 
-        auto& pm = Context::instance().programManager();
-        bgfx::dispatch(
-            viewId,
-            pm.getComputeProgram<ComputeProgram::DRAWABLE_MESH_POINTS>(),
-            mesh.vertexCount(),
-            1,
-            1);
+    // called on draw
+    template<MeshConcept MeshType>
+    bool selectionReadback(MeshType& m)
+    {
+        return mSelection.selectionReadback(m, Base::triPolyIndexMap());
+    }
 
-        mVertexQuadBufferGenerated = true;
+    bool isSelectionReadbackPending() const
+    {
+        return mSelection.isSelectionReadbackPending();
+    }
+
+    void bindSelectedVerticesBuffer() const
+    {
+        mSelection.bindSelectedVerticesBuffer();
+    }
+
+    void bindSelectedFacesBuffer() const
+    {
+        mSelection.bindSelectedFacesBuffer();
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -169,12 +167,12 @@ public:
 
         // streams MUST be consecutive starting from 0
         // otherwise on metal it won't work
-        mVertexPositionsBuffer.bindVertex(stream++);
+        mVertexPositionsBuffer.bind(stream++);
 
         if (mVertexNormalsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexNormalsBuffer.bindVertex(stream++);
+            mVertexNormalsBuffer.bind(stream++);
         }
 
         if (mVertexTangentsBuffer.isValid()) {
@@ -186,7 +184,7 @@ public:
         if (mVertexColorsBuffer.isValid()) {
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
-            mVertexColorsBuffer.bindVertex(stream++);
+            mVertexColorsBuffer.bind(stream++);
         }
 
         if (mVertexUVBuffer.isValid() && mrs.isSurface(COLOR_VERTEX_TEX)) {
@@ -199,21 +197,6 @@ public:
             // bgfx limitation
             assert(stream < bgfx::getCaps()->limits.maxVertexStreams);
             mVertexWedgeUVBuffer.bind(stream++);
-        }
-    }
-
-    // to draw splats
-    void bindVertexQuadBuffer() const
-    {
-        mVertexQuadBuffer.bind(VCL_MRB_VERTEX_POSITION_STREAM);
-        mVertexQuadIndexBuffer.bind();
-    }
-
-    void bindPointsVertexColorBuffer() const
-    {
-        if (mVertexColorsBuffer.isValid()) {
-            mVertexColorsBuffer.bindCompute(
-                VCL_MRB_VERTEX_COLOR_STREAM, bgfx::Access::Read);
         }
     }
 
@@ -232,14 +215,21 @@ public:
                 chunk.startIndex * 3, chunk.indexCount * 3);
         }
 
-        mTriangleNormalBuffer.bind(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+        mTriangleNormalBuffer.bindCompute(VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 
-        mTriangleColorBuffer.bind(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+        mTriangleColorBuffer.bindCompute(VCL_MRB_PRIMITIVE_COLOR_BUFFER);
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
+
+    void drawPoints(uint viewId) const { mPoints.draw(viewId); }
+
+    void drawPointsId(uint viewId, uint32_t id) const
+    {
+        mPoints.drawId(viewId, id);
+    }
 
     /**
      * @brief Binds the textures associated to the material of the given
@@ -332,6 +322,50 @@ public:
         }
     }
 
+    /**
+     * @brief Updates the points primitive settings based on the mesh render
+     * settings.
+     *
+     * @param[in] mrs: The mesh render settings to extract point settings from.
+     */
+    void updatePointsSettings(const MeshRenderSettings& mrs)
+    {
+        using enum MeshRenderInfo::Points;
+        using enum Points::ColorSetting;
+
+        mPoints.setSize(mrs.pointWidth());
+        mPoints.setDepthOffset(0.00011f);
+
+        if (mrs.isPoints(SHADING_VERT)) {
+            mPoints.setShading(Points::Shading::PER_VERTEX);
+        }
+        else {
+            mPoints.setShading(Points::Shading::NONE);
+        }
+
+        if (mrs.isPoints(SHAPE_CIRCLE) || mrs.isPoints(SHAPE_SPHERE)) {
+            mPoints.setShape(Points::Shape::CIRCLE);
+        }
+        else {
+            mPoints.setShape(Points::Shape::SQUARE);
+        }
+
+        if (mrs.isPoints(COLOR_USER)) {
+            mPoints.setGeneralColor(mrs.pointUserColor());
+            mPoints.setColorSetting(GENERAL);
+        }
+        else if (mrs.isPoints(COLOR_MESH)) {
+            mPoints.setGeneralColor(mMeshColor);
+            mPoints.setColorSetting(GENERAL);
+        }
+        else if (mrs.isPoints(COLOR_VERTEX)) {
+            mPoints.setColorSetting(PER_VERTEX);
+        }
+
+        mPoints.setSelectionVisibility(mrs.isPoints(SELECTION));
+        mPoints.setSelectionColor(mrs.pointSelectionColor());
+    }
+
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {
@@ -342,59 +376,30 @@ private:
 
         Base::fillVertexPositions(mesh, buffer);
 
-        mVertexPositionsBuffer.createForCompute(
+        mVertexPositionsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Position,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
 
-        // Creates the buffers to be used with compute for splatting
-        if (Context::instance().supportsCompute()) {
-            // create a layout <coordinates, colors, normals, float>
-            // 2 X vec4
-            bgfx::VertexLayout layout;
-            layout.begin()
-                .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-                .add(bgfx::Attrib::TexCoord0, 1, bgfx::AttribType::Float)
-                .end();
+        mPoints.setVertices(nv, mVertexPositionsBuffer);
 
-            // create the dynamic vertex buffer for splatting
-            mVertexQuadBuffer.create(
-                mesh.vertexCount() * 4, layout, BGFX_BUFFER_COMPUTE_WRITE);
+        // create the vertex selection buffer
+        mSelection.initVertexSelectionBitfield(nv);
+        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
 
-            // create the index buffer for splatting
-            setVertexQuadIndexBuffer(mesh);
+        // create the face selection buffer
+        mSelection.initFaceSelectionBitfield(Base::numTris());
 
-            // record that the vertex quad buffer must be generated
-            mVertexQuadBufferGenerated = false;
-        }
+        mSelection.initReadbackHandler(
+            uint(max(double(Base::numVerts()), double(Base::numTris()))));
     }
 
-    /**
-     * @brief The function allocates and fills a GPU index buffer to render
-     * a quad for each vertex of the mesh.
-     *
-     * @param[in] mesh: the input mesh from which to get the data
-     */
-    void setVertexQuadIndexBuffer(const MeshType& mesh)
+    void setVertexSelectionBuffer(const MeshType& mesh) // override
     {
-        const uint totalIndices = mesh.vertexCount() * 6;
-
-        auto [buffer, releaseFn] =
-            Context::getAllocatedBufferAndReleaseFn<uint>(totalIndices);
-
-        Base::fillVertexQuadIndices(mesh, buffer);
-
-        mVertexQuadIndexBuffer.create(buffer, totalIndices, true, releaseFn);
-
-        // if number of vertices is not zero, the index buffer must be valid
-        assert(mVertexQuadIndexBuffer.isValid() || totalIndices == 0);
+        mSelection.setVertexSelectionFromMesh(mesh);
     }
 
     void setVertexNormalsBuffer(const MeshType& mesh) // override
@@ -406,15 +411,14 @@ private:
 
         Base::fillVertexNormals(mesh, buffer);
 
-        mVertexNormalsBuffer.createForCompute(
+        mVertexNormalsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Normal,
             3,
             PrimitiveType::FLOAT,
-            false,
-            bgfx::Access::Read,
             releaseFn);
+        mPoints.setVertexNormals(nv, mVertexNormalsBuffer);
     }
 
     void setVertexColorsBuffer(const MeshType& mesh) // override
@@ -426,15 +430,15 @@ private:
 
         Base::fillVertexColors(mesh, buffer, Color::Format::ABGR);
 
-        mVertexColorsBuffer.createForCompute(
+        mVertexColorsBuffer.create(
             buffer,
             nv,
             bgfx::Attrib::Color0,
             4,
             PrimitiveType::UCHAR,
             true,
-            bgfx::Access::Read,
             releaseFn);
+        mPoints.setVertexColors(nv, mVertexColorsBuffer);
     }
 
     void setVertexTexCoordsBuffer(const MeshType& mesh) // override
@@ -452,7 +456,6 @@ private:
             bgfx::Attrib::TexCoord0,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -471,7 +474,6 @@ private:
             bgfx::Attrib::Tangent,
             4,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -490,7 +492,6 @@ private:
             bgfx::Attrib::TexCoord1,
             2,
             PrimitiveType::FLOAT,
-            false,
             releaseFn);
     }
 
@@ -508,7 +509,19 @@ private:
         // pre-triangulation estimate for meshes with degenerate faces.
         nt = Base::numTris();
 
-        mTriangleIndexBuffer.create(buffer, nt * 3, true, releaseFn);
+        mTriangleIndexBuffer.create(buffer, nt * 3, releaseFn);
+
+        // Build polygon mapping buffers for polygon-level face selection.
+        // fillTriangleIndices() above has already populated
+        // Base::triPolyIndexMap().
+        if (Context::instance().supportsCompute() && nt > 0) {
+            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
+        }
+    }
+
+    void setTriangleSelectionBuffer(const MeshType& mesh) // override
+    {
+        mSelection.setFaceSelectionFromMesh(mesh, Base::triPolyIndexMap());
     }
 
     void setTriangleNormalsBuffer(const MeshType& mesh) // override
@@ -520,11 +533,12 @@ private:
 
         Base::fillTriangleNormals(mesh, buffer);
 
-        mTriangleNormalBuffer.createForCompute(
+        mTriangleNormalBuffer.create(
             buffer,
-            nt * 3,
+            nt,
+            bgfx::Attrib::Normal,
+            3,
             PrimitiveType::FLOAT,
-            bgfx::Access::Read,
             releaseFn);
     }
 
@@ -537,8 +551,14 @@ private:
 
         Base::fillTriangleColors(mesh, buffer, Color::Format::ABGR);
 
-        mTriangleColorBuffer.createForCompute(
-            buffer, nt, PrimitiveType::UINT, bgfx::Access::Read, releaseFn);
+        mTriangleColorBuffer.create(
+            buffer,
+            nt,
+            bgfx::Attrib::Color0,
+            4,
+            PrimitiveType::UCHAR,
+            true,
+            releaseFn);
     }
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
@@ -793,6 +813,30 @@ private:
         mWireframeLines.depthOffset() = 0.0001f;
 
         // otherwise, already computed buffers should do the job
+    }
+
+    /**
+     * @brief Updates the internal buffer references in the given Points object.
+     *
+     * This must be called after a swap to update the internal buffer references
+     * in Points. OwnedOrRefBuffer stores a pointer to the VertexBuffer object,
+     * so after swapping MeshRenderBuffers, the pointers in Points would still
+     * point to the other MeshRenderBuffers's members. We must unconditionally
+     * update them, even if they are invalid, to ensure they point to the
+     * correct memory addresses within this object.
+     *
+     * @param[in] mrb: The mesh render buffers object to read vertices from.
+     * @param[in,out] points: The points primitive object to update.
+     */
+    static void updatePointsVertexBuffers(
+        const MeshRenderBuffers<MeshType>& mrb,
+        Points&                            points)
+    {
+        uint nv = mrb.numVerts();
+        points.setVertices(nv, mrb.mVertexPositionsBuffer);
+        points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
+        points.setVertexColors(nv, mrb.mVertexColorsBuffer);
+        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 
     static void createTextureSamplerUniforms()

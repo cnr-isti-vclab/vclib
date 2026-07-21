@@ -10,7 +10,6 @@ The library is divided in several modules, each one with a specific purpose:
     - **IO**: the `Core` module contains an inner module for input/output operations (loading from and saving to files) that can use 3rd party libraries. It can be configured in order to avoid 3rd party libraries and be used in header-only mode.
   - [Render](pages/2_render.md): contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
-  - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black box actions.
   - **Bindings**: contains the python bindings of the library.
 
 You can refer to the User Guide documentation to learn how to install and use the library.
@@ -18,3 +17,6 @@ You can refer to the User Guide documentation to learn how to install and use th
 The library is developed by the [Visual Computing Lab](https://vcg.isti.cnr.it) of the [ISTI Institute](https://www.isti.cnr.it) of the [National Research Council of Italy](https://www.cnr.it).
 
 The library is under the [MPL2 license](https://github.com/cnr-isti-vclab/vclib/blob/main/LICENSE).
+
+> [!WARNING]
+> **License Disclaimer:** Please note that when using the `External` module or the `IO` module of `Core`, you are also accepting the licenses of the external third-party libraries they depend on, which may differ from the MPL2 license.
