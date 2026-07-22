@@ -17,7 +17,6 @@ template<typename T>
 concept DrawableObjectConcept =
     requires (T&& obj, uint u, DrawObjectSettings s) {
         { obj.boundingBox() } -> Box3Concept;
-        obj.clone();
         { obj.isVisible() } -> std::same_as<bool>;
         { obj.name() } -> std::convertible_to<std::string>;
         { obj.info() } -> std::convertible_to<std::string>;

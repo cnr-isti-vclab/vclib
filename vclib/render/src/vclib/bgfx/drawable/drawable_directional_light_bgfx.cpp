@@ -118,16 +118,6 @@ Box3d DrawableDirectionalLightBGFX::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableDirectionalLightBGFX::clone() const&
-{
-    return std::make_shared<DrawableDirectionalLightBGFX>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableDirectionalLightBGFX::clone() &&
-{
-    return std::make_shared<DrawableDirectionalLightBGFX>(std::move(*this));
-}
-
 void DrawableDirectionalLightBGFX::createVertexBuffer()
 {
     mVertexPosBuffer.create(

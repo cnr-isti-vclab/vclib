@@ -151,29 +151,11 @@ public:
      * `drawableObjectVector()`, you are responsible for calling `init()` on new
      * elements and `refreshEditors()`.
      */
-    uint pushDrawableObject(const DrawableObject& obj)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject>
+    uint pushDrawableObject(U&& obj)
     {
-        mDrawList->pushBack(obj);
-        mDrawList->back()->init();
-        refreshEditors();
-        return mDrawList->size() - 1;
-    }
-
-    /**
-     * @brief Helper function to add a DrawableObject to the scene.
-     *
-     * In addition to pushing the object to the underlying vector, this helper
-     * safely calls `init()` on the newly added object (required to initialize
-     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
-     * components.
-     *
-     * If you choose to manually manipulate the vector via
-     * `drawableObjectVector()`, you are responsible for calling `init()` on new
-     * elements and `refreshEditors()`.
-     */
-    uint pushDrawableObject(DrawableObject&& obj)
-    {
-        mDrawList->pushBack(std::move(obj));
+        mDrawList->pushBack(std::forward<U>(obj));
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
@@ -212,27 +194,13 @@ public:
      * Safely calls `init()` on the newly added object and calls
      * `refreshEditors()`.
      */
-    bool insertDrawableObject(uint pos, const DrawableObject& obj)
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject>
+    bool insertDrawableObject(uint pos, U&& obj)
     {
         if (pos > mDrawList->size())
             return false;
-        mDrawList->insert(pos, obj);
-        mDrawList->at(pos)->init();
-        refreshEditors();
-        return true;
-    }
-
-    /**
-     * @brief Helper function to insert a DrawableObject at a specific position.
-     *
-     * Safely calls `init()` on the newly added object and calls
-     * `refreshEditors()`.
-     */
-    bool insertDrawableObject(uint pos, DrawableObject&& obj)
-    {
-        if (pos > mDrawList->size())
-            return false;
-        mDrawList->insert(pos, std::move(obj));
+        mDrawList->insert(pos, std::forward<U>(obj));
         mDrawList->at(pos)->init();
         refreshEditors();
         return true;

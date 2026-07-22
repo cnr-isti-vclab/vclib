@@ -168,16 +168,6 @@ Box3d DrawableTrackBallBGFX::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() const&
-{
-    return std::make_shared<DrawableTrackBallBGFX>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() &&
-{
-    return std::make_shared<DrawableTrackBallBGFX>(std::move(*this));
-}
-
 bool DrawableTrackBallBGFX::isVisible() const
 {
     return mVisible;

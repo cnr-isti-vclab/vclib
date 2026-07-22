@@ -88,16 +88,6 @@ Box3d DrawableDirectionalLightOpenGL2::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableDirectionalLightOpenGL2::clone() const&
-{
-    return std::make_shared<DrawableDirectionalLightOpenGL2>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableDirectionalLightOpenGL2::clone() &&
-{
-    return std::make_shared<DrawableDirectionalLightOpenGL2>(std::move(*this));
-}
-
 bool DrawableDirectionalLightOpenGL2::isVisible() const
 {
     return mVisible;

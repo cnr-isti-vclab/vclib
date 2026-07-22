@@ -142,16 +142,6 @@ Box3d DrawableTrackBallOpenGL2::boundingBox() const
     return Box3d();
 }
 
-std::shared_ptr<DrawableObject> DrawableTrackBallOpenGL2::clone() const&
-{
-    return std::make_shared<DrawableTrackBallOpenGL2>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallOpenGL2::clone() &&
-{
-    return std::make_shared<DrawableTrackBallOpenGL2>(std::move(*this));
-}
-
 bool DrawableTrackBallOpenGL2::isVisible() const
 {
     return mVisible;
