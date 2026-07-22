@@ -73,8 +73,6 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     int                                    type,
     bool                                   normalized = false)
 {
-    // TODO check if component type and type are valid values
-
     model.accessors.emplace_back();
     tinygltf::Accessor& accessor = model.accessors.back();
     uint                index    = model.accessors.size() - 1;
@@ -98,8 +96,6 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     int             texCoordAccessorIndex,
     int             mode)
 {
-    // TODO check if mode is a valid value
-
     mesh.primitives.emplace_back();
     tinygltf::Primitive& primitive   = mesh.primitives.back();
     uint                 index       = mesh.primitives.size() - 1;
@@ -112,27 +108,18 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     if (normAccessorIndex >= 0)
         primitive.attributes["NORMAL"] = normAccessorIndex;
 
-    //TODO Implement multiple textures (TEXCOORD_1, TEXCOORD_2, etc...)
+    // if multiple textures per render pass become supported
+    // multiple TEXCOORD must be set (TEXCOORD_1, etc...)
     if (texCoordAccessorIndex >= 0)
         primitive.attributes["TEXCOORD_0"] = texCoordAccessorIndex;
 
     return {index, primitive};
 }
 
-// NOTES:
-// every material has a path, but not every path has an image.
-// Check if the image is present, if not, the image must be loaded
-// from the mesh base path.
-// core\include\vclib\mesh\components\materials.h has most of the
-// functions needed to retrieve the loaded images.
-// In there, the struct MData has the needed data structures
-
 inline uint addGltfSampler(
     tinygltf::Model&         model,
     const TextureDescriptor& textureDescriptor)
 {
-    //TODO set name?
-
     model.samplers.emplace_back();
     tinygltf::Sampler& sampler = model.samplers.back();
     uint               index    = model.samplers.size() - 1;
@@ -149,9 +136,6 @@ inline uint addGltfImage(
     const Image&     image,
     std::string      path)
 {
-    //TODO check if image is null?
-    //TODO set name?
-
     model.images.emplace_back();
     tinygltf::Image& tImage = model.images.back();
     uint             index  = model.images.size() - 1;
@@ -162,7 +146,6 @@ inline uint addGltfImage(
     tImage.pixel_type = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
     tImage.image.assign(image.data(), image.data() + image.sizeInBytes());
     tImage.uri        = path;
-    //tImage.as_is = true; //TODO needed?
 
     return index;
 }
@@ -174,6 +157,12 @@ inline uint addGltfTexture(
     const TextureDescriptor&                                textureDescriptor,
     std::unordered_map<std::string, std::pair<uint, uint>>& addedImages)
 {
+    if (textureDescriptor.isNull() || mesh.textureImage(textureDescriptor.path()).isNull()) {
+        log.log("Cannot save empty texture: " + textureDescriptor.path(), LogType::WARNING_LOG);
+
+        return std::numeric_limits<uint>::max();
+    }
+
     model.textures.emplace_back();
     tinygltf::Texture& texture = model.textures.back();
     uint               index   = model.textures.size() - 1;
@@ -398,7 +387,7 @@ void addMeshToTinygltfModel(
             fd = reinterpret_cast<float*>(texCoordBuf.second.data.data());
             vertexTexCoordsToBuffer(m, fd);
 
-            // Flips V coords
+            // flip V coords
             for (unsigned int i = 1; i < m.vertexCount() * 2; i += 2)
                 fd[i] = 1 - fd[i];
 
