@@ -17,6 +17,15 @@
 
 namespace vcl {
 
+namespace detail {
+struct DummyDrawableObject : public vcl::DrawableObject {
+    void draw(const vcl::DrawObjectSettings&) override {}
+    vcl::Box3d boundingBox() const override { return {}; }
+    bool isVisible() const override { return false; }
+    void setVisibility(bool) override {}
+};
+}
+
 /**
  * @brief Concept that verifies if a class provides the standard viewer
  * interface.
@@ -33,7 +42,7 @@ template<typename T>
 concept ViewerConcept = requires (
     T&&                                        obj,
     std::shared_ptr<vcl::DrawableObjectVector> vec,
-    vcl::DrawableObject&&                      drawableObj) {
+    detail::DummyDrawableObject&&              concreteDrawableObj) {
     typename RemoveRef<T>::ViewerType;
     typename RemoveRef<T>::EditorType;
 
@@ -52,7 +61,7 @@ concept ViewerConcept = requires (
         { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
 
         {
-            obj.pushDrawableObject(std::move(drawableObj))
+            obj.pushDrawableObject(std::move(concreteDrawableObj))
         } -> std::same_as<uint>;
 
         {

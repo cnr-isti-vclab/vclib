@@ -5,22 +5,23 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
-#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#ifndef VCL_BGFX_GIZMOS_UNIFORMS_DIRECTIONAL_LIGHT_GIZMO_UNIFORMS_H
+#define VCL_BGFX_GIZMOS_UNIFORMS_DIRECTIONAL_LIGHT_GIZMO_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
-#include <vclib/space/core/color.h>
+
+#include <vclib/space/core.h>
 
 namespace vcl {
 
-class DrawableDirectionalLightUniforms
+class DirectionalLightGizmoUniforms
 {
     inline static std::array<float, 4> sLightColor = {1.0, 1.0, 0.0, 1.0};
 
     inline static Uniform sLightColorUniform;
 
 public:
-    DrawableDirectionalLightUniforms() = delete;
+    DirectionalLightGizmoUniforms() = delete;
 
     static void setColor(const vcl::Color& color)
     {
@@ -43,4 +44,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_H
+#endif // VCL_BGFX_GIZMOS_UNIFORMS_DIRECTIONAL_LIGHT_GIZMO_UNIFORMS_H

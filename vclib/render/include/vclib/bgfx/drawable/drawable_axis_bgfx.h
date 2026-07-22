@@ -143,30 +143,6 @@ public:
 
     /**
      * @brief Creates a deep copy of this DrawableAxis.
-     *
-     * @return A shared pointer to a new DrawableAxis that is a copy of this
-     * one.
-     *
-     * @see DrawableObject::clone()
-     */
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableAxisBGFX>(*this);
-    }
-
-    /**
-     * @brief Creates a new DrawableAxis by moving this one.
-     *
-     * @return A shared pointer to a new DrawableAxis moved from this one.
-     *
-     * @see DrawableObject::clone()
-     */
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableAxisBGFX>(std::move(*this));
-    }
-
-    /**
      * @brief Checks whether the axis indicator is currently visible.
      *
      * @return `true` if the axis will be drawn, `false` otherwise.
