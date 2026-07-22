@@ -150,15 +150,23 @@ inline uint addGltfImage(
     return index;
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 inline uint addGltfTexture(
     tinygltf::Model&                                        model,
     const MeshType&                                         mesh,
     const TextureDescriptor&                                textureDescriptor,
-    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages)
+    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages,
+    bool                                                    saveTextureImages,
+    LogType&                                                log               = nullLogger)
 {
-    if (textureDescriptor.isNull() || mesh.textureImage(textureDescriptor.path()).isNull()) {
+    if (textureDescriptor.isNull()) {
         log.log("Cannot save empty texture: " + textureDescriptor.path(), LogType::WARNING_LOG);
+
+        return std::numeric_limits<uint>::max();
+    }
+
+    if (saveTextureImages && mesh.textureImage(textureDescriptor.path()).isNull()) {
+        log.log("Cannot save empty image: " + textureDescriptor.path(), LogType::WARNING_LOG);
 
         return std::numeric_limits<uint>::max();
     }
@@ -167,6 +175,9 @@ inline uint addGltfTexture(
     tinygltf::Texture& texture = model.textures.back();
     uint               index   = model.textures.size() - 1;
     uint imageId = -1, samplerId = -1;
+
+    if (!saveTextureImages)
+        return index;
 
     if (!addedImages.contains(textureDescriptor.path())) {
         imageId = addGltfImage(model, mesh.textureImage(textureDescriptor.path()), textureDescriptor.path());
@@ -180,13 +191,15 @@ inline uint addGltfTexture(
     return index;
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     tinygltf::Model&                                        model,
     const MeshType&                                         mesh,
     const Material&                                         material,
     std::unordered_map<std::string, uint>&                  addedTextures,
-    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages)
+    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages,
+    bool                                                    saveTextureImages,
+    LogType&                                                log               = nullLogger)
 {   
     model.materials.emplace_back();
     tinygltf::Material& tMaterial = model.materials.back();
@@ -204,7 +217,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     // baseColorTexture
     if (!material.baseColorTextureDescriptor().isNull()) {
         if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
-            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages);
+            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages, saveTextureImages, log);
             addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
         }
 
@@ -224,7 +237,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto metallicRoughnessTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::METALLIC_ROUGHNESS));
     if (!metallicRoughnessTextureDescriptor.isNull()) {
         if (!addedTextures.contains(metallicRoughnessTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages);
+            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages, saveTextureImages, log);
             addedTextures[metallicRoughnessTextureDescriptor.path()] = textureId;
         }
 
@@ -242,7 +255,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto emissiveTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::EMISSIVE));
     if (!emissiveTextureDescriptor.isNull()) {
         if (!addedTextures.contains(emissiveTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages);
+            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages, saveTextureImages, log);
             addedTextures[emissiveTextureDescriptor.path()] = textureId;
         }
 
@@ -254,7 +267,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto normalTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::NORMAL));
     if (!normalTextureDescriptor.isNull()) {
         if (!addedTextures.contains(normalTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages);
+            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages, saveTextureImages, log);
             addedTextures[normalTextureDescriptor.path()] = textureId;
         }
 
@@ -267,7 +280,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto occlusionTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::OCCLUSION));
     if (!occlusionTextureDescriptor.isNull()) {
         if (!addedTextures.contains(occlusionTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages);
+            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages, saveTextureImages, log);
             addedTextures[occlusionTextureDescriptor.path()] = textureId;
         }
 
@@ -302,11 +315,13 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     return {index, tMaterial};
 }
 
-template<MeshConcept MeshType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void addMeshToTinygltfModel(
     const MeshType&  m,
     tinygltf::Model& tModel,
-    MeshInfo         meshInfo)
+    MeshInfo         meshInfo,
+    bool             saveTextureImages,
+    LogType&         log               = nullLogger)
 {
     // mesh
     tModel.meshes.emplace_back();
@@ -401,6 +416,7 @@ void addMeshToTinygltfModel(
             texCoordAccI = texCoordAccessor.first;
         }
     }
+    //TODO add per vertex tangent
 
     // primitives
 
@@ -506,7 +522,7 @@ void addMeshToTinygltfModel(
 
                     // the material is added to the model if not already present
                     if (!modelMaterialIndices.contains(materialIndex)) {
-                        auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages);
+                        auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages, saveTextureImages, log);
                         modelMaterialIndices[materialIndex] = material.first;
                     }
 
@@ -633,22 +649,21 @@ void saveGltf(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    detail::addMeshToTinygltfModel(m, model, meshInfo);
-
-    // TODO settings.saveTextureImages
-
-    // TODO settings to add
-    // embedImages: bool
-    // embedBuffers: bool
+    detail::addMeshToTinygltfModel(
+        m,
+        model,
+        meshInfo,
+        settings.embedBuffers || settings.saveTextureImages, // saveTextureImages
+        log);
 
     tinygltf::TinyGLTF gltf;
-    bool               success = gltf.WriteGltfSceneToFile(
+    bool success = gltf.WriteGltfSceneToFile(
         &model,
         filename,
-        true,             // embedImages
-        true,             // embedBuffers
-        true,             // pretty print
-        settings.binary); // write binary
+        settings.embedBuffers, // embedImages
+        settings.embedBuffers, // embedBuffers
+        true,                  // pretty print
+        settings.binary);      // write binary
 
     if (!success)
         throw std::runtime_error(
@@ -680,23 +695,22 @@ void saveGltf(
         if (!settings.info.isEmpty())
             meshInfo = settings.info.intersect(meshInfo);
 
-        detail::addMeshToTinygltfModel(mesh, model, meshInfo);
+        detail::addMeshToTinygltfModel(
+            mesh,
+            model,
+            meshInfo,
+            settings.embedBuffers || settings.saveTextureImages, // saveTextureImages
+            log);
     }
 
-    // TODO settings.saveTextureImages
-
-    // TODO settings to add
-    // embedImages: bool
-    // embedBuffers: bool
-
     tinygltf::TinyGLTF gltf;
-    bool               success = gltf.WriteGltfSceneToFile(
+    bool success = gltf.WriteGltfSceneToFile(
         &model,
         filename,
-        true,             // embedImages
-        true,             // embedBuffers
-        true,             // pretty print
-        settings.binary); // write binary
+        settings.embedBuffers, // embedImages
+        settings.embedBuffers, // embedBuffers
+        true,                  // pretty print
+        settings.binary);      // write binary
 
     if (!success)
         throw std::runtime_error(
