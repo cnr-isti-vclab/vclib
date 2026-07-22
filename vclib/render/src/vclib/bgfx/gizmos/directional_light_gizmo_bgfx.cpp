@@ -5,15 +5,15 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/drawable_directional_light_bgfx.h>
+#include <vclib/bgfx/gizmos/directional_light_gizmo_bgfx.h>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_directional_light_uniforms.h>
+#include <vclib/bgfx/gizmos/uniforms/directional_light_gizmo_uniforms.h>
 
 #include <vclib/algorithms/core.h>
 
 namespace vcl {
 
-DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX()
+DirectionalLightGizmoBGFX::DirectionalLightGizmoBGFX()
 {
     // create a vertex buffer that will contain the endpoints of the lines that
     // describe the light
@@ -44,7 +44,7 @@ DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX()
     createVertexBuffer();
 }
 
-void DrawableDirectionalLightBGFX::swap(DrawableDirectionalLightBGFX& other)
+void DirectionalLightGizmoBGFX::swap(DirectionalLightGizmoBGFX& other)
 {
     using std::swap;
     swap(mVisible, other.mVisible);
@@ -54,17 +54,17 @@ void DrawableDirectionalLightBGFX::swap(DrawableDirectionalLightBGFX& other)
     swap(mVertexPosBuffer, other.mVertexPosBuffer);
 }
 
-void DrawableDirectionalLightBGFX::updateRotation(const Matrix44f& rot)
+void DirectionalLightGizmoBGFX::updateRotation(const Matrix44f& rot)
 {
     mTransform = rot;
 }
 
-void DrawableDirectionalLightBGFX::setLinesColor(const Color& c)
+void DirectionalLightGizmoBGFX::setLinesColor(const Color& c)
 {
     mColor = c;
 }
 
-void DrawableDirectionalLightBGFX::draw(const DrawObjectSettings& settings)
+void DirectionalLightGizmoBGFX::draw(uint viewId)
 {
     using enum VertFragProgram;
 
@@ -77,22 +77,17 @@ void DrawableDirectionalLightBGFX::draw(const DrawObjectSettings& settings)
 
         bgfx::setTransform(mTransform.data());
 
-        DrawableDirectionalLightUniforms::setColor(mColor);
-        DrawableDirectionalLightUniforms::bind();
+        DirectionalLightGizmoUniforms::setColor(mColor);
+        DirectionalLightGizmoUniforms::bind();
 
         mVertexPosBuffer.bind(0);
 
         bgfx::submit(
-            settings.viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
+            viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
     }
 }
 
-Box3d DrawableDirectionalLightBGFX::boundingBox() const
-{
-    return Box3d();
-}
-
-void DrawableDirectionalLightBGFX::createVertexBuffer()
+void DirectionalLightGizmoBGFX::createVertexBuffer()
 {
     mVertexPosBuffer.create(
         mVertices.data(),

@@ -5,22 +5,23 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
-#define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
+#ifndef VCL_BGFX_GIZMOS_TRACKBALL_GIZMO_BGFX_H
+#define VCL_BGFX_GIZMOS_TRACKBALL_GIZMO_BGFX_H
+
+#include <vclib/bgfx/buffers.h>
+#include <vclib/render/gizmos/abstract_gizmo.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/bgfx/buffers.h>
-#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
 /**
- * @brief The DrawableTrackBallBGFX class is a drawable object that
+ * @brief The TrackballGizmoBGFX class is a visual gizmo that
  * renders a trackball using the BGFX backend.
  *
  * It draws a 3D gizmo composed of three circles.
  */
-class DrawableTrackBallBGFX : public DrawableObject
+class TrackballGizmoBGFX : public AbstractGizmo
 {
     bool mVisible = true;
 
@@ -31,23 +32,23 @@ class DrawableTrackBallBGFX : public DrawableObject
     bool           mIsDragging = false;
 
 public:
-    DrawableTrackBallBGFX();
+    TrackballGizmoBGFX();
 
     // default move constructor - buffers can be moved
-    DrawableTrackBallBGFX(DrawableTrackBallBGFX&& other) = default;
+    TrackballGizmoBGFX(TrackballGizmoBGFX&& other) = default;
 
     // default destructor - buffers are destroyed by their destructor
-    ~DrawableTrackBallBGFX() = default;
+    ~TrackballGizmoBGFX() = default;
 
     /**
-     * @brief Swap the content of this object with another DrawableTrackBallBGFX
+     * @brief Swap the content of this object with another TrackballGizmoBGFX
      * object.
      *
-     * @param[in] other: the other DrawableTrackBallBGFX object.
+     * @param[in] other: the other TrackballGizmoBGFX object.
      */
-    void swap(DrawableTrackBallBGFX& other);
+    void swap(TrackballGizmoBGFX& other);
 
-    friend void swap(DrawableTrackBallBGFX& a, DrawableTrackBallBGFX& b)
+    friend void swap(TrackballGizmoBGFX& a, TrackballGizmoBGFX& b)
     {
         a.swap(b);
     }
@@ -61,11 +62,11 @@ public:
 
     void setTransform(const vcl::Matrix44f& mtx);
 
-    // DrawableObject interface
+    // AbstractGizmo interface
 
-    void draw(const DrawObjectSettings& settings) override;
+    void init() override;
 
-    Box3d boundingBox() const override;
+    void draw(uint viewId = 0) override;
 
     bool isVisible() const override;
 
@@ -77,4 +78,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_BGFX_H
+#endif // VCL_BGFX_GIZMOS_TRACKBALL_GIZMO_BGFX_H

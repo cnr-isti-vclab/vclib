@@ -5,22 +5,23 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_OPENGL2_H
-#define VCL_OPENGL2_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_OPENGL2_H
+#ifndef VCL_OPENGL2_GIZMOS_DIRECTIONAL_LIGHT_GIZMO_OPENGL2_H
+#define VCL_OPENGL2_GIZMOS_DIRECTIONAL_LIGHT_GIZMO_OPENGL2_H
 
-#include <vclib/render/drawable/drawable_object.h>
+#include <vclib/render/gizmos/abstract_gizmo.h>
 #include <vclib/render/viewer/lights/directional_light.h>
-#include <vclib/space/core/matrix.h>
+
+#include <vclib/space/core.h>
 
 namespace vcl {
 
 /**
- * @brief The DrawableDirectionalLightOpenGL2 class is a drawable object that
+ * @brief The DirectionalLightGizmoOpenGL2 class is a visual gizmo that
  * renders a directional light using the OpenGL2 backend.
  *
  * It draws a set of lines representing the light rays.
  */
-class DrawableDirectionalLightOpenGL2 : public DrawableObject
+class DirectionalLightGizmoOpenGL2 : public AbstractGizmo
 {
     bool mVisible = false;
 
@@ -30,7 +31,7 @@ class DrawableDirectionalLightOpenGL2 : public DrawableObject
     vcl::Color         mColor = vcl::Color::Yellow;
 
 public:
-    DrawableDirectionalLightOpenGL2();
+    DirectionalLightGizmoOpenGL2();
 
     void updateRotation(const vcl::Matrix44f& rot);
 
@@ -38,10 +39,10 @@ public:
 
     void setLinesColor(const vcl::Color& c);
 
-    // DrawableObject interface
-    void draw(const DrawObjectSettings& settings) override;
+    // AbstractGizmo interface
+    void init() override {}
 
-    Box3d boundingBox() const override;
+    void draw(uint viewId = 0) override;
 
     bool isVisible() const override;
 
@@ -50,4 +51,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_OPENGL2_H
+#endif // VCL_OPENGL2_GIZMOS_DIRECTIONAL_LIGHT_GIZMO_OPENGL2_H
