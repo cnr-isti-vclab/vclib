@@ -152,7 +152,8 @@ public:
      * elements and `refreshEditors()`.
      */
     template<typename U>
-    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject> &&
+             (!std::is_abstract_v<std::remove_cvref_t<U>>)
     uint pushDrawableObject(U&& obj)
     {
         mDrawList->pushBack(std::forward<U>(obj));
@@ -195,7 +196,8 @@ public:
      * `refreshEditors()`.
      */
     template<typename U>
-    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject> &&
+             (!std::is_abstract_v<std::remove_cvref_t<U>>)
     bool insertDrawableObject(uint pos, U&& obj)
     {
         if (pos > mDrawList->size())

@@ -21,6 +21,8 @@ namespace vcl {
  * scene, but do not represent physical geometry of the model.
  * Consequently, they do not provide bounding boxes and are not usually part
  * of the core object vectors.
+ *
+ * @ingroup render_gizmos
  */
 class AbstractGizmo
 {
@@ -34,17 +36,19 @@ public:
 
     /**
      * @brief Draws the gizmo.
-     * @param viewId The ID of the view/pass to draw into (mainly for BGFX).
+     * @param[in] viewId The ID of the view/pass to draw into (mainly for BGFX).
      */
     virtual void draw(uint viewId = 0) = 0;
 
     /**
      * @brief Checks if the gizmo is currently visible.
+     * @return `true` if the gizmo is visible, `false` otherwise.
      */
     virtual bool isVisible() const = 0;
 
     /**
      * @brief Sets the visibility of the gizmo.
+     * @param[in] v The new visibility state.
      */
     virtual void setVisibility(bool v) = 0;
 };
