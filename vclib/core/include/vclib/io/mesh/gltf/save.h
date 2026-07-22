@@ -94,6 +94,7 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     int             colAccessorIndex,
     int             normAccessorIndex,
     int             texCoordAccessorIndex,
+    int             tangentAccessorIndex,
     int             mode)
 {
     mesh.primitives.emplace_back();
@@ -107,6 +108,9 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
 
     if (normAccessorIndex >= 0)
         primitive.attributes["NORMAL"] = normAccessorIndex;
+
+    if (tangentAccessorIndex >= 0)
+        primitive.attributes["TANGENT"] = tangentAccessorIndex;
 
     // if multiple textures per render pass become supported
     // multiple TEXCOORD must be set (TEXCOORD_1, etc...)
@@ -329,7 +333,11 @@ void addMeshToTinygltfModel(
     uint            meshI = tModel.meshes.size() - 1;
 
     // vertices
-    int posAccI = -1, colAccI = -1, normAccI = -1, texCoordAccI = -1;
+    int posAccI = -1;
+    int colAccI = -1;
+    int normAccI = -1;
+    int texCoordAccI = -1;
+    int tangentAccI = -1;
 
     // vertices position buffer, buffer view and accessor
     auto   posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
@@ -416,7 +424,23 @@ void addMeshToTinygltfModel(
             texCoordAccI = texCoordAccessor.first;
         }
     }
-    //TODO add per vertex tangent
+    if constexpr (HasPerVertexTangent<MeshType>) {
+        if (meshInfo.hasPerVertexTangent()) {
+            auto tangentBuf =
+                addGltfBuffer(tModel, 4 * m.vertexCount() * sizeof(float));
+            fd = reinterpret_cast<float*>(tangentBuf.second.data.data());
+            vertexTangentsToBuffer(m, fd, true);
+
+            auto tangentBufView  = addGltfBufferView(tModel, tangentBuf);
+            auto tangentAccessor = addGltfAccessor(
+                tModel,
+                tangentBufView,
+                TINYGLTF_COMPONENT_TYPE_FLOAT,
+                TINYGLTF_TYPE_VEC4);
+
+            tangentAccI = tangentAccessor.first;
+        }
+    }
 
     // primitives
 
@@ -514,7 +538,7 @@ void addMeshToTinygltfModel(
                             TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
                             TINYGLTF_TYPE_SCALAR);
                         auto primitive = addGltfPrimitive(
-                            mesh, posAccI, colAccI, normAccI, texCoordAccI, TINYGLTF_MODE_TRIANGLES);
+                            mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
 
                         primitive.second.indices = indAccessor.first;
                         primitive.second.material = modelMaterialIndex;
@@ -545,7 +569,7 @@ void addMeshToTinygltfModel(
                         TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
                         TINYGLTF_TYPE_SCALAR);
                     auto primitive = addGltfPrimitive(
-                        mesh, posAccI, colAccI, normAccI, texCoordAccI, TINYGLTF_MODE_TRIANGLES);
+                        mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
 
                     primitive.second.indices = indAccessor.first;
                     primitive.second.material = modelMaterialIndex;
@@ -553,7 +577,7 @@ void addMeshToTinygltfModel(
             }
             else {
                 auto primitive = addGltfPrimitive(
-                    mesh, posAccI, colAccI, normAccI, texCoordAccI, TINYGLTF_MODE_TRIANGLES);
+                    mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
 
                 // indices buffer, buffer view and accessor
                 auto indBuf = addGltfBuffer(
@@ -578,7 +602,7 @@ void addMeshToTinygltfModel(
     if constexpr (EdgeMeshConcept<MeshType>) {
         if (meshInfo.hasEdges() && m.edgeCount() > 0) {
             auto primitive = addGltfPrimitive(
-                mesh, posAccI, colAccI, normAccI, texCoordAccI, TINYGLTF_MODE_LINE);
+                mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_LINE);
 
             // indices buffer, buffer view and accessor
             auto indBuf =
@@ -602,7 +626,7 @@ void addMeshToTinygltfModel(
     // since no primitives were added, the mesh has neither faces nor edges
     if (mesh.primitives.size() == 0) {
         auto primitive = addGltfPrimitive(
-            mesh, posAccI, colAccI, normAccI, texCoordAccI, TINYGLTF_MODE_POINTS);
+            mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_POINTS);
     }
 
     // node
