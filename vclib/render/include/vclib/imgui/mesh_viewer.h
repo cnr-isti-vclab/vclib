@@ -9,6 +9,7 @@
 #define VCL_IMGUI_MESH_VIEWER_H
 
 #include <vclib/glfw/window_manager.h>
+#include <vclib/imgui/gui/editor_frame.h>
 #include <vclib/imgui/imgui_drawer.h>
 #include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #include <vclib/render/canvas.h>
@@ -16,7 +17,6 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/imgui/gui/editor_frame.h>
 
 namespace vcl::imgui {
 
@@ -151,7 +151,8 @@ public:
     {
         auto editor = mApp.template pushEditor<EditorT>(active);
 
-        using FrameType = typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        using FrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
         if constexpr (!std::is_same_v<FrameType, void>) {
             mApp.addEditorFrame(std::make_shared<FrameType>(editor));
         }

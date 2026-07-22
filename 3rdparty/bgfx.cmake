@@ -114,7 +114,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         INTERFACE bx bgfx bimg bimg_decode bimg_encode
     )
 
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_compile_options(bimg_decode PRIVATE -O1)
     endif()
 

@@ -22,8 +22,8 @@ namespace vcl {
 
 /**
  * @brief Type alias for the backend-specific DrawableAxis implementation.
- * 
- * Depending on the active rendering backend, this alias resolves to 
+ *
+ * Depending on the active rendering backend, this alias resolves to
  * `DrawableAxisBGFX` (for BGFX) or `DrawableAxisOpenGL2` (for OpenGL 2.0).
  * It represents an axis indicator (X=red, Y=green, Z=blue) in the 3D scene.
  */
@@ -33,14 +33,20 @@ using DrawableAxis = DrawableAxisBGFX;
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 // TODO: implement DrawableAxisOpenGL2
-class DrawableAxisOpenGL2 {
+class DrawableAxisOpenGL2
+{
     bool mVisible = false;
+
 public:
     DrawableAxisOpenGL2() = default;
+
     void draw(const auto&) {}
+
     bool isVisible() const { return mVisible; }
+
     void setVisibility(bool v) { mVisible = v; }
 };
+
 using DrawableAxis = DrawableAxisOpenGL2;
 #endif
 

@@ -10,15 +10,15 @@
 
 #include "imgui_helpers.h"
 
+#include <vclib/imgui/gui/editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/bounding_box_editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/selection_editor_frame.h>
 #include <vclib/render/concepts/viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/settings/render_mode.h>
-#include <vclib/imgui/gui/editor_frame.h>
-#include <vclib/imgui/gui/toolbar_frames/bounding_box_editor_frame.h>
-#include <vclib/imgui/gui/toolbar_frames/selection_editor_frame.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <imgui/imgui.h>
 
@@ -61,26 +61,31 @@ public:
             if (ImGui::BeginMainMenuBar()) {
                 if (ImGui::BeginMenu("Render")) {
                     if (ImGui::BeginMenu("Render Mode")) {
-                        bool classicChecked = (viewerSettings.renderMode == RenderMode::CLASSIC);
-                        if (ImGui::MenuItem("Classic", nullptr, &classicChecked)) {
+                        bool classicChecked =
+                            (viewerSettings.renderMode == RenderMode::CLASSIC);
+                        if (ImGui::MenuItem(
+                                "Classic", nullptr, &classicChecked)) {
                             viewerSettings.renderMode = RenderMode::CLASSIC;
                             Base::setViewerSettings(viewerSettings);
                         }
-                        bool pbrChecked = (viewerSettings.renderMode == RenderMode::PBR);
+                        bool pbrChecked =
+                            (viewerSettings.renderMode == RenderMode::PBR);
                         if (ImGui::MenuItem("PBR", nullptr, &pbrChecked)) {
                             viewerSettings.renderMode = RenderMode::PBR;
                             Base::setViewerSettings(viewerSettings);
                         }
                         ImGui::EndMenu();
                     }
-                    if (ImGui::MenuItem("Viewer Settings", nullptr, &mShowViewerSettings)) {
+                    if (ImGui::MenuItem(
+                            "Viewer Settings", nullptr, &mShowViewerSettings)) {
                         if (mShowViewerSettings) {
                             std::string panName = Base::panoramaFileName();
                             std::strncpy(
                                 mPanoramaPathBuffer,
                                 panName.c_str(),
                                 sizeof(mPanoramaPathBuffer) - 1);
-                            mPanoramaPathBuffer[sizeof(mPanoramaPathBuffer) - 1] = '\0';
+                            mPanoramaPathBuffer
+                                [sizeof(mPanoramaPathBuffer) - 1] = '\0';
                         }
                     }
                     ImGui::EndMenu();
@@ -104,13 +109,18 @@ public:
 
                     // tone mapping combo box
                     uint toneMapping = toUnderlying(viewerSettings.toneMapping);
-                    const auto* toneMappingNames = ViewerSettings::TONE_MAPPING_STRINGS;
-                    if (ImGui::BeginCombo("Tone mapping", toneMappingNames[toneMapping])) {
-                        const uint CNT = toUnderlying(ViewerSettings::ToneMapping::COUNT);
+                    const auto* toneMappingNames =
+                        ViewerSettings::TONE_MAPPING_STRINGS;
+                    if (ImGui::BeginCombo(
+                            "Tone mapping", toneMappingNames[toneMapping])) {
+                        const uint CNT =
+                            toUnderlying(ViewerSettings::ToneMapping::COUNT);
                         for (uint n = 0; n < CNT; n++) {
                             bool isSelected = toneMapping == n;
-                            if (ImGui::Selectable(toneMappingNames[n], isSelected)) {
-                                viewerSettings.toneMapping = static_cast<ViewerSettings::ToneMapping>(n);
+                            if (ImGui::Selectable(
+                                    toneMappingNames[n], isSelected)) {
+                                viewerSettings.toneMapping =
+                                    static_cast<ViewerSettings::ToneMapping>(n);
                             }
                             if (isSelected)
                                 ImGui::SetItemDefaultFocus();
@@ -133,14 +143,22 @@ public:
                     // image based lighting
                     ImGui::Checkbox(
                         "Image Based Lighting",
-                        [&]() { return viewerSettings.imageBasedLighting; },
-                        [&](bool ibl) { viewerSettings.imageBasedLighting = ibl; });
+                        [&]() {
+                            return viewerSettings.imageBasedLighting;
+                        },
+                        [&](bool ibl) {
+                            viewerSettings.imageBasedLighting = ibl;
+                        });
 
                     // draw background checkbox
                     ImGui::Checkbox(
                         "Render Background Panorama",
-                        [&]() { return viewerSettings.renderBackgroundPanorama; },
-                        [&](bool renderBg) { viewerSettings.renderBackgroundPanorama = renderBg; });
+                        [&]() {
+                            return viewerSettings.renderBackgroundPanorama;
+                        },
+                        [&](bool renderBg) {
+                            viewerSettings.renderBackgroundPanorama = renderBg;
+                        });
 
                     ImGui::EndDisabled();
 

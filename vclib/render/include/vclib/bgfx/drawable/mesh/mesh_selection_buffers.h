@@ -473,7 +473,8 @@ public:
             0,
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA8);
-        mFaceSelection.bind(VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(
+            VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
         mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
@@ -651,7 +652,10 @@ public:
 
     void bindSelectedVerticesBuffer() const { mVertexSelection.bind(4); }
 
-    void bindSelectedFacesBuffer() const { mFaceSelection.bind(VCL_MRB_PRIMITIVE_SELECTION_BUFFER); }
+    void bindSelectedFacesBuffer() const
+    {
+        mFaceSelection.bind(VCL_MRB_PRIMITIVE_SELECTION_BUFFER);
+    }
 
 private:
     /**

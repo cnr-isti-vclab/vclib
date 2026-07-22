@@ -85,8 +85,9 @@ private slots:
     }
 };
 
-template <typename ViewerType>
-struct EditorFrameTraits<vcl::SelectionEditor, ViewerType> {
+template<typename ViewerType>
+struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
+{
     using FrameType = SelectionEditorFrame<ViewerType>;
 };
 

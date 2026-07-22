@@ -200,8 +200,8 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const DrawableEnvironment* env = settings.environment;
 
-            bool iblEnabled = settings.imageBasedLighting &&
-                              env != nullptr && env->canDraw();
+            bool iblEnabled =
+                settings.imageBasedLighting && env != nullptr && env->canDraw();
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 // Bind textures before vertex buffers!!

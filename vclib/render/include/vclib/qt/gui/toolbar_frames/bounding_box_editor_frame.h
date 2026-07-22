@@ -58,8 +58,9 @@ private slots:
     }
 };
 
-template <typename ViewerType>
-struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType> {
+template<typename ViewerType>
+struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
+{
     using FrameType = BoundingBoxEditorFrame<ViewerType>;
 };
 

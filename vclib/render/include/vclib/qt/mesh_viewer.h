@@ -11,15 +11,15 @@
 #include "gui/drawable_object_vector_tree.h"
 #include "utils.h"
 
+#include <vclib/qt/gui/editor_frame_traits.h>
 #include <vclib/qt/gui/text_edit_logger.h>
+#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/qt/gui/editor_frame_traits.h>
-#include <vclib/qt/gui/toolbar_frames.h>
 
 #include <QMainWindow>
 
@@ -183,7 +183,9 @@ public:
             addEditorFrame(new FrameType(editor));
         }
 
-        if constexpr (std::is_same_v<EditorT<ViewerType>, vcl::MeshSelectorEditor<ViewerType>>) {
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::MeshSelectorEditor<ViewerType>>) {
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });

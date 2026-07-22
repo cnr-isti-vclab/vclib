@@ -97,10 +97,7 @@ public:
         fitScene();
     }
 
-    const ViewerSettings& viewerSettings() const
-    {
-        return mViewerSettings;
-    }
+    const ViewerSettings& viewerSettings() const { return mViewerSettings; }
 
     void setViewerSettings(const ViewerSettings& settings)
     {
@@ -114,10 +111,12 @@ public:
     void setPanorama(const std::string&) {}
 
     /**
-     * @brief Pushes a new editor of the specified type into the viewer's editor list.
-     * 
-     * The editor is instantiated and initialized with the viewer and drawable list.
-     * 
+     * @brief Pushes a new editor of the specified type into the viewer's editor
+     * list.
+     *
+     * The editor is instantiated and initialized with the viewer and drawable
+     * list.
+     *
      * @tparam ET The template type of the Editor to push.
      * @param[in] active Whether the editor should be active upon creation.
      * @return A shared pointer to the newly created editor.
@@ -270,14 +269,14 @@ public:
 
     /**
      * @brief Checks if the axis indicator is currently visible.
-     * 
+     *
      * @return true if the axis indicator is visible, false otherwise.
      */
     bool isAxisVisible() const { return mDrawAxis.isVisible(); }
 
     /**
      * @brief Toggles the visibility of the axis indicator.
-     * 
+     *
      * Flips the visibility state of the axis and requests a viewer update.
      */
     void toggleAxisVisibility()
@@ -288,10 +287,11 @@ public:
 
     /**
      * @brief Sets a custom callback for the axis visibility shortcut.
-     * 
-     * By default, pressing 'A' toggles the axis visibility. This method allows 
-     * replacing the default behaviour with custom logic (e.g. triggering UI buttons).
-     * 
+     *
+     * By default, pressing 'A' toggles the axis visibility. This method allows
+     * replacing the default behaviour with custom logic (e.g. triggering UI
+     * buttons).
+     *
      * @param[in] callback A callable invoked when the shortcut key is pressed.
      */
     void setShortcutToggleAxisCallback(std::function<void(void)> callback)

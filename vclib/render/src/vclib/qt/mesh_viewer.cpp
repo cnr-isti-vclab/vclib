@@ -90,8 +90,7 @@ MeshViewer::MeshViewer(QWidget* parent) :
     /** Editors **/
 
     // toolbar editors and frames
-    AxisFrame<ViewerType>* axisFrame =
-        new AxisFrame<ViewerType>(viewer());
+    AxisFrame<ViewerType>* axisFrame = new AxisFrame<ViewerType>(viewer());
     mUI->toolBar->addWidget(axisFrame);
 
     auto* trackballFrame = new TrackBallFrame(viewer());
@@ -152,14 +151,27 @@ MeshViewer::MeshViewer(QWidget* parent) :
     QActionGroup* renderModeGroup = new QActionGroup(this);
     renderModeGroup->addAction(mUI->actionClassic);
     renderModeGroup->addAction(mUI->actionPBR);
-    
-    connect(mUI->actionClassic, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
-    connect(mUI->actionPBR, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
+
+    connect(
+        mUI->actionClassic,
+        SIGNAL(triggered()),
+        this,
+        SLOT(renderModeChanged()));
+    connect(
+        mUI->actionPBR, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
 
     mViewerSettingsDockWidget->setVisible(false);
     mUI->actionViewer_Settings->setChecked(false);
-    connect(mUI->actionViewer_Settings, &QAction::toggled, mViewerSettingsDockWidget, &QDockWidget::setVisible);
-    connect(mViewerSettingsDockWidget, &QDockWidget::visibilityChanged, mUI->actionViewer_Settings, &QAction::setChecked);
+    connect(
+        mUI->actionViewer_Settings,
+        &QAction::toggled,
+        mViewerSettingsDockWidget,
+        &QDockWidget::setVisible);
+    connect(
+        mViewerSettingsDockWidget,
+        &QDockWidget::visibilityChanged,
+        mUI->actionViewer_Settings,
+        &QAction::setChecked);
 }
 
 void MeshViewer::addEditorFrame(QWidget* frame)
@@ -243,7 +255,8 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
     mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
-    } else if (settings.renderMode == RenderMode::PBR) {
+    }
+    else if (settings.renderMode == RenderMode::PBR) {
         mUI->actionPBR->setChecked(true);
     }
 }
@@ -441,7 +454,8 @@ void MeshViewer::renderModeChanged()
     auto sts = viewerSettings();
     if (mUI->actionClassic->isChecked()) {
         sts.renderMode = RenderMode::CLASSIC;
-    } else if (mUI->actionPBR->isChecked()) {
+    }
+    else if (mUI->actionPBR->isChecked()) {
         sts.renderMode = RenderMode::PBR;
     }
     setViewerSettings(sts);

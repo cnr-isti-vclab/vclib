@@ -12,25 +12,27 @@ namespace vcl::imgui {
 
 /**
  * @brief Base class for an ImGui editor frame.
- * 
+ *
  * An editor frame is responsible for drawing the UI elements associated with
  * a specific editor (e.g., buttons, popups) in the viewer's toolbar.
  */
-class EditorFrameImgui {
+class EditorFrameImgui
+{
 public:
-    virtual void draw() = 0;
+    virtual void draw()         = 0;
     virtual ~EditorFrameImgui() = default;
 };
 
 /**
  * @brief Traits struct to associate an Editor type with its ImGui Frame type.
- * 
+ *
  * Specializations of this struct should define `FrameType` as the class
- * that implements the UI frame for the specific editor. If no frame is 
+ * that implements the UI frame for the specific editor. If no frame is
  * associated, `FrameType` defaults to `void`.
  */
-template <template<typename> typename EditorT, typename ViewerType>
-struct EditorFrameTraits {
+template<template<typename> typename EditorT, typename ViewerType>
+struct EditorFrameTraits
+{
     using FrameType = void;
 };
 

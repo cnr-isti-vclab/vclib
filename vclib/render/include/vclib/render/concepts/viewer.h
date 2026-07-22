@@ -45,9 +45,7 @@ concept ViewerConcept = requires (
         std::as_const(obj).viewerSettings()
     } -> std::same_as<const vcl::ViewerSettings&>;
 
-    {
-        std::as_const(obj).panoramaFileName()
-    } -> std::same_as<std::string>;
+    { std::as_const(obj).panoramaFileName() } -> std::same_as<std::string>;
 
     // non const requirements
     requires IsConst<T> || requires {

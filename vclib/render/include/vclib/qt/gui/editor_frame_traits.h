@@ -8,20 +8,21 @@
 #ifndef VCL_QT_GUI_EDITOR_FRAME_TRAITS_H
 #define VCL_QT_GUI_EDITOR_FRAME_TRAITS_H
 
-#include <vclib/render/editors.h>
 #include <type_traits>
+#include <vclib/render/editors.h>
 
 namespace vcl::qt {
 
 /**
  * @brief Traits struct to associate an Editor type with its Qt Frame type.
- * 
- * Specializations of this struct should define `FrameType` as the QWidget 
- * subclass that implements the UI frame for the specific editor. If no frame 
+ *
+ * Specializations of this struct should define `FrameType` as the QWidget
+ * subclass that implements the UI frame for the specific editor. If no frame
  * is associated, `FrameType` defaults to `void`.
  */
-template <template<typename> typename EditorT, typename ViewerType>
-struct EditorFrameTraits {
+template<template<typename> typename EditorT, typename ViewerType>
+struct EditorFrameTraits
+{
     using FrameType = void;
 };
 
