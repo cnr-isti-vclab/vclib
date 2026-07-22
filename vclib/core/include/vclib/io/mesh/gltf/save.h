@@ -451,7 +451,7 @@ void addMeshToTinygltfModel(
 
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                 if (meshInfo.hasPerVertexMaterialIndex()) {
-                    // faces are sorted per material index and saved into and index buffer
+                    // faces are sorted per face material index and saved into and index buffer
                     // for each material chunk, a primitive is created with relative accessor
                     // and buffer view into the index buffer
                     // materials are saved into the model
@@ -459,13 +459,13 @@ void addMeshToTinygltfModel(
                     using FaceType = MeshType::FaceType;
 
                     // comparator of faces
-                    // ordering first by per-vertex material index (if available),
-                    // then by per-face material index (if available)
+                    // ordering first by per-face material index (if available),
+                    // then by per-face index
                     auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
-                        if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-                            if (isPerVertexMaterialIndexAvailable(m)) {
-                                uint id1 = f1.vertex(0)->materialIndex();
-                                uint id2 = f2.vertex(0)->materialIndex();
+                        if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                            if (isPerFaceMaterialIndexAvailable(m)) {
+                                uint id1 = f1.materialIndex();
+                                uint id2 = f2.materialIndex();
                                 if (id1 != id2) { // do not return true if equal
                                     return id1 < id2;
                                 }
