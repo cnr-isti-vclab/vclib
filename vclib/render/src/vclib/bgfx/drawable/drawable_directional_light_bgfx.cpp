@@ -44,32 +44,6 @@ DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX()
     createVertexBuffer();
 }
 
-DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX(
-    const DrawableDirectionalLightBGFX& other) :
-        DrawableObject(other), mVisible(other.mVisible),
-        mTransform(other.mTransform), mVertices(other.mVertices),
-        mColor(other.mColor)
-{
-    createVertexBuffer();
-}
-
-DrawableDirectionalLightBGFX::DrawableDirectionalLightBGFX(
-    DrawableDirectionalLightBGFX&& other)
-{
-    swap(other);
-}
-
-DrawableDirectionalLightBGFX::~DrawableDirectionalLightBGFX()
-{
-}
-
-DrawableDirectionalLightBGFX& DrawableDirectionalLightBGFX::operator=(
-    DrawableDirectionalLightBGFX other)
-{
-    swap(other);
-    return *this;
-}
-
 void DrawableDirectionalLightBGFX::swap(DrawableDirectionalLightBGFX& other)
 {
     using std::swap;

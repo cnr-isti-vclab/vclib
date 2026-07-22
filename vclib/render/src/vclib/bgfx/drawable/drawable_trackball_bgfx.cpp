@@ -98,15 +98,6 @@ DrawableTrackBallBGFX::DrawableTrackBallBGFX()
     createBuffers();
 }
 
-DrawableTrackBallBGFX::DrawableTrackBallBGFX(
-    const DrawableTrackBallBGFX& other) :
-        mVisible(other.mVisible), mTransform(other.mTransform)
-{
-    // copy all the members that can be copied, and then re-create the
-    // buffers
-    createBuffers();
-}
-
 void DrawableTrackBallBGFX::swap(DrawableTrackBallBGFX& other)
 {
     using std::swap;
@@ -130,13 +121,6 @@ void DrawableTrackBallBGFX::updateDragging(bool isDragging)
 void DrawableTrackBallBGFX::setTransform(const vcl::Matrix44f& mtx)
 {
     mTransform = mtx;
-}
-
-DrawableTrackBallBGFX& DrawableTrackBallBGFX::operator=(
-    DrawableTrackBallBGFX other)
-{
-    swap(other);
-    return *this;
 }
 
 void DrawableTrackBallBGFX::draw(const DrawObjectSettings& settings)

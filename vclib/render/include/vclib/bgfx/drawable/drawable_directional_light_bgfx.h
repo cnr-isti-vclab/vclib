@@ -39,13 +39,10 @@ class DrawableDirectionalLightBGFX : public DrawableObject
 public:
     DrawableDirectionalLightBGFX();
 
-    DrawableDirectionalLightBGFX(const DrawableDirectionalLightBGFX& other);
+    DrawableDirectionalLightBGFX(DrawableDirectionalLightBGFX&& other) =
+        default;
 
-    DrawableDirectionalLightBGFX(DrawableDirectionalLightBGFX&& other);
-
-    ~DrawableDirectionalLightBGFX();
-
-    DrawableDirectionalLightBGFX& operator=(DrawableDirectionalLightBGFX other);
+    ~DrawableDirectionalLightBGFX() = default;
 
     void swap(DrawableDirectionalLightBGFX& other);
 

@@ -33,8 +33,6 @@ class DrawableTrackBallBGFX : public DrawableObject
 public:
     DrawableTrackBallBGFX();
 
-    DrawableTrackBallBGFX(const DrawableTrackBallBGFX& other);
-
     // default move constructor - buffers can be moved
     DrawableTrackBallBGFX(DrawableTrackBallBGFX&& other) = default;
 
@@ -62,9 +60,6 @@ public:
     void updateDragging(bool isDragging);
 
     void setTransform(const vcl::Matrix44f& mtx);
-
-    // copy and swap idiom
-    DrawableTrackBallBGFX& operator=(DrawableTrackBallBGFX other);
 
     // DrawableObject interface
 
