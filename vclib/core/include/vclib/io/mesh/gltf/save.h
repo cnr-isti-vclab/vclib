@@ -169,13 +169,13 @@ inline uint addGltfTexture(
     if (textureDescriptor.isNull()) {
         log.log("Cannot save empty texture: " + textureDescriptor.path(), LogType::WARNING_LOG);
 
-        return std::numeric_limits<uint>::max();
+        return UINT_NULL;
     }
 
     if (saveTextureImages && mesh.textureImage(textureDescriptor.path()).isNull()) {
         log.log("Cannot save empty image: " + textureDescriptor.path(), LogType::WARNING_LOG);
 
-        return std::numeric_limits<uint>::max();
+        return UINT_NULL;
     }
 
     model.textures.emplace_back();
@@ -225,8 +225,10 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
             addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
         }
 
-        tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
-        //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
+        if (addedTextures[material.baseColorTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
+            //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
+        }
     }
 
     // metallicFactor
@@ -245,8 +247,10 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
             addedTextures[metallicRoughnessTextureDescriptor.path()] = textureId;
         }
 
-        tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = addedTextures[metallicRoughnessTextureDescriptor.path()];
-        //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord = 0; // default value
+        if (addedTextures[metallicRoughnessTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = addedTextures[metallicRoughnessTextureDescriptor.path()];
+            //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord = 0; // default value
+        }
     }
 
     // emissiveFactor
@@ -263,8 +267,10 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
             addedTextures[emissiveTextureDescriptor.path()] = textureId;
         }
 
-        tMaterial.emissiveTexture.index = addedTextures[emissiveTextureDescriptor.path()];
-        //tMaterial.emissiveTexture.texCoord = 0; // default value
+        if (addedTextures[emissiveTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.emissiveTexture.index = addedTextures[emissiveTextureDescriptor.path()];
+            //tMaterial.emissiveTexture.texCoord = 0; // default value
+        }
     }
 
     // normalTexture
@@ -275,9 +281,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
             addedTextures[normalTextureDescriptor.path()] = textureId;
         }
 
-        tMaterial.normalTexture.index = addedTextures[normalTextureDescriptor.path()];
-        //tMaterial.normalTexture.texCoord = 0; // default value
-        tMaterial.normalTexture.scale = material.normalScale();
+        if (addedTextures[normalTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.normalTexture.index = addedTextures[normalTextureDescriptor.path()];
+            //tMaterial.normalTexture.texCoord = 0; // default value
+            tMaterial.normalTexture.scale = material.normalScale();
+        }
     }
 
     // occlusionTexture
@@ -288,9 +296,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
             addedTextures[occlusionTextureDescriptor.path()] = textureId;
         }
 
-        tMaterial.occlusionTexture.index = addedTextures[occlusionTextureDescriptor.path()];
-        //tMaterial.occlusionTexture.texCoord = 0; // default value
-        tMaterial.occlusionTexture.strength = material.occlusionStrength();
+        if (addedTextures[occlusionTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.occlusionTexture.index = addedTextures[occlusionTextureDescriptor.path()];
+            //tMaterial.occlusionTexture.texCoord = 0; // default value
+            tMaterial.occlusionTexture.strength = material.occlusionStrength();
+        }
     }
 
     // doubleSided
