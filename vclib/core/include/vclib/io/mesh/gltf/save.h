@@ -157,15 +157,26 @@ inline uint addGltfImage(
     return index;
 }
 
+inline std::size_t hashSampler(const TextureDescriptor& textureDescriptor)
+{
+    std::size_t minFilter = std::hash<int>{}(static_cast<int>(textureDescriptor.minFilter()));
+    std::size_t magFilter = std::hash<int>{}(static_cast<int>(textureDescriptor.magFilter()));
+    std::size_t wrapS = std::hash<int>{}(static_cast<int>(textureDescriptor.wrapU()));
+    std::size_t wrapT = std::hash<int>{}(static_cast<int>(textureDescriptor.wrapV()));
+
+    return minFilter ^ (magFilter << 1) ^ (wrapS << 2) ^ (wrapT << 3);
+}
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 inline uint addGltfTexture(
-    tinygltf::Model&                                        model,
-    const MeshType&                                         mesh,
-    const TextureDescriptor&                                textureDescriptor,
-    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages,
-    bool                                                    saveTextureImages,
-    LogType&                                                log               = nullLogger)
-{
+    tinygltf::Model&                       model,
+    const MeshType&                        mesh,
+    const TextureDescriptor&               textureDescriptor,
+    std::unordered_map<std::string, uint>& addedImages,
+    std::unordered_map<std::size_t, uint>& addedSamplers,
+    bool                                   saveTextureImages,
+    LogType&                               log               = nullLogger)
+{   
     if (textureDescriptor.isNull()) {
         log.log("Cannot save empty texture: " + textureDescriptor.path(), LogType::WARNING_LOG);
 
@@ -182,29 +193,35 @@ inline uint addGltfTexture(
     tinygltf::Texture& texture = model.textures.back();
     uint               index   = model.textures.size() - 1;
     uint imageId = -1, samplerId = -1;
+    std::size_t samplerHash = hashSampler(textureDescriptor);
 
     if (!addedImages.contains(textureDescriptor.path())) {
         imageId = addGltfImage(model, mesh.textureImage(textureDescriptor.path()), textureDescriptor.path(), saveTextureImages);
-        samplerId = addGltfSampler(model, textureDescriptor);
-        addedImages[textureDescriptor.path()] = { imageId, samplerId };
+        addedImages[textureDescriptor.path()] = imageId;
     }
 
-    texture.source  = addedImages[textureDescriptor.path()].first;
-    texture.sampler = addedImages[textureDescriptor.path()].second;
+    if (!addedSamplers.contains(samplerHash)) {
+        samplerId = addGltfSampler(model, textureDescriptor);
+        addedSamplers[samplerHash] = samplerId;
+    }
+
+    texture.source  = addedImages[textureDescriptor.path()];
+    texture.sampler = addedSamplers[samplerHash];
 
     return index;
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
-    tinygltf::Model&                                        model,
-    const MeshType&                                         mesh,
-    const Material&                                         material,
-    std::unordered_map<std::string, uint>&                  addedTextures,
-    std::unordered_map<std::string, std::pair<uint, uint>>& addedImages,
-    bool                                                    saveTextureImages,
-    LogType&                                                log               = nullLogger)
-{   
+    tinygltf::Model&                       model,
+    const MeshType&                        mesh,
+    const Material&                        material,
+    std::unordered_map<std::string, uint>& addedTextures,
+    std::unordered_map<std::string, uint>& addedImages,
+    std::unordered_map<std::size_t, uint>& addedSamplers,
+    bool                                   saveTextureImages,
+    LogType&                               log               = nullLogger)
+{
     model.materials.emplace_back();
     tinygltf::Material& tMaterial = model.materials.back();
     uint                index    = model.materials.size() - 1;
@@ -221,7 +238,7 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     // baseColorTexture
     if (!material.baseColorTextureDescriptor().isNull()) {
         if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
-            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages, saveTextureImages, log);
+            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages, addedSamplers, saveTextureImages, log);
             addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
         }
 
@@ -243,11 +260,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto metallicRoughnessTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::METALLIC_ROUGHNESS));
     if (!metallicRoughnessTextureDescriptor.isNull()) {
         if (!addedTextures.contains(metallicRoughnessTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages, saveTextureImages, log);
+            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
             addedTextures[metallicRoughnessTextureDescriptor.path()] = textureId;
         }
 
-        if (addedTextures[metallicRoughnessTextureDescriptor().path()] != UINT_NULL) {
+        if (addedTextures[metallicRoughnessTextureDescriptor.path()] != UINT_NULL) {
             tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = addedTextures[metallicRoughnessTextureDescriptor.path()];
             //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord = 0; // default value
         }
@@ -263,11 +280,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto emissiveTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::EMISSIVE));
     if (!emissiveTextureDescriptor.isNull()) {
         if (!addedTextures.contains(emissiveTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages, saveTextureImages, log);
+            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
             addedTextures[emissiveTextureDescriptor.path()] = textureId;
         }
 
-        if (addedTextures[emissiveTextureDescriptor().path()] != UINT_NULL) {
+        if (addedTextures[emissiveTextureDescriptor.path()] != UINT_NULL) {
             tMaterial.emissiveTexture.index = addedTextures[emissiveTextureDescriptor.path()];
             //tMaterial.emissiveTexture.texCoord = 0; // default value
         }
@@ -277,11 +294,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto normalTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::NORMAL));
     if (!normalTextureDescriptor.isNull()) {
         if (!addedTextures.contains(normalTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages, saveTextureImages, log);
+            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
             addedTextures[normalTextureDescriptor.path()] = textureId;
         }
 
-        if (addedTextures[normalTextureDescriptor().path()] != UINT_NULL) {
+        if (addedTextures[normalTextureDescriptor.path()] != UINT_NULL) {
             tMaterial.normalTexture.index = addedTextures[normalTextureDescriptor.path()];
             //tMaterial.normalTexture.texCoord = 0; // default value
             tMaterial.normalTexture.scale = material.normalScale();
@@ -292,11 +309,11 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     auto occlusionTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::OCCLUSION));
     if (!occlusionTextureDescriptor.isNull()) {
         if (!addedTextures.contains(occlusionTextureDescriptor.path())) {
-            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages, saveTextureImages, log);
+            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
             addedTextures[occlusionTextureDescriptor.path()] = textureId;
         }
 
-        if (addedTextures[occlusionTextureDescriptor().path()] != UINT_NULL) {
+        if (addedTextures[occlusionTextureDescriptor.path()] != UINT_NULL) {
             tMaterial.occlusionTexture.index = addedTextures[occlusionTextureDescriptor.path()];
             //tMaterial.occlusionTexture.texCoord = 0; // default value
             tMaterial.occlusionTexture.strength = material.occlusionStrength();
@@ -525,7 +542,8 @@ void addMeshToTinygltfModel(
                     uint chunkLength = 0;
                     uint modelMaterialIndex = 0;
                     std::unordered_map<std::string, uint> addedTextures = {};
-                    std::unordered_map<std::string, std::pair<uint, uint>> addedImages = {};
+                    std::unordered_map<std::string, uint> addedImages = {};
+                    std::unordered_map<std::size_t, uint> addedSamplers = {};
 
                     for (auto faceCompactIndex : faceIndicesSortedByMaterialID) {
                         auto& face = m.face(oldFaceIndices[faceCompactIndex]);
@@ -558,7 +576,7 @@ void addMeshToTinygltfModel(
 
                         // the material is added to the model if not already present
                         if (!modelMaterialIndices.contains(materialIndex)) {
-                            auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages, saveTextureImages, log);
+                            auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages, addedSamplers, saveTextureImages, log);
                             modelMaterialIndices[materialIndex] = material.first;
                         }
 
