@@ -558,7 +558,7 @@ void addMeshToTinygltfModel(
                         }
 
                         // end previous chunk
-                        if (lastMaterialIndex != UINT_NULL) {
+                        if (chunkLength > 0) {
                             // buffer view, accessor and primitive
                             auto indBufView = addGltfBufferView(
                                 tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
@@ -571,7 +571,9 @@ void addMeshToTinygltfModel(
                                 mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
 
                             primitive.second.indices = indAccessor.first;
-                            primitive.second.material = modelMaterialIndex;
+
+                            if (lastMaterialIndex != UINT_NULL)
+                                primitive.second.material = modelMaterialIndex;
                         }
 
                         // the material is added to the model if not already present
