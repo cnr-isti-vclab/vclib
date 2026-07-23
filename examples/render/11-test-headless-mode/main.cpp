@@ -23,6 +23,14 @@ int main(int argc, char** argv)
 
     assert(inst.isHeadless() == true);
 
+    // Note: This example tests mixing a purely headless context initialization
+    // with a physical GUI window created afterwards.
+    // While this works on Windows and Linux, it will result in a black screen
+    // on macOS. When the primary context is initialized as headless 
+    // (nwh=nullptr, 0x0 resolution), the BGFX Metal backend does not set up 
+    // the necessary queues for screen presentation. Consequently, any secondary 
+    // window (like the MeshViewer below) will fail to update its CAMetalLayer.
+    // For pure offscreen rendering on macOS (no GUI), headless mode works fine.
     vcl::MeshViewer viewer;
 
     vcl::pushDefaultEditors(viewer);
