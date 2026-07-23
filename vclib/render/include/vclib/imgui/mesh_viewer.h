@@ -160,6 +160,10 @@ public:
         return editor;
     }
 
+    // automatic update... member function here to satisfy the interface, but
+    // does nothing for ImGui backend
+    void updateGUI() {}
+
     void refreshEditors() { mApp.refreshEditors(); }
 
     Camera<float> camera() const { return mApp.camera(); }

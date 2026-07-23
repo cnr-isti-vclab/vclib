@@ -63,6 +63,7 @@ void initMeshViewer(pybind11::module& m)
         return self.drawableObject(i);
     });
 
+    c.def("update_gui", &MeshViewer::updateGUI);
     c.def("fit_scene", &MeshViewer::fitScene);
     c.def("fit_view", &MeshViewer::fitView);
     c.def("show", &MeshViewer::show);
