@@ -62,6 +62,10 @@ public:
         glfwInit();
     }
 
+    ~Application() {
+        glfwTerminate();
+    }
+
     int exec() { return 0; }
 };
 

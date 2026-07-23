@@ -13,11 +13,11 @@ int main(int argc, char** argv)
 {
     vcl::Application app(argc, argv);
 
-    vcl::TriEdgeMesh mesh =
-        vcl::loadMesh<vcl::TriEdgeMesh>(
-            VCLIB_EXAMPLE_MESHES_PATH
-            "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf");
+    vcl::TriEdgeMesh mesh = vcl::loadMesh<vcl::TriEdgeMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf");
 
+    // creating DrawableMesh before viewer on purpose to check that render
+    // context is created even in headless mode
     auto dm = vcl::makeDrawable(std::move(mesh));
 
     std::cerr << "Headless: " << vcl::Context::instance().isHeadless() << "\n";
