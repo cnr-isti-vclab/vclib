@@ -102,7 +102,7 @@ void Context::setDebugVerbosity(bool verbose)
 
 bool Context::isHeadless() const
 {
-    return mWindowHandle == nullptr;
+    return mIsHeadless;
 }
 
 /**
@@ -297,8 +297,13 @@ Context::Context(void* windowHandle, void* displayHandle)
 {
     if (windowHandle == nullptr) {
         // Headless context
+        mIsHeadless = true;
+#ifdef __APPLE__
+        mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+#else
         mWindowHandle  = nullptr;
         mDisplayHandle = displayHandle;
+#endif
     }
     else {
 #ifdef __linux__
@@ -308,9 +313,7 @@ Context::Context(void* windowHandle, void* displayHandle)
         mDisplayHandle = displayHandle;
     }
 #ifdef __APPLE__
-    if (!isHeadless()) {
-        bgfx::renderFrame(); // needed for macos
-    }
+    bgfx::renderFrame(); // needed for macos
 #endif // __APPLE__
 
     bgfx::Init init;
@@ -320,9 +323,14 @@ Context::Context(void* windowHandle, void* displayHandle)
 #ifdef VCLIB_RENDER_WITH_WAYLAND
     init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
 #endif
-    if (isHeadless()) {
+    if (mIsHeadless) {
+#ifdef __APPLE__
+        init.resolution.width  = 1;
+        init.resolution.height = 1;
+#else
         init.resolution.width  = 0;
         init.resolution.height = 0;
+#endif
     } else {
         init.resolution.width  = 1;
         init.resolution.height = 1;

@@ -28,6 +28,7 @@ class Context
     // otherwise (null window handle) means that the context is headless (no UI)
     void* mWindowHandle  = nullptr;
     void* mDisplayHandle = nullptr;
+    bool  mIsHeadless    = false;
 
     // ordered set of views (high priority from top, low priority at the
     // bottom)
