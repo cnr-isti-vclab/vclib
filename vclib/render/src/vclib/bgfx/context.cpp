@@ -149,7 +149,7 @@ void Context::releaseViewId(bgfx::ViewId viewId)
 
 bool Context::isDefaultWindow(void* windowHandle) const
 {
-    return mWindowHandle == windowHandle;
+    return mWindowHandle != nullptr && mWindowHandle == windowHandle;
 }
 
 bool Context::isValidViewId(bgfx::ViewId viewId) const
@@ -220,8 +220,6 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
     const bool defaultWindow =
         (mWindowHandle != nullptr) && (winId == mWindowHandle);
 
-    // if the context is headless, the framebuffer is always offscreen
-    assert(!isHeadless() || offscreen);
     // TODO: eventually test the behavior with a headless context
 
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
@@ -299,23 +297,8 @@ Context::Context(void* windowHandle, void* displayHandle)
 {
     if (windowHandle == nullptr) {
         // Headless context
-        // TODO: right now, this is not supported.
-        // Throwing an exception to avoid segfaults. In the future, this should
-        // be supported.
-
-        throw std::runtime_error(
-            "BGFX is not initialized. Make sure to construct a RenderApp (e.g. "
-            "a Viewer) before constructing an object that requires a bgfx "
-            "context.");
-
-        // std::cerr << "WARNING: The first window used to create the bgfx "
-        //              "context is a dummy window. This is not recommended."
-        //           << std::endl;
-        // std::cerr
-        //     << "Be sure to pass a valid window handle when requesting the "
-        //        "context instance for the first time."
-        //     << std::endl;
-        // mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+        mWindowHandle  = nullptr;
+        mDisplayHandle = displayHandle;
     }
     else {
 #ifdef __linux__
@@ -337,15 +320,16 @@ Context::Context(void* windowHandle, void* displayHandle)
 #ifdef VCLIB_RENDER_WITH_WAYLAND
     init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
 #endif
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
+    if (isHeadless()) {
+        init.resolution.width  = 0;
+        init.resolution.height = 0;
+    } else {
+        init.resolution.width  = 1;
+        init.resolution.height = 1;
+    }
     init.resolution.reset  = sResetFlags;
     init.callback          = &mCallBack;
     bgfx::init(init);
-
-    if (windowHandle == nullptr) {
-        vcl::closeWindow(mWindowHandle, mDisplayHandle);
-    }
 
     // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
