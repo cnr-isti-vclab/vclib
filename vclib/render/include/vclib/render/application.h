@@ -53,7 +53,19 @@ public:
     int exec() { return mApp.exec(); }
 };
 
-#else // No Qt
+#elif VCLIB_WITH_GLFW
+
+class Application
+{
+public:
+    Application(int& /*argc*/, char** /*argv*/) {
+        glfwInit();
+    }
+
+    int exec() { return 0; }
+};
+
+#else // No Qt and No GLFW
 
 class Application
 {
