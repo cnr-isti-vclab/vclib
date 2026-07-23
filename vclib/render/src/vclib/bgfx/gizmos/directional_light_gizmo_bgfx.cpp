@@ -82,8 +82,7 @@ void DirectionalLightGizmoBGFX::draw(uint viewId)
 
         mVertexPosBuffer.bind(0);
 
-        bgfx::submit(
-            viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
+        bgfx::submit(viewId, pm.getProgram<DRAWABLE_DIRECTIONAL_LIGHT>());
     }
 }
 

@@ -20,7 +20,7 @@ namespace vcl {
  *
  * This class inherits from PointerVector, storing std::shared_ptr to
  * DrawableObject instances. It provides templated convenience methods to add
- * concrete derived classes directly by value/reference, automatically wrapping 
+ * concrete derived classes directly by value/reference, automatically wrapping
  * them in a shared pointer to take ownership of a copy of the object.
  *
  * @ingroup render_drawable
@@ -38,15 +38,17 @@ class DrawableObjectVector :
 public:
     DrawableObjectVector() = default;
 
-    using Base::pushBack;
     using Base::insert;
+    using Base::pushBack;
     using Base::set;
 
     /**
-     * @brief Adds a copy of the given derived drawable object to the end of the vector.
-     * 
-     * Constructs a new shared pointer containing a copy (or moved instance) of `v`.
-     * 
+     * @brief Adds a copy of the given derived drawable object to the end of the
+     * vector.
+     *
+     * Constructs a new shared pointer containing a copy (or moved instance) of
+     * `v`.
+     *
      * @tparam U The derived type of the drawable object.
      * @param v The object to add.
      */
@@ -56,14 +58,15 @@ public:
     void pushBack(U&& v)
     {
         using ObjType = std::remove_cvref_t<U>;
-        // Create a shared_ptr of the concrete derived type to avoid object slicing,
-        // and push it to the base PointerVector.
+        // Create a shared_ptr of the concrete derived type to avoid object
+        // slicing, and push it to the base PointerVector.
         Base::pushBack(std::make_shared<ObjType>(std::forward<U>(v)));
     }
-    
+
     /**
-     * @brief Inserts a copy of the given derived drawable object at the specified position.
-     * 
+     * @brief Inserts a copy of the given derived drawable object at the
+     * specified position.
+     *
      * @tparam U The derived type of the drawable object.
      * @param i The index at which to insert.
      * @param v The object to insert.
@@ -76,10 +79,11 @@ public:
         using ObjType = std::remove_cvref_t<U>;
         Base::insert(i, std::make_shared<ObjType>(std::forward<U>(v)));
     }
-    
+
     /**
-     * @brief Replaces the element at the specified position with a copy of the given object.
-     * 
+     * @brief Replaces the element at the specified position with a copy of the
+     * given object.
+     *
      * @tparam U The derived type of the drawable object.
      * @param i The index of the element to replace.
      * @param e The new object.
@@ -90,12 +94,13 @@ public:
     void set(uint i, U&& e)
     {
         using ObjType = std::remove_cvref_t<U>;
-        Base::at(i) = std::make_shared<ObjType>(std::forward<U>(e));
+        Base::at(i)   = std::make_shared<ObjType>(std::forward<U>(e));
     }
-    
+
     /**
-     * @brief Replaces the element at the specified iterator position with a copy of the given object.
-     * 
+     * @brief Replaces the element at the specified iterator position with a
+     * copy of the given object.
+     *
      * @tparam U The derived type of the drawable object.
      * @param it The iterator pointing to the element to replace.
      * @param e The new object.

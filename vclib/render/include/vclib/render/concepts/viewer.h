@@ -18,13 +18,17 @@
 namespace vcl {
 
 namespace detail {
-struct DummyDrawableObject : public vcl::DrawableObject {
+struct DummyDrawableObject : public vcl::DrawableObject
+{
     void draw(const vcl::DrawObjectSettings&) override {}
+
     vcl::Box3d boundingBox() const override { return {}; }
+
     bool isVisible() const override { return false; }
+
     void setVisibility(bool) override {}
 };
-}
+} // namespace detail
 
 /**
  * @brief Concept that verifies if a class provides the standard viewer
