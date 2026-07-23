@@ -7,8 +7,11 @@
 
 #include <vclib/bgfx/context.h>
 
-#include <vclib/base/base.h>
 #include <vclib/bgfx/system/native_window_handle.h>
+
+#include <vclib/render/application.h>
+
+#include <vclib/base.h>
 
 #include <iostream>
 
@@ -303,6 +306,11 @@ Context::Context(void* windowHandle, void* displayHandle)
 #else
         mWindowHandle  = nullptr;
         mDisplayHandle = displayHandle;
+#ifdef __linux__
+        if(mDisplayHandle == nullptr) {
+            mDisplayHandle = vcl::getDisplayId();
+        }
+#endif
 #endif
     }
     else {
@@ -314,7 +322,7 @@ Context::Context(void* windowHandle, void* displayHandle)
     }
 #ifdef __APPLE__
     bgfx::renderFrame(); // needed for macos
-#endif // __APPLE__
+#endif                   // __APPLE__
 
     bgfx::Init init;
     init.platformData.nwh = mWindowHandle;
@@ -331,12 +339,13 @@ Context::Context(void* windowHandle, void* displayHandle)
         init.resolution.width  = 0;
         init.resolution.height = 0;
 #endif
-    } else {
+    }
+    else {
         init.resolution.width  = 1;
         init.resolution.height = 1;
     }
-    init.resolution.reset  = sResetFlags;
-    init.callback          = &mCallBack;
+    init.resolution.reset = sResetFlags;
+    init.callback         = &mCallBack;
     bgfx::init(init);
 
     // insert view ids in the stack

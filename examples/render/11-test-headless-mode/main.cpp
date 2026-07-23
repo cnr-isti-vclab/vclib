@@ -13,25 +13,20 @@ int main(int argc, char** argv)
 {
     vcl::Application app(argc, argv);
 
-    void* displayId = vcl::getDisplayId();
+    vcl::TriEdgeMesh mesh =
+        vcl::loadMesh<vcl::TriEdgeMesh>(
+            VCLIB_EXAMPLE_MESHES_PATH
+            "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf");
 
-    // Initialize the VCL context with a null window and the display ID
-    // (will be nullptr if not running on Linux with X11 or Wayland)
-    auto& inst = vcl::Context::instance(nullptr, displayId);
+    auto dm = vcl::makeDrawable(std::move(mesh));
 
-    std::cerr << "Headless: " << inst.isHeadless() << "\n";
-
-    assert(inst.isHeadless() == true);
+    std::cerr << "Headless: " << vcl::Context::instance().isHeadless() << "\n";
 
     vcl::MeshViewer viewer;
 
     vcl::pushDefaultEditors(viewer);
 
-    std::vector<vcl::TriEdgeMesh> meshes =
-        vcl::loadMeshes<vcl::TriEdgeMesh>(
-            VCLIB_EXAMPLE_MESHES_PATH
-            "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf");
-    showOnMeshViewer(argc, argv, viewer, std::move(meshes));
+    showOnMeshViewer(argc, argv, viewer, std::move(dm));
 
     return app.exec();
 }
