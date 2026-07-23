@@ -660,6 +660,34 @@ void addMeshToTinygltfModel(
 
 } // namespace detail
 
+/**
+ * @brief Saves a mesh to a file with the given filename.
+ *
+ * @note Currently, this function has several limitations:
+ *
+ *  1) only per-vertex texcoords are exported
+ *
+ *  2) output primitives are organized only by per-vertex material indices
+ *
+ *  3) if a material has different materials for its vertices, it will
+ *     arbitrarily inherit the material of the first vertex
+ *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *
+ *  5) all primitives are exported with only a single TEXCOORD attribute (TEXCOORD_0).
+ *     If a primitive were to require more than a single set of UV coords, for example
+ *     if it rendered multiple textures at different UVs coords in the same pass,
+ *     it would need a TEXCOORD attribute for each set of distinct UV coords
+ *
+ * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] m: The mesh object to save.
+ * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * saving.
+ */
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveGltf(
     const MeshType&     m,
@@ -703,6 +731,37 @@ void saveGltf(
         throw std::runtime_error(
             "Failed to export mesh to glTF format: " + filename);
 }
+
+/**
+ * @brief Saves a range of meshes to a file with the given filename.
+ *
+ * @note Currently, this function has several limitations:
+ *
+ *  1) only per-vertex texcoords are exported
+ *
+ *  2) output primitives are organized only by per-vertex material indices
+ *
+ *  3) if a material has different materials for its vertices, it will
+ *     arbitrarily inherit the material of the first vertex
+ *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *
+ *  4) all primitives are exported with only a single TEXCOORD attribute (TEXCOORD_0).
+ *     If a primitive were to require more than a single set of UV coords, for example
+ *     if it rendered multiple textures at different UVs coords in the same pass,
+ *     it would need a TEXCOORD attribute for each set of distinct UV coords
+ *
+ *  5) even if different meshes were to share the same data, it would be duplicated.
+ *     Each mesh is exported without consideration to the other meshes' data
+ *
+ * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] meshes: The range of meshes to save.
+ * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * saving.
+ */
 
 template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
 void saveGltf(
