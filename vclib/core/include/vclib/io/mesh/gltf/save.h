@@ -51,13 +51,16 @@ inline std::pair<uint, tinygltf::Buffer&> addGltfBuffer(
 inline std::pair<uint, tinygltf::BufferView&> addGltfBufferView(
     tinygltf::Model&                   model,
     std::pair<uint, tinygltf::Buffer&> buffer,
-    int bufferViewTarget = TINYGLTF_TARGET_ARRAY_BUFFER)
+    int                                bufferViewTarget = TINYGLTF_TARGET_ARRAY_BUFFER,
+    uint                               byteOffset = 0,
+    std::optional<uint>                byteLength = std::nullopt)
 {
     model.bufferViews.emplace_back();
     tinygltf::BufferView& bufView = model.bufferViews.back();
     uint                  index   = model.bufferViews.size() - 1;
     bufView.buffer                = buffer.first;
-    bufView.byteLength            = buffer.second.data.size();
+    bufView.byteOffset            = byteOffset;
+    bufView.byteLength            = byteLength.has_value() ? byteLength.value() : buffer.second.data.size();
     bufView.target                = bufferViewTarget;
 
     return {index, bufView};
@@ -70,8 +73,6 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     int                                    type,
     bool                                   normalized = false)
 {
-    // TODO check if component type and type are valid values
-
     model.accessors.emplace_back();
     tinygltf::Accessor& accessor = model.accessors.back();
     uint                index    = model.accessors.size() - 1;
@@ -92,10 +93,10 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     int             posAccessorIndex,
     int             colAccessorIndex,
     int             normAccessorIndex,
+    int             texCoordAccessorIndex,
+    int             tangentAccessorIndex,
     int             mode)
 {
-    // TODO check if mode is a valid value
-
     mesh.primitives.emplace_back();
     tinygltf::Primitive& primitive   = mesh.primitives.back();
     uint                 index       = mesh.primitives.size() - 1;
@@ -108,14 +109,250 @@ inline std::pair<uint, tinygltf::Primitive&> addGltfPrimitive(
     if (normAccessorIndex >= 0)
         primitive.attributes["NORMAL"] = normAccessorIndex;
 
+    if (tangentAccessorIndex >= 0)
+        primitive.attributes["TANGENT"] = tangentAccessorIndex;
+
+    // if multiple textures per render pass become supported
+    // multiple TEXCOORD must be set (TEXCOORD_1, etc...)
+    if (texCoordAccessorIndex >= 0)
+        primitive.attributes["TEXCOORD_0"] = texCoordAccessorIndex;
+
     return {index, primitive};
 }
 
-template<MeshConcept MeshType>
+inline uint addGltfSampler(
+    tinygltf::Model&         model,
+    const TextureDescriptor& textureDescriptor)
+{
+    model.samplers.emplace_back();
+    tinygltf::Sampler& sampler = model.samplers.back();
+    uint               index    = model.samplers.size() - 1;
+    sampler.minFilter = static_cast<int>(textureDescriptor.minFilter());
+    sampler.magFilter = static_cast<int>(textureDescriptor.magFilter());
+    sampler.wrapS     = static_cast<int>(textureDescriptor.wrapU());
+    sampler.wrapT     = static_cast<int>(textureDescriptor.wrapV());
+
+    return index;
+}
+
+inline uint addGltfImage(
+    tinygltf::Model& model,
+    const Image&     image,
+    std::string      path,
+    bool             saveTextureImages)
+{
+    model.images.emplace_back();
+    tinygltf::Image& tImage = model.images.back();
+    uint             index  = model.images.size() - 1;
+    tImage.width      = image.width();
+    tImage.height     = image.height();
+    tImage.component  = 4; // channels
+    tImage.bits       = 8; // bits per channel
+    tImage.pixel_type = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
+    tImage.uri        = path;
+
+    if (saveTextureImages)
+        tImage.image.assign(image.data(), image.data() + image.sizeInBytes());
+
+    return index;
+}
+
+inline std::size_t hashSampler(const TextureDescriptor& textureDescriptor)
+{
+    std::size_t minFilter = std::hash<int>{}(static_cast<int>(textureDescriptor.minFilter()));
+    std::size_t magFilter = std::hash<int>{}(static_cast<int>(textureDescriptor.magFilter()));
+    std::size_t wrapS = std::hash<int>{}(static_cast<int>(textureDescriptor.wrapU()));
+    std::size_t wrapT = std::hash<int>{}(static_cast<int>(textureDescriptor.wrapV()));
+
+    return minFilter ^ (magFilter << 1) ^ (wrapS << 2) ^ (wrapT << 3);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+inline uint addGltfTexture(
+    tinygltf::Model&                       model,
+    const MeshType&                        mesh,
+    const TextureDescriptor&               textureDescriptor,
+    std::unordered_map<std::string, uint>& addedImages,
+    std::unordered_map<std::size_t, uint>& addedSamplers,
+    bool                                   saveTextureImages,
+    LogType&                               log               = nullLogger)
+{   
+    if (textureDescriptor.isNull()) {
+        log.log("Cannot save empty texture: " + textureDescriptor.path(), LogType::WARNING_LOG);
+
+        return UINT_NULL;
+    }
+
+    if (saveTextureImages && mesh.textureImage(textureDescriptor.path()).isNull()) {
+        log.log("Cannot save empty image: " + textureDescriptor.path(), LogType::WARNING_LOG);
+
+        return UINT_NULL;
+    }
+
+    model.textures.emplace_back();
+    tinygltf::Texture& texture = model.textures.back();
+    uint               index   = model.textures.size() - 1;
+    uint imageId = -1, samplerId = -1;
+    std::size_t samplerHash = hashSampler(textureDescriptor);
+
+    if (!addedImages.contains(textureDescriptor.path())) {
+        imageId = addGltfImage(model, mesh.textureImage(textureDescriptor.path()), textureDescriptor.path(), saveTextureImages);
+        addedImages[textureDescriptor.path()] = imageId;
+    }
+
+    if (!addedSamplers.contains(samplerHash)) {
+        samplerId = addGltfSampler(model, textureDescriptor);
+        addedSamplers[samplerHash] = samplerId;
+    }
+
+    texture.source  = addedImages[textureDescriptor.path()];
+    texture.sampler = addedSamplers[samplerHash];
+
+    return index;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
+    tinygltf::Model&                       model,
+    const MeshType&                        mesh,
+    const Material&                        material,
+    std::unordered_map<std::string, uint>& addedTextures,
+    std::unordered_map<std::string, uint>& addedImages,
+    std::unordered_map<std::size_t, uint>& addedSamplers,
+    bool                                   saveTextureImages,
+    LogType&                               log               = nullLogger)
+{
+    model.materials.emplace_back();
+    tinygltf::Material& tMaterial = model.materials.back();
+    uint                index    = model.materials.size() - 1;
+
+    tMaterial.name = material.name();
+
+    // baseColorFactor
+    tMaterial.pbrMetallicRoughness.baseColorFactor = {
+        material.baseColor().redF(),
+        material.baseColor().greenF(),
+        material.baseColor().blueF(),
+        material.baseColor().alphaF()};
+
+    // baseColorTexture
+    if (!material.baseColorTextureDescriptor().isNull()) {
+        if (!addedTextures.contains(material.baseColorTextureDescriptor().path())) {
+            uint textureId = addGltfTexture(model, mesh, material.baseColorTextureDescriptor(), addedImages, addedSamplers, saveTextureImages, log);
+            addedTextures[material.baseColorTextureDescriptor().path()] = textureId;
+        }
+
+        if (addedTextures[material.baseColorTextureDescriptor().path()] != UINT_NULL) {
+            tMaterial.pbrMetallicRoughness.baseColorTexture.index = addedTextures[material.baseColorTextureDescriptor().path()];
+            //tMaterial.pbrMetallicRoughness.baseColorTexture.texCoord = 0; // default value
+        }
+    }
+
+    // metallicFactor
+    tMaterial.pbrMetallicRoughness.metallicFactor =
+        material.metallic();
+
+    // roughnessFactor
+    tMaterial.pbrMetallicRoughness.roughnessFactor =
+        material.roughness();
+
+    // metallicRoughnessTexture
+    auto metallicRoughnessTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::METALLIC_ROUGHNESS));
+    if (!metallicRoughnessTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(metallicRoughnessTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, metallicRoughnessTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
+            addedTextures[metallicRoughnessTextureDescriptor.path()] = textureId;
+        }
+
+        if (addedTextures[metallicRoughnessTextureDescriptor.path()] != UINT_NULL) {
+            tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.index = addedTextures[metallicRoughnessTextureDescriptor.path()];
+            //tMaterial.pbrMetallicRoughness.metallicRoughnessTexture.texCoord = 0; // default value
+        }
+    }
+
+    // emissiveFactor
+    tMaterial.emissiveFactor = {
+        material.emissiveColor().redF(),
+        material.emissiveColor().greenF(),
+        material.emissiveColor().blueF()};
+
+    // emissiveTexture
+    auto emissiveTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::EMISSIVE));
+    if (!emissiveTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(emissiveTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, emissiveTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
+            addedTextures[emissiveTextureDescriptor.path()] = textureId;
+        }
+
+        if (addedTextures[emissiveTextureDescriptor.path()] != UINT_NULL) {
+            tMaterial.emissiveTexture.index = addedTextures[emissiveTextureDescriptor.path()];
+            //tMaterial.emissiveTexture.texCoord = 0; // default value
+        }
+    }
+
+    // normalTexture
+    auto normalTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::NORMAL));
+    if (!normalTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(normalTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, normalTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
+            addedTextures[normalTextureDescriptor.path()] = textureId;
+        }
+
+        if (addedTextures[normalTextureDescriptor.path()] != UINT_NULL) {
+            tMaterial.normalTexture.index = addedTextures[normalTextureDescriptor.path()];
+            //tMaterial.normalTexture.texCoord = 0; // default value
+            tMaterial.normalTexture.scale = material.normalScale();
+        }
+    }
+
+    // occlusionTexture
+    auto occlusionTextureDescriptor = material.textureDescriptor(toUnderlying(Material::TextureType::OCCLUSION));
+    if (!occlusionTextureDescriptor.isNull()) {
+        if (!addedTextures.contains(occlusionTextureDescriptor.path())) {
+            uint textureId = addGltfTexture(model, mesh, occlusionTextureDescriptor, addedImages, addedSamplers, saveTextureImages, log);
+            addedTextures[occlusionTextureDescriptor.path()] = textureId;
+        }
+
+        if (addedTextures[occlusionTextureDescriptor.path()] != UINT_NULL) {
+            tMaterial.occlusionTexture.index = addedTextures[occlusionTextureDescriptor.path()];
+            //tMaterial.occlusionTexture.texCoord = 0; // default value
+            tMaterial.occlusionTexture.strength = material.occlusionStrength();
+        }
+    }
+
+    // doubleSided
+    tMaterial.doubleSided =
+        material.doubleSided();
+
+    // alphaMode
+    switch (material.alphaMode()) {
+        using enum Material::AlphaMode;
+
+        case ALPHA_MASK:
+            tMaterial.alphaMode = "MASK";
+            break;
+        case ALPHA_BLEND:
+            tMaterial.alphaMode = "BLEND";
+            break;
+        case ALPHA_OPAQUE:
+            tMaterial.alphaMode = "OPAQUE"; // default value
+            break;
+    }
+
+    // alphaCutoff
+    tMaterial.alphaCutoff =
+        material.alphaCutoff();
+
+    return {index, tMaterial};
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void addMeshToTinygltfModel(
     const MeshType&  m,
     tinygltf::Model& tModel,
-    MeshInfo         meshInfo)
+    MeshInfo         meshInfo,
+    bool             saveTextureImages,
+    LogType&         log               = nullLogger)
 {
     // mesh
     tModel.meshes.emplace_back();
@@ -123,7 +360,11 @@ void addMeshToTinygltfModel(
     uint            meshI = tModel.meshes.size() - 1;
 
     // vertices
-    int posAccI = -1, colAccI = -1, normAccI = -1;
+    int posAccI = -1;
+    int colAccI = -1;
+    int normAccI = -1;
+    int texCoordAccI = -1;
+    int tangentAccI = -1;
 
     // vertices position buffer, buffer view and accessor
     auto   posBuf = addGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
@@ -138,7 +379,7 @@ void addMeshToTinygltfModel(
     if constexpr (HasBoundingBox<MeshType>) {
         bBox = m.boundingBox().template cast<double>();
     }
-    if (bBox.isNull() || bBox.isEmpty()) {
+    if (bBox.isNull()) {
         bBox = boundingBox(m).template cast<double>();
     }
 
@@ -191,7 +432,40 @@ void addMeshToTinygltfModel(
     }
     if constexpr (HasPerVertexTexCoord<MeshType>) {
         if (meshInfo.hasPerVertexTexCoord()) {
-            // TODO per vertex tex coord
+            auto texCoordBuf =
+                addGltfBuffer(tModel, 2 * m.vertexCount() * sizeof(float));
+            fd = reinterpret_cast<float*>(texCoordBuf.second.data.data());
+            vertexTexCoordsToBuffer(m, fd);
+
+            // flip V coords
+            for (unsigned int i = 1; i < m.vertexCount() * 2; i += 2)
+                fd[i] = 1 - fd[i];
+
+            auto texCoordBufView  = addGltfBufferView(tModel, texCoordBuf);
+            auto texCoordAccessor = addGltfAccessor(
+                tModel,
+                texCoordBufView,
+                TINYGLTF_COMPONENT_TYPE_FLOAT,
+                TINYGLTF_TYPE_VEC2);
+
+            texCoordAccI = texCoordAccessor.first;
+        }
+    }
+    if constexpr (HasPerVertexTangent<MeshType>) {
+        if (meshInfo.hasPerVertexTangent()) {
+            auto tangentBuf =
+                addGltfBuffer(tModel, 4 * m.vertexCount() * sizeof(float));
+            fd = reinterpret_cast<float*>(tangentBuf.second.data.data());
+            vertexTangentsToBuffer(m, fd, true);
+
+            auto tangentBufView  = addGltfBufferView(tModel, tangentBuf);
+            auto tangentAccessor = addGltfAccessor(
+                tModel,
+                tangentBufView,
+                TINYGLTF_COMPONENT_TYPE_FLOAT,
+                TINYGLTF_TYPE_VEC4);
+
+            tangentAccI = tangentAccessor.first;
         }
     }
 
@@ -200,24 +474,167 @@ void addMeshToTinygltfModel(
     // faces
     if constexpr (HasFaces<MeshType>) {
         if (meshInfo.hasFaces() && m.faceCount() > 0) {
-            auto primitive = addGltfPrimitive(
-                mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_TRIANGLES);
+            bool saveWithoutMaterial = false;
 
-            // indices buffer, buffer view and accessor
-            auto indBuf = addGltfBuffer(
-                tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
-            uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
-            triangulatedFaceVertexIndicesToBuffer(m, ud);
+            if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if (meshInfo.hasPerVertexMaterialIndex()) {
+                    // faces are sorted per material index and saved into an index buffer
+                    // for each material chunk, a primitive is created with relative accessor
+                    // and buffer view into the index buffer
+                    // materials are saved into the model
 
-            auto indBufView = addGltfBufferView(
-                tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
-            auto indAccessor = addGltfAccessor(
-                tModel,
-                indBufView,
-                TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
-                TINYGLTF_TYPE_SCALAR);
+                    using FaceType = MeshType::FaceType;
 
-            primitive.second.indices = indAccessor.first;
+                    // comparator of faces
+                    // ordering by per-vertex material index (if available)
+                    auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
+                        if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                            if (isPerVertexMaterialIndexAvailable(m)) {
+                                uint id1 = f1.vertex(0)->materialIndex();
+                                uint id2 = f2.vertex(0)->materialIndex();
+                                if (id1 != id2) { // do not return true if equal
+                                    return id1 < id2;
+                                }
+                            }
+                        }
+
+                        // if per-vertex material indices are equal,
+                        // sort by face index to have a stable sorting
+                        return f1.index() < f2.index();
+                    };
+
+                    // get the list of face indices sorted by material ID
+                    // using the face comparator defined above
+                    const std::vector<uint> faceIndicesSortedByMaterialID =
+                        sortFaceIndicesByFunction(m, faceComp, true);
+                    auto indBuf = addGltfBuffer(
+                        tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                    uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+                    TriPolyIndexBiMap indexMap;
+
+                    triangulatedFaceVertexIndicesToBuffer(
+                        m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
+
+                    // permute the triangulated face vertex indices according to the face
+                    // sorting by material ID (the function also edits the index map from
+                    // polygonal faces (which still refers to the mesh ones) to the
+                    // triangulated faces (which refers to the sorted triangles))
+                    permuteFaceVertexIndicesByFunctionToBuffer(
+                        m,
+                        ud,
+                        faceComp,
+                        indexMap);
+
+                    // get the mapping from actual indices to compact indices
+                    std::vector<uint> compactIndices = m.faceCompactIndices();
+
+                    // compactIndices tells for each face, which is its new position
+                    // we need the inverse mapping: for each new position, which is the old
+                    // face index
+                    std::vector<uint> oldFaceIndices(compactIndices.size());
+                    for (uint i = 0; i < compactIndices.size(); ++i) {
+                        oldFaceIndices[compactIndices[i]] = static_cast<uint>(i);
+                    }
+
+                    uint lastMaterialIndex = UINT_NULL;
+                    std::unordered_map<uint, uint> modelMaterialIndices{};
+                    uint chunkByteOffset = 0;
+                    uint chunkLength = 0;
+                    uint modelMaterialIndex = 0;
+                    std::unordered_map<std::string, uint> addedTextures = {};
+                    std::unordered_map<std::string, uint> addedImages = {};
+                    std::unordered_map<std::size_t, uint> addedSamplers = {};
+
+                    for (auto faceCompactIndex : faceIndicesSortedByMaterialID) {
+                        auto& face = m.face(oldFaceIndices[faceCompactIndex]);
+                        // get first vertex's material
+                        uint materialIndex = face.vertex(0)->materialIndex();
+                        uint faceChunkLength = indexMap.triangleCount(oldFaceIndices[faceCompactIndex]) * 3 * sizeof(uint);
+
+                        if (materialIndex == lastMaterialIndex) {
+                            chunkLength += faceChunkLength;
+
+                            continue;
+                        }
+
+                        // end previous chunk
+                        if (chunkLength > 0) {
+                            // buffer view, accessor and primitive
+                            auto indBufView = addGltfBufferView(
+                                tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
+                            auto indAccessor = addGltfAccessor(
+                                tModel,
+                                indBufView,
+                                TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                                TINYGLTF_TYPE_SCALAR);
+                            auto primitive = addGltfPrimitive(
+                                mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
+
+                            primitive.second.indices = indAccessor.first;
+
+                            if (lastMaterialIndex != UINT_NULL)
+                                primitive.second.material = modelMaterialIndex;
+                        }
+
+                        // the material is added to the model if not already present
+                        if (!modelMaterialIndices.contains(materialIndex)) {
+                            auto material = addGltfMaterial(tModel, m, m.material(materialIndex), addedTextures, addedImages, addedSamplers, saveTextureImages, log);
+                            modelMaterialIndices[materialIndex] = material.first;
+                        }
+
+                        modelMaterialIndex = modelMaterialIndices.at(materialIndex);
+
+                        // start new chunk
+                        chunkByteOffset += chunkLength;
+                        chunkLength = faceChunkLength;
+                        lastMaterialIndex = materialIndex;
+                    }
+
+                    // add last chunk
+                    if (lastMaterialIndex != UINT_NULL) {
+                        // buffer view, accessor and primitive
+                        auto indBufView = addGltfBufferView(
+                            tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER, chunkByteOffset, chunkLength);
+                        auto indAccessor = addGltfAccessor(
+                            tModel,
+                            indBufView,
+                            TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                            TINYGLTF_TYPE_SCALAR);
+                        auto primitive = addGltfPrimitive(
+                            mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
+
+                        primitive.second.indices = indAccessor.first;
+                        primitive.second.material = modelMaterialIndex;
+                    }
+                }
+                else {
+                    saveWithoutMaterial = true;
+                }
+            }
+            else {
+                saveWithoutMaterial = true;
+            }
+
+            if (saveWithoutMaterial) {
+                auto primitive = addGltfPrimitive(
+                    mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_TRIANGLES);
+
+                // indices buffer, buffer view and accessor
+                auto indBuf = addGltfBuffer(
+                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                uint* ud = reinterpret_cast<uint*>(indBuf.second.data.data());
+                triangulatedFaceVertexIndicesToBuffer(m, ud);
+
+                auto indBufView = addGltfBufferView(
+                    tModel, indBuf, TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER);
+                auto indAccessor = addGltfAccessor(
+                    tModel,
+                    indBufView,
+                    TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT,
+                    TINYGLTF_TYPE_SCALAR);
+
+                primitive.second.indices = indAccessor.first;
+            }
         }
     }
 
@@ -225,7 +642,7 @@ void addMeshToTinygltfModel(
     if constexpr (EdgeMeshConcept<MeshType>) {
         if (meshInfo.hasEdges() && m.edgeCount() > 0) {
             auto primitive = addGltfPrimitive(
-                mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_LINE);
+                mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_LINE);
 
             // indices buffer, buffer view and accessor
             auto indBuf =
@@ -249,7 +666,7 @@ void addMeshToTinygltfModel(
     // since no primitives were added, the mesh has neither faces nor edges
     if (mesh.primitives.size() == 0) {
         auto primitive = addGltfPrimitive(
-            mesh, posAccI, colAccI, normAccI, TINYGLTF_MODE_POINTS);
+            mesh, posAccI, colAccI, normAccI, texCoordAccI, tangentAccI, TINYGLTF_MODE_POINTS);
     }
 
     // node
@@ -269,20 +686,37 @@ void addMeshToTinygltfModel(
     // scene
     tinygltf::Scene& scene = tModel.scenes.back();
     scene.nodes.push_back(nodeI);
-
-    // --- TODO LIST ---
-
-    // TODO save all materials
-    // TODO save all textures (textures, images, samplers)
-
-    // TODO a primitive per chunk (chunk split by material. Multiple chunks
-    // could be using the same material)
-    // TODO each primitive will then reference an accessor for:
-    // TODO - texture normals
-    // TODO each primitive will reference its material
 }
 
 } // namespace detail
+
+/**
+ * @brief Saves a mesh to a file with the given filename.
+ *
+ * @note Currently, this function has several limitations:
+ *
+ *  1) only per-vertex texcoords are exported
+ *
+ *  2) output primitives are organized only by per-vertex material indices
+ *
+ *  3) if a material has different materials for its vertices, it will
+ *     arbitrarily inherit the material of the first vertex
+ *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *
+ *  5) all primitives are exported with only a single TEXCOORD attribute (TEXCOORD_0).
+ *     If a primitive were to require more than a single set of UV coords, for example
+ *     if it rendered multiple textures at different UVs coords in the same pass,
+ *     it would need a TEXCOORD attribute for each set of distinct UV coords
+ *
+ * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] m: The mesh object to save.
+ * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * saving.
+ */
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveGltf(
@@ -307,23 +741,57 @@ void saveGltf(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    detail::addMeshToTinygltfModel(m, model, meshInfo);
-
-    // TODO settings.saveTextureImages
+    detail::addMeshToTinygltfModel(
+        m,
+        model,
+        meshInfo,
+        settings.embedBuffers || settings.saveTextureImages, // saveTextureImages
+        log);
 
     tinygltf::TinyGLTF gltf;
-    bool               success = gltf.WriteGltfSceneToFile(
+    bool success = gltf.WriteGltfSceneToFile(
         &model,
         filename,
-        true,             // embedImages
-        true,             // embedBuffers
-        true,             // pretty print
-        settings.binary); // write binary
+        settings.embedBuffers, // embedImages
+        settings.embedBuffers, // embedBuffers
+        true,                  // pretty print
+        settings.binary);      // write binary
 
     if (!success)
         throw std::runtime_error(
             "Failed to export mesh to glTF format: " + filename);
 }
+
+/**
+ * @brief Saves a range of meshes to a file with the given filename.
+ *
+ * @note Currently, this function has several limitations:
+ *
+ *  1) only per-vertex texcoords are exported
+ *
+ *  2) output primitives are organized only by per-vertex material indices
+ *
+ *  3) if a material has different materials for its vertices, it will
+ *     arbitrarily inherit the material of the first vertex
+ *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *
+ *  4) all primitives are exported with only a single TEXCOORD attribute (TEXCOORD_0).
+ *     If a primitive were to require more than a single set of UV coords, for example
+ *     if it rendered multiple textures at different UVs coords in the same pass,
+ *     it would need a TEXCOORD attribute for each set of distinct UV coords
+ *
+ *  5) even if different meshes were to share the same data, it would be duplicated.
+ *     Each mesh is exported without consideration to the other meshes' data
+ *
+ * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] meshes: The range of meshes to save.
+ * @param[in] filename: The filename of the file where to save the mesh data.
+ * @param[in] settings: Settings for saving the file.
+ * @param[in, out] log: The logger object to use for logging messages during
+ * saving.
+ */
 
 template<RangeOfMeshes Meshes, LoggerConcept LogType = NullLogger>
 void saveGltf(
@@ -350,19 +818,22 @@ void saveGltf(
         if (!settings.info.isEmpty())
             meshInfo = settings.info.intersect(meshInfo);
 
-        detail::addMeshToTinygltfModel(mesh, model, meshInfo);
+        detail::addMeshToTinygltfModel(
+            mesh,
+            model,
+            meshInfo,
+            settings.embedBuffers || settings.saveTextureImages, // saveTextureImages
+            log);
     }
 
-    // TODO settings.saveTextureImages
-
     tinygltf::TinyGLTF gltf;
-    bool               success = gltf.WriteGltfSceneToFile(
+    bool success = gltf.WriteGltfSceneToFile(
         &model,
         filename,
-        true,             // embedImages
-        true,             // embedBuffers
-        true,             // pretty print
-        settings.binary); // write binary
+        settings.embedBuffers, // embedImages
+        settings.embedBuffers, // embedBuffers
+        true,                  // pretty print
+        settings.binary);      // write binary
 
     if (!success)
         throw std::runtime_error(

@@ -55,6 +55,16 @@ struct SaveSettings
     bool binary = true;
 
     /**
+     * @brief If true, the mesh buffers (textures included) will be saved embedded.
+     * Otherwise, they will be saved externally.
+     *
+     * @note When set to true, texture images are saved even if saveTextureImages
+     * is set to false. When embedBuffers is set to false, saveTextureImages
+     * determines whether to save texture images or not.
+     */
+    bool embedBuffers = false;
+
+    /**
      * @brief If true, and if the Mesh has the TextureImages component, the
      * saving function will save the texture images to the paths stored in the
      * TextureImages component. Otherwise, only the paths of the textures will
