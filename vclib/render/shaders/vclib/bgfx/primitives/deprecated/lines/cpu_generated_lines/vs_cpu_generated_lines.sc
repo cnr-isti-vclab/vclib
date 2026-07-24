@@ -1,9 +1,24 @@
-// VCLib - Visual Computing Library
-// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
-//
-// This Source Code Form is subject to the terms of the Mozilla Public License,
-// v. 2.0. If a copy of the MPL was not distributed with this file, You can
-// obtain one at https://mozilla.org/MPL/2.0/.
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2026                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ ****************************************************************************/
 
 $input a_position, a_texcoord0, a_color0, a_color1, a_normal, a_texcoord1
 $output v_color, v_normal
@@ -11,7 +26,7 @@ $output v_color, v_normal
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
 
-#include <vclib/bgfx/primitives/lines/uniforms.sh>
+#include <vclib/bgfx/primitives/deprecated/lines/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 #define NEAR_EPSILON 0.001

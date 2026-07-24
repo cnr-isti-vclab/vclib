@@ -13,15 +13,6 @@
 
 namespace vcl {
 
-/**
- * @brief Constructs a line set by referencing existing VertexBuffers.
- *
- * @param[in] vertexCount: Number of coordinate pairs (each line uses 2
- * points).
- * @param[in] verts: VertexBuffer containing 2D vertex positions.
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 ScreenSpaceLines::ScreenSpaceLines(
     const uint          vertexCount,
     const VertexBuffer& verts)
@@ -29,20 +20,6 @@ ScreenSpaceLines::ScreenSpaceLines(
     setVertices(vertexCount, verts);
 }
 
-/**
- * @brief Sets vertex positions by referencing an existing VertexBuffer.
- *
- * If no indices are set, the interpretation depends on the topology:
- * - For LINES topology, each pair of vertices defines one line segment.
- * - For LINE_STRIP topology, each vertex after the first forms a line
- *   segment with the previous vertex.
- *
- * @param[in] vertexCount: Number of coordinate pairs (each line uses 2
- * points).
- * @param[in] verts: VertexBuffer containing vertex positions.
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void ScreenSpaceLines::setVertices(uint vertexCount, const VertexBuffer& verts)
 {
     mVerPosCount = vertexCount;
@@ -50,18 +27,6 @@ void ScreenSpaceLines::setVertices(uint vertexCount, const VertexBuffer& verts)
     mIsUpdateProgramNeeded = true;
 }
 
-/**
- * @brief Sets line indices from a range of unsigned integers.
- *
- * @param[in] indexCount: Number of indices in the IndexBuffer.
- * @param[in] indices: IndexBuffer to use for lines.
- * The interpretation of indices depends on the topology:
- * - For LINES topology, each pair of indices defines one line segment.
- * - For LINE_STRIP topology, each index after the first forms a line
- *   segment with the previous index.
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void ScreenSpaceLines::setIndices(uint indexCount, const IndexBuffer& indices)
 {
     mIndexCount = indexCount;
@@ -69,16 +34,6 @@ void ScreenSpaceLines::setIndices(uint indexCount, const IndexBuffer& indices)
     mIsUpdateProgramNeeded = true;
 }
 
-/**
- * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
- *
- * @param[in] vColsCount: Number of vertex colors in the VertexBuffer.
- * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
- * Expected layout: an array of `uint` with 4 channels per color in
- * ABGR order (A, B, G, R packed as a single 32-bit integer).
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void ScreenSpaceLines::setVertexColors(
     uint                vColsCount,
     const VertexBuffer& vertexColors)
@@ -88,16 +43,6 @@ void ScreenSpaceLines::setVertexColors(
     mIsUpdateProgramNeeded = true;
 }
 
-/**
- * @brief Sets per-line colors by referencing an existing IndexBuffer.
- *
- * @param[in] lColorCount: Number of line colors in the IndexBuffer.
- * @param[in] lineColors: IndexBuffer containing per-line colors.
- * Expected layout: an array of `uint` with 4 channels per color in
- * ABGR order (A, B, G, R packed as a single 32-bit integer).
- *
- * @note The buffer must remain valid for the lifetime of this object.
- */
 void ScreenSpaceLines::setLineColors(
     uint               lColorCount,
     const IndexBuffer& lineColors)
@@ -171,6 +116,9 @@ void ScreenSpaceLines::checkAndUpdateProgram() const
 
     uint        nv      = mIndices.isValid() ? mIndexCount : mVerPosCount;
     std::string primstr = mIndices.isValid() ? "indices" : "vertices";
+
+    // Validate that buffer capacities match the expected topology rules.
+    // E.g., LINES requires pairs, and LINE_STRIP requires at least 2 points.
 
     if (mTopology == Topology::LINES && nv % 2 != 0) {
         throw std::runtime_error(

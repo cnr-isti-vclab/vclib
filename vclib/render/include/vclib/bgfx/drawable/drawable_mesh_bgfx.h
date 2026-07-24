@@ -316,9 +316,15 @@ public:
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        // TODO: manage ID for wireframe
+        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawWireframeLinesId(settings.viewId, settings.objectId);
+        }
 
-        // TODO: manage ID for edges
+        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawEdgeLinesId(settings.viewId, settings.objectId);
+        }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());

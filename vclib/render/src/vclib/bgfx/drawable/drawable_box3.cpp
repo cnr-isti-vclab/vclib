@@ -7,13 +7,15 @@
 
 #include <vclib/bgfx/drawable/drawable_box3.h>
 
+#include <vclib/algorithms/core.h>
+
 namespace vcl {
 
 DrawableBox3::DrawableBox3(const DrawableBox3& other) :
         DrawableObject(other), mBox(other.mBox)
 {
     mBoxLines.generalColor() = other.mBoxLines.generalColor();
-    mBoxLines.thickness()    = other.mBoxLines.thickness();
+    mBoxLines.setWidth(other.mBoxLines.width());
     updateLines();
 }
 
@@ -33,12 +35,12 @@ void DrawableBox3::swap(DrawableBox3& other)
 
 void DrawableBox3::setThickness(float thickness)
 {
-    mBoxLines.thickness() = thickness;
+    mBoxLines.setWidth(thickness);
 }
 
 void DrawableBox3::setColor(const Color& color)
 {
-    mBoxLines.generalColor() = color;
+    mBoxLines.setGeneralColor(color);
 }
 
 void DrawableBox3::draw(const DrawObjectSettings& settings)
@@ -50,18 +52,12 @@ void DrawableBox3::draw(const DrawObjectSettings& settings)
 
 void DrawableBox3::updateLines()
 {
-    // clang-format off
-    std::vector<float> points = {
-        mBox.min().x(), mBox.min().y(), mBox.min().z(),
-        mBox.max().x(), mBox.min().y(), mBox.min().z(),
-        mBox.min().x(), mBox.max().y(), mBox.min().z(),
-        mBox.max().x(), mBox.max().y(), mBox.min().z(),
-        mBox.min().x(), mBox.min().y(), mBox.max().z(),
-        mBox.max().x(), mBox.min().y(), mBox.max().z(),
-        mBox.min().x(), mBox.max().y(), mBox.max().z(),
-        mBox.max().x(), mBox.max().y(), mBox.max().z()
-    };
+    std::vector<Point3f> points(8);
+    for (uint i = 0; i < 8; ++i) {
+        points[i] = boxVertex(mBox, i);
+    }
 
+    // clang-format off
     std::vector<uint> lineIndices = {
         0, 1,
         1, 3,
@@ -77,7 +73,8 @@ void DrawableBox3::updateLines()
         3, 7
     };
     // clang-format on
-    mBoxLines.setPoints(points, lineIndices, {}, {}, {});
+    mBoxLines.setVertices(points);
+    mBoxLines.setIndices(lineIndices);
 }
 
 } // namespace vcl

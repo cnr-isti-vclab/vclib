@@ -5,9 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-vec3 a_position  : POSITION;  // p0 
-vec3 a_normal    : NORMAL;    // n0
-vec4 a_color0    : COLOR0;    // c0
+$input v_color, v_normal
 
-vec4 v_color     : COLOR0;    // vertex color
-vec3 v_normal    : NORMAL;
+#include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
+
+void main() {
+    gl_FragColor = u_linesId;
+}
