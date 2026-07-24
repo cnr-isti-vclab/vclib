@@ -35,7 +35,10 @@ public:
  * @return a pointer to the display ID, or nullptr if the display ID cannot be
  * retrieved.
  */
-inline void* getDisplayId() { return detail::WindowManagerNative::displayId(); }
+inline void* getDisplayId()
+{
+    return detail::WindowManagerNative::displayId();
+}
 
 } // namespace vcl::glfw
 

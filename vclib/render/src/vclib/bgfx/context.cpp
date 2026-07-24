@@ -302,13 +302,14 @@ Context::Context(void* windowHandle, void* displayHandle)
         // Headless context: initialized when no window handle is provided
         mIsHeadless = true;
 #ifdef __APPLE__
-        // macOS requires a window to initialize bgfx, so we create a dummy 1x1 hidden window
+        // macOS requires a window to initialize bgfx, so we create a dummy 1x1
+        // hidden window
         mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
 #else
         mWindowHandle  = nullptr;
         mDisplayHandle = displayHandle;
 #ifdef __linux__
-        if(mDisplayHandle == nullptr) {
+        if (mDisplayHandle == nullptr) {
             mDisplayHandle = vcl::getDisplayId();
         }
 #endif

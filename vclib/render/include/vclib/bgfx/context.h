@@ -29,7 +29,7 @@ class Context
     void* mWindowHandle  = nullptr;
     void* mDisplayHandle = nullptr;
     /// @brief Flag indicating whether the context is running in headless mode
-    bool  mIsHeadless    = false;
+    bool mIsHeadless = false;
 
     // ordered set of views (high priority from top, low priority at the
     // bottom)

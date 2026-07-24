@@ -107,12 +107,12 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
         ON
     )
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_TINYGTLF
-    "Allow install tinygltf source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_TINYGTLF
+        "Allow install tinygltf source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(tinygltf.cmake)
 endif()
 
@@ -121,24 +121,24 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
     option(VCLIB_ALLOW_SYSTEM_BOOST "Allow use of system-provided Boost" ON)
     option(VCLIB_ALLOW_DOWNLOAD_BOOST "Allow use of downloaded Boost source" ON)
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_BOOST
-    "Allow install Boost source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_BOOST
+        "Allow install Boost source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(boost.cmake)
 
     # CGAL
     option(VCLIB_ALLOW_DOWNLOAD_CGAL "Allow use of downloaded CGAL source" ON)
     option(VCLIB_ALLOW_SYSTEM_CGAL "Allow use of system-provided CGAL" ON)
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_CGAL
-    "Allow install CGAL source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_CGAL
+        "Allow install CGAL source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
 
     include(cgal.cmake)
 
@@ -159,12 +159,12 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
         ON
     )
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_LIBIGL
-    "Allow install libigl source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_LIBIGL
+        "Allow install libigl source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(libigl.cmake)
 
     # PoissonRecon
@@ -174,24 +174,24 @@ if(VCLIB_BUILD_MODULE_EXTERNAL)
         ON
     )
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_POISSON_RECON
-    "Allow install PoissonRecon source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_POISSON_RECON
+        "Allow install PoissonRecon source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(poisson-recon.cmake)
 
     # VCG
     option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
     option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_VCG
-    "Allow install VCG source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_VCG
+        "Allow install VCG source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(vcg.cmake)
 endif()
 
@@ -214,12 +214,12 @@ if(VCLIB_BUILD_MODULE_RENDER)
             ON
         )
         cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_BGFX
-    "Allow install bgfx source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+            VCLIB_ALLOW_INSTALL_BGFX
+            "Allow install bgfx source"
+            ON
+            "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+            OFF
+        )
         include(bgfx.cmake)
     endif()
 
@@ -232,23 +232,23 @@ if(VCLIB_BUILD_MODULE_RENDER)
     option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
     option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_GLFW
-    "Allow install GLFW source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_GLFW
+        "Allow install GLFW source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(glfw.cmake)
 
     ### ImGui
     option(VCLIB_ALLOW_DOWNLOAD_IMGUI "Allow use of downloaded ImGui source" ON)
     cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_IMGUI
-    "Allow install ImGui source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
+        VCLIB_ALLOW_INSTALL_IMGUI
+        "Allow install ImGui source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
     include(imgui.cmake)
 endif()
 

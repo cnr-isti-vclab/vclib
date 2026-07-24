@@ -58,13 +58,9 @@ public:
 class Application
 {
 public:
-    Application(int& /*argc*/, char** /*argv*/) {
-        glfwInit();
-    }
+    Application(int& /*argc*/, char** /*argv*/) { glfwInit(); }
 
-    ~Application() {
-        glfwTerminate();
-    }
+    ~Application() { glfwTerminate(); }
 
     int exec() { return 0; }
 };
@@ -104,7 +100,10 @@ using qt::getDisplayId;
 #elif VCLIB_WITH_GLFW
 using glfw::getDisplayId;
 #else
-inline void* getDisplayId() { return nullptr; }
+inline void* getDisplayId()
+{
+    return nullptr;
+}
 #endif
 
 } // namespace vcl

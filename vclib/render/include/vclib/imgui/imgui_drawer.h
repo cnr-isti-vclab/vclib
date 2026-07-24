@@ -128,8 +128,7 @@ public:
 #elif defined(VCLIB_RENDER_BACKEND_BGFX)
         (void) viewId;
         bgfx::setViewFrameBuffer(
-            mImguiViewId,
-            static_cast<DerivedRenderApp*>(this)->frameBuffer());
+            mImguiViewId, static_cast<DerivedRenderApp*>(this)->frameBuffer());
         ImGui_ImplBgfx_NewFrame(mImguiViewId);
 #endif // VCLIB_RENDER_BACKEND_*
 #ifdef VCLIB_WITH_GLFW
