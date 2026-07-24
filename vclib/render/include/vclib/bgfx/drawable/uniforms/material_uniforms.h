@@ -45,10 +45,13 @@ class MaterialUniforms
     // .x : pbr settings
     static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
 
+    static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
+
     static inline Uniform sBaseColorUniform;
     static inline Uniform sFactorsPackUniform;
     static inline Uniform sEmissiveAlphaCutoffPackUniform;
     static inline Uniform sSettingsUniform;
+    static inline Uniform sAnisotropyPackUniform;
 
 public:
     MaterialUniforms() = delete;
@@ -94,6 +97,9 @@ public:
         sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
         sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+
+        sAnisotropyPack[0] = m.anisotropyStrength();
+        sAnisotropyPack[1] = m.anisotropyRotation();
     }
 
     static void bind()
@@ -111,11 +117,15 @@ public:
                 Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
         if (!sSettingsUniform.isValid())
             sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
+        if (!sAnisotropyPackUniform.isValid())
+            sAnisotropyPackUniform =
+                Uniform("u_anisotropyPack", bgfx::UniformType::Vec4);
 
         sBaseColorUniform.bind(&sBaseColor);
         sFactorsPackUniform.bind(&sFactorsPack);
         sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
         sSettingsUniform.bind(&sSettings);
+        sAnisotropyPackUniform.bind(&sAnisotropyPack);
     }
 };
 
