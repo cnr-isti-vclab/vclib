@@ -11,3 +11,6 @@ vec4 a_color0    : COLOR0;    // c0
 
 vec4 v_color     : COLOR0;    // vertex color
 vec3 v_normal    : NORMAL;
+
+vec3  v_worldPos    : TEXCOORD0 = vec3(0.0, 0.0, 0.0);
+float v_discardFlag : TEXCOORD1 = 0;

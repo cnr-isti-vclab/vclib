@@ -366,6 +366,13 @@ public:
         mPoints.setSelectionColor(mrs.pointSelectionColor());
     }
 
+    void updateCrossSectionSettings(const CrossSectionSettings& css)
+    {
+        mEdgeLines.crossSectionSettings() = css;
+        mWireframeLines.crossSectionSettings() = css;
+        mPoints.setCrossSectionSettings(css);
+    }
+
 private:
     void setVertexPositionsBuffer(const MeshType& mesh) // override
     {

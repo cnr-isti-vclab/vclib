@@ -8,9 +8,12 @@
 #ifndef VCL_BGFX_PRIMITIVES_LINES_H
 #define VCL_BGFX_PRIMITIVES_LINES_H
 
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/primitives/lines/cpu_generated_lines.h>
 #include <vclib/bgfx/primitives/lines/primitive_lines.h>
 #include <vclib/bgfx/uniform.h>
+
+#include <vclib/render/settings/cross_section_settings.h>
 
 #include <vclib/base.h>
 #include <vclib/space/core.h>
@@ -74,6 +77,8 @@ private:
     BitSet8    mColorCapability = {false, false, true}; // general color only
     ColorToUse mColorToUse      = ColorToUse::GENERAL;
     Color      mGeneralColor    = Color::ColorABGR::LightGray;
+
+    CrossSectionSettings mCrossSectionSettings;
 
     ImplementationType mType = ImplementationType::COUNT;
 
@@ -371,6 +376,25 @@ public:
     Color& generalColor() { return mGeneralColor; }
 
     /**
+     * @brief Returns the current cross section settings.
+     * @return The current cross section settings.
+     */
+    const CrossSectionSettings& crossSectionSettings() const
+    {
+        return mCrossSectionSettings;
+    }
+
+    /**
+     * @brief Returns a reference to the current cross section settings. This
+     * allows to modify the settings directly.
+     * @return A reference to the current cross section settings.
+     */
+    CrossSectionSettings& crossSectionSettings()
+    {
+        return mCrossSectionSettings;
+    }
+
+    /**
      * @brief Returns the current implementation type that is used to render
      * the lines.
      * @return The current implementation type that is used to render the
@@ -518,6 +542,19 @@ private:
             std::bit_cast<float>(mGeneralColor.abgr()),
             mDepthOffset};
         sSettingUH.bind(data);
+
+        // cross section settings
+        if (mCrossSectionSettings.isEnabled()) {
+            using enum CrossSectionSettings::CrossSectionType;
+            CrossSectionUniforms::set(
+                mCrossSectionSettings.lower(),
+                mCrossSectionSettings.upper(),
+                mCrossSectionSettings.type() == PER_FRAGMENT);
+        }
+        else {
+            CrossSectionUniforms::set();
+        }
+        CrossSectionUniforms::bind();
     }
 };
 
