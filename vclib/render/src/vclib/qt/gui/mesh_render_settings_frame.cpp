@@ -28,7 +28,10 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 
     mUI->tabWidget->tabBar()->setExpanding(false);
 
-    auto setupTab = [this](int index, GenericMeshRenderSettingsFrame* frame, const QString& title) {
+    auto setupTab = [this](
+                        int                             index,
+                        GenericMeshRenderSettingsFrame* frame,
+                        const QString&                  title) {
         mUI->tabWidget->addTab(frame, title);
         QCheckBox* tabCb = new QCheckBox();
         tabCb->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -38,10 +41,12 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
         origCb->hide();
 
         connect(origCb, &QCheckBox::toggled, tabCb, [tabCb](bool checked) {
-            if (tabCb->isChecked() != checked) tabCb->setChecked(checked);
+            if (tabCb->isChecked() != checked)
+                tabCb->setChecked(checked);
         });
         connect(tabCb, &QCheckBox::toggled, origCb, [origCb](bool checked) {
-            if (origCb->isChecked() != checked) origCb->setChecked(checked);
+            if (origCb->isChecked() != checked)
+                origCb->setChecked(checked);
         });
 
         frames.push_back(frame);
