@@ -66,16 +66,6 @@ Point3d DrawableObjectVector::center() const
     return bb.center();
 }
 
-std::shared_ptr<DrawableObject> DrawableObjectVector::clone() const&
-{
-    return std::make_shared<DrawableObjectVector>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableObjectVector::clone() &&
-{
-    return std::make_shared<DrawableObjectVector>(std::move(*this));
-}
-
 bool DrawableObjectVector::isVisible() const
 {
     return mVisible;

@@ -5,9 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/drawable_trackball_bgfx.h>
+#include <vclib/bgfx/gizmos/trackball_gizmo_bgfx.h>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.h>
+#include <vclib/bgfx/gizmos/uniforms/trackball_gizmo_uniforms.h>
 
 #include <vclib/algorithms/core/create.h>
 #include <vclib/bgfx/context.h>
@@ -93,21 +93,12 @@ static const uint16_t N_POINTS = 128;
 static const auto     TRACKBALL_DATA =
     detail::createTrackballData<float, uint16_t>(1.0, N_POINTS);
 
-DrawableTrackBallBGFX::DrawableTrackBallBGFX()
+TrackballGizmoBGFX::TrackballGizmoBGFX()
 {
     createBuffers();
 }
 
-DrawableTrackBallBGFX::DrawableTrackBallBGFX(
-    const DrawableTrackBallBGFX& other) :
-        mVisible(other.mVisible), mTransform(other.mTransform)
-{
-    // copy all the members that can be copied, and then re-create the
-    // buffers
-    createBuffers();
-}
-
-void DrawableTrackBallBGFX::swap(DrawableTrackBallBGFX& other)
+void TrackballGizmoBGFX::swap(TrackballGizmoBGFX& other)
 {
     using std::swap;
     swap(mVisible, other.mVisible);
@@ -122,24 +113,22 @@ void DrawableTrackBallBGFX::swap(DrawableTrackBallBGFX& other)
  * @param[in] isDragging: true if the trackball is being dragged, false
  * otherwise.
  */
-void DrawableTrackBallBGFX::updateDragging(bool isDragging)
+void TrackballGizmoBGFX::updateDragging(bool isDragging)
 {
     mIsDragging = isDragging;
 }
 
-void DrawableTrackBallBGFX::setTransform(const vcl::Matrix44f& mtx)
+void TrackballGizmoBGFX::setTransform(const vcl::Matrix44f& mtx)
 {
     mTransform = mtx;
 }
 
-DrawableTrackBallBGFX& DrawableTrackBallBGFX::operator=(
-    DrawableTrackBallBGFX other)
+void TrackballGizmoBGFX::init()
 {
-    swap(other);
-    return *this;
+    // Empty
 }
 
-void DrawableTrackBallBGFX::draw(const DrawObjectSettings& settings)
+void TrackballGizmoBGFX::draw(uint viewId)
 {
     using enum VertFragProgram;
 
@@ -156,39 +145,24 @@ void DrawableTrackBallBGFX::draw(const DrawObjectSettings& settings)
 
         bgfx::setTransform(mTransform.data());
 
-        DrawableTrackballUniforms::setDragging(mIsDragging);
-        DrawableTrackballUniforms::bind();
+        TrackballGizmoUniforms::setDragging(mIsDragging);
+        TrackballGizmoUniforms::bind();
 
-        bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
+        bgfx::submit(viewId, pm.getProgram<DRAWABLE_TRACKBALL>());
     }
 }
 
-Box3d DrawableTrackBallBGFX::boundingBox() const
-{
-    return Box3d();
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() const&
-{
-    return std::make_shared<DrawableTrackBallBGFX>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallBGFX::clone() &&
-{
-    return std::make_shared<DrawableTrackBallBGFX>(std::move(*this));
-}
-
-bool DrawableTrackBallBGFX::isVisible() const
+bool TrackballGizmoBGFX::isVisible() const
 {
     return mVisible;
 }
 
-void DrawableTrackBallBGFX::setVisibility(bool vis)
+void TrackballGizmoBGFX::setVisibility(bool vis)
 {
     mVisible = vis;
 }
 
-void DrawableTrackBallBGFX::createBuffers()
+void TrackballGizmoBGFX::createBuffers()
 {
     // vertex layout
     bgfx::VertexLayout layout;

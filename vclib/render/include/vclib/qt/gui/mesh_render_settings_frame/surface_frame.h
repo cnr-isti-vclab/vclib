@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum SURF_COLOR {
         SC_VERT = 0,

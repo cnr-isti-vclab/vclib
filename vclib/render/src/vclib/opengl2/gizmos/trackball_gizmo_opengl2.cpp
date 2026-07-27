@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/opengl2/drawable/drawable_trackball_opengl2.h>
+#include <vclib/opengl2/gizmos/trackball_gizmo_opengl2.h>
 
 #include <vclib/algorithms/core/create.h>
 #include <vclib/space/core/color.h>
@@ -90,17 +90,17 @@ static const uint16_t N_POINTS = 128;
 static const auto     TRACKBALL_DATA =
     detail::createTrackballData<float, uint16_t>(1.0, N_POINTS);
 
-void DrawableTrackBallOpenGL2::updateDragging(bool isDragging)
+void TrackballGizmoOpenGL2::updateDragging(bool isDragging)
 {
     mIsDragging = isDragging;
 }
 
-void DrawableTrackBallOpenGL2::setTransform(const vcl::Matrix44f& mtx)
+void TrackballGizmoOpenGL2::setTransform(const vcl::Matrix44f& mtx)
 {
     mTransform = mtx;
 }
 
-void DrawableTrackBallOpenGL2::draw(const DrawObjectSettings&)
+void TrackballGizmoOpenGL2::draw(uint /*viewId*/)
 {
     if (!isVisible()) {
         return;
@@ -137,27 +137,12 @@ void DrawableTrackBallOpenGL2::draw(const DrawObjectSettings&)
     glPopAttrib();
 }
 
-Box3d DrawableTrackBallOpenGL2::boundingBox() const
-{
-    return Box3d();
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallOpenGL2::clone() const&
-{
-    return std::make_shared<DrawableTrackBallOpenGL2>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableTrackBallOpenGL2::clone() &&
-{
-    return std::make_shared<DrawableTrackBallOpenGL2>(std::move(*this));
-}
-
-bool DrawableTrackBallOpenGL2::isVisible() const
+bool TrackballGizmoOpenGL2::isVisible() const
 {
     return mVisible;
 }
 
-void DrawableTrackBallOpenGL2::setVisibility(bool vis)
+void TrackballGizmoOpenGL2::setVisibility(bool vis)
 {
     mVisible = vis;
 }

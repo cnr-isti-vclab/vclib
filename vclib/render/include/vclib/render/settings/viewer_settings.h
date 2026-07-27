@@ -5,22 +5,37 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
-#define VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
+#ifndef VCL_RENDER_SETTINGS_VIEWER_SETTINGS_H
+#define VCL_RENDER_SETTINGS_VIEWER_SETTINGS_H
 
 #include <vclib/base.h>
+#include <vclib/render/settings/render_mode.h>
 
 namespace vcl {
 
-struct PBRViewerSettings
+/**
+ * @brief Contains the settings for the viewer, such as the active render
+ * mode, exposure, and background visualization options.
+ */
+struct ViewerSettings
 {
+    /**
+     * @brief The tone mapping operators available when rendering.
+     */
     enum class ToneMapping {
+        /** @brief No tone mapping is applied. */
         NONE,
+        /** @brief Basic (Reinhard) tone mapping. */
         BASIC,
+        /** @brief ACES Filmic Tone Mapping (Hill). */
         ACES_HILL,
+        /** @brief ACES Filmic Tone Mapping (Hill) with pre-exposure boost. */
         ACES_HILL_EXPOSURE_BOOST,
+        /** @brief ACES Filmic Tone Mapping (Narkowicz). */
         ACES_NARKOWICZ,
+        /** @brief Khronos PBR Neutral tone mapping. */
         KHRONOS_PBR_NEUTRAL,
+        /** @brief Number of tone mapping operators. */
         COUNT
     };
 
@@ -34,11 +49,9 @@ struct PBRViewerSettings
             "Khronos PBR Neutral"};
 
     /**
-     * @brief Option that tells whether the viewer be set in PBR mode or not.
-     *
-     * All the options below are used only if this flag is set to true.
+     * @brief Option that tells which render mode the viewer should use.
      */
-    bool pbrMode = false;
+    RenderMode renderMode = RenderMode::CLASSIC;
 
     /**
      * @brief Option that tells whether to use image based lighting (IBL)
@@ -55,16 +68,16 @@ struct PBRViewerSettings
     bool renderBackgroundPanorama = false;
 
     /**
-     * @brief The exposure value to use in PBR mode.
+     * @brief The exposure value to use.
      */
     float exposure = 1.0f;
 
     /**
-     * @brief The tone mapping operator to use in PBR mode.
+     * @brief The tone mapping operator to use.
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
+#endif // VCL_RENDER_SETTINGS_VIEWER_SETTINGS_H

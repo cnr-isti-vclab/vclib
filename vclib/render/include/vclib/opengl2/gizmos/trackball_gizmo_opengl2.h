@@ -5,22 +5,23 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_OPENGL2_DRAWABLE_DRAWABLE_TRACKBALL_OPENGL2_H
-#define VCL_OPENGL2_DRAWABLE_DRAWABLE_TRACKBALL_OPENGL2_H
+#ifndef VCL_OPENGL2_GIZMOS_TRACKBALL_GIZMO_OPENGL2_H
+#define VCL_OPENGL2_GIZMOS_TRACKBALL_GIZMO_OPENGL2_H
+
+#include <vclib/render/gizmos/abstract_gizmo.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/render/drawable/drawable_object.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
 
 /**
- * @brief The DrawableTrackBallOpenGL2 class is a drawable object that
+ * @brief The TrackballGizmoOpenGL2 class is a visual gizmo that
  * renders a trackball using the OpenGL2 backend.
  *
  * It draws a 3D gizmo composed of three circles.
  */
-class DrawableTrackBallOpenGL2 : public DrawableObject
+class TrackballGizmoOpenGL2 : public AbstractGizmo
 {
     bool mVisible = true;
 
@@ -28,21 +29,17 @@ class DrawableTrackBallOpenGL2 : public DrawableObject
     bool           mIsDragging = false;
 
 public:
-    DrawableTrackBallOpenGL2() = default;
+    TrackballGizmoOpenGL2() = default;
 
     void updateDragging(bool isDragging);
 
     void setTransform(const vcl::Matrix44f& mtx);
 
-    // DrawableObject interface
+    // AbstractGizmo interface
 
-    void draw(const DrawObjectSettings& settings) override;
+    void init() override {}
 
-    Box3d boundingBox() const override;
-
-    std::shared_ptr<DrawableObject> clone() const& override;
-
-    std::shared_ptr<DrawableObject> clone() && override;
+    void draw(uint viewId = 0) override;
 
     bool isVisible() const override;
 
@@ -51,4 +48,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_DRAWABLE_DRAWABLE_TRACKBALL_OPENGL2_H
+#endif // VCL_OPENGL2_GIZMOS_TRACKBALL_GIZMO_OPENGL2_H

@@ -18,7 +18,7 @@ BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 fl
 BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RO(indices, uint, 5);
-BUFFER_RW(face_selected, uint, 6); // is face selected? 1 bit per triangle (MSb first)
+BUFFER_RW(face_selected, uint, 12); // is face selected? 1 bit per triangle (MSb first)
 
 BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index

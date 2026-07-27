@@ -10,15 +10,20 @@
 
 #include "imgui_helpers.h"
 
-#include <vclib/render/concepts/pbr_viewer.h>
+#include <vclib/imgui/gui/editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/bounding_box_editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/selection_editor_frame.h>
+#include <vclib/render/concepts/viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/render_mode.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <imgui/imgui.h>
 
 #include <algorithm>
+#include <cstring>
 #include <iterator>
 
 namespace vcl::imgui {
@@ -28,37 +33,140 @@ class MeshViewerDrawerImgui : public vcl::ViewerDrawer<DerivedRenderApp>
 {
     using Base = vcl::ViewerDrawer<DerivedRenderApp>;
 
-    std::shared_ptr<vcl::AxisEditor<typename Base::ViewerType>> mAxisEditor;
-    std::shared_ptr<vcl::MeshSelectorEditor<typename Base::ViewerType>>
-        mMeshSelectorEditor;
-    std::shared_ptr<vcl::BoundingBoxEditor<typename Base::ViewerType>>
-        mBoundingBoxEditor;
-    std::shared_ptr<vcl::SelectionEditor<typename Base::ViewerType>>
-        mSelectionEditor;
+    bool mShowViewerSettings       = false;
+    char mPanoramaPathBuffer[1024] = "";
+
+    std::vector<std::shared_ptr<EditorFrameImgui>> mEditorFrames;
 
 public:
     MeshViewerDrawerImgui(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        // install editors
-        mAxisEditor = std::dynamic_pointer_cast<
-            vcl::AxisEditor<typename Base::ViewerType>>(
-            Base::getEditor(Base::ViewerType::BuiltInEditors::AXIS));
+    }
 
-        mMeshSelectorEditor =
-            Base::template pushEditor<vcl::MeshSelectorEditor>();
-        mMeshSelectorEditor->setActive(true);
-
-        mBoundingBoxEditor =
-            Base::template pushEditor<vcl::BoundingBoxEditor>();
-
-        mSelectionEditor = Base::template pushEditor<vcl::SelectionEditor>();
+    void addEditorFrame(std::shared_ptr<EditorFrameImgui> frame)
+    {
+        mEditorFrames.push_back(frame);
     }
 
     virtual void onDraw(vcl::uint viewId) override
     {
         // draw parent
         Base::onDraw(viewId);
+
+        if constexpr (ViewerConcept<Base>) {
+            ViewerSettings viewerSettings = Base::viewerSettings();
+
+            // Main Menu Bar
+            if (ImGui::BeginMainMenuBar()) {
+                if (ImGui::BeginMenu("Render")) {
+                    if (ImGui::BeginMenu("Render Mode")) {
+                        bool classicChecked =
+                            (viewerSettings.renderMode == RenderMode::CLASSIC);
+                        if (ImGui::MenuItem(
+                                "Classic", nullptr, &classicChecked)) {
+                            viewerSettings.renderMode = RenderMode::CLASSIC;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        bool pbrChecked =
+                            (viewerSettings.renderMode == RenderMode::PBR);
+                        if (ImGui::MenuItem("PBR", nullptr, &pbrChecked)) {
+                            viewerSettings.renderMode = RenderMode::PBR;
+                            Base::setViewerSettings(viewerSettings);
+                        }
+                        ImGui::EndMenu();
+                    }
+                    if (ImGui::MenuItem(
+                            "Viewer Settings", nullptr, &mShowViewerSettings)) {
+                        if (mShowViewerSettings) {
+                            std::string panName = Base::panoramaFileName();
+                            std::strncpy(
+                                mPanoramaPathBuffer,
+                                panName.c_str(),
+                                sizeof(mPanoramaPathBuffer) - 1);
+                            mPanoramaPathBuffer
+                                [sizeof(mPanoramaPathBuffer) - 1] = '\0';
+                        }
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }
+
+            // Viewer Settings Window
+            if (mShowViewerSettings) {
+                if (ImGui::Begin("Viewer Settings", &mShowViewerSettings)) {
+                    // exposure slider
+                    float exposure = viewerSettings.exposure;
+                    if (ImGui::SliderFloat(
+                            "Exposure",
+                            &exposure,
+                            0.001f,
+                            64.0f,
+                            "%.3f",
+                            ImGuiSliderFlags_Logarithmic))
+                        viewerSettings.exposure = exposure;
+
+                    // tone mapping combo box
+                    uint toneMapping = toUnderlying(viewerSettings.toneMapping);
+                    const auto* toneMappingNames =
+                        ViewerSettings::TONE_MAPPING_STRINGS;
+                    if (ImGui::BeginCombo(
+                            "Tone mapping", toneMappingNames[toneMapping])) {
+                        const uint CNT =
+                            toUnderlying(ViewerSettings::ToneMapping::COUNT);
+                        for (uint n = 0; n < CNT; n++) {
+                            bool isSelected = toneMapping == n;
+                            if (ImGui::Selectable(
+                                    toneMappingNames[n], isSelected)) {
+                                viewerSettings.toneMapping =
+                                    static_cast<ViewerSettings::ToneMapping>(n);
+                            }
+                            if (isSelected)
+                                ImGui::SetItemDefaultFocus();
+                        }
+                        ImGui::EndCombo();
+                    }
+
+                    ImGui::InputText(
+                        "Panorama Path",
+                        mPanoramaPathBuffer,
+                        IM_ARRAYSIZE(mPanoramaPathBuffer));
+                    ImGui::SameLine();
+                    if (ImGui::Button("Load")) {
+                        Base::setPanorama(std::string(mPanoramaPathBuffer));
+                    }
+
+                    bool hasPanorama = !Base::panoramaFileName().empty();
+                    ImGui::BeginDisabled(!hasPanorama);
+
+                    // image based lighting
+                    ImGui::Checkbox(
+                        "Image Based Lighting",
+                        [&]() {
+                            return viewerSettings.imageBasedLighting;
+                        },
+                        [&](bool ibl) {
+                            viewerSettings.imageBasedLighting = ibl;
+                        });
+
+                    // draw background checkbox
+                    ImGui::Checkbox(
+                        "Render Background Panorama",
+                        [&]() {
+                            return viewerSettings.renderBackgroundPanorama;
+                        },
+                        [&](bool renderBg) {
+                            viewerSettings.renderBackgroundPanorama = renderBg;
+                        });
+
+                    ImGui::EndDisabled();
+
+                    Base::setViewerSettings(viewerSettings);
+                }
+                ImGui::End();
+            }
+        }
 
         // draw imgui
         ImGui::Begin("Meshes");
@@ -87,102 +195,6 @@ public:
             }
         }
 
-        if constexpr (PBRViewerConcept<Base>) {
-            // combo box for pbr mode
-            ImGui::Separator();
-            ImGui::Text("Render Mode:");
-            ImGui::SameLine();
-
-            PBRViewerSettings pbrSettings = Base::pbrSettings();
-
-            const char* renderModeNames[] = {"Classic", "PBR"};
-            bool        pbrMode           = pbrSettings.pbrMode;
-            ImGui::SetNextItemWidth(80);
-            if (ImGui::BeginCombo(
-                    "##ComboRenderMode",
-                    pbrMode ? renderModeNames[1] : renderModeNames[0])) {
-                for (int n = 0; n < IM_ARRAYSIZE(renderModeNames); n++) {
-                    bool isSelected =
-                        (pbrMode && n == 1) || (!pbrMode && n == 0);
-                    if (ImGui::Selectable(renderModeNames[n], isSelected)) {
-                        pbrSettings.pbrMode = (n == 1);
-                    }
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-
-            // Update local state and persist any changes to the viewer.
-            pbrMode = pbrSettings.pbrMode;
-            Base::setPbrSettings(pbrSettings);
-
-            ImGui::BeginDisabled(!pbrMode);
-            {
-                // exposure slider
-                ImGui::Separator();
-                ImGui::Text("Exposure:");
-                ImGui::SameLine();
-                float exposure = pbrSettings.exposure;
-                if (ImGui::SliderFloat(
-                        "##Exposure",
-                        &exposure,
-                        0.001f,
-                        64.0f,
-                        "%.3f",
-                        ImGuiSliderFlags_Logarithmic))
-                    pbrSettings.exposure = exposure;
-
-                // tone mapping combo box
-                ImGui::Text("Tone mapping:");
-                ImGui::SameLine();
-                uint toneMapping = toUnderlying(pbrSettings.toneMapping);
-
-                const auto* toneMappingNames =
-                    PBRViewerSettings::TONE_MAPPING_STRINGS;
-                if (ImGui::BeginCombo(
-                        "##ComboToneMapping", toneMappingNames[toneMapping])) {
-                    const uint CNT =
-                        toUnderlying(PBRViewerSettings::ToneMapping::COUNT);
-                    for (uint n = 0; n < CNT; n++) {
-                        bool isSelected = toneMapping == n;
-                        if (ImGui::Selectable(
-                                toneMappingNames[n], isSelected)) {
-                            pbrSettings.toneMapping =
-                                static_cast<PBRViewerSettings::ToneMapping>(n);
-                        }
-                        if (isSelected)
-                            ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-
-                // image based lighting
-                ImGui::Checkbox(
-                    "Image Based Lighting",
-                    [&]() {
-                        return pbrSettings.imageBasedLighting;
-                    },
-                    [&](bool ibl) {
-                        pbrSettings.imageBasedLighting = ibl;
-                    });
-
-                // draw background checkbox
-                ImGui::Checkbox(
-                    "Render Background Panorama",
-                    [&]() {
-                        return pbrSettings.renderBackgroundPanorama;
-                    },
-                    [&](bool renderBg) {
-                        pbrSettings.renderBackgroundPanorama = renderBg;
-                    });
-            }
-            ImGui::EndDisabled();
-            if (pbrSettings.pbrMode) {
-                Base::setPbrSettings(pbrSettings);
-            }
-        }
-
         ImGui::End();
 
         // floating editors toolbar
@@ -206,11 +218,10 @@ private:
             ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
         if (ImGui::Begin("Toolbar", nullptr, flags)) {
-            // axis editor toggle
-            bool axisActive = mAxisEditor && mAxisEditor->isVisible();
+            // axis toggle
+            bool axisActive = Base::isAxisVisible();
             if (ImGui::Button(axisActive ? "[Axis]" : " Axis ")) {
-                if (mAxisEditor)
-                    mAxisEditor->toggleVisibility();
+                Base::toggleAxisVisibility();
             }
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Axis");
@@ -225,181 +236,12 @@ private:
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Trackball");
 
-            ImGui::SameLine();
-
-            // bounding box editor toggle
-            bool bbActive =
-                mBoundingBoxEditor && mBoundingBoxEditor->isActive();
-            // TODO: find a way to insert the assets/icons/bbox.png icon here
-            // instead of text
-            if (ImGui::Button(bbActive ? "[BB]" : " BB ")) {
-                if (mBoundingBoxEditor)
-                    mBoundingBoxEditor->setActive(!bbActive);
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Show Bounding Box");
-
-            // small settings popup button
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button("v##BBSettings")) {
-                ImGui::OpenPopup("##BBSettingsPopup");
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Bounding Box Settings");
-
-            if (ImGui::BeginPopup("##BBSettingsPopup")) {
-                drawBoundingBoxSettings();
-                ImGui::EndPopup();
-            }
-
-            ImGui::SameLine(0, 6);
-            // TODO: still no way to add vertical separator using imgui
-            // https://github.com/ocornut/imgui/issues/8321
-            // ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
-            ImGui::SameLine(0, 6);
-
-            // selection editor toggles
-            auto& selSettings = mSelectionEditor->settings();
-
-            bool vSel = std::any_cast<bool>(
-                selSettings.customSettings["selectVertices"]);
-            bool fSel =
-                std::any_cast<bool>(selSettings.customSettings["selectFaces"]);
-
-            if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
-                vSel                                         = !vSel;
-                selSettings.customSettings["selectVertices"] = vSel;
-                mSelectionEditor->setActive(vSel || fSel);
-                mSelectionEditor->refreshSettings();
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Vertex Selection");
-
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
-                fSel                                      = !fSel;
-                selSettings.customSettings["selectFaces"] = fSel;
-                mSelectionEditor->setActive(vSel || fSel);
-                mSelectionEditor->refreshSettings();
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Face Selection");
-
-            // small settings popup button
-            ImGui::SameLine(0, 2);
-            if (ImGui::Button("v##SelSettings")) {
-                ImGui::OpenPopup("##SelSettingsPopup");
-            }
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
-                ImGui::SetTooltip("Selection Settings");
-
-            if (ImGui::BeginPopup("##SelSettingsPopup")) {
-                drawSelectionSettings();
-                ImGui::EndPopup();
+            for (auto& frame : mEditorFrames) {
+                ImGui::SameLine(0, 6);
+                frame->draw();
             }
         }
         ImGui::End();
-    }
-
-    void drawSelectionSettings()
-    {
-        if (!mSelectionEditor)
-            return;
-
-        EditorSettings& sts = mSelectionEditor->settings();
-
-        // Edit mode
-        static const char* editModeNames[] = {
-            "None", "Selected Object", "Visible Objects", "All Objects"};
-        int currentMode = toUnderlying(sts.editMode);
-        ImGui::Text("Apply to:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::BeginCombo("##SelEditMode", editModeNames[currentMode])) {
-            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
-                bool selected = (n == currentMode);
-                if (n == 0 || n == 3)
-                    ImGui::BeginDisabled();
-                if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
-                    mSelectionEditor->refreshSettings();
-                }
-                if (n == 0 || n == 3)
-                    ImGui::EndDisabled();
-                if (selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        // Only visible checkbox
-        assert(sts.customSettings["onlyVisible"].has_value());
-        bool onlyVisible =
-            std::any_cast<bool>(sts.customSettings["onlyVisible"]);
-        ImGui::Checkbox(
-            "Only Visible Faces",
-            [&] {
-                return onlyVisible;
-            },
-            [&](bool v) {
-                sts.customSettings["onlyVisible"] = v;
-                mSelectionEditor->refreshSettings();
-            });
-    }
-
-    void drawBoundingBoxSettings()
-    {
-        if (!mBoundingBoxEditor)
-            return;
-
-        EditorSettings& sts = mBoundingBoxEditor->settings();
-
-        // Edit mode
-        static const char* editModeNames[] = {
-            "None", "Selected Object", "Visible Objects", "All Objects"};
-        int currentMode = toUnderlying(sts.editMode);
-        ImGui::Text("Apply to:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::BeginCombo("##BBEditMode", editModeNames[currentMode])) {
-            for (int n = 0; n < IM_ARRAYSIZE(editModeNames); n++) {
-                bool selected = (n == currentMode);
-                if (ImGui::Selectable(editModeNames[n], selected)) {
-                    sts.editMode = static_cast<EditorSettings::EditMode>(n);
-                    mBoundingBoxEditor->refreshSettings();
-                }
-                if (selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        // Lines width
-        assert(sts.customSettings["thickness"].has_value());
-        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
-        ImGui::Text("Lines Width:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(130);
-        if (ImGui::SliderFloat(
-                "##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
-            sts.customSettings["thickness"] = thickness;
-            mBoundingBoxEditor->refreshSettings();
-        }
-
-        // Lines color
-        assert(sts.customSettings["color"].has_value());
-        ImGui::Text("Lines Color:");
-        ImGui::SameLine();
-        ImGui::ColorEdit4(
-            "##BBColor",
-            [&] {
-                return std::any_cast<Color>(sts.customSettings["color"]);
-            },
-            [&](Color c) {
-                sts.customSettings["color"] = c;
-                mBoundingBoxEditor->refreshSettings();
-            },
-            ImGuiColorEditFlags_NoInputs);
     }
 
     void drawMeshList()

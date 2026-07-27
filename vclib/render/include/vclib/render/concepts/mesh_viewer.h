@@ -64,6 +64,8 @@ concept MeshViewerConcept = requires (
             std::as_const(obj).drawableObjects()
         } -> std::same_as<const vcl::DrawableObjectVector&>;
 
+        { obj.updateGUI() } -> std::same_as<void>;
+
         { obj.refreshEditors() } -> std::same_as<void>;
 
         { obj.fitScene() } -> std::same_as<void>;

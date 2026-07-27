@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/opengl2/drawable/drawable_directional_light_opengl2.h>
+#include <vclib/opengl2/gizmos/directional_light_gizmo_opengl2.h>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -18,7 +18,7 @@
 
 namespace vcl {
 
-DrawableDirectionalLightOpenGL2::DrawableDirectionalLightOpenGL2()
+DirectionalLightGizmoOpenGL2::DirectionalLightGizmoOpenGL2()
 {
     mVertices.reserve(16 * 2 * 3);
 
@@ -43,18 +43,17 @@ DrawableDirectionalLightOpenGL2::DrawableDirectionalLightOpenGL2()
     }
 }
 
-void DrawableDirectionalLightOpenGL2::updateRotation(const vcl::Matrix44f& rot)
+void DirectionalLightGizmoOpenGL2::updateRotation(const vcl::Matrix44f& rot)
 {
     mTransform = rot;
 }
 
-void DrawableDirectionalLightOpenGL2::setLinesColor(const vcl::Color& c)
+void DirectionalLightGizmoOpenGL2::setLinesColor(const vcl::Color& c)
 {
     mColor = c;
 }
 
-void DrawableDirectionalLightOpenGL2::draw(
-    const DrawObjectSettings& /*settings*/)
+void DirectionalLightGizmoOpenGL2::draw(uint /*viewId*/)
 {
     if (!isVisible())
         return;
@@ -83,27 +82,12 @@ void DrawableDirectionalLightOpenGL2::draw(
     glPopAttrib();
 }
 
-Box3d DrawableDirectionalLightOpenGL2::boundingBox() const
-{
-    return Box3d();
-}
-
-std::shared_ptr<DrawableObject> DrawableDirectionalLightOpenGL2::clone() const&
-{
-    return std::make_shared<DrawableDirectionalLightOpenGL2>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableDirectionalLightOpenGL2::clone() &&
-{
-    return std::make_shared<DrawableDirectionalLightOpenGL2>(std::move(*this));
-}
-
-bool DrawableDirectionalLightOpenGL2::isVisible() const
+bool DirectionalLightGizmoOpenGL2::isVisible() const
 {
     return mVisible;
 }
 
-void DrawableDirectionalLightOpenGL2::setVisibility(bool vis)
+void DirectionalLightGizmoOpenGL2::setVisibility(bool vis)
 {
     mVisible = vis;
 }

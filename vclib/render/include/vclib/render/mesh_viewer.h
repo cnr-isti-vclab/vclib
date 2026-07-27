@@ -10,9 +10,11 @@
 
 #include "application.h"
 #include "concepts/mesh_viewer.h"
+#include "editors.h"
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/settings/render_mode.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
@@ -62,6 +64,13 @@ struct MeshViewer
 
 #endif // VCLIB_WITH_QT
 
+inline void pushDefaultEditors(MeshViewerConcept auto& viewer)
+{
+    viewer.template pushEditor<MeshSelectorEditor>(true);
+    viewer.template pushEditor<BoundingBoxEditor>();
+    viewer.template pushEditor<SelectionEditor>();
+}
+
 template<MeshConcept... MeshTypes>
 void showOnMeshViewer(
     int                     argc,
@@ -92,8 +101,8 @@ void showOnMeshViewer(
     char**                   argv,
     MeshViewerConcept auto&  viewer,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode  = false,
-    const std::string&       panorama = "")
+    RenderMode               renderMode = RenderMode::CLASSIC,
+    const std::string&       panorama   = "")
 {
     for (auto&& mesh : meshes) {
         if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
@@ -104,17 +113,15 @@ void showOnMeshViewer(
         }
     }
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-    auto sts = viewer.pbrSettings();
+    auto sts = viewer.viewerSettings();
 
     if (!panorama.empty()) {
         viewer.setPanorama(panorama);
         sts.imageBasedLighting       = true;
         sts.renderBackgroundPanorama = true;
     }
-    sts.pbrMode = pbrMode;
-    viewer.setPbrSettings(sts);
-#endif
+    sts.renderMode = renderMode;
+    viewer.setViewerSettings(sts);
 
     viewer.fitScene();
 
@@ -128,6 +135,8 @@ int showOnMeshViewer(int argc, char** argv, MeshTypes&&... meshes)
 
     MeshViewer viewer;
 
+    pushDefaultEditors(viewer);
+
     showOnMeshViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
     return app.exec();
@@ -138,14 +147,17 @@ int showOnMeshViewer(
     int                      argc,
     char**                   argv,
     std::vector<MeshTypes>&& meshes,
-    bool                     pbrMode  = false,
-    const std::string&       panorama = "")
+    RenderMode               renderMode = RenderMode::CLASSIC,
+    const std::string&       panorama   = "")
 {
     Application app(argc, argv);
 
     MeshViewer viewer;
 
-    showOnMeshViewer(argc, argv, viewer, std::move(meshes), pbrMode, panorama);
+    pushDefaultEditors(viewer);
+
+    showOnMeshViewer(
+        argc, argv, viewer, std::move(meshes), renderMode, panorama);
 
     return app.exec();
 }
