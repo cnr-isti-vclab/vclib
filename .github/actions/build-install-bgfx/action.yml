@@ -5,7 +5,7 @@ inputs:
   bgfx-version:
     description: 'The tag or branch of bgfx.cmake to clone'
     required: false
-    default: 'v1.150.9365-558'
+    default: 'v1.151.9375-560'
 
 runs:
   using: 'composite'
