@@ -8,6 +8,7 @@
 #ifndef VCL_QT_WIDGET_MANAGER_H
 #define VCL_QT_WIDGET_MANAGER_H
 
+#include "detail/window_manager_native.h"
 #include "input.h"
 #include "utils.h"
 
@@ -96,46 +97,14 @@ public:
 
     Point2f dpiScale() const { return Point2f(pixelRatio(), pixelRatio()); }
 
-    void* displayId() const
+    static void* displayId()
     {
-        void* displayID = nullptr;
-#ifdef Q_OS_LINUX
-        /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
-        QNativeInterface::QX11Application* x11AppInfo =
-            qApp->nativeInterface<QNativeInterface::QX11Application>();
-        if (x11AppInfo) {
-            displayID = x11AppInfo->display();
-        }
-        else {
-            QNativeInterface::QWaylandApplication* wayAppInfo =
-                qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-            if (wayAppInfo) {
-                displayID = wayAppInfo->display();
-            }
-            else {
-                exit(-1);
-            }
-        }
-#endif
-        return displayID;
+        return detail::WindowManagerNative::displayId();
     }
 
-    vcl::NativeWindowHandleType handleType() const
+    static vcl::NativeWindowHandleType handleType()
     {
-#ifdef Q_OS_LINUX
-        QNativeInterface::QX11Application* x11AppInfo =
-            qApp->nativeInterface<QNativeInterface::QX11Application>();
-        if (x11AppInfo) {
-            return vcl::NativeWindowHandleType::DEFAULT;
-        }
-
-        QNativeInterface::QWaylandApplication* wayAppInfo =
-            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-        if (wayAppInfo) {
-            return vcl::NativeWindowHandleType::WAYLAND;
-        }
-#endif
-        return vcl::NativeWindowHandleType::DEFAULT;
+        return detail::WindowManagerNative::handleType();
     }
 
     QPaintEngine* paintEngine() const override { return nullptr; }

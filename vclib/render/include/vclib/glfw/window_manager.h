@@ -191,9 +191,9 @@ public:
 
     void* winId() const { return detail::WindowManagerNative::winId(mWindow); }
 
-    void* displayId() const { return detail::WindowManagerNative::displayId(); }
+    static void* displayId() { return detail::WindowManagerNative::displayId(); }
 
-    vcl::NativeWindowHandleType handleType() const
+    static vcl::NativeWindowHandleType handleType()
     {
         return detail::WindowManagerNative::handleType();
     }
