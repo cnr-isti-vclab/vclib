@@ -107,7 +107,8 @@ public:
                 (void*) WindowManagerType::winId(),
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
-                WindowManagerType::displayId()),
+                WindowManagerType::displayId(),
+                WindowManagerType::handleType()),
             Drawers<RenderApp>(
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...

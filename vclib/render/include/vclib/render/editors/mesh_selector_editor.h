@@ -18,8 +18,7 @@ class MeshSelectorEditor : public Editor<ViewerDrawer>
     using Base = Editor<ViewerDrawer>;
 
     // a callback function called when an object is selected
-    std::function<void(uint)> mOnObjectSelectedFunction = [](uint) {
-    };
+    std::function<void(uint)> mOnObjectSelectedFunction = nullptr;
 
 public:
     void setOnObjectSelectedFunction(const std::function<void(uint)>& f)

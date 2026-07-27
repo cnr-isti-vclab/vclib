@@ -65,7 +65,7 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
         "@VCLIB_USED_SYSTEM_GLFW@"
         AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
     )
-        find_package(glfw3 QUIET)
+        find_package(glfw3 3.4 QUIET)
     endif()
 endif()
 

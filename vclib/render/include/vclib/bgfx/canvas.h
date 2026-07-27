@@ -59,17 +59,20 @@ private:
 
 public:
     CanvasBGFX(
-        void* winId,
-        uint  width,
-        uint  height,
-        void* displayId = nullptr) : mWinId(winId)
+        void*                       winId,
+        uint                        width,
+        uint                        height,
+        void*                       displayId = nullptr,
+        vcl::NativeWindowHandleType windowType =
+            vcl::NativeWindowHandleType::DEFAULT) : mWinId(winId)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
         // on screen framebuffer
-        mViewId = Context::instance(mWinId, displayId).requestViewId();
+        mViewId =
+            Context::instance(mWinId, displayId, windowType).requestViewId();
 
         // (re)create the framebuffers
         onResize(width, height);

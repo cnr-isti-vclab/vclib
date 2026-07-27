@@ -8,11 +8,8 @@
 #include <vclib/glfw/detail/window_manager_native.h>
 
 #if defined(__linux__)
-#ifdef VCLIB_RENDER_WITH_WAYLAND
 #define GLFW_EXPOSE_NATIVE_WAYLAND
-#else
 #define GLFW_EXPOSE_NATIVE_X11
-#endif
 #elif defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -29,11 +26,13 @@ void* WindowManagerNative::winId(GLFWwindow* window)
     void* nwh = nullptr;
 
 #if defined(__linux__)
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    nwh = (void*) (uintptr_t) glfwGetWaylandWindow(window);
-#else
-    nwh = (void*) (uintptr_t) glfwGetX11Window(window);
-#endif
+    int platform = glfwGetPlatform();
+    if (platform == GLFW_PLATFORM_WAYLAND) {
+        nwh = (void*) (uintptr_t) glfwGetWaylandWindow(window);
+    }
+    else if (platform == GLFW_PLATFORM_X11) {
+        nwh = (void*) (uintptr_t) glfwGetX11Window(window);
+    }
 #elif defined(_WIN32)
     nwh = glfwGetWin32Window(window);
 #elif defined(__APPLE__)
@@ -47,13 +46,26 @@ void* WindowManagerNative::displayId()
 {
     void* ndt = nullptr;
 #ifdef __linux__
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    ndt = (void*) (uintptr_t) glfwGetWaylandDisplay();
-#else
-    ndt = (void*) (uintptr_t) glfwGetX11Display();
-#endif
+    int platform = glfwGetPlatform();
+    if (platform == GLFW_PLATFORM_WAYLAND) {
+        ndt = (void*) (uintptr_t) glfwGetWaylandDisplay();
+    }
+    else if (platform == GLFW_PLATFORM_X11) {
+        ndt = (void*) (uintptr_t) glfwGetX11Display();
+    }
 #endif
     return ndt;
+}
+
+vcl::NativeWindowHandleType WindowManagerNative::handleType()
+{
+#ifdef __linux__
+    int platform = glfwGetPlatform();
+    if (platform == GLFW_PLATFORM_WAYLAND) {
+        return vcl::NativeWindowHandleType::WAYLAND;
+    }
+#endif
+    return vcl::NativeWindowHandleType::DEFAULT;
 }
 
 } // namespace vcl::glfw::detail

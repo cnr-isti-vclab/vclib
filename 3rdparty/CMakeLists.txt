@@ -199,11 +199,6 @@ if(VCLIB_BUILD_MODULE_RENDER)
     ### bgfx
     if(VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         # Wayland (optional)
-        option(
-            VCLIB_RENDER_WITH_WAYLAND
-            "Linux only - build vclib-render for wayland"
-            OFF
-        )
         include(wayland.cmake)
 
         # bgfx

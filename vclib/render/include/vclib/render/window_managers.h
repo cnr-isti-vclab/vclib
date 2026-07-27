@@ -29,6 +29,11 @@ struct WindowManagerId
     };
 };
 
+enum class NativeWindowHandleType {
+    DEFAULT,
+    WAYLAND
+};
+
 } // namespace vcl
 
 #endif // VCL_RENDER_WINDOW_MANAGERS_H

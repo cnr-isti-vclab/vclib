@@ -10,27 +10,9 @@
 #include <cassert>
 #include <iostream>
 
-#ifdef _WIN32
-#ifndef UNICODE
-#define VCLIB_DEF_UNICODE
-#define UNICODE
-#endif
-#include <windows.h>
-#ifdef VCLIB_DEF_UNICODE
-#undef UNICODE
-#undef VCLIB_DEF_UNICODE
-#endif
-#elif __linux__
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-#include <wayland-client.h>
-#include <wayland-egl.h>
-#else
-#include <X11/Xlib.h>
-#endif
-#endif
-
 namespace vcl {
 
+#ifdef __APPLE__
 void* createWindow(
     const char* title,
     int         width,
@@ -38,108 +20,9 @@ void* createWindow(
     void*&      display,
     bool        hidden)
 {
-#ifdef _WIN32
-    (void) display;
-
-    wchar_t wtext[256];
-    size_t  sz;
-    mbstowcs_s(&sz, wtext, title, strlen(title) + 1); // Plus null
-    LPCWSTR ptr = wtext;
-
-    WNDCLASS wc      = {};
-    wc.lpfnWndProc   = DefWindowProc;
-    wc.hInstance     = GetModuleHandle(NULL);
-    wc.lpszClassName = L"MyWindowClass";
-
-    RegisterClass(&wc);
-
-    HWND hWnd = CreateWindowEx(
-        0,
-        L"MyWindowClass",
-        ptr,
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        width,
-        height,
-        NULL,
-        NULL,
-        GetModuleHandle(NULL),
-        NULL);
-
-    if (hidden)
-        ShowWindow(hWnd, SW_HIDE);
-
-    return (void*) hWnd;
-#elif __APPLE__
     (void) display;
 
     return detail::cretateCocoaWindow(title, width, height, hidden);
-
-#else
-
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    wl_display* dspl = wl_display_connect(NULL);
-    if (!dspl) {
-        std::cerr << "Failed to connect to Wayland display." << std::endl;
-        assert(0);
-        return nullptr;
-    }
-    display = dspl;
-    // create wayland surface
-    wl_surface* surface = wl_compositor_create_surface(
-        static_cast<wl_compositor*>(wl_registry_bind(
-            wl_display_get_registry(dspl), 1, &wl_compositor_interface, 1)));
-    if (!surface) {
-        std::cerr << "Failed to create Wayland surface." << std::endl;
-        assert(0);
-        return nullptr;
-    }
-    wl_egl_window* winImpl = wl_egl_window_create(surface, 1, 1);
-    if (!hidden) {
-        wl_surface_commit(surface);
-        wl_display_roundtrip(dspl);
-    }
-    return (void*) winImpl;
-#else  // X11
-    Display* dspl = XOpenDisplay(NULL);
-    if (!dspl) {
-        std::cerr << "Failed to Open X display." << std::endl;
-        assert(0);
-        return nullptr;
-    }
-
-    int screen = DefaultScreen(dspl);
-
-    Window window = XCreateSimpleWindow(
-        dspl,
-        RootWindow(dspl, screen),
-        0,
-        0,
-        width,
-        height,
-        0,
-        BlackPixel(dspl, screen),
-        WhitePixel(dspl, screen));
-
-    if (!window) {
-        std::cerr << "Failed to create X window." << std::endl;
-        assert(0);
-        return nullptr;
-    }
-
-    XStoreName(dspl, window, title);
-
-    if (!hidden)
-        XMapWindow(dspl, window);
-
-    XSync(dspl, False);
-
-    display = (void*) dspl;
-
-    return (void*) window;
-#endif // VCLIB_RENDER_WITH_WAYLAND
-#endif // _WIN32
 }
 
 void* createWindow(const char* title, int width, int height, bool hidden)
@@ -150,18 +33,8 @@ void* createWindow(const char* title, int width, int height, bool hidden)
 
 void closeWindow(void* window, void* display)
 {
-#ifdef _WIN32
-    DestroyWindow((HWND) window);
-#elif __APPLE__
     detail::closeCocoaWindow(window);
-#else // linux
-
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    wl_display_disconnect((wl_display*) display);
-#else  // X11
-    XDestroyWindow((Display*) display, (Window) window);
-#endif // VCLIB_RENDER_WITH_WAYLAND
-#endif
 }
+#endif // __APPLE__
 
 } // namespace vcl
