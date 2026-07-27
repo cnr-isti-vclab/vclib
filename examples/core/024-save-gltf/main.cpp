@@ -26,6 +26,7 @@
 #include <vclib/space.h>
 
 #include <iostream>
+#include <filesystem>
 
 int main()
 {
@@ -45,17 +46,19 @@ int main()
 
     vcl::SaveSettings saveSettings;
     saveSettings.binary = false;
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf");
     vcl::saveMesh(
         helmet,
-        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf/024_greek_helmet_export_gltf.gltf",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (ASCII)" << std::endl;
 
     saveSettings.binary = true;
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin");
     vcl::saveMesh(
         helmet,
-        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin.glb",
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin/024_greek_helmet_export_bin.glb",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (binary)" << std::endl;
@@ -70,8 +73,9 @@ int main()
 
     std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
 
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba");
     vcl::saveMeshes(
-        meshes, VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba.glb", saveSettings);
+        meshes, VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba/024_bunny_bimba.glb", saveSettings);
 
     std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
 
@@ -85,9 +89,10 @@ int main()
 
     vcl::SaveSettings sS;
     sS.binary = false;
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf");
     vcl::saveMesh(
         pointCloud,
-        VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf/024_flower_point_cloud_export_gltf.gltf",
         sS);
 
     std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
@@ -115,13 +120,46 @@ int main()
     std::cout << "Number of faces: " << bte.faceCount() << std::endl;
     std::cout << "Number of edges: " << bte.edgeCount() << std::endl;
 
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf");
     vcl::saveMesh(
         bte,
-        VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf/024_bunny_edge_sections_export_gltf.gltf",
         sS);
 
     std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)"
               << std::endl;
+
+    // Test multiple textures
+
+    auto damagedHelmet = vcl::loadMesh<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf", loadSettings);
+    vcl::updatePerVertexAndFaceNormals(damagedHelmet);
+
+    saveSettings.binary = false;
+    saveSettings.saveTextureImages = true;
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet");
+    vcl::saveMesh(
+        damagedHelmet,
+        VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet/024_damaged_helmet.gltf",
+        saveSettings);
+
+    std::cout << "Saved Damaged Helmet in gltf format (ASCII)" << std::endl;
+
+    // Test multiple materials
+
+    auto cesiumMilkTruck = vcl::loadMesh<vcl::TriMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf", loadSettings);
+    vcl::updatePerVertexAndFaceNormals(cesiumMilkTruck);
+
+    saveSettings.binary = false;
+    saveSettings.saveTextureImages = true;
+    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_cesium_milk_truck");
+    vcl::saveMesh(
+        cesiumMilkTruck,
+        VCLIB_CORE_RESULTS_PATH "/024_cesium_milk_truck/024_cesium_milk_truck.gltf",
+        saveSettings);
+
+    std::cout << "Saved Cesium Milk Truck in gltf format (ASCII)" << std::endl;
 
     return 0;
 }
