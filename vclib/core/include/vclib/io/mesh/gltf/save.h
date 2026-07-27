@@ -667,15 +667,13 @@ void addMeshToTinygltfModel(
                 permuteFaceVertexIndicesByFunctionToBuffer(
                     m, ud, faceComp, indexMap);
 
-                // get the mapping from actual indices to compact indices
-                std::vector<uint> compactIndices = m.faceCompactIndices();
-
-                // compactIndices tells for each face, which is its new
-                // position we need the inverse mapping: for each new
-                // position, which is the old face index
-                std::vector<uint> oldFaceIndices(compactIndices.size());
-                for (uint i = 0; i < compactIndices.size(); ++i) {
-                    oldFaceIndices[compactIndices[i]] = static_cast<uint>(i);
+                // compactIndices tells for each valid face, which is its new
+                // compact position. We need the inverse mapping: for each new
+                // position (compact index), which is the actual face index.
+                std::vector<uint> oldFaceIndices;
+                oldFaceIndices.reserve(m.faceCount());
+                for (const auto& f : m.faces()) {
+                    oldFaceIndices.push_back(f.index());
                 }
 
                 uint                           lastMaterialIndex = UINT_NULL;
@@ -723,13 +721,15 @@ void addMeshToTinygltfModel(
                             oldFaceIndices[faceCompactIndex]) *
                         3 * sizeof(uint);
 
+                    // Check if the material changed to start a new primitive
+                    // chunk
                     if (materialIndex == lastMaterialIndex) {
                         chunkLength += faceChunkLength;
 
                         continue;
                     }
 
-                    // end previous chunk
+                    // Material changed: end previous chunk
                     flushChunk();
 
                     // the material is added to the model if not already
@@ -849,7 +849,7 @@ void addMeshToTinygltfModel(
  *  2) output primitives are organized by per-face or per-vertex material
  *     indices (per-face has priority). If per-vertex material indices are used,
  *     a face will arbitrarily inherit the material of its first vertex.
- *  4) even if different meshes were to share the same data, it would be
+ *  3) even if different meshes were to share the same data, it would be
  *     duplicated. Each mesh is exported without consideration to the other
  *     meshes' data
  *
@@ -917,11 +917,12 @@ void saveGltf(
  *  2) output primitives are organized by per-face or per-vertex material
  *     indices (per-face has priority). If per-vertex material indices are used,
  *     a face will arbitrarily inherit the material of its first vertex.
- *  4) even if different meshes were to share the same data, it would be
+ *  3) even if different meshes were to share the same data, it would be
  *     duplicated. Each mesh is exported without consideration to the other
  *     meshes' data
  *
- * @tparam MeshType The type of mesh to save. It must satisfy the MeshConcept.
+ * @tparam Meshes The range of meshes to save. It must satisfy the RangeOfMeshes
+ * concept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
  *
  * @param[in] meshes: The range of meshes to save.

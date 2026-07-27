@@ -70,10 +70,11 @@ void saveMeshes(
     if (ff == gltfFileFormat()) {
         saveGltf(meshes, filename, settings, log);
     }
-    else {
+    else
+#endif
+    {
         throw UnknownFileFormatException(ff.extensions().front());
     }
-#endif
 }
 
 /**
