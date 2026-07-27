@@ -165,5 +165,25 @@ int main()
 
     std::cout << "Saved Cesium Milk Truck in gltf format (ASCII)" << std::endl;
 
+    // Test wedge texcoords (with quads!)
+
+    auto spot = vcl::loadMesh<vcl::PolyMesh>(
+        VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj", loadSettings);
+    vcl::updatePerVertexAndFaceNormals(spot);
+
+    saveSettings.binary            = false;
+    saveSettings.saveTextureImages = true;
+    saveSettings.embedBuffers      = false;
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_spot_quadrangulated");
+    vcl::saveMesh(
+        spot,
+        VCLIB_CORE_RESULTS_PATH
+        "/024_spot_quadrangulated/024_spot_quadrangulated.gltf",
+        saveSettings);
+
+    std::cout << "Saved Spot Quadrangulated in gltf format (ASCII)"
+              << std::endl;
+
     return 0;
 }

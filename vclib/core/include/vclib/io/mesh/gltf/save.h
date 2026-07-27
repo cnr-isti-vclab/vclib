@@ -8,10 +8,12 @@
 #ifndef VCL_IO_MESH_GLTF_SAVE_H
 #define VCL_IO_MESH_GLTF_SAVE_H
 
-#include <tiny_gltf.h>
-#include <vclib/algorithms/mesh/import_export/export_buffer.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/mesh/settings.h>
+
+#include <vclib/algorithms/mesh.h>
+
+#include <tiny_gltf.h>
 
 namespace vcl {
 
@@ -395,18 +397,49 @@ void addMeshToTinygltfModel(
     // vertices accessors
     GltfAccessors accessors;
 
+    bool exportWedgeTexCoord = false;
+    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+        if (meshInfo.hasPerFaceWedgeTexCoords()) {
+            exportWedgeTexCoord = true;
+        }
+    }
+
+    bool exportVertexTexCoord = false;
+    if constexpr (HasPerVertexTexCoord<MeshType>) {
+        if (meshInfo.hasPerVertexTexCoord() && !exportWedgeTexCoord) {
+            exportVertexTexCoord = true;
+        }
+    }
+
+    std::vector<std::pair<uint, uint>>          vertWedgeMap;
+    std::list<uint>                             vertsToDuplicate;
+    std::list<std::list<std::pair<uint, uint>>> facesToReassign;
+    uint                                        nV = 0;
+
+    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+        if (exportWedgeTexCoord) {
+            nV = verticesToDuplicateByWedgeTexCoordsCount(
+                m, vertWedgeMap, vertsToDuplicate, facesToReassign);
+        }
+    }
+
+    uint totalVertices = m.vertexCount() + nV;
+
     // vertices position buffer, buffer view and accessor
     auto posAlloc =
-        allocateInGltfBuffer(tModel, 3 * m.vertexCount() * sizeof(float));
+        allocateInGltfBuffer(tModel, 3 * totalVertices * sizeof(float));
     float* fd = reinterpret_cast<float*>(
         tModel.buffers[posAlloc.first].data.data() + posAlloc.second);
     vertexPositionsToBuffer(m, fd);
+    if (exportWedgeTexCoord) {
+        appendDuplicateVertexPositionsToBuffer(m, vertsToDuplicate, fd);
+    }
 
     auto posBufView = addGltfBufferView(
         tModel,
         posAlloc.first,
         posAlloc.second,
-        3 * m.vertexCount() * sizeof(float));
+        3 * totalVertices * sizeof(float));
     auto posAccessor = addGltfAccessor(
         tModel, posBufView, TINYGLTF_COMPONENT_TYPE_FLOAT, TINYGLTF_TYPE_VEC3);
 
@@ -432,13 +465,17 @@ void addMeshToTinygltfModel(
 
     if constexpr (HasPerVertexColor<MeshType>) {
         if (meshInfo.hasPerVertexColor()) {
-            auto  colAlloc = allocateInGltfBuffer(tModel, 4 * m.vertexCount());
+            auto  colAlloc = allocateInGltfBuffer(tModel, 4 * totalVertices);
             uint* ud       = reinterpret_cast<uint*>(
                 tModel.buffers[colAlloc.first].data.data() + colAlloc.second);
             vertexColorsToBuffer(m, ud, vcl::Color::Format::ABGR);
+            if (exportWedgeTexCoord) {
+                appendDuplicateVertexColorsToBuffer(
+                    m, vertsToDuplicate, ud, vcl::Color::Format::ABGR);
+            }
 
             auto colBufView = addGltfBufferView(
-                tModel, colAlloc.first, colAlloc.second, 4 * m.vertexCount());
+                tModel, colAlloc.first, colAlloc.second, 4 * totalVertices);
             auto colAccessor = addGltfAccessor(
                 tModel,
                 colBufView,
@@ -452,17 +489,21 @@ void addMeshToTinygltfModel(
     }
     if constexpr (HasPerVertexNormal<MeshType>) {
         if (meshInfo.hasPerVertexNormal()) {
-            auto normAlloc = allocateInGltfBuffer(
-                tModel, 3 * m.vertexCount() * sizeof(float));
+            auto normAlloc =
+                allocateInGltfBuffer(tModel, 3 * totalVertices * sizeof(float));
             fd = reinterpret_cast<float*>(
                 tModel.buffers[normAlloc.first].data.data() + normAlloc.second);
             vertexNormalsToBuffer(m, fd, true);
+            if (exportWedgeTexCoord) {
+                appendDuplicateVertexNormalsToBuffer(
+                    m, vertsToDuplicate, fd, true);
+            }
 
             auto normBufView = addGltfBufferView(
                 tModel,
                 normAlloc.first,
                 normAlloc.second,
-                3 * m.vertexCount() * sizeof(float));
+                3 * totalVertices * sizeof(float));
             auto normAccessor = addGltfAccessor(
                 tModel,
                 normBufView,
@@ -472,47 +513,58 @@ void addMeshToTinygltfModel(
             accessors.norm = normAccessor.first;
         }
     }
-    if constexpr (HasPerVertexTexCoord<MeshType>) {
-        if (meshInfo.hasPerVertexTexCoord()) {
-            auto texCoordAlloc = allocateInGltfBuffer(
-                tModel, 2 * m.vertexCount() * sizeof(float));
-            fd = reinterpret_cast<float*>(
-                tModel.buffers[texCoordAlloc.first].data.data() +
-                texCoordAlloc.second);
-            vertexTexCoordsToBuffer(m, fd);
+    if (exportWedgeTexCoord || exportVertexTexCoord) {
+        auto texCoordAlloc =
+            allocateInGltfBuffer(tModel, 2 * totalVertices * sizeof(float));
+        fd = reinterpret_cast<float*>(
+            tModel.buffers[texCoordAlloc.first].data.data() +
+            texCoordAlloc.second);
 
-            // flip V coords
-            for (unsigned int i = 1; i < m.vertexCount() * 2; i += 2)
-                fd[i] = 1 - fd[i];
-
-            auto texCoordBufView = addGltfBufferView(
-                tModel,
-                texCoordAlloc.first,
-                texCoordAlloc.second,
-                2 * m.vertexCount() * sizeof(float));
-            auto texCoordAccessor = addGltfAccessor(
-                tModel,
-                texCoordBufView,
-                TINYGLTF_COMPONENT_TYPE_FLOAT,
-                TINYGLTF_TYPE_VEC2);
-
-            accessors.texCoord = texCoordAccessor.first;
+        if (exportWedgeTexCoord) {
+            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+                wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
+                    m, vertWedgeMap, facesToReassign, fd);
+            }
         }
+        else if (exportVertexTexCoord) {
+            vertexTexCoordsToBuffer(m, fd);
+        }
+
+        // flip V coords
+        for (unsigned int i = 1; i < totalVertices * 2; i += 2)
+            fd[i] = 1 - fd[i];
+
+        auto texCoordBufView = addGltfBufferView(
+            tModel,
+            texCoordAlloc.first,
+            texCoordAlloc.second,
+            2 * totalVertices * sizeof(float));
+        auto texCoordAccessor = addGltfAccessor(
+            tModel,
+            texCoordBufView,
+            TINYGLTF_COMPONENT_TYPE_FLOAT,
+            TINYGLTF_TYPE_VEC2);
+
+        accessors.texCoord = texCoordAccessor.first;
     }
     if constexpr (HasPerVertexTangent<MeshType>) {
         if (meshInfo.hasPerVertexTangent()) {
-            auto tangentAlloc = allocateInGltfBuffer(
-                tModel, 4 * m.vertexCount() * sizeof(float));
+            auto tangentAlloc =
+                allocateInGltfBuffer(tModel, 4 * totalVertices * sizeof(float));
             fd = reinterpret_cast<float*>(
                 tModel.buffers[tangentAlloc.first].data.data() +
                 tangentAlloc.second);
             vertexTangentsToBuffer(m, fd, true);
+            if (exportWedgeTexCoord) {
+                appendDuplicateVertexTangentsToBuffer(
+                    m, vertsToDuplicate, fd, true);
+            }
 
             auto tangentBufView = addGltfBufferView(
                 tModel,
                 tangentAlloc.first,
                 tangentAlloc.second,
-                4 * m.vertexCount() * sizeof(float));
+                4 * totalVertices * sizeof(float));
             auto tangentAccessor = addGltfAccessor(
                 tModel,
                 tangentBufView,
@@ -530,19 +582,48 @@ void addMeshToTinygltfModel(
         if (meshInfo.hasFaces() && m.faceCount() > 0) {
             bool saveWithoutMaterial = false;
 
+            bool exportMaterials      = false;
+            bool usePerFaceMaterial   = false;
+            bool usePerVertexMaterial = false;
+
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (meshInfo.hasPerFaceMaterialIndex()) {
+                    exportMaterials    = true;
+                    usePerFaceMaterial = true;
+                }
+            }
+
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-                if (meshInfo.hasPerVertexMaterialIndex()) {
-                    // faces are sorted per material index and saved into an
-                    // index buffer for each material chunk, a primitive is
-                    // created with relative accessor and buffer view into the
-                    // index buffer materials are saved into the model
+                if (meshInfo.hasPerVertexMaterialIndex() &&
+                    !usePerFaceMaterial) {
+                    exportMaterials      = true;
+                    usePerVertexMaterial = true;
+                }
+            }
 
-                    using FaceType = MeshType::FaceType;
+            if (exportMaterials) {
+                // faces are sorted per material index and saved into an
+                // index buffer for each material chunk, a primitive is
+                // created with relative accessor and buffer view into the
+                // index buffer materials are saved into the model
 
-                    // comparator of faces
-                    // ordering by per-vertex material index (if available)
-                    auto faceComp = [&](const FaceType& f1,
-                                        const FaceType& f2) {
+                using FaceType = MeshType::FaceType;
+
+                // comparator of faces
+                // ordering by material index (if available)
+                auto faceComp = [&](const FaceType& f1, const FaceType& f2) {
+                    if (usePerFaceMaterial) {
+                        if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                            if (isPerFaceMaterialIndexAvailable(m)) {
+                                uint id1 = f1.materialIndex();
+                                uint id2 = f2.materialIndex();
+                                if (id1 != id2) { // do not return true if equal
+                                    return id1 < id2;
+                                }
+                            }
+                        }
+                    }
+                    else if (usePerVertexMaterial) {
                         if constexpr (HasPerVertexMaterialIndex<MeshType>) {
                             if (isPerVertexMaterialIndexAvailable(m)) {
                                 uint id1 = f1.vertex(0)->materialIndex();
@@ -552,122 +633,130 @@ void addMeshToTinygltfModel(
                                 }
                             }
                         }
-
-                        // if per-vertex material indices are equal,
-                        // sort by face index to have a stable sorting
-                        return f1.index() < f2.index();
-                    };
-
-                    // get the list of face indices sorted by material ID
-                    // using the face comparator defined above
-                    const std::vector<uint> faceIndicesSortedByMaterialID =
-                        sortFaceIndicesByFunction(m, faceComp, true);
-                    auto indAlloc = allocateInGltfBuffer(
-                        tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
-                    uint* ud = reinterpret_cast<uint*>(
-                        tModel.buffers[indAlloc.first].data.data() +
-                        indAlloc.second);
-                    TriPolyIndexBiMap indexMap;
-
-                    triangulatedFaceVertexIndicesToBuffer(
-                        m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
-
-                    // permute the triangulated face vertex indices according to
-                    // the face sorting by material ID (the function also edits
-                    // the index map from polygonal faces (which still refers to
-                    // the mesh ones) to the triangulated faces (which refers to
-                    // the sorted triangles))
-                    permuteFaceVertexIndicesByFunctionToBuffer(
-                        m, ud, faceComp, indexMap);
-
-                    // get the mapping from actual indices to compact indices
-                    std::vector<uint> compactIndices = m.faceCompactIndices();
-
-                    // compactIndices tells for each face, which is its new
-                    // position we need the inverse mapping: for each new
-                    // position, which is the old face index
-                    std::vector<uint> oldFaceIndices(compactIndices.size());
-                    for (uint i = 0; i < compactIndices.size(); ++i) {
-                        oldFaceIndices[compactIndices[i]] =
-                            static_cast<uint>(i);
                     }
 
-                    uint lastMaterialIndex = UINT_NULL;
-                    std::unordered_map<uint, uint> modelMaterialIndices {};
-                    uint chunkByteOffset    = indAlloc.second;
-                    uint chunkLength        = 0;
-                    uint modelMaterialIndex = 0;
-                    std::unordered_map<std::size_t, uint> addedTextures = {};
-                    std::unordered_map<std::string, uint> addedImages   = {};
-                    std::unordered_map<std::size_t, uint> addedSamplers = {};
+                    // if per-vertex material indices are equal,
+                    // sort by face index to have a stable sorting
+                    return f1.index() < f2.index();
+                };
 
-                    auto flushChunk = [&]() {
-                        // buffer view, accessor and primitive
-                        if (chunkLength > 0) {
-                            addGltfIndexedPrimitive(
-                                tModel,
-                                mesh,
-                                indAlloc.first,
-                                chunkByteOffset,
-                                chunkLength,
-                                accessors,
-                                TINYGLTF_MODE_TRIANGLES,
-                                lastMaterialIndex == UINT_NULL ?
-                                    UINT_NULL :
-                                    modelMaterialIndex);
+                // get the list of face indices sorted by material ID
+                // using the face comparator defined above
+                const std::vector<uint> faceIndicesSortedByMaterialID =
+                    sortFaceIndicesByFunction(m, faceComp, true);
+                auto indAlloc = allocateInGltfBuffer(
+                    tModel, 3 * triangulatedFaceCount(m) * sizeof(uint));
+                uint* ud = reinterpret_cast<uint*>(
+                    tModel.buffers[indAlloc.first].data.data() +
+                    indAlloc.second);
+                TriPolyIndexBiMap indexMap;
+
+                triangulatedFaceVertexIndicesToBuffer(
+                    m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
+
+                if (exportWedgeTexCoord) {
+                    replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+                        m, vertsToDuplicate, facesToReassign, indexMap, ud);
+                }
+
+                // permute the triangulated face vertex indices according to
+                // the face sorting by material ID (the function also edits
+                // the index map from polygonal faces (which still refers to
+                // the mesh ones) to the triangulated faces (which refers to
+                // the sorted triangles))
+                permuteFaceVertexIndicesByFunctionToBuffer(
+                    m, ud, faceComp, indexMap);
+
+                // get the mapping from actual indices to compact indices
+                std::vector<uint> compactIndices = m.faceCompactIndices();
+
+                // compactIndices tells for each face, which is its new
+                // position we need the inverse mapping: for each new
+                // position, which is the old face index
+                std::vector<uint> oldFaceIndices(compactIndices.size());
+                for (uint i = 0; i < compactIndices.size(); ++i) {
+                    oldFaceIndices[compactIndices[i]] = static_cast<uint>(i);
+                }
+
+                uint                           lastMaterialIndex = UINT_NULL;
+                std::unordered_map<uint, uint> modelMaterialIndices {};
+                uint chunkByteOffset    = indAlloc.second;
+                uint chunkLength        = 0;
+                uint modelMaterialIndex = 0;
+                std::unordered_map<std::size_t, uint> addedTextures = {};
+                std::unordered_map<std::string, uint> addedImages   = {};
+                std::unordered_map<std::size_t, uint> addedSamplers = {};
+
+                auto flushChunk = [&]() {
+                    // buffer view, accessor and primitive
+                    if (chunkLength > 0) {
+                        addGltfIndexedPrimitive(
+                            tModel,
+                            mesh,
+                            indAlloc.first,
+                            chunkByteOffset,
+                            chunkLength,
+                            accessors,
+                            TINYGLTF_MODE_TRIANGLES,
+                            lastMaterialIndex == UINT_NULL ?
+                                UINT_NULL :
+                                modelMaterialIndex);
+                    }
+                };
+
+                for (auto faceCompactIndex : faceIndicesSortedByMaterialID) {
+                    auto& face = m.face(oldFaceIndices[faceCompactIndex]);
+
+                    uint materialIndex = 0;
+                    if (usePerFaceMaterial) {
+                        if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                            materialIndex = face.materialIndex();
                         }
-                    };
-
-                    for (auto faceCompactIndex :
-                         faceIndicesSortedByMaterialID) {
-                        auto& face = m.face(oldFaceIndices[faceCompactIndex]);
-                        // get first vertex's material
-                        uint materialIndex = face.vertex(0)->materialIndex();
-                        uint faceChunkLength =
-                            indexMap.triangleCount(
-                                oldFaceIndices[faceCompactIndex]) *
-                            3 * sizeof(uint);
-
-                        if (materialIndex == lastMaterialIndex) {
-                            chunkLength += faceChunkLength;
-
-                            continue;
+                    }
+                    else if (usePerVertexMaterial) {
+                        if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                            materialIndex = face.vertex(0)->materialIndex();
                         }
+                    }
+                    uint faceChunkLength =
+                        indexMap.triangleCount(
+                            oldFaceIndices[faceCompactIndex]) *
+                        3 * sizeof(uint);
 
-                        // end previous chunk
-                        flushChunk();
+                    if (materialIndex == lastMaterialIndex) {
+                        chunkLength += faceChunkLength;
 
-                        // the material is added to the model if not already
-                        // present
-                        if (!modelMaterialIndices.contains(materialIndex)) {
-                            auto material = addGltfMaterial(
-                                tModel,
-                                m,
-                                m.material(materialIndex),
-                                addedTextures,
-                                addedImages,
-                                addedSamplers,
-                                saveTextureImages,
-                                log);
-                            modelMaterialIndices[materialIndex] =
-                                material.first;
-                        }
-
-                        modelMaterialIndex =
-                            modelMaterialIndices.at(materialIndex);
-
-                        // start new chunk
-                        chunkByteOffset += chunkLength;
-                        chunkLength       = faceChunkLength;
-                        lastMaterialIndex = materialIndex;
+                        continue;
                     }
 
-                    // add last chunk
+                    // end previous chunk
                     flushChunk();
+
+                    // the material is added to the model if not already
+                    // present
+                    if (!modelMaterialIndices.contains(materialIndex)) {
+                        auto material = addGltfMaterial(
+                            tModel,
+                            m,
+                            m.material(materialIndex),
+                            addedTextures,
+                            addedImages,
+                            addedSamplers,
+                            saveTextureImages,
+                            log);
+                        modelMaterialIndices[materialIndex] = material.first;
+                    }
+
+                    modelMaterialIndex = modelMaterialIndices.at(materialIndex);
+
+                    // start new chunk
+                    chunkByteOffset += chunkLength;
+                    chunkLength       = faceChunkLength;
+                    lastMaterialIndex = materialIndex;
                 }
-                else {
-                    saveWithoutMaterial = true;
-                }
+
+                // add last chunk
+                flushChunk();
             }
             else {
                 saveWithoutMaterial = true;
@@ -680,7 +769,15 @@ void addMeshToTinygltfModel(
                 uint* ud = reinterpret_cast<uint*>(
                     tModel.buffers[indAlloc.first].data.data() +
                     indAlloc.second);
-                triangulatedFaceVertexIndicesToBuffer(m, ud);
+
+                TriPolyIndexBiMap indexMap;
+                triangulatedFaceVertexIndicesToBuffer(
+                    m, ud, indexMap, MatrixStorageType::ROW_MAJOR);
+
+                if (exportWedgeTexCoord) {
+                    replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+                        m, vertsToDuplicate, facesToReassign, indexMap, ud);
+                }
 
                 addGltfIndexedPrimitive(
                     tModel,
@@ -747,11 +844,11 @@ void addMeshToTinygltfModel(
  * @brief Saves a mesh to a file with the given filename.
  *
  * @note Currently, this function has several limitations:
- *  1) only per-vertex texcoords are exported
- *  2) output primitives are organized only by per-vertex material indices
- *  3) if a material has different materials for its vertices, it will
- *     arbitrarily inherit the material of the first vertex
- *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *  1) only a single set of texture coordinates is exported (TEXCOORD_0).
+ *     Per-wedge texture coordinates have priority over per-vertex ones.
+ *  2) output primitives are organized by per-face or per-vertex material
+ *     indices (per-face has priority). If per-vertex material indices are used,
+ *     a face will arbitrarily inherit the material of its first vertex.
  *  4) even if different meshes were to share the same data, it would be
  *     duplicated. Each mesh is exported without consideration to the other
  *     meshes' data
@@ -815,11 +912,11 @@ void saveGltf(
  * @brief Saves a range of meshes to a file with the given filename.
  *
  * @note Currently, this function has several limitations:
- *  1) only per-vertex texcoords are exported
- *  2) output primitives are organized only by per-vertex material indices
- *  3) if a material has different materials for its vertices, it will
- *     arbitrarily inherit the material of the first vertex
- *     (this is an unavoidable limitation when mapping per-vertex materials)
+ *  1) only a single set of texture coordinates is exported (TEXCOORD_0).
+ *     Per-wedge texture coordinates have priority over per-vertex ones.
+ *  2) output primitives are organized by per-face or per-vertex material
+ *     indices (per-face has priority). If per-vertex material indices are used,
+ *     a face will arbitrarily inherit the material of its first vertex.
  *  4) even if different meshes were to share the same data, it would be
  *     duplicated. Each mesh is exported without consideration to the other
  *     meshes' data
