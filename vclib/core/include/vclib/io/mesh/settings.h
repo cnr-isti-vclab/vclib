@@ -55,12 +55,15 @@ struct SaveSettings
     bool binary = true;
 
     /**
-     * @brief If true, the mesh buffers (textures included) will be saved embedded.
-     * Otherwise, they will be saved externally.
+     * @brief If true, the mesh buffers (textures included) will be saved
+     * embedded. Otherwise, they will be saved externally.
      *
-     * @note When set to true, texture images are saved even if saveTextureImages
-     * is set to false. When embedBuffers is set to false, saveTextureImages
-     * determines whether to save texture images or not.
+     * It applies only to file formats that support embedded buffers (like
+     * glTF).
+     *
+     * @note When set to true, texture images are saved even if
+     * saveTextureImages is set to false. When embedBuffers is set to false,
+     * saveTextureImages determines whether to save texture images or not.
      */
     bool embedBuffers = false;
 

@@ -1,32 +1,17 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/io.h>
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
 #include <vclib/space.h>
 
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 
 int main()
 {
@@ -46,19 +31,23 @@ int main()
 
     vcl::SaveSettings saveSettings;
     saveSettings.binary = false;
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf");
     vcl::saveMesh(
         helmet,
-        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_gltf/024_greek_helmet_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH
+        "/024_greek_helmet_export_gltf/024_greek_helmet_export_gltf.gltf",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (ASCII)" << std::endl;
 
     saveSettings.binary = true;
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin");
     vcl::saveMesh(
         helmet,
-        VCLIB_CORE_RESULTS_PATH "/024_greek_helmet_export_bin/024_greek_helmet_export_bin.glb",
+        VCLIB_CORE_RESULTS_PATH
+        "/024_greek_helmet_export_bin/024_greek_helmet_export_bin.glb",
         saveSettings);
 
     std::cout << "Saved Greek helmet in gltf format (binary)" << std::endl;
@@ -73,9 +62,12 @@ int main()
 
     std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
 
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba");
     vcl::saveMeshes(
-        meshes, VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba/024_bunny_bimba.glb", saveSettings);
+        meshes,
+        VCLIB_CORE_RESULTS_PATH "/024_bunny_bimba/024_bunny_bimba.glb",
+        saveSettings);
 
     std::cout << "Saved bunny and bimba in gltf format (binary)" << std::endl;
 
@@ -89,10 +81,13 @@ int main()
 
     vcl::SaveSettings sS;
     sS.binary = false;
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf");
     vcl::saveMesh(
         pointCloud,
-        VCLIB_CORE_RESULTS_PATH "/024_flower_point_cloud_export_gltf/024_flower_point_cloud_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH
+        "/024_flower_point_cloud_export_gltf/"
+        "024_flower_point_cloud_export_gltf.gltf",
         sS);
 
     std::cout << "Saved Flower Point Cloud in gltf format (ASCII)" << std::endl;
@@ -120,10 +115,13 @@ int main()
     std::cout << "Number of faces: " << bte.faceCount() << std::endl;
     std::cout << "Number of edges: " << bte.edgeCount() << std::endl;
 
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf");
     vcl::saveMesh(
         bte,
-        VCLIB_CORE_RESULTS_PATH "/024_bunny_edge_sections_export_gltf/024_bunny_edge_sections_export_gltf.gltf",
+        VCLIB_CORE_RESULTS_PATH
+        "/024_bunny_edge_sections_export_gltf/"
+        "024_bunny_edge_sections_export_gltf.gltf",
         sS);
 
     std::cout << "Saved Bunny Edge Sections in gltf format (ASCII)"
@@ -132,12 +130,15 @@ int main()
     // Test multiple textures
 
     auto damagedHelmet = vcl::loadMesh<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf", loadSettings);
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        loadSettings);
     vcl::updatePerVertexAndFaceNormals(damagedHelmet);
 
-    saveSettings.binary = false;
+    saveSettings.binary            = false;
     saveSettings.saveTextureImages = true;
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet");
+    saveSettings.embedBuffers      = true;
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet");
     vcl::saveMesh(
         damagedHelmet,
         VCLIB_CORE_RESULTS_PATH "/024_damaged_helmet/024_damaged_helmet.gltf",
@@ -148,15 +149,18 @@ int main()
     // Test multiple materials
 
     auto cesiumMilkTruck = vcl::loadMesh<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf", loadSettings);
+        VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf",
+        loadSettings);
     vcl::updatePerVertexAndFaceNormals(cesiumMilkTruck);
 
-    saveSettings.binary = false;
+    saveSettings.binary            = false;
     saveSettings.saveTextureImages = true;
-    std::filesystem::create_directories(VCLIB_CORE_RESULTS_PATH "/024_cesium_milk_truck");
+    std::filesystem::create_directories(
+        VCLIB_CORE_RESULTS_PATH "/024_cesium_milk_truck");
     vcl::saveMesh(
         cesiumMilkTruck,
-        VCLIB_CORE_RESULTS_PATH "/024_cesium_milk_truck/024_cesium_milk_truck.gltf",
+        VCLIB_CORE_RESULTS_PATH
+        "/024_cesium_milk_truck/024_cesium_milk_truck.gltf",
         saveSettings);
 
     std::cout << "Saved Cesium Milk Truck in gltf format (ASCII)" << std::endl;
