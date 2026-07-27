@@ -34,5 +34,9 @@ add_subdirectory(021-mesh-sphere-intersection)
 add_subdirectory(022-mesh-grid)
 add_subdirectory(023-mesh-custom-user-component)
 
+if(TARGET vclib-3rd-tinygltf)
+    add_subdirectory(024-save-gltf)
+endif()
+
 add_subdirectory(998-misc-no-lib)
 add_subdirectory(999-misc)
