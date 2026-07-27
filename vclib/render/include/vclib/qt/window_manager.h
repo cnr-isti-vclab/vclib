@@ -13,7 +13,8 @@
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
-#include <vclib/space/core/point.h>
+
+#include <vclib/space/core.h>
 
 #include <QAbstractEventDispatcher>
 #include <QGuiApplication>
@@ -119,6 +120,24 @@ public:
         }
 #endif
         return displayID;
+    }
+
+    vcl::NativeWindowHandleType handleType() const
+    {
+#ifdef Q_OS_LINUX
+        QNativeInterface::QX11Application* x11AppInfo =
+            qApp->nativeInterface<QNativeInterface::QX11Application>();
+        if (x11AppInfo) {
+            return vcl::NativeWindowHandleType::DEFAULT;
+        }
+
+        QNativeInterface::QWaylandApplication* wayAppInfo =
+            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+        if (wayAppInfo) {
+            return vcl::NativeWindowHandleType::WAYLAND;
+        }
+#endif
+        return vcl::NativeWindowHandleType::DEFAULT;
     }
 
     void* windowPtr() { return reinterpret_cast<void*>(winId()); }

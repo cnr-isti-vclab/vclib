@@ -8,6 +8,8 @@
 #ifndef VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
 #define VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
 
+#include <vclib/render/window_managers.h>
+
 #include <GLFW/glfw3.h>
 
 namespace vcl::glfw {
@@ -19,6 +21,7 @@ class WindowManagerNative
 public:
     static void* winId(GLFWwindow* window);
     static void* displayId();
+    static vcl::NativeWindowHandleType handleType();
 };
 
 } // namespace detail

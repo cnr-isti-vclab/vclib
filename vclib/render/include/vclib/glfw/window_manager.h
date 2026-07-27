@@ -193,6 +193,11 @@ public:
 
     void* displayId() const { return detail::WindowManagerNative::displayId(); }
 
+    vcl::NativeWindowHandleType handleType() const
+    {
+        return detail::WindowManagerNative::handleType();
+    }
+
 protected:
     void* windowPtr() { return reinterpret_cast<void*>(mWindow); }
 
@@ -222,10 +227,12 @@ protected:
         int action,
         int mods)
     {
-#if defined(__linux__) && !defined(VCLIB_RENDER_WITH_WAYLAND)
+#if defined(__linux__)
         // Fix modifiers on X11
         // maybe it will be fixed https://github.com/glfw/glfw/issues/1630
-        mods = fixKeyboardMods(key, action, mods);
+        if (glfwGetPlatform() == GLFW_PLATFORM_X11) {
+            mods = fixKeyboardMods(key, action, mods);
+        }
 #endif
 
         // GLFW modifiers are always set
