@@ -263,10 +263,16 @@ protected:
         Point2d pos;
         Point2f scale;
         glfwGetCursorPos(win, &pos.x(), &pos.y());
-#ifdef __APPLE__
-        // only macOS has coherent coordinates with content scale
+#if defined(__APPLE__)
+        // macOS has coherent coordinates with content scale
         pos.x() *= dpiScale().x();
         pos.y() *= dpiScale().y();
+#elif defined(__linux__)
+        // Wayland on Linux requires scaling to match framebuffer dimensions
+        if (handleType() == vcl::NativeWindowHandleType::WAYLAND) {
+            pos.x() *= dpiScale().x();
+            pos.y() *= dpiScale().y();
+        }
 #endif
 
         if (action == GLFW_PRESS) {
@@ -297,10 +303,16 @@ protected:
 
     virtual void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
     {
-#ifdef __APPLE__
-        // only macOS has coherent coordinates with content scale
+#if defined(__APPLE__)
+        // macOS has coherent coordinates with content scale
         xpos *= dpiScale().x();
         ypos *= dpiScale().y();
+#elif defined(__linux__)
+        // Wayland on Linux requires scaling to match framebuffer dimensions
+        if (handleType() == vcl::NativeWindowHandleType::WAYLAND) {
+            xpos *= dpiScale().x();
+            ypos *= dpiScale().y();
+        }
 #endif
         DerivedRenderApp::WM::mouseMove(derived(), xpos, ypos);
     }
