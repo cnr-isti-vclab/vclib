@@ -35,6 +35,11 @@ target_compile_definitions(
         VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external"
 )
 
+target_compile_definitions(
+    vclib-tests-examples-common
+    INTERFACE VCLIB_RENDER_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/render"
+)
+
 function(_vclib_add_test_example name)
     set(options TEST HEADER_ONLY)
     set(oneValueArgs MODULE CORE_EXAMPLE EXTERNAL_EXAMPLE)

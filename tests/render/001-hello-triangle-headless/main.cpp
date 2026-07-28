@@ -63,5 +63,9 @@ TEST_CASE("Headless Triangle Rendering")
         }
     }
     
+    // Always save the result image for inspection
+    std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) + "/001-hello-triangle-headless_res.png";
+    vcl::saveImage(renderedImage, resultFilename);
+    
     REQUIRE(match);
 }
