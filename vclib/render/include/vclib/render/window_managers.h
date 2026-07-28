@@ -23,16 +23,14 @@ struct WindowManagerId
         GLFW_WINDOW,
         QT_WIDGET,
         QT_WINDOW,
+        HEADLESS,
         // Additional window managers here
 
         WINDOW_MANAGER_COUNT
     };
 };
 
-enum class NativeWindowHandleType {
-    DEFAULT,
-    WAYLAND
-};
+enum class NativeWindowHandleType { DEFAULT, WAYLAND };
 
 } // namespace vcl
 

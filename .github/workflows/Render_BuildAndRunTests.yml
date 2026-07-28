@@ -36,7 +36,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev
-        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
@@ -61,11 +61,18 @@ jobs:
         cmake -B build --preset=vclib-render-${{matrix.render_backend}}-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
-    # - name: Run Tests
-    #   shell: bash
-    #   run: |
-    #     cd build
-    #     if [ "$RUNNER_OS" == "Windows" ]; then
-    #       export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
-    #     fi
-    #     ctest --verbose
+    - name: Run Tests
+      if: matrix.render_backend == 'bgfx'
+      shell: bash
+      run: |
+        cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
+        fi
+        ctest --verbose
+    - name: Upload Test Results
+      if: always() && matrix.render_backend == 'bgfx'
+      uses: actions/upload-artifact@v4
+      with:
+        name: render-results-${{ matrix.os }}
+        path: assets/results/render/*.png

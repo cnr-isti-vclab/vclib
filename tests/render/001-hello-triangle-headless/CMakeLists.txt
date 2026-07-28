@@ -5,14 +5,16 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-project(vclib-render-tests)
+set(SHADERS
+    shaders/vs_vertex_shader.sc
+    shaders/fs_fragment_shader.sc
+    shaders/varying.def.sc
+)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+vclib_add_test(
+    001-hello-triangle-headless
+    MODULE render
+    SOURCES main.cpp
+)
 
-if(TARGET vclib-3rd-qt OR TARGET vclib-3rd-glfw)
-    add_subdirectory(000-static-asserts)
-endif()
-
-if(TARGET vclib-3rd-bgfx)
-    add_subdirectory(001-hello-triangle-headless)
-endif()
+vclib_target_add_shaders(vclib-render-test-001-hello-triangle-headless ${SHADERS})

@@ -5,14 +5,5 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-project(vclib-render-tests)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
-
-if(TARGET vclib-3rd-qt OR TARGET vclib-3rd-glfw)
-    add_subdirectory(000-static-asserts)
-endif()
-
-if(TARGET vclib-3rd-bgfx)
-    add_subdirectory(001-hello-triangle-headless)
-endif()
+set(EXAMPLE_REQUIRED_TARGETS vclib-3rd-bgfx)
+set(EXAMPLE_EXTRA_INCLUDES "../00-hello-triangle-bgfx-common")

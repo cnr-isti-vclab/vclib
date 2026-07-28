@@ -107,15 +107,33 @@ public:
 
     /**
      * @brief Request a screenshot of the canvas.
-     *     The screenshot will be saved asynchronously.
-     * @param filename The filename where the screenshot will be saved.
-     * @param multiplier The multiplier applied to the canvas image.
+     *
+     * The screenshot will be saved asynchronously.
+     *
+     * @param[in] filename: The filename where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
      * @return true if the screenshot is requested, false otherwise.
      */
     bool screenshot(const std::string& filename, uint multiplier = 1)
     {
         return onScreenshot(filename, multiplier);
     }
+
+    /**
+     * @brief Request a screenshot of the canvas in memory.
+     *
+     * The screenshot will be populated asynchronously.
+     *
+     * @param[in] image: The image where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        return onScreenshot(image, multiplier);
+    }
+
+    /// Functions called by the DerivedRenderApp.
 
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
@@ -249,6 +267,44 @@ public:
             catch (const std::exception& e) {
                 std::cerr << "Error saving image: " << e.what() << std::endl;
             }
+        };
+
+        mReadRequest.emplace(
+            ReadFromGPUBuffer::Target::COLOR, size, mDefaultClearColor);
+        mReadRequest->setPendingRead(callback);
+        return true;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * for a screenshot in memory. Also called by the public member function screenshot().
+     *
+     * @param image
+     * @param multiplier multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     * @note this function is asynchronous, the screenshot will be populated later.
+     */
+    bool onScreenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt) {      // read already requested
+            return false;
+        }
+
+        // get size
+        auto size = mSize * multiplier;
+
+        // color data callback
+        CallbackReadBuffer callback = [&image, size](const ReadData& data) {
+            assert(std::holds_alternative<ReadFromGPUBuffer::ByteData>(data));
+            const auto& d = std::get<ReadFromGPUBuffer::ByteData>(data);
+
+            image = vcl::Image(
+                d.data(),
+                size.x(),
+                size.y(),
+                false,
+                vcl::Color::Format::ABGR); // BGFX reads back in RGBA bytes, which is ABGR as uint32_t
         };
 
         mReadRequest.emplace(

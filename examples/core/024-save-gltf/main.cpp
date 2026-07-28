@@ -168,7 +168,8 @@ int main()
     // Test wedge texcoords (with quads!)
 
     auto spot = vcl::loadMesh<vcl::PolyMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj", loadSettings);
+        VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj",
+        loadSettings);
     vcl::updatePerVertexAndFaceNormals(spot);
 
     saveSettings.binary            = false;

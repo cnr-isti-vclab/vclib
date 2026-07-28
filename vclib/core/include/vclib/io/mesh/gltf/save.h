@@ -82,9 +82,9 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     accessor.componentType       = componentType;
     accessor.type                = type;
     // count = bytes / (comp_bytes * num_comp_in_type)
-    accessor.count      = bufferView.second.byteLength /
-                          (tinygltf::GetComponentSizeInBytes(componentType) *
-                           tinygltf::GetNumComponentsInType(type));
+    accessor.count = bufferView.second.byteLength /
+                     (tinygltf::GetComponentSizeInBytes(componentType) *
+                      tinygltf::GetNumComponentsInType(type));
     accessor.normalized = normalized;
 
     return {index, accessor};

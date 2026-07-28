@@ -109,15 +109,27 @@ public:
 
     /**
      * @brief Request a screenshot of the canvas.
-     *     The screenshot will be saved asynchronously.
-     * @param filename The filename where the screenshot will be saved.
-     * @param multiplier The multiplier applied to the canvas image.
+     * @param[in] filename: The filename where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
      * @return true if the screenshot is requested, false otherwise.
      */
     bool screenshot(const std::string& filename, uint multiplier = 1)
     {
         return onScreenshot(filename, multiplier);
     }
+
+    /**
+     * @brief Request a screenshot of the canvas in memory.
+     * @param[in] image: The image where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        return onScreenshot(image, multiplier);
+    }
+
+    /// Functions called by the DerivedRenderApp.
 
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
@@ -224,6 +236,39 @@ public:
         stbi_flip_vertically_on_write(0);
 
         return ret;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * for a screenshot in memory. Also called by the public member function screenshot().
+     *
+     * @param image
+     * @param multiplier multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool onScreenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        (void) multiplier; // not used
+
+        std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
+        // read pixels
+        glReadPixels(
+            0,
+            0,
+            GLsizei(mSize.x()),
+            GLsizei(mSize.y()),
+            GL_RGBA,
+            GL_UNSIGNED_BYTE,
+            buffer.data());
+
+        image = vcl::Image(
+            buffer.data(),
+            mSize.x(),
+            mSize.y(),
+            true, // flip vertically since opengl origin is bottom-left
+            vcl::Color::Format::ABGR);
+
+        return true;
     }
 
     /**
