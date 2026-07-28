@@ -61,11 +61,12 @@ jobs:
         cmake -B build --preset=vclib-render-${{matrix.render_backend}}-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
-    # - name: Run Tests
-    #   shell: bash
-    #   run: |
-    #     cd build
-    #     if [ "$RUNNER_OS" == "Windows" ]; then
-    #       export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
-    #     fi
-    #     ctest --verbose
+    - name: Run Tests
+      if: matrix.render_backend == 'bgfx'
+      shell: bash
+      run: |
+        cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
+        fi
+        ctest --verbose
