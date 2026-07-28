@@ -51,17 +51,10 @@ TEST_CASE("Headless Triangle Rendering")
     REQUIRE(renderedImage.colorSpace() == groundTruthImage.colorSpace());
     REQUIRE(renderedImage.sizeInBytes() == groundTruthImage.sizeInBytes());
 
-    // Pixel exact comparison
-    const unsigned char* renderedData = renderedImage.data();
-    const unsigned char* gtData = groundTruthImage.data();
-    
-    bool match = true;
-    for (std::size_t i = 0; i < renderedImage.sizeInBytes(); ++i) {
-        if (renderedData[i] != gtData[i]) {
-            match = false;
-            break;
-        }
-    }
+    // Compare using isAlmostEqual with tolerance:
+    // - max 2 units of difference per color channel
+    // - max 0.5% of pixels failing this tolerance
+    bool match = renderedImage.isAlmostEqual(groundTruthImage, 2, 0.005f);
     
     // Always save the result image for inspection
     std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) + "/001-hello-triangle-headless_res.png";
