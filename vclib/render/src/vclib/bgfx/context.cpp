@@ -18,8 +18,8 @@
 namespace vcl {
 
 void Context::init(
-    void* windowHandle,
-    void* displayHandle,
+    void*                       windowHandle,
+    void*                       displayHandle,
     vcl::NativeWindowHandleType windowType)
 {
     std::lock_guard<std::mutex> lock(sMutex);
@@ -300,8 +300,8 @@ ProgramManager& Context::programManager()
 }
 
 Context::Context(
-    void* windowHandle,
-    void* displayHandle,
+    void*                       windowHandle,
+    void*                       displayHandle,
     vcl::NativeWindowHandleType windowType)
 {
     if (windowHandle == nullptr) {
@@ -337,13 +337,13 @@ Context::Context(
     init.type             = sRenderType;
     init.platformData.ndt = mDisplayHandle;
     switch (windowType) {
-        case vcl::NativeWindowHandleType::WAYLAND:
-            init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
-            break;
-        case vcl::NativeWindowHandleType::DEFAULT:
-        default:
-            init.platformData.type = bgfx::NativeWindowHandleType::Default;
-            break;
+    case vcl::NativeWindowHandleType::WAYLAND:
+        init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
+        break;
+    case vcl::NativeWindowHandleType::DEFAULT:
+    default:
+        init.platformData.type = bgfx::NativeWindowHandleType::Default;
+        break;
     }
     if (mIsHeadless) {
 #ifdef __APPLE__
@@ -384,8 +384,8 @@ Context::~Context()
 }
 
 Context& Context::instance(
-    void* windowHandle,
-    void* displayHandle,
+    void*                       windowHandle,
+    void*                       displayHandle,
     vcl::NativeWindowHandleType windowType)
 {
     if (!sInstancePtr) {

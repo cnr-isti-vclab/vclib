@@ -69,14 +69,14 @@ public:
      * @return The context instance.
      */
     static Context& instance(
-        void*                              windowHandle  = nullptr,
-        void*                              displayHandle = nullptr,
+        void*                       windowHandle  = nullptr,
+        void*                       displayHandle = nullptr,
         vcl::NativeWindowHandleType windowType =
             vcl::NativeWindowHandleType::DEFAULT);
 
     static void init(
-        void*                              windowHandle  = nullptr,
-        void*                              displayHandle = nullptr,
+        void*                       windowHandle  = nullptr,
+        void*                       displayHandle = nullptr,
         vcl::NativeWindowHandleType windowType =
             vcl::NativeWindowHandleType::DEFAULT);
 
@@ -187,8 +187,8 @@ public:
 
 private:
     Context(
-        void* windowHandle,
-        void* displayHandle,
+        void*                       windowHandle,
+        void*                       displayHandle,
         vcl::NativeWindowHandleType windowType);
 
     ~Context();

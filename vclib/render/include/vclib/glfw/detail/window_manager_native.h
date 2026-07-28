@@ -19,8 +19,8 @@ namespace detail {
 class WindowManagerNative
 {
 public:
-    static void* winId(GLFWwindow* window);
-    static void* displayId();
+    static void*                       winId(GLFWwindow* window);
+    static void*                       displayId();
     static vcl::NativeWindowHandleType handleType();
 };
 
