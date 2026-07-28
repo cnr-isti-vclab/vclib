@@ -11,6 +11,8 @@
 #include <vclib/render/headless_manager.h>
 #include <vclib/render/render_app.h>
 
+#include <vclib/io.h>
+
 #include <iostream>
 
 int main(int argc, char** argv)
@@ -23,8 +25,7 @@ int main(int argc, char** argv)
     // Request a screenshot
     std::string screenshotFilename = "screenshot.png";
     std::cout << "Requesting screenshot: " << screenshotFilename << std::endl;
-    static_cast<vcl::CanvasBGFX<WindowHeadless>&>(app).screenshot(
-        screenshotFilename);
+    app.screenshot(screenshotFilename);
 
     // Run the headless app
     // It will run until the screenshot readback is complete
@@ -32,6 +33,20 @@ int main(int argc, char** argv)
     app.show();
     std::cout << "Rendering loop finished. Check " << screenshotFilename
               << " for the output." << std::endl;
+
+    // request screenshot and save it to vcl::Image
+    vcl::Image screenshotImage;
+    std::cout << "Requesting screenshot in memory..." << std::endl;
+    app.screenshot(screenshotImage);
+    app.show();
+
+    std::cout << "Screenshot in memory requested. Image size: "
+              << screenshotImage.width() << "x" << screenshotImage.height()
+              << std::endl;
+
+    vcl::saveImage(screenshotImage, "screenshot_in_memory.png");
+
+    std::cout << "Screenshot saved to screenshot_in_memory.png" << std::endl;
 
     return 0;
 }
