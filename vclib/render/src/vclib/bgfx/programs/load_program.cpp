@@ -55,8 +55,8 @@ bgfx::ShaderHandle loadShader(bx::FileReaderI* reader, std::string name)
 
     switch (bgfx::getRendererType()) {
     case bgfx::RendererType::Noop:
-    case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/"; break;
+    case bgfx::RendererType::Direct3D11: shaderPath = "shaders/dxbc/"; break;
+    case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dxil/"; break;
     case bgfx::RendererType::Agc:
     case bgfx::RendererType::Gnm: shaderPath = "shaders/pssl/"; break;
     case bgfx::RendererType::Metal: shaderPath = "shaders/mtl/"; break;
