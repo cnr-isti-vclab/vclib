@@ -35,8 +35,8 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev xvfb mesa-vulkan-drivers
-        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev
+        sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
@@ -69,11 +69,7 @@ jobs:
         if [ "$RUNNER_OS" == "Windows" ]; then
           export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
         fi
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          xvfb-run -s "-ac -screen 0 1024x768x24" ctest --verbose
-        else
-          ctest --verbose
-        fi
+        ctest --verbose
     - name: Upload Test Results
       if: always() && matrix.render_backend == 'bgfx'
       uses: actions/upload-artifact@v4
