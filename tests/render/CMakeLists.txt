@@ -15,4 +15,5 @@ endif()
 
 if(TARGET vclib-3rd-bgfx)
     add_subdirectory(001-hello-triangle-headless)
+    add_subdirectory(002-mesh-surface-headless)
 endif()

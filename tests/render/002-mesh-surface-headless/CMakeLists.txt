@@ -5,17 +5,8 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-render-example-${EXAMPLE_NAME})
-
-set(SOURCES main.cpp)
-
-vclib_add_example(${EXAMPLE_NAME}
+vclib_add_test(
+    002-mesh-surface-headless
     MODULE render
-    SOURCES ${SOURCES}
-)
-
-target_include_directories(
-    vclib-render-example-${EXAMPLE_NAME}
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    SOURCES main.cpp
 )
