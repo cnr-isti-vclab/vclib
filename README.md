@@ -1,3 +1,7 @@
+<p align="center">
+<img src="docs/vclib_logo.svg">
+</p>
+
 # Visual Computing Library
 
 [![Core - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml) [![External - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml) [![Render - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml) [![Bindings - Build and test Wheel](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Bindings_BuildAndTestWheel.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Bindings_BuildAndTestWheel.yml)
