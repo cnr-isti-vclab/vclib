@@ -1,5 +1,9 @@
 <p align="center">
-<img src="docs/vclib_logo.svg">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/vclib_logo_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/vclib_logo_light.svg">
+    <img alt="VCLib Logo" src="docs/vclib_logo_dark.svg">
+  </picture>
 </p>
 
 # Visual Computing Library
