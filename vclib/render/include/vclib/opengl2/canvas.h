@@ -240,7 +240,8 @@ public:
 
     /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
-     * for a screenshot in memory. Also called by the public member function screenshot().
+     * for a screenshot in memory. Also called by the public member function
+     * screenshot().
      *
      * @param image
      * @param multiplier multiplier applied to the canvas image.

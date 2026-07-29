@@ -277,12 +277,14 @@ public:
 
     /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
-     * for a screenshot in memory. Also called by the public member function screenshot().
+     * for a screenshot in memory. Also called by the public member function
+     * screenshot().
      *
      * @param image
      * @param multiplier multiplier applied to the canvas image.
      * @return true if the screenshot is requested, false otherwise.
-     * @note this function is asynchronous, the screenshot will be populated later.
+     * @note this function is asynchronous, the screenshot will be populated
+     * later.
      */
     bool onScreenshot(vcl::Image& image, uint multiplier = 1)
     {
@@ -304,7 +306,8 @@ public:
                 size.x(),
                 size.y(),
                 false,
-                vcl::Color::Format::ABGR); // BGFX reads back in RGBA bytes, which is ABGR as uint32_t
+                vcl::Color::Format::ABGR); // BGFX reads back in RGBA bytes,
+                                           // which is ABGR as uint32_t
         };
 
         mReadRequest.emplace(
