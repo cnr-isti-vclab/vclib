@@ -41,6 +41,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
+    /**
+     * @brief The background color of the canvas.
+     */
     Color mBackgroundColor = Color::DarkGray;
 
     DrawableAxis mDrawAxis;
@@ -293,8 +296,16 @@ public:
         Base::fitView(sceneCenter);
     }
 
+    /**
+     * @brief Retrieves the current background color.
+     * @return The current background color.
+     */
     const Color& backgroundColor() const { return mBackgroundColor; }
 
+    /**
+     * @brief Sets the background color.
+     * @param[in] color: The new background color.
+     */
     void setBackgroundColor(const Color& color)
     {
         mBackgroundColor = color;

@@ -174,50 +174,99 @@ public:
      */
     void clearDrawableObjects() { mApp.clearDrawableObjects(); }
 
+    /**
+     * @brief Pushes an editor.
+     * @param[in] active: Whether the editor should be active upon pushing.
+     */
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
         return mApp.template pushEditor<EditorT>(active);
     }
 
-    // automatic update... member function here to satisfy the interface, but
-    // does nothing for headless backend
+    /**
+     * @brief A dummy update GUI method required to satisfy the MeshViewerConcept.
+     */
     void updateGUI() {}
 
+    /**
+     * @brief Refreshes the active editors.
+     */
     void refreshEditors() { mApp.refreshEditors(); }
 
+    /**
+     * @brief Retrieves the current camera object.
+     * @return The current camera.
+     */
     Camera<float> camera() const { return mApp.camera(); }
 
+    /**
+     * @brief Sets the camera.
+     * @param[in] c: The new camera object.
+     */
     void setCamera(const Camera<float>& c) { mApp.setCamera(c); }
 
+    /**
+     * @brief Adjusts the view to fit the whole scene.
+     */
     void fitScene() { mApp.fitScene(); }
 
+    /**
+     * @brief Adjusts the view to fit the current selected drawable objects.
+     */
     void fitView() { mApp.fitView(); }
 
+    /**
+     * @brief Shows the viewer window and starts the render loop.
+     */
     void show() { mApp.show(); }
 
+    /**
+     * @brief Shows the viewer window maximized.
+     * In headless mode, this does nothing but is kept to satisfy the concept.
+     */
     void showMaximized() {}
 
+    /**
+     * @brief Sets the viewer settings.
+     * @param[in] settings: The new viewer settings.
+     */
     void setViewerSettings(const ViewerSettings& settings)
     {
         mApp.setViewerSettings(settings);
     }
 
+    /**
+     * @brief Retrieves the current viewer settings.
+     * @return The viewer settings.
+     */
     const ViewerSettings& viewerSettings() const
     {
         return mApp.viewerSettings();
     }
 
+    /**
+     * @brief Sets the panorama image to be used as background.
+     * @param[in] panorama: The filename/path of the panorama image.
+     */
     void setPanorama(const std::string& panorama)
     {
         mApp.setPanorama(panorama);
     }
 
+    /**
+     * @brief Sets the background color of the viewer.
+     * @param[in] color: The background color.
+     */
     void setBackgroundColor(const vcl::Color& color)
     {
         mApp.setBackgroundColor(color);
     }
 
+    /**
+     * @brief Retrieves the current background color.
+     * @return The background color.
+     */
     const vcl::Color& backgroundColor() const
     {
         return mApp.backgroundColor();

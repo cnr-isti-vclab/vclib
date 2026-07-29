@@ -184,11 +184,19 @@ public:
 
     void setPanorama(const std::string& panorama);
 
+    /**
+     * @brief Sets the background color of the viewer.
+     * @param[in] color: The background color.
+     */
     void setBackgroundColor(const vcl::Color& color)
     {
         mApp.setBackgroundColor(color);
     }
 
+    /**
+     * @brief Retrieves the current background color.
+     * @return The background color.
+     */
     const vcl::Color& backgroundColor() const
     {
         return mApp.backgroundColor();
