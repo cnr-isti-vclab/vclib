@@ -34,6 +34,7 @@ class HeadlessManager
     uint        mWidth;
     uint        mHeight;
     bool        mUpdateRequested = false;
+    bool        mInitialized     = false;
 
 public:
     /**
@@ -117,6 +118,17 @@ public:
     }
 
     /**
+     * @brief Initializes the render application.
+     */
+    void init()
+    {
+        if (!mInitialized) {
+            DerivedRenderApp::WM::init(derived());
+            mInitialized = true;
+        }
+    }
+
+    /**
      * @brief Runs the headless rendering loop.
      *
      * It initializes the render application and continuously calls paint()
@@ -125,7 +137,7 @@ public:
      */
     void show()
     {
-        DerivedRenderApp::WM::init(derived());
+        init();
 
         mUpdateRequested = true;
 

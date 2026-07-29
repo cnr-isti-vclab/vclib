@@ -5,34 +5,31 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_IMGUI_MESH_VIEWER_H
-#define VCL_IMGUI_MESH_VIEWER_H
+#ifndef VCL_RENDER_HEADLESS_MESH_VIEWER_H
+#define VCL_RENDER_HEADLESS_MESH_VIEWER_H
 
-#include <vclib/glfw/window_manager.h>
-#include <vclib/imgui/gui/editor_frame.h>
-#include <vclib/imgui/imgui_drawer.h>
-#include <vclib/imgui/mesh_viewer_imgui_drawer.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/drawers/viewer_drawer.h>
+#include <vclib/render/headless_manager.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
 
-namespace vcl::imgui {
+namespace vcl {
 
 /**
- * @brief The MeshViewer class for the ImGui backend.
+ * @brief The HeadlessMeshViewer class.
  *
- * This class provides a complete GUI for manipulating and rendering meshes
- * using GLFW and ImGui. It manages an internal `RenderApp` instance.
+ * This class provides an interface for manipulating and rendering meshes
+ * in headless environments, fully respecting the MeshViewerConcept.
  */
-class MeshViewer
+class HeadlessMeshViewer
 {
     using ViewerApp = vcl::RenderApp<
-        vcl::glfw::WindowManager,
+        vcl::HeadlessManager,
         vcl::Canvas,
-        vcl::imgui::ImGuiDrawer,
-        vcl::imgui::MeshViewerDrawerImgui>;
+        vcl::ViewerDrawer>;
 
     ViewerApp mApp;
 
@@ -40,9 +37,40 @@ public:
     using EditorType = ViewerApp::EditorType;
     using ViewerType = ViewerApp::ViewerType;
 
-    explicit MeshViewer(const std::string& title = "VCLib Mesh Viewer") :
-            mApp(title)
+    explicit HeadlessMeshViewer(
+        const std::string& title  = "VCLib Headless Mesh Viewer",
+        uint               width  = 1024,
+        uint               height = 768) :
+            mApp(title, width, height)
     {
+        mApp.init();
+    }
+
+    /**
+     * @brief Resizes the canvas.
+     * @param[in] width: The new width in pixels.
+     * @param[in] height: The new height in pixels.
+     */
+    void resize(uint width, uint height) { mApp.resize(width, height); }
+
+    /**
+     * @brief Requests a screenshot and saves it to a file. 
+     * Auto-concludes by running the render loop.
+     */
+    void screenshot(const std::string& filename)
+    {
+        mApp.screenshot(filename);
+        mApp.show();
+    }
+
+    /**
+     * @brief Requests a screenshot and saves it to a vcl::Image. 
+     * Auto-concludes by running the render loop.
+     */
+    void screenshot(vcl::Image& image)
+    {
+        mApp.screenshot(image);
+        mApp.show();
     }
 
     /**
@@ -55,7 +83,7 @@ public:
 
     /**
      * @brief Returns a shared pointer to the i-th drawable object.
-     * @param i The index of the object.
+     * @param[in] i: The index of the object.
      */
     std::shared_ptr<vcl::DrawableObject> drawableObject(uint i)
     {
@@ -64,7 +92,7 @@ public:
 
     /**
      * @brief Returns a const shared pointer to the i-th drawable object.
-     * @param i The index of the object.
+     * @param[in] i: The index of the object.
      */
     std::shared_ptr<const vcl::DrawableObject> drawableObject(uint i) const
     {
@@ -89,7 +117,7 @@ public:
 
     /**
      * @brief Adds a drawable object to the end of the scene.
-     * @param obj The drawable object to add.
+     * @param[in] obj: The drawable object to add.
      * @return The ID assigned to the new object.
      */
     template<vcl::DrawableObjectConcept ObjType>
@@ -100,7 +128,7 @@ public:
 
     /**
      * @brief Adds a shared_ptr to a drawable object to the end of the scene.
-     * @param obj The drawable object to add.
+     * @param[in] obj: The drawable object to add.
      * @return The ID assigned to the new object.
      */
     uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
@@ -110,15 +138,15 @@ public:
 
     /**
      * @brief Removes a drawable object from the scene by its ID.
-     * @param id The ID of the object to remove.
+     * @param[in] id: The ID of the object to remove.
      * @return True if the object was successfully removed, false otherwise.
      */
     bool removeDrawableObject(uint id) { return mApp.removeDrawableObject(id); }
 
     /**
      * @brief Inserts a drawable object at a specific position in the scene.
-     * @param pos The position to insert the object at.
-     * @param obj The object to insert.
+     * @param[in] pos: The position to insert the object at.
+     * @param[in] obj: The object to insert.
      * @return True if the insertion was successful, false otherwise.
      */
     template<vcl::DrawableObjectConcept ObjType>
@@ -130,8 +158,8 @@ public:
     /**
      * @brief Inserts a shared_ptr to a drawable object at a specific position
      * in the scene.
-     * @param pos The position to insert the object at.
-     * @param obj The object to insert.
+     * @param[in] pos: The position to insert the object at.
+     * @param[in] obj: The object to insert.
      * @return True if the insertion was successful, false otherwise.
      */
     bool insertDrawableObject(
@@ -146,43 +174,85 @@ public:
      */
     void clearDrawableObjects() { mApp.clearDrawableObjects(); }
 
+    /**
+     * @brief Pushes an editor.
+     * @param[in] active: Whether the editor should be active upon pushing.
+     */
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        auto editor = mApp.template pushEditor<EditorT>(active);
-
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            mApp.addEditorFrame(std::make_shared<FrameType>(editor));
-        }
-
-        return editor;
+        return mApp.template pushEditor<EditorT>(active);
     }
 
-    // automatic update... member function here to satisfy the interface, but
-    // does nothing for ImGui backend
+    /**
+     * @brief A dummy update GUI method required to satisfy the MeshViewerConcept.
+     */
     void updateGUI() {}
 
+    /**
+     * @brief Refreshes the active editors.
+     */
     void refreshEditors() { mApp.refreshEditors(); }
 
+    /**
+     * @brief Retrieves the current camera object.
+     * @return The current camera.
+     */
     Camera<float> camera() const { return mApp.camera(); }
 
+    /**
+     * @brief Sets the camera.
+     * @param[in] c: The new camera object.
+     */
     void setCamera(const Camera<float>& c) { mApp.setCamera(c); }
 
+    /**
+     * @brief Adjusts the view to fit the whole scene.
+     */
     void fitScene() { mApp.fitScene(); }
 
+    /**
+     * @brief Adjusts the view to fit the current selected drawable objects.
+     */
     void fitView() { mApp.fitView(); }
 
+    /**
+     * @brief Shows the viewer window and starts the render loop.
+     */
     void show() { mApp.show(); }
 
-    void showMaximized() { mApp.showMaximized(); }
+    /**
+     * @brief Shows the viewer window maximized.
+     * In headless mode, this does nothing but is kept to satisfy the concept.
+     */
+    void showMaximized() {}
 
-    void setViewerSettings(const ViewerSettings& settings);
+    /**
+     * @brief Sets the viewer settings.
+     * @param[in] settings: The new viewer settings.
+     */
+    void setViewerSettings(const ViewerSettings& settings)
+    {
+        mApp.setViewerSettings(settings);
+    }
 
-    const ViewerSettings& viewerSettings() const;
+    /**
+     * @brief Retrieves the current viewer settings.
+     * @return The viewer settings.
+     */
+    const ViewerSettings& viewerSettings() const
+    {
+        return mApp.viewerSettings();
+    }
 
-    void setPanorama(const std::string& panorama);
+    /**
+     * @brief Sets the panorama image to be used as background.
+     * @param[in] panorama: The filename/path of the panorama image.
+     */
+    void setPanorama(const std::string& panorama)
+    {
+        mApp.setPanorama(panorama);
+    }
 
     /**
      * @brief Sets the background color of the viewer.
@@ -203,6 +273,6 @@ public:
     }
 };
 
-} // namespace vcl::imgui
+} // namespace vcl
 
-#endif // VCL_IMGUI_MESH_VIEWER_H
+#endif // VCL_RENDER_HEADLESS_MESH_VIEWER_H
