@@ -72,7 +72,7 @@ jobs:
         ctest --verbose
     - name: Upload Test Results
       if: always() && matrix.render_backend == 'bgfx'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: render-results-${{ matrix.os }}
         path: assets/results/render/*.png
