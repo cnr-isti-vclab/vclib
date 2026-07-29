@@ -183,6 +183,16 @@ public:
     const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
+
+    void setBackgroundColor(const vcl::Color& color)
+    {
+        mApp.setBackgroundColor(color);
+    }
+
+    const vcl::Color& backgroundColor() const
+    {
+        return mApp.backgroundColor();
+    }
 };
 
 } // namespace vcl::imgui

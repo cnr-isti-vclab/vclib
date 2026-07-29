@@ -212,6 +212,16 @@ public:
     {
         mApp.setPanorama(panorama);
     }
+
+    void setBackgroundColor(const vcl::Color& color)
+    {
+        mApp.setBackgroundColor(color);
+    }
+
+    const vcl::Color& backgroundColor() const
+    {
+        return mApp.backgroundColor();
+    }
 };
 
 } // namespace vcl

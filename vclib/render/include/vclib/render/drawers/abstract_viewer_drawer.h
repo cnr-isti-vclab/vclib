@@ -41,6 +41,8 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
+    Color mBackgroundColor = Color::DarkGray;
+
     DrawableAxis mDrawAxis;
 
     std::function<void(void)> mCustomShortcutToggleAxisCallback = [this]() {
@@ -291,10 +293,18 @@ public:
         Base::fitView(sceneCenter);
     }
 
+    const Color& backgroundColor() const { return mBackgroundColor; }
+
+    void setBackgroundColor(const Color& color)
+    {
+        mBackgroundColor = color;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+    }
+
     // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
         mDrawList->init();
     }
 

@@ -213,6 +213,10 @@ public:
 
     void setPanorama(const std::string& panorama);
 
+    void setBackgroundColor(const vcl::Color& color);
+
+    const vcl::Color& backgroundColor() const;
+
 public slots:
     void fitScene();
 
