@@ -10,6 +10,8 @@
 
 #include <vclib/render/concepts/mesh_viewer.h>
 #include <vclib/render/concepts/viewer.h>
+#include <vclib/render/headless_viewer.h>
+
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
@@ -27,6 +29,22 @@
 void viewerStaticAsserts()
 {
     using namespace vcl;
+
+    static_assert(
+        ViewerConcept<HeadlessViewer>,
+        "HeadlessViewer does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<const HeadlessViewer>,
+        "const HeadlessViewer does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<HeadlessViewer&>,
+        "HeadlessViewer& does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<const HeadlessViewer&>,
+        "const HeadlessViewer& does not satisfy the ViewerConcept");
+    static_assert(
+        ViewerConcept<HeadlessViewer&&>,
+        "HeadlessViewer&& does not satisfy the ViewerConcept");
 
 #ifdef VCLIB_WITH_QT
     static_assert(
