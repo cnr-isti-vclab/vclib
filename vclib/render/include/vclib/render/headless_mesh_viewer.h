@@ -43,6 +43,7 @@ public:
         uint               height = 768) :
             mApp(title, width, height)
     {
+        mApp.init();
     }
 
     /**
