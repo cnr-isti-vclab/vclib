@@ -7,8 +7,8 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/render/headless_viewer.h>
 #include <vclib/io.h>
+#include <vclib/render/headless_viewer.h>
 
 #include <iostream>
 
@@ -28,15 +28,15 @@ int main(int argc, char** argv)
     // Request a screenshot
     std::string screenshotFilename = "screenshot.png";
     std::cout << "Requesting screenshot: " << screenshotFilename << std::endl;
-    
+
     // We must initialize the application explicitly if we want to take a
     // screenshot before the show() method is called. This guarantees that
     // the Drawers have been properly initialized (including their default
     // clear color like DarkGray).
     tw.init();
-    
+
     tw.screenshot(screenshotFilename);
-    
+
     // Run the headless app
     // It will run until the screenshot readback is complete
     std::cout << "Starting rendering loop..." << std::endl;

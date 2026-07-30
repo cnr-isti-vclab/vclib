@@ -5,9 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/headless_mesh_viewer.h>
-#include <vclib/bgfx/context.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/io.h>
@@ -76,10 +76,10 @@ void runRenderTest(
     bool match = renderedImage.isAlmostEqual(groundTruthImage, 2, 0.005f);
 
     const bgfx::Caps& caps = vcl::Context::instance().capabilites();
-    bool isWARP = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
+    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
     if (isWARP && (testName == "color_face" || testName == "shading_flat")) {
-        // WARP software rasterizer has a bug with SV_PrimitiveID on indexed meshes
-        // without a Geometry Shader. It returns scrambled indices.
+        // WARP software rasterizer has a bug with SV_PrimitiveID on indexed
+        // meshes without a Geometry Shader. It returns scrambled indices.
         match = true;
     }
 

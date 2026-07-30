@@ -197,10 +197,7 @@ public:
      * @brief Retrieves the current background color.
      * @return The background color.
      */
-    const vcl::Color& backgroundColor() const
-    {
-        return mApp.backgroundColor();
-    }
+    const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
 };
 
 } // namespace vcl::imgui

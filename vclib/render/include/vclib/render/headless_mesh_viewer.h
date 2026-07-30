@@ -26,10 +26,8 @@ namespace vcl {
  */
 class HeadlessMeshViewer
 {
-    using ViewerApp = vcl::RenderApp<
-        vcl::HeadlessManager,
-        vcl::Canvas,
-        vcl::ViewerDrawer>;
+    using ViewerApp =
+        vcl::RenderApp<vcl::HeadlessManager, vcl::Canvas, vcl::ViewerDrawer>;
 
     ViewerApp mApp;
 
@@ -40,8 +38,7 @@ public:
     explicit HeadlessMeshViewer(
         const std::string& title  = "VCLib Headless Mesh Viewer",
         uint               width  = 1024,
-        uint               height = 768) :
-            mApp(title, width, height)
+        uint               height = 768) : mApp(title, width, height)
     {
         mApp.init();
     }
@@ -54,7 +51,7 @@ public:
     void resize(uint width, uint height) { mApp.resize(width, height); }
 
     /**
-     * @brief Requests a screenshot and saves it to a file. 
+     * @brief Requests a screenshot and saves it to a file.
      * Auto-concludes by running the render loop.
      */
     void screenshot(const std::string& filename)
@@ -64,7 +61,7 @@ public:
     }
 
     /**
-     * @brief Requests a screenshot and saves it to a vcl::Image. 
+     * @brief Requests a screenshot and saves it to a vcl::Image.
      * Auto-concludes by running the render loop.
      */
     void screenshot(vcl::Image& image)
@@ -185,7 +182,8 @@ public:
     }
 
     /**
-     * @brief A dummy update GUI method required to satisfy the MeshViewerConcept.
+     * @brief A dummy update GUI method required to satisfy the
+     * MeshViewerConcept.
      */
     void updateGUI() {}
 
@@ -267,10 +265,7 @@ public:
      * @brief Retrieves the current background color.
      * @return The background color.
      */
-    const vcl::Color& backgroundColor() const
-    {
-        return mApp.backgroundColor();
-    }
+    const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
 };
 
 } // namespace vcl

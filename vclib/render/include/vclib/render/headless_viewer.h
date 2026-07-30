@@ -19,7 +19,7 @@ namespace vcl {
  * @brief An alias for a headless viewer application.
  *
  * This Viewer acts as a full rendering application but operates headlessly,
- * making it suitable for generating screenshots, off-screen rendering, 
+ * making it suitable for generating screenshots, off-screen rendering,
  * or testing in environments without a display server.
  */
 using HeadlessViewer =

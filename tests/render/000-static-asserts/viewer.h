@@ -13,7 +13,6 @@
 #include <vclib/render/headless_mesh_viewer.h>
 #include <vclib/render/headless_viewer.h>
 
-
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
 #include <vclib/qt/viewer_widget.h>
