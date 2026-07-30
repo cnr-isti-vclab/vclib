@@ -85,7 +85,8 @@ void runRenderTest(
 
     // WARP software rasterizer has a bug with SV_PrimitiveID on indexed
     // meshes without a Geometry Shader. It returns scrambled indices.
-    if (!isWARP || (testName != "color_face" && testName != "shading_flat")) {
+    if (!isWARP || (testName != "color_face" && testName != "shading_flat" &&
+                    testName != "surface_selection")) {
         REQUIRE(match);
     }
 }
@@ -255,6 +256,31 @@ TEST_CASE("Mesh Surface Color Modes")
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::COLOR_WEDGE_TEX);
+            mesh.setRenderSettings(settings);
+
+            mv.pushDrawableObject(std::move(mesh));
+        });
+    }
+}
+
+TEST_CASE("Mesh Surface Selection")
+{
+    SECTION("Face Selection")
+    {
+        runRenderTest("surface_selection", [](vcl::HeadlessMeshViewer& mv) {
+            auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
+
+            mesh.updateRenderSettingsCapabilities();
+
+            // Deterministically assign selection to faces
+            for (auto& f : mesh.faces()) {
+                if (f.index() % 5 == 0)
+                    f.selected() = true;
+            }
+            mesh.updateBuffers();
+
+            auto settings = mesh.renderSettings();
+            settings.setSurface(vcl::MeshRenderInfo::Surface::SELECTION);
             mesh.setRenderSettings(settings);
 
             mv.pushDrawableObject(std::move(mesh));
