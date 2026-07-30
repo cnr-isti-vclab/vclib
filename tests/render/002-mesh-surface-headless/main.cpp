@@ -75,18 +75,19 @@ void runRenderTest(
 
     bool match = renderedImage.isAlmostEqual(groundTruthImage, 2, 0.005f);
 
-    const bgfx::Caps& caps = vcl::Context::instance().capabilites();
-    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
-    if (isWARP && (testName == "color_face" || testName == "shading_flat")) {
-        // WARP software rasterizer has a bug with SV_PrimitiveID on indexed
-        // meshes without a Geometry Shader. It returns scrambled indices.
-        match = true;
-    }
-
     std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
                                  "/002-mesh-surface-headless_" + testName +
                                  "_res.png";
     vcl::saveImage(renderedImage, resultFilename);
+
+    const bgfx::Caps& caps = vcl::Context::instance().capabilites();
+    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
+
+    // WARP software rasterizer has a bug with SV_PrimitiveID on indexed
+    // meshes without a Geometry Shader. It returns scrambled indices.
+    if (!isWARP || (testName != "color_face" && testName != "shading_flat")) {
+        REQUIRE(match);
+    }
 
     REQUIRE(match);
 }
