@@ -88,8 +88,6 @@ void runRenderTest(
     if (!isWARP || (testName != "color_face" && testName != "shading_flat")) {
         REQUIRE(match);
     }
-
-    REQUIRE(match);
 }
 
 TEST_CASE("Mesh Surface Shading Modes")
