@@ -256,6 +256,47 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
+    /**
+     * @brief Changes the current zoom (scale) of the trackball.
+     * @param[in] factor: Positive value to zoom in, negative to zoom out.
+     */
+    void trackballZoom(ScalarType factor)
+    {
+        mTrackball.applyScale(factor);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Pans the current view in the camera coordinate system.
+     * @param[in] translation: 3D translation vector.
+     */
+    void trackballPan(const PointType& translation)
+    {
+        mTrackball.applyPan(translation);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Rotates the trackball around an arbitrary axis.
+     * @param[in] axis: Rotation axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRotate(const PointType& axis, ScalarType angleRad)
+    {
+        mTrackball.applyArc(axis, angleRad);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Rolls the trackball around the camera view axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRoll(ScalarType angleRad)
+    {
+        mTrackball.applyRoll(angleRad);
+        requestUpdate();
+    }
+
     // trackball gizmo
 
     /**
@@ -378,6 +419,8 @@ protected:
     bool isDragging() const { return mTrackball.isDragging(); }
 
     MotionType currentMotion() const { return mTrackball.currentMotion(); }
+
+    void requestUpdate() { static_cast<DerivedRenderApp*>(this)->update(); }
 
 private:
     void resizeViewer(uint w, uint h)
