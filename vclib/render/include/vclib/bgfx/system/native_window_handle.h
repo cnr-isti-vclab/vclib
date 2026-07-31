@@ -24,6 +24,7 @@ void closeCocoaWindow(void* window);
 } // namespace detail
 #endif // __APPLE__
 
+#ifdef __APPLE__
 void* createWindow(
     const char* title,
     int         width,
@@ -38,6 +39,7 @@ void* createWindow(
     bool        hidden = false);
 
 void closeWindow(void* window, void* display = nullptr);
+#endif // __APPLE__
 
 } // namespace vcl
 

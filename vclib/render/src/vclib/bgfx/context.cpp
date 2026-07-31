@@ -17,11 +17,14 @@
 
 namespace vcl {
 
-void Context::init(void* windowHandle, void* displayHandle)
+void Context::init(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
 {
     std::lock_guard<std::mutex> lock(sMutex);
     if (sInstancePtr == nullptr) {
-        sInstancePtr = new Context(windowHandle, displayHandle);
+        sInstancePtr = new Context(windowHandle, displayHandle, windowType);
     }
 }
 
@@ -296,7 +299,10 @@ ProgramManager& Context::programManager()
     return *mProgramManager;
 }
 
-Context::Context(void* windowHandle, void* displayHandle)
+Context::Context(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
 {
     if (windowHandle == nullptr) {
         // Headless context: initialized when no window handle is provided
@@ -330,9 +336,15 @@ Context::Context(void* windowHandle, void* displayHandle)
     init.platformData.nwh = mWindowHandle;
     init.type             = sRenderType;
     init.platformData.ndt = mDisplayHandle;
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
-#endif
+    switch (windowType) {
+    case vcl::NativeWindowHandleType::WAYLAND:
+        init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
+        break;
+    case vcl::NativeWindowHandleType::DEFAULT:
+    default:
+        init.platformData.type = bgfx::NativeWindowHandleType::Default;
+        break;
+    }
     if (mIsHeadless) {
 #ifdef __APPLE__
         init.resolution.width  = 1;
@@ -371,10 +383,13 @@ Context::~Context()
     bgfx::shutdown();
 }
 
-Context& Context::instance(void* windowHandle, void* displayHandle)
+Context& Context::instance(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
 {
-    if (sInstancePtr == nullptr) {
-        Context::init(windowHandle, displayHandle);
+    if (!sInstancePtr) {
+        Context::init(windowHandle, displayHandle, windowType);
     }
     return *sInstancePtr;
 }

@@ -32,8 +32,8 @@ SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 */
 BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
-BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
-DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
+BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
+DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
 
 SAMPLERCUBE(s_irradiance, 9);
 SAMPLERCUBE(s_specular, 10);

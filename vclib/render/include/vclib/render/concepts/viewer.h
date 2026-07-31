@@ -79,6 +79,11 @@ concept ViewerConcept = requires (
         { obj.setViewerSettings(vcl::ViewerSettings()) } -> std::same_as<void>;
 
         { obj.setPanorama(std::string()) } -> std::same_as<void>;
+
+        { obj.trackballZoom(0.0f) } -> std::same_as<void>;
+        { obj.trackballPan(vcl::Point3f(0.f, 0.f, 0.f)) } -> std::same_as<void>;
+        { obj.trackballRotate(vcl::Point3f(0.f, 0.f, 0.f), 0.0f) } -> std::same_as<void>;
+        { obj.trackballRoll(0.0f) } -> std::same_as<void>;
     };
 };
 

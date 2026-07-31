@@ -8,6 +8,8 @@
 #ifndef VCL_RENDER_CONCEPTS_WINDOW_MANAGER_H
 #define VCL_RENDER_CONCEPTS_WINDOW_MANAGER_H
 
+#include <vclib/render/window_managers.h>
+
 #include <vclib/space/core.h>
 
 #include <concepts>
@@ -73,7 +75,10 @@ namespace vcl {
  * window.
  * - `displayId() -> void*`: Returns the platform dependent identifier of the
  * display where the window is placed. This parameter is required only on linux
- * platforms, it can be left nullptr in other platforms.
+ * platforms, it can be left nullptr in other platforms. Must be a static
+ * method.
+ * - `handleType() -> vcl::NativeWindowHandleType`: Returns the native window
+ * handle type. Must be a static method.
  * - `update() -> void`: Updates the window.
  */
 template<typename T>
@@ -101,7 +106,8 @@ concept WindowManagerConcept = requires (
     { obj.dpiScale() } -> Point2Concept;
 
     obj.winId(); // todo: try to check return type, should be void*
-    { obj.displayId() } -> std::same_as<void*>;
+    { RemoveRef<T>::displayId() } -> std::same_as<void*>;
+    { RemoveRef<T>::handleType() } -> std::same_as<vcl::NativeWindowHandleType>;
 
     // non const requirements
     requires IsConst<T> || requires {

@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-find_package(glfw3 3 QUIET)
+find_package(glfw3 3.4 QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
     message(STATUS "- GLFW - using system-provided library")
@@ -17,13 +17,8 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
     message(STATUS "- GLFW - using downloaded source")
 
     if(LINUX)
-        if(VCLIB_RENDER_WITH_WAYLAND)
-            set(GLFW_BUILD_WAYLAND ON)
-            set(GLFW_BUILD_X11 OFF)
-        else()
-            set(GLFW_BUILD_WAYLAND OFF)
-            set(GLFW_BUILD_X11 ON)
-        endif()
+        set(GLFW_BUILD_WAYLAND ON CACHE BOOL "" FORCE)
+        set(GLFW_BUILD_X11 ON CACHE BOOL "" FORCE)
     endif()
 
     set(GLFW_EXCLUDE_FROM_ALL_OPTION "")

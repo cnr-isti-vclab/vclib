@@ -13,6 +13,10 @@
 #include "ply/save.h"
 #include "stl/save.h"
 
+#ifdef VCLIB_WITH_TINYGLTF
+#include "gltf/save.h"
+#endif
+
 #include "capability.h"
 
 /**
@@ -42,6 +46,10 @@ inline std::set<FileFormat> saveMeshFormats()
     ff.insert(offFileFormat());
     ff.insert(plyFileFormat());
     ff.insert(stlFileFormat());
+
+#ifdef VCLIB_WITH_TINYGLTF
+    ff.insert(gltfFileFormat());
+#endif
 
     return ff;
 }
@@ -85,6 +93,11 @@ void saveMesh(
     else if (ff == stlFileFormat()) {
         saveStl(m, filename, settings, log);
     }
+#ifdef VCLIB_WITH_TINYGLTF
+    else if (ff == gltfFileFormat()) {
+        saveGltf(m, filename, settings, log);
+    }
+#endif
     else {
         throw UnknownFileFormatException(ff.extensions().front());
     }

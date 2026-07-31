@@ -109,6 +109,11 @@ public:
 
     // AbstractDrawableMesh implementation
 
+    void updateRenderSettingsCapabilities() override
+    {
+        mMRS.setRenderCapabilityFrom(*this);
+    }
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {

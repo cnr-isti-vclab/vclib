@@ -550,4 +550,15 @@ void MeshViewer::renderModeChanged()
     mUI->viewer->update();
 }
 
+void MeshViewer::setBackgroundColor(const vcl::Color& color)
+{
+    viewer().setBackgroundColor(color);
+    mUI->viewer->update();
+}
+
+const vcl::Color& MeshViewer::backgroundColor() const
+{
+    return viewer().backgroundColor();
+}
+
 } // namespace vcl::qt

@@ -33,8 +33,8 @@ BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
 #endif
 
 #ifdef SURFACE_SHADING_FLAT
-BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
-DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
+BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
+DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
 #endif
 
 void main()

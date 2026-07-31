@@ -1,3 +1,11 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/vclib_logo_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/vclib_logo_light.svg">
+    <img alt="VCLib Logo" src="docs/vclib_logo_dark.svg">
+  </picture>
+</p>
+
 # Visual Computing Library
 
 [![Core - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml) [![External - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml) [![Render - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml) [![Bindings - Build and test Wheel](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Bindings_BuildAndTestWheel.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Bindings_BuildAndTestWheel.yml)

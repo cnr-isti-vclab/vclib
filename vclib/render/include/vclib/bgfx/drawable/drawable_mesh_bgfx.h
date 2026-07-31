@@ -116,6 +116,11 @@ public:
         mMRB.updateCrossSectionSettings(mCSS);
     }
 
+    void updateRenderSettingsCapabilities() override
+    {
+        mMRS.setRenderCapabilityFrom(*this);
+    }
+
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);

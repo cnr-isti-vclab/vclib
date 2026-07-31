@@ -542,10 +542,11 @@ private:
 
         mTriangleNormalBuffer.create(
             buffer,
-            nt,
+            nt * 3,
             bgfx::Attrib::Normal,
-            3,
+            1,
             PrimitiveType::FLOAT,
+            false,
             releaseFn);
     }
 

@@ -60,6 +60,8 @@ public:
         MeshRenderInfo::BuffersBitSet buffersToUpdate =
             MeshRenderInfo::BUFFERS_ALL) = 0;
 
+    virtual void updateRenderSettingsCapabilities() = 0;
+
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
     virtual void setCrossSectionSettings(const CrossSectionSettings& css)
