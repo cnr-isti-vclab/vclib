@@ -171,27 +171,39 @@ public:
      */
     void onPaint()
     {
-        bgfx::setViewFrameBuffer(mViewId, mFbh);
-        bgfx::touch(mViewId);
-
-        // ask the derived frame to draw all the drawer objects:
-        DerivedRenderApp::CNV::draw(derived());
-        DerivedRenderApp::CNV::postDraw(derived());
-
         const bool newReadRequested =
             (mReadRequest != std::nullopt && mReadRequest->isPending());
 
         if (newReadRequested) {
-            // draw offscreen frame
+            // ONLY draw the offscreen frame
             offscreenFrame();
+            
+            // submit the calls for blitting the offscreen depth buffer BEFORE frame()
+            // so it happens in the same execution pass (mViewOffscreenId executes last)
+            const bool solicit = mReadRequest->submit();
+            
             mCurrFrame = bgfx::frame();
-            // submit the calls for blitting the offscreen depth buffer
-            if (mReadRequest->submit()) {
+            
+            // Restore view state for the main view now that the frame has been submitted
+            bgfx::setViewClear(
+                mViewId,
+                BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+                mDefaultClearColor.rgba());
+            bgfx::setViewFrameBuffer(mViewId, mFbh);
+            
+            if (solicit) {
                 // solicit new frame
                 derived()->update();
             }
         }
         else {
+            bgfx::setViewFrameBuffer(mViewId, mFbh);
+            bgfx::touch(mViewId);
+
+            // ask the derived frame to draw all the drawer objects:
+            DerivedRenderApp::CNV::draw(derived());
+            DerivedRenderApp::CNV::postDraw(derived());
+
             mCurrFrame = bgfx::frame();
         }
 
@@ -349,14 +361,29 @@ private:
     {
         assert(mReadRequest != std::nullopt && mReadRequest->isPending());
 
-        // render offscren
+        // Disable clear on the read request view, since its ID is higher and
+        // it executes after additional views. We use mViewId to clear instead.
+        bgfx::setViewClear(mReadRequest->viewId(), BGFX_CLEAR_NONE);
         bgfx::setViewFrameBuffer(
             mReadRequest->viewId(), mReadRequest->frameBuffer());
         bgfx::touch(mReadRequest->viewId());
 
-        // render changing the view
-        auto tmpId = mViewId;
-        mViewId    = mReadRequest->viewId();
+        auto tmpFbh = mFbh;
+        mFbh        = mReadRequest->frameBuffer();
+
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        
+        uint32_t clearValue = mDefaultClearColor.rgba();
+        if (mReadRequest->target() == ReadFromGPUBuffer::Target::ID) {
+            clearValue = Color(UINT_NULL, Color::Format::RGBA).abgr();
+        }
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            clearValue);
+            
+        bgfx::touch(mViewId);
+
         switch (mReadRequest->target()) {
         case ReadFromGPUBuffer::Target::COLOR:
         case ReadFromGPUBuffer::Target::DEPTH:
@@ -367,7 +394,8 @@ private:
             break;
         default: assert(false && "unsupported readback type"); break;
         }
-        mViewId = tmpId;
+
+        mFbh = tmpFbh;
     }
 
     auto* derived() { return static_cast<DerivedRenderApp*>(this); }
