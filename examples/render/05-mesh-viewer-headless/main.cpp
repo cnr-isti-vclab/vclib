@@ -69,19 +69,7 @@ int main(int argc, char** argv)
     mv.fitScene();
 
     // Rotate camera 25 degrees to the right along the y axis
-    vcl::Cameraf cam = mv.camera();
-
-    vcl::Point3f   dir    = cam.eye() - cam.center();
-    vcl::Matrix44f camRot = vcl::Matrix44f::Identity();
-    vcl::setTransformMatrixRotation(
-        camRot, vcl::Point3f(0.f, 1.f, 0.f), vcl::toRad(25.f));
-    vcl::Point3f newDir =
-        (camRot * vcl::Point4f(dir.x(), dir.y(), dir.z(), 0.f)).head<3>();
-
-    cam.eye() = cam.center() + newDir;
-
-    // Apply camera settings
-    mv.setCamera(cam);
+    mv.trackballRotate(vcl::Point3f(0.f, 1.f, 0.f), vcl::toRad(25.f));
 
     std::string screenshotFilename = "screenshot.png";
     std::cout << "Requesting screenshot: " << screenshotFilename << std::endl;

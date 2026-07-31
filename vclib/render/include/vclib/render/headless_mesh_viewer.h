@@ -253,6 +253,37 @@ public:
     }
 
     /**
+     * @brief Changes the current zoom (scale) of the trackball.
+     * @param[in] factor: Positive value to zoom in, negative to zoom out.
+     */
+    void trackballZoom(float factor) { mApp.trackballZoom(factor); }
+
+    /**
+     * @brief Pans the current view in the camera coordinate system.
+     * @param[in] translation: 3D translation vector.
+     */
+    void trackballPan(const Point3f& translation)
+    {
+        mApp.trackballPan(translation);
+    }
+
+    /**
+     * @brief Rotates the trackball around an arbitrary axis.
+     * @param[in] axis: Rotation axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRotate(const Point3f& axis, float angleRad)
+    {
+        mApp.trackballRotate(axis, angleRad);
+    }
+
+    /**
+     * @brief Rolls the trackball around the camera view axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRoll(float angleRad) { mApp.trackballRoll(angleRad); }
+
+    /**
      * @brief Sets the background color of the viewer.
      * @param[in] color: The background color.
      */
