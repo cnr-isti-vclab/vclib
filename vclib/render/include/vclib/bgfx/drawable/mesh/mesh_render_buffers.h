@@ -302,7 +302,7 @@ public:
         if (mrs.isEdges(SHADING_SMOOTH)) {
             sh = Lines::Shading::PER_VERTEX;
         }
-        else if (mrs.isEdges(SHADING_NONE)) {
+        else if (mrs.isEdges(SHADING_FLAT)) {
             sh = Lines::Shading::PER_LINE;
         }
         mEdgeLines.setShading(sh);
