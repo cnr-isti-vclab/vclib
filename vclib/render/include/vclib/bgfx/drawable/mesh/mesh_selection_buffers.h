@@ -473,7 +473,8 @@ public:
             0,
             bgfx::Access::Read,
             bgfx::TextureFormat::RGBA8);
-        mFaceSelection.bind(6, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(
+            VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
         mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
@@ -642,13 +643,19 @@ public:
 
     bool hasFaceSelectionBuffer() const { return mFaceSelection.isValid(); }
 
-    const BooleanBuffer& vertexSelectionBuffer() const { return mVertexSelection; }
+    const BooleanBuffer& vertexSelectionBuffer() const
+    {
+        return mVertexSelection;
+    }
 
     // ---- Bind -----------------------------------------------------------
 
     void bindSelectedVerticesBuffer() const { mVertexSelection.bind(4); }
 
-    void bindSelectedFacesBuffer() const { mFaceSelection.bind(6); }
+    void bindSelectedFacesBuffer() const
+    {
+        mFaceSelection.bind(VCL_MRB_PRIMITIVE_SELECTION_BUFFER);
+    }
 
 private:
     /**
@@ -775,7 +782,8 @@ private:
             mFaceSelectionWorkgroupSize);
         SelectionUniforms::setNumPrimitivesForSelection(mFaceSelection.size());
         SelectionUniforms::bind();
-        mFaceSelection.bind(6, bgfx::Access::ReadWrite);
+        mFaceSelection.bind(
+            VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(
             VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);

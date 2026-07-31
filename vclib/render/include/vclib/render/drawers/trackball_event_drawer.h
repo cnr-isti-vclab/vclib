@@ -10,12 +10,13 @@
 
 #include "event_drawer.h"
 
-#include <vclib/render/drawable/drawable_directional_light.h>
-#include <vclib/render/drawable/drawable_trackball.h>
+#include <vclib/render/gizmos/directional_light_gizmo.h>
+#include <vclib/render/gizmos/trackball_gizmo.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/draw_object_settings.h>
 #include <vclib/render/viewer/trackball.h>
-#include <vclib/space/core/bit_set.h>
+
+#include <vclib/space/core.h>
 
 #include <map>
 
@@ -56,11 +57,11 @@ private:
     // if dragging holds the current mouse button
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
 
-    // drawable trackball
-    DrawableTrackBall mDrawTrackBall;
+    // trackball gizmo
+    TrackballGizmo mTrackballGizmo;
 
-    // drawable directional light
-    DrawableDirectionalLight mDrawableDirectionalLight;
+    // directional light gizmo
+    DirectionalLightGizmo mDirectionalLightGizmo;
 
     std::function<void(void)> mCustomShortcutToggleTrackballCallback =
         [this]() {
@@ -255,21 +256,62 @@ public:
 
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
-    // drawable trackball
+    /**
+     * @brief Changes the current zoom (scale) of the trackball.
+     * @param[in] factor: Positive value to zoom in, negative to zoom out.
+     */
+    void trackballZoom(ScalarType factor)
+    {
+        mTrackball.applyScale(factor);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Pans the current view in the camera coordinate system.
+     * @param[in] translation: 3D translation vector.
+     */
+    void trackballPan(const PointType& translation)
+    {
+        mTrackball.applyPan(translation);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Rotates the trackball around an arbitrary axis.
+     * @param[in] axis: Rotation axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRotate(const PointType& axis, ScalarType angleRad)
+    {
+        mTrackball.applyArc(axis, angleRad);
+        requestUpdate();
+    }
+
+    /**
+     * @brief Rolls the trackball around the camera view axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRoll(ScalarType angleRad)
+    {
+        mTrackball.applyRoll(angleRad);
+        requestUpdate();
+    }
+
+    // trackball gizmo
 
     /**
      * @brief Check if the trackball is visible.
      *
      * @return true if the trackball is visible, false otherwise.
      */
-    bool isTrackBallVisible() const { return mDrawTrackBall.isVisible(); }
+    bool isTrackBallVisible() const { return mTrackballGizmo.isVisible(); }
 
     /**
      * @brief Toggles the visibility of the trackball.
      */
     void toggleTrackBallVisibility()
     {
-        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
+        mTrackballGizmo.setVisibility(!mTrackballGizmo.isVisible());
     }
 
     /**
@@ -293,24 +335,19 @@ public:
     {
         Base::onDraw(viewId);
 
-        DrawObjectSettings settings;
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-        settings.viewId = viewId;
-#endif // VCLIB_RENDER_BACKEND_BGFX
-
-        mDrawableDirectionalLight.setVisibility(
+        mDirectionalLightGizmo.setVisibility(
             currentMotion() == TrackBallType::DIR_LIGHT_ARC);
 
-        if (mDrawableDirectionalLight.isVisible()) {
+        if (mDirectionalLightGizmo.isVisible()) {
             auto v = lightGizmoMatrix();
-            mDrawableDirectionalLight.updateRotation(v);
-            mDrawableDirectionalLight.draw(settings);
+            mDirectionalLightGizmo.updateRotation(v);
+            mDirectionalLightGizmo.draw(viewId);
         }
 
-        if (mDrawTrackBall.isVisible()) {
-            mDrawTrackBall.setTransform(gizmoMatrix());
-            mDrawTrackBall.updateDragging(isDragging());
-            mDrawTrackBall.draw(settings);
+        if (mTrackballGizmo.isVisible()) {
+            mTrackballGizmo.setTransform(gizmoMatrix());
+            mTrackballGizmo.updateDragging(isDragging());
+            mTrackballGizmo.draw(viewId);
         }
     }
 
@@ -382,6 +419,8 @@ protected:
     bool isDragging() const { return mTrackball.isDragging(); }
 
     MotionType currentMotion() const { return mTrackball.currentMotion(); }
+
+    void requestUpdate() { static_cast<DerivedRenderApp*>(this)->update(); }
 
 private:
     void resizeViewer(uint w, uint h)

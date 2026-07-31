@@ -92,6 +92,11 @@ void EdgesFrame::updateFrameFromSettings()
     }
 }
 
+QCheckBox* EdgesFrame::visibilityCheckBox()
+{
+    return mUI->visibilityCheckBox;
+}
+
 void EdgesFrame::updateColorComboBoxFromSettings()
 {
     QStandardItemModel* model =

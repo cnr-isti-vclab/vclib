@@ -11,7 +11,7 @@ if (Test-Path $vcvars) {
         $venvActivate = "vclib_build_venv\Scripts\activate.bat"
         if (Test-Path $venvActivate) {
             Write-Host "Activating virtual environment..." -ForegroundColor Cyan
-            cmd.exe /c "`"$venvActivate`" && `"$vcvars`" && set CC=cl && set CXX=cl && python -m build --wheel --outdir dist"
+            cmd.exe /c "`"$venvActivate`" && `"$vcvars`" && set CC=cl && set CXX=cl && set VCLIB_LOCAL_WHEEL_BUILD=1 && python -m build --wheel --outdir dist"
             $wheelFile = Get-ChildItem -Path "dist\vclib-*.whl" | Select-Object -First 1 -ExpandProperty FullName
             if ($wheelFile) {
                 cmd.exe /c "`"$venvActivate`" && `"$vcvars`" && python -m pip install --force-reinstall `"$wheelFile`""

@@ -134,8 +134,8 @@ int main(int argc, char** argv)
 
     QGroupBox* selectionGroup = new QGroupBox("Selection");
     selectionGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout* selectionLayout = new QHBoxLayout(selectionGroup);
-    QCheckBox*   cbShowSelection = new QCheckBox("Show Selection");
+    QHBoxLayout* selectionLayout   = new QHBoxLayout(selectionGroup);
+    QCheckBox*   cbShowSelection   = new QCheckBox("Show Selection");
     QPushButton* btnSelectionColor = new QPushButton("Selection Color...");
     selectionLayout->addWidget(cbShowSelection);
     selectionLayout->addWidget(btnSelectionColor);
@@ -224,7 +224,10 @@ int main(int argc, char** argv)
             currentSelectionCol.alpha());
 
         QColor col = QColorDialog::getColor(
-            qtCurrentCol, tw, "Select Selection Color", QColorDialog::ShowAlphaChannel);
+            qtCurrentCol,
+            tw,
+            "Select Selection Color",
+            QColorDialog::ShowAlphaChannel);
         if (col.isValid()) {
             getPoints(vec)->setSelectionColor(
                 vcl::Color(col.red(), col.green(), col.blue(), 128));

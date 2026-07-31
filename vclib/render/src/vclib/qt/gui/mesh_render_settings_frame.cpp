@@ -14,8 +14,10 @@
 #include <vclib/qt/gui/mesh_render_settings_frame/surface_frame.h>
 #include <vclib/qt/gui/mesh_render_settings_frame/wireframe_frame.h>
 
+#include <QCheckBox>
 #include <QColorDialog>
-#include <QStandardItemModel>
+#include <QLabel>
+#include <QTabBar>
 
 namespace vcl::qt {
 
@@ -24,21 +26,36 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 {
     mUI->setupUi(this);
 
-    auto* pointsFrame = new PointsFrame(mMRS, this);
-    mUI->tabWidget->addTab(pointsFrame, "Points");
-    frames.push_back(pointsFrame);
+    mUI->tabWidget->tabBar()->setExpanding(false);
 
-    auto* surfaceFrame = new SurfaceFrame(mMRS, this);
-    mUI->tabWidget->addTab(surfaceFrame, "Surface");
-    frames.push_back(surfaceFrame);
+    auto setupTab = [this](
+                        int                             index,
+                        GenericMeshRenderSettingsFrame* frame,
+                        const QString&                  title) {
+        mUI->tabWidget->addTab(frame, title);
+        QCheckBox* tabCb = new QCheckBox();
+        tabCb->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        mUI->tabWidget->tabBar()->setTabButton(index, QTabBar::LeftSide, tabCb);
 
-    auto* wireframeFrame = new WireframeFrame(mMRS, this);
-    mUI->tabWidget->addTab(wireframeFrame, "Wireframe");
-    frames.push_back(wireframeFrame);
+        QCheckBox* origCb = frame->visibilityCheckBox();
+        origCb->hide();
 
-    auto* edgesFrame = new EdgesFrame(mMRS, this);
-    mUI->tabWidget->addTab(edgesFrame, "Edges");
-    frames.push_back(edgesFrame);
+        connect(origCb, &QCheckBox::toggled, tabCb, [tabCb](bool checked) {
+            if (tabCb->isChecked() != checked)
+                tabCb->setChecked(checked);
+        });
+        connect(tabCb, &QCheckBox::toggled, origCb, [origCb](bool checked) {
+            if (origCb->isChecked() != checked)
+                origCb->setChecked(checked);
+        });
+
+        frames.push_back(frame);
+    };
+
+    setupTab(0, new PointsFrame(mMRS, this), "Points");
+    setupTab(1, new SurfaceFrame(mMRS, this), "Surface");
+    setupTab(2, new WireframeFrame(mMRS, this), "Wireframe");
+    setupTab(3, new EdgesFrame(mMRS, this), "Edges");
 
     for (auto* frame : frames) {
         connect(

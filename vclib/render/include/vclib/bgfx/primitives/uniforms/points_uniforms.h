@@ -98,7 +98,7 @@ public:
         if (!sSelectionSettingsUniform.isValid())
             sSelectionSettingsUniform =
                 Uniform("u_pointsSelectionSettings", bgfx::UniformType::Vec4);
-                
+
         sPointsSettingsUniform.bind(sPointsSettings.data());
         sSelectionSettingsUniform.bind(sSelectionSettings.data());
     }

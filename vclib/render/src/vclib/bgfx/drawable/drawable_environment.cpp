@@ -37,10 +37,10 @@ DrawableEnvironment::DrawableEnvironment(const Panorama& panorama, uint viewId)
  * @param[in] settings: The tone mapping operator to use.
  */
 void DrawableEnvironment::drawBackground(
-    uint                     viewId,
-    const PBRViewerSettings& settings) const
+    uint                  viewId,
+    const ViewerSettings& settings) const
 {
-    if (settings.pbrMode && settings.renderBackgroundPanorama && canDraw()) {
+    if (settings.renderBackgroundPanorama && canDraw()) {
         using enum VertFragProgram;
         ProgramManager& pm = Context::instance().programManager();
 

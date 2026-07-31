@@ -55,8 +55,11 @@ public:
      * @brief Copy constructor. Creates a deep copy of the point set.
      */
     DrawablePoints(const DrawablePoints& other) :
-            DrawableObject(other),
-            Points(other.mPositions, other.mNormals, other.mColors, other.mSelections),
+            DrawableObject(other), Points(
+                                       other.mPositions,
+                                       other.mNormals,
+                                       other.mColors,
+                                       other.mSelections),
             mVisible(other.mVisible), mPositions(other.mPositions),
             mNormals(other.mNormals), mColors(other.mColors),
             mSelections(other.mSelections)
@@ -170,16 +173,6 @@ public:
     vcl::Box3d boundingBox() const override
     {
         return vcl::boundingBox(mPositions);
-    }
-
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawablePoints>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawablePoints>(std::move(*this));
     }
 
     bool isVisible() const override { return mVisible; }

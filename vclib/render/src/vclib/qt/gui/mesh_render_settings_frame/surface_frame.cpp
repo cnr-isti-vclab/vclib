@@ -99,6 +99,11 @@ void SurfaceFrame::updateFrameFromSettings()
     }
 }
 
+QCheckBox* SurfaceFrame::visibilityCheckBox()
+{
+    return mUI->visibilityCheckBox;
+}
+
 void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
 {
     if (!mMRS.canSurface(SHADING_SMOOTH)) {

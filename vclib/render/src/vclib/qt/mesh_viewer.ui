@@ -104,16 +104,6 @@
          </widget>
         </item>
         <item>
-         <widget class="vcl::qt::ViewerRenderSettingsFrame" name="viewerRenderSettingsFrame">
-          <property name="frameShape">
-           <enum>QFrame::Shape::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Shadow::Plain</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="vcl::qt::TextEditLogger" name="logger">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -144,6 +134,21 @@
      <height>23</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuRender">
+    <property name="title">
+     <string>Render</string>
+    </property>
+    <widget class="QMenu" name="menuRender_Mode">
+     <property name="title">
+      <string>Render Mode</string>
+     </property>
+     <addaction name="actionClassic"/>
+     <addaction name="actionPBR"/>
+    </widget>
+    <addaction name="menuRender_Mode"/>
+    <addaction name="actionViewer_Settings"/>
+   </widget>
+   <addaction name="menuRender"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -157,6 +162,33 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <action name="actionClassic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Classic</string>
+   </property>
+  </action>
+  <action name="actionPBR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>PBR</string>
+   </property>
+  </action>
+  <action name="actionViewer_Settings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Viewer Settings</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -181,12 +213,6 @@
    <class>vcl::qt::DrawableObjectVectorTree</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/drawable_object_vector_tree.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>vcl::qt::ViewerRenderSettingsFrame</class>
-   <extends>QFrame</extends>
-   <header>vclib/qt/gui/viewer_render_settings_frame.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

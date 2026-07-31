@@ -242,6 +242,3 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
-
-# examples results
-assets/results/**

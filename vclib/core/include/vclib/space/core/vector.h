@@ -9,7 +9,6 @@
 #define VCL_SPACE_CORE_VECTOR_H
 
 #include "vector/pointer_vector.h"
-#include "vector/polymorphic_object_vector.h"
 #include "vector/vector.h"
 
 #endif // VCL_SPACE_CORE_VECTOR_H

@@ -14,6 +14,18 @@ if (Test-Path $activatePs1) {
     Write-Host "Inserting the Qt6_DIR variable into the activation scripts..." -ForegroundColor Cyan
     
     # --- 1. Modify Activate.ps1 (for PowerShell) ---
+    $ps1Content = @(Get-Content -Path $activatePs1)
+    $sigStart = -1
+    for ($i = 0; $i -lt $ps1Content.Count; $i++) {
+        if ($ps1Content[$i] -match "^# SIG # Begin signature block") {
+            $sigStart = $i
+            break
+        }
+    }
+    if ($sigStart -ge 0) {
+        $ps1Content = $ps1Content[0..($sigStart-1)]
+        Set-Content -Path $activatePs1 -Value $ps1Content
+    }
     Add-Content -Path $activatePs1 -Value "`n# Automatic setting of Qt6_DIR for the build"
     Add-Content -Path $activatePs1 -Value "`$env:Qt6_DIR = `"$qt6Dir`""
     

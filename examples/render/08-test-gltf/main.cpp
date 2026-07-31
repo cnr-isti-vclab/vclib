@@ -15,6 +15,8 @@ int main(int argc, char** argv)
 
     vcl::MeshViewer viewer;
 
+    vcl::pushDefaultEditors(viewer);
+
     enum GLTFExamples {
         CAMERAS = 0,
         CESIUM_MAN,

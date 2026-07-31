@@ -219,16 +219,6 @@ public:
         return vcl::boundingBox(mPositions);
     }
 
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableLines>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableLines>(std::move(*this));
-    }
-
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }

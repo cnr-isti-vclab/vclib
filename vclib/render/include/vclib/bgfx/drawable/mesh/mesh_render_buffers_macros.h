@@ -22,14 +22,15 @@
 /* Stages */
 
 // first 10 stages for 2d textures, then 3 for cubemaps, and 2 buffers
-#define VCL_MRB_MAX_TEXTURES 10
+#define VCL_MRB_MAX_TEXTURES 9
 
-#define VCL_MRB_CUBEMAP0 10
-#define VCL_MRB_CUBEMAP1 11
-#define VCL_MRB_CUBEMAP2 12
+#define VCL_MRB_CUBEMAP0 9
+#define VCL_MRB_CUBEMAP1 10
+#define VCL_MRB_CUBEMAP2 11
 
-#define VCL_MRB_PRIMITIVE_COLOR_BUFFER  13
-#define VCL_MRB_PRIMITIVE_NORMAL_BUFFER 14
+#define VCL_MRB_PRIMITIVE_SELECTION_BUFFER 12
+#define VCL_MRB_PRIMITIVE_COLOR_BUFFER     13
+#define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    14
 // don't use stage 15 - it does not work on mac...
 
 /* Flags - PBR */

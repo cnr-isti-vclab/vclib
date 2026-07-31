@@ -50,16 +50,6 @@ void DrawableBox3::draw(const DrawObjectSettings& settings)
     }
 }
 
-std::shared_ptr<DrawableObject> DrawableBox3::clone() const&
-{
-    return std::make_shared<DrawableBox3>(*this);
-}
-
-std::shared_ptr<DrawableObject> DrawableBox3::clone() &&
-{
-    return std::make_shared<DrawableBox3>(std::move(*this));
-}
-
 void DrawableBox3::updateLines()
 {
     std::vector<Point3f> points(8);

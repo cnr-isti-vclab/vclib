@@ -9,7 +9,7 @@
 #define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
 
 #include <vclib/bgfx/uniform.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 namespace vcl {
 
@@ -22,7 +22,7 @@ namespace vcl {
  */
 class ViewerDrawerUniforms
 {
-    using enum PBRViewerSettings::ToneMapping;
+    using enum ViewerSettings::ToneMapping;
 
     static inline std::array<float, 4> sData = {
         1.0,                             // exposure
@@ -38,7 +38,7 @@ public:
 
     static void setExposure(float exposure) { sData[0] = exposure; }
 
-    static void setToneMapping(PBRViewerSettings::ToneMapping tm)
+    static void setToneMapping(ViewerSettings::ToneMapping tm)
     {
         sData[1] = std::bit_cast<float>(tm);
     }

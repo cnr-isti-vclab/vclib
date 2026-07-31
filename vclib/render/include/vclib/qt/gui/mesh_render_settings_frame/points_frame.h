@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
 

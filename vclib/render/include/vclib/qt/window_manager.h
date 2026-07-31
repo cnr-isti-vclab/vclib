@@ -8,12 +8,14 @@
 #ifndef VCL_QT_WINDOW_MANAGER_H
 #define VCL_QT_WINDOW_MANAGER_H
 
+#include "detail/window_manager_native.h"
 #include "input.h"
 #include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
-#include <vclib/space/core/point.h>
+
+#include <vclib/space/core.h>
 
 #include <QAbstractEventDispatcher>
 #include <QGuiApplication>
@@ -98,27 +100,14 @@ public:
             screen ? screen->devicePixelRatio() : 1.0);
     }
 
-    void* displayId() const
+    static void* displayId()
     {
-        void* displayID = nullptr;
-#ifdef Q_OS_LINUX
-        QNativeInterface::QX11Application* x11AppInfo =
-            qApp->nativeInterface<QNativeInterface::QX11Application>();
-        if (x11AppInfo) {
-            displayID = x11AppInfo->display();
-        }
-        else {
-            QNativeInterface::QWaylandApplication* wayAppInfo =
-                qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-            if (wayAppInfo) {
-                displayID = wayAppInfo->display();
-            }
-            else {
-                exit(-1);
-            }
-        }
-#endif
-        return displayID;
+        return detail::WindowManagerNative::displayId();
+    }
+
+    static vcl::NativeWindowHandleType handleType()
+    {
+        return detail::WindowManagerNative::handleType();
     }
 
     void* windowPtr() { return reinterpret_cast<void*>(winId()); }

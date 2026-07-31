@@ -70,6 +70,41 @@ inline QApplication qAppl(int& argc, char** argv)
     return QApplication(argc, argv);
 }
 
+/**
+ * @brief Utility function to retrieve the display ID of the current
+ * QApplication instance. This function checks whether the system is using X11
+ * or Wayland and retrieves the display ID accordingly.
+ *
+ * This function is specific for Linux systems and returns a pointer to the
+ * display ID. If the system is not using X11 or Wayland, or if the display ID
+ * cannot be retrieved, it returns nullptr.
+ *
+ * If this function is called before the QApplication instance is created, it
+ * will return nullptr. Make sure to call this function after the QApplication
+ * instance is created.
+ *
+ * @return a pointer to the display ID, or nullptr if the display ID cannot be
+ * retrieved.
+ */
+inline void* getDisplayId()
+{
+    void* displayId = nullptr;
+#ifdef Q_OS_LINUX
+    // Get the display ID depending on whether the system is using X11 or
+    // Wayland
+    if (auto x11App =
+            qApp->nativeInterface<QNativeInterface::QX11Application>()) {
+        displayId = x11App->display();
+    }
+    else if (
+        auto wayApp =
+            qApp->nativeInterface<QNativeInterface::QWaylandApplication>()) {
+        displayId = wayApp->display();
+    }
+#endif
+    return displayId;
+}
+
 } // namespace vcl::qt
 
 #endif // VCL_QT_UTILS_QAPPLICATION_H

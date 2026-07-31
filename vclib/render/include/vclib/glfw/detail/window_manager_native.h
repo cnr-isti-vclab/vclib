@@ -8,17 +8,41 @@
 #ifndef VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
 #define VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H
 
+#include <vclib/render/window_managers.h>
+
 #include <GLFW/glfw3.h>
 
-namespace vcl::glfw::detail {
+namespace vcl::glfw {
+
+namespace detail {
 
 class WindowManagerNative
 {
 public:
-    static void* winId(GLFWwindow* window);
-    static void* displayId();
+    static void*                       winId(GLFWwindow* window);
+    static void*                       displayId();
+    static vcl::NativeWindowHandleType handleType();
 };
 
-} // namespace vcl::glfw::detail
+} // namespace detail
+
+/**
+ * @brief Utility function to retrieve the display ID used by the GLFW window
+ * manager. This function checks whether the system is using X11 or Wayland and
+ * retrieves the display ID accordingly.
+ *
+ * This function is specific for Linux systems and returns a pointer to the
+ * display ID. If the system is not using X11 or Wayland, or if the display ID
+ * cannot be retrieved, it returns nullptr.
+ *
+ * @return a pointer to the display ID, or nullptr if the display ID cannot be
+ * retrieved.
+ */
+inline void* getDisplayId()
+{
+    return detail::WindowManagerNative::displayId();
+}
+
+} // namespace vcl::glfw
 
 #endif // VCL_GLFW_DETAIL_WINDOW_MANAGER_NATIVE_H

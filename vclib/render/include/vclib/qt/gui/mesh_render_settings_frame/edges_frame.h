@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
 
