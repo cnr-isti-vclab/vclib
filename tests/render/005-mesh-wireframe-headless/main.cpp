@@ -77,10 +77,6 @@ void runRenderTest(
                                       testName + "_gt.png";
 
     if (!std::filesystem::exists(groundTruthFilename)) {
-        std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
-                                     "/005-mesh-wireframe-headless_" +
-                                     testName + "_res.png";
-        vcl::saveImage(renderedImage, resultFilename);
         FAIL("Ground truth image not found.");
     }
 
