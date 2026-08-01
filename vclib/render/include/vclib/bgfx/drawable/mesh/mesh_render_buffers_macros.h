@@ -12,13 +12,6 @@
  * These macros are used both on the library and on the shader side.
  */
 
-/* Streams */
-
-#define VCL_MRB_VERTEX_POSITION_STREAM 0
-#define VCL_MRB_VERTEX_NORMAL_STREAM   1
-#define VCL_MRB_VERTEX_COLOR_STREAM    2
-#define VCL_MRB_VERTEX_TEXCOORD_STREAM 3
-
 /* Stages */
 
 // first 10 stages for 2d textures, then 3 for cubemaps, and 2 buffers

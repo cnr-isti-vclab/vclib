@@ -16,23 +16,17 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
-/*
-TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
-restore next lines with:
-
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of each face / edge
-BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
-*/
-
 // is face selected? 1 bit per triangle (MSb first)
-BUFFER_RO(faceSelected, uint, 12);
+BUFFER_RO(faceSelected, uint, VCL_MRB_PRIMITIVE_SELECTION_BUFFER);
 
 #ifdef SURFACE_COLOR_FACE
-BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
+// color of each face / edge
+BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 #endif
 
 #ifdef SURFACE_SHADING_FLAT
-BUFFER_RO(primitiveNormals, float, 14); // normal of each face / edge
+// normal of each face / edge
+BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
 DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
 #endif
 
