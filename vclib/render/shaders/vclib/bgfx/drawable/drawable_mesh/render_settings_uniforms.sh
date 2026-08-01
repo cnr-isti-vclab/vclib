@@ -19,6 +19,9 @@ uniform vec4 u_mrsColorPack[2];
 #define u_wireframeMode floatBitsToUint(u_mrsDrawPack.y)
 #define u_edgesMode (floatBitsToUint(u_mrsDrawPack.y) >> 16)
 
+#define isPerVertexColorAvailable() ((floatBitsToUint(u_mrsDrawPack.z) & 1) != 0)
+#define isPerVertexTangentAvailable() ((floatBitsToUint(u_mrsDrawPack.z) & 2) != 0)
+
 #define u_pointWidth u_mrsWidthPack.x
 #define u_wireframeWidth u_mrsWidthPack.y
 #define u_edgesWidth u_mrsWidthPack.z

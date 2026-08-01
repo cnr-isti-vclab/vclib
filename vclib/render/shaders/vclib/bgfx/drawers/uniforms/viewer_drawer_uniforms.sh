@@ -16,5 +16,6 @@ uniform vec4 u_viewerSettingsPack;
 #define u_exposure u_viewerSettingsPack.x
 #define u_toneMapping floatBitsToUint(u_viewerSettingsPack.y)
 #define u_specularMipLevels floatBitsToUint(u_viewerSettingsPack.z)
+#define useImageBasedLighting() (floatBitsToUint(u_viewerSettingsPack.w) != 0)
 
 #endif // VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_SH

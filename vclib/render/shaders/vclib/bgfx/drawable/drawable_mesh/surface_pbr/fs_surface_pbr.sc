@@ -66,7 +66,7 @@ void main()
         vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
     }
     else {
-        if (isPerVertexColorAvailable(u_pbr_settings))
+        if (isPerVertexColorAvailable())
             vertexBaseColor = v_color; // per-vertex color available
     }
 
@@ -79,7 +79,7 @@ void main()
     vec4 baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor;
 
     // alpha mode MASK
-    if (isAlphaModeMask(u_pbr_settings))
+    if (isAlphaModeMask())
         if (baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
@@ -111,7 +111,7 @@ void main()
 
         mat3 tangentFrame;
 
-        if (isPerVertexTangentAvailable(u_pbr_settings)) {
+        if (isPerVertexTangentAvailable()) {
             vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
@@ -142,7 +142,7 @@ void main()
 
     vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
 
-    if(useImageBasedLighting(u_pbr_settings))
+    if(useImageBasedLighting())
     {
         // view direction
         vec3 V = normalize(-v_position); // camera is at the origin

@@ -20,13 +20,6 @@
 
 // Settings
 
-#define checkSetting(settings, setting) bool(settings & posToBitFlag(setting))
-
-#define isPerVertexColorAvailable(settings)   checkSetting(settings, VCL_PBR_VERTEX_COLOR)
-#define isPerVertexTangentAvailable(settings) checkSetting(settings, VCL_PBR_VERTEX_TANGENT)
-#define isAlphaModeMask(settings)             checkSetting(settings, VCL_PBR_IS_ALPHA_MODE_MASK)
-#define useImageBasedLighting(settings)       checkSetting(settings, VCL_PBR_IMAGE_BASED_LIGHTING)
-
 // Lighting settings, may not be definitive
 
 #define LIGHT_COUNT                                   1

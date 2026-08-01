@@ -33,14 +33,6 @@
 #define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    14
 // don't use stage 15 - it does not work on mac...
 
-/* Flags - PBR */
-
-// bit positions used to tell which features are enabled at shader level
-#define VCL_PBR_VERTEX_COLOR         0
-#define VCL_PBR_VERTEX_TANGENT       1
-#define VCL_PBR_IS_ALPHA_MODE_MASK   2
-#define VCL_PBR_IMAGE_BASED_LIGHTING 3
-
 /* Constants - Compute (just for selection at the moment) */
 
 #define VCL_COMPUTE_THREAD_COUNT_X 64

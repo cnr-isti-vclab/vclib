@@ -11,7 +11,6 @@
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
 uniform vec4 u_emissiveAlphaCutoffPack;
-uniform vec4 u_settings;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -21,6 +20,6 @@ uniform vec4 u_settings;
 #define u_emissiveFactor u_emissiveAlphaCutoffPack.rgb
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
 
-#define u_pbr_settings floatBitsToUint(u_settings.x)
+#define isAlphaModeMask() (u_alphaCutoff >= 0.0)
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_MATERIAL_UNIFORMS_SH

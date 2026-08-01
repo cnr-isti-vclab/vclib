@@ -235,8 +235,7 @@ public:
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
-                uint64_t materialState =
-                    updateAndBindMaterialUniforms(i, iblEnabled);
+                uint64_t materialState = updateAndBindMaterialUniforms(i);
 
                 bindUniforms();
 
@@ -350,9 +349,7 @@ protected:
      * @param chunkNumber
      * @return the render state associated to the material
      */
-    uint64_t updateAndBindMaterialUniforms(
-        uint chunkNumber,
-        bool imageBasedLighting) const
+    uint64_t updateAndBindMaterialUniforms(uint chunkNumber) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -360,11 +357,7 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            MaterialUniforms::set(
-                DEFAULT_MATERIAL,
-                isPerVertexColorAvailable(*this),
-                isPerVertexTangentAvailable(*this),
-                imageBasedLighting);
+            MaterialUniforms::set(DEFAULT_MATERIAL);
         }
         else {
             using enum Material::AlphaMode;
@@ -373,18 +366,10 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                MaterialUniforms::set(
-                    DEFAULT_MATERIAL,
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(DEFAULT_MATERIAL);
             }
             else {
-                MaterialUniforms::set(
-                    MeshType::material(materialId),
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(MeshType::material(materialId));
 
                 // set the state according to the material
                 if (!MeshType::material(materialId).doubleSided()) {

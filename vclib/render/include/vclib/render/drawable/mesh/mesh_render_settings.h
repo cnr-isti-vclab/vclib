@@ -58,6 +58,9 @@ class MeshRenderSettings
     MeshRenderInfo mCapability; // capabilities of the mesh
     MeshRenderInfo mDrawMode;   // current rendering settings
 
+    bool mHasPerVertexColor = false;
+    bool mHasPerVertexTangent = false;
+
     float mPointWidth          = 3;
     float mPointUserColor[4]   = {1, 1, 0, 1}; // TODO: change to uint?
     uint  mSurfUserColor       = 0xFF808080;   // abgr
@@ -100,6 +103,9 @@ public:
      * @return the current draw mode as a MeshRenderInfo object.
      */
     MeshRenderInfo drawMode() const { return mDrawMode; }
+
+    bool hasPerVertexColor() const { return mHasPerVertexColor; }
+    bool hasPerVertexTangent() const { return mHasPerVertexTangent; }
 
     bool operator==(const MeshRenderSettings&) const = default;
 
@@ -741,7 +747,8 @@ public:
             }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                if (vcl::isPerVertexColorAvailable(m)) {
+                mHasPerVertexColor = vcl::isPerVertexColorAvailable(m);
+                if (mHasPerVertexColor) {
                     setPointsCapability(MRI::Points::COLOR_VERTEX);
                 }
             }
@@ -801,10 +808,14 @@ public:
                         // texture coordinates, and materials (which may contain
                         // the normal map texture).
                         if (hasTexCoords && m.materialCount() > 0 &&
-                            vcl::isPerVertexNormalAvailable(m) &&
-                            vcl::isPerVertexTangentAvailable(m)) {
-                            setSurfaceCapability(
-                                MRI::Surface::SHADING_NORMAL_MAP);
+                            vcl::isPerVertexNormalAvailable(m)) {
+                            
+                            mHasPerVertexTangent = vcl::isPerVertexTangentAvailable(m);
+                            
+                            if (mHasPerVertexTangent) {
+                                setSurfaceCapability(
+                                    MRI::Surface::SHADING_NORMAL_MAP);
+                            }
                         }
                     }
 
