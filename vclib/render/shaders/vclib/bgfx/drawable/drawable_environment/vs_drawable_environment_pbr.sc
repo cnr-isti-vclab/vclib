@@ -8,7 +8,7 @@
 $input a_position
 $output v_texcoord0
 
-#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_environment/uniforms.sh>
 
 void main()
 {

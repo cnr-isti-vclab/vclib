@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
-#define VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_RENDER_SETTINGS_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
 
@@ -36,4 +36,4 @@ uniform vec4 u_mrsColorPack[2];
 #define u_selectionSurfaceColor \
     uintABGRToVec4Color(floatBitsToUint(u_selectionSurfaceColorFloat))
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_RENDER_SETTINGS_UNIFORMS_SH

@@ -7,9 +7,12 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/render_settings_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/texture_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
