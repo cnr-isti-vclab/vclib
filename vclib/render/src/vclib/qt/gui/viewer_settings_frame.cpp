@@ -139,8 +139,7 @@ void ViewerSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
     updatePanoramaLabel();
 }
 
-void ViewerSettingsFrame::setViewerSettings(
-    const ViewerSettings& settings)
+void ViewerSettingsFrame::setViewerSettings(const ViewerSettings& settings)
 {
     checkPtr(mViewer);
 
@@ -174,7 +173,7 @@ void ViewerSettingsFrame::updatePanoramaLabel()
     checkPtr(mViewer);
 
     std::string panoramaFileName = detail::panoramaFileName(mViewer);
-    bool hasPanorama = !panoramaFileName.empty();
+    bool        hasPanorama      = !panoramaFileName.empty();
 
     if (hasPanorama) {
         mUI->panoramaLabel->setText(
@@ -188,7 +187,6 @@ void ViewerSettingsFrame::updatePanoramaLabel()
     mUI->drawBackgroundPanoramaCheckBox->setEnabled(hasPanorama);
 }
 
-
 void ViewerSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
     checkPtr(mViewer);
@@ -201,8 +199,7 @@ void ViewerSettingsFrame::exposureSpinBoxValueChanged(double value)
     mViewer->update();
 }
 
-void ViewerSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
-    int index)
+void ViewerSettingsFrame::toneMappingComboBoxCurrentIndexChanged(int index)
 {
     checkPtr(mViewer);
 
@@ -214,8 +211,7 @@ void ViewerSettingsFrame::toneMappingComboBoxCurrentIndexChanged(
     mViewer->update();
 }
 
-void ViewerSettingsFrame::iblCheckBoxCheckStateChanged(
-    Qt::CheckState state)
+void ViewerSettingsFrame::iblCheckBoxCheckStateChanged(Qt::CheckState state)
 {
     checkPtr(mViewer);
 

@@ -112,6 +112,11 @@ public:
         setRenderSettings(mMRS);
     }
 
+    void updateRenderSettingsCapabilities() override
+    {
+        mMRS.setRenderCapabilityFrom(*this);
+    }
+
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
@@ -200,8 +205,8 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const DrawableEnvironment* env = settings.environment;
 
-            bool iblEnabled = settings.imageBasedLighting &&
-                              env != nullptr && env->canDraw();
+            bool iblEnabled =
+                settings.imageBasedLighting && env != nullptr && env->canDraw();
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 // Bind textures before vertex buffers!!
@@ -230,8 +235,7 @@ public:
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
-                uint64_t materialState =
-                    updateAndBindMaterialUniforms(i, iblEnabled);
+                uint64_t materialState = updateAndBindMaterialUniforms(i);
 
                 bindUniforms();
 
@@ -326,16 +330,6 @@ public:
         }
     }
 
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableMeshBGFX>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableMeshBGFX>(std::move(*this));
-    }
-
     std::string& name() override { return MeshType::name(); }
 
     const std::string& name() const override { return MeshType::name(); }
@@ -355,9 +349,7 @@ protected:
      * @param chunkNumber
      * @return the render state associated to the material
      */
-    uint64_t updateAndBindMaterialUniforms(
-        uint chunkNumber,
-        bool imageBasedLighting) const
+    uint64_t updateAndBindMaterialUniforms(uint chunkNumber) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -365,11 +357,7 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            MaterialUniforms::set(
-                DEFAULT_MATERIAL,
-                isPerVertexColorAvailable(*this),
-                isPerVertexTangentAvailable(*this),
-                imageBasedLighting);
+            MaterialUniforms::set(DEFAULT_MATERIAL);
         }
         else {
             using enum Material::AlphaMode;
@@ -378,18 +366,10 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                MaterialUniforms::set(
-                    DEFAULT_MATERIAL,
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(DEFAULT_MATERIAL);
             }
             else {
-                MaterialUniforms::set(
-                    MeshType::material(materialId),
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(MeshType::material(materialId));
 
                 // set the state according to the material
                 if (!MeshType::material(materialId).doubleSided()) {

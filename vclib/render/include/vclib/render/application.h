@@ -12,6 +12,8 @@
 #include <vclib/qt/utils/qapplication.h>
 
 #include <QApplication>
+#elif VCLIB_WITH_GLFW
+#include <vclib/glfw/detail/window_manager_native.h>
 #endif
 
 namespace vcl {
@@ -51,7 +53,19 @@ public:
     int exec() { return mApp.exec(); }
 };
 
-#else // No Qt
+#elif VCLIB_WITH_GLFW
+
+class Application
+{
+public:
+    Application(int& /*argc*/, char** /*argv*/) { glfwInit(); }
+
+    ~Application() { glfwTerminate(); }
+
+    int exec() { return 0; }
+};
+
+#else // No Qt and No GLFW
 
 class Application
 {
@@ -61,6 +75,35 @@ public:
     int exec() { return 0; }
 };
 
+#endif
+
+/**
+ * @brief Utility function to retrieve the display ID of the current
+ * Application instance. This function checks whether the system is using X11
+ * or Wayland and retrieves the display ID accordingly.
+ *
+ * This function is specific for Linux systems and returns a pointer to the
+ * display ID. If the system is not using X11 or Wayland, or if the display ID
+ * cannot be retrieved, it returns nullptr.
+ *
+ * If this function is called before the vcl::Application instance is created,
+ * it could return nullptr (depends whether you're using Qt or GLFW for window
+ * managers). Make sure to call this function after the vcl::Application
+ * instance is created.
+ *
+ * @return a pointer to the display ID, or nullptr if the display ID cannot be
+ * retrieved.
+ */
+
+#ifdef VCLIB_WITH_QT
+using qt::getDisplayId;
+#elif VCLIB_WITH_GLFW
+using glfw::getDisplayId;
+#else
+inline void* getDisplayId()
+{
+    return nullptr;
+}
 #endif
 
 } // namespace vcl

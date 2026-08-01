@@ -8,12 +8,14 @@
 #ifndef VCL_QT_WIDGET_MANAGER_H
 #define VCL_QT_WIDGET_MANAGER_H
 
+#include "detail/window_manager_native.h"
 #include "input.h"
 #include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>
-#include <vclib/space/core/point.h>
+
+#include <vclib/space/core.h>
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
@@ -95,28 +97,14 @@ public:
 
     Point2f dpiScale() const { return Point2f(pixelRatio(), pixelRatio()); }
 
-    void* displayId() const
+    static void* displayId()
     {
-        void* displayID = nullptr;
-#ifdef Q_OS_LINUX
-        /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
-        QNativeInterface::QX11Application* x11AppInfo =
-            qApp->nativeInterface<QNativeInterface::QX11Application>();
-        if (x11AppInfo) {
-            displayID = x11AppInfo->display();
-        }
-        else {
-            QNativeInterface::QWaylandApplication* wayAppInfo =
-                qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-            if (wayAppInfo) {
-                displayID = wayAppInfo->display();
-            }
-            else {
-                exit(-1);
-            }
-        }
-#endif
-        return displayID;
+        return detail::WindowManagerNative::displayId();
+    }
+
+    static vcl::NativeWindowHandleType handleType()
+    {
+        return detail::WindowManagerNative::handleType();
     }
 
     QPaintEngine* paintEngine() const override { return nullptr; }

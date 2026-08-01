@@ -21,6 +21,11 @@ target_compile_definitions(
 
 target_compile_definitions(
     vclib-tests-examples-common
+    INTERFACE VCLIB_GROUND_TRUTH_PATH="${VCLIB_ASSETS_PATH}/ground_truth"
+)
+
+target_compile_definitions(
+    vclib-tests-examples-common
     INTERFACE VCLIB_CORE_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/core"
 )
 
@@ -28,6 +33,11 @@ target_compile_definitions(
     vclib-tests-examples-common
     INTERFACE
         VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external"
+)
+
+target_compile_definitions(
+    vclib-tests-examples-common
+    INTERFACE VCLIB_RENDER_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/render"
 )
 
 function(_vclib_add_test_example name)

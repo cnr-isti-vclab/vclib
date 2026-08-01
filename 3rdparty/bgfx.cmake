@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.150.9365-558)
+set(BGFX_VERSION 1.153.9385-561)
 
 find_package(bgfx QUIET)
 
@@ -86,7 +86,6 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         set(BGFX_LIBRARY_TYPE SHARED CACHE STRING "bgfx library type" FORCE)
     endif()
 
-    set(BGFX_WITH_WAYLAND ${VCLIB_RENDER_WITH_WAYLAND})
     set(BIMG_DECODE ON CACHE BOOL "" FORCE)
     set(BIMG_CUBEMAP ON CACHE BOOL "" FORCE)
 
@@ -114,7 +113,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         INTERFACE bx bgfx bimg bimg_decode bimg_encode
     )
 
-    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_compile_options(bimg_decode PRIVATE -O1)
     endif()
 

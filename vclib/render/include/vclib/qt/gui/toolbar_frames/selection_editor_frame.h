@@ -85,6 +85,12 @@ private slots:
     }
 };
 
+template<typename ViewerType>
+struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
+{
+    using FrameType = SelectionEditorFrame<ViewerType>;
+};
+
 } // namespace vcl::qt
 
 #endif // VCL_QT_GUI_TOOLBAR_FRAMES_SELECTION_EDITOR_FRAME_H

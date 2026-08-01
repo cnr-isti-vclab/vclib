@@ -12,7 +12,6 @@
 #include "concepts/iterators.h"
 #include "concepts/parallel.h"
 #include "concepts/pointers.h"
-#include "concepts/polymorphism.h"
 #include "concepts/range.h"
 #include "concepts/types.h"
 

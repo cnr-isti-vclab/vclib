@@ -64,12 +64,21 @@ concept MeshViewerConcept = requires (
             std::as_const(obj).drawableObjects()
         } -> std::same_as<const vcl::DrawableObjectVector&>;
 
+        { obj.updateGUI() } -> std::same_as<void>;
+
         { obj.refreshEditors() } -> std::same_as<void>;
 
         { obj.fitScene() } -> std::same_as<void>;
 
         { obj.show() } -> std::same_as<void>;
         { obj.showMaximized() } -> std::same_as<void>;
+
+        { obj.trackballZoom(0.0f) } -> std::same_as<void>;
+        { obj.trackballPan(vcl::Point3f(0.f, 0.f, 0.f)) } -> std::same_as<void>;
+        {
+            obj.trackballRotate(vcl::Point3f(0.f, 0.f, 0.f), 0.0f)
+        } -> std::same_as<void>;
+        { obj.trackballRoll(0.0f) } -> std::same_as<void>;
     };
 };
 

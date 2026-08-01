@@ -9,8 +9,8 @@
 #define VCL_QT_GUI_VIEWER_SETTINGS_FRAME_H
 
 #include <vclib/qt/mesh_viewer_render_app.h>
-#include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/settings/render_mode.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <QFrame>
 

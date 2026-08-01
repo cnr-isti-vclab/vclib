@@ -89,34 +89,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     /** Editors **/
 
-    // no toolbar editors
-    mMeshSelectorEditor = viewer().pushEditor<vcl::MeshSelectorEditor>();
-    mMeshSelectorEditor->setActive(true);
-    auto callback = [this](uint id) {
-        drawableObjectVectorTree().setSelectedItem(id);
-    };
-    mMeshSelectorEditor->setOnObjectSelectedFunction(callback);
-
     // toolbar editors and frames
-    mAxisEditor = std::dynamic_pointer_cast<vcl::AxisEditor<ViewerType>>(
-        viewer().getEditor(ViewerType::BuiltInEditors::AXIS));
-    assert(mAxisEditor);
-    AxisEditorFrame<ViewerType>* axisEditorFrame =
-        new AxisEditorFrame<ViewerType>(mAxisEditor);
-    mUI->toolBar->addWidget(axisEditorFrame);
+    AxisFrame<ViewerType>* axisFrame = new AxisFrame<ViewerType>(viewer());
+    mUI->toolBar->addWidget(axisFrame);
 
     auto* trackballFrame = new TrackBallFrame(viewer());
     mUI->toolBar->addWidget(trackballFrame);
-
-    mBoundingBoxEditor = viewer().pushEditor<vcl::BoundingBoxEditor>();
-    BoundingBoxEditorFrame<ViewerType>* bboxEditorFrame =
-        new BoundingBoxEditorFrame<ViewerType>(mBoundingBoxEditor);
-    mUI->toolBar->addWidget(bboxEditorFrame);
-
-    mSelectionEditor = viewer().pushEditor<vcl::SelectionEditor>();
-    SelectionEditorFrame<ViewerType>* selectionEditor =
-        new SelectionEditorFrame<ViewerType>(mSelectionEditor);
-    mUI->toolBar->addWidget(selectionEditor);
 
     disableFocus(mUI->toolBar);
 
@@ -173,14 +151,32 @@ MeshViewer::MeshViewer(QWidget* parent) :
     QActionGroup* renderModeGroup = new QActionGroup(this);
     renderModeGroup->addAction(mUI->actionClassic);
     renderModeGroup->addAction(mUI->actionPBR);
-    
-    connect(mUI->actionClassic, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
-    connect(mUI->actionPBR, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
+
+    connect(
+        mUI->actionClassic,
+        SIGNAL(triggered()),
+        this,
+        SLOT(renderModeChanged()));
+    connect(
+        mUI->actionPBR, SIGNAL(triggered()), this, SLOT(renderModeChanged()));
 
     mViewerSettingsDockWidget->setVisible(false);
     mUI->actionViewer_Settings->setChecked(false);
-    connect(mUI->actionViewer_Settings, &QAction::toggled, mViewerSettingsDockWidget, &QDockWidget::setVisible);
-    connect(mViewerSettingsDockWidget, &QDockWidget::visibilityChanged, mUI->actionViewer_Settings, &QAction::setChecked);
+    connect(
+        mUI->actionViewer_Settings,
+        &QAction::toggled,
+        mViewerSettingsDockWidget,
+        &QDockWidget::setVisible);
+    connect(
+        mViewerSettingsDockWidget,
+        &QDockWidget::visibilityChanged,
+        mUI->actionViewer_Settings,
+        &QAction::setChecked);
+}
+
+void MeshViewer::addEditorFrame(QWidget* frame)
+{
+    mUI->toolBar->addWidget(frame);
 }
 
 MeshViewer::~MeshViewer()
@@ -259,7 +255,8 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
     mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
-    } else if (settings.renderMode == RenderMode::PBR) {
+    }
+    else if (settings.renderMode == RenderMode::PBR) {
         mUI->actionPBR->setChecked(true);
     }
 }
@@ -457,11 +454,23 @@ void MeshViewer::renderModeChanged()
     auto sts = viewerSettings();
     if (mUI->actionClassic->isChecked()) {
         sts.renderMode = RenderMode::CLASSIC;
-    } else if (mUI->actionPBR->isChecked()) {
+    }
+    else if (mUI->actionPBR->isChecked()) {
         sts.renderMode = RenderMode::PBR;
     }
     setViewerSettings(sts);
     mUI->viewer->update();
+}
+
+void MeshViewer::setBackgroundColor(const vcl::Color& color)
+{
+    viewer().setBackgroundColor(color);
+    mUI->viewer->update();
+}
+
+const vcl::Color& MeshViewer::backgroundColor() const
+{
+    return viewer().backgroundColor();
 }
 
 } // namespace vcl::qt

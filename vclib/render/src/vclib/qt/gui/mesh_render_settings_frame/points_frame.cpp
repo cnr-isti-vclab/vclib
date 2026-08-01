@@ -114,6 +114,11 @@ void PointsFrame::updateFrameFromSettings()
     }
 }
 
+QCheckBox* PointsFrame::visibilityCheckBox()
+{
+    return mUI->visibilityCheckBox;
+}
+
 void PointsFrame::updateColorComboBoxFromSettings()
 {
     QStandardItemModel* model =

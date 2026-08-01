@@ -68,10 +68,6 @@ public:
 
     vcl::Box3d boundingBox() const override { return mBox.cast<double>(); }
 
-    std::shared_ptr<DrawableObject> clone() const& override;
-
-    std::shared_ptr<DrawableObject> clone() && override;
-
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }

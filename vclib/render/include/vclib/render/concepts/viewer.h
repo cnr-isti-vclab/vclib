@@ -17,6 +17,19 @@
 
 namespace vcl {
 
+namespace detail {
+struct DummyDrawableObject : public vcl::DrawableObject
+{
+    void draw(const vcl::DrawObjectSettings&) override {}
+
+    vcl::Box3d boundingBox() const override { return {}; }
+
+    bool isVisible() const override { return false; }
+
+    void setVisibility(bool) override {}
+};
+} // namespace detail
+
 /**
  * @brief Concept that verifies if a class provides the standard viewer
  * interface.
@@ -33,7 +46,7 @@ template<typename T>
 concept ViewerConcept = requires (
     T&&                                        obj,
     std::shared_ptr<vcl::DrawableObjectVector> vec,
-    vcl::DrawableObject&&                      drawableObj) {
+    detail::DummyDrawableObject&&              concreteDrawableObj) {
     typename RemoveRef<T>::ViewerType;
     typename RemoveRef<T>::EditorType;
 
@@ -45,16 +58,14 @@ concept ViewerConcept = requires (
         std::as_const(obj).viewerSettings()
     } -> std::same_as<const vcl::ViewerSettings&>;
 
-    {
-        std::as_const(obj).panoramaFileName()
-    } -> std::same_as<std::string>;
+    { std::as_const(obj).panoramaFileName() } -> std::same_as<std::string>;
 
     // non const requirements
     requires IsConst<T> || requires {
         { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
 
         {
-            obj.pushDrawableObject(std::move(drawableObj))
+            obj.pushDrawableObject(std::move(concreteDrawableObj))
         } -> std::same_as<uint>;
 
         {
@@ -68,6 +79,13 @@ concept ViewerConcept = requires (
         { obj.setViewerSettings(vcl::ViewerSettings()) } -> std::same_as<void>;
 
         { obj.setPanorama(std::string()) } -> std::same_as<void>;
+
+        { obj.trackballZoom(0.0f) } -> std::same_as<void>;
+        { obj.trackballPan(vcl::Point3f(0.f, 0.f, 0.f)) } -> std::same_as<void>;
+        {
+            obj.trackballRotate(vcl::Point3f(0.f, 0.f, 0.f), 0.0f)
+        } -> std::same_as<void>;
+        { obj.trackballRoll(0.0f) } -> std::same_as<void>;
     };
 };
 

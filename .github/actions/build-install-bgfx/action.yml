@@ -5,7 +5,7 @@ inputs:
   bgfx-version:
     description: 'The tag or branch of bgfx.cmake to clone'
     required: false
-    default: 'v1.150.9365-558'
+    default: 'v1.153.9385-561'
 
 runs:
   using: 'composite'
@@ -36,7 +36,7 @@ runs:
         WORKSPACE_PATH="${WORKSPACE//\\//}"
         
         # We build statically, as python wheels include the static library.
-        cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBGFX_BUILD_EXAMPLES=OFF -DBUILD_SHARED_LIBS=OFF -DBGFX_WITH_WAYLAND=OFF -DCMAKE_INSTALL_PREFIX="$WORKSPACE_PATH/bgfx-install"
+        cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DBGFX_BUILD_EXAMPLES=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="$WORKSPACE_PATH/bgfx-install"
         cmake --build build --config Release --target install
 
     - name: Set CMAKE_PREFIX_PATH

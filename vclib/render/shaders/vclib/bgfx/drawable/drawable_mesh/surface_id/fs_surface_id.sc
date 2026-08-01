@@ -7,7 +7,7 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
 
 void main()
 {

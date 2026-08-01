@@ -80,4 +80,4 @@ struct ViewerSettings
 
 } // namespace vcl
 
-#endif // VCL_RENDER_SETTINGS_PBR_VIEWER_SETTINGS_H
+#endif // VCL_RENDER_SETTINGS_VIEWER_SETTINGS_H

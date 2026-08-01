@@ -10,7 +10,10 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_trackball_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
+
+uniform vec4 u_trackballSettingsPack;
+
+#define u_trackballAlpha u_trackballSettingsPack.x
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_UNIFORMS_SH

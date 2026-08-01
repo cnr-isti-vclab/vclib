@@ -37,7 +37,7 @@ DrawableEnvironment::DrawableEnvironment(const Panorama& panorama, uint viewId)
  * @param[in] settings: The tone mapping operator to use.
  */
 void DrawableEnvironment::drawBackground(
-    uint                    viewId,
+    uint                  viewId,
     const ViewerSettings& settings) const
 {
     if (settings.renderBackgroundPanorama && canDraw()) {
