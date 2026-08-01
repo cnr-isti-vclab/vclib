@@ -55,7 +55,8 @@ void runRenderTest(
     // Zoom in a bit to make the mesh larger
     // We want to scale the camera distance by 0.6f.
     // trackballZoom(x) scales by pow(1.2, -x/60).
-    // So we need pow(1.2, -x/60) = 1.0f / 0.6f => x = -60 * log(1/0.6) / log(1.2)
+    // So we need pow(1.2, -x/60) = 1.0f / 0.6f => x = -60 * log(1/0.6) /
+    // log(1.2)
     mv.trackballZoom(-150.0f);
 
     vcl::Image renderedImage;
