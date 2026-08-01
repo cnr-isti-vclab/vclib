@@ -452,7 +452,7 @@ public:
         SelectionUniforms::setMeshIdForSelection(params.meshId);
         SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
         SelectionUniforms::bind();
-        vertPosBuf.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+        vertPosBuf.bind(0);
         triIdxBuf.bind();
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
@@ -719,8 +719,7 @@ private:
             mVertexSelection.size());
         SelectionUniforms::bind();
         mVertexSelection.bind(4, bgfx::Access::ReadWrite);
-        vertPosBuf.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        vertPosBuf.bindCompute(0, bgfx::Access::Read);
         bgfx::setTransform(model.data());
         dispatchVertexSelection(params.drawViewId, prog);
         return true;
@@ -784,8 +783,7 @@ private:
         SelectionUniforms::bind();
         mFaceSelection.bind(
             VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
-        vertPosBuf.bindCompute(
-            VCL_MRB_VERTEX_POSITION_STREAM, bgfx::Access::Read);
+        vertPosBuf.bindCompute(0, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);
         mTriToPolyBuffer.bind(7, bgfx::Access::Read);
         mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);

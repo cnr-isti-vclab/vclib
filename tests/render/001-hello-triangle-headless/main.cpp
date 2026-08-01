@@ -6,12 +6,14 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "../../../examples/render/00-hello-triangle-bgfx-common/hello_triangle_drawer.h"
-#include <catch2/catch_test_macros.hpp>
-#include <vclib/io/image/load.h>
-#include <vclib/io/image/save.h>
+
 #include <vclib/render/canvas.h>
 #include <vclib/render/headless_manager.h>
 #include <vclib/render/render_app.h>
+
+#include <vclib/io.h>
+
+#include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
 

@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_environment/uniforms.sh>
 
 SAMPLER2D(s_hdr, 0);                     // bound with setTexture()
 IMAGE2D_ARRAY_WO(i_cubemap, rgba32f, 1); // bound with setImage() as RW

@@ -48,6 +48,11 @@ public:
         sData[2] = std::bit_cast<float>(uint(specMips));
     }
 
+    static void setImageBasedLighting(bool ibl)
+    {
+        sData[3] = std::bit_cast<float>(uint(ibl ? 1 : 0));
+    }
+
     static void bind()
     {
         // lazy initialization

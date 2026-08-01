@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/drawable/uniforms/drawable_environment_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_environment/uniforms.sh>
 
 SAMPLERCUBE(s_env0, 0);
 IMAGE2D_ARRAY_WO(i_irradiance, rgba32f, 1);

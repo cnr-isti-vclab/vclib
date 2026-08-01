@@ -11,8 +11,8 @@ $output v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 // cross section
 $output v_worldPos, v_discardFlag
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {
