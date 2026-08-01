@@ -11,6 +11,7 @@
 #include <vclib/bgfx/shaders_common.sh>
 
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.sh>
+
+uniform vec4 u_axisColor;
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH

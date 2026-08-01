@@ -73,14 +73,10 @@ void runRenderTest(
     REQUIRE_FALSE(renderedImage.isNull());
 
     std::string groundTruthFilename = std::string(VCLIB_GROUND_TRUTH_PATH) +
-                                      "/005-mesh-wireframe-headless_" + testName +
-                                      "_gt.png";
+                                      "/005-mesh-wireframe-headless_" +
+                                      testName + "_gt.png";
 
     if (!std::filesystem::exists(groundTruthFilename)) {
-        std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
-                                     "/005-mesh-wireframe-headless_" + testName +
-                                     "_res.png";
-        vcl::saveImage(renderedImage, resultFilename);
         FAIL("Ground truth image not found.");
     }
 
@@ -116,7 +112,8 @@ TEST_CASE("Wireframe Shading Modes")
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::SHADING_NONE);
             settings.setWireframeUserColor(vcl::Color::Green);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_USER);
@@ -134,7 +131,8 @@ TEST_CASE("Wireframe Shading Modes")
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::SHADING_VERT);
             settings.setWireframeUserColor(vcl::Color::Green);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_USER);
@@ -155,7 +153,8 @@ TEST_CASE("Wireframe Color Modes")
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframeUserColor(vcl::Color::Red);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_USER);
             settings.setWireframeWidth(3);
@@ -169,15 +168,18 @@ TEST_CASE("Wireframe Color Modes")
     {
         runRenderTest("color_mesh", [](vcl::HeadlessMeshViewer& mv) {
             auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
-            mesh.color() = vcl::Color::Blue; // Set a color different from default/user
+            mesh.color() =
+                vcl::Color::Blue; // Set a color different from default/user
             mesh.updateBuffers(
                 {vcl::MeshRenderInfo::Buffers::MESH_ADDITIONAL_DATA});
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_MESH);
-            settings.setWireframeUserColor(vcl::Color::Green); // Different color to ensure it's not used
+            settings.setWireframeUserColor(
+                vcl::Color::Green); // Different color to ensure it's not used
             settings.setWireframeWidth(3);
             mesh.setRenderSettings(settings);
 
@@ -192,7 +194,8 @@ TEST_CASE("Wireframe Color Modes")
 
             auto settings = mesh.renderSettings();
             settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_VERTEX);
             settings.setWireframeWidth(3);
             mesh.setRenderSettings(settings);
@@ -216,7 +219,8 @@ TEST_CASE("Wireframe Depth Offset")
             settings.setSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH);
 
             // Wireframe visible, should render on top because of depth offset
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
             settings.setWireframeWidth(3);
             settings.setWireframeUserColor(vcl::Color::Red);
             settings.setWireframe(vcl::MeshRenderInfo::Wireframe::COLOR_USER);

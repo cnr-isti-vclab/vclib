@@ -177,20 +177,22 @@ public:
         if (newReadRequested) {
             // ONLY draw the offscreen frame
             offscreenFrame();
-            
-            // submit the calls for blitting the offscreen depth buffer BEFORE frame()
-            // so it happens in the same execution pass (mViewOffscreenId executes last)
+
+            // submit the calls for blitting the offscreen depth buffer BEFORE
+            // frame() so it happens in the same execution pass
+            // (mViewOffscreenId executes last)
             const bool solicit = mReadRequest->submit();
-            
+
             mCurrFrame = bgfx::frame();
-            
-            // Restore view state for the main view now that the frame has been submitted
+
+            // Restore view state for the main view now that the frame has been
+            // submitted
             bgfx::setViewClear(
                 mViewId,
                 BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
                 mDefaultClearColor.rgba());
             bgfx::setViewFrameBuffer(mViewId, mFbh);
-            
+
             if (solicit) {
                 // solicit new frame
                 derived()->update();
@@ -372,7 +374,7 @@ private:
         mFbh        = mReadRequest->frameBuffer();
 
         bgfx::setViewFrameBuffer(mViewId, mFbh);
-        
+
         uint32_t clearValue = mDefaultClearColor.rgba();
         if (mReadRequest->target() == ReadFromGPUBuffer::Target::ID) {
             clearValue = Color(UINT_NULL, Color::Format::RGBA).abgr();
@@ -381,7 +383,7 @@ private:
             mViewId,
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
             clearValue);
-            
+
         bgfx::touch(mViewId);
 
         switch (mReadRequest->target()) {

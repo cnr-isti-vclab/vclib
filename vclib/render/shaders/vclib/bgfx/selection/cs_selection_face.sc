@@ -9,12 +9,6 @@
 
 #include <vclib/bgfx/selection/uniforms.sh>
 
-/*
-TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
-restore next lines with:
-
-BUFFER_RO(positions, vec4, VCL_MRB_VERTEX_POSITION_STREAM); // coordinates (3 floats)
-*/
 BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RO(indices, uint, 5);

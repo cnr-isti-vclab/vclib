@@ -12,9 +12,9 @@
 #include <bgfx_compute.sh>
 #include <vclib/bgfx/buffers/boolean_buffer.sh>
 
+#define PI 3.141592653589793
+
 #define posToBitFlag(pos) (1u << pos)
-
-
 
 #define u_normalMatrix mtxFromCols( \
     u_invModelView[0].xyz, u_invModelView[1].xyz, u_invModelView[2].xyz)
@@ -152,6 +152,16 @@ vec3 computeSpecular(
 {
     return computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
+}
+
+/**
+ * @brief Converts a right-handed coordinate system vector to a left-handed coordinate system vector.
+ * @param[in] rightHand: The right-handed coordinate system vector.
+ * @return The left-handed coordinate system vector.
+ */
+vec3 leftHand(vec3 rightHand)
+{
+    return vec3(rightHand.x, rightHand.y, -rightHand.z);
 }
 
 #endif // VCL_BGFX_SHADERS_COMMON_SH

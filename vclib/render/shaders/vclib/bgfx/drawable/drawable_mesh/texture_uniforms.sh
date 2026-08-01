@@ -5,10 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
-#define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
-
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
+#define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
@@ -120,4 +118,4 @@ vec4 brdfLutTex(vec2 texcoord)
     return textureStage(textureStageBitField(u_textureStagesZ, 5), texcoord);
 }
 
-#endif // VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH

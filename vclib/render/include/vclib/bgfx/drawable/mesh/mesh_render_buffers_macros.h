@@ -12,13 +12,6 @@
  * These macros are used both on the library and on the shader side.
  */
 
-/* Streams */
-
-#define VCL_MRB_VERTEX_POSITION_STREAM 0
-#define VCL_MRB_VERTEX_NORMAL_STREAM   1
-#define VCL_MRB_VERTEX_COLOR_STREAM    2
-#define VCL_MRB_VERTEX_TEXCOORD_STREAM 3
-
 /* Stages */
 
 // first 10 stages for 2d textures, then 3 for cubemaps, and 2 buffers
@@ -32,14 +25,6 @@
 #define VCL_MRB_PRIMITIVE_COLOR_BUFFER     13
 #define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    14
 // don't use stage 15 - it does not work on mac...
-
-/* Flags - PBR */
-
-// bit positions used to tell which features are enabled at shader level
-#define VCL_PBR_VERTEX_COLOR         0
-#define VCL_PBR_VERTEX_TANGENT       1
-#define VCL_PBR_IS_ALPHA_MODE_MASK   2
-#define VCL_PBR_IMAGE_BASED_LIGHTING 3
 
 /* Constants - Compute (just for selection at the moment) */
 

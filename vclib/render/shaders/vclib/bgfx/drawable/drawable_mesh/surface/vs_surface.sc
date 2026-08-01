@@ -8,7 +8,7 @@
 $input a_position, a_normal, a_tangent, a_color0, a_texcoord0, a_texcoord1
 $output v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {

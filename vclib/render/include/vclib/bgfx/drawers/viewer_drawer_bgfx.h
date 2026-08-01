@@ -108,6 +108,7 @@ public:
             Base::viewerSettings().toneMapping);
         ViewerDrawerUniforms::setSpecularMipsLevels(
             mEnvironment.specularMipLevels());
+        ViewerDrawerUniforms::setImageBasedLighting(settings.imageBasedLighting && mEnvironment.canDraw());
         ViewerDrawerUniforms::bind();
 
         // background will be drawn only if settings allow it
