@@ -9,6 +9,7 @@
 #define VCL_IO_IMAGE_QT_SAVE_H
 
 #include <vclib/io/file_format.h>
+#include <vclib/io/file_info.h>
 
 #include <QImage>
 
@@ -39,7 +40,14 @@ inline void saveImageData(
 {
     QImage image(w, h, QImage::Format_RGBA8888);
     std::copy(data, data + w * h * 4, image.bits());
-    bool res = image.save(QString::fromStdString(filename), nullptr, quality);
+    int         qtQuality = quality;
+    std::string ext       = toLower(FileInfo::extension(filename));
+    if (ext == ".png") {
+        qtQuality = -1; // -1 is default compression, 0 is max compression (90
+                        // means almost NO compression)
+    }
+
+    bool res = image.save(QString::fromStdString(filename), nullptr, qtQuality);
     if (!res) {
         throw std::runtime_error(
             "Failed to save image data to file: " + filename);

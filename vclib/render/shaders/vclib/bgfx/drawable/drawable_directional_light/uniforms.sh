@@ -10,6 +10,6 @@
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_directional_light_uniforms.sh>
+uniform vec4 u_drawableDirectionalLightColor;
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_SH

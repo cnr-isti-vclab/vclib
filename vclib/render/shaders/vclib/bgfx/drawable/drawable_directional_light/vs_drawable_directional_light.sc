@@ -7,7 +7,7 @@
 
 $input a_position
 
-#include <vclib/bgfx/drawable/drawable_directional_light/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {

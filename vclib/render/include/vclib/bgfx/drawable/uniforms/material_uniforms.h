@@ -41,47 +41,26 @@ class MaterialUniforms
     static inline std::array<float, 4> sEmissivePack =
         {0.0, 0.0, 0.0, 1.0};
 
-    // settings packed in a vec4
-    // .x : pbr settings
-    static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
-
     // alpha cutoff and maybe other alpha related settings can be stored here
-     static inline std::array<float, 4> sAlphaPack = {0.5, 0.0, 0.0, 0.0};
+    static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
 
     static inline Uniform sBaseColorUniform;
     static inline Uniform sFactorsPackUniform;
     static inline Uniform sEmissivePackUniform;
-    static inline Uniform sSettingsUniform;
     static inline Uniform sAlphaPackUniform;
 
 public:
     MaterialUniforms() = delete;
 
-    static void set(
-        const Material& m,
-        bool            vertexColorAvailable,
-        bool            vertexTangentAvailable,
-        bool            imageBasedLighting)
+    static void set(const Material& m)
     {
-        uint pbrSettingBits = 0;
-
-        if (vertexColorAvailable) // per-vertex color available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_COLOR;
-
-        if (vertexTangentAvailable) // per-vertex tangent available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_TANGENT;
-
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             sAlphaPack[0] = m.alphaCutoff();
         }
-
-        if (imageBasedLighting) {
-            pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        else {
+            sAlphaPack[0] = -1.0f;
         }
-
-        sSettings[0] = std::bit_cast<float>(pbrSettingBits);
 
         sBaseColor[0] = m.baseColor().redF();
         sBaseColor[1] = m.baseColor().greenF();
@@ -115,15 +94,12 @@ public:
         if (!sEmissivePackUniform.isValid())
             sEmissivePackUniform =
                 Uniform("u_emissivePack", bgfx::UniformType::Vec4);
-        if (!sSettingsUniform.isValid())
-            sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
-        if (! sAlphaPackUniform.isValid())
-        	sAlphaPackUniform = Uniform("u_alphaPack", bgfx::UniformType::Vec4);
+        if (!sAlphaPackUniform.isValid())
+            sAlphaPackUniform = Uniform("u_alphaPack", bgfx::UniformType::Vec4);
 
         sBaseColorUniform.bind(&sBaseColor);
         sFactorsPackUniform.bind(&sFactorsPack);
         sEmissivePackUniform.bind(&sEmissivePack);
-        sSettingsUniform.bind(&sSettings);
         sAlphaPackUniform.bind(&sAlphaPack);
     }
 };

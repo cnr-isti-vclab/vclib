@@ -12,5 +12,6 @@
 #include "mesh/load_mesh.h"
 #include "mesh/load_meshes.h"
 #include "mesh/save_mesh.h"
+#include "mesh/save_meshes.h"
 
 #endif // VCL_IO_MESH_H

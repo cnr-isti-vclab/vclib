@@ -16,8 +16,8 @@
 
 namespace vcl::bind {
 
-template<MeshConcept MeshType>
-void initEdge(pybind11::class_<MeshType>& ct)
+template<MeshConcept MeshType, typename... Options>
+void initEdge(pybind11::class_<MeshType, Options...>& ct)
 {
     using EdgeType = MeshType::EdgeType;
 

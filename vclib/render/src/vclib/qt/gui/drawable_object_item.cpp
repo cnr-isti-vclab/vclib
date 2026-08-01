@@ -38,6 +38,33 @@ std::shared_ptr<DrawableObject> DrawableObjectItem::drawableObject() const
     return mObj;
 }
 
+void DrawableObjectItem::updateMeshInfo()
+{
+    auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(mObj);
+    if (!mesh)
+        return;
+
+    for (int i = 0; i < childCount(); ++i) {
+        auto childItem = child(i);
+        if (childItem->text(0) == "Mesh Info") {
+            for (int j = 0; j < childItem->childCount(); ++j) {
+                auto subChild = childItem->child(j);
+                if (subChild->text(0) == "# Vertices") {
+                    updateElementCountItem(
+                        subChild,
+                        mesh->vertexCount(),
+                        mesh->selectedVertexCount());
+                }
+                else if (subChild->text(0) == "# Faces") {
+                    updateElementCountItem(
+                        subChild, mesh->faceCount(), mesh->selectedFaceCount());
+                }
+            }
+            break;
+        }
+    }
+}
+
 void DrawableObjectItem::addMeshItem()
 {
     // clear any existing children
@@ -70,13 +97,15 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     // vertex number item
     auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
     vertexCountItem->setText(0, "# Vertices");
-    vertexCountItem->setText(1, QString::number(mesh.vertexCount()));
+    updateElementCountItem(
+        vertexCountItem, mesh.vertexCount(), mesh.selectedVertexCount());
     makeItemNotSelectable(vertexCountItem);
 
     if (mesh.faceCount() > 0) {
         auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
         faceCountItem->setText(0, "# Faces");
-        faceCountItem->setText(1, QString::number(mesh.faceCount()));
+        updateElementCountItem(
+            faceCountItem, mesh.faceCount(), mesh.selectedFaceCount());
         makeItemNotSelectable(faceCountItem);
     }
 
@@ -260,6 +289,22 @@ void DrawableObjectItem::addMaterialData(
 void DrawableObjectItem::makeItemNotSelectable(QTreeWidgetItem* item)
 {
     item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
+}
+
+void DrawableObjectItem::updateElementCountItem(
+    QTreeWidgetItem* item,
+    uint             count,
+    uint             selectedCount)
+{
+    if (selectedCount == 0) {
+        item->setText(1, QString::number(count));
+    }
+    else {
+        item->setText(
+            1,
+            QString::number(count) + " (" + QString::number(selectedCount) +
+                " selected)");
+    }
 }
 
 } // namespace vcl::qt

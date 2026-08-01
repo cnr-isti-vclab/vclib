@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     vcl::updatePerVertexAndFaceNormals(mesh);
 
     // Convert the mesh into a DrawableMesh which the viewer can render
-    vcl::DrawableMesh<vcl::TriMesh> drawableMesh(std::move(mesh));
+    auto drawableMesh = vcl::makeDrawable(std::move(mesh));
 
     // Optionally set some color or drawing properties
     drawableMesh.color() = vcl::Color::LightGray;

@@ -12,7 +12,7 @@
 
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/render_mode.h>
 
 #include <array>
 
@@ -35,7 +35,9 @@ struct DrawObjectSettingsBGFX
     std::array<uint, N_ADDITIONAL_VIEWS> additionalViewIds =
         makeArray<uint, N_ADDITIONAL_VIEWS>(BGFX_INVALID_VIEW);
 
-    PBRViewerSettings pbrSettings;
+    RenderMode renderMode = RenderMode::CLASSIC;
+
+    bool imageBasedLighting = false;
 
     const DrawableEnvironment* environment = nullptr;
 };

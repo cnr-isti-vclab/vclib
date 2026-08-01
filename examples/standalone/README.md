@@ -23,7 +23,7 @@ ctest --output-on-failure
 Tests the consumption of VCLib by downloading and embedding the repository at configure time.
 ```bash
 mkdir build && cd build
-cmake .. -DVCLIB_USE_FETCHCONTENT=ON
+cmake .. -DVCLIB_STANDALONE_USE_FETCHCONTENT=ON
 cmake --build .
 ctest --output-on-failure
 ```

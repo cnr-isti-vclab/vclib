@@ -8,7 +8,8 @@
 #ifndef VCL_BGFX_READ_FROM_GPU_BUFFER_H
 #define VCL_BGFX_READ_FROM_GPU_BUFFER_H
 
-#include <vclib/bgfx/buffers.h>
+#include <vclib/bgfx/buffers/frame_buffer.h>
+#include <vclib/bgfx/buffers/index_buffer.h>
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/uniform.h>
 #include <vclib/render/read_buffer_types.h>

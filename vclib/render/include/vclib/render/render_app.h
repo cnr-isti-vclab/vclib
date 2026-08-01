@@ -107,7 +107,8 @@ public:
                 (void*) WindowManagerType::winId(),
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y(),
-                WindowManagerType::displayId()),
+                WindowManagerType::displayId(),
+                WindowManagerType::handleType()),
             Drawers<RenderApp>(
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...
@@ -356,6 +357,11 @@ private:
     void dScreenshot(const std::string& filename, uint multiplier = 1)
     {
         CanvasType::onScreenshot(filename, multiplier);
+    }
+
+    void dSetContinuousRedraw(bool enabled)
+    {
+        WindowManagerType::setContinuousRedraw(enabled);
     }
 };
 
@@ -756,6 +762,14 @@ public: // TODO - remove this when C++26 is supported
         uint               multiplier = 1)
     {
         r->dScreenshot(filename, multiplier);
+    }
+
+    /**
+     * @brief A Drawer object can request to enable/disable continuous redraw.
+     */
+    static void setContinuousRedraw(RenderApp* r, bool enabled)
+    {
+        r->dSetContinuousRedraw(enabled);
     }
 };
 

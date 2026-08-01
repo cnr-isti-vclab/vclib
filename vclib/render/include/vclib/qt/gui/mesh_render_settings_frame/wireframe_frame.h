@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
 

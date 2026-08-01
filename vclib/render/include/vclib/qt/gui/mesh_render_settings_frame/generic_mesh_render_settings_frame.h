@@ -13,6 +13,8 @@
 #include <QFrame>
 #include <QPushButton>
 
+class QCheckBox;
+
 namespace vcl::qt {
 
 class GenericMeshRenderSettingsFrame : public QFrame
@@ -30,6 +32,8 @@ public:
     ~GenericMeshRenderSettingsFrame();
 
     virtual void updateFrameFromSettings() = 0;
+
+    virtual QCheckBox* visibilityCheckBox() = 0;
 
 signals:
     void settingsUpdated();

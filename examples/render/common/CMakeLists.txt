@@ -7,7 +7,7 @@
 
 project(common)
 
-set(HEADERS get_drawable_mesh.h default_viewer.h)
+set(HEADERS get_drawable_mesh.h)
 
 add_library(vclib-render-examples-common INTERFACE)
 
