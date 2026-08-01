@@ -64,21 +64,6 @@ QTextStream* TextEditLogger::levelStream(LogLevel lvl) const
     }
 }
 
-void TextEditLogger::alignLeft(QTextStream& stream) const
-{
-    stream.setFieldAlignment(QTextStream::AlignLeft);
-}
-
-void TextEditLogger::alignRight(QTextStream& stream) const
-{
-    stream.setFieldAlignment(QTextStream::AlignRight);
-}
-
-void TextEditLogger::setWidth(QTextStream& stream, uint width) const
-{
-    stream.setFieldWidth(width);
-}
-
 void TextEditLogger::flush(QTextStream& stream) const
 {
     stream.flush();

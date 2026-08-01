@@ -137,6 +137,7 @@ class EdgeMeshT :
             mesh::VertexContainer<edgemesh::Vertex<Scalar, INDEXED>>,
             mesh::EdgeContainer<edgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
+            mesh::Color,
             mesh::Mark,
             mesh::Materials,
             mesh::Name,

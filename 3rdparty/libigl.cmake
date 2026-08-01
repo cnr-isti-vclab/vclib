@@ -11,6 +11,7 @@ find_package(libigl QUIET)
 
 if(VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
     message(STATUS "- libigl - using system-provided library")
+    set(VCLIB_USED_SYSTEM_LIBIGL ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-libigl INTERFACE)
     target_link_libraries(
@@ -20,7 +21,7 @@ if(VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
 
     target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+    list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-libigl)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     message(STATUS "- libigl - using downloaded source")
@@ -40,6 +41,14 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
+
+    # Install
+    if(VCLIB_ALLOW_INSTALL_LIBIGL)
+        install(
+            DIRECTORY "${libigl_SOURCE_DIR}/include/igl"
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        )
+    endif()
 else()
     message(STATUS "- libigl - not found, skipping")
 endif()

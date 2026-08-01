@@ -21,6 +21,11 @@ target_compile_definitions(
 
 target_compile_definitions(
     vclib-tests-examples-common
+    INTERFACE VCLIB_GROUND_TRUTH_PATH="${VCLIB_ASSETS_PATH}/ground_truth"
+)
+
+target_compile_definitions(
+    vclib-tests-examples-common
     INTERFACE VCLIB_CORE_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/core"
 )
 
@@ -28,6 +33,11 @@ target_compile_definitions(
     vclib-tests-examples-common
     INTERFACE
         VCLIB_EXTERNAL_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/external"
+)
+
+target_compile_definitions(
+    vclib-tests-examples-common
+    INTERFACE VCLIB_RENDER_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results/render"
 )
 
 function(_vclib_add_test_example name)
@@ -66,6 +76,31 @@ function(_vclib_add_test_example name)
     endif()
 
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
+
+    if(WIN32 AND VCLIB_DEPLOY_EXECUTABLES)
+        set(COPY_DLLS_SCRIPT
+            "${CMAKE_CURRENT_BINARY_DIR}/copy_dlls_${TARGET_NAME}.cmake"
+        )
+        file(
+            GENERATE OUTPUT "${COPY_DLLS_SCRIPT}"
+            CONTENT
+                "
+set(DLLS \"$<TARGET_RUNTIME_DLLS:${TARGET_NAME}>\")
+if(DLLS)
+    execute_process(COMMAND \${CMAKE_COMMAND} -E copy_if_different \${DLLS} \"$<TARGET_FILE_DIR:${TARGET_NAME}>\")
+    if(\"${VCLIB_WINDEPLOYQT_EXECUTABLE}\" AND DLLS MATCHES \"Qt.*Core\")
+        execute_process(COMMAND \"${VCLIB_WINDEPLOYQT_EXECUTABLE}\" \"$<TARGET_FILE:${TARGET_NAME}>\")
+    endif()
+endif()
+"
+        )
+        add_custom_command(
+            TARGET ${TARGET_NAME}
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -P "${COPY_DLLS_SCRIPT}"
+            COMMENT "Copying runtime DLLs for ${TARGET_NAME}"
+        )
+    endif()
 
     # for each module in LINK_MODULES, link the example/test with it
     foreach(module IN LISTS ARG_LINK_MODULES)

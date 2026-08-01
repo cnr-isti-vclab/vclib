@@ -24,13 +24,19 @@ target_compile_definitions(${PROJECT_NAME} INTERFACE VCLIB_CORE_MODULE)
 
 set_target_properties(
     ${PROJECT_NAME}
-    PROPERTIES VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR}
+    PROPERTIES VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR} EXPORT_NAME core
 )
 
 target_link_libraries(
     ${PROJECT_NAME}
     INTERFACE ${VCLIB_CORE_3RDPARTY_LIBRARIES}
 )
+
+# Ensure optional system libraries (e.g., Qt) are linked against the core target.
+# This relies on BUILD_INTERFACE to avoid exposing absolute paths in the export.
+foreach(lib IN LISTS VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES)
+    target_link_libraries(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${lib}>)
+endforeach()
 
 target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 

@@ -1,0 +1,10 @@
+name: Standalone Examples - FetchContent
+
+on:
+  workflow_dispatch:
+
+jobs:
+  StandaloneExamples-FetchContent:
+    uses: ./.github/workflows/_standalone_examples_template.yml
+    with:
+      integration_mode: 'FetchContent'

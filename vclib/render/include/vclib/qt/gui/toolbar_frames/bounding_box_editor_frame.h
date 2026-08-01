@@ -58,6 +58,12 @@ private slots:
     }
 };
 
+template<typename ViewerType>
+struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
+{
+    using FrameType = BoundingBoxEditorFrame<ViewerType>;
+};
+
 } // namespace vcl::qt
 
 #endif // VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H

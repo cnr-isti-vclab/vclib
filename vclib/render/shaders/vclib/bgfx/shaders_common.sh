@@ -10,6 +10,9 @@
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
+#include <vclib/bgfx/buffers/boolean_buffer.sh>
+
+#define PI 3.141592653589793
 
 #define posToBitFlag(pos) (1u << pos)
 
@@ -49,7 +52,31 @@
         return vec3( \
             bufferName[idx30 / 4u][idx30 % 4u], \
             bufferName[idx31 / 4u][idx31 % 4u], \
-            bufferName[idx32 / 4u][idx32 % 4u]); \
+        bufferName[idx32 / 4u][idx32 % 4u]); \
+    }
+
+/**
+ * @brief Auxiliary macro to declare a function that fetches a vec3 from a flat
+ * float buffer.
+ *
+ * @param[in] funcName: The name of the function to be generated.
+ * @param[in] bufferName: The name of the float buffer from which the vec3 will
+ * be fetched.
+ *
+ * @code
+ * BUFFER_RO(myBuffer, float, 0); // buffer of float, read only on stage 0
+ * DECLARE_FETCH_VEC3_FROM_FLOAT(fetchMyBuffer, myBuffer) // declare the function
+ * //...
+ * vec3 pos = fetchMyBuffer(10); // fetch the 10-th vec3 from myBuffer
+ * @endcode
+ */
+#define DECLARE_FETCH_VEC3_FROM_FLOAT(funcName, bufferName) \
+    vec3 funcName(uint index) { \
+        uint idx = index * 3u; \
+        return vec3( \
+            bufferName[idx], \
+            bufferName[idx + 1u], \
+            bufferName[idx + 2u]); \
     }
 
 /**
@@ -125,6 +152,16 @@ vec3 computeSpecular(
 {
     return computeSpecular(
         vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
+}
+
+/**
+ * @brief Converts a right-handed coordinate system vector to a left-handed coordinate system vector.
+ * @param[in] rightHand: The right-handed coordinate system vector.
+ * @return The left-handed coordinate system vector.
+ */
+vec3 leftHand(vec3 rightHand)
+{
+    return vec3(rightHand.x, rightHand.y, -rightHand.z);
 }
 
 #endif // VCL_BGFX_SHADERS_COMMON_SH

@@ -46,12 +46,21 @@ class CMakeBuild(build_ext):
             raise RuntimeError("CMake must be installed to build the following extensions: " + ", ".join(e.name for e in self.extensions))
 
         # Configure and build the project
-        build_temp = os.path.abspath(self.build_temp)
+        build_temp = os.environ.get("VCLIB_WHEEL_BUILD_DIR", self.build_temp)
+        build_temp = os.path.abspath(build_temp)
         os.makedirs(build_temp, exist_ok=True)
 
         cmake_args = [
-            f"--preset=vclib-python-wheel"
+            f"--preset=vclib-python-wheel",
+            "-UPython*",
+            f"-DPython_EXECUTABLE={sys.executable}"
         ]
+
+        if os.environ.get("VCLIB_USE_CCACHE") == "1":
+            cmake_args.extend([
+                "-DCMAKE_C_COMPILER_LAUNCHER=ccache",
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+            ])
 
         build_args = ["--target", "install"]
 
@@ -65,8 +74,32 @@ class CMakeBuild(build_ext):
         dist_lib = os.path.join("dist", f"lib/python{sys.version_info.major}.{sys.version_info.minor}/site-packages/vclib")
         build_lib = os.path.join(self.build_lib, "vclib")
         if os.path.exists(dist_lib):
+            if os.path.exists(build_lib):
+                shutil.rmtree(build_lib)
             os.makedirs(os.path.dirname(build_lib), exist_ok=True)
             shutil.copytree(dist_lib, build_lib, dirs_exist_ok=True)
+
+            if os.environ.get("VCLIB_LOCAL_WHEEL_BUILD", "").strip() == "1":
+                init_file = os.path.join(build_lib, "__init__.py")
+                if os.path.exists(init_file):
+                    with open(init_file, "r") as f:
+                        content = f.read()
+                    
+                    old_code = (
+                        "    this_path = os.path.dirname(__file__)\n"
+                        "    qt6_path = os.path.abspath(os.path.join(this_path, '..', 'PyQt6', 'Qt6', 'bin'))"
+                    )
+                    new_code = (
+                        "    if 'Qt6_DIR' in os.environ:\n"
+                        "        qt6_path = os.path.abspath(os.path.join(os.environ['Qt6_DIR'], 'bin'))\n"
+                        "    else:\n"
+                        "        this_path = os.path.dirname(__file__)\n"
+                        "        qt6_path = os.path.abspath(os.path.join(this_path, '..', 'PyQt6', 'Qt6', 'bin'))"
+                    )
+                    content = content.replace(old_code, new_code)
+                    
+                    with open(init_file, "w") as f:
+                        f.write(content)
 
         # Ensure the copied files are included in the package
         self.distribution.package_data = {"vclib": ["*.so", "*.pyd", "*.dll", "__init__.py"]}

@@ -20,7 +20,7 @@ void initNullLogger(pybind11::module& m)
 
     py::class_<NullLogger, AbstractLogger> c(m, "NullLogger");
 
-    m.attr("null_logger") = vcl::nullLogger;
+    m.attr("null_logger") = &vcl::nullLogger;
 }
 
 } // namespace vcl::bind

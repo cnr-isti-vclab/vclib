@@ -60,31 +60,15 @@ class MaterialUniforms
 public:
     MaterialUniforms() = delete;
 
-    static void set(
-        const Material& m,
-        bool            vertexColorAvailable,
-        bool            vertexTangentAvailable,
-        bool            imageBasedLighting)
+    static void set(const Material& m)
     {
-        uint pbrSettingBits = 0;
-
-        if (vertexColorAvailable) // per-vertex color available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_COLOR;
-
-        if (vertexTangentAvailable) // per-vertex tangent available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_TANGENT;
-
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             sEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
-
-        if (imageBasedLighting) {
-            pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        else {
+            sEmissiveAlphaCutoffPack[3] = -1.0f;
         }
-
-        sSettings[0] = std::bit_cast<float>(pbrSettingBits);
 
         sBaseColor[0] = m.baseColor().redF();
         sBaseColor[1] = m.baseColor().greenF();

@@ -26,8 +26,8 @@
 
 namespace vcl::bind {
 
-template<ElementOrMeshConcept ElementType>
-void initComponents(pybind11::class_<ElementType>& c)
+template<ElementOrMeshConcept ElementType, typename... Options>
+void initComponents(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
     using enum py::return_value_policy;

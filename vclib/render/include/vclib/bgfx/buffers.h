@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_BUFFERS_H
 #define VCL_BGFX_BUFFERS_H
 
+#include "buffers/boolean_buffer.h"
 #include "buffers/dynamic_index_buffer.h"
 #include "buffers/dynamic_vertex_buffer.h"
 #include "buffers/frame_buffer.h"

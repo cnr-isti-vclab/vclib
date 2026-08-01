@@ -79,6 +79,8 @@ namespace vcl {
  * -> bool`: Called when a Drawer object asks for a screenshot of the canvas.
  * The function should take a screenshot of the canvas and save it to the
  * specified filename.
+ * - `onScreenshot(vcl::Image& image, uint multiplier = 1) -> bool`:
+ * Called when a Drawer object asks for a screenshot of the canvas in memory.
  */
 template<typename T>
 concept CanvasConcept = requires (
@@ -88,7 +90,8 @@ concept CanvasConcept = requires (
     vcl::Point2i                              p,
     vcl::Color                                c,
     typename RemoveRef<T>::CallbackReadBuffer cbrb,
-    std::string                               str) {
+    std::string                               str,
+    vcl::Image&                               img) {
     typename RemoveRef<T>::CallbackReadBuffer;
 
     RemoveRef<T>(vPtr, u, u);
@@ -108,6 +111,8 @@ concept CanvasConcept = requires (
         { obj.onReadDepth(p, cbrb) } -> std::same_as<bool>;
         { obj.onScreenshot(str) } -> std::same_as<bool>;
         { obj.onScreenshot(str, u) } -> std::same_as<bool>;
+        { obj.onScreenshot(img) } -> std::same_as<bool>;
+        { obj.onScreenshot(img, u) } -> std::same_as<bool>;
     };
 };
 

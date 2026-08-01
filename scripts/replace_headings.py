@@ -75,7 +75,7 @@ def replace_headers_in_dir(folder_path, exclude_paths = []):
             if any(exclude in file_path for exclude in exclude_paths):
                 continue
             replace_headers_in_dir(file_path, exclude_paths)
-        elif file_path.endswith(('.h.in', '.h', '.hpp', '.mm', '.cpp', '.sc', '.sh')):
+        elif file_path.endswith(('.h.in', '.h', '.hpp', '.mm', '.cpp.in','.cpp', '.sc', '.sh')):
             # if file_path does not contain 'varying.def.sc'
             if 'varying.def.sc' not in file_path:
                 replace_header(file_path, header_string)
@@ -132,6 +132,7 @@ def replace_shader_headers_in_dir(folder_path, exclude_paths = []):
 if __name__ == "__main__":
     replace_headers_in_dir('../examples/')
     replace_headers_in_dir('../tests/')
+    replace_headers_in_dir('../3rdparty/cmake/templates/')
     replace_cmake_headers_in_dir('../', recursive=False)
     replace_cmake_headers_in_dir('../3rdparty/')
     replace_cmake_headers_in_dir('../cmake/')

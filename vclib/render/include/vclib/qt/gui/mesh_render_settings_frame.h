@@ -41,8 +41,14 @@ public:
         const MeshRenderSettings& settings,
         bool                      changeCurrentTab = false);
 
+    bool isApplyToAllEnabled() const;
+
 signals:
     void settingsUpdated();
+    void applyToAllToggled(bool checked);
+
+private slots:
+    void onApplyToAllToggled(bool checked);
 
 private:
     enum { POINTS_FRAME = 0, SURFACE_FRAME, WIREFRAME_FRAME, EDGES_FRAME };

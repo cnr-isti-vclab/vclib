@@ -18,17 +18,32 @@
 
 namespace vcl {
 
+/**
+ * @class ProgramManager
+ * @brief Manages the creation, retrieval, and lifetime of bgfx programs.
+ *
+ * This class handles both vertex-fragment programs and compute programs,
+ * loading them lazily (on demand) and caching their handles.
+ */
 class ProgramManager
 {
+    /// The bgfx renderer type used to load the correct shader binaries.
     bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
 
+    /// Cache of Vertex/Fragment programs.
     std::array<bgfx::ProgramHandle, toUnderlying(VertFragProgram::COUNT)>
         mVFPrograms;
 
+    /// Cache of Compute programs.
     std::array<bgfx::ProgramHandle, toUnderlying(ComputeProgram::COUNT)>
         mCPrograms;
 
 public:
+    /**
+     * @brief Constructs a ProgramManager.
+     * @param[in] renderType: The bgfx renderer type used to select the correct
+     * shader binaries.
+     */
     ProgramManager(bgfx::RendererType::Enum renderType) :
             mRenderType(renderType)
     {
@@ -36,6 +51,9 @@ public:
         mCPrograms.fill(BGFX_INVALID_HANDLE);
     }
 
+    /**
+     * @brief Destructor. Destroys all cached bgfx programs.
+     */
     ~ProgramManager()
     {
         for (const auto& program : mVFPrograms) {
@@ -51,6 +69,15 @@ public:
         }
     }
 
+    /**
+     * @brief Retrieves the bgfx program handle for a specific Vertex/Fragment
+     * program template argument.
+     *
+     * Creates and caches the program if it has not been loaded yet.
+     *
+     * @tparam PROGRAM: The Vertex/Fragment program enum value.
+     * @return The bgfx program handle.
+     */
     template<VertFragProgram PROGRAM>
     bgfx::ProgramHandle getProgram()
     {
@@ -66,6 +93,15 @@ public:
         return mVFPrograms[p];
     }
 
+    /**
+     * @brief Retrieves the bgfx program handle for a given Vertex/Fragment
+     * program enum value.
+     *
+     * Creates and caches the program if it has not been loaded yet.
+     *
+     * @param[in] p: The Vertex/Fragment program enum value.
+     * @return The bgfx program handle.
+     */
     bgfx::ProgramHandle getProgram(VertFragProgram p)
     {
         return getProgramImpl(
@@ -73,6 +109,15 @@ public:
             std::make_index_sequence<toUnderlying(VertFragProgram::COUNT)> {});
     }
 
+    /**
+     * @brief Retrieves the bgfx program handle for a specific Compute program
+     * template argument.
+     *
+     * Creates and caches the program if it has not been loaded yet.
+     *
+     * @tparam PROGRAM: The Compute program enum value.
+     * @return The bgfx program handle.
+     */
     template<ComputeProgram PROGRAM>
     bgfx::ProgramHandle getComputeProgram()
     {
@@ -85,6 +130,15 @@ public:
         return mCPrograms[p];
     }
 
+    /**
+     * @brief Retrieves the bgfx program handle for a given Compute program enum
+     * value.
+     *
+     * Creates and caches the program if it has not been loaded yet.
+     *
+     * @param[in] p: The Compute program enum value.
+     * @return The bgfx program handle.
+     */
     bgfx::ProgramHandle getComputeProgram(ComputeProgram p)
     {
         return getComputeProgramImpl(
@@ -93,6 +147,16 @@ public:
     }
 
 private:
+    /**
+     * @brief Helper template method to retrieve the program handle dynamically.
+     *
+     * Uses index sequences to map the dynamic enum value to the static template
+     * version.
+     *
+     * @tparam Is Index sequence pack.
+     * @param[in] p: The Vertex/Fragment program enum value.
+     * @return The bgfx program handle.
+     */
     template<size_t... Is>
     bgfx::ProgramHandle getProgramImpl(
         VertFragProgram p,
@@ -104,6 +168,17 @@ private:
         return (this->*(funcs[toUnderlying(p)]))();
     }
 
+    /**
+     * @brief Helper template method to retrieve the compute program handle
+     * dynamically.
+     *
+     * Uses index sequences to map the dynamic enum value to the static template
+     * version.
+     *
+     * @tparam Is Index sequence pack.
+     * @param[in] p: The Compute program enum value.
+     * @return The bgfx program handle.
+     */
     template<size_t... Is>
     bgfx::ProgramHandle getComputeProgramImpl(
         ComputeProgram p,
