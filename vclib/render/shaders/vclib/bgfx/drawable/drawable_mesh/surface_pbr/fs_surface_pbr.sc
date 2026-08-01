@@ -7,12 +7,13 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+#include <vclib/bgfx/drawable/drawable_mesh/surface_pbr/common.sh>
+
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/material_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/render_settings_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/texture_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#include <vclib/bgfx/pbr_common.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
 

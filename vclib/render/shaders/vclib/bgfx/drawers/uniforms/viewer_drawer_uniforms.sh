@@ -9,7 +9,7 @@
 #define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_SH
 
 #include <vclib/bgfx/shaders_common.sh>
-#include <vclib/bgfx/pbr_common.sh>
+#include <vclib/bgfx/drawable/pbr_common.sh>
 
 uniform vec4 u_viewerSettingsPack;
 
