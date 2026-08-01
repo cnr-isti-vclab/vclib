@@ -42,12 +42,10 @@ SAMPLERCUBE(s_specular, 10);
 void main()
 {
     // texcoord to use
-    bool useTexture =
-        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||
-        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE));
+    bool useTexture = isSurfaceTexVertex() || isSurfaceTexWedge();
 
     vec2 texcoord = v_texcoord0; // per vertex
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
+    if (isSurfaceTexWedge()) {
         texcoord = v_texcoord1; // per wedge
     }
 
@@ -57,13 +55,13 @@ void main()
 
     // color to use per vertex
     // if the user selected per face, per mesh or per user, override
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+    if (isSurfaceColorFace()) {
         vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
-    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+    else if (isSurfaceColorMesh()) {
         vertexBaseColor = u_meshColor;
     }
-    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
+    else if (isSurfaceColorUser()) {
         vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
     }
     else {

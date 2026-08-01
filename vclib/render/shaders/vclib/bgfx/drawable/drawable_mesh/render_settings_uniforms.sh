@@ -22,6 +22,50 @@ uniform vec4 u_mrsColorPack[2];
 #define isPerVertexColorAvailable() ((floatBitsToUint(u_mrsDrawPack.z) & 1) != 0)
 #define isPerVertexTangentAvailable() ((floatBitsToUint(u_mrsDrawPack.z) & 2) != 0)
 
+// Points
+#define isPointsVisible() (bool(u_pointsMode & posToBitFlag(VCL_MRS_DRAW_POINTS)))
+#define isPointsShapePixel() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_PIXEL)))
+#define isPointsShapeCircle() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_CIRCLE)))
+#define isPointsShapeSphere() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SPHERE)))
+#define isPointsShadingNone() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_NONE)))
+#define isPointsShadingVert() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_SHADING_VERT)))
+#define isPointsColorVertex() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_VERTEX)))
+#define isPointsColorMesh() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_MESH)))
+#define isPointsColorUser() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_COLOR_USER)))
+#define isPointsDrawSelection() (bool(u_pointsMode & posToBitFlag(VCL_MRS_POINTS_DRAW_SELECTION)))
+
+// Surface
+#define isSurfaceVisible() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_DRAW_SURF)))
+#define isSurfaceShadingNone() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NONE)))
+#define isSurfaceShadingFlat() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_FLAT)))
+#define isSurfaceShadingSmooth() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_SMOOTH)))
+#define isSurfaceShadingNormalMap() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_SHADING_NORMAL_MAP)))
+#define isSurfaceColorVertex() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_VERTEX)))
+#define isSurfaceColorFace() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE)))
+#define isSurfaceTexVertex() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)))
+#define isSurfaceTexWedge() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE)))
+#define isSurfaceColorMesh() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH)))
+#define isSurfaceColorUser() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER)))
+#define isSurfaceDrawSelection() (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_DRAW_SELECTION)))
+
+// Wireframe
+#define isWireframeVisible() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_DRAW_WIREFRAME)))
+#define isWireframeShadingNone() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_SHADING_NONE)))
+#define isWireframeShadingVert() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_SHADING_VERT)))
+#define isWireframeColorVert() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_VERT)))
+#define isWireframeColorMesh() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_MESH)))
+#define isWireframeColorUser() (bool(u_wireframeMode & posToBitFlag(VCL_MRS_WIREFRAME_COLOR_USER)))
+
+// Edges
+#define isEdgesVisible() (bool(u_edgesMode & posToBitFlag(VCL_MRS_DRAW_EDGES)))
+#define isEdgesShadingNone() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_SHADING_NONE)))
+#define isEdgesShadingFlat() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_SHADING_FLAT)))
+#define isEdgesShadingSmooth() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_SHADING_SMOOTH)))
+#define isEdgesColorVertex() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_VERTEX)))
+#define isEdgesColorEdge() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_EDGE)))
+#define isEdgesColorMesh() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_MESH)))
+#define isEdgesColorUser() (bool(u_edgesMode & posToBitFlag(VCL_MRS_EDGES_COLOR_USER)))
+
 #define u_pointWidth u_mrsWidthPack.x
 #define u_wireframeWidth u_mrsWidthPack.y
 #define u_edgesWidth u_mrsWidthPack.z
