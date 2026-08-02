@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_GIZMOS_UNIFORMS_TRACKBALL_GIZMO_UNIFORMS_H
 #define VCL_BGFX_GIZMOS_UNIFORMS_TRACKBALL_GIZMO_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 
 #include <vclib/space/core.h>
 
@@ -30,7 +30,9 @@ class TrackballGizmoUniforms
     inline static std::array<float, 4> sTrackBallSettings =
         {NOT_DRAGGING_ALPHA, 0, 0, 0};
 
-    inline static Uniform sTrackballSettingsUniform;
+    inline static StaticUniform sTrackballSettingsUniform {
+        "u_trackballSettingsPack",
+        bgfx::UniformType::Vec4};
 
 public:
     TrackballGizmoUniforms() = delete;
@@ -42,11 +44,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sTrackballSettingsUniform.isValid())
-            sTrackballSettingsUniform =
-                Uniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
         sTrackballSettingsUniform.bind(sTrackBallSettings.data());
     }
 };

@@ -9,6 +9,6 @@
 #define VCL_QT_UTILS_H
 
 #include "utils/file_format.h"
-#include "utils/qapplication.h"
+#include "utils/message_hider.h"
 
 #endif // VCL_QT_UTILS_H
