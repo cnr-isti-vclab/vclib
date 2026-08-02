@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_CROSS_SECTION_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_CROSS_SECTION_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 
 #include <vclib/space/core.h>
 
@@ -46,8 +46,12 @@ class CrossSectionUniforms
         0.0                 // unused
     };
 
-    inline static Uniform sCrossSectionMinDataUniform;
-    inline static Uniform sCrossSectionMaxDataUniform;
+    inline static StaticUniform sCrossSectionMinDataUniform {
+        "u_crossSectionMinData",
+        bgfx::UniformType::Vec4};
+    inline static StaticUniform sCrossSectionMaxDataUniform {
+        "u_crossSectionMaxData",
+        bgfx::UniformType::Vec4};
 
 public:
     CrossSectionUniforms() = delete;
@@ -69,14 +73,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sCrossSectionMinDataUniform.isValid())
-            sCrossSectionMinDataUniform =
-                Uniform("u_crossSectionMinData", bgfx::UniformType::Vec4);
-        if (!sCrossSectionMaxDataUniform.isValid())
-            sCrossSectionMaxDataUniform =
-                Uniform("u_crossSectionMaxData", bgfx::UniformType::Vec4);
         sCrossSectionMinDataUniform.bind(sCrossSectionMinData.data());
         sCrossSectionMaxDataUniform.bind(sCrossSectionMaxData.data());
     }
