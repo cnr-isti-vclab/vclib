@@ -7,10 +7,13 @@
 
 #include "get_drawable_mesh.h"
 
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/viewer_window.h>
 
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     vcl::glfw::ViewerWindow tw("Viewer GLFW");
 
     // load and set up a drawable mesh
@@ -24,5 +27,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }
