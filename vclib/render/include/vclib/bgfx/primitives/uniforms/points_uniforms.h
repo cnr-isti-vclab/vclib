@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_H
 #define VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/space/core.h>
 
 #include <array>
@@ -31,11 +31,15 @@ class PointsUniforms
     // .w = unused
     inline static std::array<float, 4> sPointsSettings =
         {1.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform sPointsSettingsUniform;
+    inline static StaticUniform sPointsSettingsUniform {
+        "u_pointsSettings",
+        bgfx::UniformType::Vec4};
 
     inline static std::array<float, 4> sSelectionSettings =
         {0.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform sSelectionSettingsUniform;
+    inline static StaticUniform sSelectionSettingsUniform {
+        "u_pointsSelectionSettings",
+        bgfx::UniformType::Vec4};
 
 public:
     PointsUniforms() = delete;
@@ -90,15 +94,6 @@ public:
      */
     static void bind()
     {
-        // Lazy initialization to avoid creating uniforms before bgfx is
-        // initialized.
-        if (!sPointsSettingsUniform.isValid())
-            sPointsSettingsUniform =
-                Uniform("u_pointsSettings", bgfx::UniformType::Vec4);
-        if (!sSelectionSettingsUniform.isValid())
-            sSelectionSettingsUniform =
-                Uniform("u_pointsSelectionSettings", bgfx::UniformType::Vec4);
-
         sPointsSettingsUniform.bind(sPointsSettings.data());
         sSelectionSettingsUniform.bind(sSelectionSettings.data());
     }

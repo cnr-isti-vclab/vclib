@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/mesh.h>
 
 namespace vcl {
@@ -35,8 +35,12 @@ class DrawableMeshUniforms
         std::bit_cast<float>(0xFFFFFFFF),
         std::bit_cast<float>(0xFFFFFFFF)};
 
-    inline static Uniform sMeshColorUniform;
-    inline static Uniform sMeshDataUniform;
+    inline static StaticUniform sMeshColorUniform {
+        "u_meshColor",
+        bgfx::UniformType::Vec4};
+    inline static StaticUniform sMeshDataUniform {
+        "u_meshData",
+        bgfx::UniformType::Vec4};
 
 public:
     enum class TextureType {
@@ -91,12 +95,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sMeshColorUniform.isValid())
-            sMeshColorUniform = Uniform("u_meshColor", bgfx::UniformType::Vec4);
-        if (!sMeshDataUniform.isValid())
-            sMeshDataUniform = Uniform("u_meshData", bgfx::UniformType::Vec4);
         sMeshColorUniform.bind(sMeshColor.data());
         sMeshDataUniform.bind(sMeshData.data());
     }

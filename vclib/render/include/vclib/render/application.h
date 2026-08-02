@@ -9,11 +9,14 @@
 #define VCL_RENDER_APPLICATION_H
 
 #ifdef VCLIB_WITH_QT
-#include <vclib/qt/utils/qapplication.h>
-
-#include <QApplication>
+#include <vclib/qt/application.h>
 #elif VCLIB_WITH_GLFW
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/detail/window_manager_native.h>
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/context.h>
 #endif
 
 namespace vcl {
@@ -39,31 +42,20 @@ namespace vcl {
  *     return app.exec();
  * }
  * @endcode
+ *
+ * @note You should use this Application class only if you are using the
+ * default MeshViewer or other VCLib default GUI classes. If you are using a
+ * specific GUI framework (like Qt or GLFW) directly, you should use the
+ * corresponding application class (e.g., qt::Application or glfw::Application).
  */
 
 #ifdef VCLIB_WITH_QT
 
-class Application
-{
-    QApplication mApp;
-
-public:
-    Application(int& argc, char** argv) : mApp(qt::qAppl(argc, argv)) {}
-
-    int exec() { return mApp.exec(); }
-};
+using Application = qt::Application;
 
 #elif VCLIB_WITH_GLFW
 
-class Application
-{
-public:
-    Application(int& /*argc*/, char** /*argv*/) { glfwInit(); }
-
-    ~Application() { glfwTerminate(); }
-
-    int exec() { return 0; }
-};
+using Application = glfw::Application;
 
 #else // No Qt and No GLFW
 
@@ -71,6 +63,13 @@ class Application
 {
 public:
     Application(int& /*argc*/, char** /*argv*/) {}
+
+    ~Application()
+    {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        vcl::Context::shutdown();
+#endif
+    }
 
     int exec() { return 0; }
 };

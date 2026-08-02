@@ -58,7 +58,7 @@ class MeshRenderSettings
     MeshRenderInfo mCapability; // capabilities of the mesh
     MeshRenderInfo mDrawMode;   // current rendering settings
 
-    bool mHasPerVertexColor = false;
+    bool mHasPerVertexColor   = false;
     bool mHasPerVertexTangent = false;
 
     float mPointWidth          = 3;
@@ -105,6 +105,7 @@ public:
     MeshRenderInfo drawMode() const { return mDrawMode; }
 
     bool hasPerVertexColor() const { return mHasPerVertexColor; }
+
     bool hasPerVertexTangent() const { return mHasPerVertexTangent; }
 
     bool operator==(const MeshRenderSettings&) const = default;
@@ -809,9 +810,9 @@ public:
                         // the normal map texture).
                         if (hasTexCoords && m.materialCount() > 0 &&
                             vcl::isPerVertexNormalAvailable(m)) {
-                            
-                            mHasPerVertexTangent = vcl::isPerVertexTangentAvailable(m);
-                            
+                            mHasPerVertexTangent =
+                                vcl::isPerVertexTangentAvailable(m);
+
                             if (mHasPerVertexTangent) {
                                 setSurfaceCapability(
                                     MRI::Surface::SHADING_NORMAL_MAP);

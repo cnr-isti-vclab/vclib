@@ -9,7 +9,7 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/mesh.h>
@@ -41,21 +41,23 @@ class MaterialUniforms
     static inline std::array<float, 4> sEmissiveAlphaCutoffPack =
         {0.0, 0.0, 0.0, 0.5};
 
-    // settings packed in a vec4
-    // .x : pbr settings
-    static inline std::array<float, 4> sSettings = {0.0, 0.0, 0.0, 0.0};
-
     static inline std::array<float, 4> sClearcoatPack = {
         0.0, // clearcoat factor
         0.0, // clearcoat roughness factor
         1.0, // clearcoat normal scale
         0.0};
 
-    static inline Uniform sBaseColorUniform;
-    static inline Uniform sFactorsPackUniform;
-    static inline Uniform sEmissiveAlphaCutoffPackUniform;
-    static inline Uniform sSettingsUniform;
-    static inline Uniform sClearcoatPackUniform;
+    static inline StaticUniform sBaseColorUniform {
+        "u_baseColorFactor",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sFactorsPackUniform {
+        "u_FactorsPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
+        "u_emissiveAlphaCutoffPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sClearcoatPackUniform {
+    "u_clearcoatPack", bgfx::UniformType::Vec4};
 
 public:
     MaterialUniforms() = delete;
@@ -93,28 +95,10 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sBaseColorUniform.isValid())
-            sBaseColorUniform =
-                Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
-        if (!sFactorsPackUniform.isValid())
-            sFactorsPackUniform =
-                Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
-        if (!sEmissiveAlphaCutoffPackUniform.isValid())
-            sEmissiveAlphaCutoffPackUniform =
-                Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
-        if (!sSettingsUniform.isValid())
-            sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
-        if (!sClearcoatPackUniform.isValid())
-            sClearcoatPackUniform =
-                Uniform("u_clearcoatPack", bgfx::UniformType::Vec4);
-
-        sBaseColorUniform.bind(&sBaseColor);
-        sFactorsPackUniform.bind(&sFactorsPack);
-        sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
-        sSettingsUniform.bind(&sSettings);
-        sClearcoatPackUniform.bind(&sClearcoatPack);
+        sBaseColorUniform.bind(sBaseColor.data());
+        sFactorsPackUniform.bind(sFactorsPack.data());
+        sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sClearcoatPackUniform.bind(sClearcoatPack.data());
     }
 };
 

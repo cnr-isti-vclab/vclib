@@ -11,6 +11,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <vclib/qt/application.h>
 #include <vclib/qt/viewer_widget.h>
 
 template<typename T>
@@ -79,7 +80,7 @@ class Gesu : public Minestrone<Canvas, EventManager>
 
 int main(int argc, char** argv)
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     Gesu M;
 
