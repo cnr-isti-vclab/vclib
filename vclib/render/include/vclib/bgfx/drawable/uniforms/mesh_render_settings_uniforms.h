@@ -65,8 +65,10 @@ public:
         sDrawPack[1] = std::bit_cast<float>(d1);
 
         uint capabilities = 0;
-        if (settings.hasPerVertexColor()) capabilities |= 1;
-        if (settings.hasPerVertexTangent()) capabilities |= 2;
+        if (settings.hasPerVertexColor())
+            capabilities |= 1;
+        if (settings.hasPerVertexTangent())
+            capabilities |= 2;
         sDrawPack[2] = std::bit_cast<float>(capabilities);
 
         sWidthPack[0] = settings.pointWidth();
