@@ -17,8 +17,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initVertexReferences(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
 {
     using VertexType = ElementType::VertexType;
 

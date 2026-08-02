@@ -54,6 +54,13 @@ option(
     OFF
 )
 
+# On Windows, copy Qt runtime DLLs and run windeployqt (for deployment)
+option(
+    VCLIB_DEPLOY_EXECUTABLES
+    "If true, all runtime DLLs including Qt will be copied to the executable directory on Windows (slow, use for deployment)"
+    OFF
+)
+
 # Render specific options
 if(VCLIB_BUILD_MODULE_RENDER)
     set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")

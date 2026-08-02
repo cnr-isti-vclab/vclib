@@ -206,6 +206,55 @@ public:
         mImg.deserialize(is);
         vcl::deserialize(is, mColorSpace);
     }
+
+    /**
+     * @brief Checks if this image is almost equal to another image, allowing
+     * for a certain color tolerance and a percentage of failed pixels.
+     *
+     * @param[in] other: The image to compare with.
+     * @param[in] colorTolerance: The maximum allowed difference per color
+     * channel (0-255).
+     * @param[in] failedPixelTolerancePercentage: The maximum allowed percentage
+     * of pixels (0.0 to 1.0) that can exceed the color tolerance.
+     * @return True if the images match within the given tolerances, false
+     * otherwise.
+     */
+    bool isAlmostEqual(
+        const Image& other,
+        uint8_t      colorTolerance                 = 0,
+        float        failedPixelTolerancePercentage = 0.0f) const
+    {
+        if (width() != other.width() || height() != other.height()) {
+            return false;
+        }
+
+        const unsigned char* d1        = data();
+        const unsigned char* d2        = other.data();
+        std::size_t          numPixels = width() * height();
+
+        if (colorTolerance == 0 && failedPixelTolerancePercentage == 0.0f) {
+            return std::memcmp(d1, d2, sizeInBytes()) == 0;
+        }
+
+        std::size_t failedPixels = 0;
+        for (std::size_t i = 0; i < numPixels; ++i) {
+            bool pixelMatch = true;
+            for (int c = 0; c < 4; ++c) {
+                int diff = static_cast<int>(d1[i * 4 + c]) -
+                           static_cast<int>(d2[i * 4 + c]);
+                if (std::abs(diff) > colorTolerance) {
+                    pixelMatch = false;
+                    break;
+                }
+            }
+            if (!pixelMatch) {
+                failedPixels++;
+            }
+        }
+
+        float failedPercentage = static_cast<float>(failedPixels) / numPixels;
+        return failedPercentage <= failedPixelTolerancePercentage;
+    }
 };
 
 /* Concepts */

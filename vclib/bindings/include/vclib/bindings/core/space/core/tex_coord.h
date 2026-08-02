@@ -14,8 +14,8 @@
 
 namespace vcl::bind {
 
-template<typename TexCoordType>
-void populateTexCoord(pybind11::class_<TexCoordType>& c)
+template<typename TexCoordType, typename... Options>
+void populateTexCoord(pybind11::class_<TexCoordType, Options...>& c)
 {
     namespace py = pybind11;
     using namespace py::literals;

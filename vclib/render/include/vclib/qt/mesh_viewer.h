@@ -9,21 +9,28 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
-#include "utils.h"
 
+#include <vclib/qt/gui/editor_frame_traits.h>
 #include <vclib/qt/gui/text_edit_logger.h>
+#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
+#include <vclib/render/concepts/drawable_object.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
-#include <vclib/render/settings/pbr_viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
 
 #include <QMainWindow>
+
+class QDockWidget;
 
 namespace vcl::qt {
 
 namespace Ui {
 class MeshViewer;
 } // namespace Ui
+
+class ViewerSettingsFrame;
 
 class KeyFilter : public QObject
 {
@@ -37,23 +44,19 @@ class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
-    enum class RenderMode { CLASSIC = 0, PBR = 1 };
-
     Ui::MeshViewer* mUI;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
+    ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
+    QDockWidget*         mViewerSettingsDockWidget = nullptr;
 
-    std::shared_ptr<vcl::AxisEditor<MeshViewerRenderApp::ViewerType>>
-        mAxisEditor;
-    std::shared_ptr<vcl::MeshSelectorEditor<MeshViewerRenderApp::ViewerType>>
-        mMeshSelectorEditor;
-    std::shared_ptr<vcl::BoundingBoxEditor<MeshViewerRenderApp::ViewerType>>
-        mBoundingBoxEditor;
+    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
 protected:
     MeshViewerRenderApp& viewer() const;
 
     DrawableObjectVectorTree& drawableObjectVectorTree() const;
+
+    void addEditorFrame(QWidget* frame);
 
     void keyPressEvent(QKeyEvent* event) override;
 
@@ -64,10 +67,131 @@ public:
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
+    /**
+     * @brief Returns the ID of the currently selected drawable object.
+     */
     uint selectedDrawableObject() const;
+
+    /**
+     * @brief Returns a shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<vcl::DrawableObject> drawableObject(uint i);
+
+    /**
+     * @brief Returns a const shared pointer to the i-th drawable object.
+     * @param i The index of the object.
+     */
+    std::shared_ptr<const vcl::DrawableObject> drawableObject(uint i) const;
+
+    /**
+     * @brief Returns the number of drawable objects currently in the scene.
+     */
+    uint drawableObjectsCount() const;
+
+    /**
+     * @brief Returns a const reference to the underlying DrawableObjectVector.
+     */
+    const vcl::DrawableObjectVector& drawableObjects() const;
+
+    /**
+     * @brief Adds a drawable object to the end of the scene.
+     * @param[in] obj: The object to add.
+     * @return The ID assigned to the new object.
+     */
+    template<vcl::DrawableObjectConcept ObjType>
+    uint pushDrawableObject(ObjType&& obj)
+    {
+        uint id = viewer().pushDrawableObject(std::forward<ObjType>(obj));
+        updateGUI();
+        return id;
+    }
+
+    /**
+     * @brief Adds a shared_ptr to a drawable object to the end of the scene.
+     * @param[in] obj: The object to add.
+     * @return The ID assigned to the new object.
+     */
+    uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
+    {
+        uint id = viewer().pushDrawableObject(std::move(obj));
+        updateGUI();
+        return id;
+    }
+
+    /**
+     * @brief Removes a drawable object from the scene by its ID.
+     * @param[in] id: The ID of the object to remove.
+     * @return True if the object was successfully removed, false otherwise.
+     */
+    bool removeDrawableObject(uint id);
+
+    /**
+     * @brief Triggers an update of the drawable object with the given ID.
+     * @param[in] id: The ID of the object to update.
+     * @return True if the update was successful, false otherwise.
+     */
+    bool updateDrawableObject(uint id);
+
+    /**
+     * @brief Inserts a drawable object at a specific position in the scene.
+     * @param[in] pos: The position to insert the object at.
+     * @param[in] obj: The object to insert.
+     * @return True if the insertion was successful, false otherwise.
+     */
+    template<vcl::DrawableObjectConcept ObjType>
+    bool insertDrawableObject(uint pos, ObjType&& obj)
+    {
+        bool success =
+            viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
+        if (success)
+            updateGUI();
+        return success;
+    }
+
+    /**
+     * @brief Inserts a shared_ptr to a drawable object at a specific position
+     * in the scene.
+     * @param[in] pos: The position to insert the object at.
+     * @param[in] obj: The object to insert.
+     * @return True if the insertion was successful, false otherwise.
+     */
+    bool insertDrawableObject(
+        uint                                 pos,
+        std::shared_ptr<vcl::DrawableObject> obj)
+    {
+        bool success = viewer().insertDrawableObject(pos, std::move(obj));
+        if (success)
+            updateGUI();
+        return success;
+    }
+
+    /**
+     * @brief Clears all drawable objects from the scene.
+     */
+    void clearDrawableObjects();
+
+    template<template<typename> typename EditorT>
+    auto pushEditor(bool active = false)
+    {
+        auto editor = viewer().template pushEditor<EditorT>(active);
+
+        using FrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        if constexpr (!std::is_same_v<FrameType, void>) {
+            addEditorFrame(new FrameType(editor));
+        }
+
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::MeshSelectorEditor<ViewerType>>) {
+            editor->setOnObjectSelectedFunction([this](uint id) {
+                drawableObjectVectorTree().setSelectedItem(id);
+            });
+        }
+
+        return editor;
+    }
 
     void refreshEditors();
 
@@ -82,24 +206,72 @@ public:
 
     // void showRenderModeSelector(bool show);
 
-    void setPbrSettings(const PBRViewerSettings& settings);
+    void setViewerSettings(const ViewerSettings& settings);
 
-    const PBRViewerSettings& pbrSettings() const;
+    const ViewerSettings& viewerSettings() const;
 
     void setPanorama(const std::string& panorama);
 
+    /**
+     * @brief Changes the current zoom (scale) of the trackball.
+     * @param[in] factor: Positive value to zoom in, negative to zoom out.
+     */
+    void trackballZoom(float factor) { viewer().trackballZoom(factor); }
+
+    /**
+     * @brief Pans the current view in the camera coordinate system.
+     * @param[in] translation: 3D translation vector.
+     */
+    void trackballPan(const Point3f& translation)
+    {
+        viewer().trackballPan(translation);
+    }
+
+    /**
+     * @brief Rotates the trackball around an arbitrary axis.
+     * @param[in] axis: Rotation axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRotate(const Point3f& axis, float angleRad)
+    {
+        viewer().trackballRotate(axis, angleRad);
+    }
+
+    /**
+     * @brief Rolls the trackball around the camera view axis.
+     * @param[in] angleRad: Rotation angle in radians.
+     */
+    void trackballRoll(float angleRad) { viewer().trackballRoll(angleRad); }
+
+    /**
+     * @brief Sets the background color of the viewer.
+     * @param[in] color: The background color.
+     */
+    void setBackgroundColor(const vcl::Color& color);
+
+    /**
+     * @brief Retrieves the current background color.
+     * @return The background color.
+     */
+    const vcl::Color& backgroundColor() const;
+
 public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
     void fitScene();
 
     void fitView();
 
     void updateGUI();
+
+private slots:
+    void visibilityDrawableObjectChanged();
+
+    void selectedDrawableObjectChanged(uint i);
+
+    void meshRenderSettingsUpdated();
+
+    void applyToAllToggled(bool checked);
+
+    void renderModeChanged();
 };
 
 } // namespace vcl::qt

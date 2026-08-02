@@ -7,6 +7,7 @@
 
 #include "../808-test-lines-common/lines_common.h"
 
+#include <vclib/qt/application.h>
 #include <vclib/qt/viewer_widget.h>
 
 #include <QCheckBox>
@@ -43,7 +44,7 @@ std::shared_ptr<vcl::DrawableLines> getLines(
 
 int main(int argc, char** argv)
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     QWidget w;
 

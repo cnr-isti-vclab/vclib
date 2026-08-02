@@ -7,42 +7,38 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
-#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
-#include <vclib/bgfx/drawable/uniforms/drawable_mesh_texture_uniforms.sh>
-#include <vclib/bgfx/pbr_common.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/surface_pbr/common.sh>
+
+#include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/material_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/render_settings_uniforms.sh>
+#include <vclib/bgfx/drawable/drawable_mesh/texture_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+#include <vclib/render/drawable/mesh/mesh_render_info_macros.h>
 
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
-/*
-TODO: when https://github.com/bkaradzic/bgfx/issues/3629 will be resolved,
-restore next lines with:
+// color of each face / edge
+BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);   // color of each face / edge
-BUFFER_RO(primitiveNormals, vec4, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
+// normal of each face / edge
+BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
 
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
-*/
-BUFFER_RO(primitiveColors, uint, 13);    // color of each face / edge
-BUFFER_RO(primitiveNormals, vec4, 14); // normal of each face / edge
-DECLARE_FETCH_VEC3(fetchPrimitiveNormal, primitiveNormals);
-
-SAMPLERCUBE(s_irradiance, 10);
-SAMPLERCUBE(s_specular, 11);
 
 void main()
 {
     // texcoord to use
-    bool useTexture =
-        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_VERTEX)) ||
-        bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE));
+    bool useTexture = isSurfaceTexVertex() || isSurfaceTexWedge();
 
     vec2 texcoord = v_texcoord0; // per vertex
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_TEX_WEDGE))) {
+    if (isSurfaceTexWedge()) {
         texcoord = v_texcoord1; // per wedge
     }
 
@@ -52,17 +48,17 @@ void main()
 
     // color to use per vertex
     // if the user selected per face, per mesh or per user, override
-    if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_FACE))) {
+    if (isSurfaceColorFace()) {
         vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
     }
-    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_MESH))) {
+    else if (isSurfaceColorMesh()) {
         vertexBaseColor = u_meshColor;
     }
-    else if (bool(u_surfaceMode & posToBitFlag(VCL_MRS_SURF_COLOR_USER))) {
+    else if (isSurfaceColorUser()) {
         vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
     }
     else {
-        if (isPerVertexColorAvailable(u_pbr_settings))
+        if (isPerVertexColorAvailable())
             vertexBaseColor = v_color; // per-vertex color available
     }
 
@@ -75,7 +71,7 @@ void main()
     vec4 baseColor = u_baseColorFactor * textureBaseColor * vertexBaseColor;
 
     // alpha mode MASK
-    if (isAlphaModeMask(u_pbr_settings))
+    if (isAlphaModeMask())
         if (baseColor.a < u_alphaCutoff)
             discard; // discard fragment
 
@@ -107,7 +103,7 @@ void main()
 
         mat3 tangentFrame;
 
-        if (isPerVertexTangentAvailable(u_pbr_settings)) {
+        if (isPerVertexTangentAvailable()) {
             vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
@@ -146,7 +142,7 @@ void main()
     if (useTexture && isSpecularColorTextureAvailable())
         specularColor *= specularColorTex(texcoord).rgb;
 
-    if(useImageBasedLighting(u_pbr_settings))
+    if(useImageBasedLighting())
     {
         // view direction
         vec3 V = normalize(-v_position); // camera is at the origin

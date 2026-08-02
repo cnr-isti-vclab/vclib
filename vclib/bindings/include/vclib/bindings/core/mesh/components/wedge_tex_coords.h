@@ -16,8 +16,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initWedgeTexCoords(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initWedgeTexCoords(pybind11::class_<ElementType, Options...>& c)
 {
     using WedgeTexCoordType = ElementType::WedgeTexCoordType;
 

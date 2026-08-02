@@ -51,6 +51,8 @@ inline void saveImageData(
     ext             = toLower(ext);
     int ret         = 0;
     if (ext == ".png") {
+        stbi_write_force_png_filter =
+            4; // Use Paeth filter for optimal compression
         ret = stbi_write_png(filename.c_str(), w, h, 4, data, 0);
     }
     else if (ext == ".bmp") {

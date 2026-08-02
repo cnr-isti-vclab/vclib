@@ -20,7 +20,7 @@ if(OpenGL_FOUND)
         )
     endif()
 
-    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-opengl)
+    list(APPEND VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-opengl)
 else()
     message(
         FATAL

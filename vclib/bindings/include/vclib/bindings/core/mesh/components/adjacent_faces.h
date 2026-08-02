@@ -16,8 +16,8 @@
 
 namespace vcl::bind {
 
-template<ElementConcept ElementType>
-void initAdjacentFaces(pybind11::class_<ElementType>& c)
+template<ElementConcept ElementType, typename... Options>
+void initAdjacentFaces(pybind11::class_<ElementType, Options...>& c)
 {
     using FaceType = ElementType::AdjacentFaceType;
 

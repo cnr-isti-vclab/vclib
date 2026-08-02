@@ -13,15 +13,16 @@
  */
 
 // points
-#define VCL_MRS_DRAW_POINTS         0 // point visibility
-#define VCL_MRS_POINTS_PIXEL        1 // draw points as pixels
-#define VCL_MRS_POINTS_CIRCLE       2 // draw points as circles
-#define VCL_MRS_POINTS_SPHERE       3 // draw points as spheres
-#define VCL_MRS_POINTS_SHADING_NONE 4 // no shading
-#define VCL_MRS_POINTS_SHADING_VERT 5 // vertex normal shading
-#define VCL_MRS_POINTS_COLOR_VERTEX 6 // vert colors for points
-#define VCL_MRS_POINTS_COLOR_MESH   7 // mesh color for points
-#define VCL_MRS_POINTS_COLOR_USER   8 // user color for points
+#define VCL_MRS_DRAW_POINTS           0 // point visibility
+#define VCL_MRS_POINTS_PIXEL          1 // draw points as pixels
+#define VCL_MRS_POINTS_CIRCLE         2 // draw points as circles
+#define VCL_MRS_POINTS_SPHERE         3 // draw points as spheres
+#define VCL_MRS_POINTS_SHADING_NONE   4 // no shading
+#define VCL_MRS_POINTS_SHADING_VERT   5 // vertex normal shading
+#define VCL_MRS_POINTS_COLOR_VERTEX   6 // vert colors for points
+#define VCL_MRS_POINTS_COLOR_MESH     7 // mesh color for points
+#define VCL_MRS_POINTS_COLOR_USER     8 // user color for points
+#define VCL_MRS_POINTS_DRAW_SELECTION 9 // points with selection color
 
 // surface
 #define VCL_MRS_DRAW_SURF               0  // surface visibility
@@ -35,6 +36,7 @@
 #define VCL_MRS_SURF_TEX_WEDGE          8  // per wedge texcoords
 #define VCL_MRS_SURF_COLOR_MESH         9  // mesh color for surface
 #define VCL_MRS_SURF_COLOR_USER         10 // user color for surface
+#define VCL_MRS_SURF_DRAW_SELECTION     11 // surface with selection color
 
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe

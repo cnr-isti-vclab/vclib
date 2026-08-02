@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum SURF_COLOR {
         SC_VERT = 0,
@@ -55,6 +57,8 @@ private slots:
     void onShadingNormalMapToggled(bool checked);
     void onColorComboBoxChanged(int index);
     void onUserColorChanged(const QColor& c);
+    void onSelectionVisibilityChanged(Qt::CheckState arg1);
+    void onSelectionColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt

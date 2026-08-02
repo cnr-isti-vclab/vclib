@@ -9,7 +9,7 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/mesh.h>
@@ -48,41 +48,34 @@ class MaterialUniforms
     // specular color (RGB) and specular (A)
     static inline std::array<float, 4> sSpecularPack = {1.0, 1.0, 1.0, 1.0};
 
-    static inline Uniform sBaseColorUniform;
-    static inline Uniform sFactorsPackUniform;
-    static inline Uniform sEmissiveAlphaCutoffPackUniform;
-    static inline Uniform sSettingsUniform;
-
-    static inline Uniform sSpecularPackUniform;
+    static inline StaticUniform sBaseColorUniform {
+        "u_baseColorFactor",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sFactorsPackUniform {
+        "u_FactorsPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
+        "u_emissiveAlphaCutoffPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sSettingsUniform {
+        "u_settings",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sSpecularPackUniform {
+        "u_specularPack",
+        bgfx::UniformType::Vec4};
 
 public:
     MaterialUniforms() = delete;
 
-    static void set(
-        const Material& m,
-        bool            vertexColorAvailable,
-        bool            vertexTangentAvailable,
-        bool            imageBasedLighting)
+    static void set(const Material& m)
     {
-        uint pbrSettingBits = 0;
-
-        if (vertexColorAvailable) // per-vertex color available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_COLOR;
-
-        if (vertexTangentAvailable) // per-vertex tangent available
-            pbrSettingBits |= 1 << VCL_PBR_VERTEX_TANGENT;
-
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            pbrSettingBits |= 1 << VCL_PBR_IS_ALPHA_MODE_MASK;
             sEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
         }
-
-        if (imageBasedLighting) {
-            pbrSettingBits |= 1 << VCL_PBR_IMAGE_BASED_LIGHTING;
+        else {
+            sEmissiveAlphaCutoffPack[3] = -1.0f;
         }
-
-        sSettings[0] = std::bit_cast<float>(pbrSettingBits);
 
         sBaseColor[0] = m.baseColor().redF();
         sBaseColor[1] = m.baseColor().greenF();
@@ -108,29 +101,11 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sBaseColorUniform.isValid())
-            sBaseColorUniform =
-                Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
-        if (!sFactorsPackUniform.isValid())
-            sFactorsPackUniform =
-                Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
-        if (!sEmissiveAlphaCutoffPackUniform.isValid())
-            sEmissiveAlphaCutoffPackUniform =
-                Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
-        if (!sSettingsUniform.isValid())
-            sSettingsUniform = Uniform("u_settings", bgfx::UniformType::Vec4);
-
-        if (!sSpecularPackUniform.isValid())
-            sSpecularPackUniform = Uniform("u_specularPack", bgfx::UniformType::Vec4);
-
-        sBaseColorUniform.bind(&sBaseColor);
-        sFactorsPackUniform.bind(&sFactorsPack);
-        sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
-        sSettingsUniform.bind(&sSettings);
-
-        sSpecularPackUniform.bind(&sSpecularPack);
+        sBaseColorUniform.bind(sBaseColor.data());
+        sFactorsPackUniform.bind(sFactorsPack.data());
+        sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sSettingsUniform.bind(sSettings.data());
+        sSpecularPackUniform.bind(sSpecularPack.data());
     }
 };
 

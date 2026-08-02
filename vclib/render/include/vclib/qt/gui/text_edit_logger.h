@@ -48,12 +48,6 @@ public:
 protected:
     QTextStream* levelStream(LogLevel lvl) const override;
 
-    void alignLeft(QTextStream& stream) const override;
-
-    void alignRight(QTextStream& stream) const override;
-
-    void setWidth(QTextStream& stream, uint width) const override;
-
     void flush(QTextStream& stream) const override;
 };
 

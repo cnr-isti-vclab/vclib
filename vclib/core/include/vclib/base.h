@@ -16,6 +16,7 @@
 #include "base/hash.h"
 #include "base/inheritance.h"
 #include "base/iterators.h"
+#include "base/linearize_index.h"
 #include "base/logger.h"
 #include "base/math.h"
 #include "base/min_max.h"

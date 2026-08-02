@@ -59,17 +59,20 @@ private:
 
 public:
     CanvasBGFX(
-        void* winId,
-        uint  width,
-        uint  height,
-        void* displayId = nullptr) : mWinId(winId)
+        void*                       winId,
+        uint                        width,
+        uint                        height,
+        void*                       displayId = nullptr,
+        vcl::NativeWindowHandleType windowType =
+            vcl::NativeWindowHandleType::DEFAULT) : mWinId(winId)
     {
         static_assert(
             RenderAppConcept<DerivedRenderApp>,
             "The DerivedRenderApp must satisfy the RenderAppConcept.");
 
         // on screen framebuffer
-        mViewId = Context::instance(mWinId, displayId).requestViewId();
+        mViewId =
+            Context::instance(mWinId, displayId, windowType).requestViewId();
 
         // (re)create the framebuffers
         onResize(width, height);
@@ -104,15 +107,33 @@ public:
 
     /**
      * @brief Request a screenshot of the canvas.
-     *     The screenshot will be saved asynchronously.
-     * @param filename The filename where the screenshot will be saved.
-     * @param multiplier The multiplier applied to the canvas image.
+     *
+     * The screenshot will be saved asynchronously.
+     *
+     * @param[in] filename: The filename where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
      * @return true if the screenshot is requested, false otherwise.
      */
     bool screenshot(const std::string& filename, uint multiplier = 1)
     {
         return onScreenshot(filename, multiplier);
     }
+
+    /**
+     * @brief Request a screenshot of the canvas in memory.
+     *
+     * The screenshot will be populated asynchronously.
+     *
+     * @param[in] image: The image where the screenshot will be saved.
+     * @param[in] multiplier: The multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     */
+    bool screenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        return onScreenshot(image, multiplier);
+    }
+
+    /// Functions called by the DerivedRenderApp.
 
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
@@ -150,27 +171,41 @@ public:
      */
     void onPaint()
     {
-        bgfx::setViewFrameBuffer(mViewId, mFbh);
-        bgfx::touch(mViewId);
-
-        // ask the derived frame to draw all the drawer objects:
-        DerivedRenderApp::CNV::draw(derived());
-        DerivedRenderApp::CNV::postDraw(derived());
-
         const bool newReadRequested =
             (mReadRequest != std::nullopt && mReadRequest->isPending());
 
         if (newReadRequested) {
-            // draw offscreen frame
+            // ONLY draw the offscreen frame
             offscreenFrame();
+
+            // submit the calls for blitting the offscreen depth buffer BEFORE
+            // frame() so it happens in the same execution pass
+            // (mViewOffscreenId executes last)
+            const bool solicit = mReadRequest->submit();
+
             mCurrFrame = bgfx::frame();
-            // submit the calls for blitting the offscreen depth buffer
-            if (mReadRequest->submit()) {
+
+            // Restore view state for the main view now that the frame has been
+            // submitted
+            bgfx::setViewClear(
+                mViewId,
+                BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+                mDefaultClearColor.rgba());
+            bgfx::setViewFrameBuffer(mViewId, mFbh);
+
+            if (solicit) {
                 // solicit new frame
                 derived()->update();
             }
         }
         else {
+            bgfx::setViewFrameBuffer(mViewId, mFbh);
+            bgfx::touch(mViewId);
+
+            // ask the derived frame to draw all the drawer objects:
+            DerivedRenderApp::CNV::draw(derived());
+            DerivedRenderApp::CNV::postDraw(derived());
+
             mCurrFrame = bgfx::frame();
         }
 
@@ -256,6 +291,47 @@ public:
 
     /**
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
+     * for a screenshot in memory. Also called by the public member function
+     * screenshot().
+     *
+     * @param image
+     * @param multiplier multiplier applied to the canvas image.
+     * @return true if the screenshot is requested, false otherwise.
+     * @note this function is asynchronous, the screenshot will be populated
+     * later.
+     */
+    bool onScreenshot(vcl::Image& image, uint multiplier = 1)
+    {
+        if (!Context::instance().supportsReadback() // feature unsupported
+            || mReadRequest != std::nullopt) {      // read already requested
+            return false;
+        }
+
+        // get size
+        auto size = mSize * multiplier;
+
+        // color data callback
+        CallbackReadBuffer callback = [&image, size](const ReadData& data) {
+            assert(std::holds_alternative<ReadFromGPUBuffer::ByteData>(data));
+            const auto& d = std::get<ReadFromGPUBuffer::ByteData>(data);
+
+            image = vcl::Image(
+                d.data(),
+                size.x(),
+                size.y(),
+                false,
+                vcl::Color::Format::ABGR); // BGFX reads back in RGBA bytes,
+                                           // which is ABGR as uint32_t
+        };
+
+        mReadRequest.emplace(
+            ReadFromGPUBuffer::Target::COLOR, size, mDefaultClearColor);
+        mReadRequest->setPendingRead(callback);
+        return true;
+    }
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the ID at a specific point.
      *
      * @param point The point where the ID must be read.
@@ -287,14 +363,29 @@ private:
     {
         assert(mReadRequest != std::nullopt && mReadRequest->isPending());
 
-        // render offscren
+        // Disable clear on the read request view, since its ID is higher and
+        // it executes after additional views. We use mViewId to clear instead.
+        bgfx::setViewClear(mReadRequest->viewId(), BGFX_CLEAR_NONE);
         bgfx::setViewFrameBuffer(
             mReadRequest->viewId(), mReadRequest->frameBuffer());
         bgfx::touch(mReadRequest->viewId());
 
-        // render changing the view
-        auto tmpId = mViewId;
-        mViewId    = mReadRequest->viewId();
+        auto tmpFbh = mFbh;
+        mFbh        = mReadRequest->frameBuffer();
+
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+
+        uint32_t clearValue = mDefaultClearColor.rgba();
+        if (mReadRequest->target() == ReadFromGPUBuffer::Target::ID) {
+            clearValue = Color(UINT_NULL, Color::Format::RGBA).abgr();
+        }
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            clearValue);
+
+        bgfx::touch(mViewId);
+
         switch (mReadRequest->target()) {
         case ReadFromGPUBuffer::Target::COLOR:
         case ReadFromGPUBuffer::Target::DEPTH:
@@ -305,7 +396,8 @@ private:
             break;
         default: assert(false && "unsupported readback type"); break;
         }
-        mViewId = tmpId;
+
+        mFbh = tmpFbh;
     }
 
     auto* derived() { return static_cast<DerivedRenderApp*>(this); }

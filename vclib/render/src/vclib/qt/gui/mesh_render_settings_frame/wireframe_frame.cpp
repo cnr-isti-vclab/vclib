@@ -85,6 +85,11 @@ void WireframeFrame::updateFrameFromSettings()
     }
 }
 
+QCheckBox* WireframeFrame::visibilityCheckBox()
+{
+    return mUI->visibilityCheckBox;
+}
+
 void WireframeFrame::updateColorComboBoxFromSettings()
 {
     QStandardItemModel* model =

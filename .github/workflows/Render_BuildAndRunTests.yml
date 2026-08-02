@@ -1,7 +1,14 @@
 name: Render - Build and run Tests
 
 on:
-  [push, pull_request]
+  push:
+  pull_request:
+  workflow_call:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
 
 jobs:
   render_build_and_run_tests:
@@ -10,32 +17,31 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-15-intel', 'macos-latest', 'windows-2022']
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-2022']
         render_backend: ['bgfx', 'opengl2']
     steps:
     - uses: actions/checkout@v7
       with:
         submodules: recursive
+        ref: ${{ inputs.ref || github.ref }}
     - name: Setup MSVC
       uses: TheMrMilchmann/setup-msvc-dev@v4
       if: runner.os == 'Windows'
       with:
         arch: x64
     - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        cache: 'true'
-        version: '6.10.*'
+      uses: ./.github/actions/install-qt
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get install cmake ninja-build libtbb-dev catch2
-        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev
+        sudo apt-get update
+        sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install catch2 glfw
+        brew install catch2 glfw gmp mpfr
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
@@ -43,7 +49,11 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
-        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref_name }}
+        key: render-${{ matrix.os }}-${{matrix.render_backend}}
+        max-size: 1G
+    - name: Build and Install bgfx
+      if: matrix.render_backend == 'bgfx'
+      uses: ./.github/actions/build-install-bgfx
     - name: Build
       shell: bash
       run: |
@@ -51,8 +61,18 @@ jobs:
         cmake -B build --preset=vclib-render-${{matrix.render_backend}}-ci \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
         cmake --build build --parallel
-    # - name: Run Tests
-    #   shell: bash
-    #   run: |
-    #     cd build
-    #     ctest --verbose
+    - name: Run Tests
+      if: matrix.render_backend == 'bgfx'
+      shell: bash
+      run: |
+        cd build
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          export PATH=$(find "$PWD/_deps" -name "*.dll" -exec dirname {} \; | sort -u | tr '\n' ':')$PATH
+        fi
+        ctest --verbose
+    - name: Upload Test Results
+      if: always() && matrix.render_backend == 'bgfx'
+      uses: actions/upload-artifact@v7
+      with:
+        name: render-results-${{ matrix.os }}
+        path: assets/results/render/*.png

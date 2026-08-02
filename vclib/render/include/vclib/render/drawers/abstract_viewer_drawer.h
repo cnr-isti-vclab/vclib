@@ -10,10 +10,12 @@
 
 #include "trackball_event_drawer.h"
 
+#include <vclib/render/drawable/drawable_axis.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
+#include <vclib/render/settings/viewer_settings.h>
 #include <vclib/space/core/color.h>
 
 #include <memory>
@@ -31,12 +33,6 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
-public:
-    enum class BuiltInEditors { AXIS = 0, COUNT };
-
-private:
-    friend Editor<AbstractViewerDrawer>;
-
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
 
@@ -45,7 +41,20 @@ private:
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
+    /**
+     * @brief The background color of the canvas.
+     */
+    Color mBackgroundColor = Color::DarkGray;
+
+    DrawableAxis mDrawAxis;
+
+    std::function<void(void)> mCustomShortcutToggleAxisCallback = [this]() {
+        toggleAxisVisibility();
+    };
+
 protected:
+    ViewerSettings mViewerSettings;
+
     // the list of drawable objects
     // it could be owned by the viewer, or it could be shared with other
     // objects (e.g. the window that contains the viewer along with other
@@ -65,11 +74,6 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        // push built-in editors - the order of the editors in the vector is
-        // important, as it is used to retrieve the editor by its enum value
-        [[maybe_unused]] auto axisEd = pushEditor<AxisEditor>();
-        axisEd->setActive(true);
-        assert(axisEd == mEditors[toUnderlying(BuiltInEditors::AXIS)]);
     }
 
     ~AbstractViewerDrawer() = default;
@@ -78,6 +82,8 @@ public:
     {
         return *mDrawList;
     }
+
+    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
 
     void setDrawableObjectVector(const std::shared_ptr<DrawableObjectVector>& v)
     {
@@ -96,20 +102,39 @@ public:
         fitScene();
     }
 
+    const ViewerSettings& viewerSettings() const { return mViewerSettings; }
+
+    void setViewerSettings(const ViewerSettings& settings)
+    {
+        mViewerSettings = settings;
+    }
+
+    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+
+    std::string panoramaFileName() const { return ""; }
+
+    void setPanorama(const std::string&) {}
+
+    /**
+     * @brief Pushes a new editor of the specified type into the viewer's editor
+     * list.
+     *
+     * The editor is instantiated and initialized with the viewer and drawable
+     * list.
+     *
+     * @tparam ET The template type of the Editor to push.
+     * @param[in] active Whether the editor should be active upon creation.
+     * @return A shared pointer to the newly created editor.
+     */
     template<template<typename> typename ET>
-    auto pushEditor()
+    auto pushEditor(bool active = false)
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
+        editor->setActive(active);
         return editor;
-    }
-
-    std::shared_ptr<EditorType> getEditor(BuiltInEditors editor) const
-    {
-        assert(mEditors[toUnderlying(editor)]);
-        return mEditors[toUnderlying(editor)];
     }
 
     void refreshEditors()
@@ -119,20 +144,134 @@ public:
         }
     }
 
-    uint pushDrawableObject(const DrawableObject& obj)
+    /**
+     * @brief Helper function to add a DrawableObject to the scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
+     *
+     * If you choose to manually manipulate the vector via
+     * `drawableObjectVector()`, you are responsible for calling `init()` on new
+     * elements and `refreshEditors()`.
+     */
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject> &&
+             (!std::is_abstract_v<std::remove_cvref_t<U>>)
+    uint pushDrawableObject(U&& obj)
     {
-        mDrawList->pushBack(obj);
+        mDrawList->pushBack(std::forward<U>(obj));
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
     }
 
-    uint pushDrawableObject(DrawableObject&& obj)
+    /**
+     * @brief Helper function to add a shared_ptr of DrawableObject to the
+     * scene.
+     *
+     * In addition to pushing the object to the underlying vector, this helper
+     * safely calls `init()` on the newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` to update any GUI
+     * components.
+     */
+    uint pushDrawableObject(std::shared_ptr<DrawableObject> obj)
     {
         mDrawList->pushBack(std::move(obj));
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
+    }
+
+    bool removeDrawableObject(uint id)
+    {
+        if (id >= mDrawList->size())
+            return false;
+        mDrawList->erase(id);
+        refreshEditors();
+        requestUpdate();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a DrawableObject at a specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
+     */
+    template<typename U>
+    requires std::derived_from<std::remove_cvref_t<U>, DrawableObject> &&
+             (!std::is_abstract_v<std::remove_cvref_t<U>>)
+    bool insertDrawableObject(uint pos, U&& obj)
+    {
+        if (pos > mDrawList->size())
+            return false;
+        mDrawList->insert(pos, std::forward<U>(obj));
+        mDrawList->at(pos)->init();
+        refreshEditors();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to insert a shared_ptr of DrawableObject at a
+     * specific position.
+     *
+     * Safely calls `init()` on the newly added object and calls
+     * `refreshEditors()`.
+     */
+    bool insertDrawableObject(uint pos, std::shared_ptr<DrawableObject> obj)
+    {
+        if (pos > mDrawList->size())
+            return false;
+        mDrawList->insert(pos, std::move(obj));
+        mDrawList->at(pos)->init();
+        refreshEditors();
+        return true;
+    }
+
+    /**
+     * @brief Helper function to clear all objects from the scene.
+     *
+     * Clears the underlying vector and safely calls `refreshEditors()`.
+     */
+    void clearDrawableObjects()
+    {
+        mDrawList->clear();
+        refreshEditors();
+        requestUpdate();
+    }
+
+    /**
+     * @brief Checks if the axis indicator is currently visible.
+     *
+     * @return true if the axis indicator is visible, false otherwise.
+     */
+    bool isAxisVisible() const { return mDrawAxis.isVisible(); }
+
+    /**
+     * @brief Toggles the visibility of the axis indicator.
+     *
+     * Flips the visibility state of the axis and requests a viewer update.
+     */
+    void toggleAxisVisibility()
+    {
+        mDrawAxis.setVisibility(!mDrawAxis.isVisible());
+        requestUpdate();
+    }
+
+    /**
+     * @brief Sets a custom callback for the axis visibility shortcut.
+     *
+     * By default, pressing 'A' toggles the axis visibility. This method allows
+     * replacing the default behaviour with custom logic (e.g. triggering UI
+     * buttons).
+     *
+     * @param[in] callback A callable invoked when the shortcut key is pressed.
+     */
+    void setShortcutToggleAxisCallback(std::function<void(void)> callback)
+    {
+        mCustomShortcutToggleAxisCallback = callback;
     }
 
     void fitScene()
@@ -157,16 +296,41 @@ public:
         Base::fitView(sceneCenter);
     }
 
+    /**
+     * @brief Retrieves the current background color.
+     * @return The current background color.
+     */
+    const Color& backgroundColor() const { return mBackgroundColor; }
+
+    /**
+     * @brief Sets the background color.
+     * @param[in] color: The new background color.
+     */
+    void setBackgroundColor(const Color& color)
+    {
+        mBackgroundColor = color;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+    }
+
     // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), Color::DarkGray);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
         mDrawList->init();
     }
 
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
+
+        if (mDrawAxis.isVisible()) {
+            DrawObjectSettings settings;
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+            settings.viewId = viewId;
+#endif // VCLIB_RENDER_BACKEND_BGFX
+            mDrawAxis.draw(settings);
+        }
+
         for (const auto& editor : mEditors) {
             if (editor->isActive())
                 editor->draw(viewId);
@@ -194,6 +358,12 @@ public:
             case Key::S:
                 if (modifiers[KeyModifier::CONTROL])
                     DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+                break;
+            case Key::A:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    if (mCustomShortcutToggleAxisCallback)
+                        mCustomShortcutToggleAxisCallback();
+                }
                 break;
             default: break;
             }
@@ -304,9 +474,6 @@ public:
         return block;
     }
 
-protected:
-    DrawableObjectVector& drawableObjectVector() { return *mDrawList; }
-
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
     auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
@@ -388,6 +555,11 @@ protected:
     }
 
     void requestUpdate() { derived()->update(); }
+
+    void setContinuousRedraw(bool enabled)
+    {
+        DRA::DRW::setContinuousRedraw(derived(), enabled);
+    }
 
 private:
     auto* derived() { return static_cast<DRA*>(this); }

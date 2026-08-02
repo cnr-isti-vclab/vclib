@@ -1,0 +1,25 @@
+name: 'Run VCLib Linter'
+description: 'Runs all formatting scripts and clang-format'
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+    - run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake
+        pip install gersemi
+      shell: bash
+    - run: |
+        cd scripts
+        python3 replace_header_guards.py
+        python3 replace_headings.py
+        python3 format_cmake_with_gersemi.py
+      shell: bash
+    - uses: DoozyX/clang-format-lint-action@v0.20
+      with:
+        source: '.'
+        extensions: 'h,cpp'
+        clangFormatVersion: 20
+        inplace: True

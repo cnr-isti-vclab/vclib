@@ -1,0 +1,177 @@
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+
+# This example assumes that vclib is installed and available in the PYTHONPATH.
+
+import vclib as vcl
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
+
+# This example demonstrates various ways to iterate over mesh elements:
+# 1. Basic iteration over vertices and faces
+# 2. Iterating over adjacent elements (vertex-face, face-vertex relationships)
+# 3. Working with polygon meshes and variable topology
+# 4. Computing mesh statistics through iteration
+
+def mesh_iteration():
+    print("=== VCLib Example 002: Mesh Iteration ===\n")
+
+    # /****** Load a test mesh ******/
+
+    print("=== Loading Test Mesh ===")
+
+    mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_tri.ply")
+
+    print(f"Loaded mesh with {mesh.vertex_count()} vertices and {mesh.face_count()} faces")
+
+    # /****** Basic iteration ******/
+
+    print("\n=== Basic Iteration ===")
+
+    # Iterate with range-based for loop
+    print("First 3 vertex positions:")
+    count = 0
+    for vertex in mesh.vertices():
+        if count >= 3:
+            break
+        print(f"  Vertex {vertex.index()}: {vertex.position()}")
+        count += 1
+
+    # Iterate with traditional for loop using indices
+    print("\nFirst 3 faces (using indices):")
+    for i in range(min(3, mesh.face_count())):
+        face = mesh.face(i)
+        print(f"  Face {i}: vertices [", end="")
+        for j in range(3):
+            print(face.vertex(j).index(), end="")
+            if j < 2:
+                print(", ", end="")
+        print("]")
+
+    # /****** Face-vertex iteration ******/
+
+    print("\n=== Face-Vertex Iteration ===")
+
+    # Iterate over vertices of each face
+    count = 0
+    for face in mesh.faces():
+        if count >= 3:
+            break
+        print(f"Face {face.index()} vertices:")
+
+        for i in range(3):
+            vertex = face.vertex(i)
+            print(f"    Vertex {vertex.index()}: {vertex.position()}")
+
+        print()
+        count += 1
+
+    # /****** Adjacency-based iteration ******/
+
+    print("\n=== Adjacency-Based Iteration ===")
+
+    # Enable adjacency information
+    mesh.enable_per_vertex_adjacent_faces()
+    vcl.update_per_vertex_adjacent_faces(mesh)
+
+    # Iterate over faces adjacent to each vertex
+    count = 0
+    for vertex in mesh.vertices():
+        if count >= 3:
+            break
+        print(f"Vertex {vertex.index()} is adjacent to faces: ", end="")
+        for face in vertex.adj_faces():
+            if face is not None:
+                print(f"{face.index()} ", end="")
+            else:
+                print("null ", end="")
+        print()
+        count += 1
+
+    # Enable face-to-face adjacency
+    mesh.enable_per_face_adjacent_faces()
+    vcl.update_per_face_adjacent_faces(mesh)
+
+    print("\nFace adjacencies:")
+    count = 0
+    for face in mesh.faces():
+        if count >= 3:
+            break
+        print(f"Face {face.index()} is adjacent to faces: ", end="")
+        for i in range(3):
+            adj_face = face.adj_face(i)
+            if adj_face is not None:
+                print(f"{adj_face.index()} ", end="")
+            else:
+                print("null ", end="")
+        print()
+        count += 1
+
+    # /****** Polygon mesh iteration ******/
+
+    print("\n=== Polygon Mesh Iteration ===")
+
+    # Load a polygon mesh
+    poly_mesh = vcl.load_poly_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/cube_poly.ply")
+
+    print(f"Loaded polygon mesh with {poly_mesh.vertex_count()} vertices and {poly_mesh.face_count()} faces")
+
+    # Iterate over polygon faces (variable number of vertices)
+    for face in poly_mesh.faces():
+        print(f"Polygon face {face.index()} has {face.vertex_count()} vertices: ", end="")
+        for i in range(face.vertex_count()):
+            print(f"{face.vertex(i).index()} ", end="")
+        print()
+
+        # Calculate polygon centroid
+        centroid = vcl.Point3(0, 0, 0)
+        for i in range(face.vertex_count()):
+            centroid += face.vertex(i).position()
+        centroid /= face.vertex_count()
+        print(f"  Centroid: {centroid}")
+
+    # /****** Computing mesh statistics through iteration ******/
+
+    print("\n=== Mesh Statistics ===")
+
+    # Compute bounding box
+    if mesh.vertex_count() > 0:
+        min_point = mesh.vertex(0).position()
+        max_point = mesh.vertex(0).position()
+
+        for vertex in mesh.vertices():
+            min_point = vcl.min(min_point, vertex.position())
+            max_point = vcl.max(max_point, vertex.position())
+
+        print(f"Mesh bounding box: [{min_point}] to [{max_point}]")
+
+        # Compute average edge length
+        total_edge_length = 0.0
+        edge_count = mesh.face_count() * 3
+
+        for face in mesh.faces():
+            for i in range(3):
+                v1 = face.vertex(i).position()
+                v2 = face.vertex((i + 1) % 3).position()
+                total_edge_length += (v2 - v1).norm()
+
+        avg_edge_length = total_edge_length / edge_count
+        print(f"Average edge length: {avg_edge_length}")
+
+    # /****** Performance considerations ******/
+
+    print("\n=== Performance Notes ===")
+    print("- Range-based for loops are generally the most readable")
+    print("- Index-based access can be faster for random access patterns")
+    print("- Python iteration is optimized for readability and ease of use")
+
+
+if __name__ == "__main__":
+    mesh_iteration()

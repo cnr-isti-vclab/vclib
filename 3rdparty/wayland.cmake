@@ -7,17 +7,13 @@
 
 find_package(Wayland QUIET)
 
-if(LINUX AND VCLIB_RENDER_WITH_WAYLAND)
+if(LINUX)
     if(Wayland_FOUND)
         message(STATUS "- Wayland - using system-provided library")
 
         add_library(vclib-3rd-wayland INTERFACE)
 
         target_link_libraries(vclib-3rd-wayland INTERFACE Wayland::Wayland)
-        target_compile_definitions(
-            vclib-3rd-wayland
-            INTERFACE VCLIB_RENDER_WITH_WAYLAND
-        )
 
         list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-wayland)
     else()

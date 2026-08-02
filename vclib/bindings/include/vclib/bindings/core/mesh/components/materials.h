@@ -17,8 +17,8 @@
 
 namespace vcl::bind {
 
-template<MeshConcept MeshType>
-void initMaterials(pybind11::class_<MeshType>& c)
+template<MeshConcept MeshType, typename... Options>
+void initMaterials(pybind11::class_<MeshType, Options...>& c)
 {
     namespace py = pybind11;
     using namespace py::literals;

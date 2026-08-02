@@ -12,14 +12,20 @@
 #include "context/font_manager.h"
 #include "context/program_manager.h"
 
+#include <vclib/render/window_managers.h>
+
 #include <bgfx/bgfx.h>
 
 #include <mutex>
 #include <set>
+#include <vector>
+#include <functional>
 
 #define BGFX_INVALID_VIEW 65535
 
 namespace vcl {
+
+class Uniform;
 
 class Context
 {
@@ -28,6 +34,8 @@ class Context
     // otherwise (null window handle) means that the context is headless (no UI)
     void* mWindowHandle  = nullptr;
     void* mDisplayHandle = nullptr;
+    /// @brief Flag indicating whether the context is running in headless mode
+    bool mIsHeadless = false;
 
     // ordered set of views (high priority from top, low priority at the
     // bottom)
@@ -45,6 +53,8 @@ class Context
     // singleton
     inline static Context*   sInstancePtr = nullptr;
     inline static std::mutex sMutex;
+
+    std::vector<std::reference_wrapper<vcl::Uniform>> mStaticUniforms;
 
 public:
     // default values, used for optional parameters
@@ -65,14 +75,16 @@ public:
      * @return The context instance.
      */
     static Context& instance(
-        void* windowHandle  = nullptr,
-        void* displayHandle = nullptr);
+        void*                       windowHandle  = nullptr,
+        void*                       displayHandle = nullptr,
+        vcl::NativeWindowHandleType windowType =
+            vcl::NativeWindowHandleType::DEFAULT);
 
     static void init(
-        void* windowHandle  = nullptr,
-        void* displayHandle = nullptr);
-
-    static void initHeadless();
+        void*                       windowHandle  = nullptr,
+        void*                       displayHandle = nullptr,
+        vcl::NativeWindowHandleType windowType =
+            vcl::NativeWindowHandleType::DEFAULT);
 
     static bool isInitialized();
 
@@ -157,6 +169,17 @@ public:
     ProgramManager& programManager();
 
     /**
+     * @brief Registers a static uniform wrapper with the context.
+     *
+     * The context takes ownership of the reference and guarantees its cleanup
+     * before the context shutdown, avoiding crashes or leaks during static
+     * de-initialization.
+     *
+     * @param[in] u: A reference to the uniform to register.
+     */
+    void registerStaticUniform(vcl::Uniform& u);
+
+    /**
      * @brief Given a template type T, allocate an array of T of given size,
      * and return a pair containing the pointer to the allocated buffer and
      * a release function that can be used to free the buffer.
@@ -178,7 +201,10 @@ public:
     }
 
 private:
-    Context(void* windowHandle, void* displayHandle);
+    Context(
+        void*                       windowHandle,
+        void*                       displayHandle,
+        vcl::NativeWindowHandleType windowType);
 
     ~Context();
 

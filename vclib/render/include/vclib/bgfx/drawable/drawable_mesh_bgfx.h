@@ -78,6 +78,23 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
+    void computeSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        if constexpr (!HasFaces<MeshType>)
+            if (params.mode.primitive == SelectionPrimitive::FACE)
+                return;
+
+        mMRB.computeSelection(params, modelMatrix().template cast<float>());
+    }
+
+    bool isSelectionReadbackPending() const override
+    {
+        return mMRB.isSelectionReadbackPending();
+    }
+
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -95,11 +112,17 @@ public:
         setRenderSettings(mMRS);
     }
 
+    void updateRenderSettingsCapabilities() override
+    {
+        mMRS.setRenderCapabilityFrom(*this);
+    }
+
     void setRenderSettings(const MeshRenderSettings& rs) override
     {
         AbstractDrawableMesh::setRenderSettings(rs);
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
+        mMRB.updatePointsSettings(rs);
     }
 
     uint vertexCount() const override { return MeshType::vertexCount(); }
@@ -150,6 +173,13 @@ public:
         }
     }
 
+    uint selectedVertexCount() const override
+    {
+        return mMRB.selectedVertexCount();
+    }
+
+    uint selectedFaceCount() const override { return mMRB.selectedFaceCount(); }
+
     // DrawableObject implementation
 
     void init() override {}
@@ -173,11 +203,10 @@ public:
         MeshRenderSettingsUniforms::set(mMRS);
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
-            const PBRViewerSettings&   pbrSettings = settings.pbrSettings;
-            const DrawableEnvironment* env         = settings.environment;
+            const DrawableEnvironment* env = settings.environment;
 
-            bool iblEnabled = pbrSettings.imageBasedLighting &&
-                              env != nullptr && env->canDraw();
+            bool iblEnabled =
+                settings.imageBasedLighting && env != nullptr && env->canDraw();
 
             for (uint i = 0; i < mMRB.triangleChunksNumber(); ++i) {
                 // Bind textures before vertex buffers!!
@@ -187,7 +216,7 @@ public:
                 // tStage is the first stage from which we can bind new 2D
                 // textures
                 uint tStage = mMRB.bindTextures(mMRS, i, *this);
-                if (pbrSettings.pbrMode && iblEnabled) {
+                if (settings.renderMode == RenderMode::PBR && iblEnabled) {
                     using enum DrawableEnvironment::TextureType;
                     env->bindTexture(BRDF_LUT, tStage);
 
@@ -201,12 +230,12 @@ public:
                 /* BUFFERS */
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers(mMRS, i);
+                mMRB.bindSelectedFacesBuffer();
 
                 /* UNIFORMS */
                 DrawableMeshUniforms::setFirstChunkIndex(
                     mMRB.triangleChunk(i).startIndex);
-                uint64_t materialState =
-                    updateAndBindMaterialUniforms(i, iblEnabled);
+                uint64_t materialState = updateAndBindMaterialUniforms(i);
 
                 bindUniforms();
 
@@ -214,20 +243,23 @@ public:
 
                 /* STATE */
                 uint64_t surfaceState = state;
-                if (pbrSettings.pbrMode) {
+                if (settings.renderMode == RenderMode::PBR) {
                     surfaceState |= materialState;
                 }
 
                 bgfx::setState(surfaceState);
 
                 /* SUBMIT */
-                if (pbrSettings.pbrMode) {
+                switch (settings.renderMode) {
+                case RenderMode::PBR:
                     bgfx::submit(
                         settings.viewId,
                         pm.getProgram<DRAWABLE_MESH_SURFACE_PBR>());
-                }
-                else {
+                    break;
+                case RenderMode::CLASSIC:
+                default:
                     bgfx::submit(settings.viewId, surfaceProgramSelector());
+                    break;
                 }
             }
         }
@@ -245,33 +277,13 @@ public:
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (!Context::instance().supportsCompute()) {
-                // 1 px vertices
-                mMRB.bindVertexBuffers(mMRS);
-                bindUniforms();
+            bgfx::setTransform(model.data());
+            mMRB.drawPoints(settings.additionalViewIds[1]);
+        }
 
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.additionalViewIds[1],
-                    pm.getProgram<DRAWABLE_MESH_POINTS>());
-            }
-            else {
-                // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
-
-                // render splats
-                mMRB.bindVertexQuadBuffer();
-                mMRB.bindPointsVertexColorBuffer();
-                bindUniforms();
-
-                bgfx::setState(state);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.additionalViewIds[1],
-                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE>());
+        if (mMRB.selectionReadback(*this)) {
+            if (mOnSelectionUpdated) {
+                mOnSelectionUpdated();
             }
         }
     }
@@ -313,46 +325,9 @@ public:
         // TODO: manage ID for edges
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
-            if (!Context::instance().supportsCompute()) {
-                // 1 px vertices
-                mMRB.bindVertexBuffers(mMRS);
-
-                DrawableMeshUniforms::setMeshId(settings.objectId);
-                bindUniforms();
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.viewId, pm.getProgram<DRAWABLE_MESH_POINTS_ID>());
-            }
-            else {
-                // generate splats (quads) lazy
-                mMRB.computeQuadVertexBuffers(*this, settings.viewId);
-
-                // render splats
-                mMRB.bindVertexQuadBuffer();
-                DrawableMeshUniforms::setMeshId(settings.objectId);
-                bindUniforms();
-
-                bgfx::setState(state);
-                bgfx::setTransform(model.data());
-
-                bgfx::submit(
-                    settings.viewId,
-                    pm.getProgram<DRAWABLE_MESH_POINTS_INSTANCE_ID>());
-            }
+            bgfx::setTransform(model.data());
+            mMRB.drawPointsId(settings.viewId, settings.objectId);
         }
-    }
-
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableMeshBGFX>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableMeshBGFX>(std::move(*this));
     }
 
     std::string& name() override { return MeshType::name(); }
@@ -374,9 +349,7 @@ protected:
      * @param chunkNumber
      * @return the render state associated to the material
      */
-    uint64_t updateAndBindMaterialUniforms(
-        uint chunkNumber,
-        bool imageBasedLighting) const
+    uint64_t updateAndBindMaterialUniforms(uint chunkNumber) const
     {
         static const Material DEFAULT_MATERIAL;
 
@@ -384,11 +357,7 @@ protected:
 
         if constexpr (!HasMaterials<MeshType>) {
             // fallback to default material
-            MaterialUniforms::set(
-                DEFAULT_MATERIAL,
-                isPerVertexColorAvailable(*this),
-                isPerVertexTangentAvailable(*this),
-                imageBasedLighting);
+            MaterialUniforms::set(DEFAULT_MATERIAL);
         }
         else {
             using enum Material::AlphaMode;
@@ -397,18 +366,10 @@ protected:
 
             if (materialId == UINT_NULL) {
                 // fallback to default material
-                MaterialUniforms::set(
-                    DEFAULT_MATERIAL,
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(DEFAULT_MATERIAL);
             }
             else {
-                MaterialUniforms::set(
-                    MeshType::material(materialId),
-                    isPerVertexColorAvailable(*this),
-                    isPerVertexTangentAvailable(*this),
-                    imageBasedLighting);
+                MaterialUniforms::set(MeshType::material(materialId));
 
                 // set the state according to the material
                 if (!MeshType::material(materialId).doubleSided()) {
@@ -427,73 +388,65 @@ protected:
 
     bgfx::ProgramHandle surfaceProgramSelector() const
     {
-        using enum VertFragProgram;
+        using enum MeshRenderInfo::Surface;
 
-        ProgramManager& pm = Context::instance().programManager();
+        uint shading   = 0;
+        uint color     = 0;
+        uint selection = 0;
 
-        static const std::array<VertFragProgram, 24> surfacePrograms = {
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NONE_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_SMOOTH_COLOR_TEX_WEDGE,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_MESH,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_FACE,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_USER,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_VERTEX,
-            DRAWABLE_MESH_SURFACE_SHADING_NORMAL_MAP_COLOR_TEX_WEDGE};
-
-        uint shading = 0;
-        uint color   = 0;
-
-        const uint N_SHADING_TYPES = 4;
-        const uint N_COLOR_TYPES   = 6;
-
-        {
-            using enum MeshRenderInfo::Surface;
-            if (mMRS.isSurface(SHADING_FLAT)) {
-                shading = 1;
-            }
-            if (mMRS.isSurface(SHADING_SMOOTH)) {
-                shading = 2;
-            }
-            if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
-                shading = 3;
-            }
-            if (mMRS.isSurface(COLOR_MESH)) {
-                color = 1;
-            }
-            if (mMRS.isSurface(COLOR_FACE)) {
-                color = 2;
-            }
-            if (mMRS.isSurface(COLOR_USER)) {
-                color = 3;
-            }
-            if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
-                color = 4;
-            }
-            if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
-                color = 5;
-            }
+        if (mMRS.isSurface(SHADING_FLAT)) {
+            shading = 0;
+        }
+        if (mMRS.isSurface(SHADING_NONE)) {
+            shading = 1;
+        }
+        if (mMRS.isSurface(SHADING_NORMAL_MAP)) {
+            shading = 2;
+        }
+        if (mMRS.isSurface(SHADING_SMOOTH)) {
+            shading = 3;
         }
 
-        uint program = shading * N_COLOR_TYPES + color;
+        if (mMRS.isSurface(COLOR_FACE)) {
+            color = 0;
+        }
+        if (mMRS.isSurface(COLOR_MESH)) {
+            color = 1;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX_TEX)) {
+            color = 2;
+        }
+        if (mMRS.isSurface(COLOR_WEDGE_TEX)) {
+            color = 3;
+        }
+        if (mMRS.isSurface(COLOR_USER)) {
+            color = 4;
+        }
+        if (mMRS.isSurface(COLOR_VERTEX)) {
+            color = 5;
+        }
 
-        return pm.getProgram(surfacePrograms[program]);
+        if (!mMRS.isSurface(SELECTION)) {
+            selection = 1;
+        }
+
+        constexpr uint N_SHADING_MODES   = 4;
+        constexpr uint N_COLOR_MODES     = 6;
+        constexpr uint N_SELECTION_MODES = 2;
+
+        // the first shader of all the combinations
+        uint base = toUnderlying(
+            VertFragProgram::
+                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
+
+        uint offset =
+            linearizeIndex<N_SHADING_MODES, N_COLOR_MODES, N_SELECTION_MODES>(
+                shading, color, selection);
+
+        uint program = base + offset;
+
+        ProgramManager& pm = Context::instance().programManager();
+        return pm.getProgram(VertFragProgram(program));
     }
 };
 

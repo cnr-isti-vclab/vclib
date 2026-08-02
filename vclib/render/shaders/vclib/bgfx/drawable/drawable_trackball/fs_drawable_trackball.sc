@@ -9,7 +9,6 @@ $input v_normal, v_color
 
 #include <vclib/bgfx/drawable/drawable_trackball/uniforms.sh>
 
-
 void main()
 {
     vec3 emission = vec3(0.5, 0.5, 0.5);

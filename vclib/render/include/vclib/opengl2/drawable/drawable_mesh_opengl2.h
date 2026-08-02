@@ -109,6 +109,11 @@ public:
 
     // AbstractDrawableMesh implementation
 
+    void updateRenderSettingsCapabilities() override
+    {
+        mMRS.setRenderCapabilityFrom(*this);
+    }
+
     void updateBuffers(
         MRI::BuffersBitSet buffersToUpdate = MRI::BUFFERS_ALL) override
     {
@@ -236,16 +241,6 @@ public:
                 }
             }
         }
-    }
-
-    std::shared_ptr<DrawableObject> clone() const& override
-    {
-        return std::make_shared<DrawableMeshOpenGL2>(*this);
-    }
-
-    std::shared_ptr<DrawableObject> clone() && override
-    {
-        return std::make_shared<DrawableMeshOpenGL2>(std::move(*this));
     }
 
     std::string& name() override { return MeshType::name(); }

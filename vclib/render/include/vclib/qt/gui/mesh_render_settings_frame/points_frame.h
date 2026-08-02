@@ -34,6 +34,8 @@ public:
 
     void updateFrameFromSettings() override;
 
+    QCheckBox* visibilityCheckBox() override;
+
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
 
@@ -48,6 +50,8 @@ private slots:
     void onColorComboBoxChanged(int index);
     void onUserColorChanged(const QColor& c);
     void onSizeChanged(int value);
+    void onSelectionVisibilityChanged(Qt::CheckState arg1);
+    void onSelectionColorChanged(const QColor& c);
 };
 
 } // namespace vcl::qt

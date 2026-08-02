@@ -7,7 +7,7 @@
 
 #include "mesh_basics.h"
 
-#include <default_viewer.h>
+#include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
@@ -16,6 +16,6 @@ int main(int argc, char** argv)
     vcl::updatePerVertexAndFaceNormals(mesh0);
     vcl::updatePerVertexAndFaceNormals(mesh1);
 
-    return showMeshesOnDefaultViewer(
+    return vcl::showOnMeshViewer(
         argc, argv, std::move(mesh0), std::move(mesh1));
 }

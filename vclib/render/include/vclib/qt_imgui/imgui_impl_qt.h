@@ -9,7 +9,7 @@
 #define VCL_QT_IMGUI_IMGUI_IMPL_QT_H
 
 #include <QWidget>
-#include <imgui.h>
+#include <imgui/imgui.h>
 #ifndef IMGUI_DISABLE
 
 IMGUI_IMPL_API bool ImGui_ImplQt_Init(QWidget* widget);

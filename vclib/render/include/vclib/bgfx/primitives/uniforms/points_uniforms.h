@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_H
 #define VCL_BGFX_PRIMITIVES_UNIFORMS_POINTS_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/space/core.h>
 
 #include <array>
@@ -31,21 +31,29 @@ class PointsUniforms
     // .w = unused
     inline static std::array<float, 4> sPointsSettings =
         {1.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform sPointsSettingsUniform;
+    inline static StaticUniform sPointsSettingsUniform {
+        "u_pointsSettings",
+        bgfx::UniformType::Vec4};
+
+    inline static std::array<float, 4> sSelectionSettings =
+        {0.0f, 0.0f, 0.0f, 0.0f};
+    inline static StaticUniform sSelectionSettingsUniform {
+        "u_pointsSelectionSettings",
+        bgfx::UniformType::Vec4};
 
 public:
     PointsUniforms() = delete;
 
     /**
      * @brief Sets the width of the points.
-     * @param width The point width in pixels.
+     * @param[in] width: The point width in pixels.
      */
     static void setWidth(float width) { sPointsSettings[0] = width; }
 
     /**
      * @brief Sets the general color for points.
-     * @param color The uniform color to apply when per-vertex colors are not
-     * used.
+     * @param[in] color: The uniform color to apply when per-vertex colors are
+     * not used.
      */
     static void setGeneralColor(const vcl::Color& color)
     {
@@ -54,11 +62,29 @@ public:
 
     /**
      * @brief Sets the depth offset for points.
-     * @param depthOffset The depth offset value.
+     * @param[in] depthOffset: The depth offset value.
      */
     static void setDepthOffset(float depthOffset)
     {
         sPointsSettings[2] = depthOffset;
+    }
+
+    /**
+     * @brief Sets the object ID for points.
+     * @param[in] id: The object ID.
+     */
+    static void setId(uint32_t id)
+    {
+        sPointsSettings[3] = std::bit_cast<float>(id);
+    }
+
+    /**
+     * @brief Sets the selection color for points.
+     * @param[in] color: The uniform selection color.
+     */
+    static void setSelectionColor(const vcl::Color& color)
+    {
+        sSelectionSettings[0] = std::bit_cast<float>(color.abgr());
     }
 
     /**
@@ -68,12 +94,8 @@ public:
      */
     static void bind()
     {
-        // Lazy initialization to avoid creating uniforms before bgfx is
-        // initialized.
-        if (!sPointsSettingsUniform.isValid())
-            sPointsSettingsUniform =
-                Uniform("u_pointsSettings", bgfx::UniformType::Vec4);
         sPointsSettingsUniform.bind(sPointsSettings.data());
+        sSelectionSettingsUniform.bind(sSelectionSettings.data());
     }
 };
 

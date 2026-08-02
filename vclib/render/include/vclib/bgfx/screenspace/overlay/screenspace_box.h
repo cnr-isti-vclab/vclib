@@ -127,7 +127,7 @@ public:
         mTriIndexBuf.bind();
 
         mPosBuf.update(0, bgfx::copy(&temp[0], 8 * sizeof(float)));
-        mPosBuf.bind(VCL_MRB_VERTEX_POSITION_STREAM);
+        mPosBuf.bind(0);
 
         ScreenSpaceBoxUniforms::setColor(mColor);
         ScreenSpaceBoxUniforms::bind();

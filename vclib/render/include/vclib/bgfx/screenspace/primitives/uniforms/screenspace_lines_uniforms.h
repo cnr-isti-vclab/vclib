@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_H
 #define VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_LINES_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 
 #include <vclib/space/core.h>
 
@@ -25,7 +25,9 @@ class ScreenSpaceLinesUniforms
     // .w = unused
     inline static std::array<float, 4> sLinesSettings = {0.f, 0.f, 0.f, 0.f};
 
-    inline static Uniform sLinesSettingsUniform;
+    inline static StaticUniform sLinesSettingsUniform {
+        "u_linesSettings",
+        bgfx::UniformType::Vec4};
 
 public:
     ScreenSpaceLinesUniforms() = delete;
@@ -37,15 +39,7 @@ public:
         sLinesSettings[1] = std::bit_cast<float>(c.abgr());
     }
 
-    static void bind()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sLinesSettingsUniform.isValid())
-            sLinesSettingsUniform =
-                Uniform("u_linesSettings", bgfx::UniformType::Vec4);
-        sLinesSettingsUniform.bind(sLinesSettings.data());
-    }
+    static void bind() { sLinesSettingsUniform.bind(sLinesSettings.data()); }
 };
 
 } // namespace vcl

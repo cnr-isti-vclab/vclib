@@ -135,7 +135,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                 "mesh"_a,
                 "matrix"_a,
                 "remove_scaling_from_matrix"_a = true,
-                "log"_a                        = py::cast(vcl::nullLogger));
+                "log"_a                        = py::cast(&vcl::nullLogger));
 
             m.def(
                 "multiply_per_vertex_normals_by_matrix",
@@ -149,7 +149,7 @@ void initUpdateAlgorithms(pybind11::module& m)
                 "mesh"_a,
                 "matrix"_a,
                 "remove_scaling_from_matrix"_a = true,
-                "log"_a                        = py::cast(vcl::nullLogger));
+                "log"_a                        = py::cast(&vcl::nullLogger));
 
             // quality.h
 
@@ -406,7 +406,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             "algorithm"_a           = PrincipalCurvatureAlgorithm::TAUBIN95,
             "radius"_a              = -1.0,
             "montecarlo_sampling"_a = true,
-            "log"_a                 = py::cast(vcl::nullLogger));
+            "log"_a                 = py::cast(&vcl::nullLogger));
 
         // normal.h
 
@@ -436,7 +436,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             "mesh"_a,
             "matrix"_a,
             "remove_scaling_from_matrix"_a = true,
-            "log"_a                        = py::cast(vcl::nullLogger));
+            "log"_a                        = py::cast(&vcl::nullLogger));
 
         m.def(
             "multiply_per_face_normals_by_matrix",
@@ -450,7 +450,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             "mesh"_a,
             "matrix"_a,
             "remove_scaling_from_matrix"_a = true,
-            "log"_a                        = py::cast(vcl::nullLogger));
+            "log"_a                        = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_face_normals",
@@ -461,7 +461,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals",
@@ -472,7 +472,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals_from_face_normals",
@@ -484,7 +484,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_vertex_and_face_normals",
@@ -495,7 +495,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals_angle_weighted",
@@ -507,7 +507,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
             "update_per_vertex_normals_nelson_max_weighted",
@@ -519,7 +519,7 @@ void initUpdateAlgorithms(pybind11::module& m)
             },
             "mesh"_a,
             "normalize"_a = true,
-            "log"_a       = py::cast(vcl::nullLogger));
+            "log"_a       = py::cast(&vcl::nullLogger));
 
         // quality.h
 

@@ -7,24 +7,25 @@
 
 #include <vclib/bgfx/context.h>
 
-#include <vclib/base/base.h>
 #include <vclib/bgfx/system/native_window_handle.h>
 
-#include <iostream>
+#include <vclib/render/application.h>
+
+#include <vclib/base.h>
+
+#include <vclib/bgfx/uniform.h>
 
 namespace vcl {
 
-void Context::init(void* windowHandle, void* displayHandle)
+void Context::init(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
 {
     std::lock_guard<std::mutex> lock(sMutex);
     if (sInstancePtr == nullptr) {
-        sInstancePtr = new Context(windowHandle, displayHandle);
+        sInstancePtr = new Context(windowHandle, displayHandle, windowType);
     }
-}
-
-void Context::initHeadless()
-{
-    init(nullptr, nullptr);
 }
 
 bool Context::isInitialized()
@@ -102,7 +103,7 @@ void Context::setDebugVerbosity(bool verbose)
 
 bool Context::isHeadless() const
 {
-    return mWindowHandle == nullptr;
+    return mIsHeadless;
 }
 
 /**
@@ -149,7 +150,7 @@ void Context::releaseViewId(bgfx::ViewId viewId)
 
 bool Context::isDefaultWindow(void* windowHandle) const
 {
-    return mWindowHandle == windowHandle;
+    return mWindowHandle != nullptr && mWindowHandle == windowHandle;
 }
 
 bool Context::isValidViewId(bgfx::ViewId viewId) const
@@ -220,8 +221,6 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
     const bool defaultWindow =
         (mWindowHandle != nullptr) && (winId == mWindowHandle);
 
-    // if the context is headless, the framebuffer is always offscreen
-    assert(!isHeadless() || offscreen);
     // TODO: eventually test the behavior with a headless context
 
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
@@ -295,22 +294,33 @@ ProgramManager& Context::programManager()
     return *mProgramManager;
 }
 
-Context::Context(void* windowHandle, void* displayHandle)
+void Context::registerStaticUniform(vcl::Uniform& u)
 {
-    static const bool forceWindow = false;
+    std::lock_guard<std::mutex> lock(sMutex);
+    mStaticUniforms.push_back(std::ref(u));
+}
 
+Context::Context(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
+{
     if (windowHandle == nullptr) {
-        // Headless context
-        if (forceWindow) {
-            std::cerr << "WARNING: The first window used to create the bgfx "
-                         "context is a dummy window. This is not recommended."
-                      << std::endl;
-            std::cerr
-                << "Be sure to pass a valid window handle when requesting the "
-                   "context instance for the first time."
-                << std::endl;
-            mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+        // Headless context: initialized when no window handle is provided
+        mIsHeadless = true;
+#ifdef __APPLE__
+        // macOS requires a window to initialize bgfx, so we create a dummy 1x1
+        // hidden window
+        mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+#else
+        mWindowHandle  = nullptr;
+        mDisplayHandle = displayHandle;
+#ifdef __linux__
+        if (mDisplayHandle == nullptr) {
+            mDisplayHandle = vcl::getDisplayId();
         }
+#endif
+#endif
     }
     else {
 #ifdef __linux__
@@ -320,27 +330,38 @@ Context::Context(void* windowHandle, void* displayHandle)
         mDisplayHandle = displayHandle;
     }
 #ifdef __APPLE__
-    if (!isHeadless()) {
-        bgfx::renderFrame(); // needed for macos
-    }
-#endif // __APPLE__
+    bgfx::renderFrame(); // needed for macos
+#endif                   // __APPLE__
 
     bgfx::Init init;
     init.platformData.nwh = mWindowHandle;
     init.type             = sRenderType;
     init.platformData.ndt = mDisplayHandle;
-#ifdef VCLIB_RENDER_WITH_WAYLAND
-    init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
-#endif
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = sResetFlags;
-    init.callback          = &mCallBack;
-    bgfx::init(init);
-
-    if (windowHandle == nullptr) {
-        vcl::closeWindow(mWindowHandle, mDisplayHandle);
+    switch (windowType) {
+    case vcl::NativeWindowHandleType::WAYLAND:
+        init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
+        break;
+    case vcl::NativeWindowHandleType::DEFAULT:
+    default:
+        init.platformData.type = bgfx::NativeWindowHandleType::Default;
+        break;
     }
+    if (mIsHeadless) {
+#ifdef __APPLE__
+        init.resolution.width  = 1;
+        init.resolution.height = 1;
+#else
+        init.resolution.width  = 0;
+        init.resolution.height = 0;
+#endif
+    }
+    else {
+        init.resolution.width  = 1;
+        init.resolution.height = 1;
+    }
+    init.resolution.reset = sResetFlags;
+    init.callback         = &mCallBack;
+    bgfx::init(init);
 
     // insert view ids in the stack
     uint mv = bgfx::getCaps()->limits.maxViews;
@@ -360,13 +381,20 @@ Context::~Context()
 {
     delete mFontManager;
     delete mProgramManager;
+    for (auto& uRef : mStaticUniforms) {
+        uRef.get().destroy();
+    }
+    mStaticUniforms.clear();
     bgfx::shutdown();
 }
 
-Context& Context::instance(void* windowHandle, void* displayHandle)
+Context& Context::instance(
+    void*                       windowHandle,
+    void*                       displayHandle,
+    vcl::NativeWindowHandleType windowType)
 {
-    if (sInstancePtr == nullptr) {
-        Context::init(windowHandle, displayHandle);
+    if (!sInstancePtr) {
+        Context::init(windowHandle, displayHandle, windowType);
     }
     return *sInstancePtr;
 }

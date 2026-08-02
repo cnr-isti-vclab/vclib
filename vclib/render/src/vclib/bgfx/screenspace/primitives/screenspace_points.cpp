@@ -148,25 +148,21 @@ bgfx::ProgramHandle ScreenSpacePoints::screenspacePointsProgramSelector() const
 {
     using enum VertFragProgram;
 
-    Context&        ctx = Context::instance();
-    ProgramManager& pm  = ctx.programManager();
+    constexpr uint N_COLOR_MODES = 2;
+    constexpr uint N_SHAPE_MODES = 2;
 
-    if (mColorSetting == ColorSetting::PER_VERTEX) {
-        if (mShape == Shape::SQUARE) {
-            return pm.getProgram<SCREENSPACE_POINTS_PVC_SQ>();
-        }
-        else {
-            return pm.getProgram<SCREENSPACE_POINTS_PVC_CIR>();
-        }
-    }
-    else {
-        if (mShape == Shape::SQUARE) {
-            return pm.getProgram<SCREENSPACE_POINTS_GC_SQ>();
-        }
-        else {
-            return pm.getProgram<SCREENSPACE_POINTS_GC_CIR>();
-        }
-    }
+    uint colorMode = toUnderlying(mColorSetting);
+    uint shapeMode = toUnderlying(mShape);
+
+    uint base = toUnderlying(SCREENSPACE_POINTS_COLOR_GENERAL_SHAPE_SQUARE);
+
+    uint offset =
+        linearizeIndex<N_COLOR_MODES, N_SHAPE_MODES>(colorMode, shapeMode);
+
+    uint program = base + offset;
+
+    ProgramManager& pm = Context::instance().programManager();
+    return pm.getProgram(VertFragProgram(program));
 }
 
 } // namespace vcl

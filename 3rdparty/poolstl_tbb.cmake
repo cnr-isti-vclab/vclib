@@ -20,7 +20,7 @@ if(UNIX)
                 INTERFACE TBB::tbb Threads::Threads
             )
 
-            list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tbb)
+            list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-tbb)
         else()
             message(STATUS "- TBB - not found, skipping")
         endif()
@@ -51,8 +51,8 @@ if(
         target_compile_definitions(
             vclib-3rd-poolstl
             INTERFACE
-                -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE
-                -DPOOLSTL_STD_SUPPLEMENT_FORCE
+                $<BUILD_INTERFACE:POOLSTL_STD_SUPPLEMENT_NO_INCLUDE>
+                $<BUILD_INTERFACE:POOLSTL_STD_SUPPLEMENT_FORCE>
         )
     endif()
 
