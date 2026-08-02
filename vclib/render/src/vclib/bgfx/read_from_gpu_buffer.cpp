@@ -101,6 +101,8 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
     const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
     if (target == Target::DEPTH)
         mReadData = FloatData(pixelCount);
+    else if (target == Target::ID)
+        mReadData = ByteData(pixelCount * 8); // 8 bytes for 64-bit ID
     else
         mReadData = ByteData(pixelCount * 4);
 
@@ -113,11 +115,27 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
                                  clearColor.rgba();
 
     // Create the offscreen framebuffer
-    mOffscreenFbh.create(
-        uint16_t(size.x()),
-        uint16_t(size.y()),
-        offscreenColorFormat(),
-        offscreenDepthFormat());
+    if (target == Target::ID) {
+        bgfx::TextureHandle fbtextures[3];
+        const uint64_t kMRTRenderBufferflags =
+            BGFX_TEXTURE_RT | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
+            BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
+        
+        fbtextures[0] = bgfx::createTexture2D(
+            uint16_t(size.x()), uint16_t(size.y()), false, 1, offscreenColorFormat(), kMRTRenderBufferflags);
+        fbtextures[1] = bgfx::createTexture2D(
+            uint16_t(size.x()), uint16_t(size.y()), false, 1, offscreenColorFormat(), kMRTRenderBufferflags);
+        fbtextures[2] = bgfx::createTexture2D(
+            uint16_t(size.x()), uint16_t(size.y()), false, 1, offscreenDepthFormat(), kMRTRenderBufferflags);
+            
+        mOffscreenFbh.create(fbtextures, 3, true);
+    } else {
+        mOffscreenFbh.create(
+            uint16_t(size.x()),
+            uint16_t(size.y()),
+            offscreenColorFormat(),
+            offscreenDepthFormat());
+    }
     assert(mOffscreenFbh.isValid());
 
     // Initialize the view
@@ -128,13 +146,22 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
         clearValue,
         Context::DEFAULT_CLEAR_DEPTH,
         Context::DEFAULT_CLEAR_STENCIL);
+    
+    // For MRT, set clear for the second attachment as well using the multiple attachment clear function if needed, 
+    // but setViewClear clears all color attachments by default.
     bgfx::setViewRect(
         mViewOffscreenId, 0, 0, uint16_t(size.x()), uint16_t(size.y()));
     bgfx::touch(mViewOffscreenId);
 
-    mBlitTexture = bgfx::createTexture2D(
+    mBlitTexture[0] = bgfx::createTexture2D(
         mBlitSize.x(), mBlitSize.y(), false, 1, blitFormat, kBlitFlags);
-    assert(bgfx::isValid(mBlitTexture));
+    assert(bgfx::isValid(mBlitTexture[0]));
+    
+    if (target == Target::ID) {
+        mBlitTexture[1] = bgfx::createTexture2D(
+            mBlitSize.x(), mBlitSize.y(), false, 1, blitFormat, kBlitFlags);
+        assert(bgfx::isValid(mBlitTexture[1]));
+    }
 }
 
 ReadFromGPUBuffer::ReadFromGPUBuffer(uint maxByteSize) :
@@ -420,9 +447,13 @@ std::vector<uint8_t> ReadFromGPUBuffer::getResultsCopy() const
 
 void ReadFromGPUBuffer::destroyFramebufferResources()
 {
-    if (bgfx::isValid(mBlitTexture)) {
-        bgfx::destroy(mBlitTexture);
-        mBlitTexture = BGFX_INVALID_HANDLE;
+    if (bgfx::isValid(mBlitTexture[0])) {
+        bgfx::destroy(mBlitTexture[0]);
+        mBlitTexture[0] = BGFX_INVALID_HANDLE;
+    }
+    if (bgfx::isValid(mBlitTexture[1])) {
+        bgfx::destroy(mBlitTexture[1]);
+        mBlitTexture[1] = BGFX_INVALID_HANDLE;
     }
     // FrameBuffer handles its own destruction
     mOffscreenFbh.destroy();
@@ -447,7 +478,7 @@ void ReadFromGPUBuffer::destroyComputeResources()
 void ReadFromGPUBuffer::submitFramebufferBlit()
 {
     // Determine which framebuffer attachment to read from:
-    // COLOR → attachment 0, DEPTH → attachment 1, ID → attachment 0
+    // COLOR → attachment 0, DEPTH → attachment 1, ID → attachment 0 & 1
     const uint8_t attachment =
         (mTarget == Target::DEPTH) ? uint8_t(1) : uint8_t(0);
     const bgfx::TextureHandle srcBuffer =
@@ -461,7 +492,7 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
             // Vulkan/Metal: blit only the queried pixel
             bgfx::blit(
                 mViewOffscreenId,
-                mBlitTexture,
+                mBlitTexture[0],
                 0,
                 0,
                 srcBuffer,
@@ -472,18 +503,30 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
         }
         else {
             // D3D: blit the full depth buffer; pixel extracted in performRead
-            bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
+            bgfx::blit(mViewOffscreenId, mBlitTexture[0], 0, 0, srcBuffer);
         }
         mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<FloatData>(mReadData).data());
+            mBlitTexture[0], std::get<FloatData>(mReadData).data());
     } break;
 
-    case Target::COLOR:
+    case Target::COLOR: {
+        assert(std::holds_alternative<ByteData>(mReadData));
+        bgfx::blit(mViewOffscreenId, mBlitTexture[0], 0, 0, srcBuffer);
+        mFrameAvailable = bgfx::readTexture(
+            mBlitTexture[0], std::get<ByteData>(mReadData).data());
+    } break;
+
     case Target::ID: {
         assert(std::holds_alternative<ByteData>(mReadData));
-        bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
-        mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<ByteData>(mReadData).data());
+        const bgfx::TextureHandle srcBuffer2 = bgfx::getTexture(mOffscreenFbh, 1);
+        bgfx::blit(mViewOffscreenId, mBlitTexture[0], 0, 0, srcBuffer);
+        bgfx::blit(mViewOffscreenId, mBlitTexture[1], 0, 0, srcBuffer2);
+        
+        uint8_t* dataPtr = std::get<ByteData>(mReadData).data();
+        const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
+        // readTexture schedule reads. We need to wait for the latest one.
+        bgfx::readTexture(mBlitTexture[0], dataPtr);
+        mFrameAvailable = bgfx::readTexture(mBlitTexture[1], dataPtr + pixelCount * 4);
     } break;
 
     default: assert(false && "FRAMEBUFFER submit called with RAW target");
@@ -513,14 +556,20 @@ void ReadFromGPUBuffer::performFramebufferRead() const
     case Target::ID: {
         assert(std::holds_alternative<ByteData>(mReadData));
         const auto& data = std::get<ByteData>(mReadData);
-        if (data.size() == 4) {
+        if (data.size() == 8) {
             mReadCallback(mReadData);
         }
         else {
-            ByteData   idPixel(4);
+            ByteData   idPixel(8);
+            const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
             const auto offset =
-                (uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x())) * 4;
-            std::copy_n(data.begin() + offset, 4, idPixel.begin());
+                uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x());
+            
+            // First 4 bytes (Object ID + Type)
+            std::copy_n(data.begin() + (offset * 4), 4, idPixel.begin());
+            // Next 4 bytes (Element ID)
+            std::copy_n(data.begin() + (pixelCount * 4) + (offset * 4), 4, idPixel.begin() + 4);
+            
             mReadCallback(idPixel);
         }
     } break;

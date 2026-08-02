@@ -11,8 +11,11 @@
 
 void main()
 {
-    /***** render ID to color ******/
+    // Target 0: Object ID (16 bit) + Element Type (16 bit) (già combinati in u_meshId)
     vec4 color = uintABGRToVec4Color(u_meshId);
-
-    gl_FragColor = color;
+    gl_FragData[0] = color;
+    
+    // Target 1: Element ID (32 bit)
+    uint elementId = gl_PrimitiveID + u_firstChunkPrimitiveID;
+    gl_FragData[1] = uintABGRToVec4Color(elementId);
 }

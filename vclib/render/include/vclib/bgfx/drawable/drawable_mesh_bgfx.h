@@ -10,6 +10,7 @@
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/mesh/elements/base/base.h>
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
@@ -309,7 +310,7 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
-            DrawableMeshUniforms::setMeshId(settings.objectId);
+            DrawableMeshUniforms::setMeshId(settings.objectId | vcl::ElemId::FACE);
             DrawableMeshUniforms::setFirstChunkIndex(0);
             bindUniforms();
 
@@ -326,7 +327,7 @@ public:
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());
-            mMRB.drawPointsId(settings.viewId, settings.objectId);
+            mMRB.drawPointsId(settings.viewId, settings.objectId | vcl::ElemId::VERTEX);
         }
     }
 

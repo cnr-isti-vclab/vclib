@@ -538,13 +538,17 @@ public:
         // create the callback
         auto callback = [=, this](const ReadData& dt) {
             const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
-            assert(data.size() == 4);
-            // TODO: check how to do this properly
-            const uint id = *(uint32_t*) &data[0];
+            assert(data.size() == 8); // 8 bytes for 64-bit ID
+
+            // First 4 bytes contain Object ID (16 bits) and Element Type (16 bits)
+            const uint id_with_type = *(uint32_t*) &data[0];
+            const uint objectId = id_with_type >> 16;
+            
+            // The Element ID is in the next 4 bytes (data[4..7]) if needed in the future
 
             mReadRequested = false;
 
-            idCallback(id);
+            idCallback(objectId);
             derived()->update();
         };
 
