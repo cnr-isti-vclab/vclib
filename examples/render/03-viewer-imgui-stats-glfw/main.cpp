@@ -10,6 +10,7 @@
 // imgui drawer must be included before the window manager...
 #include <vclib/imgui/imgui_drawer.h>
 
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/imgui/imgui_stats_drawer.h>
 #include <vclib/render/canvas.h>
@@ -18,6 +19,8 @@
 
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     using ImGuiDemo = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
@@ -38,5 +41,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

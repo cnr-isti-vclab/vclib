@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_POINTS_UNIFORMS_H
 #define VCL_BGFX_SCREENSPACE_PRIMITIVES_UNIFORMS_SCREENSPACE_POINTS_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 
 #include <vclib/space/core.h>
 
@@ -25,7 +25,9 @@ class ScreenSpacePointsUniforms
     // .w = unused
     inline static std::array<float, 4> sPointsSettings =
         {1.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform sPointsSettingsUniform;
+    inline static StaticUniform sPointsSettingsUniform {
+        "u_pointsSettings",
+        bgfx::UniformType::Vec4};
 
 public:
     ScreenSpacePointsUniforms() = delete;
@@ -51,15 +53,7 @@ public:
      *
      * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
      */
-    static void bind()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sPointsSettingsUniform.isValid())
-            sPointsSettingsUniform =
-                Uniform("u_pointsSettings", bgfx::UniformType::Vec4);
-        sPointsSettingsUniform.bind(sPointsSettings.data());
-    }
+    static void bind() { sPointsSettingsUniform.bind(sPointsSettings.data()); }
 };
 
 } // namespace vcl

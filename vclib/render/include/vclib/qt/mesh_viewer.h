@@ -9,7 +9,6 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
-#include "utils.h"
 
 #include <vclib/qt/gui/editor_frame_traits.h>
 #include <vclib/qt/gui/text_edit_logger.h>
