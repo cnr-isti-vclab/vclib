@@ -10,11 +10,14 @@
 // may include qt - must be included before glfw...
 #include <vclib/render/canvas.h>
 
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     using WindowGLFW = vcl::
         RenderApp<vcl::glfw::WindowManager, vcl::Canvas, HelloTriangleDrawer>;
 
@@ -22,5 +25,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

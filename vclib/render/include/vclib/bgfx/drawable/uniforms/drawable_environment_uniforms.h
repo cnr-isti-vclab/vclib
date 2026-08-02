@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_ENVIRONMENT_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/settings/viewer_settings.h>
 
 namespace vcl {
@@ -28,7 +28,9 @@ class DrawableEnvironmentUniforms
         0.0,
         0.0};
 
-    static inline Uniform sDataUniform;
+    static inline StaticUniform sDataUniform {
+        "u_environmentSettingsPack",
+        bgfx::UniformType::Vec4};
 
 public:
     DrawableEnvironmentUniforms() = delete;
@@ -37,13 +39,7 @@ public:
 
     static void setCubeSideResolution(float cubeSide) { sData[1] = cubeSide; }
 
-    static void bind()
-    {
-        if (!sDataUniform.isValid())
-            sDataUniform =
-                Uniform("u_environmentSettingsPack", bgfx::UniformType::Vec4);
-        sDataUniform.bind(sData.data());
-    }
+    static void bind() { sDataUniform.bind(sData.data()); }
 };
 
 } // namespace vcl

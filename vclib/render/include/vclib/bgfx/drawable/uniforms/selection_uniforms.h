@@ -10,7 +10,7 @@
 
 #include <vclib/render/selection/selection_mode.h>
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
@@ -28,9 +28,15 @@ class SelectionUniforms
     static inline std::array<float, 4> sSelectionWorkgroupSizeAndCount;
     static inline std::array<float, 4> sMeshIDSelectionActionData;
 
-    static inline Uniform sSelectionBoxUniform;
-    static inline Uniform sSelectionWorkgroupSizeAndCountUniform;
-    static inline Uniform sMeshIDDataUniform;
+    static inline StaticUniform sSelectionBoxUniform {
+        "u_selectionBox",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sSelectionWorkgroupSizeAndCountUniform {
+        "u_workgroupSizeAndCount",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sMeshIDDataUniform {
+        "u_meshIdSelectionActionData",
+        bgfx::UniformType::Vec4};
 
 public:
     SelectionUniforms() = delete;
@@ -82,22 +88,10 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sSelectionBoxUniform.isValid())
-            sSelectionBoxUniform =
-                Uniform("u_selectionBox", bgfx::UniformType::Vec4);
-        if (!sSelectionWorkgroupSizeAndCountUniform.isValid())
-            sSelectionWorkgroupSizeAndCountUniform =
-                Uniform("u_workgroupSizeAndCount", bgfx::UniformType::Vec4);
-        if (!sMeshIDDataUniform.isValid())
-            sMeshIDDataUniform =
-                Uniform("u_meshIdSelectionActionData", bgfx::UniformType::Vec4);
-
-        sSelectionBoxUniform.bind(&sSelectionBox);
+        sSelectionBoxUniform.bind(sSelectionBox.data());
         sSelectionWorkgroupSizeAndCountUniform.bind(
-            &sSelectionWorkgroupSizeAndCount);
-        sMeshIDDataUniform.bind(&sMeshIDSelectionActionData);
+            sSelectionWorkgroupSizeAndCount.data());
+        sMeshIDDataUniform.bind(sMeshIDSelectionActionData.data());
     }
 };
 

@@ -9,7 +9,7 @@
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MATERIAL_UNIFORMS_H
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/settings/draw_object_settings.h>
 
 #include <vclib/mesh.h>
@@ -43,10 +43,18 @@ class MaterialUniforms
 
     static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
 
-    static inline Uniform sBaseColorUniform;
-    static inline Uniform sFactorsPackUniform;
-    static inline Uniform sEmissiveAlphaCutoffPackUniform;
-    static inline Uniform sAnisotropyPackUniform;
+    static inline StaticUniform sBaseColorUniform {
+        "u_baseColorFactor",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sFactorsPackUniform {
+        "u_FactorsPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
+        "u_emissiveAlphaCutoffPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sAnisotropyPackUniform {
+        "u_anisotropyPack",
+        bgfx::UniformType::Vec4};
 
 public:
     MaterialUniforms() = delete;
@@ -83,25 +91,10 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sBaseColorUniform.isValid())
-            sBaseColorUniform =
-                Uniform("u_baseColorFactor", bgfx::UniformType::Vec4);
-        if (!sFactorsPackUniform.isValid())
-            sFactorsPackUniform =
-                Uniform("u_FactorsPack", bgfx::UniformType::Vec4);
-        if (!sEmissiveAlphaCutoffPackUniform.isValid())
-            sEmissiveAlphaCutoffPackUniform =
-                Uniform("u_emissiveAlphaCutoffPack", bgfx::UniformType::Vec4);
-        if (!sAnisotropyPackUniform.isValid())
-            sAnisotropyPackUniform =
-                Uniform("u_anisotropyPack", bgfx::UniformType::Vec4);
-
-        sBaseColorUniform.bind(&sBaseColor);
-        sFactorsPackUniform.bind(&sFactorsPack);
-        sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
-        sAnisotropyPackUniform.bind(&sAnisotropyPack);
+        sBaseColorUniform.bind(sBaseColor.data());
+        sFactorsPackUniform.bind(sFactorsPack.data());
+        sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sAnisotropyPackUniform.bind(sAnisotropyPack.data());
     }
 };
 

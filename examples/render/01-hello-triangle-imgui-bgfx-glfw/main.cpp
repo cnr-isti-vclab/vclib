@@ -10,6 +10,7 @@
 
 #include <vclib/imgui/imgui_stats_drawer.h>
 
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
@@ -23,6 +24,8 @@
  */
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     // The window is created with the RenderApp class:
     using WindowGLFW = vcl::RenderApp<
         vcl::glfw::WindowManager, // The WindowManager: GLFW
@@ -35,5 +38,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

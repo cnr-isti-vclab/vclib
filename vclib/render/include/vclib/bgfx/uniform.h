@@ -72,6 +72,18 @@ public:
             bgfx::destroy(mUniformHandle);
     }
 
+    /**
+     * @brief Destroys the underlying bgfx::UniformHandle and invalidates it.
+     * This is useful for clearing the uniform before Context shutdown.
+     */
+    void destroy()
+    {
+        if (bgfx::isValid(mUniformHandle)) {
+            bgfx::destroy(mUniformHandle);
+            mUniformHandle = BGFX_INVALID_HANDLE;
+        }
+    }
+
     // Copying a Uniform is not allowed
     Uniform& operator=(const Uniform& oth) = delete;
 
