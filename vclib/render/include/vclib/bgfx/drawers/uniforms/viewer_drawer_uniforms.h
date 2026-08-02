@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
 #define VCL_BGFX_DRAWERS_UNIFORMS_VIEWER_DRAWER_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/settings/viewer_settings.h>
 
 namespace vcl {
@@ -31,7 +31,9 @@ class ViewerDrawerUniforms
         0.0                              // unused
     };
 
-    static inline Uniform sDataUniform;
+    static inline StaticUniform sDataUniform {
+        "u_viewerSettingsPack",
+        bgfx::UniformType::Vec4};
 
 public:
     ViewerDrawerUniforms() = delete;
@@ -55,11 +57,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sDataUniform.isValid())
-            sDataUniform =
-                Uniform("u_viewerSettingsPack", bgfx::UniformType::Vec4);
         sDataUniform.bind(sData.data());
     }
 };

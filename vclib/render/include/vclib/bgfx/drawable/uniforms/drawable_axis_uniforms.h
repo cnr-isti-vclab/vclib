@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/space/core/color.h>
 
 namespace vcl {
@@ -24,7 +24,9 @@ class DrawableAxisUniforms
 {
     inline static std::array<float, 4> sAxisColor = {1.0, 0.0, 0.0, 1.0};
 
-    inline static Uniform sAxisColorUniform;
+    inline static StaticUniform sAxisColorUniform {
+        "u_axisColor",
+        bgfx::UniformType::Vec4};
 
 public:
     DrawableAxisUniforms() = delete;
@@ -37,14 +39,7 @@ public:
         sAxisColor[3] = color.alphaF();
     }
 
-    static void bind()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sAxisColorUniform.isValid())
-            sAxisColorUniform = Uniform("u_axisColor", bgfx::UniformType::Vec4);
-        sAxisColorUniform.bind(sAxisColor.data());
-    }
+    static void bind() { sAxisColorUniform.bind(sAxisColor.data()); }
 };
 
 } // namespace vcl

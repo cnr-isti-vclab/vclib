@@ -18,10 +18,14 @@
 
 #include <mutex>
 #include <set>
+#include <vector>
+#include <functional>
 
 #define BGFX_INVALID_VIEW 65535
 
 namespace vcl {
+
+class Uniform;
 
 class Context
 {
@@ -49,6 +53,8 @@ class Context
     // singleton
     inline static Context*   sInstancePtr = nullptr;
     inline static std::mutex sMutex;
+
+    std::vector<std::reference_wrapper<vcl::Uniform>> mStaticUniforms;
 
 public:
     // default values, used for optional parameters
@@ -79,8 +85,6 @@ public:
         void*                       displayHandle = nullptr,
         vcl::NativeWindowHandleType windowType =
             vcl::NativeWindowHandleType::DEFAULT);
-
-    static void initHeadless();
 
     static bool isInitialized();
 
@@ -163,6 +167,8 @@ public:
     FontManager& fontManager();
 
     ProgramManager& programManager();
+
+    void registerStaticUniform(vcl::Uniform& u);
 
     /**
      * @brief Given a template type T, allocate an array of T of given size,
