@@ -168,6 +168,15 @@ public:
 
     ProgramManager& programManager();
 
+    /**
+     * @brief Registers a static uniform wrapper with the context.
+     *
+     * The context takes ownership of the reference and guarantees its cleanup
+     * before the context shutdown, avoiding crashes or leaks during static
+     * de-initialization.
+     *
+     * @param[in] u: A reference to the uniform to register.
+     */
     void registerStaticUniform(vcl::Uniform& u);
 
     /**

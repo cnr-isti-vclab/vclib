@@ -7,13 +7,14 @@
 
 #include "../00-hello-triangle-opengl2-common/hello_triangle_drawer.h"
 
+#include <vclib/qt/application.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/render_app.h>
 
 int main(int argc, char** argv)
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     using WidgetQt = vcl::
         RenderApp<vcl::qt::WidgetManager, vcl::Canvas, HelloTriangleDrawer>;

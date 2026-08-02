@@ -21,6 +21,12 @@ namespace vcl {
  * It manages lazy initialization and automatic registration with the Context.
  * This guarantees that the uniform is destroyed safely before bgfx::shutdown()
  * is called, preventing leaks or crashes associated with static resource destruction.
+ *
+ * @warning This class should ONLY be instantiated as a static or global variable.
+ *          If instantiated locally on the stack, it will lead to dangling references
+ *          in the Context since it registers a reference to itself.
+ *          Additionally, the get() initialization is not thread-safe and should
+ *          be called from the main thread (or externally synchronized).
  */
 class StaticUniform
 {

@@ -113,6 +113,13 @@ inline void* getDisplayId()
     return displayId;
 }
 
+/**
+ * @brief Application class for Qt backend.
+ *
+ * This class encapsulates QApplication and ensures proper initialization and
+ * teardown. It correctly shuts down the rendering context (if BGFX is used)
+ * during destruction, avoiding crashes caused by late static resource cleanup.
+ */
 class Application
 {
     QApplication mApp;

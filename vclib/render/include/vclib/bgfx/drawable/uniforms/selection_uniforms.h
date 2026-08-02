@@ -88,10 +88,10 @@ public:
 
     static void bind()
     {
-        sSelectionBoxUniform.bind(&sSelectionBox);
+        sSelectionBoxUniform.bind(sSelectionBox.data());
         sSelectionWorkgroupSizeAndCountUniform.bind(
-            &sSelectionWorkgroupSizeAndCount);
-        sMeshIDDataUniform.bind(&sMeshIDSelectionActionData);
+            sSelectionWorkgroupSizeAndCount.data());
+        sMeshIDDataUniform.bind(sMeshIDSelectionActionData.data());
     }
 };
 

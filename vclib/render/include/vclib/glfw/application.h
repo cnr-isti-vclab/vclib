@@ -16,6 +16,13 @@
 
 namespace vcl::glfw {
 
+/**
+ * @brief Application class for GLFW backend.
+ *
+ * This class initializes GLFW upon construction and terminates it upon
+ * destruction. If the BGFX render backend is enabled, it also shuts down
+ * the rendering context properly before destroying the application.
+ */
 class Application
 {
 public:

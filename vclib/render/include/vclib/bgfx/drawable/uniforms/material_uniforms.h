@@ -83,9 +83,9 @@ public:
 
     static void bind()
     {
-        sBaseColorUniform.bind(&sBaseColor);
-        sFactorsPackUniform.bind(&sFactorsPack);
-        sEmissiveAlphaCutoffPackUniform.bind(&sEmissiveAlphaCutoffPack);
+        sBaseColorUniform.bind(sBaseColor.data());
+        sFactorsPackUniform.bind(sFactorsPack.data());
+        sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
     }
 };
 
