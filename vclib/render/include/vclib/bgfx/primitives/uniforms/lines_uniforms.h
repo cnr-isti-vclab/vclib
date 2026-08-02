@@ -23,7 +23,8 @@
 #ifndef VCL_BGFX_PRIMITIVES_UNIFORMS_LINES_UNIFORMS_H
 #define VCL_BGFX_PRIMITIVES_UNIFORMS_LINES_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
+
 #include <vclib/space/core.h>
 
 #include <array>
@@ -40,8 +41,12 @@ class LinesUniforms
     // .y = general color
     // .z = depth offset
     // .w = id
-    inline static std::array<float, 4> sLinesSettings = {1.0f, 0.0f, 0.0f, 0.0f};
-    inline static Uniform              sLinesSettingsUniform;
+    inline static std::array<float, 4> sLinesSettings =
+        {1.0f, 0.0f, 0.0f, 0.0f};
+
+    inline static StaticUniform sLinesSettingsUniform {
+        "u_linesSettings",
+        bgfx::UniformType::Vec4};
 
 public:
     LinesUniforms() = delete;
@@ -83,11 +88,6 @@ public:
      */
     static void bind()
     {
-        // Lazy initialization to avoid creating uniforms before bgfx is
-        // initialized.
-        if (!sLinesSettingsUniform.isValid())
-            sLinesSettingsUniform =
-                Uniform("u_linesSettings", bgfx::UniformType::Vec4);
         sLinesSettingsUniform.bind(sLinesSettings.data());
     }
 };
