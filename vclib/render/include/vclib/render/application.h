@@ -12,6 +12,7 @@
 #include <vclib/qt/application.h>
 #elif VCLIB_WITH_GLFW
 #include <vclib/glfw/application.h>
+#include <vclib/glfw/detail/window_manager_native.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
