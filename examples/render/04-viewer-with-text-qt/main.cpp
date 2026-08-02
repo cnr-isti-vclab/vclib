@@ -11,6 +11,7 @@
 
 #include <vclib/bgfx/drawable/drawable_box3.h>
 #include <vclib/bgfx/drawers/text_drawer.h>
+#include <vclib/qt/application.h>
 #include <vclib/qt/widget_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
@@ -24,7 +25,7 @@ int main(int argc, char** argv)
         vcl::ViewerDrawer,
         vcl::TextDrawer>;
 
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     ViewerWidget tw("Viewer Qt");
 

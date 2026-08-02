@@ -7,7 +7,12 @@
 
 #include <vclib/bgfx/drawable/drawable_points.h>
 
+#include <vclib/qt/application.h>
 #include <vclib/qt/viewer_widget.h>
+
+#include <vclib/algorithms.h>
+#include <vclib/io.h>
+#include <vclib/meshes.h>
 
 #include <QCheckBox>
 #include <QColorDialog>
@@ -17,10 +22,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
-
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
 
 std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
 {
@@ -97,7 +98,7 @@ std::shared_ptr<vcl::DrawablePoints> getPoints(
 
 int main(int argc, char** argv)
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     QWidget w;
 

@@ -5,12 +5,18 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_UTILS_QAPPLICATION_H
-#define VCL_QT_UTILS_QAPPLICATION_H
+#ifndef VCL_QT_APPLICATION_H
+#define VCL_QT_APPLICATION_H
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/context.h>
+#endif
 
 #include <QApplication>
 
 namespace vcl::qt {
+
+namespace detail {
 
 /**
  * @brief Set the QT_QPA_PLATFORM environment variable to "xcb" to ensure that
@@ -70,6 +76,8 @@ inline QApplication qAppl(int& argc, char** argv)
     return QApplication(argc, argv);
 }
 
+} // namespace detail
+
 /**
  * @brief Utility function to retrieve the display ID of the current
  * QApplication instance. This function checks whether the system is using X11
@@ -105,6 +113,23 @@ inline void* getDisplayId()
     return displayId;
 }
 
+class Application
+{
+    QApplication mApp;
+
+public:
+    Application(int& argc, char** argv) : mApp(detail::qAppl(argc, argv)) {}
+
+    ~Application()
+    {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        vcl::Context::shutdown();
+#endif
+    }
+
+    int exec() { return mApp.exec(); }
+};
+
 } // namespace vcl::qt
 
-#endif // VCL_QT_UTILS_QAPPLICATION_H
+#endif // VCL_QT_APPLICATION_H

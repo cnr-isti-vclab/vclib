@@ -9,11 +9,13 @@
 #define VCL_RENDER_APPLICATION_H
 
 #ifdef VCLIB_WITH_QT
-#include <vclib/qt/utils/qapplication.h>
-
-#include <QApplication>
+#include <vclib/qt/application.h>
 #elif VCLIB_WITH_GLFW
 #include <vclib/glfw/detail/window_manager_native.h>
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/context.h>
 #endif
 
 namespace vcl {
@@ -43,15 +45,7 @@ namespace vcl {
 
 #ifdef VCLIB_WITH_QT
 
-class Application
-{
-    QApplication mApp;
-
-public:
-    Application(int& argc, char** argv) : mApp(qt::qAppl(argc, argv)) {}
-
-    int exec() { return mApp.exec(); }
-};
+using Application = qt::Application;
 
 #elif VCLIB_WITH_GLFW
 
@@ -60,7 +54,13 @@ class Application
 public:
     Application(int& /*argc*/, char** /*argv*/) { glfwInit(); }
 
-    ~Application() { glfwTerminate(); }
+    ~Application()
+    {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        vcl::Context::shutdown();
+#endif
+        glfwTerminate();
+    }
 
     int exec() { return 0; }
 };
@@ -71,6 +71,13 @@ class Application
 {
 public:
     Application(int& /*argc*/, char** /*argv*/) {}
+
+    ~Application()
+    {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        vcl::Context::shutdown();
+#endif
+    }
 
     int exec() { return 0; }
 };
