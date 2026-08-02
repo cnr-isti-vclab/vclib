@@ -8,6 +8,7 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/imgui/mesh_viewer.h>
+#include <vclib/glfw/application.h>
 #include <vclib/render/mesh_viewer.h>
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
@@ -15,6 +16,8 @@
 
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     vcl::imgui::MeshViewer tw;
     vcl::pushDefaultEditors(tw);
 
@@ -38,5 +41,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

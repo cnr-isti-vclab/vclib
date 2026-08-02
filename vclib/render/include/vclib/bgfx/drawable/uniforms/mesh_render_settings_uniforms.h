@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 #include <bgfx/bgfx.h>
@@ -46,9 +46,16 @@ class MeshRenderSettingsUniforms
     // sColorPack[7] -> unused
     inline static std::array<float, 8> sColorPack = {0.0};
 
-    inline static Uniform sDrawModeUniform;
-    inline static Uniform sWidthUniform;
-    inline static Uniform sColorUniform;
+    inline static StaticUniform sDrawModeUniform {
+        "u_mrsDrawPack",
+        bgfx::UniformType::Vec4};
+    inline static StaticUniform sWidthUniform {
+        "u_mrsWidthPack",
+        bgfx::UniformType::Vec4};
+    inline static StaticUniform sColorUniform {
+        "u_mrsColorPack",
+        bgfx::UniformType::Vec4,
+        2};
 
 public:
     MeshRenderSettingsUniforms() = delete;
@@ -65,8 +72,10 @@ public:
         sDrawPack[1] = std::bit_cast<float>(d1);
 
         uint capabilities = 0;
-        if (settings.hasPerVertexColor()) capabilities |= 1;
-        if (settings.hasPerVertexTangent()) capabilities |= 2;
+        if (settings.hasPerVertexColor())
+            capabilities |= 1;
+        if (settings.hasPerVertexTangent())
+            capabilities |= 2;
         sDrawPack[2] = std::bit_cast<float>(capabilities);
 
         sWidthPack[0] = settings.pointWidth();
@@ -87,16 +96,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sDrawModeUniform.isValid())
-            sDrawModeUniform =
-                Uniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
-        if (!sWidthUniform.isValid())
-            sWidthUniform = Uniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
-        if (!sColorUniform.isValid())
-            sColorUniform =
-                Uniform("u_mrsColorPack", bgfx::UniformType::Vec4, 2);
         sDrawModeUniform.bind(sDrawPack.data());
         sWidthUniform.bind(sWidthPack.data());
         sColorUniform.bind(sColorPack.data(), 2);

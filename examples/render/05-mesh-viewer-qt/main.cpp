@@ -7,11 +7,12 @@
 
 #include "get_drawable_mesh.h"
 
+#include <vclib/qt/application.h>
 #include <vclib/render/mesh_viewer.h>
 
 int main(int argc, char** argv)
 {
-    auto app = vcl::qt::qAppl(argc, argv);
+    auto app = vcl::qt::Application(argc, argv);
 
     vcl::qt::MeshViewer mv;
 

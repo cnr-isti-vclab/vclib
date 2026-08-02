@@ -8,6 +8,7 @@
 #include "get_drawable_mesh.h"
 
 #include <vclib/bgfx/drawers/text_drawer.h>
+#include <vclib/glfw/application.h>
 #include <vclib/glfw/window_manager.h>
 #include <vclib/render/canvas.h>
 #include <vclib/render/drawers/viewer_drawer.h>
@@ -15,6 +16,8 @@
 
 int main(int argc, char** argv)
 {
+    vcl::glfw::Application app(argc, argv);
+
     using ViewerWindow = vcl::RenderApp<
         vcl::glfw::WindowManager,
         vcl::Canvas,
@@ -45,5 +48,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

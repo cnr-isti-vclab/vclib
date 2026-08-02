@@ -13,7 +13,7 @@
 
 #include <vclib/base.h>
 
-#include <iostream>
+#include <vclib/bgfx/uniform.h>
 
 namespace vcl {
 
@@ -26,11 +26,6 @@ void Context::init(
     if (sInstancePtr == nullptr) {
         sInstancePtr = new Context(windowHandle, displayHandle, windowType);
     }
-}
-
-void Context::initHeadless()
-{
-    init(nullptr, nullptr);
 }
 
 bool Context::isInitialized()
@@ -299,6 +294,12 @@ ProgramManager& Context::programManager()
     return *mProgramManager;
 }
 
+void Context::registerStaticUniform(vcl::Uniform& u)
+{
+    std::lock_guard<std::mutex> lock(sMutex);
+    mStaticUniforms.push_back(std::ref(u));
+}
+
 Context::Context(
     void*                       windowHandle,
     void*                       displayHandle,
@@ -380,6 +381,10 @@ Context::~Context()
 {
     delete mFontManager;
     delete mProgramManager;
+    for (auto& uRef : mStaticUniforms) {
+        uRef.get().destroy();
+    }
+    mStaticUniforms.clear();
     bgfx::shutdown();
 }
 
