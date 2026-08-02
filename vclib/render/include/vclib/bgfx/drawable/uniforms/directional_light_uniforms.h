@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 #define VCL_BGFX_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 
-#include <vclib/bgfx/uniform.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/render/viewer/lights/directional_light.h>
 
 #include <bgfx/bgfx.h>
@@ -41,8 +41,12 @@ class DirectionalLightUniforms
     // just first 3 components are used
     inline static std::array<float, 4> sCol = {1.0, 1.0, 1.0, 1.0};
 
-    inline static Uniform sLightDirUniform;
-    inline static Uniform sLightColorUniform;
+    inline static StaticUniform sLightDirUniform {
+        "u_lightDirPack",
+        bgfx::UniformType::Vec4};
+    inline static StaticUniform sLightColorUniform {
+        "u_lightColorPack",
+        bgfx::UniformType::Vec4};
 
 public:
     DirectionalLightUniforms() = delete;
@@ -66,14 +70,6 @@ public:
 
     static void bind()
     {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sLightDirUniform.isValid())
-            sLightDirUniform =
-                Uniform("u_lightDirPack", bgfx::UniformType::Vec4);
-        if (!sLightColorUniform.isValid())
-            sLightColorUniform =
-                Uniform("u_lightColorPack", bgfx::UniformType::Vec4);
         sLightDirUniform.bind(sDir.data());
         sLightColorUniform.bind(sCol.data());
     }

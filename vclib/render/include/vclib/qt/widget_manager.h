@@ -10,7 +10,6 @@
 
 #include "detail/window_manager_native.h"
 #include "input.h"
-#include "utils.h"
 
 #include <vclib/render/concepts/render_app.h>
 #include <vclib/render/window_managers.h>

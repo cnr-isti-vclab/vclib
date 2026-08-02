@@ -17,6 +17,7 @@
 #include <vclib/bgfx/drawable/uniforms/material_uniforms.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/primitives/points.h>
+#include <vclib/bgfx/static_uniform.h>
 #include <vclib/bgfx/texture.h>
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
@@ -65,7 +66,18 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     // for each texture path of each material, store its texture
     std::map<std::string, Texture> mMaterialTextures;
 
-    static inline std::array<Uniform, N_TEXTURE_TYPES> sTextureSamplerUniforms;
+    // static initialization of texture sampler uniforms with names s_tex0,
+    // s_tex1, ..., s_texN
+    static inline std::array<StaticUniform, N_TEXTURE_TYPES>
+        sTextureSamplerUniforms =
+            []<std::size_t... Is>(std::index_sequence<Is...>) {
+                return std::array<StaticUniform, N_TEXTURE_TYPES> {
+                    StaticUniform {
+                                   "s_tex" + std::to_string(Is),
+                                   bgfx::UniformType::Sampler}
+                     ...
+                };
+            }(std::make_index_sequence<N_TEXTURE_TYPES> {});
 
 public:
     MeshRenderBuffers() = default;
@@ -263,7 +275,7 @@ public:
                         uint flags = Texture::samplerFlagsFromTexture(td);
                         tex.bind(
                             boundTextures,
-                            sTextureSamplerUniforms[j].handle(),
+                            sTextureSamplerUniforms[j].get().handle(),
                             flags);
 
                         tt = static_cast<DrawableMeshUniforms::TextureType>(j);
@@ -718,8 +730,6 @@ private:
             }
 
             parallelFor(texturePathVec, loadImageAndSetTexture);
-
-            createTextureSamplerUniforms();
         }
     }
 
@@ -840,18 +850,6 @@ private:
         points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 
-    static void createTextureSamplerUniforms()
-    {
-        // lazy initialization
-        // to avoid creating uniforms before bgfx is initialized
-        if (!sTextureSamplerUniforms[0].isValid()) {
-            for (uint i = 0; i < sTextureSamplerUniforms.size(); ++i) {
-                sTextureSamplerUniforms[i] = Uniform(
-                    ("s_tex" + std::to_string(i)).c_str(),
-                    bgfx::UniformType::Sampler);
-            }
-        }
-    }
 };
 
 } // namespace vcl
