@@ -558,6 +558,42 @@ public:
             derived()->update();
     }
 
+    void readElementIdRequest(
+        double x, double y, std::function<void(ushort, ushort, uint)> idCallback)
+    {
+        using ReadData = ReadBufferTypes::ReadData;
+
+        if (mReadRequested)
+            return;
+
+        // get point
+        const Point2d p(x, y);
+
+        // create the callback
+        auto callback = [=, this](const ReadData& dt) {
+            const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
+            assert(data.size() == 8); // 8 bytes for 64-bit ID
+
+            // First 4 bytes contain Object ID (16 bits) and Element Type (16 bits)
+            const uint id_with_type = *(uint32_t*) &data[0];
+            const ushort objectId = id_with_type >> 16;
+            const ushort elementType = id_with_type & 0xFFFF;
+            
+            // Next 4 bytes contain Element ID
+            const uint elementId = *(uint32_t*) &data[4];
+
+            mReadRequested = false;
+
+            idCallback(objectId, elementType, elementId);
+            derived()->update();
+        };
+
+        mReadRequested =
+            DRA::DRW::readId(derived(), Point2i(p.x(), p.y()), callback);
+        if (mReadRequested)
+            derived()->update();
+    }
+
     void requestUpdate() { derived()->update(); }
 
     void setContinuousRedraw(bool enabled)
