@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
+#include "edge_requirements.h"
 #include "face_requirements.h"
 
 #include <vclib/mesh/mesh.h>

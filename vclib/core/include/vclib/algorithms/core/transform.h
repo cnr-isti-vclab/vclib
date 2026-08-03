@@ -344,26 +344,31 @@ void multiplyNormalsByMatrix(
 }
 
 /**
- * @brief Transforms a 3D box by applying a 4x4 transformation matrix to all its
- * 8 vertices, and returns the axis-aligned bounding box that contains the
+ * @brief Transforms an N-dimensional box by applying a transformation matrix to
+ * all its vertices, and returns the axis-aligned bounding box that contains the
  * transformed vertices.
  *
- * @param[in] box: The input 3D box to be transformed.
- * @param[in] mat: The 4x4 transformation matrix to be applied to the box.
+ * @param[in] box: The input box to be transformed.
+ * @param[in] mat: The transformation matrix to be applied to the box.
  * @return The axis-aligned bounding box that contains the transformed vertices.
  */
-template<Box3Concept BoxType, Matrix44Concept MatrixType>
+template<BoxConcept BoxType, MatrixConcept MatrixType>
 BoxType transformBox(const BoxType& box, const MatrixType& mat)
 {
     using PointType  = typename BoxType::PointType;
     using ScalarType = typename PointType::ScalarType;
 
-    Matrix44<ScalarType> m44 = mat.template cast<ScalarType>();
+    auto m = mat.template cast<ScalarType>();
 
     BoxType result;
-    for (uint i = 0; i < 8; ++i) {
-        PointType corner = boxVertex(box, i);
-        corner *= m44;
+    for (uint i = 0; i < (1 << BoxType::DIM); ++i) {
+        PointType corner;
+        // Construct the i-th corner of the bounding box by using the bits of i
+        // to choose between the min and max coordinates along each dimension.
+        for (uint d = 0; d < BoxType::DIM; ++d) {
+            corner[d] = (i & (1 << d)) ? box.max()[d] : box.min()[d];
+        }
+        corner *= m;
         result.add(corner);
     }
     return result;
