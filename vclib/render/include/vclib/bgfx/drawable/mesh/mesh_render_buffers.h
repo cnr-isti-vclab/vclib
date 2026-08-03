@@ -849,7 +849,6 @@ private:
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
         points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
-
 };
 
 } // namespace vcl
