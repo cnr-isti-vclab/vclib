@@ -10,6 +10,7 @@
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/mesh/providers/mesh_provider.h>
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
@@ -30,18 +31,21 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
 
 protected:
     MeshRenderBuffers<MeshType> mMRB;
+    MeshProviderReference<MeshType> mProvider{static_cast<const MeshType&>(*this)};
 
 public:
     DrawableMeshBGFX() = default;
 
     DrawableMeshBGFX(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh), MeshType(mesh)
+            AbstractDrawableMesh(mesh),
+            MeshType(mesh)
     {
         updateBuffers();
     }
 
     DrawableMeshBGFX(MeshType&& mesh) :
-            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+            AbstractDrawableMesh(mesh),
+            MeshType(std::move(mesh))
     {
         updateBuffers();
     }
@@ -87,7 +91,7 @@ public:
             if (params.mode.primitive == SelectionPrimitive::FACE)
                 return;
 
-        mMRB.computeSelection(params, modelMatrix().template cast<float>());
+        mMRB.computeSelection(params, this->transformMatrix().template cast<float>());
     }
 
     bool isSelectionReadbackPending() const override
@@ -103,9 +107,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = MeshType::name();
         }
-
-        AbstractDrawableMesh::computeBoundingBox(
-            static_cast<const MeshType&>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
@@ -125,60 +126,10 @@ public:
         mMRB.updatePointsSettings(rs);
     }
 
-    uint vertexCount() const override { return MeshType::vertexCount(); }
-
-    uint faceCount() const override
+    const AbstractMeshProvider& meshProvider() const override
     {
-        if constexpr (HasFaces<MeshType>)
-            return MeshType::faceCount();
-        else
-            return 0;
+        return mProvider;
     }
-
-    uint edgeCount() const override
-    {
-        if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeCount();
-        else
-            return 0;
-    }
-
-    vcl::Matrix44d modelMatrix() const override
-    {
-        if constexpr (HasTransformMatrix<MeshType>) {
-            return MeshType::transformMatrix().template cast<double>();
-        }
-        else {
-            return vcl::Matrix44d::Identity();
-        }
-    }
-
-    View<MatIt> materials() const override
-    {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::materials();
-        }
-        else {
-            return View<MatIt>();
-        }
-    }
-
-    const Image& textureImage(const std::string& path) const override
-    {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::textureImage(path);
-        }
-        else {
-            return AbstractDrawableMesh::textureImage(path);
-        }
-    }
-
-    uint selectedVertexCount() const override
-    {
-        return mMRB.selectedVertexCount();
-    }
-
-    uint selectedFaceCount() const override { return mMRB.selectedFaceCount(); }
 
     // DrawableObject implementation
 

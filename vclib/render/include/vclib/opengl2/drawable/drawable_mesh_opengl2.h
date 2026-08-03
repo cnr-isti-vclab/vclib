@@ -12,6 +12,7 @@
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
+#include <vclib/mesh/providers/mesh_provider.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
 
@@ -64,11 +65,14 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
+class DrawableMeshOpenGL2 :
+        public AbstractDrawableMesh,
+        public MeshType
 {
     using MRI = MeshRenderInfo;
 
     MeshRenderVectors<MeshType> mMRD;
+    MeshProviderReference<MeshType> mProvider{static_cast<const MeshType&>(*this)};
 
     std::vector<uint> mTextID;
 
@@ -76,14 +80,16 @@ public:
     DrawableMeshOpenGL2() = default;
 
     DrawableMeshOpenGL2(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh), MeshType(mesh)
+            AbstractDrawableMesh(mesh),
+            MeshType(mesh)
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
     }
 
     DrawableMeshOpenGL2(MeshType&& mesh) :
-            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
+            AbstractDrawableMesh(mesh),
+            MeshType(std::move(mesh))
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
@@ -121,50 +127,15 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
-
         unbindTextures();
         mMRD.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
     }
 
-    uint vertexCount() const override { return MeshType::vertexCount(); }
-
-    uint faceCount() const override
+    const AbstractMeshProvider& meshProvider() const override
     {
-        if constexpr (HasFaces<MeshType>)
-            return MeshType::faceCount();
-        else
-            return 0;
-    }
-
-    uint edgeCount() const override
-    {
-        if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeCount();
-        else
-            return 0;
-    }
-
-    vcl::Matrix44d modelMatrix() const override
-    {
-        if constexpr (HasTransformMatrix<MeshType>) {
-            return MeshType::transformMatrix().template cast<double>();
-        }
-        else {
-            return vcl::Matrix44d::Identity();
-        }
-    }
-
-    View<MatIt> materials() const override
-    {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::materials();
-        }
-        else {
-            return View<MatIt>();
-        }
+        return mProvider;
     }
 
     // DrawableObject implementation

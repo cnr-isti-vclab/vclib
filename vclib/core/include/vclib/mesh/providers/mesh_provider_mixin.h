@@ -70,6 +70,18 @@ public:
         return pos;
     }
 
+    std::pair<vcl::Point3d, vcl::Point3d> edgePositions(
+        uint edgeId) const override
+    {
+        if constexpr (vcl::HasEdges<MeshType> && vcl::HasVertices<MeshType>) {
+            const auto& e = getMesh().edge(edgeId);
+            return {
+                e.vertex(0)->position().template cast<double>(),
+                e.vertex(1)->position().template cast<double>()};
+        }
+        return {vcl::Point3d(), vcl::Point3d()};
+    }
+
     vcl::Box3d boundingBox() const override
     {
         if constexpr (vcl::HasBoundingBox<MeshType>) {
@@ -133,6 +145,27 @@ public:
         return 0;
     }
 
+    std::vector<uint> faceVertices(uint faceId) const override
+    {
+        std::vector<uint> ids;
+        if constexpr (vcl::HasFaces<MeshType>) {
+            const auto& f = getMesh().face(faceId);
+            for (auto* v : f.vertices()) {
+                ids.push_back(v->index());
+            }
+        }
+        return ids;
+    }
+
+    std::pair<uint, uint> edgeVertices(uint edgeId) const override
+    {
+        if constexpr (vcl::HasEdges<MeshType>) {
+            const auto& e = getMesh().edge(edgeId);
+            return {e.vertex(0)->index(), e.vertex(1)->index()};
+        }
+        return {0, 0};
+    }
+
     uint selectedVertexCount() const override
     {
         return vcl::vertexSelectionCount(getMesh());
@@ -142,6 +175,14 @@ public:
     {
         if constexpr (vcl::HasFaces<MeshType>) {
             return vcl::faceSelectionCount(getMesh());
+        }
+        return 0;
+    }
+
+    uint selectedEdgeCount() const override
+    {
+        if constexpr (vcl::HasEdges<MeshType>) {
+            return vcl::edgeSelectionCount(getMesh());
         }
         return 0;
     }
