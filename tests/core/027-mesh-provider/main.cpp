@@ -11,21 +11,21 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-// Create a mesh type that inherits from GeometryProviderMixin
-// We use the newly defined GeometryProvider directly which already does this!
-// We can just use vcl::GeometryProvider<TestType> directly.
+// Create a mesh type that inherits from MeshProviderMixin
+// We use the newly defined MeshProvider directly which already does this!
+// We can just use vcl::MeshProvider<TestType> directly.
 
 TEMPLATE_TEST_CASE(
-    "Test GeometryProviderMixin",
+    "Test MeshProviderMixin",
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
     vcl::TriMeshIndexed,
     vcl::TriMeshIndexedf)
 {
-    using MeshType = vcl::GeometryProvider<TestType>;
+    using MeshType = vcl::MeshProvider<TestType>;
     using PointT   = typename TestType::VertexType::PositionType;
-    using Provider = const vcl::AbstractGeometryProvider*;
+    using Provider = const vcl::AbstractMeshProvider*;
 
     MeshType m;
     m.addVertices(
@@ -49,6 +49,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(f0_pos[0] == m.vertex(0).position().template cast<double>());
         REQUIRE(f0_pos[1] == m.vertex(1).position().template cast<double>());
         REQUIRE(f0_pos[2] == m.vertex(2).position().template cast<double>());
+        
+        REQUIRE(provider->vertexCount() == 4);
+        REQUIRE(provider->faceCount() == 2);
+        REQUIRE(provider->edgeCount() == 0); // these meshes don't explicitly instantiate edges unless asked, wait, actually let's just check they compile
     }
 
     THEN("Callback Getters work")
@@ -57,19 +61,9 @@ TEMPLATE_TEST_CASE(
             REQUIRE(p == m.vertex(0).position().template cast<double>());
         });
 
-        provider->queryFacePositions(
-            1, [&](const std::vector<vcl::Point3d>& pos) {
-                REQUIRE(pos.size() == 3);
-                REQUIRE(
-                    pos[0] == m.vertex(1).position().template cast<double>());
-                REQUIRE(
-                    pos[1] == m.vertex(3).position().template cast<double>());
-                REQUIRE(
-                    pos[2] == m.vertex(2).position().template cast<double>());
-            });
     }
 
-    THEN("Standalone GeometryProviderReference works")
+    THEN("Standalone MeshProviderReference works")
     {
         TestType baseMesh;
         baseMesh.addVertices(
@@ -81,8 +75,8 @@ TEMPLATE_TEST_CASE(
         baseMesh.addFace(0, 1, 2);
         baseMesh.addFace(1, 3, 2);
 
-        vcl::GeometryProviderReference<TestType> standaloneProvider(baseMesh);
-        const vcl::AbstractGeometryProvider* p = &standaloneProvider;
+        vcl::MeshProviderReference<TestType> standaloneProvider(baseMesh);
+        const vcl::AbstractMeshProvider* p = &standaloneProvider;
 
         REQUIRE(p->vertexPosition(0) == baseMesh.vertex(0).position().template cast<double>());
         auto f_pos = p->facePositions(1);

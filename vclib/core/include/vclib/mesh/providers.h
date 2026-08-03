@@ -8,8 +8,8 @@
 #ifndef VCL_MESH_PROVIDERS_H
 #define VCL_MESH_PROVIDERS_H
 
-#include "providers/abstract_geometry_provider.h"
-#include "providers/geometry_provider.h"
-#include "providers/geometry_provider_mixin.h"
+#include "providers/abstract_mesh_provider.h"
+#include "providers/mesh_provider.h"
+#include "providers/mesh_provider_mixin.h"
 
 #endif // VCL_MESH_PROVIDERS_H

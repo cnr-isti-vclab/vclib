@@ -5,11 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_MESH_PROVIDERS_GEOMETRY_PROVIDER_MIXIN_H
-#define VCL_MESH_PROVIDERS_GEOMETRY_PROVIDER_MIXIN_H
+#ifndef VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
+#define VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
 
-#include "abstract_geometry_provider.h"
-
+#include <vclib/mesh/providers/abstract_mesh_provider.h>
 #include <vclib/mesh/requirements/mesh_requirements.h>
 
 #include <type_traits>
@@ -17,8 +16,8 @@
 namespace vcl {
 
 /**
- * @brief A Mixin class that automatically implements the
- * AbstractGeometryProvider interface for a Mesh.
+ * @brief A Mixin class that automatically implements the AbstractMeshProvider
+ * interface for a Mesh.
  *
  * This class uses the Curiously Recurring Template Pattern (CRTP). It must be
  * inherited by a class that also inherits from a valid Mesh type.
@@ -29,23 +28,12 @@ namespace vcl {
  * derived class or does not inherit from a Mesh, the cast or the compilation
  * will fail.
  *
- * Example of usage:
- * @code{.cpp}
- * template<MeshConcept MeshType>
- * class MyCustomMesh :
- *     public MeshType,
- *     public GeometryProviderMixin<MyCustomMesh<MeshType>>
- * {
- *     // GeometryProviderMixin automatically implements facePositions() etc.
- * };
- * @endcode
- *
  * @tparam Derived: The class inheriting from this Mixin.
  * @tparam MeshType: The type of the mesh that provides the components. Defaults
  * to Derived.
  */
 template<typename Derived, typename MeshType = Derived>
-class GeometryProviderMixin : public virtual AbstractGeometryProvider
+class MeshProviderMixin : public virtual AbstractMeshProvider
 {
 private:
     const MeshType& getMesh() const
@@ -63,12 +51,14 @@ public:
      * @brief Constructor that checks at compile-time if the MeshType class
      * satisfies the MeshConcept.
      */
-    GeometryProviderMixin()
+    MeshProviderMixin()
     {
         static_assert(
             MeshConcept<MeshType>,
-            "MeshType in GeometryProviderMixin must satisfy the MeshConcept.");
+            "The MeshType in MeshProviderMixin must satisfy the MeshConcept.");
     }
+
+    /* Geometry */
 
     std::vector<vcl::Point3d> facePositions(uint faceId) const override
     {
@@ -90,19 +80,77 @@ public:
         return vcl::Point3d();
     }
 
-    void queryFacePositions(uint faceId, FacePositionsCallback cb)
-        const override
-    {
-        cb(facePositions(faceId));
-    }
-
     void queryVertexPosition(uint vertId, VertexPositionCallback cb)
         const override
     {
-        cb(vertexPosition(vertId));
+        if constexpr (vcl::HasVertices<MeshType>) {
+            using PosType = std::decay_t<decltype(getMesh().vertex(vertId).position())>;
+            if constexpr (std::is_same_v<PosType, vcl::Point3d>) {
+                cb(getMesh().vertex(vertId).position());
+            } else {
+                cb(getMesh().vertex(vertId).position().template cast<double>());
+            }
+        } else {
+            cb(vcl::Point3d());
+        }
+    }
+
+    /* Topology */
+
+    uint vertexCount() const override
+    {
+        if constexpr (vcl::HasVertices<MeshType>) {
+            return getMesh().vertexCount();
+        }
+        return 0;
+    }
+
+    uint faceCount() const override
+    {
+        if constexpr (vcl::HasFaces<MeshType>) {
+            return getMesh().faceCount();
+        }
+        return 0;
+    }
+
+    uint edgeCount() const override
+    {
+        if constexpr (vcl::HasEdges<MeshType>) {
+            return getMesh().edgeCount();
+        }
+        return 0;
+    }
+
+    /* Transform */
+
+    vcl::Matrix44d transformMatrix() const override
+    {
+        if constexpr (vcl::HasTransformMatrix<MeshType>) {
+            return getMesh().transformMatrix().template cast<double>();
+        }
+        return vcl::Matrix44d::Identity();
+    }
+
+    /* Appearance / Materials */
+
+    View<MatIt> materials() const override
+    {
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            return getMesh().materials();
+        }
+        return View<MatIt>();
+    }
+
+    const Image& textureImage(const std::string& path) const override
+    {
+        if constexpr (vcl::HasMaterials<MeshType>) {
+            return getMesh().textureImage(path);
+        }
+        static const Image EMPTY_IMAGE;
+        return EMPTY_IMAGE;
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_MESH_PROVIDERS_GEOMETRY_PROVIDER_MIXIN_H
+#endif // VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
