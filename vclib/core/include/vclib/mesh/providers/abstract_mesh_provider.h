@@ -32,6 +32,9 @@ public:
     /* Geometry */
     virtual std::vector<vcl::Point3d> facePositions(uint faceId) const  = 0;
     virtual vcl::Point3d              vertexPosition(uint vertId) const = 0;
+    
+    virtual vcl::Box3d boundingBox() const            = 0;
+    virtual vcl::Box3d transformedBoundingBox() const = 0;
 
     /**
      * @brief Utility method that calls the provided callback passing the vertex

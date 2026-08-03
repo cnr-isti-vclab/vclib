@@ -340,6 +340,27 @@ public:
     }
 
     /**
+     * @brief Returns the transformed bounding box of the mesh.
+     *
+     * If the mesh has both the BoundingBox and TransformMatrix components, the
+     * bounding box is transformed by the transform matrix. Otherwise, it simply
+     * returns the bounding box.
+     *
+     * @return The transformed bounding box, or the unmodified bounding box if
+     * the transform matrix is not available.
+     */
+    auto transformedBoundingBox() const
+        requires (mesh::HasBoundingBox<Mesh<Args...>>)
+    {
+        if constexpr (mesh::HasTransformMatrix<Mesh<Args...>>) {
+            return transformBox(this->boundingBox(), this->transformMatrix());
+        }
+        else {
+            return this->boundingBox();
+        }
+    }
+
+    /**
      * @brief Enables all the OptionalComponents of this mesh according to the
      * Components available on the OtherMeshType m.
      *

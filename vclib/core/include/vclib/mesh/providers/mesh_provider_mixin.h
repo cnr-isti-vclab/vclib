@@ -8,8 +8,11 @@
 #ifndef VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
 #define VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
 
-#include <vclib/mesh/providers/abstract_mesh_provider.h>
+#include "abstract_mesh_provider.h"
+
 #include <vclib/mesh/requirements/mesh_requirements.h>
+
+#include <vclib/algorithms/core.h>
 
 #include <type_traits>
 
@@ -35,17 +38,6 @@ namespace vcl {
 template<typename Derived, typename MeshType = Derived>
 class MeshProviderMixin : public virtual AbstractMeshProvider
 {
-private:
-    const MeshType& getMesh() const
-    {
-        if constexpr (std::is_base_of_v<MeshType, Derived>) {
-            return *static_cast<const Derived*>(this);
-        }
-        else {
-            return static_cast<const Derived*>(this)->mesh();
-        }
-    }
-
 public:
     /**
      * @brief Constructor that checks at compile-time if the MeshType class
@@ -63,7 +55,7 @@ public:
     std::vector<vcl::Point3d> facePositions(uint faceId) const override
     {
         std::vector<vcl::Point3d> pos;
-        if constexpr (vcl::HasFaces<MeshType> && vcl::HasVertices<MeshType>) {
+        if constexpr (vcl::HasFaces<MeshType>) {
             const auto& f = getMesh().face(faceId);
             for (auto* v : f.vertices()) {
                 pos.push_back(v->position().template cast<double>());
@@ -74,36 +66,55 @@ public:
 
     vcl::Point3d vertexPosition(uint vertId) const override
     {
-        if constexpr (vcl::HasVertices<MeshType>) {
-            return getMesh().vertex(vertId).position().template cast<double>();
+        return getMesh().vertex(vertId).position().template cast<double>();
+    }
+
+    vcl::Box3d boundingBox() const override
+    {
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
+            if (!getMesh().boundingBox().isNull()) {
+                return getMesh().boundingBox().template cast<double>();
+            }
         }
-        return vcl::Point3d();
+        return computeBoundingBox();
+    }
+
+    vcl::Box3d transformedBoundingBox() const override
+    {
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
+            if (!getMesh().boundingBox().isNull()) {
+                return getMesh()
+                    .transformedBoundingBox()
+                    .template cast<double>();
+            }
+        }
+
+        vcl::Box3d bb = computeBoundingBox();
+        if constexpr (vcl::HasTransformMatrix<MeshType>) {
+            bb = vcl::transformBox(
+                bb,
+                vcl::Matrix44d(
+                    getMesh().transformMatrix().template cast<double>()));
+        }
+        return bb;
     }
 
     void queryVertexPosition(uint vertId, VertexPositionCallback cb)
         const override
     {
-        if constexpr (vcl::HasVertices<MeshType>) {
-            using PosType = std::decay_t<decltype(getMesh().vertex(vertId).position())>;
-            if constexpr (std::is_same_v<PosType, vcl::Point3d>) {
-                cb(getMesh().vertex(vertId).position());
-            } else {
-                cb(getMesh().vertex(vertId).position().template cast<double>());
-            }
-        } else {
-            cb(vcl::Point3d());
+        using PosType =
+            std::decay_t<decltype(getMesh().vertex(vertId).position())>;
+        if constexpr (std::is_same_v<PosType, vcl::Point3d>) {
+            cb(getMesh().vertex(vertId).position());
+        }
+        else {
+            cb(getMesh().vertex(vertId).position().template cast<double>());
         }
     }
 
     /* Topology */
 
-    uint vertexCount() const override
-    {
-        if constexpr (vcl::HasVertices<MeshType>) {
-            return getMesh().vertexCount();
-        }
-        return 0;
-    }
+    uint vertexCount() const override { return getMesh().vertexCount(); }
 
     uint faceCount() const override
     {
@@ -148,6 +159,26 @@ public:
         }
         static const Image EMPTY_IMAGE;
         return EMPTY_IMAGE;
+    }
+
+private:
+    const MeshType& getMesh() const
+    {
+        if constexpr (std::is_base_of_v<MeshType, Derived>) {
+            return *static_cast<const Derived*>(this);
+        }
+        else {
+            return static_cast<const Derived*>(this)->mesh();
+        }
+    }
+
+    vcl::Box3d computeBoundingBox() const
+    {
+        vcl::Box3d b;
+        for (const auto& v : getMesh().vertices()) {
+            b.add(v.position().template cast<double>());
+        }
+        return b;
     }
 };
 

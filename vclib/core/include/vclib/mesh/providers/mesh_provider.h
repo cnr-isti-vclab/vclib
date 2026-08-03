@@ -8,7 +8,8 @@
 #ifndef VCL_MESH_PROVIDERS_MESH_PROVIDER_H
 #define VCL_MESH_PROVIDERS_MESH_PROVIDER_H
 
-#include <vclib/mesh/providers/mesh_provider_mixin.h>
+#include "mesh_provider_mixin.h"
+
 #include <vclib/mesh/requirements/mesh_requirements.h>
 
 namespace vcl {

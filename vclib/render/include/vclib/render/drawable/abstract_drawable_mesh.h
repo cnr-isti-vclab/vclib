@@ -112,20 +112,15 @@ protected:
     template<MeshConcept MeshType>
     void computeBoundingBox(const MeshType& m)
     {
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
         if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (m.boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    m.MeshType::boundingBox().template cast<double>();
+            if (!m.boundingBox().isNull()) {
+                mBoundingBox = m.transformedBoundingBox().template cast<double>();
+                return;
             }
         }
 
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(m).template cast<double>();
-        }
+        // Bounding box was either missing or null, compute it from vertices
+        mBoundingBox = vcl::boundingBox(m).template cast<double>();
 
         if constexpr (HasTransformMatrix<MeshType>) {
             mBoundingBox = transformBox(
