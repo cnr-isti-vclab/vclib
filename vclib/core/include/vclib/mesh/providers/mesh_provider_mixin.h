@@ -35,6 +35,8 @@ namespace vcl {
  * @tparam Derived: The class inheriting from this Mixin.
  * @tparam MeshType: The type of the mesh that provides the components. Defaults
  * to Derived.
+ *
+ * @ingroup mesh_providers
  */
 template<typename Derived, typename MeshType = Derived>
 class MeshProviderMixin : public virtual AbstractMeshProvider
@@ -102,6 +104,8 @@ public:
             }
         }
 
+        // Compute the bounding box if the mesh has no bounding box component,
+        // or if it has one but it is empty/null.
         vcl::Box3d bb = computeBoundingBox();
         if constexpr (vcl::HasTransformMatrix<MeshType>) {
             bb = vcl::transformBox(
@@ -219,6 +223,8 @@ public:
 private:
     const MeshType& getMesh() const
     {
+        // If the CRTP Derived class is also the MeshType, we can cast directly
+        // to it. Otherwise, we cast to Derived and use its mesh() method.
         if constexpr (std::is_base_of_v<MeshType, Derived>) {
             return *static_cast<const Derived*>(this);
         }

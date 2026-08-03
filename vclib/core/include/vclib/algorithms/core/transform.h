@@ -363,6 +363,8 @@ BoxType transformBox(const BoxType& box, const MatrixType& mat)
     BoxType result;
     for (uint i = 0; i < (1 << BoxType::DIM); ++i) {
         PointType corner;
+        // Construct the i-th corner of the bounding box by using the bits of i
+        // to choose between the min and max coordinates along each dimension.
         for (uint d = 0; d < BoxType::DIM; ++d) {
             corner[d] = (i & (1 << d)) ? box.max()[d] : box.min()[d];
         }

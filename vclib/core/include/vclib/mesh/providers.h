@@ -8,6 +8,12 @@
 #ifndef VCL_MESH_PROVIDERS_H
 #define VCL_MESH_PROVIDERS_H
 
+/**
+ * @defgroup mesh_providers Mesh Providers
+ * @ingroup mesh
+ * @brief Interfaces and mixins to expose mesh data in a type-erased way.
+ */
+
 #include "providers/abstract_mesh_provider.h"
 #include "providers/mesh_provider.h"
 #include "providers/mesh_provider_mixin.h"

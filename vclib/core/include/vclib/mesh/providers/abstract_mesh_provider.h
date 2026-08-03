@@ -20,6 +20,8 @@ namespace vcl {
  * @brief An abstract interface that exposes the data of a mesh in a type-erased
  * way, allowing it to be used in generic contexts (e.g., UI editors, renderers)
  * without knowing its concrete type.
+ *
+ * @ingroup mesh_providers
  */
 class AbstractMeshProvider
 {

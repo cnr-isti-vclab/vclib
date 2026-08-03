@@ -32,6 +32,8 @@ namespace vcl {
  * @endcode
  *
  * @tparam MeshType: The type of the mesh that provides the components.
+ *
+ * @ingroup mesh_providers
  */
 template<MeshConcept MeshType>
 class MeshProviderReference :
@@ -73,6 +75,8 @@ public:
  * @endcode
  *
  * @tparam MeshType: The base Mesh type to inherit from.
+ *
+ * @ingroup mesh_providers
  */
 template<MeshConcept MeshType>
 class MeshProvider :
