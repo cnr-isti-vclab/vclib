@@ -7,8 +7,8 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/imgui/mesh_viewer.h>
 #include <vclib/glfw/application.h>
+#include <vclib/imgui/mesh_viewer.h>
 #include <vclib/render/mesh_viewer.h>
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>

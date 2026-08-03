@@ -55,10 +55,7 @@ public:
         sData[3] = std::bit_cast<float>(uint(ibl ? 1 : 0));
     }
 
-    static void bind()
-    {
-        sDataUniform.bind(sData.data());
-    }
+    static void bind() { sDataUniform.bind(sData.data()); }
 };
 
 } // namespace vcl
