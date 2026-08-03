@@ -10,6 +10,7 @@
 
 #include "abstract_mesh_provider.h"
 
+#include <vclib/mesh/elem_algorithms/selection.h>
 #include <vclib/mesh/requirements/mesh_requirements.h>
 
 #include <vclib/algorithms/core.h>
@@ -52,6 +53,11 @@ public:
 
     /* Geometry */
 
+    vcl::Point3d vertexPosition(uint vertId) const override
+    {
+        return getMesh().vertex(vertId).position().template cast<double>();
+    }
+
     std::vector<vcl::Point3d> facePositions(uint faceId) const override
     {
         std::vector<vcl::Point3d> pos;
@@ -62,11 +68,6 @@ public:
             }
         }
         return pos;
-    }
-
-    vcl::Point3d vertexPosition(uint vertId) const override
-    {
-        return getMesh().vertex(vertId).position().template cast<double>();
     }
 
     vcl::Box3d boundingBox() const override
@@ -128,6 +129,19 @@ public:
     {
         if constexpr (vcl::HasEdges<MeshType>) {
             return getMesh().edgeCount();
+        }
+        return 0;
+    }
+
+    uint selectedVertexCount() const override
+    {
+        return vcl::vertexSelectionCount(getMesh());
+    }
+
+    uint selectedFaceCount() const override
+    {
+        if constexpr (vcl::HasFaces<MeshType>) {
+            return vcl::faceSelectionCount(getMesh());
         }
         return 0;
     }

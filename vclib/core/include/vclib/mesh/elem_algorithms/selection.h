@@ -5,10 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_ALGORITHMS_MESH_STAT_SELECTION_H
-#define VCL_ALGORITHMS_MESH_STAT_SELECTION_H
+#ifndef VCL_MESH_ELEM_ALGORITHMS_SELECTION_H
+#define VCL_MESH_ELEM_ALGORITHMS_SELECTION_H
 
-#include <vclib/mesh.h>
+#include <vclib/mesh/requirements/mesh_requirements.h>
+#include <vclib/mesh/views/components/selection.h>
 
 namespace vcl {
 
@@ -88,4 +89,4 @@ uint edgeSelectionCount(const MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_MESH_STAT_SELECTION_H
+#endif // VCL_MESH_ELEM_ALGORITHMS_SELECTION_H
