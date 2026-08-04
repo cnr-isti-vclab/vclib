@@ -8,47 +8,40 @@
 #ifndef VCL_RENDER_EDITORS_INFO_EDITOR_H
 #define VCL_RENDER_EDITORS_INFO_EDITOR_H
 
-#include "editor.h"
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+#include <vclib/bgfx/editors/info_editor_bgfx.h>
+#endif
 
-#include <iostream>
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+#include "editor.h"
+#endif
 
 namespace vcl {
 
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+template<typename ViewerDrawer>
+using InfoEditor = InfoEditorBGFX<ViewerDrawer>;
+#endif
+
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+// TODO: implement InfoEditorOpenGL2
 template<typename ViewerDrawer>
 class InfoEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
 
 public:
-    // Editor implementation
+    InfoEditor() = default;
 
-    void draw(uint /*viewId*/) override {}
-
-    bool onMousePress(
-        vcl::MouseButton::Enum   button,
-        double                   x,
-        double                   y,
-        const vcl::KeyModifiers& modifiers) override
+    void setActive(bool active) override
     {
-        bool block = Base::onMousePress(button, x, y, modifiers);
-
-        if (!block && button == vcl::MouseButton::LEFT) {
-            block = true; // consume the event to prevent further propagation
-            auto callback = [](ushort objectId, ushort elementType, uint elementId) {
-                if (objectId == 0xFFFF)
-                    return;
-
-                std::cerr << "InfoEditor:\n"
-                          << "  Object ID:    " << objectId << "\n"
-                          << "  Element Type: " << elementType << "\n"
-                          << "  Element ID:   " << elementId << "\n";
-            };
-
-            Base::viewerReadElementIdRequest(x, y, callback);
-        }
-        return block;
+        Base::setActive(active);
+        Base::viewerUpdate();
     }
+
+    void draw(uint) override {}
 };
+#endif
 
 } // namespace vcl
 

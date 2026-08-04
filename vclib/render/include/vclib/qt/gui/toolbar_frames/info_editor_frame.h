@@ -11,8 +11,8 @@
 #include "generic_editor_frame.h"
 #include <vclib/render/editors/info_editor.h>
 
-#include <QStyle>
 #include <QApplication>
+#include <QStyle>
 
 namespace vcl::qt {
 
@@ -30,16 +30,18 @@ public:
     {
         mInfoEditor = ptr;
 
-        QIcon ic = QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation);
+        QIcon ic = QApplication::style()->standardIcon(
+            QStyle::SP_MessageBoxInformation);
 
         QPushButton* editorButton = Base::addButton(ic, true);
         editorButton->setToolTip("Info");
 
-        connect(editorButton, &QPushButton::clicked, this, [this](bool checked) {
-            if (mInfoEditor) {
-                mInfoEditor->setActive(checked);
-            }
-        });
+        connect(
+            editorButton, &QPushButton::clicked, this, [this](bool checked) {
+                if (mInfoEditor) {
+                    mInfoEditor->setActive(checked);
+                }
+            });
 
         // InfoEditor doesn't have custom settings yet
         Base::hideSettingsButton();
