@@ -7,13 +7,20 @@
 
 $input v_color, v_normal
 
-#include <bgfx_shader.sh>
-#if LINES_SHADING_PER_VERTEX || LINES_SHADING_PER_LINE
+// cross section
+$input v_worldPos0, v_worldPos1, v_discardFlag, v_t
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-#endif
+
 #include <vclib/bgfx/shaders_common.sh> 
 
 void main() {
+#if LINES_SECTION_ON
+    vec3 fragPos = mix(v_worldPos0, v_worldPos1, v_t);
+    discardIfCrossSectionClipped(v_discardFlag, fragPos);
+#endif
+
     vec4 color = v_color;
     
 #if LINES_SHADING_PER_VERTEX || LINES_SHADING_PER_LINE

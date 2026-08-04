@@ -408,8 +408,8 @@ public:
 
     void updateCrossSectionSettings(const CrossSectionSettings& css)
     {
-        mEdgeLines.crossSectionSettings() = css;
-        mWireframeLines.crossSectionSettings() = css;
+        mEdgeLines.setCrossSectionSettings(css);
+        mWireframeLines.setCrossSectionSettings(css);
         mPoints.setCrossSectionSettings(css);
     }
 

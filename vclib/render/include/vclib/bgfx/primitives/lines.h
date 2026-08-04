@@ -154,13 +154,13 @@ public:
     }
 
     /**
-     * @brief Returns a reference to the current cross section settings. This
-     * allows to modify the settings directly.
-     * @return A reference to the current cross section settings.
+     * @brief Sets the cross section settings.
+     * @param[in] settings: The cross section settings to apply.
      */
-    CrossSectionSettings& crossSectionSettings()
+    void setCrossSectionSettings(const CrossSectionSettings& settings)
     {
-        return mCrossSectionSettings;
+        mCrossSectionSettings  = settings;
+        mIsUpdateProgramNeeded = true;
     }
 
     /**
