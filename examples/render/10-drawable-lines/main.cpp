@@ -13,15 +13,17 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
-#include <QRadioButton>
 #include <QHBoxLayout>
+#include <QRadioButton>
 #include <QVBoxLayout>
 
 #include <vclib/algorithms.h>
-#include <vclib/meshes.h>
 #include <vclib/io.h>
+#include <vclib/meshes.h>
 
-std::shared_ptr<vcl::DrawableLines> getDrawableLines(vcl::uint nPoints, vcl::Lines::Topology topo)
+std::shared_ptr<vcl::DrawableLines> getDrawableLines(
+    vcl::uint            nPoints,
+    vcl::Lines::Topology topo)
 {
     auto lines = std::make_shared<vcl::DrawableLines>();
     lines->setTopology(topo);
@@ -36,10 +38,10 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(vcl::uint nPoints, vcl::Lin
         lines->setVertexNormals(m.vertices() | vcl::views::normals);
 
         if (topo == vcl::Lines::Topology::LINES) {
-            std::vector<vcl::uint> indices;
-            std::vector<vcl::Color> lineColors;
+            std::vector<vcl::uint>    indices;
+            std::vector<vcl::Color>   lineColors;
             std::vector<vcl::Point3d> lineNormals;
-            
+
             for (const auto& f : m.faces()) {
                 indices.push_back(f.vertexIndex(0));
                 indices.push_back(f.vertexIndex(1));
@@ -47,15 +49,24 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(vcl::uint nPoints, vcl::Lin
                 indices.push_back(f.vertexIndex(2));
                 indices.push_back(f.vertexIndex(2));
                 indices.push_back(f.vertexIndex(0));
-                
-                auto c1 = vcl::Color(vcl::random<uint8_t>(), vcl::random<uint8_t>(), vcl::random<uint8_t>());
-                auto c2 = vcl::Color(vcl::random<uint8_t>(), vcl::random<uint8_t>(), vcl::random<uint8_t>());
-                auto c3 = vcl::Color(vcl::random<uint8_t>(), vcl::random<uint8_t>(), vcl::random<uint8_t>());
-                
+
+                auto c1 = vcl::Color(
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>());
+                auto c2 = vcl::Color(
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>());
+                auto c3 = vcl::Color(
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>());
+
                 lineColors.push_back(c1);
                 lineColors.push_back(c2);
                 lineColors.push_back(c3);
-                
+
                 lineNormals.push_back(f.normal());
                 lineNormals.push_back(f.normal());
                 lineNormals.push_back(f.normal());
@@ -63,18 +74,22 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(vcl::uint nPoints, vcl::Lin
             lines->setIndices(indices);
             lines->setLineColors(lineColors);
             lines->setLineNormals(lineNormals);
-        } else {
-            vcl::uint nLines = m.vertexCount() - 1;
-            std::vector<vcl::Color> lineColors(nLines);
+        }
+        else {
+            vcl::uint                 nLines = m.vertexCount() - 1;
+            std::vector<vcl::Color>   lineColors(nLines);
             std::vector<vcl::Point3d> lineNormals(nLines);
             for (vcl::uint i = 0; i < nLines; ++i) {
-                lineColors[i] = vcl::Color(vcl::random<uint8_t>(), vcl::random<uint8_t>(), vcl::random<uint8_t>());
+                lineColors[i] = vcl::Color(
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>(),
+                    vcl::random<uint8_t>());
                 lineNormals[i] = vcl::Point3d(0, 1, 0); // dummy normal
             }
             lines->setLineColors(lineColors);
             lines->setLineNormals(lineNormals);
         }
-        
+
         nPoints = m.vertexCount();
     }
     else {
@@ -83,19 +98,23 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(vcl::uint nPoints, vcl::Lin
             positions[i] = vcl::random<vcl::Point3d>();
         }
         lines->setVertices(positions);
-        
+
         std::vector<vcl::Point3d> normals(nPoints);
         for (vcl::uint i = 0; i < nPoints; ++i) {
             normals[i] = vcl::random<vcl::Point3d>().normalized();
         }
         lines->setVertexNormals(normals);
 
-        vcl::uint nLines = topo == vcl::Lines::Topology::LINES ? nPoints / 2 : nPoints - 1;
-        
-        std::vector<vcl::Color> lineColors(nLines);
+        vcl::uint nLines =
+            topo == vcl::Lines::Topology::LINES ? nPoints / 2 : nPoints - 1;
+
+        std::vector<vcl::Color>   lineColors(nLines);
         std::vector<vcl::Point3d> lineNormals(nLines);
         for (vcl::uint i = 0; i < nLines; ++i) {
-            lineColors[i] = vcl::Color(vcl::random<uint8_t>(), vcl::random<uint8_t>(), vcl::random<uint8_t>());
+            lineColors[i] = vcl::Color(
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>(),
+                vcl::random<uint8_t>());
             lineNormals[i] = vcl::random<vcl::Point3d>().normalized();
         }
         lines->setLineColors(lineColors);
@@ -158,7 +177,7 @@ int main(int argc, char** argv)
 
     QGroupBox* topoGroup = new QGroupBox("Topology");
     topoGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout* topoLayout = new QHBoxLayout(topoGroup);
+    QHBoxLayout*  topoLayout  = new QHBoxLayout(topoGroup);
     QRadioButton* rbTopoLines = new QRadioButton("Lines");
     QRadioButton* rbTopoStrip = new QRadioButton("Line Strip");
     rbTopoLines->setChecked(true);
@@ -167,10 +186,10 @@ int main(int argc, char** argv)
 
     QGroupBox* shadingGroup = new QGroupBox("Shading");
     shadingGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout* shadingLayout = new QHBoxLayout(shadingGroup);
-    QRadioButton* rbShadingNone = new QRadioButton("None");
+    QHBoxLayout*  shadingLayout      = new QHBoxLayout(shadingGroup);
+    QRadioButton* rbShadingNone      = new QRadioButton("None");
     QRadioButton* rbShadingPerVertex = new QRadioButton("Per Vertex");
-    QRadioButton* rbShadingPerLine = new QRadioButton("Per Line");
+    QRadioButton* rbShadingPerLine   = new QRadioButton("Per Line");
     rbShadingNone->setChecked(true);
     shadingLayout->addWidget(rbShadingNone);
     shadingLayout->addWidget(rbShadingPerVertex);
@@ -187,12 +206,13 @@ int main(int argc, char** argv)
     std::shared_ptr<vcl::DrawableObjectVector> vec =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    vec->pushBack(getDrawableLines(vcl::UINT_NULL, vcl::Lines::Topology::LINES));
+    vec->pushBack(
+        getDrawableLines(vcl::UINT_NULL, vcl::Lines::Topology::LINES));
 
     tw->setDrawableObjectVector(vec);
     auto lns = getLines(vec);
     tslider->setValue(lns->width());
-    
+
     shadingGroup->setEnabled(lns->hasVertexNormals() || lns->hasLineNormals());
 
     QObject::connect(
@@ -216,13 +236,13 @@ int main(int argc, char** argv)
     auto recreateLines = [=](vcl::Lines::Topology topo) {
         auto oldLines = getLines(vec);
         auto newLines = getDrawableLines(vcl::UINT_NULL, topo);
-        
+
         // Preserve settings
         newLines->setWidth(oldLines->width());
         newLines->setColorSetting(oldLines->colorSetting());
         newLines->setShading(oldLines->shading());
         newLines->setGeneralColor(oldLines->generalColor());
-        
+
         vec->at(0) = newLines;
         tw->update();
     };
@@ -246,19 +266,21 @@ int main(int argc, char** argv)
         }
     });
 
-    QObject::connect(rbShadingPerVertex, &QRadioButton::toggled, [=](bool checked) {
-        if (checked) {
-            getLines(vec)->setShading(vcl::Lines::Shading::PER_VERTEX);
-            tw->update();
-        }
-    });
+    QObject::connect(
+        rbShadingPerVertex, &QRadioButton::toggled, [=](bool checked) {
+            if (checked) {
+                getLines(vec)->setShading(vcl::Lines::Shading::PER_VERTEX);
+                tw->update();
+            }
+        });
 
-    QObject::connect(rbShadingPerLine, &QRadioButton::toggled, [=](bool checked) {
-        if (checked) {
-            getLines(vec)->setShading(vcl::Lines::Shading::PER_LINE);
-            tw->update();
-        }
-    });
+    QObject::connect(
+        rbShadingPerLine, &QRadioButton::toggled, [=](bool checked) {
+            if (checked) {
+                getLines(vec)->setShading(vcl::Lines::Shading::PER_LINE);
+                tw->update();
+            }
+        });
 
     w.resize(1024, 768);
 

@@ -9,8 +9,8 @@
 #define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/mesh/providers/mesh_provider.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
@@ -30,22 +30,21 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         toUnderlying(Material::TextureType::COUNT);
 
 protected:
-    MeshRenderBuffers<MeshType> mMRB;
-    MeshProviderReference<MeshType> mProvider{static_cast<const MeshType&>(*this)};
+    MeshRenderBuffers<MeshType>     mMRB;
+    MeshProviderReference<MeshType> mProvider {
+        static_cast<const MeshType&>(*this)};
 
 public:
     DrawableMeshBGFX() = default;
 
     DrawableMeshBGFX(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(mesh)
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
     }
 
     DrawableMeshBGFX(MeshType&& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(std::move(mesh))
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
     {
         updateBuffers();
     }
@@ -91,7 +90,8 @@ public:
             if (params.mode.primitive == SelectionPrimitive::FACE)
                 return;
 
-        mMRB.computeSelection(params, this->transformMatrix().template cast<float>());
+        mMRB.computeSelection(
+            params, this->transformMatrix().template cast<float>());
     }
 
     bool isSelectionReadbackPending() const override

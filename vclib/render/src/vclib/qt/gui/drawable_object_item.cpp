@@ -100,21 +100,26 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     auto vertexCountItem = new QTreeWidgetItem(meshInfoItem);
     vertexCountItem->setText(0, "# Vertices");
     updateElementCountItem(
-        vertexCountItem, mesh.meshProvider().vertexCount(), mesh.meshProvider().selectedVertexCount());
+        vertexCountItem,
+        mesh.meshProvider().vertexCount(),
+        mesh.meshProvider().selectedVertexCount());
     makeItemNotSelectable(vertexCountItem);
 
     if (mesh.meshProvider().faceCount() > 0) {
         auto faceCountItem = new QTreeWidgetItem(meshInfoItem);
         faceCountItem->setText(0, "# Faces");
         updateElementCountItem(
-            faceCountItem, mesh.meshProvider().faceCount(), mesh.meshProvider().selectedFaceCount());
+            faceCountItem,
+            mesh.meshProvider().faceCount(),
+            mesh.meshProvider().selectedFaceCount());
         makeItemNotSelectable(faceCountItem);
     }
 
     if (mesh.meshProvider().edgeCount() > 0) {
         auto edgeCountItem = new QTreeWidgetItem(meshInfoItem);
         edgeCountItem->setText(0, "# Edges");
-        edgeCountItem->setText(1, QString::number(mesh.meshProvider().edgeCount()));
+        edgeCountItem->setText(
+            1, QString::number(mesh.meshProvider().edgeCount()));
         makeItemNotSelectable(edgeCountItem);
     }
 }
@@ -136,7 +141,8 @@ void DrawableObjectItem::addTransformMatrixItem(
         rowItem->setText(0, "");
         QString rowLabel = "";
         for (int j = 0; j < 4; ++j) {
-            rowLabel += QString::number(mesh.meshProvider().transformMatrix()(i, j), 'f', 3);
+            rowLabel += QString::number(
+                mesh.meshProvider().transformMatrix()(i, j), 'f', 3);
             if (j < 3)
                 rowLabel += "\t";
         }

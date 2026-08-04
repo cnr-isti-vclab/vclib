@@ -23,7 +23,7 @@ namespace vcl {
  *
  * This class wraps the `vcl::Lines` primitive to be used within the VCLib
  * rendering framework as a `DrawableObject`. It maintains a local CPU copy
- * of the vertices, indices, normals, and colors to support `DrawableObject` 
+ * of the vertices, indices, normals, and colors to support `DrawableObject`
  * interfaces such as bounding box computation and cloning.
  */
 class DrawableLines : public DrawableObject, public Lines
@@ -37,18 +37,18 @@ class DrawableLines : public DrawableObject, public Lines
     std::vector<vcl::Point3d> mVertexNormals;
     std::vector<vcl::Point3d> mLineNormals;
 
-    using Lines::setVertices;
-    using Lines::setIndices;
-    using Lines::setVertexColors;
-    using Lines::setLineColors;
-    using Lines::setVertexNormals;
-    using Lines::setLineNormals;
     using Lines::draw;
+    using Lines::setIndices;
+    using Lines::setLineColors;
+    using Lines::setLineNormals;
+    using Lines::setVertexColors;
+    using Lines::setVertexNormals;
+    using Lines::setVertices;
 
 public:
     using Lines::ColorSetting;
-    using Lines::Topology;
     using Lines::Shading;
+    using Lines::Topology;
 
     /**
      * @brief Default constructor. Creates an empty drawable line set.
@@ -59,22 +59,24 @@ public:
      * @brief Copy constructor. Creates a deep copy of the line set.
      */
     DrawableLines(const DrawableLines& other) :
-            DrawableObject(other),
-            Lines(),
-            mVisible(other.mVisible), 
-            mPositions(other.mPositions),
-            mIndices(other.mIndices),
-            mVertexColors(other.mVertexColors),
-            mLineColors(other.mLineColors),
+            DrawableObject(other), Lines(), mVisible(other.mVisible),
+            mPositions(other.mPositions), mIndices(other.mIndices),
+            mVertexColors(other.mVertexColors), mLineColors(other.mLineColors),
             mVertexNormals(other.mVertexNormals),
             mLineNormals(other.mLineNormals)
     {
-        if (!mPositions.empty()) Lines::setVertices(mPositions);
-        if (!mIndices.empty()) Lines::setIndices(mIndices);
-        if (!mVertexColors.empty()) Lines::setVertexColors(mVertexColors);
-        if (!mLineColors.empty()) Lines::setLineColors(mLineColors);
-        if (!mVertexNormals.empty()) Lines::setVertexNormals(mVertexNormals);
-        if (!mLineNormals.empty()) Lines::setLineNormals(mLineNormals);
+        if (!mPositions.empty())
+            Lines::setVertices(mPositions);
+        if (!mIndices.empty())
+            Lines::setIndices(mIndices);
+        if (!mVertexColors.empty())
+            Lines::setVertexColors(mVertexColors);
+        if (!mLineColors.empty())
+            Lines::setLineColors(mLineColors);
+        if (!mVertexNormals.empty())
+            Lines::setVertexNormals(mVertexNormals);
+        if (!mLineNormals.empty())
+            Lines::setLineNormals(mLineNormals);
 
         Lines::setWidth(other.width());
         Lines::setTopology(other.topology());
@@ -120,7 +122,8 @@ public:
     }
 
     /**
-     * @brief Sets line coordinates from a range of 3D points and stores a local copy.
+     * @brief Sets line coordinates from a range of 3D points and stores a local
+     * copy.
      *
      * @tparam R Range type satisfying Point3Concept.
      * @param verts Range of 3D points.

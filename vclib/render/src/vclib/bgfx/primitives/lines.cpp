@@ -1,24 +1,9 @@
-/*****************************************************************************
- * VCLib                                                                     *
- * Visual Computing Library                                                  *
- *                                                                           *
- * Copyright(C) 2021-2026                                                    *
- * Visual Computing Lab                                                      *
- * ISTI - Italian National Research Council                                  *
- *                                                                           *
- * All rights reserved.                                                      *
- *                                                                           *
- * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
- * (at your option) any later version.                                       *
- *                                                                           *
- * This program is distributed in the hope that it will be useful,           *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
- ****************************************************************************/
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bgfx/primitives/lines.h>
 
@@ -304,8 +289,8 @@ bgfx::ProgramHandle Lines::linesIdProgramSelector() const
 {
     using enum VertFragProgram;
 
-    constexpr uint N_INDEX_MODES   = 2;
-    constexpr uint N_TOPO_MODES    = 2;
+    constexpr uint N_INDEX_MODES = 2;
+    constexpr uint N_TOPO_MODES  = 2;
 
     uint indices  = mIndices.isValid() ? 0 : 1;
     uint topology = toUnderlying(mTopology);
@@ -314,7 +299,8 @@ bgfx::ProgramHandle Lines::linesIdProgramSelector() const
     uint base = toUnderlying(
         PRIMITIVE_LINES_ID_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_GENERAL);
 
-    uint offset = linearizeIndex<N_INDEX_MODES, N_TOPO_MODES>(indices, topology);
+    uint offset =
+        linearizeIndex<N_INDEX_MODES, N_TOPO_MODES>(indices, topology);
 
     uint program = base + offset;
 

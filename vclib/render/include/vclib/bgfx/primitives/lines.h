@@ -79,9 +79,9 @@ private:
     OwnedOrRefBuffer<IndexBuffer>  mLineColors;
     OwnedOrRefBuffer<VertexBuffer> mLineNormals;
 
-    mutable bool mIsUpdateProgramNeeded = true;
-    mutable bgfx::ProgramHandle mProgram = BGFX_INVALID_HANDLE;
-    mutable bgfx::ProgramHandle mIdProgram = BGFX_INVALID_HANDLE;
+    mutable bool                mIsUpdateProgramNeeded = true;
+    mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
+    mutable bgfx::ProgramHandle mIdProgram             = BGFX_INVALID_HANDLE;
 
 public:
     /**
@@ -203,7 +203,7 @@ public:
         mVerPosCount = std::ranges::size(verts);
 
         uint padding = (4 - (mVerPosCount % 4)) % 4;
-        uint nv = mVerPosCount + padding;
+        uint nv      = mVerPosCount + padding;
 
         VertexBuffer vertBuff;
         auto [buffer, releaseFn] =
@@ -264,7 +264,7 @@ public:
         mVerColCount = std::ranges::size(vertColors);
 
         uint padding = (4 - (mVerColCount % 4)) % 4;
-        uint nc = mVerColCount + padding;
+        uint nc      = mVerColCount + padding;
 
         VertexBuffer vColsBuff;
         auto [buffer, releaseFn] =
@@ -322,7 +322,7 @@ public:
         mVerNorCount = std::ranges::size(vertNormals);
 
         uint padding = (4 - (mVerNorCount % 4)) % 4;
-        uint nn = mVerNorCount + padding;
+        uint nn      = mVerNorCount + padding;
 
         VertexBuffer vNormsBuff;
         auto [buffer, releaseFn] =
@@ -357,7 +357,7 @@ public:
         mLineNorCount = std::ranges::size(lineNormals);
 
         uint padding = (4 - (mLineNorCount % 4)) % 4;
-        uint nn = mLineNorCount + padding;
+        uint nn      = mLineNorCount + padding;
 
         VertexBuffer lNormsBuff;
         auto [buffer, releaseFn] =
@@ -477,7 +477,8 @@ public:
 
     /**
      * @brief Sets the color mode for line rendering.
-     * @param[in] colorToUse: Whether to use per-vertex colors, per-line colors, or general color.
+     * @param[in] colorToUse: Whether to use per-vertex colors, per-line colors,
+     * or general color.
      */
     void setColorSetting(ColorSetting colorToUse)
     {
@@ -487,7 +488,8 @@ public:
 
     /**
      * @brief Sets the shading mode for line rendering.
-     * @param[in] shading: Whether to apply no shading, per-vertex, or per-line shading.
+     * @param[in] shading: Whether to apply no shading, per-vertex, or per-line
+     * shading.
      */
     void setShading(Shading shading)
     {
@@ -508,18 +510,15 @@ public:
      * @brief Sets the depth offset applied to the lines.
      * @param[in] depthOffset: The depth offset value.
      */
-    void setDepthOffset(float depthOffset)
-    {
-        mDepthOffset = depthOffset;
-    }
+    void setDepthOffset(float depthOffset) { mDepthOffset = depthOffset; }
 
     void draw(bgfx::ViewId viewId) const;
 
     void drawId(bgfx::ViewId viewId, uint32_t id) const;
 
 private:
-    void checkAndUpdateProgram() const;
-    uint vertexPullingInstances() const;
+    void                checkAndUpdateProgram() const;
+    uint                vertexPullingInstances() const;
     bgfx::ProgramHandle linesProgramSelector() const;
     bgfx::ProgramHandle linesIdProgramSelector() const;
 

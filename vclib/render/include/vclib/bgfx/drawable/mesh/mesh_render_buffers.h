@@ -122,7 +122,6 @@ public:
         swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
 
-
         updateLinesVertexBuffers(*this, mEdgeLines);
         updateLinesVertexBuffers(other, other.mEdgeLines);
         updateLinesVertexBuffers(*this, mWireframeLines);
@@ -605,7 +604,8 @@ private:
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
-        // Update the vertex buffers (positions, colors, normals) required by lines
+        // Update the vertex buffers (positions, colors, normals) required by
+        // lines
         updateLinesVertexBuffers(*this, mEdgeLines);
 
         const uint        ne = Base::numEdges();
@@ -630,7 +630,8 @@ private:
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        // Update the vertex buffers (positions, colors, normals) required by lines
+        // Update the vertex buffers (positions, colors, normals) required by
+        // lines
         updateLinesVertexBuffers(*this, mWireframeLines);
 
         const uint        nw = Base::numWireframeLines();
