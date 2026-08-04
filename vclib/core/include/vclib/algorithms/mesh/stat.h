@@ -12,7 +12,6 @@
 #include "stat/bounding_box.h"
 #include "stat/geometry.h"
 #include "stat/quality.h"
-#include "stat/selection.h"
 #include "stat/topology.h"
 
 /**

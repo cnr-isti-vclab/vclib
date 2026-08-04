@@ -5,16 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/glfw/application.h>
-#include <vclib/glfw/viewer_window.h>
+uniform vec4 u_linesSettings;
 
-int main(int argc, char** argv)
-{
-    vcl::glfw::Application app(argc, argv);
-
-    vcl::glfw::ViewerWindow viewer;
-
-    viewer.show();
-
-    return app.exec();
-}
+#define u_linesWidth u_linesSettings.x
+#define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.y))
+#define u_depthOffset u_linesSettings.z
+#define u_linesId uintABGRToVec4Color(floatBitsToUint(u_linesSettings.w))

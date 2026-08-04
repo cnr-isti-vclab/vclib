@@ -16,10 +16,10 @@
 
 #include <bgfx/bgfx.h>
 
+#include <functional>
 #include <mutex>
 #include <set>
 #include <vector>
-#include <functional>
 
 #define BGFX_INVALID_VIEW 65535
 

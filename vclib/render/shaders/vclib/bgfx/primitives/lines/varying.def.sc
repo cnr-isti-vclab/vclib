@@ -5,16 +5,5 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/glfw/application.h>
-#include <vclib/glfw/viewer_window.h>
-
-int main(int argc, char** argv)
-{
-    vcl::glfw::Application app(argc, argv);
-
-    vcl::glfw::ViewerWindow viewer;
-
-    viewer.show();
-
-    return app.exec();
-}
+vec4 v_color : COLOR0;
+vec3 v_normal : NORMAL;

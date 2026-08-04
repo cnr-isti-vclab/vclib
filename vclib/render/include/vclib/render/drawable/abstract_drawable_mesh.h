@@ -15,7 +15,8 @@
 #include <vclib/render/settings/cross_section_settings.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/space/core/matrix.h>
+#include <vclib/mesh.h>
+#include <vclib/space/core.h>
 
 #include <functional>
 
@@ -30,13 +31,9 @@ namespace vcl {
  */
 class AbstractDrawableMesh : public vcl::DrawableObject
 {
-    inline static const Image EMPTY_IMAGE;
-
 protected:
     MeshRenderSettings mMRS;
     CrossSectionSettings mCSS;
-
-    Box3d mBoundingBox;
 
     std::function<void()> mOnSelectionUpdated;
 
@@ -69,24 +66,7 @@ public:
         mCSS = css;
     }
 
-    virtual uint vertexCount() const = 0;
-
-    virtual uint faceCount() const = 0;
-
-    virtual uint edgeCount() const = 0;
-
-    virtual vcl::Matrix44d modelMatrix() const = 0;
-
-    virtual View<MatIt> materials() const { return View<MatIt>(); }
-
-    virtual const Image& textureImage(const std::string& path) const
-    {
-        return EMPTY_IMAGE;
-    }
-
-    virtual uint selectedVertexCount() const { return 0; }
-
-    virtual uint selectedFaceCount() const { return 0; }
+    virtual const AbstractMeshProvider& meshProvider() const = 0;
 
     virtual void computeSelection(const SelectionParameters& params) {}
 
@@ -99,7 +79,10 @@ public:
 
     // DrawableObject implementation
 
-    Box3d boundingBox() const override { return mBoundingBox; }
+    Box3d boundingBox() const override
+    {
+        return meshProvider().transformedBoundingBox().template cast<double>();
+    }
 
     inline bool isVisible() const override { return mMRS.isVisible(); }
 
@@ -112,36 +95,6 @@ protected:
         vcl::DrawableObject::swap(other);
         swap(mMRS, other.mMRS);
         swap(mCSS, other.mCSS);
-        swap(mBoundingBox, other.mBoundingBox);
-    }
-
-    // if the mesh does not have a bounding box, or if it has it but it is
-    // null, compute it from the vertex positions. If the mesh has a
-    // transformation matrix, apply it to the bounding box.
-    // The DrawableMesh must return the *transformed* bounding box.
-    template<MeshConcept MeshType>
-    void computeBoundingBox(const MeshType& m)
-    {
-        bool bbToInitialize = !vcl::HasBoundingBox<MeshType>;
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
-            if (m.boundingBox().isNull()) {
-                bbToInitialize = true;
-            }
-            else {
-                mBoundingBox =
-                    m.MeshType::boundingBox().template cast<double>();
-            }
-        }
-
-        if (bbToInitialize) {
-            mBoundingBox = vcl::boundingBox(m).template cast<double>();
-        }
-
-        if constexpr (HasTransformMatrix<MeshType>) {
-            mBoundingBox = transformBox(
-                mBoundingBox,
-                Matrix44d(m.transformMatrix().template cast<double>()));
-        }
     }
 };
 
