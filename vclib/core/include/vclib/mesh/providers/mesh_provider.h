@@ -37,9 +37,7 @@ namespace vcl {
  */
 template<MeshConcept MeshType>
 class MeshProviderReference :
-        public MeshProviderMixin<
-            MeshProviderReference<MeshType>,
-            MeshType>
+        public MeshProviderMixin<MeshProviderReference<MeshType>, MeshType>
 {
 private:
     const MeshType* mMesh;

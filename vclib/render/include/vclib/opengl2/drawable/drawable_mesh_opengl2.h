@@ -11,8 +11,8 @@
 #include "mesh/mesh_render_vectors.h"
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/mesh/providers/mesh_provider.h>
+#include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
 
@@ -65,14 +65,13 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMeshOpenGL2 :
-        public AbstractDrawableMesh,
-        public MeshType
+class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
     using MRI = MeshRenderInfo;
 
-    MeshRenderVectors<MeshType> mMRD;
-    MeshProviderReference<MeshType> mProvider{static_cast<const MeshType&>(*this)};
+    MeshRenderVectors<MeshType>     mMRD;
+    MeshProviderReference<MeshType> mProvider {
+        static_cast<const MeshType&>(*this)};
 
     std::vector<uint> mTextID;
 
@@ -80,16 +79,14 @@ public:
     DrawableMeshOpenGL2() = default;
 
     DrawableMeshOpenGL2(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(mesh)
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
     }
 
     DrawableMeshOpenGL2(MeshType&& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(std::move(mesh))
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();

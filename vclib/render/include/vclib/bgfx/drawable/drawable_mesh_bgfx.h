@@ -31,22 +31,21 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         toUnderlying(Material::TextureType::COUNT);
 
 protected:
-    MeshRenderBuffers<MeshType> mMRB;
-    MeshProviderReference<MeshType> mProvider{static_cast<const MeshType&>(*this)};
+    MeshRenderBuffers<MeshType>     mMRB;
+    MeshProviderReference<MeshType> mProvider {
+        static_cast<const MeshType&>(*this)};
 
 public:
     DrawableMeshBGFX() = default;
 
     DrawableMeshBGFX(const MeshType& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(mesh)
+            AbstractDrawableMesh(mesh), MeshType(mesh)
     {
         updateBuffers();
     }
 
     DrawableMeshBGFX(MeshType&& mesh) :
-            AbstractDrawableMesh(mesh),
-            MeshType(std::move(mesh))
+            AbstractDrawableMesh(mesh), MeshType(std::move(mesh))
     {
         updateBuffers();
     }
@@ -92,7 +91,8 @@ public:
             if (params.mode.primitive == SelectionPrimitive::FACE)
                 return;
 
-        mMRB.computeSelection(params, this->transformMatrix().template cast<float>());
+        mMRB.computeSelection(
+            params, this->transformMatrix().template cast<float>());
     }
 
     bool isSelectionReadbackPending() const override
@@ -272,9 +272,15 @@ public:
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        // TODO: manage ID for wireframe
+        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawWireframeLinesId(settings.viewId, settings.objectId);
+        }
 
-        // TODO: manage ID for edges
+        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawEdgeLinesId(settings.viewId, settings.objectId);
+        }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());
