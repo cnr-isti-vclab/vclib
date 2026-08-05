@@ -255,6 +255,16 @@ protected:
     }
 
     /**
+     * @brief Returns the canvas frame buffer from the viewer.
+     * @return the canvas frame buffer handle.
+     */
+    auto viewerCanvasFrameBuffer() const
+    {
+        assert(mViewer);
+        return mViewer->canvasFrameBuffer();
+    }
+
+    /**
      * @brief Returns the current view matrix from the viewer.
      * @return the view matrix.
      */

@@ -523,6 +523,8 @@ public:
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
+    auto canvasFrameBuffer() const { return DRA::DRW::canvasFrameBuffer(derived()); }
+
     auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)

@@ -9,6 +9,7 @@
 #define VCL_BGFX_EDITORS_INFO_EDITOR_BGFX_H
 
 #include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/text/text_view.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/editors/editor.h>
 #include <vclib/space/complex/mesh_info.h>
@@ -28,6 +29,11 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
 
     vcl::Lines mOutlineLines;
 
+    vcl::TextView mTextView;
+    bool          mTextViewInitialized = false;
+
+    std::vector<vcl::Point3d> mLastFacePositions;
+
 public:
     InfoEditorBGFX()
     {
@@ -45,6 +51,9 @@ public:
     void setActive(bool active) override
     {
         Base::setActive(active);
+        if (mTextViewInitialized) {
+            mTextView.enableText(active);
+        }
         Base::viewerUpdate();
     }
 
@@ -71,6 +80,46 @@ public:
                 mOutlineLines.draw(viewId);
             }
         }
+
+        auto size = Base::viewerCanvasSize();
+        if (!mTextViewInitialized) {
+            mTextView.init(size.x(), size.y());
+            mTextView.enableText(Base::isActive());
+            mTextViewInitialized = true;
+        } else {
+            mTextView.resize(size.x(), size.y());
+        }
+
+        mTextView.clearText();
+
+        if (mLastObjectId != USHORT_NULL && mLastElementType == vcl::MeshInfo::FACE && mOutlineLines.hasPositions()) {
+            const auto& pts = mLastFacePositions;
+            if (pts.size() > 1) {
+                vcl::Point3d barycenter(0.0, 0.0, 0.0);
+                for (size_t i = 0; i < pts.size() - 1; ++i) {
+                    barycenter += pts[i];
+                }
+                barycenter /= double(pts.size() - 1);
+
+                vcl::Matrix44f mv = Base::viewerViewMatrix();
+                vcl::Matrix44f proj = Base::viewerProjectionMatrix();
+                vcl::Point4f p(barycenter.x(), barycenter.y(), barycenter.z(), 1.0f);
+                p = proj * (mv * p);
+                
+                if (p.w() != 0.0f) {
+                    p /= p.w();
+                    
+                    vcl::Point2f pos2D(
+                        (p.x() + 1.0f) * 0.5f * size.x(),
+                        (1.0f - p.y()) * 0.5f * size.y()
+                    );
+                    
+                    mTextView.appendTransientText(pos2D, "f # " + std::to_string(mLastElementId), vcl::Color::Black);
+                }
+            }
+        }
+
+        mTextView.frame(Base::viewerCanvasFrameBuffer());
     }
 
     bool onMousePress(
@@ -117,11 +166,13 @@ public:
                                     meshObj->meshProvider().transformMatrix();
                                 multiplyPointsByMatrix(positions, T);
                                 mOutlineLines.setVertices(positions);
+                                mLastFacePositions = positions;
                             }
                         }
                     }
                     else {
                         mOutlineLines.setVertices(std::vector<Point3d>());
+                        mLastFacePositions.clear();
                     }
 
                     Base::viewerUpdate();
