@@ -64,6 +64,8 @@ vcl::Key::Enum fromGLFW(Key key)
     case GLFW_KEY_Y: return vcl::Key::Y;
     case GLFW_KEY_Z: return vcl::Key::Z;
 
+    case GLFW_KEY_ESCAPE: return vcl::Key::ESCAPE;
+
     case GLFW_KEY_LEFT: return vcl::Key::LEFT;
     case GLFW_KEY_RIGHT: return vcl::Key::RIGHT;
     case GLFW_KEY_UP: return vcl::Key::UP;

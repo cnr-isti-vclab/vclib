@@ -14,6 +14,7 @@
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
+#include <QAction>
 #include <QActionGroup>
 #include <QDockWidget>
 
@@ -95,6 +96,10 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     auto* trackballFrame = new TrackBallFrame(viewer());
     mUI->toolBar->addWidget(trackballFrame);
+
+    mUI->toolBar->addSeparator();
+    auto* notEditingFrame = new NotEditingFrame(viewer());
+    mUI->toolBar->addWidget(notEditingFrame);
 
     disableFocus(mUI->toolBar);
 

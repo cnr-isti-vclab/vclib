@@ -38,6 +38,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 
     bool mReadRequested = false;
 
+    bool mEditorsEventsEnabled = true;
+    std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
+
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
@@ -77,6 +80,30 @@ public:
     }
 
     ~AbstractViewerDrawer() = default;
+
+    bool isEditorsEventsEnabled() const { return mEditorsEventsEnabled; }
+
+    void setEditorsEventsEnabled(bool enabled)
+    {
+        if (mEditorsEventsEnabled != enabled) {
+            mEditorsEventsEnabled = enabled;
+            if (mOnEditorsEventsEnabledChangedCallback) {
+                mOnEditorsEventsEnabledChangedCallback(mEditorsEventsEnabled);
+            }
+            requestUpdate();
+        }
+    }
+
+    void toggleEditorsEventsEnabled()
+    {
+        setEditorsEventsEnabled(!mEditorsEventsEnabled);
+    }
+
+    void setOnEditorsEventsEnabledChangedCallback(
+        std::function<void(bool)> callback)
+    {
+        mOnEditorsEventsEnabledChangedCallback = std::move(callback);
+    }
 
     const DrawableObjectVector& drawableObjectVector() const
     {
@@ -341,9 +368,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyPress(key, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyPress(key, modifiers);
+            }
         }
 
         if (!block)
@@ -351,6 +380,12 @@ public:
 
         if (!block) {
             switch (key) {
+            case Key::ESCAPE:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    toggleEditorsEventsEnabled();
+                    block = true;
+                }
+                break;
             case Key::R:
                 if (modifiers[KeyModifier::NO_MODIFIER])
                     fitScene();
@@ -375,9 +410,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyRelease(key, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyRelease(key, modifiers);
+            }
         }
 
         if (!block)
@@ -390,9 +427,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseMove(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseMove(x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -409,9 +448,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMousePress(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMousePress(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -428,9 +469,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseRelease(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseRelease(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -447,9 +490,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseDoubleClick(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseDoubleClick(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -463,9 +508,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseScroll(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseScroll(x, y, modifiers);
+            }
         }
 
         if (!block)
