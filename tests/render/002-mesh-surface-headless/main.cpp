@@ -11,7 +11,7 @@
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/io.h>
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -41,7 +41,8 @@ vcl::DrawableMesh<MeshType> getDrawableMesh(const std::string& filename)
 
 void runRenderTest(
     const std::string&                            testName,
-    std::function<void(vcl::HeadlessMeshViewer&)> setup)
+    std::function<void(vcl::HeadlessMeshViewer&)> setup,
+    float                                         angleY = 0.0f)
 {
     vcl::HeadlessMeshViewer mv("Headless Mesh Viewer", 1920, 1080);
 
@@ -50,6 +51,10 @@ void runRenderTest(
 
     // Apply fitscene to center everything
     mv.fitScene();
+
+    if (angleY != 0.0f) {
+        mv.trackballRotate(vcl::Point3f(0.0f, 1.0f, 0.0f), angleY);
+    }
 
     vcl::Image renderedImage;
     // this auto concludes loop
@@ -85,8 +90,9 @@ void runRenderTest(
 
     // WARP software rasterizer has a bug with SV_PrimitiveID on indexed
     // meshes without a Geometry Shader. It returns scrambled indices.
-    if (!isWARP || (testName != "color_face" && testName != "shading_flat" &&
-                    testName != "surface_selection")) {
+    if (!isWARP ||
+        (testName != "color_face" && testName != "shading_flat" &&
+         testName != "surface_selection" && testName != "polygon_selection")) {
         REQUIRE(match);
     }
 }
@@ -285,5 +291,28 @@ TEST_CASE("Mesh Surface Selection")
 
             mv.pushDrawableObject(std::move(mesh));
         });
+    }
+
+    SECTION("Polygon Selection")
+    {
+        runRenderTest("polygon_selection", [](vcl::HeadlessMeshViewer& mv) {
+            auto mesh = getDrawableMesh<vcl::PolyMesh>("spot/spot_quadrangulated.obj");
+
+            mesh.updateRenderSettingsCapabilities();
+
+            // Deterministically assign selection to faces
+            for (auto& f : mesh.faces()) {
+                if (f.index() % 3 == 0)
+                    f.selected() = true;
+            }
+            mesh.updateBuffers();
+
+            auto settings = mesh.renderSettings();
+            settings.setSurface(vcl::MeshRenderInfo::Surface::SELECTION);
+            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE);
+            mesh.setRenderSettings(settings);
+
+            mv.pushDrawableObject(std::move(mesh));
+        }, 1.57079632679f);
     }
 }
