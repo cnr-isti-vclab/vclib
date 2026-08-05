@@ -20,7 +20,7 @@ void main()
     }
 #endif
 
-    // Target 0: Object ID (16 bit) + Element Type (16 bit) (già combinati in u_pointsId)
+    // Target 0: Object ID (16 bit) + Element Type (16 bit) (already combined in u_pointsId)
     gl_FragData[0] = u_pointsId;
     
     // Target 1: Element ID (32 bit)

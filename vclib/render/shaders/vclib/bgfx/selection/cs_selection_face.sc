@@ -9,12 +9,12 @@
 
 #include <vclib/bgfx/selection/uniforms.sh>
 
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
 BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
 
 BUFFER_RO(indices, uint, 5);
 BUFFER_RW(face_selected, uint, 12); // is face selected? 1 bit per triangle (MSb first)
-
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER); // poly_to_tri_begin[polyIdx] = first triangle index

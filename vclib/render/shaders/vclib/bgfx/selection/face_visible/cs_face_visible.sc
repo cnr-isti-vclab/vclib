@@ -7,12 +7,12 @@
 
 #include <vclib/bgfx/selection/uniforms.sh>
 
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
 // INFO: the two textures MUST be of the same size
 IMAGE2D_RO(s_primIds, rgba8, 0);
 IMAGE2D_RO(s_meshIds, rgba8, 1);
 BUFFER_RW(face_selected, uint, 12);
-
-#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
 BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);       // tri_to_poly[triIdx] = polyIdx
 BUFFER_RO(poly_to_tri_begin, uint, VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER); // poly_to_tri_begin[polyIdx] = first triangle index

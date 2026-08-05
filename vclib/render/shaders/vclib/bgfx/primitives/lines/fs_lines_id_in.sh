@@ -11,7 +11,7 @@ $input v_color, v_normal, v_lineIndex
 #include <vclib/bgfx/shaders_common.sh>
 
 void main() {
-    // Target 0: Object ID (16 bit) + Element Type (16 bit) (combinati in u_linesId)
+    // Target 0: Object ID (16 bit) + Element Type (16 bit) (combined in u_linesId)
     gl_FragData[0] = u_linesId;
     
     // Target 1: Element ID (32 bit)
