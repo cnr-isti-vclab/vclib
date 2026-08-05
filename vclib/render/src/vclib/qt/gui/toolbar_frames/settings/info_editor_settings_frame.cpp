@@ -22,16 +22,22 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
 
     assert(mSettings.customSettings.at("color").has_value());
     assert(mSettings.customSettings.at("thickness").has_value());
+    assert(mSettings.customSettings.at("text_color").has_value());
+    assert(mSettings.customSettings.at("text_size").has_value());
 
     Color c = std::any_cast<Color>(mSettings.customSettings.at("color"));
-
-    float thickness =
-        std::any_cast<float>(mSettings.customSettings.at("thickness"));
+    float thickness = std::any_cast<float>(mSettings.customSettings.at("thickness"));
+    Color tc = std::any_cast<Color>(mSettings.customSettings.at("text_color"));
+    int textSize = std::any_cast<int>(mSettings.customSettings.at("text_size"));
 
     mUI->editModeFrame->hide();
     mUI->linesWidthSlider->setValue(int(thickness));
     mUI->colorPushButton->setBackgroundColor(
         QColor(c.red(), c.green(), c.blue(), c.alpha()));
+        
+    mUI->textSizeSpinBox->setValue(textSize);
+    mUI->textColorPushButton->setBackgroundColor(
+        QColor(tc.red(), tc.green(), tc.blue(), tc.alpha()));
 
     connect(
         mUI->linesWidthSlider,
@@ -44,6 +50,18 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onColorChanged(const QColor&)));
+
+    connect(
+        mUI->textSizeSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &InfoEditorSettingsFrame::onTextSizeChanged);
+
+    connect(
+        mUI->textColorPushButton,
+        SIGNAL(colorChanged(const QColor&)),
+        this,
+        SLOT(onTextColorChanged(const QColor&)));
 }
 
 InfoEditorSettingsFrame::~InfoEditorSettingsFrame()
@@ -60,6 +78,19 @@ void InfoEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 void InfoEditorSettingsFrame::onColorChanged(const QColor& c)
 {
     mSettings.customSettings["color"] =
+        Color(c.red(), c.green(), c.blue(), c.alpha());
+    emit settingsUpdated();
+}
+
+void InfoEditorSettingsFrame::onTextSizeChanged(int value)
+{
+    mSettings.customSettings["text_size"] = value;
+    emit settingsUpdated();
+}
+
+void InfoEditorSettingsFrame::onTextColorChanged(const QColor& c)
+{
+    mSettings.customSettings["text_color"] =
         Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }

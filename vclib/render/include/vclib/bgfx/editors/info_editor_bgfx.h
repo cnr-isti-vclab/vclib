@@ -34,11 +34,16 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
 
     std::vector<vcl::Point3d> mLastFacePositions;
 
+    vcl::Color mTextColor = vcl::Color::Black;
+    int        mTextSize  = 20;
+
 public:
     InfoEditorBGFX()
     {
         Base::settings().customSettings["color"] = vcl::Color(vcl::Color::Red);
         Base::settings().customSettings["thickness"] = 5.0f;
+        Base::settings().customSettings["text_color"] = vcl::Color(vcl::Color::Black);
+        Base::settings().customSettings["text_size"] = 20;
 
         mOutlineLines.setGeneralColor(vcl::Color::Red);
         mOutlineLines.setWidth(5.0f);
@@ -69,6 +74,18 @@ public:
                 std::any_cast<float>(
                     Base::settings().customSettings.at("thickness")));
         }
+        if (Base::settings().customSettings.count("text_color")) {
+            mTextColor = std::any_cast<vcl::Color>(
+                Base::settings().customSettings.at("text_color"));
+        }
+        if (Base::settings().customSettings.count("text_size")) {
+            mTextSize = std::any_cast<int>(
+                Base::settings().customSettings.at("text_size"));
+            if (mTextViewInitialized) {
+                auto dpi = Base::viewerDpiScale();
+                mTextView.setTextFont(vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
+            }
+        }
         Base::viewerUpdate();
     }
 
@@ -85,7 +102,7 @@ public:
         if (!mTextViewInitialized) {
             mTextView.init(size.x(), size.y());
             auto dpi = Base::viewerDpiScale();
-            mTextView.setTextFont(vcl::VclFont::DROID_SANS, 20 * dpi.x());
+            mTextView.setTextFont(vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
             mTextView.enableText(Base::isActive());
             mTextViewInitialized = true;
         } else {
@@ -116,7 +133,7 @@ public:
                         (1.0f - p.y()) * 0.5f * size.y()
                     );
                     
-                    mTextView.appendTransientText(pos2D, "f # " + std::to_string(mLastElementId), vcl::Color::Black);
+                    mTextView.appendTransientText(pos2D, "f # " + std::to_string(mLastElementId), mTextColor);
                 }
             }
         }
