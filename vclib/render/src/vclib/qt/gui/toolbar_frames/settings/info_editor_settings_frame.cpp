@@ -31,8 +31,8 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
     int textSize = std::any_cast<int>(mSettings.customSettings.at("text_size"));
 
     mUI->editModeFrame->hide();
-    mUI->linesWidthSlider->setValue(int(thickness));
-    mUI->colorPushButton->setBackgroundColor(
+    mUI->highlightWidthSlider->setValue(int(thickness));
+    mUI->highlightColorPushButton->setBackgroundColor(
         QColor(c.red(), c.green(), c.blue(), c.alpha()));
         
     mUI->textSizeSpinBox->setValue(textSize);
@@ -40,13 +40,13 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
         QColor(tc.red(), tc.green(), tc.blue(), tc.alpha()));
 
     connect(
-        mUI->linesWidthSlider,
+        mUI->highlightWidthSlider,
         &QSlider::valueChanged,
         this,
         &InfoEditorSettingsFrame::onLinesWidthSliderValueChanged);
 
     connect(
-        mUI->colorPushButton,
+        mUI->highlightColorPushButton,
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onColorChanged(const QColor&)));

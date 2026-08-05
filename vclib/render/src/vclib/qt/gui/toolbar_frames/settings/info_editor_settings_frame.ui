@@ -15,9 +15,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="QLabel" name="linesWidthLabel">
+    <widget class="QLabel" name="highlightWidthLabel">
      <property name="text">
-      <string>Lines Width:</string>
+      <string>Highlight Width:</string>
      </property>
     </widget>
    </item>
@@ -32,7 +32,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QSlider" name="linesWidthSlider">
+    <widget class="QSlider" name="highlightWidthSlider">
      <property name="minimum">
       <number>1</number>
      </property>
@@ -48,14 +48,14 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="highlightColorLabel">
      <property name="text">
-      <string>Lines Color:</string>
+      <string>Highlight Color:</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="vcl::qt::ColorPushButton" name="colorPushButton">
+    <widget class="vcl::qt::ColorPushButton" name="highlightColorPushButton">
      <property name="text">
       <string/>
      </property>

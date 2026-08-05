@@ -61,10 +61,10 @@ private:
     {
         vcl::EditorSettings& sts = mEditor->settings();
 
-        // Lines width
+        // Highlight width
         assert(sts.customSettings.count("thickness"));
         float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
-        ImGui::Text("Lines Width:");
+        ImGui::Text("Highlight Width:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
         if (ImGui::SliderFloat(
@@ -73,9 +73,9 @@ private:
             mEditor->refreshSettings();
         }
 
-        // Lines color
+        // Highlight color
         assert(sts.customSettings.count("color"));
-        ImGui::Text("Lines Color:");
+        ImGui::Text("Highlight Color:");
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##InfoColor",

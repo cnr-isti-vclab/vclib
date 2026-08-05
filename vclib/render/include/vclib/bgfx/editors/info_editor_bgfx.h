@@ -9,10 +9,13 @@
 #define VCL_BGFX_EDITORS_INFO_EDITOR_BGFX_H
 
 #include <vclib/bgfx/primitives/lines.h>
+#include <vclib/bgfx/primitives/points.h>
 #include <vclib/bgfx/text/text_view.h>
+
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/editors/editor.h>
-#include <vclib/space/complex/mesh_info.h>
+
+#include <vclib/space/complex.h>
 
 #include <iostream>
 #include <optional>
@@ -28,13 +31,14 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
     ushort mLastElementType = USHORT_NULL;
     uint   mLastElementId   = 0;
 
-    vcl::Lines mOutlineLines;
+    vcl::Lines  mOutlineLines;
+    vcl::Points mOutlinePoints;
 
     vcl::TextView mTextView;
     bool          mTextViewInitialized = false;
 
-    std::vector<vcl::Point3d> mLastFacePositions;
-    std::vector<uint>         mLastFaceVertexIds;
+    std::vector<vcl::Point3d> mLastElementPositions;
+    std::vector<uint>         mLastElementVertexIds;
 
     vcl::Color mTextColor = vcl::Color::Black;
     int        mTextSize  = 20;
@@ -52,6 +56,11 @@ public:
         mOutlineLines.setWidth(5.0f);
         mOutlineLines.setTopology(vcl::Lines::Topology::LINE_STRIP);
         mOutlineLines.setDepthOffset(0.00012f);
+
+        mOutlinePoints.setGeneralColor(vcl::Color::Red);
+        mOutlinePoints.setSize(5.0f);
+        mOutlinePoints.setShape(vcl::Points::Shape::CIRCLE);
+        mOutlinePoints.setDepthOffset(0.00012f);
     }
 
     // Editor implementation
@@ -68,14 +77,16 @@ public:
     void refreshSettings() override
     {
         if (Base::settings().customSettings.count("color")) {
-            mOutlineLines.setGeneralColor(
-                std::any_cast<vcl::Color>(
-                    Base::settings().customSettings.at("color")));
+            auto c = std::any_cast<vcl::Color>(
+                Base::settings().customSettings.at("color"));
+            mOutlineLines.setGeneralColor(c);
+            mOutlinePoints.setGeneralColor(c);
         }
         if (Base::settings().customSettings.count("thickness")) {
-            mOutlineLines.setWidth(
-                std::any_cast<float>(
-                    Base::settings().customSettings.at("thickness")));
+            auto w = std::any_cast<float>(
+                Base::settings().customSettings.at("thickness"));
+            mOutlineLines.setWidth(w);
+            mOutlinePoints.setSize(w);
         }
         if (Base::settings().customSettings.count("text_color")) {
             mTextColor = std::any_cast<vcl::Color>(
@@ -95,10 +106,15 @@ public:
 
     void draw(uint viewId) override
     {
-        if (mLastObjectId != USHORT_NULL &&
-            mLastElementType == vcl::MeshInfo::FACE) {
-            if (mOutlineLines.hasPositions()) {
+        if (mLastObjectId != USHORT_NULL) {
+            if (mLastElementType == vcl::MeshInfo::FACE &&
+                mOutlineLines.hasPositions()) {
                 mOutlineLines.draw(viewId);
+            }
+            else if (
+                mLastElementType == vcl::MeshInfo::VERTEX &&
+                mOutlinePoints.hasPositions()) {
+                mOutlinePoints.draw(viewId);
             }
         }
 
@@ -117,10 +133,16 @@ public:
 
         mTextView.clearText();
 
-        if (mLastObjectId != USHORT_NULL &&
-            mLastElementType == vcl::MeshInfo::FACE &&
-            mOutlineLines.hasPositions()) {
-            drawFaceInfo(viewId, size);
+        if (mLastObjectId != USHORT_NULL) {
+            if (mLastElementType == vcl::MeshInfo::FACE &&
+                mOutlineLines.hasPositions()) {
+                drawFaceInfo(viewId, size);
+            }
+            else if (
+                mLastElementType == vcl::MeshInfo::VERTEX &&
+                mOutlinePoints.hasPositions()) {
+                drawVertexInfo(viewId, size);
+            }
         }
 
         mTextView.frame(Base::viewerCanvasFrameBuffer());
@@ -174,15 +196,34 @@ public:
                             auto T = meshObj->meshProvider().transformMatrix();
                             multiplyPointsByMatrix(positions, T);
                             mOutlineLines.setVertices(positions);
-                            mLastFacePositions = positions;
-                            mLastFaceVertexIds = vIds;
+                            mLastElementPositions = positions;
+                            mLastElementVertexIds = vIds;
+                        }
+                    }
+                }
+                else if (elementType == vcl::MeshInfo::VERTEX) {
+                    auto list = Base::drawList();
+                    if (list && objectId < list->size()) {
+                        auto obj     = list->at(objectId);
+                        auto meshObj = std::dynamic_pointer_cast<
+                            vcl::AbstractDrawableMesh>(obj);
+                        if (meshObj) {
+                            auto pos = meshObj->meshProvider().vertexPosition(
+                                elementId);
+                            auto T = meshObj->meshProvider().transformMatrix();
+                            std::vector<vcl::Point3d> positions = {pos};
+                            multiplyPointsByMatrix(positions, T);
+                            mOutlinePoints.setVertices(positions);
+                            mLastElementPositions = positions;
+                            mLastElementVertexIds = {elementId};
                         }
                     }
                 }
                 else {
                     mOutlineLines.setVertices(std::vector<Point3d>());
-                    mLastFacePositions.clear();
-                    mLastFaceVertexIds.clear();
+                    mOutlinePoints.setVertices(std::vector<Point3d>());
+                    mLastElementPositions.clear();
+                    mLastElementVertexIds.clear();
                 }
 
                 Base::viewerUpdate();
@@ -214,7 +255,7 @@ private:
 
     void drawFaceInfo(uint viewId, const Point2<uint>& size)
     {
-        const auto& pts = mLastFacePositions;
+        const auto& pts = mLastElementPositions;
         if (pts.size() > 1) {
             vcl::Point3d barycenter(0.0, 0.0, 0.0);
             for (size_t i = 0; i < pts.size() - 1; ++i) {
@@ -229,9 +270,9 @@ private:
             if (auto pos2D = projectPoint(barycenter, mv, proj, size)) {
                 std::stringstream faceSS;
                 faceSS << "f#" << mLastElementId << " - v#(";
-                for (size_t i = 0; i < mLastFaceVertexIds.size(); ++i) {
-                    faceSS << mLastFaceVertexIds[i];
-                    if (i < mLastFaceVertexIds.size() - 1)
+                for (size_t i = 0; i < mLastElementVertexIds.size(); ++i) {
+                    faceSS << mLastElementVertexIds[i];
+                    if (i < mLastElementVertexIds.size() - 1)
                         faceSS << ", ";
                 }
                 faceSS << ")";
@@ -240,15 +281,31 @@ private:
             }
 
             // Draw vertex info at each vertex position
-            for (size_t i = 0; i < mLastFaceVertexIds.size(); ++i) {
+            for (size_t i = 0; i < mLastElementVertexIds.size(); ++i) {
                 if (auto pos2D = projectPoint(pts[i], mv, proj, size)) {
                     std::stringstream vertSS;
-                    vertSS << "fv[" << i << "] : v#" << mLastFaceVertexIds[i]
+                    vertSS << "fv[" << i << "] : v#" << mLastElementVertexIds[i]
                            << " - pos " << pts[i];
 
                     mTextView.appendTransientText(
                         *pos2D, vertSS.str(), mTextColor);
                 }
+            }
+        }
+    }
+
+    void drawVertexInfo(uint viewId, const Point2<uint>& size)
+    {
+        const auto& pts = mLastElementPositions;
+        if (!pts.empty() && !mLastElementVertexIds.empty()) {
+            vcl::Matrix44f mv   = Base::viewerViewMatrix();
+            vcl::Matrix44f proj = Base::viewerProjectionMatrix();
+
+            if (auto pos2D = projectPoint(pts[0], mv, proj, size)) {
+                std::stringstream vertSS;
+                vertSS << "v#" << mLastElementVertexIds[0] << " - pos "
+                       << pts[0];
+                mTextView.appendTransientText(*pos2D, vertSS.str(), mTextColor);
             }
         }
     }
