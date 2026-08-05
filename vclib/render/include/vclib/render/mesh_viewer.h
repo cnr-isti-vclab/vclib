@@ -66,9 +66,9 @@ struct MeshViewer
 
 inline void pushDefaultEditors(MeshViewerConcept auto& viewer)
 {
-    viewer.template pushEditor<InfoEditor>(false);
     viewer.template pushEditor<MeshSelectorEditor>(true);
     viewer.template pushEditor<BoundingBoxEditor>();
+    viewer.template pushEditor<InfoEditor>();
     viewer.template pushEditor<SelectionEditor>();
 }
 
