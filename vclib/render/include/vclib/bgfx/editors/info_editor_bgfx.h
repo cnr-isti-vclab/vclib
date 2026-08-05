@@ -103,7 +103,7 @@ public:
         Base::viewerUpdate();
     }
 
-    void draw(uint viewId) override
+    void drawContent(uint viewId) override
     {
         if (mLastObjectId != USHORT_NULL) {
             if (mLastElementType == vcl::MeshInfo::FACE &&
