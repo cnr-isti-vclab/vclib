@@ -84,6 +84,8 @@ public:
         auto size = Base::viewerCanvasSize();
         if (!mTextViewInitialized) {
             mTextView.init(size.x(), size.y());
+            auto dpi = Base::viewerDpiScale();
+            mTextView.setTextFont(vcl::VclFont::DROID_SANS, 20 * dpi.x());
             mTextView.enableText(Base::isActive());
             mTextViewInitialized = true;
         } else {

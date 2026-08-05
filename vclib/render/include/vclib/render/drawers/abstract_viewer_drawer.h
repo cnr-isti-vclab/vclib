@@ -527,6 +527,8 @@ public:
 
     auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
 
+    auto dpiScale() const { return DRA::DRW::dpiScale(derived()); }
+
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;

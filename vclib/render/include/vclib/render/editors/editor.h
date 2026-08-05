@@ -255,6 +255,16 @@ protected:
     }
 
     /**
+     * @brief Returns the DPI scale of the window from the viewer.
+     * @return the DPI scale.
+     */
+    auto viewerDpiScale() const
+    {
+        assert(mViewer);
+        return mViewer->dpiScale();
+    }
+
+    /**
      * @brief Returns the canvas frame buffer from the viewer.
      * @return the canvas frame buffer handle.
      */
