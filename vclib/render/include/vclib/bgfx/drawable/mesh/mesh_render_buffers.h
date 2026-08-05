@@ -10,6 +10,7 @@
 
 #include "mesh_render_buffers_macros.h"
 #include "mesh_selection_buffers.h"
+#include "mesh_poly_mapping_buffers.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
@@ -52,6 +53,7 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
     Points mPoints;
 
     MeshSelectionBuffers mSelection;
+    MeshPolyMappingBuffers mPolyMapping;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -120,6 +122,7 @@ public:
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMeshColor, other.mMeshColor);
         swap(mSelection, other.mSelection);
+        swap(mPolyMapping, other.mPolyMapping);
         swap(mMaterialTextures, other.mMaterialTextures);
 
         updateLinesVertexBuffers(*this, mEdgeLines);
@@ -146,7 +149,7 @@ public:
         const Matrix44f&           model)
     {
         mSelection.computeSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer, mPolyMapping);
     }
 
     // called on draw
@@ -169,6 +172,11 @@ public:
     void bindSelectedFacesBuffer() const
     {
         mSelection.bindSelectedFacesBuffer();
+    }
+
+    void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
+    {
+        mPolyMapping.bindTriToPolyBuffer(stage);
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -555,7 +563,7 @@ private:
         // fillTriangleIndices() above has already populated
         // Base::triPolyIndexMap().
         if (Context::instance().supportsCompute() && nt > 0) {
-            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
+            mPolyMapping.init(Base::triPolyIndexMap(), nt);
         }
     }
 

@@ -261,6 +261,7 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
+            mMRB.bindTriToPolyBuffer();
             DrawableMeshUniforms::setMeshId(settings.objectId | vcl::ElemId::FACE);
             DrawableMeshUniforms::setFirstChunkIndex(0);
             bindUniforms();

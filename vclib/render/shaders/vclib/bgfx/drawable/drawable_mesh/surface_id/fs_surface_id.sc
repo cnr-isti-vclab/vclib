@@ -9,6 +9,10 @@
 
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
 
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
+BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);
+
 void main()
 {
     // Target 0: Object ID (16 bit) + Element Type (16 bit) (già combinati in u_meshId)
@@ -17,5 +21,6 @@ void main()
     
     // Target 1: Element ID (32 bit)
     uint elementId = gl_PrimitiveID + u_firstChunkPrimitiveID;
-    gl_FragData[1] = uintABGRToVec4Color(elementId);
+    uint polyId = tri_to_poly[elementId];
+    gl_FragData[1] = uintABGRToVec4Color(polyId);
 }

@@ -12,9 +12,11 @@ IMAGE2D_RO(s_primIds, rgba8, 0);
 IMAGE2D_RO(s_meshIds, rgba8, 1);
 BUFFER_RW(face_selected, uint, 12);
 
-BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
-BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
-BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
+BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);       // tri_to_poly[triIdx] = polyIdx
+BUFFER_RO(poly_to_tri_begin, uint, VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER); // poly_to_tri_begin[polyIdx] = first triangle index
+BUFFER_RO(poly_to_tri_count, uint, VCL_MRB_POLY_TO_TRI_COUNT_BUFFER); // poly_to_tri_count[polyIdx] = number of triangles
 
 uint texVec4ToUint(vec4 pixel) {
     return
