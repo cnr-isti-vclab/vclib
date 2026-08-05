@@ -78,6 +78,8 @@ struct Key
         Y = 0x59,
         Z = 0x5a,
 
+        ESCAPE = 0x01000000,
+
         LEFT  = 0x01000012,
         UP    = 0x01000013,
         RIGHT = 0x01000014,
