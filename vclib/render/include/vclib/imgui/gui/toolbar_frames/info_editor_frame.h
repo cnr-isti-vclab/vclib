@@ -87,6 +87,32 @@ private:
                 mEditor->refreshSettings();
             },
             ImGuiColorEditFlags_NoInputs);
+        // Text Size
+        assert(sts.customSettings.count("text_size"));
+        int textSize = std::any_cast<int>(sts.customSettings["text_size"]);
+        ImGui::Text("Text Size:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::SliderInt(
+                "##InfoTextSize", &textSize, 5, 100)) {
+            sts.customSettings["text_size"] = textSize;
+            mEditor->refreshSettings();
+        }
+
+        // Text Color
+        assert(sts.customSettings.count("text_color"));
+        ImGui::Text("Text Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##InfoTextColor",
+            [&] {
+                return std::any_cast<vcl::Color>(sts.customSettings["text_color"]);
+            },
+            [&](vcl::Color c) {
+                sts.customSettings["text_color"] = c;
+                mEditor->refreshSettings();
+            },
+            ImGuiColorEditFlags_NoInputs);
     }
 };
 
