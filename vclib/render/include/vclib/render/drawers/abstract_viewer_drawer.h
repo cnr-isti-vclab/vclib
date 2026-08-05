@@ -346,6 +346,16 @@ public:
         mDrawList->init();
     }
 
+    void onDrawContent(uint viewId) override
+    {
+        Base::onDrawContent(viewId);
+
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->drawContent(viewId);
+        }
+    }
+
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
