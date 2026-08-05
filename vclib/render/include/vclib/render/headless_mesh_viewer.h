@@ -13,6 +13,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/headless_manager.h>
+#include <vclib/render/input.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
 
@@ -297,6 +298,64 @@ public:
      * @return The background color.
      */
     const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
+
+    /**
+     * @brief Simulates a key press event.
+     */
+    void simulateKeyPress(vcl::Key::Enum key) { mApp.simulateKeyPress(key); }
+
+    /**
+     * @brief Simulates a key release event.
+     */
+    void simulateKeyRelease(vcl::Key::Enum key) { mApp.simulateKeyRelease(key); }
+
+    /**
+     * @brief Simulates a mouse move event.
+     */
+    void simulateMouseMove(double x, double y) { mApp.simulateMouseMove(x, y); }
+
+    /**
+     * @brief Simulates a mouse press event.
+     */
+    void simulateMousePress(vcl::MouseButton::Enum button, double x, double y)
+    {
+        mApp.simulateMousePress(button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse release event.
+     */
+    void simulateMouseRelease(vcl::MouseButton::Enum button, double x, double y)
+    {
+        mApp.simulateMouseRelease(button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse double click event.
+     */
+    void simulateMouseDoubleClick(
+        vcl::MouseButton::Enum button,
+        double                 x,
+        double                 y)
+    {
+        mApp.simulateMouseDoubleClick(button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse scroll event.
+     */
+    void simulateMouseScroll(double x, double y)
+    {
+        mApp.simulateMouseScroll(x, y);
+    }
+
+    /**
+     * @brief Simulates setting the key modifiers.
+     */
+    void simulateSetModifiers(const vcl::KeyModifiers& modifiers)
+    {
+        mApp.simulateSetModifiers(modifiers);
+    }
 };
 
 } // namespace vcl

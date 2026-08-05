@@ -9,6 +9,7 @@
 #define VCL_RENDER_HEADLESS_MANAGER_H
 
 #include <vclib/render/concepts/render_app.h>
+#include <vclib/render/input.h>
 #include <vclib/render/window_managers.h>
 
 #include <vclib/space/core.h>
@@ -163,6 +164,73 @@ public:
      * loop.
      */
     void update() { mUpdateRequested = true; }
+
+    /**
+     * @brief Simulates a key press event.
+     */
+    void simulateKeyPress(vcl::Key::Enum key)
+    {
+        DerivedRenderApp::WM::keyPress(derived(), key);
+    }
+
+    /**
+     * @brief Simulates a key release event.
+     */
+    void simulateKeyRelease(vcl::Key::Enum key)
+    {
+        DerivedRenderApp::WM::keyRelease(derived(), key);
+    }
+
+    /**
+     * @brief Simulates a mouse move event.
+     */
+    void simulateMouseMove(double x, double y)
+    {
+        DerivedRenderApp::WM::mouseMove(derived(), x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse press event.
+     */
+    void simulateMousePress(vcl::MouseButton::Enum button, double x, double y)
+    {
+        DerivedRenderApp::WM::mousePress(derived(), button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse release event.
+     */
+    void simulateMouseRelease(vcl::MouseButton::Enum button, double x, double y)
+    {
+        DerivedRenderApp::WM::mouseRelease(derived(), button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse double click event.
+     */
+    void simulateMouseDoubleClick(
+        vcl::MouseButton::Enum button,
+        double                 x,
+        double                 y)
+    {
+        DerivedRenderApp::WM::mouseDoubleClick(derived(), button, x, y);
+    }
+
+    /**
+     * @brief Simulates a mouse scroll event.
+     */
+    void simulateMouseScroll(double x, double y)
+    {
+        DerivedRenderApp::WM::mouseScroll(derived(), x, y);
+    }
+
+    /**
+     * @brief Simulates setting the key modifiers.
+     */
+    void simulateSetModifiers(const vcl::KeyModifiers& modifiers)
+    {
+        DerivedRenderApp::WM::setModifiers(derived(), modifiers);
+    }
 
     /**
      * @brief Toggles continuous redraw mode.
