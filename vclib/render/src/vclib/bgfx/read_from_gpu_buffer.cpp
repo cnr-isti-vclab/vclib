@@ -107,7 +107,7 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
         mReadData = ByteData(pixelCount * 4);
 
     auto& ctx        = Context::instance();
-    mViewOffscreenId = ctx.requestViewId();
+    mViewOffscreenId = ctx.requestViewId(false);
 
     // Determine clear color (ID uses the null-ID as clear)
     const uint32_t clearValue =

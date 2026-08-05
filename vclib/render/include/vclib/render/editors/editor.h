@@ -95,11 +95,22 @@ public:
      * @brief Draws the editor content for the given view.
      *
      * This function is called at every frame by the viewer when the editor is
-     * active. Subclasses must implement this function to draw their content.
+     * active, during the content drawing pass. Subclasses may implement this
+     * function to draw their content.
      *
      * @param[in] viewId: the identifier of the view to draw into.
      */
-    virtual void draw(uint viewId) = 0;
+    virtual void drawContent(uint viewId) {}
+
+    /**
+     * @brief Draws the editor for the given view.
+     *
+     * This function is called at every frame by the viewer when the editor is
+     * active.
+     *
+     * @param[in] viewId: the identifier of the view to draw into.
+     */
+    virtual void draw(uint viewId) {}
 
     /**
      * @brief Called when a keyboard key is pressed.
