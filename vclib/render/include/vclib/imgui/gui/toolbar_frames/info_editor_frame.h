@@ -12,6 +12,8 @@
 
 #include <vclib/render/editors/info_editor.h>
 
+#include <vclib/space/core.h>
+
 #include <imgui/imgui.h>
 
 #include <memory>
@@ -25,8 +27,7 @@ class InfoEditorFrameImgui : public EditorFrameImgui
 
 public:
     explicit InfoEditorFrameImgui(
-        std::shared_ptr<vcl::InfoEditor<ViewerType>> editor) :
-            mEditor(editor)
+        std::shared_ptr<vcl::InfoEditor<ViewerType>> editor) : mEditor(editor)
     {
     }
 
@@ -41,6 +42,51 @@ public:
         }
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
             ImGui::SetTooltip("Info Tool");
+
+        ImGui::SameLine(0, 2);
+        if (ImGui::Button("v##InfoSettings")) {
+            ImGui::OpenPopup("##InfoSettingsPopup");
+        }
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+            ImGui::SetTooltip("Info Tool Settings");
+
+        if (ImGui::BeginPopup("##InfoSettingsPopup")) {
+            drawInfoSettings();
+            ImGui::EndPopup();
+        }
+    }
+
+private:
+    void drawInfoSettings()
+    {
+        vcl::EditorSettings& sts = mEditor->settings();
+
+        // Lines width
+        assert(sts.customSettings.count("thickness"));
+        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
+        ImGui::Text("Lines Width:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(130);
+        if (ImGui::SliderFloat(
+                "##InfoThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
+            sts.customSettings["thickness"] = thickness;
+            mEditor->refreshSettings();
+        }
+
+        // Lines color
+        assert(sts.customSettings.count("color"));
+        ImGui::Text("Lines Color:");
+        ImGui::SameLine();
+        ImGui::ColorEdit4(
+            "##InfoColor",
+            [&] {
+                return std::any_cast<vcl::Color>(sts.customSettings["color"]);
+            },
+            [&](vcl::Color c) {
+                sts.customSettings["color"] = c;
+                mEditor->refreshSettings();
+            },
+            ImGuiColorEditFlags_NoInputs);
     }
 };
 

@@ -9,6 +9,8 @@
 #define VCL_QT_GUI_TOOLBAR_FRAMES_INFO_EDITOR_FRAME_H
 
 #include "generic_editor_frame.h"
+#include "settings/info_editor_settings_frame.h"
+
 #include <vclib/render/editors/info_editor.h>
 
 #include <QApplication>
@@ -43,8 +45,11 @@ public:
                 }
             });
 
-        // InfoEditor doesn't have custom settings yet
-        Base::hideSettingsButton();
+        InfoEditorSettingsFrame* sf =
+            Base::setSettingsFrame<InfoEditorSettingsFrame>(
+                mInfoEditor->settings());
+
+        connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
     }
 
 private slots:

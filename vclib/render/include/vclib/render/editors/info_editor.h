@@ -31,7 +31,12 @@ class InfoEditor : public Editor<ViewerDrawer>
     using Base = Editor<ViewerDrawer>;
 
 public:
-    InfoEditor() = default;
+    InfoEditor()
+    {
+        // Initialize settings keys expected.
+        Base::settings().customSettings["color"]     = vcl::Color::Red;
+        Base::settings().customSettings["thickness"] = 5.0f;
+    }
 
     void setActive(bool active) override
     {
