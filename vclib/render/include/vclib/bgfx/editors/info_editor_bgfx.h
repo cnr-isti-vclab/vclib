@@ -15,6 +15,7 @@
 #include <vclib/space/complex/mesh_info.h>
 
 #include <iostream>
+#include <optional>
 
 namespace vcl {
 
@@ -33,6 +34,7 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
     bool          mTextViewInitialized = false;
 
     std::vector<vcl::Point3d> mLastFacePositions;
+    std::vector<uint>         mLastFaceVertexIds;
 
     vcl::Color mTextColor = vcl::Color::Black;
     int        mTextSize  = 20;
@@ -42,7 +44,8 @@ public:
     {
         Base::settings().customSettings["color"] = vcl::Color(vcl::Color::Red);
         Base::settings().customSettings["thickness"] = 5.0f;
-        Base::settings().customSettings["text_color"] = vcl::Color(vcl::Color::Black);
+        Base::settings().customSettings["text_color"] =
+            vcl::Color(vcl::Color::Black);
         Base::settings().customSettings["text_size"] = 20;
 
         mOutlineLines.setGeneralColor(vcl::Color::Red);
@@ -83,7 +86,8 @@ public:
                 Base::settings().customSettings.at("text_size"));
             if (mTextViewInitialized) {
                 auto dpi = Base::viewerDpiScale();
-                mTextView.setTextFont(vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
+                mTextView.setTextFont(
+                    vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
             }
         }
         Base::viewerUpdate();
@@ -102,40 +106,21 @@ public:
         if (!mTextViewInitialized) {
             mTextView.init(size.x(), size.y());
             auto dpi = Base::viewerDpiScale();
-            mTextView.setTextFont(vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
+            mTextView.setTextFont(
+                vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
             mTextView.enableText(Base::isActive());
             mTextViewInitialized = true;
-        } else {
+        }
+        else {
             mTextView.resize(size.x(), size.y());
         }
 
         mTextView.clearText();
 
-        if (mLastObjectId != USHORT_NULL && mLastElementType == vcl::MeshInfo::FACE && mOutlineLines.hasPositions()) {
-            const auto& pts = mLastFacePositions;
-            if (pts.size() > 1) {
-                vcl::Point3d barycenter(0.0, 0.0, 0.0);
-                for (size_t i = 0; i < pts.size() - 1; ++i) {
-                    barycenter += pts[i];
-                }
-                barycenter /= double(pts.size() - 1);
-
-                vcl::Matrix44f mv = Base::viewerViewMatrix();
-                vcl::Matrix44f proj = Base::viewerProjectionMatrix();
-                vcl::Point4f p(barycenter.x(), barycenter.y(), barycenter.z(), 1.0f);
-                p = proj * (mv * p);
-                
-                if (p.w() != 0.0f) {
-                    p /= p.w();
-                    
-                    vcl::Point2f pos2D(
-                        (p.x() + 1.0f) * 0.5f * size.x(),
-                        (1.0f - p.y()) * 0.5f * size.y()
-                    );
-                    
-                    mTextView.appendTransientText(pos2D, "f # " + std::to_string(mLastElementId), mTextColor);
-                }
-            }
+        if (mLastObjectId != USHORT_NULL &&
+            mLastElementType == vcl::MeshInfo::FACE &&
+            mOutlineLines.hasPositions()) {
+            drawFaceInfo(viewId, size);
         }
 
         mTextView.frame(Base::viewerCanvasFrameBuffer());
@@ -151,55 +136,121 @@ public:
 
         if (!block && button == vcl::MouseButton::LEFT) {
             block = true; // consume the event to prevent further propagation
-            auto callback =
-                [this](ushort objectId, ushort elementType, uint elementId) {
-                    if (objectId == 0xFFFF) {
-                        mLastObjectId = 0xFFFF;
-                        Base::viewerUpdate();
-                        return;
-                    }
+            auto callback = [this](
+                                ushort objectId,
+                                ushort elementType,
+                                uint   elementId) {
+                if (objectId == 0xFFFF) {
+                    mLastObjectId = 0xFFFF;
+                    Base::viewerUpdate();
+                    return;
+                }
 
-                    std::cerr << "InfoEditor:\n"
-                              << "  Object ID:    " << objectId << "\n"
-                              << "  Element Type: " << elementType << "\n"
-                              << "  Element ID:   " << elementId << "\n";
+                std::cerr << "InfoEditor:\n"
+                          << "  Object ID:    " << objectId << "\n"
+                          << "  Element Type: " << elementType << "\n"
+                          << "  Element ID:   " << elementId << "\n";
 
-                    mLastObjectId    = objectId;
-                    mLastElementType = elementType;
-                    mLastElementId   = elementId;
+                mLastObjectId    = objectId;
+                mLastElementType = elementType;
+                mLastElementId   = elementId;
 
-                    if (elementType == vcl::MeshInfo::FACE) {
-                        auto list = Base::drawList();
-                        if (list && objectId < list->size()) {
-                            auto obj     = list->at(objectId);
-                            auto meshObj = std::dynamic_pointer_cast<
-                                vcl::AbstractDrawableMesh>(obj);
-                            if (meshObj) {
-                                auto positions =
-                                    meshObj->meshProvider().facePositions(
-                                        elementId);
-                                if (positions.size() > 0) {
-                                    positions.push_back(positions[0]);
-                                }
-                                auto T =
-                                    meshObj->meshProvider().transformMatrix();
-                                multiplyPointsByMatrix(positions, T);
-                                mOutlineLines.setVertices(positions);
-                                mLastFacePositions = positions;
+                if (elementType == vcl::MeshInfo::FACE) {
+                    auto list = Base::drawList();
+                    if (list && objectId < list->size()) {
+                        auto obj     = list->at(objectId);
+                        auto meshObj = std::dynamic_pointer_cast<
+                            vcl::AbstractDrawableMesh>(obj);
+                        if (meshObj) {
+                            auto positions =
+                                meshObj->meshProvider().facePositions(
+                                    elementId);
+                            auto vIds =
+                                meshObj->meshProvider().faceVertices(elementId);
+
+                            if (positions.size() > 0) {
+                                positions.push_back(positions[0]);
                             }
+                            auto T = meshObj->meshProvider().transformMatrix();
+                            multiplyPointsByMatrix(positions, T);
+                            mOutlineLines.setVertices(positions);
+                            mLastFacePositions = positions;
+                            mLastFaceVertexIds = vIds;
                         }
                     }
-                    else {
-                        mOutlineLines.setVertices(std::vector<Point3d>());
-                        mLastFacePositions.clear();
-                    }
+                }
+                else {
+                    mOutlineLines.setVertices(std::vector<Point3d>());
+                    mLastFacePositions.clear();
+                    mLastFaceVertexIds.clear();
+                }
 
-                    Base::viewerUpdate();
-                };
+                Base::viewerUpdate();
+            };
 
             Base::viewerReadElementIdRequest(x, y, callback);
         }
         return block;
+    }
+
+private:
+    std::optional<vcl::Point2f> projectPoint(
+        const vcl::Point3d&   point3d,
+        const vcl::Matrix44f& viewMatrix,
+        const vcl::Matrix44f& projMatrix,
+        const Point2<uint>&   size) const
+    {
+        vcl::Point4f p(point3d.x(), point3d.y(), point3d.z(), 1.0f);
+        p = projMatrix * (viewMatrix * p);
+
+        if (p.w() != 0.0f) {
+            p /= p.w();
+            return vcl::Point2f(
+                (p.x() + 1.0f) * 0.5f * size.x(),
+                (1.0f - p.y()) * 0.5f * size.y());
+        }
+        return std::nullopt;
+    }
+
+    void drawFaceInfo(uint viewId, const Point2<uint>& size)
+    {
+        const auto& pts = mLastFacePositions;
+        if (pts.size() > 1) {
+            vcl::Point3d barycenter(0.0, 0.0, 0.0);
+            for (size_t i = 0; i < pts.size() - 1; ++i) {
+                barycenter += pts[i];
+            }
+            barycenter /= double(pts.size() - 1);
+
+            vcl::Matrix44f mv   = Base::viewerViewMatrix();
+            vcl::Matrix44f proj = Base::viewerProjectionMatrix();
+
+            // Draw face info at barycenter
+            if (auto pos2D = projectPoint(barycenter, mv, proj, size)) {
+                std::stringstream faceSS;
+                faceSS << "f#" << mLastElementId << " - v#(";
+                for (size_t i = 0; i < mLastFaceVertexIds.size(); ++i) {
+                    faceSS << mLastFaceVertexIds[i];
+                    if (i < mLastFaceVertexIds.size() - 1)
+                        faceSS << ", ";
+                }
+                faceSS << ")";
+
+                mTextView.appendTransientText(*pos2D, faceSS.str(), mTextColor);
+            }
+
+            // Draw vertex info at each vertex position
+            for (size_t i = 0; i < mLastFaceVertexIds.size(); ++i) {
+                if (auto pos2D = projectPoint(pts[i], mv, proj, size)) {
+                    std::stringstream vertSS;
+                    vertSS << "fv[" << i << "] : v#" << mLastFaceVertexIds[i]
+                           << " - pos " << pts[i];
+
+                    mTextView.appendTransientText(
+                        *pos2D, vertSS.str(), mTextColor);
+                }
+            }
+        }
     }
 };
 
