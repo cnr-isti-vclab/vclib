@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_color, v_normal
+$input v_color, v_normal, v_lineIndex
 
 #include <bgfx_shader.sh>
 #if LINES_SHADING_PER_VERTEX || LINES_SHADING_PER_LINE

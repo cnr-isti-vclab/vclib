@@ -17,7 +17,6 @@
 
 #include <vclib/space/complex.h>
 
-#include <iostream>
 #include <optional>
 
 namespace vcl {
@@ -116,6 +115,11 @@ public:
                 mOutlinePoints.hasPositions()) {
                 mOutlinePoints.draw(viewId);
             }
+            else if (
+                mLastElementType == vcl::MeshInfo::EDGE &&
+                mOutlineLines.hasPositions()) {
+                mOutlineLines.draw(viewId);
+            }
         }
 
         auto size = Base::viewerCanvasSize();
@@ -143,6 +147,11 @@ public:
                 mOutlinePoints.hasPositions()) {
                 drawVertexInfo(viewId, size);
             }
+            else if (
+                mLastElementType == vcl::MeshInfo::EDGE &&
+                mOutlineLines.hasPositions()) {
+                drawEdgeInfo(viewId, size);
+            }
         }
 
         mTextView.frame(Base::viewerCanvasFrameBuffer());
@@ -167,11 +176,6 @@ public:
                     Base::viewerUpdate();
                     return;
                 }
-
-                std::cerr << "InfoEditor:\n"
-                          << "  Object ID:    " << objectId << "\n"
-                          << "  Element Type: " << elementType << "\n"
-                          << "  Element ID:   " << elementId << "\n";
 
                 mLastObjectId    = objectId;
                 mLastElementType = elementType;
@@ -216,6 +220,30 @@ public:
                             mOutlinePoints.setVertices(positions);
                             mLastElementPositions = positions;
                             mLastElementVertexIds = {elementId};
+                        }
+                    }
+                }
+                else if (elementType == vcl::MeshInfo::EDGE) {
+                    auto list = Base::drawList();
+                    if (list && objectId < list->size()) {
+                        auto obj     = list->at(objectId);
+                        auto meshObj = std::dynamic_pointer_cast<
+                            vcl::AbstractDrawableMesh>(obj);
+                        if (meshObj) {
+                            auto edgeVIds =
+                                meshObj->meshProvider().edgeVertices(elementId);
+                            auto posPair =
+                                meshObj->meshProvider().edgePositions(
+                                    elementId);
+
+                            std::vector<vcl::Point3d> positions = {
+                                posPair.first, posPair.second};
+                            auto T = meshObj->meshProvider().transformMatrix();
+                            multiplyPointsByMatrix(positions, T);
+                            mOutlineLines.setVertices(positions);
+                            mLastElementPositions = positions;
+                            mLastElementVertexIds = {
+                                edgeVIds.first, edgeVIds.second};
                         }
                     }
                 }
@@ -306,6 +334,36 @@ private:
                 vertSS << "v#" << mLastElementVertexIds[0] << " - pos "
                        << pts[0];
                 mTextView.appendTransientText(*pos2D, vertSS.str(), mTextColor);
+            }
+        }
+    }
+
+    void drawEdgeInfo(uint viewId, const Point2<uint>& size)
+    {
+        const auto& pts = mLastElementPositions;
+        if (pts.size() == 2 && mLastElementVertexIds.size() == 2) {
+            vcl::Matrix44f mv   = Base::viewerViewMatrix();
+            vcl::Matrix44f proj = Base::viewerProjectionMatrix();
+
+            // Draw edge info at edge center
+            vcl::Point3d center = (pts[0] + pts[1]) * 0.5;
+            if (auto pos2D = projectPoint(center, mv, proj, size)) {
+                std::stringstream edgeSS;
+                edgeSS << "e#" << mLastElementId << " - v#("
+                       << mLastElementVertexIds[0] << ", "
+                       << mLastElementVertexIds[1] << ")";
+                mTextView.appendTransientText(*pos2D, edgeSS.str(), mTextColor);
+            }
+
+            // Draw vertex info at each vertex position
+            for (size_t i = 0; i < 2; ++i) {
+                if (auto pos2D = projectPoint(pts[i], mv, proj, size)) {
+                    std::stringstream vertSS;
+                    vertSS << "ev[" << i << "] : v#" << mLastElementVertexIds[i]
+                           << " - pos " << pts[i];
+                    mTextView.appendTransientText(
+                        *pos2D, vertSS.str(), mTextColor);
+                }
             }
         }
     }

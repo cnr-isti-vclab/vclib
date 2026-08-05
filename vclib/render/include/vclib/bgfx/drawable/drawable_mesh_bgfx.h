@@ -262,7 +262,8 @@ public:
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
             mMRB.bindTriToPolyBuffer();
-            DrawableMeshUniforms::setMeshId(settings.objectId | vcl::ElemId::FACE);
+            DrawableMeshUniforms::setMeshId(
+                settings.objectId | vcl::ElemId::FACE);
             DrawableMeshUniforms::setFirstChunkIndex(0);
             bindUniforms();
 
@@ -273,19 +274,16 @@ public:
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            bgfx::setTransform(model.data());
-            mMRB.drawWireframeLinesId(settings.viewId, settings.objectId);
-        }
-
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             bgfx::setTransform(model.data());
-            mMRB.drawEdgeLinesId(settings.viewId, settings.objectId);
+            mMRB.drawEdgeLinesId(
+                settings.viewId, settings.objectId | vcl::ElemId::EDGE);
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());
-            mMRB.drawPointsId(settings.viewId, settings.objectId | vcl::ElemId::VERTEX);
+            mMRB.drawPointsId(
+                settings.viewId, settings.objectId | vcl::ElemId::VERTEX);
         }
     }
 
