@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 
+#include "mesh_poly_mapping_buffers.h"
 #include "mesh_render_buffers_macros.h"
 
 #include <vclib/bgfx/buffers.h>
@@ -62,11 +63,6 @@ class MeshSelectionBuffers
     std::array<uint, 3> mFaceSelectionWorkgroupSize       = {0, 0, 0};
     std::array<uint, 3> mFaceSelectionAtomicWorkgroupSize = {0, 0, 0};
 
-    // Polygon-to-triangle mapping buffers for polygon-level face selection
-    IndexBuffer mTriToPolyBuffer;
-    IndexBuffer mPolyToTriBeginBuffer;
-    IndexBuffer mPolyToTriCountBuffer;
-
     uint mBufToTexRemainingFrames = UINT_NULL; // NULL means no frames remaining
     SelectionMode mLastReadbackMode;
     bool          mHasPendingReadback = false;
@@ -95,9 +91,6 @@ public:
         swap(
             mFaceSelectionAtomicWorkgroupSize,
             other.mFaceSelectionAtomicWorkgroupSize);
-        swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
-        swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
-        swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
         swap(mBufToTexRemainingFrames, other.mBufToTexRemainingFrames);
         swap(mLastReadbackMode, other.mLastReadbackMode);
         swap(mHasPendingReadback, other.mHasPendingReadback);
@@ -138,73 +131,6 @@ public:
     {
         mFaceSelection.init(numTris);
         calculateFaceSelectionWorkgroupSize();
-    }
-
-    /**
-     * @brief Uploads the polygon-to-triangle mapping buffers to the GPU.
-     *
-     * These three buffers allow compute shaders to convert from triangle
-     * indices back to the original polygon indices, which is required for
-     * polygon-level face selection on triangulated meshes.
-     *
-     * Call this after the triangle index buffer has been built (and therefore
-     * after @p indexMap has been populated by fillTriangleIndices).
-     *
-     * @param[in] indexMap: Bidirectional triangle ↔ polygon index map.
-     * @param[in] numTris: Number of triangles (after triangulation).
-     */
-    void initPolyMapping(const TriPolyIndexBiMap& indexMap, uint numTris)
-    {
-        if (numTris == 0)
-            return;
-
-        const uint numPolys = indexMap.polygonCount();
-
-        // tri_to_poly[triIdx] = polygon index
-        {
-            auto [buf, rel] =
-                Context::getAllocatedBufferAndReleaseFn<uint>(numTris);
-            for (uint i = 0; i < numTris; i++) {
-                buf[i] = indexMap.polygon(i);
-            }
-            mTriToPolyBuffer.create(
-                buf, numTris, PrimitiveType::UINT, bgfx::Access::Read, rel);
-        }
-
-        // poly_to_tri_begin[polyIdx] and poly_to_tri_count[polyIdx]
-        {
-            auto [bufBegin, relBegin] =
-                Context::getAllocatedBufferAndReleaseFn<uint>(numPolys);
-            auto [bufCount, relCount] =
-                Context::getAllocatedBufferAndReleaseFn<uint>(numPolys);
-
-            for (uint i = 0; i < numPolys; i++) {
-                uint begin = indexMap.triangleBegin(i);
-                if (begin != UINT_NULL) {
-                    bufBegin[i] = begin;
-                    bufCount[i] = indexMap.triangleCount(i);
-                }
-                else {
-                    // deleted polygon — will never be accessed by a valid
-                    // triangle thread
-                    bufBegin[i] = 0;
-                    bufCount[i] = 0;
-                }
-            }
-
-            mPolyToTriBeginBuffer.create(
-                bufBegin,
-                numPolys,
-                PrimitiveType::UINT,
-                bgfx::Access::Read,
-                relBegin);
-            mPolyToTriCountBuffer.create(
-                bufCount,
-                numPolys,
-                PrimitiveType::UINT,
-                bgfx::Access::Read,
-                relCount);
-        }
     }
 
     /**
@@ -299,20 +225,22 @@ public:
     // ---- Selection operations -------------------------------------------
 
     void computeSelection(
-        const SelectionParameters& params,
-        const Matrix44f&           model,
-        const VertexBuffer&        vertPosBuf,
-        const IndexBuffer&         triIdxBuf)
+        const SelectionParameters&    params,
+        const Matrix44f&              model,
+        const VertexBuffer&           vertPosBuf,
+        const IndexBuffer&            triIdxBuf,
+        const MeshPolyMappingBuffers& polyMapping)
     {
         bool toCompute = false;
 
         if (params.mode.isFaceSelection()) {
             if (params.mode.isVisibleSelection()) {
-                toCompute =
-                    faceSelectionVisible(params, model, vertPosBuf, triIdxBuf);
+                toCompute = faceSelectionVisible(
+                    params, model, vertPosBuf, triIdxBuf, polyMapping);
             }
             else {
-                toCompute = faceSelection(params, model, vertPosBuf, triIdxBuf);
+                toCompute = faceSelection(
+                    params, model, vertPosBuf, triIdxBuf, polyMapping);
             }
         }
         else if (params.mode.isVertexSelection()) {
@@ -383,12 +311,14 @@ public:
      * box-based selection).
      * @param[in] triIdxBuf: Triangle index buffer (only used for
      * box-based selection).
+     * @param[in] polyMapping: Polygon mapping buffers.
      */
     bool faceSelection(
-        const SelectionParameters& params,
-        const Matrix44f&           model,
-        const VertexBuffer&        vertPosBuf,
-        const IndexBuffer&         triIdxBuf)
+        const SelectionParameters&    params,
+        const Matrix44f&              model,
+        const VertexBuffer&           vertPosBuf,
+        const IndexBuffer&            triIdxBuf,
+        const MeshPolyMappingBuffers& polyMapping)
     {
         assert(params.mode.primitive == SelectionPrimitive::FACE);
         if (params.isTemporary &&
@@ -399,7 +329,8 @@ public:
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
         else
-            return faceSelectionNonAtomic(params, model, vertPosBuf, triIdxBuf);
+            return faceSelectionNonAtomic(
+                params, model, vertPosBuf, triIdxBuf, polyMapping);
     }
 
     /**
@@ -414,12 +345,14 @@ public:
      * @param[in] model: Mesh model matrix.
      * @param[in] vertPosBuf: Vertex positions buffer.
      * @param[in] triIdxBuf: Triangle index buffer.
+     * @param[in] polyMapping: Polygon mapping buffers.
      */
     bool faceSelectionVisible(
-        const SelectionParameters& params,
-        const Matrix44f&           model,
-        const VertexBuffer&        vertPosBuf,
-        const IndexBuffer&         triIdxBuf)
+        const SelectionParameters&    params,
+        const Matrix44f&              model,
+        const VertexBuffer&           vertPosBuf,
+        const IndexBuffer&            triIdxBuf,
+        const MeshPolyMappingBuffers& polyMapping)
     {
         assert(params.mode.primitive == SelectionPrimitive::FACE);
         if (params.isTemporary && params.mode.visible &&
@@ -475,9 +408,9 @@ public:
             bgfx::TextureFormat::RGBA8);
         mFaceSelection.bind(
             VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
-        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
-        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
-        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
+        polyMapping.bindTriToPolyBuffer();
+        polyMapping.bindPolyToTriBeginBuffer();
+        polyMapping.bindPolyToTriCountBuffer();
         bgfx::setTransform(model.data());
         bgfx::dispatch(
             params.pass2ViewId,
@@ -755,12 +688,14 @@ private:
      * shader).
      * @param[in] vertPosBuf: Vertex positions buffer.
      * @param[in] triIdxBuf: Triangle index buffer.
+     * @param[in] polyMapping: Polygon mapping buffers.
      */
     bool faceSelectionNonAtomic(
-        const SelectionParameters& params,
-        const Matrix44f&           model,
-        const VertexBuffer&        vertPosBuf,
-        const IndexBuffer&         triIdxBuf)
+        const SelectionParameters&    params,
+        const Matrix44f&              model,
+        const VertexBuffer&           vertPosBuf,
+        const IndexBuffer&            triIdxBuf,
+        const MeshPolyMappingBuffers& polyMapping)
     {
         if (params.box.isNull()) {
             return false;
@@ -785,9 +720,9 @@ private:
             VCL_MRB_PRIMITIVE_SELECTION_BUFFER, bgfx::Access::ReadWrite);
         vertPosBuf.bindCompute(0, bgfx::Access::Read);
         triIdxBuf.bind(5, bgfx::Access::Read);
-        mTriToPolyBuffer.bind(7, bgfx::Access::Read);
-        mPolyToTriBeginBuffer.bind(8, bgfx::Access::Read);
-        mPolyToTriCountBuffer.bind(9, bgfx::Access::Read);
+        polyMapping.bindTriToPolyBuffer();
+        polyMapping.bindPolyToTriBeginBuffer();
+        polyMapping.bindPolyToTriCountBuffer();
         bgfx::setTransform(model.data());
         dispatchFaceSelection(params.drawViewId, prog);
         return true;

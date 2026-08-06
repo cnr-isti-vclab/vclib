@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
+#include "mesh_poly_mapping_buffers.h"
 #include "mesh_render_buffers_macros.h"
 #include "mesh_selection_buffers.h"
 
@@ -51,7 +52,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     Points mPoints;
 
-    MeshSelectionBuffers mSelection;
+    MeshPolyMappingBuffers mPolyMapping;
+    MeshSelectionBuffers   mSelection;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -119,6 +121,7 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMeshColor, other.mMeshColor);
+        swap(mPolyMapping, other.mPolyMapping);
         swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
 
@@ -140,13 +143,19 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    bool isTriMesh() const { return mPolyMapping.isTriMesh(); }
+
     // called on computeSelection
     void computeSelection(
         const SelectionParameters& params,
         const Matrix44f&           model)
     {
         mSelection.computeSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+            params,
+            model,
+            mVertexPositionsBuffer,
+            mTriangleIndexBuffer,
+            mPolyMapping);
     }
 
     // called on draw
@@ -169,6 +178,11 @@ public:
     void bindSelectedFacesBuffer() const
     {
         mSelection.bindSelectedFacesBuffer();
+    }
+
+    void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
+    {
+        mPolyMapping.bindTriToPolyBuffer(stage);
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -549,9 +563,7 @@ private:
         // Build polygon mapping buffers for polygon-level face selection.
         // fillTriangleIndices() above has already populated
         // Base::triPolyIndexMap().
-        if (Context::instance().supportsCompute() && nt > 0) {
-            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
-        }
+        mPolyMapping.init(Base::triPolyIndexMap(), nt);
     }
 
     void setTriangleSelectionBuffer(const MeshType& mesh) // override
@@ -658,6 +670,7 @@ private:
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
+
             uint numMips = 1;
             if (generateMips)
                 numMips = bimg::imageGetNumMips(
