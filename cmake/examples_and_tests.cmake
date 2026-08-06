@@ -119,6 +119,12 @@ endif()
             ${TARGET_NAME}
             PRIVATE vclib-render-examples-common
         )
+        if (${ARG_TEST})
+            target_link_libraries(
+                ${TARGET_NAME}
+                PRIVATE vclib-render-tests-common
+            )
+        endif()
     endif()
 
     if(ARG_CORE_EXAMPLE)
