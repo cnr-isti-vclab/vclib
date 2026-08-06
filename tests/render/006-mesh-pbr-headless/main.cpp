@@ -6,66 +6,9 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "get_drawable_mesh.h"
+#include "run_render_test.h"
 
-#include <vclib/bgfx/context.h>
-#include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/headless_mesh_viewer.h>
-
-#include <catch2/catch_test_macros.hpp>
-
-#include <filesystem>
-#include <functional>
-#include <string>
-#include <vector>
-
-void runRenderTest(
-    const std::string&                            testName,
-    float                                         angle,
-    std::function<void(vcl::HeadlessMeshViewer&)> setup)
-{
-    vcl::HeadlessMeshViewer mv("Headless Mesh Viewer", 1920, 1080);
-
-    // run custom setup
-    setup(mv);
-
-    if (angle > 0.0f) {
-        mv.trackballRotate(vcl::Point3f(0.0f, 1.0f, 0.0f), angle);
-    }
-
-    vcl::Image renderedImage;
-    // this auto concludes loop
-    mv.screenshot(renderedImage);
-
-    REQUIRE_FALSE(renderedImage.isNull());
-
-    std::string groundTruthFilename = std::string(VCLIB_GROUND_TRUTH_PATH) +
-                                      "/006-mesh-pbr-headless_" + testName +
-                                      "_gt.png";
-
-    if (!std::filesystem::exists(groundTruthFilename)) {
-        FAIL("Ground truth image not found.");
-    }
-
-    vcl::Image groundTruthImage = vcl::loadImage(groundTruthFilename);
-    REQUIRE_FALSE(groundTruthImage.isNull());
-
-    REQUIRE(renderedImage.width() == groundTruthImage.width());
-    REQUIRE(renderedImage.height() == groundTruthImage.height());
-    REQUIRE(renderedImage.colorSpace() == groundTruthImage.colorSpace());
-    REQUIRE(renderedImage.sizeInBytes() == groundTruthImage.sizeInBytes());
-
-    // PBR rendering can produce slightly different results across different
-    // hardwares. We increase the tolerance to max diff 10 per channel and 2%
-    // failing pixels.
-    bool match = renderedImage.isAlmostEqual(groundTruthImage, 10, 0.02f);
-
-    std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
-                                 "/006-mesh-pbr-headless_" + testName +
-                                 "_res.png";
-    vcl::saveImage(renderedImage, resultFilename);
-
-    REQUIRE(match);
-}
+static const std::string TEST_NAME = "006-mesh-pbr-headless";
 
 TEST_CASE("PBR Rendering")
 {
@@ -92,7 +35,9 @@ TEST_CASE("PBR Rendering")
                 SECTION(testName)
                 {
                     runRenderTest(
-                        testName, angle, [&](vcl::HeadlessMeshViewer& mv) {
+                        TEST_NAME,
+                        testName,
+                        [&](vcl::HeadlessMeshViewer& mv) {
                             auto mesh = getDrawableMesh<vcl::TriMesh>(
                                 "gltf/" + meshName);
                             auto settings = mesh.renderSettings();
@@ -112,13 +57,12 @@ TEST_CASE("PBR Rendering")
                                 std::string(VCLIB_ASSETS_PATH) + "/panoramas/" +
                                 panoramaName;
                             mv.setPanorama(panPath);
-
-                            // Apply fitscene to center everything
-                            mv.fitScene();
-
-                                   // Zoom in a bit to make the mesh larger
-                            mv.trackballZoom(-150.0f);
-                        });
+                        },
+                        angle,
+                        false,
+                        -150.0f,
+                        10,
+                        0.02f);
                 }
             }
         }
