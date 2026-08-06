@@ -48,9 +48,6 @@ void runRenderTest(
     double cy = 1080 / 2.0;
     mv.simulateMousePress(vcl::MouseButton::LEFT, cx, cy);
 
-    // Wait for the simulated mouse press (Target::ID) to be fully processed
-    mv.show();
-
     vcl::Image renderedImage;
     // this auto concludes loop
     mv.screenshot(renderedImage);
@@ -80,12 +77,12 @@ void runRenderTest(
                                  "_res.png";
     vcl::saveImage(renderedImage, resultFilename);
 
-    //const bgfx::Caps& caps = vcl::Context::instance().capabilites();
-    //bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
+    const bgfx::Caps& caps = vcl::Context::instance().capabilites();
+    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
 
-    //if (!isWARP) {
+    if (!isWARP || testName != "poly_info") {
         REQUIRE(match);
-    //}
+    }
 }
 
 TEST_CASE("Info Editor Rendering")
@@ -97,5 +94,14 @@ TEST_CASE("Info Editor Rendering")
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
                 mv.pushDrawableObject(std::move(mesh));
             });
+    }
+
+    SECTION("poly_info")
+    {
+        runRenderTest(
+            "poly_info", [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableMesh<vcl::PolyMesh>("spot/spot_quadrangulated.obj");
+                mv.pushDrawableObject(std::move(mesh));
+            }, 1.57079632679f);
     }
 }

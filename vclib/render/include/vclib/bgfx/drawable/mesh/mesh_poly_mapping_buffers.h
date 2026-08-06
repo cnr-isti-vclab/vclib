@@ -45,6 +45,7 @@ public:
         swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
         swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
         swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
+        swap(mIsTriMesh, other.mIsTriMesh);
     }
 
     friend void swap(MeshPolyMappingBuffers& a, MeshPolyMappingBuffers& b)
