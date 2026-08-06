@@ -178,6 +178,19 @@ public:
      * @return the number of polygons stored in the BiMap.
      */
     uint polygonCount() const { return mPolyToTri.size(); }
+
+    /**
+     * @brief Returns true if the mesh is a triangle mesh (i.e., all polygons
+     * are triangles), false otherwise.
+     */
+    bool isTriMesh() const
+    {
+        for (uint i = 0; i < mPolyToTriCount.size(); ++i) {
+            if (mPolyToTriCount[i] != 1)
+                return false;
+        }
+        return true;
+    }
 };
 
 } // namespace vcl

@@ -11,7 +11,9 @@
 
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
 
+#if defined(SURFACE_ID_IS_TRI_MESH_OFF)
 BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);
+#endif
 
 void main()
 {
@@ -20,7 +22,9 @@ void main()
     gl_FragData[0] = color;
     
     // Target 1: Element ID (32 bit)
-    uint elementId = gl_PrimitiveID + u_firstChunkPrimitiveID;
-    uint polyId = tri_to_poly[elementId];
+    uint polyId = gl_PrimitiveID + u_firstChunkPrimitiveID;
+#if defined(SURFACE_ID_IS_TRI_MESH_OFF)
+    polyId = tri_to_poly[polyId];
+#endif
     gl_FragData[1] = uintABGRToVec4Color(polyId);
 }

@@ -34,6 +34,8 @@ class MeshPolyMappingBuffers
     IndexBuffer mPolyToTriBeginBuffer;
     IndexBuffer mPolyToTriCountBuffer;
 
+    bool mIsTriMesh = false;
+
 public:
     MeshPolyMappingBuffers() = default;
 
@@ -63,6 +65,8 @@ public:
      */
     void init(const TriPolyIndexBiMap& indexMap, uint numTris)
     {
+        mIsTriMesh = indexMap.isTriMesh();
+
         if (numTris == 0)
             return;
 
@@ -114,6 +118,8 @@ public:
                 relCount);
         }
     }
+
+    bool isTriMesh() const { return mIsTriMesh; }
 
     void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
     {

@@ -242,10 +242,6 @@ public:
 
     void drawId(const DrawObjectSettings& settings) override
     {
-        using enum VertFragProgram;
-
-        ProgramManager& pm = Context::instance().programManager();
-
         uint64_t state =
             0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
             BGFX_STATE_DEPTH_TEST_LEQUAL |
@@ -270,8 +266,7 @@ public:
             bgfx::setState(state);
             bgfx::setTransform(model.data());
 
-            bgfx::submit(
-                settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
+            bgfx::submit(settings.viewId, surfaceIdProgramSelector());
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
@@ -404,6 +399,18 @@ protected:
 
         ProgramManager& pm = Context::instance().programManager();
         return pm.getProgram(VertFragProgram(program));
+    }
+
+    bgfx::ProgramHandle surfaceIdProgramSelector() const
+    {
+        ProgramManager& pm = Context::instance().programManager();
+
+        if (mMRB.isTriMesh())
+            return pm.getProgram<
+                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_IS_TRI_MESH_ON>();
+        else
+            return pm.getProgram<
+                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_IS_TRI_MESH_OFF>();
     }
 };
 

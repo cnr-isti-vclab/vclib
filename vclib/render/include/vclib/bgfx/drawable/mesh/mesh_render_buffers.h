@@ -143,6 +143,8 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    bool isTriMesh() const { return mPolyMapping.isTriMesh(); }
+
     // called on computeSelection
     void computeSelection(
         const SelectionParameters& params,
@@ -557,9 +559,7 @@ private:
         // Build polygon mapping buffers for polygon-level face selection.
         // fillTriangleIndices() above has already populated
         // Base::triPolyIndexMap().
-        if (Context::instance().supportsCompute() && nt > 0) {
-            mPolyMapping.init(Base::triPolyIndexMap(), nt);
-        }
+        mPolyMapping.init(Base::triPolyIndexMap(), nt);
     }
 
     void setTriangleSelectionBuffer(const MeshType& mesh) // override
