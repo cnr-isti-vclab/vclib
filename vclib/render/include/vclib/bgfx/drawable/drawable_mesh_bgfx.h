@@ -8,8 +8,9 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/mesh/providers/mesh_provider.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
+
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
@@ -269,11 +270,6 @@ public:
 
             bgfx::submit(
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
-        }
-
-        if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
-            bgfx::setTransform(model.data());
-            mMRB.drawWireframeLinesId(settings.viewId, settings.objectId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {

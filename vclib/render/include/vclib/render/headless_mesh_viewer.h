@@ -52,6 +52,18 @@ public:
     void resize(uint width, uint height) { mApp.resize(width, height); }
 
     /**
+     * @brief Retrieves the width of the canvas.
+     * @return The width in pixels.
+     */
+    uint width() const { return mApp.width(); }
+
+    /**
+     * @brief Retrieves the height of the canvas.
+     * @return The height in pixels.
+     */
+    uint height() const { return mApp.height(); }
+
+    /**
      * @brief Requests a screenshot and saves it to a file.
      * Auto-concludes by running the render loop.
      */
@@ -302,7 +314,11 @@ public:
     /**
      * @brief Simulates a key press event.
      */
-    void simulateKeyPress(vcl::Key::Enum key) { mApp.simulateKeyPress(key); }
+    void simulateKeyPress(vcl::Key::Enum key)
+    {
+        mApp.simulateKeyPress(key);
+        mApp.show();
+    }
 
     /**
      * @brief Simulates a key release event.
@@ -310,12 +326,17 @@ public:
     void simulateKeyRelease(vcl::Key::Enum key)
     {
         mApp.simulateKeyRelease(key);
+        mApp.show();
     }
 
     /**
      * @brief Simulates a mouse move event.
      */
-    void simulateMouseMove(double x, double y) { mApp.simulateMouseMove(x, y); }
+    void simulateMouseMove(double x, double y)
+    {
+        mApp.simulateMouseMove(x, y);
+        mApp.show();
+    }
 
     /**
      * @brief Simulates a mouse press event.
@@ -323,6 +344,7 @@ public:
     void simulateMousePress(vcl::MouseButton::Enum button, double x, double y)
     {
         mApp.simulateMousePress(button, x, y);
+        mApp.show();
     }
 
     /**
@@ -331,6 +353,7 @@ public:
     void simulateMouseRelease(vcl::MouseButton::Enum button, double x, double y)
     {
         mApp.simulateMouseRelease(button, x, y);
+        mApp.show();
     }
 
     /**
@@ -342,6 +365,7 @@ public:
         double                 y)
     {
         mApp.simulateMouseDoubleClick(button, x, y);
+        mApp.show();
     }
 
     /**
@@ -350,6 +374,7 @@ public:
     void simulateMouseScroll(double x, double y)
     {
         mApp.simulateMouseScroll(x, y);
+        mApp.show();
     }
 
     /**
@@ -358,6 +383,7 @@ public:
     void simulateSetModifiers(const vcl::KeyModifiers& modifiers)
     {
         mApp.simulateSetModifiers(modifiers);
+        mApp.show();
     }
 };
 

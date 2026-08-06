@@ -674,6 +674,15 @@ public: // TODO - remove this when C++26 is supported
     }
 
     /**
+     * @brief A Drawer object can request the DPI scale of the window.
+     * @return The DPI scale of the window.
+     */
+    static auto dpiScale(const RenderApp* r)
+    {
+        return r->WindowManagerType::dpiScale();
+    }
+
+    /**
      * @brief A Drawer object can set the default clear color of the canvas.
      *
      * This function is called by the Drawer object to set the default clear
