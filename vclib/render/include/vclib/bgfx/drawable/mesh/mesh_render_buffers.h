@@ -8,9 +8,9 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
+#include "mesh_poly_mapping_buffers.h"
 #include "mesh_render_buffers_macros.h"
 #include "mesh_selection_buffers.h"
-#include "mesh_poly_mapping_buffers.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
@@ -52,8 +52,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     Points mPoints;
 
-    MeshSelectionBuffers mSelection;
     MeshPolyMappingBuffers mPolyMapping;
+    MeshSelectionBuffers   mSelection;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -121,8 +121,8 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMeshColor, other.mMeshColor);
-        swap(mSelection, other.mSelection);
         swap(mPolyMapping, other.mPolyMapping);
+        swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
 
         updateLinesVertexBuffers(*this, mEdgeLines);
@@ -151,7 +151,11 @@ public:
         const Matrix44f&           model)
     {
         mSelection.computeSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer, mPolyMapping);
+            params,
+            model,
+            mVertexPositionsBuffer,
+            mTriangleIndexBuffer,
+            mPolyMapping);
     }
 
     // called on draw
@@ -666,6 +670,7 @@ private:
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
+
             uint numMips = 1;
             if (generateMips)
                 numMips = bimg::imageGetNumMips(

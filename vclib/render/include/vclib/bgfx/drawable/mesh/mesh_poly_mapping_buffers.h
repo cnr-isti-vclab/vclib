@@ -13,8 +13,8 @@
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/context.h>
 
-#include <vclib/space/core.h>
 #include <vclib/space/complex.h>
+#include <vclib/space/core.h>
 
 #include <bgfx/bgfx.h>
 
@@ -29,7 +29,8 @@ namespace vcl {
  */
 class MeshPolyMappingBuffers
 {
-    // Polygon-to-triangle mapping buffers for polygon-level face selection and face ID
+    // Polygon-to-triangle mapping buffers for polygon-level face selection and
+    // face ID
     IndexBuffer mTriToPolyBuffer;
     IndexBuffer mPolyToTriBeginBuffer;
     IndexBuffer mPolyToTriCountBuffer;
@@ -127,12 +128,14 @@ public:
         mTriToPolyBuffer.bind(stage, bgfx::Access::Read);
     }
 
-    void bindPolyToTriBeginBuffer(uint stage = VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER) const
+    void bindPolyToTriBeginBuffer(
+        uint stage = VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER) const
     {
         mPolyToTriBeginBuffer.bind(stage, bgfx::Access::Read);
     }
 
-    void bindPolyToTriCountBuffer(uint stage = VCL_MRB_POLY_TO_TRI_COUNT_BUFFER) const
+    void bindPolyToTriCountBuffer(
+        uint stage = VCL_MRB_POLY_TO_TRI_COUNT_BUFFER) const
     {
         mPolyToTriCountBuffer.bind(stage, bgfx::Access::Read);
     }

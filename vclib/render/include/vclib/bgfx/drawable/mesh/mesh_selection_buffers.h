@@ -8,8 +8,8 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_SELECTION_BUFFERS_H
 
-#include "mesh_render_buffers_macros.h"
 #include "mesh_poly_mapping_buffers.h"
+#include "mesh_render_buffers_macros.h"
 
 #include <vclib/bgfx/buffers.h>
 #include <vclib/bgfx/buffers/boolean_buffer.h>
@@ -235,11 +235,12 @@ public:
 
         if (params.mode.isFaceSelection()) {
             if (params.mode.isVisibleSelection()) {
-                toCompute =
-                    faceSelectionVisible(params, model, vertPosBuf, triIdxBuf, polyMapping);
+                toCompute = faceSelectionVisible(
+                    params, model, vertPosBuf, triIdxBuf, polyMapping);
             }
             else {
-                toCompute = faceSelection(params, model, vertPosBuf, triIdxBuf, polyMapping);
+                toCompute = faceSelection(
+                    params, model, vertPosBuf, triIdxBuf, polyMapping);
             }
         }
         else if (params.mode.isVertexSelection()) {
@@ -328,7 +329,8 @@ public:
         if (params.mode.isAtomicAction())
             return faceSelectionAtomic(params);
         else
-            return faceSelectionNonAtomic(params, model, vertPosBuf, triIdxBuf, polyMapping);
+            return faceSelectionNonAtomic(
+                params, model, vertPosBuf, triIdxBuf, polyMapping);
     }
 
     /**
