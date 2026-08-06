@@ -6,102 +6,57 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include "get_drawable_mesh.h"
+#include "run_render_test.h"
 
-#include <vclib/bgfx/context.h>
-#include <vclib/bgfx/editors/info_editor_bgfx.h>
-#include <vclib/render/headless_mesh_viewer.h>
-
-#include <vclib/io.h>
-#include <vclib/meshes.h>
-
-#include <catch2/catch_test_macros.hpp>
-
-#include <filesystem>
-#include <functional>
-#include <string>
-
-void runRenderTest(
-    const std::string&                            testName,
-    std::function<void(vcl::HeadlessMeshViewer&)> setup,
-    float                                         angleY = 0.0f)
-{
-    vcl::HeadlessMeshViewer mv("Headless Info Editor Test", 1920, 1080);
-
-    // run custom setup
-    setup(mv);
-
-    // Apply fitscene to center everything
-    mv.fitScene();
-
-    // zoom in slightly to make sure the mesh is big
-    mv.trackballZoom(-150.f);
-
-    if (angleY != 0.0f) {
-        mv.trackballRotate(vcl::Point3f(0.0f, 1.0f, 0.0f), angleY);
-    }
-
-    // push and activate the InfoEditor
-    auto infoEditor = mv.pushEditor<vcl::InfoEditorBGFX>(true);
-
-    // simulate a click at the center of the screen
-    double cx = 1920 / 2.0;
-    double cy = 1080 / 2.0;
-    mv.simulateMousePress(vcl::MouseButton::LEFT, cx, cy);
-
-    vcl::Image renderedImage;
-    // this auto concludes loop
-    mv.screenshot(renderedImage);
-
-    REQUIRE_FALSE(renderedImage.isNull());
-
-    std::string groundTruthFilename = std::string(VCLIB_GROUND_TRUTH_PATH) +
-                                      "/007-info-editor-headless_" + testName +
-                                      "_gt.png";
-
-    if (!std::filesystem::exists(groundTruthFilename)) {
-        FAIL("Ground truth image not found.");
-    }
-
-    vcl::Image groundTruthImage = vcl::loadImage(groundTruthFilename);
-    REQUIRE_FALSE(groundTruthImage.isNull());
-
-    REQUIRE(renderedImage.width() == groundTruthImage.width());
-    REQUIRE(renderedImage.height() == groundTruthImage.height());
-    REQUIRE(renderedImage.colorSpace() == groundTruthImage.colorSpace());
-    REQUIRE(renderedImage.sizeInBytes() == groundTruthImage.sizeInBytes());
-
-    bool match = renderedImage.isAlmostEqual(groundTruthImage, 2, 0.005f);
-
-    std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
-                                 "/007-info-editor-headless_" + testName +
-                                 "_res.png";
-    vcl::saveImage(renderedImage, resultFilename);
-
-    const bgfx::Caps& caps = vcl::Context::instance().capabilites();
-    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
-
-    if (!isWARP || testName != "poly_info") {
-        REQUIRE(match);
-    }
-}
+static const std::string TEST_NAME = "007-info-editor-headless";
 
 TEST_CASE("Info Editor Rendering")
 {
     SECTION("face_info")
     {
         runRenderTest(
-            "face_info", [](vcl::HeadlessMeshViewer& mv) {
-                auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+            TEST_NAME,
+            "face_info",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh =
+                    getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
                 mv.pushDrawableObject(std::move(mesh));
+            },
+            0.0f,
+            true,
+            -150.0f,
+            2,
+            0.005f,
+            [](vcl::HeadlessMeshViewer& mv) {
+                mv.pushEditor<vcl::InfoEditorBGFX>(true);
+                mv.simulateMousePress(
+                    vcl::MouseButton::LEFT,
+                    mv.width() / 2.0,
+                    mv.height() / 2.0);
             });
     }
 
     SECTION("poly_info")
     {
         runRenderTest(
-            "poly_info", [](vcl::HeadlessMeshViewer& mv) {
-                auto mesh = getDrawableMesh<vcl::PolyMesh>("spot/spot_quadrangulated.obj");
+            TEST_NAME,
+            "poly_info",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableMesh<vcl::PolyMesh>(
+                    "spot/spot_quadrangulated.obj");
                 mv.pushDrawableObject(std::move(mesh));
-            }, 1.57079632679f);
+            },
+            1.57079632679f,
+            true,
+            -150.0f,
+            2,
+            0.005f,
+            [](vcl::HeadlessMeshViewer& mv) {
+                mv.pushEditor<vcl::InfoEditorBGFX>(true);
+                mv.simulateMousePress(
+                    vcl::MouseButton::LEFT,
+                    mv.width() / 2.0,
+                    mv.height() / 2.0);
+            });
     }
 }

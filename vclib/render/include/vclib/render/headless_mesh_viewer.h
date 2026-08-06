@@ -52,6 +52,18 @@ public:
     void resize(uint width, uint height) { mApp.resize(width, height); }
 
     /**
+     * @brief Retrieves the width of the canvas.
+     * @return The width in pixels.
+     */
+    uint width() const { return mApp.width(); }
+
+    /**
+     * @brief Retrieves the height of the canvas.
+     * @return The height in pixels.
+     */
+    uint height() const { return mApp.height(); }
+
+    /**
      * @brief Requests a screenshot and saves it to a file.
      * Auto-concludes by running the render loop.
      */

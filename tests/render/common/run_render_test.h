@@ -26,7 +26,8 @@ void runRenderTest(
     bool                                          warpIgnore     = false,
     float                                         zoom           = 0.0f,
     uint32_t                                      maxDiff        = 2,
-    float                                         failPercentage = 0.005f)
+    float                                         failPercentage = 0.005f,
+    std::function<void(vcl::HeadlessMeshViewer&)> postSetup      = nullptr)
 {
     vcl::HeadlessMeshViewer mv("Headless Mesh Viewer", 1920, 1080);
 
@@ -42,6 +43,10 @@ void runRenderTest(
 
     if (angleY != 0.0f) {
         mv.trackballRotate(vcl::Point3f(0.0f, 1.0f, 0.0f), angleY);
+    }
+
+    if (postSetup) {
+        postSetup(mv);
     }
 
     vcl::Image renderedImage;
