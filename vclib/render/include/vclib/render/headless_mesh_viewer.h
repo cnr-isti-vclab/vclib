@@ -307,7 +307,10 @@ public:
     /**
      * @brief Simulates a key release event.
      */
-    void simulateKeyRelease(vcl::Key::Enum key) { mApp.simulateKeyRelease(key); }
+    void simulateKeyRelease(vcl::Key::Enum key)
+    {
+        mApp.simulateKeyRelease(key);
+    }
 
     /**
      * @brief Simulates a mouse move event.

@@ -38,7 +38,7 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 
     bool mReadRequested = false;
 
-    bool mEditorsEventsEnabled = true;
+    bool                      mEditorsEventsEnabled = true;
     std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
 
     // the default id for the viewer drawer is 0

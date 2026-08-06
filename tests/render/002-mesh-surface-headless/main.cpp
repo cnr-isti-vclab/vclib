@@ -295,24 +295,28 @@ TEST_CASE("Mesh Surface Selection")
 
     SECTION("Polygon Selection")
     {
-        runRenderTest("polygon_selection", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableMesh<vcl::PolyMesh>("spot/spot_quadrangulated.obj");
+        runRenderTest(
+            "polygon_selection",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableMesh<vcl::PolyMesh>(
+                    "spot/spot_quadrangulated.obj");
 
-            mesh.updateRenderSettingsCapabilities();
+                mesh.updateRenderSettingsCapabilities();
 
-            // Deterministically assign selection to faces
-            for (auto& f : mesh.faces()) {
-                if (f.index() % 3 == 0)
-                    f.selected() = true;
-            }
-            mesh.updateBuffers();
+                // Deterministically assign selection to faces
+                for (auto& f : mesh.faces()) {
+                    if (f.index() % 3 == 0)
+                        f.selected() = true;
+                }
+                mesh.updateBuffers();
 
-            auto settings = mesh.renderSettings();
-            settings.setSurface(vcl::MeshRenderInfo::Surface::SELECTION);
-            settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setSurface(vcl::MeshRenderInfo::Surface::SELECTION);
+                settings.setWireframe(vcl::MeshRenderInfo::Wireframe::VISIBLE);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        }, 1.57079632679f);
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            1.57079632679f);
     }
 }

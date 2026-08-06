@@ -31,9 +31,10 @@ public:
 
         Base::hideSettingsButton();
 
-        connect(editorButton, &QPushButton::toggled, this, [this](bool checked) {
-            mViewer.setEditorsEventsEnabled(!checked);
-        });
+        connect(
+            editorButton, &QPushButton::toggled, this, [this](bool checked) {
+                mViewer.setEditorsEventsEnabled(!checked);
+            });
 
         mViewer.setOnEditorsEventsEnabledChangedCallback(
             [editorButton](bool enabled) {
