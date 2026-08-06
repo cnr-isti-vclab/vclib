@@ -21,6 +21,14 @@
 
 namespace vcl {
 
+/**
+ * @brief The InfoEditorBGFX class provides an editor for displaying information
+ * about clicked mesh elements (vertices, edges, or faces).
+ *
+ * It uses a GPU readback to identify the element under the cursor, retrieves
+ * its data from the mesh provider, and overlays text and highlights on the
+ * screen to provide visual feedback and data values (e.g., coordinates, IDs).
+ */
 template<typename ViewerDrawer>
 class InfoEditorBGFX : public Editor<ViewerDrawer>
 {
@@ -167,6 +175,9 @@ public:
 
         if (!block && button == vcl::MouseButton::LEFT) {
             block = true; // consume the event to prevent further propagation
+            
+            // The callback receives the exact Object ID, Element Type, and Element ID 
+            // from the GPU readback, avoiding the need for expensive CPU ray-tracing.
             auto callback = [this](
                                 ushort objectId,
                                 ushort elementType,

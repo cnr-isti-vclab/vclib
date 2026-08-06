@@ -18,6 +18,17 @@
 
 namespace vcl {
 
+/**
+ * @brief The InfoEditor class provides a viewer editor for displaying
+ * information about the mesh elements (e.g. vertices, edges, faces) being
+ * clicked.
+ *
+ * It retrieves the object and element ID beneath the mouse cursor from the GPU
+ * readback, reads the element details from the mesh provider, and overlays this
+ * data in the viewer as transient text and highlighting.
+ *
+ * @ingroup render_editors
+ */
 #ifdef VCLIB_RENDER_BACKEND_BGFX
 template<typename ViewerDrawer>
 using InfoEditor = InfoEditorBGFX<ViewerDrawer>;

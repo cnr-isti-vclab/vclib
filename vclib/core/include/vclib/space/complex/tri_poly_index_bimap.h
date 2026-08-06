@@ -185,6 +185,12 @@ public:
      */
     bool isTriMesh() const
     {
+        // We cannot simply compare the total number of triangles to the total
+        // number of polygons because deleted polygons have a triangle count of
+        // 0. A mesh with deleted faces and quadrangles could coincidentally
+        // have the same number of total triangles and total polygons.
+        // Therefore, we must explicitly verify that every polygon maps to
+        // exactly one triangle.
         for (uint i = 0; i < mPolyToTriCount.size(); ++i) {
             if (mPolyToTriCount[i] != 1)
                 return false;

@@ -11,9 +11,9 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/primitives/points.h>
 #include <vclib/render/drawable/drawable_object.h>
-#include <vclib/mesh/elements/base/base.h>
 
 #include <vclib/algorithms/core.h>
+#include <vclib/mesh.h>
 
 #include <bgfx/bgfx.h>
 
