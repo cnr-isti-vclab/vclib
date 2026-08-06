@@ -5,39 +5,17 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include "get_drawable_mesh.h"
+
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/headless_mesh_viewer.h>
-
-#include <vclib/algorithms/mesh.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
 #include <functional>
 #include <string>
-
-// We need a helper to load meshes and create drawable mesh
-template<vcl::MeshConcept MeshType>
-vcl::DrawableMesh<MeshType> getDrawableMesh(const std::string& filename)
-{
-    vcl::MeshInfo info;
-    MeshType      m = vcl::loadMesh<MeshType>(
-        std::string(VCLIB_EXAMPLE_MESHES_PATH) + "/" + filename, info);
-
-    if constexpr (vcl::FaceMeshConcept<MeshType>) {
-        if (!info.hasPerFaceNormal()) {
-            vcl::updatePerFaceNormals(m);
-        }
-        if (!info.hasPerVertexNormal()) {
-            vcl::updatePerVertexNormalsFromFaceNormals(m);
-        }
-    }
-
-    return vcl::makeDrawable(std::move(m));
-}
 
 void runRenderTest(
     const std::string&                            testName,

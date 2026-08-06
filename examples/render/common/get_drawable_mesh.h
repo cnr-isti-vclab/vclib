@@ -8,8 +8,7 @@
 #ifndef VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 #define VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms/mesh.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 

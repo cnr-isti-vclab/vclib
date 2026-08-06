@@ -5,13 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include "get_drawable_mesh.h"
+
 #include <vclib/bgfx/context.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/headless_mesh_viewer.h>
-
-#include <vclib/algorithms/mesh.h>
-#include <vclib/io.h>
-#include <vclib/mesh.h>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -19,26 +17,6 @@
 #include <functional>
 #include <string>
 #include <vector>
-
-// We need a helper to load meshes and create drawable mesh
-template<vcl::MeshConcept MeshType>
-vcl::DrawableMesh<MeshType> getDrawableMesh(const std::string& filename)
-{
-    vcl::MeshInfo info;
-    MeshType      m = vcl::loadMesh<MeshType>(
-        std::string(VCLIB_EXAMPLE_MESHES_PATH) + "/gltf/" + filename, info);
-
-    if constexpr (vcl::FaceMeshConcept<MeshType>) {
-        if (!info.hasPerFaceNormal()) {
-            vcl::updatePerFaceNormals(m);
-        }
-        if (!info.hasPerVertexNormal()) {
-            vcl::updatePerVertexNormalsFromFaceNormals(m);
-        }
-    }
-
-    return vcl::makeDrawable(std::move(m));
-}
 
 void runRenderTest(
     const std::string&                            testName,
@@ -49,12 +27,6 @@ void runRenderTest(
 
     // run custom setup
     setup(mv);
-
-    // Apply fitscene to center everything
-    mv.fitScene();
-
-    // Zoom in a bit to make the mesh larger
-    mv.trackballZoom(-150.0f);
 
     if (angle > 0.0f) {
         mv.trackballRotate(vcl::Point3f(0.0f, 1.0f, 0.0f), angle);
@@ -121,7 +93,8 @@ TEST_CASE("PBR Rendering")
                 {
                     runRenderTest(
                         testName, angle, [&](vcl::HeadlessMeshViewer& mv) {
-                            auto mesh = getDrawableMesh<vcl::TriMesh>(meshName);
+                            auto mesh = getDrawableMesh<vcl::TriMesh>(
+                                "gltf/" + meshName);
                             auto settings = mesh.renderSettings();
                             settings.setSurface(
                                 vcl::MeshRenderInfo::Surface::VISIBLE, true);
@@ -139,6 +112,12 @@ TEST_CASE("PBR Rendering")
                                 std::string(VCLIB_ASSETS_PATH) + "/panoramas/" +
                                 panoramaName;
                             mv.setPanorama(panPath);
+
+                            // Apply fitscene to center everything
+                            mv.fitScene();
+
+                                   // Zoom in a bit to make the mesh larger
+                            mv.trackballZoom(-150.0f);
                         });
                 }
             }
