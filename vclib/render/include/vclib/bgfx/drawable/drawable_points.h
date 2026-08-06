@@ -13,7 +13,6 @@
 #include <vclib/render/drawable/drawable_object.h>
 
 #include <vclib/algorithms/core.h>
-#include <vclib/mesh.h>
 
 #include <bgfx/bgfx.h>
 
@@ -169,11 +168,6 @@ public:
     void draw(const DrawObjectSettings& settings) override
     {
         Points::draw(settings.viewId);
-    }
-
-    void drawId(const DrawObjectSettings& settings) override
-    {
-        Points::drawId(settings.viewId, settings.objectId | vcl::ElemId::VERTEX);
     }
 
     vcl::Box3d boundingBox() const override
