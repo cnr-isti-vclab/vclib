@@ -87,6 +87,11 @@ function(add_standalone_example module name)
 
     add_executable(${TARGET_NAME} "${SOURCE_FILE}")
 
+    set_target_properties(
+        ${TARGET_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}"
+    )
+
     # Extract the base module name (e.g., 'render' from 'render/core')
     string(REGEX MATCH "^[^/]+" BASE_MODULE "${module}")
 
