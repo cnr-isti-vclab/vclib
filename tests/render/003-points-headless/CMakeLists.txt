@@ -5,8 +5,13 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-render-test-${TEST_NAME})
+
+set(SOURCES main.cpp)
+
 vclib_add_test(
-    003-points-headless
+    ${TEST_NAME}
     MODULE render
-    SOURCES main.cpp
+    SOURCES ${SOURCES}
 )

@@ -5,6 +5,9 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-render-test-${TEST_NAME})
+
 set(SHADERS
     shaders/vs_vertex_shader.sc
     shaders/fs_fragment_shader.sc
@@ -12,7 +15,7 @@ set(SHADERS
 )
 
 vclib_add_test(
-    001-hello-triangle-headless
+    ${TEST_NAME}
     MODULE render
     SOURCES main.cpp
 )
