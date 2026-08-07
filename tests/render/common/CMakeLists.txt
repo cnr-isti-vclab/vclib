@@ -7,9 +7,7 @@
 
 project(common)
 
-set(HEADERS
-    run_render_test.h
-)
+set(HEADERS run_render_test.h)
 
 add_library(vclib-render-tests-common INTERFACE)
 
