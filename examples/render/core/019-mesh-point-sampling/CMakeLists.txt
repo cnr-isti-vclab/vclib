@@ -12,6 +12,6 @@ set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    CORE_EXAMPLE 019-mesh-point-sampling
+    CORE_EXAMPLE ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
 )
