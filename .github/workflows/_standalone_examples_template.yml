@@ -50,7 +50,7 @@ jobs:
           sudo apt-get install libembree-dev libgmp-dev libmpfr-dev
         fi
         if [ "${{ matrix.module }}" == "render" ]; then
-          sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev
+          sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
         fi
 
     - name: Install dependencies
