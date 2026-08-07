@@ -405,12 +405,12 @@ protected:
     {
         ProgramManager& pm = Context::instance().programManager();
 
-        if (mMRB.isTriMesh())
+        if (mMRB.isMappingTrivial())
             return pm.getProgram<
-                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_IS_TRI_MESH_ON>();
+                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_MAPPING_TRIVIAL_ON>();
         else
             return pm.getProgram<
-                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_IS_TRI_MESH_OFF>();
+                VertFragProgram::DRAWABLE_MESH_SURFACE_ID_MAPPING_TRIVIAL_OFF>();
     }
 };
 
