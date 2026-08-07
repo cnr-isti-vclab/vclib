@@ -515,7 +515,7 @@ public:
                 !mFaceSelection.cpuBackup().empty()) {
                 const auto& cpuBackup = mFaceSelection.cpuBackup();
 
-                const bool isTriMesh =
+                const bool isMappingTrivial =
                     indexMap.triangleCount() == m.faceCount();
 
                 uint numSelectedFaces = 0;
@@ -528,7 +528,7 @@ public:
                 for (auto& f : m.faces()) {
                     const uint faceIdx = f.index();
                     const uint firstTriIdx =
-                        isTriMesh ? faceIdx : indexMap.triangleBegin(faceIdx);
+                        isMappingTrivial ? faceIdx : indexMap.triangleBegin(faceIdx);
                     const uint byteIdx = firstTriIdx / 8;
 
                     if (byteIdx < cpuBackup.size()) {
