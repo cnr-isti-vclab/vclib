@@ -8,6 +8,7 @@
 #ifndef VCL_ALGORITHMS_MESH_CLEAN_H
 #define VCL_ALGORITHMS_MESH_CLEAN_H
 
+#include <vclib/algorithms/mesh/delete.h>
 #include <vclib/algorithms/mesh/sort.h>
 #include <vclib/algorithms/mesh/stat/topology.h>
 
@@ -152,23 +153,9 @@ uint removeUnreferencedVertices(MeshType& m)
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
     if (n < m.vertexCount()) {
-        // will store on this vector only the indices of the referenced vertices
-        std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
-        // Iterate over all vertices in the mesh, and mark any unreferenced
-        // vertex as deleted.
-        for (const VertexType& v : m.vertices()) {
-            if (!refVertices[m.index(v)]) {
-                m.deleteVertex(m.index(v));
-            }
-            else {
-                refVertIndices[m.index(v)] = m.index(v);
-            }
-        }
-
-        // update the vertex indices of the mesh, setting to null the indices of
-        // the unreferenced vertices (it may happen on adjacent vertices of some
-        // container).
-        m.updateVertexReferences(refVertIndices);
+        deleteVerticesIf(m, [&](const VertexType& v) {
+            return !refVertices[m.index(v)];
+        });
     }
 
     return n;
@@ -263,9 +250,9 @@ uint removeDuplicateVertices(MeshType& m)
  * @note This function currently only works for triangle meshes. It should be
  * made more general to work for polygonal meshes as well.
  *
- * @note This function does not update any topology relation that could be
- * affected by the removal of duplicate faces, such as the VF or FF relation.
- * Therefore, it is usually performed before building any topology information.
+ * @note This function automatically updates all internal topological references 
+ * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or 
+ * `UINT_NULL`).
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
  * TriangleMeshConcept.
@@ -297,16 +284,17 @@ uint removeDuplicateFaces(MeshType& m)
 
     // sort the vector based on the face vertex indices.
     std::sort(std::execution::par_unseq, fvec.begin(), fvec.end());
-    uint total = 0;
+
+    std::vector<bool> shouldDelete(m.faceContainerSize(), false);
 
     // iterate over the sorted vector, and mark any duplicate faces as deleted.
     for (uint i = 0; i < fvec.size() - 1; ++i) {
         if (fvec[i] == fvec[i + 1]) {
-            total++;
-            m.deleteFace(fvec[i].sentinel());
+            shouldDelete[m.index(fvec[i].sentinel())] = true;
         }
     }
-    return total;
+    
+    return deleteFacesIf(m, shouldDelete);
 }
 
 /**
@@ -337,33 +325,22 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
 {
     using VertexType = MeshType::VertexType;
 
-    int count_vd = 0;
-
-    // iterate over all vertices in the mesh, and mark any with invalid floating
-    // point values as deleted.
-    for (VertexType& v : m.vertices()) {
-        if (v.position().isDegenerate()) {
-            count_vd++;
-            m.deleteVertex(&v);
-        }
-    }
+    uint count_vd = deleteVerticesIf(m, [](const VertexType& v) {
+        return v.position().isDegenerate();
+    });
 
     // If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
     // faces incident on deleted vertices.
     if constexpr (HasFaces<MeshType>) {
-        using FaceType = MeshType::FaceType;
         if (deleteAlsoFaces) {
-            for (FaceType& f : m.faces()) {
-                bool deg = false;
-                for (VertexType* v : f.vertices()) {
-                    if (v->deleted()) {
-                        deg = true;
+            deleteFacesIf(m, [](const typename MeshType::FaceType& f) {
+                for (const VertexType* v : f.vertices()) {
+                    if (v == nullptr) {
+                        return true;
                     }
                 }
-                if (deg) {
-                    m.deleteFace(&f);
-                }
-            }
+                return false;
+            });
         }
     }
 
@@ -379,7 +356,11 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
  * area faces are degenerate (for example, a face with three different vertex
  * references, but two of them have the same position). Therefore, if you
  * also want to remove these kinds of faces, you should call
- * `removeDuplicatedVertices(m)` first. This function does not adjust topology.
+ * `removeDuplicatedVertices(m)` first.
+ *
+ * @note This function automatically updates all internal topological references 
+ * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or 
+ * `UINT_NULL`).
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the
  * FaceMeshConcept.
@@ -395,22 +376,14 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
 template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
-    uint count     = 0;
-    using FaceType = MeshType::FaceType;
-
-    // iterate over all faces in the mesh, and mark any that are degenerate as
-    // deleted.
-    for (FaceType& f : m.faces()) {
-        bool deg = false; // flag to check if a face is degenerate
-        for (uint i = 0; i < f.vertexCount() && !deg; ++i) {
+    return deleteFacesIf(m, [&](const typename MeshType::FaceType& f) {
+        for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.vertex(i) == f.vertexMod(i + 1)) {
-                deg = true;
-                m.deleteFace(m.index(f));
-                count++;
+                return true;
             }
         }
-    }
-    return count;
+        return false;
+    });
 }
 
 } // namespace vcl
