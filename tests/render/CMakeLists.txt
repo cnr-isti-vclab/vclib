@@ -20,7 +20,5 @@ if(TARGET vclib-3rd-bgfx)
     add_subdirectory(004-lines-headless)
     add_subdirectory(005-mesh-wireframe-headless)
     add_subdirectory(006-mesh-pbr-headless)
-    if (NOT LINUX) # TODO: needs bgfx bug #3871 fixed for vulkan
-        add_subdirectory(007-info-editor-headless)
-    endif()
+    add_subdirectory(007-info-editor-headless)
 endif()
