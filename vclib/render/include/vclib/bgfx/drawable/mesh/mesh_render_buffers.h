@@ -143,7 +143,7 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
-    bool isTriMesh() const { return mPolyMapping.isTriMesh(); }
+    bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
 
     // called on computeSelection
     void computeSelection(

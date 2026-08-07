@@ -180,10 +180,11 @@ public:
     uint polygonCount() const { return mPolyToTri.size(); }
 
     /**
-     * @brief Returns true if the mesh is a triangle mesh (i.e., all polygons
-     * are triangles), false otherwise.
+     * @brief Returns true if the mapping between polygon faces and triangulated
+     * faces is trivial (i.e. every polygon generates exactly 1 triangle, and
+     * there are no deleted faces in the middle), false otherwise.
      */
-    bool isTriMesh() const
+    bool isMappingTrivial() const
     {
         // We cannot simply compare the total number of triangles to the total
         // number of polygons because deleted polygons have a triangle count of

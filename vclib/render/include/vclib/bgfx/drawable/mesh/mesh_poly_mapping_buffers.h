@@ -35,7 +35,7 @@ class MeshPolyMappingBuffers
     IndexBuffer mPolyToTriBeginBuffer;
     IndexBuffer mPolyToTriCountBuffer;
 
-    bool mIsTriMesh = false;
+    bool mIsMappingTrivial = false;
 
 public:
     MeshPolyMappingBuffers() = default;
@@ -46,7 +46,7 @@ public:
         swap(mTriToPolyBuffer, other.mTriToPolyBuffer);
         swap(mPolyToTriBeginBuffer, other.mPolyToTriBeginBuffer);
         swap(mPolyToTriCountBuffer, other.mPolyToTriCountBuffer);
-        swap(mIsTriMesh, other.mIsTriMesh);
+        swap(mIsMappingTrivial, other.mIsMappingTrivial);
     }
 
     friend void swap(MeshPolyMappingBuffers& a, MeshPolyMappingBuffers& b)
@@ -67,7 +67,7 @@ public:
      */
     void init(const TriPolyIndexBiMap& indexMap, uint numTris)
     {
-        mIsTriMesh = indexMap.isTriMesh();
+        mIsMappingTrivial = indexMap.isMappingTrivial();
 
         if (numTris == 0)
             return;
@@ -121,7 +121,7 @@ public:
         }
     }
 
-    bool isTriMesh() const { return mIsTriMesh; }
+    bool isMappingTrivial() const { return mIsMappingTrivial; }
 
     void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
     {
