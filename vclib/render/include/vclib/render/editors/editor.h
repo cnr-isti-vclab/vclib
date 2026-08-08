@@ -347,13 +347,13 @@ protected:
         mViewer->setContinuousRedraw(enabled);
     }
     /**
-     * @brief Pushes an undo action to the viewer's undo stack.
+     * @brief Pushes an undo/redo action to the viewer's undo/redo stack.
      * @param[in] action: the action to push.
      */
-    void pushUndoAction(std::unique_ptr<UndoRedoAction> action)
+    void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
     {
         assert(mViewer);
-        mViewer->pushUndoAction(std::move(action));
+        mViewer->pushUndoRedoAction(std::move(action));
     }
 
 private:

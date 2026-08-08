@@ -103,7 +103,7 @@ public:
         setEditorsEventsEnabled(!mEditorsEventsEnabled);
     }
 
-    void pushUndoAction(std::unique_ptr<UndoRedoAction> action)
+    void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
     {
         mUndoRedoStack.pushAction(std::move(action));
     }

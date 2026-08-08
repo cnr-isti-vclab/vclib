@@ -42,7 +42,8 @@ public:
     }
 
     /**
-     * @brief Undoes the top action on the undo stack and pushes it to the redo stack.
+     * @brief Undoes the top action on the undo stack and pushes it to the redo
+     * stack.
      * @return true if an action was undone, false if the undo stack was empty.
      */
     bool undo()
@@ -58,7 +59,8 @@ public:
     }
 
     /**
-     * @brief Redoes the top action on the redo stack and pushes it to the undo stack.
+     * @brief Redoes the top action on the redo stack and pushes it to the undo
+     * stack.
      * @return true if an action was redone, false if the redo stack was empty.
      */
     bool redo()

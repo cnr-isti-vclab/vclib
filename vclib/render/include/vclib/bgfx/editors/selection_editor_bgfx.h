@@ -14,6 +14,7 @@
 #include <vclib/bgfx/screenspace/overlay/screenspace_box.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
 
+#include <vclib/render/actions/selection_action.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/selection/selection_mode.h>
@@ -43,6 +44,10 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     std::vector<SelectionMode> mCurrentSelectionModes;
     bool                       mSelectionCalcRequired = false;
     bool                       mSelectionInProgress   = false;
+
+    // ---- Undo/Redo Action State ----
+    std::vector<SelectionUndoRedoAction::MeshSelectionState> mPreSelectionStates;
+    bool mActionCreationPending = false;
 
 public:
     SelectionEditorBGFX()
@@ -195,12 +200,21 @@ public:
 
         // Request continuous updates until GPU-to-CPU readback completes for
         // all meshes
+        bool readbackPending = false;
         for (const auto& obj : *Base::drawList()) {
             auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
             if (mesh && mesh->isSelectionReadbackPending()) {
+                readbackPending = true;
                 Base::viewerUpdate();
                 break;
             }
+        }
+
+        // Finalize undo/redo action once readback completes
+        if (!readbackPending && mActionCreationPending &&
+            !mSelectionInProgress) {
+            finalizeSelectionAction();
+            mActionCreationPending = false;
         }
     }
 
@@ -218,14 +232,20 @@ public:
             using enum SelectionAction;
             switch (key) {
             case Key::A:
+                savePreSelectionStates();
+                mActionCreationPending = true;
                 mCurrentSelectionModes = actionModesForSettings<ALL>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::D:
+                savePreSelectionStates();
+                mActionCreationPending = true;
                 mCurrentSelectionModes = actionModesForSettings<NONE>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::I:
+                savePreSelectionStates();
+                mActionCreationPending = true;
                 mCurrentSelectionModes = actionModesForSettings<INVERT>();
                 mSelectionCalcRequired = true;
                 return true;
@@ -262,6 +282,8 @@ public:
         if (!isSelectionActive())
             return false;
         if (button == MouseButton::LEFT && !mSelectionInProgress) {
+            savePreSelectionStates();
+            mActionCreationPending = true;
             mSelectionInProgress   = true;
             mSelectionAnchor       = Point2d {x, y};
             mSelectionBox          = Box2d({x, y});
@@ -598,6 +620,55 @@ private:
         box.add(sSpace[0]);
         box.add(sSpace[1]);
         return box;
+    }
+
+    // ---- Undo/Redo helpers ----
+
+    void savePreSelectionStates()
+    {
+        mPreSelectionStates.clear();
+        auto dl = Base::drawList();
+        for (size_t i = 0; i < dl->size(); i++) {
+            if (!shouldProcessObject(*dl, i))
+                continue;
+            auto el = dl->at(i);
+            if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
+                SelectionUndoRedoAction::MeshSelectionState state;
+                state.obj             = el;
+                state.vertexSelection = p->vertexSelectionBitVector();
+                state.faceSelection   = p->faceSelectionBitVector();
+                mPreSelectionStates.push_back(std::move(state));
+            }
+        }
+    }
+
+    void finalizeSelectionAction()
+    {
+        bool changed = false;
+        for (auto& state : mPreSelectionStates) {
+            if (auto lock = state.obj.lock()) {
+                if (auto* mesh =
+                    dynamic_cast<AbstractDrawableMesh*>(lock.get())) {
+                    if (state.vertexSelection !=
+                        mesh->vertexSelectionBitVector()) {
+                        changed = true;
+                        break;
+                    }
+                    if (state.faceSelection != mesh->faceSelectionBitVector()) {
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (changed) {
+            auto action = std::make_unique<SelectionUndoRedoAction>(
+                std::move(mPreSelectionStates));
+            Base::pushUndoRedoAction(std::move(action));
+            Base::viewerUpdate();
+        }
+        mPreSelectionStates.clear();
     }
 };
 
