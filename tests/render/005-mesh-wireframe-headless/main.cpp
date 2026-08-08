@@ -214,3 +214,60 @@ TEST_CASE("Wireframe Depth Offset")
             -150.f);
     }
 }
+
+TEST_CASE("Wireframe Cross Section")
+{
+    SECTION("Vertex Cross Section")
+    {
+        runRenderTest("cross_section_vertex", [](vcl::HeadlessMeshViewer& mv) {
+            auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+
+            auto settings = mesh.renderSettings();
+            settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframeWidth(3);
+            mesh.setRenderSettings(settings);
+
+            vcl::CrossSectionSettings css(mesh);
+            css.type() =
+                vcl::CrossSectionSettings::CrossSectionType::PER_VERTEX;
+
+            vcl::Point3f min = css.boundingBox().min();
+            vcl::Point3f max = css.boundingBox().max();
+            css.setLowerUpper(min + (max - min) * 0.25f,
+                              max - (max - min) * 0.25f);
+
+            mesh.setCrossSectionSettings(css);
+
+            mv.pushDrawableObject(std::move(mesh));
+        });
+    }
+
+    SECTION("Fragment Cross Section")
+    {
+        runRenderTest("cross_section_fragment", [](vcl::HeadlessMeshViewer& mv) {
+            auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+
+            auto settings = mesh.renderSettings();
+            settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
+            settings.setWireframe(
+                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+            settings.setWireframeWidth(3);
+            mesh.setRenderSettings(settings);
+
+            vcl::CrossSectionSettings css(mesh);
+            css.type() =
+                vcl::CrossSectionSettings::CrossSectionType::PER_FRAGMENT;
+
+            vcl::Point3f min = css.boundingBox().min();
+            vcl::Point3f max = css.boundingBox().max();
+            css.setLowerUpper(min + (max - min) * 0.25f,
+                              max - (max - min) * 0.25f);
+
+            mesh.setCrossSectionSettings(css);
+
+            mv.pushDrawableObject(std::move(mesh));
+        });
+    }
+}

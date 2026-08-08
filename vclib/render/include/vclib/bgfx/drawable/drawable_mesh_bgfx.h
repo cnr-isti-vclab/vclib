@@ -16,6 +16,7 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/drawable/drawable_environment.h>
 #include <vclib/bgfx/drawable/mesh/mesh_render_buffers.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
 
 #include <bgfx/bgfx.h>
@@ -112,6 +113,9 @@ public:
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         setRenderSettings(mMRS);
+
+        mCSS.setBoundingBox(*this);
+        mMRB.updateCrossSectionSettings(mCSS);
     }
 
     void updateRenderSettingsCapabilities() override
@@ -125,6 +129,12 @@ public:
         mMRB.updateEdgeSettings(rs);
         mMRB.updateWireframeSettings(rs);
         mMRB.updatePointsSettings(rs);
+    }
+
+    void setCrossSectionSettings(const CrossSectionSettings& css) override
+    {
+        AbstractDrawableMesh::setCrossSectionSettings(css);
+        mMRB.updateCrossSectionSettings(css);
     }
 
     const AbstractMeshProvider& meshProvider() const override
@@ -153,6 +163,8 @@ public:
 
         DrawableMeshUniforms::setColor(*this);
         MeshRenderSettingsUniforms::set(mMRS);
+
+        updateCrossSectionUniforms();
 
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             const DrawableEnvironment* env = settings.environment;
@@ -258,6 +270,8 @@ public:
             model = MeshType::transformMatrix().template cast<float>();
         }
 
+        updateCrossSectionUniforms();
+
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
@@ -293,6 +307,21 @@ protected:
     {
         MeshRenderSettingsUniforms::bind();
         DrawableMeshUniforms::bind();
+        CrossSectionUniforms::bind();
+    }
+
+    void updateCrossSectionUniforms() const
+    {
+        if (AbstractDrawableMesh::mCSS.isEnabled()) {
+            using enum CrossSectionSettings::CrossSectionType;
+            CrossSectionUniforms::set(
+                AbstractDrawableMesh::mCSS.lower(),
+                AbstractDrawableMesh::mCSS.upper(),
+                AbstractDrawableMesh::mCSS.type() == PER_FRAGMENT);
+        }
+        else {
+            CrossSectionUniforms::set();
+        }
     }
 
     /**
@@ -344,9 +373,14 @@ protected:
     {
         using enum MeshRenderInfo::Surface;
 
+        uint section   = 0;
         uint shading   = 0;
         uint color     = 0;
         uint selection = 0;
+
+        if (!mCSS.isEnabled()) {
+            section = 1;
+        }
 
         if (mMRS.isSurface(SHADING_FLAT)) {
             shading = 0;
@@ -384,6 +418,7 @@ protected:
             selection = 1;
         }
 
+        constexpr uint N_SECTION_MODES   = 2;
         constexpr uint N_SHADING_MODES   = 4;
         constexpr uint N_COLOR_MODES     = 6;
         constexpr uint N_SELECTION_MODES = 2;
@@ -391,11 +426,11 @@ protected:
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
+                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
 
         uint offset =
-            linearizeIndex<N_SHADING_MODES, N_COLOR_MODES, N_SELECTION_MODES>(
-                shading, color, selection);
+            linearizeIndex<N_SECTION_MODES, N_SHADING_MODES, N_COLOR_MODES, N_SELECTION_MODES>(
+                section, shading, color, selection);
 
         uint program = base + offset;
 

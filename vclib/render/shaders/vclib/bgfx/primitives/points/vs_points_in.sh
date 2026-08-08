@@ -6,9 +6,11 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 $output v_normal, v_texcoord0, v_color, v_selected
+$output v_worldPos, v_discardFlag
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/buffers/boolean_buffer.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 
 BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
@@ -74,5 +76,12 @@ void main()
 
 #if POINTS_SELECTION_ON
     v_selected = float(getBoolFromBuffer(vertexSelected, pointIndex));
+#endif
+
+#if defined(POINTS_SECTION_ON) || defined(POINTS_ID_SECTION_ON)
+    v_worldPos = mul(u_model[0], vec4(centerPos, 1.0)).xyz;
+    v_discardFlag = computeDiscardFlag(v_worldPos);
+#else
+    v_discardFlag = 1.0;
 #endif
 }
