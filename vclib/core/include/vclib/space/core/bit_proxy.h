@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
-#define VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
+#ifndef VCL_SPACE_CORE_BIT_PROXY_H
+#define VCL_SPACE_CORE_BIT_PROXY_H
 
 #include <vclib/base.h>
 
@@ -61,7 +61,7 @@ public:
         return *this;
     }
 
-    BitProxy& operator/=(bool bit)
+    BitProxy& operator^=(bool bit)
     {
         mMask.get() ^= (bit << mIndex);
         return *this;
@@ -87,4 +87,4 @@ concept BitProxyConcept = std::derived_from< // same type or derived type
 
 } // namespace vcl
 
-#endif // VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
+#endif // VCL_SPACE_CORE_BIT_PROXY_H

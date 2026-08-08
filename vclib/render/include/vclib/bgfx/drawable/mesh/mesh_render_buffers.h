@@ -143,6 +143,16 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    const vcl::BitVector<true>& vertexSelectionBitVector() const
+    {
+        return mSelection.vertexSelectionBuffer().cpuBackup();
+    }
+
+    const vcl::BitVector<true>& faceSelectionBitVector() const
+    {
+        return mSelection.faceSelectionBuffer().cpuBackup();
+    }
+
     bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
 
     // called on computeSelection
@@ -236,8 +246,6 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
     {
-        using enum MRI::Buffers;
-
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
         }

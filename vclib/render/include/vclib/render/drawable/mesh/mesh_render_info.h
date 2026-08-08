@@ -51,10 +51,12 @@ public:
         VERT_COLORS,
         VERT_TEXCOORDS,
         VERT_TANGENT,
+        VERT_SELECTION,
 
         TRIANGLES,
         TRI_NORMALS,
         TRI_COLORS,
+        FACE_SELECTION,
         WEDGE_TEXCOORDS,
 
         WIREFRAME,
@@ -83,10 +85,10 @@ public:
     };
 
 private:
-    using BuffersBitSetUnderlyingType = ushort;
+    using BuffersBitSetUnderlyingType = uint;
 
     static_assert(
-        sizeof(BuffersBitSetUnderlyingType) < (uint) Buffers::COUNT,
+        sizeof(BuffersBitSetUnderlyingType) * 8 >= (uint) Buffers::COUNT,
         "BuffersBitSet is not able to store all enum Buffers values");
 
     bool mVisible;

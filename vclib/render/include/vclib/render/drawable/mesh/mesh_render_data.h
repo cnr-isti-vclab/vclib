@@ -125,8 +125,6 @@ public:
         const MeshConcept auto& mesh,
         MRI::BuffersBitSet      buffersToUpdate = MRI::BUFFERS_ALL)
     {
-        using enum MRI::Buffers;
-
         MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
 
         // first thing to do
@@ -1035,6 +1033,9 @@ private:
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (positions)
             derived().setVertexPositionsBuffer(mesh);
+        }
+        
+        if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(VERT_SELECTION)]) {
             derived().setVertexSelectionBuffer(mesh);
         }
 
@@ -1086,6 +1087,9 @@ private:
             if (btu[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
                 derived().setTriangleIndicesBuffer(mesh);
+            }
+
+            if (btu[toUnderlying(TRIANGLES)] || btu[toUnderlying(FACE_SELECTION)]) {
                 derived().setTriangleSelectionBuffer(mesh);
             }
 
