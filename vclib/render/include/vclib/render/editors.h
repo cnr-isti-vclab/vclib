@@ -9,6 +9,7 @@
 #define VCL_RENDER_EDITORS_H
 
 #include "editors/bounding_box_editor.h"
+#include "editors/info_editor.h"
 #include "editors/mesh_selector_editor.h"
 #include "editors/selection_editor.h"
 
