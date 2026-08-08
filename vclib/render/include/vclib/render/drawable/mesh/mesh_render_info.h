@@ -64,6 +64,7 @@ public:
         EDGES,
         EDGE_COLORS,
         EDGE_NORMALS,
+        EDGE_SELECTION,
 
         TEXTURES,
 
@@ -176,6 +177,7 @@ public:
         COLOR_EDGE     = VCL_MRS_EDGES_COLOR_EDGE,
         COLOR_MESH     = VCL_MRS_EDGES_COLOR_MESH,
         COLOR_USER     = VCL_MRS_EDGES_COLOR_USER,
+        SELECTION      = VCL_MRS_EDGES_DRAW_SELECTION,
 
         COUNT
     };

@@ -352,6 +352,9 @@ public:
         else if (mrs.isEdges(COLOR_EDGE)) {
             mEdgeLines.setColorSetting(PER_LINE);
         }
+
+        mEdgeLines.setSelectionVisibility(mrs.isEdges(SELECTION));
+        mEdgeLines.setSelectionColor(mrs.edgesSelectionColor());
     }
 
     void updateWireframeSettings(const MeshRenderSettings& mrs)
@@ -641,6 +644,11 @@ private:
     void setEdgeColorsBuffer(const MeshType& mesh) // override
     {
         mEdgeLines.setLineColors(mesh.edges() | vcl::views::colors);
+    }
+
+    void setEdgeSelectionBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineSelections(mesh.edges() | vcl::views::selection);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override

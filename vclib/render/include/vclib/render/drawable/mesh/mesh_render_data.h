@@ -948,6 +948,8 @@ protected:
      */
     void setEdgeColorsBuffer(const EdgeMeshConcept auto&) {}
 
+    void setEdgeSelectionBuffer(const EdgeMeshConcept auto&) {}
+
     /**
      * @brief Function that sets the textures from the mesh and sends the data
      * to the GPU.
@@ -1174,6 +1176,9 @@ private:
                     if (btu[toUnderlying(EDGE_COLORS)]) {
                         // edge color buffer
                         derived().setEdgeColorsBuffer(mesh);
+                    }
+                    if (btu[toUnderlying(EDGE_SELECTION)]) {
+                        derived().setEdgeSelectionBuffer(mesh);
                     }
                 }
             }
