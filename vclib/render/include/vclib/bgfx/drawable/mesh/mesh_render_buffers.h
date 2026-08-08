@@ -143,6 +143,16 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    const vcl::BitVector<true>& vertexSelectionBitVector() const
+    {
+        return mSelection.vertexSelectionBuffer().cpuBackup();
+    }
+
+    const vcl::BitVector<true>& faceSelectionBitVector() const
+    {
+        return mSelection.faceSelectionBuffer().cpuBackup();
+    }
+
     bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
 
     // called on computeSelection

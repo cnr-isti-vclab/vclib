@@ -82,24 +82,6 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
-    void computeSelection(const SelectionParameters& params) override
-    {
-        if (!isVisible()) {
-            return;
-        }
-        if constexpr (!HasFaces<MeshType>)
-            if (params.mode.primitive == SelectionPrimitive::FACE)
-                return;
-
-        mMRB.computeSelection(
-            params, this->transformMatrix().template cast<float>());
-    }
-
-    bool isSelectionReadbackPending() const override
-    {
-        return mMRB.isSelectionReadbackPending();
-    }
-
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -130,6 +112,68 @@ public:
     const AbstractMeshProvider& meshProvider() const override
     {
         return mProvider;
+    }
+
+    void computeSelection(const SelectionParameters& params) override
+    {
+        if (!isVisible()) {
+            return;
+        }
+        if constexpr (!HasFaces<MeshType>)
+            if (params.mode.primitive == SelectionPrimitive::FACE)
+                return;
+
+        mMRB.computeSelection(
+            params, this->transformMatrix().template cast<float>());
+    }
+
+    vcl::BitVector<true> vertexSelectionBitVector() const override
+    {
+        return mMRB.vertexSelectionBitVector();
+    }
+
+    void setVertexSelectionBitVector(
+        const vcl::BitVector<true>& bitVector) override
+    {
+        if (bitVector.empty())
+            return;
+
+        uint vidx = 0;
+        for (auto& v : MeshType::vertices()) {
+            if (vidx < bitVector.size()) {
+                v.selected() = bitVector[vidx++];
+            }
+        }
+
+        updateBuffers({MRI::Buffers::VERT_SELECTION});
+    }
+
+    vcl::BitVector<true> faceSelectionBitVector() const override
+    {
+        return mMRB.faceSelectionBitVector();
+    }
+
+    void setFaceSelectionBitVector(
+        const vcl::BitVector<true>& bitVector) override
+    {
+        if constexpr (HasFaces<MeshType>) {
+            if (bitVector.empty())
+                return;
+
+            uint fidx = 0;
+            for (auto& f : MeshType::faces()) {
+                if (fidx < bitVector.size()) {
+                    f.selected() = bitVector[fidx++];
+                }
+            }
+
+            updateBuffers({MRI::Buffers::FACE_SELECTION});
+        }
+    }
+
+    bool isSelectionReadbackPending() const override
+    {
+        return mMRB.isSelectionReadbackPending();
     }
 
     // DrawableObject implementation
