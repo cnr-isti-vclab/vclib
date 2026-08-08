@@ -14,10 +14,10 @@
 #include <vclib/bgfx/screenspace/overlay/screenspace_box.h>
 #include <vclib/bgfx/selection/selection_parameters_bgfx.h>
 
-#include <vclib/render/actions/selection_action.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/selection/selection_mode.h>
+#include <vclib/render/undo_redo/selection_undo_redo_action.h>
 
 #include <array>
 #include <vector>
@@ -46,7 +46,13 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool                       mSelectionInProgress   = false;
 
     // ---- Undo/Redo Action State ----
-    std::vector<SelectionUndoRedoAction::MeshSelectionState> mPreSelectionStates;
+
+    /// @brief Temporarily stores the selection state of meshes before a
+    /// selection operation begins.
+    std::vector<SelectionUndoRedoAction::MeshState> mPreSelectionStates;
+
+    /// @brief True if a selection operation has started but not yet finalized
+    /// (e.g. waiting for GPU readback).
     bool mActionCreationPending = false;
 
 public:
@@ -232,20 +238,26 @@ public:
             using enum SelectionAction;
             switch (key) {
             case Key::A:
-                savePreSelectionStates();
-                mActionCreationPending = true;
+                if (!mActionCreationPending) {
+                    savePreSelectionStates();
+                    mActionCreationPending = true;
+                }
                 mCurrentSelectionModes = actionModesForSettings<ALL>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::D:
-                savePreSelectionStates();
-                mActionCreationPending = true;
+                if (!mActionCreationPending) {
+                    savePreSelectionStates();
+                    mActionCreationPending = true;
+                }
                 mCurrentSelectionModes = actionModesForSettings<NONE>();
                 mSelectionCalcRequired = true;
                 return true;
             case Key::I:
-                savePreSelectionStates();
-                mActionCreationPending = true;
+                if (!mActionCreationPending) {
+                    savePreSelectionStates();
+                    mActionCreationPending = true;
+                }
                 mCurrentSelectionModes = actionModesForSettings<INVERT>();
                 mSelectionCalcRequired = true;
                 return true;
@@ -282,8 +294,10 @@ public:
         if (!isSelectionActive())
             return false;
         if (button == MouseButton::LEFT && !mSelectionInProgress) {
-            savePreSelectionStates();
-            mActionCreationPending = true;
+            if (!mActionCreationPending) {
+                savePreSelectionStates();
+                mActionCreationPending = true;
+            }
             mSelectionInProgress   = true;
             mSelectionAnchor       = Point2d {x, y};
             mSelectionBox          = Box2d({x, y});
@@ -624,6 +638,11 @@ private:
 
     // ---- Undo/Redo helpers ----
 
+    /**
+     * @brief Saves the current selection state of all selectable meshes.
+     * Called before a selection action modifies the state, so it can be
+     * restored on undo.
+     */
     void savePreSelectionStates()
     {
         mPreSelectionStates.clear();
@@ -633,7 +652,7 @@ private:
                 continue;
             auto el = dl->at(i);
             if (auto p = dynamic_cast<AbstractDrawableMesh*>(el.get())) {
-                SelectionUndoRedoAction::MeshSelectionState state;
+                SelectionUndoRedoAction::MeshState state;
                 state.obj             = el;
                 state.vertexSelection = p->vertexSelectionBitVector();
                 state.faceSelection   = p->faceSelectionBitVector();
@@ -642,13 +661,18 @@ private:
         }
     }
 
+    /**
+     * @brief Compares the saved pre-selection states with the current ones.
+     * If any changes occurred, a new SelectionUndoRedoAction is created and
+     * pushed.
+     */
     void finalizeSelectionAction()
     {
         bool changed = false;
         for (auto& state : mPreSelectionStates) {
             if (auto lock = state.obj.lock()) {
                 if (auto* mesh =
-                    dynamic_cast<AbstractDrawableMesh*>(lock.get())) {
+                        dynamic_cast<AbstractDrawableMesh*>(lock.get())) {
                     if (state.vertexSelection !=
                         mesh->vertexSelectionBitVector()) {
                         changed = true;

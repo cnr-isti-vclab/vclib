@@ -5,13 +5,13 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_ACTIONS_UNDO_REDO_STACK_H
-#define VCL_RENDER_ACTIONS_UNDO_REDO_STACK_H
+#ifndef VCL_RENDER_UNDO_REDO_UNDO_REDO_STACK_H
+#define VCL_RENDER_UNDO_REDO_UNDO_REDO_STACK_H
 
 #include <memory>
 #include <vector>
 
-#include "action.h"
+#include "undo_redo_action.h"
 
 namespace vcl {
 
@@ -99,4 +99,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_ACTIONS_UNDO_REDO_STACK_H
+#endif // VCL_RENDER_UNDO_REDO_UNDO_REDO_STACK_H

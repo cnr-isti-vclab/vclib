@@ -5,10 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_ACTIONS_SELECTION_ACTION_H
-#define VCL_RENDER_ACTIONS_SELECTION_ACTION_H
+#ifndef VCL_RENDER_UNDO_REDO_SELECTION_UNDO_REDO_ACTION_H
+#define VCL_RENDER_UNDO_REDO_SELECTION_UNDO_REDO_ACTION_H
 
-#include <vclib/render/actions/action.h>
+#include "undo_redo_action.h"
+
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/space/core.h>
@@ -28,25 +29,38 @@ namespace vcl {
 class SelectionUndoRedoAction : public UndoRedoAction
 {
 public:
-    struct MeshSelectionState {
+    /**
+     * @brief Represents the saved selection state of a single object.
+     */
+    struct MeshState
+    {
         std::weak_ptr<vcl::DrawableObject> obj;
         vcl::BitVector<true>               vertexSelection;
         vcl::BitVector<true>               faceSelection;
     };
 
 private:
-    std::vector<MeshSelectionState> mStates;
+    std::vector<MeshState> mStates;
 
 public:
-    SelectionUndoRedoAction(std::vector<MeshSelectionState> states) :
+    /**
+     * @brief Constructs a new selection action with the given pre-selection
+     * states.
+     * @param[in] states: The list of mesh states prior to the selection
+     * operation.
+     */
+    SelectionUndoRedoAction(std::vector<MeshState> states) :
             mStates(std::move(states))
     {
     }
 
+    /// @copydoc UndoRedoAction::undo()
     void undo() override { swapState(); }
 
+    /// @copydoc UndoRedoAction::redo()
     void redo() override { swapState(); }
 
+    /// @copydoc UndoRedoAction::name()
     std::string name() const override { return "Selection Changed"; }
 
 private:
@@ -55,14 +69,16 @@ private:
         for (auto& state : mStates) {
             if (auto lock = state.obj.lock()) {
                 if (auto* mesh =
-                    dynamic_cast<AbstractDrawableMesh*>(lock.get())) {
-                    if (!state.vertexSelection.empty()) {
+                        dynamic_cast<AbstractDrawableMesh*>(lock.get())) {
+                    if (!state.vertexSelection.empty() ||
+                        !mesh->vertexSelectionBitVector().empty()) {
                         auto current = mesh->vertexSelectionBitVector();
                         mesh->setVertexSelectionBitVector(
                             state.vertexSelection);
                         state.vertexSelection = std::move(current);
                     }
-                    if (!state.faceSelection.empty()) {
+                    if (!state.faceSelection.empty() ||
+                        !mesh->faceSelectionBitVector().empty()) {
                         auto current = mesh->faceSelectionBitVector();
                         mesh->setFaceSelectionBitVector(state.faceSelection);
                         state.faceSelection = std::move(current);
@@ -75,4 +91,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_ACTIONS_SELECTION_ACTION_H
+#endif // VCL_RENDER_UNDO_REDO_SELECTION_UNDO_REDO_ACTION_H

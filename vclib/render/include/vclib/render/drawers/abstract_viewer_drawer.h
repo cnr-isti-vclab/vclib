@@ -10,13 +10,13 @@
 
 #include "trackball_event_drawer.h"
 
-#include <vclib/render/actions/undo_redo_stack.h>
 #include <vclib/render/drawable/drawable_axis.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
+#include <vclib/render/undo_redo/undo_redo_stack.h>
 
 #include <vclib/space/core.h>
 
@@ -58,6 +58,7 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     };
 
 protected:
+    /// @brief Manages the history of undoable actions performed in the viewer.
     UndoRedoStack  mUndoRedoStack;
 
     ViewerSettings mViewerSettings;
@@ -103,17 +104,29 @@ public:
         setEditorsEventsEnabled(!mEditorsEventsEnabled);
     }
 
+    /**
+     * @brief Pushes a new action onto the undo/redo stack.
+     * @param[in] action: The action to push.
+     */
     void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
     {
         mUndoRedoStack.pushAction(std::move(action));
     }
 
+    /**
+     * @brief Undoes the last action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was undone.
+     */
     void undo()
     {
         if (mUndoRedoStack.undo())
             requestUpdate();
     }
 
+    /**
+     * @brief Redoes the last undone action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was redone.
+     */
     void redo()
     {
         if (mUndoRedoStack.redo())

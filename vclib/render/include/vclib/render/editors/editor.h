@@ -8,10 +8,10 @@
 #ifndef VCL_RENDER_EDITORS_EDITOR_H
 #define VCL_RENDER_EDITORS_EDITOR_H
 
-#include <vclib/render/actions/action.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/undo_redo/undo_redo_action.h>
 
 #include <vclib/base.h>
 

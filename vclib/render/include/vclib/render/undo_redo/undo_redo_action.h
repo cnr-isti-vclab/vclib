@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_ACTIONS_ACTION_H
-#define VCL_RENDER_ACTIONS_ACTION_H
+#ifndef VCL_RENDER_UNDO_REDO_UNDO_REDO_ACTION_H
+#define VCL_RENDER_UNDO_REDO_UNDO_REDO_ACTION_H
 
 #include <string>
 
@@ -43,4 +43,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_ACTIONS_ACTION_H
+#endif // VCL_RENDER_UNDO_REDO_UNDO_REDO_ACTION_H
