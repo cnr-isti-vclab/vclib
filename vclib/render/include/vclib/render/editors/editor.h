@@ -8,6 +8,7 @@
 #ifndef VCL_RENDER_EDITORS_EDITOR_H
 #define VCL_RENDER_EDITORS_EDITOR_H
 
+#include <vclib/render/actions/action.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/editor_settings.h>
@@ -344,6 +345,15 @@ protected:
     {
         assert(mViewer);
         mViewer->setContinuousRedraw(enabled);
+    }
+    /**
+     * @brief Pushes an undo action to the viewer's undo stack.
+     * @param[in] action: the action to push.
+     */
+    void pushUndoAction(std::unique_ptr<UndoRedoAction> action)
+    {
+        assert(mViewer);
+        mViewer->pushUndoAction(std::move(action));
     }
 
 private:

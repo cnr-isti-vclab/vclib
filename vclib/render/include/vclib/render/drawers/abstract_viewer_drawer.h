@@ -10,13 +10,15 @@
 
 #include "trackball_event_drawer.h"
 
+#include <vclib/render/actions/undo_redo_stack.h>
 #include <vclib/render/drawable/drawable_axis.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/space/core/color.h>
+
+#include <vclib/space/core.h>
 
 #include <memory>
 
@@ -56,6 +58,8 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     };
 
 protected:
+    UndoRedoStack  mUndoRedoStack;
+
     ViewerSettings mViewerSettings;
 
     // the list of drawable objects
@@ -97,6 +101,23 @@ public:
     void toggleEditorsEventsEnabled()
     {
         setEditorsEventsEnabled(!mEditorsEventsEnabled);
+    }
+
+    void pushUndoAction(std::unique_ptr<UndoRedoAction> action)
+    {
+        mUndoRedoStack.pushAction(std::move(action));
+    }
+
+    void undo()
+    {
+        if (mUndoRedoStack.undo())
+            requestUpdate();
+    }
+
+    void redo()
+    {
+        if (mUndoRedoStack.redo())
+            requestUpdate();
     }
 
     void setOnEditorsEventsEnabledChangedCallback(
@@ -408,6 +429,22 @@ public:
                 if (modifiers[KeyModifier::NO_MODIFIER]) {
                     if (mCustomShortcutToggleAxisCallback)
                         mCustomShortcutToggleAxisCallback();
+                }
+                break;
+            case Key::Z:
+                if (modifiers[KeyModifier::CONTROL] && modifiers[KeyModifier::SHIFT]) {
+                    redo();
+                    block = true;
+                }
+                else if (modifiers[KeyModifier::CONTROL]) {
+                    undo();
+                    block = true;
+                }
+                break;
+            case Key::Y:
+                if (modifiers[KeyModifier::CONTROL]) {
+                    redo();
+                    block = true;
                 }
                 break;
             default: break;
