@@ -175,6 +175,16 @@ public:
         mBytes = std::move(bytes);
         mSize  = exactSizeInBits > 0 ? exactSizeInBits : bytes.size() * 8;
     }
+
+    bool operator==(const BitVector& other) const
+    {
+        return mSize == other.mSize && mBytes == other.mBytes;
+    }
+
+    bool operator!=(const BitVector& other) const
+    {
+        return !(*this == other);
+    }
 };
 
 } // namespace vcl
