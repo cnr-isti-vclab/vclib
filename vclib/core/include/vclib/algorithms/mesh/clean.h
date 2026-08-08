@@ -250,8 +250,8 @@ uint removeDuplicateVertices(MeshType& m)
  * @note This function currently only works for triangle meshes. It should be
  * made more general to work for polygonal meshes as well.
  *
- * @note This function automatically updates all internal topological references 
- * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or 
+ * @note This function automatically updates all internal topological references
+ * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
  * `UINT_NULL`).
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
@@ -293,7 +293,7 @@ uint removeDuplicateFaces(MeshType& m)
             shouldDelete[m.index(fvec[i].sentinel())] = true;
         }
     }
-    
+
     return deleteFacesIf(m, shouldDelete);
 }
 
@@ -358,8 +358,8 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
  * also want to remove these kinds of faces, you should call
  * `removeDuplicatedVertices(m)` first.
  *
- * @note This function automatically updates all internal topological references 
- * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or 
+ * @note This function automatically updates all internal topological references
+ * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
  * `UINT_NULL`).
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the

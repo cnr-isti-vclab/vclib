@@ -8,8 +8,7 @@
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-{{MODULE}}-example-${EXAMPLE_NAME})
 
-set(HEADERS
-)
+set(HEADERS)
 
 set(SOURCES main.cpp)
 

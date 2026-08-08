@@ -8,8 +8,8 @@
 #ifndef VCL_ALGORITHMS_MESH_DELETE_H
 #define VCL_ALGORITHMS_MESH_DELETE_H
 
-#include <vclib/mesh.h>
 #include <ranges>
+#include <vclib/mesh.h>
 
 /**
  * @defgroup delete Deleting Algorithms
@@ -63,7 +63,7 @@ uint deleteElementsIf(MeshType& m, Range auto&& elemFilterRng)
 
 template<MeshConcept MeshType, uint ELEM_ID>
 uint deleteElementsIf(
-    MeshType& m,
+    MeshType&                                                      m,
     const std::function<bool(
         const typename MeshType::template ElementType<ELEM_ID>&)>& elemFilter)
 {
@@ -154,7 +154,7 @@ uint deleteVerticesIf(MeshType& m, Range auto&& vertexFilterRng)
  */
 template<FaceMeshConcept MeshType>
 uint deleteFacesIf(
-    MeshType& m,
+    MeshType&                                                      m,
     const std::function<bool(const typename MeshType::FaceType&)>& faceFilter)
 {
     return detail::deleteElementsIf<MeshType, ElemId::FACE>(m, faceFilter);
@@ -210,7 +210,7 @@ uint deleteFacesIf(MeshType& m, Range auto&& faceFilterRng)
  */
 template<EdgeMeshConcept MeshType>
 uint deleteEdgesIf(
-    MeshType& m,
+    MeshType&                                                      m,
     const std::function<bool(const typename MeshType::EdgeType&)>& edgeFilter)
 {
     return detail::deleteElementsIf<MeshType, ElemId::EDGE>(m, edgeFilter);

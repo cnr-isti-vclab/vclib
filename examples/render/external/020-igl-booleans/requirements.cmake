@@ -13,4 +13,9 @@ else()
     set(EXAMPLE_EXTRA_DEFINITIONS VCLIB_RENDER_EXAMPLES_WITH_GLFW)
 endif()
 
-list(APPEND EXAMPLE_REQUIRED_TARGETS vclib-3rd-boost vclib-3rd-cgal vclib-3rd-libigl)
+list(
+    APPEND EXAMPLE_REQUIRED_TARGETS
+    vclib-3rd-boost
+    vclib-3rd-cgal
+    vclib-3rd-libigl
+)
