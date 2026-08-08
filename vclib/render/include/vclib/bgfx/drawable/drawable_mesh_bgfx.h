@@ -401,6 +401,15 @@ protected:
         return pm.getProgram(VertFragProgram(program));
     }
 
+    /**
+     * @brief Selects the correct shader program for surface ID rendering.
+     *
+     * It chooses between trivial and non-trivial ID mapping based on the
+     * mesh render buffers configuration, ensuring correct mapping from
+     * primitive ID to face ID when rendering the mesh.
+     *
+     * @return The appropriate BGFX program handle.
+     */
     bgfx::ProgramHandle surfaceIdProgramSelector() const
     {
         ProgramManager& pm = Context::instance().programManager();

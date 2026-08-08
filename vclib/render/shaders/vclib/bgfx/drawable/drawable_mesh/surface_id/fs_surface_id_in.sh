@@ -17,9 +17,9 @@ BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);
 
 void main()
 {
-    // Target 0: Object ID (16 bit) + Element Type (16 bit) (already combined in u_meshId)
-    vec4 color = uintABGRToVec4Color(u_meshId);
-    gl_FragData[0] = color;
+    // Target 0: Object ID (16 bit) + Element Type (16 bit)
+    // (already combined in u_meshId)
+    gl_FragData[0] = uintABGRToVec4Color(u_meshId);
     
     // Target 1: Element ID (32 bit)
     uint polyId = gl_PrimitiveID + u_firstChunkPrimitiveID;

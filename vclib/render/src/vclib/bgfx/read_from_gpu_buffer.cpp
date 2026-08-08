@@ -116,6 +116,10 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
 
     // Create the offscreen framebuffer
     if (target == Target::ID) {
+        // For ID reading, we use Multiple Render Targets (MRT)
+        // target 0: Color attachment (Object ID + Element Type)
+        // target 1: Color attachment (Element ID)
+        // target 2: Depth attachment
         bgfx::TextureHandle fbtextures[3];
         const uint64_t kMRTRenderBufferflags =
             BGFX_TEXTURE_RT | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
@@ -130,6 +134,7 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
             
         mOffscreenFbh.create(fbtextures, 3, true);
     } else {
+        // For COLOR or DEPTH, a standard framebuffer is sufficient
         mOffscreenFbh.create(
             uint16_t(size.x()),
             uint16_t(size.y()),
@@ -557,17 +562,19 @@ void ReadFromGPUBuffer::performFramebufferRead() const
         assert(std::holds_alternative<ByteData>(mReadData));
         const auto& data = std::get<ByteData>(mReadData);
         if (data.size() == 8) {
+            // Full buffer readback: return directly
             mReadCallback(mReadData);
         }
         else {
+            // Single pixel readback: extract 8 bytes from the combined MRT data buffer
             ByteData   idPixel(8);
             const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
             const auto offset =
                 uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x());
             
-            // First 4 bytes (Object ID + Type)
+            // First 4 bytes: target 0 (Object ID + Element Type)
             std::copy_n(data.begin() + (offset * 4), 4, idPixel.begin());
-            // Next 4 bytes (Element ID)
+            // Next 4 bytes: target 1 (Element ID), stored after target 0's data
             std::copy_n(data.begin() + (pixelCount * 4) + (offset * 4), 4, idPixel.begin() + 4);
             
             mReadCallback(idPixel);
