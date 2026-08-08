@@ -317,26 +317,11 @@ public:
         BooleanBuffer buf;
         buf.init(mVerSelCount);
 
-        uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
-        std::vector<uint8_t> backup(bitNumber / 8, 0);
+        vcl::BitVector<true> backup(mVerSelCount, false);
 
-        uint                       vidx    = 0;
-        uint                       byteIdx = 0;
-        vcl::BitSet<uint8_t, true> flags;
-
+        uint vidx = 0;
         for (bool sel : selections) {
-            flags[vidx % 8] = sel;
-            ++vidx;
-
-            if (vidx % 8 == 0) {
-                backup[byteIdx] = flags.underlying();
-                byteIdx++;
-                flags.reset();
-            }
-        }
-
-        if (vidx % 8 != 0) {
-            backup[byteIdx] = flags.underlying();
+            backup[vidx++] = sel;
         }
 
         buf.setFromCPUBuffer(backup);

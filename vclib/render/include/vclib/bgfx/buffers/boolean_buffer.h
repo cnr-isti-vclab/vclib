@@ -12,7 +12,9 @@
 #include <vclib/bgfx/context.h>
 #include <vclib/bgfx/read_from_gpu_buffer.h>
 
+#include <bit>
 #include <cmath>
+#include <cstring>
 #include <vector>
 
 namespace vcl {
@@ -27,7 +29,7 @@ namespace vcl {
 class BooleanBuffer
 {
     IndexBuffer               mGpuBuffer;
-    std::vector<uint8_t>      mBackup;
+    vcl::BitVector<true>      mBackup;
     detail::ReadFromGPUBuffer mReadbackHandler;
 
     uint mNumElements = 0;
@@ -89,17 +91,18 @@ public:
     /**
      * @brief Uploads a CPU bitfield backup to the GPU buffer.
      *
-     * @param[in] backup: The CPU bitfield packed in a vector of bytes.
+     * @param[in] backup: The CPU bitfield packed in a BitVector.
      */
-    void setFromCPUBuffer(const std::vector<uint8_t>& backup)
+    void setFromCPUBuffer(const vcl::BitVector<true>& backup)
     {
         mBackup = backup;
 
         if (backup.empty() || !mGpuBuffer.isValid())
             return;
 
+        const auto& bytes = backup.bytes();
         const uint elementCount =
-            (uint(backup.size()) + uint(sizeof(uint32_t)) - 1u) /
+            (uint(bytes.size()) + uint(sizeof(uint32_t)) - 1u) /
             uint(sizeof(uint32_t));
 
         if (elementCount == 0)
@@ -110,18 +113,21 @@ public:
 
         // The backup bytes are big-endian (uintRGBAToVec4Color stores MSB
         // in the R channel). Reconstruct each uint32 with proper byte order.
-        for (uint i = 0; i < elementCount; i++) {
-            const uint base = 4u * i;
-            uint32_t   val  = 0;
-            if (base + 0u < uint(backup.size()))
-                val |= uint32_t(backup[base + 0u]) << 24;
-            if (base + 1u < uint(backup.size()))
-                val |= uint32_t(backup[base + 1u]) << 16;
-            if (base + 2u < uint(backup.size()))
-                val |= uint32_t(backup[base + 2u]) << 8;
-            if (base + 3u < uint(backup.size()))
-                val |= uint32_t(backup[base + 3u]);
-            buffer[i] = val;
+        // Clear the buffer with zeroes first
+        std::memset(buffer, 0, elementCount * sizeof(uint32_t));
+        // Copy the raw bytes directly
+        std::memcpy(buffer, bytes.data(), bytes.size());
+
+        // The backup bytes are big-endian (uintRGBAToVec4Color stores MSB
+        // in the R channel). Reconstruct each uint32 with proper byte order.
+        if constexpr (std::endian::native == std::endian::little) {
+            for (uint i = 0; i < elementCount; i++) {
+                uint32_t v = buffer[i];
+                buffer[i]  = ((v & 0xFF000000) >> 24) |
+                            ((v & 0x00FF0000) >> 8) |
+                            ((v & 0x0000FF00) << 8) |
+                            ((v & 0x000000FF) << 24);
+            }
         }
 
         mGpuBuffer.destroy();
@@ -149,15 +155,15 @@ public:
      * @brief Retrieves the readback result, updates the local backup and
      * returns it.
      */
-    std::vector<uint8_t> getResultsCopy()
+    vcl::BitVector<true> getResultsCopy()
     {
-        mBackup = mReadbackHandler.getResultsCopy();
+        mBackup.setBytes(mReadbackHandler.getResultsCopy(), mNumElements);
         return mBackup;
     }
 
-    const std::vector<uint8_t>& cpuBackup() const { return mBackup; }
+    const vcl::BitVector<true>& cpuBackup() const { return mBackup; }
 
-    std::vector<uint8_t>& cpuBackup() { return mBackup; }
+    vcl::BitVector<true>& cpuBackup() { return mBackup; }
 
     void bind(uint stage, bgfx::Access::Enum access = bgfx::Access::Read) const
     {
