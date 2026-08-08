@@ -528,7 +528,8 @@ public:
                 for (auto& f : m.faces()) {
                     const uint faceIdx = f.index();
                     const uint firstTriIdx =
-                        isMappingTrivial ? faceIdx : indexMap.triangleBegin(faceIdx);
+                        isMappingTrivial ? faceIdx :
+                                           indexMap.triangleBegin(faceIdx);
                     const uint byteIdx = firstTriIdx / 8;
 
                     if (byteIdx < cpuBackup.size()) {
