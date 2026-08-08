@@ -236,8 +236,6 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
     {
-        using enum MRI::Buffers;
-
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
         }
