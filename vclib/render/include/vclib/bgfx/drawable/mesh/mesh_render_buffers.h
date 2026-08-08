@@ -390,7 +390,7 @@ public:
         using enum MeshRenderInfo::Points;
         using enum Points::ColorSetting;
 
-        mPoints.setSize(mrs.pointWidth());
+        mPoints.setWidth(mrs.pointWidth());
         mPoints.setDepthOffset(0.00011f);
 
         if (mrs.isPoints(SHADING_VERT)) {
@@ -445,7 +445,7 @@ private:
 
         // create the vertex selection buffer
         mSelection.initVertexSelectionBitfield(nv);
-        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
+        mPoints.setVertexSelection(nv, mSelection.vertexSelectionBuffer());
 
         // create the face selection buffer
         mSelection.initFaceSelectionBitfield(Base::numTris());
@@ -847,7 +847,7 @@ private:
         points.setVertices(nv, mrb.mVertexPositionsBuffer);
         points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
-        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
+        points.setVertexSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 };
 
