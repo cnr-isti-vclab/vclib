@@ -5,12 +5,13 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_color, v_normal
+$input v_color, v_normal, v_selected
 
 #include <bgfx_shader.sh>
 #if LINES_SHADING_PER_VERTEX || LINES_SHADING_PER_LINE
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #endif
+#include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 void main() {
@@ -20,5 +21,11 @@ void main() {
     color *= computeLight(u_lightDir, u_lightColor, v_normal);
 #endif
 
+#if LINES_SELECTION_ON
+    float selWeight = u_linesSelectionColor.a * v_selected;
+    vec3 tmp = mix(color.rgb, u_linesSelectionColor.rgb, selWeight);
+    gl_FragColor = vec4(tmp, color.a);
+#else
     gl_FragColor = color;
+#endif
 }

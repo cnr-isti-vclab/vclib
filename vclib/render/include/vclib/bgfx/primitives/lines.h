@@ -63,6 +63,7 @@ private:
     uint mLineColorCount = 0;
     uint mVerNorCount    = 0;
     uint mLineNorCount   = 0;
+    uint mLineSelCount   = 0;
 
     float        mWidth        = 1.0f;
     Topology     mTopology     = Topology::LINES;
@@ -70,6 +71,8 @@ private:
     Shading      mShading      = Shading::NONE;
     Color        mGeneralColor = Color::Black;
     float        mDepthOffset  = 0.0f;
+    Color        mSelectionColor = Color(0x88FF9732, Color::Format::ABGR);
+    bool         mSelectionVisibility = false;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
@@ -78,6 +81,7 @@ private:
     OwnedOrRefBuffer<IndexBuffer>  mIndices;
     OwnedOrRefBuffer<IndexBuffer>  mLineColors;
     OwnedOrRefBuffer<VertexBuffer> mLineNormals;
+    OwnedOrRefBuffer<BooleanBuffer> mLineSelections;
 
     mutable bool                mIsUpdateProgramNeeded = true;
     mutable bgfx::ProgramHandle mProgram               = BGFX_INVALID_HANDLE;
@@ -142,6 +146,18 @@ public:
     float depthOffset() const { return mDepthOffset; }
 
     /**
+     * @brief Returns whether the selection visibility is enabled.
+     * @return True if selection visibility is enabled, false otherwise.
+     */
+    bool isSelectionVisible() const { return mSelectionVisibility; }
+
+    /**
+     * @brief Returns the selection color.
+     * @return The selection highlight color.
+     */
+    Color selectionColor() const { return mSelectionColor; }
+
+    /**
      * @brief Returns whether the line set has valid vertex positions.
      */
     bool hasPositions() const { return mVertexPositions.isValid(); }
@@ -170,6 +186,11 @@ public:
      * @brief Returns whether the line set has valid line normals.
      */
     bool hasLineNormals() const { return mLineNormals.isValid(); }
+
+    /**
+     * @brief Returns whether the line set has valid line selections.
+     */
+    bool hasLineSelections() const { return mLineSelections.isValid(); }
 
     /**
      * @brief Returns the number of vertices in the set.
@@ -383,6 +404,32 @@ public:
     }
 
     /**
+     * @brief Sets per-line selection state from a range of booleans.
+     *
+     * @tparam R: Range whose value type is bool.
+     * @param[in] selections: A range of booleans (size must match line count).
+     */
+    template<Range R>
+    requires std::convertible_to<std::ranges::range_value_t<R>, bool>
+    void setLineSelections(R&& selections)
+    {
+        mLineSelCount = std::ranges::size(selections);
+        BooleanBuffer buf;
+        buf.init(mLineSelCount);
+
+        vcl::BitVector<true> backup(mLineSelCount, false);
+
+        uint vidx = 0;
+        for (bool sel : selections) {
+            backup[vidx++] = sel;
+        }
+
+        buf.setFromCPUBuffer(backup);
+        mLineSelections.setOwned(std::move(buf));
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
      * @brief Sets vertex positions by referencing an existing VertexBuffer.
      *
      * @param[in] vertexCount: Number of vertices in the VertexBuffer.
@@ -460,6 +507,15 @@ public:
     void setLineNormals(uint lNorCount, const VertexBuffer& lineNormals);
 
     /**
+     * @brief Sets per-line selection state by referencing an existing
+     * BooleanBuffer.
+     *
+     * @param[in] lSelCount: Number of selection states in the BooleanBuffer.
+     * @param[in] lineSels: The BooleanBuffer containing selection state.
+     */
+    void setLineSelections(uint lSelCount, const BooleanBuffer& lineSels);
+
+    /**
      * @brief Sets the width of line segments.
      * @param[in] width: The line width value.
      */
@@ -507,6 +563,25 @@ public:
     }
 
     /**
+     * @brief Sets whether the selection should be visible.
+     * @param[in] visible: True to visualize selection, false otherwise.
+     */
+    void setSelectionVisibility(bool visible)
+    {
+        mSelectionVisibility = visible;
+        mIsUpdateProgramNeeded = true;
+    }
+
+    /**
+     * @brief Sets the selection color.
+     * @param[in] color: The selection highlight color.
+     */
+    void setSelectionColor(const Color& color)
+    {
+        mSelectionColor = color;
+    }
+
+    /**
      * @brief Sets the depth offset applied to the lines.
      * @param[in] depthOffset: The depth offset value.
      */
@@ -528,6 +603,7 @@ private:
     static constexpr uint L_COL_STAGE = 3;
     static constexpr uint V_NOR_STAGE = 4;
     static constexpr uint L_NOR_STAGE = 5;
+    static constexpr uint L_SEL_STAGE = 6;
 };
 
 } // namespace vcl

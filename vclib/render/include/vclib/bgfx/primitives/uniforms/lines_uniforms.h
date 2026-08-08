@@ -33,6 +33,13 @@ class LinesUniforms
         "u_linesSettings",
         bgfx::UniformType::Vec4};
 
+    inline static std::array<float, 4> sSelectionSettings =
+        {0.0f, 0.0f, 0.0f, 0.0f};
+
+    inline static StaticUniform sSelectionSettingsUniform {
+        "u_linesSelectionSettings",
+        bgfx::UniformType::Vec4};
+
 public:
     LinesUniforms() = delete;
 
@@ -68,11 +75,24 @@ public:
     }
 
     /**
+     * @brief Sets the selection color for lines.
+     * @param color The uniform selection color.
+     */
+    static void setSelectionColor(const vcl::Color& color)
+    {
+        sSelectionSettings[0] = std::bit_cast<float>(color.abgr());
+    }
+
+    /**
      * @brief Binds the uniform to the current bgfx context.
      *
      * Lazily initializes the bgfx uniform handle if it hasn't been created yet.
      */
-    static void bind() { sLinesSettingsUniform.bind(sLinesSettings.data()); }
+    static void bind()
+    {
+        sLinesSettingsUniform.bind(sLinesSettings.data());
+        sSelectionSettingsUniform.bind(sSelectionSettings.data());
+    }
 };
 
 } // namespace vcl
