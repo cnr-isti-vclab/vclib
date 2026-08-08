@@ -65,7 +65,7 @@ public:
         mOutlineLines.setDepthOffset(0.00012f);
 
         mOutlinePoints.setGeneralColor(vcl::Color::Red);
-        mOutlinePoints.setSize(5.0f);
+        mOutlinePoints.setWidth(5.0f);
         mOutlinePoints.setShape(vcl::Points::Shape::CIRCLE);
         mOutlinePoints.setDepthOffset(0.00012f);
     }
@@ -93,7 +93,7 @@ public:
             auto w = std::any_cast<float>(
                 Base::settings().customSettings.at("thickness"));
             mOutlineLines.setWidth(w);
-            mOutlinePoints.setSize(w);
+            mOutlinePoints.setWidth(w);
         }
         if (Base::settings().customSettings.count("text_color")) {
             mTextColor = std::any_cast<vcl::Color>(

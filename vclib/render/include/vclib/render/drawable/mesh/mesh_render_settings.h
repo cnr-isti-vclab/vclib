@@ -70,6 +70,7 @@ class MeshRenderSettings
     uint  mEdgesUserColor      = 0xFF000000; // abgr
     uint  mPointSelectionColor = 0x88FF9732; // abgr
     uint  mSurfSelectionColor  = 0x88FF9732; // abgr
+    uint  mEdgeSelectionColor  = 0x88FF9732; // abgr
 
 public:
     /**
@@ -303,6 +304,18 @@ public:
     }
 
     const float* wireframeUserColorData() const { return mWrfUserColor; }
+
+    vcl::Color edgesSelectionColor() const
+    {
+        vcl::Color c;
+        c.setAbgr(mEdgeSelectionColor);
+        return c;
+    }
+
+    const uint* edgesSelectionColorData() const
+    {
+        return &mEdgeSelectionColor;
+    }
 
     /**
      * @brief Returns whether the given edges option is set.
@@ -649,6 +662,23 @@ public:
         }
     }
 
+    bool setEdgesSelectionColor(float r, float g, float b, float a = 0.5)
+    {
+        vcl::Color c;
+        c.setRedF(r);
+        c.setGreenF(g);
+        c.setBlueF(b);
+        c.setAlphaF(a);
+        mEdgeSelectionColor = c.abgr();
+        return true;
+    }
+
+    bool setEdgesSelectionColor(const vcl::Color& c)
+    {
+        mEdgeSelectionColor = c.abgr();
+        return true;
+    }
+
     bool setEdgesWidth(int width)
     {
         if (canEdges(MRI::Edges::VISIBLE)) {
@@ -858,6 +888,7 @@ public:
                     setEdgesCapability(MRI::Edges::VISIBLE);
                     setEdgesCapability(MRI::Edges::SHADING_NONE);
                     setEdgesCapability(MRI::Edges::COLOR_USER);
+                    setEdgesCapability(MRI::Edges::SELECTION);
 
                     if constexpr (vcl::HasColor<MeshType>) {
                         setEdgesCapability(MRI::Edges::COLOR_MESH);

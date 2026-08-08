@@ -196,3 +196,38 @@ TEST_CASE("Lines Color Modes")
             -150.f);
     }
 }
+
+TEST_CASE("Lines Selection")
+{
+    SECTION("Edge Selection")
+    {
+        runRenderTest(
+            TEST_NAME,
+            "edge_selection",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
+
+                mesh.updateRenderSettingsCapabilities();
+
+                // Deterministically assign selection to edges
+                for (auto& e : mesh.edges()) {
+                    if (e.index() % 2 == 0)
+                        e.selected() = true;
+                }
+                mesh.updateBuffers({vcl::MeshRenderInfo::Buffers::EDGE_SELECTION});
+
+                auto settings = mesh.renderSettings();
+                settings.setPoints(vcl::MeshRenderInfo::Points::VISIBLE, false);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_USER);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::SELECTION);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
+
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            true,
+            -150.f);
+    }
+}

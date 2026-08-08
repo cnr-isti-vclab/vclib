@@ -143,6 +143,16 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    const vcl::BitVector<true>& vertexSelectionBitVector() const
+    {
+        return mSelection.vertexSelectionBuffer().cpuBackup();
+    }
+
+    const vcl::BitVector<true>& faceSelectionBitVector() const
+    {
+        return mSelection.faceSelectionBuffer().cpuBackup();
+    }
+
     bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
 
     // called on computeSelection
@@ -236,8 +246,6 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
     {
-        using enum MRI::Buffers;
-
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
         }
@@ -344,6 +352,9 @@ public:
         else if (mrs.isEdges(COLOR_EDGE)) {
             mEdgeLines.setColorSetting(PER_LINE);
         }
+
+        mEdgeLines.setSelectionVisibility(mrs.isEdges(SELECTION));
+        mEdgeLines.setSelectionColor(mrs.edgesSelectionColor());
     }
 
     void updateWireframeSettings(const MeshRenderSettings& mrs)
@@ -382,7 +393,7 @@ public:
         using enum MeshRenderInfo::Points;
         using enum Points::ColorSetting;
 
-        mPoints.setSize(mrs.pointWidth());
+        mPoints.setWidth(mrs.pointWidth());
         mPoints.setDepthOffset(0.00011f);
 
         if (mrs.isPoints(SHADING_VERT)) {
@@ -437,7 +448,7 @@ private:
 
         // create the vertex selection buffer
         mSelection.initVertexSelectionBitfield(nv);
-        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
+        mPoints.setVertexSelection(nv, mSelection.vertexSelectionBuffer());
 
         // create the face selection buffer
         mSelection.initFaceSelectionBitfield(Base::numTris());
@@ -633,6 +644,11 @@ private:
     void setEdgeColorsBuffer(const MeshType& mesh) // override
     {
         mEdgeLines.setLineColors(mesh.edges() | vcl::views::colors);
+    }
+
+    void setEdgeSelectionBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineSelections(mesh.edges() | vcl::views::selection);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
@@ -839,7 +855,7 @@ private:
         points.setVertices(nv, mrb.mVertexPositionsBuffer);
         points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
-        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
+        points.setVertexSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 };
 

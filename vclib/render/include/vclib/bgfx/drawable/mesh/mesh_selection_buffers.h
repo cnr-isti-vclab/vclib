@@ -152,30 +152,16 @@ public:
         if (numVerts == 0)
             return;
 
-        // Compute number of bits rounded to 32 needed to store vertex selection
-        // We use mesh.vertexCount() which includes duplicated vertices
-        uint                 bitNumber = vcl::roundUp(numVerts, 32);
-        std::vector<uint8_t> vertexBackup(bitNumber / 8, 0);
+        // Compute number of bits needed to store vertex selection
+        vcl::BitVector<true> vertexBackup(numVerts, false);
 
         // Build bitfield from mesh vertex selection flags
         // Note: For duplicated vertices (indices >= numVerts), they will
         // remain unselected unless explicitly set elsewhere
-        uint                       vidx    = 0;
-        uint                       byteIdx = 0;
-        vcl::BitSet<uint8_t, true> flags;
+        uint vidx = 0;
         for (const auto& v : mesh.vertices()) {
-            flags[vidx % 8] = v.selected();
-            ++vidx;
-
-            if (vidx % 8 == 0) {
-                vertexBackup[byteIdx] = flags.underlying();
-                byteIdx++;
-                flags.reset();
-            }
+            vertexBackup[vidx++] = v.selected();
         }
-        // Handle remaining bits
-        if (vidx % 8 != 0)
-            vertexBackup[byteIdx] = flags.underlying();
 
         mVertexSelection.setFromCPUBuffer(vertexBackup);
     }
@@ -189,35 +175,20 @@ public:
         if (numFaces == 0 || !hasFaceSelectionBuffer())
             return;
 
-        // Compute number of bits rounded to 32 needed to store face
-        // selection
-        const uint wordCount = (indexMap.triangleCount() + 31) / 32;
-        uint       bitNumber = vcl::roundUp(indexMap.triangleCount(), 32);
-        std::vector<uint8_t> faceBackup(bitNumber / 8, 0);
+        // Compute number of bits needed to store face selection
+        vcl::BitVector<true> faceBackup(indexMap.triangleCount(), false);
 
         // For each face, set selection for all its triangles
-        uint                       tIdx    = 0;
-        uint                       byteIdx = 0;
-        vcl::BitSet<uint8_t, true> flags;
+        uint tIdx = 0;
         for (const auto& f : mesh.faces()) {
             const uint faceIdx     = f.index();
             const uint numFaceTris = indexMap.triangleCount(faceIdx);
 
             // Set selection for all triangles of this face
             for (uint t = 0; t < numFaceTris; ++t) {
-                flags[tIdx % 8] = f.selected();
-                ++tIdx;
-
-                if (tIdx % 8 == 0) {
-                    faceBackup[byteIdx] = flags.underlying();
-                    byteIdx++;
-                    flags.reset();
-                }
+                faceBackup[tIdx++] = f.selected();
             }
         }
-        // Handle remaining bits
-        if (tIdx % 8 != 0)
-            faceBackup[byteIdx] = flags.underlying();
 
         mFaceSelection.setFromCPUBuffer(faceBackup);
     }
@@ -580,6 +551,11 @@ public:
     const BooleanBuffer& vertexSelectionBuffer() const
     {
         return mVertexSelection;
+    }
+
+    const BooleanBuffer& faceSelectionBuffer() const
+    {
+        return mFaceSelection;
     }
 
     // ---- Bind -----------------------------------------------------------

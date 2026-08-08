@@ -51,10 +51,12 @@ public:
         VERT_COLORS,
         VERT_TEXCOORDS,
         VERT_TANGENT,
+        VERT_SELECTION,
 
         TRIANGLES,
         TRI_NORMALS,
         TRI_COLORS,
+        FACE_SELECTION,
         WEDGE_TEXCOORDS,
 
         WIREFRAME,
@@ -62,6 +64,7 @@ public:
         EDGES,
         EDGE_COLORS,
         EDGE_NORMALS,
+        EDGE_SELECTION,
 
         TEXTURES,
 
@@ -83,10 +86,10 @@ public:
     };
 
 private:
-    using BuffersBitSetUnderlyingType = ushort;
+    using BuffersBitSetUnderlyingType = uint;
 
     static_assert(
-        sizeof(BuffersBitSetUnderlyingType) < (uint) Buffers::COUNT,
+        sizeof(BuffersBitSetUnderlyingType) * 8 >= (uint) Buffers::COUNT,
         "BuffersBitSet is not able to store all enum Buffers values");
 
     bool mVisible;
@@ -174,6 +177,7 @@ public:
         COLOR_EDGE     = VCL_MRS_EDGES_COLOR_EDGE,
         COLOR_MESH     = VCL_MRS_EDGES_COLOR_MESH,
         COLOR_USER     = VCL_MRS_EDGES_COLOR_USER,
+        SELECTION      = VCL_MRS_EDGES_DRAW_SELECTION,
 
         COUNT
     };

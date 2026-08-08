@@ -11,6 +11,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/undo_redo/undo_redo_action.h>
 
 #include <vclib/base.h>
 
@@ -363,6 +364,15 @@ protected:
     {
         assert(mViewer);
         mViewer->setContinuousRedraw(enabled);
+    }
+    /**
+     * @brief Pushes an undo/redo action to the viewer's undo/redo stack.
+     * @param[in] action: the action to push.
+     */
+    void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
+    {
+        assert(mViewer);
+        mViewer->pushUndoRedoAction(std::move(action));
     }
 
 private:

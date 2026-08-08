@@ -1,0 +1,29 @@
+# VCLib - Visual Computing Library
+# Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
+
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+set(CMAKE_AUTOMOC ON)
+
+
+set(HEADERS
+    image_label.h
+    main_window.h
+    setup_viewer.h
+)
+
+set(SOURCES
+    image_label.cpp
+    main_window.cpp
+    main.cpp
+)
+
+vclib_add_example(${EXAMPLE_NAME}
+    MODULE render
+    SOURCES ${HEADERS} ${SOURCES}
+)
