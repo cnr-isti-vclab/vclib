@@ -20,6 +20,8 @@
 #include <vclib/render/settings/selection_editor_settings.h>
 #include <vclib/render/undo_redo/selection_undo_redo_action.h>
 
+#include <nlohmann/json.hpp>
+
 #include <array>
 #include <vector>
 
@@ -152,6 +154,16 @@ public:
     const SelectionEditorSettings& settings() const override
     {
         return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j)
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        mSettings.saveSettings(j);
     }
 
     void draw(uint viewId) override

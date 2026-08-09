@@ -13,6 +13,7 @@
 #include "concepts/parallel.h"
 #include "concepts/pointers.h"
 #include "concepts/range.h"
+#include "concepts/settings.h"
 #include "concepts/types.h"
 
 /**

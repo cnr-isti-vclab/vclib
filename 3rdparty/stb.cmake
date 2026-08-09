@@ -26,6 +26,8 @@ if(VCLIB_ALLOW_DOWNLOAD_STB)
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/stb>
     )
 
+    target_compile_definitions(vclib-3rd-stb INTERFACE VCLIB_WITH_STB)
+
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-stb)
     
     if(VCLIB_ALLOW_INSTALL_STB)

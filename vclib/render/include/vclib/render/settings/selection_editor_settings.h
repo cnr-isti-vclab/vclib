@@ -12,6 +12,8 @@
 
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 struct SelectionEditorSettings : public EditorSettings
@@ -20,6 +22,22 @@ struct SelectionEditorSettings : public EditorSettings
     bool       selectFaces       = false;
     bool       onlyVisible       = false;
     vcl::Color selectionBoxColor = vcl::Color(27, 120, 249, 64);
+
+    void loadSettings(const nlohmann::json& j)
+    {
+        selectVertices    = j.value("selectVertices", selectVertices);
+        selectFaces       = j.value("selectFaces", selectFaces);
+        onlyVisible       = j.value("onlyVisible", onlyVisible);
+        selectionBoxColor = j.value("selectionBoxColor", selectionBoxColor);
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        j["selectVertices"]    = selectVertices;
+        j["selectFaces"]       = selectFaces;
+        j["onlyVisible"]       = onlyVisible;
+        j["selectionBoxColor"] = selectionBoxColor;
+    }
 };
 
 } // namespace vcl

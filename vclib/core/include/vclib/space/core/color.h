@@ -10,6 +10,10 @@
 
 #include "point.h"
 
+#ifdef VCLIB_WITH_JSON
+#include <nlohmann/json.hpp>
+#endif
+
 #include <vector>
 
 namespace vcl {
@@ -939,6 +943,19 @@ inline std::vector<Color> colorScattering(
     }
     return scattering;
 }
+
+#ifdef VCLIB_WITH_JSON
+inline void to_json(nlohmann::json& j, const Color& c)
+{
+    j = std::vector<uint8_t>{c.red(), c.green(), c.blue(), c.alpha()};
+}
+
+inline void from_json(const nlohmann::json& j, Color& c)
+{
+    auto arr = j.get<std::vector<uint8_t>>();
+    c = Color(arr.at(0), arr.at(1), arr.at(2), arr.size() > 3 ? arr.at(3) : 255);
+}
+#endif
 
 } // namespace vcl
 

@@ -12,12 +12,26 @@
 
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 struct BoundingBoxEditorSettings : public EditorSettings
 {
     vcl::Color color     = vcl::Color();
     float      thickness = 2.0f;
+
+    void loadSettings(const nlohmann::json& j)
+    {
+        color     = j.value("color", color);
+        thickness = j.value("thickness", thickness);
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        j["color"]     = color;
+        j["thickness"] = thickness;
+    }
 };
 
 } // namespace vcl
