@@ -17,9 +17,11 @@ TextManager::TextManager()
 
 TextManager::~TextManager()
 {
-    mTextBufferManager->destroyTextBuffer(mTransientText);
-    mTextBufferManager->destroyTextBuffer(mStaticText);
-    delete mTextBufferManager;
+    if (mTextBufferManager) {
+        mTextBufferManager->destroyTextBuffer(mTransientText);
+        mTextBufferManager->destroyTextBuffer(mStaticText);
+        delete mTextBufferManager;
+    }
 }
 
 void TextManager::init()

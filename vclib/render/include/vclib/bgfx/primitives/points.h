@@ -141,10 +141,62 @@ public:
     float width() const { return mSettings.width; }
 
     /**
+     * @brief Returns the color mode for point rendering.
+     * @return The color mode used.
+     */
+    ColorSetting colorSetting() const { return mSettings.colorSetting; }
+
+    /**
+     * @brief Returns the shading mode for point rendering.
+     * @return The shading mode used.
+     */
+    Shading shading() const { return mSettings.shading; }
+
+    /**
+     * @brief Returns the visual shape of each point splat.
+     * @return The shape of the points.
+     */
+    Shape shape() const { return mSettings.shape; }
+
+    /**
+     * @brief Returns the general (uniform) color used when color mode is
+     * GENERAL.
+     * @return The general color.
+     */
+    Color generalColor() const { return mSettings.generalColor; }
+
+    /**
+     * @brief Returns whether the selection visibility is enabled.
+     * @return True if selection visibility is enabled, false otherwise.
+     */
+    bool isSelectionVisible() const { return mSettings.selectionVisibility; }
+
+    /**
+     * @brief Returns the selection color.
+     * @return The selection highlight color.
+     */
+    Color selectionColor() const { return mSettings.selectionColor; }
+
+    /**
      * @brief Returns the depth offset applied to the points.
      * @return The depth offset applied to the points.
      */
     float depthOffset() const { return mSettings.depthOffset; }
+
+    /**
+     * @brief Returns the visual settings.
+     * @return The current visual settings.
+     */
+    const Settings& settings() const { return mSettings; }
+
+    /**
+     * @brief Returns the current cross section settings.
+     * @return The current cross section settings.
+     */
+    const CrossSectionSettings& crossSectionSettings() const
+    {
+        return mSettings.crossSectionSettings;
+    }
 
     /**
      * @brief Returns whether the point set has valid vertex positions.
@@ -320,26 +372,11 @@ public:
         BooleanBuffer buf;
         buf.init(mVerSelCount);
 
-        uint                 bitNumber = vcl::roundUp(mVerSelCount, 32);
-        std::vector<uint8_t> backup(bitNumber / 8, 0);
+        vcl::BitVector<true> backup(mVerSelCount, false);
 
-        uint                       vidx    = 0;
-        uint                       byteIdx = 0;
-        vcl::BitSet<uint8_t, true> flags;
-
+        uint vidx = 0;
         for (bool sel : selections) {
-            flags[vidx % 8] = sel;
-            ++vidx;
-
-            if (vidx % 8 == 0) {
-                backup[byteIdx] = flags.underlying();
-                byteIdx++;
-                flags.reset();
-            }
-        }
-
-        if (vidx % 8 != 0) {
-            backup[byteIdx] = flags.underlying();
+            backup[vidx++] = sel;
         }
 
         buf.setFromCPUBuffer(backup);
@@ -353,14 +390,14 @@ public:
 
     void setVertexColors(uint vColsCount, const VertexBuffer& vertColors);
 
-    void setSelection(uint vSelCount, const BooleanBuffer& vertSels);
+    void setVertexSelection(uint vSelCount, const BooleanBuffer& vertSels);
 
     /**
-     * @brief Sets the size of point splats.
+     * @brief Sets the width/size of point splats.
      *
-     * @param[in] size: The point splat size.
+     * @param[in] size: The point splat width/size.
      */
-    void setSize(float size) { mSettings.width = size; }
+    void setWidth(float size) { mSettings.width = size; }
 
     /**
      * @brief Sets the color mode for point rendering.
@@ -375,12 +412,6 @@ public:
     }
 
     /**
-     * @brief Returns the color mode for point rendering.
-     * @return The color mode used.
-     */
-    ColorSetting colorSetting() const { return mSettings.colorSetting; }
-
-    /**
      * @brief Sets the shading mode for point rendering.
      *
      * @param[in] shading: Whether to apply no shading or compute lighting per
@@ -391,12 +422,6 @@ public:
         mSettings.shading      = shading;
         mIsUpdateProgramNeeded = true;
     }
-
-    /**
-     * @brief Returns the shading mode for point rendering.
-     * @return The shading mode used.
-     */
-    Shading shading() const { return mSettings.shading; }
 
     /**
      * @brief Sets the visual shape of each point splat.
@@ -410,12 +435,6 @@ public:
     }
 
     /**
-     * @brief Returns the visual shape of each point splat.
-     * @return The shape of the points.
-     */
-    Shape shape() const { return mSettings.shape; }
-
-    /**
      * @brief Sets the general (uniform) color used when color mode is GENERAL.
      *
      * @param[in] generalColor: The fallback color for all points.
@@ -424,37 +443,6 @@ public:
     {
         mSettings.generalColor = generalColor;
     }
-
-    /**
-     * @brief Returns the general (uniform) color used when color mode is
-     * GENERAL.
-     * @return The general color.
-     */
-    Color generalColor() const { return mSettings.generalColor; }
-
-    /**
-     * @brief Sets the depth offset applied to the points.
-     * @param[in] depthOffset: The depth offset value.
-     */
-    void setDepthOffset(float depthOffset)
-    {
-        mSettings.depthOffset = depthOffset;
-    }
-
-    /**
-     * @brief Sets the selection color.
-     * @param[in] color: The selection highlight color.
-     */
-    void setSelectionColor(const Color& color)
-    {
-        mSettings.selectionColor = color;
-    }
-
-    /**
-     * @brief Returns the selection color.
-     * @return The selection highlight color.
-     */
-    Color selectionColor() const { return mSettings.selectionColor; }
 
     /**
      * @brief Sets whether the selection should be visible.
@@ -467,10 +455,22 @@ public:
     }
 
     /**
-     * @brief Returns whether the selection visibility is enabled.
-     * @return True if selection visibility is enabled, false otherwise.
+     * @brief Sets the selection color.
+     * @param[in] color: The selection highlight color.
      */
-    bool isSelectionVisible() const { return mSettings.selectionVisibility; }
+    void setSelectionColor(const Color& color)
+    {
+        mSettings.selectionColor = color;
+    }
+
+    /**
+     * @brief Sets the depth offset applied to the points.
+     * @param[in] depthOffset: The depth offset value.
+     */
+    void setDepthOffset(float depthOffset)
+    {
+        mSettings.depthOffset = depthOffset;
+    }
 
     /**
      * @brief Sets all visual settings at once.
@@ -480,21 +480,6 @@ public:
     {
         mSettings              = settings;
         mIsUpdateProgramNeeded = true;
-    }
-
-    /**
-     * @brief Returns the visual settings.
-     * @return The current visual settings.
-     */
-    const Settings& settings() const { return mSettings; }
-
-    /**
-     * @brief Returns the current cross section settings.
-     * @return The current cross section settings.
-     */
-    const CrossSectionSettings& crossSectionSettings() const
-    {
-        return mSettings.crossSectionSettings;
     }
 
     /**

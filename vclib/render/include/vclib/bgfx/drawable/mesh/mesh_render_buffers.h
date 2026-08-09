@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
+#include "mesh_poly_mapping_buffers.h"
 #include "mesh_render_buffers_macros.h"
 #include "mesh_selection_buffers.h"
 
@@ -51,7 +52,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     Points mPoints;
 
-    MeshSelectionBuffers mSelection;
+    MeshPolyMappingBuffers mPolyMapping;
+    MeshSelectionBuffers   mSelection;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -119,6 +121,7 @@ public:
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
         swap(mMeshColor, other.mMeshColor);
+        swap(mPolyMapping, other.mPolyMapping);
         swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
 
@@ -140,13 +143,29 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    const vcl::BitVector<true>& vertexSelectionBitVector() const
+    {
+        return mSelection.vertexSelectionBuffer().cpuBackup();
+    }
+
+    const vcl::BitVector<true>& faceSelectionBitVector() const
+    {
+        return mSelection.faceSelectionBuffer().cpuBackup();
+    }
+
+    bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
+
     // called on computeSelection
     void computeSelection(
         const SelectionParameters& params,
         const Matrix44f&           model)
     {
         mSelection.computeSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+            params,
+            model,
+            mVertexPositionsBuffer,
+            mTriangleIndexBuffer,
+            mPolyMapping);
     }
 
     // called on draw
@@ -169,6 +188,11 @@ public:
     void bindSelectedFacesBuffer() const
     {
         mSelection.bindSelectedFacesBuffer();
+    }
+
+    void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
+    {
+        mPolyMapping.bindTriToPolyBuffer(stage);
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -222,8 +246,6 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
     {
-        using enum MRI::Buffers;
-
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
         }
@@ -246,11 +268,6 @@ public:
     }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
-
-    void drawWireframeLinesId(uint viewId, uint32_t id) const
-    {
-        mWireframeLines.drawId(viewId, id);
-    }
 
     void drawPoints(uint viewId) const { mPoints.draw(viewId); }
 
@@ -335,6 +352,9 @@ public:
         else if (mrs.isEdges(COLOR_EDGE)) {
             mEdgeLines.setColorSetting(PER_LINE);
         }
+
+        mEdgeLines.setSelectionVisibility(mrs.isEdges(SELECTION));
+        mEdgeLines.setSelectionColor(mrs.edgesSelectionColor());
     }
 
     void updateWireframeSettings(const MeshRenderSettings& mrs)
@@ -373,7 +393,7 @@ public:
         using enum MeshRenderInfo::Points;
         using enum Points::ColorSetting;
 
-        mPoints.setSize(mrs.pointWidth());
+        mPoints.setWidth(mrs.pointWidth());
         mPoints.setDepthOffset(0.00011f);
 
         if (mrs.isPoints(SHADING_VERT)) {
@@ -435,7 +455,7 @@ private:
 
         // create the vertex selection buffer
         mSelection.initVertexSelectionBitfield(nv);
-        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
+        mPoints.setVertexSelection(nv, mSelection.vertexSelectionBuffer());
 
         // create the face selection buffer
         mSelection.initFaceSelectionBitfield(Base::numTris());
@@ -561,9 +581,7 @@ private:
         // Build polygon mapping buffers for polygon-level face selection.
         // fillTriangleIndices() above has already populated
         // Base::triPolyIndexMap().
-        if (Context::instance().supportsCompute() && nt > 0) {
-            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
-        }
+        mPolyMapping.init(Base::triPolyIndexMap(), nt);
     }
 
     void setTriangleSelectionBuffer(const MeshType& mesh) // override
@@ -635,6 +653,11 @@ private:
         mEdgeLines.setLineColors(mesh.edges() | vcl::views::colors);
     }
 
+    void setEdgeSelectionBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineSelections(mesh.edges() | vcl::views::selection);
+    }
+
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
         // Update the vertex buffers (positions, colors, normals) required by
@@ -670,6 +693,7 @@ private:
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
+
             uint numMips = 1;
             if (generateMips)
                 numMips = bimg::imageGetNumMips(
@@ -838,7 +862,7 @@ private:
         points.setVertices(nv, mrb.mVertexPositionsBuffer);
         points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
-        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
+        points.setVertexSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
 };
 

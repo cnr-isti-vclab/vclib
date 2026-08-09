@@ -8,10 +8,44 @@
 # the following examples are the same of the ones in the external module,
 # but they add a viewer at the end in order to visualize the results
 
-if(TARGET vclib-3rd-embree)
-    add_subdirectory(011-best-heightfield-orientation)
-endif()
+# Automatically find and add all external render examples.
+# For each directory, we check if it's a valid example by looking for a main.cpp file.
+# If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
+# and ensure all required targets are available before adding the subdirectory.
+file(
+    GLOB RENDER_EXTERNAL_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*"
+)
+foreach(dir IN LISTS RENDER_EXTERNAL_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
+            # Reset required targets for this iteration
+            set(EXAMPLE_REQUIRED_TARGETS "")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+            endif()
 
-if(TARGET vclib-3rd-boost AND TARGET vclib-3rd-cgal AND TARGET vclib-3rd-libigl)
-    add_subdirectory(020-igl-booleans)
-endif()
+            # Verify if all the required targets (e.g., 3rd party libraries) exist
+            set(REQUIREMENTS_MET TRUE)
+            set(UNMET_REQ_PRINT "")
+            foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                if(NOT TARGET ${req})
+                    set(REQUIREMENTS_MET FALSE)
+                    string(REPLACE "vclib-3rd-" "" req_print ${req})
+                    list(APPEND UNMET_REQ_PRINT ${req_print})
+                endif()
+            endforeach()
+
+            if(REQUIREMENTS_MET)
+                add_subdirectory("${dir}")
+            else()
+                message(
+                    STATUS
+                    "Skipping ${dir} due to missing req: "
+                    "${UNMET_REQ_PRINT}"
+                )
+            endif()
+        endif()
+    endif()
+endforeach()

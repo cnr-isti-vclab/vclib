@@ -1018,12 +1018,12 @@ public:
      * UINT_NULL.
      */
     template<uint ELEM_ID>
-    void updateIndices(const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
         requires (hasContainerOf<ELEM_ID>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::updateElementIndices(newIndices);
+        Cont::updateElementReferences(newIndices);
     }
 
     void serialize(std::ostream& os) const

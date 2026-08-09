@@ -5,14 +5,14 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$input v_color, v_normal
+$input v_color, v_normal, v_selected
 
 // cross section
 $input v_worldPos0, v_worldPos1, v_discardFlag, v_t
 
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-
+#include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh> 
 
 void main() {
@@ -27,5 +27,11 @@ void main() {
     color *= computeLight(u_lightDir, u_lightColor, v_normal);
 #endif
 
+#if LINES_SELECTION_ON
+    float selWeight = u_linesSelectionColor.a * v_selected;
+    vec3 tmp = mix(color.rgb, u_linesSelectionColor.rgb, selWeight);
+    gl_FragColor = vec4(tmp, color.a);
+#else
     gl_FragColor = color;
+#endif
 }

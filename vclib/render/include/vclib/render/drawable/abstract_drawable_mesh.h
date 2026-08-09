@@ -70,6 +70,14 @@ public:
 
     virtual void computeSelection(const SelectionParameters& params) {}
 
+    virtual vcl::BitVector<true> vertexSelectionBitVector() const { return {}; }
+
+    virtual void setVertexSelectionBitVector(const vcl::BitVector<true>&) {}
+
+    virtual vcl::BitVector<true> faceSelectionBitVector() const { return {}; }
+
+    virtual void setFaceSelectionBitVector(const vcl::BitVector<true>&) {}
+
     void setOnSelectionUpdatedCallback(std::function<void()> cb)
     {
         mOnSelectionUpdated = std::move(cb);

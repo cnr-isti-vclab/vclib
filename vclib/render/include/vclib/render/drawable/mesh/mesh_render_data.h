@@ -125,8 +125,6 @@ public:
         const MeshConcept auto& mesh,
         MRI::BuffersBitSet      buffersToUpdate = MRI::BUFFERS_ALL)
     {
-        using enum MRI::Buffers;
-
         MRI::BuffersBitSet btu = mBuffersToFill & buffersToUpdate;
 
         // first thing to do
@@ -950,6 +948,8 @@ protected:
      */
     void setEdgeColorsBuffer(const EdgeMeshConcept auto&) {}
 
+    void setEdgeSelectionBuffer(const EdgeMeshConcept auto&) {}
+
     /**
      * @brief Function that sets the textures from the mesh and sends the data
      * to the GPU.
@@ -1035,6 +1035,9 @@ private:
         if (btu[toUnderlying(VERTICES)]) {
             // vertex buffer (positions)
             derived().setVertexPositionsBuffer(mesh);
+        }
+
+        if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(VERT_SELECTION)]) {
             derived().setVertexSelectionBuffer(mesh);
         }
 
@@ -1086,6 +1089,10 @@ private:
             if (btu[toUnderlying(TRIANGLES)]) {
                 // triangle index buffer
                 derived().setTriangleIndicesBuffer(mesh);
+            }
+
+            if (btu[toUnderlying(TRIANGLES)] ||
+                btu[toUnderlying(FACE_SELECTION)]) {
                 derived().setTriangleSelectionBuffer(mesh);
             }
 
@@ -1170,6 +1177,9 @@ private:
                     if (btu[toUnderlying(EDGE_COLORS)]) {
                         // edge color buffer
                         derived().setEdgeColorsBuffer(mesh);
+                    }
+                    if (btu[toUnderlying(EDGE_SELECTION)]) {
+                        derived().setEdgeSelectionBuffer(mesh);
                     }
                 }
             }

@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$output v_color, v_normal
+$output v_color, v_normal, v_selected
 
 // cross section
 $output v_worldPos0, v_worldPos1, v_discardFlag, v_t
@@ -13,6 +13,7 @@ $output v_worldPos0, v_worldPos1, v_discardFlag, v_t
 #include <bgfx_shader.sh>
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/buffers/boolean_buffer.sh>
 #include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
 
 BUFFER_RO(vertexPosBuffer, vec4, 0);
@@ -38,6 +39,10 @@ DECLARE_FETCH_VEC3(getVertexNor, vertexNorBuffer)
 #if LINES_SHADING_PER_LINE
 BUFFER_RO(lineNorBuffer, vec4, 5);
 DECLARE_FETCH_VEC3(getLineNor, lineNorBuffer)
+#endif
+
+#if LINES_SELECTION_ON
+BUFFER_RO(lineSelectedBuffer, uint, 6);
 #endif
 
 uint getVind(uint vind) {
@@ -180,4 +185,8 @@ void main() {
     // We scale the offset by w to maintain it consistently after the perspective divide.
     p.z += -u_depthOffset * p.w;
     gl_Position = p;
+
+#if LINES_SELECTION_ON
+    v_selected = float(getBoolFromBuffer(lineSelectedBuffer, lineIndex));
+#endif
 }

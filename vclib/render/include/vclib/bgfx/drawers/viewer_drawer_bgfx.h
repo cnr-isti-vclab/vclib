@@ -116,6 +116,8 @@ public:
         mEnvironment.drawBackground(settings.viewId, Base::viewerSettings());
 
         Base::drawableObjectVector().draw(settings);
+
+        Base::onDrawContent(viewId);
     }
 
     void onDrawId(uint viewId) override

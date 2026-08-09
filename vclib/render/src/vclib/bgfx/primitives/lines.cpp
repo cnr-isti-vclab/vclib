@@ -69,6 +69,14 @@ void Lines::setLineNormals(uint lNorCount, const VertexBuffer& lineNormals)
     mLineNormals.setReferenced(&lineNormals);
 }
 
+void Lines::setLineSelections(uint lSelCount, const BooleanBuffer& lineSels)
+{
+    if (lSelCount != mLineSelCount)
+        mIsUpdateProgramNeeded = true;
+    mLineSelCount = lSelCount;
+    mLineSelections.setReferenced(&lineSels);
+}
+
 /**
  * @brief Draws the line segments on the specified view.
  *
@@ -91,6 +99,7 @@ void Lines::draw(bgfx::ViewId viewId) const
     LinesUniforms::setWidth(mWidth);
     LinesUniforms::setGeneralColor(mGeneralColor);
     LinesUniforms::setDepthOffset(mDepthOffset);
+    LinesUniforms::setSelectionColor(mSelectionColor);
 
     // Bind buffers for compute / vertex pulling
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
@@ -109,6 +118,9 @@ void Lines::draw(bgfx::ViewId viewId) const
     }
     if (mLineNormals.isValid() && mShading == Shading::PER_LINE) {
         mLineNormals.get().bindCompute(L_NOR_STAGE, bgfx::Access::Read);
+    }
+    if (mSelectionVisibility) {
+        mLineSelections.get().bind(L_SEL_STAGE, bgfx::Access::Read);
     }
 
     bgfx::setVertexCount(vertexPullingInstances());
@@ -260,6 +272,29 @@ void Lines::checkAndUpdateProgram() const
         }
     }
 
+    if (mSelectionVisibility) {
+        if (!mLineSelections.isValid()) {
+            throw std::runtime_error(
+                "Lines: Selection visibility is ON but the line selection "
+                "buffer "
+                "is invalid.");
+        }
+        if (mTopology == Topology::LINES && mLineSelCount != nv / 2) {
+            throw std::runtime_error(
+                "Lines: The number of line selection elements must match the "
+                "number of "
+                "lines (" +
+                primstr + " / 2) for LINES topology.");
+        }
+        if (mTopology == Topology::LINE_STRIP && mLineSelCount != nv - 1) {
+            throw std::runtime_error(
+                "Lines: The number of line selection elements must match the "
+                "number of "
+                "lines (" +
+                primstr + " - 1) for LINE_STRIP topology.");
+        }
+    }
+
     mProgram               = linesProgramSelector();
     mIdProgram             = linesIdProgramSelector();
     mIsUpdateProgramNeeded = false;
@@ -286,28 +321,31 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
 {
     using enum VertFragProgram;
 
-    constexpr uint N_SHADING_MODES = 3;
-    constexpr uint N_INDEX_MODES   = 2;
-    constexpr uint N_TOPO_MODES    = 2;
-    constexpr uint N_COLOR_MODES   = 3;
-    constexpr uint N_SECTION_MODES = 2;
+    constexpr uint N_SHADING_MODES   = 3;
+    constexpr uint N_INDEX_MODES     = 2;
+    constexpr uint N_TOPO_MODES      = 2;
+    constexpr uint N_COLOR_MODES     = 3;
+    constexpr uint N_SELECTION_MODES = 2;
+    constexpr uint N_SECTION_MODES   = 2;
 
     uint shading  = toUnderlying(mShading);
     uint indices  = mIndices.isValid() ? 0 : 1;
     uint topology = toUnderlying(mTopology);
     uint color    = toUnderlying(mColorSetting);
+	uint select   = mSelectionVisibility ? 1 : 0;
     uint section  = mCrossSectionSettings.isEnabled() ? 1 : 0;
 
     // the first shader of all the combinations
     uint base = toUnderlying(
-        PRIMITIVE_LINES_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX_SECTION_OFF);
+        PRIMITIVE_LINES_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX_SELECTION_OFF_SECTION_OFF);
 
     uint offset = linearizeIndex<
         N_SHADING_MODES,
         N_INDEX_MODES,
         N_TOPO_MODES,
         N_COLOR_MODES,
-        N_SECTION_MODES>(shading, indices, topology, color, section);
+        N_SELECTION_MODES,
+        N_SECTION_MODES>(shading, indices, topology, color, select, section);
 
     uint program = base + offset;
 

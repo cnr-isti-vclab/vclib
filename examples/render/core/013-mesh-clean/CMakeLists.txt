@@ -6,12 +6,12 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-render-example-${EXAMPLE_NAME})
+project(vclib-render-example-core-${EXAMPLE_NAME})
 
 set(SOURCES main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render
-    CORE_EXAMPLE 013-mesh-clean
+    CORE_EXAMPLE ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
 )

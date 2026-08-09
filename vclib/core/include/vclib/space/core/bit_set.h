@@ -8,7 +8,7 @@
 #ifndef VCL_SPACE_CORE_BIT_SET_H
 #define VCL_SPACE_CORE_BIT_SET_H
 
-#include "bit_set/bit_proxy.h"
+#include "bit_proxy.h"
 
 #include <vclib/base.h>
 

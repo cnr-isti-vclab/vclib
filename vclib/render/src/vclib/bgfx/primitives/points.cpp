@@ -104,7 +104,7 @@ void Points::setVertexColors(uint vColsCount, const VertexBuffer& vertColors)
  * @param[in] vSelCount: Number of selection states in the BooleanBuffer.
  * @param[in] vertSels: The BooleanBuffer containing selection state.
  */
-void Points::setSelection(uint vSelCount, const BooleanBuffer& vertSels)
+void Points::setVertexSelection(uint vSelCount, const BooleanBuffer& vertSels)
 {
     mVerSelCount = vSelCount;
     mSelectionBuffer.setReferenced(&vertSels);

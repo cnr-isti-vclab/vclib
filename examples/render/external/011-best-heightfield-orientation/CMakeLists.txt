@@ -14,6 +14,6 @@ vclib_add_example(
     ${EXAMPLE_NAME}
     MODULE render
     LINK_MODULES external
-    EXTERNAL_EXAMPLE 011-best-heightfield-orientation
+    EXTERNAL_EXAMPLE ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
 )

@@ -55,5 +55,6 @@
 #define VCL_MRS_EDGES_COLOR_EDGE     5 // edge color for edges
 #define VCL_MRS_EDGES_COLOR_MESH     6 // mesh color for edges
 #define VCL_MRS_EDGES_COLOR_USER     7 // user color for edges
+#define VCL_MRS_EDGES_DRAW_SELECTION 8 // edges with selection color
 
 #endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H
