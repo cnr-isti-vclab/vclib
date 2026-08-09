@@ -219,55 +219,71 @@ TEST_CASE("Wireframe Cross Section")
 {
     SECTION("Vertex Cross Section")
     {
-        runRenderTest("cross_section_vertex", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+        runRenderTest(
+            TEST_NAME,
+            "cross_section_vertex",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh =
+                    getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
 
-            auto settings = mesh.renderSettings();
-            settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(
-                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
-            settings.setWireframeWidth(3);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setSurface(
+                    vcl::MeshRenderInfo::Surface::VISIBLE, false);
+                settings.setWireframe(
+                    vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+                settings.setWireframeWidth(3);
+                mesh.setRenderSettings(settings);
 
-            vcl::CrossSectionSettings css(mesh);
-            css.type() =
-                vcl::CrossSectionSettings::CrossSectionType::PER_VERTEX;
+                vcl::CrossSectionSettings css(mesh);
+                css.type() =
+                    vcl::CrossSectionSettings::CrossSectionType::PER_VERTEX;
 
-            vcl::Point3f min = css.boundingBox().min();
-            vcl::Point3f max = css.boundingBox().max();
-            css.setLowerUpper(min + (max - min) * 0.25f,
-                              max - (max - min) * 0.25f);
+                vcl::Point3f min = css.boundingBox().min();
+                vcl::Point3f max = css.boundingBox().max();
+                css.setLowerUpper(
+                    min + (max - min) * 0.25f, max - (max - min) * 0.25f);
 
-            mesh.setCrossSectionSettings(css);
+                mesh.setCrossSectionSettings(css);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 
     SECTION("Fragment Cross Section")
     {
-        runRenderTest("cross_section_fragment", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+        runRenderTest(
+            TEST_NAME,
+            "cross_section_fragment",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh =
+                    getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
 
-            auto settings = mesh.renderSettings();
-            settings.setSurface(vcl::MeshRenderInfo::Surface::VISIBLE, false);
-            settings.setWireframe(
-                vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
-            settings.setWireframeWidth(3);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setSurface(
+                    vcl::MeshRenderInfo::Surface::VISIBLE, false);
+                settings.setWireframe(
+                    vcl::MeshRenderInfo::Wireframe::VISIBLE, true);
+                settings.setWireframeWidth(3);
+                mesh.setRenderSettings(settings);
 
-            vcl::CrossSectionSettings css(mesh);
-            css.type() =
-                vcl::CrossSectionSettings::CrossSectionType::PER_FRAGMENT;
+                vcl::CrossSectionSettings css(mesh);
+                css.type() =
+                    vcl::CrossSectionSettings::CrossSectionType::PER_FRAGMENT;
 
-            vcl::Point3f min = css.boundingBox().min();
-            vcl::Point3f max = css.boundingBox().max();
-            css.setLowerUpper(min + (max - min) * 0.25f,
-                              max - (max - min) * 0.25f);
+                vcl::Point3f min = css.boundingBox().min();
+                vcl::Point3f max = css.boundingBox().max();
+                css.setLowerUpper(
+                    min + (max - min) * 0.25f, max - (max - min) * 0.25f);
 
-            mesh.setCrossSectionSettings(css);
+                mesh.setCrossSectionSettings(css);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 }
