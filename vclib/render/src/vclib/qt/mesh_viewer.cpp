@@ -10,7 +10,10 @@
 #include "ui_mesh_viewer.h"
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
+#include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
+#include <vclib/qt/gui/toolbar_frames/settings/bounding_box_editor_settings_frame.h>
+#include <vclib/qt/gui/toolbar_frames/settings/selection_editor_settings_frame.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
@@ -518,10 +521,37 @@ void MeshViewer::renderModeChanged()
 
 void MeshViewer::openSettings()
 {
-    QDialog settingsDialog(this);
-    settingsDialog.setWindowTitle("Settings");
-    settingsDialog.resize(600, 400);
-    settingsDialog.exec();
+    SelectionEditorSettings selSts;
+    if (mSelectionEditor) {
+        selSts = mSelectionEditor->settings();
+    }
+    
+    BoundingBoxEditorSettings bboxSts;
+    if (mBoundingBoxEditor) {
+        bboxSts = mBoundingBoxEditor->settings();
+    }
+
+    SettingsDialog dialog(selSts, bboxSts, this);
+    
+    connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        if (mSelectionEditor) {
+            mSelectionEditor->settings() = dialog.selectionSettings();
+            mSelectionEditor->refreshSettings();
+            for (auto* f : mUI->toolBar->findChildren<SelectionEditorSettingsFrame*>()) {
+                f->updateGUI();
+            }
+        }
+        if (mBoundingBoxEditor) {
+            mBoundingBoxEditor->settings() = dialog.boundingBoxSettings();
+            mBoundingBoxEditor->refreshSettings();
+            for (auto* f : mUI->toolBar->findChildren<BoundingBoxEditorSettingsFrame*>()) {
+                f->updateGUI();
+            }
+        }
+        viewer().update();
+    });
+
+    dialog.exec();
 }
 
 void MeshViewer::setBackgroundColor(const vcl::Color& color)

@@ -25,18 +25,19 @@ struct SelectionEditorSettings : public EditorSettings
 
     void loadSettings(const nlohmann::json& j)
     {
-        selectVertices    = j.value("selectVertices", selectVertices);
-        selectFaces       = j.value("selectFaces", selectFaces);
-        onlyVisible       = j.value("onlyVisible", onlyVisible);
-        selectionBoxColor = j.value("selectionBoxColor", selectionBoxColor);
+        if (j.contains("SelectionEditor")) {
+            const auto& jSel = j["SelectionEditor"];
+            onlyVisible       = jSel.value("onlyVisible", onlyVisible);
+            selectionBoxColor = jSel.value("selectionBoxColor", selectionBoxColor);
+            editMode          = static_cast<EditMode>(jSel.value("editMode", static_cast<int>(editMode)));
+        }
     }
 
     void saveSettings(nlohmann::json& j) const
     {
-        j["selectVertices"]    = selectVertices;
-        j["selectFaces"]       = selectFaces;
-        j["onlyVisible"]       = onlyVisible;
-        j["selectionBoxColor"] = selectionBoxColor;
+        j["SelectionEditor"]["onlyVisible"]       = onlyVisible;
+        j["SelectionEditor"]["selectionBoxColor"] = selectionBoxColor;
+        j["SelectionEditor"]["editMode"]          = static_cast<int>(editMode);
     }
 };
 

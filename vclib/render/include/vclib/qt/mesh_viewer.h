@@ -19,6 +19,12 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
+#include <vclib/render/settings/viewer_settings.h>
+#include <vclib/base/concepts/settings.h>
+#include <vclib/base/system.h>
+
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 #include <QMainWindow>
 
@@ -44,6 +50,11 @@ class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
+public:
+    using EditorType = MeshViewerRenderApp::EditorType;
+    using ViewerType = MeshViewerRenderApp::ViewerType;
+
+private:
     Ui::MeshViewer* mUI;
 
     ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
@@ -51,7 +62,9 @@ class MeshViewer : public QMainWindow
 
     QAction* mSpacerAction = nullptr;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
+    std::shared_ptr<vcl::DrawableObjectVector>          mDrawableObjectVector;
+    std::shared_ptr<vcl::SelectionEditor<ViewerType>>   mSelectionEditor;
+    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> mBoundingBoxEditor;
 
 protected:
     MeshViewerRenderApp& viewer() const;
@@ -63,9 +76,6 @@ protected:
     void keyPressEvent(QKeyEvent* event) override;
 
 public:
-    using EditorType = MeshViewerRenderApp::EditorType;
-    using ViewerType = MeshViewerRenderApp::ViewerType;
-
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
@@ -178,18 +188,49 @@ public:
     {
         auto editor = viewer().template pushEditor<EditorT>(active);
 
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            addEditorFrame(new FrameType(editor));
-        }
-
         if constexpr (std::is_same_v<
                           EditorT<ViewerType>,
                           vcl::MeshSelectorEditor<ViewerType>>) {
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });
+        }
+
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::SelectionEditor<ViewerType>>) {
+            mSelectionEditor = editor;
+        }
+
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::BoundingBoxEditor<ViewerType>>) {
+            mBoundingBoxEditor = editor;
+        }
+
+        // Load default settings if available
+        std::string configDir = vcl::appConfigDirectory("vclib");
+        std::string filePath = configDir + "/render_settings.json";
+        std::ifstream in(filePath);
+        if (in.is_open()) {
+            try {
+                nlohmann::json j;
+                in >> j;
+                if (j.contains("Editors")) {
+                    if constexpr (vcl::HasSettings<EditorT<ViewerType>>) {
+                        editor->loadSettings(j["Editors"]);
+                        editor->refreshSettings();
+                    }
+                }
+            } catch (...) {
+                // Ignore parse errors
+            }
+        }
+
+        using FrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
+        if constexpr (!std::is_same_v<FrameType, void>) {
+            addEditorFrame(new FrameType(editor));
         }
 
         return editor;

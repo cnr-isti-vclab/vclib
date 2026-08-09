@@ -23,14 +23,19 @@ struct BoundingBoxEditorSettings : public EditorSettings
 
     void loadSettings(const nlohmann::json& j)
     {
-        color     = j.value("color", color);
-        thickness = j.value("thickness", thickness);
+        if (j.contains("BoundingBoxEditor")) {
+            const auto& jBox = j["BoundingBoxEditor"];
+            color     = jBox.value("color", color);
+            thickness = jBox.value("thickness", thickness);
+            editMode  = static_cast<EditMode>(jBox.value("editMode", static_cast<int>(editMode)));
+        }
     }
 
     void saveSettings(nlohmann::json& j) const
     {
-        j["color"]     = color;
-        j["thickness"] = thickness;
+        j["BoundingBoxEditor"]["color"]     = color;
+        j["BoundingBoxEditor"]["thickness"] = thickness;
+        j["BoundingBoxEditor"]["editMode"]  = static_cast<int>(editMode);
     }
 };
 

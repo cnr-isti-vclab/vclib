@@ -32,6 +32,8 @@ public:
         QWidget*                   parent = nullptr);
     ~BoundingBoxEditorSettingsFrame();
 
+    void updateGUI();
+
 signals:
     void settingsUpdated();
 
