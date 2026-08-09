@@ -49,6 +49,8 @@ class MeshViewer : public QMainWindow
     ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
     QDockWidget*         mViewerSettingsDockWidget = nullptr;
 
+    QAction* mSpacerAction = nullptr;
+
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
 protected:
@@ -255,6 +257,9 @@ public:
      */
     const vcl::Color& backgroundColor() const;
 
+private:
+    void setupSettingsButton();
+
 public slots:
     void fitScene();
 
@@ -272,6 +277,8 @@ private slots:
     void applyToAllToggled(bool checked);
 
     void renderModeChanged();
+
+    void openSettings();
 };
 
 } // namespace vcl::qt

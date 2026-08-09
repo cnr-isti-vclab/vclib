@@ -16,7 +16,10 @@
 
 #include <QAction>
 #include <QActionGroup>
+#include <QDialog>
 #include <QDockWidget>
+#include <QPushButton>
+#include <QIcon>
 
 namespace vcl::qt {
 
@@ -103,6 +106,8 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     disableFocus(mUI->toolBar);
 
+    setupSettingsButton();
+
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
@@ -177,11 +182,55 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &QDockWidget::visibilityChanged,
         mUI->actionViewer_Settings,
         &QAction::setChecked);
+
+    connect(
+        mUI->actionSettings,
+        &QAction::triggered,
+        this,
+        &MeshViewer::openSettings);
+}
+
+void MeshViewer::setupSettingsButton()
+{
+    QWidget* spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    mSpacerAction = mUI->toolBar->addWidget(spacer);
+
+    QPushButton* settingsBtn = new QPushButton(this);
+    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
+    settingsBtn->setIconSize(QSize(32, 32));
+    settingsBtn->setFixedSize(QSize(40, 40));
+    settingsBtn->setFocusPolicy(Qt::NoFocus);
+    settingsBtn->setToolTip("Settings");
+    settingsBtn->setStyleSheet(
+        "QPushButton {"
+        "  background-color: transparent;"
+        "  border: 1px solid transparent;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: palette(midlight);"
+        "  border-color: palette(dark);"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(dark);"
+        "}");
+    mUI->toolBar->addWidget(settingsBtn);
+    connect(
+        settingsBtn,
+        &QPushButton::clicked,
+        mUI->actionSettings,
+        &QAction::trigger);
 }
 
 void MeshViewer::addEditorFrame(QWidget* frame)
 {
-    mUI->toolBar->addWidget(frame);
+    if (mSpacerAction) {
+        mUI->toolBar->insertWidget(mSpacerAction, frame);
+    } else {
+        mUI->toolBar->addWidget(frame);
+    }
 }
 
 MeshViewer::~MeshViewer()
@@ -465,6 +514,14 @@ void MeshViewer::renderModeChanged()
     }
     setViewerSettings(sts);
     mUI->viewer->update();
+}
+
+void MeshViewer::openSettings()
+{
+    QDialog settingsDialog(this);
+    settingsDialog.setWindowTitle("Settings");
+    settingsDialog.resize(600, 400);
+    settingsDialog.exec();
 }
 
 void MeshViewer::setBackgroundColor(const vcl::Color& color)
