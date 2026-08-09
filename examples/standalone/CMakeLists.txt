@@ -79,19 +79,23 @@ target_compile_definitions(
 function(add_standalone_example module name)
     set(TARGET_NAME "standalone-${module}-${name}")
     string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
-    set(SOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/main.cpp")
+    file(GLOB SOURCES 
+        "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/*.h"
+    )
 
-    if(NOT EXISTS "${SOURCE_FILE}")
-        message(FATAL_ERROR "Source file not found: ${SOURCE_FILE}")
+    if(NOT SOURCES)
+        message(FATAL_ERROR "No source files found in: ${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}")
     endif()
 
-    add_executable(${TARGET_NAME} "${SOURCE_FILE}")
+    add_executable(${TARGET_NAME} ${SOURCES})
 
     set_target_properties(
         ${TARGET_NAME}
         PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY
                 "${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}"
+            AUTOMOC ON
     )
 
     # Extract the base module name (e.g., 'render' from 'render/core')
