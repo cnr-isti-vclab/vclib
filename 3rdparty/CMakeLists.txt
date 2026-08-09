@@ -92,6 +92,29 @@ include(zip-views.cmake)
 
 # IO or RENDER 3rd Party libraries
 if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
+    # nlohmann_json
+    option(VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON "Allow use of system-provided nlohmann_json" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON "Allow use of downloaded nlohmann_json source" ON)
+    cmake_dependent_option(
+        VCLIB_ALLOW_INSTALL_NLOHMANN_JSON
+        "Allow install nlohmann_json source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
+    include(nlohmann_json.cmake)
+
+    # stb
+    option(VCLIB_ALLOW_DOWNLOAD_STB "Allow use of downloaded stb source" ON)
+    cmake_dependent_option(
+        VCLIB_ALLOW_INSTALL_STB
+        "Allow install stb source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
+    include(stb.cmake)
+
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
     include(qt.cmake)
@@ -99,8 +122,7 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # tinygltf
     option(
         VCLIB_ALLOW_DOWNLOAD_TINYGTLF
-        "Allow use of downloaded tinygltf source
-        (brings stb and nlohmann-json)"
+        "Allow use of downloaded tinygltf source"
         ON
     )
     cmake_dependent_option(
