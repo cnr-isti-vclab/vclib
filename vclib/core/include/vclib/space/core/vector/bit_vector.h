@@ -181,10 +181,7 @@ public:
         return mSize == other.mSize && mBytes == other.mBytes;
     }
 
-    bool operator!=(const BitVector& other) const
-    {
-        return !(*this == other);
-    }
+    bool operator!=(const BitVector& other) const { return !(*this == other); }
 };
 
 } // namespace vcl

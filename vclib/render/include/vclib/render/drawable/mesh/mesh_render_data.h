@@ -1036,7 +1036,7 @@ private:
             // vertex buffer (positions)
             derived().setVertexPositionsBuffer(mesh);
         }
-        
+
         if (btu[toUnderlying(VERTICES)] || btu[toUnderlying(VERT_SELECTION)]) {
             derived().setVertexSelectionBuffer(mesh);
         }
@@ -1091,7 +1091,8 @@ private:
                 derived().setTriangleIndicesBuffer(mesh);
             }
 
-            if (btu[toUnderlying(TRIANGLES)] || btu[toUnderlying(FACE_SELECTION)]) {
+            if (btu[toUnderlying(TRIANGLES)] ||
+                btu[toUnderlying(FACE_SELECTION)]) {
                 derived().setTriangleSelectionBuffer(mesh);
             }
 

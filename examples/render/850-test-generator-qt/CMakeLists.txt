@@ -10,18 +10,9 @@ project(vclib-render-example-${EXAMPLE_NAME})
 
 set(CMAKE_AUTOMOC ON)
 
+set(HEADERS image_label.h main_window.h setup_viewer.h)
 
-set(HEADERS
-    image_label.h
-    main_window.h
-    setup_viewer.h
-)
-
-set(SOURCES
-    image_label.cpp
-    main_window.cpp
-    main.cpp
-)
+set(SOURCES image_label.cpp main_window.cpp main.cpp)
 
 vclib_add_example(${EXAMPLE_NAME}
     MODULE render

@@ -214,7 +214,8 @@ TEST_CASE("Lines Selection")
                     if (e.index() % 2 == 0)
                         e.selected() = true;
                 }
-                mesh.updateBuffers({vcl::MeshRenderInfo::Buffers::EDGE_SELECTION});
+                mesh.updateBuffers(
+                    {vcl::MeshRenderInfo::Buffers::EDGE_SELECTION});
 
                 auto settings = mesh.renderSettings();
                 settings.setPoints(vcl::MeshRenderInfo::Points::VISIBLE, false);

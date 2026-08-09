@@ -65,22 +65,22 @@ private:
     uint mLineNorCount   = 0;
     uint mLineSelCount   = 0;
 
-    float        mWidth        = 1.0f;
-    Topology     mTopology     = Topology::LINES;
-    ColorSetting mColorSetting = ColorSetting::GENERAL;
-    Shading      mShading      = Shading::NONE;
-    Color        mGeneralColor = Color::Black;
-    float        mDepthOffset  = 0.0f;
-    Color        mSelectionColor = Color(0x88FF9732, Color::Format::ABGR);
+    float        mWidth               = 1.0f;
+    Topology     mTopology            = Topology::LINES;
+    ColorSetting mColorSetting        = ColorSetting::GENERAL;
+    Shading      mShading             = Shading::NONE;
+    Color        mGeneralColor        = Color::Black;
+    float        mDepthOffset         = 0.0f;
+    Color        mSelectionColor      = Color(0x88FF9732, Color::Format::ABGR);
     bool         mSelectionVisibility = false;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
     OwnedOrRefBuffer<VertexBuffer> mVertexNormals;
 
-    OwnedOrRefBuffer<IndexBuffer>  mIndices;
-    OwnedOrRefBuffer<IndexBuffer>  mLineColors;
-    OwnedOrRefBuffer<VertexBuffer> mLineNormals;
+    OwnedOrRefBuffer<IndexBuffer>   mIndices;
+    OwnedOrRefBuffer<IndexBuffer>   mLineColors;
+    OwnedOrRefBuffer<VertexBuffer>  mLineNormals;
     OwnedOrRefBuffer<BooleanBuffer> mLineSelections;
 
     mutable bool                mIsUpdateProgramNeeded = true;
@@ -568,7 +568,7 @@ public:
      */
     void setSelectionVisibility(bool visible)
     {
-        mSelectionVisibility = visible;
+        mSelectionVisibility   = visible;
         mIsUpdateProgramNeeded = true;
     }
 
@@ -576,10 +576,7 @@ public:
      * @brief Sets the selection color.
      * @param[in] color: The selection highlight color.
      */
-    void setSelectionColor(const Color& color)
-    {
-        mSelectionColor = color;
-    }
+    void setSelectionColor(const Color& color) { mSelectionColor = color; }
 
     /**
      * @brief Sets the depth offset applied to the lines.

@@ -36,14 +36,13 @@ class Editor
 
     std::shared_ptr<DrawableObjectVector> mDrawList;
 
-    EditorSettings mSettings;
-
     bool mIsActive = false;
 
 public:
     using ViewerDrawerType = ViewerDrawer;
 
-    Editor() = default;
+    Editor()          = default;
+    virtual ~Editor() = default;
 
     /**
      * @brief Returns whether the editor is currently active.
@@ -68,13 +67,13 @@ public:
      * @brief Returns the editor settings.
      * @return a reference to the EditorSettings object.
      */
-    EditorSettings& settings() { return mSettings; }
+    virtual EditorSettings& settings() = 0;
 
     /**
      * @brief Returns the editor settings.
      * @return a const reference to the EditorSettings object.
      */
-    const EditorSettings& settings() const { return mSettings; }
+    virtual const EditorSettings& settings() const = 0;
 
     /**
      * @brief Called by the viewer when the drawable object vector changes.
@@ -365,6 +364,7 @@ protected:
         assert(mViewer);
         mViewer->setContinuousRedraw(enabled);
     }
+
     /**
      * @brief Pushes an undo/redo action to the viewer's undo/redo stack.
      * @param[in] action: the action to push.

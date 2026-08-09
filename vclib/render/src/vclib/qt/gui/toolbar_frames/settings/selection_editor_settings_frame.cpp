@@ -12,17 +12,14 @@
 namespace vcl::qt {
 
 SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
-    EditorSettings& sts,
-    QWidget*        parent) :
+    SelectionEditorSettings& sts,
+    QWidget*                 parent) :
         QFrame(parent), mUI(new Ui::SelectionEditorSettingsFrame),
         mSettings(sts)
 {
     mUI->setupUi(this);
 
-    assert(mSettings.customSettings.at("onlyVisible").has_value());
-
-    bool onlyVisible =
-        std::any_cast<bool>(mSettings.customSettings.at("onlyVisible"));
+    bool onlyVisible = mSettings.onlyVisible;
 
     mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::NONE);
     mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::ALL_OBJECTS);
@@ -61,7 +58,7 @@ void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
     Qt::CheckState state)
 {
     bool onlyVisible                        = state == Qt::CheckState::Checked;
-    mSettings.customSettings["onlyVisible"] = onlyVisible;
+    mSettings.onlyVisible = onlyVisible;
     emit settingsUpdated();
 }
 

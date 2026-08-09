@@ -17,6 +17,7 @@
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/selection/selection_mode.h>
+#include <vclib/render/settings/selection_editor_settings.h>
 #include <vclib/render/undo_redo/selection_undo_redo_action.h>
 
 #include <array>
@@ -55,25 +56,18 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     /// (e.g. waiting for GPU readback).
     bool mActionCreationPending = false;
 
+    SelectionEditorSettings mSettings;
+
 public:
     SelectionEditorBGFX()
     {
-        // default settings
-        Base::settings().customSettings["selectVertices"] = false;
-        Base::settings().customSettings["selectFaces"]    = false;
-        Base::settings().customSettings["onlyVisible"]    = false;
-        Base::settings().customSettings["selectionBoxColor"] =
-            vcl::Color(27, 120, 249, 64);
-
         mVisibleFaceFBSize = std::min(
             DEFAULT_VISIBLE_FACE_FB_SIZE,
             Context::instance().capabilites().limits.maxTextureSize);
 
         // Initialize screen-space box for selection overlay
         mScreenSpaceBox.init();
-        mScreenSpaceBox.setColor(
-            std::any_cast<const vcl::Color&>(
-                Base::settings().customSettings.at("selectionBoxColor")));
+        mScreenSpaceBox.setColor(mSettings.selectionBoxColor);
 
         // ---- Pass 1: render scene into visible-selection framebuffer ----
         mVisibleSelectionViewIds[0] = Context::instance().requestViewId();
@@ -149,8 +143,15 @@ public:
 
     void setSelectionBoxColor(const Color& color)
     {
-        Base::settings().customSettings["selectionBoxColor"] = color;
+        mSettings.selectionBoxColor = color;
         mScreenSpaceBox.setColor(color);
+    }
+
+    SelectionEditorSettings& settings() override { return mSettings; }
+
+    const SelectionEditorSettings& settings() const override
+    {
+        return mSettings;
     }
 
     void draw(uint viewId) override
@@ -339,7 +340,7 @@ private:
      */
     bool shouldProcessObject(const DrawableObjectVector& dl, uint index) const
     {
-        switch (Base::settings().editMode) {
+        switch (mSettings.editMode) {
         case EditorSettings::EditMode::CURRENT_OBJECT:
             return index == dl.selectedObjectId();
         case EditorSettings::EditMode::VISIBLE_OBJECTS:
@@ -359,10 +360,7 @@ private:
     {
         if (!Base::isActive())
             return false;
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        return sv || sf;
+        return mSettings.selectVertices || mSettings.selectFaces;
     }
 
     /**
@@ -392,10 +390,9 @@ private:
     std::vector<SelectionMode> selectionModesForModifier(
         const KeyModifiers& mods) const
     {
-        const auto& cs = Base::settings().customSettings;
-        bool        sv = std::any_cast<bool>(cs.at("selectVertices"));
-        bool        sf = std::any_cast<bool>(cs.at("selectFaces"));
-        bool        ov = std::any_cast<bool>(cs.at("onlyVisible"));
+        bool sv = mSettings.selectVertices;
+        bool sf = mSettings.selectFaces;
+        bool ov = mSettings.onlyVisible;
 
         auto action = actionFromModifier(mods);
 
@@ -413,11 +410,10 @@ private:
     template<SelectionAction ACTION>
     std::vector<SelectionMode> actionModesForSettings() const
     {
-        const auto&                cs = Base::settings().customSettings;
         std::vector<SelectionMode> modes;
-        if (std::any_cast<bool>(cs.at("selectVertices")))
+        if (mSettings.selectVertices)
             modes.push_back({SelectionPrimitive::VERTEX, ACTION});
-        if (std::any_cast<bool>(cs.at("selectFaces")))
+        if (mSettings.selectFaces)
             modes.push_back({SelectionPrimitive::FACE, ACTION});
         return modes;
     }

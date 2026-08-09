@@ -20,6 +20,8 @@ class MeshSelectorEditor : public Editor<ViewerDrawer>
     // a callback function called when an object is selected
     std::function<void(uint)> mOnObjectSelectedFunction = nullptr;
 
+    EditorSettings mSettings;
+
 public:
     void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
     {
@@ -27,6 +29,10 @@ public:
     }
 
     // Editor implementation
+
+    EditorSettings& settings() override { return mSettings; }
+
+    const EditorSettings& settings() const override { return mSettings; }
 
     void draw(uint viewId) override {}
 

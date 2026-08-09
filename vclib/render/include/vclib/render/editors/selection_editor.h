@@ -13,9 +13,9 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/space/core.h>
-
 #include "editor.h"
+
+#include <vclib/render/settings/selection_editor_settings.h>
 #endif
 
 namespace vcl {
@@ -31,15 +31,16 @@ template<typename ViewerDrawer>
 class SelectionEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+    SelectionEditorSettings mSettings;
 
 public:
-    SelectionEditor()
+    SelectionEditor() = default;
+
+    SelectionEditorSettings& settings() override { return mSettings; }
+
+    const SelectionEditorSettings& settings() const override
     {
-        Base::settings().customSettings["selectVertices"] = false;
-        Base::settings().customSettings["selectFaces"]    = false;
-        Base::settings().customSettings["onlyVisible"]    = false;
-        Base::settings().customSettings["selectionBoxColor"] =
-            vcl::Color(27, 120, 249, 64);
+        return mSettings;
     }
 
     void draw(uint) override {}

@@ -59,7 +59,7 @@ public:
 private:
     void drawBoundingBoxSettings()
     {
-        vcl::EditorSettings& sts = mEditor->settings();
+        vcl::BoundingBoxEditorSettings& sts = mEditor->settings();
 
         // Edit mode
         static const char* editModeNames[] = {
@@ -83,28 +83,26 @@ private:
         }
 
         // Lines width
-        assert(sts.customSettings["thickness"].has_value());
-        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
+        float thickness = sts.thickness;
         ImGui::Text("Lines Width:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
         if (ImGui::SliderFloat(
                 "##BBThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
-            sts.customSettings["thickness"] = thickness;
+            sts.thickness = thickness;
             mEditor->refreshSettings();
         }
 
         // Lines color
-        assert(sts.customSettings["color"].has_value());
         ImGui::Text("Lines Color:");
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##BBColor",
             [&] {
-                return std::any_cast<vcl::Color>(sts.customSettings["color"]);
+                return sts.color;
             },
             [&](vcl::Color c) {
-                sts.customSettings["color"] = c;
+                sts.color = c;
                 mEditor->refreshSettings();
             },
             ImGuiColorEditFlags_NoInputs);

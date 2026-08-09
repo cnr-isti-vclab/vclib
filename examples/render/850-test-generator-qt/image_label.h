@@ -31,7 +31,7 @@ protected:
     void resizeEvent(QResizeEvent* event) override;
 
 private:
-    void updateDisplay();
+    void    updateDisplay();
     QPixmap mOriginalPixmap;
 };
 

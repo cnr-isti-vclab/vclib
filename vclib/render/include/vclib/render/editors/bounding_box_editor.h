@@ -13,9 +13,9 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/space/core.h>
-
 #include "editor.h"
+
+#include <vclib/render/settings/bounding_box_editor_settings.h>
 #endif
 
 namespace vcl {
@@ -31,13 +31,16 @@ template<typename ViewerDrawer>
 class BoundingBoxEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+    BoundingBoxEditorSettings mSettings;
 
 public:
-    BoundingBoxEditor()
+    BoundingBoxEditor() = default;
+
+    BoundingBoxEditorSettings& settings() override { return mSettings; }
+
+    const BoundingBoxEditorSettings& settings() const override
     {
-        // Initialize settings keys expected.
-        Base::settings().customSettings["color"]     = vcl::Color();
-        Base::settings().customSettings["thickness"] = 2.0f;
+        return mSettings;
     }
 
     void draw(uint) override {}

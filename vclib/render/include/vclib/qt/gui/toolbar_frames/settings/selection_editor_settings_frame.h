@@ -8,7 +8,7 @@
 #ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
 #define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/editors/selection_editor.h>
 
 #include <QFrame>
 
@@ -23,12 +23,12 @@ class SelectionEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::SelectionEditorSettingsFrame* mUI;
-    EditorSettings&                   mSettings;
+    SelectionEditorSettings&          mSettings;
 
 public:
     explicit SelectionEditorSettingsFrame(
-        EditorSettings& sts,
-        QWidget*        parent = nullptr);
+        SelectionEditorSettings& sts,
+        QWidget*                 parent = nullptr);
     ~SelectionEditorSettingsFrame();
 
 signals:

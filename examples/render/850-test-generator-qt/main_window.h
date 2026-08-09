@@ -8,19 +8,19 @@
 #ifndef VCLIB_RENDER_EXAMPLES_TEST_GENERATOR_MAIN_WINDOW_H
 #define VCLIB_RENDER_EXAMPLES_TEST_GENERATOR_MAIN_WINDOW_H
 
+#include "image_label.h"
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QLabel>
 #include <QMainWindow>
 #include <QSpinBox>
-#include <QDoubleSpinBox>
-#include <QComboBox>
-#include <QCheckBox>
 #include <QTextEdit>
-#include <QLabel>
-#include <vclib/render/headless_mesh_viewer.h>
-#include "image_label.h"
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
 #include <utility>
+#include <vclib/render/headless_mesh_viewer.h>
+#include <vector>
 
 class MainWindow : public QMainWindow
 {
@@ -55,25 +55,25 @@ private:
     vcl::HeadlessMeshViewer mViewer;
 
     // UI elements
-    ImageLabel* mImageLabel;
-    QLabel* mStatusLabel;
-    QTextEdit* mCodeOutput;
-    QSpinBox* mSpinX;
-    QSpinBox* mSpinY;
-    QSpinBox* mSpinScrollX;
-    QSpinBox* mSpinScrollY;
+    ImageLabel*     mImageLabel;
+    QLabel*         mStatusLabel;
+    QTextEdit*      mCodeOutput;
+    QSpinBox*       mSpinX;
+    QSpinBox*       mSpinY;
+    QSpinBox*       mSpinScrollX;
+    QSpinBox*       mSpinScrollY;
     QDoubleSpinBox* mSpinAxisX;
     QDoubleSpinBox* mSpinAxisY;
     QDoubleSpinBox* mSpinAxisZ;
     QDoubleSpinBox* mSpinAngle;
     QDoubleSpinBox* mSpinZoom;
-    QComboBox* mComboMouseButton;
-    QComboBox* mComboKey;
-    QCheckBox* mCheckShift;
-    QCheckBox* mCheckCtrl;
-    QCheckBox* mCheckAlt;
-    QCheckBox* mCheckSuper;
-    QComboBox* mComboCustomActions;
+    QComboBox*      mComboMouseButton;
+    QComboBox*      mComboKey;
+    QCheckBox*      mCheckShift;
+    QCheckBox*      mCheckCtrl;
+    QCheckBox*      mCheckAlt;
+    QCheckBox*      mCheckSuper;
+    QComboBox*      mComboCustomActions;
 
     // Custom actions from setupViewer
     std::vector<std::pair<std::string, std::function<void()>>> mCustomActions;

@@ -14,20 +14,15 @@
 namespace vcl::qt {
 
 BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
-    EditorSettings& sts,
-    QWidget*        parent) :
+    BoundingBoxEditorSettings& sts,
+    QWidget*                   parent) :
         QFrame(parent), mUI(new Ui::BoundingBoxEditorSettingsFrame),
         mSettings(sts)
 {
     mUI->setupUi(this);
 
-    assert(mSettings.customSettings.at("color").has_value());
-    assert(mSettings.customSettings.at("thickness").has_value());
-
-    Color c = std::any_cast<Color>(mSettings.customSettings.at("color"));
-
-    float thickness =
-        std::any_cast<float>(mSettings.customSettings.at("thickness"));
+    Color c = mSettings.color;
+    float thickness = mSettings.thickness;
 
     mUI->editModeFrame->setEditMode(mSettings.editMode);
     mUI->linesWidthSlider->setValue(int(thickness));
@@ -69,14 +64,13 @@ void BoundingBoxEditorSettingsFrame::editModeChanged(int index)
 
 void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 {
-    mSettings.customSettings["thickness"] = float(value);
+    mSettings.thickness = float(value);
     emit settingsUpdated();
 }
 
 void BoundingBoxEditorSettingsFrame::onColorChanged(const QColor& c)
 {
-    mSettings.customSettings["color"] =
-        Color(c.red(), c.green(), c.blue(), c.alpha());
+    mSettings.color = Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }
 

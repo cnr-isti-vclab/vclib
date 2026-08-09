@@ -10,12 +10,12 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/render/headless_mesh_viewer.h>
-#include <vclib/meshes.h>
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
 #include <utility>
+#include <vclib/meshes.h>
+#include <vclib/render/headless_mesh_viewer.h>
+#include <vector>
 
 using CustomAction = std::pair<std::string, std::function<void()>>;
 
@@ -31,7 +31,7 @@ inline std::vector<CustomAction> setupViewer(vcl::HeadlessMeshViewer& mv)
     // You can also return custom actions (lambdas) that will be added to the UI
     // to interactively trigger them.
     // -------------------------------------------------------------------------
-    
+
     // adding a mesh
     auto mesh = getDrawableMesh<vcl::TriMesh>();
     mv.pushDrawableObject(std::move(mesh));
@@ -61,29 +61,27 @@ inline void addSelectionEditorAndCustomActions(
 
     actions.push_back(
         {"Enable Vertex Selection", [=]() {
-             selectionEditor->settings().customSettings["selectVertices"] =
-                 true;
+             selectionEditor->settings().selectVertices = true;
          }});
     actions.push_back(
         {"Enable Face Selection", [=]() {
-             selectionEditor->settings().customSettings["selectFaces"] = true;
+             selectionEditor->settings().selectFaces = true;
          }});
     actions.push_back(
         {"Enable Only Visible Selection", [=]() {
-             selectionEditor->settings().customSettings["onlyVisible"] = true;
+             selectionEditor->settings().onlyVisible = true;
          }});
     actions.push_back(
         {"Disable Vertex Selection", [=]() {
-             selectionEditor->settings().customSettings["selectVertices"] =
-                 false;
+             selectionEditor->settings().selectVertices = false;
          }});
     actions.push_back(
         {"Disable Face Selection", [=]() {
-             selectionEditor->settings().customSettings["selectFaces"] = false;
+             selectionEditor->settings().selectFaces = false;
          }});
     actions.push_back(
         {"Disable Only Visible Selection", [=]() {
-             selectionEditor->settings().customSettings["onlyVisible"] = false;
+             selectionEditor->settings().onlyVisible = false;
          }});
 }
 

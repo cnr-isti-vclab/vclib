@@ -101,7 +101,7 @@ public:
             return;
 
         const auto& bytes = backup.bytes();
-        const uint elementCount =
+        const uint  elementCount =
             (uint(bytes.size()) + uint(sizeof(uint32_t)) - 1u) /
             uint(sizeof(uint32_t));
 
@@ -123,10 +123,8 @@ public:
         if constexpr (std::endian::native == std::endian::little) {
             for (uint i = 0; i < elementCount; i++) {
                 uint32_t v = buffer[i];
-                buffer[i]  = ((v & 0xFF000000) >> 24) |
-                            ((v & 0x00FF0000) >> 8) |
-                            ((v & 0x0000FF00) << 8) |
-                            ((v & 0x000000FF) << 24);
+                buffer[i] = ((v & 0xFF000000) >> 24) | ((v & 0x00FF0000) >> 8) |
+                            ((v & 0x0000FF00) << 8) | ((v & 0x000000FF) << 24);
             }
         }
 
