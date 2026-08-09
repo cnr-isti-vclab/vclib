@@ -32,4 +32,11 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
         vclib-3rd-tinygltf
         INTERFACE VCLIB_WITH_JSON VCLIB_WITH_STB VCLIB_WITH_TINYGLTF
     )
+else()
+    if(VCLIB_BUILD_MODULE_RENDER)
+        message(
+            FATAL_ERROR
+            "tinygltf is required by the render module - VCLIB_ALLOW_DOWNLOAD_TINYGTLF must be enabled."
+        )
+    endif()
 endif()

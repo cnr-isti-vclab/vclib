@@ -16,8 +16,6 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 # Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-# === REQUIRED === #
-
 # Optional system libraries used by VCLib modules.
 # These lists track system dependencies (like Qt) so they can be
 # exported to vclibConfig.cmake and properly re-linked by find_dependency().
@@ -29,6 +27,8 @@ set(VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES "")
 
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 set(VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES "")
+
+# === REQUIRED === #
 
 option(
     VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES
@@ -95,10 +95,7 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # Qt
     option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
     include(qt.cmake)
-endif()
 
-# IO - 3rd Party libraries
-if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES)
     # tinygltf
     option(
         VCLIB_ALLOW_DOWNLOAD_TINYGTLF
