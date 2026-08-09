@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
+#include "mesh_poly_mapping_buffers.h"
 #include "mesh_render_buffers_macros.h"
 #include "mesh_selection_buffers.h"
 
@@ -51,7 +52,8 @@ class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
 
     Points mPoints;
 
-    MeshSelectionBuffers mSelection;
+    MeshPolyMappingBuffers mPolyMapping;
+    MeshSelectionBuffers   mSelection;
 
     IndexBuffer  mTriangleIndexBuffer;
     VertexBuffer mTriangleNormalBuffer;
@@ -118,8 +120,15 @@ public:
         swap(mTriangleColorBuffer, other.mTriangleColorBuffer);
         swap(mEdgeLines, other.mEdgeLines);
         swap(mWireframeLines, other.mWireframeLines);
+        swap(mMeshColor, other.mMeshColor);
+        swap(mPolyMapping, other.mPolyMapping);
         swap(mSelection, other.mSelection);
         swap(mMaterialTextures, other.mMaterialTextures);
+
+        updateLinesVertexBuffers(*this, mEdgeLines);
+        updateLinesVertexBuffers(other, other.mEdgeLines);
+        updateLinesVertexBuffers(*this, mWireframeLines);
+        updateLinesVertexBuffers(other, other.mWireframeLines);
 
         updatePointsVertexBuffers(*this, mPoints);
         updatePointsVertexBuffers(other, other.mPoints);
@@ -134,13 +143,29 @@ public:
 
     uint selectedFaceCount() const { return mSelection.selectedFaceCount(); }
 
+    const vcl::BitVector<true>& vertexSelectionBitVector() const
+    {
+        return mSelection.vertexSelectionBuffer().cpuBackup();
+    }
+
+    const vcl::BitVector<true>& faceSelectionBitVector() const
+    {
+        return mSelection.faceSelectionBuffer().cpuBackup();
+    }
+
+    bool isMappingTrivial() const { return mPolyMapping.isMappingTrivial(); }
+
     // called on computeSelection
     void computeSelection(
         const SelectionParameters& params,
         const Matrix44f&           model)
     {
         mSelection.computeSelection(
-            params, model, mVertexPositionsBuffer, mTriangleIndexBuffer);
+            params,
+            model,
+            mVertexPositionsBuffer,
+            mTriangleIndexBuffer,
+            mPolyMapping);
     }
 
     // called on draw
@@ -163,6 +188,11 @@ public:
     void bindSelectedFacesBuffer() const
     {
         mSelection.bindSelectedFacesBuffer();
+    }
+
+    void bindTriToPolyBuffer(uint stage = VCL_MRB_TRI_TO_POLY_BUFFER) const
+    {
+        mPolyMapping.bindTriToPolyBuffer(stage);
     }
 
     void bindVertexBuffers(const MeshRenderSettings& mrs) const
@@ -216,8 +246,6 @@ public:
         const MeshRenderSettings& mrs,
         uint                      chunkToBind = UINT_NULL) const
     {
-        using enum MRI::Buffers;
-
         if (chunkToBind == UINT_NULL) {
             mTriangleIndexBuffer.bind();
         }
@@ -233,6 +261,11 @@ public:
     }
 
     void drawEdgeLines(uint viewId) const { mEdgeLines.draw(viewId); }
+
+    void drawEdgeLinesId(uint viewId, uint32_t id) const
+    {
+        mEdgeLines.drawId(viewId, id);
+    }
 
     void drawWireframeLines(uint viewId) const { mWireframeLines.draw(viewId); }
 
@@ -292,45 +325,60 @@ public:
     void updateEdgeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Edges;
-        using enum Lines::ColorToUse;
+        using enum Lines::ColorSetting;
 
-        mEdgeLines.thickness() = mrs.edgesWidth();
-        mEdgeLines.setShading(mrs.isEdges(SHADING_SMOOTH));
+        mEdgeLines.setWidth(mrs.edgesWidth());
+
+        Lines::Shading sh = Lines::Shading::NONE;
+        if (mrs.isEdges(SHADING_SMOOTH)) {
+            sh = Lines::Shading::PER_VERTEX;
+        }
+        else if (mrs.isEdges(SHADING_FLAT)) {
+            sh = Lines::Shading::PER_LINE;
+        }
+        mEdgeLines.setShading(sh);
 
         if (mrs.isEdges(COLOR_USER)) {
-            mEdgeLines.generalColor() = mrs.edgesUserColor();
-            mEdgeLines.setColorToUse(GENERAL);
+            mEdgeLines.setGeneralColor(mrs.edgesUserColor());
+            mEdgeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isEdges(COLOR_MESH)) {
-            mEdgeLines.generalColor() = mMeshColor;
-            mEdgeLines.setColorToUse(GENERAL);
+            mEdgeLines.setGeneralColor(mMeshColor);
+            mEdgeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isEdges(COLOR_VERTEX)) {
-            mEdgeLines.setColorToUse(PER_VERTEX);
+            mEdgeLines.setColorSetting(PER_VERTEX);
         }
         else if (mrs.isEdges(COLOR_EDGE)) {
-            mEdgeLines.setColorToUse(PER_EDGE);
+            mEdgeLines.setColorSetting(PER_LINE);
         }
+
+        mEdgeLines.setSelectionVisibility(mrs.isEdges(SELECTION));
+        mEdgeLines.setSelectionColor(mrs.edgesSelectionColor());
     }
 
     void updateWireframeSettings(const MeshRenderSettings& mrs)
     {
         using enum MeshRenderInfo::Wireframe;
-        using enum Lines::ColorToUse;
+        using enum Lines::ColorSetting;
 
-        mWireframeLines.thickness() = mrs.wireframeWidth();
-        mWireframeLines.setShading(mrs.isWireframe(SHADING_VERT));
+        mWireframeLines.setWidth(mrs.wireframeWidth());
+
+        Lines::Shading sh = mrs.isWireframe(SHADING_VERT) ?
+                                Lines::Shading::PER_VERTEX :
+                                Lines::Shading::NONE;
+        mWireframeLines.setShading(sh);
 
         if (mrs.isWireframe(COLOR_USER)) {
-            mWireframeLines.generalColor() = mrs.wireframeUserColor();
-            mWireframeLines.setColorToUse(GENERAL);
+            mWireframeLines.setGeneralColor(mrs.wireframeUserColor());
+            mWireframeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_MESH)) {
-            mWireframeLines.generalColor() = mMeshColor;
-            mWireframeLines.setColorToUse(GENERAL);
+            mWireframeLines.setGeneralColor(mMeshColor);
+            mWireframeLines.setColorSetting(GENERAL);
         }
         else if (mrs.isWireframe(COLOR_VERTEX)) {
-            mWireframeLines.setColorToUse(PER_VERTEX);
+            mWireframeLines.setColorSetting(PER_VERTEX);
         }
     }
 
@@ -345,7 +393,7 @@ public:
         using enum MeshRenderInfo::Points;
         using enum Points::ColorSetting;
 
-        mPoints.setSize(mrs.pointWidth());
+        mPoints.setWidth(mrs.pointWidth());
         mPoints.setDepthOffset(0.00011f);
 
         if (mrs.isPoints(SHADING_VERT)) {
@@ -400,7 +448,7 @@ private:
 
         // create the vertex selection buffer
         mSelection.initVertexSelectionBitfield(nv);
-        mPoints.setSelection(nv, mSelection.vertexSelectionBuffer());
+        mPoints.setVertexSelection(nv, mSelection.vertexSelectionBuffer());
 
         // create the face selection buffer
         mSelection.initFaceSelectionBitfield(Base::numTris());
@@ -526,9 +574,7 @@ private:
         // Build polygon mapping buffers for polygon-level face selection.
         // fillTriangleIndices() above has already populated
         // Base::triPolyIndexMap().
-        if (Context::instance().supportsCompute() && nt > 0) {
-            mSelection.initPolyMapping(Base::triPolyIndexMap(), nt);
-        }
+        mPolyMapping.init(Base::triPolyIndexMap(), nt);
     }
 
     void setTriangleSelectionBuffer(const MeshType& mesh) // override
@@ -576,12 +622,49 @@ private:
 
     void setEdgeIndicesBuffer(const MeshType& mesh) // override
     {
-        computeEdgeLines(mesh);
+        // Update the vertex buffers (positions, colors, normals) required by
+        // lines
+        updateLinesVertexBuffers(*this, mEdgeLines);
+
+        const uint        ne = Base::numEdges();
+        std::vector<uint> indices(ne * 2);
+        Base::fillEdgeIndices(mesh, indices.data());
+
+        mEdgeLines.setIndices(indices);
+
+        // to avoid z-fighting with filled triangles
+        mEdgeLines.setDepthOffset(0.0001f);
+    }
+
+    void setEdgeNormalsBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineNormals(mesh.edges() | vcl::views::normals);
+    }
+
+    void setEdgeColorsBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineColors(mesh.edges() | vcl::views::colors);
+    }
+
+    void setEdgeSelectionBuffer(const MeshType& mesh) // override
+    {
+        mEdgeLines.setLineSelections(mesh.edges() | vcl::views::selection);
     }
 
     void setWireframeIndicesBuffer(const MeshType& mesh) // override
     {
-        computeWireframeLines(mesh);
+        // Update the vertex buffers (positions, colors, normals) required by
+        // lines
+        updateLinesVertexBuffers(*this, mWireframeLines);
+
+        const uint        nw = Base::numWireframeLines();
+        std::vector<uint> indices(nw * 2);
+        Base::fillWireframeIndices(mesh, indices.data());
+
+        mWireframeLines.setIndices(indices);
+
+        // to avoid z-fighting with filled triangles
+        mWireframeLines.setDepthOffset(0.0001f);
     }
 
     void setTextures(const MeshType& mesh) // override
@@ -672,7 +755,8 @@ private:
                                     1,
                                     bimg::TextureFormat::RGBA8) /
                                 4; // in uints
-            uint numMips      = 1;
+
+            uint numMips = 1;
             if (generateMips)
                 numMips = bimg::imageGetNumMips(
                     bimg::TextureFormat::RGBA8, img.width(), img.height());
@@ -834,90 +918,14 @@ private:
         }
     }
 
-    void computeEdgeLines(const MeshType& mesh)
+    static void updateLinesVertexBuffers(
+        const MeshRenderBuffers<MeshType>& mrb,
+        Lines&                             lines)
     {
-        // if cpu lines, do this...
-
-        // positions
-        const uint         nv = Base::numVerts();
-        std::vector<float> positions(nv * 3);
-        Base::fillVertexPositions(mesh, positions.data());
-
-        // indices
-        const uint        ne = Base::numEdges();
-        std::vector<uint> indices(ne * 2);
-        Base::fillEdgeIndices(mesh, indices.data());
-
-        // v normals
-        std::vector<float> normals;
-        if (mVertexNormalsBuffer.isValid()) {
-            normals.resize(nv * 3);
-            Base::fillVertexNormals(mesh, normals.data());
-        }
-
-        // todo - edge normals
-
-        // vcolors
-        std::vector<uint> vcolors;
-        if (mVertexColorsBuffer.isValid()) {
-            vcolors.resize(nv);
-            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
-        }
-
-        std::vector<uint> ecolors;
-        if constexpr (vcl::HasPerEdgeColor<MeshType>) {
-            if (vcl::isPerEdgeColorAvailable(mesh)) {
-                // if (btu[toUnderlying(EDGE_COLORS)]) {
-                //  edge color buffer
-                ecolors.resize(ne);
-                Base::fillEdgeColors(mesh, ecolors.data(), Color::Format::ABGR);
-                //}
-            }
-        }
-
-        mEdgeLines.setPoints(positions, indices, normals, vcolors, ecolors);
-
-        // to avoid z-fighting with filled triangles
-        mEdgeLines.depthOffset() = 0.0001f;
-
-        // otherwise, already computed buffers should do the job
-    }
-
-    // to generate wireframe lines
-    void computeWireframeLines(const MeshType& mesh)
-    {
-        // if cpu lines, do this...
-
-        // positions
-        const uint         nv = Base::numVerts();
-        std::vector<float> positions(nv * 3);
-        Base::fillVertexPositions(mesh, positions.data());
-
-        // indices
-        const uint        nw = Base::numWireframeLines();
-        std::vector<uint> indices(nw * 2);
-        Base::fillWireframeIndices(mesh, indices.data());
-
-        // v normals
-        std::vector<float> normals;
-        if (mVertexNormalsBuffer.isValid()) {
-            normals.resize(nv * 3);
-            Base::fillVertexNormals(mesh, normals.data());
-        }
-
-        // vcolors
-        std::vector<uint> vcolors;
-        if (mVertexColorsBuffer.isValid()) {
-            vcolors.resize(nv);
-            Base::fillVertexColors(mesh, vcolors.data(), Color::Format::ABGR);
-        }
-
-        mWireframeLines.setPoints(positions, indices, normals, vcolors, {});
-
-        // to avoid z-fighting with filled triangles
-        mWireframeLines.depthOffset() = 0.0001f;
-
-        // otherwise, already computed buffers should do the job
+        uint nv = mrb.numVerts();
+        lines.setVertices(nv, mrb.mVertexPositionsBuffer);
+        lines.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
+        lines.setVertexColors(nv, mrb.mVertexColorsBuffer);
     }
 
     /**
@@ -941,9 +949,8 @@ private:
         points.setVertices(nv, mrb.mVertexPositionsBuffer);
         points.setVertexNormals(nv, mrb.mVertexNormalsBuffer);
         points.setVertexColors(nv, mrb.mVertexColorsBuffer);
-        points.setSelection(nv, mrb.mSelection.vertexSelectionBuffer());
+        points.setVertexSelection(nv, mrb.mSelection.vertexSelectionBuffer());
     }
-
 };
 
 } // namespace vcl

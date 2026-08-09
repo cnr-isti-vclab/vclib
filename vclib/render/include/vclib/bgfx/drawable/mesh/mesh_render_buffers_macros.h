@@ -26,6 +26,11 @@
 #define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    14
 // don't use stage 15 - it does not work on mac...
 
+/* Mapping polygon - triangle (used in selection and drawId) */
+#define VCL_MRB_TRI_TO_POLY_BUFFER       7
+#define VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER 8
+#define VCL_MRB_POLY_TO_TRI_COUNT_BUFFER 9
+
 /* Constants - Compute (just for selection at the moment) */
 
 #define VCL_COMPUTE_THREAD_COUNT_X 64

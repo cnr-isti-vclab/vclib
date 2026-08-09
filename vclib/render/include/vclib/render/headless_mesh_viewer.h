@@ -13,6 +13,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/viewer_drawer.h>
 #include <vclib/render/headless_manager.h>
+#include <vclib/render/input.h>
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
 
@@ -49,6 +50,18 @@ public:
      * @param[in] height: The new height in pixels.
      */
     void resize(uint width, uint height) { mApp.resize(width, height); }
+
+    /**
+     * @brief Retrieves the width of the canvas.
+     * @return The width in pixels.
+     */
+    uint width() const { return mApp.width(); }
+
+    /**
+     * @brief Retrieves the height of the canvas.
+     * @return The height in pixels.
+     */
+    uint height() const { return mApp.height(); }
 
     /**
      * @brief Requests a screenshot and saves it to a file.
@@ -297,6 +310,81 @@ public:
      * @return The background color.
      */
     const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
+
+    /**
+     * @brief Simulates a key press event.
+     */
+    void simulateKeyPress(vcl::Key::Enum key)
+    {
+        mApp.simulateKeyPress(key);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a key release event.
+     */
+    void simulateKeyRelease(vcl::Key::Enum key)
+    {
+        mApp.simulateKeyRelease(key);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a mouse move event.
+     */
+    void simulateMouseMove(double x, double y)
+    {
+        mApp.simulateMouseMove(x, y);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a mouse press event.
+     */
+    void simulateMousePress(vcl::MouseButton::Enum button, double x, double y)
+    {
+        mApp.simulateMousePress(button, x, y);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a mouse release event.
+     */
+    void simulateMouseRelease(vcl::MouseButton::Enum button, double x, double y)
+    {
+        mApp.simulateMouseRelease(button, x, y);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a mouse double click event.
+     */
+    void simulateMouseDoubleClick(
+        vcl::MouseButton::Enum button,
+        double                 x,
+        double                 y)
+    {
+        mApp.simulateMouseDoubleClick(button, x, y);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates a mouse scroll event.
+     */
+    void simulateMouseScroll(double x, double y)
+    {
+        mApp.simulateMouseScroll(x, y);
+        mApp.show();
+    }
+
+    /**
+     * @brief Simulates setting the key modifiers.
+     */
+    void simulateSetModifiers(const vcl::KeyModifiers& modifiers)
+    {
+        mApp.simulateSetModifiers(modifiers);
+        mApp.show();
+    }
 };
 
 } // namespace vcl

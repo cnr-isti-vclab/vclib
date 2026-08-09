@@ -5,19 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/bgfx/context.h>
-#include <vclib/render/drawable/drawable_mesh.h>
-#include <vclib/render/headless_mesh_viewer.h>
+#include "run_render_test.h"
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
 #include <vclib/meshes.h>
 
-#include <catch2/catch_test_macros.hpp>
-
-#include <filesystem>
-#include <functional>
-#include <string>
+static const std::string TEST_NAME = "004-lines-headless";
 
 // We need a helper to create the edge mesh and wrap it in a drawable mesh
 vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
@@ -69,87 +61,48 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
     return vcl::makeDrawable(std::move(em));
 }
 
-void runRenderTest(
-    const std::string&                            testName,
-    std::function<void(vcl::HeadlessMeshViewer&)> setup)
-{
-    vcl::HeadlessMeshViewer mv("Headless Mesh Viewer", 1920, 1080);
-
-    // run custom setup
-    setup(mv);
-
-    // Apply fitscene to center everything
-    mv.fitScene();
-
-    // Zoom in a bit to make the mesh larger
-    mv.trackballZoom(-150.0f);
-
-    vcl::Image renderedImage;
-    // this auto concludes loop
-    mv.screenshot(renderedImage);
-
-    REQUIRE_FALSE(renderedImage.isNull());
-
-    std::string groundTruthFilename = std::string(VCLIB_GROUND_TRUTH_PATH) +
-                                      "/004-lines-headless_" + testName +
-                                      "_gt.png";
-
-    if (!std::filesystem::exists(groundTruthFilename)) {
-        FAIL("Ground truth image not found.");
-    }
-
-    vcl::Image groundTruthImage = vcl::loadImage(groundTruthFilename);
-    REQUIRE_FALSE(groundTruthImage.isNull());
-
-    REQUIRE(renderedImage.width() == groundTruthImage.width());
-    REQUIRE(renderedImage.height() == groundTruthImage.height());
-    REQUIRE(renderedImage.colorSpace() == groundTruthImage.colorSpace());
-    REQUIRE(renderedImage.sizeInBytes() == groundTruthImage.sizeInBytes());
-
-    bool match = renderedImage.isAlmostEqual(groundTruthImage, 2, 0.005f);
-
-    std::string resultFilename = std::string(VCLIB_RENDER_RESULTS_PATH) +
-                                 "/004-lines-headless_" + testName + "_res.png";
-    vcl::saveImage(renderedImage, resultFilename);
-
-    const bgfx::Caps& caps = vcl::Context::instance().capabilites();
-    bool isWARP            = caps.vendorId == 0x1414 && caps.deviceId == 0x008c;
-
-    if (!isWARP || testName != "color_edge") {
-        REQUIRE(match);
-    }
-}
-
 TEST_CASE("Lines Shading Modes")
 {
     SECTION("Shading None")
     {
-        runRenderTest("shading_none", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "shading_none",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::SHADING_NONE);
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::SHADING_NONE);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 
     SECTION("Shading Smooth")
     {
-        runRenderTest("shading_smooth", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "shading_smooth",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::SHADING_SMOOTH);
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::SHADING_SMOOTH);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 }
 
@@ -157,64 +110,125 @@ TEST_CASE("Lines Color Modes")
 {
     SECTION("Color User")
     {
-        runRenderTest("color_user", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "color_user",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdgesUserColor(vcl::Color::DarkYellow);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_USER);
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdgesUserColor(vcl::Color::DarkYellow);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_USER);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 
     SECTION("Color Mesh")
     {
-        runRenderTest("color_mesh", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "color_mesh",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_MESH);
-            settings.setEdgesUserColor(
-                vcl::Color::Green); // Different color to ensure it's not used
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_MESH);
+                settings.setEdgesUserColor(
+                    vcl::Color::Green); // Different color to ensure it's not
+                                        // used
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 
     SECTION("Color Vertex")
     {
-        runRenderTest("color_vertex", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "color_vertex",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_VERTEX);
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_VERTEX);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            false,
+            -150.f);
     }
 
     SECTION("Color Edge")
     {
-        runRenderTest("color_edge", [](vcl::HeadlessMeshViewer& mv) {
-            auto mesh = getDrawableEdgeMesh();
+        runRenderTest(
+            TEST_NAME,
+            "color_edge",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
 
-            auto settings = mesh.renderSettings();
-            settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
-            settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_EDGE);
-            settings.setEdgesWidth(4);
-            mesh.setRenderSettings(settings);
+                auto settings = mesh.renderSettings();
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_EDGE);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
 
-            mv.pushDrawableObject(std::move(mesh));
-        });
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            true,
+            -150.f);
+    }
+}
+
+TEST_CASE("Lines Selection")
+{
+    SECTION("Edge Selection")
+    {
+        runRenderTest(
+            TEST_NAME,
+            "edge_selection",
+            [](vcl::HeadlessMeshViewer& mv) {
+                auto mesh = getDrawableEdgeMesh();
+
+                mesh.updateRenderSettingsCapabilities();
+
+                // Deterministically assign selection to edges
+                for (auto& e : mesh.edges()) {
+                    if (e.index() % 2 == 0)
+                        e.selected() = true;
+                }
+                mesh.updateBuffers(
+                    {vcl::MeshRenderInfo::Buffers::EDGE_SELECTION});
+
+                auto settings = mesh.renderSettings();
+                settings.setPoints(vcl::MeshRenderInfo::Points::VISIBLE, false);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::VISIBLE, true);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::COLOR_USER);
+                settings.setEdges(vcl::MeshRenderInfo::Edges::SELECTION);
+                settings.setEdgesWidth(4);
+                mesh.setRenderSettings(settings);
+
+                mv.pushDrawableObject(std::move(mesh));
+            },
+            0.f,
+            true,
+            -150.f);
     }
 }

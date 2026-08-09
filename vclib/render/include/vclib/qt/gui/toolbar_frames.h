@@ -10,6 +10,7 @@
 
 #include "toolbar_frames/axis_frame.h"
 #include "toolbar_frames/bounding_box_editor_frame.h"
+#include "toolbar_frames/not_editing_frame.h"
 #include "toolbar_frames/selection_editor_frame.h"
 #include "toolbar_frames/trackball_frame.h"
 

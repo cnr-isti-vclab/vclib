@@ -16,7 +16,9 @@
 #include <vclib/render/editors.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/space/core/color.h>
+#include <vclib/render/undo_redo/undo_redo_stack.h>
+
+#include <vclib/space/core.h>
 
 #include <memory>
 
@@ -38,6 +40,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 
     bool mReadRequested = false;
 
+    bool                      mEditorsEventsEnabled = true;
+    std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
+
     // the default id for the viewer drawer is 0
     uint mId = 0;
 
@@ -53,6 +58,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     };
 
 protected:
+    /// @brief Manages the history of undoable actions performed in the viewer.
+    UndoRedoStack mUndoRedoStack;
+
     ViewerSettings mViewerSettings;
 
     // the list of drawable objects
@@ -77,6 +85,59 @@ public:
     }
 
     ~AbstractViewerDrawer() = default;
+
+    bool isEditorsEventsEnabled() const { return mEditorsEventsEnabled; }
+
+    void setEditorsEventsEnabled(bool enabled)
+    {
+        if (mEditorsEventsEnabled != enabled) {
+            mEditorsEventsEnabled = enabled;
+            if (mOnEditorsEventsEnabledChangedCallback) {
+                mOnEditorsEventsEnabledChangedCallback(mEditorsEventsEnabled);
+            }
+            requestUpdate();
+        }
+    }
+
+    void toggleEditorsEventsEnabled()
+    {
+        setEditorsEventsEnabled(!mEditorsEventsEnabled);
+    }
+
+    /**
+     * @brief Pushes a new action onto the undo/redo stack.
+     * @param[in] action: The action to push.
+     */
+    void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
+    {
+        mUndoRedoStack.pushAction(std::move(action));
+    }
+
+    /**
+     * @brief Undoes the last action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was undone.
+     */
+    void undo()
+    {
+        if (mUndoRedoStack.undo())
+            requestUpdate();
+    }
+
+    /**
+     * @brief Redoes the last undone action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was redone.
+     */
+    void redo()
+    {
+        if (mUndoRedoStack.redo())
+            requestUpdate();
+    }
+
+    void setOnEditorsEventsEnabledChangedCallback(
+        std::function<void(bool)> callback)
+    {
+        mOnEditorsEventsEnabledChangedCallback = std::move(callback);
+    }
 
     const DrawableObjectVector& drawableObjectVector() const
     {
@@ -319,6 +380,16 @@ public:
         mDrawList->init();
     }
 
+    void onDrawContent(uint viewId) override
+    {
+        Base::onDrawContent(viewId);
+
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->drawContent(viewId);
+        }
+    }
+
     void onDraw(uint viewId) override
     {
         Base::onDraw(viewId);
@@ -341,9 +412,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyPress(key, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyPress(key, modifiers);
+            }
         }
 
         if (!block)
@@ -351,6 +424,12 @@ public:
 
         if (!block) {
             switch (key) {
+            case Key::ESCAPE:
+                if (modifiers[KeyModifier::NO_MODIFIER]) {
+                    toggleEditorsEventsEnabled();
+                    block = true;
+                }
+                break;
             case Key::R:
                 if (modifiers[KeyModifier::NO_MODIFIER])
                     fitScene();
@@ -365,6 +444,23 @@ public:
                         mCustomShortcutToggleAxisCallback();
                 }
                 break;
+            case Key::Z:
+                if (modifiers[KeyModifier::CONTROL] &&
+                    modifiers[KeyModifier::SHIFT]) {
+                    redo();
+                    block = true;
+                }
+                else if (modifiers[KeyModifier::CONTROL]) {
+                    undo();
+                    block = true;
+                }
+                break;
+            case Key::Y:
+                if (modifiers[KeyModifier::CONTROL]) {
+                    redo();
+                    block = true;
+                }
+                break;
             default: break;
             }
         }
@@ -375,9 +471,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyRelease(key, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyRelease(key, modifiers);
+            }
         }
 
         if (!block)
@@ -390,9 +488,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseMove(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseMove(x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -409,9 +509,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMousePress(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMousePress(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -428,9 +530,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseRelease(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseRelease(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -447,9 +551,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseDoubleClick(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseDoubleClick(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -463,9 +569,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseScroll(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseScroll(x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -476,7 +584,14 @@ public:
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
+    auto canvasFrameBuffer() const
+    {
+        return DRA::DRW::canvasFrameBuffer(derived());
+    }
+
     auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
+
+    auto dpiScale() const { return DRA::DRW::dpiScale(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {

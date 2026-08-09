@@ -8,7 +8,9 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_MESH_BGFX_H
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
+
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/bgfx/context.h>
@@ -29,7 +31,9 @@ class DrawableMeshBGFX : public AbstractDrawableMesh, public MeshType
         toUnderlying(Material::TextureType::COUNT);
 
 protected:
-    MeshRenderBuffers<MeshType> mMRB;
+    MeshRenderBuffers<MeshType>     mMRB;
+    MeshProviderReference<MeshType> mProvider {
+        static_cast<const MeshType&>(*this)};
 
 public:
     DrawableMeshBGFX() = default;
@@ -78,23 +82,6 @@ public:
 
     using AbstractDrawableMesh::boundingBox;
 
-    void computeSelection(const SelectionParameters& params) override
-    {
-        if (!isVisible()) {
-            return;
-        }
-        if constexpr (!HasFaces<MeshType>)
-            if (params.mode.primitive == SelectionPrimitive::FACE)
-                return;
-
-        mMRB.computeSelection(params, modelMatrix().template cast<float>());
-    }
-
-    bool isSelectionReadbackPending() const override
-    {
-        return mMRB.isSelectionReadbackPending();
-    }
-
     // AbstractDrawableMesh implementation
 
     void updateBuffers(
@@ -103,9 +90,6 @@ public:
         if constexpr (HasName<MeshType>) {
             AbstractDrawableMesh::name() = MeshType::name();
         }
-
-        AbstractDrawableMesh::computeBoundingBox(
-            static_cast<const MeshType&>(*this));
 
         mMRB.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
@@ -125,60 +109,72 @@ public:
         mMRB.updatePointsSettings(rs);
     }
 
-    uint vertexCount() const override { return MeshType::vertexCount(); }
-
-    uint faceCount() const override
+    const AbstractMeshProvider& meshProvider() const override
     {
-        if constexpr (HasFaces<MeshType>)
-            return MeshType::faceCount();
-        else
-            return 0;
+        return mProvider;
     }
 
-    uint edgeCount() const override
+    void computeSelection(const SelectionParameters& params) override
     {
-        if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeCount();
-        else
-            return 0;
+        if (!isVisible()) {
+            return;
+        }
+        if constexpr (!HasFaces<MeshType>)
+            if (params.mode.primitive == SelectionPrimitive::FACE)
+                return;
+
+        mMRB.computeSelection(
+            params, this->transformMatrix().template cast<float>());
     }
 
-    vcl::Matrix44d modelMatrix() const override
+    vcl::BitVector<true> vertexSelectionBitVector() const override
     {
-        if constexpr (HasTransformMatrix<MeshType>) {
-            return MeshType::transformMatrix().template cast<double>();
+        return mMRB.vertexSelectionBitVector();
+    }
+
+    void setVertexSelectionBitVector(
+        const vcl::BitVector<true>& bitVector) override
+    {
+        if (bitVector.empty())
+            return;
+
+        uint vidx = 0;
+        for (auto& v : MeshType::vertices()) {
+            if (vidx < bitVector.size()) {
+                v.selected() = bitVector[vidx++];
+            }
         }
-        else {
-            return vcl::Matrix44d::Identity();
+
+        updateBuffers({MRI::Buffers::VERT_SELECTION});
+    }
+
+    vcl::BitVector<true> faceSelectionBitVector() const override
+    {
+        return mMRB.faceSelectionBitVector();
+    }
+
+    void setFaceSelectionBitVector(
+        const vcl::BitVector<true>& bitVector) override
+    {
+        if constexpr (HasFaces<MeshType>) {
+            if (bitVector.empty())
+                return;
+
+            uint fidx = 0;
+            for (auto& f : MeshType::faces()) {
+                if (fidx < bitVector.size()) {
+                    f.selected() = bitVector[fidx++];
+                }
+            }
+
+            updateBuffers({MRI::Buffers::FACE_SELECTION});
         }
     }
 
-    View<MatIt> materials() const override
+    bool isSelectionReadbackPending() const override
     {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::materials();
-        }
-        else {
-            return View<MatIt>();
-        }
+        return mMRB.isSelectionReadbackPending();
     }
-
-    const Image& textureImage(const std::string& path) const override
-    {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::textureImage(path);
-        }
-        else {
-            return AbstractDrawableMesh::textureImage(path);
-        }
-    }
-
-    uint selectedVertexCount() const override
-    {
-        return mMRB.selectedVertexCount();
-    }
-
-    uint selectedFaceCount() const override { return mMRB.selectedFaceCount(); }
 
     // DrawableObject implementation
 
@@ -309,6 +305,7 @@ public:
         if (mMRS.isSurface(MRI::Surface::VISIBLE)) {
             mMRB.bindVertexBuffers(mMRS);
             mMRB.bindIndexBuffers(mMRS);
+            mMRB.bindTriToPolyBuffer();
             DrawableMeshUniforms::setMeshId(settings.objectId);
             DrawableMeshUniforms::setFirstChunkIndex(0);
             bindUniforms();
@@ -320,9 +317,10 @@ public:
                 settings.viewId, pm.getProgram<DRAWABLE_MESH_SURFACE_ID>());
         }
 
-        // TODO: manage ID for wireframe
-
-        // TODO: manage ID for edges
+        if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
+            bgfx::setTransform(model.data());
+            mMRB.drawEdgeLinesId(settings.viewId, settings.objectId);
+        }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());

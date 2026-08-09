@@ -236,6 +236,16 @@ private:
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
                 ImGui::SetTooltip("Show Trackball");
 
+            ImGui::SameLine();
+
+            // not editing toggle
+            bool notEditing = !Base::isEditorsEventsEnabled();
+            if (ImGui::Button(notEditing ? "[ NE ]" : "  NE  ")) {
+                Base::toggleEditorsEventsEnabled();
+            }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::SetTooltip("Not Editing Mode");
+
             for (auto& frame : mEditorFrames) {
                 ImGui::SameLine(0, 6);
                 frame->draw();

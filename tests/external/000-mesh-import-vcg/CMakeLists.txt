@@ -6,7 +6,7 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 get_filename_component(TEST_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-test-${TEST_NAME})
+project(vclib-external-test-${TEST_NAME})
 
 # vcg generates a lot of warnings
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)

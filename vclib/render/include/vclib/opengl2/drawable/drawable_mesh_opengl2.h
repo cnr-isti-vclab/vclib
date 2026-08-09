@@ -11,6 +11,7 @@
 #include "mesh/mesh_render_vectors.h"
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
+#include <vclib/mesh/providers/mesh_provider.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
@@ -68,7 +69,9 @@ class DrawableMeshOpenGL2 : public AbstractDrawableMesh, public MeshType
 {
     using MRI = MeshRenderInfo;
 
-    MeshRenderVectors<MeshType> mMRD;
+    MeshRenderVectors<MeshType>     mMRD;
+    MeshProviderReference<MeshType> mProvider {
+        static_cast<const MeshType&>(*this)};
 
     std::vector<uint> mTextID;
 
@@ -121,50 +124,15 @@ public:
             AbstractDrawableMesh::name() = MeshType::name();
         }
 
-        AbstractDrawableMesh::computeBoundingBox(static_cast<MeshType>(*this));
-
         unbindTextures();
         mMRD.update(*this, buffersToUpdate);
         mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
     }
 
-    uint vertexCount() const override { return MeshType::vertexCount(); }
-
-    uint faceCount() const override
+    const AbstractMeshProvider& meshProvider() const override
     {
-        if constexpr (HasFaces<MeshType>)
-            return MeshType::faceCount();
-        else
-            return 0;
-    }
-
-    uint edgeCount() const override
-    {
-        if constexpr (HasEdges<MeshType>)
-            return MeshType::edgeCount();
-        else
-            return 0;
-    }
-
-    vcl::Matrix44d modelMatrix() const override
-    {
-        if constexpr (HasTransformMatrix<MeshType>) {
-            return MeshType::transformMatrix().template cast<double>();
-        }
-        else {
-            return vcl::Matrix44d::Identity();
-        }
-    }
-
-    View<MatIt> materials() const override
-    {
-        if constexpr (HasMaterials<MeshType>) {
-            return MeshType::materials();
-        }
-        else {
-            return View<MatIt>();
-        }
+        return mProvider;
     }
 
     // DrawableObject implementation
