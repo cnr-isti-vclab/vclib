@@ -8,7 +8,7 @@
 #ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 #define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_BOUNDING_BOX_EDITOR_SETTINGS_FRAME_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/editors/bounding_box_editor.h>
 
 #include <QColor>
 #include <QFrame>
@@ -24,12 +24,12 @@ class BoundingBoxEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::BoundingBoxEditorSettingsFrame* mUI;
-    EditorSettings&                     mSettings;
+    BoundingBoxEditorSettings&          mSettings;
 
 public:
     explicit BoundingBoxEditorSettingsFrame(
-        EditorSettings& sts,
-        QWidget*        parent = nullptr);
+        BoundingBoxEditorSettings& sts,
+        QWidget*                   parent = nullptr);
     ~BoundingBoxEditorSettingsFrame();
 
 signals:

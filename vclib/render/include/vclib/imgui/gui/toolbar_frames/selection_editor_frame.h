@@ -35,16 +35,14 @@ public:
         if (!mEditor)
             return;
 
-        vcl::EditorSettings& selSettings = mEditor->settings();
+        vcl::SelectionEditorSettings& selSettings = mEditor->settings();
 
-        bool vSel =
-            std::any_cast<bool>(selSettings.customSettings["selectVertices"]);
-        bool fSel =
-            std::any_cast<bool>(selSettings.customSettings["selectFaces"]);
+        bool vSel = selSettings.selectVertices;
+        bool fSel = selSettings.selectFaces;
 
         if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
             vSel                                         = !vSel;
-            selSettings.customSettings["selectVertices"] = vSel;
+            selSettings.selectVertices = vSel;
             mEditor->setActive(vSel || fSel);
             mEditor->refreshSettings();
         }
@@ -54,7 +52,7 @@ public:
         ImGui::SameLine(0, 2);
         if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
             fSel                                      = !fSel;
-            selSettings.customSettings["selectFaces"] = fSel;
+            selSettings.selectFaces = fSel;
             mEditor->setActive(vSel || fSel);
             mEditor->refreshSettings();
         }
@@ -78,7 +76,7 @@ public:
 private:
     void drawSelectionSettings()
     {
-        vcl::EditorSettings& sts = mEditor->settings();
+        vcl::SelectionEditorSettings& sts = mEditor->settings();
 
         // Edit mode
         static const char* editModeNames[] = {
@@ -106,16 +104,14 @@ private:
         }
 
         // Only visible checkbox
-        assert(sts.customSettings["onlyVisible"].has_value());
-        bool onlyVisible =
-            std::any_cast<bool>(sts.customSettings["onlyVisible"]);
+        bool onlyVisible = sts.onlyVisible;
         ImGui::Checkbox(
             "Only Visible Faces",
             [&] {
                 return onlyVisible;
             },
             [&](bool v) {
-                sts.customSettings["onlyVisible"] = v;
+                sts.onlyVisible = v;
                 mEditor->refreshSettings();
             });
     }

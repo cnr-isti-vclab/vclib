@@ -31,9 +31,6 @@ public:
 
         auto& settings = mSelectionEditor->settings();
 
-        assert(settings.customSettings.at("selectVertices").has_value());
-        assert(settings.customSettings.at("selectFaces").has_value());
-
         QIcon        icv(":/icons/select_vertex.png");
         QPushButton* selectVerticesButton = Base::addButton(icv);
         selectVerticesButton->setToolTip("Select Vertices");
@@ -43,17 +40,15 @@ public:
         selectFacesButton->setToolTip("Select Faces");
 
         auto onSelectVerticesButtonClicked = [&](bool checked) {
-            bool selFaces =
-                std::any_cast<bool>(settings.customSettings["selectFaces"]);
+            bool selFaces = settings.selectFaces;
             mSelectionEditor->setActive(checked || selFaces);
-            settings.customSettings["selectVertices"] = checked;
+            settings.selectVertices = checked;
         };
 
         auto onSelectFacesButtonClicked = [&](bool checked) {
-            bool selVertices =
-                std::any_cast<bool>(settings.customSettings["selectVertices"]);
+            bool selVertices = settings.selectVertices;
             mSelectionEditor->setActive(checked || selVertices);
-            settings.customSettings["selectFaces"] = checked;
+            settings.selectFaces = checked;
         };
 
         connect(

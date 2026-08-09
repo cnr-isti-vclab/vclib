@@ -61,29 +61,27 @@ inline void addSelectionEditorAndCustomActions(
 
     actions.push_back(
         {"Enable Vertex Selection", [=]() {
-             selectionEditor->settings().customSettings["selectVertices"] =
-                 true;
+             selectionEditor->settings().selectVertices = true;
          }});
     actions.push_back(
         {"Enable Face Selection", [=]() {
-             selectionEditor->settings().customSettings["selectFaces"] = true;
+             selectionEditor->settings().selectFaces = true;
          }});
     actions.push_back(
         {"Enable Only Visible Selection", [=]() {
-             selectionEditor->settings().customSettings["onlyVisible"] = true;
+             selectionEditor->settings().onlyVisible = true;
          }});
     actions.push_back(
         {"Disable Vertex Selection", [=]() {
-             selectionEditor->settings().customSettings["selectVertices"] =
-                 false;
+             selectionEditor->settings().selectVertices = false;
          }});
     actions.push_back(
         {"Disable Face Selection", [=]() {
-             selectionEditor->settings().customSettings["selectFaces"] = false;
+             selectionEditor->settings().selectFaces = false;
          }});
     actions.push_back(
         {"Disable Only Visible Selection", [=]() {
-             selectionEditor->settings().customSettings["onlyVisible"] = false;
+             selectionEditor->settings().onlyVisible = false;
          }});
 }
 

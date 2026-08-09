@@ -41,8 +41,8 @@ protected:
 
     void showSettingsButton() { settingsButton()->setVisible(true); }
 
-    template<typename SettingsFrame>
-    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
+    template<typename SettingsFrame, typename SettingsType>
+    [[nodiscard]] SettingsFrame* setSettingsFrame(SettingsType& sts)
     {
         QMenu*         popupMenu = new QMenu(this);
         QWidgetAction* wa        = new QWidgetAction(popupMenu);
