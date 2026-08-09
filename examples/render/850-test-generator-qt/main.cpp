@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <QApplication>
 #include "main_window.h"
+#include <QApplication>
 
 int main(int argc, char* argv[])
 {
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     // the MainWindow constructor.
 
     QApplication app(argc, argv);
-    MainWindow w;
+    MainWindow   w;
     w.resize(1200, 800);
     w.show();
     return app.exec();

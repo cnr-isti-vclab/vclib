@@ -11,17 +11,16 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <QApplication>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QClipboard>
 #include <QFormLayout>
-#include <QPushButton>
+#include <QHBoxLayout>
 #include <QImage>
 #include <QPixmap>
-#include <QClipboard>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget* parent) :
-    QMainWindow(parent),
-    mViewer("Test Generator Viewer", 1920, 1080)
+        QMainWindow(parent), mViewer("Test Generator Viewer", 1920, 1080)
 {
     setupUI();
     setupMeshViewer();
@@ -44,7 +43,7 @@ void MainWindow::setupUI()
 
     // Mouse Settings
     QFormLayout* formLayout = new QFormLayout();
-    mSpinX = new QSpinBox();
+    mSpinX                  = new QSpinBox();
     mSpinX->setRange(-9999, 9999);
     mSpinY = new QSpinBox();
     mSpinY->setRange(-9999, 9999);
@@ -52,33 +51,48 @@ void MainWindow::setupUI()
     formLayout->addRow("Mouse Y:", mSpinY);
 
     mComboMouseButton = new QComboBox();
-    mComboMouseButton->addItem("vcl::MouseButton::Enum::LEFT", QVariant(vcl::MouseButton::LEFT));
-    mComboMouseButton->addItem("vcl::MouseButton::Enum::RIGHT", QVariant(vcl::MouseButton::RIGHT));
-    mComboMouseButton->addItem("vcl::MouseButton::Enum::MIDDLE", QVariant(vcl::MouseButton::MIDDLE));
-    mComboMouseButton->addItem("vcl::MouseButton::Enum::NO_BUTTON", QVariant(vcl::MouseButton::NO_BUTTON));
+    mComboMouseButton->addItem(
+        "vcl::MouseButton::Enum::LEFT", QVariant(vcl::MouseButton::LEFT));
+    mComboMouseButton->addItem(
+        "vcl::MouseButton::Enum::RIGHT", QVariant(vcl::MouseButton::RIGHT));
+    mComboMouseButton->addItem(
+        "vcl::MouseButton::Enum::MIDDLE", QVariant(vcl::MouseButton::MIDDLE));
+    mComboMouseButton->addItem(
+        "vcl::MouseButton::Enum::NO_BUTTON",
+        QVariant(vcl::MouseButton::NO_BUTTON));
     formLayout->addRow("Button:", mComboMouseButton);
-    
+
     controlLayout->addLayout(formLayout);
 
     QPushButton* btnPress = new QPushButton("Simulate Mouse Press");
-    connect(btnPress, &QPushButton::clicked, this, &MainWindow::simulateMousePress);
+    connect(
+        btnPress, &QPushButton::clicked, this, &MainWindow::simulateMousePress);
     controlLayout->addWidget(btnPress);
 
     QPushButton* btnRelease = new QPushButton("Simulate Mouse Release");
-    connect(btnRelease, &QPushButton::clicked, this, &MainWindow::simulateMouseRelease);
+    connect(
+        btnRelease,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateMouseRelease);
     controlLayout->addWidget(btnRelease);
 
     QPushButton* btnMove = new QPushButton("Simulate Mouse Move");
-    connect(btnMove, &QPushButton::clicked, this, &MainWindow::simulateMouseMove);
+    connect(
+        btnMove, &QPushButton::clicked, this, &MainWindow::simulateMouseMove);
     controlLayout->addWidget(btnMove);
 
     QPushButton* btnDClick = new QPushButton("Simulate Double Click");
-    connect(btnDClick, &QPushButton::clicked, this, &MainWindow::simulateMouseDoubleClick);
+    connect(
+        btnDClick,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateMouseDoubleClick);
     controlLayout->addWidget(btnDClick);
 
     // Scroll settings
     QFormLayout* scrollFormLayout = new QFormLayout();
-    mSpinScrollX = new QSpinBox();
+    mSpinScrollX                  = new QSpinBox();
     mSpinScrollX->setRange(-9999, 9999);
     mSpinScrollY = new QSpinBox();
     mSpinScrollY->setRange(-9999, 9999);
@@ -87,13 +101,17 @@ void MainWindow::setupUI()
     controlLayout->addLayout(scrollFormLayout);
 
     QPushButton* btnScroll = new QPushButton("Simulate Mouse Scroll");
-    connect(btnScroll, &QPushButton::clicked, this, &MainWindow::simulateMouseScroll);
+    connect(
+        btnScroll,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateMouseScroll);
     controlLayout->addWidget(btnScroll);
 
     // Key Settings
     controlLayout->addSpacing(20);
     QFormLayout* keyFormLayout = new QFormLayout();
-    mComboKey = new QComboBox();
+    mComboKey                  = new QComboBox();
     mComboKey->addItem("vcl::Key::Enum::SPACE", QVariant(vcl::Key::SPACE));
     mComboKey->addItem("vcl::Key::Enum::A", QVariant(vcl::Key::A));
     mComboKey->addItem("vcl::Key::Enum::ESCAPE", QVariant(vcl::Key::ESCAPE));
@@ -101,20 +119,28 @@ void MainWindow::setupUI()
     controlLayout->addLayout(keyFormLayout);
 
     QPushButton* btnKeyPress = new QPushButton("Simulate Key Press");
-    connect(btnKeyPress, &QPushButton::clicked, this, &MainWindow::simulateKeyPress);
+    connect(
+        btnKeyPress,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateKeyPress);
     controlLayout->addWidget(btnKeyPress);
 
     QPushButton* btnKeyRelease = new QPushButton("Simulate Key Release");
-    connect(btnKeyRelease, &QPushButton::clicked, this, &MainWindow::simulateKeyRelease);
+    connect(
+        btnKeyRelease,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateKeyRelease);
     controlLayout->addWidget(btnKeyRelease);
 
     // Modifiers Settings
     controlLayout->addSpacing(20);
     QHBoxLayout* modLayout = new QHBoxLayout();
-    mCheckShift = new QCheckBox("Shift");
-    mCheckCtrl = new QCheckBox("Ctrl");
-    mCheckAlt = new QCheckBox("Alt");
-    mCheckSuper = new QCheckBox("Super");
+    mCheckShift            = new QCheckBox("Shift");
+    mCheckCtrl             = new QCheckBox("Ctrl");
+    mCheckAlt              = new QCheckBox("Alt");
+    mCheckSuper            = new QCheckBox("Super");
     modLayout->addWidget(mCheckShift);
     modLayout->addWidget(mCheckCtrl);
     modLayout->addWidget(mCheckAlt);
@@ -122,7 +148,11 @@ void MainWindow::setupUI()
     controlLayout->addLayout(modLayout);
 
     QPushButton* btnSetModifiers = new QPushButton("Simulate Set Modifiers");
-    connect(btnSetModifiers, &QPushButton::clicked, this, &MainWindow::simulateSetModifiers);
+    connect(
+        btnSetModifiers,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateSetModifiers);
     controlLayout->addWidget(btnSetModifiers);
 
     // Trackball Settings
@@ -159,22 +189,35 @@ void MainWindow::setupUI()
     controlLayout->addLayout(trackballFormLayout);
 
     QPushButton* btnRotate = new QPushButton("Simulate Trackball Rotate");
-    connect(btnRotate, &QPushButton::clicked, this, &MainWindow::simulateTrackballRotate);
+    connect(
+        btnRotate,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateTrackballRotate);
     controlLayout->addWidget(btnRotate);
 
     QPushButton* btnZoom = new QPushButton("Simulate Trackball Zoom");
-    connect(btnZoom, &QPushButton::clicked, this, &MainWindow::simulateTrackballZoom);
+    connect(
+        btnZoom,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::simulateTrackballZoom);
     controlLayout->addWidget(btnZoom);
 
     // Custom Actions Settings
     controlLayout->addSpacing(20);
     QFormLayout* customActionsLayout = new QFormLayout();
-    mComboCustomActions = new QComboBox();
+    mComboCustomActions              = new QComboBox();
     customActionsLayout->addRow("Custom Actions:", mComboCustomActions);
     controlLayout->addLayout(customActionsLayout);
 
-    QPushButton* btnExecuteCustomAction = new QPushButton("Execute Selected Action");
-    connect(btnExecuteCustomAction, &QPushButton::clicked, this, &MainWindow::executeCustomAction);
+    QPushButton* btnExecuteCustomAction =
+        new QPushButton("Execute Selected Action");
+    connect(
+        btnExecuteCustomAction,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::executeCustomAction);
     controlLayout->addWidget(btnExecuteCustomAction);
 
     // Code Output
@@ -185,7 +228,7 @@ void MainWindow::setupUI()
     controlLayout->addWidget(mCodeOutput);
 
     QPushButton* btnCopy = new QPushButton("Copy to Clipboard");
-    connect(btnCopy, &QPushButton::clicked, [this](){
+    connect(btnCopy, &QPushButton::clicked, [this]() {
         QApplication::clipboard()->setText(mCodeOutput->toPlainText());
     });
     controlLayout->addWidget(btnCopy);
@@ -202,9 +245,17 @@ void MainWindow::setupUI()
     mImageLabel->setStyleSheet("background-color: black;");
     mImageLabel->setAlignment(Qt::AlignCenter);
     mImageLabel->setMinimumSize(800, 600); // scaled down view
-    connect(mImageLabel, &ImageLabel::mouseHovered, this, &MainWindow::onImageHovered);
-    connect(mImageLabel, &ImageLabel::mouseClicked, this, &MainWindow::onImageClicked);
-    
+    connect(
+        mImageLabel,
+        &ImageLabel::mouseHovered,
+        this,
+        &MainWindow::onImageHovered);
+    connect(
+        mImageLabel,
+        &ImageLabel::mouseClicked,
+        this,
+        &MainWindow::onImageClicked);
+
     // allow the image label to resize and we scale the pixmap
     mainLayout->addWidget(mImageLabel, 3);
 }
@@ -215,7 +266,9 @@ void MainWindow::setupMeshViewer()
 
     // Populate combobox with custom actions
     for (size_t i = 0; i < mCustomActions.size(); ++i) {
-        mComboCustomActions->addItem(QString::fromStdString(mCustomActions[i].first), QVariant(static_cast<int>(i)));
+        mComboCustomActions->addItem(
+            QString::fromStdString(mCustomActions[i].first),
+            QVariant(static_cast<int>(i)));
     }
 }
 
@@ -225,22 +278,25 @@ void MainWindow::updateScreenshot()
     mViewer.screenshot(img);
 
     if (img.width() > 0 && img.height() > 0) {
-        QImage qimg(img.data(), img.width(), img.height(), QImage::Format_RGBA8888);
+        QImage qimg(
+            img.data(), img.width(), img.height(), QImage::Format_RGBA8888);
         mImageLabel->setImage(qimg);
     }
 }
 
 void MainWindow::onImageHovered(int x, int y)
 {
-    // calculate the actual pixel position in the 1920x1080 image based on the scaled pixmap
-    if (mImageLabel->pixmap(Qt::ReturnByValue).isNull()) return;
+    // calculate the actual pixel position in the 1920x1080 image based on the
+    // scaled pixmap
+    if (mImageLabel->pixmap(Qt::ReturnByValue).isNull())
+        return;
 
     QPixmap px = mImageLabel->pixmap(Qt::ReturnByValue);
-    
-    int pxWidth = px.width();
+
+    int pxWidth  = px.width();
     int pxHeight = px.height();
 
-    int labelWidth = mImageLabel->width();
+    int labelWidth  = mImageLabel->width();
     int labelHeight = mImageLabel->height();
 
     int xOffset = (labelWidth - pxWidth) / 2;
@@ -254,8 +310,10 @@ void MainWindow::onImageHovered(int x, int y)
         int origX = (realX * mViewer.width()) / pxWidth;
         int origY = (realY * mViewer.height()) / pxHeight;
 
-        mStatusLabel->setText(QString("Hover: X: %1, Y: %2").arg(origX).arg(origY));
-    } else {
+        mStatusLabel->setText(
+            QString("Hover: X: %1, Y: %2").arg(origX).arg(origY));
+    }
+    else {
         mStatusLabel->setText("Hover: out of bounds");
     }
 }
@@ -263,14 +321,15 @@ void MainWindow::onImageHovered(int x, int y)
 void MainWindow::onImageClicked(int x, int y, Qt::MouseButton button)
 {
     if (button == Qt::LeftButton) {
-        if (mImageLabel->pixmap(Qt::ReturnByValue).isNull()) return;
+        if (mImageLabel->pixmap(Qt::ReturnByValue).isNull())
+            return;
 
         QPixmap px = mImageLabel->pixmap(Qt::ReturnByValue);
-        
-        int pxWidth = px.width();
+
+        int pxWidth  = px.width();
         int pxHeight = px.height();
 
-        int labelWidth = mImageLabel->width();
+        int labelWidth  = mImageLabel->width();
         int labelHeight = mImageLabel->height();
 
         int xOffset = (labelWidth - pxWidth) / 2;
@@ -296,37 +355,49 @@ void MainWindow::appendCode(const QString& code)
 
 void MainWindow::simulateMousePress()
 {
-    int x = mSpinX->value();
-    int y = mSpinY->value();
-    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(mComboMouseButton->currentData().toInt());
+    int                    x   = mSpinX->value();
+    int                    y   = mSpinY->value();
+    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(
+        mComboMouseButton->currentData().toInt());
     QString btnText = mComboMouseButton->currentText();
-    
+
     mViewer.simulateMousePress(btn, x, y);
-    appendCode(QString("mv.simulateMousePress(%1, %2, %3);").arg(btnText).arg(x).arg(y));
+    appendCode(QString("mv.simulateMousePress(%1, %2, %3);")
+                   .arg(btnText)
+                   .arg(x)
+                   .arg(y));
     updateScreenshot();
 }
 
 void MainWindow::simulateMouseRelease()
 {
-    int x = mSpinX->value();
-    int y = mSpinY->value();
-    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(mComboMouseButton->currentData().toInt());
+    int                    x   = mSpinX->value();
+    int                    y   = mSpinY->value();
+    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(
+        mComboMouseButton->currentData().toInt());
     QString btnText = mComboMouseButton->currentText();
-    
+
     mViewer.simulateMouseRelease(btn, x, y);
-    appendCode(QString("mv.simulateMouseRelease(%1, %2, %3);").arg(btnText).arg(x).arg(y));
+    appendCode(QString("mv.simulateMouseRelease(%1, %2, %3);")
+                   .arg(btnText)
+                   .arg(x)
+                   .arg(y));
     updateScreenshot();
 }
 
 void MainWindow::simulateMouseDoubleClick()
 {
-    int x = mSpinX->value();
-    int y = mSpinY->value();
-    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(mComboMouseButton->currentData().toInt());
+    int                    x   = mSpinX->value();
+    int                    y   = mSpinY->value();
+    vcl::MouseButton::Enum btn = static_cast<vcl::MouseButton::Enum>(
+        mComboMouseButton->currentData().toInt());
     QString btnText = mComboMouseButton->currentText();
-    
+
     mViewer.simulateMouseDoubleClick(btn, x, y);
-    appendCode(QString("mv.simulateMouseDoubleClick(%1, %2, %3);").arg(btnText).arg(x).arg(y));
+    appendCode(QString("mv.simulateMouseDoubleClick(%1, %2, %3);")
+                   .arg(btnText)
+                   .arg(x)
+                   .arg(y));
     updateScreenshot();
 }
 
@@ -334,7 +405,7 @@ void MainWindow::simulateMouseMove()
 {
     int x = mSpinX->value();
     int y = mSpinY->value();
-    
+
     mViewer.simulateMouseMove(x, y);
     appendCode(QString("mv.simulateMouseMove(%1, %2);").arg(x).arg(y));
     updateScreenshot();
@@ -344,7 +415,7 @@ void MainWindow::simulateMouseScroll()
 {
     int x = mSpinScrollX->value();
     int y = mSpinScrollY->value();
-    
+
     mViewer.simulateMouseScroll(x, y);
     appendCode(QString("mv.simulateMouseScroll(%1, %2);").arg(x).arg(y));
     updateScreenshot();
@@ -352,7 +423,8 @@ void MainWindow::simulateMouseScroll()
 
 void MainWindow::simulateKeyPress()
 {
-    vcl::Key::Enum key = static_cast<vcl::Key::Enum>(mComboKey->currentData().toInt());
+    vcl::Key::Enum key =
+        static_cast<vcl::Key::Enum>(mComboKey->currentData().toInt());
     QString keyText = mComboKey->currentText();
     mViewer.simulateKeyPress(key);
     appendCode(QString("mv.simulateKeyPress(%1);").arg(keyText));
@@ -361,7 +433,8 @@ void MainWindow::simulateKeyPress()
 
 void MainWindow::simulateKeyRelease()
 {
-    vcl::Key::Enum key = static_cast<vcl::Key::Enum>(mComboKey->currentData().toInt());
+    vcl::Key::Enum key =
+        static_cast<vcl::Key::Enum>(mComboKey->currentData().toInt());
     QString keyText = mComboKey->currentText();
     mViewer.simulateKeyRelease(key);
     appendCode(QString("mv.simulateKeyRelease(%1);").arg(keyText));
@@ -371,7 +444,7 @@ void MainWindow::simulateKeyRelease()
 void MainWindow::simulateSetModifiers()
 {
     vcl::KeyModifiers mods;
-    QStringList activeMods;
+    QStringList       activeMods;
 
     if (mCheckShift->isChecked()) {
         mods[vcl::KeyModifier::SHIFT] = true;
@@ -391,20 +464,27 @@ void MainWindow::simulateSetModifiers()
     }
 
     mViewer.simulateSetModifiers(mods);
-    appendCode(QString("mv.simulateSetModifiers(vcl::KeyModifiers{ %1 });").arg(activeMods.join(", ")));
+    appendCode(QString("mv.simulateSetModifiers(vcl::KeyModifiers{ %1 });")
+                   .arg(activeMods.join(", ")));
     updateScreenshot();
 }
 
 void MainWindow::simulateTrackballRotate()
 {
-    float x = mSpinAxisX->value();
-    float y = mSpinAxisY->value();
-    float z = mSpinAxisZ->value();
+    float x        = mSpinAxisX->value();
+    float y        = mSpinAxisY->value();
+    float z        = mSpinAxisZ->value();
     float angleDeg = mSpinAngle->value();
     float angleRad = vcl::toRad(angleDeg);
 
     mViewer.trackballRotate(vcl::Point3f(x, y, z), angleRad);
-    appendCode(QString("mv.trackballRotate(vcl::Point3f(%1, %2, %3), vcl::toRad(%4f));").arg(x).arg(y).arg(z).arg(angleDeg));
+    appendCode(
+        QString(
+            "mv.trackballRotate(vcl::Point3f(%1, %2, %3), vcl::toRad(%4f));")
+            .arg(x)
+            .arg(y)
+            .arg(z)
+            .arg(angleDeg));
     updateScreenshot();
 }
 
@@ -418,12 +498,15 @@ void MainWindow::simulateTrackballZoom()
 
 void MainWindow::executeCustomAction()
 {
-    if (mCustomActions.empty()) return;
+    if (mCustomActions.empty())
+        return;
 
     int index = mComboCustomActions->currentData().toInt();
     if (index >= 0 && index < static_cast<int>(mCustomActions.size())) {
         mCustomActions[index].second(); // execute lambda
-        appendCode(QString("\n// Executed custom action: %1\n").arg(QString::fromStdString(mCustomActions[index].first)));
+        appendCode(
+            QString("\n// Executed custom action: %1\n")
+                .arg(QString::fromStdString(mCustomActions[index].first)));
         updateScreenshot();
     }
 }

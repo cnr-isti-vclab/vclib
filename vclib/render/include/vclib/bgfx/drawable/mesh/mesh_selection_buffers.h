@@ -553,10 +553,7 @@ public:
         return mVertexSelection;
     }
 
-    const BooleanBuffer& faceSelectionBuffer() const
-    {
-        return mFaceSelection;
-    }
+    const BooleanBuffer& faceSelectionBuffer() const { return mFaceSelection; }
 
     // ---- Bind -----------------------------------------------------------
 

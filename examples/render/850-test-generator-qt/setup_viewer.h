@@ -10,12 +10,12 @@
 
 #include "get_drawable_mesh.h"
 
-#include <vclib/render/headless_mesh_viewer.h>
-#include <vclib/meshes.h>
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
 #include <utility>
+#include <vclib/meshes.h>
+#include <vclib/render/headless_mesh_viewer.h>
+#include <vector>
 
 using CustomAction = std::pair<std::string, std::function<void()>>;
 
@@ -31,7 +31,7 @@ inline std::vector<CustomAction> setupViewer(vcl::HeadlessMeshViewer& mv)
     // You can also return custom actions (lambdas) that will be added to the UI
     // to interactively trigger them.
     // -------------------------------------------------------------------------
-    
+
     // adding a mesh
     auto mesh = getDrawableMesh<vcl::TriMesh>();
     mv.pushDrawableObject(std::move(mesh));

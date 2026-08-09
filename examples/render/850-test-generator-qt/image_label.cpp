@@ -21,7 +21,8 @@ void ImageLabel::setImage(const QImage& img)
 void ImageLabel::updateDisplay()
 {
     if (!mOriginalPixmap.isNull()) {
-        setPixmap(mOriginalPixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        setPixmap(mOriginalPixmap.scaled(
+            size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
 }
 
@@ -39,6 +40,7 @@ void ImageLabel::mouseMoveEvent(QMouseEvent* event)
 
 void ImageLabel::mousePressEvent(QMouseEvent* event)
 {
-    emit mouseClicked(event->position().x(), event->position().y(), event->button());
+    emit mouseClicked(
+        event->position().x(), event->position().y(), event->button());
     QLabel::mousePressEvent(event);
 }

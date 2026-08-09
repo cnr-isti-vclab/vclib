@@ -346,6 +346,7 @@ protected:
         assert(mViewer);
         mViewer->setContinuousRedraw(enabled);
     }
+
     /**
      * @brief Pushes an undo/redo action to the viewer's undo/redo stack.
      * @param[in] action: the action to push.

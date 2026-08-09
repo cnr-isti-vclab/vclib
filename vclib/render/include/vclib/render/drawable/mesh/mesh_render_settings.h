@@ -312,10 +312,7 @@ public:
         return c;
     }
 
-    const uint* edgesSelectionColorData() const
-    {
-        return &mEdgeSelectionColor;
-    }
+    const uint* edgesSelectionColorData() const { return &mEdgeSelectionColor; }
 
     /**
      * @brief Returns whether the given edges option is set.

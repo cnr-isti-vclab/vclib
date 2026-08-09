@@ -59,7 +59,7 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 
 protected:
     /// @brief Manages the history of undoable actions performed in the viewer.
-    UndoRedoStack  mUndoRedoStack;
+    UndoRedoStack mUndoRedoStack;
 
     ViewerSettings mViewerSettings;
 
@@ -445,7 +445,8 @@ public:
                 }
                 break;
             case Key::Z:
-                if (modifiers[KeyModifier::CONTROL] && modifiers[KeyModifier::SHIFT]) {
+                if (modifiers[KeyModifier::CONTROL] &&
+                    modifiers[KeyModifier::SHIFT]) {
                     redo();
                     block = true;
                 }
