@@ -14,6 +14,7 @@
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/editors/editor.h>
+#include <vclib/render/settings/info_editor_settings.h>
 
 #include <vclib/space/complex.h>
 
@@ -50,15 +51,11 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
     vcl::Color mTextColor = vcl::Color::Black;
     int        mTextSize  = 20;
 
+    InfoEditorSettings mSettings;
+
 public:
     InfoEditorBGFX()
     {
-        Base::settings().customSettings["color"] = vcl::Color(vcl::Color::Red);
-        Base::settings().customSettings["thickness"] = 5.0f;
-        Base::settings().customSettings["text_color"] =
-            vcl::Color(vcl::Color::Black);
-        Base::settings().customSettings["text_size"] = 20;
-
         mOutlineLines.setGeneralColor(vcl::Color::Red);
         mOutlineLines.setWidth(5.0f);
         mOutlineLines.setTopology(vcl::Lines::Topology::LINE_STRIP);
@@ -69,6 +66,10 @@ public:
         mOutlinePoints.setShape(vcl::Points::Shape::CIRCLE);
         mOutlinePoints.setDepthOffset(0.00012f);
     }
+
+    InfoEditorSettings& settings() override { return mSettings; }
+
+    const InfoEditorSettings& settings() const override { return mSettings; }
 
     // Editor implementation
 
@@ -83,31 +84,21 @@ public:
 
     void refreshSettings() override
     {
-        if (Base::settings().customSettings.count("color")) {
-            auto c = std::any_cast<vcl::Color>(
-                Base::settings().customSettings.at("color"));
-            mOutlineLines.setGeneralColor(c);
-            mOutlinePoints.setGeneralColor(c);
+        mOutlineLines.setGeneralColor(this->settings().color);
+        mOutlinePoints.setGeneralColor(this->settings().color);
+
+        mOutlineLines.setWidth(this->settings().thickness);
+        mOutlinePoints.setWidth(this->settings().thickness);
+
+        mTextColor = this->settings().textColor;
+        mTextSize  = this->settings().textSize;
+
+        if (mTextViewInitialized) {
+            auto dpi = Base::viewerDpiScale();
+            mTextView.setTextFont(
+                vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
         }
-        if (Base::settings().customSettings.count("thickness")) {
-            auto w = std::any_cast<float>(
-                Base::settings().customSettings.at("thickness"));
-            mOutlineLines.setWidth(w);
-            mOutlinePoints.setWidth(w);
-        }
-        if (Base::settings().customSettings.count("text_color")) {
-            mTextColor = std::any_cast<vcl::Color>(
-                Base::settings().customSettings.at("text_color"));
-        }
-        if (Base::settings().customSettings.count("text_size")) {
-            mTextSize = std::any_cast<int>(
-                Base::settings().customSettings.at("text_size"));
-            if (mTextViewInitialized) {
-                auto dpi = Base::viewerDpiScale();
-                mTextView.setTextFont(
-                    vcl::VclFont::DROID_SANS, mTextSize * dpi.x());
-            }
-        }
+
         Base::viewerUpdate();
     }
 
@@ -175,9 +166,10 @@ public:
 
         if (!block && button == vcl::MouseButton::LEFT) {
             block = true; // consume the event to prevent further propagation
-            
-            // The callback receives the exact Object ID, Element Type, and Element ID 
-            // from the GPU readback, avoiding the need for expensive CPU ray-tracing.
+
+            // The callback receives the exact Object ID, Element Type, and
+            // Element ID from the GPU readback, avoiding the need for expensive
+            // CPU ray-tracing.
             auto callback = [this](
                                 ushort objectId,
                                 ushort elementType,

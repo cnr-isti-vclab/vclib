@@ -14,6 +14,8 @@
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
 #include "editor.h"
+
+#include <vclib/render/settings/info_editor_settings.h>
 #endif
 
 namespace vcl {
@@ -40,14 +42,14 @@ template<typename ViewerDrawer>
 class InfoEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+    InfoEditorSettings mSettings;
 
 public:
-    InfoEditor()
-    {
-        // Initialize settings keys expected.
-        Base::settings().customSettings["color"]     = vcl::Color::Red;
-        Base::settings().customSettings["thickness"] = 5.0f;
-    }
+    InfoEditor() = default;
+
+    InfoEditorSettings& settings() override { return mSettings; }
+
+    const InfoEditorSettings& settings() const override { return mSettings; }
 
     void setActive(bool active) override
     {

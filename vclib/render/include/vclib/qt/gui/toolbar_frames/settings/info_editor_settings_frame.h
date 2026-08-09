@@ -8,7 +8,7 @@
 #ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_INFO_EDITOR_SETTINGS_FRAME_H
 #define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_INFO_EDITOR_SETTINGS_FRAME_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/settings/info_editor_settings.h>
 
 #include <QColor>
 #include <QFrame>
@@ -24,11 +24,11 @@ class InfoEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::InfoEditorSettingsFrame* mUI;
-    EditorSettings&              mSettings;
+    InfoEditorSettings&              mSettings;
 
 public:
     explicit InfoEditorSettingsFrame(
-        EditorSettings& sts,
+        InfoEditorSettings& sts,
         QWidget*        parent = nullptr);
     ~InfoEditorSettingsFrame();
 

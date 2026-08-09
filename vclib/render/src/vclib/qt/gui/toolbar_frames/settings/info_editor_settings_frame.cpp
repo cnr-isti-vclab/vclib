@@ -14,21 +14,16 @@
 namespace vcl::qt {
 
 InfoEditorSettingsFrame::InfoEditorSettingsFrame(
-    EditorSettings& sts,
+    InfoEditorSettings& sts,
     QWidget*        parent) :
         QFrame(parent), mUI(new Ui::InfoEditorSettingsFrame), mSettings(sts)
 {
     mUI->setupUi(this);
 
-    assert(mSettings.customSettings.at("color").has_value());
-    assert(mSettings.customSettings.at("thickness").has_value());
-    assert(mSettings.customSettings.at("text_color").has_value());
-    assert(mSettings.customSettings.at("text_size").has_value());
-
-    Color c = std::any_cast<Color>(mSettings.customSettings.at("color"));
-    float thickness = std::any_cast<float>(mSettings.customSettings.at("thickness"));
-    Color tc = std::any_cast<Color>(mSettings.customSettings.at("text_color"));
-    int textSize = std::any_cast<int>(mSettings.customSettings.at("text_size"));
+    Color c = mSettings.color;
+    float thickness = mSettings.thickness;
+    Color tc = mSettings.textColor;
+    int textSize = mSettings.textSize;
 
     mUI->editModeFrame->hide();
     mUI->highlightWidthSlider->setValue(int(thickness));
@@ -71,26 +66,26 @@ InfoEditorSettingsFrame::~InfoEditorSettingsFrame()
 
 void InfoEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 {
-    mSettings.customSettings["thickness"] = float(value);
+    mSettings.thickness = float(value);
     emit settingsUpdated();
 }
 
 void InfoEditorSettingsFrame::onColorChanged(const QColor& c)
 {
-    mSettings.customSettings["color"] =
+    mSettings.color =
         Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }
 
 void InfoEditorSettingsFrame::onTextSizeChanged(int value)
 {
-    mSettings.customSettings["text_size"] = value;
+    mSettings.textSize = value;
     emit settingsUpdated();
 }
 
 void InfoEditorSettingsFrame::onTextColorChanged(const QColor& c)
 {
-    mSettings.customSettings["text_color"] =
+    mSettings.textColor =
         Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }

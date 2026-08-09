@@ -59,57 +59,53 @@ public:
 private:
     void drawInfoSettings()
     {
-        vcl::EditorSettings& sts = mEditor->settings();
+        vcl::InfoEditorSettings& sts = mEditor->settings();
 
         // Highlight width
-        assert(sts.customSettings.count("thickness"));
-        float thickness = std::any_cast<float>(sts.customSettings["thickness"]);
+        float thickness = sts.thickness;
         ImGui::Text("Highlight Width:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
         if (ImGui::SliderFloat(
                 "##InfoThickness", &thickness, 1.0f, 10.0f, "%.1f")) {
-            sts.customSettings["thickness"] = thickness;
+            sts.thickness = thickness;
             mEditor->refreshSettings();
         }
 
         // Highlight color
-        assert(sts.customSettings.count("color"));
         ImGui::Text("Highlight Color:");
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##InfoColor",
             [&] {
-                return std::any_cast<vcl::Color>(sts.customSettings["color"]);
+                return sts.color;
             },
             [&](vcl::Color c) {
-                sts.customSettings["color"] = c;
+                sts.color = c;
                 mEditor->refreshSettings();
             },
             ImGuiColorEditFlags_NoInputs);
         // Text Size
-        assert(sts.customSettings.count("text_size"));
-        int textSize = std::any_cast<int>(sts.customSettings["text_size"]);
+        int textSize = sts.textSize;
         ImGui::Text("Text Size:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(130);
         if (ImGui::SliderInt(
                 "##InfoTextSize", &textSize, 5, 100)) {
-            sts.customSettings["text_size"] = textSize;
+            sts.textSize = textSize;
             mEditor->refreshSettings();
         }
 
         // Text Color
-        assert(sts.customSettings.count("text_color"));
         ImGui::Text("Text Color:");
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##InfoTextColor",
             [&] {
-                return std::any_cast<vcl::Color>(sts.customSettings["text_color"]);
+                return sts.textColor;
             },
             [&](vcl::Color c) {
-                sts.customSettings["text_color"] = c;
+                sts.textColor = c;
                 mEditor->refreshSettings();
             },
             ImGuiColorEditFlags_NoInputs);
