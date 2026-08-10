@@ -209,8 +209,8 @@ public:
         }
 
         // Load default settings if available
-        std::string configDir = vcl::appConfigDirectory("vclib");
-        std::string filePath = configDir + "/render_settings.json";
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        std::string filePath = (configDir / "render_settings.json").string();
         std::ifstream in(filePath);
         if (in.is_open()) {
             try {

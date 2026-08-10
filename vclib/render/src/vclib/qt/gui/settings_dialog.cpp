@@ -81,12 +81,12 @@ void SettingsDialog::onSaveDefaultsClicked()
     mSelSts.saveSettings(j["Editors"]);
     mBBoxSts.saveSettings(j["Editors"]);
 
-    std::string configDir = vcl::appConfigDirectory("vclib");
-    std::string filePath = configDir + "/render_settings.json";
+    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+    std::string filePath = (configDir / "render_settings.json").string();
 
     // Ensure directory exists
     QDir dir;
-    dir.mkpath(QString::fromStdString(configDir));
+    dir.mkpath(QString::fromStdString(configDir.string()));
 
     std::ofstream out(filePath);
     if (out.is_open()) {
