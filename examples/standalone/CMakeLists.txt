@@ -79,13 +79,17 @@ target_compile_definitions(
 function(add_standalone_example module name)
     set(TARGET_NAME "standalone-${module}-${name}")
     string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
-    file(GLOB SOURCES 
+    file(
+        GLOB SOURCES
         "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}/*.h"
     )
 
     if(NOT SOURCES)
-        message(FATAL_ERROR "No source files found in: ${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}")
+        message(
+            FATAL_ERROR
+            "No source files found in: ${CMAKE_CURRENT_SOURCE_DIR}/../${module}/${name}"
+        )
     endif()
 
     add_executable(${TARGET_NAME} ${SOURCES})

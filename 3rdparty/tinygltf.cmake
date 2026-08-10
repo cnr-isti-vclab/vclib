@@ -27,19 +27,17 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
 
     add_library(vclib-3rd-tinygltf INTERFACE)
     target_link_libraries(
-        vclib-3rd-tinygltf INTERFACE 
-        tinygltf 
-        vclib-3rd-nlohmann_json 
-        vclib-3rd-stb
+        vclib-3rd-tinygltf
+        INTERFACE tinygltf vclib-3rd-nlohmann_json vclib-3rd-stb
     )
 
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tinygltf)
 
     target_compile_definitions(
         vclib-3rd-tinygltf
-        INTERFACE 
-            VCLIB_WITH_JSON 
-            VCLIB_WITH_STB 
+        INTERFACE
+            VCLIB_WITH_JSON
+            VCLIB_WITH_STB
             VCLIB_WITH_TINYGLTF
             TINYGLTF_NO_INCLUDE_JSON
     )

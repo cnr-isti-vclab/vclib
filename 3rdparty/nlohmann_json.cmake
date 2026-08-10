@@ -16,7 +16,10 @@ if(VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON AND nlohmann_json_FOUND)
     set(VCLIB_USED_SYSTEM_NLOHMANN_JSON ON CACHE INTERNAL "")
 
     add_library(vclib-3rd-nlohmann_json INTERFACE)
-    target_link_libraries(vclib-3rd-nlohmann_json INTERFACE nlohmann_json::nlohmann_json)
+    target_link_libraries(
+        vclib-3rd-nlohmann_json
+        INTERFACE nlohmann_json::nlohmann_json
+    )
     list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-nlohmann_json)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
@@ -38,7 +41,10 @@ elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
     FetchContent_MakeAvailable(nlohmann_json)
 
     add_library(vclib-3rd-nlohmann_json INTERFACE)
-    target_link_libraries(vclib-3rd-nlohmann_json INTERFACE nlohmann_json::nlohmann_json)
+    target_link_libraries(
+        vclib-3rd-nlohmann_json
+        INTERFACE nlohmann_json::nlohmann_json
+    )
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-nlohmann_json)
 else()
     message(

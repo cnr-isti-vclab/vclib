@@ -187,7 +187,10 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
         "@VCLIB_USED_SYSTEM_NLOHMANN_JSON@"
         AND "vclib-3rd-nlohmann_json" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
     )
-        if(TARGET nlohmann_json::nlohmann_json AND NOT TARGET vclib::vclib-3rd-nlohmann_json)
+        if(
+            TARGET nlohmann_json::nlohmann_json
+            AND NOT TARGET vclib::vclib-3rd-nlohmann_json
+        )
             add_library(vclib::vclib-3rd-nlohmann_json INTERFACE IMPORTED)
             set_property(
                 TARGET vclib::vclib-3rd-nlohmann_json
@@ -198,7 +201,8 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
                 set_property(
                     TARGET vclib::core
                     APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-nlohmann_json
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-nlohmann_json
                 )
             endif()
         endif()

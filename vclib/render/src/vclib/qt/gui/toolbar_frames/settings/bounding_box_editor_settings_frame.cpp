@@ -21,7 +21,7 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
 {
     mUI->setupUi(this);
 
-    Color c = mSettings.color;
+    Color c         = mSettings.color;
     float thickness = mSettings.thickness;
 
     mUI->editModeFrame->setEditMode(mSettings.editMode);
