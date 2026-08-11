@@ -8,51 +8,63 @@
 #ifndef VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
 #define VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
 
-#include <QString>
-#include <QWidget>
-#include <QToolBar>
+#include <vclib/base.h>
+
 #include <nlohmann/json.hpp>
-#include <vclib/base/concepts/settings.h>
+
+#include <QString>
+#include <QToolBar>
+#include <QWidget>
+
 #include <memory>
 
 namespace vcl::qt {
 
-class SettingsDialogTab {
+class SettingsDialogTab
+{
 public:
-    virtual ~SettingsDialogTab() = default;
-    virtual QString name() const = 0;
-    virtual QWidget* createWidget(QWidget* parent) = 0;
-    virtual void applySettings() = 0;
-    virtual void saveSettings(nlohmann::json& j) const = 0;
-    virtual void updateToolbarFrames(QToolBar* toolbar) = 0;
+    virtual ~SettingsDialogTab()                            = default;
+    virtual QString  name() const                           = 0;
+    virtual QWidget* createWidget(QWidget* parent)          = 0;
+    virtual void     applySettings()                        = 0;
+    virtual void     saveSettings(nlohmann::json& j) const  = 0;
+    virtual void     updateToolbarFrames(QToolBar* toolbar) = 0;
 };
 
 template<typename EditorType, typename SettingsFrameType>
-class EditorSettingsTabImpl : public SettingsDialogTab {
+class EditorSettingsTabImpl : public SettingsDialogTab
+{
     std::shared_ptr<EditorType> mEditor;
-    QString mName;
-    using SettingsType = std::remove_reference_t<decltype(std::declval<EditorType>().settings())>;
+    QString                     mName;
+    using SettingsType = std::remove_reference_t<
+        decltype(std::declval<EditorType>().settings())>;
     std::unique_ptr<SettingsType> mTempSettings;
 
 public:
-    EditorSettingsTabImpl(std::shared_ptr<EditorType> editor, const QString& name)
-        : mEditor(editor), mName(name) {}
+    EditorSettingsTabImpl(
+        std::shared_ptr<EditorType> editor,
+        const QString&              name) : mEditor(editor), mName(name)
+    {
+    }
 
     QString name() const override { return mName; }
 
-    QWidget* createWidget(QWidget* parent) override {
+    QWidget* createWidget(QWidget* parent) override
+    {
         mTempSettings = std::make_unique<SettingsType>(mEditor->settings());
         return new SettingsFrameType(*mTempSettings, parent);
     }
 
-    void applySettings() override {
+    void applySettings() override
+    {
         if (mTempSettings) {
             mEditor->settings() = *mTempSettings;
             mEditor->refreshSettings();
         }
     }
 
-    void saveSettings(nlohmann::json& j) const override {
+    void saveSettings(nlohmann::json& j) const override
+    {
         if (mTempSettings) {
             if constexpr (vcl::HasSettings<SettingsType>) {
                 mTempSettings->saveSettings(j);
@@ -60,7 +72,8 @@ public:
         }
     }
 
-    void updateToolbarFrames(QToolBar* toolbar) override {
+    void updateToolbarFrames(QToolBar* toolbar) override
+    {
         for (auto* f : toolbar->findChildren<SettingsFrameType*>()) {
             f->updateGUI();
         }

@@ -24,14 +24,12 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
     Ui::SettingsDialog* mUI;
-    QToolBar*           mToolBar;
 
     const SettingsDialogData& mData;
 
 public:
     explicit SettingsDialog(
         const SettingsDialogData& data,
-        QToolBar*                 toolbar,
         QWidget*                  parent = nullptr);
     ~SettingsDialog();
 

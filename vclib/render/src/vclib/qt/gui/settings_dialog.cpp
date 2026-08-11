@@ -6,54 +6,56 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/qt/gui/settings_dialog.h>
+
 #include "ui_settings_dialog.h"
 
-#include <vclib/base/system.h>
+#include <vclib/base.h>
+
+#include <nlohmann/json.hpp>
+
+#include <QDir>
+#include <QFile>
+#include <QMessageBox>
 #include <QVBoxLayout>
 
-#include <vclib/base/system.h>
-
-#include <QFile>
-#include <QDir>
-#include <QMessageBox>
-
 #include <fstream>
-#include <nlohmann/json.hpp>
 
 namespace vcl::qt {
 
 SettingsDialog::SettingsDialog(
     const SettingsDialogData& data,
-    QToolBar*                 toolbar,
-    QWidget*                  parent)
-    : QDialog(parent),
-      mUI(new Ui::SettingsDialog),
-      mToolBar(toolbar),
-      mData(data)
+    QWidget* parent) : QDialog(parent), mUI(new Ui::SettingsDialog), mData(data)
 {
     mUI->setupUi(this);
 
     // Populate Editors tab
     for (const auto& tab : mData.tabs()) {
-        QWidget* page = new QWidget();
+        QWidget*     page   = new QWidget();
         QVBoxLayout* layout = new QVBoxLayout(page);
         layout->addWidget(tab->createWidget(page));
         layout->addStretch();
-        
+
         mUI->editorsTabWidget->addTab(page, tab->name());
     }
 
     // Sync QListWidget selection to QStackedWidget page
-    connect(mUI->categoryList, &QListWidget::currentRowChanged,
-            mUI->stackedWidget, &QStackedWidget::setCurrentIndex);
+    connect(
+        mUI->categoryList,
+        &QListWidget::currentRowChanged,
+        mUI->stackedWidget,
+        &QStackedWidget::setCurrentIndex);
 
     // Apply button
     QPushButton* applyBtn = mUI->buttonBox->button(QDialogButtonBox::Apply);
-    connect(applyBtn, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
+    connect(
+        applyBtn, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
 
     // Save Defaults button
-    connect(mUI->saveDefaultsButton, &QPushButton::clicked,
-            this, &SettingsDialog::onSaveDefaultsClicked);
+    connect(
+        mUI->saveDefaultsButton,
+        &QPushButton::clicked,
+        this,
+        &SettingsDialog::onSaveDefaultsClicked);
 }
 
 SettingsDialog::~SettingsDialog()
@@ -86,11 +88,14 @@ void SettingsDialog::onSaveDefaultsClicked()
     if (out.is_open()) {
         out << j.dump(4);
         out.close();
-        QMessageBox::information(this, "Settings Saved", 
+        QMessageBox::information(
+            this,
+            "Settings Saved",
             "Default settings have been successfully saved.");
-    } else {
-        QMessageBox::warning(this, "Save Failed", 
-            "Failed to save default settings to file.");
+    }
+    else {
+        QMessageBox::warning(
+            this, "Save Failed", "Failed to save default settings to file.");
     }
 }
 

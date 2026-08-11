@@ -72,14 +72,14 @@ protected slots:
 /**
  * @brief Traits struct to associate an Editor type with its Qt Frame type.
  *
- * Specializations of this struct should define `FrameType` as the QWidget
- * subclass that implements the UI frame for the specific editor. If no frame
- * is associated, `FrameType` defaults to `void`.
+ * Specializations of this struct should define `ToolbarFrameType` as the
+ * QWidget subclass that implements the UI frame for the specific editor. If no
+ * frame is associated, `ToolbarFrameType` defaults to `void`.
  */
 template<template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits
 {
-    using FrameType = void;
+    using ToolbarFrameType = void;
     using SettingsFrameType = void;
 };
 

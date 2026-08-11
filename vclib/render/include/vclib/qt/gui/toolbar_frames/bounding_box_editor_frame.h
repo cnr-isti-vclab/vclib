@@ -62,7 +62,7 @@ private slots:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
 {
-    using FrameType = BoundingBoxEditorFrame<ViewerType>;
+    using ToolbarFrameType = BoundingBoxEditorFrame<ViewerType>;
     using SettingsFrameType = BoundingBoxEditorSettingsFrame;
 };
 

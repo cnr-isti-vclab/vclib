@@ -12,8 +12,6 @@
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
-#include <vclib/qt/gui/editor_settings_frames/bounding_box_editor_settings_frame.h>
-#include <vclib/qt/gui/editor_settings_frames/selection_editor_settings_frame.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
@@ -521,7 +519,7 @@ void MeshViewer::renderModeChanged()
 
 void MeshViewer::openSettings()
 {
-    SettingsDialog dialog(mSettingsData, mUI->toolBar, this);
+    SettingsDialog dialog(mSettingsData, this);
     
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
         for (auto& tab : mSettingsData.tabs()) {
