@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::qt::InfoEditorSettingsFrame</class>
- <widget class="QFrame" name="vcl::qt::InfoEditorSettingsFrame">
+ <class>vcl::qt::BoundingBoxEditorSettingsFrame</class>
+ <widget class="QFrame" name="vcl::qt::BoundingBoxEditorSettingsFrame">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>149</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,9 +15,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="QLabel" name="highlightWidthLabel">
+    <widget class="QLabel" name="linesWidthLabel">
      <property name="text">
-      <string>Highlight Width:</string>
+      <string>Lines Width:</string>
      </property>
     </widget>
    </item>
@@ -32,7 +32,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QSlider" name="highlightWidthSlider">
+    <widget class="QSlider" name="linesWidthSlider">
      <property name="minimum">
       <number>1</number>
      </property>
@@ -48,48 +48,14 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="highlightColorLabel">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Highlight Color:</string>
+      <string>Lines Color:</string>
      </property>
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="vcl::qt::ColorPushButton" name="highlightColorPushButton">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="textSizeLabel">
-     <property name="text">
-      <string>Text Size:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QSpinBox" name="textSizeSpinBox">
-     <property name="minimum">
-      <number>5</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>20</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="textColorLabel">
-     <property name="text">
-      <string>Text Color:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="vcl::qt::ColorPushButton" name="textColorPushButton">
+    <widget class="vcl::qt::ColorPushButton" name="colorPushButton">
      <property name="text">
       <string/>
      </property>
@@ -101,7 +67,7 @@
   <customwidget>
    <class>vcl::qt::EditModeSettingsFrame</class>
    <extends>QFrame</extends>
-   <header>vclib/qt/gui/toolbar_frames/settings/edit_mode_settings_frame.h</header>
+   <header>vclib/qt/gui/editor_settings_frames/edit_mode_settings_frame.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
