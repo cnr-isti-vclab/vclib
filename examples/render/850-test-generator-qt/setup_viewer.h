@@ -59,30 +59,24 @@ inline void addSelectionEditorAndCustomActions(
     // adding the Selection Editor
     auto selectionEditor = mv.pushEditor<vcl::SelectionEditor>(true);
 
-    actions.push_back(
-        {"Enable Vertex Selection", [=]() {
-             selectionEditor->settings().selectVertices = true;
-         }});
-    actions.push_back(
-        {"Enable Face Selection", [=]() {
-             selectionEditor->settings().selectFaces = true;
-         }});
-    actions.push_back(
-        {"Enable Only Visible Selection", [=]() {
-             selectionEditor->settings().onlyVisible = true;
-         }});
-    actions.push_back(
-        {"Disable Vertex Selection", [=]() {
-             selectionEditor->settings().selectVertices = false;
-         }});
-    actions.push_back(
-        {"Disable Face Selection", [=]() {
-             selectionEditor->settings().selectFaces = false;
-         }});
-    actions.push_back(
-        {"Disable Only Visible Selection", [=]() {
-             selectionEditor->settings().onlyVisible = false;
-         }});
+    actions.push_back({"Enable Vertex Selection", [=]() {
+                           selectionEditor->settings().selectVertices = true;
+                       }});
+    actions.push_back({"Enable Face Selection", [=]() {
+                           selectionEditor->settings().selectFaces = true;
+                       }});
+    actions.push_back({"Enable Only Visible Selection", [=]() {
+                           selectionEditor->settings().onlyVisible = true;
+                       }});
+    actions.push_back({"Disable Vertex Selection", [=]() {
+                           selectionEditor->settings().selectVertices = false;
+                       }});
+    actions.push_back({"Disable Face Selection", [=]() {
+                           selectionEditor->settings().selectFaces = false;
+                       }});
+    actions.push_back({"Disable Only Visible Selection", [=]() {
+                           selectionEditor->settings().onlyVisible = false;
+                       }});
 }
 
 #endif // VCLIB_RENDER_EXAMPLES_TEST_GENERATOR_SETUP_VIEWER_H

@@ -57,7 +57,7 @@ void SelectionEditorSettingsFrame::editModeChanged(int index)
 void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
     Qt::CheckState state)
 {
-    bool onlyVisible                        = state == Qt::CheckState::Checked;
+    bool onlyVisible      = state == Qt::CheckState::Checked;
     mSettings.onlyVisible = onlyVisible;
     emit settingsUpdated();
 }
