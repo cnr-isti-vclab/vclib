@@ -47,6 +47,8 @@ class InfoEditor : public Editor<ViewerDrawer>
 public:
     InfoEditor() = default;
 
+    std::string name() const override { return "Info"; }
+
     InfoEditorSettings& settings() override { return mSettings; }
 
     const InfoEditorSettings& settings() const override { return mSettings; }

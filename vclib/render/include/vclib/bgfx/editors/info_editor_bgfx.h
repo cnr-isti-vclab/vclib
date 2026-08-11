@@ -67,6 +67,8 @@ public:
         mOutlinePoints.setDepthOffset(0.00012f);
     }
 
+    std::string name() const override { return "Info"; }
+
     InfoEditorSettings& settings() override { return mSettings; }
 
     const InfoEditorSettings& settings() const override { return mSettings; }
