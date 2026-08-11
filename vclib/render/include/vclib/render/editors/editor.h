@@ -45,7 +45,7 @@ public:
     virtual ~Editor() = default;
 
     /**
-     * @brief Returns the name of the editor, typically used in settings dialogs or UI.
+     * @brief Returns the name of the editor, typically used in UI.
      * @return the name of the editor as a string.
      */
     virtual std::string name() const = 0;

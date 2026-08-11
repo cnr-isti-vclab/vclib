@@ -48,6 +48,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
     )
     target_compile_definitions(vclib-3rd-nlohmann_json INTERFACE VCLIB_WITH_JSON)
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-nlohmann_json)
+
 else()
     message(
         FATAL_ERROR

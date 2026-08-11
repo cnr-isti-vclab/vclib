@@ -143,13 +143,13 @@ public:
         Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
     }
 
-    std::string name() const override { return "Selection"; }
-
     void setSelectionBoxColor(const Color& color)
     {
         mSettings.selectionBoxColor = color;
         mScreenSpaceBox.setColor(color);
     }
+
+    std::string name() const override { return "Selection"; }
 
     SelectionEditorSettings& settings() override { return mSettings; }
 
