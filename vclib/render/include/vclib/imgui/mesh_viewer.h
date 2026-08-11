@@ -151,10 +151,10 @@ public:
     {
         auto editor = mApp.template pushEditor<EditorT>(active);
 
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            mApp.addEditorFrame(std::make_shared<FrameType>(editor));
+        using ToolbarFrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::ToolbarFrameType;
+        if constexpr (!std::is_same_v<ToolbarFrameType, void>) {
+            mApp.addEditorFrame(std::make_shared<ToolbarFrameType>(editor));
         }
 
         return editor;

@@ -175,10 +175,10 @@ public:
     {
         auto editor = viewer().template pushEditor<EditorT>(active);
 
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            addEditorFrame(new FrameType(editor));
+        using ToolbarFrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::ToolbarFrameType;
+        if constexpr (!std::is_same_v<ToolbarFrameType, void>) {
+            addEditorFrame(new ToolbarFrameType(editor));
         }
 
         if constexpr (std::is_same_v<
