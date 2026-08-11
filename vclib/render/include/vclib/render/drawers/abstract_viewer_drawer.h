@@ -17,6 +17,7 @@
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/undo_redo/undo_redo_stack.h>
+#include <nlohmann/json.hpp>
 
 #include <vclib/space/core.h>
 
@@ -170,6 +171,28 @@ public:
         mViewerSettings = settings;
     }
 
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("ViewerSettings")) {
+            mViewerSettings.loadSettings(j);
+        }
+        if (j.contains("Editors")) {
+            for (auto& editor : mEditors) {
+                if (editor)
+                    editor->loadSettings(j["Editors"]);
+            }
+        }
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        mViewerSettings.saveSettings(j);
+        for (const auto& editor : mEditors) {
+            if (editor)
+                editor->saveSettings(j["Editors"]);
+        }
+    }
+
     // Default ViewerConcept placeholders. Can be shadowed by derived classes.
 
     std::string panoramaFileName() const { return ""; }
@@ -188,13 +211,19 @@ public:
      * @return A shared pointer to the newly created editor.
      */
     template<template<typename> typename ET>
-    auto pushEditor(bool active = false)
+    auto pushEditor(bool active = false, const nlohmann::json& j = {})
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
+        
+        if (j.contains("Editors")) {
+            editor->loadSettings(j["Editors"]);
+            editor->refreshSettings();
+        }
+        
         return editor;
     }
 

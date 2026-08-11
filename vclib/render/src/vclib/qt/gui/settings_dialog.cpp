@@ -9,6 +9,8 @@
 
 #include "ui_settings_dialog.h"
 
+#include <vclib/render/settings.h>
+
 #include <vclib/base.h>
 
 #include <nlohmann/json.hpp>
@@ -78,7 +80,7 @@ void SettingsDialog::onSaveDefaultsClicked()
     }
 
     std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string filePath = (configDir / "render_settings.json").string();
+    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
 
     // Ensure directory exists
     QDir dir;

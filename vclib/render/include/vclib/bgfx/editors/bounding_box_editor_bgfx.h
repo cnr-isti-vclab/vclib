@@ -38,12 +38,12 @@ public:
         return mSettings;
     }
 
-    void loadSettings(const nlohmann::json& j)
+    void loadSettings(const nlohmann::json& j) override
     {
         mSettings.loadSettings(j);
     }
 
-    void saveSettings(nlohmann::json& j) const
+    void saveSettings(nlohmann::json& j) const override
     {
         mSettings.saveSettings(j);
     }

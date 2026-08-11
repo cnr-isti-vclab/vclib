@@ -18,6 +18,7 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/settings.h>
 #include <vclib/render/settings/viewer_settings.h>
 
 #include <vclib/base.h>
@@ -189,7 +190,19 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        auto editor = viewer().template pushEditor<EditorT>(active);
+        nlohmann::json j;
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        std::ifstream in(filePath);
+        if (in.is_open()) {
+            try {
+                in >> j;
+            } catch (...) {
+                // Ignore parse errors
+            }
+        }
+
+        auto editor = viewer().template pushEditor<EditorT>(active, j);
 
         if constexpr (std::is_same_v<
                           EditorT<ViewerType>,
@@ -207,25 +220,6 @@ public:
                     editor, QString::fromStdString(editor->name())
                 )
             );
-        }
-
-        // Load default settings if available
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        std::string filePath = (configDir / "render_settings.json").string();
-        std::ifstream in(filePath);
-        if (in.is_open()) {
-            try {
-                nlohmann::json j;
-                in >> j;
-                if (j.contains("Editors")) {
-                    if constexpr (vcl::HasSettings<EditorT<ViewerType>>) {
-                        editor->loadSettings(j["Editors"]);
-                        editor->refreshSettings();
-                    }
-                }
-            } catch (...) {
-                // Ignore parse errors
-            }
         }
 
         using ToolbarFrameType =

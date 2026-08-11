@@ -10,6 +10,7 @@
 
 #include <vclib/base.h>
 #include <vclib/render/settings/render_mode.h>
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 
@@ -76,6 +77,27 @@ struct ViewerSettings
      * @brief The tone mapping operator to use.
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
+
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("ViewerSettings")) {
+            const auto& js = j["ViewerSettings"];
+            renderMode = static_cast<RenderMode>(js.value("renderMode", static_cast<int>(renderMode)));
+            imageBasedLighting = js.value("imageBasedLighting", imageBasedLighting);
+            renderBackgroundPanorama = js.value("renderBackgroundPanorama", renderBackgroundPanorama);
+            exposure = js.value("exposure", exposure);
+            toneMapping = static_cast<ToneMapping>(js.value("toneMapping", static_cast<int>(toneMapping)));
+        }
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        j["ViewerSettings"]["renderMode"] = static_cast<int>(renderMode);
+        j["ViewerSettings"]["imageBasedLighting"] = imageBasedLighting;
+        j["ViewerSettings"]["renderBackgroundPanorama"] = renderBackgroundPanorama;
+        j["ViewerSettings"]["exposure"] = exposure;
+        j["ViewerSettings"]["toneMapping"] = static_cast<int>(toneMapping);
+    }
 };
 
 } // namespace vcl

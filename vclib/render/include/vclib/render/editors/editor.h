@@ -13,6 +13,8 @@
 #include <vclib/render/settings/editor_settings.h>
 #include <vclib/render/undo_redo/undo_redo_action.h>
 
+#include <nlohmann/json.hpp>
+
 #include <vclib/base.h>
 
 namespace vcl {
@@ -80,6 +82,18 @@ public:
      * @return a const reference to the EditorSettings object.
      */
     virtual const EditorSettings& settings() const = 0;
+
+    /**
+     * @brief Loads the editor settings from a JSON object.
+     * @param[in] j: the JSON object containing the settings.
+     */
+    virtual void loadSettings(const nlohmann::json& j) {}
+
+    /**
+     * @brief Saves the editor settings to a JSON object.
+     * @param[out] j: the JSON object where the settings will be saved.
+     */
+    virtual void saveSettings(nlohmann::json& j) const {}
 
     /**
      * @brief Called by the viewer when the drawable object vector changes.

@@ -189,6 +189,22 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &QAction::triggered,
         this,
         &MeshViewer::openSettings);
+
+    // Load default global settings
+    nlohmann::json j;
+    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    std::ifstream in(filePath);
+    if (in.is_open()) {
+        try {
+            in >> j;
+            viewer().loadSettings(j);
+            setViewerSettings(viewer().viewerSettings());
+            // Editors pushed later will load their own settings via pushEditor
+        } catch (...) {
+            // Ignore parse errors
+        }
+    }
 }
 
 void MeshViewer::setupSettingsButton()
