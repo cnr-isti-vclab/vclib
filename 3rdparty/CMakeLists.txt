@@ -93,8 +93,16 @@ include(zip-views.cmake)
 # IO or RENDER 3rd Party libraries
 if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # nlohmann_json
-    option(VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON "Allow use of system-provided nlohmann_json" ON)
-    option(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON "Allow use of downloaded nlohmann_json source" ON)
+    option(
+        VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON
+        "Allow use of system-provided nlohmann_json"
+        ON
+    )
+    option(
+        VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON
+        "Allow use of downloaded nlohmann_json source"
+        ON
+    )
     cmake_dependent_option(
         VCLIB_ALLOW_INSTALL_NLOHMANN_JSON
         "Allow install nlohmann_json source"

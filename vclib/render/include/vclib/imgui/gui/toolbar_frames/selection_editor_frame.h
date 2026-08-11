@@ -41,7 +41,7 @@ public:
         bool fSel = selSettings.selectFaces;
 
         if (ImGui::Button(vSel ? "[V Sel]" : " V Sel ")) {
-            vSel                                         = !vSel;
+            vSel                       = !vSel;
             selSettings.selectVertices = vSel;
             mEditor->setActive(vSel || fSel);
             mEditor->refreshSettings();
@@ -51,7 +51,7 @@ public:
 
         ImGui::SameLine(0, 2);
         if (ImGui::Button(fSel ? "[F Sel]" : " F Sel ")) {
-            fSel                                      = !fSel;
+            fSel                    = !fSel;
             selSettings.selectFaces = fSel;
             mEditor->setActive(vSel || fSel);
             mEditor->refreshSettings();

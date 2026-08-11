@@ -17,25 +17,27 @@ if(VCLIB_ALLOW_DOWNLOAD_STB)
     FetchContent_MakeAvailable(stb)
 
     add_library(vclib-3rd-stb INTERFACE)
-    
+
     target_include_directories(
-        vclib-3rd-stb INTERFACE 
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include/stb>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/stb>
+        vclib-3rd-stb
+        INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include/stb>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/stb>
     )
 
     target_compile_definitions(vclib-3rd-stb INTERFACE VCLIB_WITH_STB)
 
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-stb)
-    
+
     if(VCLIB_ALLOW_INSTALL_STB)
         # Export for installation
         install(
             DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/stb_include/stb
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-            FILES_MATCHING PATTERN "*.h"
+            FILES_MATCHING
+            PATTERN "*.h"
             PATTERN "deprecated" EXCLUDE
             PATTERN "tests" EXCLUDE
             PATTERN "stb_image_resize_test" EXCLUDE
