@@ -19,14 +19,14 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/render/settings/viewer_settings.h>
-#include <vclib/base/concepts/settings.h>
-#include <vclib/base/system.h>
 
-#include <fstream>
+#include <vclib/base.h>
+
 #include <nlohmann/json.hpp>
 
 #include <QMainWindow>
+
+#include <fstream>
 
 class QDockWidget;
 

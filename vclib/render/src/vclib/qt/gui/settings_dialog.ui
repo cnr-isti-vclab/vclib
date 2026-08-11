@@ -59,21 +59,19 @@
         <item>
          <widget class="QTabWidget" name="editorsTabWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="selectionTab">
            <attribute name="title">
             <string>Selection</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_selection">
-           </layout>
+           <layout class="QVBoxLayout" name="verticalLayout_selection"/>
           </widget>
           <widget class="QWidget" name="boundingBoxTab">
            <attribute name="title">
             <string>Bounding Box</string>
            </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_bbox">
-           </layout>
+           <layout class="QVBoxLayout" name="verticalLayout_bbox"/>
           </widget>
          </widget>
         </item>
