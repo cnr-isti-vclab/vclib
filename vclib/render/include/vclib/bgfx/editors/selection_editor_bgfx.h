@@ -147,6 +147,8 @@ public:
         mScreenSpaceBox.setColor(color);
     }
 
+    std::string name() const override { return "Selection"; }
+
     SelectionEditorSettings& settings() override { return mSettings; }
 
     const SelectionEditorSettings& settings() const override

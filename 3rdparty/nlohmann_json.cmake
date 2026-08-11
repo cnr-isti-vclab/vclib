@@ -20,6 +20,7 @@ if(VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON AND nlohmann_json_FOUND)
         vclib-3rd-nlohmann_json
         INTERFACE nlohmann_json::nlohmann_json
     )
+    target_compile_definitions(vclib-3rd-nlohmann_json INTERFACE VCLIB_WITH_JSON)
     list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-nlohmann_json)
 
 elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
@@ -45,7 +46,9 @@ elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
         vclib-3rd-nlohmann_json
         INTERFACE nlohmann_json::nlohmann_json
     )
+    target_compile_definitions(vclib-3rd-nlohmann_json INTERFACE VCLIB_WITH_JSON)
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-nlohmann_json)
+
 else()
     message(
         FATAL_ERROR

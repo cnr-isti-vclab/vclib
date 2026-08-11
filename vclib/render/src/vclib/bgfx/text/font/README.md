@@ -3,4 +3,5 @@ The source code of this directory is directly taken from the [bgfx repository](h
 It has been modified with the following goals:
 - Remove the dependency on the bgfx example-common library, that is not needed for the purpose of this project and it depends on ImGui, that is not used/needed in this project.
 - Insert the original classes and functions under bgfx namespace, to avoid conflicts with other libraries.
-- Use the vclib-render stb-TrueType library instead of the one used by bgfx
+- Use the vclib 3rdparty stb library instead of the one used by bgfx
+- Update definitions to use VCL_UTF8_ACCEPT and VCL_UTF8_REJECT instead of UTF8_ACCEPT and UTF8_REJECT for avoiding conflicts with other libraries

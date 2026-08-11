@@ -339,7 +339,7 @@ void TextBuffer::appendText(FontHandle _fontHandle, const char* _string, const c
 		const char* origString = _string;
 		for (; *_string && _string < _end ; ++_string)
 		{
-			if (utf8_decode(&state, (uint32_t*)&codepoint, *_string) == UTF8_ACCEPT )
+			if (utf8_decode(&state, (uint32_t*)&codepoint, *_string) == VCL_UTF8_ACCEPT )
 			{
 				appendGlyph(_fontHandle, codepoint, true);
 			}
@@ -354,13 +354,13 @@ void TextBuffer::appendText(FontHandle _fontHandle, const char* _string, const c
 
 	for (; *_string && _string < _end ; ++_string)
 	{
-		if (utf8_decode(&state, (uint32_t*)&codepoint, *_string) == UTF8_ACCEPT )
+		if (utf8_decode(&state, (uint32_t*)&codepoint, *_string) == VCL_UTF8_ACCEPT )
 		{
 			appendGlyph(_fontHandle, codepoint, false);
 		}
 	}
 
-	BX_ASSERT(state == UTF8_ACCEPT, "The string is not well-formed");
+	BX_ASSERT(state == VCL_UTF8_ACCEPT, "The string is not well-formed");
 }
 
 void TextBuffer::appendText(FontHandle _fontHandle, const wchar_t* _string, const wchar_t* _end)

@@ -27,6 +27,8 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 public:
     BoundingBoxEditorBGFX() = default;
 
+    std::string name() const override { return "Bounding Box"; }
+
     BoundingBoxEditorSettings& settings() override { return mSettings; }
 
     const BoundingBoxEditorSettings& settings() const override
