@@ -30,6 +30,8 @@ public:
 
     // Editor implementation
 
+    std::string name() const override { return "Mesh Selector"; }
+
     EditorSettings& settings() override { return mSettings; }
 
     const EditorSettings& settings() const override { return mSettings; }

@@ -143,6 +143,8 @@ public:
         Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
     }
 
+    std::string name() const override { return "Selection"; }
+
     void setSelectionBoxColor(const Color& color)
     {
         mSettings.selectionBoxColor = color;

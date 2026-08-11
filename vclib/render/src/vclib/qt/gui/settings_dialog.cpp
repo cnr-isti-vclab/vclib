@@ -8,8 +8,8 @@
 #include <vclib/qt/gui/settings_dialog.h>
 #include "ui_settings_dialog.h"
 
-#include <vclib/qt/gui/toolbar_frames/settings/bounding_box_editor_settings_frame.h>
-#include <vclib/qt/gui/toolbar_frames/settings/selection_editor_settings_frame.h>
+#include <vclib/base/system.h>
+#include <QVBoxLayout>
 
 #include <vclib/base/system.h>
 
@@ -23,24 +23,25 @@
 namespace vcl::qt {
 
 SettingsDialog::SettingsDialog(
-    const SelectionEditorSettings&   selSts,
-    const BoundingBoxEditorSettings& bboxSts,
-    QWidget*                         parent) :
-        QDialog(parent),
-        mUI(new Ui::SettingsDialog),
-        mSelSts(selSts),
-        mBBoxSts(bboxSts)
+    const SettingsDialogData& data,
+    QToolBar*                 toolbar,
+    QWidget*                  parent)
+    : QDialog(parent),
+      mUI(new Ui::SettingsDialog),
+      mToolBar(toolbar),
+      mData(data)
 {
     mUI->setupUi(this);
 
-    // Set up the frames inside the tabs
-    auto* selFrame = new SelectionEditorSettingsFrame(mSelSts, this);
-    mUI->verticalLayout_selection->addWidget(selFrame);
-    mUI->verticalLayout_selection->addStretch(); // push widgets to the top
-
-    auto* bboxFrame = new BoundingBoxEditorSettingsFrame(mBBoxSts, this);
-    mUI->verticalLayout_bbox->addWidget(bboxFrame);
-    mUI->verticalLayout_bbox->addStretch(); // push widgets to the top
+    // Populate Editors tab
+    for (const auto& tab : mData.tabs()) {
+        QWidget* page = new QWidget();
+        QVBoxLayout* layout = new QVBoxLayout(page);
+        layout->addWidget(tab->createWidget(page));
+        layout->addStretch();
+        
+        mUI->editorsTabWidget->addTab(page, tab->name());
+    }
 
     // Sync QListWidget selection to QStackedWidget page
     connect(mUI->categoryList, &QListWidget::currentRowChanged,
@@ -60,15 +61,7 @@ SettingsDialog::~SettingsDialog()
     delete mUI;
 }
 
-const SelectionEditorSettings& SettingsDialog::selectionSettings() const
-{
-    return mSelSts;
-}
-
-const BoundingBoxEditorSettings& SettingsDialog::boundingBoxSettings() const
-{
-    return mBBoxSts;
-}
+// Removed hardcoded getters
 
 void SettingsDialog::onApplyClicked()
 {
@@ -78,8 +71,9 @@ void SettingsDialog::onApplyClicked()
 void SettingsDialog::onSaveDefaultsClicked()
 {
     nlohmann::json j;
-    mSelSts.saveSettings(j["Editors"]);
-    mBBoxSts.saveSettings(j["Editors"]);
+    for (const auto& tab : mData.tabs()) {
+        tab->saveSettings(j["Editors"]);
+    }
 
     std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
     std::string filePath = (configDir / "render_settings.json").string();

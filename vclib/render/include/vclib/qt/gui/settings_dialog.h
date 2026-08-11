@@ -8,9 +8,10 @@
 #ifndef VCL_QT_GUI_SETTINGS_DIALOG_H
 #define VCL_QT_GUI_SETTINGS_DIALOG_H
 
+#include "settings_dialog/settings_dialog_data.h"
+
 #include <QDialog>
-#include <vclib/render/settings/bounding_box_editor_settings.h>
-#include <vclib/render/settings/selection_editor_settings.h>
+#include <QToolBar>
 
 namespace vcl::qt {
 
@@ -22,15 +23,17 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
 
+    Ui::SettingsDialog* mUI;
+    QToolBar*           mToolBar;
+
+    const SettingsDialogData& mData;
+
 public:
     explicit SettingsDialog(
-        const SelectionEditorSettings&   selSts,
-        const BoundingBoxEditorSettings& bboxSts,
-        QWidget*                         parent = nullptr);
+        const SettingsDialogData& data,
+        QToolBar*                 toolbar,
+        QWidget*                  parent = nullptr);
     ~SettingsDialog();
-
-    const SelectionEditorSettings& selectionSettings() const;
-    const BoundingBoxEditorSettings& boundingBoxSettings() const;
 
 signals:
     void applied();
@@ -39,10 +42,6 @@ private slots:
     void onApplyClicked();
     void onSaveDefaultsClicked();
 
-private:
-    Ui::SettingsDialog*       mUI;
-    SelectionEditorSettings   mSelSts;
-    BoundingBoxEditorSettings mBBoxSts;
 };
 
 } // namespace vcl::qt

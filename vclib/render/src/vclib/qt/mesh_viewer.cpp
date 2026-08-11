@@ -521,32 +521,12 @@ void MeshViewer::renderModeChanged()
 
 void MeshViewer::openSettings()
 {
-    SelectionEditorSettings selSts;
-    if (mSelectionEditor) {
-        selSts = mSelectionEditor->settings();
-    }
-    
-    BoundingBoxEditorSettings bboxSts;
-    if (mBoundingBoxEditor) {
-        bboxSts = mBoundingBoxEditor->settings();
-    }
-
-    SettingsDialog dialog(selSts, bboxSts, this);
+    SettingsDialog dialog(mSettingsData, mUI->toolBar, this);
     
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
-        if (mSelectionEditor) {
-            mSelectionEditor->settings() = dialog.selectionSettings();
-            mSelectionEditor->refreshSettings();
-            for (auto* f : mUI->toolBar->findChildren<SelectionEditorSettingsFrame*>()) {
-                f->updateGUI();
-            }
-        }
-        if (mBoundingBoxEditor) {
-            mBoundingBoxEditor->settings() = dialog.boundingBoxSettings();
-            mBoundingBoxEditor->refreshSettings();
-            for (auto* f : mUI->toolBar->findChildren<BoundingBoxEditorSettingsFrame*>()) {
-                f->updateGUI();
-            }
+        for (auto& tab : mSettingsData.tabs()) {
+            tab->applySettings();
+            tab->updateToolbarFrames(mUI->toolBar);
         }
         viewer().update();
     });

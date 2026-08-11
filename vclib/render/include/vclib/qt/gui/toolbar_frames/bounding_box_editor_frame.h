@@ -62,6 +62,7 @@ template<typename ViewerType>
 struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
 {
     using FrameType = BoundingBoxEditorFrame<ViewerType>;
+    using SettingsFrameType = BoundingBoxEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

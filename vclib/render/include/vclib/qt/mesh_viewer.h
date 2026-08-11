@@ -9,9 +9,10 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
+#include "gui/settings_dialog/settings_dialog_data.h"
+#include "gui/text_edit_logger.h"
+#include "gui/toolbar_frames.h"
 
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -22,6 +23,7 @@
 #include <vclib/base.h>
 
 #include <nlohmann/json.hpp>
+
 
 #include <QMainWindow>
 
@@ -39,7 +41,10 @@ class ViewerSettingsFrame;
 
 class KeyFilter : public QObject
 {
-    using QObject::QObject;
+    Q_OBJECT
+
+public:
+    KeyFilter(QObject* parent = nullptr) : QObject(parent) {}
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
@@ -61,9 +66,8 @@ private:
 
     QAction* mSpacerAction = nullptr;
 
-    std::shared_ptr<vcl::DrawableObjectVector>          mDrawableObjectVector;
-    std::shared_ptr<vcl::SelectionEditor<ViewerType>>   mSelectionEditor;
-    std::shared_ptr<vcl::BoundingBoxEditor<ViewerType>> mBoundingBoxEditor;
+    std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
+    SettingsDialogData                         mSettingsData;
 
 protected:
     MeshViewerRenderApp& viewer() const;
@@ -195,16 +199,14 @@ public:
             });
         }
 
-        if constexpr (std::is_same_v<
-                          EditorT<ViewerType>,
-                          vcl::SelectionEditor<ViewerType>>) {
-            mSelectionEditor = editor;
-        }
-
-        if constexpr (std::is_same_v<
-                          EditorT<ViewerType>,
-                          vcl::BoundingBoxEditor<ViewerType>>) {
-            mBoundingBoxEditor = editor;
+        // Store editor for settings dialog if it has a settings frame
+        using SettingsFrame = typename EditorFrameTraits<EditorT, ViewerType>::SettingsFrameType;
+        if constexpr (!std::is_same_v<SettingsFrame, void>) {
+            mSettingsData.addTab(
+                std::make_shared<EditorSettingsTabImpl<EditorT<ViewerType>, SettingsFrame>>(
+                    editor, QString::fromStdString(editor->name())
+                )
+            );
         }
 
         // Load default settings if available

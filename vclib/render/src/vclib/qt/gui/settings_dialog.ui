@@ -57,23 +57,8 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QTabWidget" name="editorsTabWidget">
-          <property name="currentIndex">
-           <number>1</number>
-          </property>
-          <widget class="QWidget" name="selectionTab">
-           <attribute name="title">
-            <string>Selection</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_selection"/>
+          <widget class="QTabWidget" name="editorsTabWidget">
           </widget>
-          <widget class="QWidget" name="boundingBoxTab">
-           <attribute name="title">
-            <string>Bounding Box</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_bbox"/>
-          </widget>
-         </widget>
         </item>
        </layout>
       </widget>

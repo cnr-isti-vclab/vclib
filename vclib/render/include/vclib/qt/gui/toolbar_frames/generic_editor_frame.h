@@ -80,6 +80,7 @@ template<template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits
 {
     using FrameType = void;
+    using SettingsFrameType = void;
 };
 
 } // namespace vcl::qt

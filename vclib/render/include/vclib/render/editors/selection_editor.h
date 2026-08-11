@@ -38,6 +38,8 @@ class SelectionEditor : public Editor<ViewerDrawer>
 public:
     SelectionEditor() = default;
 
+    std::string name() const override { return "Selection"; }
+
     SelectionEditorSettings& settings() override { return mSettings; }
 
     const SelectionEditorSettings& settings() const override
