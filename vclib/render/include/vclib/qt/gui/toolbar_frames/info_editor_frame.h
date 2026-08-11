@@ -66,7 +66,7 @@ private slots:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::InfoEditor, ViewerType>
 {
-    using FrameType = InfoEditorFrame<ViewerType>;
+    using ToolbarFrameType = InfoEditorFrame<ViewerType>;
 };
 
 } // namespace vcl::qt

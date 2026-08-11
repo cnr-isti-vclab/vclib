@@ -115,7 +115,7 @@ private:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::InfoEditor, ViewerType>
 {
-    using FrameType = InfoEditorFrameImgui<ViewerType>;
+    using ToolbarFrameType = InfoEditorFrameImgui<ViewerType>;
 };
 
 } // namespace vcl::imgui

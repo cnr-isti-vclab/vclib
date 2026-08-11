@@ -120,7 +120,7 @@ private:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
 {
-    using FrameType = SelectionEditorFrameImgui<ViewerType>;
+    using ToolbarFrameType = SelectionEditorFrameImgui<ViewerType>;
 };
 
 } // namespace vcl::imgui

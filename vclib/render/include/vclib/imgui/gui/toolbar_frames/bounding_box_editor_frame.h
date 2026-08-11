@@ -112,7 +112,7 @@ private:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
 {
-    using FrameType = BoundingBoxEditorFrameImgui<ViewerType>;
+    using ToolbarFrameType = BoundingBoxEditorFrameImgui<ViewerType>;
 };
 
 } // namespace vcl::imgui

@@ -84,7 +84,7 @@ private slots:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
 {
-    using FrameType = SelectionEditorFrame<ViewerType>;
+    using ToolbarFrameType = SelectionEditorFrame<ViewerType>;
 };
 
 } // namespace vcl::qt
