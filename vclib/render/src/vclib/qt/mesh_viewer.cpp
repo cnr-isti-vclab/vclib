@@ -12,8 +12,8 @@
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/toolbar_frames.h>
-#include <vclib/qt/gui/toolbar_frames/settings/bounding_box_editor_settings_frame.h>
-#include <vclib/qt/gui/toolbar_frames/settings/selection_editor_settings_frame.h>
+#include <vclib/qt/gui/editor_settings_frames/bounding_box_editor_settings_frame.h>
+#include <vclib/qt/gui/editor_settings_frames/selection_editor_settings_frame.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 

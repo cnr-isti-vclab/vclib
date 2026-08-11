@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/qt/gui/toolbar_frames/settings/edit_mode_settings_frame.h>
+#include <vclib/qt/gui/editor_settings_frames/edit_mode_settings_frame.h>
 
 #include "ui_edit_mode_settings_frame.h"
 
