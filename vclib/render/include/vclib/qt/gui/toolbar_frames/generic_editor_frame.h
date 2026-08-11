@@ -69,6 +69,19 @@ protected slots:
     virtual void refreshSettings() {};
 };
 
+/**
+ * @brief Traits struct to associate an Editor type with its Qt Frame type.
+ *
+ * Specializations of this struct should define `FrameType` as the QWidget
+ * subclass that implements the UI frame for the specific editor. If no frame
+ * is associated, `FrameType` defaults to `void`.
+ */
+template<template<typename> typename EditorT, typename ViewerType>
+struct EditorFrameTraits
+{
+    using FrameType = void;
+};
+
 } // namespace vcl::qt
 
 #endif // VCL_QT_GUI_TOOLBAR_FRAMES_GENERIC_EDITOR_FRAME_H
