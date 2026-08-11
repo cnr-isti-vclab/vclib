@@ -9,9 +9,10 @@
 #define VCL_QT_GUI_TOOLBAR_FRAMES_SELECTION_EDITOR_FRAME_H
 
 #include "generic_editor_frame.h"
-#include "settings/selection_editor_settings_frame.h"
 
 #include <vclib/render/editors/selection_editor.h>
+
+#include <vclib/qt/gui/editor_settings_frames/selection_editor_settings_frame.h>
 
 namespace vcl::qt {
 
