@@ -35,9 +35,7 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
 
     target_compile_definitions(
         vclib-3rd-tinygltf
-        INTERFACE
-            VCLIB_WITH_TINYGLTF
-            TINYGLTF_NO_INCLUDE_JSON
+        INTERFACE VCLIB_WITH_TINYGLTF TINYGLTF_NO_INCLUDE_JSON
     )
 else()
     if(VCLIB_BUILD_MODULE_RENDER)
