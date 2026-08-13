@@ -80,9 +80,9 @@ public:
      *
      * @param[in] action
      */
-    static void setSelectionAction(SelectionAction action)
+    static void setSelectionAction(SelectionDragAction action)
     {
-        float val = action == SelectionAction::SUBTRACT ? 1.0 : 0.0;
+        float val = action == SelectionDragAction::SUBTRACT ? 1.0 : 0.0;
         sMeshIDSelectionActionData[1] = val;
     }
 
