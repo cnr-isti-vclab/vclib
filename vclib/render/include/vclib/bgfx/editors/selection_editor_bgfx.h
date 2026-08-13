@@ -411,12 +411,12 @@ private:
     {
         std::vector<SelectionMode> modes;
         if (mSettings.selectVertices)
-            modes.push_back({SelectionPrimitive::VERTEX, action});
+            modes.emplace_back(SelectionPrimitive::VERTEX, action);
         if (mSettings.selectFaces)
-            modes.push_back(
-                {SelectionPrimitive::FACE,
-                 action,
-                 static_cast<bool>(mSettings.onlyVisible)});
+            modes.emplace_back(
+                SelectionPrimitive::FACE,
+                action,
+                static_cast<bool>(mSettings.onlyVisible));
         return modes;
     }
 
@@ -425,12 +425,12 @@ private:
     {
         std::vector<SelectionMode> modes;
         if (mSettings.selectVertices)
-            modes.push_back({SelectionPrimitive::VERTEX, action});
+            modes.emplace_back(SelectionPrimitive::VERTEX, action);
         if (mSettings.selectFaces)
-            modes.push_back(
-                {SelectionPrimitive::FACE,
-                 action,
-                 static_cast<bool>(mSettings.onlyVisible)});
+            modes.emplace_back(
+                SelectionPrimitive::FACE,
+                action,
+                static_cast<bool>(mSettings.onlyVisible));
         return modes;
     }
 
