@@ -30,6 +30,25 @@ namespace vcl {
 template<typename ViewerDrawer>
 class SelectionEditorBGFX : public Editor<ViewerDrawer>
 {
+public:
+    enum class SelectionKeyAction {
+        SELECT_ALL,
+        DESELECT_ALL,
+        INVERT_SELECTION
+    };
+    using KeyMap =
+        BindingMap<std::pair<Key::Enum, KeyModifiers>, SelectionKeyAction>;
+
+    enum class SelectionMouseAction {
+        REGULAR_SELECTION,
+        ADD_SELECTION,
+        SUBTRACT_SELECTION
+    };
+    using MouseMap = BindingMap<
+        std::pair<MouseButton::Enum, KeyModifiers>,
+        SelectionMouseAction>;
+
+private:
     using Base = Editor<ViewerDrawer>;
 
     // ---- BGFX rendering resources ----
@@ -59,6 +78,12 @@ class SelectionEditorBGFX : public Editor<ViewerDrawer>
     bool mActionCreationPending = false;
 
     SelectionEditorSettings mSettings;
+
+    KeyMap mKeyBindings = defaultKeyMap();
+
+    MouseMap mMouseBindings = defaultMouseMap();
+
+    std::optional<SelectionMouseAction> mCurrentMouseAction;
 
 public:
     SelectionEditorBGFX()
@@ -143,13 +168,40 @@ public:
         Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
     }
 
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Vertex Selection",
+            {Key::V, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                mSettings.selectVertices = !mSettings.selectVertices;
+                bool anyActive =
+                    mSettings.selectVertices || mSettings.selectFaces;
+                Base::setActive(anyActive);
+                Base::notifyStateUpdated();
+                Base::viewerUpdate();
+            });
+
+        Base::viewerRegisterGlobalAction(
+            "Toggle Face Selection",
+            {Key::F, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                mSettings.selectFaces = !mSettings.selectFaces;
+                bool anyActive =
+                    mSettings.selectVertices || mSettings.selectFaces;
+                Base::setActive(anyActive);
+                Base::notifyStateUpdated();
+                Base::viewerUpdate();
+            });
+    }
+
     void setSelectionBoxColor(const Color& color)
     {
         mSettings.selectionBoxColor = color;
         mScreenSpaceBox.setColor(color);
     }
 
-    std::string name() const override { return "Selection"; }
+    std::string name() const override { return "Selection Editor"; }
 
     SelectionEditorSettings& settings() override { return mSettings; }
 
@@ -167,6 +219,14 @@ public:
     {
         mSettings.saveSettings(j);
     }
+
+    KeyMap& keyBindings() { return mKeyBindings; }
+
+    const KeyMap& keyBindings() const { return mKeyBindings; }
+
+    MouseMap& mouseBindings() { return mMouseBindings; }
+
+    const MouseMap& mouseBindings() const { return mMouseBindings; }
 
     void draw(uint viewId) override
     {
@@ -249,35 +309,27 @@ public:
         if (!isSelectionActive() || mSelectionInProgress)
             return false;
 
-        if (modifiers.only(KeyModifier::CONTROL)) {
-            using enum SelectionAction;
-            switch (key) {
-            case Key::A:
-                if (!mActionCreationPending) {
-                    savePreSelectionStates();
-                    mActionCreationPending = true;
-                }
-                mCurrentSelectionModes = actionModesForSettings<ALL>();
-                mSelectionCalcRequired = true;
-                return true;
-            case Key::D:
-                if (!mActionCreationPending) {
-                    savePreSelectionStates();
-                    mActionCreationPending = true;
-                }
-                mCurrentSelectionModes = actionModesForSettings<NONE>();
-                mSelectionCalcRequired = true;
-                return true;
-            case Key::I:
-                if (!mActionCreationPending) {
-                    savePreSelectionStates();
-                    mActionCreationPending = true;
-                }
-                mCurrentSelectionModes = actionModesForSettings<INVERT>();
-                mSelectionCalcRequired = true;
-                return true;
-            default: break;
+        auto actionOpt = mKeyBindings.action({key, modifiers});
+        if (actionOpt.has_value()) {
+            if (!mActionCreationPending) {
+                savePreSelectionStates();
+                mActionCreationPending = true;
             }
+
+            using enum SelectionAction;
+            switch (actionOpt.value()) {
+            case SelectionKeyAction::SELECT_ALL:
+                mCurrentSelectionModes = actionModesForSettings<ALL>();
+                break;
+            case SelectionKeyAction::DESELECT_ALL:
+                mCurrentSelectionModes = actionModesForSettings<NONE>();
+                break;
+            case SelectionKeyAction::INVERT_SELECTION:
+                mCurrentSelectionModes = actionModesForSettings<INVERT>();
+                break;
+            }
+            mSelectionCalcRequired = true;
+            return true;
         }
         return false;
     }
@@ -294,10 +346,16 @@ public:
         if (mSelectionInProgress) {
             mSelectionBox = Box2d(mSelectionAnchor.value());
             mSelectionBox->add(Point2d {x, y});
-            mCurrentSelectionModes = selectionModesForModifier(modifiers);
+
+            if (mCurrentMouseAction.has_value()) {
+                mCurrentSelectionModes =
+                    selectionModesForAction(mCurrentMouseAction.value());
+            }
+
             mSelectionCalcRequired = true;
+            return true; // Consume event only while dragging
         }
-        return true; // Consume all mouse-move events while selection is active
+        return false; // Let it propagate if not dragging
     }
 
     bool onMousePress(
@@ -308,17 +366,22 @@ public:
     {
         if (!isSelectionActive())
             return false;
-        if (button == MouseButton::LEFT && !mSelectionInProgress) {
+
+        auto actionOpt = mMouseBindings.action({button, modifiers});
+        if (actionOpt.has_value() && !mSelectionInProgress) {
             if (!mActionCreationPending) {
                 savePreSelectionStates();
                 mActionCreationPending = true;
             }
-            mSelectionInProgress   = true;
-            mSelectionAnchor       = Point2d {x, y};
-            mSelectionBox          = Box2d({x, y});
-            mCurrentSelectionModes = selectionModesForModifier(modifiers);
+            mSelectionInProgress = true;
+            mSelectionAnchor     = Point2d {x, y};
+            mSelectionBox        = Box2d({x, y});
+            mCurrentMouseAction  = actionOpt.value();
+            mCurrentSelectionModes =
+                selectionModesForAction(mCurrentMouseAction.value());
+            return true; // Smart blocking
         }
-        return true; // Consume all mouse-press events while selection is active
+        return false;
     }
 
     bool onMouseRelease(
@@ -327,19 +390,23 @@ public:
         double              y,
         const KeyModifiers& modifiers) override
     {
-        if (button == MouseButton::LEFT && mSelectionInProgress) {
-            mSelectionInProgress   = false;
+        if (mSelectionInProgress) {
+            // We don't check the button here to gracefully handle edge cases
+            // where release might happen differently, but we could enforce it.
+            mSelectionInProgress = false;
+            mCurrentMouseAction.reset();
             mSelectionCalcRequired = true;
             // Force a repaint so the selection box disappears immediately
             Base::viewerUpdate();
+            return true; // We handled the release of our drag
         }
-        return isSelectionActive();
+        return false;
     }
 
     bool onMouseScroll(double dx, double dy, const KeyModifiers& modifiers)
         override
     {
-        return isSelectionActive();
+        return false; // SelectionEditor doesn't consume scroll events
     }
 
 private:
@@ -378,45 +445,37 @@ private:
     }
 
     /**
-     * @brief Maps modifier keys to the corresponding SelectionAction.
-     *
-     * No modifier  → REGULAR (replace)
-     * Ctrl         → ADD
-     * Ctrl+Shift   → SUBTRACT
-     */
-    static SelectionAction actionFromModifier(const KeyModifiers& mods)
-    {
-        if (mods[KeyModifier::CONTROL] && mods[KeyModifier::SHIFT])
-            return SelectionAction::SUBTRACT;
-        if (mods[KeyModifier::CONTROL])
-            return SelectionAction::ADD;
-        return SelectionAction::REGULAR;
-    }
-
-    /**
-     * @brief Maps the current settings and drag modifier to the appropriate
+     * @brief Maps the SelectionMouseAction to the appropriate
      * list of SelectionModes (one per active selection type).
      *
      * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
      * mode and a face mode are returned. 'onlyVisible' is applied only to
      * face selection.
      */
-    std::vector<SelectionMode> selectionModesForModifier(
-        const KeyModifiers& mods) const
+    std::vector<SelectionMode> selectionModesForAction(
+        SelectionMouseAction action) const
     {
-        bool sv = mSettings.selectVertices;
-        bool sf = mSettings.selectFaces;
-        bool ov = mSettings.onlyVisible;
-
-        auto action = actionFromModifier(mods);
+        SelectionAction selAction;
+        switch (action) {
+        case SelectionMouseAction::ADD_SELECTION:
+            selAction = SelectionAction::ADD;
+            break;
+        case SelectionMouseAction::SUBTRACT_SELECTION:
+            selAction = SelectionAction::SUBTRACT;
+            break;
+        case SelectionMouseAction::REGULAR_SELECTION:
+        default: selAction = SelectionAction::REGULAR; break;
+        }
 
         std::vector<SelectionMode> modes;
-        if (sv) {
-            modes.push_back({SelectionPrimitive::VERTEX, action});
+        if (mSettings.selectVertices) {
+            modes.push_back({SelectionPrimitive::VERTEX, selAction});
         }
-        if (sf) {
+        if (mSettings.selectFaces) {
             modes.push_back(
-                {SelectionPrimitive::FACE, action, static_cast<bool>(ov)});
+                {SelectionPrimitive::FACE,
+                 selAction,
+                 static_cast<bool>(mSettings.onlyVisible)});
         }
         return modes;
     }
@@ -703,6 +762,31 @@ private:
             Base::viewerUpdate();
         }
         mPreSelectionStates.clear();
+    }
+
+    static KeyMap defaultKeyMap()
+    {
+        using enum Key::Enum;
+        using enum KeyModifier::Enum;
+
+        return KeyMap {
+            {{A, {CONTROL}}, SelectionKeyAction::SELECT_ALL      },
+            {{D, {CONTROL}}, SelectionKeyAction::DESELECT_ALL    },
+            {{I, {CONTROL}}, SelectionKeyAction::INVERT_SELECTION}
+        };
+    }
+
+    static MouseMap defaultMouseMap()
+    {
+        using enum MouseButton::Enum;
+        using enum KeyModifier::Enum;
+
+        return MouseMap {
+            {{LEFT, {NO_MODIFIER}},    SelectionMouseAction::REGULAR_SELECTION},
+            {{LEFT, {CONTROL}},        SelectionMouseAction::ADD_SELECTION    },
+            {{LEFT, {CONTROL, SHIFT}},
+             SelectionMouseAction::SUBTRACT_SELECTION                         }
+        };
     }
 };
 

@@ -40,6 +40,8 @@ class Editor
 
     bool mIsActive = false;
 
+    std::function<void()> mOnStateUpdatedCallback;
+
 public:
     using ViewerDrawerType = ViewerDrawer;
 
@@ -69,7 +71,22 @@ public:
      *
      * @param[in] active: the new active state.
      */
-    virtual void setActive(bool active) { mIsActive = active; }
+    virtual void setActive(bool active) 
+    { 
+        mIsActive = active; 
+        notifyStateUpdated();
+    }
+
+    /**
+     * @brief Sets the callback to be invoked when the editor state changes.
+     * 
+     * This is typically used by UI components to stay synchronized with the
+     * internal state of the editor.
+     */
+    void setOnStateUpdatedCallback(std::function<void()> cb)
+    {
+        mOnStateUpdatedCallback = std::move(cb);
+    }
 
     /**
      * @brief Returns the editor settings.
@@ -110,6 +127,14 @@ public:
      * Subclasses may override this function to react to settings updates.
      */
     virtual void refreshSettings() {}
+
+    /**
+     * @brief Called by the viewer immediately after the viewer pointer is set.
+     * 
+     * Subclasses may override this function to perform initialization that 
+     * requires access to the viewer, such as registering global actions.
+     */
+    virtual void onViewerSet() {}
 
     /**
      * @brief Draws the editor content for the given view.
@@ -270,6 +295,16 @@ public:
 
 protected:
     /**
+     * @brief Notifies listeners (e.g. GUI) that the internal state or settings
+     * of the editor have changed and need visual synchronization.
+     */
+    void notifyStateUpdated() const
+    {
+        if (mOnStateUpdatedCallback)
+            mOnStateUpdatedCallback();
+    }
+
+    /**
      * @brief Returns the shared drawable object vector of the viewer.
      * @return a shared pointer to the DrawableObjectVector.
      */
@@ -374,6 +409,22 @@ protected:
     {
         assert(mViewer);
         mViewer->pushUndoRedoAction(std::move(action));
+    }
+
+    /**
+     * @brief Registers a global action in the viewer.
+     *
+     * @param[in] name: The unique name of the global action.
+     * @param[in] defaultShortcut: The default keyboard shortcut to trigger the action.
+     * @param[in] callback: The function to execute when the shortcut is pressed.
+     */
+    void viewerRegisterGlobalAction(
+        const std::string&                 name,
+        std::pair<Key::Enum, KeyModifiers> defaultShortcut,
+        std::function<void()>              callback)
+    {
+        assert(mViewer);
+        mViewer->registerGlobalAction(name, defaultShortcut, std::move(callback));
     }
 
 private:

@@ -31,6 +31,16 @@ public:
 
     std::string name() const override { return "Bounding Box"; }
 
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Bounding Box",
+            {Key::B, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                this->setActive(!this->isActive());
+            });
+    }
+
     BoundingBoxEditorSettings& settings() override { return mSettings; }
 
     const BoundingBoxEditorSettings& settings() const override
