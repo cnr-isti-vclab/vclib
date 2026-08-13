@@ -41,9 +41,9 @@ private:
 
     using ScrollAxis = unsigned char;
     using DragMotionMap =
-        std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>;
+        BindingMap<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>;
     using ScrollAtomicMap =
-        std::map<std::pair<KeyModifiers, ScrollAxis>, MotionType>;
+        BindingMap<std::pair<KeyModifiers, ScrollAxis>, MotionType>;
     using KeyAtomicMap = std::map<
         std::pair<Key::Enum, KeyModifiers>,
         std::function<void(TrackBallEventDrawerT& d)>>;
@@ -313,10 +313,10 @@ private:
     void moveMouse(int x, int y)
     {
         // ugly AF
-        auto it = mDragMotionMap.find(
+        auto actionOpt = mDragMotionMap.action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         mTrackball.setMousePosition(x, y);
         mTrackball.update();
@@ -331,10 +331,10 @@ private:
 
         mCurrentMouseButton = button;
 
-        auto it =
-            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        auto actionOpt =
+            mDragMotionMap.action(std::make_pair(button, mCurrentKeyModifiers));
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
             // no need to update here, it will be updated in moveMouse
             // for event driven rendering (e.g., Qt) this can trigger
             // an unwanted drag motion using the previous mouse position
@@ -348,10 +348,10 @@ private:
             mCurrentMouseButton = MouseButton::NO_BUTTON;
         }
 
-        auto it =
-            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.endDragMotion(it->second);
+        auto actionOpt =
+            mDragMotionMap.action(std::make_pair(button, mCurrentKeyModifiers));
+        if (actionOpt.has_value()) {
+            mTrackball.endDragMotion(actionOpt.value());
             mTrackball.update();
         }
     }
@@ -363,18 +363,18 @@ private:
         }
 
         if (pixelDeltaX != 0) {
-            auto it =
-                mScrollAtomicMap.find({mCurrentKeyModifiers, ScrollAxis(0)});
-            if (it != mScrollAtomicMap.end()) {
-                mTrackball.applyAtomicMotion(it->second, pixelDeltaX);
+            auto actionOpt =
+                mScrollAtomicMap.action({mCurrentKeyModifiers, ScrollAxis(0)});
+            if (actionOpt.has_value()) {
+                mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaX);
             }
         }
 
         if (pixelDeltaY != 0) {
-            auto it =
-                mScrollAtomicMap.find({mCurrentKeyModifiers, ScrollAxis(1)});
-            if (it != mScrollAtomicMap.end()) {
-                mTrackball.applyAtomicMotion(it->second, pixelDeltaY);
+            auto actionOpt =
+                mScrollAtomicMap.action({mCurrentKeyModifiers, ScrollAxis(1)});
+            if (actionOpt.has_value()) {
+                mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaY);
             }
         }
     }
@@ -388,10 +388,10 @@ private:
         }
 
         // dragging
-        auto it = mDragMotionMap.find(
+        auto actionOpt = mDragMotionMap.action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         else {
             mTrackball.endDragMotion(currentMotion());
@@ -406,10 +406,10 @@ private:
             return;
 
         // dragging
-        auto it = mDragMotionMap.find(
+        auto actionOpt = mDragMotionMap.action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         else {
             mTrackball.endDragMotion(currentMotion());
