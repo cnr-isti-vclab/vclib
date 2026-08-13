@@ -183,18 +183,6 @@ public:
     // trackball gizmo
 
     /**
-     * @brief Registers a new atomic action or overwrites an existing one.
-     *
-     * @param[in] name: The unique identifier/name for the action.
-     * @param[in] callback: The function to execute when the action is
-     * triggered.
-     */
-    void registerAtomicAction(const std::string& name, AtomicActionCallback callback)
-    {
-        mAtomicActionRegistry[name] = callback;
-    }
-
-    /**
      * @brief Check if the trackball is visible.
      *
      * @return true if the trackball is visible, false otherwise.
@@ -222,6 +210,43 @@ public:
     void setShortcutToggleTrackballCallback(std::function<void(void)> callback)
     {
         mCustomShortcutToggleTrackballCallback = callback;
+    }
+
+    // event key/mouse assignments
+
+    /**
+     * @brief Returns a reference to the DragMotionMap to allow reading or
+     * modifying drag bindings.
+     */
+    DragMotionMap& dragMotionMap() { return mDragMotionMap; }
+    const DragMotionMap& dragMotionMap() const { return mDragMotionMap; }
+
+    /**
+     * @brief Returns a reference to the ScrollAtomicMap to allow reading or
+     * modifying scroll bindings.
+     */
+    ScrollAtomicMap& scrollAtomicMap() { return mScrollAtomicMap; }
+    const ScrollAtomicMap& scrollAtomicMap() const { return mScrollAtomicMap; }
+
+    /**
+     * @brief Returns a reference to the KeyAtomicMap to allow reading or
+     * modifying key bindings.
+     */
+    KeyAtomicMap& keyAtomicMap() { return mKeyAtomicMap; }
+    const KeyAtomicMap& keyAtomicMap() const { return mKeyAtomicMap; }
+
+    /**
+     * @brief Registers a new atomic action or overwrites an existing one.
+     *
+     * @param[in] name: The unique identifier/name for the action.
+     * @param[in] callback: The function to execute when the action is
+     * triggered.
+     */
+    void registerAtomicAction(
+        const std::string&   name,
+        AtomicActionCallback callback)
+    {
+        mAtomicActionRegistry[name] = callback;
     }
 
     // events
