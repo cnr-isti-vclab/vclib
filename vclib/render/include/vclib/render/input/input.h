@@ -85,10 +85,10 @@ struct Key
         RIGHT = 0x01000014,
         DOWN  = 0x01000015,
 
-        SHIFT   = 0x01000020, // modifiers
-        CONTROL = 0x01000021,
-        SUPER   = 0x01000022,
-        ALT     = 0x01000023,
+        SHIFT_KEY   = 0x01000020, // modifiers
+        CONTROL_KEY = 0x01000021,
+        SUPER_KEY   = 0x01000022,
+        ALT_KEY     = 0x01000023,
 
         CAPS_LOCK   = 0x01000024,
         NUM_LOCK    = 0x01000025,
@@ -124,17 +124,17 @@ struct Key
 
 inline bool isModifierKey(Key::Enum key)
 {
-    return key == Key::SHIFT || key == Key::CONTROL || key == Key::SUPER ||
-           key == Key::ALT;
+    return key == Key::SHIFT_KEY || key == Key::CONTROL_KEY ||
+           key == Key::SUPER_KEY || key == Key::ALT_KEY;
 }
 
 inline Key::Enum modifierToKey(KeyModifier::Enum modifier)
 {
     switch (modifier) {
-    case KeyModifier::SHIFT: return Key::SHIFT;
-    case KeyModifier::CONTROL: return Key::CONTROL;
-    case KeyModifier::SUPER: return Key::SUPER;
-    case KeyModifier::ALT: return Key::ALT;
+    case KeyModifier::SHIFT: return Key::SHIFT_KEY;
+    case KeyModifier::CONTROL: return Key::CONTROL_KEY;
+    case KeyModifier::SUPER: return Key::SUPER_KEY;
+    case KeyModifier::ALT: return Key::ALT_KEY;
     default: return Key::UNKNOWN;
     }
 }
@@ -142,10 +142,10 @@ inline Key::Enum modifierToKey(KeyModifier::Enum modifier)
 inline KeyModifier::Enum keyToModifier(Key::Enum key)
 {
     switch (key) {
-    case Key::SHIFT: return KeyModifier::SHIFT;
-    case Key::CONTROL: return KeyModifier::CONTROL;
-    case Key::SUPER: return KeyModifier::SUPER;
-    case Key::ALT: return KeyModifier::ALT;
+    case Key::SHIFT_KEY: return KeyModifier::SHIFT;
+    case Key::CONTROL_KEY: return KeyModifier::CONTROL;
+    case Key::SUPER_KEY: return KeyModifier::SUPER;
+    case Key::ALT_KEY: return KeyModifier::ALT;
     default: return KeyModifier::NO_MODIFIER;
     }
 }

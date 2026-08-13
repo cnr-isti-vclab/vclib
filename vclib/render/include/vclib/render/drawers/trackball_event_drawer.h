@@ -18,7 +18,9 @@
 
 #include <vclib/space/core.h>
 
+#include <functional>
 #include <map>
+#include <string>
 
 namespace vcl {
 
@@ -44,9 +46,9 @@ private:
         BindingMap<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>;
     using ScrollAtomicMap =
         BindingMap<std::pair<KeyModifiers, ScrollAxis>, MotionType>;
-    using KeyAtomicMap = std::map<
-        std::pair<Key::Enum, KeyModifiers>,
-        std::function<void(TrackBallEventDrawerT& d)>>;
+    using KeyAtomicMap =
+        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+    using AtomicActionCallback = std::function<void(TrackBallEventDrawerT& d)>;
 
     // translation step in camera space
     static constexpr double DISCRETE_TRANSLATION_STEP = 0.1;
@@ -82,6 +84,9 @@ private:
     ScrollAtomicMap mScrollAtomicMap = defaultScrollMotionMap();
 
     KeyAtomicMap mKeyAtomicMap = defaultKeyAtomicMap();
+
+    std::map<std::string, AtomicActionCallback> mAtomicActionRegistry =
+        defaultAtomicActionRegistry();
 
 public:
     TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
@@ -176,6 +181,18 @@ public:
     }
 
     // trackball gizmo
+
+    /**
+     * @brief Registers a new atomic action or overwrites an existing one.
+     *
+     * @param[in] name: The unique identifier/name for the action.
+     * @param[in] callback: The function to execute when the action is
+     * triggered.
+     */
+    void registerAtomicAction(const std::string& name, AtomicActionCallback callback)
+    {
+        mAtomicActionRegistry[name] = callback;
+    }
 
     /**
      * @brief Check if the trackball is visible.
@@ -382,9 +399,12 @@ private:
     void keyPress(Key::Enum key)
     {
         // atomic motions are enabled while dragging
-        auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
-        if (atomicOp != mKeyAtomicMap.end()) {
-            atomicOp->second(*this);
+        auto actionNameOpt = mKeyAtomicMap.action({key, mCurrentKeyModifiers});
+        if (actionNameOpt.has_value()) {
+            auto it = mAtomicActionRegistry.find(actionNameOpt.value());
+            if (it != mAtomicActionRegistry.end()) {
+                it->second(*this);
+            }
         }
 
         // dragging
@@ -472,89 +492,129 @@ private:
 
     static KeyAtomicMap defaultKeyAtomicMap()
     {
-        using TBED = TrackBallEventDrawerT;
-
         using enum Key::Enum;
+        using enum KeyModifier::Enum;
 
         return KeyAtomicMap {
-            {{R, {KeyModifier::NO_MODIFIER}},
+            {{R, {NO_MODIFIER}},       "Reset Trackball"        },
+            {{R, {CONTROL, SHIFT}},    "Reset Directional Light"},
+
+            // rotate
+            {{NP_2, {NO_MODIFIER}},    "Rotate X+"              },
+            {{NP_4, {NO_MODIFIER}},    "Rotate Y-"              },
+            {{NP_6, {NO_MODIFIER}},    "Rotate Y+"              },
+            {{NP_8, {NO_MODIFIER}},    "Rotate X-"              },
+
+            // translate
+            {{UP, {NO_MODIFIER}},      "Translate Y+"           },
+            {{DOWN, {NO_MODIFIER}},    "Translate Y-"           },
+            {{LEFT, {NO_MODIFIER}},    "Translate X-"           },
+            {{RIGHT, {NO_MODIFIER}},   "Translate X+"           },
+
+            // set view
+            {{NP_1, {NO_MODIFIER}},    "View Front"             },
+            {{NP_7, {NO_MODIFIER}},    "View Top"               },
+            {{NP_3, {NO_MODIFIER}},    "View Right"             },
+            {{NP_1, {CONTROL}},        "View Back"              },
+            {{NP_7, {CONTROL}},        "View Bottom"            },
+            {{NP_3, {CONTROL}},        "View Left"              },
+
+            // projection mode
+            {{NP_5, {NO_MODIFIER}},    "Toggle Projection"      },
+
+            // rotate light
+            {{NP_2, {CONTROL, SHIFT}}, "Rotate Light X+"        },
+            {{NP_4, {CONTROL, SHIFT}}, "Rotate Light Y-"        },
+            {{NP_6, {CONTROL, SHIFT}}, "Rotate Light Y+"        },
+            {{NP_8, {CONTROL, SHIFT}}, "Rotate Light X-"        },
+        };
+    }
+
+    static std::map<std::string, AtomicActionCallback>
+    defaultAtomicActionRegistry()
+    {
+        using TBED = TrackBallEventDrawerT;
+
+        return {
+            {"Reset Trackball",
              [](TBED& d) {
                  d.reset();
              }},
-            {{R, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+            {"Reset Directional Light",
              [](TBED& d) {
                  d.mTrackball.resetDirectionalLight();
              }},
 
             // rotate
-            {{NP_2, {KeyModifier::NO_MODIFIER}},
+            {"Rotate X+",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
              }},
-            {{NP_4, {KeyModifier::NO_MODIFIER}},
+            {"Rotate Y-",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
              }},
-            {{NP_6, {KeyModifier::NO_MODIFIER}},
+            {"Rotate Y+",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
              }},
-            {{NP_8, {KeyModifier::NO_MODIFIER}},
+            {"Rotate X-",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
              }},
 
             // translate
-            {{UP, {KeyModifier::NO_MODIFIER}},
+            {"Translate Y+",
              [](TBED& d) {
                  translate(d.mTrackball, UNIT_Y * DISCRETE_TRANSLATION_STEP);
              }},
-            {{DOWN, {KeyModifier::NO_MODIFIER}},
+            {"Translate Y-",
              [](TBED& d) {
                  translate(d.mTrackball, -UNIT_Y * DISCRETE_TRANSLATION_STEP);
              }},
-            {{LEFT, {KeyModifier::NO_MODIFIER}},
+            {"Translate X-",
              [](TBED& d) {
                  translate(d.mTrackball, -UNIT_X * DISCRETE_TRANSLATION_STEP);
              }},
-            {{RIGHT, {KeyModifier::NO_MODIFIER}},
+            {"Translate X+",
              [](TBED& d) {
                  translate(d.mTrackball, UNIT_X * DISCRETE_TRANSLATION_STEP);
              }},
 
             // set view
-            {{NP_1, {KeyModifier::NO_MODIFIER}},
-             [](TBED& d) { // front
+            {"View Front",
+             [](TBED& d) {
                  d.mTrackball.reset();
              }},
-            {{NP_7, {KeyModifier::NO_MODIFIER}},
-             [](TBED& d) { // top
+            {"View Top",
+             [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_X, M_PI_2);
              }},
-            {{NP_3, {KeyModifier::NO_MODIFIER}},
-             [](TBED& d) { // right
+            {"View Right",
+             [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, -M_PI_2);
              }},
-            {{NP_1, {KeyModifier::CONTROL}},
-             [](TBED& d) { // back
+            {"View Back",
+             [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, M_PI);
              }},
-            {{NP_7, {KeyModifier::CONTROL}},
-             [](TBED& d) { // bottom
+            {"View Bottom",
+             [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_X, -M_PI_2);
              }},
-            {{NP_3, {KeyModifier::CONTROL}},
-             [](TBED& d) { // left
+            {"View Left",
+             [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, M_PI_2);
              }},
+
             // projection mode
-            {{NP_5, {KeyModifier::NO_MODIFIER}},
-             [](TBED& d) { // reset
+            {"Toggle Projection",
+             [](TBED& d) {
                  const auto v =
                      d.mTrackball.projectionMode() ==
                              Camera<Scalar>::ProjectionMode::PERSPECTIVE ?
@@ -564,19 +624,19 @@ private:
              }},
 
             // rotate light
-            {{NP_2, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+            {"Rotate Light X+",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
              }},
-            {{NP_4, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+            {"Rotate Light Y-",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
              }},
-            {{NP_6, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+            {"Rotate Light Y+",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
              }},
-            {{NP_8, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+            {"Rotate Light X-",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
              }},
