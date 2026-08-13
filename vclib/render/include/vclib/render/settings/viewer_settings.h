@@ -10,6 +10,7 @@
 
 #include <vclib/base.h>
 #include <vclib/render/settings/render_mode.h>
+#include <vclib/render/settings/trackball_settings.h>
 
 namespace vcl {
 
@@ -17,7 +18,7 @@ namespace vcl {
  * @brief Contains the settings for the viewer, such as the active render
  * mode, exposure, and background visualization options.
  */
-struct ViewerSettings
+struct ViewerSettings : public TrackballSettings
 {
     /**
      * @brief The tone mapping operators available when rendering.
@@ -76,6 +77,14 @@ struct ViewerSettings
      * @brief The tone mapping operator to use.
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
+
+    /**
+     * @brief Global actions registered by the viewer or editors.
+     */
+    using ViewerGlobalActionMap =
+        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+    
+    ViewerGlobalActionMap globalActionMap;
 };
 
 } // namespace vcl
