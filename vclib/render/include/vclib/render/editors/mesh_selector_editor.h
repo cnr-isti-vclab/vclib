@@ -15,6 +15,13 @@ namespace vcl {
 template<typename ViewerDrawer>
 class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
+public:
+    enum class MeshSelectorAction { SELECT_MESH };
+    using MouseMap = BindingMap<
+        std::pair<MouseButton::Enum, KeyModifiers>,
+        MeshSelectorAction>;
+
+private:
     using Base = Editor<ViewerDrawer>;
 
     // a callback function called when an object is selected
@@ -22,11 +29,20 @@ class MeshSelectorEditor : public Editor<ViewerDrawer>
 
     EditorSettings mSettings;
 
+    MouseMap mMouseBindings = {
+        {{MouseButton::RIGHT, {KeyModifier::NO_MODIFIER}},
+         MeshSelectorAction::SELECT_MESH}
+    };
+
 public:
     void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
     {
         mOnObjectSelectedFunction = f;
     }
+
+    MouseMap& mouseBindings() { return mMouseBindings; }
+
+    const MouseMap& mouseBindings() const { return mMouseBindings; }
 
     // Editor implementation
 
@@ -45,8 +61,12 @@ public:
         const vcl::KeyModifiers& modifiers) override
     {
         bool block = Base::onMousePress(button, x, y, modifiers);
+        if (block)
+            return true;
 
-        if (!block && button == vcl::MouseButton::RIGHT) {
+        auto action = mMouseBindings.action({button, modifiers});
+        if (action.has_value() &&
+            action.value() == MeshSelectorAction::SELECT_MESH) {
             auto callback = [&](uint id) {
                 if (id == vcl::UINT_NULL)
                     return;
@@ -58,8 +78,10 @@ public:
             };
 
             Base::viewerReadIdRequest(x, y, callback);
+            return true; // Smart blocking: consumed event
         }
-        return block;
+
+        return false;
     }
 };
 
