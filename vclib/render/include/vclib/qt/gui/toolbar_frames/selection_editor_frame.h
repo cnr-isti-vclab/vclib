@@ -68,6 +68,14 @@ public:
             Base::setSettingsFrame<SelectionEditorSettingsFrame>(settings);
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+
+        mSelectionEditor->setOnStateUpdatedCallback(
+            [this, selectVerticesButton, selectFacesButton]() {
+                selectVerticesButton->setChecked(
+                    mSelectionEditor->settings().selectVertices);
+                selectFacesButton->setChecked(
+                    mSelectionEditor->settings().selectFaces);
+            });
     }
 
 private slots:

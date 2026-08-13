@@ -166,13 +166,40 @@ public:
         Context::instance().releaseViewId(mVisibleSelectionViewIds[1]);
     }
 
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Vertex Selection",
+            {Key::V, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                mSettings.selectVertices = !mSettings.selectVertices;
+                bool anyActive =
+                    mSettings.selectVertices || mSettings.selectFaces;
+                Base::setActive(anyActive);
+                Base::notifyStateUpdated();
+                Base::viewerUpdate();
+            });
+
+        Base::viewerRegisterGlobalAction(
+            "Toggle Face Selection",
+            {Key::F, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                mSettings.selectFaces = !mSettings.selectFaces;
+                bool anyActive =
+                    mSettings.selectVertices || mSettings.selectFaces;
+                Base::setActive(anyActive);
+                Base::notifyStateUpdated();
+                Base::viewerUpdate();
+            });
+    }
+
     void setSelectionBoxColor(const Color& color)
     {
         mSettings.selectionBoxColor = color;
         mScreenSpaceBox.setColor(color);
     }
 
-    std::string name() const override { return "Selection"; }
+    std::string name() const override { return "Selection Editor"; }
 
     SelectionEditorSettings& settings() override { return mSettings; }
 

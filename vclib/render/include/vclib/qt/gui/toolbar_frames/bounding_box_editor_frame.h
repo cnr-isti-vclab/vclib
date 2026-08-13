@@ -47,6 +47,10 @@ public:
                 mBoundingBoxEditor->settings());
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+
+        mBoundingBoxEditor->setOnStateUpdatedCallback([this, editorButton]() {
+            editorButton->setChecked(mBoundingBoxEditor->isActive());
+        });
     }
 
 private slots:

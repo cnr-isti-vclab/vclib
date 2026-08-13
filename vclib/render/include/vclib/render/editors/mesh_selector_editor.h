@@ -46,6 +46,17 @@ public:
 
     // Editor implementation
 
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Mesh Selector",
+            {Key::M, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                Base::setActive(!Base::isActive());
+                Base::viewerUpdate();
+            });
+    }
+
     std::string name() const override { return "Mesh Selector"; }
 
     EditorSettings& settings() override { return mSettings; }

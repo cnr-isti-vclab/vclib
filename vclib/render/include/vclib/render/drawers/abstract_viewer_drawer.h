@@ -35,6 +35,12 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
+public:
+    using GlobalActionCallback = std::function<void()>;
+    using GlobalActionMap =
+        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+
+private:
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
 
@@ -42,6 +48,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 
     bool                      mEditorsEventsEnabled = true;
     std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
+
+    GlobalActionMap                             mGlobalActionMap;
+    std::map<std::string, GlobalActionCallback> mGlobalActionRegistry;
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
@@ -139,6 +148,26 @@ public:
         mOnEditorsEventsEnabledChangedCallback = std::move(callback);
     }
 
+    /**
+     * @brief Registers a global action and its default shortcut.
+     *
+     * @param[in] name: The unique name of the global action.
+     * @param[in] defaultShortcut: The default keyboard shortcut.
+     * @param[in] callback: The callback to execute when the action is
+     * triggered.
+     */
+    void registerGlobalAction(
+        const std::string&                 name,
+        std::pair<Key::Enum, KeyModifiers> defaultShortcut,
+        GlobalActionCallback               callback)
+    {
+        mGlobalActionRegistry[name] = std::move(callback);
+        // Set the default shortcut only if the action isn't already mapped
+        if (!mGlobalActionMap.input(name).has_value()) {
+            mGlobalActionMap.setBinding(name, defaultShortcut);
+        }
+    }
+
     const DrawableObjectVector& drawableObjectVector() const
     {
         return *mDrawList;
@@ -193,6 +222,7 @@ public:
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
+        editor->onViewerSet();
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
         return editor;
@@ -413,6 +443,15 @@ public:
         bool block = false;
 
         if (mEditorsEventsEnabled) {
+            auto actionNameOpt = mGlobalActionMap.action({key, modifiers});
+            if (actionNameOpt.has_value()) {
+                auto it = mGlobalActionRegistry.find(actionNameOpt.value());
+                if (it != mGlobalActionRegistry.end()) {
+                    it->second();
+                    return true;
+                }
+            }
+
             for (const auto& editor : mEditors) {
                 if (!block && editor->isActive())
                     block = editor->onKeyPress(key, modifiers);
