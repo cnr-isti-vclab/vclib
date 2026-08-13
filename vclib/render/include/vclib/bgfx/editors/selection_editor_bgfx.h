@@ -31,22 +31,8 @@ template<typename ViewerDrawer>
 class SelectionEditorBGFX : public Editor<ViewerDrawer>
 {
 public:
-    enum class SelectionKeyAction {
-        SELECT_ALL,
-        DESELECT_ALL,
-        INVERT_SELECTION
-    };
-    using KeyMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, SelectionKeyAction>;
-
-    enum class SelectionMouseAction {
-        REGULAR_SELECTION,
-        ADD_SELECTION,
-        SUBTRACT_SELECTION
-    };
-    using MouseMap = BindingMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        SelectionMouseAction>;
+    using KeyMap   = SelectionEditorSettings::KeyMap;
+    using MouseMap = SelectionEditorSettings::MouseMap;
 
 private:
     using Base = Editor<ViewerDrawer>;
@@ -79,11 +65,7 @@ private:
 
     SelectionEditorSettings mSettings;
 
-    KeyMap mKeyBindings = defaultKeyMap();
-
-    MouseMap mMouseBindings = defaultMouseMap();
-
-    std::optional<SelectionMouseAction> mCurrentMouseAction;
+    std::optional<SelectionDragAction> mCurrentMouseAction;
 
 public:
     SelectionEditorBGFX()
@@ -220,13 +202,13 @@ public:
         mSettings.saveSettings(j);
     }
 
-    KeyMap& keyBindings() { return mKeyBindings; }
+    KeyMap& keyBindings() { return mSettings.keyBindings; }
 
-    const KeyMap& keyBindings() const { return mKeyBindings; }
+    const KeyMap& keyBindings() const { return mSettings.keyBindings; }
 
-    MouseMap& mouseBindings() { return mMouseBindings; }
+    MouseMap& mouseBindings() { return mSettings.mouseBindings; }
 
-    const MouseMap& mouseBindings() const { return mMouseBindings; }
+    const MouseMap& mouseBindings() const { return mSettings.mouseBindings; }
 
     void draw(uint viewId) override
     {
@@ -309,25 +291,16 @@ public:
         if (!isSelectionActive() || mSelectionInProgress)
             return false;
 
-        auto actionOpt = mKeyBindings.action({key, modifiers});
+        auto actionOpt = mSettings.keyBindings.action({key, modifiers});
         if (actionOpt.has_value()) {
+            SelectionAtomicAction action = actionOpt.value();
+
             if (!mActionCreationPending) {
                 savePreSelectionStates();
                 mActionCreationPending = true;
             }
 
-            using enum SelectionAction;
-            switch (actionOpt.value()) {
-            case SelectionKeyAction::SELECT_ALL:
-                mCurrentSelectionModes = actionModesForSettings<ALL>();
-                break;
-            case SelectionKeyAction::DESELECT_ALL:
-                mCurrentSelectionModes = actionModesForSettings<NONE>();
-                break;
-            case SelectionKeyAction::INVERT_SELECTION:
-                mCurrentSelectionModes = actionModesForSettings<INVERT>();
-                break;
-            }
+            mCurrentSelectionModes = actionModesForSettings(action);
             mSelectionCalcRequired = true;
             return true;
         }
@@ -349,7 +322,7 @@ public:
 
             if (mCurrentMouseAction.has_value()) {
                 mCurrentSelectionModes =
-                    selectionModesForAction(mCurrentMouseAction.value());
+                    actionModesForSettings(mCurrentMouseAction.value());
             }
 
             mSelectionCalcRequired = true;
@@ -367,18 +340,19 @@ public:
         if (!isSelectionActive())
             return false;
 
-        auto actionOpt = mMouseBindings.action({button, modifiers});
+        auto actionOpt = mSettings.mouseBindings.action({button, modifiers});
         if (actionOpt.has_value() && !mSelectionInProgress) {
+            SelectionDragAction action = actionOpt.value();
+
             if (!mActionCreationPending) {
                 savePreSelectionStates();
                 mActionCreationPending = true;
             }
-            mSelectionInProgress = true;
-            mSelectionAnchor     = Point2d {x, y};
-            mSelectionBox        = Box2d({x, y});
-            mCurrentMouseAction  = actionOpt.value();
-            mCurrentSelectionModes =
-                selectionModesForAction(mCurrentMouseAction.value());
+            mSelectionInProgress   = true;
+            mSelectionAnchor       = Point2d {x, y};
+            mSelectionBox          = Box2d({x, y});
+            mCurrentMouseAction    = actionOpt.value();
+            mCurrentSelectionModes = actionModesForSettings(action);
             return true; // Smart blocking
         }
         return false;
@@ -444,50 +418,31 @@ private:
         return mSettings.selectVertices || mSettings.selectFaces;
     }
 
-    /**
-     * @brief Maps the SelectionMouseAction to the appropriate
-     * list of SelectionModes (one per active selection type).
-     *
-     * When both 'selectVertices' and 'selectFaces' are enabled both a vertex
-     * mode and a face mode are returned. 'onlyVisible' is applied only to
-     * face selection.
-     */
-    std::vector<SelectionMode> selectionModesForAction(
-        SelectionMouseAction action) const
-    {
-        SelectionAction selAction;
-        switch (action) {
-        case SelectionMouseAction::ADD_SELECTION:
-            selAction = SelectionAction::ADD;
-            break;
-        case SelectionMouseAction::SUBTRACT_SELECTION:
-            selAction = SelectionAction::SUBTRACT;
-            break;
-        case SelectionMouseAction::REGULAR_SELECTION:
-        default: selAction = SelectionAction::REGULAR; break;
-        }
-
-        std::vector<SelectionMode> modes;
-        if (mSettings.selectVertices) {
-            modes.push_back({SelectionPrimitive::VERTEX, selAction});
-        }
-        if (mSettings.selectFaces) {
-            modes.push_back(
-                {SelectionPrimitive::FACE,
-                 selAction,
-                 static_cast<bool>(mSettings.onlyVisible)});
-        }
-        return modes;
-    }
-
-    template<SelectionAction ACTION>
-    std::vector<SelectionMode> actionModesForSettings() const
+    std::vector<SelectionMode> actionModesForSettings(
+        SelectionAtomicAction action) const
     {
         std::vector<SelectionMode> modes;
         if (mSettings.selectVertices)
-            modes.push_back({SelectionPrimitive::VERTEX, ACTION});
+            modes.emplace_back(SelectionPrimitive::VERTEX, action);
         if (mSettings.selectFaces)
-            modes.push_back({SelectionPrimitive::FACE, ACTION});
+            modes.emplace_back(
+                SelectionPrimitive::FACE,
+                action,
+                static_cast<bool>(mSettings.onlyVisible));
+        return modes;
+    }
+
+    std::vector<SelectionMode> actionModesForSettings(
+        SelectionDragAction action) const
+    {
+        std::vector<SelectionMode> modes;
+        if (mSettings.selectVertices)
+            modes.emplace_back(SelectionPrimitive::VERTEX, action);
+        if (mSettings.selectFaces)
+            modes.emplace_back(
+                SelectionPrimitive::FACE,
+                action,
+                static_cast<bool>(mSettings.onlyVisible));
         return modes;
     }
 
@@ -571,18 +526,20 @@ private:
                 // For REGULAR mode we must clear the current selection;
                 // for ADD/SUBTRACT we simply skip (no change).
                 if (mode.primitive == SelectionPrimitive::FACE &&
-                    mode.action == SelectionAction::REGULAR && mode.visible) {
+                    mode.isAction(SelectionDragAction::REGULAR) &&
+                    mode.visible) {
                     SelectionParameters clearParams = {
                         viewId,
                         mVisibleSelectionViewIds[0],
                         mVisibleSelectionViewIds[1],
                         Box2d(),
                         SelectionMode {
-                                       SelectionPrimitive::FACE, SelectionAction::NONE},
+                                       SelectionPrimitive::FACE,
+                                       SelectionAtomicAction::NONE                 },
                         mSelectionInProgress,
                         bgfx::getTexture(mVisibleSelectionFB, 0),
                         bgfx::getTexture(mVisibleSelectionFB, 1),
-                        {mVisibleFaceFBSize,       mVisibleFaceFBSize   },
+                        {mVisibleFaceFBSize,       mVisibleFaceFBSize},
                         0
                     };
                     for (size_t i = 0; i < dl->size(); i++) {
@@ -762,31 +719,6 @@ private:
             Base::viewerUpdate();
         }
         mPreSelectionStates.clear();
-    }
-
-    static KeyMap defaultKeyMap()
-    {
-        using enum Key::Enum;
-        using enum KeyModifier::Enum;
-
-        return KeyMap {
-            {{A, {CONTROL}}, SelectionKeyAction::SELECT_ALL      },
-            {{D, {CONTROL}}, SelectionKeyAction::DESELECT_ALL    },
-            {{I, {CONTROL}}, SelectionKeyAction::INVERT_SELECTION}
-        };
-    }
-
-    static MouseMap defaultMouseMap()
-    {
-        using enum MouseButton::Enum;
-        using enum KeyModifier::Enum;
-
-        return MouseMap {
-            {{LEFT, {NO_MODIFIER}},    SelectionMouseAction::REGULAR_SELECTION},
-            {{LEFT, {CONTROL}},        SelectionMouseAction::ADD_SELECTION    },
-            {{LEFT, {CONTROL, SHIFT}},
-             SelectionMouseAction::SUBTRACT_SELECTION                         }
-        };
     }
 };
 

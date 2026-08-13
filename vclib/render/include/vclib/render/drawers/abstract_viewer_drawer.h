@@ -38,8 +38,7 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
 public:
     using GlobalActionCallback = std::function<void()>;
-    using GlobalActionMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+    using GlobalActionMap = ViewerSettings::ViewerGlobalActionMap;
 
 private:
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
@@ -50,7 +49,6 @@ private:
     bool                      mEditorsEventsEnabled = true;
     std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
 
-    GlobalActionMap                             mGlobalActionMap;
     std::map<std::string, GlobalActionCallback> mGlobalActionRegistry;
 
     // the default id for the viewer drawer is 0
@@ -88,6 +86,9 @@ protected:
 public:
     using EditorType = Editor<AbstractViewerDrawer>;
     using ViewerType = AbstractViewerDrawer;
+
+    TrackballSettings& trackballSettings() override { return mViewerSettings; }
+    const TrackballSettings& trackballSettings() const override { return mViewerSettings; }
 
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -164,8 +165,8 @@ public:
     {
         mGlobalActionRegistry[name] = std::move(callback);
         // Set the default shortcut only if the action isn't already mapped
-        if (!mGlobalActionMap.input(name).has_value()) {
-            mGlobalActionMap.setBinding(name, defaultShortcut);
+        if (!mViewerSettings.globalActionMap.input(name).has_value()) {
+            mViewerSettings.globalActionMap.setBinding(name, defaultShortcut);
         }
     }
 
@@ -472,7 +473,7 @@ public:
         bool block = false;
 
         if (mEditorsEventsEnabled) {
-            auto actionNameOpt = mGlobalActionMap.action({key, modifiers});
+            auto actionNameOpt = mViewerSettings.globalActionMap.action({key, modifiers});
             if (actionNameOpt.has_value()) {
                 auto it = mGlobalActionRegistry.find(actionNameOpt.value());
                 if (it != mGlobalActionRegistry.end()) {
