@@ -106,7 +106,7 @@ struct ViewerSettings : public TrackballSettings
         j["ViewerSettings"]["exposure"] = exposure;
         j["ViewerSettings"]["toneMapping"] = static_cast<int>(toneMapping);
     }
-    
+
     ViewerGlobalActionMap globalActionMap;
 };
 

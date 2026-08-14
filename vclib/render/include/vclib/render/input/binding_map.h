@@ -99,7 +99,8 @@ public:
         for (auto it = mMap.begin(); it != mMap.end();) {
             if (it->second == action) {
                 it = mMap.erase(it);
-            } else {
+            }
+            else {
                 ++it;
             }
         }

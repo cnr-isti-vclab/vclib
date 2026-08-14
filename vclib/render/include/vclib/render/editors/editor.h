@@ -71,15 +71,15 @@ public:
      *
      * @param[in] active: the new active state.
      */
-    virtual void setActive(bool active) 
-    { 
-        mIsActive = active; 
+    virtual void setActive(bool active)
+    {
+        mIsActive = active;
         notifyStateUpdated();
     }
 
     /**
      * @brief Sets the callback to be invoked when the editor state changes.
-     * 
+     *
      * This is typically used by UI components to stay synchronized with the
      * internal state of the editor.
      */
@@ -130,8 +130,8 @@ public:
 
     /**
      * @brief Called by the viewer immediately after the viewer pointer is set.
-     * 
-     * Subclasses may override this function to perform initialization that 
+     *
+     * Subclasses may override this function to perform initialization that
      * requires access to the viewer, such as registering global actions.
      */
     virtual void onViewerSet() {}
@@ -415,8 +415,10 @@ protected:
      * @brief Registers a global action in the viewer.
      *
      * @param[in] name: The unique name of the global action.
-     * @param[in] defaultShortcut: The default keyboard shortcut to trigger the action.
-     * @param[in] callback: The function to execute when the shortcut is pressed.
+     * @param[in] defaultShortcut: The default keyboard shortcut to trigger the
+     * action.
+     * @param[in] callback: The function to execute when the shortcut is
+     * pressed.
      */
     void viewerRegisterGlobalAction(
         const std::string&                 name,
@@ -424,7 +426,8 @@ protected:
         std::function<void()>              callback)
     {
         assert(mViewer);
-        mViewer->registerGlobalAction(name, defaultShortcut, std::move(callback));
+        mViewer->registerGlobalAction(
+            name, defaultShortcut, std::move(callback));
     }
 
 private:
