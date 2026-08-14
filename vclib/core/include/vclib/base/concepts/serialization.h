@@ -12,8 +12,22 @@
 
 #include <istream>
 #include <ostream>
+#include <string>
 
 namespace vcl {
+
+/**
+ * @brief Concept that is evaluated true if T can be converted to a string.
+ *
+ * A type T is stringifiable if it can be converted to a std::string using the
+ * `toString` function.
+ *
+ * @ingroup util_concepts
+ */
+template <typename T>
+concept Stringifiable = requires(T obj) {
+    { toString(obj) } -> std::convertible_to<std::string>;
+};
 
 /**
  * @brief Concept that is evaluated true if T is an output streamable type.
