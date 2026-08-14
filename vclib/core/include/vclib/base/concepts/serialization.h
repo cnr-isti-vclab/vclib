@@ -10,9 +10,10 @@
 
 #include "const_correctness.h"
 
+#include <vclib/base/string.h>
+
 #include <istream>
 #include <ostream>
-#include <string>
 
 namespace vcl {
 

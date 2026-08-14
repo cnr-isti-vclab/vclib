@@ -63,6 +63,9 @@ std::string toString(T val)
         ss << address;
         return ss.str();
     }
+    else if constexpr (std::is_convertible_v<T, std::string>) {
+        return std::string(val);
+    }
     else {
         return std::to_string(val);
     }
