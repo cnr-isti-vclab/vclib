@@ -72,6 +72,38 @@ std::string toString(T val)
 }
 
 /**
+ * @brief Converts a string to a value of type T.
+ *
+ * @tparam T: The target type.
+ * @param[in] str: The string to convert.
+ * @return The converted value.
+ * @throws std::invalid_argument if the conversion fails or is unsupported.
+ */
+template<typename T>
+T fromString(const std::string& str)
+{
+    if constexpr (std::is_same_v<T, std::string>) {
+        return str;
+    }
+    else {
+        // try to convert trough the stream operator
+        T value;
+        std::istringstream iss(str);
+
+        // If T is a boolean type, set the stream to parse "true"/"false"
+        // instead of "1"/"0"
+        iss >> std::boolalpha;
+        iss >> value;
+
+        if (iss.fail()) {
+            throw std::invalid_argument(
+                "vcl::fromString failed to parse: '" + str + "'");
+        }
+        return value;
+    }
+}
+
+/**
  * @brief Returns `true` if the `input` string contains `substr` as a substring,
  * without taking into account case sensitiveness.
  * @param input: input string.
