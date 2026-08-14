@@ -107,12 +107,22 @@ concept CoreParsable = std::is_same_v<std::decay_t<T>, std::string> ||
                        HasStaticFromString<T> || InputStreamable<T>;
 
 /**
+ * @brief Checks if a type has an ADL free function `fromString(const std::string&, T&)`
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasADLFromString = requires (const std::string& str, T& out) {
+    fromString(str, out);
+};
+
+/**
  * @brief Concept that is evaluated true if T can be parsed from a string.
  *
  * @ingroup util_concepts
  */
 template<typename T>
-concept Parsable = CoreParsable<T>;
+concept Parsable = CoreParsable<T> || HasADLFromString<T>;
 
 /**
  * @brief Concept that is evaluated true if T is serializable.
