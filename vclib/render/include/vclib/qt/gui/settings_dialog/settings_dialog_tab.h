@@ -8,7 +8,7 @@
 #ifndef VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
 #define VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
 
-#include <vclib/base.h>
+#include <vclib/render/concepts/settings.h>
 
 #include <nlohmann/json.hpp>
 
