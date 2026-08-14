@@ -37,7 +37,7 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
 public:
     using GlobalActionCallback = std::function<void()>;
-    using GlobalActionMap = ViewerSettings::ViewerGlobalActionMap;
+    using GlobalActionMap      = ViewerSettings::ViewerGlobalActionMap;
 
 private:
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
@@ -87,7 +87,11 @@ public:
     using ViewerType = AbstractViewerDrawer;
 
     TrackballSettings& trackballSettings() override { return mViewerSettings; }
-    const TrackballSettings& trackballSettings() const override { return mViewerSettings; }
+
+    const TrackballSettings& trackballSettings() const override
+    {
+        return mViewerSettings;
+    }
 
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -444,7 +448,8 @@ public:
         bool block = false;
 
         if (mEditorsEventsEnabled) {
-            auto actionNameOpt = mViewerSettings.globalActionMap.action({key, modifiers});
+            auto actionNameOpt =
+                mViewerSettings.globalActionMap.action({key, modifiers});
             if (actionNameOpt.has_value()) {
                 auto it = mGlobalActionRegistry.find(actionNameOpt.value());
                 if (it != mGlobalActionRegistry.end()) {

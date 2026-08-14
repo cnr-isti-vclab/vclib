@@ -83,7 +83,7 @@ struct ViewerSettings : public TrackballSettings
      */
     using ViewerGlobalActionMap =
         BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
-    
+
     ViewerGlobalActionMap globalActionMap;
 };
 

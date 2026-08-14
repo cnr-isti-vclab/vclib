@@ -42,13 +42,13 @@ public:
 
         auto onSelectVerticesButtonClicked = [&](bool checked) {
             settings.selectVertices = checked;
-            bool selFaces = settings.selectFaces;
+            bool selFaces           = settings.selectFaces;
             mSelectionEditor->setActive(checked || selFaces);
         };
 
         auto onSelectFacesButtonClicked = [&](bool checked) {
             settings.selectFaces = checked;
-            bool selVertices = settings.selectVertices;
+            bool selVertices     = settings.selectVertices;
             mSelectionEditor->setActive(checked || selVertices);
         };
 
