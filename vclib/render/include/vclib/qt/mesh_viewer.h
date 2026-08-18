@@ -25,7 +25,6 @@
 
 #include <nlohmann/json.hpp>
 
-
 #include <QMainWindow>
 
 #include <fstream>

@@ -19,8 +19,8 @@
 #include <QActionGroup>
 #include <QDialog>
 #include <QDockWidget>
-#include <QPushButton>
 #include <QIcon>
+#include <QPushButton>
 
 namespace vcl::qt {
 
