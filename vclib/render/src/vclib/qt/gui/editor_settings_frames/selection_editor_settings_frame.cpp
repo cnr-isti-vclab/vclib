@@ -45,6 +45,7 @@ SelectionEditorSettingsFrame::~SelectionEditorSettingsFrame()
 void SelectionEditorSettingsFrame::updateGUI()
 {
     // Block signals so we don't trigger settingsUpdated()
+    // during the initialization/update of the GUI components.
     bool b1 = mUI->editModeFrame->blockSignals(true);
     bool b2 = mUI->onlyVisibleCheckBox->blockSignals(true);
 

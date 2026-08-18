@@ -20,6 +20,9 @@
 
 namespace vcl::qt {
 
+/**
+ * @brief The SettingsDialogTab class is an interface for a settings tab inside the SettingsDialog.
+ */
 class SettingsDialogTab
 {
 public:
@@ -31,6 +34,12 @@ public:
     virtual void     updateToolbarFrames(QToolBar* toolbar) = 0;
 };
 
+/**
+ * @brief The EditorSettingsTabImpl class implements SettingsDialogTab for specific editor types.
+ *
+ * @tparam EditorType The type of the editor.
+ * @tparam SettingsFrameType The type of the GUI frame used to edit the settings.
+ */
 template<typename EditorType, typename SettingsFrameType>
 class EditorSettingsTabImpl : public SettingsDialogTab
 {

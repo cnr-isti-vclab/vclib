@@ -19,6 +19,12 @@ namespace Ui {
 class SettingsDialog;
 }
 
+/**
+ * @brief The SettingsDialog class provides a dialog for managing application settings.
+ *
+ * This dialog dynamically populates tabs for editor settings and allows users
+ * to apply changes or save them as defaults to the file system.
+ */
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -38,7 +44,6 @@ signals:
 
 private slots:
     void onApplyClicked();
-    void onSaveDefaultsClicked();
 
 };
 

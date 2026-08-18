@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include <fstream>
@@ -47,17 +48,13 @@ SettingsDialog::SettingsDialog(
         mUI->stackedWidget,
         &QStackedWidget::setCurrentIndex);
 
-    // Apply button
+    // Apply and OK buttons
     QPushButton* applyBtn = mUI->buttonBox->button(QDialogButtonBox::Apply);
     connect(
         applyBtn, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
+    connect(this, &QDialog::accepted, this, &SettingsDialog::onApplyClicked);
 
-    // Save Defaults button
-    connect(
-        mUI->saveDefaultsButton,
-        &QPushButton::clicked,
-        this,
-        &SettingsDialog::onSaveDefaultsClicked);
+
 }
 
 SettingsDialog::~SettingsDialog()
@@ -69,18 +66,25 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::onApplyClicked()
 {
-    emit applied();
-}
+    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
 
-void SettingsDialog::onSaveDefaultsClicked()
-{
     nlohmann::json j;
+    
+    // Read existing file to preserve other settings like ViewerSettings
+    std::ifstream in(filePath);
+    if (in.is_open()) {
+        try {
+            in >> j;
+        } catch (...) {
+            // Ignore parse errors and overwrite
+        }
+        in.close();
+    }
+
     for (const auto& tab : mData.tabs()) {
         tab->saveSettings(j["Editors"]);
     }
-
-    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
 
     // Ensure directory exists
     QDir dir;
@@ -90,15 +94,13 @@ void SettingsDialog::onSaveDefaultsClicked()
     if (out.is_open()) {
         out << j.dump(4);
         out.close();
-        QMessageBox::information(
-            this,
-            "Settings Saved",
-            "Default settings have been successfully saved.");
     }
     else {
         QMessageBox::warning(
             this, "Save Failed", "Failed to save default settings to file.");
     }
+
+    emit applied();
 }
 
 } // namespace vcl::qt

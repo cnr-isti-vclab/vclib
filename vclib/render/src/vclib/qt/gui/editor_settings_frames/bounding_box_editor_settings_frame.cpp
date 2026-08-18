@@ -50,6 +50,7 @@ BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
 void BoundingBoxEditorSettingsFrame::updateGUI()
 {
     // Block signals so we don't trigger settingsUpdated()
+    // during the initialization/update of the GUI components.
     bool b1 = mUI->editModeFrame->blockSignals(true);
     bool b2 = mUI->linesWidthSlider->blockSignals(true);
     bool b3 = mUI->colorPushButton->blockSignals(true);
