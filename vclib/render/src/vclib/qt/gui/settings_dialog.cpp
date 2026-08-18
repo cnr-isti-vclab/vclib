@@ -74,6 +74,19 @@ SettingsDialog::SettingsDialog(
     connect(
         applyBtn, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
     connect(this, &QDialog::accepted, this, &SettingsDialog::onApplyClicked);
+
+    // Reset All Defaults button
+    connect(
+        mUI->resetAllDefaultsButton,
+        &QPushButton::clicked,
+        this,
+        [this]() {
+            QList<QPushButton*> buttons =
+                this->findChildren<QPushButton*>("resetDefaultButton");
+            for (QPushButton* btn : buttons) {
+                btn->click();
+            }
+        });
 }
 
 SettingsDialog::~SettingsDialog()

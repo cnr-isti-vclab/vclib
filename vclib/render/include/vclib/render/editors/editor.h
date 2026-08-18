@@ -13,9 +13,9 @@
 #include <vclib/render/settings/editor_settings.h>
 #include <vclib/render/undo_redo/undo_redo_action.h>
 
-#include <nlohmann/json.hpp>
-
 #include <vclib/base.h>
+
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 

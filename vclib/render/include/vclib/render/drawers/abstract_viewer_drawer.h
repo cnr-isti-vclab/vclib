@@ -17,9 +17,10 @@
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/undo_redo/undo_redo_stack.h>
-#include <nlohmann/json.hpp>
 
 #include <vclib/space/core.h>
+
+#include <nlohmann/json.hpp>
 
 #include <memory>
 
@@ -228,8 +229,6 @@ public:
                 editor->saveSettings(j["Editors"]);
         }
     }
-
-    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
 
     /**
      * @brief Pushes a new editor of the specified type into the viewer's editor

@@ -67,7 +67,13 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-
+     <item>
+      <widget class="QPushButton" name="resetAllDefaultsButton">
+       <property name="text">
+        <string>Reset All Defaults</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
