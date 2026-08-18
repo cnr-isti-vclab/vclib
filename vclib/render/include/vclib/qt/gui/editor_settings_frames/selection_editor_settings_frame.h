@@ -40,6 +40,8 @@ private slots:
     void editModeChanged(int index);
 
     void onlyVisibleCheckBoxChanged(Qt::CheckState state);
+
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt

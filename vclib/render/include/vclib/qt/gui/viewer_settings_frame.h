@@ -57,6 +57,8 @@ private slots:
     void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
 
     void loadPanoramaPushButtonClicked();
+    
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt

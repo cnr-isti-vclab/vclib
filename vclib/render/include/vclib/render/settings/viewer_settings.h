@@ -91,6 +91,16 @@ struct ViewerSettings : public TrackballSettings
      */
     std::string panoramaPath = "";
 
+    void resetDefaults()
+    {
+        renderMode               = RenderMode::CLASSIC;
+        imageBasedLighting       = false;
+        renderBackgroundPanorama = false;
+        exposure                 = 1.0f;
+        toneMapping              = ToneMapping::ACES_HILL;
+        panoramaPath             = "";
+    }
+
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("ViewerSettings")) {

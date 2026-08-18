@@ -35,6 +35,13 @@ struct SelectionEditorSettings : public EditorSettings
     KeyMap   keyBindings   = defaultKeyMap();
     MouseMap mouseBindings = defaultMouseMap();
 
+    void resetDefaults()
+    {
+        onlyVisible       = false;
+        selectionBoxColor = vcl::Color(27, 120, 249, 64);
+        editMode          = EditMode::CURRENT_OBJECT;
+    }
+
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("SelectionEditor")) {

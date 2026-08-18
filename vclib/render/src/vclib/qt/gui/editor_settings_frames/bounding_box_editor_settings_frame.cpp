@@ -40,6 +40,12 @@ BoundingBoxEditorSettingsFrame::BoundingBoxEditorSettingsFrame(
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onColorChanged(const QColor&)));
+
+    connect(
+        mUI->resetDefaultButton,
+        SIGNAL(clicked()),
+        this,
+        SLOT(onResetDefaultClicked()));
 }
 
 BoundingBoxEditorSettingsFrame::~BoundingBoxEditorSettingsFrame()
@@ -86,6 +92,13 @@ void BoundingBoxEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
 void BoundingBoxEditorSettingsFrame::onColorChanged(const QColor& c)
 {
     mSettings.color = Color(c.red(), c.green(), c.blue(), c.alpha());
+    emit settingsUpdated();
+}
+
+void BoundingBoxEditorSettingsFrame::onResetDefaultClicked()
+{
+    mSettings.resetDefaults();
+    updateGUI();
     emit settingsUpdated();
 }
 

@@ -66,6 +66,12 @@ ViewerSettingsFrame::ViewerSettingsFrame(QWidget* parent) :
         SIGNAL(clicked()),
         this,
         SLOT(loadPanoramaPushButtonClicked()));
+
+    connect(
+        mUI->resetDefaultButton,
+        SIGNAL(clicked()),
+        this,
+        SLOT(onResetDefaultClicked()));
 }
 
 ViewerSettingsFrame::~ViewerSettingsFrame()
@@ -178,6 +184,13 @@ void ViewerSettingsFrame::loadPanoramaPushButtonClicked()
         updatePanoramaLabel();
         emit settingsChanged(mSettings);
     }
+}
+
+void ViewerSettingsFrame::onResetDefaultClicked()
+{
+    mSettings.resetDefaults();
+    setViewerSettings(mSettings);
+    emit settingsChanged(mSettings);
 }
 
 } // namespace vcl::qt

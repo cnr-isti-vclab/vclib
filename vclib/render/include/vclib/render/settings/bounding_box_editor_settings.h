@@ -21,6 +21,13 @@ struct BoundingBoxEditorSettings : public EditorSettings
     vcl::Color color     = vcl::Color();
     float      thickness = 2.0f;
 
+    void resetDefaults()
+    {
+        color     = vcl::Color();
+        thickness = 2.0f;
+        editMode  = EditMode::CURRENT_OBJECT;
+    }
+
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("BoundingBoxEditor")) {

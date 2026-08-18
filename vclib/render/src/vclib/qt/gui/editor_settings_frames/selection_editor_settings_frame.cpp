@@ -35,6 +35,12 @@ SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
         &QCheckBox::checkStateChanged,
         this,
         &SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged);
+
+    connect(
+        mUI->resetDefaultButton,
+        &QPushButton::clicked,
+        this,
+        &SelectionEditorSettingsFrame::onResetDefaultClicked);
 }
 
 SelectionEditorSettingsFrame::~SelectionEditorSettingsFrame()
@@ -70,6 +76,13 @@ void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
 {
     bool onlyVisible      = state == Qt::CheckState::Checked;
     mSettings.onlyVisible = onlyVisible;
+    emit settingsUpdated();
+}
+
+void SelectionEditorSettingsFrame::onResetDefaultClicked()
+{
+    mSettings.resetDefaults();
+    updateGUI();
     emit settingsUpdated();
 }
 
