@@ -96,6 +96,11 @@ T fromString(const std::string& str)
     else if constexpr (HasStaticFromString<T>) {
         return T::fromString(str);
     }
+    else if constexpr (HasADLFromString<T>) {
+        T out;
+        fromString(str, out);
+        return out;
+    }
     else {
         // try to convert trough the stream operator
         T                  value;

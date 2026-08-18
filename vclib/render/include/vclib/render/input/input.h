@@ -11,7 +11,6 @@
 #include <vclib/space/core.h>
 
 #include <string>
-#include <vector>
 
 namespace vcl {
 
@@ -41,87 +40,87 @@ using KeyModifiers = BitSet<char>;
 struct Key
 {
     enum Enum {
-        SPACE = 0x20,
+        SPACE,
 
-        _0 = 0x30,
-        _1 = 0x31,
-        _2 = 0x32,
-        _3 = 0x33,
-        _4 = 0x34,
-        _5 = 0x35,
-        _6 = 0x36,
-        _7 = 0x37,
-        _8 = 0x38,
-        _9 = 0x39,
+        _0,
+        _1,
+        _2,
+        _3,
+        _4,
+        _5,
+        _6,
+        _7,
+        _8,
+        _9,
 
-        A = 0x41,
-        B = 0x42,
-        C = 0x43,
-        D = 0x44,
-        E = 0x45,
-        F = 0x46,
-        G = 0x47,
-        H = 0x48,
-        I = 0x49,
-        J = 0x4a,
-        K = 0x4b,
-        L = 0x4c,
-        M = 0x4d,
-        N = 0x4e,
-        O = 0x4f,
-        P = 0x50,
-        Q = 0x51,
-        R = 0x52,
-        S = 0x53,
-        T = 0x54,
-        U = 0x55,
-        V = 0x56,
-        W = 0x57,
-        X = 0x58,
-        Y = 0x59,
-        Z = 0x5a,
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V,
+        W,
+        X,
+        Y,
+        Z,
 
-        ESCAPE = 0x01000000,
+        ESCAPE,
 
-        LEFT  = 0x01000012,
-        UP    = 0x01000013,
-        RIGHT = 0x01000014,
-        DOWN  = 0x01000015,
+        LEFT,
+        UP,
+        RIGHT,
+        DOWN,
 
-        SHIFT_KEY   = 0x01000020, // modifiers
-        CONTROL_KEY = 0x01000021,
-        SUPER_KEY   = 0x01000022,
-        ALT_KEY     = 0x01000023,
+        SHIFT_KEY, // modifiers
+        CONTROL_KEY,
+        SUPER_KEY,
+        ALT_KEY,
 
-        CAPS_LOCK   = 0x01000024,
-        NUM_LOCK    = 0x01000025,
-        SCROLL_LOCK = 0x01000026,
+        CAPS_LOCK,
+        NUM_LOCK,
+        SCROLL_LOCK,
 
-        F1  = 0x01000030,
-        F2  = 0x01000031,
-        F3  = 0x01000032,
-        F4  = 0x01000033,
-        F5  = 0x01000034,
-        F6  = 0x01000035,
-        F7  = 0x01000036,
-        F8  = 0x01000037,
-        F9  = 0x01000038,
-        F10 = 0x01000039,
-        F11 = 0x0100003a,
-        F12 = 0x0100003b,
+        F1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
 
-        NP_0 = 0x010000a2,
-        NP_1 = 0x010000a3,
-        NP_2 = 0x010000a4,
-        NP_3 = 0x010000a5,
-        NP_4 = 0x010000a6,
-        NP_5 = 0x010000a7,
-        NP_6 = 0x010000a8,
-        NP_7 = 0x010000a9,
-        NP_8 = 0x010000aa,
-        NP_9 = 0x010000ab,
+        NP_0,
+        NP_1,
+        NP_2,
+        NP_3,
+        NP_4,
+        NP_5,
+        NP_6,
+        NP_7,
+        NP_8,
+        NP_9,
 
-        UNKNOWN = 0x01ffffff
+        UNKNOWN
     };
 };
 
@@ -164,15 +163,16 @@ inline std::string toString(MouseButton::Enum b)
     }
 }
 
-inline MouseButton::Enum mouseButtonFromString(const std::string& str)
+inline void fromString(const std::string& str, MouseButton::Enum& out)
 {
     if (str == "Left")
-        return MouseButton::LEFT;
-    if (str == "Right")
-        return MouseButton::RIGHT;
-    if (str == "Middle")
-        return MouseButton::MIDDLE;
-    return MouseButton::NO_BUTTON;
+        out = MouseButton::LEFT;
+    else if (str == "Right")
+        out = MouseButton::RIGHT;
+    else if (str == "Middle")
+        out = MouseButton::MIDDLE;
+    else
+        out = MouseButton::NO_BUTTON;
 }
 
 inline std::string toString(KeyModifier::Enum m)
@@ -187,17 +187,18 @@ inline std::string toString(KeyModifier::Enum m)
     }
 }
 
-inline KeyModifier::Enum keyModifierFromString(const std::string& str)
+inline void fromString(const std::string& str, KeyModifier::Enum& out)
 {
     if (str == "Shift")
-        return KeyModifier::SHIFT;
-    if (str == "Ctrl")
-        return KeyModifier::CONTROL;
-    if (str == "Alt")
-        return KeyModifier::ALT;
-    if (str == "Super")
-        return KeyModifier::SUPER;
-    return KeyModifier::NO_MODIFIER;
+        out = KeyModifier::SHIFT;
+    else if (str == "Ctrl")
+        out = KeyModifier::CONTROL;
+    else if (str == "Alt")
+        out = KeyModifier::ALT;
+    else if (str == "Super")
+        out = KeyModifier::SUPER;
+    else
+        out = KeyModifier::NO_MODIFIER;
 }
 
 inline std::string toString(KeyModifiers mods)
@@ -218,18 +219,19 @@ inline std::string toString(KeyModifiers mods)
     return res;
 }
 
-inline KeyModifiers keyModifiersFromString(const std::string& str)
+inline void fromString(const std::string& str, KeyModifiers& out)
 {
-    KeyModifiers mods;
+    out.reset();
     if (str.find("Ctrl") != std::string::npos)
-        mods[KeyModifier::CONTROL] = true;
+        out[KeyModifier::CONTROL] = true;
     if (str.find("Alt") != std::string::npos)
-        mods[KeyModifier::ALT] = true;
+        out[KeyModifier::ALT] = true;
     if (str.find("Shift") != std::string::npos)
-        mods[KeyModifier::SHIFT] = true;
+        out[KeyModifier::SHIFT] = true;
     if (str.find("Super") != std::string::npos)
-        mods[KeyModifier::SUPER] = true;
-    return mods;
+        out[KeyModifier::SUPER] = true;
+    if (out.none())
+        out[KeyModifier::NO_MODIFIER] = true;
 }
 
 inline std::string toString(Key::Enum k)
@@ -265,56 +267,66 @@ inline std::string toString(Key::Enum k)
     }
 }
 
-inline Key::Enum keyFromString(const std::string& str)
+inline void fromString(const std::string& str, Key::Enum& out)
 {
     if (str.length() == 1) {
         char c = str[0];
-        if (c >= 'A' && c <= 'Z')
-            return static_cast<Key::Enum>(Key::A + (c - 'A'));
-        if (c >= 'a' && c <= 'z')
-            return static_cast<Key::Enum>(Key::A + (c - 'a'));
-        if (c >= '0' && c <= '9')
-            return static_cast<Key::Enum>(Key::_0 + (c - '0'));
+        if (c >= 'A' && c <= 'Z') {
+            out = static_cast<Key::Enum>(Key::A + (c - 'A'));
+            return;
+        }
+        if (c >= 'a' && c <= 'z') {
+            out = static_cast<Key::Enum>(Key::A + (c - 'a'));
+            return;
+        }
+        if (c >= '0' && c <= '9') {
+            out = static_cast<Key::Enum>(Key::_0 + (c - '0'));
+            return;
+        }
     }
     if (str.size() > 1 && str[0] == 'F' && str[1] >= '1' && str[1] <= '9') {
         int f = std::stoi(str.substr(1));
-        if (f >= 1 && f <= 12)
-            return static_cast<Key::Enum>(Key::F1 + (f - 1));
+        if (f >= 1 && f <= 12) {
+            out = static_cast<Key::Enum>(Key::F1 + (f - 1));
+            return;
+        }
     }
     if (str.find("NumPad ") == 0) {
         int n = std::stoi(str.substr(7));
-        if (n >= 0 && n <= 9)
-            return static_cast<Key::Enum>(Key::NP_0 + n);
+        if (n >= 0 && n <= 9) {
+            out = static_cast<Key::Enum>(Key::NP_0 + n);
+            return;
+        }
     }
 
     if (str == "Space")
-        return Key::SPACE;
-    if (str == "Escape")
-        return Key::ESCAPE;
-    if (str == "Left")
-        return Key::LEFT;
-    if (str == "Up")
-        return Key::UP;
-    if (str == "Right")
-        return Key::RIGHT;
-    if (str == "Down")
-        return Key::DOWN;
-    if (str == "Shift")
-        return Key::SHIFT_KEY;
-    if (str == "Ctrl")
-        return Key::CONTROL_KEY;
-    if (str == "Super")
-        return Key::SUPER_KEY;
-    if (str == "Alt")
-        return Key::ALT_KEY;
-    if (str == "Caps Lock")
-        return Key::CAPS_LOCK;
-    if (str == "Num Lock")
-        return Key::NUM_LOCK;
-    if (str == "Scroll Lock")
-        return Key::SCROLL_LOCK;
-
-    return Key::UNKNOWN;
+        out = Key::SPACE;
+    else if (str == "Escape")
+        out = Key::ESCAPE;
+    else if (str == "Left")
+        out = Key::LEFT;
+    else if (str == "Up")
+        out = Key::UP;
+    else if (str == "Right")
+        out = Key::RIGHT;
+    else if (str == "Down")
+        out = Key::DOWN;
+    else if (str == "Shift")
+        out = Key::SHIFT_KEY;
+    else if (str == "Ctrl")
+        out = Key::CONTROL_KEY;
+    else if (str == "Super")
+        out = Key::SUPER_KEY;
+    else if (str == "Alt")
+        out = Key::ALT_KEY;
+    else if (str == "Caps Lock")
+        out = Key::CAPS_LOCK;
+    else if (str == "Num Lock")
+        out = Key::NUM_LOCK;
+    else if (str == "Scroll Lock")
+        out = Key::SCROLL_LOCK;
+    else
+        out = Key::UNKNOWN;
 }
 
 } // namespace vcl
