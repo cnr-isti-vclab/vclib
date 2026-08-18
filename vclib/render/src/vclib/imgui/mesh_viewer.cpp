@@ -37,17 +37,4 @@ const ViewerSettings& MeshViewer::viewerSettings() const
     return viewerSetts(mApp);
 }
 
-template<typename V>
-void setPanor(V& v, const std::string& panorama)
-{
-    if constexpr (ViewerConcept<V>) {
-        v.setPanorama(panorama);
-    }
-}
-
-void MeshViewer::setPanorama(const std::string& panorama)
-{
-    setPanor(mApp, panorama);
-}
-
 } // namespace vcl::imgui

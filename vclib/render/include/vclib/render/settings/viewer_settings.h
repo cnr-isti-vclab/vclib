@@ -22,7 +22,7 @@ namespace vcl {
  */
 struct ViewerSettings : public TrackballSettings
 {
-	/**
+    /**
      * @brief Global actions registered by the viewer or editors.
      */
     using ViewerGlobalActionMap =
@@ -86,15 +86,25 @@ struct ViewerSettings : public TrackballSettings
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
 
+    /**
+     * @brief The path to the panorama environment map.
+     */
+    std::string panoramaPath = "";
+
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("ViewerSettings")) {
             const auto& js = j["ViewerSettings"];
-            renderMode = static_cast<RenderMode>(js.value("renderMode", static_cast<int>(renderMode)));
-            imageBasedLighting = js.value("imageBasedLighting", imageBasedLighting);
-            renderBackgroundPanorama = js.value("renderBackgroundPanorama", renderBackgroundPanorama);
-            exposure = js.value("exposure", exposure);
-            toneMapping = static_cast<ToneMapping>(js.value("toneMapping", static_cast<int>(toneMapping)));
+            renderMode     = static_cast<RenderMode>(
+                js.value("renderMode", static_cast<int>(renderMode)));
+            imageBasedLighting =
+                js.value("imageBasedLighting", imageBasedLighting);
+            renderBackgroundPanorama =
+                js.value("renderBackgroundPanorama", renderBackgroundPanorama);
+            exposure    = js.value("exposure", exposure);
+            toneMapping = static_cast<ToneMapping>(
+                js.value("toneMapping", static_cast<int>(toneMapping)));
+            panoramaPath = js.value("panoramaPath", panoramaPath);
         }
     }
 
@@ -102,9 +112,11 @@ struct ViewerSettings : public TrackballSettings
     {
         j["ViewerSettings"]["renderMode"] = static_cast<int>(renderMode);
         j["ViewerSettings"]["imageBasedLighting"] = imageBasedLighting;
-        j["ViewerSettings"]["renderBackgroundPanorama"] = renderBackgroundPanorama;
-        j["ViewerSettings"]["exposure"] = exposure;
-        j["ViewerSettings"]["toneMapping"] = static_cast<int>(toneMapping);
+        j["ViewerSettings"]["renderBackgroundPanorama"] =
+            renderBackgroundPanorama;
+        j["ViewerSettings"]["exposure"]     = exposure;
+        j["ViewerSettings"]["toneMapping"]  = static_cast<int>(toneMapping);
+        j["ViewerSettings"]["panoramaPath"] = panoramaPath;
     }
 
     ViewerGlobalActionMap globalActionMap;

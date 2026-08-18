@@ -9,6 +9,7 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
+#include "gui/settings_dialog/editor_settings_tab_impl.h"
 #include "gui/settings_dialog/settings_dialog_data.h"
 #include "gui/text_edit_logger.h"
 #include "gui/toolbar_frames.h"
@@ -246,8 +247,6 @@ public:
     void setViewerSettings(const ViewerSettings& settings);
 
     const ViewerSettings& viewerSettings() const;
-
-    void setPanorama(const std::string& panorama);
 
     /**
      * @brief Changes the current zoom (scale) of the trackball.

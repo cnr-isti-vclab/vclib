@@ -11,6 +11,7 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
+#include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -112,7 +113,16 @@ MeshViewer::MeshViewer(QWidget* parent) :
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
-    mViewerSettingsFrame->setViewer(mUI->viewer);
+    mViewerSettingsFrame->setViewerSettings(viewer().viewerSettings());
+
+    connect(
+        mViewerSettingsFrame,
+        &ViewerSettingsFrame::settingsChanged,
+        this,
+        [this](const ViewerSettings& settings) {
+            mUI->viewer->setViewerSettings(settings);
+            mUI->viewer->update();
+        });
 
     mViewerSettingsDockWidget = new QDockWidget("Viewer Settings", this);
     mViewerSettingsDockWidget->setWidget(mViewerSettingsFrame);
@@ -191,9 +201,10 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &MeshViewer::openSettings);
 
     // Load default global settings
-    nlohmann::json j;
+    nlohmann::json        j;
     std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    std::string           filePath =
+        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
     std::ifstream in(filePath);
     if (in.is_open()) {
         try {
@@ -201,10 +212,13 @@ MeshViewer::MeshViewer(QWidget* parent) :
             viewer().loadSettings(j);
             setViewerSettings(viewer().viewerSettings());
             // Editors pushed later will load their own settings via pushEditor
-        } catch (...) {
+        }
+        catch (...) {
             // Ignore parse errors
         }
     }
+
+    mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
 }
 
 void MeshViewer::setupSettingsButton()
@@ -245,7 +259,8 @@ void MeshViewer::addEditorFrame(QWidget* frame)
 {
     if (mSpacerAction) {
         mUI->toolBar->insertWidget(mSpacerAction, frame);
-    } else {
+    }
+    else {
         mUI->toolBar->addWidget(frame);
     }
 }
@@ -323,6 +338,7 @@ void MeshViewer::setCamera(const Camera<float>& c)
 
 void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
+    mUI->viewer->setViewerSettings(settings);
     mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
@@ -335,11 +351,6 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
     return mViewerSettingsFrame->viewerSettings();
-}
-
-void MeshViewer::setPanorama(const std::string& panorama)
-{
-    mViewerSettingsFrame->setPanorama(panorama);
 }
 
 void MeshViewer::keyPressEvent(QKeyEvent* event)
@@ -536,7 +547,7 @@ void MeshViewer::renderModeChanged()
 void MeshViewer::openSettings()
 {
     SettingsDialog dialog(mSettingsData, this);
-    
+
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
         for (auto& tab : mSettingsData.tabs()) {
             tab->applySettings();

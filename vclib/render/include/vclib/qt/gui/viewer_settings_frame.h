@@ -28,24 +28,25 @@ class ViewerSettingsFrame : public QFrame
 
     Ui::ViewerSettingsFrame* mUI;
 
-    MeshViewerRenderApp* mViewer;
+    ViewerSettings mSettings;
 
 public:
     explicit ViewerSettingsFrame(QWidget* parent = nullptr);
     ~ViewerSettingsFrame();
 
-    void setViewer(MeshViewerRenderApp* viewer);
-
     void setViewerSettings(const ViewerSettings& settings);
-
-    void setPanorama(const std::string& panorama);
 
     const ViewerSettings& viewerSettings() const;
 
 private:
     void updatePanoramaLabel();
 
+signals:
+    void settingsChanged(const ViewerSettings& settings);
+
 private slots:
+
+    void renderModeComboBoxCurrentIndexChanged(int index);
 
     void exposureSpinBoxValueChanged(double value);
 

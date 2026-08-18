@@ -257,15 +257,6 @@ public:
     }
 
     /**
-     * @brief Sets the panorama image to be used as background.
-     * @param[in] panorama: The filename/path of the panorama image.
-     */
-    void setPanorama(const std::string& panorama)
-    {
-        mApp.setPanorama(panorama);
-    }
-
-    /**
      * @brief Changes the current zoom (scale) of the trackball.
      * @param[in] factor: Positive value to zoom in, negative to zoom out.
      */

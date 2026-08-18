@@ -182,8 +182,6 @@ public:
 
     const ViewerSettings& viewerSettings() const;
 
-    void setPanorama(const std::string& panorama);
-
     /**
      * @brief Changes the current zoom (scale) of the trackball.
      * @param[in] factor: Positive value to zoom in, negative to zoom out.

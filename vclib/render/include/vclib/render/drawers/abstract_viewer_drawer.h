@@ -208,7 +208,9 @@ public:
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("ViewerSettings")) {
-            mViewerSettings.loadSettings(j);
+            ViewerSettings settings = mViewerSettings;
+            settings.loadSettings(j);
+            derived()->setViewerSettings(settings);
         }
         if (j.contains("Editors")) {
             for (auto& editor : mEditors) {
@@ -228,10 +230,6 @@ public:
     }
 
     // Default ViewerConcept placeholders. Can be shadowed by derived classes.
-
-    std::string panoramaFileName() const { return ""; }
-
-    void setPanorama(const std::string&) {}
 
     /**
      * @brief Pushes a new editor of the specified type into the viewer's editor

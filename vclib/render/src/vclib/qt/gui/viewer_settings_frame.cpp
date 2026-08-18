@@ -9,69 +9,20 @@
 
 #include "ui_viewer_settings_frame.h"
 
-#include <vclib/render/concepts/viewer.h>
-
 #include <QColorDialog>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QStandardItemModel>
 
-#define checkPtr(p) \
-    if (!(p)) {     \
-        return;     \
-    }
-
 namespace vcl::qt {
-
-namespace detail {
-
-template<typename V>
-const ViewerSettings& viewerSettings(const V* v)
-{
-    static vcl::ViewerSettings sts;
-    if constexpr (ViewerConcept<V>) {
-        if (v)
-            return v->viewerSettings();
-        else
-            return sts;
-    }
-    else {
-        return sts;
-    }
-}
-
-template<typename V>
-void setViewerSettings(V* v, const ViewerSettings& settings)
-{
-    if constexpr (ViewerConcept<V>) {
-        v->setViewerSettings(settings);
-    }
-}
-
-template<typename V>
-std::string panoramaFileName(V* v)
-{
-    if constexpr (ViewerConcept<V>) {
-        return v->panoramaFileName();
-    }
-    else {
-        return std::string();
-    }
-}
-
-template<typename V>
-void setPanorama(V* v, const std::string& panorama)
-{
-    if constexpr (ViewerConcept<V>) {
-        v->setPanorama(panorama);
-    }
-}
-
-} // namespace detail
 
 ViewerSettingsFrame::ViewerSettingsFrame(QWidget* parent) :
         QFrame(parent), mUI(new Ui::ViewerSettingsFrame)
 {
     mUI->setupUi(this);
+
+    mUI->renderModeComboBox->addItem("Classic");
+    mUI->renderModeComboBox->addItem("PBR");
 
     using enum ViewerSettings::ToneMapping;
 
@@ -79,6 +30,12 @@ ViewerSettingsFrame::ViewerSettingsFrame(QWidget* parent) :
         mUI->toneMappingComboBox->addItem(
             ViewerSettings::TONE_MAPPING_STRINGS[i]);
     }
+
+    connect(
+        mUI->renderModeComboBox,
+        SIGNAL(currentIndexChanged(int)),
+        this,
+        SLOT(renderModeComboBoxCurrentIndexChanged(int)));
 
     connect(
         mUI->exposureSpinBox,
@@ -116,124 +73,95 @@ ViewerSettingsFrame::~ViewerSettingsFrame()
     delete mUI;
 }
 
-void ViewerSettingsFrame::setViewer(MeshViewerRenderApp* viewer)
+void ViewerSettingsFrame::setViewerSettings(const ViewerSettings& settings)
 {
-    mViewer = viewer;
+    mSettings = settings;
 
-    if (!mViewer) {
-        mUI->pbrSettingsFrame->setVisible(false);
-        return;
+    bool blocked = mUI->renderModeComboBox->blockSignals(true);
+    if (mSettings.renderMode == RenderMode::CLASSIC) {
+        mUI->renderModeComboBox->setCurrentIndex(0);
     }
+    else if (mSettings.renderMode == RenderMode::PBR) {
+        mUI->renderModeComboBox->setCurrentIndex(1);
+    }
+    mUI->renderModeComboBox->blockSignals(blocked);
 
-    auto settings = detail::viewerSettings(mViewer);
+    blocked = mUI->exposureSpinBox->blockSignals(true);
+    mUI->exposureSpinBox->setValue(mSettings.exposure);
+    mUI->exposureSpinBox->blockSignals(blocked);
 
-    mUI->exposureSpinBox->setValue(settings.exposure);
-    mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
+    blocked = mUI->iblCheckBox->blockSignals(true);
+    mUI->iblCheckBox->setChecked(mSettings.imageBasedLighting);
+    mUI->iblCheckBox->blockSignals(blocked);
+
+    blocked = mUI->drawBackgroundPanoramaCheckBox->blockSignals(true);
     mUI->drawBackgroundPanoramaCheckBox->setChecked(
-        settings.renderBackgroundPanorama);
+        mSettings.renderBackgroundPanorama);
+    mUI->drawBackgroundPanoramaCheckBox->blockSignals(blocked);
 
+    blocked = mUI->toneMappingComboBox->blockSignals(true);
     mUI->toneMappingComboBox->setCurrentIndex(
-        toUnderlying(settings.toneMapping));
+        toUnderlying(mSettings.toneMapping));
+    mUI->toneMappingComboBox->blockSignals(blocked);
 
     mUI->pbrSettingsFrame->setVisible(true);
     updatePanoramaLabel();
 }
 
-void ViewerSettingsFrame::setViewerSettings(const ViewerSettings& settings)
-{
-    checkPtr(mViewer);
-
-    mUI->exposureSpinBox->setValue(settings.exposure);
-    mUI->iblCheckBox->setChecked(settings.imageBasedLighting);
-    mUI->drawBackgroundPanoramaCheckBox->setChecked(
-        settings.renderBackgroundPanorama);
-
-    mUI->toneMappingComboBox->setCurrentIndex(
-        toUnderlying(settings.toneMapping));
-
-    detail::setViewerSettings(mViewer, settings);
-}
-
-void ViewerSettingsFrame::setPanorama(const std::string& panorama)
-{
-    checkPtr(mViewer);
-
-    detail::setPanorama(mViewer, panorama);
-
-    updatePanoramaLabel();
-}
-
 const ViewerSettings& ViewerSettingsFrame::viewerSettings() const
 {
-    return detail::viewerSettings(mViewer);
+    return mSettings;
 }
 
 void ViewerSettingsFrame::updatePanoramaLabel()
 {
-    checkPtr(mViewer);
-
-    std::string panoramaFileName = detail::panoramaFileName(mViewer);
-    bool        hasPanorama      = !panoramaFileName.empty();
+    bool hasPanorama = !mSettings.panoramaPath.empty();
 
     if (hasPanorama) {
+        QString   fullPath = QString::fromStdString(mSettings.panoramaPath);
+        QFileInfo fileInfo(fullPath);
         mUI->panoramaLabel->setText(
-            QString("Panorama: ") + panoramaFileName.c_str());
+            QString("Panorama: ") + fileInfo.fileName());
+        mUI->panoramaLabel->setToolTip(fullPath);
     }
     else {
         mUI->panoramaLabel->setText("Panorama: None");
+        mUI->panoramaLabel->setToolTip("");
     }
 
     mUI->iblCheckBox->setEnabled(hasPanorama);
     mUI->drawBackgroundPanoramaCheckBox->setEnabled(hasPanorama);
 }
 
+void ViewerSettingsFrame::renderModeComboBoxCurrentIndexChanged(int index)
+{
+    mSettings.renderMode = (index == 0) ? RenderMode::CLASSIC : RenderMode::PBR;
+    emit settingsChanged(mSettings);
+}
+
 void ViewerSettingsFrame::exposureSpinBoxValueChanged(double value)
 {
-    checkPtr(mViewer);
-
-    auto sts = detail::viewerSettings(mViewer);
-
-    sts.exposure = static_cast<float>(value);
-
-    detail::setViewerSettings(mViewer, sts);
-    mViewer->update();
+    mSettings.exposure = static_cast<float>(value);
+    emit settingsChanged(mSettings);
 }
 
 void ViewerSettingsFrame::toneMappingComboBoxCurrentIndexChanged(int index)
 {
-    checkPtr(mViewer);
-
-    auto sts = detail::viewerSettings(mViewer);
-
-    sts.toneMapping = static_cast<ViewerSettings::ToneMapping>(index);
-
-    detail::setViewerSettings(mViewer, sts);
-    mViewer->update();
+    mSettings.toneMapping = static_cast<ViewerSettings::ToneMapping>(index);
+    emit settingsChanged(mSettings);
 }
 
 void ViewerSettingsFrame::iblCheckBoxCheckStateChanged(Qt::CheckState state)
 {
-    checkPtr(mViewer);
-
-    auto sts = detail::viewerSettings(mViewer);
-
-    sts.imageBasedLighting = (state == Qt::Checked);
-
-    detail::setViewerSettings(mViewer, sts);
-    mViewer->update();
+    mSettings.imageBasedLighting = (state == Qt::Checked);
+    emit settingsChanged(mSettings);
 }
 
 void ViewerSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
     Qt::CheckState state)
 {
-    checkPtr(mViewer);
-
-    auto sts = detail::viewerSettings(mViewer);
-
-    sts.renderBackgroundPanorama = (state == Qt::Checked);
-
-    detail::setViewerSettings(mViewer, sts);
-    mViewer->update();
+    mSettings.renderBackgroundPanorama = (state == Qt::Checked);
+    emit settingsChanged(mSettings);
 }
 
 void ViewerSettingsFrame::loadPanoramaPushButtonClicked()
@@ -246,7 +174,9 @@ void ViewerSettingsFrame::loadPanoramaPushButtonClicked()
         tr("HDR Images (*.hdr *.exr *.ktx *.dds)"));
 
     if (!fileName.isEmpty()) {
-        setPanorama(fileName.toStdString());
+        mSettings.panoramaPath = fileName.toStdString();
+        updatePanoramaLabel();
+        emit settingsChanged(mSettings);
     }
 }
 

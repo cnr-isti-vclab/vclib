@@ -31,14 +31,35 @@ SettingsDialog::SettingsDialog(
 {
     mUI->setupUi(this);
 
-    // Populate Editors tab
+    mUI->categoryList->clear();
+    while (mUI->stackedWidget->count() > 0) {
+        QWidget* widget = mUI->stackedWidget->widget(0);
+        mUI->stackedWidget->removeWidget(widget);
+        widget->deleteLater();
+    }
+
+    std::map<QString, QTabWidget*> categoryTabs;
+
     for (const auto& tab : mData.tabs()) {
+        QString cat = tab->category();
+        if (categoryTabs.find(cat) == categoryTabs.end()) {
+            mUI->categoryList->addItem(cat);
+            QTabWidget* tabWidget = new QTabWidget();
+            mUI->stackedWidget->addWidget(tabWidget);
+            categoryTabs[cat] = tabWidget;
+        }
+
         QWidget*     page   = new QWidget();
         QVBoxLayout* layout = new QVBoxLayout(page);
         layout->addWidget(tab->createWidget(page));
         layout->addStretch();
 
-        mUI->editorsTabWidget->addTab(page, tab->name());
+        categoryTabs[cat]->addTab(page, tab->name());
+    }
+
+    if (mUI->categoryList->count() > 0) {
+        mUI->categoryList->setCurrentRow(0);
+        mUI->stackedWidget->setCurrentIndex(0);
     }
 
     // Sync QListWidget selection to QStackedWidget page
@@ -53,8 +74,6 @@ SettingsDialog::SettingsDialog(
     connect(
         applyBtn, &QPushButton::clicked, this, &SettingsDialog::onApplyClicked);
     connect(this, &QDialog::accepted, this, &SettingsDialog::onApplyClicked);
-
-
 }
 
 SettingsDialog::~SettingsDialog()
@@ -62,28 +81,33 @@ SettingsDialog::~SettingsDialog()
     delete mUI;
 }
 
-// Removed hardcoded getters
-
 void SettingsDialog::onApplyClicked()
 {
     std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    std::string           filePath =
+        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
 
     nlohmann::json j;
-    
+
     // Read existing file to preserve other settings like ViewerSettings
     std::ifstream in(filePath);
     if (in.is_open()) {
         try {
             in >> j;
-        } catch (...) {
+        }
+        catch (...) {
             // Ignore parse errors and overwrite
         }
         in.close();
     }
 
     for (const auto& tab : mData.tabs()) {
-        tab->saveSettings(j["Editors"]);
+        if (tab->category() == "Editors") {
+            tab->saveSettings(j["Editors"]);
+        }
+        else {
+            tab->saveSettings(j);
+        }
     }
 
     // Ensure directory exists
