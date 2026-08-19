@@ -40,6 +40,17 @@ struct MeshSelectorEditorSettings : public EditorSettings
 
     MouseMap mouseBindings = defaultMouseMap();
 
+    void resetDefaults()
+    {
+        mouseBindings.resetToDefaults();
+    }
+
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+        override
+    {
+        return {mouseBindings};
+    }
+
     void loadSettings(const nlohmann::json& /*j*/)
     {
         // Add JSON loading logic here when needed

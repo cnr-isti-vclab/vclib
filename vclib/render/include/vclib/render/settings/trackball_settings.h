@@ -38,6 +38,11 @@ struct TrackballSettings
         keyAtomicMap.resetToDefaults();
     }
 
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+    {
+        return {dragMotionMap, scrollAtomicMap, keyAtomicMap};
+    }
+
 private:
     static DragMotionMap defaultDragMotionMap()
     {

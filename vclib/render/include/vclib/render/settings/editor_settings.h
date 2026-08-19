@@ -10,7 +10,12 @@
 
 #include <vclib/base.h>
 
+#include <vector>
+#include <functional>
+
 namespace vcl {
+
+class AbstractInputActionMap;
 
 struct EditorSettings
 {
@@ -23,6 +28,12 @@ struct EditorSettings
 
     /**< @brief The edit mode of the editor. */
     EditMode editMode = EditMode::CURRENT_OBJECT;
+
+    virtual std::vector<std::reference_wrapper<AbstractInputActionMap>>
+    actionMaps()
+    {
+        return {};
+    }
 
     virtual ~EditorSettings() = default;
 };

@@ -44,6 +44,14 @@ struct SelectionEditorSettings : public EditorSettings
         onlyVisible       = false;
         selectionBoxColor = vcl::Color(27, 120, 249, 64);
         editMode          = EditMode::CURRENT_OBJECT;
+        keyBindings.resetToDefaults();
+        mouseBindings.resetToDefaults();
+    }
+
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+        override
+    {
+        return {keyBindings, mouseBindings};
     }
 
     /**

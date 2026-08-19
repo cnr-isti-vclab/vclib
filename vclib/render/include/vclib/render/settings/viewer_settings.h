@@ -153,6 +153,13 @@ struct ViewerSettings : public TrackballSettings
     }
 
     ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
+
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+    {
+        auto res = TrackballSettings::actionMaps();
+        res.push_back(globalActionMap);
+        return res;
+    }
 };
 
 } // namespace vcl
