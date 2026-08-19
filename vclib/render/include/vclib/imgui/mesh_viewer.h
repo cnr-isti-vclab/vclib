@@ -37,7 +37,6 @@ class MeshViewer
     ViewerApp mApp;
 
 public:
-    using EditorType = ViewerApp::EditorType;
     using ViewerType = ViewerApp::ViewerType;
 
     explicit MeshViewer(const std::string& title = "VCLib Mesh Viewer") :

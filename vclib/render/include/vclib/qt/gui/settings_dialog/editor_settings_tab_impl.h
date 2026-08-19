@@ -24,8 +24,8 @@ namespace vcl::qt {
  * @brief The EditorSettingsTabImpl class implements SettingsDialogTab for
  * specific editor types.
  *
- * @tparam EditorType The type of the editor.
- * @tparam SettingsFrameType The type of the GUI frame used to edit the
+ * @tparam EditorType: The type of the editor.
+ * @tparam SettingsFrameType: The type of the GUI frame used to edit the
  * settings.
  */
 template<typename EditorType, typename SettingsFrameType>

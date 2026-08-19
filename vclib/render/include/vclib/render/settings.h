@@ -12,6 +12,9 @@
 
 namespace vcl {
 
+/**
+ * @brief The filename used for saving and loading global render settings.
+ */
 inline const std::string RENDER_SETTINGS_FILE_NAME = "render_settings.json";
 
 } // namespace vcl

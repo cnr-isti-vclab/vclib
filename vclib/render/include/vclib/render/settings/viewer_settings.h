@@ -91,6 +91,9 @@ struct ViewerSettings : public TrackballSettings
      */
     std::string panoramaPath = "";
 
+    /**
+     * @brief Resets the settings to their default values.
+     */
     void resetDefaults()
     {
         renderMode               = RenderMode::CLASSIC;
@@ -101,6 +104,10 @@ struct ViewerSettings : public TrackballSettings
         panoramaPath             = "";
     }
 
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("ViewerSettings")) {
@@ -118,6 +125,10 @@ struct ViewerSettings : public TrackballSettings
         }
     }
 
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
     void saveSettings(nlohmann::json& j) const
     {
         j["ViewerSettings"]["renderMode"] = static_cast<int>(renderMode);

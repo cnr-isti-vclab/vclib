@@ -33,7 +33,6 @@ class HeadlessMeshViewer
     ViewerApp mApp;
 
 public:
-    using EditorType = ViewerApp::EditorType;
     using ViewerType = ViewerApp::ViewerType;
 
     explicit HeadlessMeshViewer(

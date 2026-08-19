@@ -35,6 +35,9 @@ struct SelectionEditorSettings : public EditorSettings
     KeyMap   keyBindings   = defaultKeyMap();
     MouseMap mouseBindings = defaultMouseMap();
 
+    /**
+     * @brief Resets the settings to their default values.
+     */
     void resetDefaults()
     {
         onlyVisible       = false;
@@ -42,6 +45,10 @@ struct SelectionEditorSettings : public EditorSettings
         editMode          = EditMode::CURRENT_OBJECT;
     }
 
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("SelectionEditor")) {
@@ -52,6 +59,10 @@ struct SelectionEditorSettings : public EditorSettings
         }
     }
 
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
     void saveSettings(nlohmann::json& j) const
     {
         j["SelectionEditor"]["onlyVisible"]       = onlyVisible;

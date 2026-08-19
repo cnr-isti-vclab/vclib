@@ -21,6 +21,9 @@ struct BoundingBoxEditorSettings : public EditorSettings
     vcl::Color color     = vcl::Color();
     float      thickness = 2.0f;
 
+    /**
+     * @brief Resets the settings to their default values.
+     */
     void resetDefaults()
     {
         color     = vcl::Color();
@@ -28,6 +31,10 @@ struct BoundingBoxEditorSettings : public EditorSettings
         editMode  = EditMode::CURRENT_OBJECT;
     }
 
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     void loadSettings(const nlohmann::json& j)
     {
         if (j.contains("BoundingBoxEditor")) {
@@ -38,6 +45,10 @@ struct BoundingBoxEditorSettings : public EditorSettings
         }
     }
 
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
     void saveSettings(nlohmann::json& j) const
     {
         j["BoundingBoxEditor"]["color"]     = color;

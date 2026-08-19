@@ -44,21 +44,6 @@ bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
 }
 
 /**
- * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
- *
- * @return MeshViewerRenderApp
- */
-MeshViewerRenderApp& MeshViewer::viewer() const
-{
-    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
-}
-
-DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
-{
-    return *mUI->drawVectorTree;
-}
-
-/**
  * @brief MeshViewer constructor.
  *
  * Creates a MeshViewer having the given parent.
@@ -221,50 +206,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
 }
 
-void MeshViewer::setupSettingsButton()
-{
-    QWidget* spacer = new QWidget(this);
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    mSpacerAction = mUI->toolBar->addWidget(spacer);
-
-    QPushButton* settingsBtn = new QPushButton(this);
-    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
-    settingsBtn->setIconSize(QSize(32, 32));
-    settingsBtn->setFixedSize(QSize(40, 40));
-    settingsBtn->setFocusPolicy(Qt::NoFocus);
-    settingsBtn->setToolTip("Settings");
-    settingsBtn->setStyleSheet(
-        "QPushButton {"
-        "  background-color: transparent;"
-        "  border: 1px solid transparent;"
-        "  border-radius: 4px;"
-        "}"
-        "QPushButton:hover {"
-        "  background-color: palette(midlight);"
-        "  border-color: palette(dark);"
-        "}"
-        "QPushButton:pressed {"
-        "  background-color: palette(highlight);"
-        "  border-color: palette(dark);"
-        "}");
-    mUI->toolBar->addWidget(settingsBtn);
-    connect(
-        settingsBtn,
-        &QPushButton::clicked,
-        mUI->actionSettings,
-        &QAction::trigger);
-}
-
-void MeshViewer::addEditorFrame(QWidget* frame)
-{
-    if (mSpacerAction) {
-        mUI->toolBar->insertWidget(mSpacerAction, frame);
-    }
-    else {
-        mUI->toolBar->addWidget(frame);
-    }
-}
-
 MeshViewer::~MeshViewer()
 {
     delete mUI;
@@ -353,21 +294,23 @@ const ViewerSettings& MeshViewer::viewerSettings() const
     return mViewerSettingsFrame->viewerSettings();
 }
 
-void MeshViewer::keyPressEvent(QKeyEvent* event)
+/**
+ * @brief Sets the background color of the viewer.
+ * @param[in] color: The background color.
+ */
+void MeshViewer::setBackgroundColor(const vcl::Color& color)
 {
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
-    }
+    viewer().setBackgroundColor(color);
+    mUI->viewer->update();
+}
+
+/**
+ * @brief Retrieves the current background color.
+ * @return The background color.
+ */
+const vcl::Color& MeshViewer::backgroundColor() const
+{
+    return viewer().backgroundColor();
 }
 
 void MeshViewer::fitScene()
@@ -415,6 +358,85 @@ void MeshViewer::updateGUI()
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
+}
+
+/**
+ * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
+ *
+ * @return MeshViewerRenderApp
+ */
+MeshViewerRenderApp& MeshViewer::viewer() const
+{
+    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
+}
+
+DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
+{
+    return *mUI->drawVectorTree;
+}
+
+void MeshViewer::addEditorFrame(QWidget* frame)
+{
+    if (mSpacerAction) {
+        mUI->toolBar->insertWidget(mSpacerAction, frame);
+    }
+    else {
+        mUI->toolBar->addWidget(frame);
+    }
+}
+
+void MeshViewer::keyPressEvent(QKeyEvent* event)
+{
+    // show screenshot dialog on CTRL + S
+    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
+        vcl::qt::ScreenShotDialog dialog(this);
+        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+            auto sf = dialog.selectedFiles();
+            mUI->viewer->screenshot(
+                sf[0].toStdString(), dialog.screenMultiplierValue());
+        }
+    }
+    else {
+        event->ignore();
+        QWidget::keyPressEvent(event);
+    }
+}
+
+/**
+ * @brief Setup and add the settings button to the UI toolbar.
+ */
+void MeshViewer::setupSettingsButton()
+{
+    QWidget* spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    mSpacerAction = mUI->toolBar->addWidget(spacer);
+
+    QPushButton* settingsBtn = new QPushButton(this);
+    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
+    settingsBtn->setIconSize(QSize(32, 32));
+    settingsBtn->setFixedSize(QSize(40, 40));
+    settingsBtn->setFocusPolicy(Qt::NoFocus);
+    settingsBtn->setToolTip("Settings");
+    settingsBtn->setStyleSheet(
+        "QPushButton {"
+        "  background-color: transparent;"
+        "  border: 1px solid transparent;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: palette(midlight);"
+        "  border-color: palette(dark);"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(dark);"
+        "}");
+    mUI->toolBar->addWidget(settingsBtn);
+    connect(
+        settingsBtn,
+        &QPushButton::clicked,
+        mUI->actionSettings,
+        &QAction::trigger);
 }
 
 /**
@@ -544,6 +566,9 @@ void MeshViewer::renderModeChanged()
     mUI->viewer->update();
 }
 
+/**
+ * @brief Opens the global settings dialog to configure viewer and editors.
+ */
 void MeshViewer::openSettings()
 {
     SettingsDialog dialog(mSettingsData, this);
@@ -557,17 +582,6 @@ void MeshViewer::openSettings()
     });
 
     dialog.exec();
-}
-
-void MeshViewer::setBackgroundColor(const vcl::Color& color)
-{
-    viewer().setBackgroundColor(color);
-    mUI->viewer->update();
-}
-
-const vcl::Color& MeshViewer::backgroundColor() const
-{
-    return viewer().backgroundColor();
 }
 
 } // namespace vcl::qt
