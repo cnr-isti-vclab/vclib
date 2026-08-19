@@ -124,6 +124,13 @@ struct Key
     };
 };
 
+struct ScrollAxis {
+    enum Enum {
+        HORIZONTAL = 0,
+        VERTICAL   = 1,
+    };
+};
+
 inline bool isModifierKey(Key::Enum key)
 {
     return key == Key::SHIFT_KEY || key == Key::CONTROL_KEY ||
@@ -327,6 +334,27 @@ inline void fromString(const std::string& str, Key::Enum& out)
         out = Key::SCROLL_LOCK;
     else
         out = Key::UNKNOWN;
+}
+
+inline std::string toString(ScrollAxis::Enum axis)
+{
+    switch (axis) {
+    case ScrollAxis::HORIZONTAL: return "Horizontal";
+    case ScrollAxis::VERTICAL: return "Vertical";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, ScrollAxis::Enum& out)
+{
+    if (str == "Horizontal")
+        out = ScrollAxis::HORIZONTAL;
+    else if (str == "Vertical")
+        out = ScrollAxis::VERTICAL;
+    else {
+        throw std::invalid_argument(
+            "fromString ScrollAxis::Enum failed to parse: '" + str + "'");
+    }
 }
 
 } // namespace vcl

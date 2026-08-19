@@ -425,7 +425,7 @@ private:
 
         if (pixelDeltaX != 0) {
             auto actionOpt = scrollAtomicMap().action(
-                {mCurrentKeyModifiers, TrackballSettings::ScrollAxis(0)});
+                {ScrollAxis::HORIZONTAL, mCurrentKeyModifiers});
             if (actionOpt.has_value()) {
                 mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaX);
             }
@@ -433,7 +433,7 @@ private:
 
         if (pixelDeltaY != 0) {
             auto actionOpt = scrollAtomicMap().action(
-                {mCurrentKeyModifiers, TrackballSettings::ScrollAxis(1)});
+                {ScrollAxis::VERTICAL, mCurrentKeyModifiers});
             if (actionOpt.has_value()) {
                 mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaY);
             }
