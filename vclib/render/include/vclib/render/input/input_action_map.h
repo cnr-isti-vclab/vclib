@@ -49,15 +49,39 @@ class InputActionMap : public AbstractInputActionMap
     std::map<Input, ActionID> mBindings;
 
 public:
+    struct InitData
+    {
+        ActionID             id;
+        std::string          name;
+        std::optional<Input> defaultInput = std::nullopt;
+    };
+
     InputActionMap(const std::string& name = "") : mMapName(name) {}
 
     void registerAction(
         const ActionID&      id,
         const std::string&   name,
-        std::optional<Input> defaultInput)
+        std::optional<Input> defaultInput = std::nullopt)
     {
+        for (auto& def : mDefs) {
+            if (def.id == id) {
+                def.name = name;
+                if (!def.input.has_value() && defaultInput.has_value()) {
+                    def.input = defaultInput;
+                }
+                updateBindings();
+                return;
+            }
+        }
         mDefs.push_back({id, name, defaultInput});
         updateBindings();
+    }
+
+    void registerActions(std::initializer_list<InitData> actions)
+    {
+        for (const auto& a : actions) {
+            registerAction(a.id, a.name, a.defaultInput);
+        }
     }
 
     std::string mapName() const override { return mMapName; }
@@ -68,8 +92,8 @@ public:
         res.reserve(mDefs.size());
         for (const auto& def : mDefs) {
             std::string inputStr =
-                def.input.has_value() ? vcl::toString(def.input.value()) : "";
-            res.push_back({vcl::toString(def.id), def.name, inputStr});
+                def.input.has_value() ? toString(def.input.value()) : "";
+            res.push_back({toString(def.id), def.name, inputStr});
         }
         return res;
     }
@@ -77,8 +101,7 @@ public:
     void setBinding(const std::string& actionId, const std::string& inputStr)
         override
     {
-        ActionID id;
-        vcl::fromString(actionId, id);
+        ActionID id = vcl::fromString<ActionID>(actionId);
 
         for (auto& def : mDefs) {
             if (def.id == id) {
@@ -86,8 +109,7 @@ public:
                     def.input = std::nullopt;
                 }
                 else {
-                    Input in;
-                    vcl::fromString(inputStr, in);
+                    Input in = vcl::fromString<Input>(inputStr);
                     def.input = in;
                 }
                 updateBindings();
@@ -106,6 +128,16 @@ public:
         auto it = mBindings.find(in);
         if (it != mBindings.end()) {
             return it->second;
+        }
+        return std::nullopt;
+    }
+
+    std::optional<Input> input(const ActionID& id) const
+    {
+        for (const auto& def : mDefs) {
+            if (def.id == id) {
+                return def.input;
+            }
         }
         return std::nullopt;
     }

@@ -28,7 +28,7 @@ struct ViewerSettings : public TrackballSettings
      * @brief Global actions registered by the viewer or editors.
      */
     using ViewerGlobalActionMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+        InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
 
     /**
      * @brief The tone mapping operators available when rendering.
@@ -150,7 +150,7 @@ struct ViewerSettings : public TrackballSettings
         j["ViewerSettings"]["panoramaPath"]    = panoramaPath;
     }
 
-    ViewerGlobalActionMap globalActionMap;
+    ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
 };
 
 } // namespace vcl
