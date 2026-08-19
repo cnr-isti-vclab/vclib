@@ -18,13 +18,11 @@ namespace vcl {
  */
 struct TrackballSettings
 {
-    using ScrollAxis = unsigned char;
-
     using DragMotionMap = BindingMap<
         std::pair<MouseButton::Enum, KeyModifiers>,
         TrackballMotionType>;
     using ScrollAtomicMap =
-        BindingMap<std::pair<KeyModifiers, ScrollAxis>, TrackballMotionType>;
+        BindingMap<std::pair<ScrollAxis::Enum, KeyModifiers>, TrackballMotionType>;
     using KeyAtomicMap =
         BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
 
@@ -56,11 +54,11 @@ private:
         using enum TrackballMotionType;
 
         return ScrollAtomicMap {
-            {{{NO_MODIFIER}, 1}, SCALE},
-            {{{CONTROL}, 1},     ROLL },
-            {{{SHIFT}, 1},       FOV  },
+            {{ScrollAxis::VERTICAL, {NO_MODIFIER}}, SCALE},
+            {{ScrollAxis::VERTICAL, {CONTROL}},     ROLL },
+            {{ScrollAxis::VERTICAL, {SHIFT}},       FOV  },
 #ifdef __APPLE__
-            {{{SHIFT}, 0},       FOV  },
+            {{ScrollAxis::HORIZONTAL, {SHIFT}},       FOV  },
 #endif
         };
     }
