@@ -75,6 +75,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="saveAsDefaultCheckBox">
+       <property name="toolTip">
+        <string>If checked, these settings will be saved to the configuration file and automatically loaded the next time you open the application.</string>
+       </property>
+       <property name="text">
+        <string>Remember these settings</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>

@@ -96,45 +96,47 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::onApplyClicked()
 {
-    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string           filePath =
-        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    if (mUI->saveAsDefaultCheckBox->isChecked()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        std::string           filePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
 
-    nlohmann::json j;
+        nlohmann::json j;
 
-    // Read existing file to preserve other settings like ViewerSettings
-    std::ifstream in(filePath);
-    if (in.is_open()) {
-        try {
-            in >> j;
+        // Read existing file to preserve other settings like ViewerSettings
+        std::ifstream in(filePath);
+        if (in.is_open()) {
+            try {
+                in >> j;
+            }
+            catch (...) {
+                // Ignore parse errors and overwrite
+            }
+            in.close();
         }
-        catch (...) {
-            // Ignore parse errors and overwrite
-        }
-        in.close();
-    }
 
-    for (const auto& tab : mData.tabs()) {
-        if (tab->category() == "Editors") {
-            tab->saveSettings(j["Editors"]);
+        for (const auto& tab : mData.tabs()) {
+            if (tab->category() == "Editors") {
+                tab->saveSettings(j["Editors"]);
+            }
+            else {
+                tab->saveSettings(j);
+            }
+        }
+
+        // Ensure directory exists
+        QDir dir;
+        dir.mkpath(QString::fromStdString(configDir.string()));
+
+        std::ofstream out(filePath);
+        if (out.is_open()) {
+            out << j.dump(4);
+            out.close();
         }
         else {
-            tab->saveSettings(j);
+            QMessageBox::warning(
+                this, "Save Failed", "Failed to save default settings to file.");
         }
-    }
-
-    // Ensure directory exists
-    QDir dir;
-    dir.mkpath(QString::fromStdString(configDir.string()));
-
-    std::ofstream out(filePath);
-    if (out.is_open()) {
-        out << j.dump(4);
-        out.close();
-    }
-    else {
-        QMessageBox::warning(
-            this, "Save Failed", "Failed to save default settings to file.");
     }
 
     emit applied();
