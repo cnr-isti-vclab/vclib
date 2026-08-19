@@ -20,6 +20,8 @@
 
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 #include <memory>
 
 namespace vcl {
@@ -52,11 +54,6 @@ private:
 
     // the default id for the viewer drawer is 0
     uint mId = 0;
-
-    /**
-     * @brief The background color of the canvas.
-     */
-    Color mBackgroundColor = Color::DarkGray;
 
     DrawableAxis mDrawAxis;
 
@@ -202,13 +199,32 @@ public:
     void setViewerSettings(const ViewerSettings& settings)
     {
         mViewerSettings = settings;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), settings.backgroundColor);
     }
 
-    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("ViewerSettings")) {
+            ViewerSettings settings = mViewerSettings;
+            settings.loadSettings(j);
+            derived()->setViewerSettings(settings);
+        }
+        if (j.contains("Editors")) {
+            for (auto& editor : mEditors) {
+                if (editor)
+                    editor->loadSettings(j["Editors"]);
+            }
+        }
+    }
 
-    std::string panoramaFileName() const { return ""; }
-
-    void setPanorama(const std::string&) {}
+    void saveSettings(nlohmann::json& j) const
+    {
+        mViewerSettings.saveSettings(j);
+        for (const auto& editor : mEditors) {
+            if (editor)
+                editor->saveSettings(j["Editors"]);
+        }
+    }
 
     /**
      * @brief Pushes a new editor of the specified type into the viewer's editor
@@ -222,7 +238,7 @@ public:
      * @return A shared pointer to the newly created editor.
      */
     template<template<typename> typename ET>
-    auto pushEditor(bool active = false)
+    auto pushEditor(bool active = false, const nlohmann::json& j = {})
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
@@ -230,6 +246,12 @@ public:
         editor->onViewerSet();
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
+        
+        if (j.contains("Editors")) {
+            editor->loadSettings(j["Editors"]);
+            editor->refreshSettings();
+        }
+        
         return editor;
     }
 
@@ -396,7 +418,7 @@ public:
      * @brief Retrieves the current background color.
      * @return The current background color.
      */
-    const Color& backgroundColor() const { return mBackgroundColor; }
+    const Color& backgroundColor() const { return mViewerSettings.backgroundColor; }
 
     /**
      * @brief Sets the background color.
@@ -404,14 +426,13 @@ public:
      */
     void setBackgroundColor(const Color& color)
     {
-        mBackgroundColor = color;
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        mViewerSettings.backgroundColor = color;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), color);
     }
 
-    // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mViewerSettings.backgroundColor);
         mDrawList->init();
     }
 

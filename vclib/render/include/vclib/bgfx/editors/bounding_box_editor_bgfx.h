@@ -13,6 +13,8 @@
 #include <vclib/render/editors/editor.h>
 #include <vclib/render/settings/bounding_box_editor_settings.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 template<typename ViewerDrawer>
@@ -44,6 +46,16 @@ public:
     const BoundingBoxEditorSettings& settings() const override
     {
         return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        mSettings.saveSettings(j);
     }
 
     void setActive(bool active) override

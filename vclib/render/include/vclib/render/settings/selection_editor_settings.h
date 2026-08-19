@@ -15,6 +15,8 @@
 
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 struct SelectionEditorSettings : public EditorSettings
@@ -32,6 +34,41 @@ struct SelectionEditorSettings : public EditorSettings
 
     KeyMap   keyBindings   = defaultKeyMap();
     MouseMap mouseBindings = defaultMouseMap();
+
+    /**
+     * @brief Resets the settings to their default values.
+     */
+    void resetDefaults()
+    {
+        onlyVisible       = false;
+        selectionBoxColor = vcl::Color(27, 120, 249, 64);
+        editMode          = EditMode::CURRENT_OBJECT;
+    }
+
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("SelectionEditor")) {
+            const auto& jSel = j["SelectionEditor"];
+            onlyVisible       = jSel.value("onlyVisible", onlyVisible);
+            selectionBoxColor = jSel.value("selectionBoxColor", selectionBoxColor);
+            editMode          = static_cast<EditMode>(jSel.value("editMode", static_cast<int>(editMode)));
+        }
+    }
+
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
+    void saveSettings(nlohmann::json& j) const
+    {
+        j["SelectionEditor"]["onlyVisible"]       = onlyVisible;
+        j["SelectionEditor"]["selectionBoxColor"] = selectionBoxColor;
+        j["SelectionEditor"]["editMode"]          = static_cast<int>(editMode);
+    }
 
 private:
     static KeyMap defaultKeyMap()

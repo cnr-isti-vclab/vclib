@@ -10,13 +10,18 @@
 #include "ui_mesh_viewer.h"
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
+#include <vclib/qt/gui/settings_dialog.h>
+#include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <QAction>
 #include <QActionGroup>
+#include <QDialog>
 #include <QDockWidget>
+#include <QIcon>
+#include <QPushButton>
 
 namespace vcl::qt {
 
@@ -36,21 +41,6 @@ bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
     }
 
     return QObject::eventFilter(watched, event);
-}
-
-/**
- * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
- *
- * @return MeshViewerRenderApp
- */
-MeshViewerRenderApp& MeshViewer::viewer() const
-{
-    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
-}
-
-DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
-{
-    return *mUI->drawVectorTree;
 }
 
 /**
@@ -103,10 +93,21 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     disableFocus(mUI->toolBar);
 
+    setupSettingsButton();
+
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
-    mViewerSettingsFrame->setViewer(mUI->viewer);
+    mViewerSettingsFrame->setViewerSettings(viewer().viewerSettings());
+
+    connect(
+        mViewerSettingsFrame,
+        &ViewerSettingsFrame::settingsChanged,
+        this,
+        [this](const ViewerSettings& settings) {
+            mUI->viewer->setViewerSettings(settings);
+            mUI->viewer->update();
+        });
 
     mViewerSettingsDockWidget = new QDockWidget("Viewer Settings", this);
     mViewerSettingsDockWidget->setWidget(mViewerSettingsFrame);
@@ -177,11 +178,33 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &QDockWidget::visibilityChanged,
         mUI->actionViewer_Settings,
         &QAction::setChecked);
-}
 
-void MeshViewer::addEditorFrame(QWidget* frame)
-{
-    mUI->toolBar->addWidget(frame);
+    connect(
+        mUI->actionSettings,
+        &QAction::triggered,
+        this,
+        &MeshViewer::openSettings);
+
+    // Load default global settings
+    nlohmann::json        j;
+    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+    std::string           filePath =
+        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    std::ifstream in(filePath);
+    if (in.is_open()) {
+        try {
+            in >> j;
+            viewer().loadSettings(j);
+            setViewerSettings(viewer().viewerSettings());
+            // Editors pushed later will load their own settings via pushEditor
+        }
+        catch (...) {
+            // Ignore parse errors and reset to empty object to avoid crashes
+            j = nlohmann::json::object();
+        }
+    }
+
+    mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
 }
 
 MeshViewer::~MeshViewer()
@@ -257,6 +280,7 @@ void MeshViewer::setCamera(const Camera<float>& c)
 
 void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
+    mUI->viewer->setViewerSettings(settings);
     mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
@@ -269,28 +293,6 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
     return mViewerSettingsFrame->viewerSettings();
-}
-
-void MeshViewer::setPanorama(const std::string& panorama)
-{
-    mViewerSettingsFrame->setPanorama(panorama);
-}
-
-void MeshViewer::keyPressEvent(QKeyEvent* event)
-{
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
-    }
 }
 
 void MeshViewer::fitScene()
@@ -338,6 +340,85 @@ void MeshViewer::updateGUI()
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
+}
+
+/**
+ * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
+ *
+ * @return MeshViewerRenderApp
+ */
+MeshViewerRenderApp& MeshViewer::viewer() const
+{
+    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
+}
+
+DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
+{
+    return *mUI->drawVectorTree;
+}
+
+void MeshViewer::addEditorFrame(QWidget* frame)
+{
+    if (mSpacerAction) {
+        mUI->toolBar->insertWidget(mSpacerAction, frame);
+    }
+    else {
+        mUI->toolBar->addWidget(frame);
+    }
+}
+
+void MeshViewer::keyPressEvent(QKeyEvent* event)
+{
+    // show screenshot dialog on CTRL + S
+    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
+        vcl::qt::ScreenShotDialog dialog(this);
+        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+            auto sf = dialog.selectedFiles();
+            mUI->viewer->screenshot(
+                sf[0].toStdString(), dialog.screenMultiplierValue());
+        }
+    }
+    else {
+        event->ignore();
+        QWidget::keyPressEvent(event);
+    }
+}
+
+/**
+ * @brief Setup and add the settings button to the UI toolbar.
+ */
+void MeshViewer::setupSettingsButton()
+{
+    QWidget* spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    mSpacerAction = mUI->toolBar->addWidget(spacer);
+
+    QPushButton* settingsBtn = new QPushButton(this);
+    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
+    settingsBtn->setIconSize(QSize(32, 32));
+    settingsBtn->setFixedSize(QSize(40, 40));
+    settingsBtn->setFocusPolicy(Qt::NoFocus);
+    settingsBtn->setToolTip("Settings");
+    settingsBtn->setStyleSheet(
+        "QPushButton {"
+        "  background-color: transparent;"
+        "  border: 1px solid transparent;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: palette(midlight);"
+        "  border-color: palette(dark);"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(dark);"
+        "}");
+    mUI->toolBar->addWidget(settingsBtn);
+    connect(
+        settingsBtn,
+        &QPushButton::clicked,
+        mUI->actionSettings,
+        &QAction::trigger);
 }
 
 /**
@@ -467,15 +548,22 @@ void MeshViewer::renderModeChanged()
     mUI->viewer->update();
 }
 
-void MeshViewer::setBackgroundColor(const vcl::Color& color)
+/**
+ * @brief Opens the global settings dialog to configure viewer and editors.
+ */
+void MeshViewer::openSettings()
 {
-    viewer().setBackgroundColor(color);
-    mUI->viewer->update();
-}
+    SettingsDialog dialog(mSettingsData, this);
 
-const vcl::Color& MeshViewer::backgroundColor() const
-{
-    return viewer().backgroundColor();
+    connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        for (auto& tab : mSettingsData.tabs()) {
+            tab->applySettings();
+            tab->updateToolbarFrames(mUI->toolBar);
+        }
+        viewer().update();
+    });
+
+    dialog.exec();
 }
 
 } // namespace vcl::qt

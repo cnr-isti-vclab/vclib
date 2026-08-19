@@ -93,6 +93,7 @@ template<typename ViewerType>
 struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
 {
     using ToolbarFrameType = SelectionEditorFrame<ViewerType>;
+    using SettingsFrameType = SelectionEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

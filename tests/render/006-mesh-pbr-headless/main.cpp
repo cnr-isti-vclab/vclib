@@ -51,12 +51,13 @@ TEST_CASE("PBR Rendering")
                             viewerSettings.renderMode = vcl::RenderMode::PBR;
                             viewerSettings.renderBackgroundPanorama = true;
                             viewerSettings.imageBasedLighting       = true;
-                            mv.setViewerSettings(viewerSettings);
-
+                            
                             std::string panPath =
                                 std::string(VCLIB_ASSETS_PATH) + "/panoramas/" +
                                 panoramaName;
-                            mv.setPanorama(panPath);
+                            viewerSettings.panoramaPath = panPath;
+                                
+                            mv.setViewerSettings(viewerSettings);
                         },
                         angle,
                         false,

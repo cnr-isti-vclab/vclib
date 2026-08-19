@@ -31,6 +31,8 @@ public:
         QWidget*                 parent = nullptr);
     ~SelectionEditorSettingsFrame();
 
+    void updateGUI();
+
 signals:
     void settingsUpdated();
 
@@ -38,6 +40,8 @@ private slots:
     void editModeChanged(int index);
 
     void onlyVisibleCheckBoxChanged(Qt::CheckState state);
+
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt

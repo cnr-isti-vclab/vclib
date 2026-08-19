@@ -19,13 +19,10 @@ SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
 {
     mUI->setupUi(this);
 
-    bool onlyVisible = mSettings.onlyVisible;
-
     mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::NONE);
     mUI->editModeFrame->disableEditMode(EditorSettings::EditMode::ALL_OBJECTS);
 
-    mUI->editModeFrame->setEditMode(mSettings.editMode);
-    mUI->onlyVisibleCheckBox->setChecked(onlyVisible);
+    updateGUI();
 
     connect(
         mUI->editModeFrame,
@@ -38,11 +35,31 @@ SelectionEditorSettingsFrame::SelectionEditorSettingsFrame(
         &QCheckBox::checkStateChanged,
         this,
         &SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged);
+
+    connect(
+        mUI->resetDefaultButton,
+        &QPushButton::clicked,
+        this,
+        &SelectionEditorSettingsFrame::onResetDefaultClicked);
 }
 
 SelectionEditorSettingsFrame::~SelectionEditorSettingsFrame()
 {
     delete mUI;
+}
+
+void SelectionEditorSettingsFrame::updateGUI()
+{
+    // Block signals so we don't trigger settingsUpdated()
+    // during the initialization/update of the GUI components.
+    bool b1 = mUI->editModeFrame->blockSignals(true);
+    bool b2 = mUI->onlyVisibleCheckBox->blockSignals(true);
+
+    mUI->editModeFrame->setEditMode(mSettings.editMode);
+    mUI->onlyVisibleCheckBox->setChecked(mSettings.onlyVisible);
+
+    mUI->editModeFrame->blockSignals(b1);
+    mUI->onlyVisibleCheckBox->blockSignals(b2);
 }
 
 void SelectionEditorSettingsFrame::editModeChanged(int index)
@@ -59,6 +76,13 @@ void SelectionEditorSettingsFrame::onlyVisibleCheckBoxChanged(
 {
     bool onlyVisible      = state == Qt::CheckState::Checked;
     mSettings.onlyVisible = onlyVisible;
+    emit settingsUpdated();
+}
+
+void SelectionEditorSettingsFrame::onResetDefaultClicked()
+{
+    mSettings.resetDefaults();
+    updateGUI();
     emit settingsUpdated();
 }
 
