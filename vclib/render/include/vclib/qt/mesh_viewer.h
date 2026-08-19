@@ -55,11 +55,6 @@ class MeshViewer : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    /** @brief Type alias for the specific ViewerApp */
-    using ViewerType = MeshViewerRenderApp::ViewerType;
-
-private:
     Ui::MeshViewer* mUI;
 
     ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
@@ -73,6 +68,9 @@ private:
     SettingsDialogData mSettingsData;
 
 public:
+    /** @brief Type alias for the specific ViewerApp */
+    using ViewerType = MeshViewerRenderApp::ViewerType;
+
     explicit MeshViewer(QWidget* parent = nullptr);
     ~MeshViewer();
 
