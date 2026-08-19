@@ -8,8 +8,8 @@
 #ifndef VCL_RENDER_SETTINGS_SELECTION_EDITOR_SETTINGS_H
 #define VCL_RENDER_SETTINGS_SELECTION_EDITOR_SETTINGS_H
 
-#include <vclib/render/input/binding_map.h>
 #include <vclib/render/input/input.h>
+#include <vclib/render/input/input_action_map.h>
 #include <vclib/render/selection/selection_mode.h>
 #include <vclib/render/settings/editor_settings.h>
 
@@ -21,9 +21,10 @@ namespace vcl {
 
 struct SelectionEditorSettings : public EditorSettings
 {
-    using KeyMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, SelectionAtomicAction>;
-    using MouseMap = BindingMap<
+    using KeyMap = InputActionMap<
+        std::pair<Key::Enum, KeyModifiers>,
+        SelectionAtomicAction>;
+    using MouseMap = InputActionMap<
         std::pair<MouseButton::Enum, KeyModifiers>,
         SelectionDragAction>;
 
@@ -53,9 +54,11 @@ struct SelectionEditorSettings : public EditorSettings
     {
         if (j.contains("SelectionEditor")) {
             const auto& jSel = j["SelectionEditor"];
-            onlyVisible       = jSel.value("onlyVisible", onlyVisible);
-            selectionBoxColor = jSel.value("selectionBoxColor", selectionBoxColor);
-            editMode          = static_cast<EditMode>(jSel.value("editMode", static_cast<int>(editMode)));
+            onlyVisible      = jSel.value("onlyVisible", onlyVisible);
+            selectionBoxColor =
+                jSel.value("selectionBoxColor", selectionBoxColor);
+            editMode = static_cast<EditMode>(
+                jSel.value("editMode", static_cast<int>(editMode)));
         }
     }
 
@@ -75,24 +78,34 @@ private:
     {
         using enum Key::Enum;
         using enum KeyModifier::Enum;
+        using Input = std::pair<Key::Enum, KeyModifiers>;
 
-        return KeyMap {
-            {{A, {CONTROL}}, SelectionAtomicAction::ALL   },
-            {{D, {CONTROL}}, SelectionAtomicAction::NONE  },
-            {{I, {CONTROL}}, SelectionAtomicAction::INVERT}
-        };
+        KeyMap map("Selection Atomic Actions");
+        map.registerActions({
+            {SelectionAtomicAction::ALL,    "Select All",   Input {A, {CONTROL}}},
+            {SelectionAtomicAction::NONE,   "Deselect All", Input {D, {CONTROL}}},
+            {SelectionAtomicAction::INVERT,
+             "Invert Selection",                            Input {I, {CONTROL}}}
+        });
+        return map;
     }
 
     static MouseMap defaultMouseMap()
     {
         using enum MouseButton::Enum;
         using enum KeyModifier::Enum;
+        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
 
-        return MouseMap {
-            {{LEFT, {NO_MODIFIER}},    SelectionDragAction::REGULAR },
-            {{LEFT, {CONTROL}},        SelectionDragAction::ADD     },
-            {{LEFT, {CONTROL, SHIFT}}, SelectionDragAction::SUBTRACT}
-        };
+        MouseMap map("Selection Drag Actions");
+        map.registerActions({
+            {SelectionDragAction::REGULAR,
+             "Regular Selection",       Input {LEFT, {NO_MODIFIER}}   },
+            {SelectionDragAction::ADD,
+             "Add to Selection",        Input {LEFT, {CONTROL}}       },
+            {SelectionDragAction::SUBTRACT,
+             "Subtract from Selection", Input {LEFT, {CONTROL, SHIFT}}}
+        });
+        return map;
     }
 };
 
