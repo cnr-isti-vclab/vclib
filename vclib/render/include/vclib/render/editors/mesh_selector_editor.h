@@ -10,14 +10,34 @@
 
 #include "editor.h"
 
+#include <vclib/render/input.h>
+
 namespace vcl {
+
+enum class MeshSelectorAction { SELECT_MESH };
+
+inline std::string toString(MeshSelectorAction action)
+{
+    switch (action) {
+    case MeshSelectorAction::SELECT_MESH: return "Select Mesh";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, MeshSelectorAction& out)
+{
+    if (str == "Select Mesh")
+        out = MeshSelectorAction::SELECT_MESH;
+    else
+        throw std::invalid_argument(
+            "Invalid MeshSelectorAction string: " + str);
+}
 
 template<typename ViewerDrawer>
 class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
 public:
-    enum class MeshSelectorAction { SELECT_MESH };
-    using MouseMap = BindingMap<
+    using MouseMap = InputActionMap<
         std::pair<MouseButton::Enum, KeyModifiers>,
         MeshSelectorAction>;
 
@@ -29,10 +49,20 @@ private:
 
     EditorSettings mSettings;
 
-    MouseMap mMouseBindings = {
-        {{MouseButton::RIGHT, {KeyModifier::NO_MODIFIER}},
-         MeshSelectorAction::SELECT_MESH}
-    };
+    MouseMap mMouseBindings = defaultMouseMap();
+
+    static MouseMap defaultMouseMap()
+    {
+        using enum MouseButton::Enum;
+        using enum KeyModifier::Enum;
+        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
+
+        MouseMap map("Mesh Selector Mouse Actions");
+        map.registerActions({
+            {MeshSelectorAction::SELECT_MESH, "Select Mesh", Input{RIGHT, {NO_MODIFIER}}}
+        });
+        return map;
+    }
 
 public:
     void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
