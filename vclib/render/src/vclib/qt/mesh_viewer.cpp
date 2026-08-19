@@ -294,25 +294,6 @@ const ViewerSettings& MeshViewer::viewerSettings() const
     return mViewerSettingsFrame->viewerSettings();
 }
 
-/**
- * @brief Sets the background color of the viewer.
- * @param[in] color: The background color.
- */
-void MeshViewer::setBackgroundColor(const vcl::Color& color)
-{
-    viewer().setBackgroundColor(color);
-    mUI->viewer->update();
-}
-
-/**
- * @brief Retrieves the current background color.
- * @return The background color.
- */
-const vcl::Color& MeshViewer::backgroundColor() const
-{
-    return viewer().backgroundColor();
-}
-
 void MeshViewer::fitScene()
 {
     mUI->viewer->fitScene();

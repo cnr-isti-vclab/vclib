@@ -12,6 +12,8 @@
 #include <vclib/render/settings/render_mode.h>
 #include <vclib/render/settings/trackball_settings.h>
 
+#include <vclib/space/core/color.h>
+
 #include <nlohmann/json.hpp>
 
 namespace vcl {
@@ -87,6 +89,11 @@ struct ViewerSettings : public TrackballSettings
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
 
     /**
+     * @brief The background color of the canvas.
+     */
+    vcl::Color backgroundColor = vcl::Color::DarkGray;
+
+    /**
      * @brief The path to the panorama environment map.
      */
     std::string panoramaPath = "";
@@ -101,6 +108,7 @@ struct ViewerSettings : public TrackballSettings
         renderBackgroundPanorama = false;
         exposure                 = 1.0f;
         toneMapping              = ToneMapping::ACES_HILL;
+        backgroundColor          = vcl::Color::DarkGray;
         panoramaPath             = "";
     }
 
@@ -121,7 +129,8 @@ struct ViewerSettings : public TrackballSettings
             exposure    = js.value("exposure", exposure);
             toneMapping = static_cast<ToneMapping>(
                 js.value("toneMapping", static_cast<int>(toneMapping)));
-            panoramaPath = js.value("panoramaPath", panoramaPath);
+            backgroundColor = js.value("backgroundColor", backgroundColor);
+            panoramaPath    = js.value("panoramaPath", panoramaPath);
         }
     }
 
@@ -135,9 +144,10 @@ struct ViewerSettings : public TrackballSettings
         j["ViewerSettings"]["imageBasedLighting"] = imageBasedLighting;
         j["ViewerSettings"]["renderBackgroundPanorama"] =
             renderBackgroundPanorama;
-        j["ViewerSettings"]["exposure"]     = exposure;
-        j["ViewerSettings"]["toneMapping"]  = static_cast<int>(toneMapping);
-        j["ViewerSettings"]["panoramaPath"] = panoramaPath;
+        j["ViewerSettings"]["exposure"]        = exposure;
+        j["ViewerSettings"]["toneMapping"]     = static_cast<int>(toneMapping);
+        j["ViewerSettings"]["backgroundColor"] = backgroundColor;
+        j["ViewerSettings"]["panoramaPath"]    = panoramaPath;
     }
 
     ViewerGlobalActionMap globalActionMap;

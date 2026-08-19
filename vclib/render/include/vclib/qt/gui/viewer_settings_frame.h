@@ -12,6 +12,7 @@
 #include <vclib/render/settings/render_mode.h>
 #include <vclib/render/settings/viewer_settings.h>
 
+#include <QColor>
 #include <QFrame>
 
 class QPushButton;
@@ -59,6 +60,8 @@ private slots:
     void loadPanoramaPushButtonClicked();
     
     void onResetDefaultClicked();
+    
+    void backgroundColorPushButtonColorChanged(const QColor& color);
 };
 
 } // namespace vcl::qt

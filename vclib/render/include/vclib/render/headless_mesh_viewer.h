@@ -287,21 +287,6 @@ public:
     void trackballRoll(float angleRad) { mApp.trackballRoll(angleRad); }
 
     /**
-     * @brief Sets the background color of the viewer.
-     * @param[in] color: The background color.
-     */
-    void setBackgroundColor(const vcl::Color& color)
-    {
-        mApp.setBackgroundColor(color);
-    }
-
-    /**
-     * @brief Retrieves the current background color.
-     * @return The background color.
-     */
-    const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
-
-    /**
      * @brief Simulates a key press event.
      */
     void simulateKeyPress(vcl::Key::Enum key)

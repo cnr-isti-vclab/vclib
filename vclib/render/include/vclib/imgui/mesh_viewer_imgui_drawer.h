@@ -137,6 +137,16 @@ public:
                         viewerSettings.panoramaPath = std::string(mPanoramaPathBuffer);
                     }
 
+                    ImGui::ColorEdit4(
+                        "Background Color",
+                        [&] {
+                            return viewerSettings.backgroundColor;
+                        },
+                        [&](vcl::Color c) {
+                            viewerSettings.backgroundColor = c;
+                        },
+                        ImGuiColorEditFlags_NoInputs);
+
                     bool hasPanorama = !viewerSettings.panoramaPath.empty();
                     ImGui::BeginDisabled(!hasPanorama);
 

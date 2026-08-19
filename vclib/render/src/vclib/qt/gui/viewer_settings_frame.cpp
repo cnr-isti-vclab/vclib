@@ -72,6 +72,12 @@ ViewerSettingsFrame::ViewerSettingsFrame(QWidget* parent) :
         SIGNAL(clicked()),
         this,
         SLOT(onResetDefaultClicked()));
+
+    connect(
+        mUI->backgroundColorPushButton,
+        SIGNAL(colorChanged(QColor)),
+        this,
+        SLOT(backgroundColorPushButtonColorChanged(QColor)));
 }
 
 ViewerSettingsFrame::~ViewerSettingsFrame()
@@ -109,6 +115,14 @@ void ViewerSettingsFrame::setViewerSettings(const ViewerSettings& settings)
     mUI->toneMappingComboBox->setCurrentIndex(
         toUnderlying(mSettings.toneMapping));
     mUI->toneMappingComboBox->blockSignals(blocked);
+
+    blocked = mUI->backgroundColorPushButton->blockSignals(true);
+    mUI->backgroundColorPushButton->setBackgroundColor(QColor(
+        mSettings.backgroundColor.red(),
+        mSettings.backgroundColor.green(),
+        mSettings.backgroundColor.blue(),
+        mSettings.backgroundColor.alpha()));
+    mUI->backgroundColorPushButton->blockSignals(blocked);
 
     mUI->pbrSettingsFrame->setVisible(true);
     updatePanoramaLabel();
@@ -190,6 +204,13 @@ void ViewerSettingsFrame::onResetDefaultClicked()
 {
     mSettings.resetDefaults();
     setViewerSettings(mSettings);
+    emit settingsChanged(mSettings);
+}
+
+void ViewerSettingsFrame::backgroundColorPushButtonColorChanged(const QColor& color)
+{
+    mSettings.backgroundColor = vcl::Color(
+        color.red(), color.green(), color.blue(), color.alpha());
     emit settingsChanged(mSettings);
 }
 
