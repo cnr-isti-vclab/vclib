@@ -20,19 +20,7 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
 {
     mUI->setupUi(this);
 
-    Color c = mSettings.color;
-    float thickness = mSettings.thickness;
-    Color tc = mSettings.textColor;
-    int textSize = mSettings.textSize;
-
-    mUI->editModeFrame->hide();
-    mUI->highlightWidthSlider->setValue(int(thickness));
-    mUI->highlightColorPushButton->setBackgroundColor(
-        QColor(c.red(), c.green(), c.blue(), c.alpha()));
-        
-    mUI->textSizeSpinBox->setValue(textSize);
-    mUI->textColorPushButton->setBackgroundColor(
-        QColor(tc.red(), tc.green(), tc.blue(), tc.alpha()));
+    updateGUI();
 
     connect(
         mUI->highlightWidthSlider,
@@ -57,11 +45,44 @@ InfoEditorSettingsFrame::InfoEditorSettingsFrame(
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onTextColorChanged(const QColor&)));
+
+    connect(
+        mUI->resetDefaultButton,
+        SIGNAL(clicked()),
+        this,
+        SLOT(onResetDefaultClicked()));
 }
 
 InfoEditorSettingsFrame::~InfoEditorSettingsFrame()
 {
     delete mUI;
+}
+
+void InfoEditorSettingsFrame::updateGUI()
+{
+    bool b1 = mUI->highlightWidthSlider->blockSignals(true);
+    bool b2 = mUI->highlightColorPushButton->blockSignals(true);
+    bool b3 = mUI->textSizeSpinBox->blockSignals(true);
+    bool b4 = mUI->textColorPushButton->blockSignals(true);
+
+    Color c = mSettings.color;
+    float thickness = mSettings.thickness;
+    Color tc = mSettings.textColor;
+    int textSize = mSettings.textSize;
+
+    mUI->editModeFrame->hide();
+    mUI->highlightWidthSlider->setValue(int(thickness));
+    mUI->highlightColorPushButton->setBackgroundColor(
+        QColor(c.red(), c.green(), c.blue(), c.alpha()));
+        
+    mUI->textSizeSpinBox->setValue(textSize);
+    mUI->textColorPushButton->setBackgroundColor(
+        QColor(tc.red(), tc.green(), tc.blue(), tc.alpha()));
+
+    mUI->highlightWidthSlider->blockSignals(b1);
+    mUI->highlightColorPushButton->blockSignals(b2);
+    mUI->textSizeSpinBox->blockSignals(b3);
+    mUI->textColorPushButton->blockSignals(b4);
 }
 
 void InfoEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)
@@ -87,6 +108,13 @@ void InfoEditorSettingsFrame::onTextColorChanged(const QColor& c)
 {
     mSettings.textColor =
         Color(c.red(), c.green(), c.blue(), c.alpha());
+    emit settingsUpdated();
+}
+
+void InfoEditorSettingsFrame::onResetDefaultClicked()
+{
+    mSettings.resetDefaults();
+    updateGUI();
     emit settingsUpdated();
 }
 

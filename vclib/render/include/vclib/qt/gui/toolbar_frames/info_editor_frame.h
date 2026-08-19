@@ -67,6 +67,7 @@ template<typename ViewerType>
 struct EditorFrameTraits<vcl::InfoEditor, ViewerType>
 {
     using ToolbarFrameType = InfoEditorFrame<ViewerType>;
+    using SettingsFrameType = InfoEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

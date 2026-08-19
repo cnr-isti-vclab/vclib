@@ -7,13 +7,40 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>149</height>
+    <height>181</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="1">
+    <widget class="vcl::qt::ColorPushButton" name="highlightColorPushButton">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="highlightColorLabel">
+     <property name="text">
+      <string>Highlight Color:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="textSizeSpinBox">
+     <property name="minimum">
+      <number>5</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="value">
+      <number>20</number>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="highlightWidthLabel">
      <property name="text">
@@ -21,13 +48,17 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="vcl::qt::EditModeSettingsFrame" name="editModeFrame">
-     <property name="frameShape">
-      <enum>QFrame::Shape::NoFrame</enum>
+   <item row="4" column="0">
+    <widget class="QLabel" name="textColorLabel">
+     <property name="text">
+      <string>Text Color:</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Plain</enum>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="vcl::qt::ColorPushButton" name="textColorPushButton">
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </item>
@@ -47,17 +78,13 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="highlightColorLabel">
-     <property name="text">
-      <string>Highlight Color:</string>
+   <item row="0" column="0" colspan="2">
+    <widget class="vcl::qt::EditModeSettingsFrame" name="editModeFrame">
+     <property name="frameShape">
+      <enum>QFrame::Shape::NoFrame</enum>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="vcl::qt::ColorPushButton" name="highlightColorPushButton">
-     <property name="text">
-      <string/>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Plain</enum>
      </property>
     </widget>
    </item>
@@ -68,32 +95,29 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QSpinBox" name="textSizeSpinBox">
-     <property name="minimum">
-      <number>5</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>20</number>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="textColorLabel">
-     <property name="text">
-      <string>Text Color:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="vcl::qt::ColorPushButton" name="textColorPushButton">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+   <item row="5" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="resetDefaultButton">
+       <property name="text">
+        <string>Reset Defaults</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

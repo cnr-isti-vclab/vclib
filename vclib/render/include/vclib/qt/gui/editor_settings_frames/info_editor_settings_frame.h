@@ -32,6 +32,8 @@ public:
         QWidget*        parent = nullptr);
     ~InfoEditorSettingsFrame();
 
+    void updateGUI();
+
 signals:
     void settingsUpdated();
 
@@ -43,6 +45,8 @@ private slots:
     void onTextSizeChanged(int value);
 
     void onTextColorChanged(const QColor& c);
+
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt
