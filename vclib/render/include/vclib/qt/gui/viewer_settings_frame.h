@@ -43,6 +43,10 @@ private:
     void updatePanoramaLabel();
 
 signals:
+    /**
+     * @brief Emitted when any viewer setting is changed through the GUI.
+     * @param settings The new viewer settings.
+     */
     void settingsChanged(const ViewerSettings& settings);
 
 private slots:

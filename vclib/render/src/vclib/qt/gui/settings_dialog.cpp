@@ -110,7 +110,8 @@ void SettingsDialog::onApplyClicked()
                 in >> j;
             }
             catch (...) {
-                // Ignore parse errors and overwrite
+                // Ignore parse errors and overwrite by resetting to an empty object
+                j = nlohmann::json::object();
             }
             in.close();
         }

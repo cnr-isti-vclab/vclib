@@ -199,7 +199,8 @@ MeshViewer::MeshViewer(QWidget* parent) :
             // Editors pushed later will load their own settings via pushEditor
         }
         catch (...) {
-            // Ignore parse errors
+            // Ignore parse errors and reset to empty object to avoid crashes
+            j = nlohmann::json::object();
         }
     }
 

@@ -184,7 +184,8 @@ public:
             try {
                 in >> j;
             } catch (...) {
-                // Ignore parse errors
+                // Ignore parse errors and reset to empty object to avoid crashes
+                j = nlohmann::json::object();
             }
         }
 
