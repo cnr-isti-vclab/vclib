@@ -124,7 +124,8 @@ struct Key
     };
 };
 
-struct ScrollAxis {
+struct ScrollAxis
+{
     enum Enum {
         HORIZONTAL = 0,
         VERTICAL   = 1,
@@ -354,6 +355,82 @@ inline void fromString(const std::string& str, ScrollAxis::Enum& out)
     else {
         throw std::invalid_argument(
             "fromString ScrollAxis::Enum failed to parse: '" + str + "'");
+    }
+}
+
+// --- std::pair conversions ---
+
+inline std::string toString(
+    const std::pair<MouseButton::Enum, KeyModifiers>& input)
+{
+    std::string modStr = toString(input.second);
+    std::string btnStr = toString(input.first);
+    if (modStr.empty())
+        return btnStr;
+    return modStr + "+" + btnStr;
+}
+
+inline void fromString(
+    const std::string&                          str,
+    std::pair<MouseButton::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
+    }
+}
+
+inline std::string toString(const std::pair<Key::Enum, KeyModifiers>& input)
+{
+    std::string modStr = toString(input.second);
+    std::string keyStr = toString(input.first);
+    if (modStr.empty())
+        return keyStr;
+    return modStr + "+" + keyStr;
+}
+
+inline void fromString(
+    const std::string&                  str,
+    std::pair<Key::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
+    }
+}
+
+inline std::string toString(
+    const std::pair<ScrollAxis::Enum, KeyModifiers>& input)
+{
+    std::string modStr  = toString(input.second);
+    std::string axisStr = toString(input.first);
+    if (modStr.empty())
+        return axisStr;
+    return modStr + "+" + axisStr;
+}
+
+inline void fromString(
+    const std::string&                         str,
+    std::pair<ScrollAxis::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
     }
 }
 
