@@ -10,69 +10,31 @@
 
 #include "editor.h"
 
-#include <vclib/render/input.h>
+#include <vclib/render/settings/mesh_selector_editor_settings.h>
 
 namespace vcl {
-
-enum class MeshSelectorAction { SELECT_MESH };
-
-inline std::string toString(MeshSelectorAction action)
-{
-    switch (action) {
-    case MeshSelectorAction::SELECT_MESH: return "Select Mesh";
-    default: return "Unknown";
-    }
-}
-
-inline void fromString(const std::string& str, MeshSelectorAction& out)
-{
-    if (str == "Select Mesh")
-        out = MeshSelectorAction::SELECT_MESH;
-    else
-        throw std::invalid_argument(
-            "Invalid MeshSelectorAction string: " + str);
-}
 
 template<typename ViewerDrawer>
 class MeshSelectorEditor : public Editor<ViewerDrawer>
 {
-public:
-    using MouseMap = InputActionMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        MeshSelectorAction>;
-
-private:
     using Base = Editor<ViewerDrawer>;
 
     // a callback function called when an object is selected
     std::function<void(uint)> mOnObjectSelectedFunction = nullptr;
 
-    EditorSettings mSettings;
-
-    MouseMap mMouseBindings = defaultMouseMap();
-
-    static MouseMap defaultMouseMap()
-    {
-        using enum MouseButton::Enum;
-        using enum KeyModifier::Enum;
-        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
-
-        MouseMap map("Mesh Selector Mouse Actions");
-        map.registerActions({
-            {MeshSelectorAction::SELECT_MESH, "Select Mesh", Input{RIGHT, {NO_MODIFIER}}}
-        });
-        return map;
-    }
+    MeshSelectorEditorSettings mSettings;
 
 public:
+    using MouseMap = MeshSelectorEditorSettings::MouseMap;
+
     void setOnObjectSelectedFunction(const std::function<void(uint)>& f)
     {
         mOnObjectSelectedFunction = f;
     }
 
-    MouseMap& mouseBindings() { return mMouseBindings; }
+    MouseMap& mouseBindings() { return mSettings.mouseBindings; }
 
-    const MouseMap& mouseBindings() const { return mMouseBindings; }
+    const MouseMap& mouseBindings() const { return mSettings.mouseBindings; }
 
     // Editor implementation
 
@@ -105,7 +67,7 @@ public:
         if (block)
             return true;
 
-        auto action = mMouseBindings.action({button, modifiers});
+        auto action = mSettings.mouseBindings.action({button, modifiers});
         if (action.has_value() &&
             action.value() == MeshSelectorAction::SELECT_MESH) {
             auto callback = [&](uint id) {
