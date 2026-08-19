@@ -25,24 +25,6 @@
 
 namespace vcl::qt {
 
-bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
-{
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        // Ignore only the Ctrl + S shortcut override, you can customize check
-        // for your needs
-        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
-            keyEvent->key() == 'S') {
-            qDebug() << "Ignoring " << keyEvent->modifiers() << " + "
-                     << (char) keyEvent->key() << " for " << watched;
-            event->ignore();
-            return true;
-        }
-    }
-
-    return QObject::eventFilter(watched, event);
-}
-
 /**
  * @brief MeshViewer constructor.
  *
@@ -58,6 +40,19 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     // give keyboard focus to the viewer widget immediately
     mUI->viewer->setFocus();
+
+    // Register Qt-specific screenshot action with dialog
+    viewer().registerGlobalAction(
+        "Take Screenshot",
+        {Key::S, {KeyModifier::CONTROL}},
+        [this]() {
+            vcl::qt::ScreenShotDialog dialog(this);
+            if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+                auto sf = dialog.selectedFiles();
+                mUI->viewer->screenshot(
+                    sf[0].toStdString(), dialog.screenMultiplierValue());
+            }
+        });
 
     // prevent any widget in the right area from stealing keyboard focus
     mUI->rightArea->setFocusPolicy(Qt::NoFocus);
@@ -117,9 +112,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
     addDockWidget(Qt::RightDockWidgetArea, mViewerSettingsDockWidget);
 
     /** Events **/
-
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // meshRenderSettingsUpdated() member function
@@ -364,23 +356,6 @@ void MeshViewer::addEditorFrame(QWidget* frame)
     }
     else {
         mUI->toolBar->addWidget(frame);
-    }
-}
-
-void MeshViewer::keyPressEvent(QKeyEvent* event)
-{
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
     }
 }
 

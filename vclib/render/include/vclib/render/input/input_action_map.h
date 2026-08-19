@@ -42,10 +42,11 @@ class InputActionMap : public AbstractInputActionMap
         ActionID             id;
         std::string          name;
         std::optional<Input> input;
+        std::optional<Input> defaultInput;
     };
 
-    std::string               mMapName;
-    std::vector<ActionDef>    mDefs;
+    std::string            mMapName;
+    std::vector<ActionDef> mDefs;
     std::map<Input, ActionID> mBindings;
 
 public:
@@ -66,6 +67,7 @@ public:
         for (auto& def : mDefs) {
             if (def.id == id) {
                 def.name = name;
+                def.defaultInput = defaultInput;
                 if (!def.input.has_value() && defaultInput.has_value()) {
                     def.input = defaultInput;
                 }
@@ -73,7 +75,7 @@ public:
                 return;
             }
         }
-        mDefs.push_back({id, name, defaultInput});
+        mDefs.push_back({id, name, defaultInput, defaultInput});
         updateBindings();
     }
 
@@ -82,6 +84,14 @@ public:
         for (const auto& a : actions) {
             registerAction(a.id, a.name, a.defaultInput);
         }
+    }
+
+    void resetToDefaults()
+    {
+        for (auto& def : mDefs) {
+            def.input = def.defaultInput;
+        }
+        updateBindings();
     }
 
     std::string mapName() const override { return mMapName; }

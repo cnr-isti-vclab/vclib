@@ -93,6 +93,53 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
+        registerGlobalAction(
+            "Toggle Editors Events",
+            {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                toggleEditorsEventsEnabled();
+            });
+
+        registerGlobalAction(
+            "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
+                fitScene();
+            });
+
+        registerGlobalAction(
+            "Toggle Axis", {Key::A, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (mCustomShortcutToggleAxisCallback)
+                    mCustomShortcutToggleAxisCallback();
+            });
+
+        registerGlobalAction(
+            "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
+                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+            });
+
+        registerGlobalAction(
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
+                undo();
+            });
+
+        registerGlobalAction(
+            "Redo", {Key::Y, {KeyModifier::CONTROL}}, [this]() {
+                redo();
+            });
+
+        registerGlobalAction(
+            "Redo (Alt)",
+            {
+                Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}
+        },
+            [this]() {
+                redo();
+            });
+
+        registerGlobalAction(
+            "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (this->mCustomShortcutToggleTrackballCallback)
+                    this->mCustomShortcutToggleTrackballCallback();
+            });
     }
 
     ~AbstractViewerDrawer() = default;
@@ -471,17 +518,17 @@ public:
     {
         bool block = false;
 
-        if (mEditorsEventsEnabled) {
-            auto actionNameOpt =
-                mViewerSettings.globalActionMap.action({key, modifiers});
-            if (actionNameOpt.has_value()) {
-                auto it = mGlobalActionRegistry.find(actionNameOpt.value());
-                if (it != mGlobalActionRegistry.end()) {
-                    it->second();
-                    return true;
-                }
+        auto actionNameOpt =
+            mViewerSettings.globalActionMap.action({key, modifiers});
+        if (actionNameOpt.has_value()) {
+            auto it = mGlobalActionRegistry.find(actionNameOpt.value());
+            if (it != mGlobalActionRegistry.end()) {
+                it->second();
+                return true;
             }
+        }
 
+        if (mEditorsEventsEnabled) {
             for (const auto& editor : mEditors) {
                 if (!block && editor->isActive())
                     block = editor->onKeyPress(key, modifiers);
@@ -491,48 +538,6 @@ public:
         if (!block)
             block = Base::onKeyPress(key, modifiers);
 
-        if (!block) {
-            switch (key) {
-            case Key::ESCAPE:
-                if (modifiers[KeyModifier::NO_MODIFIER]) {
-                    toggleEditorsEventsEnabled();
-                    block = true;
-                }
-                break;
-            case Key::R:
-                if (modifiers[KeyModifier::NO_MODIFIER])
-                    fitScene();
-                break;
-            case Key::S:
-                if (modifiers[KeyModifier::CONTROL])
-                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-                break;
-            case Key::A:
-                if (modifiers[KeyModifier::NO_MODIFIER]) {
-                    if (mCustomShortcutToggleAxisCallback)
-                        mCustomShortcutToggleAxisCallback();
-                }
-                break;
-            case Key::Z:
-                if (modifiers[KeyModifier::CONTROL] &&
-                    modifiers[KeyModifier::SHIFT]) {
-                    redo();
-                    block = true;
-                }
-                else if (modifiers[KeyModifier::CONTROL]) {
-                    undo();
-                    block = true;
-                }
-                break;
-            case Key::Y:
-                if (modifiers[KeyModifier::CONTROL]) {
-                    redo();
-                    block = true;
-                }
-                break;
-            default: break;
-            }
-        }
         return block;
     }
 

@@ -31,6 +31,13 @@ struct TrackballSettings
     ScrollAtomicMap scrollAtomicMap = defaultScrollMotionMap();
     KeyAtomicMap    keyAtomicMap    = defaultKeyAtomicMap();
 
+    void resetDefaults()
+    {
+        dragMotionMap.resetToDefaults();
+        scrollAtomicMap.resetToDefaults();
+        keyAtomicMap.resetToDefaults();
+    }
+
 private:
     static DragMotionMap defaultDragMotionMap()
     {

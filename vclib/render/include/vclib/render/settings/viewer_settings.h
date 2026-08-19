@@ -103,6 +103,7 @@ struct ViewerSettings : public TrackballSettings
      */
     void resetDefaults()
     {
+        TrackballSettings::resetDefaults();
         renderMode               = RenderMode::CLASSIC;
         imageBasedLighting       = false;
         renderBackgroundPanorama = false;
@@ -110,6 +111,7 @@ struct ViewerSettings : public TrackballSettings
         toneMapping              = ToneMapping::ACES_HILL;
         backgroundColor          = vcl::Color::DarkGray;
         panoramaPath             = "";
+        globalActionMap.resetToDefaults();
     }
 
     /**

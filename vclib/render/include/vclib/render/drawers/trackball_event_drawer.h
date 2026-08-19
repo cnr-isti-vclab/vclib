@@ -69,15 +69,16 @@ private:
     // directional light gizmo
     DirectionalLightGizmo mDirectionalLightGizmo;
 
-    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
-        [this]() {
-            toggleTrackBallVisibility();
-        };
-
     TrackballSettings mDefaultTrackballSettings;
 
     std::map<std::string, AtomicActionCallback> mAtomicActionRegistry =
         defaultAtomicActionRegistry();
+
+protected:
+    std::function<void(void)> mCustomShortcutToggleTrackballCallback =
+        [this]() {
+            toggleTrackBallVisibility();
+        };
 
 public:
     TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
@@ -295,12 +296,6 @@ public:
     bool onKeyPress(Key::Enum key, const KeyModifiers& modifiers) override
     {
         setKeyModifiers(modifiers);
-        // handle shortcut for trackball visibility
-        if (key == Key::T && modifiers[KeyModifier::NO_MODIFIER]) {
-            if (mCustomShortcutToggleTrackballCallback)
-                mCustomShortcutToggleTrackballCallback();
-            return true;
-        }
         keyPress(key);
         return false;
     }
