@@ -32,6 +32,8 @@ public:
         QWidget*                   parent = nullptr);
     ~BoundingBoxEditorSettingsFrame();
 
+    void updateGUI();
+
 signals:
     void settingsUpdated();
 
@@ -41,6 +43,8 @@ private slots:
     void onLinesWidthSliderValueChanged(int value);
 
     void onColorChanged(const QColor& c);
+
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt

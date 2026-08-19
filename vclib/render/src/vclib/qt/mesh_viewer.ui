@@ -148,6 +148,13 @@
     <addaction name="menuRender_Mode"/>
     <addaction name="actionViewer_Settings"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionSettings"/>
+   </widget>
+   <addaction name="menuEdit"/>
    <addaction name="menuRender"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -187,6 +194,11 @@
    </property>
    <property name="text">
     <string>Viewer Settings</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

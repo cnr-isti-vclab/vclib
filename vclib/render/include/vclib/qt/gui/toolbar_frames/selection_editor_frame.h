@@ -41,15 +41,15 @@ public:
         selectFacesButton->setToolTip("Select Faces");
 
         auto onSelectVerticesButtonClicked = [&](bool checked) {
-            bool selFaces = settings.selectFaces;
-            mSelectionEditor->setActive(checked || selFaces);
             settings.selectVertices = checked;
+            bool selFaces           = settings.selectFaces;
+            mSelectionEditor->setActive(checked || selFaces);
         };
 
         auto onSelectFacesButtonClicked = [&](bool checked) {
-            bool selVertices = settings.selectVertices;
-            mSelectionEditor->setActive(checked || selVertices);
             settings.selectFaces = checked;
+            bool selVertices     = settings.selectVertices;
+            mSelectionEditor->setActive(checked || selVertices);
         };
 
         connect(
@@ -68,6 +68,14 @@ public:
             Base::setSettingsFrame<SelectionEditorSettingsFrame>(settings);
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+
+        mSelectionEditor->setOnStateUpdatedCallback(
+            [this, selectVerticesButton, selectFacesButton]() {
+                selectVerticesButton->setChecked(
+                    mSelectionEditor->settings().selectVertices);
+                selectFacesButton->setChecked(
+                    mSelectionEditor->settings().selectFaces);
+            });
     }
 
 private slots:
@@ -85,6 +93,7 @@ template<typename ViewerType>
 struct EditorFrameTraits<vcl::SelectionEditor, ViewerType>
 {
     using ToolbarFrameType = SelectionEditorFrame<ViewerType>;
+    using SettingsFrameType = SelectionEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

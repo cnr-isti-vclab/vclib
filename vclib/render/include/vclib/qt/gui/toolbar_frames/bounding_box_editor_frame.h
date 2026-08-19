@@ -47,6 +47,10 @@ public:
                 mBoundingBoxEditor->settings());
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+
+        mBoundingBoxEditor->setOnStateUpdatedCallback([this, editorButton]() {
+            editorButton->setChecked(mBoundingBoxEditor->isActive());
+        });
     }
 
 private slots:
@@ -63,6 +67,7 @@ template<typename ViewerType>
 struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
 {
     using ToolbarFrameType = BoundingBoxEditorFrame<ViewerType>;
+    using SettingsFrameType = BoundingBoxEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

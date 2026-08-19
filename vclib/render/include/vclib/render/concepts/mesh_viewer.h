@@ -35,7 +35,6 @@ concept MeshViewerConcept = requires (
     std::shared_ptr<vcl::DrawableObject> obj3,
     uint                                 id) {
     typename RemoveRef<T>::ViewerType;
-    typename RemoveRef<T>::EditorType;
 
     // non const requirements
     requires IsConst<T> || requires {

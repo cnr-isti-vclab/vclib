@@ -13,6 +13,8 @@
 #include <vclib/render/editors/editor.h>
 #include <vclib/render/settings/bounding_box_editor_settings.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 template<typename ViewerDrawer>
@@ -29,11 +31,31 @@ public:
 
     std::string name() const override { return "Bounding Box"; }
 
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Bounding Box",
+            {Key::B, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                this->setActive(!this->isActive());
+            });
+    }
+
     BoundingBoxEditorSettings& settings() override { return mSettings; }
 
     const BoundingBoxEditorSettings& settings() const override
     {
         return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        mSettings.saveSettings(j);
     }
 
     void setActive(bool active) override

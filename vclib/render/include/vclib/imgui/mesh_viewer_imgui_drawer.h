@@ -80,7 +80,7 @@ public:
                     if (ImGui::MenuItem(
                             "Viewer Settings", nullptr, &mShowViewerSettings)) {
                         if (mShowViewerSettings) {
-                            std::string panName = Base::panoramaFileName();
+                            std::string panName = viewerSettings.panoramaPath;
                             std::strncpy(
                                 mPanoramaPathBuffer,
                                 panName.c_str(),
@@ -135,10 +135,20 @@ public:
                         IM_ARRAYSIZE(mPanoramaPathBuffer));
                     ImGui::SameLine();
                     if (ImGui::Button("Load")) {
-                        Base::setPanorama(std::string(mPanoramaPathBuffer));
+                        viewerSettings.panoramaPath = std::string(mPanoramaPathBuffer);
                     }
 
-                    bool hasPanorama = !Base::panoramaFileName().empty();
+                    ImGui::ColorEdit4(
+                        "Background Color",
+                        [&] {
+                            return viewerSettings.backgroundColor;
+                        },
+                        [&](vcl::Color c) {
+                            viewerSettings.backgroundColor = c;
+                        },
+                        ImGuiColorEditFlags_NoInputs);
+
+                    bool hasPanorama = !viewerSettings.panoramaPath.empty();
                     ImGui::BeginDisabled(!hasPanorama);
 
                     // image based lighting

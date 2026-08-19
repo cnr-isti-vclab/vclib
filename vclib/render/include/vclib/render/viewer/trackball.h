@@ -18,6 +18,21 @@
 namespace vcl {
 
 /**
+ * @brief The type of trackball motion that can be applied.
+ */
+enum class TrackballMotionType {
+    ARC,           ///< Arcball rotation.
+    PAN,           ///< Panning motion.
+    ZMOVE,         ///< Movement along Z axis (similar to zoom, but translates).
+    ROLL,          ///< Roll rotation around the view direction.
+    SCALE,         ///< Scaling motion.
+    FOV,           ///< Field of view change.
+    FOCUS,         ///< Focus on a specific point.
+    DIR_LIGHT_ARC, ///< Directional light rotation.
+    MOTION_COUNT   ///< Number of motion types.
+};
+
+/**
  * @brief The TrackBall class implements a trackball (a camera combined with
  * model transformation).
  *
@@ -37,18 +52,6 @@ template<typename Scalar>
 class TrackBall
 {
 public:
-    enum MotionType {
-        ARC,
-        PAN,
-        ZMOVE,
-        ROLL,
-        SCALE,
-        FOV,
-        FOCUS,
-        DIR_LIGHT_ARC,
-        MOTION_COUNT
-    };
-
     struct TransformArgs
     {
         Point3<Scalar> axis;
@@ -90,8 +93,8 @@ private:
     Scalar mRadius = ARC_BALL_RADIUS_RATIO;
 
     // trackball interaction state
-    bool       mDragging       = false;
-    MotionType mCurrDragMotion = MOTION_COUNT;
+    bool                mDragging       = false;
+    TrackballMotionType mCurrDragMotion = TrackballMotionType::MOTION_COUNT;
 
     // initial arcball hit point
     Point3<Scalar> mInitialPoint;
@@ -388,7 +391,7 @@ public:
 
     bool isDragging() const { return mDragging; }
 
-    MotionType currentMotion() const { return mCurrDragMotion; }
+    TrackballMotionType currentMotion() const { return mCurrDragMotion; }
 
     // Atomic motions
 
@@ -415,50 +418,63 @@ public:
      * @param step
      */
     void applyAtomicMotion(
-        MotionType      motion,
-        AtomicMotionArg step = std::monostate())
+        TrackballMotionType motion,
+        AtomicMotionArg     step = std::monostate())
     {
         if (std::holds_alternative<Scalar>(step)) {
             Scalar inc = std::get<Scalar>(step);
 
             switch (motion) {
-            case ROLL: roll(inc); break;
-            case SCALE: performScale(inc); break;
-            case FOV: performFov(inc); break;
-            case ZMOVE: performZmove(inc); break;
+            case TrackballMotionType::ROLL: roll(inc); break;
+            case TrackballMotionType::SCALE: performScale(inc); break;
+            case TrackballMotionType::FOV: performFov(inc); break;
+            case TrackballMotionType::ZMOVE: performZmove(inc); break;
             default: break;
             }
         }
         else if (std::holds_alternative<TransformArgs>(step)) {
             const TransformArgs& args = std::get<TransformArgs>(step);
             switch (motion) {
-            case ARC: rotate(args.axis, args.scalar); break;
-            case DIR_LIGHT_ARC: rotateDirLight(args.axis, args.scalar); break;
+            case TrackballMotionType::ARC:
+                rotate(args.axis, args.scalar);
+                break;
+            case TrackballMotionType::DIR_LIGHT_ARC:
+                rotateDirLight(args.axis, args.scalar);
+                break;
             default: break;
             }
         }
         else if (std::holds_alternative<Point3<Scalar>>(step)) {
             Point3<Scalar> val = std::get<Point3<Scalar>>(step);
             switch (motion) {
-            case PAN: translate(val); break;
-            case FOCUS: setCenter(val); changeScale(FOCUS_SCALE_FACTOR);
+            case TrackballMotionType::PAN: translate(val); break;
+            case TrackballMotionType::FOCUS:
+                setCenter(val);
+                changeScale(FOCUS_SCALE_FACTOR);
+                break;
             default: break;
             }
         }
     }
 
-    void applyScale(Scalar value) { applyAtomicMotion(SCALE, value); }
+    void applyScale(Scalar value)
+    {
+        applyAtomicMotion(TrackballMotionType::SCALE, value);
+    }
 
-    void applyRoll(Scalar angleRad) { applyAtomicMotion(ROLL, angleRad); }
+    void applyRoll(Scalar angleRad)
+    {
+        applyAtomicMotion(TrackballMotionType::ROLL, angleRad);
+    }
 
     void applyPan(const Point3<Scalar>& translation)
     {
-        applyAtomicMotion(PAN, translation);
+        applyAtomicMotion(TrackballMotionType::PAN, translation);
     }
 
     void applyArc(const Point3<Scalar>& axis, Scalar angle)
     {
-        applyAtomicMotion(ARC, TransformArgs(axis, angle));
+        applyAtomicMotion(TrackballMotionType::ARC, TransformArgs(axis, angle));
     }
 
     // Drag motions
@@ -481,9 +497,11 @@ public:
      * @note this function should be called when the drag motion begins
      * (e.g., the mouse is pressed) or the motion type changes.
      */
-    void beginDragMotion(MotionType motion)
+    void beginDragMotion(TrackballMotionType motion)
     {
-        assert(motion != MOTION_COUNT && "Invalid motion type");
+        assert(
+            motion != TrackballMotionType::MOTION_COUNT &&
+            "Invalid motion type");
 
         // no need to restart?
         if (mCurrDragMotion == motion)
@@ -506,10 +524,11 @@ public:
      * @note this function should be called when the drag motion ends
      * (e.g., the mouse is released)
      */
-    void endDragMotion(MotionType motion)
+    void endDragMotion(TrackballMotionType motion)
     {
         setDragMotionValue(motion, false);
-        mDragging = false;
+        mCurrDragMotion = TrackballMotionType::MOTION_COUNT;
+        mDragging       = false;
     }
 
     /**
@@ -520,7 +539,8 @@ public:
     void update() // TODO: rename this function (it just updates the motion)
     {
         assert(
-            mDragging != (mCurrDragMotion == MOTION_COUNT) &&
+            mDragging !=
+                (mCurrDragMotion == TrackballMotionType::MOTION_COUNT) &&
             "Invalid state: dragging and no motion");
         if (mDragging && mCurrMousePosition != mPrevMousePosition)
             drag(mCurrDragMotion);
@@ -529,20 +549,20 @@ public:
 private:
     /**-------------- Generic Functions  --------------**/
 
-    void setDragMotionValue(MotionType motion, bool value)
+    void setDragMotionValue(TrackballMotionType motion, bool value)
     {
-        mCurrDragMotion = value ? motion : MOTION_COUNT;
+        mCurrDragMotion = value ? motion : TrackballMotionType::MOTION_COUNT;
     }
 
-    void drag(MotionType motion)
+    void drag(TrackballMotionType motion)
     {
         switch (motion) {
-        case ARC: dragArc(); break;
-        case PAN: dragPan(); break;
-        case ZMOVE: dragZmove(); break;
-        case ROLL: dragRoll(); break;
-        case SCALE: dragScale(); break;
-        case DIR_LIGHT_ARC: dragDirLightArc(); break;
+        case TrackballMotionType::ARC: dragArc(); break;
+        case TrackballMotionType::PAN: dragPan(); break;
+        case TrackballMotionType::ZMOVE: dragZmove(); break;
+        case TrackballMotionType::ROLL: dragRoll(); break;
+        case TrackballMotionType::SCALE: dragScale(); break;
+        case TrackballMotionType::DIR_LIGHT_ARC: dragDirLightArc(); break;
         default: break;
         }
     }

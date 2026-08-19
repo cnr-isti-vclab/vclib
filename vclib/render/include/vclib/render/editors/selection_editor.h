@@ -18,6 +18,8 @@
 #include <vclib/render/settings/selection_editor_settings.h>
 #endif
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
@@ -43,6 +45,16 @@ public:
     const SelectionEditorSettings& settings() const override
     {
         return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        mSettings.saveSettings(j);
     }
 
     void draw(uint) override {}

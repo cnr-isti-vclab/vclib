@@ -117,7 +117,7 @@ void showOnMeshViewer(
     auto sts = viewer.viewerSettings();
 
     if (!panorama.empty()) {
-        viewer.setPanorama(panorama);
+        sts.panoramaPath             = panorama;
         sts.imageBasedLighting       = true;
         sts.renderBackgroundPanorama = true;
     }

@@ -20,6 +20,8 @@
 
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 #include <memory>
 
 namespace vcl {
@@ -35,6 +37,11 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
+public:
+    using GlobalActionCallback = std::function<void()>;
+    using GlobalActionMap      = ViewerSettings::ViewerGlobalActionMap;
+
+private:
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
 
@@ -43,13 +50,10 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     bool                      mEditorsEventsEnabled = true;
     std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
 
+    std::map<std::string, GlobalActionCallback> mGlobalActionRegistry;
+
     // the default id for the viewer drawer is 0
     uint mId = 0;
-
-    /**
-     * @brief The background color of the canvas.
-     */
-    Color mBackgroundColor = Color::DarkGray;
 
     DrawableAxis mDrawAxis;
 
@@ -78,6 +82,13 @@ protected:
 public:
     using EditorType = Editor<AbstractViewerDrawer>;
     using ViewerType = AbstractViewerDrawer;
+
+    TrackballSettings& trackballSettings() override { return mViewerSettings; }
+
+    const TrackballSettings& trackballSettings() const override
+    {
+        return mViewerSettings;
+    }
 
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
@@ -139,6 +150,26 @@ public:
         mOnEditorsEventsEnabledChangedCallback = std::move(callback);
     }
 
+    /**
+     * @brief Registers a global action and its default shortcut.
+     *
+     * @param[in] name: The unique name of the global action.
+     * @param[in] defaultShortcut: The default keyboard shortcut.
+     * @param[in] callback: The callback to execute when the action is
+     * triggered.
+     */
+    void registerGlobalAction(
+        const std::string&                 name,
+        std::pair<Key::Enum, KeyModifiers> defaultShortcut,
+        GlobalActionCallback               callback)
+    {
+        mGlobalActionRegistry[name] = std::move(callback);
+        // Set the default shortcut only if the action isn't already mapped
+        if (!mViewerSettings.globalActionMap.input(name).has_value()) {
+            mViewerSettings.globalActionMap.setBinding(name, defaultShortcut);
+        }
+    }
+
     const DrawableObjectVector& drawableObjectVector() const
     {
         return *mDrawList;
@@ -168,13 +199,32 @@ public:
     void setViewerSettings(const ViewerSettings& settings)
     {
         mViewerSettings = settings;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), settings.backgroundColor);
     }
 
-    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("ViewerSettings")) {
+            ViewerSettings settings = mViewerSettings;
+            settings.loadSettings(j);
+            derived()->setViewerSettings(settings);
+        }
+        if (j.contains("Editors")) {
+            for (auto& editor : mEditors) {
+                if (editor)
+                    editor->loadSettings(j["Editors"]);
+            }
+        }
+    }
 
-    std::string panoramaFileName() const { return ""; }
-
-    void setPanorama(const std::string&) {}
+    void saveSettings(nlohmann::json& j) const
+    {
+        mViewerSettings.saveSettings(j);
+        for (const auto& editor : mEditors) {
+            if (editor)
+                editor->saveSettings(j["Editors"]);
+        }
+    }
 
     /**
      * @brief Pushes a new editor of the specified type into the viewer's editor
@@ -188,13 +238,20 @@ public:
      * @return A shared pointer to the newly created editor.
      */
     template<template<typename> typename ET>
-    auto pushEditor(bool active = false)
+    auto pushEditor(bool active = false, const nlohmann::json& j = {})
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
+        editor->onViewerSet();
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
+        
+        if (j.contains("Editors")) {
+            editor->loadSettings(j["Editors"]);
+            editor->refreshSettings();
+        }
+        
         return editor;
     }
 
@@ -361,7 +418,7 @@ public:
      * @brief Retrieves the current background color.
      * @return The current background color.
      */
-    const Color& backgroundColor() const { return mBackgroundColor; }
+    const Color& backgroundColor() const { return mViewerSettings.backgroundColor; }
 
     /**
      * @brief Sets the background color.
@@ -369,14 +426,13 @@ public:
      */
     void setBackgroundColor(const Color& color)
     {
-        mBackgroundColor = color;
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        mViewerSettings.backgroundColor = color;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), color);
     }
 
-    // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        DRA::DRW::setCanvasDefaultClearColor(derived(), mViewerSettings.backgroundColor);
         mDrawList->init();
     }
 
@@ -413,6 +469,16 @@ public:
         bool block = false;
 
         if (mEditorsEventsEnabled) {
+            auto actionNameOpt =
+                mViewerSettings.globalActionMap.action({key, modifiers});
+            if (actionNameOpt.has_value()) {
+                auto it = mGlobalActionRegistry.find(actionNameOpt.value());
+                if (it != mGlobalActionRegistry.end()) {
+                    it->second();
+                    return true;
+                }
+            }
+
             for (const auto& editor : mEditors) {
                 if (!block && editor->isActive())
                     block = editor->onKeyPress(key, modifiers);
