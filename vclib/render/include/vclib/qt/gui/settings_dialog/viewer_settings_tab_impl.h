@@ -59,7 +59,7 @@ public:
         mTempSettings.saveSettings(j);
     }
 
-    void updateToolbarFrames(QToolBar* toolbar) override
+    void updateToolbarFrames(QToolBar* /*toolbar*/) override
     {
         // Settings are already applied via applySettings,
         // which updates the MeshViewer and its DockWidget frame.

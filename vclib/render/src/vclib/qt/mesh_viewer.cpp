@@ -12,6 +12,7 @@
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
+#include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -197,6 +198,7 @@ MeshViewer::MeshViewer(QWidget* parent) :
     }
 
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>());
 }
 
 MeshViewer::~MeshViewer()
