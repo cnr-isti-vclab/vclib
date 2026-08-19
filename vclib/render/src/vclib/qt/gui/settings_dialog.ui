@@ -32,6 +32,9 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">QListWidget::item { min-height: 35px; }</string>
+      </property>
       <item>
        <property name="text">
         <string>Editors</string>
