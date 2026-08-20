@@ -198,7 +198,9 @@ MeshViewer::MeshViewer(QWidget* parent) :
     }
 
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
-    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>());
+    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>([this]() {
+        return viewer().actionMapGroups();
+    }));
 }
 
 MeshViewer::~MeshViewer()
@@ -286,7 +288,7 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mViewerSettingsFrame->viewerSettings();
+    return viewer().viewerSettings();
 }
 
 void MeshViewer::fitScene()

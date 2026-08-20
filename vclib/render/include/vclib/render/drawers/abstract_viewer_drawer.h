@@ -14,6 +14,7 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/input/action_map_group.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
 #include <vclib/render/undo_redo/undo_redo_stack.h>
@@ -240,6 +241,25 @@ public:
     }
 
     const ViewerSettings& viewerSettings() const { return mViewerSettings; }
+
+    std::vector<ActionMapGroup> actionMapGroups()
+    {
+        std::vector<ActionMapGroup> groups;
+        
+        auto viewerMaps = mViewerSettings.actionMaps();
+        if (!viewerMaps.empty()) {
+            groups.push_back({"Viewer", std::move(viewerMaps)});
+        }
+        
+        for (auto& editor : mEditors) {
+            auto editorMaps = editor->settings().actionMaps();
+            if (!editorMaps.empty()) {
+                groups.push_back({editor->name(), std::move(editorMaps)});
+            }
+        }
+        
+        return groups;
+    }
 
     void setViewerSettings(const ViewerSettings& settings)
     {

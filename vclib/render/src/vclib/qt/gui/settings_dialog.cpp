@@ -51,8 +51,19 @@ SettingsDialog::SettingsDialog(
 
         QWidget*     page   = new QWidget();
         QVBoxLayout* layout = new QVBoxLayout(page);
-        layout->addWidget(tab->createWidget(page));
-        layout->addStretch();
+
+        QWidget* tabWidgetInstance = tab->createWidget(page);
+
+        if (tabWidgetInstance->sizePolicy().verticalPolicy() ==
+                QSizePolicy::Expanding ||
+            tabWidgetInstance->sizePolicy().verticalPolicy() ==
+                QSizePolicy::MinimumExpanding) {
+            layout->addWidget(tabWidgetInstance, 1);
+        }
+        else {
+            layout->addWidget(tabWidgetInstance, 0);
+            layout->addStretch();
+        }
 
         categoryTabs[cat]->addTab(page, tab->name());
     }
@@ -76,17 +87,13 @@ SettingsDialog::SettingsDialog(
     connect(this, &QDialog::accepted, this, &SettingsDialog::onApplyClicked);
 
     // Reset All Defaults button
-    connect(
-        mUI->resetAllDefaultsButton,
-        &QPushButton::clicked,
-        this,
-        [this]() {
-            QList<QPushButton*> buttons =
-                this->findChildren<QPushButton*>("resetDefaultButton");
-            for (QPushButton* btn : buttons) {
-                btn->click();
-            }
-        });
+    connect(mUI->resetAllDefaultsButton, &QPushButton::clicked, this, [this]() {
+        const QList<QPushButton*> buttons =
+            this->findChildren<QPushButton*>("resetDefaultButton");
+        for (QPushButton* btn : buttons) {
+            btn->click();
+        }
+    });
 }
 
 SettingsDialog::~SettingsDialog()
@@ -110,7 +117,8 @@ void SettingsDialog::onApplyClicked()
                 in >> j;
             }
             catch (...) {
-                // Ignore parse errors and overwrite by resetting to an empty object
+                // Ignore parse errors and overwrite by resetting to an empty
+                // object
                 j = nlohmann::json::object();
             }
             in.close();
@@ -136,7 +144,9 @@ void SettingsDialog::onApplyClicked()
         }
         else {
             QMessageBox::warning(
-                this, "Save Failed", "Failed to save default settings to file.");
+                this,
+                "Save Failed",
+                "Failed to save default settings to file.");
         }
     }
 

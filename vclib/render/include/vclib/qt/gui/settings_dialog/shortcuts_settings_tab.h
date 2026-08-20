@@ -9,27 +9,41 @@
 #define VCL_QT_SHORTCUTS_SETTINGS_TAB_H
 
 #include <vclib/qt/gui/settings_dialog/settings_dialog_tab.h>
+#include <vclib/render/input/action_map_group.h>
 
 #include <QIcon>
 #include <QString>
 #include <QWidget>
 
+#include <functional>
+
 namespace vcl::qt {
+
+class InputBindingsWidget;
 
 class ShortcutsSettingsTab : public SettingsDialogTab
 {
+    std::function<std::vector<ActionMapGroup>()> mProvider;
+    std::vector<InputBindingsWidget*>            mWidgets;
+
 public:
-    ShortcutsSettingsTab()           = default;
+    explicit ShortcutsSettingsTab(
+        std::function<std::vector<ActionMapGroup>()> provider) :
+            mProvider(std::move(provider))
+    {
+    }
+
     ~ShortcutsSettingsTab() override = default;
 
     QString category() const override;
+
     QString name() const override;
 
     QWidget* createWidget(QWidget* parent) override;
 
-    void applySettings() override {}
+    void applySettings() override;
 
-    void saveSettings(nlohmann::json& /*j*/) const override {}
+    void saveSettings(nlohmann::json& /*j*/) const override;
 
     void updateToolbarFrames(QToolBar* /*toolbar*/) override {}
 };

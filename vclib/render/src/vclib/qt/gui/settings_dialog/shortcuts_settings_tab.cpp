@@ -5,9 +5,14 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include <vclib/qt/gui/input_bindings_widget.h>
+#include <vclib/qt/gui/settings_dialog/settings_dialog_data.h>
 #include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
+#include <vclib/render/input/abstract_input_action_map.h>
 
+#include <QGroupBox>
 #include <QLabel>
+#include <QScrollArea>
 #include <QVBoxLayout>
 
 namespace vcl::qt {
@@ -24,16 +29,62 @@ QString ShortcutsSettingsTab::name() const
 
 QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 {
-    QWidget* widget = new QWidget(parent);
-    QVBoxLayout* layout = new QVBoxLayout(widget);
-    
-    QLabel* placeholderLabel = new QLabel("Key Bindings coming...", widget);
-    placeholderLabel->setAlignment(Qt::AlignCenter);
-    
-    layout->addWidget(placeholderLabel);
-    layout->addStretch();
+    QScrollArea* scrollArea = new QScrollArea(parent);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    return widget;
+    QWidget*     scrollContent = new QWidget(scrollArea);
+    QVBoxLayout* layout        = new QVBoxLayout(scrollContent);
+
+    auto groups = mProvider();
+    for (const auto& group : groups) {
+        QLabel* titleLabel =
+            new QLabel(QString::fromStdString(group.name), scrollContent);
+        QFont font = titleLabel->font();
+        font.setBold(true);
+        font.setPointSize(font.pointSize() + 2);
+        titleLabel->setFont(font);
+        layout->addWidget(titleLabel);
+
+        for (const auto& mapRef : group.maps) {
+            QGroupBox* groupBox = new QGroupBox(
+                QString::fromStdString(mapRef.get().mapName()), scrollContent);
+            QVBoxLayout* groupLayout = new QVBoxLayout(groupBox);
+
+            InputBindingsWidget* bindingsWidget =
+                new InputBindingsWidget(mapRef, groupBox);
+            groupLayout->addWidget(bindingsWidget);
+            mWidgets.push_back(bindingsWidget);
+
+            layout->addWidget(groupBox);
+        }
+
+        layout->addSpacing(10);
+    }
+
+    if (groups.empty()) {
+        QLabel* placeholderLabel =
+            new QLabel("No shortcut available.", scrollContent);
+        placeholderLabel->setAlignment(Qt::AlignCenter);
+        layout->addWidget(placeholderLabel);
+    }
+
+    layout->addStretch();
+    scrollArea->setWidget(scrollContent);
+
+    return scrollArea;
+}
+
+void ShortcutsSettingsTab::applySettings()
+{
+    for (auto* w : mWidgets) {
+        // w->applySettings(); // uncomment this line when step 13 is
+        // implemented
+    }
+}
+
+void ShortcutsSettingsTab::saveSettings(nlohmann::json& /*j*/) const
+{
 }
 
 } // namespace vcl::qt
