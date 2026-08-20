@@ -124,7 +124,8 @@ struct Key
     };
 };
 
-struct ScrollAxis {
+struct ScrollAxis
+{
     enum Enum {
         HORIZONTAL = 0,
         VERTICAL   = 1,

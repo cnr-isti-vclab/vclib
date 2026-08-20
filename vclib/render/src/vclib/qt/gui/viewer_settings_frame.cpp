@@ -207,10 +207,11 @@ void ViewerSettingsFrame::onResetDefaultClicked()
     emit settingsChanged(mSettings);
 }
 
-void ViewerSettingsFrame::backgroundColorPushButtonColorChanged(const QColor& color)
+void ViewerSettingsFrame::backgroundColorPushButtonColorChanged(
+    const QColor& color)
 {
-    mSettings.backgroundColor = vcl::Color(
-        color.red(), color.green(), color.blue(), color.alpha());
+    mSettings.backgroundColor =
+        vcl::Color(color.red(), color.green(), color.blue(), color.alpha());
     emit settingsChanged(mSettings);
 }
 

@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_VIEWER_SETTINGS_TAB_IMPL_H
-#define VCL_QT_GUI_VIEWER_SETTINGS_TAB_IMPL_H
+#ifndef VCL_QT_GUI_SETTINGS_DIALOG_VIEWER_SETTINGS_TAB_IMPL_H
+#define VCL_QT_GUI_SETTINGS_DIALOG_VIEWER_SETTINGS_TAB_IMPL_H
 
 #include "settings_dialog_tab.h"
 
@@ -69,4 +69,4 @@ public:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_VIEWER_SETTINGS_TAB_IMPL_H
+#endif // VCL_QT_GUI_SETTINGS_DIALOG_VIEWER_SETTINGS_TAB_IMPL_H

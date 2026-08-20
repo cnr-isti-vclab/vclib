@@ -199,7 +199,8 @@ public:
     void setViewerSettings(const ViewerSettings& settings)
     {
         mViewerSettings = settings;
-        DRA::DRW::setCanvasDefaultClearColor(derived(), settings.backgroundColor);
+        DRA::DRW::setCanvasDefaultClearColor(
+            derived(), settings.backgroundColor);
     }
 
     void loadSettings(const nlohmann::json& j)
@@ -246,12 +247,12 @@ public:
         editor->onViewerSet();
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
-        
+
         if (j.contains("Editors")) {
             editor->loadSettings(j["Editors"]);
             editor->refreshSettings();
         }
-        
+
         return editor;
     }
 
@@ -418,7 +419,10 @@ public:
      * @brief Retrieves the current background color.
      * @return The current background color.
      */
-    const Color& backgroundColor() const { return mViewerSettings.backgroundColor; }
+    const Color& backgroundColor() const
+    {
+        return mViewerSettings.backgroundColor;
+    }
 
     /**
      * @brief Sets the background color.
@@ -432,7 +436,8 @@ public:
 
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mViewerSettings.backgroundColor);
+        DRA::DRW::setCanvasDefaultClearColor(
+            derived(), mViewerSettings.backgroundColor);
         mDrawList->init();
     }
 

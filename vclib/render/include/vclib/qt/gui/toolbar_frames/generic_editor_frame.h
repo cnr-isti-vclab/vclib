@@ -79,7 +79,7 @@ protected slots:
 template<template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits
 {
-    using ToolbarFrameType = void;
+    using ToolbarFrameType  = void;
     using SettingsFrameType = void;
 };
 
