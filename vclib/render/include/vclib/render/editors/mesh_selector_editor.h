@@ -86,6 +86,36 @@ public:
 
         return false;
     }
+
+    bool onMouseDoubleClick(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        bool block = Base::onMouseDoubleClick(button, x, y, modifiers);
+        if (block)
+            return true;
+
+        auto action = mSettings.mouseBindings.action({button, modifiers, true});
+        if (action.has_value() &&
+            action.value() == MeshSelectorAction::SELECT_MESH) {
+            auto callback = [&](uint id) {
+                if (id == vcl::UINT_NULL)
+                    return;
+
+                if (mOnObjectSelectedFunction)
+                    mOnObjectSelectedFunction(id);
+                else
+                    Base::drawList()->setSelectedObjectId(id);
+            };
+
+            Base::viewerReadIdRequest(x, y, callback);
+            return true; // Smart blocking: consumed event
+        }
+
+        return false;
+    }
 };
 
 } // namespace vcl

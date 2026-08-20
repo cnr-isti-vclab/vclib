@@ -358,6 +358,33 @@ public:
         return false;
     }
 
+    bool onMouseDoubleClick(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        if (!isSelectionActive())
+            return false;
+
+        auto actionOpt = mSettings.mouseBindings.action({button, modifiers, true});
+        if (actionOpt.has_value() && !mSelectionInProgress) {
+            SelectionDragAction action = actionOpt.value();
+
+            if (!mActionCreationPending) {
+                savePreSelectionStates();
+                mActionCreationPending = true;
+            }
+            mSelectionInProgress   = true;
+            mSelectionAnchor       = Point2d {x, y};
+            mSelectionBox          = Box2d({x, y});
+            mCurrentMouseAction    = actionOpt.value();
+            mCurrentSelectionModes = actionModesForSettings(action);
+            return true; // Smart blocking
+        }
+        return false;
+    }
+
     bool onMouseRelease(
         MouseButton::Enum   button,
         double              x,

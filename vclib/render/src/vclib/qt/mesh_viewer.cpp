@@ -535,8 +535,18 @@ void MeshViewer::openSettings()
     SettingsDialog dialog(mSettingsData, this);
 
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        // Apply non-shortcuts settings first to avoid overwriting shortcuts with temp copies
         for (auto& tab : mSettingsData.tabs()) {
-            tab->applySettings();
+            if (tab->category() != "Shortcuts")
+                tab->applySettings();
+        }
+        // Apply shortcuts last so they take precedence
+        for (auto& tab : mSettingsData.tabs()) {
+            if (tab->category() == "Shortcuts")
+                tab->applySettings();
+        }
+        
+        for (auto& tab : mSettingsData.tabs()) {
             tab->updateToolbarFrames(mUI->toolBar);
         }
         viewer().update();
