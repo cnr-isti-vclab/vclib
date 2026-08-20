@@ -8,8 +8,8 @@
 #ifndef VCL_RENDER_SETTINGS_MESH_SELECTOR_EDITOR_SETTINGS_H
 #define VCL_RENDER_SETTINGS_MESH_SELECTOR_EDITOR_SETTINGS_H
 
-#include <vclib/render/input/input_action_map.h>
 #include <vclib/render/input/input.h>
+#include <vclib/render/input/input_action_map.h>
 #include <vclib/render/settings/editor_settings.h>
 
 #include <nlohmann/json.hpp>
@@ -28,22 +28,20 @@ inline std::string toString(MeshSelectorAction action)
 
 inline void fromString(const std::string& str, MeshSelectorAction& out)
 {
-    if (str == "Select Mesh") out = MeshSelectorAction::SELECT_MESH;
-    else throw std::invalid_argument("Invalid MeshSelectorAction string: " + str);
+    if (str == "Select Mesh")
+        out = MeshSelectorAction::SELECT_MESH;
+    else
+        throw std::invalid_argument(
+            "Invalid MeshSelectorAction string: " + str);
 }
 
 struct MeshSelectorEditorSettings : public EditorSettings
 {
-    using MouseMap = InputActionMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        MeshSelectorAction>;
+    using MouseMap = InputActionMap<MouseInput, MeshSelectorAction>;
 
     MouseMap mouseBindings = defaultMouseMap();
 
-    void resetDefaults()
-    {
-        mouseBindings.resetToDefaults();
-    }
+    void resetDefaults() { mouseBindings.resetToDefaults(); }
 
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
         override
@@ -66,11 +64,10 @@ private:
     {
         using enum MouseButton::Enum;
         using enum KeyModifier::Enum;
-        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
-
         MouseMap map("Mesh Selector Mouse Actions");
         map.registerActions({
-            {MeshSelectorAction::SELECT_MESH, "Select Mesh", Input{RIGHT, {NO_MODIFIER}}}
+            {MeshSelectorAction::SELECT_MESH,
+             "Select Mesh", MouseInput {RIGHT, {NO_MODIFIER}, false}}
         });
         return map;
     }

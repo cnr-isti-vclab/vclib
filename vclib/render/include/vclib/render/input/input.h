@@ -14,16 +14,6 @@
 
 namespace vcl {
 
-struct MouseButton
-{
-    enum Enum {
-        LEFT      = 0,
-        RIGHT     = 1,
-        MIDDLE    = 2,
-        NO_BUTTON = 3,
-    };
-};
-
 struct KeyModifier
 {
     enum Enum {
@@ -124,6 +114,38 @@ struct Key
     };
 };
 
+struct MouseButton
+{
+    enum Enum {
+        LEFT      = 0,
+        RIGHT     = 1,
+        MIDDLE    = 2,
+        NO_BUTTON = 3,
+    };
+};
+
+struct MouseInput
+{
+    MouseButton::Enum button;
+    KeyModifiers      modifiers;
+    bool              isDoubleClick = false;
+
+    bool operator==(const MouseInput& other) const
+    {
+        return button == other.button && modifiers == other.modifiers &&
+               isDoubleClick == other.isDoubleClick;
+    }
+
+    bool operator<(const MouseInput& other) const
+    {
+        if (button != other.button)
+            return button < other.button;
+        if (modifiers != other.modifiers)
+            return modifiers.underlying() < other.modifiers.underlying();
+        return isDoubleClick < other.isDoubleClick;
+    }
+};
+
 struct ScrollAxis
 {
     enum Enum {
@@ -167,8 +189,8 @@ inline std::string toString(MouseButton::Enum b)
     case MouseButton::RIGHT: return "Right Click";
     case MouseButton::MIDDLE: return "Middle Click";
     case MouseButton::NO_BUTTON: return "None";
-    default: return "Unknown";
     }
+    return "Unknown";
 }
 
 inline void fromString(const std::string& str, MouseButton::Enum& out)
@@ -359,6 +381,34 @@ inline void fromString(const std::string& str, ScrollAxis::Enum& out)
 }
 
 // --- std::pair conversions ---
+
+inline std::string toString(const MouseInput& m)
+{
+    std::string res = toString(m.modifiers);
+    if (!res.empty())
+        res += "+";
+    if (m.isDoubleClick)
+        res += "Double ";
+    res += toString(m.button);
+    return res;
+}
+
+inline void fromString(const std::string& str, MouseInput& out)
+{
+    out = {MouseButton::NO_BUTTON, {KeyModifier::NO_MODIFIER}, false};
+
+    if (str.find("Double") != std::string::npos)
+        out.isDoubleClick = true;
+
+    if (str.find("Left Click") != std::string::npos)
+        out.button = MouseButton::LEFT;
+    else if (str.find("Right Click") != std::string::npos)
+        out.button = MouseButton::RIGHT;
+    else if (str.find("Middle Click") != std::string::npos)
+        out.button = MouseButton::MIDDLE;
+
+    fromString(str, out.modifiers);
+}
 
 inline std::string toString(
     const std::pair<MouseButton::Enum, KeyModifiers>& input)

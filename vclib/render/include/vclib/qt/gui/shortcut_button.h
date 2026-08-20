@@ -11,6 +11,7 @@
 #include <vclib/render/input/abstract_input_action_map.h>
 
 #include <QPushButton>
+#include <QTimer>
 
 #include <functional>
 #include <string>
@@ -22,6 +23,9 @@ class ShortcutButton : public QPushButton
     AbstractInputActionMap::InputType mExpectedType;
     bool                              mListening = false;
     QString                           mOriginalText;
+    QTimer*                           mDoubleClickTimer = nullptr;
+    Qt::MouseButton                   mPendingButton;
+    Qt::KeyboardModifiers             mPendingModifiers;
 
 public:
     std::function<void(const std::string&)> onInputCaptured;
@@ -36,6 +40,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
     void focusOutEvent(QFocusEvent* event) override;
 };

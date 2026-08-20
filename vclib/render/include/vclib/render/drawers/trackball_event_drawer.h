@@ -42,6 +42,7 @@ private:
 
     using DragMotionMap        = TrackballSettings::DragMotionMap;
     using ScrollAtomicMap      = TrackballSettings::ScrollAtomicMap;
+    using MouseAtomicMap       = TrackballSettings::MouseAtomicMap;
     using KeyAtomicMap         = TrackballSettings::KeyAtomicMap;
     using AtomicActionCallback = std::function<void(TrackBallEventDrawerT& d)>;
 
@@ -59,9 +60,11 @@ private:
 
     // current modifiers state (must be updated using setKeyModifiers)
     KeyModifiers mCurrentKeyModifiers = {KeyModifier::NO_MODIFIER};
+
     // current mouse button (automatically updated)
     // if dragging holds the current mouse button
     MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
+    bool              mIsDoubleClick      = false;
 
     // trackball gizmo
     TrackballGizmo mTrackballGizmo;
@@ -242,6 +245,20 @@ public:
     }
 
     /**
+     * @brief Returns a reference to the MouseAtomicMap to allow reading or
+     * modifying mouse bindings.
+     */
+    MouseAtomicMap& mouseAtomicMap()
+    {
+        return trackballSettings().mouseAtomicMap;
+    }
+
+    const MouseAtomicMap& mouseAtomicMap() const
+    {
+        return trackballSettings().mouseAtomicMap;
+    }
+
+    /**
      * @brief Returns a reference to the KeyAtomicMap to allow reading or
      * modifying key bindings.
      */
@@ -322,7 +339,7 @@ public:
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
-        pressMouse(button);
+        pressMouse({button, modifiers, false});
         return false;
     }
 
@@ -334,7 +351,24 @@ public:
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
-        releaseMouse(button);
+        
+        bool isDbl = (button == mCurrentMouseButton) ? mIsDoubleClick : false;
+        MouseInput input = {button, modifiers, isDbl};
+        releaseMouse(input);
+        
+        return false;
+    }
+
+    bool onMouseDoubleClick(
+        MouseButton::Enum   button,
+        double              x,
+        double              y,
+        const KeyModifiers& modifiers) override
+    {
+        setKeyModifiers(modifiers);
+        moveMouse(x, y);
+
+        pressMouse({button, modifiers, true});
         return false;
     }
 
@@ -368,9 +402,9 @@ private:
 
     void moveMouse(int x, int y)
     {
-        // ugly AF
-        auto actionOpt = dragMotionMap().action(
-            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
+        MouseInput currentInput = {
+            mCurrentMouseButton, mCurrentKeyModifiers, mIsDoubleClick};
+        auto actionOpt = dragMotionMap().action(currentInput);
         if (actionOpt.has_value()) {
             mTrackball.beginDragMotion(actionOpt.value());
         }
@@ -378,17 +412,17 @@ private:
         mTrackball.update();
     }
 
-    void pressMouse(MouseButton::Enum button)
+    void pressMouse(const MouseInput& input)
     {
         // if dragging, do not update the current mouse button
         if (mTrackball.isDragging()) {
             return;
         }
 
-        mCurrentMouseButton = button;
+        mCurrentMouseButton = input.button;
+        mIsDoubleClick = input.isDoubleClick;
 
-        auto actionOpt = dragMotionMap().action(
-            std::make_pair(button, mCurrentKeyModifiers));
+        auto actionOpt = dragMotionMap().action(input);
         if (actionOpt.has_value()) {
             mTrackball.beginDragMotion(actionOpt.value());
             // no need to update here, it will be updated in moveMouse
@@ -397,15 +431,15 @@ private:
         }
     }
 
-    void releaseMouse(MouseButton::Enum button)
+    void releaseMouse(const MouseInput& input)
     {
         // if dragging, update the current mouse button only if it matches
-        if (mTrackball.isDragging() && mCurrentMouseButton == button) {
+        if (mTrackball.isDragging() && mCurrentMouseButton == input.button) {
             mCurrentMouseButton = MouseButton::NO_BUTTON;
+            mIsDoubleClick = false;
         }
 
-        auto actionOpt = dragMotionMap().action(
-            std::make_pair(button, mCurrentKeyModifiers));
+        auto actionOpt = dragMotionMap().action(input);
         if (actionOpt.has_value()) {
             mTrackball.endDragMotion(actionOpt.value());
             mTrackball.update();
@@ -447,8 +481,9 @@ private:
         }
 
         // dragging
-        auto actionOpt = dragMotionMap().action(
-            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
+        MouseInput currentInput = {
+            mCurrentMouseButton, mCurrentKeyModifiers, mIsDoubleClick};
+        auto actionOpt = dragMotionMap().action(currentInput);
         if (actionOpt.has_value()) {
             mTrackball.beginDragMotion(actionOpt.value());
         }
@@ -465,8 +500,9 @@ private:
             return;
 
         // dragging
-        auto actionOpt = dragMotionMap().action(
-            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
+        MouseInput currentInput = {
+            mCurrentMouseButton, mCurrentKeyModifiers, mIsDoubleClick};
+        auto actionOpt = dragMotionMap().action(currentInput);
         if (actionOpt.has_value()) {
             mTrackball.beginDragMotion(actionOpt.value());
         }

@@ -98,16 +98,20 @@ public:
 
     InputType inputType() const override
     {
-        if constexpr (std::is_same_v<Input, std::pair<Key::Enum, KeyModifiers>> || 
-                      std::is_same_v<Input, Key::Enum>) {
+        if constexpr (
+            std::is_same_v<Input, std::pair<Key::Enum, KeyModifiers>> ||
+            std::is_same_v<Input, Key::Enum>) {
             return InputType::KEY;
         }
-        else if constexpr (std::is_same_v<Input, std::pair<MouseButton::Enum, KeyModifiers>> ||
-                           std::is_same_v<Input, MouseButton::Enum>) {
+        else if constexpr (
+            std::is_same_v<Input, std::pair<MouseButton::Enum, KeyModifiers>> ||
+            std::is_same_v<Input, MouseInput> ||
+            std::is_same_v<Input, MouseButton::Enum>) {
             return InputType::MOUSE_BUTTON;
         }
-        else if constexpr (std::is_same_v<Input, std::pair<ScrollAxis::Enum, KeyModifiers>> ||
-                           std::is_same_v<Input, ScrollAxis::Enum>) {
+        else if constexpr (
+            std::is_same_v<Input, std::pair<ScrollAxis::Enum, KeyModifiers>> ||
+            std::is_same_v<Input, ScrollAxis::Enum>) {
             return InputType::SCROLL_AXIS;
         }
         else {

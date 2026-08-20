@@ -9,6 +9,7 @@
 
 #include <vclib/qt/input.h>
 
+#include <QApplication>
 #include <QFocusEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -91,15 +92,55 @@ void ShortcutButton::mousePressEvent(QMouseEvent* event)
         return;
     }
 
-    vcl::MouseButton::Enum vclBtn  = vcl::qt::fromQt(event->button());
-    vcl::KeyModifiers      vclMods = vcl::qt::fromQt(event->modifiers());
-    std::string inputStr = vcl::toString(std::make_pair(vclBtn, vclMods));
+    mPendingButton    = event->button();
+    mPendingModifiers = event->modifiers();
 
-    mListening = false;
-    setText(QString::fromStdString(inputStr));
-    if (onInputCaptured)
-        onInputCaptured(inputStr);
-    clearFocus();
+    if (!mDoubleClickTimer) {
+        mDoubleClickTimer = new QTimer(this);
+        mDoubleClickTimer->setSingleShot(true);
+        connect(mDoubleClickTimer, &QTimer::timeout, this, [this]() {
+            if (!mListening)
+                return;
+
+            vcl::MouseButton::Enum vclBtn  = vcl::qt::fromQt(mPendingButton);
+            vcl::KeyModifiers      vclMods = vcl::qt::fromQt(mPendingModifiers);
+            std::string            inputStr =
+                vcl::toString(vcl::MouseInput {vclBtn, vclMods, false});
+
+            mListening = false;
+            setText(QString::fromStdString(inputStr));
+            if (onInputCaptured)
+                onInputCaptured(inputStr);
+            clearFocus();
+        });
+    }
+
+    mDoubleClickTimer->start(QApplication::doubleClickInterval());
+}
+
+void ShortcutButton::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if (mListening && mDoubleClickTimer && mDoubleClickTimer->isActive()) {
+        mDoubleClickTimer->stop();
+
+        if (mExpectedType != AbstractInputActionMap::InputType::MOUSE_BUTTON) {
+            return;
+        }
+
+        vcl::MouseButton::Enum vclBtn  = vcl::qt::fromQt(event->button());
+        vcl::KeyModifiers      vclMods = vcl::qt::fromQt(event->modifiers());
+        std::string            inputStr =
+            vcl::toString(vcl::MouseInput {vclBtn, vclMods, true});
+
+        mListening = false;
+        setText(QString::fromStdString(inputStr));
+        if (onInputCaptured)
+            onInputCaptured(inputStr);
+        clearFocus();
+    }
+    else {
+        QPushButton::mouseDoubleClickEvent(event);
+    }
 }
 
 void ShortcutButton::wheelEvent(QWheelEvent* event)
@@ -132,6 +173,9 @@ void ShortcutButton::focusOutEvent(QFocusEvent* event)
     if (mListening) {
         mListening = false;
         setText(mOriginalText);
+        if (mDoubleClickTimer && mDoubleClickTimer->isActive()) {
+            mDoubleClickTimer->stop();
+        }
     }
     QPushButton::focusOutEvent(event);
 }

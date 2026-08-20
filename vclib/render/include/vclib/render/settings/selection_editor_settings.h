@@ -24,9 +24,7 @@ struct SelectionEditorSettings : public EditorSettings
     using KeyMap = InputActionMap<
         std::pair<Key::Enum, KeyModifiers>,
         SelectionAtomicAction>;
-    using MouseMap = InputActionMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        SelectionDragAction>;
+    using MouseMap = InputActionMap<MouseInput, SelectionDragAction>;
 
     bool       selectVertices    = false;
     bool       selectFaces       = false;
@@ -102,16 +100,15 @@ private:
     {
         using enum MouseButton::Enum;
         using enum KeyModifier::Enum;
-        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
 
         MouseMap map("Selection Drag Actions");
         map.registerActions({
             {SelectionDragAction::REGULAR,
-             "Regular Selection",       Input {LEFT, {NO_MODIFIER}}   },
+             "Regular Selection",       MouseInput {LEFT, {NO_MODIFIER}, false}   },
             {SelectionDragAction::ADD,
-             "Add to Selection",        Input {LEFT, {CONTROL}}       },
+             "Add to Selection",        MouseInput {LEFT, {CONTROL}, false}       },
             {SelectionDragAction::SUBTRACT,
-             "Subtract from Selection", Input {LEFT, {CONTROL, SHIFT}}}
+             "Subtract from Selection", MouseInput {LEFT, {CONTROL, SHIFT}, false}}
         });
         return map;
     }

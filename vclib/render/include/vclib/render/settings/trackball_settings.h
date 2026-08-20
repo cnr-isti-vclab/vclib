@@ -18,29 +18,31 @@ namespace vcl {
  */
 struct TrackballSettings
 {
-    using DragMotionMap = InputActionMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        TrackballMotionType>;
+    using DragMotionMap = InputActionMap<MouseInput, TrackballMotionType>;
     using ScrollAtomicMap = InputActionMap<
         std::pair<ScrollAxis::Enum, KeyModifiers>,
         TrackballMotionType>;
     using KeyAtomicMap =
         InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+    using MouseAtomicMap =
+        InputActionMap<MouseInput, TrackballMotionType>;
 
     DragMotionMap   dragMotionMap   = defaultDragMotionMap();
     ScrollAtomicMap scrollAtomicMap = defaultScrollMotionMap();
     KeyAtomicMap    keyAtomicMap    = defaultKeyAtomicMap();
+    MouseAtomicMap  mouseAtomicMap  = defaultMouseAtomicMap();
 
     void resetDefaults()
     {
         dragMotionMap.resetToDefaults();
         scrollAtomicMap.resetToDefaults();
         keyAtomicMap.resetToDefaults();
+        mouseAtomicMap.resetToDefaults();
     }
 
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
     {
-        return {dragMotionMap, scrollAtomicMap, keyAtomicMap};
+        return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
     }
 
 private:
@@ -48,17 +50,17 @@ private:
     {
         using enum MouseButton::Enum;
         using enum KeyModifier::Enum;
+
         using enum TrackballMotionType;
-        using Input = std::pair<MouseButton::Enum, KeyModifiers>;
 
         DragMotionMap map("Trackball Drag Motions");
         map.registerActions({
-            {ARC,           "Arcball Rotation",   Input {LEFT, {NO_MODIFIER}}   },
-            {PAN,           "Pan",                Input {LEFT, {CONTROL}}       },
-            {ZMOVE,         "Zoom (Translation)", Input {LEFT, {ALT}}           },
-            {SCALE,         "Scale",              Input {LEFT, {SHIFT}}         },
-            {ROLL,          "Roll",               Input {MIDDLE, {CONTROL}}     },
-            {DIR_LIGHT_ARC, "Light Rotation",     Input {LEFT, {SHIFT, CONTROL}}}
+            {ARC,           "Arcball Rotation",   MouseInput {LEFT, {NO_MODIFIER}, false}   },
+            {PAN,           "Pan",                MouseInput {LEFT, {CONTROL}, false}       },
+            {ZMOVE,         "Zoom (Translation)", MouseInput {LEFT, {ALT}, false}           },
+            {SCALE,         "Scale",              MouseInput {LEFT, {SHIFT}, false}         },
+            {ROLL,          "Roll",               MouseInput {MIDDLE, {CONTROL}, false}     },
+            {DIR_LIGHT_ARC, "Light Rotation",     MouseInput {LEFT, {SHIFT, CONTROL}, false}}
         });
         return map;
     }
@@ -74,6 +76,19 @@ private:
             {SCALE, "Scale",         Input {ScrollAxis::VERTICAL, {NO_MODIFIER}}},
             {ROLL,  "Roll",          Input {ScrollAxis::VERTICAL, {CONTROL}}    },
             {FOV,   "Field of View", Input {ScrollAxis::VERTICAL, {SHIFT}}      }
+        });
+        return map;
+    }
+
+    static MouseAtomicMap defaultMouseAtomicMap()
+    {
+        using enum MouseButton::Enum;
+        using enum KeyModifier::Enum;
+        using enum TrackballMotionType;
+
+        MouseAtomicMap map("Trackball Mouse Atomic Motions");
+        map.registerActions({
+            {FOCUS, "Focus on Object", MouseInput {LEFT, {NO_MODIFIER}, true}}
         });
         return map;
     }

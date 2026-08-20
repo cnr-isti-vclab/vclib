@@ -564,6 +564,15 @@ public:
             }
         }
 
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, false});
+            if (actionOpt.has_value() && actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
+        }
+
         if (!block)
             block = Base::onMousePress(button, x, y, modifiers);
 
@@ -606,6 +615,15 @@ public:
             }
         }
 
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, true});
+            if (actionOpt.has_value() && actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
+        }
+
         if (!block)
             block = Base::onMouseDoubleClick(button, x, y, modifiers);
 
@@ -641,7 +659,10 @@ public:
 
     auto dpiScale() const { return DRA::DRW::dpiScale(derived()); }
 
-    void readDepthRequest(double x, double y, bool homogeneousNDC = true)
+    void readDepthRequest(
+        double x,
+        double y,
+        bool   homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;
         using FloatData  = ReadBufferTypes::FloatData;
