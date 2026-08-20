@@ -124,7 +124,7 @@ private:
 
         KeyAtomicMap map("Trackball Key Motions");
         map.registerActions({
-            {"Reset Trackball",         "Reset Trackball", Input {R, {NO_MODIFIER}}      },
+            {"Reset Trackball",         "Reset Trackball", Input {R, {CONTROL}}          },
             {"Reset Directional Light",
              "Reset Directional Light",                    Input {R, {CONTROL, SHIFT}}   },
             {"Rotate X+",               "Rotate X+",       Input {NP_2, {NO_MODIFIER}}   },

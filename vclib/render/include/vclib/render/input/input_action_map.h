@@ -188,7 +188,7 @@ public:
     {
         if (j.contains(mMapName)) {
             for (const auto& [actionId, inputStr] : j[mMapName].items()) {
-                setBinding(actionId, inputStr.get<std::string>());
+                setBinding(actionId, inputStr.template get<std::string>());
             }
         }
     }

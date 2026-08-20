@@ -12,6 +12,7 @@
 #include <vclib/render/input/abstract_input_action_map.h>
 
 #include <QHeaderView>
+#include <QToolButton>
 #include <QVBoxLayout>
 #include <vclib/qt/gui/shortcut_button.h>
 
@@ -61,12 +62,16 @@ InputBindingsWidget::InputBindingsWidget(
                 if (nameItem &&
                     nameItem->data(Qt::UserRole).toString().toStdString() ==
                         action.id) {
-                    if (auto* w = mUI->bindingsTable->cellWidget(i, 1)) {
-                        static_cast<ShortcutButton*>(w)->setText(
-                            QString::fromStdString(
-                                action.defaultInput.empty() ?
-                                    "None" :
-                                    action.defaultInput));
+                    QWidget* w = mUI->bindingsTable->cellWidget(i, 1);
+                    if (w) {
+                        if (QPushButton* btn =
+                                w->findChild<QPushButton*>("shortcutButton")) {
+                            btn->setText(
+                                QString::fromStdString(
+                                    action.defaultInput.empty() ?
+                                        "None" :
+                                        action.defaultInput));
+                        }
                     }
                     break;
                 }
@@ -104,11 +109,29 @@ void InputBindingsWidget::populateTable()
         nameItem->setData(Qt::UserRole, QString::fromStdString(action.id));
         mUI->bindingsTable->setItem(i, 0, nameItem);
 
-        // Column 1: Action Binding (Button)
+        // Column 1: Action Binding (Button + Unbind)
+        QWidget*     bindingWidget = new QWidget(mUI->bindingsTable);
+        QHBoxLayout* bindingLayout = new QHBoxLayout(bindingWidget);
+        bindingLayout->setContentsMargins(0, 0, 0, 0);
+        bindingLayout->setSpacing(5);
+
         ShortcutButton* bindingBtn = new ShortcutButton(
             mMap.get().inputType(),
-            QString::fromStdString(action.input),
-            mUI->bindingsTable);
+            QString::fromStdString(
+                action.input.empty() ? "None" : action.input),
+            bindingWidget);
+        bindingBtn->setObjectName("shortcutButton");
+
+        bindingBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+        QToolButton* unbindBtn = new QToolButton(bindingWidget);
+        unbindBtn->setText("❌");
+        unbindBtn->setToolTip("Unbind this action");
+        unbindBtn->setStyleSheet(
+            "QToolButton { color: red; border: none; font-weight: bold; }");
+
+        bindingLayout->addWidget(bindingBtn);
+        bindingLayout->addWidget(unbindBtn);
 
         // We connect this button for event interception
         connect(bindingBtn, &QPushButton::clicked, this, [bindingBtn]() {
@@ -120,7 +143,14 @@ void InputBindingsWidget::populateTable()
                 mPendingBindings[id] = inputStr;
             };
 
-        mUI->bindingsTable->setCellWidget(i, 1, bindingBtn);
+        connect(unbindBtn, &QToolButton::clicked, this, [bindingBtn]() {
+            bindingBtn->setText("None");
+            if (bindingBtn->onInputCaptured) {
+                bindingBtn->onInputCaptured("");
+            }
+        });
+
+        mUI->bindingsTable->setCellWidget(i, 1, bindingWidget);
     }
 
     // Disable internal scrolling and fix height to content

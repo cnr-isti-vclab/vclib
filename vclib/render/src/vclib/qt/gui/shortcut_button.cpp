@@ -44,22 +44,6 @@ void ShortcutButton::keyPressEvent(QKeyEvent* event)
         return;
     }
 
-    if (event->key() == Qt::Key_Escape) {
-        mListening = false;
-        setText(mOriginalText);
-        clearFocus();
-        return;
-    }
-
-    if (event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete) {
-        mListening = false;
-        setText("None");
-        if (onInputCaptured)
-            onInputCaptured("");
-        clearFocus();
-        return;
-    }
-
     if (mExpectedType != AbstractInputActionMap::InputType::KEY) {
         return;
     }
