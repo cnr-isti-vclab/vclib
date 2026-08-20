@@ -39,6 +39,7 @@ public:
         std::string id;
         std::string name;
         std::string input;
+        std::string defaultInput;
     };
 
     virtual ~AbstractInputActionMap() = default;
@@ -88,6 +89,11 @@ public:
     virtual void setBinding(
         const std::string& actionId,
         const std::string& inputStr) = 0;
+
+    /**
+     * @brief Restores all bindings in the map to their original default values.
+     */
+    virtual void resetToDefaults() = 0;
 };
 
 } // namespace vcl

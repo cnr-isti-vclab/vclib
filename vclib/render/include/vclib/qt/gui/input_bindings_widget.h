@@ -11,7 +11,9 @@
 #include <QWidget>
 
 #include <functional>
+#include <map>
 #include <memory>
+#include <string>
 
 namespace vcl {
 class AbstractInputActionMap;
@@ -29,12 +31,15 @@ class InputBindingsWidget : public QWidget
 
     std::unique_ptr<Ui::InputBindingsWidget>       mUI;
     std::reference_wrapper<AbstractInputActionMap> mMap;
+    std::map<std::string, std::string>             mPendingBindings;
 
 public:
     explicit InputBindingsWidget(
         std::reference_wrapper<AbstractInputActionMap> map,
         QWidget*                                       parent = nullptr);
     ~InputBindingsWidget() override;
+
+    void applySettings();
 
 private:
     void populateTable();

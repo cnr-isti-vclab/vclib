@@ -12,8 +12,8 @@
 #include <vclib/render/input/abstract_input_action_map.h>
 
 #include <QHeaderView>
-#include <QPushButton>
 #include <QVBoxLayout>
+#include <vclib/qt/gui/shortcut_button.h>
 
 namespace vcl::qt {
 
@@ -50,14 +50,38 @@ InputBindingsWidget::InputBindingsWidget(
     }
 
     connect(resetBtn, &QPushButton::clicked, this, [this]() {
-        // Step 14 logic: reset to default
-        // mPendingBindings.clear();
-        // mMap.get().resetToDefaults();
-        // populateTable();
+        const auto actions = mMap.get().actions();
+        for (const auto& action : actions) {
+            mPendingBindings[action.id] = action.defaultInput;
+
+            // Find the button and update its text
+            for (int i = 0; i < mUI->bindingsTable->rowCount(); ++i) {
+                QTableWidgetItem* nameItem = mUI->bindingsTable->item(i, 0);
+                if (nameItem &&
+                    nameItem->data(Qt::UserRole).toString().toStdString() ==
+                        action.id) {
+                    if (auto* w = mUI->bindingsTable->cellWidget(i, 1)) {
+                        static_cast<ShortcutButton*>(w)->setText(
+                            QString::fromStdString(
+                                action.defaultInput.empty() ?
+                                    "None" :
+                                    action.defaultInput));
+                    }
+                    break;
+                }
+            }
+        }
     });
 }
 
 InputBindingsWidget::~InputBindingsWidget() = default;
+
+void InputBindingsWidget::applySettings()
+{
+    for (const auto& [id, inputStr] : mPendingBindings) {
+        mMap.get().setBinding(id, inputStr);
+    }
+}
 
 void InputBindingsWidget::populateTable()
 {
@@ -80,21 +104,20 @@ void InputBindingsWidget::populateTable()
         mUI->bindingsTable->setItem(i, 0, nameItem);
 
         // Column 1: Action Binding (Button)
-        QPushButton* bindingBtn = new QPushButton(
-            QString::fromStdString(action.input), mUI->bindingsTable);
-        bindingBtn->setStyleSheet("text-align: left; padding: 2px 5px;");
-        bindingBtn->setCursor(Qt::PointingHandCursor);
+        ShortcutButton* bindingBtn = new ShortcutButton(
+            mMap.get().inputType(),
+            QString::fromStdString(action.input),
+            mUI->bindingsTable);
 
-        // We will connect this button in Step 14 for event interception
-        connect(
-            bindingBtn,
-            &QPushButton::clicked,
-            this,
-            [this, bindingBtn, id = action.id]() {
-                // Temporary placeholder for Step 14
-                bindingBtn->setText("Press any key...");
-                // TODO: Start listening
-            });
+        // We connect this button for event interception
+        connect(bindingBtn, &QPushButton::clicked, this, [bindingBtn]() {
+            bindingBtn->startListening();
+        });
+
+        bindingBtn->onInputCaptured =
+            [this, id = action.id](const std::string& inputStr) {
+                mPendingBindings[id] = inputStr;
+            };
 
         mUI->bindingsTable->setCellWidget(i, 1, bindingBtn);
     }

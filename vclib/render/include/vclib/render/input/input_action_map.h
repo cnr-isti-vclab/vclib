@@ -86,7 +86,7 @@ public:
         }
     }
 
-    void resetToDefaults()
+    void resetToDefaults() override
     {
         for (auto& def : mDefs) {
             def.input = def.defaultInput;
@@ -120,9 +120,16 @@ public:
         std::vector<AbstractInputActionMap::ActionInfo> res;
         res.reserve(mDefs.size());
         for (const auto& def : mDefs) {
-            std::string inputStr =
-                def.input.has_value() ? toString(def.input.value()) : "";
-            res.push_back({toString(def.id), def.name, inputStr});
+            AbstractInputActionMap::ActionInfo info;
+            info.id   = toString(def.id);
+            info.name = def.name;
+            if (def.input.has_value()) {
+                info.input = toString(def.input.value());
+            }
+            if (def.defaultInput.has_value()) {
+                info.defaultInput = toString(def.defaultInput.value());
+            }
+            res.push_back(info);
         }
         return res;
     }

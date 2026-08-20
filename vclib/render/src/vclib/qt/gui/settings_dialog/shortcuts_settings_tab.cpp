@@ -29,6 +29,8 @@ QString ShortcutsSettingsTab::name() const
 
 QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 {
+    mWidgets.clear();
+
     QScrollArea* scrollArea = new QScrollArea(parent);
     scrollArea->setWidgetResizable(true);
     scrollArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -106,9 +108,8 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
 void ShortcutsSettingsTab::applySettings()
 {
-    for (auto* w : mWidgets) {
-        // w->applySettings(); // uncomment this line when step 13 is
-        // implemented
+    for (auto* widget : mWidgets) {
+        widget->applySettings();
     }
 }
 
