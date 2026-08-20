@@ -12,8 +12,8 @@
 
 #include <QLabel>
 #include <QScrollArea>
-#include <QVBoxLayout>
 #include <QToolButton>
+#include <QVBoxLayout>
 
 namespace vcl::qt {
 
@@ -40,7 +40,8 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
     QLabel* infoLabel = new QLabel(
         "Note: Editor shortcuts are only active when the editor is enabled. "
-        "If a conflict occurs, active editors override the base Viewer shortcuts.",
+        "If a conflict occurs, active editors override the base Viewer "
+        "shortcuts.",
         scrollContent);
     infoLabel->setWordWrap(true);
     infoLabel->setStyleSheet("color: gray; font-style: italic;");
@@ -49,7 +50,8 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
     auto groups = mProvider();
     for (const auto& group : groups) {
-        QLabel* titleLabel = new QLabel(QString::fromStdString(group.name), scrollContent);
+        QLabel* titleLabel =
+            new QLabel(QString::fromStdString(group.name), scrollContent);
         QFont font = titleLabel->font();
         font.setBold(true);
         font.setPointSize(font.pointSize() + 2);
@@ -58,25 +60,34 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
         for (const auto& mapRef : group.maps) {
             QToolButton* toggleButton = new QToolButton(scrollContent);
-            toggleButton->setStyleSheet("QToolButton { border: none; font-weight: bold; text-align: left; }");
+            toggleButton->setStyleSheet(
+                "QToolButton { border: none; font-weight: bold; text-align: "
+                "left; }");
             toggleButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             toggleButton->setArrowType(Qt::DownArrow);
-            toggleButton->setText(QString::fromStdString(mapRef.get().mapName()));
+            toggleButton->setText(
+                QString::fromStdString(mapRef.get().mapName()));
             toggleButton->setCheckable(true);
             toggleButton->setChecked(false);
 
-            InputBindingsWidget* bindingsWidget = new InputBindingsWidget(mapRef, scrollContent);
-            
-            QObject::connect(toggleButton, &QToolButton::toggled, bindingsWidget, [toggleButton, bindingsWidget](bool checked) {
-                toggleButton->setArrowType(checked ? Qt::RightArrow : Qt::DownArrow);
-                bindingsWidget->setVisible(!checked);
-            });
+            InputBindingsWidget* bindingsWidget =
+                new InputBindingsWidget(mapRef, scrollContent);
+
+            QObject::connect(
+                toggleButton,
+                &QToolButton::toggled,
+                bindingsWidget,
+                [toggleButton, bindingsWidget](bool checked) {
+                    toggleButton->setArrowType(
+                        checked ? Qt::RightArrow : Qt::DownArrow);
+                    bindingsWidget->setVisible(!checked);
+                });
 
             layout->addWidget(toggleButton);
             layout->addWidget(bindingsWidget);
             mWidgets.push_back(bindingsWidget);
         }
-        
+
         layout->addSpacing(15);
     }
 

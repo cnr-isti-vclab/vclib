@@ -25,6 +25,11 @@ class AbstractInputActionMap
 {
 public:
     /**
+     * @brief Identifies the family of physical inputs this map accepts.
+     */
+    enum class InputType { KEY, MOUSE_BUTTON, SCROLL_AXIS, UNKNOWN };
+
+    /**
      * @brief A Data Transfer Object (DTO) containing string-based information
      * about a registered action. Used by the UI to list and edit bindings
      * without knowing the underlying types.
@@ -47,6 +52,13 @@ public:
      * @return The name of the map as a string.
      */
     virtual std::string mapName() const = 0;
+
+    /**
+     * @brief Returns the type of physical input this map accepts.
+     * This is used by the UI to filter incoming events when listening for a new
+     * shortcut.
+     */
+    virtual InputType inputType() const = 0;
 
     /**
      * @brief Retrieves the list of all registered actions and their current
