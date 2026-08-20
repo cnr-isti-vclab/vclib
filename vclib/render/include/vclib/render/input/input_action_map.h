@@ -13,6 +13,8 @@
 
 #include <vclib/base.h>
 
+#include <nlohmann/json.hpp>
+
 #include <map>
 #include <optional>
 #include <string>
@@ -180,6 +182,27 @@ public:
             }
         }
         return std::nullopt;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        if (j.contains(mMapName)) {
+            for (const auto& [actionId, inputStr] : j[mMapName].items()) {
+                setBinding(actionId, inputStr.get<std::string>());
+            }
+        }
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        auto& mapJson = j[mMapName];
+        for (const auto& def : mDefs) {
+            if (def.input.has_value()) {
+                mapJson[toString(def.id)] = toString(def.input.value());
+            } else {
+                mapJson[toString(def.id)] = "";
+            }
+        }
     }
 
 private:

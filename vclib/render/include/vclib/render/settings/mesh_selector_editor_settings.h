@@ -49,14 +49,16 @@ struct MeshSelectorEditorSettings : public EditorSettings
         return {mouseBindings};
     }
 
-    void loadSettings(const nlohmann::json& /*j*/)
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps()
+        const override
     {
-        // Add JSON loading logic here when needed
+        return {mouseBindings};
     }
 
-    void saveSettings(nlohmann::json& /*j*/) const
+    void loadSettings(const nlohmann::json& j) override
     {
-        // Add JSON saving logic here when needed
+        EditorSettings::loadSettings(j);
+        mouseBindings.loadSettings(j);
     }
 
 private:

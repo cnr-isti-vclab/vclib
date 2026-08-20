@@ -8,14 +8,16 @@
 #ifndef VCL_RENDER_SETTINGS_EDITOR_SETTINGS_H
 #define VCL_RENDER_SETTINGS_EDITOR_SETTINGS_H
 
+#include <vclib/render/input/abstract_input_action_map.h>
+
 #include <vclib/base.h>
+
+#include <nlohmann/json_fwd.hpp>
 
 #include <vector>
 #include <functional>
 
 namespace vcl {
-
-class AbstractInputActionMap;
 
 struct EditorSettings
 {
@@ -49,6 +51,26 @@ struct EditorSettings
     actionMaps()
     {
         return {};
+    }
+
+    virtual std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const
+    {
+        return {};
+    }
+
+    virtual void loadSettings(const nlohmann::json& j)
+    {
+        for (auto& map : actionMaps()) {
+            map.get().loadSettings(j);
+        }
+    }
+
+    virtual void saveSettings(nlohmann::json& j) const
+    {
+        for (const auto& map : actionMaps()) {
+            map.get().saveSettings(j);
+        }
     }
 
     virtual ~EditorSettings() = default;

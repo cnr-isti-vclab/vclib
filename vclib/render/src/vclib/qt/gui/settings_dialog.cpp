@@ -103,6 +103,8 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::onApplyClicked()
 {
+    emit applied();
+
     if (mUI->saveAsDefaultCheckBox->isChecked()) {
         std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
         std::string           filePath =
@@ -128,6 +130,9 @@ void SettingsDialog::onApplyClicked()
             if (tab->category() == "Editors") {
                 tab->saveSettings(j["Editors"]);
             }
+            else if (tab->category() == "Viewer") {
+                tab->saveSettings(j["Viewer"]);
+            }
             else {
                 tab->saveSettings(j);
             }
@@ -149,8 +154,6 @@ void SettingsDialog::onApplyClicked()
                 "Failed to save default settings to file.");
         }
     }
-
-    emit applied();
 }
 
 } // namespace vcl::qt

@@ -52,14 +52,22 @@ struct SelectionEditorSettings : public EditorSettings
         return {keyBindings, mouseBindings};
     }
 
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps()
+        const override
+    {
+        return {keyBindings, mouseBindings};
+    }
+
     /**
      * @brief Loads the settings from a JSON object.
      * @param[in] j: the JSON object to read from.
      */
-    void loadSettings(const nlohmann::json& j)
+    void loadSettings(const nlohmann::json& j) override
     {
-        if (j.contains("SelectionEditor")) {
-            const auto& jSel = j["SelectionEditor"];
+        EditorSettings::loadSettings(j);
+
+        if (j.contains("Selection Editor")) {
+            const auto& jSel = j["Selection Editor"];
             onlyVisible      = jSel.value("onlyVisible", onlyVisible);
             selectionBoxColor =
                 jSel.value("selectionBoxColor", selectionBoxColor);
@@ -72,11 +80,14 @@ struct SelectionEditorSettings : public EditorSettings
      * @brief Saves the settings to a JSON object.
      * @param[out] j: the JSON object to write to.
      */
-    void saveSettings(nlohmann::json& j) const
+    void saveSettings(nlohmann::json& j) const override
     {
-        j["SelectionEditor"]["onlyVisible"]       = onlyVisible;
-        j["SelectionEditor"]["selectionBoxColor"] = selectionBoxColor;
-        j["SelectionEditor"]["editMode"]          = static_cast<int>(editMode);
+        EditorSettings::saveSettings(j);
+
+        auto& jSel = j["Selection Editor"];
+        jSel["onlyVisible"]       = onlyVisible;
+        jSel["selectionBoxColor"] = selectionBoxColor;
+        jSel["editMode"]          = static_cast<int>(editMode);
     }
 
 private:

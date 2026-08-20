@@ -42,6 +42,7 @@ InputBindingsWidget::InputBindingsWidget(
     populateTable();
 
     QPushButton* resetBtn = new QPushButton("Reset Map Defaults", this);
+    resetBtn->setObjectName("resetDefaultButton");
     resetBtn->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
 
     // The layout is automatically created by setupUi

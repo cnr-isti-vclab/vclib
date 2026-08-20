@@ -224,9 +224,9 @@ public:
 
     void loadSettings(const nlohmann::json& j)
     {
-        if (j.contains("ViewerSettings")) {
+        if (j.contains("Viewer")) {
             ViewerSettings settings = mViewerSettings;
-            settings.loadSettings(j);
+            settings.loadSettings(j["Viewer"]);
             derived()->setViewerSettings(settings);
         }
         if (j.contains("Editors")) {

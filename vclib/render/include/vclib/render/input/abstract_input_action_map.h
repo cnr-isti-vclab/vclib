@@ -8,6 +8,8 @@
 #ifndef VCL_RENDER_INPUT_ABSTRACT_INPUT_ACTION_MAP_H
 #define VCL_RENDER_INPUT_ABSTRACT_INPUT_ACTION_MAP_H
 
+#include <nlohmann/json_fwd.hpp>
+
 #include <string>
 #include <vector>
 
@@ -94,6 +96,16 @@ public:
      * @brief Restores all bindings in the map to their original default values.
      */
     virtual void resetToDefaults() = 0;
+
+    /**
+     * @brief Loads the bindings from a JSON object.
+     */
+    virtual void loadSettings(const nlohmann::json& j) = 0;
+
+    /**
+     * @brief Saves the bindings to a JSON object.
+     */
+    virtual void saveSettings(nlohmann::json& j) const = 0;
 };
 
 } // namespace vcl

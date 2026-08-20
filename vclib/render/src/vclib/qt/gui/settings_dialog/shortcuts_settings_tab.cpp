@@ -15,6 +15,8 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl::qt {
 
 QString ShortcutsSettingsTab::category() const
@@ -113,8 +115,20 @@ void ShortcutsSettingsTab::applySettings()
     }
 }
 
-void ShortcutsSettingsTab::saveSettings(nlohmann::json& /*j*/) const
+void ShortcutsSettingsTab::saveSettings(nlohmann::json& j) const
 {
+    auto groups = mProvider();
+    for (const auto& group : groups) {
+        if (group.name == "Viewer") {
+            for (const auto& mapRef : group.maps) {
+                mapRef.get().saveSettings(j["Viewer"]);
+            }
+        } else {
+            for (const auto& mapRef : group.maps) {
+                mapRef.get().saveSettings(j["Editors"]);
+            }
+        }
+    }
 }
 
 } // namespace vcl::qt

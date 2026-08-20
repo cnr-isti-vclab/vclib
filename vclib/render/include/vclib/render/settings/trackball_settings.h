@@ -11,6 +11,8 @@
 #include <vclib/render/input.h>
 #include <vclib/render/viewer/trackball.h>
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace vcl {
 
 /**
@@ -18,14 +20,13 @@ namespace vcl {
  */
 struct TrackballSettings
 {
-    using DragMotionMap = InputActionMap<MouseInput, TrackballMotionType>;
+    using DragMotionMap   = InputActionMap<MouseInput, TrackballMotionType>;
     using ScrollAtomicMap = InputActionMap<
         std::pair<ScrollAxis::Enum, KeyModifiers>,
         TrackballMotionType>;
     using KeyAtomicMap =
         InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
-    using MouseAtomicMap =
-        InputActionMap<MouseInput, TrackballMotionType>;
+    using MouseAtomicMap = InputActionMap<MouseInput, TrackballMotionType>;
 
     DragMotionMap   dragMotionMap   = defaultDragMotionMap();
     ScrollAtomicMap scrollAtomicMap = defaultScrollMotionMap();
@@ -45,6 +46,26 @@ struct TrackballSettings
         return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
     }
 
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const
+    {
+        return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
+    }
+
+    void loadSettings(const nlohmann::json& j)
+    {
+        for (auto& map : actionMaps()) {
+            map.get().loadSettings(j);
+        }
+    }
+
+    void saveSettings(nlohmann::json& j) const
+    {
+        for (const auto& map : actionMaps()) {
+            map.get().saveSettings(j);
+        }
+    }
+
 private:
     static DragMotionMap defaultDragMotionMap()
     {
@@ -60,7 +81,8 @@ private:
             {ZMOVE,         "Zoom (Translation)", MouseInput {LEFT, {ALT}, false}           },
             {SCALE,         "Scale",              MouseInput {LEFT, {SHIFT}, false}         },
             {ROLL,          "Roll",               MouseInput {MIDDLE, {CONTROL}, false}     },
-            {DIR_LIGHT_ARC, "Light Rotation",     MouseInput {LEFT, {SHIFT, CONTROL}, false}}
+            {DIR_LIGHT_ARC,
+             "Light Rotation",                    MouseInput {LEFT, {SHIFT, CONTROL}, false}}
         });
         return map;
     }
@@ -88,7 +110,8 @@ private:
 
         MouseAtomicMap map("Trackball Mouse Atomic Motions");
         map.registerActions({
-            {FOCUS, "Focus on Object", MouseInput {LEFT, {NO_MODIFIER}, true}}
+            {FOCUS,
+             "Focus on Object", MouseInput {LEFT, {NO_MODIFIER}, true}}
         });
         return map;
     }
