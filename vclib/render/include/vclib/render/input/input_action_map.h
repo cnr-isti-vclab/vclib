@@ -45,8 +45,8 @@ class InputActionMap : public AbstractInputActionMap
         std::optional<Input> defaultInput;
     };
 
-    std::string            mMapName;
-    std::vector<ActionDef> mDefs;
+    std::string               mMapName;
+    std::vector<ActionDef>    mDefs;
     std::map<Input, ActionID> mBindings;
 
 public:
@@ -66,7 +66,7 @@ public:
     {
         for (auto& def : mDefs) {
             if (def.id == id) {
-                def.name = name;
+                def.name         = name;
                 def.defaultInput = defaultInput;
                 if (!def.input.has_value() && defaultInput.has_value()) {
                     def.input = defaultInput;
@@ -119,7 +119,7 @@ public:
                     def.input = std::nullopt;
                 }
                 else {
-                    Input in = vcl::fromString<Input>(inputStr);
+                    Input in  = vcl::fromString<Input>(inputStr);
                     def.input = in;
                 }
                 updateBindings();

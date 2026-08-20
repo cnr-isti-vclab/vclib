@@ -25,7 +25,8 @@ namespace vcl {
 struct ViewerSettings : public TrackballSettings
 {
     /**
-     * @brief Global actions registered by the viewer or editors.
+     * @brief Global actions type, used to register actions by the viewer or
+     * editors.
      */
     using ViewerGlobalActionMap =
         InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
@@ -99,6 +100,11 @@ struct ViewerSettings : public TrackballSettings
     std::string panoramaPath = "";
 
     /**
+     * @brief Global actions registered by the viewer or editors.
+     */
+    ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
+
+    /**
      * @brief Resets the settings to their default values.
      */
     void resetDefaults()
@@ -151,8 +157,6 @@ struct ViewerSettings : public TrackballSettings
         j["ViewerSettings"]["backgroundColor"] = backgroundColor;
         j["ViewerSettings"]["panoramaPath"]    = panoramaPath;
     }
-
-    ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
 
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
     {

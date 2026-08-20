@@ -94,53 +94,7 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
-        registerGlobalAction(
-            "Toggle Editors Events",
-            {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                toggleEditorsEventsEnabled();
-            });
-
-        registerGlobalAction(
-            "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
-                fitScene();
-            });
-
-        registerGlobalAction(
-            "Toggle Axis", {Key::A, {KeyModifier::NO_MODIFIER}}, [this]() {
-                if (mCustomShortcutToggleAxisCallback)
-                    mCustomShortcutToggleAxisCallback();
-            });
-
-        registerGlobalAction(
-            "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
-                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-            });
-
-        registerGlobalAction(
-            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
-                undo();
-            });
-
-        registerGlobalAction(
-            "Redo", {Key::Y, {KeyModifier::CONTROL}}, [this]() {
-                redo();
-            });
-
-        registerGlobalAction(
-            "Redo (Alt)",
-            {
-                Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}
-        },
-            [this]() {
-                redo();
-            });
-
-        registerGlobalAction(
-            "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {
-                if (this->mCustomShortcutToggleTrackballCallback)
-                    this->mCustomShortcutToggleTrackballCallback();
-            });
+        registerGlobalActions();
     }
 
     ~AbstractViewerDrawer() = default;
@@ -771,6 +725,57 @@ public:
     }
 
 private:
+    void registerGlobalActions()
+    {
+        registerGlobalAction(
+            "Toggle Editors Events",
+            {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                toggleEditorsEventsEnabled();
+            });
+
+        registerGlobalAction(
+            "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
+                fitScene();
+            });
+
+        registerGlobalAction(
+            "Toggle Axis", {Key::A, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (mCustomShortcutToggleAxisCallback)
+                    mCustomShortcutToggleAxisCallback();
+            });
+
+        registerGlobalAction(
+            "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
+                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+            });
+
+        registerGlobalAction(
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
+                undo();
+            });
+
+        registerGlobalAction(
+            "Redo", {Key::Y, {KeyModifier::CONTROL}}, [this]() {
+                redo();
+            });
+
+        registerGlobalAction(
+            "Redo (Alt)",
+            {
+                Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}
+        },
+            [this]() {
+                redo();
+            });
+
+        registerGlobalAction(
+            "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (this->mCustomShortcutToggleTrackballCallback)
+                    this->mCustomShortcutToggleTrackballCallback();
+            });
+    }
+
     auto* derived() { return static_cast<DRA*>(this); }
 
     const auto* derived() const { return static_cast<const DRA*>(this); }

@@ -27,15 +27,14 @@ class InputBindingsWidget : public QWidget
 {
     Q_OBJECT
 
+    std::unique_ptr<Ui::InputBindingsWidget>       mUI;
+    std::reference_wrapper<AbstractInputActionMap> mMap;
+
 public:
     explicit InputBindingsWidget(
         std::reference_wrapper<AbstractInputActionMap> map,
         QWidget*                                       parent = nullptr);
     ~InputBindingsWidget() override;
-
-private:
-    std::unique_ptr<Ui::InputBindingsWidget>       mUI;
-    std::reference_wrapper<AbstractInputActionMap> mMap;
 };
 
 } // namespace vcl::qt

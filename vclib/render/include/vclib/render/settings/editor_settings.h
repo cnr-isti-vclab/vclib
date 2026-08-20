@@ -29,6 +29,22 @@ struct EditorSettings
     /**< @brief The edit mode of the editor. */
     EditMode editMode = EditMode::CURRENT_OBJECT;
 
+    /**
+     * @brief Retrieves the action maps associated with this editor.
+     *
+     * This method allows the editor to expose its input action maps (which bind
+     * physical inputs like keys or mouse buttons to specific logical actions)
+     * to the outside world.
+     *
+     * The primary use case is for the UI (such as the Settings Dialog) to
+     * collect all the action maps from active editors and present them to the
+     * user for customization. Modifying the returned maps will dynamically
+     * update the editor's input bindings.
+     *
+     * @return A vector of mutable references to the editor's
+     * AbstractInputActionMaps. Returns an empty vector by default if the editor
+     * has no custom bindings.
+     */
     virtual std::vector<std::reference_wrapper<AbstractInputActionMap>>
     actionMaps()
     {
