@@ -10,10 +10,10 @@
 #include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
 #include <vclib/render/input/abstract_input_action_map.h>
 
-#include <QGroupBox>
 #include <QLabel>
 #include <QScrollArea>
 #include <QVBoxLayout>
+#include <QToolButton>
 
 namespace vcl::qt {
 
@@ -35,11 +35,21 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
     QWidget*     scrollContent = new QWidget(scrollArea);
     QVBoxLayout* layout        = new QVBoxLayout(scrollContent);
+    layout->setContentsMargins(10, 10, 10, 10);
+    layout->setSpacing(5);
+
+    QLabel* infoLabel = new QLabel(
+        "Note: Editor shortcuts are only active when the editor is enabled. "
+        "If a conflict occurs, active editors override the base Viewer shortcuts.",
+        scrollContent);
+    infoLabel->setWordWrap(true);
+    infoLabel->setStyleSheet("color: gray; font-style: italic;");
+    layout->addWidget(infoLabel);
+    layout->addSpacing(10);
 
     auto groups = mProvider();
     for (const auto& group : groups) {
-        QLabel* titleLabel =
-            new QLabel(QString::fromStdString(group.name), scrollContent);
+        QLabel* titleLabel = new QLabel(QString::fromStdString(group.name), scrollContent);
         QFont font = titleLabel->font();
         font.setBold(true);
         font.setPointSize(font.pointSize() + 2);
@@ -47,19 +57,27 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
         layout->addWidget(titleLabel);
 
         for (const auto& mapRef : group.maps) {
-            QGroupBox* groupBox = new QGroupBox(
-                QString::fromStdString(mapRef.get().mapName()), scrollContent);
-            QVBoxLayout* groupLayout = new QVBoxLayout(groupBox);
+            QToolButton* toggleButton = new QToolButton(scrollContent);
+            toggleButton->setStyleSheet("QToolButton { border: none; font-weight: bold; text-align: left; }");
+            toggleButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+            toggleButton->setArrowType(Qt::DownArrow);
+            toggleButton->setText(QString::fromStdString(mapRef.get().mapName()));
+            toggleButton->setCheckable(true);
+            toggleButton->setChecked(false);
 
-            InputBindingsWidget* bindingsWidget =
-                new InputBindingsWidget(mapRef, groupBox);
-            groupLayout->addWidget(bindingsWidget);
+            InputBindingsWidget* bindingsWidget = new InputBindingsWidget(mapRef, scrollContent);
+            
+            QObject::connect(toggleButton, &QToolButton::toggled, bindingsWidget, [toggleButton, bindingsWidget](bool checked) {
+                toggleButton->setArrowType(checked ? Qt::RightArrow : Qt::DownArrow);
+                bindingsWidget->setVisible(!checked);
+            });
+
+            layout->addWidget(toggleButton);
+            layout->addWidget(bindingsWidget);
             mWidgets.push_back(bindingsWidget);
-
-            layout->addWidget(groupBox);
         }
-
-        layout->addSpacing(10);
+        
+        layout->addSpacing(15);
     }
 
     if (groups.empty()) {

@@ -35,6 +35,9 @@ public:
         std::reference_wrapper<AbstractInputActionMap> map,
         QWidget*                                       parent = nullptr);
     ~InputBindingsWidget() override;
+
+private:
+    void populateTable();
 };
 
 } // namespace vcl::qt
