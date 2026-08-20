@@ -9,12 +9,13 @@
 
 #include "ui_input_bindings_widget.h"
 
+#include <vclib/qt/gui/shortcut_button.h>
 #include <vclib/render/input/abstract_input_action_map.h>
 
 #include <QHeaderView>
+#include <QLabel>
 #include <QToolButton>
 #include <QVBoxLayout>
-#include <vclib/qt/gui/shortcut_button.h>
 
 namespace vcl::qt {
 
@@ -77,6 +78,7 @@ InputBindingsWidget::InputBindingsWidget(
                 }
             }
         }
+        emit bindingsChanged();
     });
 }
 
@@ -124,12 +126,18 @@ void InputBindingsWidget::populateTable()
 
         bindingBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+        QLabel* warningLabel = new QLabel("⚠️", bindingWidget);
+        warningLabel->setObjectName("warningLabel");
+        // Orange warning sign, no bold needed since emoji
+        warningLabel->hide();
+
         QToolButton* unbindBtn = new QToolButton(bindingWidget);
         unbindBtn->setText("❌");
         unbindBtn->setToolTip("Unbind this action");
         unbindBtn->setStyleSheet(
             "QToolButton { color: red; border: none; font-weight: bold; }");
 
+        bindingLayout->addWidget(warningLabel);
         bindingLayout->addWidget(bindingBtn);
         bindingLayout->addWidget(unbindBtn);
 
@@ -141,6 +149,7 @@ void InputBindingsWidget::populateTable()
         bindingBtn->onInputCaptured =
             [this, id = action.id](const std::string& inputStr) {
                 mPendingBindings[id] = inputStr;
+                emit bindingsChanged();
             };
 
         connect(unbindBtn, &QToolButton::clicked, this, [bindingBtn]() {
@@ -161,6 +170,73 @@ void InputBindingsWidget::populateTable()
     }
     mUI->bindingsTable->setMinimumHeight(totalHeight);
     mUI->bindingsTable->setMaximumHeight(totalHeight);
+}
+
+int InputBindingsWidget::inputType() const
+{
+    return static_cast<int>(mMap.get().inputType());
+}
+
+std::string InputBindingsWidget::mapName() const
+{
+    return mMap.get().mapName();
+}
+
+std::vector<InputBindingsWidget::ActionInfo> InputBindingsWidget::getActions() const
+{
+    std::vector<ActionInfo> actions;
+    for (const auto& a : mMap.get().actions()) {
+        actions.push_back(ActionInfo{a.id, a.name});
+    }
+    return actions;
+}
+
+std::string InputBindingsWidget::currentInput(const std::string& actionId) const
+{
+    if (mPendingBindings.count(actionId))
+        return mPendingBindings.at(actionId);
+        
+    for (const auto& a : mMap.get().actions()) {
+        if (a.id == actionId) {
+            return a.input;
+        }
+    }
+    return "";
+}
+
+void InputBindingsWidget::setConflict(
+    const std::string& actionId,
+    bool               hasConflict,
+    const QString&     tooltip)
+{
+    for (int i = 0; i < mUI->bindingsTable->rowCount(); ++i) {
+        QTableWidgetItem* nameItem = mUI->bindingsTable->item(i, 0);
+        if (nameItem &&
+            nameItem->data(Qt::UserRole).toString().toStdString() == actionId) {
+            QWidget* w = mUI->bindingsTable->cellWidget(i, 1);
+            if (w) {
+                if (QLabel* warningLabel =
+                        w->findChild<QLabel*>("warningLabel")) {
+                    warningLabel->setVisible(hasConflict);
+                    warningLabel->setToolTip(tooltip);
+                }
+            }
+            break;
+        }
+    }
+}
+
+void InputBindingsWidget::clearAllConflicts()
+{
+    for (int i = 0; i < mUI->bindingsTable->rowCount(); ++i) {
+        QWidget* w = mUI->bindingsTable->cellWidget(i, 1);
+        if (w) {
+            if (QLabel* warningLabel = w->findChild<QLabel*>("warningLabel")) {
+                warningLabel->setVisible(false);
+                warningLabel->setToolTip("");
+            }
+        }
+    }
 }
 
 } // namespace vcl::qt

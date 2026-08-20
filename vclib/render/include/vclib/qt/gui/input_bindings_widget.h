@@ -34,12 +34,36 @@ class InputBindingsWidget : public QWidget
     std::map<std::string, std::string>             mPendingBindings;
 
 public:
+    struct ActionInfo
+    {
+        std::string id;
+        std::string name;
+    };
+
     explicit InputBindingsWidget(
         std::reference_wrapper<AbstractInputActionMap> map,
         QWidget*                                       parent = nullptr);
     ~InputBindingsWidget() override;
 
     void applySettings();
+
+    // Conflict resolution interface
+    int         inputType() const;
+    std::string mapName() const;
+
+    std::vector<ActionInfo> getActions() const;
+
+    std::string currentInput(const std::string& actionId) const;
+
+    void setConflict(
+        const std::string& actionId,
+        bool               hasConflict,
+        const QString&     tooltip = "");
+
+    void clearAllConflicts();
+
+signals:
+    void bindingsChanged();
 
 private:
     void populateTable();

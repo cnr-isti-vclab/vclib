@@ -78,6 +78,14 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
                 new InputBindingsWidget(mapRef, scrollContent);
 
             QObject::connect(
+                bindingsWidget,
+                &InputBindingsWidget::bindingsChanged,
+                bindingsWidget,
+                [this]() {
+                    checkConflicts();
+                });
+
+            QObject::connect(
                 toggleButton,
                 &QToolButton::toggled,
                 bindingsWidget,
@@ -89,7 +97,7 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
 
             layout->addWidget(toggleButton);
             layout->addWidget(bindingsWidget);
-            mWidgets.push_back(bindingsWidget);
+            mWidgets.push_back({bindingsWidget, group.name});
         }
 
         layout->addSpacing(15);
@@ -103,15 +111,19 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
     }
 
     layout->addStretch();
+    scrollContent->setLayout(layout);
     scrollArea->setWidget(scrollContent);
+
+    // Initial check for default conflicts
+    checkConflicts();
 
     return scrollArea;
 }
 
 void ShortcutsSettingsTab::applySettings()
 {
-    for (auto* widget : mWidgets) {
-        widget->applySettings();
+    for (auto& pair : mWidgets) {
+        pair.first->applySettings();
     }
 }
 
@@ -123,9 +135,71 @@ void ShortcutsSettingsTab::saveSettings(nlohmann::json& j) const
             for (const auto& mapRef : group.maps) {
                 mapRef.get().saveSettings(j["Viewer"]);
             }
-        } else {
+        }
+        else {
             for (const auto& mapRef : group.maps) {
                 mapRef.get().saveSettings(j["Editors"]);
+            }
+        }
+    }
+}
+
+void ShortcutsSettingsTab::checkConflicts()
+{
+    struct BindingInfo
+    {
+        InputBindingsWidget* widget;
+        std::string          actionId;
+        std::string          actionName;
+        std::string          mapName;
+    };
+
+    // Map from (groupName) -> (inputType) -> (inputStr -> vector of bindings)
+    std::map<
+        std::string,
+        std::map<int, std::map<std::string, std::vector<BindingInfo>>>>
+        allBindings;
+
+    // First pass: clear all warnings
+    for (auto& pair : mWidgets) {
+        pair.first->clearAllConflicts();
+    }
+
+    // Second pass: gather all current inputs scoped by their ActionMapGroup
+    for (auto& pair : mWidgets) {
+        InputBindingsWidget* widget    = pair.first;
+        std::string          groupName = pair.second;
+
+        int         inputType = widget->inputType();
+        std::string mapName   = widget->mapName();
+        for (const auto& action : widget->getActions()) {
+            std::string inputStr = widget->currentInput(action.id);
+            if (!inputStr.empty() && inputStr != "None") {
+                allBindings[groupName][inputType][inputStr].push_back(
+                    {widget, action.id, action.name, mapName});
+            }
+        }
+    }
+
+    // Third pass: identify conflicts and set warnings
+    for (const auto& [groupName, groupMap] : allBindings) {
+        for (const auto& [type, inputMap] : groupMap) {
+            for (const auto& [inputStr, bindings] : inputMap) {
+                if (bindings.size() > 1) {
+                    // Build tooltip
+                    QStringList conflictNames;
+                    for (const auto& b : bindings) {
+                        conflictNames << QString::fromStdString(
+                            "• " + b.mapName + " -> " + b.actionName);
+                    }
+                    QString tooltip =
+                        "Conflict detected with:\n" + conflictNames.join("\n");
+
+                    // Set warning on all conflicting widgets
+                    for (const auto& b : bindings) {
+                        b.widget->setConflict(b.actionId, true, tooltip);
+                    }
+                }
             }
         }
     }

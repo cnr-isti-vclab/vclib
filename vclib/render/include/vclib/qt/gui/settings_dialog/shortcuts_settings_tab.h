@@ -23,8 +23,8 @@ class InputBindingsWidget;
 
 class ShortcutsSettingsTab : public SettingsDialogTab
 {
-    std::function<std::vector<ActionMapGroup>()> mProvider;
-    std::vector<InputBindingsWidget*>            mWidgets;
+    std::function<std::vector<ActionMapGroup>()>              mProvider;
+    std::vector<std::pair<InputBindingsWidget*, std::string>> mWidgets;
 
 public:
     explicit ShortcutsSettingsTab(
@@ -43,9 +43,12 @@ public:
 
     void applySettings() override;
 
-    void saveSettings(nlohmann::json& /*j*/) const override;
+    void saveSettings(nlohmann::json& j) const override;
 
     void updateToolbarFrames(QToolBar* /*toolbar*/) override {}
+
+private:
+    void checkConflicts();
 };
 
 } // namespace vcl::qt
