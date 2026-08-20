@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
-#define VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
+#ifndef VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_TAB_H
+#define VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_TAB_H
 
 #include <vclib/render/concepts/settings.h>
 
@@ -77,4 +77,4 @@ public:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_SETTINGS_DIALOG_TAB_H
+#endif // VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_TAB_H

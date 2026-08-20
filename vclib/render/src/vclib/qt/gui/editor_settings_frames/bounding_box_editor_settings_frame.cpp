@@ -61,7 +61,7 @@ void BoundingBoxEditorSettingsFrame::updateGUI()
     bool b2 = mUI->linesWidthSlider->blockSignals(true);
     bool b3 = mUI->colorPushButton->blockSignals(true);
 
-    Color c = mSettings.color;
+    Color c         = mSettings.color;
     float thickness = mSettings.thickness;
 
     mUI->editModeFrame->setEditMode(mSettings.editMode);

@@ -17,10 +17,11 @@ namespace vcl::qt {
 
 namespace Ui {
 class SettingsDialog;
-}
+} // namespace Ui
 
 /**
- * @brief The SettingsDialog class provides a dialog for managing application settings.
+ * @brief The SettingsDialog class provides a dialog for managing application
+ * settings.
  *
  * This dialog dynamically populates tabs for editor settings and allows users
  * to apply changes or save them as defaults to the file system.
@@ -44,7 +45,6 @@ signals:
 
 private slots:
     void onApplyClicked();
-
 };
 
 } // namespace vcl::qt
