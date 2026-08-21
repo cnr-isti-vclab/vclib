@@ -32,7 +32,7 @@ class InputBindingsWidget;
  */
 class ShortcutsSettingsTab : public SettingsDialogTab
 {
-    std::function<std::vector<ActionMapGroup>()>              mProvider;
+    std::function<std::vector<ActionMapGroup>()> mProvider;
     // one InputBindingsWidget per action map, paired with its owning group
     // name, used by checkConflicts() to scope conflict detection
     std::vector<std::pair<InputBindingsWidget*, std::string>> mWidgets;

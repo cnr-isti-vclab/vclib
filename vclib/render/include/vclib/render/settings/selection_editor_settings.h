@@ -52,8 +52,8 @@ struct SelectionEditorSettings : public EditorSettings
         return {keyBindings, mouseBindings};
     }
 
-    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps()
-        const override
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const override
     {
         return {keyBindings, mouseBindings};
     }
@@ -84,7 +84,7 @@ struct SelectionEditorSettings : public EditorSettings
     {
         EditorSettings::saveSettings(j);
 
-        auto& jSel = j["Selection Editor"];
+        auto& jSel                = j["Selection Editor"];
         jSel["onlyVisible"]       = onlyVisible;
         jSel["selectionBoxColor"] = selectionBoxColor;
         jSel["editMode"]          = static_cast<int>(editMode);
@@ -99,10 +99,11 @@ private:
 
         KeyMap map("Selection Atomic Actions");
         map.registerActions({
-            {SelectionAtomicAction::ALL,    "Select All",   Input {A, {CONTROL}}},
-            {SelectionAtomicAction::NONE,   "Deselect All", Input {D, {CONTROL}}},
+            {SelectionAtomicAction::ALL,    "Select All", {Input {A, {CONTROL}}}},
+            {SelectionAtomicAction::NONE,
+             "Deselect All",                              {Input {D, {CONTROL}}}},
             {SelectionAtomicAction::INVERT,
-             "Invert Selection",                            Input {I, {CONTROL}}}
+             "Invert Selection",                          {Input {I, {CONTROL}}}}
         });
         return map;
     }
@@ -115,11 +116,11 @@ private:
         MouseMap map("Selection Drag Actions");
         map.registerActions({
             {SelectionDragAction::REGULAR,
-             "Regular Selection",       MouseInput {LEFT, {NO_MODIFIER}, false}   },
+             "Regular Selection",       {MouseInput {LEFT, {NO_MODIFIER}, false}}   },
             {SelectionDragAction::ADD,
-             "Add to Selection",        MouseInput {LEFT, {CONTROL}, false}       },
+             "Add to Selection",        {MouseInput {LEFT, {CONTROL}, false}}       },
             {SelectionDragAction::SUBTRACT,
-             "Subtract from Selection", MouseInput {LEFT, {CONTROL, SHIFT}, false}}
+             "Subtract from Selection", {MouseInput {LEFT, {CONTROL, SHIFT}, false}}}
         });
         return map;
     }

@@ -173,10 +173,11 @@ void ShortcutsSettingsTab::checkConflicts()
         int         inputType = widget->inputType();
         std::string mapName   = widget->mapName();
         for (const auto& action : widget->getActions()) {
-            std::string inputStr = widget->currentInput(action.id);
-            if (!inputStr.empty() && inputStr != "None") {
-                allBindings[groupName][inputType][inputStr].push_back(
-                    {widget, action.id, action.name, mapName});
+            for (const std::string& inputStr : widget->currentInputs(action.id)) {
+                if (!inputStr.empty() && inputStr != "None") {
+                    allBindings[groupName][inputType][inputStr].push_back(
+                        {widget, action.id, action.name, mapName});
+                }
             }
         }
     }

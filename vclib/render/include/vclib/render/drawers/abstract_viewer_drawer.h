@@ -161,13 +161,25 @@ public:
      * triggered.
      */
     void registerGlobalAction(
+        const std::string&                                     name,
+        const std::vector<std::pair<Key::Enum, KeyModifiers>>& defaultShortcuts,
+        GlobalActionCallback                                   callback)
+    {
+        mGlobalActionRegistry[name] = std::move(callback);
+        mViewerSettings.globalActionMap.registerActions({
+            {name, name, defaultShortcuts}
+        });
+    }
+
+    void registerGlobalAction(
         const std::string&                 name,
         std::pair<Key::Enum, KeyModifiers> defaultShortcut,
         GlobalActionCallback               callback)
     {
-        mGlobalActionRegistry[name] = std::move(callback);
-        mViewerSettings.globalActionMap.registerAction(
-            name, name, defaultShortcut);
+        registerGlobalAction(
+            name,
+            std::vector<std::pair<Key::Enum, KeyModifiers>> {defaultShortcut},
+            std::move(callback));
     }
 
     const DrawableObjectVector& drawableObjectVector() const
@@ -199,19 +211,19 @@ public:
     std::vector<ActionMapGroup> actionMapGroups()
     {
         std::vector<ActionMapGroup> groups;
-        
+
         auto viewerMaps = mViewerSettings.actionMaps();
         if (!viewerMaps.empty()) {
             groups.push_back({"Viewer", std::move(viewerMaps)});
         }
-        
+
         for (auto& editor : mEditors) {
             auto editorMaps = editor->settings().actionMaps();
             if (!editorMaps.empty()) {
                 groups.push_back({editor->name(), std::move(editorMaps)});
             }
         }
-        
+
         return groups;
     }
 
@@ -571,7 +583,8 @@ public:
         if (!block) {
             auto actionOpt =
                 Base::mouseAtomicMap().action({button, modifiers, false});
-            if (actionOpt.has_value() && actionOpt.value() == TrackballMotionType::FOCUS) {
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
                 derived()->readDepthRequest(x, y, true);
                 block = true;
             }
@@ -622,7 +635,8 @@ public:
         if (!block) {
             auto actionOpt =
                 Base::mouseAtomicMap().action({button, modifiers, true});
-            if (actionOpt.has_value() && actionOpt.value() == TrackballMotionType::FOCUS) {
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
                 derived()->readDepthRequest(x, y, true);
                 block = true;
             }
@@ -663,10 +677,7 @@ public:
 
     auto dpiScale() const { return DRA::DRW::dpiScale(derived()); }
 
-    void readDepthRequest(
-        double x,
-        double y,
-        bool   homogeneousNDC = true)
+    void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         using ReadData   = ReadBufferTypes::ReadData;
         using FloatData  = ReadBufferTypes::FloatData;
@@ -781,14 +792,10 @@ private:
             });
 
         registerGlobalAction(
-            "Redo", {Key::Y, {KeyModifier::CONTROL}}, [this]() {
-                redo();
-            });
-
-        registerGlobalAction(
-            "Redo (Alt)",
+            "Redo",
             {
-                Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}
+                {Key::Y, {KeyModifier::CONTROL}                    },
+                {Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}}
         },
             [this]() {
                 redo();

@@ -38,10 +38,10 @@ public:
      */
     struct ActionInfo
     {
-        std::string id;
-        std::string name;
-        std::string input;
-        std::string defaultInput;
+        std::string              id;
+        std::string              name;
+        std::vector<std::string> inputs;
+        std::vector<std::string> defaultInputs;
     };
 
     virtual ~AbstractInputActionMap() = default;
@@ -68,8 +68,8 @@ public:
      * input bindings.
      *
      * Implementations should return a vector of `ActionInfo` describing each
-     * action. The `input` string in `ActionInfo` should represent the current
-     * physical input bound to the action, or be empty if no input is currently
+     * action. The `inputs` vector in `ActionInfo` should represent the current
+     * physical inputs bound to the action, or be empty if no input is currently
      * bound.
      *
      * @return A vector containing the information for all registered actions.
@@ -77,20 +77,21 @@ public:
     virtual std::vector<ActionInfo> actions() const = 0;
 
     /**
-     * @brief Assigns a new physical input to a specific action.
+     * @brief Assigns a new set of physical inputs to a specific action.
      *
-     * This method is called by the UI when the user assigns a new shortcut to
-     * an action. Implementations should parse `inputStr` back into their
-     * physical input type and update the internal binding map.
+     * This method is called by the UI when the user assigns new shortcuts to
+     * an action. Implementations should parse each string in `inputStrs` back
+     * into their physical input type and update the internal binding map.
      *
      * @param[in] actionId: The unique string identifier of the action (from
      * `ActionInfo::id`).
-     * @param[in] inputStr: The string representation of the physical input
-     * (e.g. "Ctrl+Left"). If empty, the binding should be removed.
+     * @param[in] inputStrs: The string representations of the physical inputs
+     * (e.g. ["Ctrl+Left", "Middle Click"]). If empty, the bindings should be
+     * removed.
      */
-    virtual void setBinding(
-        const std::string& actionId,
-        const std::string& inputStr) = 0;
+    virtual void setBindings(
+        const std::string&              actionId,
+        const std::vector<std::string>& inputStrs) = 0;
 
     /**
      * @brief Restores all bindings in the map to their original default values.

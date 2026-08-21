@@ -41,10 +41,10 @@ class InputActionMap : public AbstractInputActionMap
 {
     struct ActionDef
     {
-        ActionID             id;
-        std::string          name;
-        std::optional<Input> input;
-        std::optional<Input> defaultInput;
+        ActionID           id;
+        std::string        name;
+        std::vector<Input> inputs;
+        std::vector<Input> defaultInputs;
     };
 
     std::string               mMapName;
@@ -54,44 +54,44 @@ class InputActionMap : public AbstractInputActionMap
 public:
     struct InitData
     {
-        ActionID             id;
-        std::string          name;
-        std::optional<Input> defaultInput = std::nullopt;
+        ActionID           id;
+        std::string        name;
+        std::vector<Input> defaultInputs = {};
     };
 
     InputActionMap(const std::string& name = "") : mMapName(name) {}
 
     void registerAction(
-        const ActionID&      id,
-        const std::string&   name,
-        std::optional<Input> defaultInput = std::nullopt)
+        const ActionID&           id,
+        const std::string&        name,
+        const std::vector<Input>& defaultInputs = {})
     {
         for (auto& def : mDefs) {
             if (def.id == id) {
-                def.name         = name;
-                def.defaultInput = defaultInput;
-                if (!def.input.has_value() && defaultInput.has_value()) {
-                    def.input = defaultInput;
+                def.name          = name;
+                def.defaultInputs = defaultInputs;
+                if (def.inputs.empty() && !defaultInputs.empty()) {
+                    def.inputs = defaultInputs;
                 }
                 updateBindings();
                 return;
             }
         }
-        mDefs.push_back({id, name, defaultInput, defaultInput});
+        mDefs.push_back({id, name, defaultInputs, defaultInputs});
         updateBindings();
     }
 
     void registerActions(std::initializer_list<InitData> actions)
     {
         for (const auto& a : actions) {
-            registerAction(a.id, a.name, a.defaultInput);
+            registerAction(a.id, a.name, a.defaultInputs);
         }
     }
 
     void resetToDefaults() override
     {
         for (auto& def : mDefs) {
-            def.input = def.defaultInput;
+            def.inputs = def.defaultInputs;
         }
         updateBindings();
     }
@@ -129,30 +129,30 @@ public:
             AbstractInputActionMap::ActionInfo info;
             info.id   = toString(def.id);
             info.name = def.name;
-            if (def.input.has_value()) {
-                info.input = toString(def.input.value());
+            for (const auto& in : def.inputs) {
+                info.inputs.push_back(toString(in));
             }
-            if (def.defaultInput.has_value()) {
-                info.defaultInput = toString(def.defaultInput.value());
+            for (const auto& in : def.defaultInputs) {
+                info.defaultInputs.push_back(toString(in));
             }
             res.push_back(info);
         }
         return res;
     }
 
-    void setBinding(const std::string& actionId, const std::string& inputStr)
-        override
+    void setBindings(
+        const std::string&              actionId,
+        const std::vector<std::string>& inputStrs) override
     {
         ActionID id = vcl::fromString<ActionID>(actionId);
 
         for (auto& def : mDefs) {
             if (def.id == id) {
-                if (inputStr.empty()) {
-                    def.input = std::nullopt;
-                }
-                else {
-                    Input in  = vcl::fromString<Input>(inputStr);
-                    def.input = in;
+                def.inputs.clear();
+                for (const auto& inStr : inputStrs) {
+                    if (!inStr.empty()) {
+                        def.inputs.push_back(vcl::fromString<Input>(inStr));
+                    }
                 }
                 updateBindings();
                 return;
@@ -174,21 +174,33 @@ public:
         return std::nullopt;
     }
 
-    std::optional<Input> input(const ActionID& id) const
+    std::vector<Input> inputs(const ActionID& id) const
     {
         for (const auto& def : mDefs) {
             if (def.id == id) {
-                return def.input;
+                return def.inputs;
             }
         }
-        return std::nullopt;
+        return {};
     }
 
     void loadSettings(const nlohmann::json& j) override
     {
         if (j.contains(mMapName)) {
-            for (const auto& [actionId, inputStr] : j[mMapName].items()) {
-                setBinding(actionId, inputStr.template get<std::string>());
+            for (const auto& [actionId, jValue] : j[mMapName].items()) {
+                std::vector<std::string> inputStrs;
+                if (jValue.is_array()) {
+                    for (const auto& item : jValue) {
+                        inputStrs.push_back(item.template get<std::string>());
+                    }
+                }
+                else if (jValue.is_string()) {
+                    std::string str = jValue.template get<std::string>();
+                    if (!str.empty()) {
+                        inputStrs.push_back(str);
+                    }
+                }
+                setBindings(actionId, inputStrs);
             }
         }
     }
@@ -197,25 +209,25 @@ public:
     {
         auto& mapJson = j[mMapName];
         for (const auto& def : mDefs) {
-            if (def.input.has_value()) {
-                mapJson[toString(def.id)] = toString(def.input.value());
-            } else {
-                mapJson[toString(def.id)] = "";
+            std::vector<std::string> strs;
+            for (const auto& in : def.inputs) {
+                strs.push_back(toString(in));
             }
+            mapJson[toString(def.id)] = strs;
         }
     }
 
 private:
     // rebuilds the reverse (input -> action) lookup table used by action().
-    // Each action can be bound to a single Input; if two actions are bound to
+    // Each action can be bound to multiple Inputs; if two actions are bound to
     // the same Input, the last one in mDefs silently wins the lookup (the UI
     // is expected to warn about such conflicts, see checkConflicts()).
     void updateBindings()
     {
         mBindings.clear();
         for (const auto& def : mDefs) {
-            if (def.input.has_value()) {
-                mBindings[def.input.value()] = def.id;
+            for (const auto& in : def.inputs) {
+                mBindings[in] = def.id;
             }
         }
     }

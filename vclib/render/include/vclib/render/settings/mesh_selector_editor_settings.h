@@ -49,8 +49,8 @@ struct MeshSelectorEditorSettings : public EditorSettings
         return {mouseBindings};
     }
 
-    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps()
-        const override
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const override
     {
         return {mouseBindings};
     }
@@ -69,7 +69,7 @@ private:
         MouseMap map("Mesh Selector Mouse Actions");
         map.registerActions({
             {MeshSelectorAction::SELECT_MESH,
-             "Select Mesh", MouseInput {RIGHT, {NO_MODIFIER}, false}}
+             "Select Mesh", {MouseInput {RIGHT, {NO_MODIFIER}, false}}}
         });
         return map;
     }

@@ -39,8 +39,8 @@ class InputBindingsWidget : public QWidget
 
     std::unique_ptr<Ui::InputBindingsWidget>       mUI;
     std::reference_wrapper<AbstractInputActionMap> mMap;
-    // actionId -> pending input string, not yet applied to mMap
-    std::map<std::string, std::string>             mPendingBindings;
+    // actionId -> pending input strings, not yet applied to mMap
+    std::map<std::string, std::vector<std::string>> mPendingBindings;
 
 public:
     struct ActionInfo
@@ -62,7 +62,7 @@ public:
 
     std::vector<ActionInfo> getActions() const;
 
-    std::string currentInput(const std::string& actionId) const;
+    std::vector<std::string> currentInputs(const std::string& actionId) const;
 
     void setConflict(
         const std::string& actionId,

@@ -8,6 +8,7 @@
 #include <vclib/qt/gui/input_bindings_widget.h>
 
 #include "ui_input_bindings_widget.h"
+#include <QTimer>
 
 #include <vclib/qt/gui/shortcut_button.h>
 #include <vclib/render/input/abstract_input_action_map.h>
@@ -55,29 +56,11 @@ InputBindingsWidget::InputBindingsWidget(
     connect(resetBtn, &QPushButton::clicked, this, [this]() {
         const auto actions = mMap.get().actions();
         for (const auto& action : actions) {
-            mPendingBindings[action.id] = action.defaultInput;
-
-            // Find the button and update its text
-            for (int i = 0; i < mUI->bindingsTable->rowCount(); ++i) {
-                QTableWidgetItem* nameItem = mUI->bindingsTable->item(i, 0);
-                if (nameItem &&
-                    nameItem->data(Qt::UserRole).toString().toStdString() ==
-                        action.id) {
-                    QWidget* w = mUI->bindingsTable->cellWidget(i, 1);
-                    if (w) {
-                        if (QPushButton* btn =
-                                w->findChild<QPushButton*>("shortcutButton")) {
-                            btn->setText(
-                                QString::fromStdString(
-                                    action.defaultInput.empty() ?
-                                        "None" :
-                                        action.defaultInput));
-                        }
-                    }
-                    break;
-                }
-            }
+            mPendingBindings[action.id] = action.defaultInputs;
         }
+        QTimer::singleShot(0, this, [this]() {
+            populateTable();
+        });
         emit bindingsChanged();
     });
 }
@@ -86,8 +69,8 @@ InputBindingsWidget::~InputBindingsWidget() = default;
 
 void InputBindingsWidget::applySettings()
 {
-    for (const auto& [id, inputStr] : mPendingBindings) {
-        mMap.get().setBinding(id, inputStr);
+    for (const auto& [id, inputStrs] : mPendingBindings) {
+        mMap.get().setBindings(id, inputStrs);
     }
 }
 
@@ -99,7 +82,8 @@ void InputBindingsWidget::populateTable()
     mUI->bindingsTable->setRowCount(actions.size());
 
     for (int i = 0; i < (int) actions.size(); ++i) {
-        const auto& action = actions[i];
+        const auto& action   = actions[i];
+        std::string actionId = action.id;
 
         // Column 0: Action Name
         QTableWidgetItem* nameItem =
@@ -108,63 +92,162 @@ void InputBindingsWidget::populateTable()
             nameItem->flags() & ~Qt::ItemIsEditable); // Read-only
 
         // Store the action ID in the UserRole of the first column
-        nameItem->setData(Qt::UserRole, QString::fromStdString(action.id));
+        nameItem->setData(Qt::UserRole, QString::fromStdString(actionId));
         mUI->bindingsTable->setItem(i, 0, nameItem);
 
-        // Column 1: Action Binding (Button + Unbind)
+        // Column 1: Action Binding (Container)
         QWidget*     bindingWidget = new QWidget(mUI->bindingsTable);
         QHBoxLayout* bindingLayout = new QHBoxLayout(bindingWidget);
         bindingLayout->setContentsMargins(0, 0, 0, 0);
         bindingLayout->setSpacing(5);
 
-        ShortcutButton* bindingBtn = new ShortcutButton(
-            mMap.get().inputType(),
-            QString::fromStdString(
-                action.input.empty() ? "None" : action.input),
-            bindingWidget);
-        bindingBtn->setObjectName("shortcutButton");
-
-        bindingBtn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
         QLabel* warningLabel = new QLabel("⚠️", bindingWidget);
         warningLabel->setObjectName("warningLabel");
-        // Orange warning sign, no bold needed since emoji
         warningLabel->hide();
-
-        QToolButton* unbindBtn = new QToolButton(bindingWidget);
-        unbindBtn->setText("❌");
-        unbindBtn->setToolTip("Unbind this action");
-        unbindBtn->setStyleSheet(
-            "QToolButton { color: red; border: none; font-weight: bold; }");
-
         bindingLayout->addWidget(warningLabel);
-        bindingLayout->addWidget(bindingBtn);
-        bindingLayout->addWidget(unbindBtn);
 
-        // We connect this button for event interception
-        connect(bindingBtn, &QPushButton::clicked, this, [bindingBtn]() {
-            bindingBtn->startListening();
-        });
+        // Container for dynamic shortcut buttons
+        QWidget*     shortcutsContainer = new QWidget(bindingWidget);
+        QHBoxLayout* shortcutsLayout    = new QHBoxLayout(shortcutsContainer);
+        shortcutsLayout->setContentsMargins(0, 0, 0, 0);
+        shortcutsLayout->setSpacing(5);
+        bindingLayout->addWidget(shortcutsContainer);
 
-        bindingBtn->onInputCaptured =
-            [this, id = action.id](const std::string& inputStr) {
-                mPendingBindings[id] = inputStr;
-                emit bindingsChanged();
-            };
+        QToolButton* addBtn = new QToolButton(bindingWidget);
+        addBtn->setText("➕");
+        addBtn->setToolTip("Add shortcut");
+        addBtn->setStyleSheet(
+            "QToolButton { color: green; border: none; font-weight: bold; }");
+        bindingLayout->addWidget(addBtn);
 
-        connect(unbindBtn, &QToolButton::clicked, this, [bindingBtn]() {
-            bindingBtn->setText("None");
-            if (bindingBtn->onInputCaptured) {
-                bindingBtn->onInputCaptured("");
+        bindingLayout->addStretch(); // push everything left
+
+        // Lambda to redraw the shortcuts container for this action
+        auto redrawShortcuts = [this,
+                                shortcutsContainer,
+                                shortcutsLayout,
+                                actionId]() {
+            // clear layout
+            QLayoutItem* item;
+            while ((item = shortcutsLayout->takeAt(0)) != nullptr) {
+                if (QWidget* widget = item->widget()) {
+                    widget->deleteLater();
+                }
+                delete item;
             }
-        });
+
+            const auto& inputs = currentInputs(actionId);
+
+            for (size_t j = 0; j < inputs.size(); ++j) {
+                const auto& inputStr = inputs[j];
+
+                QWidget*     pairWidget = new QWidget(shortcutsContainer);
+                QHBoxLayout* pairLayout = new QHBoxLayout(pairWidget);
+                pairLayout->setContentsMargins(0, 0, 0, 0);
+                pairLayout->setSpacing(2);
+
+                ShortcutButton* bindingBtn = new ShortcutButton(
+                    mMap.get().inputType(),
+                    QString::fromStdString(
+                        inputStr.empty() ? "Listening..." : inputStr),
+                    pairWidget);
+                bindingBtn->setObjectName("shortcutButton");
+                bindingBtn->setSizePolicy(
+                    QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+                QToolButton* unbindBtn = new QToolButton(pairWidget);
+                unbindBtn->setText("❌");
+                unbindBtn->setToolTip("Unbind this shortcut");
+                unbindBtn->setStyleSheet(
+                    "QToolButton { color: red; border: none; font-weight: "
+                    "bold; }");
+
+                pairLayout->addWidget(bindingBtn);
+                pairLayout->addWidget(unbindBtn);
+
+                shortcutsLayout->addWidget(pairWidget);
+
+                connect(
+                    bindingBtn, &QPushButton::clicked, this, [bindingBtn]() {
+                        bindingBtn->startListening();
+                    });
+
+                bindingBtn->onInputCaptured = [this, actionId, j](
+                                                  const std::string& newStr) {
+                    if (mPendingBindings.find(actionId) ==
+                        mPendingBindings.end()) {
+                        mPendingBindings[actionId] = currentInputs(actionId);
+                    }
+                    mPendingBindings[actionId][j] = newStr;
+                    emit bindingsChanged();
+                };
+
+                connect(
+                    unbindBtn,
+                    &QToolButton::clicked,
+                    this,
+                    [this, actionId, j]() {
+                        if (mPendingBindings.find(actionId) ==
+                            mPendingBindings.end()) {
+                            mPendingBindings[actionId] =
+                                currentInputs(actionId);
+                        }
+                        auto& vec = mPendingBindings[actionId];
+                        if (j < vec.size()) {
+                            vec.erase(vec.begin() + j);
+                        }
+
+                        // Queue a safe table redraw to reflect the deletion
+                        QTimer::singleShot(0, this, [this]() {
+                            populateTable();
+                        });
+                        emit bindingsChanged();
+                    });
+            }
+
+            // Auto-start listening on the newly added empty shortcut
+            if (!inputs.empty() && inputs.back().empty()) {
+                if (shortcutsLayout->count() > 0) {
+                    QWidget* lastPair =
+                        shortcutsLayout->itemAt(shortcutsLayout->count() - 1)
+                            ->widget();
+                    if (QPushButton* pBtn = lastPair->findChild<QPushButton*>(
+                            "shortcutButton")) {
+                        if (ShortcutButton* btn =
+                                static_cast<ShortcutButton*>(pBtn)) {
+                            btn->startListening();
+                        }
+                    }
+                }
+            }
+        };
+
+        connect(
+            addBtn,
+            &QToolButton::clicked,
+            this,
+            [this, actionId, redrawShortcuts]() {
+                if (mPendingBindings.find(actionId) == mPendingBindings.end()) {
+                    mPendingBindings[actionId] = currentInputs(actionId);
+                }
+                mPendingBindings[actionId].push_back(""); // Add empty slot
+                redrawShortcuts();
+            });
+
+        // Initial draw
+        redrawShortcuts();
 
         mUI->bindingsTable->setCellWidget(i, 1, bindingWidget);
     }
 
     // Disable internal scrolling and fix height to content
     mUI->bindingsTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    int totalHeight = mUI->bindingsTable->horizontalHeader()->height() + 2;
+
+    int totalHeight = 2; // For borders
+    if (mUI->bindingsTable->horizontalHeader()->isVisible()) {
+        totalHeight += mUI->bindingsTable->horizontalHeader()->height();
+    }
+
     for (int i = 0; i < mUI->bindingsTable->rowCount(); ++i) {
         totalHeight += mUI->bindingsTable->rowHeight(i);
     }
@@ -182,26 +265,28 @@ std::string InputBindingsWidget::mapName() const
     return mMap.get().mapName();
 }
 
-std::vector<InputBindingsWidget::ActionInfo> InputBindingsWidget::getActions() const
+std::vector<InputBindingsWidget::ActionInfo> InputBindingsWidget::getActions()
+    const
 {
     std::vector<ActionInfo> actions;
     for (const auto& a : mMap.get().actions()) {
-        actions.push_back(ActionInfo{a.id, a.name});
+        actions.push_back(ActionInfo {a.id, a.name});
     }
     return actions;
 }
 
-std::string InputBindingsWidget::currentInput(const std::string& actionId) const
+std::vector<std::string> InputBindingsWidget::currentInputs(
+    const std::string& actionId) const
 {
     if (mPendingBindings.count(actionId))
         return mPendingBindings.at(actionId);
-        
+
     for (const auto& a : mMap.get().actions()) {
         if (a.id == actionId) {
-            return a.input;
+            return a.inputs;
         }
     }
-    return "";
+    return {};
 }
 
 void InputBindingsWidget::setConflict(
