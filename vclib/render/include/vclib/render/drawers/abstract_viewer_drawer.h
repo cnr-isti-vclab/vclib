@@ -632,6 +632,9 @@ public:
             }
         }
 
+        if (!block)
+            block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
         if (!block) {
             auto actionOpt =
                 Base::mouseAtomicMap().action({button, modifiers, true});
@@ -641,9 +644,6 @@ public:
                 block = true;
             }
         }
-
-        if (!block)
-            block = Base::onMouseDoubleClick(button, x, y, modifiers);
 
         return block;
     }

@@ -408,6 +408,9 @@ private:
         if (actionOpt.has_value()) {
             mTrackball.beginDragMotion(actionOpt.value());
         }
+        else if (mTrackball.isDragging()) {
+            mTrackball.endDragMotion(currentMotion());
+        }
         mTrackball.setMousePosition(x, y);
         mTrackball.update();
     }
@@ -416,6 +419,13 @@ private:
     {
         // if dragging, do not update the current mouse button
         if (mTrackball.isDragging()) {
+            return;
+        }
+
+        // ignore spurious single-click press events emitted by some systems 
+        // immediately after a double-click event
+        if (mCurrentMouseButton == input.button && mIsDoubleClick &&
+            !input.isDoubleClick) {
             return;
         }
 
@@ -433,8 +443,8 @@ private:
 
     void releaseMouse(const MouseInput& input)
     {
-        // if dragging, update the current mouse button only if it matches
-        if (mTrackball.isDragging() && mCurrentMouseButton == input.button) {
+        // update the current mouse button only if it matches
+        if (mCurrentMouseButton == input.button) {
             mCurrentMouseButton = MouseButton::NO_BUTTON;
             mIsDoubleClick = false;
         }
@@ -442,6 +452,10 @@ private:
         auto actionOpt = dragMotionMap().action(input);
         if (actionOpt.has_value()) {
             mTrackball.endDragMotion(actionOpt.value());
+            mTrackball.update();
+        }
+        else if (mTrackball.isDragging()) {
+            mTrackball.endDragMotion(currentMotion());
             mTrackball.update();
         }
     }
