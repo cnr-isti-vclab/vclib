@@ -163,9 +163,9 @@ inline KeyModifier::Enum keyToModifier(Key::Enum key)
 inline std::string toString(MouseButton::Enum b)
 {
     switch (b) {
-    case MouseButton::LEFT: return "Left";
-    case MouseButton::RIGHT: return "Right";
-    case MouseButton::MIDDLE: return "Middle";
+    case MouseButton::LEFT: return "Left Click";
+    case MouseButton::RIGHT: return "Right Click";
+    case MouseButton::MIDDLE: return "Middle Click";
     case MouseButton::NO_BUTTON: return "None";
     default: return "Unknown";
     }
@@ -173,11 +173,11 @@ inline std::string toString(MouseButton::Enum b)
 
 inline void fromString(const std::string& str, MouseButton::Enum& out)
 {
-    if (str == "Left")
+    if (str == "Left Click")
         out = MouseButton::LEFT;
-    else if (str == "Right")
+    else if (str == "Right Click")
         out = MouseButton::RIGHT;
-    else if (str == "Middle")
+    else if (str == "Middle Click")
         out = MouseButton::MIDDLE;
     else
         out = MouseButton::NO_BUTTON;
@@ -340,17 +340,17 @@ inline void fromString(const std::string& str, Key::Enum& out)
 inline std::string toString(ScrollAxis::Enum axis)
 {
     switch (axis) {
-    case ScrollAxis::HORIZONTAL: return "Horizontal";
-    case ScrollAxis::VERTICAL: return "Vertical";
+    case ScrollAxis::HORIZONTAL: return "Horizontal Scroll";
+    case ScrollAxis::VERTICAL: return "Vertical Scroll";
     default: return "Unknown";
     }
 }
 
 inline void fromString(const std::string& str, ScrollAxis::Enum& out)
 {
-    if (str == "Horizontal")
+    if (str == "Horizontal Scroll")
         out = ScrollAxis::HORIZONTAL;
-    else if (str == "Vertical")
+    else if (str == "Vertical Scroll")
         out = ScrollAxis::VERTICAL;
     else {
         throw std::invalid_argument(
