@@ -33,6 +33,9 @@ struct TrackballSettings
     KeyAtomicMap    keyAtomicMap    = defaultKeyAtomicMap();
     MouseAtomicMap  mouseAtomicMap  = defaultMouseAtomicMap();
 
+    /**
+     * @brief Resets the settings and bindings to their default values.
+     */
     void resetDefaults()
     {
         dragMotionMap.resetToDefaults();
@@ -41,17 +44,27 @@ struct TrackballSettings
         mouseAtomicMap.resetToDefaults();
     }
 
+    /**
+     * @brief Retrieves the action maps associated with the trackball.
+     */
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
     {
         return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
     }
 
+    /**
+     * @brief Retrieves the action maps associated with the trackball.
+     */
     std::vector<std::reference_wrapper<const AbstractInputActionMap>>
     actionMaps() const
     {
         return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
     }
 
+    /**
+     * @brief Loads the bindings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     void loadSettings(const nlohmann::json& j)
     {
         for (auto& map : actionMaps()) {
@@ -59,6 +72,10 @@ struct TrackballSettings
         }
     }
 
+    /**
+     * @brief Saves the bindings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
     void saveSettings(nlohmann::json& j) const
     {
         for (const auto& map : actionMaps()) {

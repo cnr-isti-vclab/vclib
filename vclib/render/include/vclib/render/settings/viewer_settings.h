@@ -163,6 +163,9 @@ struct ViewerSettings : public TrackballSettings
         js["panoramaPath"]             = panoramaPath;
     }
 
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
     {
         auto res = TrackballSettings::actionMaps();
@@ -170,6 +173,9 @@ struct ViewerSettings : public TrackballSettings
         return res;
     }
 
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
     std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps() const
     {
         auto res = TrackballSettings::actionMaps();

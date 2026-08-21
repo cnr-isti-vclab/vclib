@@ -59,6 +59,10 @@ struct EditorSettings
         return {};
     }
 
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     virtual void loadSettings(const nlohmann::json& j)
     {
         for (auto& map : actionMaps()) {
@@ -66,6 +70,10 @@ struct EditorSettings
         }
     }
 
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
     virtual void saveSettings(nlohmann::json& j) const
     {
         for (const auto& map : actionMaps()) {

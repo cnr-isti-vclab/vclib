@@ -144,14 +144,21 @@ public:
         const std::string&              actionId,
         const std::vector<std::string>& inputStrs) override
     {
-        ActionID id = vcl::fromString<ActionID>(actionId);
+        ActionID id;
+        try {
+            id = vcl::fromString<ActionID>(actionId);
+        } catch (...) {
+            return;
+        }
 
         for (auto& def : mDefs) {
             if (def.id == id) {
                 def.inputs.clear();
                 for (const auto& inStr : inputStrs) {
                     if (!inStr.empty()) {
-                        def.inputs.push_back(vcl::fromString<Input>(inStr));
+                        try {
+                            def.inputs.push_back(vcl::fromString<Input>(inStr));
+                        } catch (...) {}
                     }
                 }
                 updateBindings();

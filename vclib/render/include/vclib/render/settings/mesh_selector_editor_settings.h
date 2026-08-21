@@ -39,26 +39,41 @@ struct MeshSelectorEditorSettings : public EditorSettings
 {
     using MouseMap = InputActionMap<MouseInput, MeshSelectorAction>;
 
+    /**
+     * @brief The mouse input action map for this editor.
+     */
     MouseMap mouseBindings = defaultMouseMap();
 
+    /**
+     * @brief Resets the settings and bindings to their default values.
+     */
     void resetDefaults() { mouseBindings.resetToDefaults(); }
 
+    /**
+     * @brief Retrieves the action maps associated with this editor.
+     */
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
         override
     {
         return {mouseBindings};
     }
 
+    /**
+     * @brief Retrieves the action maps associated with this editor.
+     */
     std::vector<std::reference_wrapper<const AbstractInputActionMap>>
     actionMaps() const override
     {
         return {mouseBindings};
     }
 
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
     void loadSettings(const nlohmann::json& j) override
     {
         EditorSettings::loadSettings(j);
-        mouseBindings.loadSettings(j);
     }
 
 private:

@@ -46,12 +46,18 @@ struct SelectionEditorSettings : public EditorSettings
         mouseBindings.resetToDefaults();
     }
 
+    /**
+     * @brief Retrieves the action maps associated with this editor.
+     */
     std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
         override
     {
         return {keyBindings, mouseBindings};
     }
 
+    /**
+     * @brief Retrieves the action maps associated with this editor.
+     */
     std::vector<std::reference_wrapper<const AbstractInputActionMap>>
     actionMaps() const override
     {
