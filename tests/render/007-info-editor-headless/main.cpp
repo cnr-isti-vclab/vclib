@@ -23,7 +23,7 @@ TEST_CASE("Info Editor Rendering")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            true,
+            false,
             -150.0f,
             2,
             0.005f,
@@ -47,7 +47,7 @@ TEST_CASE("Info Editor Rendering")
                 mv.pushDrawableObject(std::move(mesh));
             },
             1.57079632679f,
-            true,
+            false,
             -150.0f,
             2,
             0.005f,

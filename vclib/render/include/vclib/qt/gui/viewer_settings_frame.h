@@ -62,9 +62,9 @@ private slots:
     void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
 
     void loadPanoramaPushButtonClicked();
-    
+
     void onResetDefaultClicked();
-    
+
     void backgroundColorPushButtonColorChanged(const QColor& color);
 };
 

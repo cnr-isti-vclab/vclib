@@ -21,8 +21,9 @@ struct TrackballSettings
     using DragMotionMap = BindingMap<
         std::pair<MouseButton::Enum, KeyModifiers>,
         TrackballMotionType>;
-    using ScrollAtomicMap =
-        BindingMap<std::pair<ScrollAxis::Enum, KeyModifiers>, TrackballMotionType>;
+    using ScrollAtomicMap = BindingMap<
+        std::pair<ScrollAxis::Enum, KeyModifiers>,
+        TrackballMotionType>;
     using KeyAtomicMap =
         BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
 
@@ -58,7 +59,7 @@ private:
             {{ScrollAxis::VERTICAL, {CONTROL}},     ROLL },
             {{ScrollAxis::VERTICAL, {SHIFT}},       FOV  },
 #ifdef __APPLE__
-            {{ScrollAxis::HORIZONTAL, {SHIFT}},       FOV  },
+            {{ScrollAxis::HORIZONTAL, {SHIFT}},     FOV  },
 #endif
         };
     }

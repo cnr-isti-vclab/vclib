@@ -125,6 +125,18 @@ template<typename T>
 concept Parsable = CoreParsable<T> || HasADLFromString<T>;
 
 /**
+ * @brief Concept that is evaluated true if T can be both converted to a string
+ * and parsed from a string.
+ *
+ * This concept is useful for types that need to be serialized and deserialized
+ * as human-readable strings (e.g. for UI or JSON configuration).
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept StringConvertible = Stringifiable<T> && Parsable<T>;
+
+/**
  * @brief Concept that is evaluated true if T is serializable.
  *
  * A type T is serializable if it can be written to an output stream and read

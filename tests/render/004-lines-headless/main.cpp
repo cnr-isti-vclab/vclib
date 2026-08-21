@@ -192,7 +192,7 @@ TEST_CASE("Lines Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            true,
+            false,
             -150.f);
     }
 }
@@ -228,7 +228,7 @@ TEST_CASE("Lines Selection")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            true,
+            false,
             -150.f);
     }
 }

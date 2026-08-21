@@ -5,36 +5,40 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_SETTINGS_DIALOG_DATA_H
-#define VCL_QT_GUI_SETTINGS_DIALOG_DATA_H
+#ifndef VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_DATA_H
+#define VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_DATA_H
 
 #include "settings_dialog_tab.h"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace vcl::qt {
 
 /**
  * @brief The SettingsDialogData class holds data for the settings dialog.
  *
- * This class stores a collection of tabs that will be presented in the SettingsDialog.
+ * This class stores a collection of tabs that will be presented in the
+ * SettingsDialog.
  */
-class SettingsDialogData {
+class SettingsDialogData
+{
     std::vector<std::shared_ptr<SettingsDialogTab>> mTabs;
 
 public:
     SettingsDialogData() = default;
 
-    void addTab(std::shared_ptr<SettingsDialogTab> tab) {
+    void addTab(std::shared_ptr<SettingsDialogTab> tab)
+    {
         mTabs.push_back(tab);
     }
 
-    const std::vector<std::shared_ptr<SettingsDialogTab>>& tabs() const {
+    const std::vector<std::shared_ptr<SettingsDialogTab>>& tabs() const
+    {
         return mTabs;
     }
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_SETTINGS_DIALOG_DATA_H
+#endif // VCL_QT_GUI_SETTINGS_DIALOG_SETTINGS_DIALOG_DATA_H

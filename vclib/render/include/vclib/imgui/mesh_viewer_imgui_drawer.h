@@ -135,7 +135,8 @@ public:
                         IM_ARRAYSIZE(mPanoramaPathBuffer));
                     ImGui::SameLine();
                     if (ImGui::Button("Load")) {
-                        viewerSettings.panoramaPath = std::string(mPanoramaPathBuffer);
+                        viewerSettings.panoramaPath =
+                            std::string(mPanoramaPathBuffer);
                     }
 
                     ImGui::ColorEdit4(

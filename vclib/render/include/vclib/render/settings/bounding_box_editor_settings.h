@@ -39,9 +39,10 @@ struct BoundingBoxEditorSettings : public EditorSettings
     {
         if (j.contains("BoundingBoxEditor")) {
             const auto& jBox = j["BoundingBoxEditor"];
-            color     = jBox.value("color", color);
-            thickness = jBox.value("thickness", thickness);
-            editMode  = static_cast<EditMode>(jBox.value("editMode", static_cast<int>(editMode)));
+            color            = jBox.value("color", color);
+            thickness        = jBox.value("thickness", thickness);
+            editMode         = static_cast<EditMode>(
+                jBox.value("editMode", static_cast<int>(editMode)));
         }
     }
 

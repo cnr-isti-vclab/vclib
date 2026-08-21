@@ -174,25 +174,27 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        nlohmann::json j;
+        nlohmann::json        j;
         std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        std::string filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        std::string           filePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
         std::ifstream in(filePath);
         if (in.is_open()) {
             try {
                 in >> j;
-            } catch (...) {
-                // Ignore parse errors and reset to empty object to avoid crashes
+            }
+            catch (...) {
+                // Ignore parse errors and reset to empty object to avoid
+                // crashes
                 j = nlohmann::json::object();
             }
         }
 
         auto editor = viewer().template pushEditor<EditorT>(active, j);
 
-        if constexpr (
-            std::is_same_v<
-                EditorT<ViewerType>,
-                vcl::MeshSelectorEditor<ViewerType>>) {
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::MeshSelectorEditor<ViewerType>>) {
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });
