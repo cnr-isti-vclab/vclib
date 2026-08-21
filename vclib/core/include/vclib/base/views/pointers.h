@@ -34,7 +34,7 @@ struct DereferenceView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, DereferenceView)
     {
-        return std::views::transform(r, [](auto p) {
+        return std::views::transform(r, [](auto p) -> decltype(auto) {
             return *p;
         });
     }
