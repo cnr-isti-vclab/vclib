@@ -40,8 +40,7 @@ TEST_CASE("Mesh Surface Shading Modes")
 
                 mv.pushDrawableObject(std::move(mesh));
             },
-            0.f,
-            true);
+            0.f);
     }
 
     SECTION("Shading Smooth")
@@ -166,8 +165,7 @@ TEST_CASE("Mesh Surface Color Modes")
 
                 mv.pushDrawableObject(std::move(mesh));
             },
-            0.f,
-            true);
+            0.f);
     }
 
     SECTION("Color Vertex Texcoord")
@@ -230,8 +228,7 @@ TEST_CASE("Mesh Surface Selection")
 
                 mv.pushDrawableObject(std::move(mesh));
             },
-            0.f,
-            true);
+            0.f);
     }
 
     SECTION("Polygon Selection")
@@ -259,7 +256,6 @@ TEST_CASE("Mesh Surface Selection")
 
                 mv.pushDrawableObject(std::move(mesh));
             },
-            1.57079632679f,
-            true);
+            1.57079632679f);
     }
 }
