@@ -18,11 +18,22 @@
 
 namespace vcl::qt {
 
+/**
+ * @brief A push button that, when clicked, listens for the next key or mouse
+ * input and reports it as a string via the onInputCaptured callback.
+ *
+ * Used by InputBindingsWidget to let the user interactively (re)assign a
+ * shortcut to an action. The kind of input it listens for (key, mouse button
+ * or scroll axis) is restricted by \p mExpectedType, so that e.g. a button
+ * editing a mouse binding ignores keyboard events.
+ */
 class ShortcutButton : public QPushButton
 {
     AbstractInputActionMap::InputType mExpectedType;
     bool                              mListening = false;
     QString                           mOriginalText;
+    // used to distinguish a single click from the first click of a double
+    // click when capturing mouse bindings
     QTimer*                           mDoubleClickTimer = nullptr;
     Qt::MouseButton                   mPendingButton;
     Qt::KeyboardModifiers             mPendingModifiers;

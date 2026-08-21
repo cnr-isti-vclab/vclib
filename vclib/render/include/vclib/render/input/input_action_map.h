@@ -206,6 +206,10 @@ public:
     }
 
 private:
+    // rebuilds the reverse (input -> action) lookup table used by action().
+    // Each action can be bound to a single Input; if two actions are bound to
+    // the same Input, the last one in mDefs silently wins the lookup (the UI
+    // is expected to warn about such conflicts, see checkConflicts()).
     void updateBindings()
     {
         mBindings.clear();

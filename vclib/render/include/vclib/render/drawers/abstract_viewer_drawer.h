@@ -239,7 +239,8 @@ public:
 
     void saveSettings(nlohmann::json& j) const
     {
-        mViewerSettings.saveSettings(j);
+        // must be nested under "Viewer" to mirror loadSettings()
+        mViewerSettings.saveSettings(j["Viewer"]);
         for (const auto& editor : mEditors) {
             if (editor)
                 editor->saveSettings(j["Editors"]);
@@ -492,6 +493,9 @@ public:
     {
         bool block = false;
 
+        // global actions (e.g. Escape to toggle editor events) always fire,
+        // even when editor events are disabled, otherwise they could never
+        // be used to re-enable them
         auto actionNameOpt =
             mViewerSettings.globalActionMap.action({key, modifiers});
         if (actionNameOpt.has_value()) {

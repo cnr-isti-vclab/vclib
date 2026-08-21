@@ -25,12 +25,21 @@ namespace Ui {
 class InputBindingsWidget;
 } // namespace Ui
 
+/**
+ * @brief A widget listing all the actions of a single AbstractInputActionMap,
+ * each with a ShortcutButton to view and reassign its current binding.
+ *
+ * Edits made by the user are buffered in mPendingBindings and are only
+ * written back to the underlying action map when applySettings() is called,
+ * so that closing the settings dialog without applying discards the changes.
+ */
 class InputBindingsWidget : public QWidget
 {
     Q_OBJECT
 
     std::unique_ptr<Ui::InputBindingsWidget>       mUI;
     std::reference_wrapper<AbstractInputActionMap> mMap;
+    // actionId -> pending input string, not yet applied to mMap
     std::map<std::string, std::string>             mPendingBindings;
 
 public:

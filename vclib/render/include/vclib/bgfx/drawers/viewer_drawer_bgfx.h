@@ -161,6 +161,8 @@ public:
         return block;
     }
 
+    // shadows Base::readDepthRequest: the requested homogeneousNDC is always
+    // overridden with the value required by the current bgfx backend
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
         homogeneousNDC = Context::instance().capabilites().homogeneousDepth;

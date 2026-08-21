@@ -21,9 +21,20 @@ namespace vcl::qt {
 
 class InputBindingsWidget;
 
+/**
+ * @brief The SettingsDialogTab that lets the user browse and customize all
+ * the input bindings (shortcuts) exposed by the viewer and its active
+ * editors.
+ *
+ * The available ActionMapGroup%s are obtained on demand from mProvider (e.g.
+ * a callback into the viewer), so the tab always reflects the editors that
+ * are currently pushed into the viewer.
+ */
 class ShortcutsSettingsTab : public SettingsDialogTab
 {
     std::function<std::vector<ActionMapGroup>()>              mProvider;
+    // one InputBindingsWidget per action map, paired with its owning group
+    // name, used by checkConflicts() to scope conflict detection
     std::vector<std::pair<InputBindingsWidget*, std::string>> mWidgets;
 
 public:

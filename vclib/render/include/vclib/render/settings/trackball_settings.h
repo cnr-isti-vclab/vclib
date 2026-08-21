@@ -93,6 +93,10 @@ private:
         using enum TrackballMotionType;
         using Input = std::pair<ScrollAxis::Enum, KeyModifiers>;
 
+        // NOTE: each action supports a single default Input, so the previous
+        // Apple-only alternate binding (Shift + Horizontal Scroll -> FOV, for
+        // trackpads reporting Shift+scroll as a horizontal delta) can no
+        // longer be expressed here.
         ScrollAtomicMap map("Trackball Scroll Motions");
         map.registerActions({
             {SCALE, "Scale",         Input {ScrollAxis::VERTICAL, {NO_MODIFIER}}},
@@ -124,6 +128,8 @@ private:
 
         KeyAtomicMap map("Trackball Key Motions");
         map.registerActions({
+            // bound to Ctrl+R (not plain R) to avoid clashing with the
+            // viewer's global "Fit Scene" action, also bound to R
             {"Reset Trackball",         "Reset Trackball", Input {R, {CONTROL}}          },
             {"Reset Directional Light",
              "Reset Directional Light",                    Input {R, {CONTROL, SHIFT}}   },
