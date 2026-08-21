@@ -189,8 +189,8 @@ inline std::string toString(MouseButton::Enum b)
     case MouseButton::RIGHT: return "Right Click";
     case MouseButton::MIDDLE: return "Middle Click";
     case MouseButton::NO_BUTTON: return "None";
+    default: return "Unknown";
     }
-    return "Unknown";
 }
 
 inline void fromString(const std::string& str, MouseButton::Enum& out)
