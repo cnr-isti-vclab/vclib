@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_INPUT_BINDINGS_WIDGET_H
-#define VCL_QT_INPUT_BINDINGS_WIDGET_H
+#ifndef VCL_QT_GUI_SETTINGS_DIALOG_INPUT_BINDINGS_WIDGET_H
+#define VCL_QT_GUI_SETTINGS_DIALOG_INPUT_BINDINGS_WIDGET_H
 
 #include <QWidget>
 
@@ -80,4 +80,4 @@ private:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_INPUT_BINDINGS_WIDGET_H
+#endif // VCL_QT_GUI_SETTINGS_DIALOG_INPUT_BINDINGS_WIDGET_H

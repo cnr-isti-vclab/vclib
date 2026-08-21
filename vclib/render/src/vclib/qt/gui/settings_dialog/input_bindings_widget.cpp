@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#include <vclib/qt/gui/input_bindings_widget.h>
+#include <vclib/qt/gui/settings_dialog/input_bindings_widget.h>
 
 #include "ui_input_bindings_widget.h"
 #include <QTimer>
