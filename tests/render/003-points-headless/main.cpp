@@ -229,7 +229,7 @@ TEST_CASE("Points Selection")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            true,
+            false,
             -150.0f);
     }
 }
