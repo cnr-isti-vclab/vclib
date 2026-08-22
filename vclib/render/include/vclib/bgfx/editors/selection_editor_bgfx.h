@@ -337,25 +337,17 @@ public:
         double                   y,
         const vcl::KeyModifiers& modifiers) override
     {
-        if (!isSelectionActive())
-            return false;
+        return mousePress(button, x, y, modifiers, false);
+    }
 
-        auto actionOpt = mSettings.mouseBindings.action({button, modifiers});
-        if (actionOpt.has_value() && !mSelectionInProgress) {
-            SelectionDragAction action = actionOpt.value();
-
-            if (!mActionCreationPending) {
-                savePreSelectionStates();
-                mActionCreationPending = true;
-            }
-            mSelectionInProgress   = true;
-            mSelectionAnchor       = Point2d {x, y};
-            mSelectionBox          = Box2d({x, y});
-            mCurrentMouseAction    = actionOpt.value();
-            mCurrentSelectionModes = actionModesForSettings(action);
-            return true; // Smart blocking
-        }
-        return false;
+    bool onMouseDoubleClick(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers) override
+    {
+        // Treat double-click as a press for selection
+        return mousePress(button, x, y, modifiers, true);
     }
 
     bool onMouseRelease(
@@ -416,6 +408,35 @@ private:
         if (!Base::isActive())
             return false;
         return mSettings.selectVertices || mSettings.selectFaces;
+    }
+
+    bool mousePress(
+        vcl::MouseButton::Enum   button,
+        double                   x,
+        double                   y,
+        const vcl::KeyModifiers& modifiers,
+        bool doubleClick)
+    {
+        if (!isSelectionActive())
+            return false;
+
+        auto actionOpt =
+            mSettings.mouseBindings.action({button, modifiers, doubleClick});
+        if (actionOpt.has_value() && !mSelectionInProgress) {
+            SelectionDragAction action = actionOpt.value();
+
+            if (!mActionCreationPending) {
+                savePreSelectionStates();
+                mActionCreationPending = true;
+            }
+            mSelectionInProgress   = true;
+            mSelectionAnchor       = Point2d {x, y};
+            mSelectionBox          = Box2d({x, y});
+            mCurrentMouseAction    = actionOpt.value();
+            mCurrentSelectionModes = actionModesForSettings(action);
+            return true; // Smart blocking
+        }
+        return false;
     }
 
     std::vector<SelectionMode> actionModesForSettings(
