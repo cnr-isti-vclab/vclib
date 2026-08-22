@@ -160,10 +160,17 @@ public:
             if (bitVector.empty())
                 return;
 
-            uint fidx = 0;
+            const auto& indexMap = mMRB.triPolyIndexMap();
+            const bool isMappingTrivial = indexMap.isMappingTrivial();
+
             for (auto& f : MeshType::faces()) {
-                if (fidx < bitVector.size()) {
-                    f.selected() = bitVector[fidx++];
+                const uint faceIdx = f.index();
+                const uint firstTriIdx =
+                    isMappingTrivial ? faceIdx :
+                                       indexMap.triangleBegin(faceIdx);
+
+                if (firstTriIdx < bitVector.size()) {
+                    f.selected() = bitVector[firstTriIdx];
                 }
             }
 
