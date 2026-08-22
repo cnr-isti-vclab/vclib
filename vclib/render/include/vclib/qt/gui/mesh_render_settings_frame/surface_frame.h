@@ -59,6 +59,9 @@ private slots:
     void onUserColorChanged(const QColor& c);
     void onSelectionVisibilityChanged(Qt::CheckState arg1);
     void onSelectionColorChanged(const QColor& c);
+    void onBackFaceSingleToggled(bool checked);
+    void onBackFaceDoubleToggled(bool checked);
+    void onBackFaceCullToggled(bool checked);
 };
 
 } // namespace vcl::qt

@@ -242,6 +242,11 @@ public:
                 if (settings.renderMode == RenderMode::PBR) {
                     surfaceState |= materialState;
                 }
+                else {
+                    if (mMRS.isSurface(MRI::Surface::BACKFACE_CULL)) {
+                        surfaceState |= BGFX_STATE_CULL_CW;
+                    }
+                }
 
                 bgfx::setState(surfaceState);
 

@@ -792,6 +792,9 @@ public:
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
                     setSurfaceCapability(MRI::Surface::SELECTION);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_SINGLE);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_DOUBLE);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_CULL);
                     setWireframeCapability(MRI::Wireframe::VISIBLE);
                     setWireframeCapability(MRI::Wireframe::SHADING_NONE);
                     setWireframeCapability(MRI::Wireframe::COLOR_USER);
@@ -996,6 +999,7 @@ private:
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
             setSurface(SELECTION, true);
+            setSurface(BACKFACE_SINGLE, true);
             // shading
             if (canSurface(SHADING_NORMAL_MAP)) {
                 setSurface(SHADING_NORMAL_MAP);
