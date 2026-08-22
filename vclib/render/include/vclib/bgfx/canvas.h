@@ -352,7 +352,7 @@ public:
         }
 
         mReadRequest.emplace(
-            ReadFromGPUBuffer::Target::ID, mSize, mDefaultClearColor);
+            ReadFromGPUBuffer::Target::ID, mSize, vcl::Color::White);
         mReadRequest->setPendingRead(point, callback);
         return true;
     }

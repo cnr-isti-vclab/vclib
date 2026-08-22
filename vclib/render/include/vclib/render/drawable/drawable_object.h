@@ -69,6 +69,10 @@ public:
      * It will be called on request when the renderer needs to draw the ID of
      * the object.
      *
+     * @note The `settings.objectId` passed to this function must be pre-shifted
+     * by 16 bits (i.e. `objectId << 16`). The lower 16 bits are reserved for
+     * the element type (e.g., Vertex, Face, Edge).
+     *
      * @param[in] settings: The settings to use to draw the object.
      */
     virtual void drawId(const DrawObjectSettings& settings) {};
