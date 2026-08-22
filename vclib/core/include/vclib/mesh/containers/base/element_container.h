@@ -44,11 +44,10 @@ public:
     using ParentMeshType = T::ParentMeshType;
 
     ElementContainer(const ElementContainer& other) :
-        ElementContainerTriggerer(other),
-        mElemCount(other.mElemCount),
-        mParentMesh(other.mParentMesh),
-        mVerticalCompVecTuple(other.mVerticalCompVecTuple),
-        mCustomCompVecMap(other.mCustomCompVecMap)
+            ElementContainerTriggerer(other), mElemCount(other.mElemCount),
+            mParentMesh(other.mParentMesh),
+            mVerticalCompVecTuple(other.mVerticalCompVecTuple),
+            mCustomCompVecMap(other.mCustomCompVecMap)
     {
         mElemVec.resize(other.mElemVec.size());
         for (uint i = 0; i < mElemVec.size(); ++i) {
@@ -72,7 +71,7 @@ public:
         return *this;
     }
 
-    ElementContainer(ElementContainer&&) = default;
+    ElementContainer(ElementContainer&&)            = default;
     ElementContainer& operator=(ElementContainer&&) = default;
 
 protected:

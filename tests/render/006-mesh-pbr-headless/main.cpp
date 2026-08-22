@@ -60,7 +60,6 @@ TEST_CASE("PBR Rendering")
                             mv.setViewerSettings(viewerSettings);
                         },
                         angle,
-                        false,
                         -150.0f,
                         10,
                         0.02f);

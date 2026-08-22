@@ -31,7 +31,6 @@ TEST_CASE("Points Shading Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 
@@ -54,7 +53,6 @@ TEST_CASE("Points Shading Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 }
@@ -81,7 +79,6 @@ TEST_CASE("Points Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 
@@ -109,7 +106,6 @@ TEST_CASE("Points Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 
@@ -145,7 +141,6 @@ TEST_CASE("Points Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 }
@@ -171,7 +166,6 @@ TEST_CASE("Points Shape Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 
@@ -194,7 +188,6 @@ TEST_CASE("Points Shape Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 }
@@ -229,7 +222,6 @@ TEST_CASE("Points Selection")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 }
@@ -261,7 +253,6 @@ TEST_CASE("Points Depth Offset")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.0f,
-            false,
             -150.0f);
     }
 }
