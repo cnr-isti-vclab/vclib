@@ -67,6 +67,12 @@ void main()
     }
 #endif
 
+#ifdef SURFACE_BACK_FACE_DOUBLE_ON
+    if (!vcl_FrontFacing) {
+        normal = -normal;
+    }
+#endif
+
 
 #ifndef SURFACE_SHADING_NONE
     // if flat or smooth shading, compute light
