@@ -29,6 +29,12 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
     )
         find_dependency(Eigen3)
     endif()
+    if(
+        "@VCLIB_USED_SYSTEM_NLOHMANN_JSON@"
+        AND "vclib-3rd-nlohmann_json" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
+    )
+        find_dependency(nlohmann_json)
+    endif()
 endif()
 
 if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
@@ -173,6 +179,30 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
                     TARGET vclib::core
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-eigen
+                )
+            endif()
+        endif()
+    endif()
+    if(
+        "@VCLIB_USED_SYSTEM_NLOHMANN_JSON@"
+        AND "vclib-3rd-nlohmann_json" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
+    )
+        if(
+            TARGET nlohmann_json::nlohmann_json
+            AND NOT TARGET vclib::vclib-3rd-nlohmann_json
+        )
+            add_library(vclib::vclib-3rd-nlohmann_json INTERFACE IMPORTED)
+            set_property(
+                TARGET vclib::vclib-3rd-nlohmann_json
+                APPEND
+                PROPERTY INTERFACE_LINK_LIBRARIES nlohmann_json::nlohmann_json
+            )
+            if(TARGET vclib::core)
+                set_property(
+                    TARGET vclib::core
+                    APPEND
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-nlohmann_json
                 )
             endif()
         endif()

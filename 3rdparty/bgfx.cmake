@@ -23,6 +23,7 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
             bgfx::bimg
             bgfx::bimg_decode
             bgfx::bimg_encode
+            vclib-3rd-stb
     )
 
     target_include_directories(
@@ -32,10 +33,6 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     target_include_directories(
         vclib-3rd-bgfx
         INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
-    )
-    target_include_directories(
-        vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb/include
     )
     target_include_directories(
         vclib-3rd-bgfx
@@ -110,7 +107,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_link_libraries(
         vclib-3rd-bgfx
-        INTERFACE bx bgfx bimg bimg_decode bimg_encode
+        INTERFACE bx bgfx bimg bimg_decode bimg_encode vclib-3rd-stb
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

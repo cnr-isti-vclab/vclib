@@ -10,6 +10,11 @@
 
 #include <vclib/base.h>
 #include <vclib/render/settings/render_mode.h>
+#include <vclib/render/settings/trackball_settings.h>
+
+#include <vclib/space/core/color.h>
+
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 
@@ -17,8 +22,14 @@ namespace vcl {
  * @brief Contains the settings for the viewer, such as the active render
  * mode, exposure, and background visualization options.
  */
-struct ViewerSettings
+struct ViewerSettings : public TrackballSettings
 {
+    /**
+     * @brief Global actions registered by the viewer or editors.
+     */
+    using ViewerGlobalActionMap =
+        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+
     /**
      * @brief The tone mapping operators available when rendering.
      */
@@ -76,6 +87,70 @@ struct ViewerSettings
      * @brief The tone mapping operator to use.
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
+
+    /**
+     * @brief The background color of the canvas.
+     */
+    vcl::Color backgroundColor = vcl::Color::DarkGray;
+
+    /**
+     * @brief The path to the panorama environment map.
+     */
+    std::string panoramaPath = "";
+
+    /**
+     * @brief Resets the settings to their default values.
+     */
+    void resetDefaults()
+    {
+        renderMode               = RenderMode::CLASSIC;
+        imageBasedLighting       = false;
+        renderBackgroundPanorama = false;
+        exposure                 = 1.0f;
+        toneMapping              = ToneMapping::ACES_HILL;
+        backgroundColor          = vcl::Color::DarkGray;
+        panoramaPath             = "";
+    }
+
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("ViewerSettings")) {
+            const auto& js = j["ViewerSettings"];
+            renderMode     = static_cast<RenderMode>(
+                js.value("renderMode", static_cast<int>(renderMode)));
+            imageBasedLighting =
+                js.value("imageBasedLighting", imageBasedLighting);
+            renderBackgroundPanorama =
+                js.value("renderBackgroundPanorama", renderBackgroundPanorama);
+            exposure    = js.value("exposure", exposure);
+            toneMapping = static_cast<ToneMapping>(
+                js.value("toneMapping", static_cast<int>(toneMapping)));
+            backgroundColor = js.value("backgroundColor", backgroundColor);
+            panoramaPath    = js.value("panoramaPath", panoramaPath);
+        }
+    }
+
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
+    void saveSettings(nlohmann::json& j) const
+    {
+        j["ViewerSettings"]["renderMode"] = static_cast<int>(renderMode);
+        j["ViewerSettings"]["imageBasedLighting"] = imageBasedLighting;
+        j["ViewerSettings"]["renderBackgroundPanorama"] =
+            renderBackgroundPanorama;
+        j["ViewerSettings"]["exposure"]        = exposure;
+        j["ViewerSettings"]["toneMapping"]     = static_cast<int>(toneMapping);
+        j["ViewerSettings"]["backgroundColor"] = backgroundColor;
+        j["ViewerSettings"]["panoramaPath"]    = panoramaPath;
+    }
+
+    ViewerGlobalActionMap globalActionMap;
 };
 
 } // namespace vcl

@@ -13,10 +13,12 @@
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/space/core.h>
-
 #include "editor.h"
+
+#include <vclib/render/settings/bounding_box_editor_settings.h>
 #endif
+
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 
@@ -31,13 +33,28 @@ template<typename ViewerDrawer>
 class BoundingBoxEditor : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
+    BoundingBoxEditorSettings mSettings;
 
 public:
-    BoundingBoxEditor()
+    BoundingBoxEditor() = default;
+
+    std::string name() const override { return "Bounding Box"; }
+
+    BoundingBoxEditorSettings& settings() override { return mSettings; }
+
+    const BoundingBoxEditorSettings& settings() const override
     {
-        // Initialize settings keys expected.
-        Base::settings().customSettings["color"]     = vcl::Color();
-        Base::settings().customSettings["thickness"] = 2.0f;
+        return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        mSettings.saveSettings(j);
     }
 
     void draw(uint) override {}

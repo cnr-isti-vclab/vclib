@@ -9,18 +9,26 @@
 #define VCL_QT_MESH_VIEWER_H
 
 #include "gui/drawable_object_vector_tree.h"
+#include "gui/settings_dialog/editor_settings_tab_impl.h"
+#include "gui/settings_dialog/settings_dialog_data.h"
+#include "gui/text_edit_logger.h"
+#include "gui/toolbar_frames.h"
 
-#include <vclib/qt/gui/editor_frame_traits.h>
-#include <vclib/qt/gui/text_edit_logger.h>
-#include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/mesh_viewer_render_app.h>
 #include <vclib/render/concepts/drawable_object.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/settings.h>
 #include <vclib/render/settings/viewer_settings.h>
 
+#include <vclib/base.h>
+
+#include <nlohmann/json.hpp>
+
 #include <QMainWindow>
+
+#include <fstream>
 
 class QDockWidget;
 
@@ -34,7 +42,10 @@ class ViewerSettingsFrame;
 
 class KeyFilter : public QObject
 {
-    using QObject::QObject;
+    Q_OBJECT
+
+public:
+    KeyFilter(QObject* parent = nullptr) : QObject(parent) {}
 
 protected:
     bool eventFilter(QObject* obj, QEvent* event) override;
@@ -49,19 +60,15 @@ class MeshViewer : public QMainWindow
     ViewerSettingsFrame* mViewerSettingsFrame      = nullptr;
     QDockWidget*         mViewerSettingsDockWidget = nullptr;
 
+    QAction* mSpacerAction = nullptr;
+
     std::shared_ptr<vcl::DrawableObjectVector> mDrawableObjectVector;
 
-protected:
-    MeshViewerRenderApp& viewer() const;
-
-    DrawableObjectVectorTree& drawableObjectVectorTree() const;
-
-    void addEditorFrame(QWidget* frame);
-
-    void keyPressEvent(QKeyEvent* event) override;
+    /** @brief Stores settings tabs data to pass to SettingsDialog */
+    SettingsDialogData mSettingsData;
 
 public:
-    using EditorType = MeshViewerRenderApp::EditorType;
+    /** @brief Type alias for the specific ViewerApp */
     using ViewerType = MeshViewerRenderApp::ViewerType;
 
     explicit MeshViewer(QWidget* parent = nullptr);
@@ -127,13 +134,6 @@ public:
     bool removeDrawableObject(uint id);
 
     /**
-     * @brief Triggers an update of the drawable object with the given ID.
-     * @param[in] id: The ID of the object to update.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool updateDrawableObject(uint id);
-
-    /**
      * @brief Inserts a drawable object at a specific position in the scene.
      * @param[in] pos: The position to insert the object at.
      * @param[in] obj: The object to insert.
@@ -174,13 +174,23 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        auto editor = viewer().template pushEditor<EditorT>(active);
-
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            addEditorFrame(new FrameType(editor));
+        nlohmann::json        j;
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        std::string           filePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        std::ifstream in(filePath);
+        if (in.is_open()) {
+            try {
+                in >> j;
+            }
+            catch (...) {
+                // Ignore parse errors and reset to empty object to avoid
+                // crashes
+                j = nlohmann::json::object();
+            }
         }
+
+        auto editor = viewer().template pushEditor<EditorT>(active, j);
 
         if constexpr (std::is_same_v<
                           EditorT<ViewerType>,
@@ -188,6 +198,22 @@ public:
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });
+        }
+
+        // Store editor for settings dialog if it has a settings frame
+        using SettingsFrame =
+            typename EditorFrameTraits<EditorT, ViewerType>::SettingsFrameType;
+        if constexpr (!std::is_same_v<SettingsFrame, void>) {
+            mSettingsData.addTab(
+                std::make_shared<
+                    EditorSettingsTabImpl<EditorT<ViewerType>, SettingsFrame>>(
+                    editor, QString::fromStdString(editor->name())));
+        }
+
+        using ToolbarFrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::ToolbarFrameType;
+        if constexpr (!std::is_same_v<ToolbarFrameType, void>) {
+            addEditorFrame(new ToolbarFrameType(editor));
         }
 
         return editor;
@@ -209,8 +235,6 @@ public:
     void setViewerSettings(const ViewerSettings& settings);
 
     const ViewerSettings& viewerSettings() const;
-
-    void setPanorama(const std::string& panorama);
 
     /**
      * @brief Changes the current zoom (scale) of the trackball.
@@ -243,24 +267,24 @@ public:
      */
     void trackballRoll(float angleRad) { viewer().trackballRoll(angleRad); }
 
-    /**
-     * @brief Sets the background color of the viewer.
-     * @param[in] color: The background color.
-     */
-    void setBackgroundColor(const vcl::Color& color);
-
-    /**
-     * @brief Retrieves the current background color.
-     * @return The background color.
-     */
-    const vcl::Color& backgroundColor() const;
-
 public slots:
     void fitScene();
 
     void fitView();
 
     void updateGUI();
+
+protected:
+    MeshViewerRenderApp& viewer() const;
+
+    DrawableObjectVectorTree& drawableObjectVectorTree() const;
+
+    void addEditorFrame(QWidget* frame);
+
+    void keyPressEvent(QKeyEvent* event) override;
+
+private:
+    void setupSettingsButton();
 
 private slots:
     void visibilityDrawableObjectChanged();
@@ -274,6 +298,8 @@ private slots:
     void applyToAllToggled(bool checked);
 
     void renderModeChanged();
+
+    void openSettings();
 };
 
 } // namespace vcl::qt

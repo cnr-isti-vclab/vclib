@@ -8,6 +8,7 @@
 #ifndef VCL_BASE_STRING_H
 #define VCL_BASE_STRING_H
 
+#include <vclib/base/concepts/serialization.h>
 #include <vclib/base/min_max.h>
 
 #include <algorithm>
@@ -48,12 +49,13 @@ inline std::string::const_iterator findCaseInsensitive(
 /**
  * @brief Converts a value of type `T` to a string.
  *
- * With respect to `std::to_string`, this function also works with pointers.
+ * With respect to `std::to_string`, this function also works with pointers
+ * and types that have a `.toString()` member function.
  *
  * @param val: value to convert.
  * @return string representation of `val`.
  */
-template<typename T>
+template<CoreStringifiable T>
 std::string toString(T val)
 {
     // if T is a pointer
@@ -63,8 +65,57 @@ std::string toString(T val)
         ss << address;
         return ss.str();
     }
+    else if constexpr (HasMemberToString<T>) {
+        return val.toString();
+    }
+    else if constexpr (std::is_convertible_v<T, std::string>) {
+        return std::string(val);
+    }
     else {
         return std::to_string(val);
+    }
+}
+
+/**
+ * @brief Converts a string to a value of type T.
+ *
+ * Works with std::string, types supported by std::istream, and types
+ * providing a static `T::fromString(const std::string&)` method.
+ *
+ * @tparam T: The target type.
+ * @param[in] str: The string to convert.
+ * @return The converted value.
+ * @throws std::invalid_argument if the conversion fails or is unsupported.
+ */
+template<Parsable T>
+T fromString(const std::string& str)
+{
+    if constexpr (std::is_same_v<T, std::string>) {
+        return str;
+    }
+    else if constexpr (HasStaticFromString<T>) {
+        return T::fromString(str);
+    }
+    else if constexpr (HasADLFromString<T>) {
+        T out;
+        fromString(str, out);
+        return out;
+    }
+    else {
+        // try to convert trough the stream operator
+        T                  value;
+        std::istringstream iss(str);
+
+        // If T is a boolean type, set the stream to parse "true"/"false"
+        // instead of "1"/"0"
+        iss >> std::boolalpha;
+        iss >> value;
+
+        if (iss.fail()) {
+            throw std::invalid_argument(
+                "vcl::fromString failed to parse: '" + str + "'");
+        }
+        return value;
     }
 }
 

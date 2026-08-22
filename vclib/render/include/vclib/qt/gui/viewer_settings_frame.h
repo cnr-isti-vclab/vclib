@@ -12,6 +12,7 @@
 #include <vclib/render/settings/render_mode.h>
 #include <vclib/render/settings/viewer_settings.h>
 
+#include <QColor>
 #include <QFrame>
 
 class QPushButton;
@@ -28,24 +29,29 @@ class ViewerSettingsFrame : public QFrame
 
     Ui::ViewerSettingsFrame* mUI;
 
-    MeshViewerRenderApp* mViewer;
+    ViewerSettings mSettings;
 
 public:
     explicit ViewerSettingsFrame(QWidget* parent = nullptr);
     ~ViewerSettingsFrame();
 
-    void setViewer(MeshViewerRenderApp* viewer);
-
     void setViewerSettings(const ViewerSettings& settings);
-
-    void setPanorama(const std::string& panorama);
 
     const ViewerSettings& viewerSettings() const;
 
 private:
     void updatePanoramaLabel();
 
+signals:
+    /**
+     * @brief Emitted when any viewer setting is changed through the GUI.
+     * @param settings The new viewer settings.
+     */
+    void settingsChanged(const ViewerSettings& settings);
+
 private slots:
+
+    void renderModeComboBoxCurrentIndexChanged(int index);
 
     void exposureSpinBoxValueChanged(double value);
 
@@ -56,6 +62,10 @@ private slots:
     void drawBackgroundPanoramaCheckBoxCheckStateChanged(Qt::CheckState state);
 
     void loadPanoramaPushButtonClicked();
+
+    void onResetDefaultClicked();
+
+    void backgroundColorPushButtonColorChanged(const QColor& color);
 };
 
 } // namespace vcl::qt

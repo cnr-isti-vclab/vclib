@@ -12,8 +12,50 @@
 
 #include <istream>
 #include <ostream>
+#include <string>
+#include <type_traits>
 
 namespace vcl {
+
+/**
+ * @brief Checks if a type has a member function `.toString()` returning a
+ * string.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasMemberToString = requires (const T& obj) {
+    { obj.toString() } -> std::convertible_to<std::string>;
+};
+
+/**
+ * @brief Evaluates true if T can be natively converted to string without ADL
+ * `toString`.
+ *
+ * This includes pointers, types convertible to std::string, types with
+ * `.toString()`, and types supported by `std::to_string(obj)`.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept CoreStringifiable =
+    std::is_pointer_v<T> || std::is_convertible_v<T, std::string> ||
+    HasMemberToString<T> || requires (const T& obj) {
+        { std::to_string(obj) } -> std::convertible_to<std::string>;
+    };
+
+/**
+ * @brief Concept that is evaluated true if T can be converted to a string.
+ *
+ * A type T is stringifiable if it satisfies `CoreStringifiable<T>` or has a
+ * free function `toString(T)` (found via ADL) that returns a `std::string`.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept Stringifiable = CoreStringifiable<T> || requires (const T& obj) {
+    { toString(obj) } -> std::convertible_to<std::string>;
+};
 
 /**
  * @brief Concept that is evaluated true if T is an output streamable type.
@@ -40,6 +82,59 @@ template<typename T>
 concept InputStreamable = requires (std::istream& is, T&& value) {
     { is >> value } -> std::convertible_to<std::istream&>;
 };
+
+/**
+ * @brief Checks if a type has a static `T::fromString(const std::string&)`
+ * method.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasStaticFromString = requires (const std::string& str) {
+    { T::fromString(str) } -> std::convertible_to<T>;
+};
+
+/**
+ * @brief Defines all types that can be natively parsed from a string.
+ *
+ * This includes std::string itself, types with a static `T::fromString`,
+ * and types supported by std::istream (like int, float).
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept CoreParsable = std::is_same_v<std::decay_t<T>, std::string> ||
+                       HasStaticFromString<T> || InputStreamable<T>;
+
+/**
+ * @brief Checks if a type has an ADL free function `fromString(const
+ * std::string&, T&)`
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept HasADLFromString =
+    requires (const std::string& str, T& out) { fromString(str, out); };
+
+/**
+ * @brief Concept that is evaluated true if T can be parsed from a string.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept Parsable = CoreParsable<T> || HasADLFromString<T>;
+
+/**
+ * @brief Concept that is evaluated true if T can be both converted to a string
+ * and parsed from a string.
+ *
+ * This concept is useful for types that need to be serialized and deserialized
+ * as human-readable strings (e.g. for UI or JSON configuration).
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept StringConvertible = Stringifiable<T> && Parsable<T>;
 
 /**
  * @brief Concept that is evaluated true if T is serializable.
