@@ -75,6 +75,24 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onSelectionColorChanged(const QColor&)));
+
+    connect(
+        mUI->backFaceSingleRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceSingleToggled(bool)));
+
+    connect(
+        mUI->backFaceDoubleRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceDoubleToggled(bool)));
+
+    connect(
+        mUI->backFaceCullRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceCullToggled(bool)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -256,6 +274,30 @@ void SurfaceFrame::onSelectionColorChanged(const QColor& c)
     // alpha is always 0.5
     mMRS.setSurfaceSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
     emit meshRenderSettingsUpdated();
+}
+
+void SurfaceFrame::onBackFaceSingleToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_SINGLE, true);
+        emit meshRenderSettingsUpdated();
+    }
+}
+
+void SurfaceFrame::onBackFaceDoubleToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_DOUBLE, true);
+        emit meshRenderSettingsUpdated();
+    }
+}
+
+void SurfaceFrame::onBackFaceCullToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_CULL, true);
+        emit meshRenderSettingsUpdated();
+    }
 }
 
 } // namespace vcl::qt

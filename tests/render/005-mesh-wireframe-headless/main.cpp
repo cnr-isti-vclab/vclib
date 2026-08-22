@@ -242,7 +242,6 @@ TEST_CASE("Wireframe Cross Section")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 
@@ -277,7 +276,6 @@ TEST_CASE("Wireframe Cross Section")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 }

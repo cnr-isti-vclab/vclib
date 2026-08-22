@@ -147,6 +147,9 @@ public:
         COLOR_MESH         = VCL_MRS_SURF_COLOR_MESH,
         COLOR_USER         = VCL_MRS_SURF_COLOR_USER,
         SELECTION          = VCL_MRS_SURF_DRAW_SELECTION,
+        BACKFACE_SINGLE    = VCL_MRS_SURF_BF_SINGLE,
+        BACKFACE_DOUBLE    = VCL_MRS_SURF_BF_DOUBLE,
+        BACKFACE_CULL      = VCL_MRS_SURF_BF_CULL,
 
         COUNT
     };
@@ -431,7 +434,9 @@ private:
             Surface::SHADING_NONE,       // first
             Surface::SHADING_NORMAL_MAP, // last
             Surface::COLOR_VERTEX,       // first
-            Surface::COLOR_USER);        // last
+            Surface::COLOR_USER,         // last
+            Surface::BACKFACE_SINGLE,    // first
+            Surface::BACKFACE_CULL);     // last
 
     inline static constexpr const auto WIREFRAME_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Wireframe>(
