@@ -29,9 +29,7 @@ TEST_CASE("Mesh Surface Shading Modes")
     SECTION("Shading Flat")
     {
         runRenderTest(
-            TEST_NAME,
-            "shading_flat",
-            [](vcl::HeadlessMeshViewer& mv) {
+            TEST_NAME, "shading_flat", [](vcl::HeadlessMeshViewer& mv) {
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
 
                 auto settings = mesh.renderSettings();
@@ -137,33 +135,29 @@ TEST_CASE("Mesh Surface Color Modes")
 
     SECTION("Color Face")
     {
-        runRenderTest(
-            TEST_NAME,
-            "color_face",
-            [](vcl::HeadlessMeshViewer& mv) {
-                auto mesh =
-                    getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
+        runRenderTest(TEST_NAME, "color_face", [](vcl::HeadlessMeshViewer& mv) {
+            auto mesh = getDrawableMesh<vcl::TriMesh>("bunny_simplified.obj");
 
-                mesh.enablePerFaceColor();
-                mesh.updateRenderSettingsCapabilities();
+            mesh.enablePerFaceColor();
+            mesh.updateRenderSettingsCapabilities();
 
-                // Deterministically assign colors to faces
-                for (auto& f : mesh.faces()) {
-                    if (f.index() % 3 == 0)
-                        f.color() = vcl::Color::Cyan;
-                    else if (f.index() % 3 == 1)
-                        f.color() = vcl::Color::Magenta;
-                    else
-                        f.color() = vcl::Color::Yellow;
-                }
-                mesh.updateBuffers({vcl::MeshRenderInfo::Buffers::TRI_COLORS});
+            // Deterministically assign colors to faces
+            for (auto& f : mesh.faces()) {
+                if (f.index() % 3 == 0)
+                    f.color() = vcl::Color::Cyan;
+                else if (f.index() % 3 == 1)
+                    f.color() = vcl::Color::Magenta;
+                else
+                    f.color() = vcl::Color::Yellow;
+            }
+            mesh.updateBuffers({vcl::MeshRenderInfo::Buffers::TRI_COLORS});
 
-                auto settings = mesh.renderSettings();
-                settings.setSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE);
-                mesh.setRenderSettings(settings);
+            auto settings = mesh.renderSettings();
+            settings.setSurface(vcl::MeshRenderInfo::Surface::COLOR_FACE);
+            mesh.setRenderSettings(settings);
 
-                mv.pushDrawableObject(std::move(mesh));
-            });
+            mv.pushDrawableObject(std::move(mesh));
+        });
     }
 
     SECTION("Color Vertex Texcoord")
@@ -206,9 +200,7 @@ TEST_CASE("Mesh Surface Selection")
     SECTION("Face Selection")
     {
         runRenderTest(
-            TEST_NAME,
-            "surface_selection",
-            [](vcl::HeadlessMeshViewer& mv) {
+            TEST_NAME, "surface_selection", [](vcl::HeadlessMeshViewer& mv) {
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
 
                 mesh.updateRenderSettingsCapabilities();
