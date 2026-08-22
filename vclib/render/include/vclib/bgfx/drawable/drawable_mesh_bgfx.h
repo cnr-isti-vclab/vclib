@@ -242,6 +242,11 @@ public:
                 if (settings.renderMode == RenderMode::PBR) {
                     surfaceState |= materialState;
                 }
+                else {
+                    if (mMRS.isSurface(MRI::Surface::BACKFACE_CULL)) {
+                        surfaceState |= BGFX_STATE_CULL_CW;
+                    }
+                }
 
                 bgfx::setState(surfaceState);
 
@@ -389,6 +394,7 @@ protected:
         uint shading   = 0;
         uint color     = 0;
         uint selection = 0;
+        uint backFace  = 0;
 
         if (mMRS.isSurface(SHADING_FLAT)) {
             shading = 0;
@@ -426,18 +432,25 @@ protected:
             selection = 1;
         }
 
+        if (mMRS.isSurface(BACKFACE_DOUBLE)) {
+            backFace = 1;
+        }
+
         constexpr uint N_SHADING_MODES   = 4;
         constexpr uint N_COLOR_MODES     = 6;
         constexpr uint N_SELECTION_MODES = 2;
+        constexpr uint N_BACK_FACE_MODES = 2;
 
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON);
+                DRAWABLE_MESH_SURFACE_SHADING_FLAT_COLOR_FACE_SELECTION_ON_BACK_FACE_DOUBLE_OFF);
 
-        uint offset =
-            linearizeIndex<N_SHADING_MODES, N_COLOR_MODES, N_SELECTION_MODES>(
-                shading, color, selection);
+        uint offset = linearizeIndex<
+            N_SHADING_MODES,
+            N_COLOR_MODES,
+            N_SELECTION_MODES,
+            N_BACK_FACE_MODES>(shading, color, selection, backFace);
 
         uint program = base + offset;
 

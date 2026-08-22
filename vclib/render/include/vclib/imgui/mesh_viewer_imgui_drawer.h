@@ -675,6 +675,39 @@ private:
             },
             ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoAlpha);
 
+        // backface
+        ImGui::Text("Backface:");
+        ImGui::SameLine();
+        ImGui::RadioButton(
+            "Single",
+            [&] {
+                return settings.isSurface(BACKFACE_SINGLE);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(BACKFACE_SINGLE);
+            });
+        ImGui::SameLine();
+        ImGui::RadioButton(
+            "Double",
+            [&] {
+                return settings.isSurface(BACKFACE_DOUBLE);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(BACKFACE_DOUBLE);
+            });
+        ImGui::SameLine();
+        ImGui::RadioButton(
+            "Cull",
+            [&] {
+                return settings.isSurface(BACKFACE_CULL);
+            },
+            [&](bool vis) {
+                if (vis)
+                    settings.setSurface(BACKFACE_CULL);
+            });
+
         ImGui::EndDisabled();
     }
 
