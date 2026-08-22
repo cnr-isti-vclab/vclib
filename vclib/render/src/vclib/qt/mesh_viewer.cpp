@@ -51,8 +51,9 @@ bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
  *
  * @param parent
  */
-MeshViewer::MeshViewer(QWidget* parent) :
-        QMainWindow(parent), mUI(new Ui::MeshViewer)
+MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
+    QMainWindow(parent),
+    mSettingsFilePath(settingsFilePath), mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
 
@@ -187,9 +188,11 @@ MeshViewer::MeshViewer(QWidget* parent) :
 
     // Load default global settings
     nlohmann::json        j;
-    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string           filePath =
-        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    std::string           filePath = mSettingsFilePath;
+    if (filePath.empty()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    }
     std::ifstream in(filePath);
     if (in.is_open()) {
         try {
@@ -563,6 +566,7 @@ void MeshViewer::openSettings()
         viewer().update();
     });
 
+    dialog.setSettingsFilePath(mSettingsFilePath);
     dialog.exec();
 }
 

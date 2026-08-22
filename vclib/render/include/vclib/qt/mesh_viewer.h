@@ -67,12 +67,17 @@ class MeshViewer : public QMainWindow
     /** @brief Stores settings tabs data to pass to SettingsDialog */
     SettingsDialogData mSettingsData;
 
+    std::string mSettingsFilePath;
+
 public:
     /** @brief Type alias for the specific ViewerApp */
     using ViewerType = MeshViewerRenderApp::ViewerType;
 
-    explicit MeshViewer(QWidget* parent = nullptr);
+    explicit MeshViewer(QWidget* parent = nullptr, const std::string& settingsFilePath = "");
     ~MeshViewer();
+
+    const std::string& settingsFilePath() const { return mSettingsFilePath; }
+    void setSettingsFilePath(const std::string& path) { mSettingsFilePath = path; }
 
     /**
      * @brief Returns the ID of the currently selected drawable object.
@@ -175,9 +180,11 @@ public:
     auto pushEditor(bool active = false)
     {
         nlohmann::json        j;
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        std::string           filePath =
-            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        std::string           filePath = mSettingsFilePath;
+        if (filePath.empty()) {
+            std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+            filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        }
         std::ifstream in(filePath);
         if (in.is_open()) {
             try {
