@@ -144,14 +144,14 @@ void EdgesFrame::updateColorComboBoxFromSettings()
 void EdgesFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setEdges(VISIBLE, arg1 == Qt::CheckState::Checked);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void EdgesFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
         mMRS.setEdges(SHADING_SMOOTH);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -159,7 +159,7 @@ void EdgesFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
         mMRS.setEdges(SHADING_FLAT);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -167,7 +167,7 @@ void EdgesFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
         mMRS.setEdges(SHADING_NONE);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -180,19 +180,19 @@ void EdgesFrame::onColorComboBoxChanged(int index)
     case E_USER: mMRS.setEdges(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == E_USER);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void EdgesFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setEdgesUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void EdgesFrame::onSizeChanged(int value)
 {
     mMRS.setEdgesWidth(value);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 } // namespace vcl::qt

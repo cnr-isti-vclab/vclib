@@ -208,14 +208,14 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setSurface(VISIBLE, arg1 == Qt::CheckState::Checked);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void SurfaceFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(SHADING_SMOOTH);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -223,7 +223,7 @@ void SurfaceFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(SHADING_FLAT);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -231,7 +231,7 @@ void SurfaceFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(SHADING_NONE);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -239,7 +239,7 @@ void SurfaceFrame::onShadingNormalMapToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(SHADING_NORMAL_MAP);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -254,33 +254,33 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
     case SC_USER: mMRS.setSurface(COLOR_USER); break;
     }
     mUI->userColorFrame->setEnabled(index == SC_USER);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void SurfaceFrame::onUserColorChanged(const QColor& c)
 {
     mMRS.setSurfaceUserColor(c.redF(), c.greenF(), c.blueF(), c.alphaF());
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void SurfaceFrame::onSelectionVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setSurface(SELECTION, arg1 == Qt::CheckState::Checked);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void SurfaceFrame::onSelectionColorChanged(const QColor& c)
 {
     // alpha is always 0.5
     mMRS.setSurfaceSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
-    emit settingsUpdated();
+    emit meshRenderSettingsUpdated();
 }
 
 void SurfaceFrame::onBackFaceSingleToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(BACKFACE_SINGLE, true);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -288,7 +288,7 @@ void SurfaceFrame::onBackFaceDoubleToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(BACKFACE_DOUBLE, true);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
@@ -296,7 +296,7 @@ void SurfaceFrame::onBackFaceCullToggled(bool checked)
 {
     if (checked) {
         mMRS.setSurface(BACKFACE_CULL, true);
-        emit settingsUpdated();
+        emit meshRenderSettingsUpdated();
     }
 }
 
