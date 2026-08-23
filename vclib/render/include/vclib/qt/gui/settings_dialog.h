@@ -42,7 +42,10 @@ public:
         QWidget*                  parent = nullptr);
     ~SettingsDialog();
 
-    void setSettingsFilePath(const std::string& path) { mSettingsFilePath = path; }
+    void setSettingsFilePath(const std::string& path)
+    {
+        mSettingsFilePath = path;
+    }
 
 signals:
     void applied();

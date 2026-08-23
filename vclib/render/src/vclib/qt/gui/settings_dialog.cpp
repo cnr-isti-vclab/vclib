@@ -126,7 +126,9 @@ void SettingsDialog::onApplyClicked()
 
         // Ensure directory exists
         QDir dir;
-        dir.mkpath(QString::fromStdString(std::filesystem::path(filePath).parent_path().string()));
+        dir.mkpath(
+            QString::fromStdString(
+                std::filesystem::path(filePath).parent_path().string()));
 
         std::ofstream out(filePath);
         if (out.is_open()) {

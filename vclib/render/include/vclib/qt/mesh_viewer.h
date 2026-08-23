@@ -73,11 +73,17 @@ public:
     /** @brief Type alias for the specific ViewerApp */
     using ViewerType = MeshViewerRenderApp::ViewerType;
 
-    explicit MeshViewer(QWidget* parent = nullptr, const std::string& settingsFilePath = "");
+    explicit MeshViewer(
+        QWidget*           parent           = nullptr,
+        const std::string& settingsFilePath = "");
     ~MeshViewer();
 
     const std::string& settingsFilePath() const { return mSettingsFilePath; }
-    void setSettingsFilePath(const std::string& path) { mSettingsFilePath = path; }
+
+    void setSettingsFilePath(const std::string& path)
+    {
+        mSettingsFilePath = path;
+    }
 
     /**
      * @brief Returns the ID of the currently selected drawable object.
@@ -179,8 +185,8 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        nlohmann::json        j;
-        std::string           filePath = mSettingsFilePath;
+        nlohmann::json j;
+        std::string    filePath = mSettingsFilePath;
         if (filePath.empty()) {
             std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
             filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
