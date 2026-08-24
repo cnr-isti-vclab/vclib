@@ -2065,7 +2065,8 @@ private:
                         CompId::MATERIAL_INDEX>()) {
                     auto elems = m.template elements<ELEM_ID>((uint) sizes[I]);
                     for (auto& e : elems) {
-                        if (e.materialIndex() != vcl::UINT_NULL && e.materialIndex() < mapping.size()) {
+                        if (e.materialIndex() != vcl::UINT_NULL &&
+                            e.materialIndex() < mapping.size()) {
                             e.materialIndex() = mapping[e.materialIndex()];
                         }
                     }
