@@ -13,6 +13,8 @@
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 /**
@@ -112,6 +114,9 @@ public:
     bool operator==(const MeshRenderSettings&) const = default;
 
     bool operator!=(const MeshRenderSettings&) const = default;
+
+    friend void to_json(nlohmann::json& j, const MeshRenderSettings& mrs);
+    friend void from_json(const nlohmann::json& j, MeshRenderSettings& mrs);
 
     // rendering option capabilities of the mesh
 
@@ -1085,6 +1090,68 @@ private:
         }
     }
 };
+
+inline void to_json(nlohmann::json& j, const MeshRenderSettings& mrs)
+{
+    j = nlohmann::json {
+        {"drawMode",            mrs.mDrawMode              },
+        {"hasPerVertexColor",   mrs.mHasPerVertexColor     },
+        {"hasPerVertexTangent", mrs.mHasPerVertexTangent   },
+        {"pointWidth",          mrs.mPointWidth            },
+        {"pointUserColor",      mrs.pointUserColor()       },
+        {"surfUserColor",       mrs.surfaceUserColor()     },
+        {"wrfWidth",            mrs.mWrfWidth              },
+        {"wrfUserColor",        mrs.wireframeUserColor()   },
+        {"edgesWidth",          mrs.mEdgesWidth            },
+        {"edgesUserColor",      mrs.edgesUserColor()       },
+        {"pointSelectionColor", mrs.pointSelectionColor()  },
+        {"surfSelectionColor",  mrs.surfaceSelectionColor()},
+        {"edgeSelectionColor",  mrs.edgesSelectionColor()  }
+    };
+}
+
+inline void from_json(const nlohmann::json& j, MeshRenderSettings& mrs)
+{
+    if (j.contains("drawMode"))
+        j.at("drawMode").get_to(mrs.mDrawMode);
+    if (j.contains("hasPerVertexColor"))
+        j.at("hasPerVertexColor").get_to(mrs.mHasPerVertexColor);
+    if (j.contains("hasPerVertexTangent"))
+        j.at("hasPerVertexTangent").get_to(mrs.mHasPerVertexTangent);
+    if (j.contains("pointWidth"))
+        j.at("pointWidth").get_to(mrs.mPointWidth);
+    if (j.contains("pointUserColor")) {
+        vcl::Color c           = j.at("pointUserColor").get<vcl::Color>();
+        mrs.mPointUserColor[0] = c.redF();
+        mrs.mPointUserColor[1] = c.greenF();
+        mrs.mPointUserColor[2] = c.blueF();
+        mrs.mPointUserColor[3] = c.alphaF();
+    }
+    if (j.contains("surfUserColor"))
+        mrs.mSurfUserColor = j.at("surfUserColor").get<vcl::Color>().abgr();
+    if (j.contains("wrfWidth"))
+        j.at("wrfWidth").get_to(mrs.mWrfWidth);
+    if (j.contains("wrfUserColor")) {
+        vcl::Color c         = j.at("wrfUserColor").get<vcl::Color>();
+        mrs.mWrfUserColor[0] = c.redF();
+        mrs.mWrfUserColor[1] = c.greenF();
+        mrs.mWrfUserColor[2] = c.blueF();
+        mrs.mWrfUserColor[3] = c.alphaF();
+    }
+    if (j.contains("edgesWidth"))
+        j.at("edgesWidth").get_to(mrs.mEdgesWidth);
+    if (j.contains("edgesUserColor"))
+        mrs.mEdgesUserColor = j.at("edgesUserColor").get<vcl::Color>().abgr();
+    if (j.contains("pointSelectionColor"))
+        mrs.mPointSelectionColor =
+            j.at("pointSelectionColor").get<vcl::Color>().abgr();
+    if (j.contains("surfSelectionColor"))
+        mrs.mSurfSelectionColor =
+            j.at("surfSelectionColor").get<vcl::Color>().abgr();
+    if (j.contains("edgeSelectionColor"))
+        mrs.mEdgeSelectionColor =
+            j.at("edgeSelectionColor").get<vcl::Color>().abgr();
+}
 
 } // namespace vcl
 
