@@ -190,7 +190,7 @@ uint removeDuplicateVertices(MeshType& m)
 
     // a map that will be used to keep track of deleted vertices and their
     // corresponding pointers.
-    std::vector<uint> newVertexIndices(m.vertexCount());
+    std::vector<uint> newVertexIndices(m.vertexContainerSize());
     // assigning each vertex index to itself.
     std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
