@@ -35,11 +35,11 @@ void initCleanAlgorithms(pybind11::module& m)
 
             m.def(
                 "remove_degenerate_vertices",
-                [](MeshType& m, bool deleteAlsoFaces) -> uint {
-                    return removeDegenerateVertices(m, deleteAlsoFaces);
+                [](MeshType& m, bool deleteAlsoIncidentElements) -> uint {
+                    return removeDegenerateVertices(m, deleteAlsoIncidentElements);
                 },
                 "mesh"_a,
-                "delete_also_faces"_a);
+                "delete_also_incident_elements"_a);
         };
 
     defForAllMeshTypes(m, fAllMeshes);

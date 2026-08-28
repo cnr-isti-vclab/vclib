@@ -119,6 +119,32 @@ private:
     SentinelType         s;
 };
 
+template<typename Cont, MeshConcept MeshType>
+void deleteElementsWithDeletedVertices(MeshType& m, uint& deletedCount)
+{
+    if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
+        constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
+        deletedCount +=
+            deleteElementsIf<MeshType, ELEM_ID>(m, [](const auto& el) {
+                for (const auto* v : el.vertices()) {
+                    if (v == nullptr) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+    }
+}
+
+template<typename... Cont, MeshConcept MeshType>
+void deleteElementsWithDeletedVertices(
+    MeshType& m,
+    uint&     deletedCount,
+    TypeWrapper<Cont...>)
+{
+    (deleteElementsWithDeletedVertices<Cont>(m, deletedCount), ...);
+}
+
 } // namespace detail
 
 /**
@@ -302,9 +328,9 @@ uint removeDuplicateFaces(MeshType& m)
  * values (NaN or inf).
  *
  * This function removes all vertices in the input mesh that have position
- * with invalid floating point values, such as NaN or inf. If the input mesh has
- * faces, and if the flag `deleteAlsoFaces` is set to true, all faces incident
- * on deleted vertices are also deleted.
+ * with invalid floating point values, such as NaN or inf. If the flag
+ * `deleteAlsoIncidentElements` is set to true, all elements (e.g. faces or
+ * edges) incident on deleted vertices are also deleted.
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
  * MeshConcept.
@@ -313,15 +339,15 @@ uint removeDuplicateFaces(MeshType& m)
  * This mesh will be modified in place, with all degenerated vertices being
  * marked as deleted.
  *
- * @param[in] deleteAlsoFaces: If true, all faces incident on deleted vertices
- * will also be deleted.
+ * @param[in] deleteAlsoIncidentElements: If true, all elements incident on
+ * deleted vertices will also be deleted.
  *
  * @return The number of degenerated vertices that were marked as deleted.
  *
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
+uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
 {
     using VertexType = MeshType::VertexType;
 
@@ -329,19 +355,10 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
         return v.position().isDegenerate();
     });
 
-    // If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
-    // faces incident on deleted vertices.
-    if constexpr (HasFaces<MeshType>) {
-        if (deleteAlsoFaces) {
-            deleteFacesIf(m, [](const typename MeshType::FaceType& f) {
-                for (const VertexType* v : f.vertices()) {
-                    if (v == nullptr) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-        }
+    if (deleteAlsoIncidentElements) {
+        uint dummy = 0;
+        detail::deleteElementsWithDeletedVertices(
+            m, dummy, typename MeshType::Containers());
     }
 
     return count_vd;
