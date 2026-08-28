@@ -178,29 +178,29 @@ MicrofacetDistributionSample GGX(vec2 xi, float roughness)
 vec4 getImportanceSample(uint sampleIndex, uint sampleCount, vec3 N, uint distributionType, float roughness)
 {
     vec2 Xi = hammersley(sampleIndex, sampleCount);
-    MicrofacetDistributionSample sample;
+    MicrofacetDistributionSample smp;
 
     if(distributionType == DISTRIBUTION_LAMBERTIAN)
     {
-        sample = Lambertian(Xi);
+        smp = Lambertian(Xi);
     }
     else // if(distributionType == DISTRIBUTION_GGX)
     {
-        sample = GGX(Xi, roughness);
+        smp = GGX(Xi, roughness);
     }
 
     // from spherical coordinates to cartesian coordinates
     vec3 H = normalize(vec3(
-        cos(sample.phi) * sample.sinTheta,
-        sin(sample.phi) * sample.sinTheta,
-        sample.cosTheta
+        cos(smp.phi) * smp.sinTheta,
+        sin(smp.phi) * smp.sinTheta,
+        smp.cosTheta
     ));
 
     // from tangent-space vector to world-space sample vector
     mat3 TBN = generateTBN(N);
     vec3 sampleVec = mul(H, TBN);
 
-    return vec4(sampleVec.x, sampleVec.y, sampleVec.z, sample.pdf);
+    return vec4(sampleVec.x, sampleVec.y, sampleVec.z, smp.pdf);
 }
 
 /**
@@ -238,7 +238,7 @@ float computeLod(float pdf, float width, float sampleCount)
  * @param[in] fromHdr: Whether the cubemap is from an HDR source (flipped for writing the cubemap).
  * @return The direction vector corresponding to the given face and UV coordinates.
  */
-vec3 faceDirection(int face, vec2 uv, bool fromHdr)
+vec3 faceDirection(uint face, vec2 uv, bool fromHdr)
 {
     if(fromHdr) // flipped for writing
     {
