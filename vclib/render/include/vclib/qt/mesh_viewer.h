@@ -122,6 +122,14 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     uint pushDrawableObject(ObjType&& obj)
     {
+        if constexpr (
+            std::is_base_of_v<
+                vcl::AbstractDrawableMesh,
+                std::remove_cvref_t<ObjType>>) {
+            auto rs = obj.renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            obj.setRenderSettings(rs);
+        }
         uint id = viewer().pushDrawableObject(std::forward<ObjType>(obj));
         updateGUI();
         return id;
@@ -134,6 +142,12 @@ public:
      */
     uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
     {
+        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
+        if (mesh) {
+            MeshRenderSettings rs = mesh->renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            mesh->setRenderSettings(rs);
+        }
         uint id = viewer().pushDrawableObject(std::move(obj));
         updateGUI();
         return id;
@@ -155,6 +169,14 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     bool insertDrawableObject(uint pos, ObjType&& obj)
     {
+        if constexpr (
+            std::is_base_of_v<
+                vcl::AbstractDrawableMesh,
+                std::remove_cvref_t<ObjType>>) {
+            auto rs = obj.renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            obj.setRenderSettings(rs);
+        }
         bool success =
             viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
         if (success)
@@ -173,6 +195,12 @@ public:
         uint                                 pos,
         std::shared_ptr<vcl::DrawableObject> obj)
     {
+        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
+        if (mesh) {
+            MeshRenderSettings rs = mesh->renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            mesh->setRenderSettings(rs);
+        }
         bool success = viewer().insertDrawableObject(pos, std::move(obj));
         if (success)
             updateGUI();
@@ -207,9 +235,10 @@ public:
 
         auto editor = viewer().template pushEditor<EditorT>(active, j);
 
-        if constexpr (std::is_same_v<
-                          EditorT<ViewerType>,
-                          vcl::MeshSelectorEditor<ViewerType>>) {
+        if constexpr (
+            std::is_same_v<
+                EditorT<ViewerType>,
+                vcl::MeshSelectorEditor<ViewerType>>) {
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });

@@ -721,8 +721,14 @@ public:
         for (uint i = toUnderlying(MRI::Points::SHAPE_PIXEL);
              i < toUnderlying(MRI::Points::COUNT);
              ++i) {
-            if (other.isPoints(static_cast<MRI::Points>(i)))
-                setPoints(static_cast<MRI::Points>(i));
+            auto val = static_cast<MRI::Points>(i);
+            auto rng = MRI::pointsExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setPoints(val, other.isPoints(val));
+            }
+            else if (other.isPoints(val)) {
+                setPoints(val);
+            }
         }
 
         // Surface
@@ -731,8 +737,14 @@ public:
         for (uint i = toUnderlying(MRI::Surface::SHADING_NONE);
              i < toUnderlying(MRI::Surface::COUNT);
              ++i) {
-            if (other.isSurface(static_cast<MRI::Surface>(i)))
-                setSurface(static_cast<MRI::Surface>(i));
+            auto val = static_cast<MRI::Surface>(i);
+            auto rng = MRI::surfaceExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setSurface(val, other.isSurface(val));
+            }
+            else if (other.isSurface(val)) {
+                setSurface(val);
+            }
         }
 
         // Wireframe
@@ -742,8 +754,14 @@ public:
         for (uint i = toUnderlying(MRI::Wireframe::SHADING_NONE);
              i < toUnderlying(MRI::Wireframe::COUNT);
              ++i) {
-            if (other.isWireframe(static_cast<MRI::Wireframe>(i)))
-                setWireframe(static_cast<MRI::Wireframe>(i));
+            auto val = static_cast<MRI::Wireframe>(i);
+            auto rng = MRI::wireframeExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setWireframe(val, other.isWireframe(val));
+            }
+            else if (other.isWireframe(val)) {
+                setWireframe(val);
+            }
         }
 
         // Edges
@@ -751,8 +769,14 @@ public:
         for (uint i = toUnderlying(MRI::Edges::SHADING_NONE);
              i < toUnderlying(MRI::Edges::COUNT);
              ++i) {
-            if (other.isEdges(static_cast<MRI::Edges>(i)))
-                setEdges(static_cast<MRI::Edges>(i));
+            auto val = static_cast<MRI::Edges>(i);
+            auto rng = MRI::edgesExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setEdges(val, other.isEdges(val));
+            }
+            else if (other.isEdges(val)) {
+                setEdges(val);
+            }
         }
     }
 
