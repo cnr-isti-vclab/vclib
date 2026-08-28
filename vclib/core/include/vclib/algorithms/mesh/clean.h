@@ -365,15 +365,22 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
 }
 
 /**
- * @brief Removes all degenerate faces from the input mesh.
+ * @brief Removes or repairs all degenerate faces from the input mesh.
  *
- * This function removes all faces in the input mesh that are topologically
- * degenerate, meaning that they have two or more vertex references that link
- * the same vertex. All degenerate faces are zero area faces, but not all zero
- * area faces are degenerate (for example, a face with three different vertex
- * references, but two of them have the same position). Therefore, if you
- * also want to remove these kinds of faces, you should call
- * `removeDuplicatedVertices(m)` first.
+ * This function removes or repairs all faces in the input mesh that are
+ * topologically degenerate, meaning that they have two or more consecutive
+ * vertex references that link the same vertex.
+ *
+ * For fixed-size faces (e.g. Triangle meshes), any face containing consecutive
+ * duplicated vertices is completely marked as deleted. For dynamic-size faces
+ * (e.g. Polygon meshes), the function will attempt to "repair" the face by
+ * erasing the duplicated vertex references. If after this process the polygon
+ * ends up having fewer than 3 vertices, it will be marked as deleted.
+ *
+ * All degenerate faces are zero area faces, but not all zero area faces are
+ * degenerate (for example, a face with three different vertex references, but
+ * two of them have the same position). Therefore, if you also want to remove
+ * these kinds of faces, you should call `removeDuplicateVertices(m)` first.
  *
  * @note This function automatically updates all internal topological references
  * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
@@ -383,8 +390,7 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
  * FaceMeshConcept.
  *
  * @param[in,out] m: The input mesh for which to remove degenerate faces. This
- * mesh will be modified in place, with all degenerate faces being marked as
- * deleted.
+ * mesh will be modified in place.
  *
  * @return The number of degenerate faces that were marked as deleted.
  *
@@ -393,7 +399,26 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
 template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
-    return deleteFacesIf(m, [&](const typename MeshType::FaceType& f) {
+    using FaceType = typename MeshType::FaceType;
+
+    if constexpr (PolygonFaceConcept<FaceType>) {
+        for (FaceType& f : m.faces()) {
+            for (int i = int(f.vertexCount()) - 1; i >= 0; --i) {
+                if (f.vertexCount() < 3)
+                    break;
+                if (f.vertex(i) == f.vertexMod(i + 1)) {
+                    f.eraseVertex(i);
+                }
+            }
+        }
+    }
+
+    return deleteFacesIf(m, [&](const FaceType& f) {
+        if constexpr (PolygonFaceConcept<FaceType>) {
+            if (f.vertexCount() < 3) {
+                return true;
+            }
+        }
         for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.vertex(i) == f.vertexMod(i + 1)) {
                 return true;
