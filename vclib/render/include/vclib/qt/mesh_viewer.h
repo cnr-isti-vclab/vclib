@@ -69,6 +69,8 @@ class MeshViewer : public QMainWindow
 
     std::string mSettingsFilePath;
 
+    MeshRenderSettings mDefaultMeshRenderSettings;
+
 public:
     /** @brief Type alias for the specific ViewerApp */
     using ViewerType = MeshViewerRenderApp::ViewerType;

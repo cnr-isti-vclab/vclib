@@ -11,6 +11,7 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
+#include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
 #include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
@@ -207,7 +208,14 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         }
     }
 
+    mDefaultMeshRenderSettings.setAllCapabilities(true);
+    mDefaultMeshRenderSettings.setDefaultSettingsFromCapability();
+    if (j.contains("MeshRenderSettings")) {
+        mDefaultMeshRenderSettings = j.at("MeshRenderSettings").get<MeshRenderSettings>();
+    }
+
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    setupMeshRenderSettingsTabs(mSettingsData, mDefaultMeshRenderSettings);
 }
 
 MeshViewer::~MeshViewer()

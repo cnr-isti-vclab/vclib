@@ -48,6 +48,7 @@ private:
 
     void uptateShadingRadioButtonsFromSettings();
     void updateColorComboBoxFromSettings();
+    void updateBackFaceRadioButtonsFromSettings();
 
 private slots:
     void onVisibilityChanged(Qt::CheckState arg1);

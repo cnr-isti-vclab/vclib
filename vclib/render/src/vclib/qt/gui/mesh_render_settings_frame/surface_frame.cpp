@@ -113,11 +113,12 @@ void SurfaceFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
+        mUI->specularCheckBox->setEnabled(mMRS.canSurface(SPECULAR));
+        mUI->specularCheckBox->setChecked(mMRS.isSurface(SPECULAR));
         updateColorComboBoxFromSettings();
         mUI->selectionVisibilityCheckBox->setEnabled(true);
         mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
-        mUI->specularCheckBox->setEnabled(mMRS.canSurface(SPECULAR));
-        mUI->specularCheckBox->setChecked(mMRS.isSurface(SPECULAR));
+        updateBackFaceRadioButtonsFromSettings();
     }
     else {
         this->setEnabled(false);
@@ -211,6 +212,13 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     c.setBlue(sc.blue());
     c.setAlpha(sc.alpha());
     mUI->selectionColorDialogPushButton->setBackgroundColor(c);
+}
+
+void SurfaceFrame::updateBackFaceRadioButtonsFromSettings()
+{
+    mUI->backFaceSingleRadioButton->setChecked(mMRS.isSurface(BACKFACE_SINGLE));
+    mUI->backFaceDoubleRadioButton->setChecked(mMRS.isSurface(BACKFACE_DOUBLE));
+    mUI->backFaceCullRadioButton->setChecked(mMRS.isSurface(BACKFACE_CULL));
 }
 
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)

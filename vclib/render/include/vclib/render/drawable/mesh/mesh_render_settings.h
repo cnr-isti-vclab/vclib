@@ -944,34 +944,6 @@ public:
         }
     }
 
-private:
-    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
-    void setCapability(Enum val, bool b = true)
-    {
-        assert(val < Enum::COUNT);
-        mCapability.settings<PRIMITIVE>()[toUnderlying(val)] = b;
-    }
-
-    void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
-    {
-        setCapability<MRI::Primitive::POINTS>(p, b);
-    }
-
-    void setSurfaceCapability(MeshRenderInfo::Surface s, bool b = true)
-    {
-        setCapability<MRI::Primitive::SURFACE>(s, b);
-    }
-
-    void setWireframeCapability(MeshRenderInfo::Wireframe w, bool b = true)
-    {
-        setCapability<MRI::Primitive::WIREFRAME>(w, b);
-    }
-
-    void setEdgesCapability(MeshRenderInfo::Edges e, bool b = true)
-    {
-        setCapability<MRI::Primitive::EDGES>(e, b);
-    }
-
     void setDefaultPointSettingsFromCapability()
     {
         using enum MRI::Points;
@@ -1088,6 +1060,34 @@ private:
                 setEdges(COLOR_USER);
             }
         }
+    }
+
+private:
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    void setCapability(Enum val, bool b = true)
+    {
+        assert(val < Enum::COUNT);
+        mCapability.settings<PRIMITIVE>()[toUnderlying(val)] = b;
+    }
+
+    void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
+    {
+        setCapability<MRI::Primitive::POINTS>(p, b);
+    }
+
+    void setSurfaceCapability(MeshRenderInfo::Surface s, bool b = true)
+    {
+        setCapability<MRI::Primitive::SURFACE>(s, b);
+    }
+
+    void setWireframeCapability(MeshRenderInfo::Wireframe w, bool b = true)
+    {
+        setCapability<MRI::Primitive::WIREFRAME>(w, b);
+    }
+
+    void setEdgesCapability(MeshRenderInfo::Edges e, bool b = true)
+    {
+        setCapability<MRI::Primitive::EDGES>(e, b);
     }
 };
 
