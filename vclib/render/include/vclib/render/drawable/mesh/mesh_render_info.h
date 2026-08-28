@@ -150,6 +150,7 @@ public:
         BACKFACE_SINGLE    = VCL_MRS_SURF_BF_SINGLE,
         BACKFACE_DOUBLE    = VCL_MRS_SURF_BF_DOUBLE,
         BACKFACE_CULL      = VCL_MRS_SURF_BF_CULL,
+        SPECULAR           = VCL_MRS_SURF_SPECULAR,
 
         COUNT
     };

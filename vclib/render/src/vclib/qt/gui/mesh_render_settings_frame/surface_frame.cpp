@@ -93,6 +93,12 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(toggled(bool)),
         this,
         SLOT(onBackFaceCullToggled(bool)));
+
+    connect(
+        mUI->specularCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSpecularChanged(Qt::CheckState)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -110,6 +116,8 @@ void SurfaceFrame::updateFrameFromSettings()
         updateColorComboBoxFromSettings();
         mUI->selectionVisibilityCheckBox->setEnabled(true);
         mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
+        mUI->specularCheckBox->setEnabled(mMRS.canSurface(SPECULAR));
+        mUI->specularCheckBox->setChecked(mMRS.isSurface(SPECULAR));
     }
     else {
         this->setEnabled(false);
@@ -298,6 +306,12 @@ void SurfaceFrame::onBackFaceCullToggled(bool checked)
         mMRS.setSurface(BACKFACE_CULL, true);
         emit settingsUpdated();
     }
+}
+
+void SurfaceFrame::onSpecularChanged(Qt::CheckState arg1)
+{
+    mMRS.setSurface(SPECULAR, arg1 == Qt::CheckState::Checked);
+    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

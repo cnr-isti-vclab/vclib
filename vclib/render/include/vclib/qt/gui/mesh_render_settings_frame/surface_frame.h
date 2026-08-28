@@ -62,6 +62,7 @@ private slots:
     void onBackFaceSingleToggled(bool checked);
     void onBackFaceDoubleToggled(bool checked);
     void onBackFaceCullToggled(bool checked);
+    void onSpecularChanged(Qt::CheckState arg1);
 };
 
 } // namespace vcl::qt

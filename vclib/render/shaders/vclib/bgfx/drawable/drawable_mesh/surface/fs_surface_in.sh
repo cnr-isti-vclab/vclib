@@ -78,6 +78,7 @@ void main()
     // if flat or smooth shading, compute light
     light = computeLight(u_lightDir, u_lightColor, normal);
 
+#ifdef SURFACE_SPECULAR_ON
     // all computations are in view (camera) space
     // => the camera eye is at (0, 0, 0)
     // also, u_lightDir is provided in view space
@@ -87,6 +88,7 @@ void main()
         u_lightDir,
         u_lightColor,
         normal);
+#endif
 #endif
 
     /***** compute color ******/

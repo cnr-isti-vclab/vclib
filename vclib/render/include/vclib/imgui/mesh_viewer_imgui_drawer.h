@@ -561,6 +561,18 @@ private:
                     settings.setSurface(SHADING_NONE);
             });
 
+        ImGui::SameLine();
+        ImGui::BeginDisabled(!settings.canSurface(SPECULAR));
+        ImGui::Checkbox(
+            "Specular",
+            [&] {
+                return settings.isSurface(SPECULAR);
+            },
+            [&](bool vis) {
+                settings.setSurface(SPECULAR, vis);
+            });
+        ImGui::EndDisabled();
+
         // color
         const uint CS_COUNT =
             toUnderlying(COLOR_USER) - toUnderlying(COLOR_VERTEX) + 1;
