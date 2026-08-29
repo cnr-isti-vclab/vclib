@@ -122,10 +122,9 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     uint pushDrawableObject(ObjType&& obj)
     {
-        if constexpr (
-            std::is_base_of_v<
-                vcl::AbstractDrawableMesh,
-                std::remove_cvref_t<ObjType>>) {
+        if constexpr (std::is_base_of_v<
+                          vcl::AbstractDrawableMesh,
+                          std::remove_cvref_t<ObjType>>) {
             auto rs = obj.renderSettings();
             rs.updateIfCapable(mDefaultMeshRenderSettings);
             obj.setRenderSettings(rs);
@@ -169,10 +168,9 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     bool insertDrawableObject(uint pos, ObjType&& obj)
     {
-        if constexpr (
-            std::is_base_of_v<
-                vcl::AbstractDrawableMesh,
-                std::remove_cvref_t<ObjType>>) {
+        if constexpr (std::is_base_of_v<
+                          vcl::AbstractDrawableMesh,
+                          std::remove_cvref_t<ObjType>>) {
             auto rs = obj.renderSettings();
             rs.updateIfCapable(mDefaultMeshRenderSettings);
             obj.setRenderSettings(rs);
@@ -235,10 +233,9 @@ public:
 
         auto editor = viewer().template pushEditor<EditorT>(active, j);
 
-        if constexpr (
-            std::is_same_v<
-                EditorT<ViewerType>,
-                vcl::MeshSelectorEditor<ViewerType>>) {
+        if constexpr (std::is_same_v<
+                          EditorT<ViewerType>,
+                          vcl::MeshSelectorEditor<ViewerType>>) {
             editor->setOnObjectSelectedFunction([this](uint id) {
                 drawableObjectVectorTree().setSelectedItem(id);
             });

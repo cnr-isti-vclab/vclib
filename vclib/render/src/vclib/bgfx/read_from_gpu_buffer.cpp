@@ -376,7 +376,7 @@ uint ReadFromGPUBuffer::submit(
     bgfx::TextureRegion readRegion;
     readRegion.handle = mCPUTexHandle;
     mFrameAvailable   = bgfx::read(readRegion, mReadResults.data());
-    mSubmitted      = true;
+    mSubmitted        = true;
     return 2;
 }
 
@@ -473,8 +473,8 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
         }
         bgfx::TextureRegion readRegion;
         readRegion.handle = mBlitTexture;
-        mFrameAvailable   = bgfx::read(
-            readRegion, std::get<FloatData>(mReadData).data());
+        mFrameAvailable =
+            bgfx::read(readRegion, std::get<FloatData>(mReadData).data());
     } break;
 
     case Target::COLOR:
@@ -485,11 +485,11 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
         bgfx::TextureRegion srcRegion;
         srcRegion.handle = srcBuffer;
         bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
-        
+
         bgfx::TextureRegion readRegion;
         readRegion.handle = mBlitTexture;
-        mFrameAvailable   = bgfx::read(
-            readRegion, std::get<ByteData>(mReadData).data());
+        mFrameAvailable =
+            bgfx::read(readRegion, std::get<ByteData>(mReadData).data());
     } break;
 
     default: assert(false && "FRAMEBUFFER submit called with RAW target");

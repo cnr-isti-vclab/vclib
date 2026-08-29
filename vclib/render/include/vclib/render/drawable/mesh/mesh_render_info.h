@@ -495,12 +495,12 @@ private:
  */
 inline void to_json(nlohmann::json& j, const MeshRenderInfo& mri)
 {
-    j = nlohmann::json{
-        {"visible", mri.visible()},
-        {"points", mri.points().underlying()},
-        {"surface", mri.surface().underlying()},
+    j = nlohmann::json {
+        {"visible",   mri.visible()               },
+        {"points",    mri.points().underlying()   },
+        {"surface",   mri.surface().underlying()  },
         {"wireframe", mri.wireframe().underlying()},
-        {"edges", mri.edges().underlying()}
+        {"edges",     mri.edges().underlying()    }
     };
 }
 
