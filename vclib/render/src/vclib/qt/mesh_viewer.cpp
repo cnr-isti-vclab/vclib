@@ -204,8 +204,9 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     mDefaultMeshRenderSettings.setAllCapabilities(true);
     mDefaultMeshRenderSettings.setDefaultSettingsFromCapability();
     if (j.contains("MeshRenderSettings")) {
-        mDefaultMeshRenderSettings =
+        MeshRenderSettings parsedSettings =
             j.at("MeshRenderSettings").get<MeshRenderSettings>();
+        mDefaultMeshRenderSettings.updateIfCapable(parsedSettings);
     }
 
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
