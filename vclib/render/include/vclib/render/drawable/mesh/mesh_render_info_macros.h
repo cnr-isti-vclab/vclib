@@ -40,7 +40,8 @@
 #define VCL_MRS_SURF_BF_SINGLE          12 // backface single-sided
 #define VCL_MRS_SURF_BF_DOUBLE          13 // backface double-sided
 #define VCL_MRS_SURF_BF_CULL            14 // backface culling
-// #define VCL_MRS_SURF_BF_FANCY           15 // ?
+#define VCL_MRS_SURF_SPECULAR           15 // specular shading enabled
+// #define VCL_MRS_SURF_BF_FANCY           16 // ?
 
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe

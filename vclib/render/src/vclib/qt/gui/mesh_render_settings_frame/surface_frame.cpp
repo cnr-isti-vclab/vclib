@@ -93,6 +93,12 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(toggled(bool)),
         this,
         SLOT(onBackFaceCullToggled(bool)));
+
+    connect(
+        mUI->specularCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSpecularChanged(Qt::CheckState)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -107,9 +113,12 @@ void SurfaceFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
+        mUI->specularCheckBox->setEnabled(mMRS.canSurface(SPECULAR));
+        mUI->specularCheckBox->setChecked(mMRS.isSurface(SPECULAR));
         updateColorComboBoxFromSettings();
         mUI->selectionVisibilityCheckBox->setEnabled(true);
         mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
+        updateBackFaceRadioButtonsFromSettings();
     }
     else {
         this->setEnabled(false);
@@ -205,6 +214,13 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
+void SurfaceFrame::updateBackFaceRadioButtonsFromSettings()
+{
+    mUI->backFaceSingleRadioButton->setChecked(mMRS.isSurface(BACKFACE_SINGLE));
+    mUI->backFaceDoubleRadioButton->setChecked(mMRS.isSurface(BACKFACE_DOUBLE));
+    mUI->backFaceCullRadioButton->setChecked(mMRS.isSurface(BACKFACE_CULL));
+}
+
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setSurface(VISIBLE, arg1 == Qt::CheckState::Checked);
@@ -298,6 +314,12 @@ void SurfaceFrame::onBackFaceCullToggled(bool checked)
         mMRS.setSurface(BACKFACE_CULL, true);
         emit meshRenderSettingsUpdated();
     }
+}
+
+void SurfaceFrame::onSpecularChanged(Qt::CheckState arg1)
+{
+    mMRS.setSurface(SPECULAR, arg1 == Qt::CheckState::Checked);
+    emit meshRenderSettingsUpdated();
 }
 
 } // namespace vcl::qt

@@ -34,11 +34,18 @@ class SettingsDialog : public QDialog
 
     const SettingsDialogData& mData;
 
+    std::string mSettingsFilePath;
+
 public:
     explicit SettingsDialog(
         const SettingsDialogData& data,
         QWidget*                  parent = nullptr);
     ~SettingsDialog();
+
+    void setSettingsFilePath(const std::string& path)
+    {
+        mSettingsFilePath = path;
+    }
 
 signals:
     void applied();

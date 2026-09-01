@@ -13,16 +13,16 @@ $output v_worldPos, v_discardFlag
 #include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 
-BUFFER_RO(pointsBuffer, vec4, 0); // 3D point positions
-DECLARE_FETCH_VEC3(fetchPosition, pointsBuffer);
+BUFFER_RAW_RO(pointsBuffer, 0); // 3D point positions
+DECLARE_FETCH_VEC3(fetchPosition, pointsBuffer)
 
 #if POINTS_SHADING_PER_VERTEX
-BUFFER_RO(normalsBuffer, vec4, 1); // 3D normals
-DECLARE_FETCH_VEC3(fetchNormal, normalsBuffer);
+BUFFER_RAW_RO(normalsBuffer, 1); // 3D normals
+DECLARE_FETCH_VEC3(fetchNormal, normalsBuffer)
 #endif
 
 #if POINTS_COLOR_PER_VERTEX
-BUFFER_RO(pointColors, uint, 2); // colors
+BUFFER_RAW_RO(pointColors, 2); // colors
 #endif
 
 #if POINTS_SELECTION_ON
@@ -66,7 +66,7 @@ void main()
 
     // Color calculation
 #if POINTS_COLOR_PER_VERTEX
-    v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+    v_color = uintABGRToVec4Color(rawLoadUint(pointColors, pointIndex));
 #else
     v_color = u_pointsGeneralColor;
 #endif

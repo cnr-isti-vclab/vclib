@@ -170,10 +170,17 @@ public:
             if (bitVector.empty())
                 return;
 
-            uint fidx = 0;
+            const auto& indexMap         = mMRB.triPolyIndexMap();
+            const bool  isMappingTrivial = indexMap.isMappingTrivial();
+
             for (auto& f : MeshType::faces()) {
-                if (fidx < bitVector.size()) {
-                    f.selected() = bitVector[fidx++];
+                const uint faceIdx     = f.index();
+                const uint firstTriIdx = isMappingTrivial ?
+                                             faceIdx :
+                                             indexMap.triangleBegin(faceIdx);
+
+                if (firstTriIdx < bitVector.size()) {
+                    f.selected() = bitVector[firstTriIdx];
                 }
             }
 
@@ -427,6 +434,7 @@ protected:
         uint color     = 0;
         uint selection = 0;
         uint backFace  = 0;
+        uint specular  = 0;
 
         if (!mCSS.isEnabled()) {
             section = 1;
@@ -472,23 +480,30 @@ protected:
             backFace = 1;
         }
 
+        if (mMRS.isSurface(SPECULAR)) {
+            specular = 1;
+        }
+
         constexpr uint N_SHADING_MODES   = 4;
         constexpr uint N_COLOR_MODES     = 6;
         constexpr uint N_SELECTION_MODES = 2;
         constexpr uint N_BACK_FACE_MODES = 2;
+        constexpr uint N_SPECULAR_MODES  = 2;
         constexpr uint N_SECTION_MODES   = 2;
 
         // the first shader of all the combinations
         uint base = toUnderlying(
             VertFragProgram::
-                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE_SELECTION_ON_BACK_FACE_DOUBLE_OFF);
+                DRAWABLE_MESH_SURFACE_SECTION_ON_SHADING_FLAT_COLOR_FACE_SELECTION_ON_BACK_FACE_DOUBLE_OFF_SPECULAR_OFF);
 
         uint offset = linearizeIndex<
             N_SECTION_MODES,
             N_SHADING_MODES,
             N_COLOR_MODES,
             N_SELECTION_MODES,
-            N_BACK_FACE_MODES>(section, shading, color, selection, backFace);
+            N_BACK_FACE_MODES,
+            N_SPECULAR_MODES>(
+            section, shading, color, selection, backFace, specular);
 
         uint program = base + offset;
 

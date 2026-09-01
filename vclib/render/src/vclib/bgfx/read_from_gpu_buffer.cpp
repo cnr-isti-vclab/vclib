@@ -364,22 +364,19 @@ uint ReadFromGPUBuffer::submit(
         wgpSize[1],
         wgpSize[2]);
 
-    bgfx::blit(
-        blitView,
-        mCPUTexHandle,
-        0,
-        0,
-        mGPUTexHandle,
-        0,
-        0,
-        uint16_t(mComputeTexSize[0]),
-        uint16_t(mComputeTexSize[1]));
+    bgfx::TextureRegion dstRegion;
+    dstRegion.handle = mCPUTexHandle;
+    bgfx::TextureRegion srcRegion;
+    srcRegion.handle = mGPUTexHandle;
+    bgfx::blit(blitView, dstRegion, srcRegion);
 
     ctx.releaseViewId(blitView);
     ctx.releaseViewId(dispatchView);
 
-    mFrameAvailable = bgfx::readTexture(mCPUTexHandle, mReadResults.data());
-    mSubmitted      = true;
+    bgfx::TextureRegion readRegion;
+    readRegion.handle = mCPUTexHandle;
+    mFrameAvailable   = bgfx::read(readRegion, mReadResults.data());
+    mSubmitted        = true;
     return 2;
 }
 
@@ -459,31 +456,40 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
         const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
         if (pixelCount == 1) {
             // Vulkan/Metal: blit only the queried pixel
-            bgfx::blit(
-                mViewOffscreenId,
-                mBlitTexture,
-                0,
-                0,
-                srcBuffer,
-                uint16_t(mPoint.x()),
-                uint16_t(mPoint.y()),
-                1,
-                1);
+            bgfx::TextureRegion dstRegion;
+            dstRegion.init(mBlitTexture, 0, 0, 1, 1);
+            bgfx::TextureRegion srcRegion;
+            srcRegion.init(
+                srcBuffer, uint16_t(mPoint.x()), uint16_t(mPoint.y()), 1, 1);
+            bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
         }
         else {
             // D3D: blit the full depth buffer; pixel extracted in performRead
-            bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
+            bgfx::TextureRegion dstRegion;
+            dstRegion.handle = mBlitTexture;
+            bgfx::TextureRegion srcRegion;
+            srcRegion.handle = srcBuffer;
+            bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
         }
-        mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<FloatData>(mReadData).data());
+        bgfx::TextureRegion readRegion;
+        readRegion.handle = mBlitTexture;
+        mFrameAvailable =
+            bgfx::read(readRegion, std::get<FloatData>(mReadData).data());
     } break;
 
     case Target::COLOR:
     case Target::ID: {
         assert(std::holds_alternative<ByteData>(mReadData));
-        bgfx::blit(mViewOffscreenId, mBlitTexture, 0, 0, srcBuffer);
-        mFrameAvailable = bgfx::readTexture(
-            mBlitTexture, std::get<ByteData>(mReadData).data());
+        bgfx::TextureRegion dstRegion;
+        dstRegion.handle = mBlitTexture;
+        bgfx::TextureRegion srcRegion;
+        srcRegion.handle = srcBuffer;
+        bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
+
+        bgfx::TextureRegion readRegion;
+        readRegion.handle = mBlitTexture;
+        mFrameAvailable =
+            bgfx::read(readRegion, std::get<ByteData>(mReadData).data());
     } break;
 
     default: assert(false && "FRAMEBUFFER submit called with RAW target");
