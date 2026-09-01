@@ -13,6 +13,8 @@
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
+#include <nlohmann/json.hpp>
+
 namespace vcl {
 
 /**
@@ -112,6 +114,9 @@ public:
     bool operator==(const MeshRenderSettings&) const = default;
 
     bool operator!=(const MeshRenderSettings&) const = default;
+
+    friend void to_json(nlohmann::json& j, const MeshRenderSettings& mrs);
+    friend void from_json(const nlohmann::json& j, MeshRenderSettings& mrs);
 
     // rendering option capabilities of the mesh
 
@@ -716,8 +721,14 @@ public:
         for (uint i = toUnderlying(MRI::Points::SHAPE_PIXEL);
              i < toUnderlying(MRI::Points::COUNT);
              ++i) {
-            if (other.isPoints(static_cast<MRI::Points>(i)))
-                setPoints(static_cast<MRI::Points>(i));
+            auto val = static_cast<MRI::Points>(i);
+            auto rng = MRI::pointsExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setPoints(val, other.isPoints(val));
+            }
+            else if (other.isPoints(val)) {
+                setPoints(val);
+            }
         }
 
         // Surface
@@ -726,8 +737,14 @@ public:
         for (uint i = toUnderlying(MRI::Surface::SHADING_NONE);
              i < toUnderlying(MRI::Surface::COUNT);
              ++i) {
-            if (other.isSurface(static_cast<MRI::Surface>(i)))
-                setSurface(static_cast<MRI::Surface>(i));
+            auto val = static_cast<MRI::Surface>(i);
+            auto rng = MRI::surfaceExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setSurface(val, other.isSurface(val));
+            }
+            else if (other.isSurface(val)) {
+                setSurface(val);
+            }
         }
 
         // Wireframe
@@ -737,8 +754,14 @@ public:
         for (uint i = toUnderlying(MRI::Wireframe::SHADING_NONE);
              i < toUnderlying(MRI::Wireframe::COUNT);
              ++i) {
-            if (other.isWireframe(static_cast<MRI::Wireframe>(i)))
-                setWireframe(static_cast<MRI::Wireframe>(i));
+            auto val = static_cast<MRI::Wireframe>(i);
+            auto rng = MRI::wireframeExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setWireframe(val, other.isWireframe(val));
+            }
+            else if (other.isWireframe(val)) {
+                setWireframe(val);
+            }
         }
 
         // Edges
@@ -746,8 +769,14 @@ public:
         for (uint i = toUnderlying(MRI::Edges::SHADING_NONE);
              i < toUnderlying(MRI::Edges::COUNT);
              ++i) {
-            if (other.isEdges(static_cast<MRI::Edges>(i)))
-                setEdges(static_cast<MRI::Edges>(i));
+            auto val = static_cast<MRI::Edges>(i);
+            auto rng = MRI::edgesExclusiveRange(val);
+            if (rng.first == rng.second) {
+                setEdges(val, other.isEdges(val));
+            }
+            else if (other.isEdges(val)) {
+                setEdges(val);
+            }
         }
     }
 
@@ -792,6 +821,10 @@ public:
                     setSurfaceCapability(MRI::Surface::SHADING_NONE);
                     setSurfaceCapability(MRI::Surface::COLOR_USER);
                     setSurfaceCapability(MRI::Surface::SELECTION);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_SINGLE);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_DOUBLE);
+                    setSurfaceCapability(MRI::Surface::BACKFACE_CULL);
+                    setSurfaceCapability(MRI::Surface::SPECULAR);
                     setWireframeCapability(MRI::Wireframe::VISIBLE);
                     setWireframeCapability(MRI::Wireframe::SHADING_NONE);
                     setWireframeCapability(MRI::Wireframe::COLOR_USER);
@@ -935,34 +968,6 @@ public:
         }
     }
 
-private:
-    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
-    void setCapability(Enum val, bool b = true)
-    {
-        assert(val < Enum::COUNT);
-        mCapability.settings<PRIMITIVE>()[toUnderlying(val)] = b;
-    }
-
-    void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
-    {
-        setCapability<MRI::Primitive::POINTS>(p, b);
-    }
-
-    void setSurfaceCapability(MeshRenderInfo::Surface s, bool b = true)
-    {
-        setCapability<MRI::Primitive::SURFACE>(s, b);
-    }
-
-    void setWireframeCapability(MeshRenderInfo::Wireframe w, bool b = true)
-    {
-        setCapability<MRI::Primitive::WIREFRAME>(w, b);
-    }
-
-    void setEdgesCapability(MeshRenderInfo::Edges e, bool b = true)
-    {
-        setCapability<MRI::Primitive::EDGES>(e, b);
-    }
-
     void setDefaultPointSettingsFromCapability()
     {
         using enum MRI::Points;
@@ -996,6 +1001,8 @@ private:
         if (canSurface(VISIBLE)) {
             setSurface(VISIBLE, true);
             setSurface(SELECTION, true);
+            setSurface(SPECULAR, true);
+            setSurface(BACKFACE_SINGLE, true);
             // shading
             if (canSurface(SHADING_NORMAL_MAP)) {
                 setSurface(SHADING_NORMAL_MAP);
@@ -1078,7 +1085,97 @@ private:
             }
         }
     }
+
+private:
+    template<MeshRenderInfo::Primitive PRIMITIVE, typename Enum>
+    void setCapability(Enum val, bool b = true)
+    {
+        assert(val < Enum::COUNT);
+        mCapability.settings<PRIMITIVE>()[toUnderlying(val)] = b;
+    }
+
+    void setPointsCapability(MeshRenderInfo::Points p, bool b = true)
+    {
+        setCapability<MRI::Primitive::POINTS>(p, b);
+    }
+
+    void setSurfaceCapability(MeshRenderInfo::Surface s, bool b = true)
+    {
+        setCapability<MRI::Primitive::SURFACE>(s, b);
+    }
+
+    void setWireframeCapability(MeshRenderInfo::Wireframe w, bool b = true)
+    {
+        setCapability<MRI::Primitive::WIREFRAME>(w, b);
+    }
+
+    void setEdgesCapability(MeshRenderInfo::Edges e, bool b = true)
+    {
+        setCapability<MRI::Primitive::EDGES>(e, b);
+    }
 };
+
+inline void to_json(nlohmann::json& j, const MeshRenderSettings& mrs)
+{
+    j = nlohmann::json {
+        {"drawMode",            mrs.mDrawMode              },
+        {"hasPerVertexColor",   mrs.mHasPerVertexColor     },
+        {"hasPerVertexTangent", mrs.mHasPerVertexTangent   },
+        {"pointWidth",          mrs.mPointWidth            },
+        {"pointUserColor",      mrs.pointUserColor()       },
+        {"surfUserColor",       mrs.surfaceUserColor()     },
+        {"wrfWidth",            mrs.mWrfWidth              },
+        {"wrfUserColor",        mrs.wireframeUserColor()   },
+        {"edgesWidth",          mrs.mEdgesWidth            },
+        {"edgesUserColor",      mrs.edgesUserColor()       },
+        {"pointSelectionColor", mrs.pointSelectionColor()  },
+        {"surfSelectionColor",  mrs.surfaceSelectionColor()},
+        {"edgeSelectionColor",  mrs.edgesSelectionColor()  }
+    };
+}
+
+inline void from_json(const nlohmann::json& j, MeshRenderSettings& mrs)
+{
+    if (j.contains("drawMode"))
+        j.at("drawMode").get_to(mrs.mDrawMode);
+    if (j.contains("hasPerVertexColor"))
+        j.at("hasPerVertexColor").get_to(mrs.mHasPerVertexColor);
+    if (j.contains("hasPerVertexTangent"))
+        j.at("hasPerVertexTangent").get_to(mrs.mHasPerVertexTangent);
+    if (j.contains("pointWidth"))
+        j.at("pointWidth").get_to(mrs.mPointWidth);
+    if (j.contains("pointUserColor")) {
+        vcl::Color c           = j.at("pointUserColor").get<vcl::Color>();
+        mrs.mPointUserColor[0] = c.redF();
+        mrs.mPointUserColor[1] = c.greenF();
+        mrs.mPointUserColor[2] = c.blueF();
+        mrs.mPointUserColor[3] = c.alphaF();
+    }
+    if (j.contains("surfUserColor"))
+        mrs.mSurfUserColor = j.at("surfUserColor").get<vcl::Color>().abgr();
+    if (j.contains("wrfWidth"))
+        j.at("wrfWidth").get_to(mrs.mWrfWidth);
+    if (j.contains("wrfUserColor")) {
+        vcl::Color c         = j.at("wrfUserColor").get<vcl::Color>();
+        mrs.mWrfUserColor[0] = c.redF();
+        mrs.mWrfUserColor[1] = c.greenF();
+        mrs.mWrfUserColor[2] = c.blueF();
+        mrs.mWrfUserColor[3] = c.alphaF();
+    }
+    if (j.contains("edgesWidth"))
+        j.at("edgesWidth").get_to(mrs.mEdgesWidth);
+    if (j.contains("edgesUserColor"))
+        mrs.mEdgesUserColor = j.at("edgesUserColor").get<vcl::Color>().abgr();
+    if (j.contains("pointSelectionColor"))
+        mrs.mPointSelectionColor =
+            j.at("pointSelectionColor").get<vcl::Color>().abgr();
+    if (j.contains("surfSelectionColor"))
+        mrs.mSurfSelectionColor =
+            j.at("surfSelectionColor").get<vcl::Color>().abgr();
+    if (j.contains("edgeSelectionColor"))
+        mrs.mEdgeSelectionColor =
+            j.at("edgeSelectionColor").get<vcl::Color>().abgr();
+}
 
 } // namespace vcl
 

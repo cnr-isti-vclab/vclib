@@ -198,6 +198,7 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
 
     mUI->treeWidget->clear();
 
+    mUI->treeWidget->blockSignals(true);
     uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
@@ -213,6 +214,7 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
         }
         ++i;
     }
+    mUI->treeWidget->blockSignals(false);
 }
 
 void DrawableObjectVectorTree::itemSelectionChanged()

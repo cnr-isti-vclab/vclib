@@ -56,12 +56,25 @@ class MeshViewer : public QMainWindow
     /** @brief Stores settings tabs data to pass to SettingsDialog */
     SettingsDialogData mSettingsData;
 
+    std::string mSettingsFilePath;
+
+    MeshRenderSettings mDefaultMeshRenderSettings;
+
 public:
     /** @brief Type alias for the specific ViewerApp */
     using ViewerType = MeshViewerRenderApp::ViewerType;
 
-    explicit MeshViewer(QWidget* parent = nullptr);
+    explicit MeshViewer(
+        QWidget*           parent           = nullptr,
+        const std::string& settingsFilePath = "");
     ~MeshViewer();
+
+    const std::string& settingsFilePath() const { return mSettingsFilePath; }
+
+    void setSettingsFilePath(const std::string& path)
+    {
+        mSettingsFilePath = path;
+    }
 
     /**
      * @brief Returns the ID of the currently selected drawable object.
@@ -98,6 +111,13 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     uint pushDrawableObject(ObjType&& obj)
     {
+        if constexpr (std::is_base_of_v<
+                          vcl::AbstractDrawableMesh,
+                          std::remove_cvref_t<ObjType>>) {
+            auto rs = obj.renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            obj.setRenderSettings(rs);
+        }
         uint id = viewer().pushDrawableObject(std::forward<ObjType>(obj));
         updateGUI();
         return id;
@@ -110,6 +130,12 @@ public:
      */
     uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
     {
+        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
+        if (mesh) {
+            MeshRenderSettings rs = mesh->renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            mesh->setRenderSettings(rs);
+        }
         uint id = viewer().pushDrawableObject(std::move(obj));
         updateGUI();
         return id;
@@ -131,6 +157,13 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     bool insertDrawableObject(uint pos, ObjType&& obj)
     {
+        if constexpr (std::is_base_of_v<
+                          vcl::AbstractDrawableMesh,
+                          std::remove_cvref_t<ObjType>>) {
+            auto rs = obj.renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            obj.setRenderSettings(rs);
+        }
         bool success =
             viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
         if (success)
@@ -149,6 +182,12 @@ public:
         uint                                 pos,
         std::shared_ptr<vcl::DrawableObject> obj)
     {
+        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
+        if (mesh) {
+            MeshRenderSettings rs = mesh->renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            mesh->setRenderSettings(rs);
+        }
         bool success = viewer().insertDrawableObject(pos, std::move(obj));
         if (success)
             updateGUI();
@@ -163,10 +202,12 @@ public:
     template<template<typename> typename EditorT>
     auto pushEditor(bool active = false)
     {
-        nlohmann::json        j;
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        std::string           filePath =
-            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        nlohmann::json j;
+        std::string    filePath = mSettingsFilePath;
+        if (filePath.empty()) {
+            std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+            filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        }
         std::ifstream in(filePath);
         if (in.is_open()) {
             try {

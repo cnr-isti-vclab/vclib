@@ -106,9 +106,11 @@ void SettingsDialog::onApplyClicked()
     emit applied();
 
     if (mUI->saveAsDefaultCheckBox->isChecked()) {
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        std::string           filePath =
-            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        std::string filePath = mSettingsFilePath;
+        if (filePath.empty()) {
+            std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+            filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+        }
 
         nlohmann::json j;
 
@@ -140,7 +142,9 @@ void SettingsDialog::onApplyClicked()
 
         // Ensure directory exists
         QDir dir;
-        dir.mkpath(QString::fromStdString(configDir.string()));
+        dir.mkpath(
+            QString::fromStdString(
+                std::filesystem::path(filePath).parent_path().string()));
 
         std::ofstream out(filePath);
         if (out.is_open()) {

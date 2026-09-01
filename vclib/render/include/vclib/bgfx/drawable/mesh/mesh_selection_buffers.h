@@ -178,16 +178,11 @@ public:
         // Compute number of bits needed to store face selection
         vcl::BitVector<true> faceBackup(indexMap.triangleCount(), false);
 
-        // For each face, set selection for all its triangles
-        uint tIdx = 0;
-        for (const auto& f : mesh.faces()) {
-            const uint faceIdx     = f.index();
-            const uint numFaceTris = indexMap.triangleCount(faceIdx);
-
-            // Set selection for all triangles of this face
-            for (uint t = 0; t < numFaceTris; ++t) {
-                faceBackup[tIdx++] = f.selected();
-            }
+        // For each triangle, get its polygon index and read the selection from
+        // the mesh
+        for (uint tIdx = 0; tIdx < indexMap.triangleCount(); ++tIdx) {
+            uint faceIdx     = indexMap.polygon(tIdx);
+            faceBackup[tIdx] = mesh.face(faceIdx).selected();
         }
 
         mFaceSelection.setFromCPUBuffer(faceBackup);
@@ -470,9 +465,9 @@ public:
 
             for (auto& v : m.vertices()) {
                 const uint byteIdx = vidx / 8;
-                if (byteIdx < cpuBackup.size()) {
+                if (byteIdx < cpuBackup.bytes().size()) {
                     if (vidx % 8 == 0)
-                        flags.setUnderlying(cpuBackup[byteIdx]);
+                        flags.setUnderlying(cpuBackup.bytes()[byteIdx]);
 
                     bool selected = flags[vidx % 8];
                     v.selected()  = selected;
@@ -507,9 +502,9 @@ public:
                                            indexMap.triangleBegin(faceIdx);
                     const uint byteIdx = firstTriIdx / 8;
 
-                    if (byteIdx < cpuBackup.size()) {
+                    if (byteIdx < cpuBackup.bytes().size()) {
                         if (byteIdx != lastByteIdx) {
-                            flags.setUnderlying(cpuBackup[byteIdx]);
+                            flags.setUnderlying(cpuBackup.bytes()[byteIdx]);
                             lastByteIdx = byteIdx;
                         }
 
