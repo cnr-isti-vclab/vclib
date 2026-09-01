@@ -21,13 +21,13 @@ BUFFER_RO(faceSelected, uint, VCL_MRB_PRIMITIVE_SELECTION_BUFFER);
 
 #ifdef SURFACE_COLOR_FACE
 // color of each face / edge
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+BUFFER_RAW_RO(primitiveColors, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 #endif
 
 #ifdef SURFACE_SHADING_FLAT
 // normal of each face / edge
-BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
-DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
+BUFFER_RAW_RO(primitiveNormals, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals)
 #endif
 
 void main()
@@ -78,6 +78,7 @@ void main()
     // if flat or smooth shading, compute light
     light = computeLight(u_lightDir, u_lightColor, normal);
 
+#ifdef SURFACE_SPECULAR_ON
     // all computations are in view (camera) space
     // => the camera eye is at (0, 0, 0)
     // also, u_lightDir is provided in view space
@@ -87,6 +88,7 @@ void main()
         u_lightDir,
         u_lightColor,
         normal);
+#endif
 #endif
 
     /***** compute color ******/
@@ -99,7 +101,7 @@ void main()
     color = u_meshColor;
 #endif
 #ifdef SURFACE_COLOR_FACE
-    color = uintABGRToVec4Color(primitiveColors[primitiveID]);
+    color = uintABGRToVec4Color(rawLoadUint(primitiveColors, primitiveID));
 #endif
 #ifdef SURFACE_COLOR_TEX_VERTEX
     if (isBaseColorTextureAvailable())

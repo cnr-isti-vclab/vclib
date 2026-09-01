@@ -19,7 +19,7 @@ void main()
     // gid.z   = cubemap face index [0..5]
 
     ivec2 pixel = gid.xy;
-    int face    = gid.z;
+    uint face   = uint(gid.z);
 
     ivec3 dims  = imageSize(i_irradiance);
     int size    = dims.x;  // cube is size×size×6
@@ -33,7 +33,7 @@ void main()
     uv = uv * 2.0 - 1.0;
 
     // Get direction corresponding to cubemap face pixel
-    vec3 dir = faceDirection(uint(face), uv, false);
+    vec3 dir = faceDirection(face, uv, false);
 
     vec3 normal = normalize(dir);
 
@@ -41,7 +41,7 @@ void main()
     const uint SAMPLE_COUNT = 1024u;
     for (uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
-        vec4 sample = getImportanceSample(
+        vec4 smp = getImportanceSample(
             i,                              // current sample index
             SAMPLE_COUNT, 
             normal, 
@@ -49,8 +49,8 @@ void main()
             -1.0                            // roughness (not needed for irradiance)
         );
 
-        vec3 H = sample.xyz;
-        float pdf = sample.w;
+        vec3 H = smp.xyz;
+        float pdf = smp.w;
 
         float mipLevel = computeLod(pdf, u_cubeSideResolution, float(SAMPLE_COUNT)); //TODO: see if a bias is needed
 

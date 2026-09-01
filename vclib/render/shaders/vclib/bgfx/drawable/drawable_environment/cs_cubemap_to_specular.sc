@@ -43,7 +43,7 @@ void main()
     vec3 prefilteredColor = vec3_splat(0.0);
     for (uint i = 0u; i < SAMPLE_COUNT; ++i)
     {
-        vec4 sample = getImportanceSample(
+        vec4 smp = getImportanceSample(
             i,                              // current sample index
             SAMPLE_COUNT, 
             N, 
@@ -51,8 +51,8 @@ void main()
             u_roughness
         );
 
-        vec3 H = sample.xyz;
-        float pdf = sample.w;
+        vec3 H = smp.xyz;
+        float pdf = smp.w;
 
         float mipLevel = computeLod(pdf, u_cubeSideResolution, float(SAMPLE_COUNT));
 

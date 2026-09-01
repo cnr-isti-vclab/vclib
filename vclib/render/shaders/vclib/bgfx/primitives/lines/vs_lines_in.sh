@@ -12,11 +12,11 @@ $output v_color, v_normal, v_selected, v_lineIndex
 #include <vclib/bgfx/buffers/boolean_buffer.sh>
 #include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
 
-BUFFER_RO(vertexPosBuffer, vec4, 0);
+BUFFER_RAW_RO(vertexPosBuffer, 0);
 DECLARE_FETCH_VEC3(getVertexPos, vertexPosBuffer)
 
 #if LINES_COLOR_PER_VERTEX
-BUFFER_RO(vertexColBuffer, uint, 1);
+BUFFER_RAW_RO(vertexColBuffer, 1);
 #endif
 
 #if LINES_INDICES_ON
@@ -24,16 +24,16 @@ BUFFER_RO(indexBuffer, uint, 2);
 #endif
 
 #if LINES_COLOR_PER_LINE
-BUFFER_RO(lineColBuffer, uint, 3);
+BUFFER_RAW_RO(lineColBuffer, 3);
 #endif
 
 #if LINES_SHADING_PER_VERTEX
-BUFFER_RO(vertexNorBuffer, vec4, 4);
+BUFFER_RAW_RO(vertexNorBuffer, 4);
 DECLARE_FETCH_VEC3(getVertexNor, vertexNorBuffer)
 #endif
 
 #if LINES_SHADING_PER_LINE
-BUFFER_RO(lineNorBuffer, vec4, 5);
+BUFFER_RAW_RO(lineNorBuffer, 5);
 DECLARE_FETCH_VEC3(getLineNor, lineNorBuffer)
 #endif
 
@@ -86,10 +86,10 @@ void main() {
 #endif
 
 #if LINES_COLOR_PER_VERTEX
-    vec4 c0 = uintABGRToVec4Color(vertexColBuffer[vertexIndex0]);
-    vec4 c1 = uintABGRToVec4Color(vertexColBuffer[vertexIndex1]);
+    vec4 c0 = uintABGRToVec4Color(rawLoadUint(vertexColBuffer, vertexIndex0));
+    vec4 c1 = uintABGRToVec4Color(rawLoadUint(vertexColBuffer, vertexIndex1));
 #elif LINES_COLOR_PER_LINE
-    vec4 c_line = uintABGRToVec4Color(lineColBuffer[lineIndex]);
+    vec4 c_line = uintABGRToVec4Color(rawLoadUint(lineColBuffer, lineIndex));
     vec4 c0 = c_line;
     vec4 c1 = c_line;
 #else

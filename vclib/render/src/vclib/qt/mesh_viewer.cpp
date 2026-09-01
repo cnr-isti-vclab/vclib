@@ -11,6 +11,7 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
+#include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
 #include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
@@ -51,8 +52,9 @@ bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
  *
  * @param parent
  */
-MeshViewer::MeshViewer(QWidget* parent) :
-        QMainWindow(parent), mUI(new Ui::MeshViewer)
+MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
+        QMainWindow(parent), mSettingsFilePath(settingsFilePath),
+        mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
 
@@ -186,10 +188,12 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &MeshViewer::openSettings);
 
     // Load default global settings
-    nlohmann::json        j;
-    std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-    std::string           filePath =
-        (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    nlohmann::json j;
+    std::string    filePath = mSettingsFilePath;
+    if (filePath.empty()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    }
     std::ifstream in(filePath);
     if (in.is_open()) {
         try {
@@ -204,7 +208,15 @@ MeshViewer::MeshViewer(QWidget* parent) :
         }
     }
 
+    mDefaultMeshRenderSettings.setAllCapabilities(true);
+    mDefaultMeshRenderSettings.setDefaultSettingsFromCapability();
+    if (j.contains("MeshRenderSettings")) {
+        mDefaultMeshRenderSettings =
+            j.at("MeshRenderSettings").get<MeshRenderSettings>();
+    }
+
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    setupMeshRenderSettingsTabs(mSettingsData, mDefaultMeshRenderSettings);
 }
 
 MeshViewer::~MeshViewer()
@@ -563,6 +575,7 @@ void MeshViewer::openSettings()
         viewer().update();
     });
 
+    dialog.setSettingsFilePath(mSettingsFilePath);
     dialog.exec();
 }
 
