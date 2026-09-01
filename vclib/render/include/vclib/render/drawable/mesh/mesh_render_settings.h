@@ -715,6 +715,9 @@ public:
         setWireframeUserColor(other.wireframeUserColor());
         setEdgesWidth(other.edgesWidth());
         setEdgesUserColor(other.edgesUserColor());
+        setPointSelectionColor(other.pointSelectionColor());
+        setSurfaceSelectionColor(other.surfaceSelectionColor());
+        setEdgesSelectionColor(other.edgesSelectionColor());
 
         // Points
         setPoints(MRI::Points::VISIBLE, other.isPoints(MRI::Points::VISIBLE));
