@@ -2,8 +2,7 @@
 
 The library can be used both as a C++ library and as a Python library.
 
-> [!WARNING]
-> **License Disclaimer:** While VCLib is licensed under the MPL2 license, please note that when using the `External` module or the `IO` module of `Core`, you are implicitly accepting the licenses of the underlying external third-party libraries, which may differ from MPL2.
+> **WARNING - License Disclaimer:** While VCLib is licensed under the MPL2 license, please note that when using the `External` module or the `IO` module of `Core`, you are implicitly accepting the licenses of the underlying external third-party libraries, which may differ from MPL2.
 
 ## C++
 
@@ -47,9 +46,11 @@ By default, the library is built with the **Core** module only. You can enable t
 
 There are three main ways to include VCLib in your CMake project.
 
-#### 1. Using `find_package` (Pre-compiled Archive)
+#### 1. Using find_package (Pre-compiled Packages)
 
-You can download a pre-compiled archive of VCLib from the [GitHub Releases](https://github.com/cnr-isti-vclab/vclib/releases) page. We provide archives for both the `core` version (only the Core module) and the `all` version (Core, Render, and External modules).
+You can download a pre-compiled package of VCLib from the [GitHub Releases](https://github.com/cnr-isti-vclab/vclib/releases) page. We provide packages for two configurations:
+- **`core`**: Contains only the Core module.
+- **`all`**: Contains the Core, Render, and External modules. The Render module in this package is compiled using `bgfx` as the backend.
 
 Once downloaded and extracted, you can use `find_package`:
 
@@ -57,21 +58,18 @@ Once downloaded and extracted, you can use `find_package`:
 cmake_minimum_required(VERSION 3.24)
 project(my_project LANGUAGES CXX)
 
-# enable any of the vclib modules you require here:
-set(VCLIB_BUILD_MODULE_EXTERNAL OFF)
-set(VCLIB_BUILD_MODULE_RENDER OFF)
-
+# Find the VCLib package
 find_package(vclib REQUIRED)
 
 add_executable(my_project main.cpp)
 target_link_libraries(my_project PRIVATE vclib::vclib)
 ```
 
-*Note: If you extracted the archive in a non-standard location, you will need to pass `-Dvclib_DIR=/path/to/extracted/vclib/lib/cmake/vclib` when configuring your project.*
+*Note: Unless you install the package in a standard system path, you need to tell CMake where to find it by passing `-Dvclib_DIR=/path/to/extracted/vclib/lib/cmake/vclib` during configuration.*
 
-#### 2. Using `FetchContent` (Build from Source)
+#### 2. Using FetchContent (Build from Source)
 
-If you prefer to download and build the library at configuration time without dealing with archives, you can use `FetchContent`:
+If you prefer to download and build the library at configuration time without cloning it manually, you can use `FetchContent`:
 
 ```cmake
 cmake_minimum_required(VERSION 3.24)
@@ -94,7 +92,7 @@ add_executable(my_project main.cpp)
 target_link_libraries(my_project PRIVATE vclib::vclib)
 ```
 
-#### 3. Using `add_subdirectory`
+#### 3. Using add_subdirectory (Build from Source)
 
 Alternatively, you can clone the repository directly into your project directory (or add it as a git submodule) and include it:
 
