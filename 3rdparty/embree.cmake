@@ -37,7 +37,7 @@ if(NOT embree_FOUND AND WIN32 AND VCLIB_ALLOW_DOWNLOAD_EMBREE)
                 FILES
                     "${vclib_embree_win_SOURCE_DIR}/bin/embree${EMBREE_MAJOR}.dll"
                     "${vclib_embree_win_SOURCE_DIR}/bin/tbb12.dll"
-                DESTINATION ${CMAKE_INSTALL_BINDIR}
+                DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT Runtime
             )
             install(
                 FILES
