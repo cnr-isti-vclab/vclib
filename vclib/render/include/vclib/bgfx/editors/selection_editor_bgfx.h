@@ -102,7 +102,7 @@ public:
             mVisibleFaceFBSize,
             false,
             1,
-            Context::instance().DEFAULT_DEPTH_FORMAT,
+            Context::defaultDepthFormat(),
             BGFX_TEXTURE_RT);
         mVisibleSelectionFB.create(texHandles, 3, true);
         bgfx::setViewFrameBuffer(
@@ -134,7 +134,7 @@ public:
             1,
             false,
             1,
-            Context::instance().DEFAULT_DEPTH_FORMAT,
+            Context::defaultDepthFormat(),
             BGFX_TEXTURE_RT);
         mComputePassFB.create(computePassTexs, 2, true);
         bgfx::setViewFrameBuffer(

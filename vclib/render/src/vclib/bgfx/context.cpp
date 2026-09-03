@@ -158,6 +158,23 @@ bool Context::isValidViewId(bgfx::ViewId viewId) const
     return viewId <= capabilites().limits.maxViews;
 }
 
+bgfx::TextureFormat::Enum Context::defaultDepthFormat()
+{
+    const bgfx::TextureFormat::Enum depthFormats[] = {
+        bgfx::TextureFormat::D24S8,
+        bgfx::TextureFormat::D32FS8,
+        bgfx::TextureFormat::D32F,
+        bgfx::TextureFormat::D24,
+        bgfx::TextureFormat::D16,
+    };
+    for (auto format : depthFormats) {
+        if (bgfx::isTextureValid(0, false, 1, format, BGFX_TEXTURE_RT)) {
+            return format;
+        }
+    }
+    return bgfx::TextureFormat::D24S8;
+}
+
 static const uint64_t kMRTRenderBufferflags =
     0 | BGFX_TEXTURE_RT | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
     BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
