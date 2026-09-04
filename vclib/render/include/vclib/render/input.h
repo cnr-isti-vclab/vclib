@@ -8,7 +8,8 @@
 #ifndef VCL_RENDER_INPUT_H
 #define VCL_RENDER_INPUT_H
 
-#include "input/binding_map.h"
+#include "input/abstract_input_action_map.h"
 #include "input/input.h"
+#include "input/input_action_map.h"
 
 #endif // VCL_RENDER_INPUT_H

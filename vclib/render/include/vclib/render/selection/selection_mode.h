@@ -8,6 +8,8 @@
 #ifndef VCL_RENDER_SELECTION_SELECTION_MODE_H
 #define VCL_RENDER_SELECTION_SELECTION_MODE_H
 
+#include <stdexcept>
+#include <string>
 #include <variant>
 
 namespace vcl {
@@ -39,6 +41,29 @@ enum class SelectionAtomicAction {
            ///< everything except what is currently chosen.
 };
 
+inline std::string toString(SelectionAtomicAction action)
+{
+    switch (action) {
+    case SelectionAtomicAction::ALL: return "Select All";
+    case SelectionAtomicAction::NONE: return "Deselect All";
+    case SelectionAtomicAction::INVERT: return "Invert Selection";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, SelectionAtomicAction& out)
+{
+    if (str == "Select All")
+        out = SelectionAtomicAction::ALL;
+    else if (str == "Deselect All")
+        out = SelectionAtomicAction::NONE;
+    else if (str == "Invert Selection")
+        out = SelectionAtomicAction::INVERT;
+    else
+        throw std::invalid_argument(
+            "Invalid SelectionAtomicAction string: " + str);
+}
+
 /**
  * @brief Box-based selection operations.
  *
@@ -61,6 +86,29 @@ enum class SelectionDragAction {
              ///< deselected; others remain unaffected. Typically triggered
              ///< with a modifier key (e.g. Ctrl+Shift+drag).
 };
+
+inline std::string toString(SelectionDragAction action)
+{
+    switch (action) {
+    case SelectionDragAction::REGULAR: return "Regular Selection";
+    case SelectionDragAction::ADD: return "Add to Selection";
+    case SelectionDragAction::SUBTRACT: return "Subtract from Selection";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, SelectionDragAction& out)
+{
+    if (str == "Regular Selection")
+        out = SelectionDragAction::REGULAR;
+    else if (str == "Add to Selection")
+        out = SelectionDragAction::ADD;
+    else if (str == "Subtract from Selection")
+        out = SelectionDragAction::SUBTRACT;
+    else
+        throw std::invalid_argument(
+            "Invalid SelectionDragAction string: " + str);
+}
 
 /**
  * @brief Describes a single selection operation.

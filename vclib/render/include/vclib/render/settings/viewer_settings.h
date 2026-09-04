@@ -25,10 +25,11 @@ namespace vcl {
 struct ViewerSettings : public TrackballSettings
 {
     /**
-     * @brief Global actions registered by the viewer or editors.
+     * @brief Global actions type, used to register actions by the viewer or
+     * editors.
      */
     using ViewerGlobalActionMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+        InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
 
     /**
      * @brief The tone mapping operators available when rendering.
@@ -99,10 +100,16 @@ struct ViewerSettings : public TrackballSettings
     std::string panoramaPath = "";
 
     /**
+     * @brief Global actions registered by the viewer or editors.
+     */
+    ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
+
+    /**
      * @brief Resets the settings to their default values.
      */
     void resetDefaults()
     {
+        TrackballSettings::resetDefaults();
         renderMode               = RenderMode::CLASSIC;
         imageBasedLighting       = false;
         renderBackgroundPanorama = false;
@@ -110,6 +117,7 @@ struct ViewerSettings : public TrackballSettings
         toneMapping              = ToneMapping::ACES_HILL;
         backgroundColor          = vcl::Color::DarkGray;
         panoramaPath             = "";
+        globalActionMap.resetToDefaults();
     }
 
     /**
@@ -118,8 +126,10 @@ struct ViewerSettings : public TrackballSettings
      */
     void loadSettings(const nlohmann::json& j)
     {
-        if (j.contains("ViewerSettings")) {
-            const auto& js = j["ViewerSettings"];
+        TrackballSettings::loadSettings(j);
+        globalActionMap.loadSettings(j);
+        if (j.contains("Viewer Settings")) {
+            const auto& js = j["Viewer Settings"];
             renderMode     = static_cast<RenderMode>(
                 js.value("renderMode", static_cast<int>(renderMode)));
             imageBasedLighting =
@@ -140,17 +150,38 @@ struct ViewerSettings : public TrackballSettings
      */
     void saveSettings(nlohmann::json& j) const
     {
-        j["ViewerSettings"]["renderMode"] = static_cast<int>(renderMode);
-        j["ViewerSettings"]["imageBasedLighting"] = imageBasedLighting;
-        j["ViewerSettings"]["renderBackgroundPanorama"] =
-            renderBackgroundPanorama;
-        j["ViewerSettings"]["exposure"]        = exposure;
-        j["ViewerSettings"]["toneMapping"]     = static_cast<int>(toneMapping);
-        j["ViewerSettings"]["backgroundColor"] = backgroundColor;
-        j["ViewerSettings"]["panoramaPath"]    = panoramaPath;
+        TrackballSettings::saveSettings(j);
+        globalActionMap.saveSettings(j);
+
+        auto& js = j["Viewer Settings"];
+        js["renderMode"]               = static_cast<int>(renderMode);
+        js["imageBasedLighting"]       = imageBasedLighting;
+        js["renderBackgroundPanorama"] = renderBackgroundPanorama;
+        js["exposure"]                 = exposure;
+        js["toneMapping"]              = static_cast<int>(toneMapping);
+        js["backgroundColor"]          = backgroundColor;
+        js["panoramaPath"]             = panoramaPath;
     }
 
-    ViewerGlobalActionMap globalActionMap;
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+    {
+        auto res = TrackballSettings::actionMaps();
+        res.push_back(globalActionMap);
+        return res;
+    }
+
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps() const
+    {
+        auto res = TrackballSettings::actionMaps();
+        res.push_back(globalActionMap);
+        return res;
+    }
 };
 
 } // namespace vcl
