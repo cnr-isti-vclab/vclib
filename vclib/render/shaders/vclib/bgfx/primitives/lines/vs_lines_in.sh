@@ -7,7 +7,11 @@
 
 $output v_color, v_normal, v_selected
 
+// cross section
+$output v_worldPos0, v_worldPos1, v_discardFlag, v_t
+
 #include <bgfx_shader.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/buffers/boolean_buffer.sh>
 #include <vclib/bgfx/primitives/uniforms/lines_uniforms.sh>
@@ -67,6 +71,12 @@ void main() {
     vec3 p0 = getVertexPos(vertexIndex0);
     vec3 p1 = getVertexPos(vertexIndex1);
 
+#if defined(LINES_SECTION_ON) || defined(LINES_ID_SECTION_ON)
+    // compute initial world positions
+    vec3 worldP0 = mul(u_model[0], vec4(p0, 1.0)).xyz;
+    vec3 worldP1 = mul(u_model[0], vec4(p1, 1.0)).xyz;
+#endif
+
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
 
@@ -103,18 +113,28 @@ void main() {
     vec4 clippedColor1 = c1;
     vec3 clippedNormal0 = n0_NDC;
     vec3 clippedNormal1 = n1_NDC;
+#if defined(LINES_SECTION_ON) || defined(LINES_ID_SECTION_ON)
+    vec3 clippedWorldP0 = worldP0;
+    vec3 clippedWorldP1 = worldP1;
+#endif
 
     if (p0_NDC.w < NEAR_EPSILON) {
         float t = (NEAR_EPSILON - p0_NDC.w) / (p1_NDC.w - p0_NDC.w);
         clippedP0 = mix(p0_NDC, p1_NDC, t);
         clippedColor0 = mix(c0, c1, t);
         clippedNormal0 = mix(n0_NDC, n1_NDC, t);
+#if defined(LINES_SECTION_ON) || defined(LINES_ID_SECTION_ON)
+        clippedWorldP0 = mix(worldP0, worldP1, t);
+#endif
     }
     if (p1_NDC.w < NEAR_EPSILON) {
         float t = (NEAR_EPSILON - p1_NDC.w) / (p0_NDC.w - p1_NDC.w);
         clippedP1 = mix(p1_NDC, p0_NDC, t);
         clippedColor1 = mix(c1, c0, t);
         clippedNormal1 = mix(n1_NDC, n0_NDC, t);
+#if defined(LINES_SECTION_ON) || defined(LINES_ID_SECTION_ON)
+        clippedWorldP1 = mix(worldP1, worldP0, t);
+#endif
     }
 
     const vec2 offsets[6] = {
@@ -148,6 +168,18 @@ void main() {
 
     v_color = color;
     v_normal = normal;
+
+#if defined(LINES_SECTION_ON) || defined(LINES_ID_SECTION_ON)
+    v_worldPos0 = clippedWorldP0;
+    v_worldPos1 = clippedWorldP1;
+    v_t = uv.x;
+    // discard flag - 1.0 if either endpoint is outside the cross section
+    // (only used in per-vertex mode; in per-fragment mode computeDiscardFlag returns 0.0)
+    v_discardFlag =
+        max(computeDiscardFlag(v_worldPos0), computeDiscardFlag(v_worldPos1));
+#else
+    v_discardFlag = 1.0;
+#endif
 
     // Apply depth offset in clip space.
     // We scale the offset by w to maintain it consistently after the perspective divide.

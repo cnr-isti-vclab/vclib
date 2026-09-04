@@ -10,6 +10,8 @@
 
 #include <vclib/bgfx/buffers.h>
 
+#include <vclib/render/settings/cross_section_settings.h>
+
 namespace vcl {
 
 /**
@@ -65,14 +67,15 @@ private:
     uint mLineNorCount   = 0;
     uint mLineSelCount   = 0;
 
-    float        mWidth               = 1.0f;
-    Topology     mTopology            = Topology::LINES;
-    ColorSetting mColorSetting        = ColorSetting::GENERAL;
-    Shading      mShading             = Shading::NONE;
-    Color        mGeneralColor        = Color::Black;
-    float        mDepthOffset         = 0.0f;
+    float        mWidth        = 1.0f;
+    Topology     mTopology     = Topology::LINES;
+    ColorSetting mColorSetting = ColorSetting::GENERAL;
+    Shading      mShading      = Shading::NONE;
+    Color        mGeneralColor = Color::Black;
+    float        mDepthOffset  = 0.0f;
     Color        mSelectionColor      = Color(0x88FF9732, Color::Format::ABGR);
     bool         mSelectionVisibility = false;
+    CrossSectionSettings mCrossSectionSettings;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
@@ -156,6 +159,25 @@ public:
      * @return The selection highlight color.
      */
     Color selectionColor() const { return mSelectionColor; }
+
+    /*
+     * @brief Returns the current cross section settings.
+     * @return The current cross section settings.
+     */
+    const CrossSectionSettings& crossSectionSettings() const
+    {
+        return mCrossSectionSettings;
+    }
+
+    /**
+     * @brief Sets the cross section settings.
+     * @param[in] settings: The cross section settings to apply.
+     */
+    void setCrossSectionSettings(const CrossSectionSettings& settings)
+    {
+        mCrossSectionSettings  = settings;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Returns whether the line set has valid vertex positions.

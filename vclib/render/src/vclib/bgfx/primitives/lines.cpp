@@ -8,6 +8,7 @@
 #include <vclib/bgfx/primitives/lines.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/primitives/uniforms/lines_uniforms.h>
 #include <vclib/bgfx/programs/vert_frag_loader.h>
 
@@ -127,6 +128,19 @@ void Lines::draw(bgfx::ViewId viewId) const
         0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
         BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
     LinesUniforms::bind();
+
+    if (mCrossSectionSettings.isEnabled()) {
+        using enum CrossSectionSettings::CrossSectionType;
+        CrossSectionUniforms::set(
+            mCrossSectionSettings.lower(),
+            mCrossSectionSettings.upper(),
+            mCrossSectionSettings.type() == PER_FRAGMENT);
+    }
+    else {
+        CrossSectionUniforms::set();
+    }
+    CrossSectionUniforms::bind();
+
     bgfx::submit(viewId, mProgram);
 }
 
@@ -155,6 +169,19 @@ void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
         BGFX_STATE_DEPTH_TEST_LEQUAL |
         BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
     LinesUniforms::bind();
+
+    if (mCrossSectionSettings.isEnabled()) {
+        using enum CrossSectionSettings::CrossSectionType;
+        CrossSectionUniforms::set(
+            mCrossSectionSettings.lower(),
+            mCrossSectionSettings.upper(),
+            mCrossSectionSettings.type() == PER_FRAGMENT);
+    }
+    else {
+        CrossSectionUniforms::set();
+    }
+    CrossSectionUniforms::bind();
+
     bgfx::submit(viewId, mIdProgram);
 }
 
@@ -299,23 +326,26 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
     constexpr uint N_TOPO_MODES      = 2;
     constexpr uint N_COLOR_MODES     = 3;
     constexpr uint N_SELECTION_MODES = 2;
+    constexpr uint N_SECTION_MODES   = 2;
 
     uint shading  = toUnderlying(mShading);
     uint indices  = mIndices.isValid() ? 0 : 1;
     uint topology = toUnderlying(mTopology);
     uint color    = toUnderlying(mColorSetting);
-    uint select   = mSelectionVisibility ? 1 : 0;
+	uint select   = mSelectionVisibility ? 1 : 0;
+    uint section  = mCrossSectionSettings.isEnabled() ? 1 : 0;
 
     // the first shader of all the combinations
     uint base = toUnderlying(
-        PRIMITIVE_LINES_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX_SELECTION_OFF);
+        PRIMITIVE_LINES_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_PER_VERTEX_SELECTION_OFF_SECTION_OFF);
 
     uint offset = linearizeIndex<
         N_SHADING_MODES,
         N_INDEX_MODES,
         N_TOPO_MODES,
         N_COLOR_MODES,
-        N_SELECTION_MODES>(shading, indices, topology, color, select);
+        N_SELECTION_MODES,
+        N_SECTION_MODES>(shading, indices, topology, color, select, section);
 
     uint program = base + offset;
 
@@ -329,16 +359,18 @@ bgfx::ProgramHandle Lines::linesIdProgramSelector() const
 
     constexpr uint N_INDEX_MODES = 2;
     constexpr uint N_TOPO_MODES  = 2;
+    constexpr uint N_SECTION_MODES = 2;
 
     uint indices  = mIndices.isValid() ? 0 : 1;
     uint topology = toUnderlying(mTopology);
+    uint section  = mCrossSectionSettings.isEnabled() ? 1 : 0;
 
     // the first shader of all the combinations
     uint base = toUnderlying(
-        PRIMITIVE_LINES_ID_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_GENERAL);
+        PRIMITIVE_LINES_ID_SHADING_NONE_INDICES_ON_TOPO_LINES_COLOR_GENERAL_SECTION_OFF);
 
     uint offset =
-        linearizeIndex<N_INDEX_MODES, N_TOPO_MODES>(indices, topology);
+        linearizeIndex<N_INDEX_MODES, N_TOPO_MODES, N_SECTION_MODES>(indices, topology, section);
 
     uint program = base + offset;
 
