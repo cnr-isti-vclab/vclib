@@ -277,6 +277,10 @@ public:
 
     const ViewerSettings& viewerSettings() const;
 
+    void setRightAreaVisible(bool visible);
+
+    bool isRightAreaVisible() const;
+
     /**
      * @brief Changes the current zoom (scale) of the trackball.
      * @param[in] factor: Positive value to zoom in, negative to zoom out.

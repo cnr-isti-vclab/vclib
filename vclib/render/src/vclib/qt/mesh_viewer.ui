@@ -154,7 +154,24 @@
     </property>
     <addaction name="actionSettings"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuAppearance">
+     <property name="title">
+      <string>Appearance</string>
+     </property>
+     <addaction name="actionShow_Right_Area"/>
+     <addaction name="separator"/>
+     <addaction name="actionShow_Draw_Vector_Tree"/>
+     <addaction name="actionShow_Settings_Frame"/>
+     <addaction name="actionShow_Logger"/>
+    </widget>
+    <addaction name="menuAppearance"/>
+   </widget>
    <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
    <addaction name="menuRender"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -199,6 +216,50 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionShow_Right_Area">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Right Area</string>
+   </property>
+  </action>
+  <action name="actionShow_Logger">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Logger</string>
+   </property>
+  </action>
+  <action name="actionShow_Settings_Frame">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Mesh Render Settings</string>
+   </property>
+  </action>
+  <action name="actionShow_Draw_Vector_Tree">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Draw Vector Tree</string>
    </property>
   </action>
  </widget>
