@@ -11,6 +11,8 @@
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
 uniform vec4 u_emissiveAlphaCutoffPack;
+uniform vec4 u_settings;
+uniform vec4 u_specularPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -21,5 +23,8 @@ uniform vec4 u_emissiveAlphaCutoffPack;
 #define u_alphaCutoff u_emissiveAlphaCutoffPack.a
 
 #define isAlphaModeMask() (u_alphaCutoff >= 0.0)
+
+#define u_specularColorFactor u_specularPack.rgb
+#define u_specularFactor u_specularPack.a
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_MATERIAL_UNIFORMS_SH
