@@ -12,6 +12,7 @@
 
 #include <vclib/imgui/gui/editor_frame.h>
 #include <vclib/imgui/gui/toolbar_frames/bounding_box_editor_frame.h>
+#include <vclib/imgui/gui/toolbar_frames/info_editor_frame.h>
 #include <vclib/imgui/gui/toolbar_frames/selection_editor_frame.h>
 #include <vclib/render/concepts/viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>

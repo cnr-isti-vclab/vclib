@@ -78,7 +78,8 @@ private:
     // -------------------------------------------------------------------------
     FrameBuffer         mOffscreenFbh;
     bgfx::ViewId        mViewOffscreenId = BGFX_INVALID_VIEW;
-    bgfx::TextureHandle mBlitTexture     = BGFX_INVALID_HANDLE;
+    std::array<bgfx::TextureHandle, 2> mBlitTexture = {{
+        BGFX_INVALID_HANDLE, BGFX_INVALID_HANDLE}};
     Point2<uint16_t>    mBlitSize        = {0, 0};
     Color               mClearColor      = Color::Black;
 

@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$output v_color, v_normal, v_selected
+$output v_color, v_normal, v_selected, v_lineIndex
 
 #include <bgfx_shader.sh>
 #include <vclib/bgfx/shaders_common.sh>
@@ -148,6 +148,7 @@ void main() {
 
     v_color = color;
     v_normal = normal;
+    v_lineIndex = float(lineIndex);
 
     // Apply depth offset in clip space.
     // We scale the offset by w to maintain it consistently after the perspective divide.

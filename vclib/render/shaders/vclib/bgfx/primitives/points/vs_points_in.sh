@@ -5,7 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-$output v_normal, v_texcoord0, v_color, v_selected
+$output v_normal, v_texcoord0, v_color, v_selected, v_pointIndex
 
 #include <vclib/bgfx/shaders_common.sh>
 #include <vclib/bgfx/buffers/boolean_buffer.sh>
@@ -75,4 +75,6 @@ void main()
 #if POINTS_SELECTION_ON
     v_selected = float(getBoolFromBuffer(vertexSelected, pointIndex));
 #endif
+
+    v_pointIndex = float(pointIndex);
 }
