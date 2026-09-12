@@ -10,8 +10,8 @@
 
 #include "abstract_mesh_provider.h"
 
-#include <vclib/mesh/elem_algorithms/selection.h>
 #include <vclib/mesh/elem_algorithms/polygon/geometry.h>
+#include <vclib/mesh/elem_algorithms/selection.h>
 #include <vclib/mesh/requirements/mesh_requirements.h>
 
 #include <vclib/algorithms/core.h>

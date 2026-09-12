@@ -52,9 +52,13 @@ public:
                 mShowNormalsEditor->settings());
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
-        connect(sf, &ShowNormalsEditorSettingsFrame::contentUpdated, this, [this]() {
-            refreshContent();
-        });
+        connect(
+            sf,
+            &ShowNormalsEditorSettingsFrame::contentUpdated,
+            this,
+            [this]() {
+                refreshContent();
+            });
 
         mShowNormalsEditor->setOnStateUpdatedCallback([this, editorButton]() {
             editorButton->setChecked(mShowNormalsEditor->isActive());

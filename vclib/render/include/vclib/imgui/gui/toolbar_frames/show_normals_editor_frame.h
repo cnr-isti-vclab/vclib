@@ -86,7 +86,7 @@ private:
             }
             ImGui::EndCombo();
         }
-        
+
         ImGui::Separator();
 
         // Vertex Normals
@@ -96,7 +96,9 @@ private:
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##SNVertexColor",
-            [&] { return sts.vertexNormalColor; },
+            [&] {
+                return sts.vertexNormalColor;
+            },
             [&](vcl::Color c) {
                 sts.vertexNormalColor = c;
                 mEditor->refreshSettings();
@@ -110,13 +112,15 @@ private:
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##SNFaceColor",
-            [&] { return sts.faceNormalColor; },
+            [&] {
+                return sts.faceNormalColor;
+            },
             [&](vcl::Color c) {
                 sts.faceNormalColor = c;
                 mEditor->refreshSettings();
             },
             ImGuiColorEditFlags_NoInputs);
-            
+
         ImGui::Separator();
 
         // Length Ratio
@@ -140,9 +144,9 @@ private:
             sts.thickness = thickness;
             mEditor->refreshSettings();
         }
-        
+
         ImGui::Separator();
-        
+
         if (ImGui::Button("Reset Defaults")) {
             sts.resetDefaults();
             mEditor->refresh();

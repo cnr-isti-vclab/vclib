@@ -90,11 +90,11 @@ void ShowNormalsEditorSettingsFrame::updateGUI()
     mUI->editModeFrame->setEditMode(mSettings.editMode);
     mUI->showVertexNormalsCheckBox->setChecked(mSettings.showVertexNormals);
     mUI->showFaceNormalsCheckBox->setChecked(mSettings.showFaceNormals);
-    
+
     Color vc = mSettings.vertexNormalColor;
     mUI->vertexNormalColorButton->setBackgroundColor(
         QColor(vc.red(), vc.green(), vc.blue(), vc.alpha()));
-        
+
     Color fc = mSettings.faceNormalColor;
     mUI->faceNormalColorButton->setBackgroundColor(
         QColor(fc.red(), fc.green(), fc.blue(), fc.alpha()));
@@ -134,7 +134,8 @@ void ShowNormalsEditorSettingsFrame::onShowFaceNormalsChanged(int state)
 
 void ShowNormalsEditorSettingsFrame::onVertexNormalColorChanged(const QColor& c)
 {
-    mSettings.vertexNormalColor = Color(c.red(), c.green(), c.blue(), c.alpha());
+    mSettings.vertexNormalColor =
+        Color(c.red(), c.green(), c.blue(), c.alpha());
     emit settingsUpdated();
 }
 
