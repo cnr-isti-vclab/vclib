@@ -148,7 +148,7 @@ void ShowNormalsEditorSettingsFrame::onFaceNormalColorChanged(const QColor& c)
 void ShowNormalsEditorSettingsFrame::onNormalLengthRatioChanged(double value)
 {
     mSettings.normalLengthRatio = value;
-    emit contentUpdated();
+    emit settingsUpdated();
 }
 
 void ShowNormalsEditorSettingsFrame::onLinesWidthSliderValueChanged(int value)

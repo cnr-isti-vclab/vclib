@@ -83,34 +83,42 @@ public:
             if (m) {
                 const auto& provider = m->meshProvider();
 
-                double diag       = m->boundingBox().diagonal();
-                double lineLength = diag * mSettings.normalLengthRatio;
-
                 // Vertex Normals
                 mVertexNormalsLines.push_back(
-                    vertexNormalLines(provider, lineLength));
+                    vertexNormalLines(provider));
 
                 // Face Normals
                 mFaceNormalsLines.push_back(
-                    faceNormalLines(provider, lineLength));
+                    faceNormalLines(provider));
             }
             else {
                 mVertexNormalsLines.push_back(DrawableLines());
                 mFaceNormalsLines.push_back(DrawableLines());
             }
         }
-        Base::viewerUpdate();
+        
+        refreshSettings();
     }
 
     void refreshSettings() override
     {
-        for (auto& l : mVertexNormalsLines) {
-            l.setGeneralColor(mSettings.vertexNormalColor);
-            l.setWidth(mSettings.thickness);
-        }
-        for (auto& l : mFaceNormalsLines) {
-            l.setGeneralColor(mSettings.faceNormalColor);
-            l.setWidth(mSettings.thickness);
+        uint i = 0;
+        for (const auto& drawable : *Base::drawList()) {
+            const AbstractDrawableMesh* m =
+                dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
+            if (m && i < mVertexNormalsLines.size()) {
+                double diag       = m->boundingBox().diagonal();
+                double lineLength = diag * mSettings.normalLengthRatio;
+
+                mVertexNormalsLines[i].setGeneralColor(mSettings.vertexNormalColor);
+                mVertexNormalsLines[i].setWidth(mSettings.thickness);
+                mVertexNormalsLines[i].setVectorLength(lineLength);
+
+                mFaceNormalsLines[i].setGeneralColor(mSettings.faceNormalColor);
+                mFaceNormalsLines[i].setWidth(mSettings.thickness);
+                mFaceNormalsLines[i].setVectorLength(lineLength);
+            }
+            i++;
         }
         Base::viewerUpdate();
     }
@@ -152,13 +160,11 @@ public:
 
 private:
     DrawableLines vertexNormalLines(
-        const AbstractMeshProvider& provider,
-        double                      lineLength)
+        const AbstractMeshProvider& provider)
     {
         DrawableLines vLines;
         if (provider.hasVertexNormals()) {
             std::vector<vcl::Point3d> pts;
-            std::vector<uint>         ids;
             uint                      vCount = provider.vertexCount();
             vcl::Matrix44d            T      = provider.transformMatrix();
 
@@ -170,31 +176,23 @@ private:
                     pos *= T;
                     n = vcl::multiplyNormalByMatrix(n, T);
                     n.normalize();
-                    uint sId = pts.size();
                     pts.push_back(pos);
-                    pts.push_back(pos + n * lineLength);
-                    ids.push_back(sId);
-                    ids.push_back(sId + 1);
+                    pts.push_back(n); // Vector direction
                 }
             }
             vLines.setVertices(pts);
-            vLines.setIndices(ids);
-            vLines.setGeneralColor(mSettings.vertexNormalColor);
-            vLines.setWidth(mSettings.thickness);
-            vLines.setTopology(DrawableLines::Topology::LINES);
+            vLines.setTopology(DrawableLines::Topology::VECTORS);
         }
 
         return vLines;
     }
 
     DrawableLines faceNormalLines(
-        const AbstractMeshProvider& provider,
-        double                      lineLength)
+        const AbstractMeshProvider& provider)
     {
         DrawableLines fLines;
         if (provider.hasFaceNormals()) {
             std::vector<vcl::Point3d> pts;
-            std::vector<uint>         ids;
             uint                      fCount = provider.faceCount();
             vcl::Matrix44d            T      = provider.transformMatrix();
 
@@ -206,18 +204,12 @@ private:
                     barycenter *= T;
                     n = vcl::multiplyNormalByMatrix(n, T);
                     n.normalize();
-                    uint sId = pts.size();
                     pts.push_back(barycenter);
-                    pts.push_back(barycenter + n * lineLength);
-                    ids.push_back(sId);
-                    ids.push_back(sId + 1);
+                    pts.push_back(n); // Vector direction
                 }
             }
             fLines.setVertices(pts);
-            fLines.setIndices(ids);
-            fLines.setGeneralColor(mSettings.faceNormalColor);
-            fLines.setWidth(mSettings.thickness);
-            fLines.setTopology(DrawableLines::Topology::LINES);
+            fLines.setTopology(DrawableLines::Topology::VECTORS);
         }
 
         return fLines;
