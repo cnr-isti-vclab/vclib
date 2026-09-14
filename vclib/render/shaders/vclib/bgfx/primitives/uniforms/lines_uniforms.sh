@@ -6,10 +6,11 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 uniform vec4 u_linesSettings;
-uniform vec4 u_linesSelectionSettings;
+uniform vec4 u_linesSettings2;
 
 #define u_linesWidth u_linesSettings.x
 #define u_linesGeneralColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings.y))
 #define u_depthOffset u_linesSettings.z
 #define u_linesId uintABGRToVec4Color(floatBitsToUint(u_linesSettings.w))
-#define u_linesSelectionColor uintABGRToVec4Color(floatBitsToUint(u_linesSelectionSettings.x))
+#define u_linesSelectionColor uintABGRToVec4Color(floatBitsToUint(u_linesSettings2.x))
+#define u_vectorLength u_linesSettings2.y

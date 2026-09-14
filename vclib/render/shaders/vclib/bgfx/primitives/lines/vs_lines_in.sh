@@ -56,7 +56,7 @@ void main() {
     uint lineIndex = gl_VertexID / 6u;
     uint localVertex = gl_VertexID % 6u;
 
-#if LINES_TOPO_LINES
+#if LINES_TOPO_LINES || LINES_TOPO_VECTORS
     uint vertexIndex0 = getVind(lineIndex * 2u);
     uint vertexIndex1 = getVind(lineIndex * 2u + 1u);
 #else
@@ -66,6 +66,10 @@ void main() {
 
     vec3 p0 = getVertexPos(vertexIndex0);
     vec3 p1 = getVertexPos(vertexIndex1);
+
+#if LINES_TOPO_VECTORS
+    p1 = p0 + p1 * u_vectorLength;
+#endif
 
     vec4 p0_NDC = mul(u_modelViewProj, vec4(p0, 1.0));
     vec4 p1_NDC = mul(u_modelViewProj, vec4(p1, 1.0));
