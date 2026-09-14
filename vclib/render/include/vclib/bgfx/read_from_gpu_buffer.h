@@ -72,6 +72,7 @@ private:
     ReadBufferTypes::ReadData           mReadData     = {};
     ReadBufferTypes::CallbackReadBuffer mReadCallback = nullptr;
     Point2i                             mPoint        = {0, 0};
+    Point2<uint>                        mSize         = {0, 0};
 
     // -------------------------------------------------------------------------
     // FRAMEBUFFER-specific state
@@ -164,6 +165,8 @@ public:
 
     Source source() const;
     Target target() const;
+
+    Point2<uint> size() const { return mSize; }
 
     // -------------------------------------------------------------------------
     // FRAMEBUFFER-only accessors (for canvas offscreen rendering setup)

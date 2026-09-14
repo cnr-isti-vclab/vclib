@@ -7,10 +7,16 @@ on:
         required: false
         type: string
         description: "The commit SHA or ref to checkout. Defaults to the workflow trigger ref."
+      target:
+        required: false
+        type: string
+        default: 'all'
+        description: "The target packages to build: 'all', 'archive', or 'installer'."
 
 jobs:
-  build_vclib_packages:
-    name: Build VCLib Package (${{ matrix.os }}, ${{ matrix.package_type }})
+  build_vclib_archives:
+    name: Build VCLib Archives (${{ matrix.os }}, ${{ matrix.package_type }})
+    if: inputs.target != 'installer'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -36,9 +42,9 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build libtbb-dev
-        sudo apt-get install libembree-dev
-        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
+        sudo apt-get install -y cmake ninja-build libtbb-dev
+        sudo apt-get install -y libembree-dev
+        sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
 
     - name: Install dependencies
       if: runner.os == 'macOS'
@@ -54,7 +60,7 @@ jobs:
         choco install -y cmake ninja
 
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.23
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: package-${{ matrix.os }}-${{ matrix.package_type }}
         max-size: 1G
@@ -74,3 +80,175 @@ jobs:
         name: vclib-package-${{ matrix.package_type }}-${{ runner.os }}-${{ runner.arch }}
         path: install-vclib
         include-hidden-files: true
+
+  build_vclib_nsis:
+    name: Build VCLib NSIS Package (Windows)
+    if: inputs.target != 'archive'
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref }}
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      with:
+        arch: x64
+
+    - name: Install Qt
+      uses: ./.github/actions/install-qt
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        choco install -y cmake ninja nsis
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.24
+      with:
+        key: nsis-windows
+        max-size: 1G
+
+    - name: Build and Package VCLib NSIS
+      shell: bash
+      run: |
+        cmake -S . -B build-nsis --preset=vclib-all-install \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build-nsis
+        cpack --config build-nsis/CPackConfig.cmake -G NSIS -B packages
+        mkdir -p dist_installer
+        cp packages/*.exe dist_installer/
+
+    - name: Upload VCLib Installer (Windows NSIS)
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-installer-nsis-${{ runner.os }}-${{ runner.arch }}
+        path: dist_installer/*
+
+  build_vclib_msi:
+    name: Build VCLib MSI Package (Windows)
+    if: inputs.target != 'archive'
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref }}
+
+    - name: Setup MSVC
+      uses: TheMrMilchmann/setup-msvc-dev@v4
+      with:
+        arch: x64
+
+    - name: Install Qt
+      uses: ./.github/actions/install-qt
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        choco install -y cmake ninja wixtoolset
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.24
+      with:
+        key: msi-windows
+        max-size: 1G
+
+    - name: Build and Package VCLib MSI
+      shell: bash
+      run: |
+        export PATH="/c/Program Files (x86)/WiX Toolset v3.14/bin:/c/Program Files (x86)/WiX Toolset v3.11/bin:$PATH"
+        cmake -S . -B build-msi --preset=vclib-all-install \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build-msi
+        cpack --config build-msi/CPackConfig.cmake -G WIX -B packages
+        mkdir -p dist_installer
+        cp packages/*.msi dist_installer/
+
+    - name: Upload VCLib Installer (Windows MSI)
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-installer-msi-${{ runner.os }}-${{ runner.arch }}
+        path: dist_installer/*
+
+  build_vclib_deb:
+    name: Build VCLib DEB Package (${{ matrix.os }})
+    if: inputs.target != 'archive'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-26.04', 'ubuntu-26.04-arm']
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build libtbb-dev libembree-dev libgmp-dev libmpfr-dev
+        sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
+        sudo apt-get install -y libeigen3-dev libboost-dev libcgal-dev libglfw3-dev qt6-base-dev
+
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2.24
+      with:
+        key: deb-${{ matrix.os }}
+        max-size: 1G
+
+    - name: Build and Package VCLib DEB
+      shell: bash
+      run: |
+        cmake -S . -B build-deb --preset=vclib-all-install \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake --build build-deb
+        cpack --config build-deb/CPackConfig.cmake -G DEB -B packages
+        mkdir -p dist_installer
+        cp packages/*.deb dist_installer/
+
+    - name: Upload VCLib DEB Package
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-installer-deb-${{ runner.os }}-${{ runner.arch }}
+        path: dist_installer/*
+
+  build_vclib_rpm:
+    name: Build VCLib RPM Package (${{ matrix.os }})
+    if: inputs.target != 'archive'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm']
+    container:
+      image: fedora:41
+    steps:
+    - name: Install git and tar
+      run: dnf install -y git tar unzip
+
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+        ref: ${{ inputs.ref }}
+
+    - name: Install dependencies
+      run: |
+        dnf install -y gcc gcc-c++ cmake ninja-build tbb-devel embree-devel gmp-devel mpfr-devel eigen3-devel boost-devel CGAL-devel glfw-devel qt6-qtbase-devel freeglut-devel mesa-libGL-devel libXi-devel libXinerama-devel libXcursor-devel libXrandr-devel wayland-devel wayland-protocols-devel libxkbcommon-devel rpm-build perl
+
+    - name: Build and Package VCLib RPM
+      shell: bash
+      run: |
+        cmake -S . -B build-rpm --preset=vclib-all-install
+        cmake --build build-rpm
+        cpack --config build-rpm/CPackConfig.cmake -G RPM -B packages
+        mkdir -p dist_installer
+        cp packages/*.rpm dist_installer/
+
+    - name: Upload VCLib RPM Package
+      uses: actions/upload-artifact@v7
+      with:
+        name: vclib-installer-rpm-${{ runner.os }}-${{ runner.arch }}
+        path: dist_installer/*

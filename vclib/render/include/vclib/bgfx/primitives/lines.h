@@ -41,11 +41,14 @@ public:
      * - LINE_STRIP: Lines are defined by a strip of vertices, where each vertex
      *     after the first forms a line segment with the previous vertex.
      *     (vertices 0-1 form line 1, vertices 1-2 form line 2, etc.)
+     * - VECTORS: Lines are defined by consecutive pairs of vertices, but the second
+     *     vertex is interpreted as a direction vector rather than an absolute position.
+     *     The final endpoint is computed as `pos0 + dir * vectorLength`.
      *
      * The topology determines how the vertex data is interpreted to form lines.
      * The default is LINES.
      */
-    enum class Topology { LINES = 0, LINE_STRIP = 1 };
+    enum class Topology { LINES = 0, LINE_STRIP = 1, VECTORS = 2 };
 
     /**
      * @brief Specifies how lines are shaded.
@@ -73,6 +76,7 @@ private:
     float        mDepthOffset         = 0.0f;
     Color        mSelectionColor      = Color(0x88FF9732, Color::Format::ABGR);
     bool         mSelectionVisibility = false;
+    float        mVectorLength        = 1.0f;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
@@ -209,6 +213,8 @@ public:
      * - For LINES topology, each pair of vertices defines one line segment.
      * - For LINE_STRIP topology, each vertex after the first forms a line
      *   segment with the previous vertex.
+     * - For VECTORS topology, each pair of vertices defines an origin and a
+     *   direction vector.
      *
      * @tparam R: Range whose value type satisfies Point3Concept (must provide
      * x(), y(), z()).
@@ -451,6 +457,8 @@ public:
      * - For LINES topology, each pair of indices defines one line segment.
      * - For LINE_STRIP topology, each index after the first forms a line
      *   segment with the previous index.
+     * - For VECTORS topology, each pair of indices defines an origin and a
+     *   direction vector.
      *
      * @note The buffer must remain valid for the lifetime of this object.
      */
@@ -583,6 +591,18 @@ public:
      * @param[in] depthOffset: The depth offset value.
      */
     void setDepthOffset(float depthOffset) { mDepthOffset = depthOffset; }
+
+    /**
+     * @brief Sets the vector length applied to the vectors.
+     * @param[in] length: The vector length value.
+     */
+    void setVectorLength(float length) { mVectorLength = length; }
+
+    /**
+     * @brief Returns the vector length.
+     * @return The vector length.
+     */
+    float vectorLength() const { return mVectorLength; }
 
     void draw(bgfx::ViewId viewId) const;
 

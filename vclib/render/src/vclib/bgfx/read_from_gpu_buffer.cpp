@@ -45,8 +45,8 @@ static bgfx::TextureFormat::Enum offscreenDepthFormat()
     switch (Context::renderType()) {
     case bgfx::RendererType::Direct3D11:
     case bgfx::RendererType::Direct3D12:
-    case bgfx::RendererType::Vulkan: return bgfx::TextureFormat::D32F;
-    case bgfx::RendererType::Metal: return bgfx::TextureFormat::D32;
+    case bgfx::RendererType::Vulkan:
+    case bgfx::RendererType::Metal: return bgfx::TextureFormat::D32F;
     default:
         assert(false && "offscreen depth unsupported for this render type");
     }
@@ -85,6 +85,7 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
             wideIsLarger ? maxTex : uint(double(size.x()) * ratio),
             wideIsLarger ? uint(double(size.y()) * ratio) : maxTex};
     }
+    mSize = size;
 
     // Determine blit texture size and format
     bgfx::TextureFormat::Enum blitFormat;

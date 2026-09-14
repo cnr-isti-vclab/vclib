@@ -46,7 +46,7 @@ jobs:
         choco install ninja ccache
 
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.23
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: bindings-${{ matrix.os }}
         max-size: 1G
@@ -96,7 +96,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install freeglut3-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev
 
     - uses: actions/download-artifact@v8
       with:

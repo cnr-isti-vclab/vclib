@@ -114,13 +114,6 @@ const bgfx::Caps& Context::capabilites() const
     return *bgfx::getCaps();
 }
 
-bool Context::supportsReadback() const
-{
-    return (capabilites().supported &
-            (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK)) ==
-           (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
-}
-
 bool Context::supportsCompute() const
 {
     return (capabilites().supported & BGFX_CAPS_COMPUTE) == BGFX_CAPS_COMPUTE;
@@ -156,6 +149,23 @@ bool Context::isDefaultWindow(void* windowHandle) const
 bool Context::isValidViewId(bgfx::ViewId viewId) const
 {
     return viewId <= capabilites().limits.maxViews;
+}
+
+bgfx::TextureFormat::Enum Context::defaultDepthFormat()
+{
+    const bgfx::TextureFormat::Enum depthFormats[] = {
+        bgfx::TextureFormat::D24S8,
+        bgfx::TextureFormat::D32FS8,
+        bgfx::TextureFormat::D32F,
+        bgfx::TextureFormat::D24,
+        bgfx::TextureFormat::D16,
+    };
+    for (auto format : depthFormats) {
+        if (bgfx::isTextureValid(0, false, 1, format, BGFX_TEXTURE_RT)) {
+            return format;
+        }
+    }
+    return bgfx::TextureFormat::D24S8;
 }
 
 static const uint64_t kMRTRenderBufferflags =
@@ -202,7 +212,11 @@ void Context::resetDefaultFramebuffer(
     uint16_t                  height,
     bgfx::TextureFormat::Enum colorFormat)
 {
-    bgfx::reset(width, height, sResetFlags, colorFormat);
+    bgfx::SwapChain swapChain;
+    swapChain.width       = width;
+    swapChain.height      = height;
+    swapChain.formatColor = colorFormat;
+    bgfx::reset(sResetFlags, &swapChain);
 }
 
 bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
@@ -235,10 +249,16 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
             // create offscreen framebuffer
             fbh = createOffscreenFramebuffer(
                 width, height, colorFormat, depthFormat);
-        else
+        else {
             // create framebuffer for the given window
-            fbh = bgfx::createFrameBuffer(
-                winId, width, height, colorFormat, depthFormat);
+            bgfx::SwapChain swapChain;
+            swapChain.nwh                = winId;
+            swapChain.width              = width;
+            swapChain.height             = height;
+            swapChain.formatColor        = colorFormat;
+            swapChain.formatDepthStencil = depthFormat;
+            fbh                          = bgfx::createFrameBuffer(swapChain);
+        }
 
         assert(bgfx::isValid(fbh));
     }
@@ -334,9 +354,9 @@ Context::Context(
 #endif                   // __APPLE__
 
     bgfx::Init init;
-    init.platformData.nwh = mWindowHandle;
-    init.type             = sRenderType;
-    init.platformData.ndt = mDisplayHandle;
+    init.swapChain.nwh = mWindowHandle;
+    init.type          = sRenderType;
+    init.swapChain.ndt = mDisplayHandle;
     switch (windowType) {
     case vcl::NativeWindowHandleType::WAYLAND:
         init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
@@ -348,19 +368,19 @@ Context::Context(
     }
     if (mIsHeadless) {
 #ifdef __APPLE__
-        init.resolution.width  = 1;
-        init.resolution.height = 1;
+        init.swapChain.width  = 1;
+        init.swapChain.height = 1;
 #else
-        init.resolution.width  = 0;
-        init.resolution.height = 0;
+        init.swapChain.width  = 0;
+        init.swapChain.height = 0;
 #endif
     }
     else {
-        init.resolution.width  = 1;
-        init.resolution.height = 1;
+        init.swapChain.width  = 1;
+        init.swapChain.height = 1;
     }
-    init.resolution.reset = sResetFlags;
-    init.callback         = &mCallBack;
+    init.reset    = sResetFlags;
+    init.callback = &mCallBack;
     bgfx::init(init);
 
     // insert view ids in the stack

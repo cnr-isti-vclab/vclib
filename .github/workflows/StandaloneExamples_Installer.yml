@@ -1,0 +1,61 @@
+name: Standalone Examples - Installer
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Packages:
+    uses: ./.github/workflows/_build_packages.yml
+    with:
+      ref: ${{ github.ref }}
+      target: 'installer'
+
+  StandaloneExamples-Installer:
+    needs: Build-Packages
+    uses: ./.github/workflows/_standalone_examples_template.yml
+    with:
+      integration_mode: 'installer'
+
+  Test-RPM:
+    needs: Build-Packages
+    name: Test RPM Installer (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'ubuntu-24.04-arm']
+    container:
+      image: fedora:41
+    steps:
+    - name: Install git
+      run: dnf install -y git
+
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: dnf install -y cmake ninja-build gcc-c++
+
+    - name: Download VCLib RPM Package
+      uses: actions/download-artifact@v8
+      with:
+        name: vclib-installer-rpm-${{ runner.os }}-${{ runner.arch }}
+        path: installer-vclib
+
+    - name: Install RPM
+      run: dnf install -y installer-vclib/*.rpm
+
+    - name: Configure Standalone Examples
+      run: |
+        cmake -S examples/standalone -B examples/standalone/build \
+          -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DVCLIB_STANDALONE_USE_FETCHCONTENT=OFF
+
+    - name: Build Standalone Examples
+      run: cmake --build examples/standalone/build
+
+    - name: Run Tests
+      working-directory: examples/standalone/build
+      run: ctest --output-on-failure

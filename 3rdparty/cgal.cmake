@@ -159,6 +159,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/mpfr-6.dll"
                 DESTINATION ${CMAKE_INSTALL_BINDIR}
+                COMPONENT Runtime
             )
         endif()
     endif()

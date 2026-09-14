@@ -72,7 +72,7 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
         find_package(Wayland QUIET)
     endif()
     if("vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
-        find_package(bgfx QUIET)
+        find_package(bgfx QUIET PATHS "${CMAKE_CURRENT_LIST_DIR}/../bgfx")
     endif()
     if(
         "@VCLIB_USED_SYSTEM_GLFW@"
@@ -173,6 +173,11 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
                 TARGET vclib::vclib-3rd-eigen
                 APPEND
                 PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
+            )
+            set_property(
+                TARGET vclib::vclib-3rd-eigen
+                APPEND
+                PROPERTY INTERFACE_COMPILE_DEFINITIONS EIGEN_MAX_ALIGN_BYTES=16
             )
             if(TARGET vclib::core)
                 set_property(
@@ -534,18 +539,20 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
         "@VCLIB_USED_SYSTEM_GLFW@"
         AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
     )
-        if(TARGET glfw AND NOT TARGET vclib::vclib-3rd-glfw)
-            add_library(vclib::vclib-3rd-glfw INTERFACE IMPORTED)
-            set_property(
-                TARGET vclib::vclib-3rd-glfw
-                APPEND
-                PROPERTY INTERFACE_LINK_LIBRARIES glfw
-            )
-            set_property(
-                TARGET vclib::vclib-3rd-glfw
-                APPEND
-                PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW
-            )
+        if(TARGET glfw)
+            if(NOT TARGET vclib::vclib-3rd-glfw)
+                add_library(vclib::vclib-3rd-glfw INTERFACE IMPORTED)
+                set_property(
+                    TARGET vclib::vclib-3rd-glfw
+                    APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES glfw
+                )
+                set_property(
+                    TARGET vclib::vclib-3rd-glfw
+                    APPEND
+                    PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW
+                )
+            endif()
             if(TARGET vclib::render)
                 set_property(
                     TARGET vclib::render

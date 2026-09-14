@@ -8,6 +8,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 jobs:
   prepare_release:
     name: Prepare Release
@@ -127,6 +130,16 @@ jobs:
           fi
         done
         
+        # Process Installers (.deb, .rpm, .exe and .msi)
+        for inst_dir in artifacts/vclib-installer-*; do
+          if [ -d "$inst_dir" ]; then
+            cp "$inst_dir"/*.deb release_assets/ 2>/dev/null || true
+            cp "$inst_dir"/*.rpm release_assets/ 2>/dev/null || true
+            cp "$inst_dir"/*.exe release_assets/ 2>/dev/null || true
+            cp "$inst_dir"/*.msi release_assets/ 2>/dev/null || true
+          fi
+        done
+
         # Process Docs
         if [ -d "artifacts/vclib_docs" ]; then
           cd artifacts
@@ -146,3 +159,20 @@ jobs:
         target_commitish: ${{ needs.prepare_release.outputs.new_sha }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-homebrew:
+    name: Update Homebrew formula
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Homebrew formula
+        uses: mislav/bump-homebrew-formula-action@v4
+        with:
+          formula-name: vclib
+          formula-path: Formula/vclib.rb
+          homebrew-tap: alemuntoni/homebrew-vclib
+          tag-name: v${{ github.event.inputs.version }}
+          commit-message: "Bump vclib formula to v${{ github.event.inputs.version }}"
+          create-pullrequest: true
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}

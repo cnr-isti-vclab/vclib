@@ -194,3 +194,6 @@ install(
     FILES ${CMAKE_CURRENT_LIST_DIR}/LICENSE
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/licenses/vclib
 )
+
+# Packaging
+include(cmake/vclib_cpack.cmake)

@@ -12,7 +12,7 @@ static const std::string TEST_NAME = "006-mesh-pbr-headless";
 
 TEST_CASE("PBR Rendering")
 {
-    std::vector<std::string> panoramas = {"pisa.hdr", "uffizi.hdr"};
+    std::vector<std::string> panoramas = {"pisa.hdr", "uffizi.exr"};
     std::vector<std::string> meshes    = {
         "DamagedHelmet/DamagedHelmet.gltf",
         "MetalRoughSpheres/MetalRoughSpheres.gltf",
