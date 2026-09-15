@@ -44,8 +44,8 @@ signals:
 private slots:
     void editModeChanged(int index);
 
-    void onShowVertexNormalsChanged(int state);
-    void onShowFaceNormalsChanged(int state);
+    void onShowVertexNormalsChanged(Qt::CheckState state);
+    void onShowFaceNormalsChanged(Qt::CheckState state);
 
     void onVertexNormalColorChanged(const QColor& c);
     void onFaceNormalColorChanged(const QColor& c);
