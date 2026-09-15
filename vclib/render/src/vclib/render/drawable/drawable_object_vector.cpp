@@ -31,8 +31,8 @@ void DrawableObjectVector::drawId(const DrawObjectSettings& settings)
     DrawObjectSettings sts = settings;
     if (isVisible()) {
         for (size_t idx = 0; idx < Base::size(); idx++) {
-            // TODO: combine idx with the content of settings.objectId
-            sts.objectId = idx;
+            // The objectId is shifted by 16 bits as expected by DrawableObject
+            sts.objectId = (idx << 16);
 
             const auto& p = Base::at(idx);
 
