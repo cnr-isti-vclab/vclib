@@ -25,10 +25,10 @@ namespace vcl {
  *
  * Example of usage:
  * @code{.cpp}
- * vcl::TriMesh m;
+ * TriMesh m;
  * // ... fill mesh ...
- * vcl::MeshProviderReference<vcl::TriMesh> provider(m);
- * vcl::Point3d p = provider.vertexPosition(0);
+ * MeshProviderReference<TriMesh> provider(m);
+ * Point3d p = provider.vertexPosition(0);
  * @endcode
  *
  * @tparam MeshType: The type of the mesh that provides the components.
@@ -66,10 +66,10 @@ public:
  *
  * Example of usage:
  * @code{.cpp}
- * vcl::MeshProvider<vcl::TriMesh> m;
+ * MeshProvider<TriMesh> m;
  * // ... fill mesh ...
- * const vcl::AbstractMeshProvider* provider = &m;
- * vcl::Point3d p = provider->vertexPosition(0);
+ * const AbstractMeshProvider* provider = &m;
+ * Point3d p = provider->vertexPosition(0);
  * @endcode
  *
  * @tparam MeshType: The base Mesh type to inherit from.

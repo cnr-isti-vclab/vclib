@@ -213,8 +213,8 @@ void Context::resetDefaultFramebuffer(
     bgfx::TextureFormat::Enum colorFormat)
 {
     bgfx::SwapChain swapChain;
-    swapChain.width = width;
-    swapChain.height = height;
+    swapChain.width       = width;
+    swapChain.height      = height;
     swapChain.formatColor = colorFormat;
     bgfx::reset(sResetFlags, &swapChain);
 }
@@ -252,12 +252,12 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
         else {
             // create framebuffer for the given window
             bgfx::SwapChain swapChain;
-            swapChain.nwh = winId;
-            swapChain.width = width;
-            swapChain.height = height;
-            swapChain.formatColor = colorFormat;
+            swapChain.nwh                = winId;
+            swapChain.width              = width;
+            swapChain.height             = height;
+            swapChain.formatColor        = colorFormat;
             swapChain.formatDepthStencil = depthFormat;
-            fbh = bgfx::createFrameBuffer(swapChain);
+            fbh                          = bgfx::createFrameBuffer(swapChain);
         }
 
         assert(bgfx::isValid(fbh));
@@ -354,9 +354,9 @@ Context::Context(
 #endif                   // __APPLE__
 
     bgfx::Init init;
-    init.swapChain.nwh    = mWindowHandle;
-    init.type             = sRenderType;
-    init.swapChain.ndt    = mDisplayHandle;
+    init.swapChain.nwh = mWindowHandle;
+    init.type          = sRenderType;
+    init.swapChain.ndt = mDisplayHandle;
     switch (windowType) {
     case vcl::NativeWindowHandleType::WAYLAND:
         init.platformData.type = bgfx::NativeWindowHandleType::Wayland;
@@ -379,8 +379,8 @@ Context::Context(
         init.swapChain.width  = 1;
         init.swapChain.height = 1;
     }
-    init.reset            = sResetFlags;
-    init.callback         = &mCallBack;
+    init.reset    = sResetFlags;
+    init.callback = &mCallBack;
     bgfx::init(init);
 
     // insert view ids in the stack

@@ -10,6 +10,7 @@
 
 #include "abstract_mesh_provider.h"
 
+#include <vclib/mesh/elem_algorithms/polygon/geometry.h>
 #include <vclib/mesh/elem_algorithms/selection.h>
 #include <vclib/mesh/requirements/mesh_requirements.h>
 
@@ -55,15 +56,15 @@ public:
 
     /* Geometry */
 
-    vcl::Point3d vertexPosition(uint vertId) const override
+    Point3d vertexPosition(uint vertId) const override
     {
         return getMesh().vertex(vertId).position().template cast<double>();
     }
 
-    std::vector<vcl::Point3d> facePositions(uint faceId) const override
+    std::vector<Point3d> facePositions(uint faceId) const override
     {
-        std::vector<vcl::Point3d> pos;
-        if constexpr (vcl::HasFaces<MeshType>) {
+        std::vector<Point3d> pos;
+        if constexpr (HasFaces<MeshType>) {
             const auto& f = getMesh().face(faceId);
             for (auto* v : f.vertices()) {
                 pos.push_back(v->position().template cast<double>());
@@ -72,21 +73,29 @@ public:
         return pos;
     }
 
-    std::pair<vcl::Point3d, vcl::Point3d> edgePositions(
-        uint edgeId) const override
+    Point3d faceBarycenter(uint faceId) const override
     {
-        if constexpr (vcl::HasEdges<MeshType> && vcl::HasVertices<MeshType>) {
+        if constexpr (HasFaces<MeshType>) {
+            return vcl::faceBarycenter(getMesh().face(faceId))
+                .template cast<double>();
+        }
+        return Point3d();
+    }
+
+    std::pair<Point3d, Point3d> edgePositions(uint edgeId) const override
+    {
+        if constexpr (HasEdges<MeshType> && HasVertices<MeshType>) {
             const auto& e = getMesh().edge(edgeId);
             return {
                 e.vertex(0)->position().template cast<double>(),
                 e.vertex(1)->position().template cast<double>()};
         }
-        return {vcl::Point3d(), vcl::Point3d()};
+        return {Point3d(), Point3d()};
     }
 
-    vcl::Box3d boundingBox() const override
+    Box3d boundingBox() const override
     {
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
+        if constexpr (HasBoundingBox<MeshType>) {
             if (!getMesh().boundingBox().isNull()) {
                 return getMesh().boundingBox().template cast<double>();
             }
@@ -94,9 +103,9 @@ public:
         return computeBoundingBox();
     }
 
-    vcl::Box3d transformedBoundingBox() const override
+    Box3d transformedBoundingBox() const override
     {
-        if constexpr (vcl::HasBoundingBox<MeshType>) {
+        if constexpr (HasBoundingBox<MeshType>) {
             if (!getMesh().boundingBox().isNull()) {
                 return getMesh()
                     .transformedBoundingBox()
@@ -106,12 +115,11 @@ public:
 
         // Compute the bounding box if the mesh has no bounding box component,
         // or if it has one but it is empty/null.
-        vcl::Box3d bb = computeBoundingBox();
-        if constexpr (vcl::HasTransformMatrix<MeshType>) {
-            bb = vcl::transformBox(
+        Box3d bb = computeBoundingBox();
+        if constexpr (HasTransformMatrix<MeshType>) {
+            bb = transformBox(
                 bb,
-                vcl::Matrix44d(
-                    getMesh().transformMatrix().template cast<double>()));
+                Matrix44d(getMesh().transformMatrix().template cast<double>()));
         }
         return bb;
     }
@@ -121,12 +129,46 @@ public:
     {
         using PosType =
             std::decay_t<decltype(getMesh().vertex(vertId).position())>;
-        if constexpr (std::is_same_v<PosType, vcl::Point3d>) {
+        if constexpr (std::is_same_v<PosType, Point3d>) {
             cb(getMesh().vertex(vertId).position());
         }
         else {
             cb(getMesh().vertex(vertId).position().template cast<double>());
         }
+    }
+
+    /* Normals */
+
+    bool hasVertexNormals() const override
+    {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            return isPerVertexNormalAvailable(getMesh());
+        }
+        return false;
+    }
+
+    bool hasFaceNormals() const override
+    {
+        if constexpr (HasPerFaceNormal<MeshType>) {
+            return isPerFaceNormalAvailable(getMesh());
+        }
+        return false;
+    }
+
+    Point3d vertexNormal(uint vertId) const override
+    {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            return getMesh().vertex(vertId).normal().template cast<double>();
+        }
+        return Point3d();
+    }
+
+    Point3d faceNormal(uint faceId) const override
+    {
+        if constexpr (HasPerFaceNormal<MeshType>) {
+            return getMesh().face(faceId).normal().template cast<double>();
+        }
+        return Point3d();
     }
 
     /* Topology */
@@ -135,7 +177,7 @@ public:
 
     uint faceCount() const override
     {
-        if constexpr (vcl::HasFaces<MeshType>) {
+        if constexpr (HasFaces<MeshType>) {
             return getMesh().faceCount();
         }
         return 0;
@@ -143,7 +185,7 @@ public:
 
     uint edgeCount() const override
     {
-        if constexpr (vcl::HasEdges<MeshType>) {
+        if constexpr (HasEdges<MeshType>) {
             return getMesh().edgeCount();
         }
         return 0;
@@ -152,7 +194,7 @@ public:
     std::vector<uint> faceVertices(uint faceId) const override
     {
         std::vector<uint> ids;
-        if constexpr (vcl::HasFaces<MeshType>) {
+        if constexpr (HasFaces<MeshType>) {
             const auto& f = getMesh().face(faceId);
             for (auto* v : f.vertices()) {
                 ids.push_back(v->index());
@@ -163,7 +205,7 @@ public:
 
     std::pair<uint, uint> edgeVertices(uint edgeId) const override
     {
-        if constexpr (vcl::HasEdges<MeshType>) {
+        if constexpr (HasEdges<MeshType>) {
             const auto& e = getMesh().edge(edgeId);
             return {e.vertex(0)->index(), e.vertex(1)->index()};
         }
@@ -172,40 +214,40 @@ public:
 
     uint selectedVertexCount() const override
     {
-        return vcl::vertexSelectionCount(getMesh());
+        return vertexSelectionCount(getMesh());
     }
 
     uint selectedFaceCount() const override
     {
-        if constexpr (vcl::HasFaces<MeshType>) {
-            return vcl::faceSelectionCount(getMesh());
+        if constexpr (HasFaces<MeshType>) {
+            return faceSelectionCount(getMesh());
         }
         return 0;
     }
 
     uint selectedEdgeCount() const override
     {
-        if constexpr (vcl::HasEdges<MeshType>) {
-            return vcl::edgeSelectionCount(getMesh());
+        if constexpr (HasEdges<MeshType>) {
+            return edgeSelectionCount(getMesh());
         }
         return 0;
     }
 
     /* Transform */
 
-    vcl::Matrix44d transformMatrix() const override
+    Matrix44d transformMatrix() const override
     {
-        if constexpr (vcl::HasTransformMatrix<MeshType>) {
+        if constexpr (HasTransformMatrix<MeshType>) {
             return getMesh().transformMatrix().template cast<double>();
         }
-        return vcl::Matrix44d::Identity();
+        return Matrix44d::Identity();
     }
 
     /* Appearance / Materials */
 
     View<MatIt> materials() const override
     {
-        if constexpr (vcl::HasMaterials<MeshType>) {
+        if constexpr (HasMaterials<MeshType>) {
             return getMesh().materials();
         }
         return View<MatIt>();
@@ -213,7 +255,7 @@ public:
 
     const Image& textureImage(const std::string& path) const override
     {
-        if constexpr (vcl::HasMaterials<MeshType>) {
+        if constexpr (HasMaterials<MeshType>) {
             return getMesh().textureImage(path);
         }
         static const Image EMPTY_IMAGE;
@@ -233,9 +275,9 @@ private:
         }
     }
 
-    vcl::Box3d computeBoundingBox() const
+    Box3d computeBoundingBox() const
     {
-        vcl::Box3d b;
+        Box3d b;
         for (const auto& v : getMesh().vertices()) {
             b.add(v.position().template cast<double>());
         }
