@@ -165,7 +165,7 @@ public:
             }
         }
 
-        mTextView.frame(Base::viewerCanvasFrameBuffer());
+        mTextView.frame(viewId, Base::viewerCanvasFrameBuffer());
     }
 
     bool onMousePress(
