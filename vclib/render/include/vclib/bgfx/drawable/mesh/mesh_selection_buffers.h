@@ -178,16 +178,11 @@ public:
         // Compute number of bits needed to store face selection
         vcl::BitVector<true> faceBackup(indexMap.triangleCount(), false);
 
-        // For each face, set selection for all its triangles
-        uint tIdx = 0;
-        for (const auto& f : mesh.faces()) {
-            const uint faceIdx     = f.index();
-            const uint numFaceTris = indexMap.triangleCount(faceIdx);
-
-            // Set selection for all triangles of this face
-            for (uint t = 0; t < numFaceTris; ++t) {
-                faceBackup[tIdx++] = f.selected();
-            }
+        // For each triangle, get its polygon index and read the selection from
+        // the mesh
+        for (uint tIdx = 0; tIdx < indexMap.triangleCount(); ++tIdx) {
+            uint faceIdx     = indexMap.polygon(tIdx);
+            faceBackup[tIdx] = mesh.face(faceIdx).selected();
         }
 
         mFaceSelection.setFromCPUBuffer(faceBackup);
@@ -256,10 +251,11 @@ public:
         const Matrix44f&           model,
         const VertexBuffer&        vertPosBuf)
     {
+        using enum SelectionDragAction;
+
         assert(params.mode.primitive == SelectionPrimitive::VERTEX);
         if (params.isTemporary &&
-            (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
+            (params.mode.isAction(ADD) || params.mode.isAction(SUBTRACT))) {
             mVertexSelection.setFromCPUBuffer(mVertexSelection.cpuBackup());
         }
         if (params.mode.isAtomicAction())
@@ -291,10 +287,11 @@ public:
         const IndexBuffer&            triIdxBuf,
         const MeshPolyMappingBuffers& polyMapping)
     {
+        using enum SelectionDragAction;
+
         assert(params.mode.primitive == SelectionPrimitive::FACE);
         if (params.isTemporary &&
-            (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
+            (params.mode.isAction(ADD) || params.mode.isAction(SUBTRACT))) {
             mFaceSelection.setFromCPUBuffer(mFaceSelection.cpuBackup());
         }
         if (params.mode.isAtomicAction())
@@ -325,18 +322,19 @@ public:
         const IndexBuffer&            triIdxBuf,
         const MeshPolyMappingBuffers& polyMapping)
     {
+        using enum SelectionDragAction;
+
         assert(params.mode.primitive == SelectionPrimitive::FACE);
         if (params.isTemporary && params.mode.visible &&
-            (params.mode.action == SelectionAction::ADD ||
-             params.mode.action == SelectionAction::SUBTRACT)) {
+            (params.mode.isAction(ADD) || params.mode.isAction(SUBTRACT))) {
             mFaceSelection.setFromCPUBuffer(mFaceSelection.cpuBackup());
         }
 
         if (params.mode.primitive == SelectionPrimitive::FACE &&
-            params.mode.action == SelectionAction::REGULAR) {
+            params.mode.isAction(REGULAR)) {
             SelectionParameters params2(params);
             params2.drawViewId  = params2.pass1ViewId;
-            params2.mode.action = SelectionAction::NONE;
+            params2.mode.action = SelectionAtomicAction::NONE;
             faceSelectionAtomic(params2);
         }
 
@@ -361,7 +359,8 @@ public:
         bgfx::setTransform(model.data());
         bgfx::submit(params.pass1ViewId, passProgram);
 
-        SelectionUniforms::setSelectionAction(params.mode.action);
+        SelectionUniforms::setSelectionAction(
+            std::get<SelectionDragAction>(params.mode.action));
         SelectionUniforms::setMeshIdForSelection(params.meshId);
         SelectionUniforms::setSelectionWorkgroupSize(workGroupSize);
         SelectionUniforms::bind();
@@ -466,9 +465,9 @@ public:
 
             for (auto& v : m.vertices()) {
                 const uint byteIdx = vidx / 8;
-                if (byteIdx < cpuBackup.size()) {
+                if (byteIdx < cpuBackup.bytes().size()) {
                     if (vidx % 8 == 0)
-                        flags.setUnderlying(cpuBackup[byteIdx]);
+                        flags.setUnderlying(cpuBackup.bytes()[byteIdx]);
 
                     bool selected = flags[vidx % 8];
                     v.selected()  = selected;
@@ -503,9 +502,9 @@ public:
                                            indexMap.triangleBegin(faceIdx);
                     const uint byteIdx = firstTriIdx / 8;
 
-                    if (byteIdx < cpuBackup.size()) {
+                    if (byteIdx < cpuBackup.bytes().size()) {
                         if (byteIdx != lastByteIdx) {
-                            flags.setUnderlying(cpuBackup[byteIdx]);
+                            flags.setUnderlying(cpuBackup.bytes()[byteIdx]);
                             lastByteIdx = byteIdx;
                         }
 
@@ -574,7 +573,7 @@ private:
     {
         SelectionParameters params;
         params.drawViewId  = drawViewId;
-        params.mode.action = SelectionAction::NONE;
+        params.mode.action = SelectionAtomicAction::NONE;
         vertexSelectionAtomic(params);
     }
 
@@ -587,7 +586,7 @@ private:
     {
         SelectionParameters params;
         params.drawViewId  = drawViewId;
-        params.mode.action = SelectionAction::NONE;
+        params.mode.action = SelectionAtomicAction::NONE;
         faceSelectionAtomic(params);
     }
 
@@ -611,10 +610,11 @@ private:
         }
 
         // For REGULAR mode, first clear the entire vertex selection buffer
-        if (params.mode.action == SelectionAction::REGULAR) {
+        if (params.mode.isAction(SelectionDragAction::REGULAR)) {
             clearVertexSelection(params.drawViewId);
         }
-        SelectionUniforms::setSelectionAction(params.mode.action);
+        SelectionUniforms::setSelectionAction(
+            std::get<SelectionDragAction>(params.mode.action));
 
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
@@ -676,11 +676,12 @@ private:
         }
 
         // For REGULAR mode, first clear the entire face selection buffer
-        if (params.mode.action == SelectionAction::REGULAR) {
+        if (params.mode.isAction(SelectionDragAction::REGULAR)) {
             clearFaceSelection(params.drawViewId);
         }
 
-        SelectionUniforms::setSelectionAction(params.mode.action);
+        SelectionUniforms::setSelectionAction(
+            std::get<SelectionDragAction>(params.mode.action));
 
         bgfx::ProgramHandle prog = getComputeProgramFromSelectionMode(
             Context::instance().programManager(), params.mode);
@@ -765,39 +766,32 @@ private:
         ProgramManager& pm,
         SelectionMode   mode) const
     {
-        using enum SelectionAction;
         using enum SelectionPrimitive;
         using enum ComputeProgram;
 
-        switch (mode.primitive) {
-        case VERTEX:
-            switch (mode.action) {
-            case REGULAR:
-            case ADD:
-            case SUBTRACT: return pm.getComputeProgram<SELECTION_VERTEX>();
+        if (mode.isAtomicAction()) {
+            using enum SelectionAtomicAction;
+
+            SelectionAtomicAction action =
+                std::get<SelectionAtomicAction>(mode.action);
+            switch (action) {
             case ALL: return pm.getComputeProgram<SELECTION_ALL>();
             case NONE: return pm.getComputeProgram<SELECTION_NONE>();
             case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();
             }
-
-        case FACE:
-            switch (mode.action) {
-            case REGULAR:
-            case ADD:
-            case SUBTRACT:
+        }
+        else {
+            switch (mode.primitive) {
+            case VERTEX: return pm.getComputeProgram<SELECTION_VERTEX>();
+            case FACE:
                 if (mode.visible)
                     return pm.getComputeProgram<SELECTION_FACE_VISIBLE>();
                 else
                     return pm.getComputeProgram<SELECTION_FACE>();
-            case ALL: return pm.getComputeProgram<SELECTION_ALL>();
-            case NONE: return pm.getComputeProgram<SELECTION_NONE>();
-            case INVERT: return pm.getComputeProgram<SELECTION_INVERT>();
             }
-        default:
-            // Invalid mode — should never happen
-            assert(false && "Invalid selection mode");
-            return BGFX_INVALID_HANDLE;
         }
+        assert(false && "Invalid selection mode");
+        return BGFX_INVALID_HANDLE;
     }
 
     /**

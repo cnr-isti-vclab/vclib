@@ -176,22 +176,16 @@ public:
 
         if (newReadRequested) {
             // ONLY draw the offscreen frame
-            offscreenFrame();
+            const bool solicit = offscreenFrame();
 
-            // submit the calls for blitting the offscreen depth buffer BEFORE
-            // frame() so it happens in the same execution pass
-            // (mViewOffscreenId executes last)
-            const bool solicit = mReadRequest->submit();
-
-            mCurrFrame = bgfx::frame();
-
-            // Restore view state for the main view now that the frame has been
-            // submitted
             bgfx::setViewClear(
                 mViewId,
                 BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
                 mDefaultClearColor.rgba());
             bgfx::setViewFrameBuffer(mViewId, mFbh);
+            bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
+            DerivedRenderApp::CNV::resizeDrawers(
+                derived(), mSize.x(), mSize.y());
 
             if (solicit) {
                 // solicit new frame
@@ -236,9 +230,8 @@ public:
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
+        if (mReadRequest != std::nullopt      // read already requested
+            || point.x() < 0 || point.y() < 0 // point out of bounds
             || point.x() >= mSize.x() || point.y() >= mSize.y()) {
             return false;
         }
@@ -260,8 +253,7 @@ public:
      */
     bool onScreenshot(const std::string& filename, uint multiplier = 1)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt) {      // read already requested
+        if (mReadRequest != std::nullopt) { // read already requested
             return false;
         }
 
@@ -302,8 +294,7 @@ public:
      */
     bool onScreenshot(vcl::Image& image, uint multiplier = 1)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt) {      // read already requested
+        if (mReadRequest != std::nullopt) { // read already requested
             return false;
         }
 
@@ -344,9 +335,8 @@ public:
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
+        if (mReadRequest != std::nullopt      // read already requested
+            || point.x() < 0 || point.y() < 0 // point out of bounds
             || point.x() >= mSize.x() || point.y() >= mSize.y()) {
             return false;
         }
@@ -359,9 +349,12 @@ public:
 
 private:
     // draw offscreen frame
-    void offscreenFrame()
+    bool offscreenFrame()
     {
         assert(mReadRequest != std::nullopt && mReadRequest->isPending());
+
+        auto originalSize = mSize;
+        auto originalFbh  = mFbh;
 
         // Disable clear on the read request view, since its ID is higher and
         // it executes after additional views. We use mViewId to clear instead.
@@ -370,8 +363,10 @@ private:
             mReadRequest->viewId(), mReadRequest->frameBuffer());
         bgfx::touch(mReadRequest->viewId());
 
-        auto tmpFbh = mFbh;
-        mFbh        = mReadRequest->frameBuffer();
+        mSize = mReadRequest->size();
+        DerivedRenderApp::CNV::resizeDrawers(derived(), mSize.x(), mSize.y());
+
+        mFbh = mReadRequest->frameBuffer();
 
         bgfx::setViewFrameBuffer(mViewId, mFbh);
 
@@ -383,6 +378,8 @@ private:
             mViewId,
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
             clearValue);
+
+        bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
 
         bgfx::touch(mViewId);
 
@@ -397,7 +394,19 @@ private:
         default: assert(false && "unsupported readback type"); break;
         }
 
-        mFbh = tmpFbh;
+        // submit the calls for blitting the offscreen depth buffer BEFORE
+        // frame() so it happens in the same execution pass
+        // (mViewOffscreenId executes last)
+        const bool solecit = mReadRequest->submit();
+
+        mCurrFrame = bgfx::frame();
+
+        // Restore view state for the main view now that the frame has been
+        // submitted
+        mFbh  = originalFbh;
+        mSize = originalSize;
+
+        return solecit;
     }
 
     auto* derived() { return static_cast<DerivedRenderApp*>(this); }

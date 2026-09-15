@@ -54,7 +54,6 @@ TEST_CASE("Wireframe Shading Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 
@@ -83,7 +82,6 @@ TEST_CASE("Wireframe Shading Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 }
@@ -113,7 +111,6 @@ TEST_CASE("Wireframe Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 
@@ -146,7 +143,6 @@ TEST_CASE("Wireframe Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 
@@ -173,7 +169,6 @@ TEST_CASE("Wireframe Color Modes")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 }
@@ -210,7 +205,6 @@ TEST_CASE("Wireframe Depth Offset")
                 mv.pushDrawableObject(std::move(mesh));
             },
             0.f,
-            false,
             -150.f);
     }
 }

@@ -23,6 +23,8 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
 {
     mUI->setupUi(this);
 
+    mUI->treeWidget->header()->setSectionResizeMode(
+        0, QHeaderView::Interactive);
     mUI->treeWidget->header()->setStretchLastSection(false);
     mUI->treeWidget->header()->setSectionResizeMode(2, QHeaderView::Fixed);
     mUI->treeWidget->setColumnWidth(2, 28);
@@ -198,6 +200,7 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
 
     mUI->treeWidget->clear();
 
+    mUI->treeWidget->blockSignals(true);
     uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
@@ -212,6 +215,18 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
             item->setExpanded(true);
         }
         ++i;
+    }
+    mUI->treeWidget->blockSignals(false);
+
+    mUI->treeWidget->resizeColumnToContents(0);
+    int       colWidth = mUI->treeWidget->columnWidth(0);
+    const int minWidth = 120;
+    const int maxWidth = 300;
+    if (colWidth < minWidth) {
+        mUI->treeWidget->setColumnWidth(0, minWidth);
+    }
+    else if (colWidth > maxWidth) {
+        mUI->treeWidget->setColumnWidth(0, maxWidth);
     }
 }
 

@@ -12,7 +12,7 @@ static const std::string TEST_NAME = "006-mesh-pbr-headless";
 
 TEST_CASE("PBR Rendering")
 {
-    std::vector<std::string> panoramas = {"pisa.hdr", "uffizi.hdr"};
+    std::vector<std::string> panoramas = {"pisa.hdr", "uffizi.exr"};
     std::vector<std::string> meshes    = {
         "DamagedHelmet/DamagedHelmet.gltf",
         "MetalRoughSpheres/MetalRoughSpheres.gltf",
@@ -53,15 +53,15 @@ TEST_CASE("PBR Rendering")
                             viewerSettings.renderMode = vcl::RenderMode::PBR;
                             viewerSettings.renderBackgroundPanorama = true;
                             viewerSettings.imageBasedLighting       = true;
-                            mv.setViewerSettings(viewerSettings);
 
                             std::string panPath =
                                 std::string(VCLIB_ASSETS_PATH) + "/panoramas/" +
                                 panoramaName;
-                            mv.setPanorama(panPath);
+                            viewerSettings.panoramaPath = panPath;
+
+                            mv.setViewerSettings(viewerSettings);
                         },
                         angle,
-                        false,
                         -150.0f,
                         10,
                         0.02f);

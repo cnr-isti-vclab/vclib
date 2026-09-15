@@ -119,6 +119,32 @@ private:
     SentinelType         s;
 };
 
+template<typename Cont, MeshConcept MeshType>
+void deleteElementsWithDeletedVertices(MeshType& m, uint& deletedCount)
+{
+    if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
+        constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
+        deletedCount +=
+            deleteElementsIf<MeshType, ELEM_ID>(m, [](const auto& el) {
+                for (const auto* v : el.vertices()) {
+                    if (v == nullptr) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+    }
+}
+
+template<typename... Cont, MeshConcept MeshType>
+void deleteElementsWithDeletedVertices(
+    MeshType& m,
+    uint&     deletedCount,
+    TypeWrapper<Cont...>)
+{
+    (deleteElementsWithDeletedVertices<Cont>(m, deletedCount), ...);
+}
+
 } // namespace detail
 
 /**
@@ -190,7 +216,7 @@ uint removeDuplicateVertices(MeshType& m)
 
     // a map that will be used to keep track of deleted vertices and their
     // corresponding pointers.
-    std::vector<uint> newVertexIndices(m.vertexCount());
+    std::vector<uint> newVertexIndices(m.vertexContainerSize());
     // assigning each vertex index to itself.
     std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
@@ -302,9 +328,9 @@ uint removeDuplicateFaces(MeshType& m)
  * values (NaN or inf).
  *
  * This function removes all vertices in the input mesh that have position
- * with invalid floating point values, such as NaN or inf. If the input mesh has
- * faces, and if the flag `deleteAlsoFaces` is set to true, all faces incident
- * on deleted vertices are also deleted.
+ * with invalid floating point values, such as NaN or inf. If the flag
+ * `deleteAlsoIncidentElements` is set to true, all elements (e.g. faces or
+ * edges) incident on deleted vertices are also deleted.
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
  * MeshConcept.
@@ -313,15 +339,15 @@ uint removeDuplicateFaces(MeshType& m)
  * This mesh will be modified in place, with all degenerated vertices being
  * marked as deleted.
  *
- * @param[in] deleteAlsoFaces: If true, all faces incident on deleted vertices
- * will also be deleted.
+ * @param[in] deleteAlsoIncidentElements: If true, all elements incident on
+ * deleted vertices will also be deleted.
  *
  * @return The number of degenerated vertices that were marked as deleted.
  *
  * @ingroup clean
  */
 template<MeshConcept MeshType>
-uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
+uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
 {
     using VertexType = MeshType::VertexType;
 
@@ -329,34 +355,32 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
         return v.position().isDegenerate();
     });
 
-    // If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
-    // faces incident on deleted vertices.
-    if constexpr (HasFaces<MeshType>) {
-        if (deleteAlsoFaces) {
-            deleteFacesIf(m, [](const typename MeshType::FaceType& f) {
-                for (const VertexType* v : f.vertices()) {
-                    if (v == nullptr) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-        }
+    if (deleteAlsoIncidentElements) {
+        uint dummy = 0;
+        detail::deleteElementsWithDeletedVertices(
+            m, dummy, typename MeshType::Containers());
     }
 
     return count_vd;
 }
 
 /**
- * @brief Removes all degenerate faces from the input mesh.
+ * @brief Removes or repairs all degenerate faces from the input mesh.
  *
- * This function removes all faces in the input mesh that are topologically
- * degenerate, meaning that they have two or more vertex references that link
- * the same vertex. All degenerate faces are zero area faces, but not all zero
- * area faces are degenerate (for example, a face with three different vertex
- * references, but two of them have the same position). Therefore, if you
- * also want to remove these kinds of faces, you should call
- * `removeDuplicatedVertices(m)` first.
+ * This function removes or repairs all faces in the input mesh that are
+ * topologically degenerate, meaning that they have two or more consecutive
+ * vertex references that link the same vertex.
+ *
+ * For fixed-size faces (e.g. Triangle meshes), any face containing consecutive
+ * duplicated vertices is completely marked as deleted. For dynamic-size faces
+ * (e.g. Polygon meshes), the function will attempt to "repair" the face by
+ * erasing the duplicated vertex references. If after this process the polygon
+ * ends up having fewer than 3 vertices, it will be marked as deleted.
+ *
+ * All degenerate faces are zero area faces, but not all zero area faces are
+ * degenerate (for example, a face with three different vertex references, but
+ * two of them have the same position). Therefore, if you also want to remove
+ * these kinds of faces, you should call `removeDuplicateVertices(m)` first.
  *
  * @note This function automatically updates all internal topological references
  * to the deleted faces, invalidating them (e.g. setting them to `nullptr` or
@@ -366,8 +390,7 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
  * FaceMeshConcept.
  *
  * @param[in,out] m: The input mesh for which to remove degenerate faces. This
- * mesh will be modified in place, with all degenerate faces being marked as
- * deleted.
+ * mesh will be modified in place.
  *
  * @return The number of degenerate faces that were marked as deleted.
  *
@@ -376,7 +399,26 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoFaces)
 template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
-    return deleteFacesIf(m, [&](const typename MeshType::FaceType& f) {
+    using FaceType = typename MeshType::FaceType;
+
+    if constexpr (PolygonFaceConcept<FaceType>) {
+        for (FaceType& f : m.faces()) {
+            for (int i = int(f.vertexCount()) - 1; i >= 0; --i) {
+                if (f.vertexCount() < 3)
+                    break;
+                if (f.vertex(i) == f.vertexMod(i + 1)) {
+                    f.eraseVertex(i);
+                }
+            }
+        }
+    }
+
+    return deleteFacesIf(m, [&](const FaceType& f) {
+        if constexpr (PolygonFaceConcept<FaceType>) {
+            if (f.vertexCount() < 3) {
+                return true;
+            }
+        }
         for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.vertex(i) == f.vertexMod(i + 1)) {
                 return true;

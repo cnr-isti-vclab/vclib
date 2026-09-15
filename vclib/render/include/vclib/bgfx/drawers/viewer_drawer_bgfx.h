@@ -39,7 +39,6 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 
     bool mStatsEnabled = false;
 
-    std::string         mPanoramaPath;
     DrawableEnvironment mEnvironment;
 
 public:
@@ -58,14 +57,24 @@ public:
         }
     }
 
+    void setViewerSettings(const ViewerSettings& settings)
+    {
+        bool panoramaChanged =
+            (Base::viewerSettings().panoramaPath != settings.panoramaPath);
+        Base::setViewerSettings(settings);
+        if (panoramaChanged) {
+            setPanorama(settings.panoramaPath);
+        }
+    }
+
     std::string panoramaFileName() const
     {
-        return FileInfo::fileNameWithExtension(mPanoramaPath);
+        return FileInfo::fileNameWithExtension(
+            Base::viewerSettings().panoramaPath);
     }
 
     void setPanorama(const std::string& panorama)
     {
-        mPanoramaPath = panorama;
         Panorama p(panorama);
         mEnvironment = DrawableEnvironment(p, Base::canvasViewId());
     }

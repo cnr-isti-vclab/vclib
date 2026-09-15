@@ -65,6 +65,13 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
     static const uint COMPONENT_ID = UINT_NULL;
 
 public:
+    Element(const Element&)            = delete;
+    Element& operator=(const Element&) = delete;
+
+    Element()                     = default;
+    Element(Element&&)            = default;
+    Element& operator=(Element&&) = default;
+
     using ParentMeshType = MeshType;
 
     /**
@@ -136,6 +143,12 @@ public:
     }
 
 private:
+    void rawCopyFrom(const Element& other)
+    {
+        comp::ParentMeshPointer<MeshType>::operator=(other);
+        (Comps::operator=(other), ...);
+    }
+
     // hide init and isAvailable members
     void init() {}
 

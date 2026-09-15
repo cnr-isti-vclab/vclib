@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.153.9398-566)
+set(BGFX_VERSION 1.159.9485-575)
 
 find_package(bgfx QUIET)
 
@@ -23,6 +23,7 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
             bgfx::bimg
             bgfx::bimg_decode
             bgfx::bimg_encode
+            vclib-3rd-stb
     )
 
     target_include_directories(
@@ -32,10 +33,6 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
     target_include_directories(
         vclib-3rd-bgfx
         INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
-    )
-    target_include_directories(
-        vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb/include
     )
     target_include_directories(
         vclib-3rd-bgfx
@@ -110,7 +107,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_link_libraries(
         vclib-3rd-bgfx
-        INTERFACE bx bgfx bimg bimg_decode bimg_encode
+        INTERFACE bx bgfx bimg bimg_decode bimg_encode vclib-3rd-stb
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -146,4 +143,21 @@ if(TARGET vclib-3rd-bgfx)
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_shader_combinations.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
     )
+
+    if(UNIX AND NOT APPLE)
+        # bgfx.cmake installs a prebuilt x86-64 libdxcompiler.so on Linux into bin/.
+        # On non-x86_64 architectures (e.g. ARM64) this is a foreign-architecture binary
+        # that breaks dpkg-shlibdeps during DEB packaging. Furthermore, DirectX shader
+        # compilation is not used on Linux by VCLib.
+        install(
+            CODE
+                [[
+            file(GLOB_RECURSE _DXCOMPILER_FILES "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/*libdxcompiler.so*")
+            foreach(_F IN LISTS _DXCOMPILER_FILES)
+                message(STATUS "Removing unneeded DirectX shader compiler library: ${_F}")
+                file(REMOVE "${_F}")
+            endforeach()
+        ]]
+        )
+    endif()
 endif()

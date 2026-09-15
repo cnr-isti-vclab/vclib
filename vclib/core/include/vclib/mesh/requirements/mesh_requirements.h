@@ -10,6 +10,7 @@
 
 #include "edge_requirements.h"
 #include "face_requirements.h"
+#include "vertex_requirements.h"
 
 #include <vclib/mesh/mesh.h>
 #include <vclib/mesh/mesh_components.h>

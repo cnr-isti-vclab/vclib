@@ -146,7 +146,7 @@ vec3 toneMapBasic(vec3 color)
  * @param[in] mapping: The tone mapping operator to use.
  * @return The tone mapped color.
  */
-vec3 toneMap(vec3 color, int mapping)
+vec3 toneMap(vec3 color, uint mapping)
 {
     switch(mapping)
     {

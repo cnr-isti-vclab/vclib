@@ -37,7 +37,6 @@ class MeshViewer
     ViewerApp mApp;
 
 public:
-    using EditorType = ViewerApp::EditorType;
     using ViewerType = ViewerApp::ViewerType;
 
     explicit MeshViewer(const std::string& title = "VCLib Mesh Viewer") :
@@ -151,10 +150,10 @@ public:
     {
         auto editor = mApp.template pushEditor<EditorT>(active);
 
-        using FrameType =
-            typename EditorFrameTraits<EditorT, ViewerType>::FrameType;
-        if constexpr (!std::is_same_v<FrameType, void>) {
-            mApp.addEditorFrame(std::make_shared<FrameType>(editor));
+        using ToolbarFrameType =
+            typename EditorFrameTraits<EditorT, ViewerType>::ToolbarFrameType;
+        if constexpr (!std::is_same_v<ToolbarFrameType, void>) {
+            mApp.addEditorFrame(std::make_shared<ToolbarFrameType>(editor));
         }
 
         return editor;
@@ -181,8 +180,6 @@ public:
     void setViewerSettings(const ViewerSettings& settings);
 
     const ViewerSettings& viewerSettings() const;
-
-    void setPanorama(const std::string& panorama);
 
     /**
      * @brief Changes the current zoom (scale) of the trackball.
@@ -214,21 +211,6 @@ public:
      * @param[in] angleRad: Rotation angle in radians.
      */
     void trackballRoll(float angleRad) { mApp.trackballRoll(angleRad); }
-
-    /**
-     * @brief Sets the background color of the viewer.
-     * @param[in] color: The background color.
-     */
-    void setBackgroundColor(const vcl::Color& color)
-    {
-        mApp.setBackgroundColor(color);
-    }
-
-    /**
-     * @brief Retrieves the current background color.
-     * @return The background color.
-     */
-    const vcl::Color& backgroundColor() const { return mApp.backgroundColor(); }
 };
 
 } // namespace vcl::imgui

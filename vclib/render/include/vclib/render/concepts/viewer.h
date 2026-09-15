@@ -58,8 +58,6 @@ concept ViewerConcept = requires (
         std::as_const(obj).viewerSettings()
     } -> std::same_as<const vcl::ViewerSettings&>;
 
-    { std::as_const(obj).panoramaFileName() } -> std::same_as<std::string>;
-
     // non const requirements
     requires IsConst<T> || requires {
         { obj.setDrawableObjectVector(vec) } -> std::same_as<void>;
@@ -77,8 +75,6 @@ concept ViewerConcept = requires (
         { obj.fitScene() } -> std::same_as<void>;
 
         { obj.setViewerSettings(vcl::ViewerSettings()) } -> std::same_as<void>;
-
-        { obj.setPanorama(std::string()) } -> std::same_as<void>;
 
         { obj.trackballZoom(0.0f) } -> std::same_as<void>;
         { obj.trackballPan(vcl::Point3f(0.f, 0.f, 0.f)) } -> std::same_as<void>;

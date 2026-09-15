@@ -10,6 +10,12 @@
 
 #include <vclib/base.h>
 
+// Restrict Eigen alignment to 16 bytes (SSE) to prevent ABI incompatibilities
+// across translation units and alignment issues with standard containers.
+#ifndef EIGEN_MAX_ALIGN_BYTES
+#define EIGEN_MAX_ALIGN_BYTES 16
+#endif
+
 #include <Eigen/Core>
 
 namespace vcl {

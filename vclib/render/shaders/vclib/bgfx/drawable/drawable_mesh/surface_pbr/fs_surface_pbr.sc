@@ -23,11 +23,11 @@ $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 #define primitiveID (u_firstChunkPrimitiveID + gl_PrimitiveID)
 
 // color of each face / edge
-BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
+BUFFER_RAW_RO(primitiveColors, VCL_MRB_PRIMITIVE_COLOR_BUFFER);
 
 // normal of each face / edge
-BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
-DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals);
+BUFFER_RAW_RO(primitiveNormals, VCL_MRB_PRIMITIVE_NORMAL_BUFFER);
+DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals)
 
 SAMPLERCUBE(s_irradiance, VCL_MRB_CUBEMAP0);
 SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
@@ -49,7 +49,7 @@ void main()
     // color to use per vertex
     // if the user selected per face, per mesh or per user, override
     if (isSurfaceColorFace()) {
-        vertexBaseColor = uintABGRToVec4Color(primitiveColors[primitiveID]);
+        vertexBaseColor = uintABGRToVec4Color(rawLoadUint(primitiveColors, primitiveID));
     }
     else if (isSurfaceColorMesh()) {
         vertexBaseColor = u_meshColor;

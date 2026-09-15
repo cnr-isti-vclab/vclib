@@ -9,9 +9,10 @@
 #define VCL_QT_GUI_TOOLBAR_FRAMES_BOUNDING_BOX_EDITOR_FRAME_H
 
 #include "generic_editor_frame.h"
-#include "settings/bounding_box_editor_settings_frame.h"
 
 #include <vclib/render/editors/bounding_box_editor.h>
+
+#include <vclib/qt/gui/editor_settings_frames/bounding_box_editor_settings_frame.h>
 
 namespace vcl::qt {
 
@@ -46,6 +47,10 @@ public:
                 mBoundingBoxEditor->settings());
 
         connect(sf, SIGNAL(settingsUpdated()), this, SLOT(refreshSettings()));
+
+        mBoundingBoxEditor->setOnStateUpdatedCallback([this, editorButton]() {
+            editorButton->setChecked(mBoundingBoxEditor->isActive());
+        });
     }
 
 private slots:
@@ -61,7 +66,8 @@ private slots:
 template<typename ViewerType>
 struct EditorFrameTraits<vcl::BoundingBoxEditor, ViewerType>
 {
-    using FrameType = BoundingBoxEditorFrame<ViewerType>;
+    using ToolbarFrameType  = BoundingBoxEditorFrame<ViewerType>;
+    using SettingsFrameType = BoundingBoxEditorSettingsFrame;
 };
 
 } // namespace vcl::qt

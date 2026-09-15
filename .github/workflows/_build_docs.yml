@@ -16,7 +16,7 @@ on:
 jobs:
   build_docs:
     name: Build Docs
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v7

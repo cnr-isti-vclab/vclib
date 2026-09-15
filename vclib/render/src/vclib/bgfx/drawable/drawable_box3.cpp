@@ -14,7 +14,7 @@ namespace vcl {
 DrawableBox3::DrawableBox3(const DrawableBox3& other) :
         DrawableObject(other), mBox(other.mBox)
 {
-    mBoxLines.generalColor() = other.mBoxLines.generalColor();
+    mBoxLines.setGeneralColor(other.mBoxLines.generalColor());
     mBoxLines.setWidth(other.mBoxLines.width());
     updateLines();
 }
@@ -25,7 +25,7 @@ DrawableBox3& DrawableBox3::operator=(DrawableBox3 other)
     return *this;
 }
 
-void DrawableBox3::swap(DrawableBox3& other)
+void DrawableBox3::swap(DrawableBox3& other) noexcept
 {
     using std::swap;
     DrawableObject::swap(other);

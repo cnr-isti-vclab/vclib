@@ -67,7 +67,7 @@ void TextMetrics::appendText(FontHandle _fontHandle, const char* _string)
 		}
 	}
 
-	BX_ASSERT(state == UTF8_ACCEPT, "The string is not well-formed");
+	BX_ASSERT(state == VCL_UTF8_ACCEPT, "The string is not well-formed");
 }
 
 TextLineMetrics::TextLineMetrics(const FontInfo& _fontInfo)
@@ -82,7 +82,7 @@ uint32_t TextLineMetrics::getLineCount(const bx::StringView& _str) const
 	uint32_t lineCount = 1;
 	for (const char* ptr = _str.getPtr(); ptr != _str.getTerm(); ++ptr)
 	{
-		if (utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == UTF8_ACCEPT)
+		if (utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == VCL_UTF8_ACCEPT)
 		{
 			if (codepoint == L'\n')
 			{
@@ -91,7 +91,7 @@ uint32_t TextLineMetrics::getLineCount(const bx::StringView& _str) const
 		}
 	}
 
-	BX_ASSERT(state == UTF8_ACCEPT, "The string is not well-formed");
+	BX_ASSERT(state == VCL_UTF8_ACCEPT, "The string is not well-formed");
 	return lineCount;
 }
 
@@ -109,7 +109,7 @@ void TextLineMetrics::getSubText(const bx::StringView& _str, uint32_t _firstLine
 	{
 		for (; ptr != _str.getTerm(); ++ptr)
 		{
-			if (utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == UTF8_ACCEPT)
+			if (utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == VCL_UTF8_ACCEPT)
 			{
 				if (codepoint == L'\n')
 				{
@@ -121,7 +121,7 @@ void TextLineMetrics::getSubText(const bx::StringView& _str, uint32_t _firstLine
 		}
 	}
 
-	BX_ASSERT(state == UTF8_ACCEPT, "The string is not well-formed");
+	BX_ASSERT(state == VCL_UTF8_ACCEPT, "The string is not well-formed");
 	_begin = ptr;
 
 	while (ptr != _str.getTerm()
@@ -129,7 +129,7 @@ void TextLineMetrics::getSubText(const bx::StringView& _str, uint32_t _firstLine
 	{
 		for (; ptr != _str.getTerm(); ++ptr)
 		{
-			if(utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == UTF8_ACCEPT)
+			if(utf8_decode(&state, (uint32_t*)&codepoint, *ptr) == VCL_UTF8_ACCEPT)
 			{
 				if(codepoint == L'\n')
 				{
@@ -141,7 +141,7 @@ void TextLineMetrics::getSubText(const bx::StringView& _str, uint32_t _firstLine
 		}
 	}
 
-	BX_ASSERT(state == UTF8_ACCEPT, "The string is not well-formed");
+	BX_ASSERT(state == VCL_UTF8_ACCEPT, "The string is not well-formed");
 	_end = ptr;
 }
 

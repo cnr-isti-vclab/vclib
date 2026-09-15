@@ -9,7 +9,7 @@
 
 #include <vclib/bgfx/selection/uniforms.sh>
 
-BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
+BUFFER_RAW_RO(positions, 0); // coordinates (3 floats)
 
 BUFFER_RW(vertex_selected, uint, 4);   // is vertex selected? 1 bit per vertex...
 
@@ -45,9 +45,9 @@ void main()
     );
 
     vec4 p = vec4(
-        positions[idx30/4][idx30%4],
-        positions[idx31/4][idx31%4],
-        positions[idx32/4][idx32%4],
+        rawLoadFloat(positions, idx30),
+        rawLoadFloat(positions, idx31),
+        rawLoadFloat(positions, idx32),
         1
     );
 

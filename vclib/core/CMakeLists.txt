@@ -56,5 +56,6 @@ if(VCLIB_INSTALL_MODULE_CORE)
     install(
         DIRECTORY ${VCLIB_CORE_INCLUDE_DIR}/vclib
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        PATTERN "*.in" EXCLUDE
     )
 endif()

@@ -26,14 +26,14 @@ public:
 /**
  * @brief Traits struct to associate an Editor type with its ImGui Frame type.
  *
- * Specializations of this struct should define `FrameType` as the class
+ * Specializations of this struct should define `ToolbarFrameType` as the class
  * that implements the UI frame for the specific editor. If no frame is
- * associated, `FrameType` defaults to `void`.
+ * associated, `ToolbarFrameType` defaults to `void`.
  */
 template<template<typename> typename EditorT, typename ViewerType>
 struct EditorFrameTraits
 {
-    using FrameType = void;
+    using ToolbarFrameType = void;
 };
 
 } // namespace vcl::imgui

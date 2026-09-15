@@ -9,6 +9,8 @@
 
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
+#include <QLocale>
+
 namespace vcl::qt {
 
 DrawableObjectItem::DrawableObjectItem(
@@ -85,6 +87,9 @@ void DrawableObjectItem::addMeshItem()
         if (mIconFunction) {
             std::pair<QIcon, std::string> p = mIconFunction(*mesh);
             setIcon(2, p.first);
+            if (!p.second.empty()) {
+                setToolTip(2, QString::fromStdString(p.second));
+            }
         }
     }
 }
@@ -118,8 +123,10 @@ void DrawableObjectItem::addMeshInfoItem(const AbstractDrawableMesh& mesh)
     if (mesh.meshProvider().edgeCount() > 0) {
         auto edgeCountItem = new QTreeWidgetItem(meshInfoItem);
         edgeCountItem->setText(0, "# Edges");
-        edgeCountItem->setText(
-            1, QString::number(mesh.meshProvider().edgeCount()));
+        updateElementCountItem(
+            edgeCountItem,
+            mesh.meshProvider().edgeCount(),
+            mesh.meshProvider().selectedEdgeCount());
         makeItemNotSelectable(edgeCountItem);
     }
 }
@@ -305,13 +312,14 @@ void DrawableObjectItem::updateElementCountItem(
     uint             count,
     uint             selectedCount)
 {
+    QLocale locale;
     if (selectedCount == 0) {
-        item->setText(1, QString::number(count));
+        item->setText(1, locale.toString(count));
     }
     else {
         item->setText(
             1,
-            QString::number(count) + " (" + QString::number(selectedCount) +
+            locale.toString(count) + " (" + locale.toString(selectedCount) +
                 " selected)");
     }
 }

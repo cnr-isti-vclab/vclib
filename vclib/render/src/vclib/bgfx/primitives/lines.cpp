@@ -99,6 +99,7 @@ void Lines::draw(bgfx::ViewId viewId) const
     LinesUniforms::setGeneralColor(mGeneralColor);
     LinesUniforms::setDepthOffset(mDepthOffset);
     LinesUniforms::setSelectionColor(mSelectionColor);
+    LinesUniforms::setVectorLength(mVectorLength);
 
     // Bind buffers for compute / vertex pulling
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
@@ -141,6 +142,7 @@ void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
     LinesUniforms::setWidth(mWidth);
     LinesUniforms::setDepthOffset(mDepthOffset);
     LinesUniforms::setId(id);
+    LinesUniforms::setVectorLength(mVectorLength);
 
     // Bind buffers for compute / vertex pulling
     mVertexPositions.get().bindCompute(V_POS_STAGE, bgfx::Access::Read);
@@ -170,9 +172,10 @@ void Lines::checkAndUpdateProgram() const
     // Validate that buffer capacities match the expected topology rules.
     // E.g., LINES requires pairs, and LINE_STRIP requires at least 2 points.
 
-    if (mTopology == Topology::LINES && nv % 2 != 0) {
+    if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+        nv % 2 != 0) {
         throw std::runtime_error(
-            "Lines: For LINES topology, the number of " + primstr +
+            "Lines: For LINES or VECTORS topology, the number of " + primstr +
             " must be even (each line requires 2 endpoints).");
     }
     if (mTopology == Topology::LINE_STRIP && nv < 2) {
@@ -199,11 +202,12 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE color setting requires a valid line color "
                 "buffer.");
         }
-        if (mTopology == Topology::LINES && mLineColorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineColorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line colors must match the number of "
                 "lines (" +
-                primstr + " / 2) for LINES topology.");
+                primstr + " / 2) for LINES or VECTORS topology.");
         }
         if (mTopology == Topology::LINE_STRIP && mLineColorCount != nv - 1) {
             throw std::runtime_error(
@@ -231,11 +235,12 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE shading setting requires a valid line normal "
                 "buffer.");
         }
-        if (mTopology == Topology::LINES && mLineNorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineNorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line normals must match the number of "
                 "lines (" +
-                primstr + " / 2) for LINES topology.");
+                primstr + " / 2) for LINES or VECTORS topology.");
         }
         if (mTopology == Topology::LINE_STRIP && mLineNorCount != nv - 1) {
             throw std::runtime_error(
@@ -252,12 +257,13 @@ void Lines::checkAndUpdateProgram() const
                 "buffer "
                 "is invalid.");
         }
-        if (mTopology == Topology::LINES && mLineSelCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineSelCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line selection elements must match the "
                 "number of "
                 "lines (" +
-                primstr + " / 2) for LINES topology.");
+                primstr + " / 2) for LINES or VECTORS topology.");
         }
         if (mTopology == Topology::LINE_STRIP && mLineSelCount != nv - 1) {
             throw std::runtime_error(
@@ -278,7 +284,7 @@ uint Lines::vertexPullingInstances() const
     uint nVPI = 0;
     uint nv   = mIndices.isValid() ? mIndexCount : mVerPosCount;
 
-    if (mTopology == Topology::LINES) {
+    if (mTopology == Topology::LINES || mTopology == Topology::VECTORS) {
         // each line generates 6 vertices (2 triangles) in the shader
         nVPI = (nv / 2) * 6; // Which is nv * 3
     }
@@ -296,7 +302,7 @@ bgfx::ProgramHandle Lines::linesProgramSelector() const
 
     constexpr uint N_SHADING_MODES   = 3;
     constexpr uint N_INDEX_MODES     = 2;
-    constexpr uint N_TOPO_MODES      = 2;
+    constexpr uint N_TOPO_MODES      = 3;
     constexpr uint N_COLOR_MODES     = 3;
     constexpr uint N_SELECTION_MODES = 2;
 
@@ -328,7 +334,7 @@ bgfx::ProgramHandle Lines::linesIdProgramSelector() const
     using enum VertFragProgram;
 
     constexpr uint N_INDEX_MODES = 2;
-    constexpr uint N_TOPO_MODES  = 2;
+    constexpr uint N_TOPO_MODES  = 3;
 
     uint indices  = mIndices.isValid() ? 0 : 1;
     uint topology = toUnderlying(mTopology);

@@ -50,7 +50,7 @@ uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch)
 	uint32_t byte = _ch;
 	uint32_t type = s_utf8d[byte];
 
-	*_codep = (*_state != UTF8_ACCEPT) ?
+	*_codep = (*_state != VCL_UTF8_ACCEPT) ?
 			  (byte & 0x3fu) | (*_codep << 6) :
 			  (0xff >> type) & (byte);
 

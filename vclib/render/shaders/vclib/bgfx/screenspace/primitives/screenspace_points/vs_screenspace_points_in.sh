@@ -11,9 +11,9 @@ $output v_color, v_texcoord1
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_points_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
-BUFFER_RO(pointsBuffer, vec2, 0); // 2D point positions
+BUFFER_RAW_RO(pointsBuffer, 0); // 2D point positions
 #if SCREENSPACE_POINTS_COLOR_PER_VERTEX
-BUFFER_RO(pointColors, uint, 1); // colors
+BUFFER_RAW_RO(pointColors, 1); // colors
 #endif
 
 void main()
@@ -24,7 +24,7 @@ void main()
     uint localVertex = gl_VertexID % 6u;
 
     // Fetch the center position of this point
-    vec2 centerPos = pointsBuffer[pointIndex];
+    vec2 centerPos = vec2(rawLoadFloat(pointsBuffer, pointIndex * 2u), rawLoadFloat(pointsBuffer, pointIndex * 2u + 1u));
 
     const vec2 offsets[6] = {
         vec2(-1.0, -1.0), vec2(-1.0,  1.0), vec2( 1.0, -1.0),
@@ -48,7 +48,7 @@ void main()
         1.0);
 
 #ifdef SCREENSPACE_POINTS_COLOR_PER_VERTEX
-    v_color = uintABGRToVec4Color(pointColors[pointIndex]);
+    v_color = uintABGRToVec4Color(rawLoadUint(pointColors, pointIndex));
 #else
     v_color = u_pointsGeneralColor;
 #endif

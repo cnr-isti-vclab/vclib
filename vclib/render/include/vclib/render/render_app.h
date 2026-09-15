@@ -170,11 +170,7 @@ private:
     void wmResize(uint width, uint height)
     {
         CanvasType::onResize(width, height);
-
-        // call the onResize member function of each Drawer object.
-        // NOTE: use static_cast<Drawers*>(this)->function() to call the
-        // right VIRTUAL function of the Drawer object.
-        (static_cast<Drawers<RenderApp>*>(this)->onResize(width, height), ...);
+        cnvResizeDrawers(width, height);
     }
 
     void wmPaint() { CanvasType::onPaint(); }
@@ -322,6 +318,14 @@ private:
         // NOTE: use static_cast<Drawers*>(this)->function() to call the
         // right VIRTUAL function of the Drawer object.
         (..., static_cast<Drawers<RenderApp>*>(this)->onPostDraw());
+    }
+
+    void cnvResizeDrawers(uint width, uint height)
+    {
+        // call the onResize member function of each Drawer object.
+        // NOTE: use static_cast<Drawers*>(this)->function() to call the
+        // right VIRTUAL function of the Drawer object.
+        (static_cast<Drawers<RenderApp>*>(this)->onResize(width, height), ...);
     }
 
     /***** Member functions called by Drawer objects *****/
@@ -607,6 +611,18 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::CNV
      * every Drawer object.
      */
     static void postDraw(RenderApp* r) { r->cnvPostDraw(); }
+
+    /**
+     * @brief The CanvasType has been resized, and asks the RenderApp to call
+     * the `onResize(uint, uint)` function for every Drawer object.
+     *
+     * @param width The new width of the canvas.
+     * @param height The new height of the canvas.
+     */
+    static void resizeDrawers(RenderApp* r, uint width, uint height)
+    {
+        r->cnvResizeDrawers(width, height);
+    }
 };
 
 /**

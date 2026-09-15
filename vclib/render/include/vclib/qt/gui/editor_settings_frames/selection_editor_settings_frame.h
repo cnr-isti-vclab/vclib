@@ -5,10 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_SELECTION_EDITOR_SETTINGS_FRAME_H
+#define VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_SELECTION_EDITOR_SETTINGS_FRAME_H
 
-#include <vclib/render/settings/editor_settings.h>
+#include <vclib/render/editors/selection_editor.h>
 
 #include <QFrame>
 
@@ -23,13 +23,15 @@ class SelectionEditorSettingsFrame : public QFrame
     Q_OBJECT
 
     Ui::SelectionEditorSettingsFrame* mUI;
-    EditorSettings&                   mSettings;
+    SelectionEditorSettings&          mSettings;
 
 public:
     explicit SelectionEditorSettingsFrame(
-        EditorSettings& sts,
-        QWidget*        parent = nullptr);
+        SelectionEditorSettings& sts,
+        QWidget*                 parent = nullptr);
     ~SelectionEditorSettingsFrame();
+
+    void updateGUI();
 
 signals:
     void settingsUpdated();
@@ -38,8 +40,10 @@ private slots:
     void editModeChanged(int index);
 
     void onlyVisibleCheckBoxChanged(Qt::CheckState state);
+
+    void onResetDefaultClicked();
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_SELECTION_EDITOR_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_SELECTION_EDITOR_SETTINGS_FRAME_H

@@ -46,13 +46,11 @@
  */
 #define DECLARE_FETCH_VEC3(funcName, bufferName) \
     vec3 funcName(uint index) { \
-        uint idx30 = index * 3u; \
-        uint idx31 = idx30 + 1u; \
-        uint idx32 = idx30 + 2u; \
+        uint idx = index * 3u; \
         return vec3( \
-            bufferName[idx30 / 4u][idx30 % 4u], \
-            bufferName[idx31 / 4u][idx31 % 4u], \
-        bufferName[idx32 / 4u][idx32 % 4u]); \
+            rawLoadFloat(bufferName, idx), \
+            rawLoadFloat(bufferName, idx + 1u), \
+            rawLoadFloat(bufferName, idx + 2u)); \
     }
 
 /**
@@ -64,7 +62,7 @@
  * be fetched.
  *
  * @code
- * BUFFER_RO(myBuffer, float, 0); // buffer of float, read only on stage 0
+ * BUFFER_RAW_RO(myBuffer, 0); // buffer of float, read only on stage 0
  * DECLARE_FETCH_VEC3_FROM_FLOAT(fetchMyBuffer, myBuffer) // declare the function
  * //...
  * vec3 pos = fetchMyBuffer(10); // fetch the 10-th vec3 from myBuffer
@@ -74,9 +72,9 @@
     vec3 funcName(uint index) { \
         uint idx = index * 3u; \
         return vec3( \
-            bufferName[idx], \
-            bufferName[idx + 1u], \
-            bufferName[idx + 2u]); \
+            rawLoadFloat(bufferName, idx), \
+            rawLoadFloat(bufferName, idx + 1u), \
+            rawLoadFloat(bufferName, idx + 2u)); \
     }
 
 /**

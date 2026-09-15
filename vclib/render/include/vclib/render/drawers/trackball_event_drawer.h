@@ -14,11 +14,14 @@
 #include <vclib/render/gizmos/trackball_gizmo.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/draw_object_settings.h>
+#include <vclib/render/settings/trackball_settings.h>
 #include <vclib/render/viewer/trackball.h>
 
 #include <vclib/space/core.h>
 
+#include <functional>
 #include <map>
+#include <string>
 
 namespace vcl {
 
@@ -37,7 +40,10 @@ public:
 private:
     using Base = EventDrawer<DerivedRenderApp>;
 
-    using MotionType = vcl::TrackBall<Scalar>::MotionType;
+    using DragMotionMap        = TrackballSettings::DragMotionMap;
+    using ScrollAtomicMap      = TrackballSettings::ScrollAtomicMap;
+    using KeyAtomicMap         = TrackballSettings::KeyAtomicMap;
+    using AtomicActionCallback = std::function<void(TrackBallEventDrawerT& d)>;
 
     // translation step in camera space
     static constexpr double DISCRETE_TRANSLATION_STEP = 0.1;
@@ -68,148 +74,26 @@ private:
             toggleTrackBallVisibility();
         };
 
-    std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
-        mDragMotionMap = {
-            // clang-format off
-            {{MouseButton::LEFT, {KeyModifier::NO_MODIFIER}},
-             TrackBallType::ARC                                               },
-            {{MouseButton::LEFT, {KeyModifier::CONTROL}}, TrackBallType::PAN  },
-            {{MouseButton::LEFT, {KeyModifier::ALT}},     TrackBallType::ZMOVE},
-            {{MouseButton::LEFT, {KeyModifier::SHIFT}},   TrackBallType::SCALE},
-            {{MouseButton::MIDDLE, {KeyModifier::NO_MODIFIER}},
-             TrackBallType::PAN                                               },
-            {{MouseButton::MIDDLE, {KeyModifier::CONTROL}},
-             TrackBallType::ROLL                                              },
-            {{MouseButton::LEFT, {KeyModifier::SHIFT, KeyModifier::CONTROL}},
-             TrackBallType::DIR_LIGHT_ARC                                     },
-            // clang-format on
-    };
+    TrackballSettings mDefaultTrackballSettings;
 
-    using Axis = unsigned char;
-    std::map<std::pair<KeyModifiers, Axis>, MotionType> mScrollAtomicMap = {
-        {{{KeyModifier::NO_MODIFIER}, 1}, TrackBallType::SCALE},
-        {{{KeyModifier::CONTROL}, 1},     TrackBallType::ROLL },
-        {{{KeyModifier::SHIFT}, 1},       TrackBallType::FOV  },
-#ifdef __APPLE__
-        {{{KeyModifier::SHIFT}, 0},       TrackBallType::FOV  },
-#endif
-    };
-
-    std::map<
-        std::pair<Key::Enum, KeyModifiers>,
-        std::function<void(TrackBallType& t)>>
-        mKeyAtomicMap = {
-            {{Key::R, {KeyModifier::NO_MODIFIER}},
-             [&](TrackBallType& t) {
-                 t.reset(
-                     mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
-             }},
-            {{Key::R, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [&](TrackBallType& t) {
-                 t.resetDirectionalLight();
-             }},
-
-            // rotate
-            {{Key::NP_2, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 rotate(t, UNIT_X, DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_4, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 rotate(t, UNIT_Y, -DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_6, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 rotate(t, UNIT_Y, DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_8, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 rotate(t, UNIT_X, -DISCRETE_ROTATION_STEP);
-             }},
-
-            // translate
-            {{Key::UP, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 translate(t, UNIT_Y * DISCRETE_TRANSLATION_STEP);
-             }},
-            {{Key::DOWN, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 translate(t, -UNIT_Y * DISCRETE_TRANSLATION_STEP);
-             }},
-            {{Key::LEFT, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 translate(t, -UNIT_X * DISCRETE_TRANSLATION_STEP);
-             }},
-            {{Key::RIGHT, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) {
-                 translate(t, UNIT_X * DISCRETE_TRANSLATION_STEP);
-             }},
-
-            // set view
-            {{Key::NP_1, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) { // front
-                 t.reset();
-             }},
-            {{Key::NP_7, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) { // top
-                 t.reset();
-                 rotate(t, UNIT_X, M_PI_2);
-             }},
-            {{Key::NP_3, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) { // right
-                 t.reset();
-                 rotate(t, UNIT_Y, -M_PI_2);
-             }},
-            {{Key::NP_1, {KeyModifier::CONTROL}},
-             [](TrackBallType& t) { // back
-                 t.reset();
-                 rotate(t, UNIT_Y, M_PI);
-             }},
-            {{Key::NP_7, {KeyModifier::CONTROL}},
-             [](TrackBallType& t) { // bottom
-                 t.reset();
-                 rotate(t, UNIT_X, -M_PI_2);
-             }},
-            {{Key::NP_3, {KeyModifier::CONTROL}},
-             [](TrackBallType& t) { // left
-                 t.reset();
-                 rotate(t, UNIT_Y, M_PI_2);
-             }},
-            // projection mode
-            {{Key::NP_5, {KeyModifier::NO_MODIFIER}},
-             [](TrackBallType& t) { // reset
-                 const auto v =
-                     t.projectionMode() ==
-                             Camera<Scalar>::ProjectionMode::PERSPECTIVE ?
-                         Camera<Scalar>::ProjectionMode::ORTHO :
-                         Camera<Scalar>::ProjectionMode::PERSPECTIVE;
-                 t.setProjectionMode(v);
-             }},
-
-            // rotate light
-            {{Key::NP_2, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [](TrackBallType& t) {
-                 rotateLight(t, UNIT_X, DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_4, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [](TrackBallType& t) {
-                 rotateLight(t, UNIT_Y, -DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_6, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [](TrackBallType& t) {
-                 rotateLight(t, UNIT_Y, DISCRETE_ROTATION_STEP);
-             }},
-            {{Key::NP_8, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
-             [](TrackBallType& t) {
-                 rotateLight(t, UNIT_X, -DISCRETE_ROTATION_STEP);
-             }},
-    };
+    std::map<std::string, AtomicActionCallback> mAtomicActionRegistry =
+        defaultAtomicActionRegistry();
 
 public:
     TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
         resizeViewer(width, height);
+    }
+
+    virtual TrackballSettings& trackballSettings()
+    {
+        return mDefaultTrackballSettings;
+    }
+
+    virtual const TrackballSettings& trackballSettings() const
+    {
+        return mDefaultTrackballSettings;
     }
 
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
@@ -227,7 +111,7 @@ public:
 
     void focus(const Point3<Scalar>& center)
     {
-        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+        mTrackball.applyAtomicMotion(TrackballMotionType::FOCUS, center);
     }
 
     void fitScene(const Point3<Scalar>& center, Scalar radius)
@@ -329,6 +213,58 @@ public:
         mCustomShortcutToggleTrackballCallback = callback;
     }
 
+    // event key/mouse assignments
+
+    /**
+     * @brief Returns a reference to the DragMotionMap to allow reading or
+     * modifying drag bindings.
+     */
+    DragMotionMap& dragMotionMap() { return trackballSettings().dragMotionMap; }
+
+    const DragMotionMap& dragMotionMap() const
+    {
+        return trackballSettings().dragMotionMap;
+    }
+
+    /**
+     * @brief Returns a reference to the ScrollAtomicMap to allow reading or
+     * modifying scroll bindings.
+     */
+    ScrollAtomicMap& scrollAtomicMap()
+    {
+        return trackballSettings().scrollAtomicMap;
+    }
+
+    const ScrollAtomicMap& scrollAtomicMap() const
+    {
+        return trackballSettings().scrollAtomicMap;
+    }
+
+    /**
+     * @brief Returns a reference to the KeyAtomicMap to allow reading or
+     * modifying key bindings.
+     */
+    KeyAtomicMap& keyAtomicMap() { return trackballSettings().keyAtomicMap; }
+
+    const KeyAtomicMap& keyAtomicMap() const
+    {
+        return trackballSettings().keyAtomicMap;
+    }
+
+    /**
+     * @brief Registers a new atomic action or overwrites an existing one.
+     *
+     * @param[in] name: The unique identifier/name for the action.
+     * @param[in] callback: The function to execute when the action is
+     * triggered.
+     */
+    void registerAtomicAction(
+        const std::string&   name,
+        AtomicActionCallback callback)
+    {
+        mAtomicActionRegistry[name] = callback;
+    }
+
     // events
 
     void onDraw(uint viewId) override
@@ -336,7 +272,7 @@ public:
         Base::onDraw(viewId);
 
         mDirectionalLightGizmo.setVisibility(
-            currentMotion() == TrackBallType::DIR_LIGHT_ARC);
+            currentMotion() == TrackballMotionType::DIR_LIGHT_ARC);
 
         if (mDirectionalLightGizmo.isVisible()) {
             auto v = lightGizmoMatrix();
@@ -418,7 +354,10 @@ public:
 protected:
     bool isDragging() const { return mTrackball.isDragging(); }
 
-    MotionType currentMotion() const { return mTrackball.currentMotion(); }
+    TrackballMotionType currentMotion() const
+    {
+        return mTrackball.currentMotion();
+    }
 
     void requestUpdate() { static_cast<DerivedRenderApp*>(this)->update(); }
 
@@ -435,10 +374,10 @@ private:
     void moveMouse(int x, int y)
     {
         // ugly AF
-        auto it = mDragMotionMap.find(
+        auto actionOpt = dragMotionMap().action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         mTrackball.setMousePosition(x, y);
         mTrackball.update();
@@ -453,10 +392,10 @@ private:
 
         mCurrentMouseButton = button;
 
-        auto it =
-            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        auto actionOpt = dragMotionMap().action(
+            std::make_pair(button, mCurrentKeyModifiers));
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
             // no need to update here, it will be updated in moveMouse
             // for event driven rendering (e.g., Qt) this can trigger
             // an unwanted drag motion using the previous mouse position
@@ -470,10 +409,10 @@ private:
             mCurrentMouseButton = MouseButton::NO_BUTTON;
         }
 
-        auto it =
-            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.endDragMotion(it->second);
+        auto actionOpt = dragMotionMap().action(
+            std::make_pair(button, mCurrentKeyModifiers));
+        if (actionOpt.has_value()) {
+            mTrackball.endDragMotion(actionOpt.value());
             mTrackball.update();
         }
     }
@@ -485,16 +424,18 @@ private:
         }
 
         if (pixelDeltaX != 0) {
-            auto it = mScrollAtomicMap.find({mCurrentKeyModifiers, Axis(0)});
-            if (it != mScrollAtomicMap.end()) {
-                mTrackball.applyAtomicMotion(it->second, pixelDeltaX);
+            auto actionOpt = scrollAtomicMap().action(
+                {ScrollAxis::HORIZONTAL, mCurrentKeyModifiers});
+            if (actionOpt.has_value()) {
+                mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaX);
             }
         }
 
         if (pixelDeltaY != 0) {
-            auto it = mScrollAtomicMap.find({mCurrentKeyModifiers, Axis(1)});
-            if (it != mScrollAtomicMap.end()) {
-                mTrackball.applyAtomicMotion(it->second, pixelDeltaY);
+            auto actionOpt = scrollAtomicMap().action(
+                {ScrollAxis::VERTICAL, mCurrentKeyModifiers});
+            if (actionOpt.has_value()) {
+                mTrackball.applyAtomicMotion(actionOpt.value(), pixelDeltaY);
             }
         }
     }
@@ -502,16 +443,19 @@ private:
     void keyPress(Key::Enum key)
     {
         // atomic motions are enabled while dragging
-        auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
-        if (atomicOp != mKeyAtomicMap.end()) {
-            atomicOp->second(mTrackball);
+        auto actionNameOpt = keyAtomicMap().action({key, mCurrentKeyModifiers});
+        if (actionNameOpt.has_value()) {
+            auto it = mAtomicActionRegistry.find(actionNameOpt.value());
+            if (it != mAtomicActionRegistry.end()) {
+                it->second(*this);
+            }
         }
 
         // dragging
-        auto it = mDragMotionMap.find(
+        auto actionOpt = dragMotionMap().action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         else {
             mTrackball.endDragMotion(currentMotion());
@@ -526,10 +470,10 @@ private:
             return;
 
         // dragging
-        auto it = mDragMotionMap.find(
+        auto actionOpt = dragMotionMap().action(
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
-        if (it != mDragMotionMap.end()) {
-            mTrackball.beginDragMotion(it->second);
+        if (actionOpt.has_value()) {
+            mTrackball.beginDragMotion(actionOpt.value());
         }
         else {
             mTrackball.endDragMotion(currentMotion());
@@ -543,7 +487,7 @@ private:
         Scalar                angle = M_PI / 6)
     {
         using Args = typename TrackBallType::TransformArgs;
-        t.applyAtomicMotion(TrackBallType::ARC, Args(axis, angle));
+        t.applyAtomicMotion(TrackballMotionType::ARC, Args(axis, angle));
     }
 
     static void rotateLight(
@@ -552,12 +496,126 @@ private:
         Scalar                angle = M_PI / 6)
     {
         using Args = typename TrackBallType::TransformArgs;
-        t.applyAtomicMotion(TrackBallType::DIR_LIGHT_ARC, Args(axis, angle));
+        t.applyAtomicMotion(
+            TrackballMotionType::DIR_LIGHT_ARC, Args(axis, angle));
     }
 
     static void translate(TrackBallType& t, const Point3<Scalar>& translation)
     {
-        t.applyAtomicMotion(TrackBallType::PAN, translation);
+        t.applyAtomicMotion(TrackballMotionType::PAN, translation);
+    }
+
+    static std::map<std::string, AtomicActionCallback>
+    defaultAtomicActionRegistry()
+    {
+        using TBED = TrackBallEventDrawerT;
+
+        return {
+            {"Reset Trackball",
+             [](TBED& d) {
+                 d.reset();
+             }},
+            {"Reset Directional Light",
+             [](TBED& d) {
+                 d.mTrackball.resetDirectionalLight();
+             }},
+
+            // rotate
+            {"Rotate X+",
+             [](TBED& d) {
+                 rotate(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate Y-",
+             [](TBED& d) {
+                 rotate(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate Y+",
+             [](TBED& d) {
+                 rotate(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate X-",
+             [](TBED& d) {
+                 rotate(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
+             }},
+
+            // translate
+            {"Translate Y+",
+             [](TBED& d) {
+                 translate(d.mTrackball, UNIT_Y * DISCRETE_TRANSLATION_STEP);
+             }},
+            {"Translate Y-",
+             [](TBED& d) {
+                 translate(d.mTrackball, -UNIT_Y * DISCRETE_TRANSLATION_STEP);
+             }},
+            {"Translate X-",
+             [](TBED& d) {
+                 translate(d.mTrackball, -UNIT_X * DISCRETE_TRANSLATION_STEP);
+             }},
+            {"Translate X+",
+             [](TBED& d) {
+                 translate(d.mTrackball, UNIT_X * DISCRETE_TRANSLATION_STEP);
+             }},
+
+            // set view
+            {"View Front",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+             }},
+            {"View Top",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+                 rotate(d.mTrackball, UNIT_X, M_PI_2);
+             }},
+            {"View Right",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+                 rotate(d.mTrackball, UNIT_Y, -M_PI_2);
+             }},
+            {"View Back",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+                 rotate(d.mTrackball, UNIT_Y, M_PI);
+             }},
+            {"View Bottom",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+                 rotate(d.mTrackball, UNIT_X, -M_PI_2);
+             }},
+            {"View Left",
+             [](TBED& d) {
+                 d.mTrackball.reset();
+                 rotate(d.mTrackball, UNIT_Y, M_PI_2);
+             }},
+
+            // projection mode
+            {"Toggle Projection",
+             [](TBED& d) {
+                 const auto v =
+                     d.mTrackball.projectionMode() ==
+                             Camera<Scalar>::ProjectionMode::PERSPECTIVE ?
+                         Camera<Scalar>::ProjectionMode::ORTHO :
+                         Camera<Scalar>::ProjectionMode::PERSPECTIVE;
+                 d.mTrackball.setProjectionMode(v);
+             }},
+
+            // rotate light
+            {"Rotate Light X+",
+             [](TBED& d) {
+                 rotateLight(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate Light Y-",
+             [](TBED& d) {
+                 rotateLight(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate Light Y+",
+             [](TBED& d) {
+                 rotateLight(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
+             }},
+            {"Rotate Light X-",
+             [](TBED& d) {
+                 rotateLight(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
+             }},
+        };
     }
 };
 

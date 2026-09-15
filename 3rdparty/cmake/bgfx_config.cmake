@@ -9,41 +9,23 @@ include(${CMAKE_CURRENT_LIST_DIR}/vclib_shader_combinations.cmake)
 
 # Replace original bgfx profile names with the ones used by vclib
 function(_bgfx_get_profile_path_ext PROFILE PROFILE_PATH_EXT)
-    string(REPLACE 100_es essl PROFILE ${PROFILE})
-    string(REPLACE 300_es essl PROFILE ${PROFILE})
-    string(REPLACE 120 glsl PROFILE ${PROFILE})
+    string(REPLACE 320_es essl PROFILE ${PROFILE})
     string(REPLACE 430 glsl PROFILE ${PROFILE})
     string(REPLACE s_5_0 dxbc PROFILE ${PROFILE})
     string(REPLACE s_6_0 dxil PROFILE ${PROFILE})
-
-    string(REPLACE 140 glsl PROFILE ${PROFILE})
-    string(REPLACE 400 glsl PROFILE ${PROFILE})
-    string(REPLACE 320_es essl PROFILE ${PROFILE})
     string(REPLACE metal22-11 mtl PROFILE ${PROFILE})
-
-    # after replacing metal22-11
-    string(REPLACE metal mtl PROFILE ${PROFILE})
 
     set(${PROFILE_PATH_EXT} ${PROFILE} PARENT_SCOPE)
 endfunction()
 
 # Replace original bgfx profile names with the ones used by vclib
 function(_bgfx_get_profile_ext PROFILE PROFILE_EXT)
-    string(REPLACE 100_es essl PROFILE ${PROFILE})
-    string(REPLACE 300_es essl PROFILE ${PROFILE})
-    string(REPLACE 120 glsl PROFILE ${PROFILE})
+    string(REPLACE 320_es essl PROFILE ${PROFILE})
     string(REPLACE 430 glsl PROFILE ${PROFILE})
     string(REPLACE spirv spv PROFILE ${PROFILE})
     string(REPLACE s_5_0 dxbc PROFILE ${PROFILE})
     string(REPLACE s_6_0 dxil PROFILE ${PROFILE})
-
-    string(REPLACE 140 glsl PROFILE ${PROFILE})
-    string(REPLACE 400 glsl PROFILE ${PROFILE})
-    string(REPLACE 320_es essl PROFILE ${PROFILE})
     string(REPLACE metal22-11 mtl PROFILE ${PROFILE})
-
-    # after replacing metal22-11
-    string(REPLACE metal mtl PROFILE ${PROFILE})
 
     set(${PROFILE_EXT} ${PROFILE} PARENT_SCOPE)
 endfunction()
@@ -129,12 +111,12 @@ function(vclib_build_shader)
     endif()
 
     set(BGFX_VF_PROFILES
-        140 # glsl
+        430 # glsl
         320_es # essl
         spirv # spirv
     )
     set(BGFX_COMPUTE_PROFILES
-        400 # glsl
+        430 # glsl
         320_es # essl
         spirv # spirv
     )

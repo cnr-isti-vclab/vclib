@@ -6,5 +6,6 @@
         <file alias="select_face.png">icons/select_face.png</file>
         <file alias="select_vertex.png">icons/select_vertex.png</file>
         <file alias="not_editing.png">icons/not_editing.png</file>
+        <file alias="show_normals.png">icons/show_normals.png</file>
     </qresource>
 </RCC>

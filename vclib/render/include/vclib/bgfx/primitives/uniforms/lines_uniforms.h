@@ -33,11 +33,11 @@ class LinesUniforms
         "u_linesSettings",
         bgfx::UniformType::Vec4};
 
-    inline static std::array<float, 4> sSelectionSettings =
+    inline static std::array<float, 4> sLinesSettings2 =
         {0.0f, 0.0f, 0.0f, 0.0f};
 
-    inline static StaticUniform sSelectionSettingsUniform {
-        "u_linesSelectionSettings",
+    inline static StaticUniform sLinesSettings2Uniform {
+        "u_linesSettings2",
         bgfx::UniformType::Vec4};
 
 public:
@@ -80,8 +80,14 @@ public:
      */
     static void setSelectionColor(const vcl::Color& color)
     {
-        sSelectionSettings[0] = std::bit_cast<float>(color.abgr());
+        sLinesSettings2[0] = std::bit_cast<float>(color.abgr());
     }
+
+    /**
+     * @brief Sets the vector length for vectors topology.
+     * @param length The uniform vector length.
+     */
+    static void setVectorLength(float length) { sLinesSettings2[1] = length; }
 
     /**
      * @brief Binds the uniform to the current bgfx context.
@@ -91,7 +97,7 @@ public:
     static void bind()
     {
         sLinesSettingsUniform.bind(sLinesSettings.data());
-        sSelectionSettingsUniform.bind(sSelectionSettings.data());
+        sLinesSettings2Uniform.bind(sLinesSettings2.data());
     }
 };
 

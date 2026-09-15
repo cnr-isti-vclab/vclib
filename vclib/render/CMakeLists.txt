@@ -206,6 +206,13 @@ if(VCLIB_RENDER_BACKEND STREQUAL "bgfx")
         COMPUTE
     )
 
+    if(TARGET vclib-3rd-imgui)
+        vclib_add_embedded_programs_from_file(
+            "${CMAKE_CURRENT_SOURCE_DIR}/shaders/embedded_imgui_programs.config"
+            VERT_FRAG
+        )
+    endif()
+
     # Generate the combined headers
     vclib_generate_embedded_programs_headers()
 

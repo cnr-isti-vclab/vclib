@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
-#define VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#ifndef VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_EDIT_MODE_SETTINGS_FRAME_H
+#define VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_EDIT_MODE_SETTINGS_FRAME_H
 
 #include <vclib/render/settings/editor_settings.h>
 
@@ -39,4 +39,4 @@ signals:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_TOOLBAR_FRAMES_SETTINGS_EDIT_MODE_SETTINGS_FRAME_H
+#endif // VCL_QT_GUI_EDITOR_SETTINGS_FRAMES_EDIT_MODE_SETTINGS_FRAME_H
