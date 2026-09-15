@@ -26,28 +26,34 @@ namespace vcl {
 class AbstractMeshProvider
 {
 public:
-    using VertexPositionCallback = std::function<void(const vcl::Point3d&)>;
-    using MatIt                  = std::vector<vcl::Material>::const_iterator;
+    using VertexPositionCallback = std::function<void(const Point3d&)>;
+    using MatIt                  = std::vector<Material>::const_iterator;
 
     virtual ~AbstractMeshProvider() = default;
 
     /* Geometry */
-    virtual std::vector<vcl::Point3d> facePositions(uint faceId) const = 0;
-    virtual std::pair<vcl::Point3d, vcl::Point3d> edgePositions(
-        uint edgeId) const                                 = 0;
-    virtual vcl::Point3d vertexPosition(uint vertId) const = 0;
+    virtual std::vector<Point3d>        facePositions(uint faceId) const  = 0;
+    virtual std::pair<Point3d, Point3d> edgePositions(uint edgeId) const  = 0;
+    virtual Point3d                     vertexPosition(uint vertId) const = 0;
+    virtual Point3d                     faceBarycenter(uint faceId) const = 0;
 
-    virtual vcl::Box3d boundingBox() const            = 0;
-    virtual vcl::Box3d transformedBoundingBox() const = 0;
+    virtual Box3d boundingBox() const            = 0;
+    virtual Box3d transformedBoundingBox() const = 0;
 
     /**
      * @brief Utility method that calls the provided callback passing the vertex
      * position. Using this callback can prevent deep copies and temporary
      * objects if the underlying mesh scalar type matches the requested
-     * vcl::Point3d type.
+     * Point3d type.
      */
     virtual void queryVertexPosition(uint vertId, VertexPositionCallback cb)
         const = 0;
+
+    /* Normals */
+    virtual bool    hasVertexNormals() const        = 0;
+    virtual bool    hasFaceNormals() const          = 0;
+    virtual Point3d vertexNormal(uint vertId) const = 0;
+    virtual Point3d faceNormal(uint faceId) const   = 0;
 
     /* Topology */
     virtual uint vertexCount() const = 0;
@@ -62,7 +68,7 @@ public:
     virtual uint selectedEdgeCount() const   = 0;
 
     /* Transform */
-    virtual vcl::Matrix44d transformMatrix() const = 0;
+    virtual Matrix44d transformMatrix() const = 0;
 
     /* Appearance / Materials */
     virtual View<MatIt>  materials() const                           = 0;

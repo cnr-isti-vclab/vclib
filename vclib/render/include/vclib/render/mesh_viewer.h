@@ -70,6 +70,7 @@ inline void pushDefaultEditors(MeshViewerConcept auto& viewer)
     viewer.template pushEditor<BoundingBoxEditor>();
     viewer.template pushEditor<InfoEditor>();
     viewer.template pushEditor<SelectionEditor>();
+    viewer.template pushEditor<ShowNormalsEditor>();
 }
 
 template<MeshConcept... MeshTypes>

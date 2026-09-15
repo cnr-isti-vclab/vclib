@@ -166,6 +166,7 @@ public:
 
     Source source() const;
     Target target() const;
+
     Point2<uint> size() const { return mSize; }
 
     // -------------------------------------------------------------------------
