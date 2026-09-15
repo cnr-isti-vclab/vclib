@@ -12,6 +12,7 @@
 #include "mesh/mesh_render_settings.h"
 
 #include <vclib/render/selection/selection_parameters.h>
+#include <vclib/render/settings/cross_section_settings.h>
 
 #include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
@@ -32,6 +33,7 @@ class AbstractDrawableMesh : public vcl::DrawableObject
 {
 protected:
     MeshRenderSettings mMRS;
+    CrossSectionSettings mCSS;
 
     std::function<void()> mOnSelectionUpdated;
 
@@ -43,11 +45,13 @@ public:
     AbstractDrawableMesh(const AbstractDrawableMesh& other) = default;
 
     template<MeshConcept MeshType>
-    AbstractDrawableMesh(const MeshType& m) : mMRS(m)
+    AbstractDrawableMesh(const MeshType& m) : mMRS(m), mCSS(m)
     {
     }
 
     const MeshRenderSettings& renderSettings() const { return mMRS; }
+
+    const CrossSectionSettings& crossSectionSettings() const { return mCSS; }
 
     virtual void updateBuffers(
         MeshRenderInfo::BuffersBitSet buffersToUpdate =
@@ -56,6 +60,11 @@ public:
     virtual void updateRenderSettingsCapabilities() = 0;
 
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
+
+    virtual void setCrossSectionSettings(const CrossSectionSettings& css)
+    {
+        mCSS = css;
+    }
 
     virtual const AbstractMeshProvider& meshProvider() const = 0;
 
@@ -93,6 +102,7 @@ protected:
         using std::swap;
         vcl::DrawableObject::swap(other);
         swap(mMRS, other.mMRS);
+        swap(mCSS, other.mCSS);
     }
 };
 
