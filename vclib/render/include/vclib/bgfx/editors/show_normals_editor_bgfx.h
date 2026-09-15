@@ -84,19 +84,17 @@ public:
                 const auto& provider = m->meshProvider();
 
                 // Vertex Normals
-                mVertexNormalsLines.push_back(
-                    vertexNormalLines(provider));
+                mVertexNormalsLines.push_back(vertexNormalLines(provider));
 
                 // Face Normals
-                mFaceNormalsLines.push_back(
-                    faceNormalLines(provider));
+                mFaceNormalsLines.push_back(faceNormalLines(provider));
             }
             else {
                 mVertexNormalsLines.push_back(DrawableLines());
                 mFaceNormalsLines.push_back(DrawableLines());
             }
         }
-        
+
         refreshSettings();
     }
 
@@ -110,7 +108,8 @@ public:
                 double diag       = m->boundingBox().diagonal();
                 double lineLength = diag * mSettings.normalLengthRatio;
 
-                mVertexNormalsLines[i].setGeneralColor(mSettings.vertexNormalColor);
+                mVertexNormalsLines[i].setGeneralColor(
+                    mSettings.vertexNormalColor);
                 mVertexNormalsLines[i].setWidth(mSettings.thickness);
                 mVertexNormalsLines[i].setVectorLength(lineLength);
 
@@ -159,8 +158,7 @@ public:
     }
 
 private:
-    DrawableLines vertexNormalLines(
-        const AbstractMeshProvider& provider)
+    DrawableLines vertexNormalLines(const AbstractMeshProvider& provider)
     {
         DrawableLines vLines;
         if (provider.hasVertexNormals()) {
@@ -187,8 +185,7 @@ private:
         return vLines;
     }
 
-    DrawableLines faceNormalLines(
-        const AbstractMeshProvider& provider)
+    DrawableLines faceNormalLines(const AbstractMeshProvider& provider)
     {
         DrawableLines fLines;
         if (provider.hasFaceNormals()) {

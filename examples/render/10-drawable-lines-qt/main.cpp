@@ -48,10 +48,11 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
                 norms.push_back(v.normal());
                 norms.push_back(v.normal());
 
-                lineColors.push_back(vcl::Color(
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>()));
+                lineColors.push_back(
+                    vcl::Color(
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>()));
                 lineNormals.push_back(v.normal());
             }
             lines->setVertices(pts);
@@ -64,56 +65,56 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
             lines->setVertexNormals(m.vertices() | vcl::views::normals);
 
             if (topo == vcl::Lines::Topology::LINES) {
-            std::vector<vcl::uint>    indices;
-            std::vector<vcl::Color>   lineColors;
-            std::vector<vcl::Point3d> lineNormals;
+                std::vector<vcl::uint>    indices;
+                std::vector<vcl::Color>   lineColors;
+                std::vector<vcl::Point3d> lineNormals;
 
-            for (const auto& f : m.faces()) {
-                indices.push_back(f.vertexIndex(0));
-                indices.push_back(f.vertexIndex(1));
-                indices.push_back(f.vertexIndex(1));
-                indices.push_back(f.vertexIndex(2));
-                indices.push_back(f.vertexIndex(2));
-                indices.push_back(f.vertexIndex(0));
+                for (const auto& f : m.faces()) {
+                    indices.push_back(f.vertexIndex(0));
+                    indices.push_back(f.vertexIndex(1));
+                    indices.push_back(f.vertexIndex(1));
+                    indices.push_back(f.vertexIndex(2));
+                    indices.push_back(f.vertexIndex(2));
+                    indices.push_back(f.vertexIndex(0));
 
-                auto c1 = vcl::Color(
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>());
-                auto c2 = vcl::Color(
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>());
-                auto c3 = vcl::Color(
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>());
+                    auto c1 = vcl::Color(
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>());
+                    auto c2 = vcl::Color(
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>());
+                    auto c3 = vcl::Color(
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>());
 
-                lineColors.push_back(c1);
-                lineColors.push_back(c2);
-                lineColors.push_back(c3);
+                    lineColors.push_back(c1);
+                    lineColors.push_back(c2);
+                    lineColors.push_back(c3);
 
-                lineNormals.push_back(f.normal());
-                lineNormals.push_back(f.normal());
-                lineNormals.push_back(f.normal());
+                    lineNormals.push_back(f.normal());
+                    lineNormals.push_back(f.normal());
+                    lineNormals.push_back(f.normal());
+                }
+                lines->setIndices(indices);
+                lines->setLineColors(lineColors);
+                lines->setLineNormals(lineNormals);
             }
-            lines->setIndices(indices);
-            lines->setLineColors(lineColors);
-            lines->setLineNormals(lineNormals);
-        }
-        else {
-            vcl::uint                 nLines = m.vertexCount() - 1;
-            std::vector<vcl::Color>   lineColors(nLines);
-            std::vector<vcl::Point3d> lineNormals(nLines);
-            for (vcl::uint i = 0; i < nLines; ++i) {
-                lineColors[i] = vcl::Color(
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>(),
-                    vcl::random<uint8_t>());
-                lineNormals[i] = vcl::Point3d(0, 1, 0); // dummy normal
-            }
-            lines->setLineColors(lineColors);
-            lines->setLineNormals(lineNormals);
+            else {
+                vcl::uint                 nLines = m.vertexCount() - 1;
+                std::vector<vcl::Color>   lineColors(nLines);
+                std::vector<vcl::Point3d> lineNormals(nLines);
+                for (vcl::uint i = 0; i < nLines; ++i) {
+                    lineColors[i] = vcl::Color(
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>(),
+                        vcl::random<uint8_t>());
+                    lineNormals[i] = vcl::Point3d(0, 1, 0); // dummy normal
+                }
+                lines->setLineColors(lineColors);
+                lines->setLineNormals(lineNormals);
             }
         }
     }
@@ -122,7 +123,8 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
         for (vcl::uint i = 0; i < nPoints; ++i) {
             if (topo == vcl::Lines::Topology::VECTORS && i % 2 == 1) {
                 positions[i] = vcl::random<vcl::Point3d>().normalized();
-            } else {
+            }
+            else {
                 positions[i] = vcl::random<vcl::Point3d>();
             }
         }
@@ -134,8 +136,9 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
         }
         lines->setVertexNormals(normals);
 
-        vcl::uint nLines =
-            topo == vcl::Lines::Topology::LINE_STRIP ? nPoints - 1 : nPoints / 2;
+        vcl::uint nLines = topo == vcl::Lines::Topology::LINE_STRIP ?
+                               nPoints - 1 :
+                               nPoints / 2;
 
         std::vector<vcl::Color>   lineColors(nLines);
         std::vector<vcl::Point3d> lineNormals(nLines);
@@ -150,7 +153,7 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
         lines->setLineNormals(lineNormals);
     }
 
-    vcl::uint totalVertices = lines->vertexCount();
+    vcl::uint               totalVertices = lines->vertexCount();
     std::vector<vcl::Color> colors(totalVertices);
     for (vcl::uint i = 0; i < totalVertices; ++i) {
         colors[i] = vcl::Color(
@@ -200,7 +203,7 @@ int main(int argc, char** argv)
     layout->addWidget(ccb);
 
     QHBoxLayout* slidersLayout = new QHBoxLayout();
-    
+
     QLabel* widthLabel = new QLabel("Width:");
     slidersLayout->addWidget(widthLabel);
     QSlider* tslider = new QSlider();
@@ -218,12 +221,12 @@ int main(int argc, char** argv)
     lengthSlider->setMaximum(20);
     lengthSlider->setValue(10);
     slidersLayout->addWidget(lengthSlider);
-    
+
     layout->addLayout(slidersLayout);
 
     QGroupBox* topoGroup = new QGroupBox("Topology");
     topoGroup->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    QHBoxLayout*  topoLayout  = new QHBoxLayout(topoGroup);
+    QHBoxLayout*  topoLayout    = new QHBoxLayout(topoGroup);
     QRadioButton* rbTopoLines   = new QRadioButton("Lines");
     QRadioButton* rbTopoStrip   = new QRadioButton("Line Strip");
     QRadioButton* rbTopoVectors = new QRadioButton("Vectors");

@@ -41,9 +41,10 @@ public:
      * - LINE_STRIP: Lines are defined by a strip of vertices, where each vertex
      *     after the first forms a line segment with the previous vertex.
      *     (vertices 0-1 form line 1, vertices 1-2 form line 2, etc.)
-     * - VECTORS: Lines are defined by consecutive pairs of vertices, but the second
-     *     vertex is interpreted as a direction vector rather than an absolute position.
-     *     The final endpoint is computed as `pos0 + dir * vectorLength`.
+     * - VECTORS: Lines are defined by consecutive pairs of vertices, but the
+     * second vertex is interpreted as a direction vector rather than an
+     * absolute position. The final endpoint is computed as `pos0 + dir *
+     * vectorLength`.
      *
      * The topology determines how the vertex data is interpreted to form lines.
      * The default is LINES.
