@@ -43,8 +43,9 @@ private:
 
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
-    bgfx::ViewId            mViewId = BGFX_INVALID_VIEW;
-    bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
+    bgfx::ViewId            mViewId          = BGFX_INVALID_VIEW;
+    bgfx::ViewId            mOffscreenViewId = BGFX_INVALID_VIEW;
+    bgfx::FrameBufferHandle mFbh             = BGFX_INVALID_HANDLE;
 
     // size of the canvas
     Point2<uint> mSize = {0, 0};
@@ -83,6 +84,8 @@ public:
         // deallocate the framebuffers
         if (bgfx::isValid(mFbh))
             bgfx::destroy(mFbh);
+        if (Context::instance().isValidViewId(mOffscreenViewId))
+            Context::instance().releaseViewId(mOffscreenViewId);
 
         // release the view id
         auto& ctx = Context::instance();
@@ -174,33 +177,28 @@ public:
         const bool newReadRequested =
             (mReadRequest != std::nullopt && mReadRequest->isPending());
 
+        bool solicit = false;
         if (newReadRequested) {
-            // ONLY draw the offscreen frame
-            const bool solicit = offscreenFrame();
-
-            bgfx::setViewClear(
-                mViewId,
-                BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
-                mDefaultClearColor.rgba());
-            bgfx::setViewFrameBuffer(mViewId, mFbh);
-            bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
-            DerivedRenderApp::CNV::resizeDrawers(
-                derived(), mSize.x(), mSize.y());
-
-            if (solicit) {
-                // solicit new frame
-                derived()->update();
-            }
+            solicit = offscreenFrame();
         }
-        else {
-            bgfx::setViewFrameBuffer(mViewId, mFbh);
-            bgfx::touch(mViewId);
 
-            // ask the derived frame to draw all the drawer objects:
-            DerivedRenderApp::CNV::draw(derived());
-            DerivedRenderApp::CNV::postDraw(derived());
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        bgfx::touch(mViewId);
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            mDefaultClearColor.rgba());
+        bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
 
-            mCurrFrame = bgfx::frame();
+        // ask the derived frame to draw all the drawer objects:
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
+
+        mCurrFrame = bgfx::frame();
+
+        if (solicit) {
+            // solicit new frame
+            derived()->update();
         }
 
         if (mReadRequest != std::nullopt) {
@@ -356,8 +354,17 @@ private:
     {
         assert(mReadRequest != std::nullopt && mReadRequest->isPending());
 
-        auto originalSize = mSize;
-        auto originalFbh  = mFbh;
+        auto originalSize   = mSize;
+        auto originalFbh    = mFbh;
+        auto originalViewId = mViewId;
+
+        // Use a permanent view ID for offscreen rendering.
+        // It's high priority so it gets a low view ID and executes before the
+        // readback blit.
+        if (mOffscreenViewId == BGFX_INVALID_VIEW) {
+            mOffscreenViewId = Context::instance().requestViewId(true);
+        }
+        mViewId = mOffscreenViewId;
 
         // Disable clear on the read request view, since its ID is higher and
         // it executes after additional views. We use mViewId to clear instead.
@@ -402,12 +409,14 @@ private:
         // (mViewOffscreenId executes last)
         const bool solecit = mReadRequest->submit();
 
-        mCurrFrame = bgfx::frame();
-
         // Restore view state for the main view now that the frame has been
         // submitted
-        mFbh  = originalFbh;
-        mSize = originalSize;
+        mFbh    = originalFbh;
+        mSize   = originalSize;
+        mViewId = originalViewId;
+
+        // Restore drawers size
+        DerivedRenderApp::CNV::resizeDrawers(derived(), mSize.x(), mSize.y());
 
         return solecit;
     }
