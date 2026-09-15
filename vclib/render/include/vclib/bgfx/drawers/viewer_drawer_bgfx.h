@@ -161,21 +161,12 @@ public:
         return block;
     }
 
-    bool onMouseDoubleClick(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
+    // shadows Base::readDepthRequest: the requested homogeneousNDC is always
+    // overridden with the value required by the current bgfx backend
+    void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
-        bool block = Base::onMouseDoubleClick(button, x, y, modifiers);
-
-        if (!block && button == MouseButton::LEFT) {
-            const bool homogeneousNDC =
-                Context::instance().capabilites().homogeneousDepth;
-
-            Base::readDepthRequest(x, y, homogeneousNDC);
-        }
-        return block;
+        homogeneousNDC = Context::instance().capabilites().homogeneousDepth;
+        Base::readDepthRequest(x, y, homogeneousNDC);
     }
 
 private:
