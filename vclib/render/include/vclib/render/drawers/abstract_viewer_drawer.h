@@ -711,41 +711,11 @@ public:
             derived()->update();
     }
 
-    void readIdRequest(double x, double y, std::function<void(uint)> idCallback)
-    {
-        using ReadData = ReadBufferTypes::ReadData;
-
-        if (mReadRequested)
-            return;
-
-        // get point
-        const Point2d p(x, y);
-
-        // create the callback
-        auto callback = [=, this](const ReadData& dt) {
-            const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
-            assert(data.size() == 8); // 8 bytes for 64-bit ID
-
-            // First 4 bytes contain Object ID (16 bits) and Element Type (16 bits)
-            const uint id_with_type = *(uint32_t*) &data[0];
-            const uint objectId = id_with_type >> 16;
-            
-            // The Element ID is in the next 4 bytes (data[4..7]) if needed in the future
-
-            mReadRequested = false;
-
-            idCallback(objectId);
-            derived()->update();
-        };
-
-        mReadRequested =
-            DRA::DRW::readId(derived(), Point2i(p.x(), p.y()), callback);
-        if (mReadRequested)
-            derived()->update();
-    }
-
     void readElementIdRequest(
-        double x, double y, std::function<void(ushort, ushort, uint)> idCallback)
+        double                                    x,
+        double                                    y,
+        std::function<void(ushort, ushort, uint)> idCallback,
+        uint                                      radius = 0)
     {
         using ReadData = ReadBufferTypes::ReadData;
 
@@ -758,24 +728,51 @@ public:
         // create the callback
         auto callback = [=, this](const ReadData& dt) {
             const auto& data = std::get<ReadBufferTypes::ByteData>(dt);
-            assert(data.size() == 8); // 8 bytes for 64-bit ID
 
-            // First 4 bytes contain Object ID (16 bits) and Element Type (16 bits)
-            const uint id_with_type = *(uint32_t*) &data[0];
-            const ushort objectId = id_with_type >> 16;
-            const ushort elementType = id_with_type & 0xFFFF;
-            
-            // Next 4 bytes contain Element ID
-            const uint elementId = *(uint32_t*) &data[4];
+            ushort bestObjectId    = 0xFFFF;
+            ushort bestElementType = 0xFFFF;
+            uint   bestElementId   = 0;
+            double min_dist        = 1e9;
+
+            // If radius > 0, the buffer contains an N x N window of pixels.
+            // Calculate the window's side length and center coordinates.
+            int count = data.size() / 8;
+            int side  = 1;
+            while (side * side < count)
+                side++;
+            int center = side / 2;
+
+            // Iterate over all pixels in the window. We want to find a valid
+            // object (objectId != 0xFFFF) that is spatially closest to the
+            // center (i.e. closest to where the user originally clicked).
+            for (size_t i = 0; i < count; ++i) {
+                const uint   id_with_type = *(uint32_t*) &data[i * 8];
+                const ushort objectId     = id_with_type >> 16;
+                const ushort elementType  = id_with_type & 0xFFFF;
+                const uint   elementId    = *(uint32_t*) &data[i * 8 + 4];
+
+                if (objectId != 0xFFFF) {
+                    int    px   = i % side;
+                    int    py   = i / side;
+                    double dist = (px - center) * (px - center) +
+                                  (py - center) * (py - center);
+                    if (dist < min_dist) {
+                        min_dist        = dist;
+                        bestObjectId    = objectId;
+                        bestElementType = elementType;
+                        bestElementId   = elementId;
+                    }
+                }
+            }
 
             mReadRequested = false;
 
-            idCallback(objectId, elementType, elementId);
+            idCallback(bestObjectId, bestElementType, bestElementId);
             derived()->update();
         };
 
-        mReadRequested =
-            DRA::DRW::readId(derived(), Point2i(p.x(), p.y()), callback);
+        mReadRequested = DRA::DRW::readId(
+            derived(), Point2i(p.x(), p.y()), callback, radius);
         if (mReadRequested)
             derived()->update();
     }

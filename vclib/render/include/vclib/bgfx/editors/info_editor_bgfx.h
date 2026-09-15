@@ -272,7 +272,7 @@ public:
                 Base::viewerUpdate();
             };
 
-            Base::viewerReadElementIdRequest(x, y, callback);
+            Base::viewerReadElementIdRequest(x, y, callback, 3);
         }
         return block;
     }

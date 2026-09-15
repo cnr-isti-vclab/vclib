@@ -251,6 +251,7 @@ void ReadFromGPUBuffer::swap(ReadFromGPUBuffer& other) noexcept
     swap(mReadData, other.mReadData);
     swap(mReadCallback, other.mReadCallback);
     swap(mPoint, other.mPoint);
+    swap(mRadius, other.mRadius);
     // FRAMEBUFFER
     swap(mOffscreenFbh, other.mOffscreenFbh);
     swap(mViewOffscreenId, other.mViewOffscreenId);
@@ -325,12 +326,14 @@ bool ReadFromGPUBuffer::isAvailable(uint32_t currentFrame) const
 
 bool ReadFromGPUBuffer::setPendingRead(
     Point2i            point,
-    CallbackReadBuffer callback)
+    CallbackReadBuffer callback,
+    uint               radius)
 {
     if (!isValid() || mSource != Source::FRAMEBUFFER || mPending || mSubmitted)
         return false;
 
     mPoint        = point;
+    mRadius       = radius;
     mReadCallback = callback;
     mPending      = true;
     return true;
@@ -604,26 +607,58 @@ void ReadFromGPUBuffer::performFramebufferRead() const
         assert(std::holds_alternative<ByteData>(mReadData));
         const auto& data = std::get<ByteData>(mReadData);
         if (data.size() == 8) {
-            // Full buffer readback: return directly
+            // Full buffer readback (1 pixel size): return directly
             mReadCallback(mReadData);
         }
         else {
-            // Single pixel readback: extract 8 bytes from the combined MRT data
-            // buffer
-            ByteData   idPixel(8);
             const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
-            const auto offset =
-                uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x());
 
-            // First 4 bytes: target 0 (Object ID + Element Type)
-            std::copy_n(data.begin() + (offset * 4), 4, idPixel.begin());
-            // Next 4 bytes: target 1 (Element ID), stored after target 0's data
-            std::copy_n(
-                data.begin() + (pixelCount * 4) + (offset * 4),
-                4,
-                idPixel.begin() + 4);
+            int startX = std::max(0, mPoint.x() - (int) mRadius);
+            int endX =
+                std::min((int) mBlitSize.x() - 1, mPoint.x() + (int) mRadius);
+            int startY = std::max(0, mPoint.y() - (int) mRadius);
+            int endY =
+                std::min((int) mBlitSize.y() - 1, mPoint.y() + (int) mRadius);
 
-            mReadCallback(idPixel);
+            uint width  = endX - startX + 1;
+            uint height = endY - startY + 1;
+
+            if (width == 1 && height == 1) {
+                ByteData   idPixel(8);
+                const auto offset =
+                    uint(mPoint.y()) * mBlitSize.x() + uint(mPoint.x());
+
+                // First 4 bytes: target 0 (Object ID + Element Type)
+                std::copy_n(data.begin() + (offset * 4), 4, idPixel.begin());
+                // Next 4 bytes: target 1 (Element ID), stored after target 0's
+                // data
+                std::copy_n(
+                    data.begin() + (pixelCount * 4) + (offset * 4),
+                    4,
+                    idPixel.begin() + 4);
+
+                mReadCallback(idPixel);
+            }
+            else {
+                ByteData windowData(width * height * 8);
+                uint     outIdx = 0;
+
+                for (int y = startY; y <= endY; ++y) {
+                    for (int x = startX; x <= endX; ++x) {
+                        const auto offset = uint(y) * mBlitSize.x() + uint(x);
+                        std::copy_n(
+                            data.begin() + (offset * 4),
+                            4,
+                            windowData.begin() + outIdx * 8);
+                        std::copy_n(
+                            data.begin() + (pixelCount * 4) + (offset * 4),
+                            4,
+                            windowData.begin() + outIdx * 8 + 4);
+                        outIdx++;
+                    }
+                }
+                mReadCallback(windowData);
+            }
         }
     } break;
 

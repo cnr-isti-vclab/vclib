@@ -72,7 +72,8 @@ private:
     ReadBufferTypes::ReadData           mReadData     = {};
     ReadBufferTypes::CallbackReadBuffer mReadCallback = nullptr;
     Point2i                             mPoint        = {0, 0};
-    Point2<uint>                        mSize         = {0, 0};
+    uint         mRadius = 0; // pixel tolerance for ID reads
+    Point2<uint> mSize   = {0, 0};
 
     // -------------------------------------------------------------------------
     // FRAMEBUFFER-specific state
@@ -221,10 +222,19 @@ public:
      * After this call the caller must render its scene to the offscreen
      * framebuffer (using viewId() and frameBuffer()) before calling submit().
      *
+     * @param[in] point: The pixel coordinate to read (in framebuffer space).
+     * @param[in] callback: The callback function that will be called when the
+     * read is complete. May be nullptr if getResultsCopy() is used instead.
+     * @param[in] radius: The radius of the area around the point where the ID
+     * must be read. Only used for ID reads. Ignored for DEPTH and COLOR reads.
+     *
      * @return false if the instance is not a valid FRAMEBUFFER instance, or if
      * a read is already pending or submitted.
      */
-    bool setPendingRead(Point2i point, CallbackReadBuffer callback);
+    bool setPendingRead(
+        Point2i            point,
+        CallbackReadBuffer callback,
+        uint               radius = 0);
 
     /**
      * @brief Convenience overload for COLOR reads (no query point needed).
