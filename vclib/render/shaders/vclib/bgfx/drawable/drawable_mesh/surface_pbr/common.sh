@@ -188,6 +188,84 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
 
     return FssEss + FmsEms;
 }
+
+// GGX Distribution Anisotropic (Same as Babylon.js)
+// https://blog.selfshadow.com/publications/s2012-shading-course/burley/s2012_pbs_disney_brdf_notes_v3.pdf Addenda
+float D_GGX_anisotropic(
+    float NoH,
+    float ToH,
+    float BoH,
+    float at,
+    float ab)
+{
+    float a2 = at * ab;
+    vec3 f = vec3(ab * ToH, at * BoH, a2 * NoH);
+    float w2 = a2 / dot(f, f);
+    return a2 * w2 * w2 / PI;
+}
+
+// GGX Mask/Shadowing Anisotropic (Same as Babylon.js - smithVisibility_GGXCorrelated_Anisotropic)
+// Heitz http://jcgt.org/published/0003/02/03/paper.pdf
+float V_GGX_anisotropic(
+    float NoL,
+    float NoV,
+    float BoV,
+    float ToV,
+    float ToL,
+    float BoL,
+    float at,
+    float ab)
+{
+    float GGXV = NoL * length(vec3(at * ToV, ab * BoV, NoV));
+    float GGXL = NoV * length(vec3(at * ToL, ab * BoL, NoL));
+    float GGXSum = GGXV + GGXL;
+    return GGXSum > 0.0 ? 0.5 / GGXSum : 0.0;
+}
+
+float pbrSpecularAnisotropic(
+    float roughness,
+    float anisotropy,
+    vec3 N,
+    vec3 V,
+    vec3 L,
+    vec3 H,
+    vec3 T,
+    vec3 B)
+{
+    float alphaRoughness = roughness * roughness;
+    // Roughness along the anisotropy bitangent is the material roughness, while the tangent roughness increases with anisotropy.
+    float at = mix(alphaRoughness, 1.0, anisotropy * anisotropy);
+    float ab = clamp(alphaRoughness, 0.001, 1.0);
+
+    float NoL = clamp(dot(N, L), 0.0, 1.0);
+    float NoH = clamp(dot(N, H), 0.001, 1.0);
+    float NoV = clampedDot(N, V);
+
+    return
+        V_GGX_anisotropic(NoL, NoV, dot(B, V), dot(T, V), dot(T, L), dot(B, L), at, ab) *
+        D_GGX_anisotropic(NoH, dot(T, H), dot(B, H), at, ab);
+}
+
+/**
+ * @brief Computes a bent normal used to modify the reflection direction in order to simulate anisotropic reflections.
+ * @param[in] normal: The original normal vector.
+ * @param[in] view: The view direction vector (must be normalized).
+ * @param[in] anisotropyDirection: The direction of anisotropy (must be normalized).
+ * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
+ * @param[in] roughness: The surface roughness (between 0 and 1).
+ * @return The bent normal vector.
+ *
+ * @note TODO: check this function, is it used only for the IBL (environment map) reflection direction?
+ */
+vec3 bendNormal(vec3 normal, vec3 view, vec3 anisotropyDirection, float anisotropyStrength, float roughness)
+{
+    float bendFactor = 1.0 - anisotropyStrength * (1.0 - roughness);
+    float bendFactor4 = bendFactor * bendFactor * bendFactor * bendFactor;
+
+    vec3 anisotropicNormal = cross(cross(anisotropyDirection, view), anisotropyDirection);
+    return normalize(mix(anisotropicNormal, normal, bendFactor4));
+}
+
 /**
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
@@ -211,6 +289,9 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
+ * @param[in] anisotropicTangent: The tangent vector for anisotropy.
+ * @param[in] anisotropicBitangent: The bitangent vector for anisotropy.
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
@@ -226,6 +307,9 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float anisotropyStrength,
+    vec3 anisotropicTangent,
+    vec3 anisotropicBitangent,
     float exposure,
     uint toneMapping)
 {
@@ -263,8 +347,21 @@ vec4 pbrColorLights(
         vec3 l_diffuse = lightIntensity * pbrDiffuse(color.rgb);
 
         // specular component for both metallic and dielectric surfaces
-        vec3 l_specular_metal = lightIntensity * pbrSpecular(NoV, NoH, NoL, roughness);
-        vec3 l_specular_dielectric = l_specular_metal;
+        vec3 l_specular_metal, l_specular_dielectric;
+        if(anisotropyStrength > 0.0) // anisotropic version of the specular component
+            l_specular_metal = lightIntensity * pbrSpecularAnisotropic(
+                roughness,
+                anisotropyStrength,
+                normal,
+                V,
+                lightDir,
+                H,
+                anisotropicTangent,
+                anisotropicBitangent);
+        else
+            l_specular_metal = lightIntensity * pbrSpecular(NoV, NoH, NoL, roughness);
+
+        l_specular_dielectric = l_specular_metal;
 
         // metallic surfaces reflect only specular light
         vec3 l_metal_brdf = metal_fresnel * l_specular_metal;
