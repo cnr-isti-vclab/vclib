@@ -236,11 +236,53 @@ Matrix44 orthoProjectionMatrix(
 }
 
 /**
+ * @brief Projects a 3D point to a screen position
+ *
+ * This function projects a 3D point to a screen position using the given
+ * model view projection matrix, the viewport and a flag indicating if the NDC
+ * coordinates are homogeneous.
+ * The origin of the viewport is assumed to be at the bottom-left corner of the
+ * screen.
+ *
+ * @param[in] pt: The 3D point to project
+ * @param[in] modelViewProjection: The model view projection matrix (or any
+ * transform+projection matrix, depending on the space to project from)
+ * @param[in] viewport: The viewport (x, y, width, height)
+ * @param[in] homogeneousNDC: Flag to indicate if the NDC coordinates are
+ * homogeneous (i.e., z is in [-1,1] if true, or [0,1] otherwise)
+ * @return The projected screen position
+ *
+ * @ingroup algorithms_core
+ */
+template<MatrixConcept Matrix44, Point3Concept PointType>
+PointType projectScreenPosition(
+    const PointType&                         pt,
+    const Matrix44&                          modelViewProjection,
+    const Point4<typename Matrix44::Scalar>& viewport,
+    bool                                     homogeneousNDC)
+{
+    using Scalar = Matrix44::Scalar;
+    Point4<Scalar> p(pt.x(), pt.y(), pt.z(), 1.0);
+    p = modelViewProjection * p;
+    if (p.w() == 0.0) {
+        throw std::runtime_error("project: division by zero");
+    }
+    p /= p.w();
+
+    return PointType(
+        (p.x() + 1.0) * 0.5 * viewport[2] + viewport[0],
+        (p.y() + 1.0) * 0.5 * viewport[3] + viewport[1],
+        homogeneousNDC ? (p.z() + 1.0) * 0.5 : p.z());
+}
+
+/**
  * @brief Unprojects a screen position to a 3D point
  *
  * This function unprojects a screen position to a 3D point using the given
  * model view projection matrix, the viewport and a flag indicating if the NDC
  * coordinates are homogeneous.
+ * The origin of the viewport is assumed to be at the bottom-left corner of the
+ * screen.
  *
  * @param[in] screenPos: The screen position to unproject
  * @param[in] modelViewProjection: The model view projection matrix (or any
