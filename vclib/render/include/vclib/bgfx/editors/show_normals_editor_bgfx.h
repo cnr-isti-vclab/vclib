@@ -135,9 +135,11 @@ public:
         if (mSettings.editMode == CURRENT_OBJECT) {
             uint id = Base::drawList()->selectedObjectId();
             if (id < mVertexNormalsLines.size()) {
-                auto m = dynamic_cast<AbstractDrawableMesh*>(Base::drawList()->at(id).get());
+                auto m = dynamic_cast<AbstractDrawableMesh*>(
+                    Base::drawList()->at(id).get());
                 if (m) {
-                    vcl::Matrix44f model = m->meshProvider().transformMatrix().cast<float>();
+                    vcl::Matrix44f model =
+                        m->meshProvider().transformMatrix().cast<float>();
                     if (mSettings.showVertexNormals) {
                         bgfx::setTransform(model.data());
                         mVertexNormalsLines[id].draw(settings);
@@ -156,9 +158,11 @@ public:
                                 true;
 
                 if (show) {
-                    auto m = dynamic_cast<AbstractDrawableMesh*>(Base::drawList()->at(i).get());
+                    auto m = dynamic_cast<AbstractDrawableMesh*>(
+                        Base::drawList()->at(i).get());
                     if (m) {
-                        vcl::Matrix44f model = m->meshProvider().transformMatrix().cast<float>();
+                        vcl::Matrix44f model =
+                            m->meshProvider().transformMatrix().cast<float>();
                         if (mSettings.showVertexNormals) {
                             bgfx::setTransform(model.data());
                             mVertexNormalsLines[i].draw(settings);
