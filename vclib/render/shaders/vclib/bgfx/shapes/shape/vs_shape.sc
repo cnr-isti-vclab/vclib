@@ -5,13 +5,14 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
-#define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
+$input a_position, a_normal
+$output v_position, v_normal
 
-#include <vclib/bgfx/shaders_common.sh>
+#include <vclib/bgfx/shapes/shape/uniforms.sh>
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-
-uniform vec4 u_axisColor;
-
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
+void main()
+{
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+    v_normal = normalize(mul(u_normalMatrix, a_normal));
+}
