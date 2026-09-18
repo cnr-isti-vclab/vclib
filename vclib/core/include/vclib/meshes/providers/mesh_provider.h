@@ -5,12 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_MESH_PROVIDERS_MESH_PROVIDER_H
-#define VCL_MESH_PROVIDERS_MESH_PROVIDER_H
+#ifndef VCL_MESHES_PROVIDERS_MESH_PROVIDER_H
+#define VCL_MESHES_PROVIDERS_MESH_PROVIDER_H
 
 #include "mesh_provider_mixin.h"
-
-#include <vclib/mesh/requirements/mesh_requirements.h>
 
 namespace vcl {
 
@@ -85,4 +83,4 @@ class MeshProvider :
 
 } // namespace vcl
 
-#endif // VCL_MESH_PROVIDERS_MESH_PROVIDER_H
+#endif // VCL_MESHES_PROVIDERS_MESH_PROVIDER_H

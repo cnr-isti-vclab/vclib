@@ -9,6 +9,7 @@
 #define VCL_MESHES_H
 
 #include "meshes/edge_mesh.h"
+#include "meshes/mesh_provider.h"
 #include "meshes/point_cloud.h"
 #include "meshes/poly_edge_mesh.h"
 #include "meshes/poly_mesh.h"
