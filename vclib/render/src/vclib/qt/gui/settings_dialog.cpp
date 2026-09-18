@@ -51,8 +51,19 @@ SettingsDialog::SettingsDialog(
 
         QWidget*     page   = new QWidget();
         QVBoxLayout* layout = new QVBoxLayout(page);
-        layout->addWidget(tab->createWidget(page));
-        layout->addStretch();
+
+        QWidget* tabWidgetInstance = tab->createWidget(page);
+
+        if (tabWidgetInstance->sizePolicy().verticalPolicy() ==
+                QSizePolicy::Expanding ||
+            tabWidgetInstance->sizePolicy().verticalPolicy() ==
+                QSizePolicy::MinimumExpanding) {
+            layout->addWidget(tabWidgetInstance, 1);
+        }
+        else {
+            layout->addWidget(tabWidgetInstance, 0);
+            layout->addStretch();
+        }
 
         categoryTabs[cat]->addTab(page, tab->name());
     }
@@ -77,7 +88,7 @@ SettingsDialog::SettingsDialog(
 
     // Reset All Defaults button
     connect(mUI->resetAllDefaultsButton, &QPushButton::clicked, this, [this]() {
-        QList<QPushButton*> buttons =
+        const QList<QPushButton*> buttons =
             this->findChildren<QPushButton*>("resetDefaultButton");
         for (QPushButton* btn : buttons) {
             btn->click();
@@ -92,6 +103,8 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::onApplyClicked()
 {
+    emit applied();
+
     if (mUI->saveAsDefaultCheckBox->isChecked()) {
         std::string filePath = mSettingsFilePath;
         if (filePath.empty()) {
@@ -119,6 +132,9 @@ void SettingsDialog::onApplyClicked()
             if (tab->category() == "Editors") {
                 tab->saveSettings(j["Editors"]);
             }
+            else if (tab->category() == "Viewer") {
+                tab->saveSettings(j["Viewer"]);
+            }
             else {
                 tab->saveSettings(j);
             }
@@ -142,8 +158,6 @@ void SettingsDialog::onApplyClicked()
                 "Failed to save default settings to file.");
         }
     }
-
-    emit applied();
 }
 
 } // namespace vcl::qt

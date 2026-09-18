@@ -13,6 +13,7 @@
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
 #include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
+#include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -25,24 +26,6 @@
 #include <QPushButton>
 
 namespace vcl::qt {
-
-bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
-{
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        // Ignore only the Ctrl + S shortcut override, you can customize check
-        // for your needs
-        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
-            keyEvent->key() == 'S') {
-            qDebug() << "Ignoring " << keyEvent->modifiers() << " + "
-                     << (char) keyEvent->key() << " for " << watched;
-            event->ignore();
-            return true;
-        }
-    }
-
-    return QObject::eventFilter(watched, event);
-}
 
 /**
  * @brief MeshViewer constructor.
@@ -60,6 +43,19 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
 
     // give keyboard focus to the viewer widget immediately
     mUI->viewer->setFocus();
+
+    // Register Qt-specific screenshot action with dialog
+    viewer().registerGlobalAction(
+        "Take Screenshot",
+        {Key::S, {KeyModifier::CONTROL}},
+        [this]() {
+            vcl::qt::ScreenShotDialog dialog(this);
+            if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+                auto sf = dialog.selectedFiles();
+                mUI->viewer->screenshot(
+                    sf[0].toStdString(), dialog.screenMultiplierValue());
+            }
+        });
 
     // prevent any widget in the right area from stealing keyboard focus
     mUI->rightArea->setFocusPolicy(Qt::NoFocus);
@@ -119,9 +115,6 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     addDockWidget(Qt::RightDockWidgetArea, mViewerSettingsDockWidget);
 
     /** Events **/
-
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // meshRenderSettingsUpdated() member function
@@ -238,6 +231,9 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     }
 
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>([this]() {
+        return viewer().actionMapGroups();
+    }));
     setupMeshRenderSettingsTabs(mSettingsData, mDefaultMeshRenderSettings);
 }
 
@@ -326,7 +322,7 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mViewerSettingsFrame->viewerSettings();
+    return viewer().viewerSettings();
 }
 
 /**
@@ -416,23 +412,6 @@ void MeshViewer::addEditorFrame(QWidget* frame)
     }
     else {
         mUI->toolBar->addWidget(frame);
-    }
-}
-
-void MeshViewer::keyPressEvent(QKeyEvent* event)
-{
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
     }
 }
 
@@ -608,8 +587,18 @@ void MeshViewer::openSettings()
     SettingsDialog dialog(mSettingsData, this);
 
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        // Apply non-shortcuts settings first to avoid overwriting shortcuts with temp copies
         for (auto& tab : mSettingsData.tabs()) {
-            tab->applySettings();
+            if (tab->category() != "Shortcuts")
+                tab->applySettings();
+        }
+        // Apply shortcuts last so they take precedence
+        for (auto& tab : mSettingsData.tabs()) {
+            if (tab->category() == "Shortcuts")
+                tab->applySettings();
+        }
+        
+        for (auto& tab : mSettingsData.tabs()) {
             tab->updateToolbarFrames(mUI->toolBar);
         }
         viewer().update();
