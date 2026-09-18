@@ -5,16 +5,12 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_SHAPES_SHAPE_UNIFORMS_SH
-#define VCL_BGFX_SHAPES_SHAPE_UNIFORMS_SH
+$input v_position
 
+#include <vclib/bgfx/shapes/shape/uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-
-uniform vec4 u_shapeColor;
-uniform vec4 u_shapeIdPack;
-
-#define u_shapeId uintABGRToVec4Color(floatBitsToUint(u_shapeIdPack.x))
-
-#endif // VCL_BGFX_SHAPES_SHAPE_UNIFORMS_SH
+void main()
+{
+    gl_FragColor = u_shapeId;
+}
