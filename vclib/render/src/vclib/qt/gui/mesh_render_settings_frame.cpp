@@ -28,16 +28,16 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 
     mUI->tabWidget->tabBar()->setExpanding(false);
 
-    auto setupTab = [this](
-                        int                             index,
-                        GenericMeshRenderSettingsFrame* frame,
-                        const QString&                  title) {
+    auto addTabWithCheckbox = [this](
+                                  int            index,
+                                  QWidget*       frame,
+                                  QCheckBox*     origCb,
+                                  const QString& title) {
         mUI->tabWidget->addTab(frame, title);
         QCheckBox* tabCb = new QCheckBox();
         tabCb->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         mUI->tabWidget->tabBar()->setTabButton(index, QTabBar::LeftSide, tabCb);
 
-        QCheckBox* origCb = frame->visibilityCheckBox();
         origCb->hide();
 
         connect(origCb, &QCheckBox::toggled, tabCb, [tabCb](bool checked) {
@@ -48,19 +48,40 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
             if (origCb->isChecked() != checked)
                 origCb->setChecked(checked);
         });
-
-        frames.push_back(frame);
     };
 
-    setupTab(0, new PointsFrame(mMRS, this), "Points");
-    setupTab(1, new SurfaceFrame(mMRS, this), "Surface");
-    setupTab(2, new WireframeFrame(mMRS, this), "Wireframe");
-    setupTab(3, new EdgesFrame(mMRS, this), "Edges");
+    auto setupGenericTab = [&](int                             index,
+                               GenericMeshRenderSettingsFrame* frame,
+                               const QString&                  title) {
+        addTabWithCheckbox(index, frame, frame->visibilityCheckBox(), title);
+        mFrames.push_back(frame);
+    };
 
-    for (auto* frame : frames) {
+    setupGenericTab(0, new PointsFrame(mMRS, this), "Points");
+    setupGenericTab(1, new SurfaceFrame(mMRS, this), "Surface");
+    setupGenericTab(2, new WireframeFrame(mMRS, this), "Wireframe");
+    setupGenericTab(3, new EdgesFrame(mMRS, this), "Edges");
+
+    for (auto* frame : mFrames) {
         connect(
-            frame, SIGNAL(settingsUpdated()), this, SIGNAL(settingsUpdated()));
+            frame,
+            SIGNAL(meshRenderSettingsUpdated()),
+            this,
+            SIGNAL(meshRenderSettingsUpdated()));
     }
+
+    mCrossSectionFrame = new CrossSectionSettingsFrame(this);
+    addTabWithCheckbox(
+        4,
+        mCrossSectionFrame,
+        mCrossSectionFrame->visibilityCheckBox(),
+        "Cross Section");
+
+    connect(
+        mCrossSectionFrame,
+        SIGNAL(crossSectionSettingsUpdated()),
+        this,
+        SIGNAL(crossSectionSettingsUpdated()));
 
     connect(
         mUI->applyToAllCheckBox,
@@ -77,6 +98,12 @@ MeshRenderSettingsFrame::~MeshRenderSettingsFrame()
 const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
 {
     return mMRS;
+}
+
+const CrossSectionSettings& MeshRenderSettingsFrame::crossSectionSettings()
+    const
+{
+    return mCrossSectionFrame->crossSectionSettings();
 }
 
 bool MeshRenderSettingsFrame::isApplyToAllEnabled() const
@@ -104,11 +131,17 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
     updateGuiFromSettings(changeCurrentTab);
 }
 
+void MeshRenderSettingsFrame::setCrossSectionSettings(
+    const CrossSectionSettings& settings)
+{
+    mCrossSectionFrame->setCrossSectionSettings(settings);
+}
+
 void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
 {
     using MRI = MeshRenderInfo;
 
-    for (auto* frame : frames) {
+    for (auto* frame : mFrames) {
         frame->updateFrameFromSettings();
     }
 
