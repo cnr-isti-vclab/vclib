@@ -7,7 +7,7 @@
 
 #include <vclib/bgfx/drawable/drawable_axis_bgfx.h>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.h>
+#include <vclib/bgfx/shapes/uniforms/shape_uniforms.h>
 
 #include <vclib/algorithms/mesh/create.h>
 
@@ -64,17 +64,17 @@ void DrawableAxisBGFX::draw(const DrawObjectSettings& settings)
         for (uint i = 0; i < 3; i++) {
             for (uint j = 0; j < 2; j++) {
                 if (j == 0) // cylinders
-                    DrawableAxisUniforms::setColor(AXIS_COLORS[i]);
+                    ShapeUniforms::setColor(AXIS_COLORS[i]);
                 else // rest (cone, spheres...)
-                    DrawableAxisUniforms::setColor(vcl::Color::White);
-                DrawableAxisUniforms::bind();
+                    ShapeUniforms::setColor(vcl::Color::White);
+                ShapeUniforms::bind();
 
                 mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
                 mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
 
                 bgfx::setTransform(mMatrices[i].data());
 
-                bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_AXIS>());
+                bgfx::submit(settings.viewId, pm.getProgram<SHAPE>());
             }
         }
     }

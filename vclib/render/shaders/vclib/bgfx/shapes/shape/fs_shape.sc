@@ -8,12 +8,12 @@
 $input v_position
 $input v_normal
 
-#include <vclib/bgfx/drawable/drawable_axis/uniforms.sh>
+#include <vclib/bgfx/shapes/shape/uniforms.sh>
 
 void main()
 {
     // color
-    vec4 color = u_axisColor;
+    vec4 color = u_shapeColor;
 
     /***** compute light ******/
     // default values - no shading
@@ -34,5 +34,5 @@ void main()
         u_lightColor,
         normal);
 
-    gl_FragColor = light * u_axisColor + vec4(specular, 0);
+    gl_FragColor = light * u_shapeColor + vec4(specular, 0);
 }

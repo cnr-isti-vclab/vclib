@@ -8,7 +8,7 @@
 $input a_position, a_normal
 $output v_position, v_normal
 
-#include <vclib/bgfx/drawable/drawable_axis/uniforms.sh>
+#include <vclib/bgfx/shapes/shape/uniforms.sh>
 
 void main()
 {
