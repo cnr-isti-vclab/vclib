@@ -10,11 +10,12 @@
 
 #include "mesh/mesh_render_vectors.h"
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
-#include <vclib/mesh/providers/mesh_provider.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/opengl2/drawable/draw_objects3.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/meshes.h>
 
 #ifdef _WIN32
 #include <windows.h>
