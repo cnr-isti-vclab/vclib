@@ -23,13 +23,13 @@ namespace vcl {
 
 /**
  * @brief Base class for rendering simple 3D shapes.
- * 
- * The Shape class manages the GPU buffers (via MeshRenderBuffers) for a 
- * given triangle mesh and provides convenient methods to draw it with a 
+ *
+ * The Shape class manages the GPU buffers (via MeshRenderBuffers) for a
+ * given triangle mesh and provides convenient methods to draw it with a
  * flat color or a picking ID.
- * 
+ *
  * It is designed to be lightweight and used inside other drawables or gizmos.
- * Shapes are movable but not copyable to prevent accidental duplication 
+ * Shapes are movable but not copyable to prevent accidental duplication
  * of GPU resources.
  */
 class Shape
@@ -44,21 +44,22 @@ public:
      */
     Shape(const vcl::TriMesh& mesh)
     {
-        using MRI = MeshRenderInfo;
+        using MRI              = MeshRenderInfo;
         MRI::BuffersBitSet btf = {
-            MRI::Buffers::VERTICES, 
-            MRI::Buffers::VERT_NORMALS, 
+            MRI::Buffers::VERTICES,
+            MRI::Buffers::VERT_NORMALS,
             MRI::Buffers::TRIANGLES};
 
         mBuffers = MeshRenderBuffers<vcl::TriMesh>(mesh, btf);
     }
 
     // Disable copy
-    Shape(const Shape&) = delete;
+    Shape(const Shape&)            = delete;
     Shape& operator=(const Shape&) = delete;
 
     // Enable move
     Shape(Shape&& other) { swap(other); }
+
     Shape& operator=(Shape&& other)
     {
         swap(other);
@@ -77,9 +78,9 @@ public:
      * @brief Draws the shape with the specified transform and color.
      */
     void draw(
-        uint                  viewId,
-        const vcl::Matrix44f& transform,
-        const vcl::Color&     color)
+        uint             viewId,
+        const Color&     color,
+        const Matrix44f& transform = Matrix44f::Identity())
     {
         using enum VertFragProgram;
 
@@ -103,7 +104,10 @@ public:
     /**
      * @brief Draws the shape for picking.
      */
-    void drawId(uint viewId, const vcl::Matrix44f& transform, uint32_t id)
+    void drawId(
+        uint             viewId,
+        uint32_t         id,
+        const Matrix44f& transform = Matrix44f::Identity())
     {
         using enum VertFragProgram;
 
@@ -116,7 +120,7 @@ public:
 
         mBuffers.bindVertexBuffers(MeshRenderSettings());
         mBuffers.bindIndexBuffers(MeshRenderSettings());
-        
+
         ShapeUniforms::setId(id);
         ShapeUniforms::bind();
 
