@@ -12,5 +12,10 @@ $input v_position
 
 void main()
 {
-    gl_FragColor = u_shapeId;
+    // Target 0: Object ID (16 bit) + Element Type (16 bit)
+    // (already combined in u_shapeId)
+    gl_FragData[0] = u_shapeId;
+    
+    // Target 1: Element ID (32 bit) - Always 0 for shapes
+    gl_FragData[1] = uintABGRToVec4Color(0u);
 }
