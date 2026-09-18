@@ -8,11 +8,11 @@
 #ifndef VCL_BINDINGS_CORE_MESHES_H
 #define VCL_BINDINGS_CORE_MESHES_H
 
-#include "mesh/providers/abstract_mesh_provider.h"
 #include "meshes/edge_mesh.h"
 #include "meshes/point_cloud.h"
 #include "meshes/poly_edge_mesh.h"
 #include "meshes/poly_mesh.h"
+#include "meshes/providers/abstract_mesh_provider.h"
 #include "meshes/tri_edge_mesh.h"
 #include "meshes/tri_mesh.h"
 

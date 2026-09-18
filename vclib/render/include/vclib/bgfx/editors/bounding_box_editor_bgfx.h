@@ -75,7 +75,8 @@ public:
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
-                mBoxes.push_back(DrawableBox3(m->meshProvider().boundingBox(), c, thickness));
+                mBoxes.push_back(DrawableBox3(
+                    m->meshProvider().boundingBox(), c, thickness));
             }
             else {
                 mBoxes.push_back(DrawableBox3(Box3f()));
@@ -110,9 +111,12 @@ public:
             uint id = Base::drawList()->selectedObjectId();
             if (id < mBoxes.size()) {
                 const AbstractDrawableMesh* m =
-                    dynamic_cast<const AbstractDrawableMesh*>(Base::drawList()->at(id).get());
+                    dynamic_cast<const AbstractDrawableMesh*>(
+                        Base::drawList()->at(id).get());
                 if (m) {
-                    Matrix44f transform = m->meshProvider().transformMatrix().template cast<float>();
+                    Matrix44f transform = m->meshProvider()
+                                              .transformMatrix()
+                                              .template cast<float>();
                     bgfx::setTransform(transform.data());
                 }
                 mBoxes[id].draw(settings);
@@ -126,9 +130,12 @@ public:
 
                 if (show) {
                     const AbstractDrawableMesh* m =
-                        dynamic_cast<const AbstractDrawableMesh*>(Base::drawList()->at(i).get());
+                        dynamic_cast<const AbstractDrawableMesh*>(
+                            Base::drawList()->at(i).get());
                     if (m) {
-                        Matrix44f transform = m->meshProvider().transformMatrix().template cast<float>();
+                        Matrix44f transform = m->meshProvider()
+                                                  .transformMatrix()
+                                                  .template cast<float>();
                         bgfx::setTransform(transform.data());
                     }
                     mBoxes[i].draw(settings);
