@@ -7,7 +7,6 @@
 
 #include <vclib/bgfx/drawable/drawable_axis_bgfx.h>
 
-
 #include <vclib/algorithms/mesh/create.h>
 
 namespace vcl {
@@ -55,7 +54,8 @@ void DrawableAxisBGFX::draw(const DrawObjectSettings& settings)
     if (isVisible()) {
         for (uint i = 0; i < 3; i++) {
             mArrowShapes[0].draw(settings.viewId, AXIS_COLORS[i], mMatrices[i]);
-            mArrowShapes[1].draw(settings.viewId, vcl::Color::White, mMatrices[i]);
+            mArrowShapes[1].draw(
+                settings.viewId, vcl::Color::White, mMatrices[i]);
         }
     }
 }

@@ -37,6 +37,23 @@ public:
                     subdivisions))
     {
     }
+
+    template<Point3Concept PointType>
+    ConeShape(
+        const PointType& p1,
+        const PointType& p2,
+        double           radiusBottom,
+        double           radiusTop,
+        uint             subdivisions = 36) :
+            Shape(
+                vcl::createCone<vcl::TriMesh>(
+                    p1,
+                    p2,
+                    radiusBottom,
+                    radiusTop,
+                    subdivisions))
+    {
+    }
 };
 
 } // namespace vcl

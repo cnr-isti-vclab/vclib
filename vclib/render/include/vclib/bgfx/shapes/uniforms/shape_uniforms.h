@@ -8,9 +8,9 @@
 #ifndef VCL_BGFX_SHAPES_UNIFORMS_SHAPE_UNIFORMS_H
 #define VCL_BGFX_SHAPES_UNIFORMS_SHAPE_UNIFORMS_H
 
+#include <bit>
 #include <vclib/bgfx/static_uniform.h>
 #include <vclib/space/core/color.h>
-#include <bit>
 
 namespace vcl {
 
@@ -24,12 +24,12 @@ namespace vcl {
 class ShapeUniforms
 {
     inline static std::array<float, 4> sShapeColor = {1.0, 0.0, 0.0, 1.0};
-    inline static StaticUniform sShapeColorUniform {
+    inline static StaticUniform        sShapeColorUniform {
         "u_shapeColor",
         bgfx::UniformType::Vec4};
 
     inline static std::array<float, 4> sShapeId = {0.0, 0.0, 0.0, 0.0};
-    inline static StaticUniform sShapeIdUniform {
+    inline static StaticUniform        sShapeIdUniform {
         "u_shapeIdPack",
         bgfx::UniformType::Vec4};
 
@@ -44,14 +44,11 @@ public:
         sShapeColor[3] = color.alphaF();
     }
 
-    static void setId(uint32_t id)
-    {
-        sShapeId[0] = std::bit_cast<float>(id);
-    }
+    static void setId(uint32_t id) { sShapeId[0] = std::bit_cast<float>(id); }
 
-    static void bind() 
-    { 
-        sShapeColorUniform.bind(sShapeColor.data()); 
+    static void bind()
+    {
+        sShapeColorUniform.bind(sShapeColor.data());
         sShapeIdUniform.bind(sShapeId.data());
     }
 };
