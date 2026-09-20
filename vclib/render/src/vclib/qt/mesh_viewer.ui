@@ -150,6 +150,7 @@
       <string>Camera View</string>
      </property>
      <addaction name="actionLoad_Camera_View"/>
+     <addaction name="actionSave_Camera_View"/>
     </widget>
     <addaction name="menuRender_Mode"/>
     <addaction name="menuCamera_View"/>
@@ -215,6 +216,11 @@
   <action name="actionLoad_Camera_View">
    <property name="text">
     <string>Load Camera View...</string>
+   </property>
+  </action>
+  <action name="actionSave_Camera_View">
+   <property name="text">
+    <string>Save Camera View...</string>
    </property>
   </action>
   <action name="actionViewer_Settings">

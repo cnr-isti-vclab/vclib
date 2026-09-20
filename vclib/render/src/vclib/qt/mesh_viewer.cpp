@@ -207,6 +207,12 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         &MeshViewer::loadCameraView);
 
     connect(
+        mUI->actionSave_Camera_View,
+        &QAction::triggered,
+        this,
+        &MeshViewer::saveCameraView);
+
+    connect(
         mUI->actionShow_Right_Area,
         &QAction::toggled,
         mUI->rightArea,
@@ -653,6 +659,27 @@ void MeshViewer::loadCameraView()
         }
         catch (const std::exception& e) {
             QMessageBox::warning(this, tr("Error loading camera"), e.what());
+        }
+    }
+}
+
+void MeshViewer::saveCameraView()
+{
+    QString lastDir = dialogDirectory("SaveCamera", mSettingsFilePath);
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        tr("Save Camera View"),
+        lastDir,
+        tr("glTF Files (*.gltf *.glb)"));
+
+    if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "SaveCamera", QFileInfo(fileName).absolutePath(), mSettingsFilePath);
+        try {
+            vcl::saveCamera(viewer().camera(), fileName.toStdString());
+        }
+        catch (const std::exception& e) {
+            QMessageBox::warning(this, tr("Error saving camera"), e.what());
         }
     }
 }

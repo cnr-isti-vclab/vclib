@@ -317,6 +317,8 @@ public slots:
 
     void loadCameraView();
 
+    void saveCameraView();
+
 protected:
     MeshViewerRenderApp& viewer() const;
 
