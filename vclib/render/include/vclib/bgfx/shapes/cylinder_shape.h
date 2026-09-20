@@ -29,6 +29,21 @@ public:
                 vcl::createCylinder<vcl::TriMesh>(radius, height, subdivisions))
     {
     }
+
+    template<Point3Concept PointType>
+    CylinderShape(
+        const PointType& p1,
+        const PointType& p2,
+        double           radius,
+        uint             subdivisions = 36) :
+            Shape(
+                vcl::createCylinder<vcl::TriMesh>(
+                    p1,
+                    p2,
+                    radius,
+                    subdivisions))
+    {
+    }
 };
 
 } // namespace vcl
