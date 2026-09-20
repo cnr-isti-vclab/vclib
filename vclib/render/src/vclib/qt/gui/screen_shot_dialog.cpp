@@ -9,13 +9,15 @@
 
 #include <vclib/qt/gui/dialog_directories.h>
 
+#include <QFileInfo>
 #include <QGridLayout>
 #include <QLabel>
-#include <QFileInfo>
 
 namespace vcl::qt {
 
-ScreenShotDialog::ScreenShotDialog(QWidget* parent, const std::string& settingsFilePath) :
+ScreenShotDialog::ScreenShotDialog(
+    QWidget*           parent,
+    const std::string& settingsFilePath) :
         QFileDialog(
             parent,
             "Save Screenshot",

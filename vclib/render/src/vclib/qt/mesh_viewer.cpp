@@ -24,11 +24,11 @@
 #include <QActionGroup>
 #include <QDialog>
 #include <QDockWidget>
-#include <QIcon>
-#include <QPushButton>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QFileInfo>
+#include <QIcon>
+#include <QMessageBox>
+#include <QPushButton>
 
 namespace vcl::qt {
 
@@ -642,16 +642,15 @@ void MeshViewer::openSettings()
 
 void MeshViewer::loadCameraView()
 {
-    QString lastDir = dialogDirectory("LoadCamera", mSettingsFilePath);
+    QString lastDir  = dialogDirectory("LoadCamera", mSettingsFilePath);
     QString fileName = QFileDialog::getOpenFileName(
-        this,
-        tr("Load Camera View"),
-        lastDir,
-        tr("glTF Files (*.gltf *.glb)"));
+        this, tr("Load Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
 
     if (!fileName.isEmpty()) {
         setDialogDirectory(
-            "LoadCamera", QFileInfo(fileName).absolutePath(), mSettingsFilePath);
+            "LoadCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
         try {
             vcl::Camera<float> c = vcl::loadCamera<>(fileName.toStdString());
             viewer().setCamera(c);
@@ -665,16 +664,15 @@ void MeshViewer::loadCameraView()
 
 void MeshViewer::saveCameraView()
 {
-    QString lastDir = dialogDirectory("SaveCamera", mSettingsFilePath);
+    QString lastDir  = dialogDirectory("SaveCamera", mSettingsFilePath);
     QString fileName = QFileDialog::getSaveFileName(
-        this,
-        tr("Save Camera View"),
-        lastDir,
-        tr("glTF Files (*.gltf *.glb)"));
+        this, tr("Save Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
 
     if (!fileName.isEmpty()) {
         setDialogDirectory(
-            "SaveCamera", QFileInfo(fileName).absolutePath(), mSettingsFilePath);
+            "SaveCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
         try {
             vcl::saveCamera(viewer().camera(), fileName.toStdString());
         }

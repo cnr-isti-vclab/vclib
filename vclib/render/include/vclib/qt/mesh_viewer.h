@@ -215,7 +215,7 @@ public:
     {
         nlohmann::json j;
         std::string    filePath = mSettingsFilePath;
-        std::ifstream in(filePath);
+        std::ifstream  in(filePath);
         if (in.is_open()) {
             try {
                 in >> j;

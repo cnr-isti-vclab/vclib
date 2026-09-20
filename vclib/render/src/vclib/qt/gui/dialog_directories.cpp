@@ -82,8 +82,9 @@ void setDialogDirectory(
 
     // Ensure directory exists
     QDir qdir;
-    qdir.mkpath(QString::fromStdString(
-        std::filesystem::path(filePath).parent_path().string()));
+    qdir.mkpath(
+        QString::fromStdString(
+            std::filesystem::path(filePath).parent_path().string()));
 
     std::ofstream out(filePath);
     if (out.is_open()) {
