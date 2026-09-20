@@ -56,6 +56,12 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         QMainWindow(parent), mSettingsFilePath(settingsFilePath),
         mUI(new Ui::MeshViewer)
 {
+    if (mSettingsFilePath.empty()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        mSettingsFilePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    }
+
     mUI->setupUi(this);
 
     // give keyboard focus to the viewer widget immediately
@@ -100,6 +106,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
+    mViewerSettingsFrame->setSettingsFilePath(mSettingsFilePath);
     mViewerSettingsFrame->setViewerSettings(viewer().viewerSettings());
 
     connect(
@@ -211,11 +218,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     // Load default global settings
     nlohmann::json j;
     std::string    filePath = mSettingsFilePath;
-    if (filePath.empty()) {
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
-    }
-    std::ifstream in(filePath);
+    std::ifstream  in(filePath);
     if (in.is_open()) {
         try {
             in >> j;
@@ -423,7 +426,7 @@ void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S
     if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
+        vcl::qt::ScreenShotDialog dialog(this, mSettingsFilePath);
         if (dialog.exec() && dialog.selectedFiles().size() > 0) {
             auto sf = dialog.selectedFiles();
             mUI->viewer->screenshot(

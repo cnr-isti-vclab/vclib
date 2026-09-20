@@ -215,10 +215,6 @@ public:
     {
         nlohmann::json j;
         std::string    filePath = mSettingsFilePath;
-        if (filePath.empty()) {
-            std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-            filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
-        }
         std::ifstream in(filePath);
         if (in.is_open()) {
             try {
