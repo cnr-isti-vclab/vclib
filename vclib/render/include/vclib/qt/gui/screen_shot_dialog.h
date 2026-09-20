@@ -19,11 +19,18 @@ class ScreenShotDialog : public QFileDialog
 
     QSpinBox* mMultiplierSpinBox = nullptr;
 
+    std::string mSettingsFilePath;
+
 public:
-    explicit ScreenShotDialog(QWidget* parent = nullptr);
+    explicit ScreenShotDialog(
+        QWidget*           parent           = nullptr,
+        const std::string& settingsFilePath = "");
     ~ScreenShotDialog();
 
     int screenMultiplierValue() const;
+
+public slots:
+    void accept() override;
 };
 
 } // namespace vcl::qt

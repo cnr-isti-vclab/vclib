@@ -39,7 +39,16 @@ public:
 
     const ViewerSettings& viewerSettings() const;
 
+    void setSettingsFilePath(const std::string& path)
+    {
+        mSettingsFilePath = path;
+    }
+
+    const std::string& settingsFilePath() const { return mSettingsFilePath; }
+
 private:
+    std::string mSettingsFilePath;
+
     void updatePanoramaLabel();
 
 signals:

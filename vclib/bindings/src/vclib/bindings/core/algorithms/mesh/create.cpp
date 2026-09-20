@@ -58,7 +58,11 @@ void initCreateAlgorithms(pybind11::module& m)
 
         m.def(
             name.c_str(),
-            [](const Point3d& p1, const Point3d& p2, double rb, double rt, uint s) {
+            [](const Point3d& p1,
+               const Point3d& p2,
+               double         rb,
+               double         rt,
+               uint           s) {
                 return vcl::createCone<MeshType>(p1, p2, rb, rt, s);
             },
             "p1"_a,
@@ -69,7 +73,12 @@ void initCreateAlgorithms(pybind11::module& m)
 
         m.def(
             "create_cone",
-            [](MeshType& m, const Point3d& p1, const Point3d& p2, double rb, double rt, uint s) {
+            [](MeshType&      m,
+               const Point3d& p1,
+               const Point3d& p2,
+               double         rb,
+               double         rt,
+               uint           s) {
                 m = vcl::createCone<MeshType>(p1, p2, rb, rt, s);
             },
             "mesh"_a,
@@ -112,7 +121,11 @@ void initCreateAlgorithms(pybind11::module& m)
 
         m.def(
             "create_cylinder",
-            [](MeshType& m, const Point3d& p1, const Point3d& p2, double r, uint s) {
+            [](MeshType&      m,
+               const Point3d& p1,
+               const Point3d& p2,
+               double         r,
+               uint           s) {
                 m = vcl::createCylinder<MeshType>(p1, p2, r, s);
             },
             "mesh"_a,

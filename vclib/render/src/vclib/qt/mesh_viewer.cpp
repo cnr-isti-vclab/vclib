@@ -9,6 +9,7 @@
 
 #include "ui_mesh_viewer.h"
 
+#include <vclib/qt/gui/dialog_directories.h>
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
@@ -17,11 +18,16 @@
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
+#include <vclib/io.h>
+
 #include <QAction>
 #include <QActionGroup>
 #include <QDialog>
 #include <QDockWidget>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QIcon>
+#include <QMessageBox>
 #include <QPushButton>
 
 namespace vcl::qt {
@@ -56,6 +62,12 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         QMainWindow(parent), mSettingsFilePath(settingsFilePath),
         mUI(new Ui::MeshViewer)
 {
+    if (mSettingsFilePath.empty()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        mSettingsFilePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    }
+
     mUI->setupUi(this);
 
     // give keyboard focus to the viewer widget immediately
@@ -100,6 +112,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
+    mViewerSettingsFrame->setSettingsFilePath(mSettingsFilePath);
     mViewerSettingsFrame->setViewerSettings(viewer().viewerSettings());
 
     connect(
@@ -188,6 +201,18 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         &MeshViewer::openSettings);
 
     connect(
+        mUI->actionLoad_Camera_View,
+        &QAction::triggered,
+        this,
+        &MeshViewer::loadCameraView);
+
+    connect(
+        mUI->actionSave_Camera_View,
+        &QAction::triggered,
+        this,
+        &MeshViewer::saveCameraView);
+
+    connect(
         mUI->actionShow_Right_Area,
         &QAction::toggled,
         mUI->rightArea,
@@ -211,11 +236,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     // Load default global settings
     nlohmann::json j;
     std::string    filePath = mSettingsFilePath;
-    if (filePath.empty()) {
-        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-        filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
-    }
-    std::ifstream in(filePath);
+    std::ifstream  in(filePath);
     if (in.is_open()) {
         try {
             in >> j;
@@ -423,7 +444,7 @@ void MeshViewer::keyPressEvent(QKeyEvent* event)
 {
     // show screenshot dialog on CTRL + S
     if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
+        vcl::qt::ScreenShotDialog dialog(this, mSettingsFilePath);
         if (dialog.exec() && dialog.selectedFiles().size() > 0) {
             auto sf = dialog.selectedFiles();
             mUI->viewer->screenshot(
@@ -617,6 +638,48 @@ void MeshViewer::openSettings()
 
     dialog.setSettingsFilePath(mSettingsFilePath);
     dialog.exec();
+}
+
+void MeshViewer::loadCameraView()
+{
+    QString lastDir  = dialogDirectory("LoadCamera", mSettingsFilePath);
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Load Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
+
+    if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "LoadCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
+        try {
+            vcl::Camera<float> c = vcl::loadCamera<>(fileName.toStdString());
+            viewer().setCamera(c);
+            viewer().update();
+        }
+        catch (const std::exception& e) {
+            QMessageBox::warning(this, tr("Error loading camera"), e.what());
+        }
+    }
+}
+
+void MeshViewer::saveCameraView()
+{
+    QString lastDir  = dialogDirectory("SaveCamera", mSettingsFilePath);
+    QString fileName = QFileDialog::getSaveFileName(
+        this, tr("Save Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
+
+    if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "SaveCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
+        try {
+            vcl::saveCamera(viewer().camera(), fileName.toStdString());
+        }
+        catch (const std::exception& e) {
+            QMessageBox::warning(this, tr("Error saving camera"), e.what());
+        }
+    }
 }
 
 } // namespace vcl::qt
