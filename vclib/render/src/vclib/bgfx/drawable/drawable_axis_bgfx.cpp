@@ -7,8 +7,6 @@
 
 #include <vclib/bgfx/drawable/drawable_axis_bgfx.h>
 
-#include <vclib/bgfx/drawable/uniforms/drawable_axis_uniforms.h>
-
 #include <vclib/algorithms/mesh/create.h>
 
 namespace vcl {
@@ -53,29 +51,10 @@ void DrawableAxisBGFX::setSize(double size)
  */
 void DrawableAxisBGFX::draw(const DrawObjectSettings& settings)
 {
-    using enum VertFragProgram;
-
-    ProgramManager& pm = Context::instance().programManager();
-
     if (isVisible()) {
-        uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                         BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                         BGFX_STATE_MSAA;
         for (uint i = 0; i < 3; i++) {
-            for (uint j = 0; j < 2; j++) {
-                if (j == 0) // cylinders
-                    DrawableAxisUniforms::setColor(AXIS_COLORS[i]);
-                else // rest (cone, spheres...)
-                    DrawableAxisUniforms::setColor(vcl::Color::White);
-                DrawableAxisUniforms::bind();
-
-                mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
-                mArrowBuffers[j].bindIndexBuffers(MeshRenderSettings());
-
-                bgfx::setTransform(mMatrices[i].data());
-
-                bgfx::submit(settings.viewId, pm.getProgram<DRAWABLE_AXIS>());
-            }
+            mArrowShapes[0].draw(settings.viewId, AXIS_COLORS[i], mMatrices[i]);
+            mArrowShapes[1].draw(settings.viewId, Color::White, mMatrices[i]);
         }
     }
 }
@@ -114,14 +93,8 @@ void DrawableAxisBGFX::updateMatrices(double size)
  */
 void DrawableAxisBGFX::createAxis()
 {
-    using MRI = MeshRenderInfo;
-    using enum MRI::Buffers;
-
-    MRI::BuffersBitSet btf = {VERTICES, VERT_NORMALS, TRIANGLES};
-
-    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.first, btf);
-
-    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(AXIS_MESHES.second, btf);
+    mArrowShapes[0] = vcl::Shape(AXIS_MESHES.first);
+    mArrowShapes[1] = vcl::Shape(AXIS_MESHES.second);
 }
 
 } // namespace vcl

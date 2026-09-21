@@ -5,10 +5,12 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_IO_CAMERA_H
-#define VCL_IO_CAMERA_H
+$input v_position
 
-#include "camera/load.h"
-#include "camera/save.h"
+#include <vclib/bgfx/shapes/shape/uniforms.sh>
+#include <vclib/bgfx/shaders_common.sh>
 
-#endif // VCL_IO_CAMERA_H
+void main()
+{
+    gl_FragColor = u_shapeId;
+}

@@ -29,13 +29,8 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 {
-    inline static const uint N_ADDITIONAL_VIEWS =
-        DrawObjectSettings::N_ADDITIONAL_VIEWS;
-
     using Base = AbstractViewerDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
-
-    std::array<uint, N_ADDITIONAL_VIEWS> mAdditionalViewIds;
 
     bool mStatsEnabled = false;
 
@@ -44,18 +39,10 @@ class ViewerDrawerBGFX : public AbstractViewerDrawer<DerivedRenderApp>
 public:
     ViewerDrawerBGFX(uint width = 1024, uint height = 768) : Base(width, height)
     {
-        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
-            mAdditionalViewIds[i] = Context::instance().requestViewId();
-        }
         this->onResize(width, height);
     }
 
-    ~ViewerDrawerBGFX()
-    {
-        for (uint i = 0; i < N_ADDITIONAL_VIEWS; i++) {
-            Context::instance().releaseViewId(mAdditionalViewIds[i]);
-        }
-    }
+    ~ViewerDrawerBGFX() = default;
 
     void setViewerSettings(const ViewerSettings& settings)
     {
@@ -82,25 +69,14 @@ public:
     void onResize(uint width, uint height) override
     {
         Base::onResize(width, height);
-        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
-            bgfx::setViewRect(mAdditionalViewIds[i], 0, 0, width, height);
-            bgfx::setViewClear(mAdditionalViewIds[i], BGFX_CLEAR_NONE);
-            bgfx::touch(mAdditionalViewIds[i]);
-        }
     }
 
     void onDrawContent(uint viewId) override
     {
         auto fbh = DRA::DRW::canvasFrameBuffer(derived());
-        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
-            bgfx::setViewFrameBuffer(mAdditionalViewIds[i], fbh);
-            bgfx::touch(mAdditionalViewIds[i]);
-        }
 
         DrawObjectSettings settings;
         settings.viewId = viewId;
-
-        settings.additionalViewIds = mAdditionalViewIds;
 
         settings.renderMode         = Base::viewerSettings().renderMode;
         settings.imageBasedLighting = Base::viewerSettings().imageBasedLighting;
@@ -178,10 +154,6 @@ private:
         Matrix44f pm = Base::projectionMatrix();
 
         bgfx::setViewTransform(viewId, vm.data(), pm.data());
-
-        for (uint i = 0; i < N_ADDITIONAL_VIEWS; ++i) {
-            bgfx::setViewTransform(mAdditionalViewIds[i], vm.data(), pm.data());
-        }
     }
 
     auto* derived() { return static_cast<DRA*>(this); }

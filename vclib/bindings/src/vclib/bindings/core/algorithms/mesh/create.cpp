@@ -56,6 +56,38 @@ void initCreateAlgorithms(pybind11::module& m)
             "height"_a,
             "subdivisions"_a = 36);
 
+        m.def(
+            name.c_str(),
+            [](const Point3d& p1,
+               const Point3d& p2,
+               double         rb,
+               double         rt,
+               uint           s) {
+                return vcl::createCone<MeshType>(p1, p2, rb, rt, s);
+            },
+            "p1"_a,
+            "p2"_a,
+            "radius_bottom"_a,
+            "radius_top"_a,
+            "subdivisions"_a = 36);
+
+        m.def(
+            "create_cone",
+            [](MeshType&      m,
+               const Point3d& p1,
+               const Point3d& p2,
+               double         rb,
+               double         rt,
+               uint           s) {
+                m = vcl::createCone<MeshType>(p1, p2, rb, rt, s);
+            },
+            "mesh"_a,
+            "p1"_a,
+            "p2"_a,
+            "radius_bottom"_a,
+            "radius_top"_a,
+            "subdivisions"_a = 36);
+
         name =
             "create_cylinder_" + camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
@@ -75,6 +107,31 @@ void initCreateAlgorithms(pybind11::module& m)
             "mesh"_a,
             "radius"_a,
             "height"_a,
+            "subdivisions"_a = 36);
+
+        m.def(
+            name.c_str(),
+            [](const Point3d& p1, const Point3d& p2, double r, uint s) {
+                return vcl::createCylinder<MeshType>(p1, p2, r, s);
+            },
+            "p1"_a,
+            "p2"_a,
+            "radius"_a,
+            "subdivisions"_a = 36);
+
+        m.def(
+            "create_cylinder",
+            [](MeshType&      m,
+               const Point3d& p1,
+               const Point3d& p2,
+               double         r,
+               uint           s) {
+                m = vcl::createCylinder<MeshType>(p1, p2, r, s);
+            },
+            "mesh"_a,
+            "p1"_a,
+            "p2"_a,
+            "radius"_a,
             "subdivisions"_a = 36);
 
         // dodecahedron.h

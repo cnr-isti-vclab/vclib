@@ -8,7 +8,7 @@
 #ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_BGFX_H
 #define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_BGFX_H
 
-#include "mesh/mesh_render_buffers.h"
+#include <vclib/bgfx/shapes/shape.h>
 
 #include <vclib/algorithms/mesh/create.h>
 #include <vclib/meshes/tri_mesh.h>
@@ -59,7 +59,7 @@ class DrawableAxisBGFX : public DrawableObject
         vcl::Matrix44f::Zero(),
         vcl::Matrix44f::Zero()};
 
-    MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
+    vcl::Shape mArrowShapes[2]; // 0: cylinder, 1: cone/spheres
 
 public:
     DrawableAxisBGFX(double size = 1);
@@ -117,7 +117,7 @@ public:
             swap(mMatrices[i], other.mMatrices[i]);
         }
         for (uint i = 0; i < 2; i++) {
-            mArrowBuffers[i].swap(other.mArrowBuffers[i]);
+            mArrowShapes[i].swap(other.mArrowShapes[i]);
         }
     }
 

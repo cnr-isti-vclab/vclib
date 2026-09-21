@@ -204,11 +204,7 @@ public:
     {
         nlohmann::json j;
         std::string    filePath = mSettingsFilePath;
-        if (filePath.empty()) {
-            std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
-            filePath = (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
-        }
-        std::ifstream in(filePath);
+        std::ifstream  in(filePath);
         if (in.is_open()) {
             try {
                 in >> j;
@@ -307,6 +303,10 @@ public slots:
     void fitView();
 
     void updateGUI();
+
+    void loadCameraView();
+
+    void saveCameraView();
 
 protected:
     MeshViewerRenderApp& viewer() const;

@@ -5,10 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BINDINGS_CORE_MESH_PROVIDERS_ABSTRACT_MESH_PROVIDER_H
-#define VCL_BINDINGS_CORE_MESH_PROVIDERS_ABSTRACT_MESH_PROVIDER_H
+#ifndef VCL_BINDINGS_CORE_MESHES_PROVIDERS_ABSTRACT_MESH_PROVIDER_H
+#define VCL_BINDINGS_CORE_MESHES_PROVIDERS_ABSTRACT_MESH_PROVIDER_H
 
-#include <vclib/mesh/providers/abstract_mesh_provider.h>
+#include <vclib/meshes.h>
 
 #include <pybind11/pybind11.h>
 
@@ -48,4 +48,4 @@ inline void initAbstractMeshProvider(pybind11::module& m)
 
 } // namespace vcl::bind
 
-#endif // VCL_BINDINGS_CORE_MESH_PROVIDERS_ABSTRACT_MESH_PROVIDER_H
+#endif // VCL_BINDINGS_CORE_MESHES_PROVIDERS_ABSTRACT_MESH_PROVIDER_H

@@ -172,7 +172,8 @@ void Lines::checkAndUpdateProgram() const
     // Validate that buffer capacities match the expected topology rules.
     // E.g., LINES requires pairs, and LINE_STRIP requires at least 2 points.
 
-    if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && nv % 2 != 0) {
+    if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+        nv % 2 != 0) {
         throw std::runtime_error(
             "Lines: For LINES or VECTORS topology, the number of " + primstr +
             " must be even (each line requires 2 endpoints).");
@@ -201,7 +202,8 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE color setting requires a valid line color "
                 "buffer.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineColorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineColorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line colors must match the number of "
                 "lines (" +
@@ -233,7 +235,8 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE shading setting requires a valid line normal "
                 "buffer.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineNorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineNorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line normals must match the number of "
                 "lines (" +
@@ -254,7 +257,8 @@ void Lines::checkAndUpdateProgram() const
                 "buffer "
                 "is invalid.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineSelCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineSelCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line selection elements must match the "
                 "number of "
