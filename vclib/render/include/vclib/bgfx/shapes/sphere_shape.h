@@ -8,9 +8,10 @@
 #ifndef VCL_BGFX_SHAPES_SPHERE_SHAPE_H
 #define VCL_BGFX_SHAPES_SPHERE_SHAPE_H
 
-#include <vclib/algorithms/mesh/create.h>
 #include <vclib/bgfx/shapes/shape.h>
-#include <vclib/space/core/sphere.h>
+
+#include <vclib/algorithms/mesh.h>
+#include <vclib/space/core.h>
 
 namespace vcl {
 

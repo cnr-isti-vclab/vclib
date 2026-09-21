@@ -54,8 +54,7 @@ void DrawableAxisBGFX::draw(const DrawObjectSettings& settings)
     if (isVisible()) {
         for (uint i = 0; i < 3; i++) {
             mArrowShapes[0].draw(settings.viewId, AXIS_COLORS[i], mMatrices[i]);
-            mArrowShapes[1].draw(
-                settings.viewId, vcl::Color::White, mMatrices[i]);
+            mArrowShapes[1].draw(settings.viewId, Color::White, mMatrices[i]);
         }
     }
 }

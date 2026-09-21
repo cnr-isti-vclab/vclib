@@ -63,6 +63,21 @@ void DrawableObjectItem::updateMeshInfo()
                         mesh->meshProvider().faceCount(),
                         mesh->meshProvider().selectedFaceCount());
                 }
+                else if (childItem->text(0) == "Transform Matrix") {
+                    for (int j = 0; j < 4; ++j) {
+                        auto rowItem = childItem->child(j);
+                        QString rowLabel = "";
+                        for (int c = 0; c < 4; ++c) {
+                            rowLabel += QString::number(
+                                mesh->meshProvider().transformMatrix()(j, c),
+                                'f',
+                                3);
+                            if (c < 3)
+                                rowLabel += "\t";
+                        }
+                        rowItem->setText(1, rowLabel);
+                    }
+                }
             }
             break;
         }
