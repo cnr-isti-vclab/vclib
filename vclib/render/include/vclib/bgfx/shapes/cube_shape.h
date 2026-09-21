@@ -8,8 +8,9 @@
 #ifndef VCL_BGFX_SHAPES_CUBE_SHAPE_H
 #define VCL_BGFX_SHAPES_CUBE_SHAPE_H
 
-#include <vclib/algorithms/mesh/create.h>
 #include <vclib/bgfx/shapes/shape.h>
+
+#include <vclib/algorithms/mesh.h>
 
 namespace vcl {
 

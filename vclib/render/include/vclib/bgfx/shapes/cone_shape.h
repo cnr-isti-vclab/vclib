@@ -8,21 +8,22 @@
 #ifndef VCL_BGFX_SHAPES_CONE_SHAPE_H
 #define VCL_BGFX_SHAPES_CONE_SHAPE_H
 
-#include <vclib/algorithms/mesh.h>
 #include <vclib/bgfx/shapes/shape.h>
+
+#include <vclib/algorithms/mesh.h>
 
 namespace vcl {
 
 /**
  * @brief A basic 3D cone shape.
  *
- * Creates a cone mesh with the base at Z=0 and apex at Z=1,
+ * Creates a cone mesh with the base at Y=-height/2 and apex at Y=height/2,
  * with a default base radius of 1.
  */
 class ConeShape : public Shape
 {
 public:
-    ConeShape() : Shape(vcl::createCone<vcl::TriMesh>(1.0, 0.0, 1.0)) {}
+    ConeShape() : ConeShape(1.0, 0.0, 1.0) {}
 
     ConeShape(
         double radiusBottom,
