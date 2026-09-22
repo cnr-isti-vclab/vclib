@@ -65,7 +65,7 @@ void DrawableObjectItem::updateMeshInfo()
                 }
                 else if (childItem->text(0) == "Transform Matrix") {
                     for (int j = 0; j < 4; ++j) {
-                        auto rowItem = childItem->child(j);
+                        auto    rowItem  = childItem->child(j);
                         QString rowLabel = "";
                         for (int c = 0; c < 4; ++c) {
                             rowLabel += QString::number(
