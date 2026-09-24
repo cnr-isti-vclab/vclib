@@ -7,6 +7,7 @@
 #define VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H
 
 #include <bgfx/bgfx.h>
+#include <bx/bx.h>
 #include <imgui/imgui.h>
 
 #define IMGUI_MBUT_LEFT   0x01
@@ -49,13 +50,26 @@ namespace ImGui
 #define IMGUI_FLAGS_ALPHA_BLEND UINT8_C(0x01)
 
 	///
+	struct TextureBgfx
+	{
+		bgfx::TextureHandle handle;
+		uint8_t  flags;
+		uint8_t  mip;
+		uint32_t unused;
+	};
+
+	///
 	inline ImTextureID toId(bgfx::TextureHandle _handle, uint8_t _flags, uint8_t _mip)
 	{
-		union { struct { bgfx::TextureHandle handle; uint8_t flags; uint8_t mip; } s; ImTextureID id; } tex;
-		tex.s.handle = _handle;
-		tex.s.flags  = _flags;
-		tex.s.mip    = _mip;
-		return tex.id;
+		TextureBgfx tex
+		{
+			.handle = _handle,
+			.flags  = _flags,
+			.mip    = _mip,
+			.unused = 0,
+		};
+
+		return bx::bitCast<ImTextureID>(tex);
 	}
 
 	// Helper function for passing bgfx::TextureHandle to ImGui::Image.

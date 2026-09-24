@@ -1,0 +1,895 @@
+diff --git a/3rdparty/imgui.cmake b/3rdparty/imgui.cmake
+index 8a4cd489b..778c7819c 100644
+--- a/3rdparty/imgui.cmake
++++ b/3rdparty/imgui.cmake
+@@ -23,7 +23,7 @@
+ if (VCLIB_ALLOW_DOWNLOAD_IMGUI)
+     message(STATUS "- ImGui - using downloaded source")
+ 
+-    set(IMGUI_VERSION 1.92.0)
++    set(IMGUI_VERSION 1.92.5)
+ 
+     # ImGui (glfw + bgfx)
+     FetchContent_Declare(
+diff --git a/examples/render/00-hello-triangle/bgfx/glfw/main.cpp b/examples/render/00-hello-triangle/bgfx/glfw/main.cpp
+index 801cb689c..c1e555709 100644
+--- a/examples/render/00-hello-triangle/bgfx/glfw/main.cpp
++++ b/examples/render/00-hello-triangle/bgfx/glfw/main.cpp
+@@ -37,5 +37,5 @@ int main(int argc, char** argv)
+ 
+     tw.show();
+ 
+-    return 0;
++    return vcl::glfw::GLFWApplication::exec();
+ }
+diff --git a/examples/render/02-mesh-viewer/imgui/glfw/main.cpp b/examples/render/02-mesh-viewer/imgui/glfw/main.cpp
+index 80a63e998..b34c0566b 100644
+--- a/examples/render/02-mesh-viewer/imgui/glfw/main.cpp
++++ b/examples/render/02-mesh-viewer/imgui/glfw/main.cpp
+@@ -62,5 +62,7 @@ int main(int argc, char** argv)
+ 
+     tw.show();
+ 
++    vcl::glfw::GLFWApplication::instance().executeMainLoop();
++
+     return 0;
+ }
+diff --git a/examples/render/05-two-window-viewers/CMakeLists.txt b/examples/render/05-two-window-viewers/CMakeLists.txt
+index ff17955c7..9a8c4f2f7 100644
+--- a/examples/render/05-two-window-viewers/CMakeLists.txt
++++ b/examples/render/05-two-window-viewers/CMakeLists.txt
+@@ -22,6 +22,9 @@
+ 
+ cmake_minimum_required(VERSION 3.24)
+ 
++if (TARGET vclib-3rd-glfw)
++    add_subdirectory(glfw)
++endif()
+ if (TARGET vclib-3rd-qt)
+     add_subdirectory(qt)
+ endif()
+diff --git a/examples/render/05-two-window-viewers/glfw/CMakeLists.txt b/examples/render/05-two-window-viewers/glfw/CMakeLists.txt
+new file mode 100644
+index 000000000..c8b8e5826
+--- /dev/null
++++ b/examples/render/05-two-window-viewers/glfw/CMakeLists.txt
+@@ -0,0 +1,37 @@
++#*****************************************************************************
++#* VCLib                                                                     *
++#* Visual Computing Library                                                  *
++#*                                                                           *
++#* Copyright(C) 2021-2026                                                    *
++#* Visual Computing Lab                                                      *
++#* ISTI - Italian National Research Council                                  *
++#*                                                                           *
++#* All rights reserved.                                                      *
++#*                                                                           *
++#* This program is free software; you can redistribute it and/or modify      *
++#* it under the terms of the Mozilla Public License Version 2.0 as published *
++#* by the Mozilla Foundation; either version 2 of the License, or            *
++#* (at your option) any later version.                                       *
++#*                                                                           *
++#* This program is distributed in the hope that it will be useful,           *
++#* but WITHOUT ANY WARRANTY; without even the implied warranty of            *
++#* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
++#* Mozilla Public License Version 2.0                                        *
++#* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
++#****************************************************************************/
++
++cmake_minimum_required(VERSION 3.24)
++
++set(EXAMPLE_NAME 05-two-window-viewers-glfw)
++project(vclib-render-example-${EXAMPLE_NAME})
++
++### Build settings
++set(CMAKE_CXX_STANDARD 20)
++
++set(SOURCES
++    main.cpp)
++
++# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
++vclib_add_example(${EXAMPLE_NAME}
++    VCLIB_MODULE render
++    SOURCES ${SOURCES})
+diff --git a/examples/render/05-two-window-viewers/glfw/main.cpp b/examples/render/05-two-window-viewers/glfw/main.cpp
+new file mode 100644
+index 000000000..160b21132
+--- /dev/null
++++ b/examples/render/05-two-window-viewers/glfw/main.cpp
+@@ -0,0 +1,65 @@
++/*****************************************************************************
++ * VCLib                                                                     *
++ * Visual Computing Library                                                  *
++ *                                                                           *
++ * Copyright(C) 2021-2026                                                    *
++ * Visual Computing Lab                                                      *
++ * ISTI - Italian National Research Council                                  *
++ *                                                                           *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This program is free software; you can redistribute it and/or modify      *
++ * it under the terms of the Mozilla Public License Version 2.0 as published *
++ * by the Mozilla Foundation; either version 2 of the License, or            *
++ * (at your option) any later version.                                       *
++ *                                                                           *
++ * This program is distributed in the hope that it will be useful,           *
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
++ * Mozilla Public License Version 2.0                                        *
++ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
++ ****************************************************************************/
++
++#include "get_drawable_mesh.h"
++
++#include <vclib/glfw/viewer_window.h>
++
++int main(int argc, char** argv)
++{
++    vcl::glfw::ViewerWindow viewer1("Viewer GLFW 1");
++    vcl::glfw::ViewerWindow viewer2("Viewer GLFW 2");
++
++    // load and set up a drawable mesh
++    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh<vcl::TriMesh>();
++
++    using enum vcl::MeshRenderInfo::Buffers;
++    drawable.color() = vcl::Color::Yellow;
++    drawable.updateBuffers({MESH_ADDITIONAL_DATA});
++
++    auto mrs = drawable.renderSettings();
++    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_MESH);
++    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_FLAT);
++    drawable.setRenderSettings(mrs);
++
++    // add the drawable mesh to the scene
++    // the viewer will own **a copy** of the drawable mesh
++    viewer1.pushDrawableObject(drawable);
++
++    viewer1.fitScene();
++
++    viewer1.show();
++
++    mrs.setSurface(vcl::MeshRenderInfo::Surface::SHADING_SMOOTH);
++    mrs.setSurface(vcl::MeshRenderInfo::Surface::COLOR_VERTEX);
++    drawable.setRenderSettings(mrs);
++
++    // add the drawable mesh to the scene
++    // the viewer will own **a copy** of the drawable mesh
++    viewer2.pushDrawableObject(drawable);
++
++    viewer2.fitScene();
++
++    viewer2.show();
++
++    return vcl::glfw::GLFWApplication::exec();
++}
+diff --git a/vclib/render/include/vclib/bgfx_imgui/imgui_impl_bgfx.h b/vclib/render/include/vclib/bgfx_imgui/imgui_impl_bgfx.h
+index 30c2711d5..6a5b05674 100644
+--- a/vclib/render/include/vclib/bgfx_imgui/imgui_impl_bgfx.h
++++ b/vclib/render/include/vclib/bgfx_imgui/imgui_impl_bgfx.h
+@@ -7,6 +7,7 @@
+ #define VCL_BGFX_IMGUI_IMGUI_IMPL_BGFX_H
+ 
+ #include <bgfx/bgfx.h>
++#include <bx/bx.h>
+ #include <imgui.h>
+ #include <iconfontheaders/icons_kenney.h>
+ #include <iconfontheaders/icons_font_awesome.h>
+@@ -50,14 +51,26 @@ namespace ImGui
+ #define IMGUI_FLAGS_NONE        UINT8_C(0x00)
+ #define IMGUI_FLAGS_ALPHA_BLEND UINT8_C(0x01)
+ 
++	struct TextureBgfx
++	{
++		bgfx::TextureHandle handle;
++		uint8_t  flags;
++		uint8_t  mip;
++		uint32_t unused;
++	};
++
+ 	///
+ 	inline ImTextureID toId(bgfx::TextureHandle _handle, uint8_t _flags, uint8_t _mip)
+ 	{
+-		union { struct { bgfx::TextureHandle handle; uint8_t flags; uint8_t mip; } s; ImTextureID id; } tex;
+-		tex.s.handle = _handle;
+-		tex.s.flags  = _flags;
+-		tex.s.mip    = _mip;
+-		return tex.id;
++		TextureBgfx tex
++		{
++			.handle = _handle,
++			.flags  = _flags,
++			.mip    = _mip,
++			.unused = 0,
++		};
++
++		return bx::bitCast<ImTextureID>(tex);
+ 	}
+ 
+ 	// Helper function for passing bgfx::TextureHandle to ImGui::Image.
+diff --git a/vclib/render/include/vclib/glfw/application.h b/vclib/render/include/vclib/glfw/application.h
+new file mode 100644
+index 000000000..b068b059b
+--- /dev/null
++++ b/vclib/render/include/vclib/glfw/application.h
+@@ -0,0 +1,86 @@
++/*****************************************************************************
++ * VCLib                                                                     *
++ * Visual Computing Library                                                  *
++ *                                                                           *
++ * Copyright(C) 2021-2026                                                    *
++ * Visual Computing Lab                                                      *
++ * ISTI - Italian National Research Council                                  *
++ *                                                                           *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This program is free software; you can redistribute it and/or modify      *
++ * it under the terms of the Mozilla Public License Version 2.0 as published *
++ * by the Mozilla Foundation; either version 2 of the License, or            *
++ * (at your option) any later version.                                       *
++ *                                                                           *
++ * This program is distributed in the hope that it will be useful,           *
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
++ * Mozilla Public License Version 2.0                                        *
++ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
++ ****************************************************************************/
++
++#ifndef VCL_GLFW_APPLICATION_H
++#define VCL_GLFW_APPLICATION_H
++
++#include <set>
++#include <memory>
++#include <GLFW/glfw3.h>
++
++namespace vcl::glfw {
++
++class WindowManagerBase; // Forward declaration
++
++class GLFWApplication {
++    // Centralized static GLFW callbacks
++    static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
++    static void contentScaleCallback(GLFWwindow* window, float xscale, float yscale);
++    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
++    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
++    static void cursorPosCallback(GLFWwindow* window, double xpos, double ypos);
++    static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
++    GLFWApplication();
++    ~GLFWApplication();
++
++public:
++    // Singleton instance accessor (optional, can be regular class)
++    static GLFWApplication& instance();
++
++    // Register/unregister windows (called by WindowManager)
++    void registerWindow(WindowManagerBase* win);
++    void unregisterWindow(WindowManagerBase* win);
++
++    // Main event/render loop
++    int executeMainLoop();
++
++    // Static version of executeMainLoop()
++    static int exec();
++
++    // Number of open windows
++    size_t windowCount() const;
++
++private:
++    std::set<WindowManagerBase*> mWindows;
++    bool mInitialized = false;
++};
++
++// Base class for all window managers to allow registration
++class WindowManagerBase {
++public:
++    virtual ~WindowManagerBase() = default;
++    virtual void paint() = 0;
++    virtual bool shouldClose() const = 0;
++    virtual GLFWwindow* glfwWindow() const = 0;
++
++    // GLFW callback handling methods (to be called by GLFWApplication)
++    virtual void onGlfwFramebufferSize(int width, int height) = 0;
++    virtual void onGlfwContentScale(float xscale, float yscale) = 0;
++    virtual void onGlfwKey(int key, int scancode, int action, int mods) = 0;
++    virtual void onGlfwMouseButton(int button, int action, int mods) = 0;
++    virtual void onGlfwCursorPos(double xpos, double ypos) = 0;
++    virtual void onGlfwScroll(double xoffset, double yoffset) = 0;
++};
++
++} // namespace vcl::glfw
++
++#endif // VCL_GLFW_APPLICATION_H
+diff --git a/vclib/render/include/vclib/glfw/window_manager.h b/vclib/render/include/vclib/glfw/window_manager.h
+index 293720e2c..4883121b0 100644
+--- a/vclib/render/include/vclib/glfw/window_manager.h
++++ b/vclib/render/include/vclib/glfw/window_manager.h
+@@ -41,24 +41,15 @@
+ #define GLFW_EXPOSE_NATIVE_COCOA
+ #endif
+ 
+-#include <GLFW/glfw3.h>
++#include <vclib/glfw/application.h>
+ #include <GLFW/glfw3native.h>
+ 
+ #include <iostream>
+ 
+ namespace vcl::glfw {
+ 
+-namespace detail {
+-
+-inline void glfwErrorCallback(int error, const char* description)
+-{
+-    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
+-}
+-
+-} // namespace detail
+-
+ template<typename DerivedRenderApp>
+-class WindowManager
++class WindowManager : public WindowManagerBase
+ {
+     std::string mTitle;
+ 
+@@ -108,11 +99,8 @@ public:
+             RenderAppConcept<DerivedRenderApp>,
+             "The DerivedRenderApp must satisfy the RenderAppConcept.");
+ 
+-        glfwSetErrorCallback(detail::glfwErrorCallback);
+-        if (!glfwInit()) {
+-            std::cerr << "Failed to initialize GLFW" << std::endl;
+-            exit(EXIT_FAILURE);
+-        }
++        // force GLFWApplication allocation
++        auto & glfwApp = GLFWApplication::instance();
+ 
+ #if defined(VCLIB_RENDER_BACKEND_BGFX)
+         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+@@ -132,7 +120,6 @@ public:
+             width, height, windowTitle.c_str(), nullptr, nullptr);
+         if (!mWindow) {
+             std::cerr << "Failed to create GLFW window" << std::endl;
+-            glfwTerminate();
+             exit(EXIT_FAILURE);
+         }
+ 
+@@ -142,12 +129,18 @@ public:
+ 
+         // get content scale (e.g. for macOS retina displays)
+         glfwGetWindowContentScale(mWindow, &mScaleX, &mScaleY);
++        
++        // register with GLFWApplication
++        glfwApp.registerWindow(this);
+ 
+-        glfwSetWindowUserPointer(mWindow, this);
+-        setCallbacks();
++        DerivedRenderApp::WM::init(derived());
+     }
+ 
+-    virtual ~WindowManager() { cleanup(); }
++    virtual ~WindowManager() {
++        // Unregister from GLFWApplication
++        GLFWApplication::instance().unregisterWindow(this);
++        cleanup();
++    }
+ 
+     const std::string& windowTitle() const { return mTitle; }
+ 
+@@ -178,16 +171,12 @@ public:
+ 
+     void show()
+     {
+-        DerivedRenderApp::WM::init(derived());
+-        while (!glfwWindowShouldClose(mWindow)) {
+-            glfwPollEvents();
+-            DerivedRenderApp::WM::paint(derived());
+-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+-            glfwSwapBuffers(mWindow);
+-#endif
+-        }
+-        // Window was closed by user, clean up
+-        cleanup();
++        glfwShowWindow(mWindow);
++    }
++
++    void hide()
++    {
++        glfwHideWindow(mWindow);
+     }
+ 
+     /**
+@@ -202,8 +191,8 @@ public:
+ 
+     // required by the WindowManagerConcept
+     // because when the Canvas draws, then it requires the WindowManger to
+-    // update. Here is empty because the show() method does and manages
+-    // internally the loop.
++    // update. Here is empty because the GLFWApplication manages the drawing
++    // loop.
+     void update() {}
+ 
+     Point2f dpiScale() const { return Point2f(mScaleX, mScaleY); }
+@@ -240,6 +229,50 @@ public:
+         return ndt;
+     }
+ 
++    // WindowManagerBase interface implementation
++    void paint() override {
++#ifdef VCLIB_RENDER_BACKEND_OPENGL2
++        glfwMakeContextCurrent(mWindow);
++#endif
++        DerivedRenderApp::WM::paint(derived());
++#ifdef VCLIB_RENDER_BACKEND_OPENGL2
++        glfwSwapBuffers(mWindow);
++#endif
++    }
++
++    bool shouldClose() const override {
++        return glfwWindowShouldClose(mWindow);
++    }
++
++    GLFWwindow* glfwWindow() const override {
++        return mWindow;
++    }
++
++    // WindowManagerBase GLFW callback interface implementation
++    void onGlfwFramebufferSize(int width, int height) override {
++        glfwFramebufferSizeCallback(mWindow, width, height);
++    }
++
++    void onGlfwContentScale(float xscale, float yscale) override {
++        glfwContentScaleCallback(mWindow, xscale, yscale);
++    }
++
++    void onGlfwKey(int key, int scancode, int action, int mods) override {
++        glfwKeyCallback(mWindow, key, scancode, action, mods);
++    }
++
++    void onGlfwMouseButton(int button, int action, int mods) override {
++        glfwMouseButtonCallback(mWindow, button, action, mods);
++    }
++
++    void onGlfwCursorPos(double xpos, double ypos) override {
++        glfwCursorPosCallback(mWindow, xpos, ypos);
++    }
++
++    void onGlfwScroll(double xoffset, double yoffset) override {
++        glfwScrollCallback(mWindow, xoffset, yoffset);
++    }
++
+ protected:
+     void* windowPtr() { return reinterpret_cast<void*>(mWindow); }
+ 
+@@ -302,6 +335,7 @@ protected:
+ 
+         Point2d pos;
+         Point2f scale;
++        assert(mWindow == win);
+         glfwGetCursorPos(win, &pos.x(), &pos.y());
+ #ifdef __APPLE__
+         // only macOS has coherent coordinates with content scale
+@@ -368,62 +402,6 @@ private:
+         }
+     }
+ 
+-    void setCallbacks()
+-    {
+-        // framebuffer size callback
+-        glfwSetFramebufferSizeCallback(
+-            mWindow, [](GLFWwindow* window, int width, int height) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwFramebufferSizeCallback(window, width, height);
+-            });
+-
+-        // content scale callback
+-        glfwSetWindowContentScaleCallback(
+-            mWindow, [](GLFWwindow* window, float xscale, float yscale) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwContentScaleCallback(window, xscale, yscale);
+-            });
+-
+-        // key callback
+-        glfwSetKeyCallback(
+-            mWindow,
+-            [](GLFWwindow* window,
+-               int         key,
+-               int         scancode,
+-               int         action,
+-               int         mods) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwKeyCallback(window, key, scancode, action, mods);
+-            });
+-
+-        // mouse position callback
+-        glfwSetCursorPosCallback(
+-            mWindow, [](GLFWwindow* window, double xpos, double ypos) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwCursorPosCallback(window, xpos, ypos);
+-            });
+-
+-        // mouse button callback
+-        glfwSetMouseButtonCallback(
+-            mWindow, [](GLFWwindow* window, int button, int action, int mods) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwMouseButtonCallback(window, button, action, mods);
+-            });
+-
+-        // scroll callback
+-        glfwSetScrollCallback(
+-            mWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
+-                auto* self = static_cast<WindowManager*>(
+-                    glfwGetWindowUserPointer(window));
+-                self->glfwScrollCallback(window, xoffset, yoffset);
+-            });
+-    }
+-
+     auto* derived() { return static_cast<DerivedRenderApp*>(this); }
+ 
+     const auto* derived() const
+diff --git a/vclib/render/include/vclib/render/render_app.h b/vclib/render/include/vclib/render/render_app.h
+index 7a3b93b56..b2c202543 100644
+--- a/vclib/render/include/vclib/render/render_app.h
++++ b/vclib/render/include/vclib/render/render_app.h
+@@ -130,6 +130,9 @@ public:
+                 width * WindowManagerType::dpiScale().x(),
+                 height * WindowManagerType::dpiScale().y())...
+     {
++        CanvasType::onInit();
++        (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
++         ...);
+     }
+ 
+ private:
+@@ -179,9 +182,9 @@ private:
+ 
+     void wmInit()
+     {
+-        CanvasType::onInit();
+-        (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
+-         ...);
++        // CanvasType::onInit();
++        // (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
++        //  ...);
+     }
+ 
+     void wmResize(uint width, uint height)
+diff --git a/vclib/render/src/vclib/bgfx_imgui/imgui_impl_bgfx.cpp b/vclib/render/src/vclib/bgfx_imgui/imgui_impl_bgfx.cpp
+index 32f54461d..f9a21fc63 100644
+--- a/vclib/render/src/vclib/bgfx_imgui/imgui_impl_bgfx.cpp
++++ b/vclib/render/src/vclib/bgfx_imgui/imgui_impl_bgfx.cpp
+@@ -113,6 +113,70 @@ struct OcornutImguiContext
+ {
+ 	void render(ImDrawData* _drawData)
+ 	{
++		if (NULL != _drawData->Textures)
++		{
++			for (ImTextureData* texData : *_drawData->Textures)
++			{
++				switch (texData->Status)
++				{
++				case ImTextureStatus_WantCreate:
++					{
++						ImGui::TextureBgfx tex =
++						{
++							.handle = bgfx::createTexture2D(
++								  (uint16_t)texData->Width
++								, (uint16_t)texData->Height
++								, false
++								, 1
++								, bgfx::TextureFormat::BGRA8
++								, 0
++								),
++							.flags  = IMGUI_FLAGS_ALPHA_BLEND,
++							.mip    = 0,
++							.unused = 0,
++						};
++
++						bgfx::setName(tex.handle, "ImGui Font Atlas");
++						bgfx::updateTexture2D(tex.handle, 0, 0, 0, 0
++							, bx::narrowCast<uint16_t>(texData->Width)
++							, bx::narrowCast<uint16_t>(texData->Height)
++							, bgfx::copy(texData->GetPixels(), texData->GetSizeInBytes() )
++							);
++
++						texData->SetTexID(bx::bitCast<ImTextureID>(tex) );
++						texData->SetStatus(ImTextureStatus_OK);
++					}
++					break;
++
++				case ImTextureStatus_WantDestroy:
++					{
++						ImGui::TextureBgfx tex = bx::bitCast<ImGui::TextureBgfx>(texData->GetTexID() );
++						bgfx::destroy(tex.handle);
++						texData->SetTexID(ImTextureID_Invalid);
++						texData->SetStatus(ImTextureStatus_Destroyed);
++					}
++					break;
++
++				case ImTextureStatus_WantUpdates:
++					{
++						ImGui::TextureBgfx tex = bx::bitCast<ImGui::TextureBgfx>(texData->GetTexID() );
++
++						for (ImTextureRect& rect : texData->Updates)
++						{
++							const uint32_t bpp = texData->BytesPerPixel;
++							const bgfx::Memory* pix = bgfx::alloc(rect.h * rect.w * bpp);
++							bx::gather(pix->data, texData->GetPixelsAt(rect.x, rect.y), texData->GetPitch(), rect.w * bpp, rect.h);
++							bgfx::updateTexture2D(tex.handle, 0, 0, rect.x, rect.y, rect.w, rect.h, pix);
++						}
++					}
++					break;
++
++				default:
++					break;
++				}
++			}
++		}
++
+ 		// Avoid rendering when minimized, scale coordinates for retina displays (screen coordinates != framebuffer coordinates)
+ 		int32_t dispWidth  = _drawData->DisplaySize.x * _drawData->FramebufferScale.x;
+ 		int32_t dispHeight = _drawData->DisplaySize.y * _drawData->FramebufferScale.y;
+@@ -188,22 +252,24 @@ struct OcornutImguiContext
+ 						| BGFX_STATE_MSAA
+ 						;
+ 
+-					bgfx::TextureHandle th = m_texture;
++					bgfx::TextureHandle th = BGFX_INVALID_HANDLE;
+ 					bgfx::ProgramHandle program = m_program;
+ 
+-					if (ImU64(0) != cmd->TexRef._TexID)
++					const ImTextureID texId = cmd->GetTexID();
++
++					if (ImTextureID_Invalid != texId)
+ 					{
+-						union { ImTextureID ptr; struct { bgfx::TextureHandle handle; uint8_t flags; uint8_t mip; } s; } texture = { cmd->TexRef._TexID };
++						ImGui::TextureBgfx tex = bx::bitCast<ImGui::TextureBgfx>(texId);
+ 
+-						state |= 0 != (IMGUI_FLAGS_ALPHA_BLEND & texture.s.flags)
++						state |= 0 != (IMGUI_FLAGS_ALPHA_BLEND & tex.flags)
+ 							? BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
+ 							: BGFX_STATE_NONE
+ 							;
+-						th = texture.s.handle;
++						th = tex.handle;
+ 
+-						if (0 != texture.s.mip)
++						if (0 != tex.mip)
+ 						{
+-							const float lodEnabled[4] = { float(texture.s.mip), 1.0f, 0.0f, 0.0f };
++							const float lodEnabled[4] = { float(tex.mip), 1.0f, 0.0f, 0.0f };
+ 							bgfx::setUniform(u_imageLodEnabled, lodEnabled);
+ 							program = m_imageProgram;
+ 						}
+@@ -285,7 +351,10 @@ struct OcornutImguiContext
+ 
+ 		io.BackendRendererName = "imgui_impl_bgfx";
+ 		
+-		io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset;
++		io.BackendFlags |= 0
++			| ImGuiBackendFlags_RendererHasVtxOffset
++			| ImGuiBackendFlags_RendererHasTextures
++			;
+ 
+ #if USE_ENTRY
+ 		for (int32_t ii = 0; ii < (int32_t)entry::Key::Count; ++ii)
+@@ -425,16 +494,12 @@ struct OcornutImguiContext
+ 
+ 		s_tex = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
+ 
+-		uint8_t* data;
+-		int32_t width;
+-		int32_t height;
+ // 		{
+ // 			ImFontConfig config;
+ // 			config.FontDataOwnedByAtlas = false;
+ // 			config.MergeMode = false;
+-// //			config.MergeGlyphCenterV = true;
+ 
+-// 			const ImWchar* ranges = io.Fonts->GetGlyphRangesCyrillic();
++// 			const ImWchar* ranges = io.Fonts->GetGlyphRangesDefault();
+ // 			m_font[ImGui::Font::Regular] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoRegularTtf,     sizeof(s_robotoRegularTtf),     _fontSize,      &config, ranges);
+ // 			m_font[ImGui::Font::Mono   ] = io.Fonts->AddFontFromMemoryTTF( (void*)s_robotoMonoRegularTtf, sizeof(s_robotoMonoRegularTtf), _fontSize-3.0f, &config, ranges);
+ 
+@@ -454,18 +519,6 @@ struct OcornutImguiContext
+ // 			}
+ // 		}
+ 
+-		io.Fonts->GetTexDataAsRGBA32(&data, &width, &height);
+-
+-		m_texture = bgfx::createTexture2D(
+-			  (uint16_t)width
+-			, (uint16_t)height
+-			, false
+-			, 1
+-			, bgfx::TextureFormat::BGRA8
+-			, 0
+-			, bgfx::copy(data, width*height*4)
+-			);
+-
+ 		// NO DOCKING
+ 		// ImGui::InitDockContext();
+ 	}
+@@ -478,7 +531,6 @@ struct OcornutImguiContext
+ 		// ImGui::DestroyContext(m_imgui);
+ 
+ 		bgfx::destroy(s_tex);
+-		bgfx::destroy(m_texture);
+ 
+ 		bgfx::destroy(u_imageLodEnabled);
+ 		bgfx::destroy(m_imageProgram);
+@@ -574,7 +626,6 @@ struct OcornutImguiContext
+ 	bgfx::VertexLayout  m_layout;
+ 	bgfx::ProgramHandle m_program;
+ 	bgfx::ProgramHandle m_imageProgram;
+-	bgfx::TextureHandle m_texture;
+ 	bgfx::UniformHandle s_tex;
+ 	bgfx::UniformHandle u_imageLodEnabled;
+ 	// ImFont* m_font[ImGui::Font::Count];
+@@ -651,7 +702,7 @@ void ImGui_ImplBgfx_RenderDrawData(ImDrawData* draw_data)
+ // {
+ 	// void PushFont(Font::Enum _font)
+ 	// {
+-	// 	PushFont(s_ctx.m_font[_font]);
++	// 	PushFont(s_ctx.m_font[_font], 0.0f);
+ 	// }
+ 
+ 	// void PushEnabled(bool _enabled)
+diff --git a/vclib/render/src/vclib/glfw/application.cpp b/vclib/render/src/vclib/glfw/application.cpp
+new file mode 100644
+index 000000000..d9aecbcab
+--- /dev/null
++++ b/vclib/render/src/vclib/glfw/application.cpp
+@@ -0,0 +1,130 @@
++/*****************************************************************************
++ * VCLib                                                                     *
++ * Visual Computing Library                                                  *
++ *                                                                           *
++ * Copyright(C) 2021-2026                                                    *
++ * Visual Computing Lab                                                      *
++ * ISTI - Italian National Research Council                                  *
++ *                                                                           *
++ * All rights reserved.                                                      *
++ *                                                                           *
++ * This program is free software; you can redistribute it and/or modify      *
++ * it under the terms of the Mozilla Public License Version 2.0 as published *
++ * by the Mozilla Foundation; either version 2 of the License, or            *
++ * (at your option) any later version.                                       *
++ *                                                                           *
++ * This program is distributed in the hope that it will be useful,           *
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
++ * Mozilla Public License Version 2.0                                        *
++ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
++ ****************************************************************************/
++
++#include <vclib/glfw/application.h>
++#include <algorithm>
++#include <iostream>
++
++namespace vcl::glfw {
++
++namespace detail {
++
++inline void glfwErrorCallback(int error, const char* description)
++{
++    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
++}
++
++} // namespace detail
++
++// Centralized static GLFW callbacks
++void GLFWApplication::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwFramebufferSize(width, height);
++}
++
++void GLFWApplication::contentScaleCallback(GLFWwindow* window, float xscale, float yscale) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwContentScale(xscale, yscale);
++}
++
++void GLFWApplication::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwKey(key, scancode, action, mods);
++}
++
++void GLFWApplication::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwMouseButton(button, action, mods);
++}
++
++void GLFWApplication::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwCursorPos(xpos, ypos);
++}
++
++void GLFWApplication::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
++    auto* wm = static_cast<WindowManagerBase*>(glfwGetWindowUserPointer(window));
++    if (wm) wm->onGlfwScroll(xoffset, yoffset);
++}
++
++GLFWApplication& GLFWApplication::instance() {
++    static GLFWApplication app;
++    return app;
++}
++
++GLFWApplication::GLFWApplication() {
++    glfwSetErrorCallback(detail::glfwErrorCallback);
++    if (!glfwInit()) {
++        throw std::runtime_error("Failed to initialize GLFW");
++    }
++    mInitialized = true;
++}
++
++GLFWApplication::~GLFWApplication() {
++    if (mInitialized) {
++        glfwTerminate();
++        mInitialized = false;
++    }
++}
++
++void GLFWApplication::registerWindow(WindowManagerBase* win) {
++    mWindows.insert(win);
++    
++    GLFWwindow* window = win->glfwWindow();
++    glfwSetWindowUserPointer(window, win);
++    
++    // Set all GLFW callbacks for this window
++    glfwSetFramebufferSizeCallback(window, &GLFWApplication::framebufferSizeCallback);
++    glfwSetWindowContentScaleCallback(window, &GLFWApplication::contentScaleCallback);
++    glfwSetKeyCallback(window, &GLFWApplication::keyCallback);
++    glfwSetCursorPosCallback(window, &GLFWApplication::cursorPosCallback);
++    glfwSetMouseButtonCallback(window, &GLFWApplication::mouseButtonCallback);
++    glfwSetScrollCallback(window, &GLFWApplication::scrollCallback);
++}
++
++void GLFWApplication::unregisterWindow(WindowManagerBase* win) {
++    mWindows.erase(win);
++}
++
++size_t GLFWApplication::windowCount() const {
++    return mWindows.size();
++}
++
++int GLFWApplication::exec() {
++    return instance().executeMainLoop();
++}
++
++int GLFWApplication::executeMainLoop() {
++    while (!mWindows.empty()) {
++        glfwPollEvents();
++        std::erase_if(mWindows, [](WindowManagerBase* win) {
++            return win->shouldClose();
++        });
++        std::for_each(mWindows.begin(), mWindows.end(),
++            [](WindowManagerBase* win) {
++                win->paint();
++        });
++    }
++    return 0;
++}
++
++} // namespace vcl::glfw
+diff --git a/vclib/render/src/vclib/qt_imgui/imgui_impl_qt.cpp b/vclib/render/src/vclib/qt_imgui/imgui_impl_qt.cpp
+index fba23493f..37b4c7613 100644
+--- a/vclib/render/src/vclib/qt_imgui/imgui_impl_qt.cpp
++++ b/vclib/render/src/vclib/qt_imgui/imgui_impl_qt.cpp
+@@ -188,10 +188,11 @@ static ImGuiKey ImGui_ImplQt_KeyToImGuiKey(int keycode)
+ static void ImGui_ImplQt_UpdateKeyboardModifiers(Qt::KeyboardModifiers mods)
+ {
+     ImGuiIO& io = ImGui::GetIO();
+-    io.AddKeyEvent(ImGuiKey_ModCtrl, mods.testFlag(Qt::ControlModifier));
+-    io.AddKeyEvent(ImGuiKey_ModShift, mods.testFlag(Qt::ShiftModifier));
+-    io.AddKeyEvent(ImGuiKey_ModAlt, mods.testFlag(Qt::AltModifier));
+-    io.AddKeyEvent(ImGuiKey_ModSuper, mods.testFlag(Qt::MetaModifier));
++    io.AddKeyEvent(ImGuiKey_LeftCtrl, mods.testFlag(Qt::ControlModifier));
++    io.AddKeyEvent(ImGuiKey_LeftShift, mods.testFlag(Qt::ShiftModifier));
++    io.AddKeyEvent(ImGuiKey_LeftAlt, mods.testFlag(Qt::AltModifier));
++    io.AddKeyEvent(ImGuiKey_LeftSuper, mods.testFlag(Qt::MetaModifier));
++    // TODO handle right side modifiers
+ }
+ 
+ static void ImGui_ImplQt_UpdateFocusEvent(bool focused)

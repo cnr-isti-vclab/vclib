@@ -113,6 +113,9 @@ public:
                 width * WindowManagerType::dpiScale().x(),
                 height * WindowManagerType::dpiScale().y())...
     {
+        CanvasType::onInit();
+        (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
+         ...);
     }
 
 private:
@@ -162,9 +165,9 @@ private:
 
     void wmInit()
     {
-        CanvasType::onInit();
-        (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
-         ...);
+        // CanvasType::onInit();
+        // (static_cast<Drawers<RenderApp>*>(this)->onInit(CanvasType::viewId()),
+        //  ...);
     }
 
     void wmResize(uint width, uint height)

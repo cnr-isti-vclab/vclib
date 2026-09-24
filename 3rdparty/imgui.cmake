@@ -8,7 +8,7 @@
 if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
     message(STATUS "- ImGui - using downloaded source")
 
-    set(IMGUI_VERSION 1.92.0)
+    set(IMGUI_VERSION 1.92.5)
 
     set(IMGUI_EXCLUDE_FROM_ALL_OPTION "")
     if(NOT VCLIB_ALLOW_INSTALL_IMGUI)
