@@ -85,6 +85,18 @@ void DrawableObjectVectorTree::setDeleteFunction(const DeleteFunction& f)
     mDeleteFunction = f;
 }
 
+void DrawableObjectVectorTree::addCustomContextMenuAction(
+    const std::string&          name,
+    const CustomActionFunction& f)
+{
+    mCustomActions.push_back({name, f});
+}
+
+void DrawableObjectVectorTree::clearCustomContextMenuActions()
+{
+    mCustomActions.clear();
+}
+
 uint DrawableObjectVectorTree::selectedDrawableObject() const
 {
     auto sItems = mUI->treeWidget->selectedItems();
@@ -366,6 +378,20 @@ void DrawableObjectVectorTree::onCustomContextMenuRequested(const QPoint& pos)
         }
     });
     menu.addAction(deleteAction);
+
+    if (!mCustomActions.empty()) {
+        menu.addSeparator();
+        for (const auto& [name, f] : mCustomActions) {
+            QAction* customAction =
+                new QAction(QString::fromStdString(name), &menu);
+            connect(customAction, &QAction::triggered, [f, obj]() {
+                if (f) {
+                    f(obj);
+                }
+            });
+            menu.addAction(customAction);
+        }
+    }
 
     menu.exec(mUI->treeWidget->viewport()->mapToGlobal(pos));
 }

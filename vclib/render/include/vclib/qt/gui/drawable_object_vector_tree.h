@@ -28,6 +28,8 @@ public:
     using RenameFunction = std::function<
         void(std::shared_ptr<DrawableObject>, const std::string&)>;
     using DeleteFunction = std::function<void(std::shared_ptr<DrawableObject>)>;
+    using CustomActionFunction =
+        std::function<void(std::shared_ptr<DrawableObject>)>;
 
 private:
     Q_OBJECT
@@ -46,6 +48,9 @@ private:
     // delete function
     DeleteFunction mDeleteFunction = nullptr;
 
+    // custom actions
+    std::vector<std::pair<std::string, CustomActionFunction>> mCustomActions;
+
     bool             mCheckboxPressed = false;
     QTreeWidgetItem* mPressedItem     = nullptr;
 
@@ -61,6 +66,12 @@ public:
     void setRenameFunction(const RenameFunction& f);
 
     void setDeleteFunction(const DeleteFunction& f);
+
+    void addCustomContextMenuAction(
+        const std::string&          name,
+        const CustomActionFunction& f);
+
+    void clearCustomContextMenuActions();
 
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
