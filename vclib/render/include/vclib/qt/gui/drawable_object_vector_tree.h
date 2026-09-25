@@ -27,6 +27,7 @@ public:
     using IconFunction   = DrawableObjectItem::IconFunction;
     using RenameFunction = std::function<
         void(std::shared_ptr<DrawableObject>, const std::string&)>;
+    using DeleteFunction = std::function<void(std::shared_ptr<DrawableObject>)>;
 
 private:
     Q_OBJECT
@@ -42,6 +43,9 @@ private:
     // rename function
     RenameFunction mRenameFunction = nullptr;
 
+    // delete function
+    DeleteFunction mDeleteFunction = nullptr;
+
     bool             mCheckboxPressed = false;
     QTreeWidgetItem* mPressedItem     = nullptr;
 
@@ -55,6 +59,8 @@ public:
     void setIconFunction(const IconFunction& f);
 
     void setRenameFunction(const RenameFunction& f);
+
+    void setDeleteFunction(const DeleteFunction& f);
 
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
@@ -80,6 +86,7 @@ private:
 private slots:
     void itemSelectionChanged();
     void onItemChanged(QTreeWidgetItem* item, int column);
+    void onCustomContextMenuRequested(const QPoint& pos);
 };
 
 } // namespace vcl::qt

@@ -11,7 +11,9 @@
 
 #include <vclib/qt/gui/drawable_object_item.h>
 
+#include <QAction>
 #include <QApplication>
+#include <QMenu>
 #include <QMouseEvent>
 
 #include <set>
@@ -45,6 +47,13 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         this,
         &DrawableObjectVectorTree::onItemChanged);
 
+    mUI->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(
+        mUI->treeWidget,
+        &QTreeWidget::customContextMenuRequested,
+        this,
+        &DrawableObjectVectorTree::onCustomContextMenuRequested);
+
     mUI->treeWidget->viewport()->installEventFilter(this);
 }
 
@@ -69,6 +78,11 @@ void DrawableObjectVectorTree::setIconFunction(const IconFunction& f)
 void DrawableObjectVectorTree::setRenameFunction(const RenameFunction& f)
 {
     mRenameFunction = f;
+}
+
+void DrawableObjectVectorTree::setDeleteFunction(const DeleteFunction& f)
+{
+    mDeleteFunction = f;
 }
 
 uint DrawableObjectVectorTree::selectedDrawableObject() const
@@ -203,9 +217,8 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
         }
     }
 
-    mUI->treeWidget->clear();
-
     mUI->treeWidget->blockSignals(true);
+    mUI->treeWidget->clear();
     uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
@@ -233,6 +246,9 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
     else if (colWidth > maxWidth) {
         mUI->treeWidget->setColumnWidth(0, maxWidth);
     }
+
+    // update the selection logic now that the tree is fully rebuilt
+    itemSelectionChanged();
 }
 
 void DrawableObjectVectorTree::itemSelectionChanged()
@@ -309,6 +325,49 @@ void DrawableObjectVectorTree::onItemChanged(QTreeWidgetItem* item, int column)
             }
         }
     }
+}
+
+void DrawableObjectVectorTree::onCustomContextMenuRequested(const QPoint& pos)
+{
+    QTreeWidgetItem* item = mUI->treeWidget->itemAt(pos);
+    if (!item) {
+        return;
+    }
+
+    auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+    if (!drawableItem) {
+        return;
+    }
+
+    auto obj = drawableItem->drawableObject();
+    if (!obj) {
+        return;
+    }
+
+    QMenu menu(this);
+
+    QAction* renameAction = new QAction("Rename", &menu);
+    connect(renameAction, &QAction::triggered, [this, item]() {
+        mUI->treeWidget->editItem(item, 0);
+    });
+    menu.addAction(renameAction);
+
+    QAction* deleteAction = new QAction("Delete", &menu);
+    connect(deleteAction, &QAction::triggered, [this, obj]() {
+        if (mDeleteFunction) {
+            mDeleteFunction(obj);
+        }
+        else if (mDrawList) {
+            auto it = std::find(mDrawList->begin(), mDrawList->end(), obj);
+            if (it != mDrawList->end()) {
+                mDrawList->erase(it - mDrawList->begin());
+                update();
+            }
+        }
+    });
+    menu.addAction(deleteAction);
+
+    menu.exec(mUI->treeWidget->viewport()->mapToGlobal(pos));
 }
 
 } // namespace vcl::qt
