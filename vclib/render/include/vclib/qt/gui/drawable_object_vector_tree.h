@@ -24,7 +24,9 @@ class DrawableObjectVectorTree;
 class DrawableObjectVectorTree : public QFrame
 {
 public:
-    using IconFunction = DrawableObjectItem::IconFunction;
+    using IconFunction   = DrawableObjectItem::IconFunction;
+    using RenameFunction = std::function<
+        void(std::shared_ptr<DrawableObject>, const std::string&)>;
 
 private:
     Q_OBJECT
@@ -37,6 +39,9 @@ private:
     // icon function
     IconFunction mIconFunction = nullptr;
 
+    // rename function
+    RenameFunction mRenameFunction = nullptr;
+
     bool             mCheckboxPressed = false;
     QTreeWidgetItem* mPressedItem     = nullptr;
 
@@ -48,6 +53,8 @@ public:
     ~DrawableObjectVectorTree();
 
     void setIconFunction(const IconFunction& f);
+
+    void setRenameFunction(const RenameFunction& f);
 
     void setDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
@@ -72,7 +79,7 @@ private:
 
 private slots:
     void itemSelectionChanged();
-    void itemCheckStateChanged(QTreeWidgetItem* item, int column);
+    void onItemChanged(QTreeWidgetItem* item, int column);
 };
 
 } // namespace vcl::qt

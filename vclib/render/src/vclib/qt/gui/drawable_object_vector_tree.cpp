@@ -38,12 +38,12 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         &DrawableObjectVectorTree::itemSelectionChanged);
 
     // each time that the user checks or unchecks an item, call the
-    // itemCheckStateChanged slot
+    // onItemChanged slot
     connect(
         mUI->treeWidget,
         &QTreeWidget::itemChanged,
         this,
-        &DrawableObjectVectorTree::itemCheckStateChanged);
+        &DrawableObjectVectorTree::onItemChanged);
 
     mUI->treeWidget->viewport()->installEventFilter(this);
 }
@@ -64,6 +64,11 @@ void DrawableObjectVectorTree::setIconFunction(const IconFunction& f)
 {
     mIconFunction = f;
     updateDrawableVectorTree();
+}
+
+void DrawableObjectVectorTree::setRenameFunction(const RenameFunction& f)
+{
+    mRenameFunction = f;
 }
 
 uint DrawableObjectVectorTree::selectedDrawableObject() const
@@ -249,47 +254,60 @@ void DrawableObjectVectorTree::itemSelectionChanged()
     }
 }
 
-void DrawableObjectVectorTree::itemCheckStateChanged(
-    QTreeWidgetItem* item,
-    int              column)
+void DrawableObjectVectorTree::onItemChanged(QTreeWidgetItem* item, int column)
 {
     if (item && column == 0) {
-        bool isCtrlPressed =
-            QApplication::keyboardModifiers() & Qt::ControlModifier;
+        auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+        if (!drawableItem) {
+            return;
+        }
 
-        if (isCtrlPressed) {
-            mUI->treeWidget->blockSignals(true);
+        auto obj = drawableItem->drawableObject();
+        if (!obj) {
+            return;
+        }
 
-            for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
-                auto childItem = mUI->treeWidget->topLevelItem(i);
-                auto drawableItem =
-                    dynamic_cast<DrawableObjectItem*>(childItem);
-                if (drawableItem) {
-                    bool visible = (childItem == item);
-                    childItem->setCheckState(
-                        0, visible ? Qt::Checked : Qt::Unchecked);
-                    auto obj = drawableItem->drawableObject();
-                    if (obj) {
-                        obj->setVisibility(visible);
+        // Check if the check state changed (visibility)
+        bool isVisible = (item->checkState(0) == Qt::Checked);
+        if (isVisible != obj->isVisible()) {
+            bool isCtrlPressed =
+                QApplication::keyboardModifiers() & Qt::ControlModifier;
+            if (isCtrlPressed) {
+                mUI->treeWidget->blockSignals(true);
+                for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+                    auto childItem = mUI->treeWidget->topLevelItem(i);
+                    auto childDrawableItem =
+                        dynamic_cast<DrawableObjectItem*>(childItem);
+                    if (childDrawableItem) {
+                        bool visible = (childItem == item);
+                        childItem->setCheckState(
+                            0, visible ? Qt::Checked : Qt::Unchecked);
+                        auto childObj = childDrawableItem->drawableObject();
+                        if (childObj) {
+                            childObj->setVisibility(visible);
+                        }
                     }
                 }
+
+                mUI->treeWidget->blockSignals(false);
+            }
+            else {
+                obj->setVisibility(isVisible);
             }
 
-            mUI->treeWidget->blockSignals(false);
+            // emit the visibility changed signal
+            emit drawableObjectVisibilityChanged();
         }
-        else {
-            // update the visibility of the drawable object
-            auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
-            if (drawableItem) {
-                auto obj = drawableItem->drawableObject();
-                if (obj) {
-                    obj->setVisibility(item->checkState(column) == Qt::Checked);
-                }
+        // Check if the text changed (renaming)
+        std::string newName = item->text(0).toStdString();
+        if (newName != obj->name()) {
+            if (mRenameFunction) {
+                mRenameFunction(obj, newName);
+            }
+            else {
+                obj->name() = newName;
             }
         }
-
-        // emit the visibility changed signal
-        emit drawableObjectVisibilityChanged();
     }
 }
 
