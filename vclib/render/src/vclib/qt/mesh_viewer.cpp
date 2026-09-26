@@ -503,7 +503,8 @@ void MeshViewer::setupSettingsButton()
     mSpacerAction = mUI->toolBar->addWidget(spacer);
 
     QPushButton* settingsBtn = new QPushButton(this);
-    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
+    settingsBtn->setIcon(
+        QIcon::fromTheme("preferences-system", QIcon(":/icons/settings.png")));
     settingsBtn->setIconSize(QSize(32, 32));
     settingsBtn->setFixedSize(QSize(40, 40));
     settingsBtn->setFocusPolicy(Qt::NoFocus);
