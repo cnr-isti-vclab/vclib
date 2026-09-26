@@ -54,6 +54,12 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
     InfoEditorSettings mSettings;
 
 public:
+    using MouseMap = InfoEditorSettings::MouseMap;
+
+    MouseMap& mouseBindings() { return mSettings.mouseBindings; }
+
+    const MouseMap& mouseBindings() const { return mSettings.mouseBindings; }
+
     InfoEditorBGFX()
     {
         mOutlineLines.setGeneralColor(vcl::Color::Red);
@@ -68,6 +74,16 @@ public:
     }
 
     std::string name() const override { return "Info"; }
+
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Info Editor",
+            {Key::I, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                this->setActive(!this->isActive());
+            });
+    }
 
     InfoEditorSettings& settings() override { return mSettings; }
 
@@ -175,8 +191,12 @@ public:
         const vcl::KeyModifiers& modifiers) override
     {
         bool block = Base::onMousePress(button, x, y, modifiers);
+        if (block)
+            return true;
 
-        if (!block && button == vcl::MouseButton::LEFT) {
+        auto action = mSettings.mouseBindings.action({button, modifiers});
+        if (action.has_value() &&
+            action.value() == InfoEditorAction::SELECT_ELEMENT) {
             block = true; // consume the event to prevent further propagation
 
             // The callback receives the exact Object ID, Element Type, and

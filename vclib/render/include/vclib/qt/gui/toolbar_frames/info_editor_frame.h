@@ -46,6 +46,10 @@ public:
                 }
             });
 
+        mInfoEditor->setOnStateUpdatedCallback([this, editorButton]() {
+            editorButton->setChecked(mInfoEditor->isActive());
+        });
+
         InfoEditorSettingsFrame* sf =
             Base::setSettingsFrame<InfoEditorSettingsFrame>(
                 mInfoEditor->settings());

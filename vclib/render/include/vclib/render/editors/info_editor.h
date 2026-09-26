@@ -45,9 +45,25 @@ class InfoEditor : public Editor<ViewerDrawer>
     InfoEditorSettings mSettings;
 
 public:
+    using MouseMap = InfoEditorSettings::MouseMap;
+
+    MouseMap& mouseBindings() { return mSettings.mouseBindings; }
+
+    const MouseMap& mouseBindings() const { return mSettings.mouseBindings; }
+
     InfoEditor() = default;
 
     std::string name() const override { return "Info"; }
+
+    void onViewerSet() override
+    {
+        Base::viewerRegisterGlobalAction(
+            "Toggle Info Editor",
+            {Key::I, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                this->setActive(!this->isActive());
+            });
+    }
 
     InfoEditorSettings& settings() override { return mSettings; }
 
