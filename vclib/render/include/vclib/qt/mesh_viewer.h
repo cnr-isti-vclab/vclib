@@ -343,6 +343,8 @@ private slots:
 
     void meshRenderSettingsUpdated();
 
+    void crossSectionSettingsUpdated();
+
     void applyToAllToggled(bool checked);
 
     void renderModeChanged();

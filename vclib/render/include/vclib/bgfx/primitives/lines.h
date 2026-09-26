@@ -10,6 +10,8 @@
 
 #include <vclib/bgfx/buffers.h>
 
+#include <vclib/render/settings/cross_section_settings.h>
+
 namespace vcl {
 
 /**
@@ -78,6 +80,7 @@ private:
     Color        mSelectionColor      = Color(0x88FF9732, Color::Format::ABGR);
     bool         mSelectionVisibility = false;
     float        mVectorLength        = 1.0f;
+    CrossSectionSettings mCrossSectionSettings;
 
     OwnedOrRefBuffer<VertexBuffer> mVertexPositions;
     OwnedOrRefBuffer<VertexBuffer> mVertexColors;
@@ -161,6 +164,25 @@ public:
      * @return The selection highlight color.
      */
     Color selectionColor() const { return mSelectionColor; }
+
+    /*
+     * @brief Returns the current cross section settings.
+     * @return The current cross section settings.
+     */
+    const CrossSectionSettings& crossSectionSettings() const
+    {
+        return mCrossSectionSettings;
+    }
+
+    /**
+     * @brief Sets the cross section settings.
+     * @param[in] settings: The cross section settings to apply.
+     */
+    void setCrossSectionSettings(const CrossSectionSettings& settings)
+    {
+        mCrossSectionSettings  = settings;
+        mIsUpdateProgramNeeded = true;
+    }
 
     /**
      * @brief Returns whether the line set has valid vertex positions.
