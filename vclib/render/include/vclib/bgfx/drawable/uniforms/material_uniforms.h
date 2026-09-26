@@ -37,9 +37,12 @@ class MaterialUniforms
     };
 
     // emissive color factor stored in RGB channels, alpha channel is unused so
-    // it can be used to store the alpha cutoff when needed
-    static inline std::array<float, 4> sEmissiveAlphaCutoffPack =
-        {0.0, 0.0, 0.0, 0.5};
+    // it can be used to store the emissive strength
+    static inline std::array<float, 4> sEmissivePack =
+        {0.0, 0.0, 0.0, 1.0};
+
+    // alpha cutoff and maybe other alpha related settings can be stored here
+    static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
 
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
@@ -47,8 +50,11 @@ class MaterialUniforms
     static inline StaticUniform sFactorsPackUniform {
         "u_FactorsPack",
         bgfx::UniformType::Vec4};
-    static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
-        "u_emissiveAlphaCutoffPack",
+    static inline StaticUniform sEmissivePackUniform {
+        "u_emissivePack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sAlphaPackUniform {
+        "u_alphaPack",
         bgfx::UniformType::Vec4};
 
 public:
@@ -58,10 +64,10 @@ public:
     {
         if (m.alphaMode() ==
             Material::AlphaMode::ALPHA_MASK) { // alpha mode is MASK
-            sEmissiveAlphaCutoffPack[3] = m.alphaCutoff();
+            sAlphaPack[0] = m.alphaCutoff();
         }
         else {
-            sEmissiveAlphaCutoffPack[3] = -1.0f;
+            sAlphaPack[0] = -1.0f;
         }
 
         sBaseColor[0] = m.baseColor().redF();
@@ -76,16 +82,19 @@ public:
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
 
-        sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
-        sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
-        sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+
+        sEmissivePack[0] = m.emissiveColor().redF();
+        sEmissivePack[1] = m.emissiveColor().greenF();
+        sEmissivePack[2] = m.emissiveColor().blueF();
+        sEmissivePack[3] = m.emissiveStrength();
     }
 
     static void bind()
     {
         sBaseColorUniform.bind(sBaseColor.data());
         sFactorsPackUniform.bind(sFactorsPack.data());
-        sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sEmissivePackUniform.bind(sEmissivePack.data());
+        sAlphaPackUniform.bind(sAlphaPack.data());
     }
 };
 
