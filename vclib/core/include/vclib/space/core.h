@@ -34,6 +34,7 @@
 #include "core/tex_coord_indexed.h"
 #include "core/texture_descriptor.h"
 #include "core/triangle_wrapper.h"
+#include "core/undo_redo.h"
 #include "core/vector.h"
 
 #endif // VCL_SPACE_CORE_H

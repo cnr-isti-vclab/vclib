@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_SHORTCUT_BUTTON_H
-#define VCL_QT_SHORTCUT_BUTTON_H
+#ifndef VCL_QT_GUI_SHORTCUT_BUTTON_H
+#define VCL_QT_GUI_SHORTCUT_BUTTON_H
 
 #include <vclib/render/input/abstract_input_action_map.h>
 
@@ -58,4 +58,4 @@ protected:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_SHORTCUT_BUTTON_H
+#endif // VCL_QT_GUI_SHORTCUT_BUTTON_H

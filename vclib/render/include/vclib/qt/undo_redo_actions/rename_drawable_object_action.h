@@ -9,7 +9,8 @@
 #define VCL_QT_UNDO_REDO_ACTIONS_RENAME_DRAWABLE_OBJECT_ACTION_H
 
 #include <vclib/qt/mesh_viewer.h>
-#include <vclib/render/undo_redo/undo_redo_action.h>
+
+#include <vclib/space/core.h>
 
 namespace vcl::qt {
 

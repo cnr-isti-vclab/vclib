@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_SHORTCUTS_SETTINGS_TAB_H
-#define VCL_QT_SHORTCUTS_SETTINGS_TAB_H
+#ifndef VCL_QT_GUI_SETTINGS_DIALOG_SHORTCUTS_SETTINGS_TAB_H
+#define VCL_QT_GUI_SETTINGS_DIALOG_SHORTCUTS_SETTINGS_TAB_H
 
 #include <vclib/qt/gui/settings_dialog/settings_dialog_tab.h>
 #include <vclib/render/input/action_map_group.h>
@@ -64,4 +64,4 @@ private:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_SHORTCUTS_SETTINGS_TAB_H
+#endif // VCL_QT_GUI_SETTINGS_DIALOG_SHORTCUTS_SETTINGS_TAB_H

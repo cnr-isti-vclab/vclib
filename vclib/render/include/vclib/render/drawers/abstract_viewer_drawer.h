@@ -17,7 +17,6 @@
 #include <vclib/render/input/action_map_group.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/render/undo_redo/undo_redo_stack.h>
 
 #include <vclib/space/core.h>
 
