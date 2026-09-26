@@ -260,7 +260,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
             auto& vector = drawableObjects();
             auto  it     = std::find(vector.begin(), vector.end(), obj);
             if (it != vector.end()) {
-                uint index = std::distance(vector.begin(), it);
+                uint index  = std::distance(vector.begin(), it);
                 auto action = std::make_unique<DeleteDrawableObjectAction>(
                     this, index, obj);
                 viewer().pushUndoRedoAction(std::move(action));

@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_QT_GUI_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
-#define VCL_QT_GUI_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
+#ifndef VCL_QT_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
+#define VCL_QT_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
 
 #include <vclib/qt/mesh_viewer.h>
 #include <vclib/render/undo_redo/undo_redo_action.h>
@@ -57,4 +57,4 @@ private:
 
 } // namespace vcl::qt
 
-#endif // VCL_QT_GUI_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
+#endif // VCL_QT_UNDO_REDO_ACTIONS_DELETE_DRAWABLE_OBJECT_ACTION_H
