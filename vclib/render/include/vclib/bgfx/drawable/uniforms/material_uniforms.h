@@ -41,6 +41,12 @@ class MaterialUniforms
     static inline std::array<float, 4> sEmissiveAlphaCutoffPack =
         {0.0, 0.0, 0.0, 0.5};
 
+    static inline std::array<float, 4> sClearcoatPack = {
+        0.0, // clearcoat factor
+        0.0, // clearcoat roughness factor
+        1.0, // clearcoat normal scale
+        0.0};
+
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
         bgfx::UniformType::Vec4};
@@ -50,6 +56,8 @@ class MaterialUniforms
     static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
         "u_emissiveAlphaCutoffPack",
         bgfx::UniformType::Vec4};
+    static inline StaticUniform sClearcoatPackUniform {
+    "u_clearcoatPack", bgfx::UniformType::Vec4};
 
 public:
     MaterialUniforms() = delete;
@@ -76,6 +84,10 @@ public:
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
 
+        sClearcoatPack[0] = m.clearcoat();
+        sClearcoatPack[1] = m.clearcoatRoughness();
+        sClearcoatPack[2] = m.clearcoatNormalScale();
+
         sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
         sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
@@ -86,6 +98,7 @@ public:
         sBaseColorUniform.bind(sBaseColor.data());
         sFactorsPackUniform.bind(sFactorsPack.data());
         sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sClearcoatPackUniform.bind(sClearcoatPack.data());
     }
 };
 
