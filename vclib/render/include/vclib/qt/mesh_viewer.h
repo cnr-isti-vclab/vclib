@@ -315,6 +315,11 @@ protected:
 
     void addEditorFrame(QWidget* frame);
 
+    void addSettingsTab(std::shared_ptr<SettingsDialogTab> tab)
+    {
+        mSettingsData.addTab(std::move(tab));
+    }
+
 private:
     void setupSettingsButton();
 

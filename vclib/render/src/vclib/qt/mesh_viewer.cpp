@@ -17,6 +17,7 @@
 #include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
+#include <vclib/qt/undo_redo_actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <vclib/io.h>
@@ -225,6 +226,41 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         &QAction::toggled,
         mUI->drawVectorTree,
         &QWidget::setVisible);
+
+    connect(mUI->actionUndo, &QAction::triggered, this, [this]() {
+        viewer().undo();
+    });
+    connect(mUI->actionRedo, &QAction::triggered, this, [this]() {
+        viewer().redo();
+    });
+
+    mUI->drawVectorTree->setRenameFunction(
+        [this](
+            std::shared_ptr<vcl::DrawableObject> obj,
+            const std::string&                   newName) {
+            if (obj->name() != newName) {
+                auto action = std::make_unique<RenameDrawableObjectAction>(
+                    this, obj, obj->name());
+                viewer().pushUndoRedoAction(std::move(action));
+
+                obj->name() = newName;
+                updateGUI();
+            }
+        });
+
+    mUI->drawVectorTree->setDeleteFunction(
+        [this](std::shared_ptr<vcl::DrawableObject> obj) {
+            auto& vector = drawableObjects();
+            auto  it     = std::find(vector.begin(), vector.end(), obj);
+            if (it != vector.end()) {
+                uint index  = std::distance(vector.begin(), it);
+                auto action = std::make_unique<DeleteDrawableObjectAction>(
+                    this, index, obj);
+                viewer().pushUndoRedoAction(std::move(action));
+
+                removeDrawableObject(index);
+            }
+        });
 
     // Load default global settings
     nlohmann::json j;

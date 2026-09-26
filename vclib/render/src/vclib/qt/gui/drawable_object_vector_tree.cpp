@@ -11,7 +11,9 @@
 
 #include <vclib/qt/gui/drawable_object_item.h>
 
+#include <QAction>
 #include <QApplication>
+#include <QMenu>
 #include <QMouseEvent>
 
 #include <set>
@@ -38,12 +40,19 @@ DrawableObjectVectorTree::DrawableObjectVectorTree(QWidget* parent) :
         &DrawableObjectVectorTree::itemSelectionChanged);
 
     // each time that the user checks or unchecks an item, call the
-    // itemCheckStateChanged slot
+    // onItemChanged slot
     connect(
         mUI->treeWidget,
         &QTreeWidget::itemChanged,
         this,
-        &DrawableObjectVectorTree::itemCheckStateChanged);
+        &DrawableObjectVectorTree::onItemChanged);
+
+    mUI->treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(
+        mUI->treeWidget,
+        &QTreeWidget::customContextMenuRequested,
+        this,
+        &DrawableObjectVectorTree::onCustomContextMenuRequested);
 
     mUI->treeWidget->viewport()->installEventFilter(this);
 }
@@ -64,6 +73,28 @@ void DrawableObjectVectorTree::setIconFunction(const IconFunction& f)
 {
     mIconFunction = f;
     updateDrawableVectorTree();
+}
+
+void DrawableObjectVectorTree::setRenameFunction(const RenameFunction& f)
+{
+    mRenameFunction = f;
+}
+
+void DrawableObjectVectorTree::setDeleteFunction(const DeleteFunction& f)
+{
+    mDeleteFunction = f;
+}
+
+void DrawableObjectVectorTree::addCustomContextMenuAction(
+    const std::string&          name,
+    const CustomActionFunction& f)
+{
+    mCustomActions.push_back({name, f});
+}
+
+void DrawableObjectVectorTree::clearCustomContextMenuActions()
+{
+    mCustomActions.clear();
 }
 
 uint DrawableObjectVectorTree::selectedDrawableObject() const
@@ -198,9 +229,8 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
         }
     }
 
-    mUI->treeWidget->clear();
-
     mUI->treeWidget->blockSignals(true);
+    mUI->treeWidget->clear();
     uint i = 0;
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
@@ -228,6 +258,9 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
     else if (colWidth > maxWidth) {
         mUI->treeWidget->setColumnWidth(0, maxWidth);
     }
+
+    // update the selection logic now that the tree is fully rebuilt
+    itemSelectionChanged();
 }
 
 void DrawableObjectVectorTree::itemSelectionChanged()
@@ -249,48 +282,118 @@ void DrawableObjectVectorTree::itemSelectionChanged()
     }
 }
 
-void DrawableObjectVectorTree::itemCheckStateChanged(
-    QTreeWidgetItem* item,
-    int              column)
+void DrawableObjectVectorTree::onItemChanged(QTreeWidgetItem* item, int column)
 {
     if (item && column == 0) {
-        bool isCtrlPressed =
-            QApplication::keyboardModifiers() & Qt::ControlModifier;
+        auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+        if (!drawableItem) {
+            return;
+        }
 
-        if (isCtrlPressed) {
-            mUI->treeWidget->blockSignals(true);
+        auto obj = drawableItem->drawableObject();
+        if (!obj) {
+            return;
+        }
 
-            for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
-                auto childItem = mUI->treeWidget->topLevelItem(i);
-                auto drawableItem =
-                    dynamic_cast<DrawableObjectItem*>(childItem);
-                if (drawableItem) {
-                    bool visible = (childItem == item);
-                    childItem->setCheckState(
-                        0, visible ? Qt::Checked : Qt::Unchecked);
-                    auto obj = drawableItem->drawableObject();
-                    if (obj) {
-                        obj->setVisibility(visible);
+        // Check if the check state changed (visibility)
+        bool isVisible = (item->checkState(0) == Qt::Checked);
+        if (isVisible != obj->isVisible()) {
+            bool isCtrlPressed =
+                QApplication::keyboardModifiers() & Qt::ControlModifier;
+            if (isCtrlPressed) {
+                mUI->treeWidget->blockSignals(true);
+                for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
+                    auto childItem = mUI->treeWidget->topLevelItem(i);
+                    auto childDrawableItem =
+                        dynamic_cast<DrawableObjectItem*>(childItem);
+                    if (childDrawableItem) {
+                        bool visible = (childItem == item);
+                        childItem->setCheckState(
+                            0, visible ? Qt::Checked : Qt::Unchecked);
+                        auto childObj = childDrawableItem->drawableObject();
+                        if (childObj) {
+                            childObj->setVisibility(visible);
+                        }
                     }
                 }
+
+                mUI->treeWidget->blockSignals(false);
+            }
+            else {
+                obj->setVisibility(isVisible);
             }
 
-            mUI->treeWidget->blockSignals(false);
+            // emit the visibility changed signal
+            emit drawableObjectVisibilityChanged();
         }
-        else {
-            // update the visibility of the drawable object
-            auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
-            if (drawableItem) {
-                auto obj = drawableItem->drawableObject();
-                if (obj) {
-                    obj->setVisibility(item->checkState(column) == Qt::Checked);
-                }
+        // Check if the text changed (renaming)
+        std::string newName = item->text(0).toStdString();
+        if (newName != obj->name()) {
+            if (mRenameFunction) {
+                mRenameFunction(obj, newName);
+            }
+            else {
+                obj->name() = newName;
             }
         }
-
-        // emit the visibility changed signal
-        emit drawableObjectVisibilityChanged();
     }
+}
+
+void DrawableObjectVectorTree::onCustomContextMenuRequested(const QPoint& pos)
+{
+    QTreeWidgetItem* item = mUI->treeWidget->itemAt(pos);
+    if (!item) {
+        return;
+    }
+
+    auto drawableItem = dynamic_cast<DrawableObjectItem*>(item);
+    if (!drawableItem) {
+        return;
+    }
+
+    auto obj = drawableItem->drawableObject();
+    if (!obj) {
+        return;
+    }
+
+    QMenu menu(this);
+
+    QAction* renameAction = new QAction("Rename", &menu);
+    connect(renameAction, &QAction::triggered, [this, item]() {
+        mUI->treeWidget->editItem(item, 0);
+    });
+    menu.addAction(renameAction);
+
+    QAction* deleteAction = new QAction("Delete", &menu);
+    connect(deleteAction, &QAction::triggered, [this, obj]() {
+        if (mDeleteFunction) {
+            mDeleteFunction(obj);
+        }
+        else if (mDrawList) {
+            auto it = std::find(mDrawList->begin(), mDrawList->end(), obj);
+            if (it != mDrawList->end()) {
+                mDrawList->erase(it - mDrawList->begin());
+                update();
+            }
+        }
+    });
+    menu.addAction(deleteAction);
+
+    if (!mCustomActions.empty()) {
+        menu.addSeparator();
+        for (const auto& [name, f] : mCustomActions) {
+            QAction* customAction =
+                new QAction(QString::fromStdString(name), &menu);
+            connect(customAction, &QAction::triggered, [f, obj]() {
+                if (f) {
+                    f(obj);
+                }
+            });
+            menu.addAction(customAction);
+        }
+    }
+
+    menu.exec(mUI->treeWidget->viewport()->mapToGlobal(pos));
 }
 
 } // namespace vcl::qt

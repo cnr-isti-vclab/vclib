@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <ui version="4.0">
  <class>vcl::qt::MeshViewer</class>
  <widget class="QMainWindow" name="vcl::qt::MeshViewer">
@@ -85,7 +85,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree"/>
+         <widget class="vcl::qt::DrawableObjectVectorTree" name="drawVectorTree" />
         </item>
         <item>
          <widget class="vcl::qt::MeshRenderSettingsFrame" name="meshRenderSettingsFrame">
@@ -142,25 +142,28 @@
      <property name="title">
       <string>Render Mode</string>
      </property>
-     <addaction name="actionClassic"/>
-     <addaction name="actionPBR"/>
+     <addaction name="actionClassic" />
+     <addaction name="actionPBR" />
     </widget>
     <widget class="QMenu" name="menuCamera_View">
      <property name="title">
       <string>Camera View</string>
      </property>
-     <addaction name="actionLoad_Camera_View"/>
-     <addaction name="actionSave_Camera_View"/>
+     <addaction name="actionLoad_Camera_View" />
+     <addaction name="actionSave_Camera_View" />
     </widget>
-    <addaction name="menuRender_Mode"/>
-    <addaction name="menuCamera_View"/>
-    <addaction name="actionViewer_Settings"/>
+    <addaction name="menuRender_Mode" />
+    <addaction name="menuCamera_View" />
+    <addaction name="actionViewer_Settings" />
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionSettings"/>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionSettings" />
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -170,19 +173,19 @@
      <property name="title">
       <string>Appearance</string>
      </property>
-     <addaction name="actionShow_Right_Area"/>
-     <addaction name="separator"/>
-     <addaction name="actionShow_Draw_Vector_Tree"/>
-     <addaction name="actionShow_Settings_Frame"/>
-     <addaction name="actionShow_Logger"/>
+     <addaction name="actionShow_Right_Area" />
+     <addaction name="separator" />
+     <addaction name="actionShow_Draw_Vector_Tree" />
+     <addaction name="actionShow_Settings_Frame" />
+     <addaction name="actionShow_Logger" />
     </widget>
-    <addaction name="menuAppearance"/>
+    <addaction name="menuAppearance" />
    </widget>
-   <addaction name="menuEdit"/>
-   <addaction name="menuView"/>
-   <addaction name="menuRender"/>
+   <addaction name="menuEdit" />
+   <addaction name="menuView" />
+   <addaction name="menuRender" />
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>toolBar</string>
@@ -280,6 +283,22 @@
     <string>Show Draw Vector Tree</string>
    </property>
   </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -307,6 +326,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
