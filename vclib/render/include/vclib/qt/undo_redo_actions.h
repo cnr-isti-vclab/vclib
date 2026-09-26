@@ -5,11 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_RENDER_INPUT_H
-#define VCL_RENDER_INPUT_H
+#ifndef VCL_QT_UNDO_REDO_ACTIONS_H
+#define VCL_QT_UNDO_REDO_ACTIONS_H
 
-#include "input/abstract_input_action_map.h"
-#include "input/input.h"
-#include "input/input_action_map.h"
+#include "undo_redo_actions/delete_drawable_object_action.h"
+#include "undo_redo_actions/rename_drawable_object_action.h"
 
-#endif // VCL_RENDER_INPUT_H
+#endif // VCL_QT_UNDO_REDO_ACTIONS_H

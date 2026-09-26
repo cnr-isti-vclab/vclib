@@ -14,8 +14,10 @@
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
 #include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
+#include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
+#include <vclib/qt/undo_redo_actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <vclib/io.h>
@@ -31,24 +33,6 @@
 #include <QPushButton>
 
 namespace vcl::qt {
-
-bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
-{
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        // Ignore only the Ctrl + S shortcut override, you can customize check
-        // for your needs
-        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
-            keyEvent->key() == 'S') {
-            qDebug() << "Ignoring " << keyEvent->modifiers() << " + "
-                     << (char) keyEvent->key() << " for " << watched;
-            event->ignore();
-            return true;
-        }
-    }
-
-    return QObject::eventFilter(watched, event);
-}
 
 /**
  * @brief MeshViewer constructor.
@@ -73,13 +57,27 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     // give keyboard focus to the viewer widget immediately
     mUI->viewer->setFocus();
 
+    // Register Qt-specific screenshot action with dialog
+    viewer().registerGlobalAction(
+        "Take Screenshot",
+        {Key::S, {KeyModifier::CONTROL}},
+        [this]() {
+            vcl::qt::ScreenShotDialog dialog(this);
+            if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+                auto sf = dialog.selectedFiles();
+                mUI->viewer->screenshot(
+                    sf[0].toStdString(), dialog.screenMultiplierValue());
+            }
+        });
+
     // prevent any widget in the right area from stealing keyboard focus
     mUI->rightArea->setFocusPolicy(Qt::NoFocus);
-    std::function<void(QWidget*)> disableFocus = [&disableFocus](QWidget* w) {
+    auto disableFocus = [](QWidget* w) {
         w->setFocusPolicy(Qt::NoFocus);
-        for (auto* child : w->findChildren<QWidget*>(
-                 QString(), Qt::FindChildrenRecursively)) {
-            disableFocus(child);
+        for (auto* child : w->findChildren<QWidget*>()) {
+            if (!child->isWindow()) {
+                child->setFocusPolicy(Qt::NoFocus);
+            }
         }
     };
     disableFocus(mUI->rightArea);
@@ -132,9 +130,6 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     addDockWidget(Qt::RightDockWidgetArea, mViewerSettingsDockWidget);
 
     /** Events **/
-
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // meshRenderSettingsUpdated() member function
@@ -233,6 +228,41 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
         mUI->drawVectorTree,
         &QWidget::setVisible);
 
+    connect(mUI->actionUndo, &QAction::triggered, this, [this]() {
+        viewer().undo();
+    });
+    connect(mUI->actionRedo, &QAction::triggered, this, [this]() {
+        viewer().redo();
+    });
+
+    mUI->drawVectorTree->setRenameFunction(
+        [this](
+            std::shared_ptr<vcl::DrawableObject> obj,
+            const std::string&                   newName) {
+            if (obj->name() != newName) {
+                auto action = std::make_unique<RenameDrawableObjectAction>(
+                    this, obj, obj->name());
+                viewer().pushUndoRedoAction(std::move(action));
+
+                obj->name() = newName;
+                updateGUI();
+            }
+        });
+
+    mUI->drawVectorTree->setDeleteFunction(
+        [this](std::shared_ptr<vcl::DrawableObject> obj) {
+            auto& vector = drawableObjects();
+            auto  it     = std::find(vector.begin(), vector.end(), obj);
+            if (it != vector.end()) {
+                uint index  = std::distance(vector.begin(), it);
+                auto action = std::make_unique<DeleteDrawableObjectAction>(
+                    this, index, obj);
+                viewer().pushUndoRedoAction(std::move(action));
+
+                removeDrawableObject(index);
+            }
+        });
+
     // Load default global settings
     nlohmann::json j;
     std::string    filePath = mSettingsFilePath;
@@ -259,6 +289,9 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
     }
 
     mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>([this]() {
+        return viewer().actionMapGroups();
+    }));
     setupMeshRenderSettingsTabs(mSettingsData, mDefaultMeshRenderSettings);
 }
 
@@ -347,7 +380,7 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mViewerSettingsFrame->viewerSettings();
+    return viewer().viewerSettings();
 }
 
 /**
@@ -440,23 +473,6 @@ void MeshViewer::addEditorFrame(QWidget* frame)
     }
 }
 
-void MeshViewer::keyPressEvent(QKeyEvent* event)
-{
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this, mSettingsFilePath);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
-    }
-}
-
 /**
  * @brief Setup and add the settings button to the UI toolbar.
  */
@@ -467,7 +483,8 @@ void MeshViewer::setupSettingsButton()
     mSpacerAction = mUI->toolBar->addWidget(spacer);
 
     QPushButton* settingsBtn = new QPushButton(this);
-    settingsBtn->setIcon(QIcon::fromTheme("preferences-system"));
+    settingsBtn->setIcon(
+        QIcon::fromTheme("preferences-system", QIcon(":/icons/settings.png")));
     settingsBtn->setIconSize(QSize(32, 32));
     settingsBtn->setFixedSize(QSize(40, 40));
     settingsBtn->setFocusPolicy(Qt::NoFocus);
@@ -629,8 +646,18 @@ void MeshViewer::openSettings()
     SettingsDialog dialog(mSettingsData, this);
 
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        // Apply non-shortcuts settings first to avoid overwriting shortcuts with temp copies
         for (auto& tab : mSettingsData.tabs()) {
-            tab->applySettings();
+            if (tab->category() != "Shortcuts")
+                tab->applySettings();
+        }
+        // Apply shortcuts last so they take precedence
+        for (auto& tab : mSettingsData.tabs()) {
+            if (tab->category() == "Shortcuts")
+                tab->applySettings();
+        }
+        
+        for (auto& tab : mSettingsData.tabs()) {
             tab->updateToolbarFrames(mUI->toolBar);
         }
         viewer().update();

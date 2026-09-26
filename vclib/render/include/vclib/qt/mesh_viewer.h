@@ -40,17 +40,6 @@ class MeshViewer;
 
 class ViewerSettingsFrame;
 
-class KeyFilter : public QObject
-{
-    Q_OBJECT
-
-public:
-    KeyFilter(QObject* parent = nullptr) : QObject(parent) {}
-
-protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-};
-
 class MeshViewer : public QMainWindow
 {
     Q_OBJECT
@@ -326,7 +315,10 @@ protected:
 
     void addEditorFrame(QWidget* frame);
 
-    void keyPressEvent(QKeyEvent* event) override;
+    void addSettingsTab(std::shared_ptr<SettingsDialogTab> tab)
+    {
+        mSettingsData.addTab(std::move(tab));
+    }
 
 private:
     void setupSettingsButton();

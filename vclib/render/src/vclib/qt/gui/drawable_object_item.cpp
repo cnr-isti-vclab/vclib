@@ -28,7 +28,8 @@ DrawableObjectItem::DrawableObjectItem(
     // leave setText and setFlags AFTER setCheckState.
     // for some reason, they trigger the itemCheckStateChanged signal...
     setFlags(
-        Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+        Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable |
+        Qt::ItemIsEditable);
     setText(0, QString::fromStdString(obj->name()));
 
     // add mesh item
@@ -65,7 +66,7 @@ void DrawableObjectItem::updateMeshInfo()
                 }
                 else if (childItem->text(0) == "Transform Matrix") {
                     for (int j = 0; j < 4; ++j) {
-                        auto rowItem = childItem->child(j);
+                        auto    rowItem  = childItem->child(j);
                         QString rowLabel = "";
                         for (int c = 0; c < 4; ++c) {
                             rowLabel += QString::number(

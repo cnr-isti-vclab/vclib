@@ -35,14 +35,16 @@ struct BoundingBoxEditorSettings : public EditorSettings
      * @brief Loads the settings from a JSON object.
      * @param[in] j: the JSON object to read from.
      */
-    void loadSettings(const nlohmann::json& j)
+    void loadSettings(const nlohmann::json& j) override
     {
-        if (j.contains("BoundingBoxEditor")) {
-            const auto& jBox = j["BoundingBoxEditor"];
-            color            = jBox.value("color", color);
-            thickness        = jBox.value("thickness", thickness);
-            editMode         = static_cast<EditMode>(
-                jBox.value("editMode", static_cast<int>(editMode)));
+        EditorSettings::loadSettings(j);
+
+        if (j.contains("Bounding Box Editor")) {
+            const auto& jbb = j["Bounding Box Editor"];
+            color           = jbb.value("color", color);
+            thickness       = jbb.value("thickness", thickness);
+            editMode        = static_cast<EditMode>(
+                jbb.value("editMode", static_cast<int>(editMode)));
         }
     }
 
@@ -50,11 +52,14 @@ struct BoundingBoxEditorSettings : public EditorSettings
      * @brief Saves the settings to a JSON object.
      * @param[out] j: the JSON object to write to.
      */
-    void saveSettings(nlohmann::json& j) const
+    void saveSettings(nlohmann::json& j) const override
     {
-        j["BoundingBoxEditor"]["color"]     = color;
-        j["BoundingBoxEditor"]["thickness"] = thickness;
-        j["BoundingBoxEditor"]["editMode"]  = static_cast<int>(editMode);
+        EditorSettings::saveSettings(j);
+
+        auto& jbb = j["Bounding Box Editor"];
+        jbb["color"]     = color;
+        jbb["thickness"] = thickness;
+        jbb["editMode"]  = static_cast<int>(editMode);
     }
 };
 
