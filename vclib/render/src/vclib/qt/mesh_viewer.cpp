@@ -72,11 +72,12 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
 
     // prevent any widget in the right area from stealing keyboard focus
     mUI->rightArea->setFocusPolicy(Qt::NoFocus);
-    std::function<void(QWidget*)> disableFocus = [&disableFocus](QWidget* w) {
+    auto disableFocus = [](QWidget* w) {
         w->setFocusPolicy(Qt::NoFocus);
-        for (auto* child : w->findChildren<QWidget*>(
-                 QString(), Qt::FindChildrenRecursively)) {
-            disableFocus(child);
+        for (auto* child : w->findChildren<QWidget*>()) {
+            if (!child->isWindow()) {
+                child->setFocusPolicy(Qt::NoFocus);
+            }
         }
     };
     disableFocus(mUI->rightArea);
