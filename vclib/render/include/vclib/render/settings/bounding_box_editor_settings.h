@@ -56,7 +56,7 @@ struct BoundingBoxEditorSettings : public EditorSettings
     {
         EditorSettings::saveSettings(j);
 
-        auto& jbb = j["Bounding Box Editor"];
+        auto& jbb        = j["Bounding Box Editor"];
         jbb["color"]     = color;
         jbb["thickness"] = thickness;
         jbb["editMode"]  = static_cast<int>(editMode);

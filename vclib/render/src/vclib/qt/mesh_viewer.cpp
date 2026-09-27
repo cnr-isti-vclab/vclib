@@ -13,8 +13,8 @@
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/gui/settings_dialog.h>
 #include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
-#include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
+#include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
 #include <vclib/qt/undo_redo_actions.h>
@@ -59,9 +59,7 @@ MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
 
     // Register Qt-specific screenshot action with dialog
     viewer().registerGlobalAction(
-        "Take Screenshot",
-        {Key::S, {KeyModifier::CONTROL}},
-        [this]() {
+        "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
             vcl::qt::ScreenShotDialog dialog(this);
             if (dialog.exec() && dialog.selectedFiles().size() > 0) {
                 auto sf = dialog.selectedFiles();
@@ -646,7 +644,8 @@ void MeshViewer::openSettings()
     SettingsDialog dialog(mSettingsData, this);
 
     connect(&dialog, &SettingsDialog::applied, this, [&]() {
-        // Apply non-shortcuts settings first to avoid overwriting shortcuts with temp copies
+        // Apply non-shortcuts settings first to avoid overwriting shortcuts
+        // with temp copies
         for (auto& tab : mSettingsData.tabs()) {
             if (tab->category() != "Shortcuts")
                 tab->applySettings();
@@ -656,7 +655,7 @@ void MeshViewer::openSettings()
             if (tab->category() == "Shortcuts")
                 tab->applySettings();
         }
-        
+
         for (auto& tab : mSettingsData.tabs()) {
             tab->updateToolbarFrames(mUI->toolBar);
         }

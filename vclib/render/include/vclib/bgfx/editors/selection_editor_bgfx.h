@@ -410,7 +410,7 @@ private:
         double                   x,
         double                   y,
         const vcl::KeyModifiers& modifiers,
-        bool doubleClick)
+        bool                     doubleClick)
     {
         if (!isSelectionActive())
             return false;

@@ -351,11 +351,11 @@ public:
     {
         setKeyModifiers(modifiers);
         moveMouse(x, y);
-        
+
         bool isDbl = (button == mCurrentMouseButton) ? mIsDoubleClick : false;
         MouseInput input = {button, modifiers, isDbl};
         releaseMouse(input);
-        
+
         return false;
     }
 
@@ -422,7 +422,7 @@ private:
             return;
         }
 
-        // ignore spurious single-click press events emitted by some systems 
+        // ignore spurious single-click press events emitted by some systems
         // immediately after a double-click event
         if (mCurrentMouseButton == input.button && mIsDoubleClick &&
             !input.isDoubleClick) {
@@ -430,7 +430,7 @@ private:
         }
 
         mCurrentMouseButton = input.button;
-        mIsDoubleClick = input.isDoubleClick;
+        mIsDoubleClick      = input.isDoubleClick;
 
         auto actionOpt = dragMotionMap().action(input);
         if (actionOpt.has_value()) {
@@ -446,7 +446,7 @@ private:
         // update the current mouse button only if it matches
         if (mCurrentMouseButton == input.button) {
             mCurrentMouseButton = MouseButton::NO_BUTTON;
-            mIsDoubleClick = false;
+            mIsDoubleClick      = false;
         }
 
         auto actionOpt = dragMotionMap().action(input);

@@ -102,7 +102,7 @@ struct ViewerSettings : public TrackballSettings
     /**
      * @brief Global actions registered by the viewer or editors.
      */
-    ViewerGlobalActionMap globalActionMap{"Viewer Global Actions"};
+    ViewerGlobalActionMap globalActionMap {"Viewer Global Actions"};
 
     /**
      * @brief Resets the settings to their default values.
@@ -153,7 +153,7 @@ struct ViewerSettings : public TrackballSettings
         TrackballSettings::saveSettings(j);
         globalActionMap.saveSettings(j);
 
-        auto& js = j["Viewer Settings"];
+        auto& js                       = j["Viewer Settings"];
         js["renderMode"]               = static_cast<int>(renderMode);
         js["imageBasedLighting"]       = imageBasedLighting;
         js["renderBackgroundPanorama"] = renderBackgroundPanorama;
@@ -176,7 +176,8 @@ struct ViewerSettings : public TrackballSettings
     /**
      * @brief Retrieves the action maps associated with the viewer.
      */
-    std::vector<std::reference_wrapper<const AbstractInputActionMap>> actionMaps() const
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const
     {
         auto res = TrackballSettings::actionMaps();
         res.push_back(globalActionMap);
