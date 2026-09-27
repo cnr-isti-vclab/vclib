@@ -139,7 +139,7 @@ void ShortcutButton::wheelEvent(QWheelEvent* event)
     }
 
     vcl::ScrollAxis::Enum axis    = (std::abs(event->angleDelta().x()) >
-                                     std::abs(event->angleDelta().y())) ?
+                                  std::abs(event->angleDelta().y())) ?
                                         vcl::ScrollAxis::HORIZONTAL :
                                         vcl::ScrollAxis::VERTICAL;
     vcl::KeyModifiers     vclMods = vcl::qt::fromQt(event->modifiers());

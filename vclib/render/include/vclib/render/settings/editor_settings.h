@@ -14,8 +14,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 namespace vcl {
 

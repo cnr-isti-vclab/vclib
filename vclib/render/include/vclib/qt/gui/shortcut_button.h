@@ -34,9 +34,9 @@ class ShortcutButton : public QPushButton
     QString                           mOriginalText;
     // used to distinguish a single click from the first click of a double
     // click when capturing mouse bindings
-    QTimer*                           mDoubleClickTimer = nullptr;
-    Qt::MouseButton                   mPendingButton;
-    Qt::KeyboardModifiers             mPendingModifiers;
+    QTimer*               mDoubleClickTimer = nullptr;
+    Qt::MouseButton       mPendingButton;
+    Qt::KeyboardModifiers mPendingModifiers;
 
 public:
     std::function<void(const std::string&)> onInputCaptured;

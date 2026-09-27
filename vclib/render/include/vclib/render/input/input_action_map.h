@@ -147,7 +147,8 @@ public:
         ActionID id;
         try {
             id = vcl::fromString<ActionID>(actionId);
-        } catch (...) {
+        }
+        catch (...) {
             return;
         }
 
@@ -158,7 +159,9 @@ public:
                     if (!inStr.empty()) {
                         try {
                             def.inputs.push_back(vcl::fromString<Input>(inStr));
-                        } catch (...) {}
+                        }
+                        catch (...) {
+                        }
                     }
                 }
                 updateBindings();
