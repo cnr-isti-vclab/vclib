@@ -222,16 +222,53 @@ bool DrawableObjectVectorTree::eventFilter(QObject* obj, QEvent* event)
 
 void DrawableObjectVectorTree::updateDrawableVectorTree()
 {
-    std::set<uint> expandedItems;
+    std::map<void*, std::set<QString>> expandedStates;
+
+    auto saveExpanded = [](auto&              self,
+                           QTreeWidgetItem*   item,
+                           const QString&     path,
+                           std::set<QString>& expandedPaths) -> void {
+        if (item->isExpanded()) {
+            expandedPaths.insert(path);
+        }
+        for (int j = 0; j < item->childCount(); ++j) {
+            self(
+                self,
+                item->child(j),
+                path + "/" + item->child(j)->text(0),
+                expandedPaths);
+        }
+    };
+
     for (int i = 0; i < mUI->treeWidget->topLevelItemCount(); ++i) {
-        if (mUI->treeWidget->topLevelItem(i)->isExpanded()) {
-            expandedItems.insert(i);
+        auto topItem      = mUI->treeWidget->topLevelItem(i);
+        auto drawableItem = dynamic_cast<DrawableObjectItem*>(topItem);
+        if (drawableItem && drawableItem->drawableObject()) {
+            std::set<QString> paths;
+            saveExpanded(saveExpanded, topItem, "", paths);
+            expandedStates[drawableItem->drawableObject().get()] = paths;
         }
     }
 
     mUI->treeWidget->blockSignals(true);
     mUI->treeWidget->clear();
-    uint i = 0;
+
+    auto restoreExpanded = [](auto&                    self,
+                              QTreeWidgetItem*         item,
+                              const QString&           path,
+                              const std::set<QString>& expandedPaths) -> void {
+        if (expandedPaths.count(path) > 0) {
+            item->setExpanded(true);
+        }
+        for (int j = 0; j < item->childCount(); ++j) {
+            self(
+                self,
+                item->child(j),
+                path + "/" + item->child(j)->text(0),
+                expandedPaths);
+        }
+    };
+
     for (auto& d : *mDrawList) {
         DrawableObjectItem* item =
             new DrawableObjectItem(d, mIconFunction, mUI->treeWidget);
@@ -241,10 +278,10 @@ void DrawableObjectVectorTree::updateDrawableVectorTree()
         // if d is visible, set the check state to checked
         item->setCheckState(0, d->isVisible() ? Qt::Checked : Qt::Unchecked);
 
-        if (expandedItems.count(i) > 0) {
-            item->setExpanded(true);
+        auto it = expandedStates.find(d.get());
+        if (it != expandedStates.end()) {
+            restoreExpanded(restoreExpanded, item, "", it->second);
         }
-        ++i;
     }
     mUI->treeWidget->blockSignals(false);
 
