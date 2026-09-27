@@ -8,6 +8,7 @@
 #ifndef VCL_SPACE_CORE_UNDO_REDO_H
 #define VCL_SPACE_CORE_UNDO_REDO_H
 
+#include "undo_redo/composite_undo_redo_action.h"
 #include "undo_redo/undo_redo_action.h"
 #include "undo_redo/undo_redo_stack.h"
 
