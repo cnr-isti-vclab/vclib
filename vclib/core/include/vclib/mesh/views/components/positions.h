@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_POSITIONS_H
 #define VCL_MESH_VIEWS_COMPONENTS_POSITIONS_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/position.h>
 
 #include <vclib/base.h>
@@ -39,6 +40,9 @@ struct PositionsView
 } // namespace detail
 
 inline constexpr detail::PositionsView positions;
+
+template <>
+inline constexpr auto component<CompId::POSITION> = positions;
 
 } // namespace vcl::views
 

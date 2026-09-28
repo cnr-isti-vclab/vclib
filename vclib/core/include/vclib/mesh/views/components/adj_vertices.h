@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/adjacent_vertices.h>
 
 #include <vclib/base.h>
@@ -48,6 +49,9 @@ struct AdjVerticesView
  * @ingroup views
  */
 inline constexpr detail::AdjVerticesView adjVertices;
+
+template <>
+inline constexpr auto component<CompId::ADJACENT_VERTICES> = adjVertices;
 
 } // namespace vcl::views
 

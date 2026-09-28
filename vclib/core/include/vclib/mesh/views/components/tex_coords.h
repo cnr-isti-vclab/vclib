@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 #define VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/wedge_tex_coords.h>
 
 #include <vclib/base.h>
@@ -49,6 +50,9 @@ struct TexCoordsView
 } // namespace detail
 
 inline constexpr detail::TexCoordsView texCoords;
+
+template <>
+inline constexpr auto component<CompId::TEX_COORD> = texCoords;
 
 } // namespace vcl::views
 

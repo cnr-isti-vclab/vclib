@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_NORMALS_H
 #define VCL_MESH_VIEWS_COMPONENTS_NORMALS_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/normal.h>
 
 #include <vclib/base.h>
@@ -39,6 +40,9 @@ struct NormalsView
 } // namespace detail
 
 inline constexpr detail::NormalsView normals;
+
+template <>
+inline constexpr auto component<CompId::NORMAL> = normals;
 
 } // namespace vcl::views
 

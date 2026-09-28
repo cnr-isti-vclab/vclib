@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/adjacent_edges.h>
 
 #include <vclib/base.h>
@@ -48,6 +49,9 @@ struct AdjEdgesView
  * @ingroup views
  */
 inline constexpr detail::AdjEdgesView adjEdges;
+
+template <>
+inline constexpr auto component<CompId::ADJACENT_EDGES> = adjEdges;
 
 } // namespace vcl::views
 

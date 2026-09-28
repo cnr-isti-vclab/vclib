@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 #define VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
 
+#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/adjacent_faces.h>
 
 #include <vclib/base.h>
@@ -48,6 +49,9 @@ struct AdjFacesView
  * @ingroup views
  */
 inline constexpr detail::AdjFacesView adjFaces;
+
+template <>
+inline constexpr auto component<CompId::ADJACENT_FACES> = adjFaces;
 
 } // namespace vcl::views
 
