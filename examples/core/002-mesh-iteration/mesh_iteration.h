@@ -158,9 +158,10 @@ void meshIteration()
     }
 
     // Alternatively, iterate using generic component view
-    std::cout << "\nVertex positions using generic component view:" << std::endl;
+    std::cout << "\nVertex positions using generic component view:"
+              << std::endl;
     for (int count = 0; const auto& position :
-                        mesh | vcl::views::vertices |
+                        mesh | vcl::views::elements<vcl::ElemId::VERTEX> |
                             vcl::views::component<vcl::CompId::POSITION>) {
         if (count >= 3)
             break;

@@ -8,6 +8,7 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 #define VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 
+#include <vclib/mesh/views/element.h>
 #include <vclib/mesh/requirements/vertex_requirements.h>
 
 namespace vcl {
@@ -75,6 +76,9 @@ struct VerticesView
  * @ingroup views
  */
 inline constexpr detail::VerticesView vertices;
+
+template <>
+inline constexpr auto elements<vcl::ElemId::VERTEX> = vertices;
 
 } // namespace views
 } // namespace vcl
