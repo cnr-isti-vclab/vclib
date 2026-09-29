@@ -8,9 +8,11 @@
 #ifndef VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
 #define VCL_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
 
+#include "mesh_render_settings_frame/cross_section_settings_frame.h"
 #include "mesh_render_settings_frame/generic_mesh_render_settings_frame.h"
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
+#include <vclib/render/settings/cross_section_settings.h>
 
 #include <QFrame>
 
@@ -29,7 +31,8 @@ class MeshRenderSettingsFrame : public QFrame
     Ui::MeshRenderSettingsFrame* mUI;
     MeshRenderSettings           mMRS;
 
-    std::vector<GenericMeshRenderSettingsFrame*> frames;
+    std::vector<GenericMeshRenderSettingsFrame*> mFrames;
+    CrossSectionSettingsFrame*                   mCrossSectionFrame = nullptr;
 
 public:
     explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
@@ -37,14 +40,21 @@ public:
 
     const MeshRenderSettings& meshRenderSettings() const;
 
+    const CrossSectionSettings& crossSectionSettings() const;
+
     void setMeshRenderSettings(
         const MeshRenderSettings& settings,
         bool                      changeCurrentTab = false);
 
+    void setCrossSectionSettings(const CrossSectionSettings& settings);
+
     bool isApplyToAllEnabled() const;
 
 signals:
-    void settingsUpdated();
+    void meshRenderSettingsUpdated();
+
+    void crossSectionSettingsUpdated();
+
     void applyToAllToggled(bool checked);
 
 private slots:

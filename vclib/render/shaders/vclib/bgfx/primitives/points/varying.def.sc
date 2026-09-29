@@ -5,7 +5,9 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-vec3 v_normal          : NORMAL = vec3(0.0, 0.0, 0.0);
-vec2 v_texcoord0       : TEXCOORD0;
-flat vec4 v_color      : COLOR0;
-flat float v_selected  : TEXCOORD1 = 0.0;
+vec3 v_normal            : NORMAL = vec3(0.0, 0.0, 0.0);
+vec2 v_texcoord0         : TEXCOORD0;
+flat vec4 v_color        : COLOR0;
+flat float v_selected    : TEXCOORD1 = 0.0;
+vec3 v_worldPos          : TEXCOORD2 = vec3(0.0, 0.0, 0.0);
+flat float v_discardFlag : TEXCOORD3 = 1.0;
