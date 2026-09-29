@@ -9,6 +9,7 @@
 #define VCL_MESH_VIEWS_ELEMENTS_FACE_H
 
 #include <vclib/mesh/requirements/face_requirements.h>
+#include <vclib/mesh/views/element.h>
 
 namespace vcl {
 
@@ -67,6 +68,9 @@ struct FacesView
  * @ingroup views
  */
 inline constexpr detail::FacesView faces;
+
+template<>
+inline constexpr auto elements<vcl::ElemId::FACE> = faces;
 
 } // namespace views
 } // namespace vcl

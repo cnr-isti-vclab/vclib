@@ -157,6 +157,18 @@ void meshIteration()
         count++;
     }
 
+    // Alternatively, iterate using generic component view
+    std::cout << "\nVertex positions using generic component view:"
+              << std::endl;
+    for (int count = 0; const auto& position :
+                        mesh | vcl::views::elements<vcl::ElemId::VERTEX> |
+                            vcl::views::component<vcl::CompId::POSITION>) {
+        if (count >= 3)
+            break;
+        std::cout << "  Position " << count << ": " << position << std::endl;
+        count++;
+    }
+
     // Iterate over face vertices using views
     std::cout << "\nFace vertices using views:" << std::endl;
     for (int count = 0; const auto& face : mesh | vcl::views::faces) {
