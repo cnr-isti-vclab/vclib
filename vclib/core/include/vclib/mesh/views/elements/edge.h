@@ -8,8 +8,8 @@
 #ifndef VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 #define VCL_MESH_VIEWS_ELEMENTS_EDGE_H
 
-#include <vclib/mesh/views/element.h>
 #include <vclib/mesh/requirements/edge_requirements.h>
+#include <vclib/mesh/views/element.h>
 
 namespace vcl {
 
@@ -69,7 +69,7 @@ struct EdgesView
  */
 inline constexpr detail::EdgesView edges;
 
-template <>
+template<>
 inline constexpr auto elements<vcl::ElemId::EDGE> = edges;
 
 } // namespace views

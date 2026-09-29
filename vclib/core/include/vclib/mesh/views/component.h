@@ -13,11 +13,13 @@
 namespace vcl::views {
 
 namespace detail {
-    struct UnsupportedComponentView {};
-}
+struct UnsupportedComponentView
+{
+};
+} // namespace detail
 
 template<uint COMP_ID>
-inline constexpr auto component = detail::UnsupportedComponentView{};
+inline constexpr auto component = detail::UnsupportedComponentView {};
 
 } // namespace vcl::views
 

@@ -8,8 +8,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 #define VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 
-#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/tangent.h>
+#include <vclib/mesh/views/component.h>
 
 #include <vclib/base.h>
 
@@ -42,7 +42,7 @@ struct TangentView
 
 inline constexpr detail::TangentView tangents;
 
-template <>
+template<>
 inline constexpr auto component<CompId::TANGENT> = tangents;
 
 } // namespace vcl::views

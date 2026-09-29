@@ -8,9 +8,9 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 #define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 
-#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/color.h>
 #include <vclib/mesh/components/wedge_colors.h>
+#include <vclib/mesh/views/component.h>
 
 #include <vclib/base.h>
 
@@ -51,7 +51,7 @@ struct ColorsView
 
 inline constexpr detail::ColorsView colors;
 
-template <>
+template<>
 inline constexpr auto component<CompId::COLOR> = colors;
 
 } // namespace vcl::views

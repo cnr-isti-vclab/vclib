@@ -13,11 +13,13 @@
 namespace vcl::views {
 
 namespace detail {
-    struct UnsupportedElementView {};
-}
+struct UnsupportedElementView
+{
+};
+} // namespace detail
 
 template<uint ELEM_ID>
-inline constexpr auto elements = detail::UnsupportedElementView{};
+inline constexpr auto elements = detail::UnsupportedElementView {};
 
 } // namespace vcl::views
 

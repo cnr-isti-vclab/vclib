@@ -8,8 +8,8 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
 #define VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
 
-#include <vclib/mesh/views/component.h>
 #include <vclib/mesh/components/principal_curvature.h>
+#include <vclib/mesh/views/component.h>
 
 #include <vclib/base.h>
 
@@ -41,8 +41,9 @@ struct PrincipalCurvaturesView
 
 inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
 
-template <>
-inline constexpr auto component<CompId::PRINCIPAL_CURVATURE> = principalCurvatures;
+template<>
+inline constexpr auto component<CompId::PRINCIPAL_CURVATURE> =
+    principalCurvatures;
 
 } // namespace vcl::views
 
