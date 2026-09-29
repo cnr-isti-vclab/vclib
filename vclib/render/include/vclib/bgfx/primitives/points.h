@@ -27,6 +27,15 @@ class Points
     inline static const VertexBuffer NULL_VERTEX_BUFFER;
 
 public:
+    static const uint64_t DEFAULT_DRAW_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
+
+    static const uint64_t DEFAULT_DRAW_ID_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+
     /**
      * @brief Specifies how point colors are determined during rendering.
      */
@@ -469,15 +478,6 @@ public:
         mSettings              = settings;
         mIsUpdateProgramNeeded = true;
     }
-
-    static const uint64_t DEFAULT_DRAW_STATE =
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
-
-    static const uint64_t DEFAULT_DRAW_ID_STATE =
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LEQUAL |
-        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
 
     void draw(
         bgfx::ViewId viewId,
