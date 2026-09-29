@@ -605,9 +605,23 @@ public:
      */
     float vectorLength() const { return mVectorLength; }
 
-    void draw(bgfx::ViewId viewId) const;
+    static const uint64_t DEFAULT_DRAW_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
 
-    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+    static const uint64_t DEFAULT_DRAW_ID_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+
+    void draw(
+        bgfx::ViewId viewId,
+        uint64_t     state = DEFAULT_DRAW_STATE) const;
+
+    void drawId(
+        bgfx::ViewId viewId,
+        uint32_t     id,
+        uint64_t     state = DEFAULT_DRAW_ID_STATE) const;
 
 private:
     void                checkAndUpdateProgram() const;

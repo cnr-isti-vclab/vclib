@@ -87,7 +87,7 @@ void Lines::setLineSelections(uint lSelCount, const BooleanBuffer& lineSels)
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
-void Lines::draw(bgfx::ViewId viewId) const
+void Lines::draw(bgfx::ViewId viewId, uint64_t state) const
 {
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
@@ -124,14 +124,12 @@ void Lines::draw(bgfx::ViewId viewId) const
     }
 
     bgfx::setVertexCount(vertexPullingInstances());
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
+    bgfx::setState(state);
     LinesUniforms::bind();
     bgfx::submit(viewId, mProgram);
 }
 
-void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
+void Lines::drawId(bgfx::ViewId viewId, uint32_t id, uint64_t state) const
 {
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
@@ -152,10 +150,7 @@ void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
     }
 
     bgfx::setVertexCount(vertexPullingInstances());
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LEQUAL |
-        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
+    bgfx::setState(state);
     LinesUniforms::bind();
     bgfx::submit(viewId, mIdProgram);
 }
