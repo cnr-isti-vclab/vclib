@@ -11,6 +11,8 @@
 #include <vclib/render/input.h>
 #include <vclib/render/viewer/trackball.h>
 
+#include <nlohmann/json_fwd.hpp>
+
 namespace vcl {
 
 /**
@@ -18,90 +20,161 @@ namespace vcl {
  */
 struct TrackballSettings
 {
-    using DragMotionMap = BindingMap<
-        std::pair<MouseButton::Enum, KeyModifiers>,
-        TrackballMotionType>;
-    using ScrollAtomicMap = BindingMap<
+    using DragMotionMap   = InputActionMap<MouseInput, TrackballMotionType>;
+    using ScrollAtomicMap = InputActionMap<
         std::pair<ScrollAxis::Enum, KeyModifiers>,
         TrackballMotionType>;
     using KeyAtomicMap =
-        BindingMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+        InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+    using MouseAtomicMap = InputActionMap<MouseInput, TrackballMotionType>;
 
     DragMotionMap   dragMotionMap   = defaultDragMotionMap();
     ScrollAtomicMap scrollAtomicMap = defaultScrollMotionMap();
     KeyAtomicMap    keyAtomicMap    = defaultKeyAtomicMap();
+    MouseAtomicMap  mouseAtomicMap  = defaultMouseAtomicMap();
+
+    /**
+     * @brief Resets the settings and bindings to their default values.
+     */
+    void resetDefaults()
+    {
+        dragMotionMap.resetToDefaults();
+        scrollAtomicMap.resetToDefaults();
+        keyAtomicMap.resetToDefaults();
+        mouseAtomicMap.resetToDefaults();
+    }
+
+    /**
+     * @brief Retrieves the action maps associated with the trackball.
+     */
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+    {
+        return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
+    }
+
+    /**
+     * @brief Retrieves the action maps associated with the trackball.
+     */
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const
+    {
+        return {dragMotionMap, scrollAtomicMap, keyAtomicMap, mouseAtomicMap};
+    }
+
+    /**
+     * @brief Loads the bindings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
+    void loadSettings(const nlohmann::json& j)
+    {
+        for (auto& map : actionMaps()) {
+            map.get().loadSettings(j);
+        }
+    }
+
+    /**
+     * @brief Saves the bindings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
+    void saveSettings(nlohmann::json& j) const
+    {
+        for (const auto& map : actionMaps()) {
+            map.get().saveSettings(j);
+        }
+    }
 
 private:
     static DragMotionMap defaultDragMotionMap()
     {
         using enum MouseButton::Enum;
         using enum KeyModifier::Enum;
+
         using enum TrackballMotionType;
 
-        return DragMotionMap {
-            {{LEFT, {NO_MODIFIER}},    ARC          },
-            {{LEFT, {CONTROL}},        PAN          },
-            {{LEFT, {ALT}},            ZMOVE        },
-            {{LEFT, {SHIFT}},          SCALE        },
-            {{MIDDLE, {NO_MODIFIER}},  PAN          },
-            {{MIDDLE, {CONTROL}},      ROLL         },
-            {{LEFT, {SHIFT, CONTROL}}, DIR_LIGHT_ARC},
-        };
+        DragMotionMap map("Trackball Drag Motions");
+        map.registerActions({
+            {ARC,
+             "Arcball Rotation",                  {MouseInput {LEFT, {NO_MODIFIER}, false}}   },
+            {PAN,           "Pan",                {MouseInput {LEFT, {CONTROL}, false}}       },
+            {ZMOVE,         "Zoom (Translation)", {MouseInput {LEFT, {ALT}, false}}           },
+            {SCALE,         "Scale",              {MouseInput {LEFT, {SHIFT}, false}}         },
+            {ROLL,          "Roll",               {MouseInput {MIDDLE, {CONTROL}, false}}     },
+            {DIR_LIGHT_ARC,
+             "Light Rotation",                    {MouseInput {LEFT, {SHIFT, CONTROL}, false}}}
+        });
+        return map;
     }
 
     static ScrollAtomicMap defaultScrollMotionMap()
     {
         using enum KeyModifier::Enum;
         using enum TrackballMotionType;
+        using Input = std::pair<ScrollAxis::Enum, KeyModifiers>;
 
-        return ScrollAtomicMap {
-            {{ScrollAxis::VERTICAL, {NO_MODIFIER}}, SCALE},
-            {{ScrollAxis::VERTICAL, {CONTROL}},     ROLL },
-            {{ScrollAxis::VERTICAL, {SHIFT}},       FOV  },
-#ifdef __APPLE__
-            {{ScrollAxis::HORIZONTAL, {SHIFT}},     FOV  },
-#endif
-        };
+        ScrollAtomicMap map("Trackball Scroll Motions");
+        map.registerActions({
+            {SCALE, "Scale",  {Input {ScrollAxis::VERTICAL, {NO_MODIFIER}}}        },
+            {ROLL,  "Roll",   {Input {ScrollAxis::VERTICAL, {CONTROL}}}            },
+            {FOV,
+             "Field of View", {Input {ScrollAxis::VERTICAL, {SHIFT}},
+              Input {ScrollAxis::HORIZONTAL, {SHIFT}}}}
+        });
+        return map;
+    }
+
+    static MouseAtomicMap defaultMouseAtomicMap()
+    {
+        using enum MouseButton::Enum;
+        using enum KeyModifier::Enum;
+        using enum TrackballMotionType;
+
+        MouseAtomicMap map("Trackball Mouse Atomic Motions");
+        map.registerActions({
+            {FOCUS,
+             "Focus on Object", {MouseInput {LEFT, {NO_MODIFIER}, true}}}
+        });
+        return map;
     }
 
     static KeyAtomicMap defaultKeyAtomicMap()
     {
         using enum Key::Enum;
         using enum KeyModifier::Enum;
+        using Input = std::pair<Key::Enum, KeyModifiers>;
 
-        return KeyAtomicMap {
-            {{R, {NO_MODIFIER}},       "Reset Trackball"        },
-            {{R, {CONTROL, SHIFT}},    "Reset Directional Light"},
-
-            // rotate
-            {{NP_2, {NO_MODIFIER}},    "Rotate X+"              },
-            {{NP_4, {NO_MODIFIER}},    "Rotate Y-"              },
-            {{NP_6, {NO_MODIFIER}},    "Rotate Y+"              },
-            {{NP_8, {NO_MODIFIER}},    "Rotate X-"              },
-
-            // translate
-            {{UP, {NO_MODIFIER}},      "Translate Y+"           },
-            {{DOWN, {NO_MODIFIER}},    "Translate Y-"           },
-            {{LEFT, {NO_MODIFIER}},    "Translate X-"           },
-            {{RIGHT, {NO_MODIFIER}},   "Translate X+"           },
-
-            // set view
-            {{NP_1, {NO_MODIFIER}},    "View Front"             },
-            {{NP_7, {NO_MODIFIER}},    "View Top"               },
-            {{NP_3, {NO_MODIFIER}},    "View Right"             },
-            {{NP_1, {CONTROL}},        "View Back"              },
-            {{NP_7, {CONTROL}},        "View Bottom"            },
-            {{NP_3, {CONTROL}},        "View Left"              },
-
-            // projection mode
-            {{NP_5, {NO_MODIFIER}},    "Toggle Projection"      },
-
-            // rotate light
-            {{NP_2, {CONTROL, SHIFT}}, "Rotate Light X+"        },
-            {{NP_4, {CONTROL, SHIFT}}, "Rotate Light Y-"        },
-            {{NP_6, {CONTROL, SHIFT}}, "Rotate Light Y+"        },
-            {{NP_8, {CONTROL, SHIFT}}, "Rotate Light X-"        },
-        };
+        KeyAtomicMap map("Trackball Key Motions");
+        map.registerActions({
+            // bound to Ctrl+R (not plain R) to avoid clashing with the
+            // viewer's global "Fit Scene" action, also bound to R
+            {"Reset Trackball",         "Reset Trackball", {Input {R, {CONTROL}}}          },
+            {"Reset Directional Light",
+             "Reset Directional Light",                    {Input {R, {CONTROL, SHIFT}}}   },
+            {"Rotate X+",               "Rotate X+",       {Input {NP_2, {NO_MODIFIER}}}   },
+            {"Rotate Y-",               "Rotate Y-",       {Input {NP_4, {NO_MODIFIER}}}   },
+            {"Rotate Y+",               "Rotate Y+",       {Input {NP_6, {NO_MODIFIER}}}   },
+            {"Rotate X-",               "Rotate X-",       {Input {NP_8, {NO_MODIFIER}}}   },
+            {"Translate Y+",            "Translate Y+",    {Input {UP, {NO_MODIFIER}}}     },
+            {"Translate Y-",            "Translate Y-",    {Input {DOWN, {NO_MODIFIER}}}   },
+            {"Translate X-",            "Translate X-",    {Input {LEFT, {NO_MODIFIER}}}   },
+            {"Translate X+",            "Translate X+",    {Input {RIGHT, {NO_MODIFIER}}}  },
+            {"View Front",              "View Front",      {Input {NP_1, {NO_MODIFIER}}}   },
+            {"View Top",                "View Top",        {Input {NP_7, {NO_MODIFIER}}}   },
+            {"View Right",              "View Right",      {Input {NP_3, {NO_MODIFIER}}}   },
+            {"View Back",               "View Back",       {Input {NP_1, {CONTROL}}}       },
+            {"View Bottom",             "View Bottom",     {Input {NP_7, {CONTROL}}}       },
+            {"View Left",               "View Left",       {Input {NP_3, {CONTROL}}}       },
+            {"Toggle Projection",
+             "Toggle Projection",                          {Input {NP_5, {NO_MODIFIER}}}   },
+            {"Rotate Light X+",
+             "Rotate Light X+",                            {Input {NP_2, {CONTROL, SHIFT}}}},
+            {"Rotate Light Y-",
+             "Rotate Light Y-",                            {Input {NP_4, {CONTROL, SHIFT}}}},
+            {"Rotate Light Y+",
+             "Rotate Light Y+",                            {Input {NP_6, {CONTROL, SHIFT}}}},
+            {"Rotate Light X-",
+             "Rotate Light X-",                            {Input {NP_8, {CONTROL, SHIFT}}}}
+        });
+        return map;
     }
 };
 

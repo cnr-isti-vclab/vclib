@@ -24,16 +24,11 @@ namespace vcl {
  */
 struct DrawObjectSettingsBGFX
 {
-    inline static const uint N_ADDITIONAL_VIEWS = 4;
-
     /**< @brief The object ID to assign to the object. */
     uint objectId = 0;
 
     /**< @brief The view ID on which to draw the object. */
     uint viewId = 0;
-
-    std::array<uint, N_ADDITIONAL_VIEWS> additionalViewIds =
-        makeArray<uint, N_ADDITIONAL_VIEWS>(BGFX_INVALID_VIEW);
 
     RenderMode renderMode = RenderMode::CLASSIC;
 

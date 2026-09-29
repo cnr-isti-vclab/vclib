@@ -87,10 +87,7 @@ public:
      * @brief Sets the vector length for vectors topology.
      * @param length The uniform vector length.
      */
-    static void setVectorLength(float length)
-    {
-        sLinesSettings2[1] = length;
-    }
+    static void setVectorLength(float length) { sLinesSettings2[1] = length; }
 
     /**
      * @brief Binds the uniform to the current bgfx context.

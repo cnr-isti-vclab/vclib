@@ -156,6 +156,10 @@ public:
         }
 
         updateBuffers({MRI::Buffers::VERT_SELECTION});
+
+        if (mOnSelectionUpdated) {
+            mOnSelectionUpdated();
+        }
     }
 
     vcl::BitVector<true> faceSelectionBitVector() const override
@@ -185,6 +189,10 @@ public:
             }
 
             updateBuffers({MRI::Buffers::FACE_SELECTION});
+
+            if (mOnSelectionUpdated) {
+                mOnSelectionUpdated();
+            }
         }
     }
 
@@ -287,18 +295,18 @@ public:
         if (mMRS.isWireframe(MRI::Wireframe::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawWireframeLines(settings.additionalViewIds[0]);
+            mMRB.drawWireframeLines(settings.viewId);
         }
 
         if (mMRS.isEdges(MRI::Edges::VISIBLE)) {
             bgfx::setTransform(model.data());
 
-            mMRB.drawEdgeLines(settings.additionalViewIds[0]);
+            mMRB.drawEdgeLines(settings.viewId);
         }
 
         if (mMRS.isPoints(MRI::Points::VISIBLE)) {
             bgfx::setTransform(model.data());
-            mMRB.drawPoints(settings.additionalViewIds[1]);
+            mMRB.drawPoints(settings.viewId);
         }
 
         if (mMRB.selectionReadback(*this)) {

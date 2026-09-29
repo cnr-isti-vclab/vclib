@@ -31,13 +31,13 @@ ShowNormalsEditorSettingsFrame::ShowNormalsEditorSettingsFrame(
 
     connect(
         mUI->showVertexNormalsCheckBox,
-        &QCheckBox::stateChanged,
+        &QCheckBox::checkStateChanged,
         this,
         &ShowNormalsEditorSettingsFrame::onShowVertexNormalsChanged);
 
     connect(
         mUI->showFaceNormalsCheckBox,
-        &QCheckBox::stateChanged,
+        &QCheckBox::checkStateChanged,
         this,
         &ShowNormalsEditorSettingsFrame::onShowFaceNormalsChanged);
 
@@ -120,15 +120,17 @@ void ShowNormalsEditorSettingsFrame::editModeChanged(int index)
     emit settingsUpdated();
 }
 
-void ShowNormalsEditorSettingsFrame::onShowVertexNormalsChanged(int state)
+void ShowNormalsEditorSettingsFrame::onShowVertexNormalsChanged(
+    Qt::CheckState state)
 {
-    mSettings.showVertexNormals = (state == Qt::Checked);
+    mSettings.showVertexNormals = (state == Qt::CheckState::Checked);
     emit settingsUpdated();
 }
 
-void ShowNormalsEditorSettingsFrame::onShowFaceNormalsChanged(int state)
+void ShowNormalsEditorSettingsFrame::onShowFaceNormalsChanged(
+    Qt::CheckState state)
 {
-    mSettings.showFaceNormals = (state == Qt::Checked);
+    mSettings.showFaceNormals = (state == Qt::CheckState::Checked);
     emit settingsUpdated();
 }
 

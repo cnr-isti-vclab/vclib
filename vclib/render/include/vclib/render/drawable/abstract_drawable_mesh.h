@@ -15,7 +15,7 @@
 #include <vclib/render/settings/cross_section_settings.h>
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/mesh.h>
+#include <vclib/meshes.h>
 #include <vclib/space/core.h>
 
 #include <functional>

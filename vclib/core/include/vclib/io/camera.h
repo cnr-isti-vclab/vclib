@@ -9,5 +9,6 @@
 #define VCL_IO_CAMERA_H
 
 #include "camera/load.h"
+#include "camera/save.h"
 
 #endif // VCL_IO_CAMERA_H

@@ -26,6 +26,15 @@ namespace vcl {
 class Lines
 {
 public:
+    static const uint64_t DEFAULT_DRAW_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
+
+    static const uint64_t DEFAULT_DRAW_ID_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+
     /**
      * @brief Specifies how line colors are determined during rendering.
      */
@@ -43,9 +52,10 @@ public:
      * - LINE_STRIP: Lines are defined by a strip of vertices, where each vertex
      *     after the first forms a line segment with the previous vertex.
      *     (vertices 0-1 form line 1, vertices 1-2 form line 2, etc.)
-     * - VECTORS: Lines are defined by consecutive pairs of vertices, but the second
-     *     vertex is interpreted as a direction vector rather than an absolute position.
-     *     The final endpoint is computed as `pos0 + dir * vectorLength`.
+     * - VECTORS: Lines are defined by consecutive pairs of vertices, but the
+     * second vertex is interpreted as a direction vector rather than an
+     * absolute position. The final endpoint is computed as `pos0 + dir *
+     * vectorLength`.
      *
      * The topology determines how the vertex data is interpreted to form lines.
      * The default is LINES.
@@ -626,9 +636,14 @@ public:
      */
     float vectorLength() const { return mVectorLength; }
 
-    void draw(bgfx::ViewId viewId) const;
+    void draw(
+        bgfx::ViewId viewId,
+        uint64_t     state = DEFAULT_DRAW_STATE) const;
 
-    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+    void drawId(
+        bgfx::ViewId viewId,
+        uint32_t     id,
+        uint64_t     state = DEFAULT_DRAW_ID_STATE) const;
 
 private:
     void                checkAndUpdateProgram() const;

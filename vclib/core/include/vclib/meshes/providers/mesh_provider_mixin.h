@@ -5,16 +5,13 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
-#define VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
+#ifndef VCL_MESHES_PROVIDERS_MESH_PROVIDER_MIXIN_H
+#define VCL_MESHES_PROVIDERS_MESH_PROVIDER_MIXIN_H
 
 #include "abstract_mesh_provider.h"
 
-#include <vclib/mesh/elem_algorithms/polygon/geometry.h>
-#include <vclib/mesh/elem_algorithms/selection.h>
-#include <vclib/mesh/requirements/mesh_requirements.h>
-
-#include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
 
 #include <type_traits>
 
@@ -287,4 +284,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MESH_PROVIDERS_MESH_PROVIDER_MIXIN_H
+#endif // VCL_MESHES_PROVIDERS_MESH_PROVIDER_MIXIN_H

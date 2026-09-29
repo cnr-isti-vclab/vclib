@@ -5,12 +5,12 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_MESH_PROVIDERS_H
-#define VCL_MESH_PROVIDERS_H
+#ifndef VCL_MESHES_MESH_PROVIDER_H
+#define VCL_MESHES_MESH_PROVIDER_H
 
 /**
  * @defgroup mesh_providers Mesh Providers
- * @ingroup mesh
+ * @ingroup meshes
  * @brief Interfaces and mixins to expose mesh data in a type-erased way.
  */
 
@@ -18,4 +18,4 @@
 #include "providers/mesh_provider.h"
 #include "providers/mesh_provider_mixin.h"
 
-#endif // VCL_MESH_PROVIDERS_H
+#endif // VCL_MESHES_MESH_PROVIDER_H

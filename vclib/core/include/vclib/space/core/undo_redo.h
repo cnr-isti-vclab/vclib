@@ -5,13 +5,11 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
-#define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
+#ifndef VCL_SPACE_CORE_UNDO_REDO_H
+#define VCL_SPACE_CORE_UNDO_REDO_H
 
-#include <vclib/bgfx/shaders_common.sh>
+#include "undo_redo/composite_undo_redo_action.h"
+#include "undo_redo/undo_redo_action.h"
+#include "undo_redo/undo_redo_stack.h"
 
-#include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
-
-uniform vec4 u_axisColor;
-
-#endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_UNIFORMS_SH
+#endif // VCL_SPACE_CORE_UNDO_REDO_H

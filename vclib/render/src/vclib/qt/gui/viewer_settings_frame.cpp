@@ -9,6 +9,8 @@
 
 #include "ui_viewer_settings_frame.h"
 
+#include <vclib/qt/gui/dialog_directories.h>
+
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -186,14 +188,20 @@ void ViewerSettingsFrame::drawBackgroundPanoramaCheckBoxCheckStateChanged(
 
 void ViewerSettingsFrame::loadPanoramaPushButtonClicked()
 {
+    QString lastDir = dialogDirectory("LoadPanorama", mSettingsFilePath);
+
     // open a file dialog asking for a *.hdr file
     QString fileName = QFileDialog::getOpenFileName(
         this,
         tr("Load Panorama"),
-        "",
+        lastDir,
         tr("HDR Images (*.hdr *.exr *.ktx *.dds)"));
 
     if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "LoadPanorama",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
         mSettings.panoramaPath = fileName.toStdString();
         updatePanoramaLabel();
         emit settingsChanged(mSettings);

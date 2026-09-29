@@ -79,20 +79,6 @@ public:
         for (auto& obj : *(ParentViewer::mDrawList))
             obj->draw();
     }
-
-    // events
-    bool onMouseDoubleClick(
-        MouseButton::Enum   button,
-        double              x,
-        double              y,
-        const KeyModifiers& modifiers) override
-    {
-        bool block = ParentViewer::onMouseDoubleClick(button, x, y, modifiers);
-        if (!block && button == MouseButton::LEFT) {
-            ParentViewer::readDepthRequest(x, y);
-        }
-        return block;
-    }
 };
 
 } // namespace vcl

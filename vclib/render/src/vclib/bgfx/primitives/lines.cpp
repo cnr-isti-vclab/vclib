@@ -88,7 +88,7 @@ void Lines::setLineSelections(uint lSelCount, const BooleanBuffer& lineSels)
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
-void Lines::draw(bgfx::ViewId viewId) const
+void Lines::draw(bgfx::ViewId viewId, uint64_t state) const
 {
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
@@ -125,9 +125,7 @@ void Lines::draw(bgfx::ViewId viewId) const
     }
 
     bgfx::setVertexCount(vertexPullingInstances());
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
+    bgfx::setState(state);
     LinesUniforms::bind();
 
     if (mCrossSectionSettings.isEnabled()) {
@@ -145,7 +143,7 @@ void Lines::draw(bgfx::ViewId viewId) const
     bgfx::submit(viewId, mProgram);
 }
 
-void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
+void Lines::drawId(bgfx::ViewId viewId, uint32_t id, uint64_t state) const
 {
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
         return;
@@ -166,10 +164,7 @@ void Lines::drawId(bgfx::ViewId viewId, uint32_t id) const
     }
 
     bgfx::setVertexCount(vertexPullingInstances());
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LEQUAL |
-        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
+    bgfx::setState(state);
     LinesUniforms::bind();
 
     if (mCrossSectionSettings.isEnabled()) {
@@ -199,7 +194,8 @@ void Lines::checkAndUpdateProgram() const
     // Validate that buffer capacities match the expected topology rules.
     // E.g., LINES requires pairs, and LINE_STRIP requires at least 2 points.
 
-    if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && nv % 2 != 0) {
+    if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+        nv % 2 != 0) {
         throw std::runtime_error(
             "Lines: For LINES or VECTORS topology, the number of " + primstr +
             " must be even (each line requires 2 endpoints).");
@@ -228,7 +224,8 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE color setting requires a valid line color "
                 "buffer.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineColorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineColorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line colors must match the number of "
                 "lines (" +
@@ -260,7 +257,8 @@ void Lines::checkAndUpdateProgram() const
                 "Lines: PER_LINE shading setting requires a valid line normal "
                 "buffer.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineNorCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineNorCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line normals must match the number of "
                 "lines (" +
@@ -281,7 +279,8 @@ void Lines::checkAndUpdateProgram() const
                 "buffer "
                 "is invalid.");
         }
-        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) && mLineSelCount != nv / 2) {
+        if ((mTopology == Topology::LINES || mTopology == Topology::VECTORS) &&
+            mLineSelCount != nv / 2) {
             throw std::runtime_error(
                 "Lines: The number of line selection elements must match the "
                 "number of "

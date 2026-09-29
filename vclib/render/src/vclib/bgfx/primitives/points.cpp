@@ -121,7 +121,7 @@ void Points::setVertexSelection(uint vSelCount, const BooleanBuffer& vertSels)
  *
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  */
-void Points::draw(bgfx::ViewId viewId) const
+void Points::draw(bgfx::ViewId viewId, uint64_t state) const
 {
     // Skip rendering if there are no vertices or the position buffer is invalid
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
@@ -157,9 +157,7 @@ void Points::draw(bgfx::ViewId viewId) const
 
     bgfx::setVertexCount(mVerPosCount * 6);
 
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA);
+    bgfx::setState(state);
 
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
@@ -186,7 +184,7 @@ void Points::draw(bgfx::ViewId viewId) const
  * @param[in] viewId: The bgfx view ID to submit the rendering commands to.
  * @param[in] id: The ID to render the points with.
  */
-void Points::drawId(bgfx::ViewId viewId, uint32_t id) const
+void Points::drawId(bgfx::ViewId viewId, uint32_t id, uint64_t state) const
 {
     // Skip rendering if there are no vertices or the position buffer is invalid
     if (mVerPosCount == 0 || !mVertexPositions.isValid()) {
@@ -207,10 +205,7 @@ void Points::drawId(bgfx::ViewId viewId, uint32_t id) const
 
     bgfx::setVertexCount(mVerPosCount * 6);
 
-    bgfx::setState(
-        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-        BGFX_STATE_DEPTH_TEST_LEQUAL |
-        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO));
+    bgfx::setState(state);
 
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
