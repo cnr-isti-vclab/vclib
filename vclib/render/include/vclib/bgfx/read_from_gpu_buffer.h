@@ -166,6 +166,12 @@ public:
     Source source() const;
     Target target() const;
 
+    bgfx::ViewMode::Enum preferredViewMode() const
+    {
+        return (mTarget == Target::ID) ? bgfx::ViewMode::Sequential :
+                                         bgfx::ViewMode::Default;
+    }
+
     Point2<uint> size() const { return mSize; }
 
     // -------------------------------------------------------------------------
