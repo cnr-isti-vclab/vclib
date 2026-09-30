@@ -479,9 +479,7 @@ public:
         mIsUpdateProgramNeeded = true;
     }
 
-    void draw(
-        bgfx::ViewId viewId,
-        uint64_t     state = DEFAULT_DRAW_STATE) const;
+    void draw(bgfx::ViewId viewId, uint64_t state = DEFAULT_DRAW_STATE) const;
 
     void drawId(
         bgfx::ViewId viewId,
