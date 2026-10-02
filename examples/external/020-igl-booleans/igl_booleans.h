@@ -32,4 +32,24 @@ auto meshBooleans()
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }
 
+auto polyMeshBooleans()
+{
+    using namespace vcl;
+    using namespace vcl::igl;
+
+    PolyMesh m1;
+    loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj");
+
+    PolyMesh m2;
+    loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/maneki_neko.ply");
+
+    PolyMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
+    mUnion.name()  = "union";
+
+    PolyMesh mIntersection = meshBoolean(m1, m2, MeshBoolean::INTERSECTION);
+    mIntersection.name()  = "intersection";
+
+    return std::make_tuple(m1, m2, mUnion, mIntersection);
+}
+
 #endif // IGL_BOOLEANS_H
