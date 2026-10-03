@@ -249,42 +249,50 @@ Eigen::MatrixXi rebuildPolygons(
     return FRPoly;
 }
 
-template<typename MeshType>
-void transferFaceColors(
+template<uint COMP_ID, typename MeshType>
+void transferFaceComponents(
     const MeshType&        m0,
     const MeshType&        m1,
     const Eigen::VectorXi& indices,
-    MeshType&              out)
+    MeshType&              out,
+    auto placeHolder)
 {
-    if constexpr (vcl::HasPerFaceColor<MeshType>) {
-        bool m0HasColor = vcl::isPerFaceColorAvailable(m0);
-        bool m1HasColor = vcl::isPerFaceColorAvailable(m1);
+    constexpr uint F = vcl::ElemId::FACE;
 
-        if (!m0HasColor && !m1HasColor) {
+    if constexpr (
+        MeshType::
+            template hasPerElementComponent<F, COMP_ID>()) {
+
+        bool m0HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m0);
+        bool m1HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m1);
+
+        if (!m0HasComp && !m1HasComp) {
             return;
         }
 
-        vcl::enableIfPerFaceColorOptional(out);
+        vcl::enableIfPerElementComponentOptional<F, COMP_ID>(out);
 
         uint i       = 0;
         uint m0Faces = m0.faceContainerSize();
         for (auto& f : out.faces()) {
             int originalIdx = indices[i];
             if (originalIdx < (int) m0Faces) {
-                if (m0HasColor) {
-                    f.color() = m0.face(originalIdx).color();
+                if (m0HasComp) {
+                    f.template componentValue<COMP_ID>() =
+                        m0.face(originalIdx).template componentValue<COMP_ID>();
                 }
                 else {
-                    f.color() = vcl::Color::Gray;
+                    f.template componentValue<COMP_ID>() = placeHolder;
                 }
             }
             else {
                 int m1Idx = originalIdx - m0Faces;
-                if (m1HasColor) {
-                    f.color() = m1.face(m1Idx).color();
+                if (m1HasComp) {
+                    f.template componentValue<COMP_ID>() =
+                        m1.face(m1Idx).template componentValue<COMP_ID>();
                 }
                 else {
-                    f.color() = vcl::Color::Gray;
+                    f.template componentValue<COMP_ID>() = placeHolder;
                 }
             }
             ++i;
@@ -393,12 +401,19 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
     }
 
     // TODO: before returning, we should post-process the output mesh to
-    // transfer the attributes (e.g., vertex colors, etc.) from the
+    // transfer the vertex attributes (e.g., vertex colors, etc.) from the
     // input meshes to the output mesh.
 
     auto out = vcl::meshFromMatrices<MeshType>(VR, FR);
 
-    detail::transferFaceColors(m0, m1, indices, out);
+    using NormalType = typename MeshType::FaceType::NormalType;
+
+    detail::transferFaceComponents<vcl::CompId::NORMAL>(
+        m0, m1, indices, out, NormalType());
+    detail::transferFaceComponents<vcl::CompId::COLOR>(
+        m0, m1, indices, out, Color::Gray);
+    detail::transferFaceComponents<vcl::CompId::QUALITY>(
+        m0, m1, indices, out, 0.0);
 
     return out;
 }

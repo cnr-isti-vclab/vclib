@@ -20,11 +20,13 @@ auto meshBooleans()
 
     TriMesh m1;
     loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    vcl::updatePerVertexAndFaceNormals(m1);
     m1.enablePerFaceColor();
     setPerFaceColor(m1, vcl::Color::LightRed);
 
     TriMesh m2;
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    vcl::updatePerVertexAndFaceNormals(m2);
     m2.enablePerFaceColor();
     setPerFaceColor(m2, vcl::Color::LightBlue);
 
@@ -44,9 +46,11 @@ auto polyMeshBooleans()
 
     PolyMesh m1;
     loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj");
+    vcl::updatePerVertexAndFaceNormals(m1);
 
     PolyMesh m2;
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/maneki_neko.ply");
+    vcl::updatePerVertexAndFaceNormals(m2);
 
     PolyMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
     mUnion.name()   = "union";

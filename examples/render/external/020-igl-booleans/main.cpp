@@ -13,17 +13,13 @@ int main(int argc, char** argv)
 {
     auto [tm1, tm2, tUnion, tIntersection] = meshBooleans();
 
-    vcl::updatePerVertexAndFaceNormals(tm1);
-    vcl::updatePerVertexAndFaceNormals(tm2);
-    vcl::updatePerVertexAndFaceNormals(tUnion);
-    vcl::updatePerVertexAndFaceNormals(tIntersection);
+    vcl::updatePerVertexNormalsFromFaceNormals(tUnion);
+    vcl::updatePerVertexNormalsFromFaceNormals(tIntersection);
 
     auto [pm1, pm2, pUnion, pIntersection] = polyMeshBooleans();
 
-    vcl::updatePerVertexAndFaceNormals(pm1);
-    vcl::updatePerVertexAndFaceNormals(pm2);
-    vcl::updatePerVertexAndFaceNormals(pUnion);
-    vcl::updatePerVertexAndFaceNormals(pIntersection);
+    vcl::updatePerVertexNormalsFromFaceNormals(pUnion);
+    vcl::updatePerVertexNormalsFromFaceNormals(pIntersection);
 
     return vcl::showOnMeshViewer(
         argc,
