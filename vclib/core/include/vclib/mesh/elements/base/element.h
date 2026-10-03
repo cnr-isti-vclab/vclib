@@ -103,6 +103,24 @@ public:
         return *static_cast<const Comp*>(this);
     }
 
+    template<uint COMP_ID>
+    auto& componentValue()
+    {
+        static_assert(COMP_ID != CompId::CUSTOM_COMPONENTS,
+                      "CustomComponents do not have a single value.");
+        using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
+        return this->Comp::data();
+    }
+
+    template<uint COMP_ID>
+    const auto& componentValue() const
+    {
+        static_assert(COMP_ID != CompId::CUSTOM_COMPONENTS,
+                      "CustomComponents do not have a single value.");
+        using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
+        return this->Comp::data();
+    }
+
     template<typename ElType>
     void importFrom(const ElType& v, bool importRefs = true)
     {
