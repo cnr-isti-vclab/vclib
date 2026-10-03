@@ -44,10 +44,10 @@ auto polyMeshBooleans()
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/maneki_neko.ply");
 
     PolyMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
-    mUnion.name()  = "union";
+    mUnion.name()   = "union";
 
     PolyMesh mIntersection = meshBoolean(m1, m2, MeshBoolean::INTERSECTION);
-    mIntersection.name()  = "intersection";
+    mIntersection.name()   = "intersection";
 
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }
