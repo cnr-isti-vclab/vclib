@@ -55,6 +55,7 @@ Eigen::MatrixXi rebuildPolygons(
     const Eigen::MatrixX3i&  FR,
     const Eigen::VectorXi&   indices,
     uint                     F0Rows,
+    uint                     m0FaceContainerSize,
     const TriPolyIndexBiMap& m0BiMap,
     const TriPolyIndexBiMap& m1BiMap,
     Eigen::VectorXi&         outIndices)
@@ -64,7 +65,7 @@ Eigen::MatrixXi rebuildPolygons(
     std::vector<int> globalPolyIds(FR.rows());
 
     // number of polygons in m0 to offset the global IDs for m1 polygons
-    uint m0PolyCount = m0BiMap.polygonCount();
+    uint m0PolyCount = m0FaceContainerSize;
 
     for (int i = 0; i < FR.rows(); ++i) {
         int j = indices[i];
@@ -248,6 +249,49 @@ Eigen::MatrixXi rebuildPolygons(
     return FRPoly;
 }
 
+template<typename MeshType>
+void transferFaceColors(
+    const MeshType&        m0,
+    const MeshType&        m1,
+    const Eigen::VectorXi& indices,
+    MeshType&              out)
+{
+    if constexpr (vcl::HasPerFaceColor<MeshType>) {
+        bool m0HasColor = vcl::isPerFaceColorAvailable(m0);
+        bool m1HasColor = vcl::isPerFaceColorAvailable(m1);
+
+        if (!m0HasColor && !m1HasColor) {
+            return;
+        }
+
+        vcl::enableIfPerFaceColorOptional(out);
+
+        uint i       = 0;
+        uint m0Faces = m0.faceContainerSize();
+        for (auto& f : out.faces()) {
+            int originalIdx = indices[i];
+            if (originalIdx < (int) m0Faces) {
+                if (m0HasColor) {
+                    f.color() = m0.face(originalIdx).color();
+                }
+                else {
+                    f.color() = vcl::Color::Gray;
+                }
+            }
+            else {
+                int m1Idx = originalIdx - m0Faces;
+                if (m1HasColor) {
+                    f.color() = m1.face(m1Idx).color();
+                }
+                else {
+                    f.color() = vcl::Color::Gray;
+                }
+            }
+            ++i;
+        }
+    }
+}
+
 } // namespace detail
 
 enum class MeshBoolean : int {
@@ -316,18 +360,47 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
             "(closed).");
     }
 
+    Eigen::VectorXi outIndices;
     if constexpr (vcl::PolygonMeshConcept<MeshType>) {
-        Eigen::VectorXi outIndices;
         FR = detail::rebuildPolygons<ScalarType>(
-            FR, indices, F0.rows(), m0BiMap, m1BiMap, outIndices);
+            FR,
+            indices,
+            F0.rows(),
+            m0.faceContainerSize(),
+            m0BiMap,
+            m1BiMap,
+            outIndices);
         indices = outIndices; // to map back to original polygon indices
+    }
+    else {
+        // if one of the meshes has deleted faces, we need to remap the indices
+        // to the original face indices
+        if (m0.faceContainerSize() != m0.faceCount() ||
+            m1.faceContainerSize() != m1.faceCount()) {
+            outIndices.resize(indices.size());
+            uint m0Size = m0.faceContainerSize();
+            for (int i = 0; i < indices.size(); ++i) {
+                int j = indices[i];
+                if (j < F0.rows()) {
+                    outIndices[i] = m0BiMap.polygon(j);
+                }
+                else {
+                    outIndices[i] = m0Size + m1BiMap.polygon(j - F0.rows());
+                }
+            }
+            indices = outIndices;
+        }
     }
 
     // TODO: before returning, we should post-process the output mesh to
-    // transfer the attributes (e.g., vertex colors, face colors, etc.) from the
+    // transfer the attributes (e.g., vertex colors, etc.) from the
     // input meshes to the output mesh.
 
-    return vcl::meshFromMatrices<MeshType>(VR, FR);
+    auto out = vcl::meshFromMatrices<MeshType>(VR, FR);
+
+    detail::transferFaceColors(m0, m1, indices, out);
+
+    return out;
 }
 
 } // namespace vcl::igl

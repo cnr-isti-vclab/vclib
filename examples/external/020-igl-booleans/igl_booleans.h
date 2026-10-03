@@ -8,6 +8,7 @@
 #ifndef IGL_BOOLEANS_H
 #define IGL_BOOLEANS_H
 
+#include <vclib/algorithms/mesh.h>
 #include <vclib/igl/booleans.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
@@ -19,9 +20,13 @@ auto meshBooleans()
 
     TriMesh m1;
     loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    m1.enablePerFaceColor();
+    setPerFaceColor(m1, vcl::Color::LightRed);
 
     TriMesh m2;
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    m2.enablePerFaceColor();
+    setPerFaceColor(m2, vcl::Color::LightBlue);
 
     TriMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
     mUnion.name()  = "union";
