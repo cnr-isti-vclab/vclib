@@ -361,23 +361,26 @@ protected:
     }
 
     /**
-     * @brief Requests the viewer to read the ID of the object at the given
-     * screen coordinates.
+     * @brief Requests the viewer to read the Object ID, Element Type, and
+     * Element ID of the object at the given screen coordinates.
      *
      * The result is delivered asynchronously via the provided callback.
      *
      * @param[in] x: the x coordinate of the point, in window pixels.
      * @param[in] y: the y coordinate of the point, in window pixels.
-     * @param[in] idCallback: callback invoked with the ID of the object at the
-     * given coordinates once the read is complete.
+     * @param[in] idCallback: callback invoked with the objectId, elementType,
+     * and elementId
+     * @param[in] radius: the radius of the pixel neighborhood to consider when
+     * reading the ID. If radius is 0, only the pixel at (x, y) is considered.
      */
-    void viewerReadIdRequest(
-        double                    x,
-        double                    y,
-        std::function<void(uint)> idCallback)
+    void viewerReadElementIdRequest(
+        double                                x,
+        double                                y,
+        std::function<void(ushort, ushort, uint)> idCallback,
+        uint                                      radius = 0)
     {
         assert(mViewer);
-        mViewer->readIdRequest(x, y, std::move(idCallback));
+        mViewer->readElementIdRequest(x, y, std::move(idCallback), radius);
     }
 
     /**
