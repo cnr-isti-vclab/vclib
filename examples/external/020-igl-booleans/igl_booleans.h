@@ -22,13 +22,17 @@ auto meshBooleans()
     loadMesh(m1, VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
     vcl::updatePerVertexAndFaceNormals(m1);
     m1.enablePerFaceColor();
+    m1.enablePerVertexColor();
     setPerFaceColor(m1, vcl::Color::LightRed);
+    setPerVertexColor(m1, vcl::Color::LightMagenta);
 
     TriMesh m2;
     loadMesh(m2, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     vcl::updatePerVertexAndFaceNormals(m2);
     m2.enablePerFaceColor();
+    m2.enablePerVertexColor();
     setPerFaceColor(m2, vcl::Color::LightBlue);
+    setPerVertexColor(m2, vcl::Color::LightYellow);
 
     TriMesh mUnion = meshBoolean(m1, m2, MeshBoolean::UNION);
     mUnion.name()  = "union";

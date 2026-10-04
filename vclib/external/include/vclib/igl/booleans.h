@@ -317,6 +317,117 @@ void transferFaceComponents(
     }
 }
 
+template<typename MeshType, typename VMat, typename FMat>
+void transferVertexComponents(
+    const MeshType&        m0,
+    const MeshType&        m1,
+    MeshType&              out,
+    const VMat&            /*V0*/, // Unused directly since we fetch from mesh
+    const FMat&            F0,
+    const VMat&            /*V1*/,
+    const FMat&            F1,
+    const Eigen::MatrixXi& FR_tri,
+    const Eigen::VectorXi& indices_tri,
+    Color                  colorPlaceHolder)
+{
+    constexpr uint V = vcl::ElemId::VERTEX;
+    using ScalarType = typename MeshType::VertexType::PositionType::ScalarType;
+
+    bool transferColors =
+        vcl::isPerVertexColorAvailable(m0) || vcl::isPerVertexColorAvailable(m1);
+
+    if (!transferColors)
+        return;
+
+    if (transferColors)
+        enableIfPerVertexColorOptional(out);
+
+    uint m0Triangles = F0.rows();
+
+    std::vector<std::array<float, 4>> colorAccum;
+    std::vector<int>                  incidentCount;
+
+    if (transferColors) {
+        colorAccum.resize(out.vertexCount(), {0.0f, 0.0f, 0.0f, 0.0f});
+        incidentCount.resize(out.vertexCount(), 0);
+    }
+
+    for (int i = 0; i < FR_tri.rows(); ++i) {
+        int  birthTriIdx = indices_tri[i];
+        bool fromM0      = birthTriIdx < (int) m0Triangles;
+
+        Eigen::Vector3i birthTri;
+        if (fromM0) {
+            birthTri = F0.row(birthTriIdx);
+        }
+        else {
+            birthTri = F1.row(birthTriIdx - m0Triangles);
+        }
+
+        Point3<ScalarType> p0 = fromM0 ? m0.vertex(birthTri[0]).position()
+                                       : m1.vertex(birthTri[0]).position();
+        Point3<ScalarType> p1 = fromM0 ? m0.vertex(birthTri[1]).position()
+                                       : m1.vertex(birthTri[1]).position();
+        Point3<ScalarType> p2 = fromM0 ? m0.vertex(birthTri[2]).position()
+                                       : m1.vertex(birthTri[2]).position();
+
+        Color c0 = colorPlaceHolder;
+        Color c1 = colorPlaceHolder;
+        Color c2 = colorPlaceHolder;
+
+        if (transferColors) {
+            if (fromM0 && vcl::isPerVertexColorAvailable(m0)) {
+                c0 = m0.vertex(birthTri[0]).color();
+                c1 = m0.vertex(birthTri[1]).color();
+                c2 = m0.vertex(birthTri[2]).color();
+            }
+            else if (!fromM0 && vcl::isPerVertexColorAvailable(m1)) {
+                c0 = m1.vertex(birthTri[0]).color();
+                c1 = m1.vertex(birthTri[1]).color();
+                c2 = m1.vertex(birthTri[2]).color();
+            }
+        }
+
+        for (int j = 0; j < 3; ++j) {
+            int  outVIdx = FR_tri(i, j);
+            auto outP    = out.vertex(outVIdx).position();
+
+            auto bcoords = vcl::Triangle3<ScalarType>::barycentricCoordinates(
+                p0, p1, p2, outP);
+
+            if (transferColors) {
+                float r = c0.red() * bcoords[0] + c1.red() * bcoords[1] +
+                          c2.red() * bcoords[2];
+                float g = c0.green() * bcoords[0] + c1.green() * bcoords[1] +
+                          c2.green() * bcoords[2];
+                float b = c0.blue() * bcoords[0] + c1.blue() * bcoords[1] +
+                          c2.blue() * bcoords[2];
+                float a = c0.alpha() * bcoords[0] + c1.alpha() * bcoords[1] +
+                          c2.alpha() * bcoords[2];
+
+                colorAccum[outVIdx][0] += r;
+                colorAccum[outVIdx][1] += g;
+                colorAccum[outVIdx][2] += b;
+                colorAccum[outVIdx][3] += a;
+                incidentCount[outVIdx]++;
+            }
+        }
+    }
+
+    if (transferColors) {
+        for (uint i = 0; i < out.vertexCount(); ++i) {
+            if (incidentCount[i] > 0) {
+                float inv = 1.0f / incidentCount[i];
+                out.vertex(i).color() = Color(
+                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][0] * inv))),
+                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][1] * inv))),
+                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][2] * inv))),
+                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][3] * inv))));
+            }
+        }
+    }
+}
+
 } // namespace detail
 
 enum class MeshBoolean : int {
@@ -385,6 +496,9 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
             "(closed).");
     }
 
+    Eigen::MatrixXi FR_tri      = FR;
+    Eigen::VectorXi indices_tri = indices;
+
     Eigen::VectorXi outIndices;
     if constexpr (vcl::PolygonMeshConcept<MeshType>) {
         FR = detail::rebuildPolygons<ScalarType>(
@@ -427,6 +541,9 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
 
     detail::transferFaceComponents(
         m0, m1, indices, out, NormalType(), Color::Gray, 0.0);
+
+    detail::transferVertexComponents(
+        m0, m1, out, V0, F0, V1, F1, FR_tri, indices_tri, Color::Gray);
 
     return out;
 }
