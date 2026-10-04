@@ -255,14 +255,11 @@ void transferFaceComponents(
     const MeshType&        m1,
     const Eigen::VectorXi& indices,
     MeshType&              out,
-    auto placeHolder)
+    auto                   placeHolder)
 {
     constexpr uint F = vcl::ElemId::FACE;
 
-    if constexpr (
-        MeshType::
-            template hasPerElementComponent<F, COMP_ID>()) {
-
+    if constexpr (MeshType::template hasPerElementComponent<F, COMP_ID>()) {
         bool m0HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m0);
         bool m1HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m1);
 

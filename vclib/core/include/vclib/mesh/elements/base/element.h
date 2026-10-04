@@ -106,8 +106,9 @@ public:
     template<uint COMP_ID>
     auto& componentValue()
     {
-        static_assert(COMP_ID != CompId::CUSTOM_COMPONENTS,
-                      "CustomComponents do not have a single value.");
+        static_assert(
+            COMP_ID != CompId::CUSTOM_COMPONENTS,
+            "CustomComponents do not have a single value.");
         using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
         return this->Comp::data();
     }
@@ -115,8 +116,9 @@ public:
     template<uint COMP_ID>
     const auto& componentValue() const
     {
-        static_assert(COMP_ID != CompId::CUSTOM_COMPONENTS,
-                      "CustomComponents do not have a single value.");
+        static_assert(
+            COMP_ID != CompId::CUSTOM_COMPONENTS,
+            "CustomComponents do not have a single value.");
         using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
         return this->Comp::data();
     }
