@@ -179,6 +179,15 @@ public:
     }
 
     /**
+     * @copydoc Triangle::barycentricCoordinates()
+     */
+    Point3<ScalarType> barycentricCoordinates(const PointT& p) const
+    {
+        return Triangle<PointT>::barycentricCoordinates(
+            mPoint0, mPoint1, mPoint2, p);
+    }
+
+    /**
      * @copydoc Triangle::circumcenter()
      */
     PointT circumcenter() const
