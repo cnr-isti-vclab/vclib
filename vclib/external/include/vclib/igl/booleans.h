@@ -249,49 +249,69 @@ Eigen::MatrixXi rebuildPolygons(
     return FRPoly;
 }
 
-template<uint COMP_ID, typename MeshType>
+template<typename MeshType>
 void transferFaceComponents(
     const MeshType&        m0,
     const MeshType&        m1,
     const Eigen::VectorXi& indices,
     MeshType&              out,
-    auto                   placeHolder)
+    auto                   normalPlaceHolder,
+    Color                  colorPlaceHolder,
+    auto                   qualityPlaceHolder)
 {
     constexpr uint F = vcl::ElemId::FACE;
 
-    if constexpr (MeshType::template hasPerElementComponent<F, COMP_ID>()) {
-        bool m0HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m0);
-        bool m1HasComp = vcl::isPerElementComponentAvailable<F, COMP_ID>(m1);
-
-        if (!m0HasComp && !m1HasComp) {
-            return;
-        }
-
-        vcl::enableIfPerElementComponentOptional<F, COMP_ID>(out);
-
-        uint i       = 0;
-        uint m0Faces = m0.faceContainerSize();
-        for (auto& f : out.faces()) {
-            int originalIdx = indices[i];
-            if (originalIdx < (int) m0Faces) {
-                if (m0HasComp) {
+    auto transferComponent = [&]<uint COMP_ID>(
+                                 auto&       f,
+                                 int         index,
+                                 uint        m0Faces,
+                                 const auto& placeHolder) {
+        // avoid compile errors for meshes without the component COMP_ID
+        if constexpr (MeshType::template hasPerElementComponent<F, COMP_ID>()) {
+            if (index < (int) m0Faces) {
+                if (vcl::isPerElementComponentAvailable<F, COMP_ID>(m0))
                     f.template componentValue<COMP_ID>() =
-                        m0.face(originalIdx).template componentValue<COMP_ID>();
-                }
-                else {
+                        m0.face(index).template componentValue<COMP_ID>();
+                else
                     f.template componentValue<COMP_ID>() = placeHolder;
-                }
             }
             else {
-                int m1Idx = originalIdx - m0Faces;
-                if (m1HasComp) {
+                int m1Idx = index - m0Faces;
+                if (vcl::isPerElementComponentAvailable<F, COMP_ID>(m1))
                     f.template componentValue<COMP_ID>() =
                         m1.face(m1Idx).template componentValue<COMP_ID>();
-                }
-                else {
+                else
                     f.template componentValue<COMP_ID>() = placeHolder;
-                }
             }
+        }
+    };
+
+    bool transferNormals =
+        vcl::isPerFaceNormalAvailable(m0) || vcl::isPerFaceNormalAvailable(m1);
+    bool transferColors =
+        vcl::isPerFaceColorAvailable(m0) || vcl::isPerFaceColorAvailable(m1);
+    bool transferQuality = vcl::isPerFaceQualityAvailable(m0) ||
+                           vcl::isPerFaceQualityAvailable(m1);
+
+    if (transferNormals || transferColors || transferQuality) {
+        if (transferNormals)
+            enableIfPerFaceNormalOptional(out);
+        if (transferColors)
+            enableIfPerFaceColorOptional(out);
+        if (transferQuality)
+            enableIfPerFaceQualityOptional(out);
+
+        uint m0Faces = m0.faceContainerSize();
+        for (uint i = 0; auto& f : out.faces()) {
+            if (transferNormals)
+                transferComponent.template operator()<CompId::NORMAL>(
+                    f, indices[i], m0Faces, normalPlaceHolder);
+            if (transferColors)
+                transferComponent.template operator()<CompId::COLOR>(
+                    f, indices[i], m0Faces, colorPlaceHolder);
+            if (transferQuality)
+                transferComponent.template operator()<CompId::QUALITY>(
+                    f, indices[i], m0Faces, qualityPlaceHolder);
             ++i;
         }
     }
@@ -405,12 +425,8 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
 
     using NormalType = typename MeshType::FaceType::NormalType;
 
-    detail::transferFaceComponents<vcl::CompId::NORMAL>(
-        m0, m1, indices, out, NormalType());
-    detail::transferFaceComponents<vcl::CompId::COLOR>(
-        m0, m1, indices, out, Color::Gray);
-    detail::transferFaceComponents<vcl::CompId::QUALITY>(
-        m0, m1, indices, out, 0.0);
+    detail::transferFaceComponents(
+        m0, m1, indices, out, NormalType(), Color::Gray, 0.0);
 
     return out;
 }
