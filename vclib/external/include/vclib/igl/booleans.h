@@ -317,43 +317,96 @@ void transferFaceComponents(
     }
 }
 
-template<typename MeshType, typename VMat, typename FMat>
+template<typename MeshType, typename FMat>
 void transferVertexComponents(
     const MeshType&        m0,
     const MeshType&        m1,
-    MeshType&              out,
-    const VMat&            /*V0*/, // Unused directly since we fetch from mesh
     const FMat&            F0,
-    const VMat&            /*V1*/,
     const FMat&            F1,
-    const Eigen::MatrixXi& FR_tri,
-    const Eigen::VectorXi& indices_tri,
-    Color                  colorPlaceHolder)
+    const Eigen::MatrixXi& FRTri,
+    const Eigen::VectorXi& indicesTri,
+    MeshType&              out,
+    auto                   normalPlaceHolder,
+    Color                  colorPlaceHolder,
+    auto                   qualityPlaceHolder)
 {
     constexpr uint V = vcl::ElemId::VERTEX;
     using ScalarType = typename MeshType::VertexType::PositionType::ScalarType;
 
-    bool transferColors =
-        vcl::isPerVertexColorAvailable(m0) || vcl::isPerVertexColorAvailable(m1);
+    bool transferNormals = vcl::isPerVertexNormalAvailable(m0) ||
+                           vcl::isPerVertexNormalAvailable(m1);
+    bool transferColors  = vcl::isPerVertexColorAvailable(m0) ||
+                           vcl::isPerVertexColorAvailable(m1);
+    bool transferQuality = vcl::isPerVertexQualityAvailable(m0) ||
+                           vcl::isPerVertexQualityAvailable(m1);
 
-    if (!transferColors)
+    if (!transferNormals && !transferColors && !transferQuality)
         return;
 
+    if (transferNormals)
+        enableIfPerVertexNormalOptional(out);
     if (transferColors)
         enableIfPerVertexColorOptional(out);
+    if (transferQuality)
+        enableIfPerVertexQualityOptional(out);
 
     uint m0Triangles = F0.rows();
 
-    std::vector<std::array<float, 4>> colorAccum;
-    std::vector<int>                  incidentCount;
+    std::vector<Point4f>            colorAccum;
+    std::vector<Point3<ScalarType>> normalAccum;
+    std::vector<double>             qualityAccum;
+    std::vector<int>                incidentCount(out.vertexCount(), 0);
 
-    if (transferColors) {
-        colorAccum.resize(out.vertexCount(), {0.0f, 0.0f, 0.0f, 0.0f});
-        incidentCount.resize(out.vertexCount(), 0);
-    }
+    if (transferColors)
+        colorAccum.resize(out.vertexCount(), Point4f());
+    if (transferNormals)
+        normalAccum.resize(out.vertexCount(), Point3<ScalarType>());
+    if (transferQuality)
+        qualityAccum.resize(out.vertexCount(), 0.0);
 
-    for (int i = 0; i < FR_tri.rows(); ++i) {
-        int  birthTriIdx = indices_tri[i];
+    auto accumulateComponent = [&]<uint COMP_ID, typename AccumType>(
+                                   std::vector<AccumType>& accum,
+                                   int                     outVIdx,
+                                   bool                    fromM0,
+                                   const Eigen::Vector3i&  birthTri,
+                                   const auto&             bcoords,
+                                   const auto&             placeHolder) {
+        if constexpr (MeshType::template hasPerElementComponent<V, COMP_ID>()) {
+            auto c0 = placeHolder;
+            auto c1 = placeHolder;
+            auto c2 = placeHolder;
+
+            if (fromM0 && vcl::isPerElementComponentAvailable<V, COMP_ID>(m0)) {
+                c0 = m0.vertex(birthTri[0]).template componentValue<COMP_ID>();
+                c1 = m0.vertex(birthTri[1]).template componentValue<COMP_ID>();
+                c2 = m0.vertex(birthTri[2]).template componentValue<COMP_ID>();
+            }
+            else if (
+                !fromM0 &&
+                vcl::isPerElementComponentAvailable<V, COMP_ID>(m1)) {
+                c0 = m1.vertex(birthTri[0]).template componentValue<COMP_ID>();
+                c1 = m1.vertex(birthTri[1]).template componentValue<COMP_ID>();
+                c2 = m1.vertex(birthTri[2]).template componentValue<COMP_ID>();
+            }
+
+            if constexpr (COMP_ID == CompId::COLOR) {
+                Point4f v;
+                for (uint i = 0; i < 4; i++) {
+                    v[i] = c0[i] * bcoords[0] + c1[i] * bcoords[1] +
+                           c2[i] * bcoords[2];
+                }
+
+                accum[outVIdx] += v;
+            }
+            else {
+                auto v = c0 * bcoords[0] + c1 * bcoords[1] + c2 * bcoords[2];
+                accum[outVIdx] += v;
+            }
+        }
+    };
+
+    for (int i = 0; i < FRTri.rows(); ++i) {
+        int  birthTriIdx = indicesTri[i];
         bool fromM0      = birthTriIdx < (int) m0Triangles;
 
         Eigen::Vector3i birthTri;
@@ -364,65 +417,94 @@ void transferVertexComponents(
             birthTri = F1.row(birthTriIdx - m0Triangles);
         }
 
-        Point3<ScalarType> p0 = fromM0 ? m0.vertex(birthTri[0]).position()
-                                       : m1.vertex(birthTri[0]).position();
-        Point3<ScalarType> p1 = fromM0 ? m0.vertex(birthTri[1]).position()
-                                       : m1.vertex(birthTri[1]).position();
-        Point3<ScalarType> p2 = fromM0 ? m0.vertex(birthTri[2]).position()
-                                       : m1.vertex(birthTri[2]).position();
-
-        Color c0 = colorPlaceHolder;
-        Color c1 = colorPlaceHolder;
-        Color c2 = colorPlaceHolder;
-
-        if (transferColors) {
-            if (fromM0 && vcl::isPerVertexColorAvailable(m0)) {
-                c0 = m0.vertex(birthTri[0]).color();
-                c1 = m0.vertex(birthTri[1]).color();
-                c2 = m0.vertex(birthTri[2]).color();
-            }
-            else if (!fromM0 && vcl::isPerVertexColorAvailable(m1)) {
-                c0 = m1.vertex(birthTri[0]).color();
-                c1 = m1.vertex(birthTri[1]).color();
-                c2 = m1.vertex(birthTri[2]).color();
-            }
-        }
+        Point3<ScalarType> p0 = fromM0 ? m0.vertex(birthTri[0]).position() :
+                                         m1.vertex(birthTri[0]).position();
+        Point3<ScalarType> p1 = fromM0 ? m0.vertex(birthTri[1]).position() :
+                                         m1.vertex(birthTri[1]).position();
+        Point3<ScalarType> p2 = fromM0 ? m0.vertex(birthTri[2]).position() :
+                                         m1.vertex(birthTri[2]).position();
 
         for (int j = 0; j < 3; ++j) {
-            int  outVIdx = FR_tri(i, j);
+            int  outVIdx = FRTri(i, j);
             auto outP    = out.vertex(outVIdx).position();
 
             auto bcoords = vcl::Triangle3<ScalarType>::barycentricCoordinates(
                 p0, p1, p2, outP);
 
             if (transferColors) {
-                float r = c0.red() * bcoords[0] + c1.red() * bcoords[1] +
-                          c2.red() * bcoords[2];
-                float g = c0.green() * bcoords[0] + c1.green() * bcoords[1] +
-                          c2.green() * bcoords[2];
-                float b = c0.blue() * bcoords[0] + c1.blue() * bcoords[1] +
-                          c2.blue() * bcoords[2];
-                float a = c0.alpha() * bcoords[0] + c1.alpha() * bcoords[1] +
-                          c2.alpha() * bcoords[2];
-
-                colorAccum[outVIdx][0] += r;
-                colorAccum[outVIdx][1] += g;
-                colorAccum[outVIdx][2] += b;
-                colorAccum[outVIdx][3] += a;
-                incidentCount[outVIdx]++;
+                accumulateComponent.template operator()<CompId::COLOR>(
+                    colorAccum,
+                    outVIdx,
+                    fromM0,
+                    birthTri,
+                    bcoords,
+                    colorPlaceHolder);
             }
+            if (transferNormals) {
+                accumulateComponent.template operator()<CompId::NORMAL>(
+                    normalAccum,
+                    outVIdx,
+                    fromM0,
+                    birthTri,
+                    bcoords,
+                    normalPlaceHolder);
+            }
+            if (transferQuality) {
+                accumulateComponent.template operator()<CompId::QUALITY>(
+                    qualityAccum,
+                    outVIdx,
+                    fromM0,
+                    birthTri,
+                    bcoords,
+                    qualityPlaceHolder);
+            }
+
+            incidentCount[outVIdx]++;
         }
     }
 
-    if (transferColors) {
-        for (uint i = 0; i < out.vertexCount(); ++i) {
-            if (incidentCount[i] > 0) {
-                float inv = 1.0f / incidentCount[i];
-                out.vertex(i).color() = Color(
-                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][0] * inv))),
-                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][1] * inv))),
-                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][2] * inv))),
-                    static_cast<uint8_t>(std::max(0.0f, std::min(255.0f, colorAccum[i][3] * inv))));
+    auto finalizeComponent = [&]<uint COMP_ID, typename AccumType>(
+                                 const std::vector<AccumType>& accum,
+                                 int                           incCount,
+                                 int                           vIdx) {
+        if constexpr (MeshType::template hasPerElementComponent<V, COMP_ID>()) {
+            if constexpr (COMP_ID == CompId::COLOR) {
+                auto clampV = [](float v) {
+                    return static_cast<uint8_t>(std::clamp(v, 0.0f, 255.0f));
+                };
+
+                float inv = 1.0f / incCount;
+                out.vertex(vIdx).template componentValue<COMP_ID>() = Color(
+                    clampV(accum[vIdx][0] * inv),
+                    clampV(accum[vIdx][1] * inv),
+                    clampV(accum[vIdx][2] * inv),
+                    clampV(accum[vIdx][3] * inv));
+            }
+            else if constexpr (COMP_ID == CompId::NORMAL) {
+                out.vertex(vIdx).template componentValue<COMP_ID>() =
+                    accum[vIdx].normalized();
+            }
+            else {
+                out.vertex(vIdx).template componentValue<COMP_ID>() =
+                    accum[vIdx] / incCount;
+            }
+        }
+    };
+
+    for (uint i = 0; i < out.vertexCount(); ++i) {
+        int incCount = incidentCount[i];
+        if (incCount > 0) {
+            if (transferColors) {
+                finalizeComponent.template operator()<CompId::COLOR>(
+                    colorAccum, incCount, i);
+            }
+            if (transferNormals) {
+                finalizeComponent.template operator()<CompId::NORMAL>(
+                    normalAccum, incCount, i);
+            }
+            if (transferQuality) {
+                finalizeComponent.template operator()<CompId::QUALITY>(
+                    qualityAccum, incCount, i);
             }
         }
     }
@@ -496,8 +578,8 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
             "(closed).");
     }
 
-    Eigen::MatrixXi FR_tri      = FR;
-    Eigen::VectorXi indices_tri = indices;
+    Eigen::MatrixXi FRTri      = FR;
+    Eigen::VectorXi indicesTri = indices;
 
     Eigen::VectorXi outIndices;
     if constexpr (vcl::PolygonMeshConcept<MeshType>) {
@@ -537,13 +619,23 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
 
     auto out = vcl::meshFromMatrices<MeshType>(VR, FR);
 
-    using NormalType = typename MeshType::FaceType::NormalType;
+    using FNormalType = typename MeshType::FaceType::NormalType;
+    using VNormalType = typename MeshType::VertexType::NormalType;
 
     detail::transferFaceComponents(
-        m0, m1, indices, out, NormalType(), Color::Gray, 0.0);
+        m0, m1, indices, out, FNormalType(), Color::Gray, 0.0);
 
     detail::transferVertexComponents(
-        m0, m1, out, V0, F0, V1, F1, FR_tri, indices_tri, Color::Gray);
+        m0,
+        m1,
+        F0,
+        F1,
+        FRTri,
+        indicesTri,
+        out,
+        VNormalType(),
+        Color::Gray,
+        0.0);
 
     return out;
 }
