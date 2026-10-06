@@ -8,6 +8,20 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-3rdparty)
 
+include(GNUInstallDirs)
+set(VCLIB_3RDPARTY_INSTALL_INCLUDEDIR
+    "${CMAKE_INSTALL_INCLUDEDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_LIBDIR
+    "${CMAKE_INSTALL_LIBDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_BINDIR
+    "${CMAKE_INSTALL_BINDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_DATADIR
+    "${CMAKE_INSTALL_DATADIR}/vclib/3rdparty"
+)
+
 include(FetchContent)
 
 # 3rdparty libraries may have warnings
@@ -363,7 +377,7 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
                 if(NOT added_install_interface)
                     list(
                         APPEND new_inc_dirs
-                        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+                        "$<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>"
                     )
                     set(added_install_interface TRUE)
                 endif()
@@ -378,10 +392,10 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
     install(
         TARGETS ${tgt}
         EXPORT vclibTargets
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        LIBRARY DESTINATION ${VCLIB_3RDPARTY_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${VCLIB_3RDPARTY_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${VCLIB_3RDPARTY_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
     )
 endforeach()
 

@@ -41,6 +41,6 @@ if(
 )
     install(
         DIRECTORY ${VCLIB_EIGEN_DIR}/Eigen
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
     )
 endif()

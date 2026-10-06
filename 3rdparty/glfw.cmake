@@ -35,6 +35,24 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
 
     FetchContent_MakeAvailable(glfw3)
 
+    if(VCLIB_ALLOW_INSTALL_GLFW)
+        install(CODE "
+            # Move CMake configs
+            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/glfw3\")
+                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake\")
+                file(RENAME
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/glfw3\"
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake/glfw3\"
+                )
+            endif()
+
+            # Remove pkgconfig
+            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig/glfw3.pc\")
+                file(REMOVE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/pkgconfig/glfw3.pc\")
+            endif()
+        ")
+    endif()
+
     set(VCLIB_USES_GLFW TRUE)
 endif()
 

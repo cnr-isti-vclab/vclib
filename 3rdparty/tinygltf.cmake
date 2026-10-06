@@ -25,6 +25,25 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGTLF)
     )
     FetchContent_MakeAvailable(tinygltf)
 
+    if(VCLIB_ALLOW_INSTALL_TINYGTLF)
+        install(CODE "
+            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/tiny_gltf.h\")
+                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}\")
+                file(RENAME
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/tiny_gltf.h\"
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/tiny_gltf.h\"
+                )
+            endif()
+            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/TinyGLTF\")
+                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake\")
+                file(RENAME
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/TinyGLTF\"
+                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake/TinyGLTF\"
+                )
+            endif()
+        ")
+    endif()
+
     add_library(vclib-3rd-tinygltf INTERFACE)
     target_link_libraries(
         vclib-3rd-tinygltf
