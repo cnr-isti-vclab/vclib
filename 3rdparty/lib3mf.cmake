@@ -7,26 +7,12 @@
 
 set(LIB3MF_VERSION 2.5.0) 
 
-find_package(lib3mf QUIET)
-
-if(VCLIB_ALLOW_SYSTEM_LIB3MF AND lib3mf_FOUND)
-    message(STATUS "- lib3mf - using system-provided library")
-    
-    add_library(vclib-3rd-lib3mf INTERFACE)
-    
-    if(TARGET lib3mf::lib3mf)
-        target_link_libraries(vclib-3rd-lib3mf INTERFACE lib3mf::lib3mf)
-    elseif(TARGET Lib3MF::Lib3MF)
-        target_link_libraries(vclib-3rd-lib3mf INTERFACE Lib3MF::Lib3MF)
-    endif()
-
-    target_compile_definitions(vclib-3rd-lib3mf INTERFACE VCLIB_WITH_LIB3MF)
-    list(APPEND VCLIB_CORE_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-lib3mf)
-
-elseif(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
+if(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
     message(STATUS "- lib3mf - using downloaded source")
 
     set(LIB3MF_TESTS OFF CACHE BOOL "" FORCE)
+    # We force static build to avoid polluting system with lib3mf.so and conflicting with OS packages
+    set(LIB3MF_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 
     FetchContent_Declare(
         lib3mf

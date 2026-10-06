@@ -94,11 +94,6 @@ include(zip-views.cmake)
 if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
     # lib3mf
     option(
-        VCLIB_ALLOW_SYSTEM_LIB3MF
-        "Allow use of system-provided lib3mf"
-        ON
-    )
-    option(
         VCLIB_ALLOW_DOWNLOAD_LIB3MF
         "Allow use of downloaded lib3mf source"
         ON

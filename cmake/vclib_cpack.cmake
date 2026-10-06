@@ -73,7 +73,7 @@ else() # Linux
     set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
     set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     set(CPACK_DEBIAN_PACKAGE_DEPENDS
-        "libeigen3-dev, libboost-dev, libcgal-dev, libglfw3-dev, libtbb-dev, lib3mf-dev, libembree-dev, libgmp-dev, libmpfr-dev, qt6-base-dev, libgl1-mesa-dev, libwayland-dev, libxkbcommon-dev"
+        "libeigen3-dev, libboost-dev, libcgal-dev, libglfw3-dev, libtbb-dev, libembree-dev, libgmp-dev, libmpfr-dev, qt6-base-dev, libgl1-mesa-dev, libwayland-dev, libxkbcommon-dev"
     )
 
     # RPM package settings
@@ -85,7 +85,7 @@ else() # Linux
         set(CPACK_RPM_PACKAGE_ARCHITECTURE "aarch64")
     endif()
     set(CPACK_RPM_PACKAGE_REQUIRES
-        "eigen3-devel, lib3mf-devel, boost-devel, CGAL-devel, glfw-devel, tbb-devel, embree-devel, gmp-devel, mpfr-devel, qt6-qtbase-devel, freeglut-devel, mesa-libGL-devel, libXi-devel, libXinerama-devel, libXcursor-devel, libXrandr-devel, wayland-devel, wayland-protocols-devel, libxkbcommon-devel"
+        "eigen3-devel, boost-devel, CGAL-devel, glfw-devel, tbb-devel, embree-devel, gmp-devel, mpfr-devel, qt6-qtbase-devel, freeglut-devel, mesa-libGL-devel, libXi-devel, libXinerama-devel, libXcursor-devel, libXrandr-devel, wayland-devel, wayland-protocols-devel, libxkbcommon-devel"
     )
 endif()
 

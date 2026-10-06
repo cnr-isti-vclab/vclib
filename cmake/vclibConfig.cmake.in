@@ -35,11 +35,8 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
     )
         find_dependency(nlohmann_json)
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_LIB3MF@"
-        AND "vclib-3rd-lib3mf" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
-    )
-        find_package(lib3mf QUIET)
+    if("vclib-3rd-lib3mf" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
+        find_dependency(lib3mf)
     endif()
 endif()
 
@@ -218,33 +215,9 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
             endif()
         endif()
     endif()
-    if(
-        "@VCLIB_USED_SYSTEM_LIB3MF@"
-        AND "vclib-3rd-lib3mf" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
-    )
-        if(NOT TARGET vclib::vclib-3rd-lib3mf)
-            # lib3mf può esportare con nomi diversi a seconda dell'OS/Manager
-            if(TARGET lib3mf::lib3mf)
-                set(LIB3MF_TARGET lib3mf::lib3mf)
-            elseif(TARGET Lib3MF::Lib3MF)
-                set(LIB3MF_TARGET Lib3MF::Lib3MF)
-            endif()
-            
-            if(LIB3MF_TARGET)
-                add_library(vclib::vclib-3rd-lib3mf INTERFACE IMPORTED)
-                set_property(
-                    TARGET vclib::vclib-3rd-lib3mf
-                    APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES ${LIB3MF_TARGET}
-                )
-                if(TARGET vclib::core)
-                    set_property(
-                        TARGET vclib::core
-                        APPEND
-                        PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-lib3mf
-                    )
-                endif()
-            endif()
+    if("vclib-3rd-lib3mf" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
+        if(NOT TARGET lib3mf AND TARGET lib3mf::lib3mf)
+            add_library(lib3mf ALIAS lib3mf::lib3mf)
         endif()
     endif()
 endif()

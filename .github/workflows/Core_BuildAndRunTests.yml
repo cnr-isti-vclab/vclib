@@ -32,7 +32,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build libtbb-dev lib3mf-dev catch2
+        sudo apt-get install cmake ninja-build libtbb-dev catch2
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash

@@ -42,7 +42,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libtbb-dev lib3mf-dev
+        sudo apt-get install -y cmake ninja-build libtbb-dev
         if [ "${{ matrix.module }}" == "external" ]; then
           sudo apt-get install -y libembree-dev libgmp-dev libmpfr-dev
         fi
@@ -54,7 +54,7 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install cmake ninja tbb lib3mf
+        brew install cmake ninja tbb
         if [ "${{ matrix.module }}" == "external" ]; then
           brew install embree gmp mpfr
         fi
