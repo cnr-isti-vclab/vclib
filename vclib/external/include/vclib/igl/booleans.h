@@ -335,8 +335,8 @@ void transferVertexComponents(
 
     bool transferNormals = vcl::isPerVertexNormalAvailable(m0) ||
                            vcl::isPerVertexNormalAvailable(m1);
-    bool transferColors  = vcl::isPerVertexColorAvailable(m0) ||
-                           vcl::isPerVertexColorAvailable(m1);
+    bool transferColors = vcl::isPerVertexColorAvailable(m0) ||
+                          vcl::isPerVertexColorAvailable(m1);
     bool transferQuality = vcl::isPerVertexQualityAvailable(m0) ||
                            vcl::isPerVertexQualityAvailable(m1);
 
