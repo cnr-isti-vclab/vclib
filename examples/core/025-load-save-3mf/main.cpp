@@ -9,9 +9,14 @@
 
 int main()
 {
-    auto [mesh0, mesh1, mesh2] = load3mf();
+    try {
+        auto [mesh0, mesh1, mesh2] = load3mf();
 
-    save3mf(mesh0, mesh1, mesh2);
+        save3mf(mesh0, mesh1, mesh2);
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
 
     return 0;
 }

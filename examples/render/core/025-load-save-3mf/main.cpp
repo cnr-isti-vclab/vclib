@@ -11,12 +11,18 @@
 
 int main(int argc, char** argv)
 {
-    auto [mesh0, mesh1, mesh2] = load3mf();
+    try {
+        auto [mesh0, mesh1, mesh2] = load3mf();
 
-    vcl::updatePerVertexAndFaceNormals(mesh0);
-    vcl::updatePerVertexAndFaceNormals(mesh1);
-    vcl::updatePerVertexAndFaceNormals(mesh2);
+        vcl::updatePerVertexAndFaceNormals(mesh0);
+        vcl::updatePerVertexAndFaceNormals(mesh1);
+        vcl::updatePerVertexAndFaceNormals(mesh2);
 
-    return vcl::showOnMeshViewer(
-        argc, argv, std::move(mesh0), std::move(mesh1), std::move(mesh2));
+        return vcl::showOnMeshViewer(
+            argc, argv, std::move(mesh0), std::move(mesh1), std::move(mesh2));
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 0;
+    }
 }

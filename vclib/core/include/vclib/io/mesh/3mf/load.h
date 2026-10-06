@@ -11,7 +11,16 @@
 #include <vclib/io/file_info.h>
 #include <vclib/io/mesh/settings.h>
 
+#ifndef NOMINMAX
+#    define NOMINMAX
+#endif
 #include <lib3mf_implicit.hpp>
+#if defined(min)
+#    undef min
+#endif
+#if defined(max)
+#    undef max
+#endif
 
 namespace vcl {
 
