@@ -92,6 +92,26 @@ include(zip-views.cmake)
 
 # IO or RENDER 3rd Party libraries
 if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
+    # lib3mf
+    option(
+        VCLIB_ALLOW_SYSTEM_LIB3MF
+        "Allow use of system-provided lib3mf"
+        ON
+    )
+    option(
+        VCLIB_ALLOW_DOWNLOAD_LIB3MF
+        "Allow use of downloaded lib3mf source"
+        ON
+    )
+    cmake_dependent_option(
+        VCLIB_ALLOW_INSTALL_LIB3MF
+        "Allow install lib3mf source"
+        ON
+        "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
+        OFF
+    )
+    include(lib3mf.cmake)
+
     # nlohmann_json
     option(
         VCLIB_ALLOW_SYSTEM_NLOHMANN_JSON

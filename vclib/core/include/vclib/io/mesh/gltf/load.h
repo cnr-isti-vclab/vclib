@@ -158,6 +158,10 @@ void loadGltf(
     std::vector<MeshInfo> infos;
     loadGltf(meshes, filename, infos, settings, log);
 
+    if (meshes.empty()) {
+        return;
+    }
+
     m          = std::move(meshes.front());
     loadedInfo = std::move(infos.front());
     for (std::size_t i = 1; i < meshes.size(); ++i) {

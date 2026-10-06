@@ -13,6 +13,10 @@
 #include "ply/load.h"
 #include "stl/load.h"
 
+#ifdef VCLIB_WITH_LIB3MF
+#include "3mf/load.h"
+#endif
+
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/load.h"
 #endif
@@ -47,6 +51,10 @@ inline std::set<FileFormat> loadMeshFormats()
     ff.insert(offFileFormat());
     ff.insert(plyFileFormat());
     ff.insert(stlFileFormat());
+
+#ifdef VCLIB_WITH_LIB3MF
+    ff.insert(_3mfFileFormat());
+#endif
 
 #ifdef VCLIB_WITH_TINYGLTF
     ff.insert(gltfFileFormat());
@@ -100,6 +108,11 @@ void loadMesh(
     else if (ff == stlFileFormat()) {
         loadStl(m, filename, loadedInfo, settings, log);
     }
+#ifdef VCLIB_WITH_LIB3MF
+    else if (ff == _3mfFileFormat()) {
+        load3mf(m, filename, loadedInfo, settings, log);
+    }
+#endif
 #ifdef VCLIB_WITH_TINYGLTF
     else if (ff == gltfFileFormat()) {
         loadGltf(m, filename, loadedInfo, settings, log);

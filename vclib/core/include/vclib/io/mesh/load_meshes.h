@@ -8,6 +8,10 @@
 #ifndef VCL_IO_MESH_LOAD_MESHES_H
 #define VCL_IO_MESH_LOAD_MESHES_H
 
+#ifdef VCLIB_WITH_LIB3MF
+#include "3mf/load.h"
+#endif
+
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/load.h"
 #endif
@@ -30,6 +34,10 @@ namespace vcl {
 inline std::set<FileFormat> loadMeshesFormats()
 {
     std::set<FileFormat> ff;
+
+#ifdef VCLIB_WITH_LIB3MF
+    ff.insert(_3mfFileFormat());
+#endif
 
 #ifdef VCLIB_WITH_TINYGLTF
     ff.insert(gltfFileFormat());
@@ -72,14 +80,21 @@ void loadMeshes(
 
     loadedInfo.clear();
 
+#ifdef VCLIB_WITH_LIB3MF
+    if (ff == _3mfFileFormat()) {
+        load3mf(meshes, filename, loadedInfo, settings, log);
+    }
+    else
+#endif
 #ifdef VCLIB_WITH_TINYGLTF
-    if (ff == gltfFileFormat()) {
+        if (ff == gltfFileFormat()) {
         loadGltf(meshes, filename, loadedInfo, settings, log);
     }
-    else {
+    else
+#endif
+    {
         throw UnknownFileFormatException(ff.extensions().front());
     }
-#endif
 }
 
 /**

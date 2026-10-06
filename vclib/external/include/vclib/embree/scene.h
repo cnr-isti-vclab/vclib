@@ -181,16 +181,16 @@ public:
      *
      * This member function casts a ray from the given origin in the specified
      * direction and returns the first face of the scene that is intersected
-     * within the given near and far distances.
+     * within the given tNear and tFar distances.
      *
      * @tparam ScalarType: Scalar type used by the point coordinates
      * (for example, float or double).
      *
      * @param[in] origin: The origin point of the ray in world space.
      * @param[in] direction: The direction vector of the ray in world space.
-     * @param[in] near: The minimum distance from the origin to consider for
+     * @param[in] tNear: The minimum distance from the origin to consider for
      * intersections (default is 0).
-     * @param[in] far: The maximum distance from the origin to consider for
+     * @param[in] tFar: The maximum distance from the origin to consider for
      * intersections (default is infinity).
      *
      * @return A HitResult describing the first intersected face along the
@@ -201,11 +201,11 @@ public:
     HitResult firstFaceIntersectedByRay(
         const Point3<ScalarType>& origin,
         const Point3<ScalarType>& direction,
-        float                     near = 0.f,
-        float far = std::numeric_limits<float>::infinity()) const
+        float                     tNear = 0.f,
+        float tFar = std::numeric_limits<float>::infinity()) const
     {
         if (mScene) {
-            RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
+            RTCRayHit rayhit = initRayHitValues(origin, direction, tNear, tFar);
 
             rtcIntersect1(mScene, &rayhit);
 
@@ -226,15 +226,15 @@ public:
      * @brief Finds the first face intersected by a ray.
      *
      * This member function casts the given ray and returns the first face of
-     * the scene that is intersected within the given near and far distances.
+     * the scene that is intersected within the given tNear and tFar distances.
      *
      * @tparam ScalarType: Scalar type used by the ray coordinates
      * (for example, float or double).
      *
      * @param[in] ray: The ray in world space used as query.
-     * @param[in] near: The minimum distance from the ray origin to consider
+     * @param[in] tNear: The minimum distance from the ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from the ray origin to consider
+     * @param[in] tFar: The maximum distance from the ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A HitResult describing the first intersected face along the
@@ -244,11 +244,11 @@ public:
     template<typename ScalarType>
     HitResult firstFaceIntersectedByRay(
         const Ray3<ScalarType>& ray,
-        float                   near = 0.f,
-        float far = std::numeric_limits<float>::infinity()) const
+        float                   tNear = 0.f,
+        float tFar = std::numeric_limits<float>::infinity()) const
     {
         return firstFaceIntersectedByRay(
-            ray.origin(), ray.direction(), near, far);
+            ray.origin(), ray.direction(), tNear, tFar);
     }
 
     /**
@@ -282,7 +282,7 @@ public:
      *
      * This member function casts multiple rays defined by the given origins and
      * directions, and returns for each ray the first face of the scene that
-     * is intersected within the given near and far distances.
+     * is intersected within the given tNear and tFar distances.
      *
      * This function performs ray intersection tests in parallel to improve
      * performance when dealing with a large number of rays.
@@ -296,9 +296,9 @@ public:
      * rays in world space.
      * @param[in] directions: A range of vectors representing the directions
      * of the rays in world space.
-     * @param[in] near: The minimum distance from each ray origin to consider
+     * @param[in] tNear: The minimum distance from each ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from each ray origin to consider
+     * @param[in] tFar: The maximum distance from each ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A vector of HitResult tuples, one for each ray, describing the
@@ -309,8 +309,8 @@ public:
     std::vector<HitResult> firstFaceIntersectedByRays(
         R1&&  origins,
         R2&&  directions,
-        float near = 0.f,
-        float far  = std::numeric_limits<float>::infinity()) const
+        float tNear = 0.f,
+        float tFar  = std::numeric_limits<float>::infinity()) const
         requires Point3Concept<std::ranges::range_value_t<R1>> &&
                  Point3Concept<std::ranges::range_value_t<R2>>
     {
@@ -330,7 +330,7 @@ public:
 #ifndef VCL_EMBREE_FORCE_CHUNK_16
             auto computeRay = [&](uint i) {
                 results[i] = firstFaceIntersectedByRay(
-                    origins[i], directions[i], near, far);
+                    origins[i], directions[i], tNear, tFar);
             };
 
             std::vector<std::size_t> rayIndices(sz);
@@ -363,7 +363,7 @@ public:
                 for (std::size_t i = first; i < last; ++i) {
                     std::size_t idx = i - first;
                     initRayHitsValues(
-                        rayHits, idx, origins[i], directions[i], near, far);
+                        rayHits, idx, origins[i], directions[i], tNear, tFar);
                 }
 
                 rtcIntersect16(validMask.data(), mScene, &rayHits);
@@ -408,8 +408,8 @@ public:
      * @brief Finds the first faces intersected by multiple rays.
      *
      * This member function casts multiple rays and returns for each ray the
-     * first face of the scene that is intersected within the given near and
-     * far distances.
+     * first face of the scene that is intersected within the given tNear and
+     * tFar distances.
      *
      * This function performs ray intersection tests in parallel to improve
      * performance when dealing with a large number of rays.
@@ -418,9 +418,9 @@ public:
      * @ref Ray3Concept, representing the rays to be tested.
      *
      * @param[in] rays: A range of rays in world space used as queries.
-     * @param[in] near: The minimum distance from each ray origin to consider
+     * @param[in] tNear: The minimum distance from each ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from each ray origin to consider
+     * @param[in] tFar: The maximum distance from each ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A vector of HitResult tuples, one for each ray, describing the
@@ -430,8 +430,8 @@ public:
     template<RandomAccessRange R>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R&&   rays,
-        float near = 0.f,
-        float far  = std::numeric_limits<float>::infinity()) const
+        float tNear = 0.f,
+        float tFar  = std::numeric_limits<float>::infinity()) const
         requires Ray3Concept<std::ranges::range_value_t<R>>
     {
         auto getOriginView = [](const auto& r) {
@@ -445,7 +445,7 @@ public:
         auto origins    = rays | std::views::transform(getOriginView);
         auto directions = rays | std::views::transform(getDirectionView);
 
-        return firstFaceIntersectedByRays(origins, directions, near, far);
+        return firstFaceIntersectedByRays(origins, directions, tNear, tFar);
     }
 
     /**

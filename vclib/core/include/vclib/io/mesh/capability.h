@@ -13,6 +13,10 @@
 #include "ply/capability.h"
 #include "stl/capability.h"
 
+#ifdef VCLIB_WITH_LIB3MF
+#include "3mf/capability.h"
+#endif
+
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/capability.h"
 #endif
@@ -36,6 +40,11 @@ inline MeshInfo formatCapability(const std::string& format)
     else if (ext == "stl") {
         return stlFormatCapability();
     }
+#ifdef VCLIB_WITH_LIB3MF
+    else if (ext == "3mf") {
+        return _3mfFormatCapability();
+    }
+#endif
 #ifdef VCLIB_WITH_TINYGLTF
     else if (ext == "gltf" || ext == "glb") {
         return gltfFormatCapability();
