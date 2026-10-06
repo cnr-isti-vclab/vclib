@@ -41,7 +41,7 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install lib3mf catch2 glfw gmp mpfr
+        brew install catch2 glfw gmp mpfr
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |

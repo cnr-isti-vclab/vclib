@@ -38,7 +38,7 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install lib3mf catch2
+        brew install catch2
         brew install embree cgal
     - name: Install dependencies
       if: runner.os == 'Windows'
