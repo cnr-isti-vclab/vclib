@@ -42,7 +42,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install -y cmake ninja-build libtbb-dev
+        sudo apt-get install -y cmake ninja-build lib3mf-dev libtbb-dev
         sudo apt-get install -y libembree-dev
         sudo apt-get install -y freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
 
@@ -50,7 +50,7 @@ jobs:
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install cmake ninja
+        brew install cmake ninja lib3mf
         brew install embree gmp mpfr
 
     - name: Install dependencies
@@ -236,7 +236,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        dnf install -y gcc gcc-c++ cmake ninja-build tbb-devel embree-devel gmp-devel mpfr-devel eigen3-devel boost-devel CGAL-devel glfw-devel qt6-qtbase-devel freeglut-devel mesa-libGL-devel libXi-devel libXinerama-devel libXcursor-devel libXrandr-devel wayland-devel wayland-protocols-devel libxkbcommon-devel rpm-build perl
+        dnf install -y gcc gcc-c++ cmake ninja-build tbb-devel lib3mf-devel embree-devel gmp-devel mpfr-devel eigen3-devel boost-devel CGAL-devel glfw-devel qt6-qtbase-devel freeglut-devel mesa-libGL-devel libXi-devel libXinerama-devel libXcursor-devel libXrandr-devel wayland-devel wayland-protocols-devel libxkbcommon-devel rpm-build perl
 
     - name: Build and Package VCLib RPM
       shell: bash

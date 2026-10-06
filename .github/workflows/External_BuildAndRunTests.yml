@@ -32,13 +32,13 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build libtbb-dev catch2
+        sudo apt-get install cmake ninja-build libtbb-dev lib3mf-dev catch2
         sudo apt-get install libcgal-dev libembree-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install catch2
+        brew install lib3mf catch2
         brew install embree cgal
     - name: Install dependencies
       if: runner.os == 'Windows'

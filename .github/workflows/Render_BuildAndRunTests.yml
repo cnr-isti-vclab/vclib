@@ -35,13 +35,13 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install cmake ninja-build libtbb-dev catch2 libgmp-dev libmpfr-dev
+        sudo apt-get install cmake ninja-build libtbb-dev lib3mf-dev catch2 libgmp-dev libmpfr-dev
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libglfw3-dev libwayland-dev wayland-protocols libxkbcommon-dev mesa-vulkan-drivers
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install catch2 glfw gmp mpfr
+        brew install lib3mf catch2 glfw gmp mpfr
     - name: Install dependencies
       if: runner.os == 'Windows'
       run: |
