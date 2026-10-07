@@ -31,7 +31,11 @@ else()
             ${VCG_EXCLUDE_FROM_ALL}
         )
 
+        vclib_begin_3rdparty_install_scope()
+
         FetchContent_MakeAvailable(vcglib)
+
+        vclib_end_3rdparty_install_scope()
         set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})
         set(VCLIB_USES_VCG TRUE)
     else()
@@ -49,7 +53,12 @@ if(VCLIB_USES_VCG)
             INTERFACE $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
         )
     else()
-        target_include_directories(vclib-3rd-vcg INTERFACE ${VCG_INCLUDE_DIRS})
+        target_include_directories(
+            vclib-3rd-vcg
+            INTERFACE 
+                $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
+                $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
+        )
     endif()
 
     set_target_properties(

@@ -104,12 +104,18 @@ function(add_standalone_example module name)
 
     # Extract the base module name (e.g., 'render' from 'render/core')
     string(REGEX MATCH "^[^/]+" BASE_MODULE "${module}")
+    # If there is no submodule (e.g., just 'core'), this evaluates to an empty
+    # string.
+    string(REGEX REPLACE "^[^/]+/?(.*)$" "\\1" SUB_MODULE "${module}")
 
     # Link to vclib and the common definitions
     target_link_libraries(
         ${TARGET_NAME}
         PRIVATE vclib::${BASE_MODULE} vclib-standalone-examples-common
     )
+    if(SUB_MODULE AND TARGET vclib::${SUB_MODULE})
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib::${SUB_MODULE})
+    endif()
 
     # Add the example directory to include path in case it uses local headers
     target_include_directories(
