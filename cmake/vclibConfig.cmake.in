@@ -371,10 +371,25 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                                 "${VCLIB_3RDPARTY_INCLUDE_DIR}/embree4"
                     )
                 endif()
+                if(NOT TARGET vclib-3rd-embree-tbb)
+                    add_library(vclib-3rd-embree-tbb SHARED IMPORTED GLOBAL)
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_IMPLIB
+                                "${VCLIB_3RDPARTY_LIB_DIR}/tbb12.lib"
+                    )
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_LOCATION
+                                "${VCLIB_3RDPARTY_BIN_DIR}/tbb12.dll"
+                    )
+                endif()
                 set_property(
                     TARGET vclib::vclib-3rd-embree
                     APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES embree
+                    PROPERTY INTERFACE_LINK_LIBRARIES embree vclib-3rd-embree-tbb
                 )
             endif()
             set_property(
