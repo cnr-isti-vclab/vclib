@@ -333,6 +333,8 @@ void transferVertexComponents(
     constexpr uint V = vcl::ElemId::VERTEX;
     using ScalarType = typename MeshType::VertexType::PositionType::ScalarType;
 
+    // Determine which vertex components need to be transferred to the output
+    // mesh based on their availability in the input meshes.
     bool transferNormals = vcl::isPerVertexNormalAvailable(m0) ||
                            vcl::isPerVertexNormalAvailable(m1);
     bool transferColors = vcl::isPerVertexColorAvailable(m0) ||

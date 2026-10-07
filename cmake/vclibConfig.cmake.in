@@ -23,7 +23,7 @@ set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
 )
 
 # Helper variables for 3rdparty paths
-set(VCLIB_3RDPARTY_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../lib/vclib/3rdparty")
+set(VCLIB_3RDPARTY_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/../../vclib/3rdparty")
 set(VCLIB_3RDPARTY_BIN_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../bin/vclib/3rdparty")
 set(VCLIB_3RDPARTY_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/../../../include/vclib/3rdparty")
 
