@@ -40,7 +40,10 @@ else()
         if(VCLIB_ALLOW_INSTALL_VCG)
             install(CODE "
                 message(STATUS \"Moving vcg headers to vclib/3rdparty/vcg\")
-                file(RENAME \"\${CMAKE_INSTALL_PREFIX}/include/vcg\" \"\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/vcg\")
+                if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/vcg\")
+                    file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}\")
+                    file(RENAME \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/vcg\" \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/vcg\")
+                endif()
             ")
         endif()
         
