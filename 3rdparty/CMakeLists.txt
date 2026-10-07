@@ -8,6 +8,22 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-3rdparty)
 
+include(GNUInstallDirs)
+set(VCLIB_3RDPARTY_INSTALL_INCLUDEDIR
+    "${CMAKE_INSTALL_INCLUDEDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_LIBDIR
+    "${CMAKE_INSTALL_LIBDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_BINDIR
+    "${CMAKE_INSTALL_BINDIR}/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INSTALL_DATADIR
+    "${CMAKE_INSTALL_DATADIR}/vclib/3rdparty"
+)
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_3rdparty_install_scope.cmake)
+
 include(FetchContent)
 
 # 3rdparty libraries may have warnings
@@ -129,12 +145,12 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
 
     # tinygltf
     option(
-        VCLIB_ALLOW_DOWNLOAD_TINYGTLF
+        VCLIB_ALLOW_DOWNLOAD_TINYGLTF
         "Allow use of downloaded tinygltf source"
         ON
     )
     cmake_dependent_option(
-        VCLIB_ALLOW_INSTALL_TINYGTLF
+        VCLIB_ALLOW_INSTALL_TINYGLTF
         "Allow install tinygltf source"
         ON
         "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
@@ -363,7 +379,7 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
                 if(NOT added_install_interface)
                     list(
                         APPEND new_inc_dirs
-                        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+                        "$<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>"
                     )
                     set(added_install_interface TRUE)
                 endif()
@@ -378,10 +394,10 @@ foreach(tgt IN LISTS EXPORTED_TARGETS)
     install(
         TARGETS ${tgt}
         EXPORT vclibTargets
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        LIBRARY DESTINATION ${VCLIB_3RDPARTY_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${VCLIB_3RDPARTY_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${VCLIB_3RDPARTY_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
     )
 endforeach()
 

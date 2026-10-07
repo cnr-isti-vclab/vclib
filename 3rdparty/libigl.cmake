@@ -46,7 +46,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     if(VCLIB_ALLOW_INSTALL_LIBIGL)
         install(
             DIRECTORY "${libigl_SOURCE_DIR}/include/igl"
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
         )
     endif()
 else()

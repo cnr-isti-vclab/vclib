@@ -73,7 +73,7 @@ if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
     if(VCLIB_ALLOW_INSTALL_POISSON_RECON)
         install(
             DIRECTORY ${poissonrecon_SOURCE_DIR}/include/poisson_recon
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
         )
     endif()
 
