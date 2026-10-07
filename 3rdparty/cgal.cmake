@@ -136,13 +136,13 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
     if(VCLIB_ALLOW_INSTALL_CGAL)
         install(
             DIRECTORY "${cgal_SOURCE_DIR}/include/CGAL"
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
         )
         if(WIN32)
             # Install headers
             install(
                 DIRECTORY "${cgal_SOURCE_DIR}/auxiliary/gmp/include/"
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+                DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
             )
             # Install .lib files
             install(
@@ -150,7 +150,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmp.lib"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/gmpxx.lib"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/lib/mpfr.lib"
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                DESTINATION ${VCLIB_3RDPARTY_INSTALL_LIBDIR}
             )
             # Install .dll files
             install(
@@ -158,7 +158,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmp-10.dll"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/gmpxx-4.dll"
                     "${cgal_SOURCE_DIR}/auxiliary/gmp/bin/mpfr-6.dll"
-                DESTINATION ${CMAKE_INSTALL_BINDIR}
+                DESTINATION ${VCLIB_3RDPARTY_INSTALL_BINDIR}
                 COMPONENT Runtime
             )
         endif()

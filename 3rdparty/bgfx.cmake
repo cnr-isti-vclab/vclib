@@ -98,7 +98,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
     )
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(bgfx)
+
+    vclib_end_3rdparty_install_scope()
 
     add_library(vclib-3rd-bgfx INTERFACE)
 

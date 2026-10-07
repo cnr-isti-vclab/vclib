@@ -73,9 +73,16 @@ target_compile_definitions(
 #     000-mesh-basic # name of the example directory
 # )
 #
-# Function to add a standalone example linking to the original source code.
-# It sets up the executable, links it against vclib and common example properties,
-# adds the required include paths, and registers a CTest to run the example.
+# Adds a standalone example executable and registers it with CTest.
+#
+# \param module The module path (e.g., 'core', 'render', 'external')
+# \param name   The name of the example directory (e.g., '000-mesh-basic')
+# \param ARGN   Additional include directories relative to the example directory
+#
+# This function automatically extracts the base module and submodule names from
+# the provided `module` path and links the corresponding vclib targets (e.g.,
+# vclib::core, vclib::render). It also handles custom shader compilation and
+# copies runtime DLLs on Windows.
 function(add_standalone_example module name)
     set(TARGET_NAME "standalone-${module}-${name}")
     string(REPLACE "/" "-" TARGET_NAME "${TARGET_NAME}")
@@ -104,12 +111,18 @@ function(add_standalone_example module name)
 
     # Extract the base module name (e.g., 'render' from 'render/core')
     string(REGEX MATCH "^[^/]+" BASE_MODULE "${module}")
+    # If there is no submodule (e.g., just 'core'), this evaluates to an empty
+    # string.
+    string(REGEX REPLACE "^[^/]+/?(.*)$" "\\1" SUB_MODULE "${module}")
 
     # Link to vclib and the common definitions
     target_link_libraries(
         ${TARGET_NAME}
         PRIVATE vclib::${BASE_MODULE} vclib-standalone-examples-common
     )
+    if(SUB_MODULE AND TARGET vclib::${SUB_MODULE})
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib::${SUB_MODULE})
+    endif()
 
     # Add the example directory to include path in case it uses local headers
     target_include_directories(
@@ -139,10 +152,11 @@ function(add_standalone_example module name)
         if(SHADERS AND COMMAND vclib_target_add_shaders)
             vclib_target_add_shaders(${TARGET_NAME} ${SHADERS})
 
-            # vclib_target_add_shaders resolves the output directory based on the relative path
-            # of the shader source. Since the examples are built from a different directory
-            # relative to the standalone CMakeLists, we copy the compiled shaders to the
-            # executable's expected directory so they can be loaded at runtime.
+            # vclib_target_add_shaders resolves the output directory based on
+            # the relative path of the shader source. Since the examples are
+            # built from a different directory relative to the standalone
+            # CMakeLists, we copy the compiled shaders to the executable's
+            # expected directory so they can be loaded at runtime.
             get_property(
                 TARGET_BIN_DIR
                 TARGET ${TARGET_NAME}
