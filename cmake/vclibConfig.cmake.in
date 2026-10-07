@@ -41,7 +41,7 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
         find_dependency(nlohmann_json)
     endif()
     if("vclib-3rd-lib3mf" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES)
-        find_dependency(lib3mf)
+        find_dependency(lib3mf PATHS "${VCLIB_3RDPARTY_LIB_DIR}/cmake/lib3mf")
     endif()
 endif()
 

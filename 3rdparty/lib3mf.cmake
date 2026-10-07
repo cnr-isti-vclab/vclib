@@ -14,10 +14,16 @@ if(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
     # We force static build to avoid polluting system with lib3mf.so and conflicting with OS packages
     set(LIB3MF_BUILD_SHARED OFF CACHE BOOL "" FORCE)
 
+    set(LIB3MF_EXCLUDE_FROM_ALL_OPTION "")
+    if(NOT VCLIB_ALLOW_INSTALL_LIB3MF)
+        set(LIB3MF_EXCLUDE_FROM_ALL_OPTION EXCLUDE_FROM_ALL)
+    endif()
+
     FetchContent_Declare(
         lib3mf
         GIT_REPOSITORY https://github.com/3MFConsortium/lib3mf
         GIT_TAG v${LIB3MF_VERSION}
+        ${LIB3MF_EXCLUDE_FROM_ALL_OPTION}
     )
     # Workaround for a bug in lib3mf CMakeLists.txt where it looks for lib3mf.pc
     # in CMAKE_BINARY_DIR during installation instead of CMAKE_CURRENT_BINARY_DIR.
@@ -25,7 +31,11 @@ if(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
         file(TOUCH "${CMAKE_BINARY_DIR}/lib3mf.pc")
     endif()
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(lib3mf)
+
+    vclib_end_3rdparty_install_scope()
 
     if(TARGET lib3mf)
         # lib3mf CMake populates PUBLIC compile options (e.g. /WX on Windows)
