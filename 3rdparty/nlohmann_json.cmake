@@ -42,34 +42,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
         GIT_REPOSITORY https://github.com/nlohmann/json.git
         GIT_TAG v${NLOHMANN_JSON_VERSION}
     )
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(nlohmann_json)
 
-    if(VCLIB_ALLOW_INSTALL_NLOHMANN_JSON)
-        install(CODE "
-            # Move headers
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/nlohmann\")
-                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}\")
-                file(RENAME
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/nlohmann\"
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/nlohmann\"
-                )
-            endif()
-
-            # Move CMake configs
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/cmake/nlohmann_json\")
-                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_DATADIR}/cmake\")
-                file(RENAME
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/cmake/nlohmann_json\"
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_DATADIR}/cmake/nlohmann_json\"
-                )
-            endif()
-
-            # Remove pkgconfig
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/pkgconfig/nlohmann_json.pc\")
-                file(REMOVE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/pkgconfig/nlohmann_json.pc\")
-            endif()
-        ")
-    endif()
+    vclib_end_3rdparty_install_scope()
 
     add_library(vclib-3rd-nlohmann_json INTERFACE)
     target_link_libraries(

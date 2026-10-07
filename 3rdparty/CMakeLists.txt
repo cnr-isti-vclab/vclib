@@ -22,6 +22,8 @@ set(VCLIB_3RDPARTY_INSTALL_DATADIR
     "${CMAKE_INSTALL_DATADIR}/vclib/3rdparty"
 )
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_3rdparty_install_scope.cmake)
+
 include(FetchContent)
 
 # 3rdparty libraries may have warnings
@@ -143,12 +145,12 @@ if(VCLIB_BUILD_CORE_WITH_3RDPARTY_IO_LIBRARIES OR VCLIB_BUILD_MODULE_RENDER)
 
     # tinygltf
     option(
-        VCLIB_ALLOW_DOWNLOAD_TINYGTLF
+        VCLIB_ALLOW_DOWNLOAD_TINYGLTF
         "Allow use of downloaded tinygltf source"
         ON
     )
     cmake_dependent_option(
-        VCLIB_ALLOW_INSTALL_TINYGTLF
+        VCLIB_ALLOW_INSTALL_TINYGLTF
         "Allow install tinygltf source"
         ON
         "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"

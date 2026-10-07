@@ -98,59 +98,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
     )
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(bgfx)
 
-    # Move installed headers, cmake configs, and bin tools to vclib/3rdparty prefix
-    if(VCLIB_ALLOW_INSTALL_BGFX)
-        install(CODE "
-            foreach(dir bgfx bimg bx Bindings)
-                if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/\${dir}\")
-                    file(RENAME
-                        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/\${dir}\"
-                        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/\${dir}\"
-                    )
-                endif()
-            endforeach()
-
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake\")
-                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake\")
-                foreach(lib_cmake_dir bgfx bimg bx)
-                    if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/\${lib_cmake_dir}\")
-                        file(RENAME
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/cmake/\${lib_cmake_dir}\"
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_LIBDIR}/cmake/\${lib_cmake_dir}\"
-                        )
-                    endif()
-                endforeach()
-            endif()
-
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/licences/bgfx\")
-                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_DATADIR}/licences\")
-                file(RENAME
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/licences/bgfx\"
-                    \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_DATADIR}/licences/bgfx\"
-                )
-            endif()
-
-            if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}\")
-                file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_BINDIR}\")
-                foreach(tool shaderc texturec texturev geometryc geometryv)
-                    if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/\${tool}\")
-                        file(RENAME
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/\${tool}\"
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_BINDIR}/\${tool}\"
-                        )
-                    endif()
-                    if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/\${tool}.exe\")
-                        file(RENAME
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}/\${tool}.exe\"
-                            \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_BINDIR}/\${tool}.exe\"
-                        )
-                    endif()
-                endforeach()
-            endif()
-        ")
-    endif()
+    vclib_end_3rdparty_install_scope()
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
