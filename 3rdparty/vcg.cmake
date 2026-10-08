@@ -36,17 +36,20 @@ else()
         FetchContent_MakeAvailable(vcglib)
 
         vclib_end_3rdparty_install_scope()
-        
+
         if(VCLIB_ALLOW_INSTALL_VCG)
-            install(CODE "
+            install(
+                CODE
+                    "
                 message(STATUS \"Moving vcg headers to vclib/3rdparty/vcg\")
                 if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/vcg\")
                     file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}\")
                     file(RENAME \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/vcg\" \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/vcg\")
                 endif()
-            ")
+            "
+            )
         endif()
-        
+
         set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})
         set(VCLIB_USES_VCG TRUE)
     else()
@@ -66,7 +69,7 @@ if(VCLIB_USES_VCG)
     else()
         target_include_directories(
             vclib-3rd-vcg
-            INTERFACE 
+            INTERFACE
                 $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
                 $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
         )
