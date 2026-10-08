@@ -1,0 +1,75 @@
+name: 'Build and Install lib3mf'
+description: 'Builds and installs lib3mf from source, caching the installation.'
+
+inputs:
+  version:
+    description: 'lib3mf version to build'
+    default: '2.5.0'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get OS Info
+      id: os-info
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+          if [ -f /etc/os-release ]; then
+            source /etc/os-release
+            echo "os_id=${ID}-${VERSION_ID}" >> $GITHUB_OUTPUT
+          else
+            echo "os_id=linux" >> $GITHUB_OUTPUT
+          fi
+        elif [ "$RUNNER_OS" == "macOS" ]; then
+          echo "os_id=macos-$(sw_vers -productVersion | cut -d. -f1)" >> $GITHUB_OUTPUT
+        else
+          echo "os_id=windows" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Cache lib3mf
+      id: cache-lib3mf
+      uses: actions/cache@v6
+      with:
+        path: ${{ runner.workspace }}/lib3mf-install
+        key: lib3mf-${{ inputs.version }}-${{ steps.os-info.outputs.os_id }}-${{ runner.arch }}-static
+
+    - name: Build lib3mf
+      if: steps.cache-lib3mf.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        WORKSPACE_PATH="${WORKSPACE//\\//}"
+        
+        echo "Building lib3mf from source..."
+        cd "$WORKSPACE_PATH"
+        git clone --recurse-submodules --depth 1 --branch v${{ inputs.version }} https://github.com/3MFConsortium/lib3mf.git src-lib3mf
+        
+        # Build and install lib3mf (static)
+        cmake -S src-lib3mf -B build-lib3mf \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DLIB3MF_TESTS=OFF \
+          -DLIB3MF_BUILD_SHARED=OFF \
+          -DCMAKE_INSTALL_PREFIX="$WORKSPACE_PATH/lib3mf-install"
+          
+        cmake --build build-lib3mf --config Release --parallel 2
+        cmake --install build-lib3mf --config Release
+        
+        rm -rf src-lib3mf build-lib3mf
+
+    - name: Configure CMake Prefix Path
+      shell: bash
+      env:
+        WORKSPACE: ${{ github.workspace }}
+      run: |
+        WORKSPACE_PATH="${WORKSPACE//\\//}"
+
+        if [ -z "$CMAKE_PREFIX_PATH" ]; then
+          echo "CMAKE_PREFIX_PATH=$WORKSPACE_PATH/lib3mf-install" >> $GITHUB_ENV
+        else
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            echo "CMAKE_PREFIX_PATH=$WORKSPACE_PATH/lib3mf-install;$CMAKE_PREFIX_PATH" >> $GITHUB_ENV
+          else
+            echo "CMAKE_PREFIX_PATH=$WORKSPACE_PATH/lib3mf-install:$CMAKE_PREFIX_PATH" >> $GITHUB_ENV
+          fi
+        fi

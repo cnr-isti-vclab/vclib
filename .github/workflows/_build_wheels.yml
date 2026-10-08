@@ -54,6 +54,9 @@ jobs:
     - name: Build and Install bgfx
       uses: ./.github/actions/build-install-bgfx
 
+    - name: Build and Install lib3mf
+      uses: ./.github/actions/build-install-lib3mf
+
     - name: Build Wheel 3.12
       uses: ./.github/actions/build-python-wheel
       with:

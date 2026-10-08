@@ -47,6 +47,8 @@ jobs:
       with:
         key: core-${{ matrix.os }}
         max-size: 1G
+    - name: Build and Install lib3mf
+      uses: ./.github/actions/build-install-lib3mf
     - name: Build
       shell: bash
       run: |
