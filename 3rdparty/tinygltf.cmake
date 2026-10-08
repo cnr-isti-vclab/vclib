@@ -30,7 +30,9 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGLTF)
     vclib_end_3rdparty_install_scope()
 
     if(VCLIB_ALLOW_INSTALL_TINYGLTF)
-        install(CODE "
+        install(
+            CODE
+                "
             if(EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/include/tiny_gltf.h\")
                 file(MAKE_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}\")
                 file(RENAME
@@ -45,7 +47,8 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGLTF)
                     \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/tinygltf_json.h\"
                 )
             endif()
-        ")
+        "
+        )
     endif()
 
     add_library(vclib-3rd-tinygltf INTERFACE)
