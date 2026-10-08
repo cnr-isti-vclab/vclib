@@ -23,6 +23,10 @@ if(WIN32)
     endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    add_compile_options(-Wno-psabi)
+endif()
+
 function(vclib_disable_target_warnings target_name)
     if(TARGET ${target_name})
         if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
