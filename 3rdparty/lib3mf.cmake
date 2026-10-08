@@ -59,11 +59,10 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
 
     vclib_end_3rdparty_install_scope()
 
-    if(TARGET lib3mf)
-        # lib3mf CMake populates PUBLIC compile options (e.g. /WX on Windows)
-        # We clear the interface options to prevent them from leaking into vclib targets
-        set_target_properties(lib3mf PROPERTIES INTERFACE_COMPILE_OPTIONS "")
-    endif()
+    # lib3mf CMake populates PUBLIC compile options (e.g. /WX on Windows)
+    # We clear the interface options to prevent them from leaking into vclib targets
+    set_target_properties(lib3mf PROPERTIES INTERFACE_COMPILE_OPTIONS "")
+    disable_target_warnings(lib3mf)
 
     add_library(vclib-3rd-lib3mf INTERFACE)
     target_link_libraries(vclib-3rd-lib3mf INTERFACE lib3mf)
