@@ -188,9 +188,9 @@ public:
      *
      * @param[in] origin: The origin point of the ray in world space.
      * @param[in] direction: The direction vector of the ray in world space.
-     * @param[in] near: The minimum distance from the origin to consider for
+     * @param[in] tNear: The minimum distance from the origin to consider for
      * intersections (default is 0).
-     * @param[in] far: The maximum distance from the origin to consider for
+     * @param[in] tFar: The maximum distance from the origin to consider for
      * intersections (default is infinity).
      *
      * @return A HitResult describing the first intersected face along the
@@ -201,11 +201,11 @@ public:
     HitResult firstFaceIntersectedByRay(
         const Point3<ScalarType>& origin,
         const Point3<ScalarType>& direction,
-        float                     near = 0.f,
-        float far = std::numeric_limits<float>::infinity()) const
+        float                     tNear = 0.f,
+        float tFar = std::numeric_limits<float>::infinity()) const
     {
         if (mScene) {
-            RTCRayHit rayhit = initRayHitValues(origin, direction, near, far);
+            RTCRayHit rayhit = initRayHitValues(origin, direction, tNear, tFar);
 
             rtcIntersect1(mScene, &rayhit);
 
@@ -232,9 +232,9 @@ public:
      * (for example, float or double).
      *
      * @param[in] ray: The ray in world space used as query.
-     * @param[in] near: The minimum distance from the ray origin to consider
+     * @param[in] tNear: The minimum distance from the ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from the ray origin to consider
+     * @param[in] tFar: The maximum distance from the ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A HitResult describing the first intersected face along the
@@ -244,11 +244,11 @@ public:
     template<typename ScalarType>
     HitResult firstFaceIntersectedByRay(
         const Ray3<ScalarType>& ray,
-        float                   near = 0.f,
-        float far = std::numeric_limits<float>::infinity()) const
+        float                   tNear = 0.f,
+        float tFar = std::numeric_limits<float>::infinity()) const
     {
         return firstFaceIntersectedByRay(
-            ray.origin(), ray.direction(), near, far);
+            ray.origin(), ray.direction(), tNear, tFar);
     }
 
     /**
@@ -296,9 +296,9 @@ public:
      * rays in world space.
      * @param[in] directions: A range of vectors representing the directions
      * of the rays in world space.
-     * @param[in] near: The minimum distance from each ray origin to consider
+     * @param[in] tNear: The minimum distance from each ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from each ray origin to consider
+     * @param[in] tFar: The maximum distance from each ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A vector of HitResult tuples, one for each ray, describing the
@@ -309,8 +309,8 @@ public:
     std::vector<HitResult> firstFaceIntersectedByRays(
         R1&&  origins,
         R2&&  directions,
-        float near = 0.f,
-        float far  = std::numeric_limits<float>::infinity()) const
+        float tNear = 0.f,
+        float tFar  = std::numeric_limits<float>::infinity()) const
         requires Point3Concept<std::ranges::range_value_t<R1>> &&
                  Point3Concept<std::ranges::range_value_t<R2>>
     {
@@ -330,7 +330,7 @@ public:
 #ifndef VCL_EMBREE_FORCE_CHUNK_16
             auto computeRay = [&](uint i) {
                 results[i] = firstFaceIntersectedByRay(
-                    origins[i], directions[i], near, far);
+                    origins[i], directions[i], tNear, tFar);
             };
 
             std::vector<std::size_t> rayIndices(sz);
@@ -363,7 +363,7 @@ public:
                 for (std::size_t i = first; i < last; ++i) {
                     std::size_t idx = i - first;
                     initRayHitsValues(
-                        rayHits, idx, origins[i], directions[i], near, far);
+                        rayHits, idx, origins[i], directions[i], tNear, tFar);
                 }
 
                 rtcIntersect16(validMask.data(), mScene, &rayHits);
@@ -418,9 +418,9 @@ public:
      * @ref Ray3Concept, representing the rays to be tested.
      *
      * @param[in] rays: A range of rays in world space used as queries.
-     * @param[in] near: The minimum distance from each ray origin to consider
+     * @param[in] tNear: The minimum distance from each ray origin to consider
      * for intersections (default is 0).
-     * @param[in] far: The maximum distance from each ray origin to consider
+     * @param[in] tFar: The maximum distance from each ray origin to consider
      * for intersections (default is infinity).
      *
      * @return A vector of HitResult tuples, one for each ray, describing the
@@ -430,8 +430,8 @@ public:
     template<RandomAccessRange R>
     std::vector<HitResult> firstFaceIntersectedByRays(
         R&&   rays,
-        float near = 0.f,
-        float far  = std::numeric_limits<float>::infinity()) const
+        float tNear = 0.f,
+        float tFar  = std::numeric_limits<float>::infinity()) const
         requires Ray3Concept<std::ranges::range_value_t<R>>
     {
         auto getOriginView = [](const auto& r) {
@@ -445,7 +445,7 @@ public:
         auto origins    = rays | std::views::transform(getOriginView);
         auto directions = rays | std::views::transform(getDirectionView);
 
-        return firstFaceIntersectedByRays(origins, directions, near, far);
+        return firstFaceIntersectedByRays(origins, directions, tNear, tFar);
     }
 
     /**
@@ -579,8 +579,8 @@ private:
     static inline RTCRayHit initRayHitValues(
         const PointType& origin,
         const PointType& direction,
-        float            tnear = 0.f,
-        float            tfar  = std::numeric_limits<float>::infinity())
+        float            tNear = 0.f,
+        float            tFar  = std::numeric_limits<float>::infinity())
     {
         RTCRayHit rayhit;
         rayhit.ray.org_x     = origin.x();
@@ -589,8 +589,8 @@ private:
         rayhit.ray.dir_x     = direction.x();
         rayhit.ray.dir_y     = direction.y();
         rayhit.ray.dir_z     = direction.z();
-        rayhit.ray.tnear     = tnear;
-        rayhit.ray.tfar      = tfar;
+        rayhit.ray.tnear     = tNear;
+        rayhit.ray.tfar      = tFar;
         rayhit.ray.mask      = -1;
         rayhit.ray.flags     = 0;
         rayhit.hit.geomID    = RTC_INVALID_GEOMETRY_ID;
@@ -604,8 +604,8 @@ private:
         uint             i,
         const PointType& origin,
         const PointType& direction,
-        float            tnear = 0.f,
-        float            tfar  = std::numeric_limits<float>::infinity())
+        float            tNear = 0.f,
+        float            tFar  = std::numeric_limits<float>::infinity())
     {
         rayhits.ray.org_x[i]     = origin.x();
         rayhits.ray.org_y[i]     = origin.y();
@@ -613,8 +613,8 @@ private:
         rayhits.ray.dir_x[i]     = direction.x();
         rayhits.ray.dir_y[i]     = direction.y();
         rayhits.ray.dir_z[i]     = direction.z();
-        rayhits.ray.tnear[i]     = tnear;
-        rayhits.ray.tfar[i]      = tfar;
+        rayhits.ray.tnear[i]     = tNear;
+        rayhits.ray.tfar[i]      = tFar;
         rayhits.ray.mask[i]      = -1;
         rayhits.ray.flags[i]     = 0;
         rayhits.hit.geomID[i]    = RTC_INVALID_GEOMETRY_ID;
