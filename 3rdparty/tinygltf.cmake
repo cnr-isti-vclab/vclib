@@ -29,6 +29,8 @@ if(VCLIB_ALLOW_DOWNLOAD_TINYGLTF)
 
     vclib_end_3rdparty_install_scope()
 
+    vclib_disable_target_warnings(tinygltf)
+
     if(VCLIB_ALLOW_INSTALL_TINYGLTF)
         install(
             CODE

@@ -579,8 +579,8 @@ private:
     static inline RTCRayHit initRayHitValues(
         const PointType& origin,
         const PointType& direction,
-        float            tnear = 0.f,
-        float            tfar  = std::numeric_limits<float>::infinity())
+        float            tNear = 0.f,
+        float            tFar  = std::numeric_limits<float>::infinity())
     {
         RTCRayHit rayhit;
         rayhit.ray.org_x     = origin.x();
@@ -589,8 +589,8 @@ private:
         rayhit.ray.dir_x     = direction.x();
         rayhit.ray.dir_y     = direction.y();
         rayhit.ray.dir_z     = direction.z();
-        rayhit.ray.tnear     = tnear;
-        rayhit.ray.tfar      = tfar;
+        rayhit.ray.tnear     = tNear;
+        rayhit.ray.tfar      = tFar;
         rayhit.ray.mask      = -1;
         rayhit.ray.flags     = 0;
         rayhit.hit.geomID    = RTC_INVALID_GEOMETRY_ID;
@@ -604,8 +604,8 @@ private:
         uint             i,
         const PointType& origin,
         const PointType& direction,
-        float            tnear = 0.f,
-        float            tfar  = std::numeric_limits<float>::infinity())
+        float            tNear = 0.f,
+        float            tFar  = std::numeric_limits<float>::infinity())
     {
         rayhits.ray.org_x[i]     = origin.x();
         rayhits.ray.org_y[i]     = origin.y();
@@ -613,8 +613,8 @@ private:
         rayhits.ray.dir_x[i]     = direction.x();
         rayhits.ray.dir_y[i]     = direction.y();
         rayhits.ray.dir_z[i]     = direction.z();
-        rayhits.ray.tnear[i]     = tnear;
-        rayhits.ray.tfar[i]      = tfar;
+        rayhits.ray.tnear[i]     = tNear;
+        rayhits.ray.tfar[i]      = tFar;
         rayhits.ray.mask[i]      = -1;
         rayhits.ray.flags[i]     = 0;
         rayhits.hit.geomID[i]    = RTC_INVALID_GEOMETRY_ID;

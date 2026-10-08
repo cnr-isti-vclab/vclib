@@ -15,6 +15,7 @@ if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
         GIT_REPOSITORY https://github.com/mkazhdan/PoissonRecon
         GIT_TAG ${POISSON_RECON_HASH_COMMIT}
         EXCLUDE_FROM_ALL
+        SYSTEM
     )
 
     FetchContent_MakeAvailable(poissonrecon)
@@ -61,7 +62,9 @@ if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
 
     target_include_directories(
         vclib-3rd-poisson-recon
-        INTERFACE ${poissonrecon_SOURCE_DIR}/include
+        SYSTEM INTERFACE 
+            $<BUILD_INTERFACE:${poissonrecon_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
     )
 
     target_compile_definitions(

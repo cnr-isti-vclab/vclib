@@ -28,15 +28,15 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdf/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include>
     )
 
     # make sure that the imported targets are global
@@ -104,10 +104,14 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     vclib_end_3rdparty_install_scope()
 
-    add_library(vclib-3rd-bgfx INTERFACE)
+    # there are some warnings that we need to ignore
+    vclib_disable_target_warnings(spirv-cross) #bgfx 3rdparty
+    vclib_disable_target_warnings(l-smash)     #bgfx 3rdparty
 
-    # there are three warnings on gcc that we need to ignore
-    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
+
+    vclib_disable_target_warnings(bimg_encode) #bimg 3rdparty
+
+    add_library(vclib-3rd-bgfx INTERFACE)
 
     target_link_libraries(
         vclib-3rd-bgfx
@@ -120,7 +124,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty
+        INTERFACE $<BUILD_INTERFACE:${bgfx_SOURCE_DIR}/bgfx/3rdparty>
     )
 
     set_target_properties(
