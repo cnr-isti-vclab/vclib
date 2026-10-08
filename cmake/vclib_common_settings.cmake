@@ -23,7 +23,7 @@ if(WIN32)
     endif()
 endif()
 
-function(disable_target_warnings target_name)
+function(vclib_disable_target_warnings target_name)
     if(TARGET ${target_name})
         if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
             target_compile_options(${target_name} PRIVATE /w)

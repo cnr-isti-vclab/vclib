@@ -29,6 +29,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
         URL
             https://github.com/CGAL/cgal/releases/download/v${CGAL_VER}/CGAL-${CGAL_VER}.zip
         SOURCE_SUBDIR "include" # trick to avoid add_subdir of cgal directory
+        SYSTEM
     )
 
     FetchContent_MakeAvailable(cgal)
@@ -36,7 +37,9 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
     add_library(vclib-3rd-cgal INTERFACE)
     target_include_directories(
         vclib-3rd-cgal
-        INTERFACE "${cgal_SOURCE_DIR}/include"
+        SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${cgal_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
     )
 
     if(WIN32)

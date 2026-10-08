@@ -19,7 +19,7 @@ if(VCLIB_ALLOW_SYSTEM_LIBIGL AND libigl_FOUND)
         INTERFACE igl::core igl::copyleft::cgal
     )
 
-    target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
+    target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL CGAL_NO_DEPRECATION_WARNINGS)
 
     list(APPEND VCLIB_EXTERNAL_OPTIONAL_SYSTEM_LIBRARIES vclib-3rd-libigl)
 
@@ -31,6 +31,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
         GIT_REPOSITORY https://github.com/libigl/libigl.git
         GIT_TAG v${LIBIGL_VER}
         EXCLUDE_FROM_ALL
+        SYSTEM
     )
 
     FetchContent_MakeAvailable(libigl)
@@ -38,7 +39,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_LIBIGL)
     add_library(vclib-3rd-libigl INTERFACE)
     target_link_libraries(vclib-3rd-libigl INTERFACE igl::core)
 
-    target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL)
+    target_compile_definitions(vclib-3rd-libigl INTERFACE VCLIB_WITH_LIBIGL CGAL_NO_DEPRECATION_WARNINGS)
 
     list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-libigl)
 
