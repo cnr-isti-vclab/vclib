@@ -7,7 +7,29 @@
 
 set(LIB3MF_VERSION 2.5.0) 
 
-if(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
+if(VCLIB_ALLOW_SYSTEM_LIB3MF)
+    find_package(lib3mf QUIET)
+endif()
+
+if(VCLIB_ALLOW_SYSTEM_LIB3MF AND (TARGET lib3mf::lib3mf OR TARGET lib3mf))
+    message(STATUS "- lib3mf - using system-provided library")
+    set(VCLIB_USED_SYSTEM_LIB3MF ON CACHE INTERNAL "")
+    
+    add_library(vclib-3rd-lib3mf INTERFACE)
+
+    if(TARGET lib3mf::lib3mf)
+        # We clear the interface options to prevent them from leaking into vclib targets
+        set_target_properties(lib3mf::lib3mf PROPERTIES INTERFACE_COMPILE_OPTIONS "")
+        target_link_libraries(vclib-3rd-lib3mf INTERFACE lib3mf::lib3mf)
+    else()
+        set_target_properties(lib3mf PROPERTIES INTERFACE_COMPILE_OPTIONS "")
+        target_link_libraries(vclib-3rd-lib3mf INTERFACE lib3mf)
+    endif()
+
+    target_compile_definitions(vclib-3rd-lib3mf INTERFACE VCLIB_WITH_LIB3MF)
+    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-lib3mf)
+
+elseif(VCLIB_ALLOW_DOWNLOAD_LIB3MF)
     message(STATUS "- lib3mf - using downloaded source")
 
     set(LIB3MF_TESTS OFF CACHE BOOL "" FORCE)
