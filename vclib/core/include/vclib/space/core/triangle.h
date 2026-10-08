@@ -167,6 +167,22 @@ public:
     }
 
     /**
+     * @brief Computes the barycentric coordinates of a point with respect to
+     * the triangle.
+     *
+     * Given a point `p` that is assumed to lie on the plane of the triangle,
+     * this function computes its barycentric coordinates (u, v, w) such that
+     * `p = u * p0 + v * p1 + w * p2`.
+     *
+     * @param[in] p: The point for which to compute the barycentric coordinates.
+     * @return A Point3 containing the barycentric coordinates (u, v, w).
+     */
+    Point3<ScalarType> barycentricCoordinates(const PointT& p) const
+    {
+        return barycentricCoordinates(mPoints[0], mPoints[1], mPoints[2], p);
+    }
+
+    /**
      * @brief Compute the circumcenter of the triangle.
      *
      * The function computes the circumcenter of the triangle, which is the
@@ -374,6 +390,50 @@ public:
         ScalarType    b2)
     {
         return p0 * b0 + p1 * b1 + p2 * b2;
+    }
+
+    /**
+     * @brief Computes the barycentric coordinates of a point with respect to
+     * a triangle.
+     *
+     * Given a triangle with vertices \p p0, \p p1, and \p p2, and a point \p p
+     * that is assumed to lie on the plane of the triangle, this function
+     * computes the barycentric coordinates (u, v, w) of \p p such that
+     * `p = u * p0 + v * p1 + w * p2`.
+     *
+     * @param[in] p0: The first vertex of the triangle.
+     * @param[in] p1: The second vertex of the triangle.
+     * @param[in] p2: The third vertex of the triangle.
+     * @param[in] p: The point for which to compute the barycentric coordinates.
+     * @return A Point3 containing the barycentric coordinates (u, v, w).
+     */
+    static Point3<ScalarType> barycentricCoordinates(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2,
+        const PointT& p)
+    {
+        PointT v0 = p1 - p0;
+        PointT v1 = p2 - p0;
+        PointT v2 = p - p0;
+
+        ScalarType d00 = v0.dot(v0);
+        ScalarType d01 = v0.dot(v1);
+        ScalarType d11 = v1.dot(v1);
+        ScalarType d20 = v2.dot(v0);
+        ScalarType d21 = v2.dot(v1);
+
+        ScalarType denom = d00 * d11 - d01 * d01;
+
+        if (denom == 0) {
+            return Point3<ScalarType>(1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0);
+        }
+
+        ScalarType v = (d11 * d20 - d01 * d21) / denom;
+        ScalarType w = (d00 * d21 - d01 * d20) / denom;
+        ScalarType u = 1 - v - w;
+
+        return Point3<ScalarType>(u, v, w);
     }
 
     /**

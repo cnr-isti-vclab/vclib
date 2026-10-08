@@ -363,6 +363,10 @@ private:
         }
         mViewId = mOffscreenViewId;
 
+        // the view mode depends on the type of read request (e.g. Sequential
+        // for ID picking)
+        bgfx::setViewMode(mOffscreenViewId, mReadRequest->preferredViewMode());
+
         // Disable clear on the read request view, since its ID is higher and
         // it executes after additional views. We use mViewId to clear instead.
         bgfx::setViewClear(mReadRequest->viewId(), BGFX_CLEAR_NONE);
