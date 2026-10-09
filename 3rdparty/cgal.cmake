@@ -37,7 +37,8 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CGAL)
     add_library(vclib-3rd-cgal INTERFACE)
     target_include_directories(
         vclib-3rd-cgal
-        SYSTEM INTERFACE
+        SYSTEM
+        INTERFACE
             $<BUILD_INTERFACE:${cgal_SOURCE_DIR}/include>
             $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
     )

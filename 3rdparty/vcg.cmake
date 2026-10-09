@@ -64,11 +64,13 @@ if(VCLIB_USES_VCG)
         # Hide system include from export so it doesn't pollute the install interface
         target_include_directories(
             vclib-3rd-vcg
+            SYSTEM
             INTERFACE $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
         )
     else()
         target_include_directories(
             vclib-3rd-vcg
+            SYSTEM
             INTERFACE
                 $<BUILD_INTERFACE:${VCG_INCLUDE_DIRS}>
                 $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
