@@ -62,7 +62,8 @@ if(VCLIB_ALLOW_DOWNLOAD_POISSON_RECON)
 
     target_include_directories(
         vclib-3rd-poisson-recon
-        SYSTEM INTERFACE 
+        SYSTEM
+        INTERFACE
             $<BUILD_INTERFACE:${poissonrecon_SOURCE_DIR}/include>
             $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
     )
