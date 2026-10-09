@@ -41,6 +41,8 @@ class MaterialUniforms
     static inline std::array<float, 4> sEmissiveAlphaCutoffPack =
         {0.0, 0.0, 0.0, 0.5};
 
+    static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
+
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
         bgfx::UniformType::Vec4};
@@ -49,6 +51,9 @@ class MaterialUniforms
         bgfx::UniformType::Vec4};
     static inline StaticUniform sEmissiveAlphaCutoffPackUniform {
         "u_emissiveAlphaCutoffPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sAnisotropyPackUniform {
+        "u_anisotropyPack",
         bgfx::UniformType::Vec4};
 
 public:
@@ -79,6 +84,9 @@ public:
         sEmissiveAlphaCutoffPack[0] = m.emissiveColor().redF();
         sEmissiveAlphaCutoffPack[1] = m.emissiveColor().greenF();
         sEmissiveAlphaCutoffPack[2] = m.emissiveColor().blueF();
+
+        sAnisotropyPack[0] = m.anisotropyStrength();
+        sAnisotropyPack[1] = m.anisotropyRotation();
     }
 
     static void bind()
@@ -86,6 +94,7 @@ public:
         sBaseColorUniform.bind(sBaseColor.data());
         sFactorsPackUniform.bind(sFactorsPack.data());
         sEmissiveAlphaCutoffPackUniform.bind(sEmissiveAlphaCutoffPack.data());
+        sAnisotropyPackUniform.bind(sAnisotropyPack.data());
     }
 };
 
