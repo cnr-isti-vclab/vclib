@@ -10,15 +10,18 @@
 
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
-uniform vec4 u_emissiveAlphaCutoffPack;
+uniform vec4 u_emissivePack;
+uniform vec4 u_alphaPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
 #define u_metallicFactor u_FactorsPack.b
 #define u_normalScale u_FactorsPack.a
 
-#define u_emissiveFactor u_emissiveAlphaCutoffPack.rgb
-#define u_alphaCutoff u_emissiveAlphaCutoffPack.a
+#define u_emissiveFactor u_emissivePack.rgb
+#define u_emissiveStrength u_emissivePack.a
+
+#define u_alphaCutoff u_alphaPack.x
 
 #define isAlphaModeMask() (u_alphaCutoff >= 0.0)
 
