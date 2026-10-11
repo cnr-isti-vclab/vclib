@@ -10,6 +10,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <print>
 #include <string>
 
 namespace vcl {
@@ -25,12 +26,29 @@ namespace vcl {
  */
 class Timer
 {
+    using Clock     = std::chrono::steady_clock;
+    using TimePoint = Clock::time_point;
+
     std::string mCaption   = "Timer";
     bool        mIsStopped = false;
-
-    std::chrono::high_resolution_clock::time_point mBegin, mEnd;
+    TimePoint   mBegin, mEnd;
 
 public:
+    /**
+     * @brief Creates a timer with the given caption. If the given boolean is
+     * true, the timer starts.
+     *
+     * @param[in] caption: the caption of the timer.
+     * @param[in] _start: if true, the timer will start when the object is
+     * created.
+     */
+    explicit Timer(std::string caption = "Timer", bool start = true) :
+            mCaption(std::move(caption))
+    {
+        if (start)
+            this->start();
+    }
+
     /**
      * @brief Creates a timer with the caption "Timer". If the given boolean is
      * true, the timer starts.
@@ -38,46 +56,19 @@ public:
      * @param[in] _start: if true, the timer will start when the object is
      * created.
      */
-    Timer(bool _start = true)
-    {
-        if (_start)
-            start();
-    }
+    Timer(bool start) : Timer(std::string("Timer"), start) {}
 
     /**
-     * @brief Creates a timer with the given caption. If the given boolean is
-     * true, the timer starts.
-     *
-     * @param[in] caption: the caption of the timer.
-     * @param[in] _start: if true, the timer will start when the object is
-     * created.
+     * @brief Returns the caption of the timer.
      */
-    Timer(const char* caption, bool _start = true) : mCaption(caption)
-    {
-        if (_start)
-            start();
-    }
-
-    /**
-     * @brief Creates a timer with the given caption. If the given boolean is
-     * true, the timer starts.
-     *
-     * @param[in] caption: the caption of the timer.
-     * @param[in] _start: if true, the timer will start when the object is
-     * created.
-     */
-    Timer(const std::string& caption, bool _start = true) : mCaption(caption)
-    {
-        if (_start)
-            start();
-    }
+    decltype(auto) caption(this auto&& self) { return (self.mCaption); }
 
     /**
      * @brief Starts the timer.
      */
     void start()
     {
-        mBegin     = std::chrono::high_resolution_clock::now();
+        mBegin     = Clock::now();
         mIsStopped = false;
     }
 
@@ -96,33 +87,8 @@ public:
      */
     void stop()
     {
-        mEnd       = std::chrono::high_resolution_clock::now();
+        mEnd       = Clock::now();
         mIsStopped = true;
-    }
-
-    /**
-     * @brief Prints the time passed between the call of start() and this member
-     * function. Works also if the timer is not stopped. Printed time is
-     * expressed in seconds.
-     */
-    void print() const
-    {
-        double secs = delay();
-        int    mins = (int) secs / 60;
-        if (mins == 0)
-            std::cout << "[" << secs << " secs]\t" << mCaption << std::endl;
-        else {
-            secs      = secs - mins * 60;
-            int hours = mins / 60;
-            if (hours == 0)
-                std::cout << "[" << mins << " mins; " << secs << " secs]\t"
-                          << mCaption << std::endl;
-            else {
-                mins = mins - hours * 60;
-                std::cout << "[" << hours << " hours; " << mins << " mins; "
-                          << secs << " secs]\t" << mCaption << std::endl;
-            }
-        }
     }
 
     /**
@@ -132,25 +98,50 @@ public:
      */
     double delay() const
     {
-        double secs;
-        if (mIsStopped) {
-            secs =
-                (double) (std::chrono::duration_cast<std::chrono::microseconds>(
-                              mEnd - mBegin)
-                              .count()) /
-                1000000;
-        }
-        else {
-            std::chrono::high_resolution_clock::time_point s =
-                std::chrono::high_resolution_clock::now();
-            secs =
-                (double) (std::chrono::duration_cast<std::chrono::microseconds>(
-                              s - mBegin)
-                              .count()) /
-                1000000;
-        }
-        return secs;
+        const auto end = mIsStopped ? mEnd : Clock::now();
+        return std::chrono::duration<double>(end - mBegin).count();
     }
+
+    /**
+     * @brief Returns a string representation of the timer's elapsed time and
+     * caption.
+     *
+     * The format of the returned string is:
+     * - If less than 1 minute: "[X.XXX secs]    caption"
+     * - If less than 1 hour: "[Y mins; X.XXX secs]    caption"
+     * - If 1 hour or more: "[Z hours; Y mins; X.XXX secs]    caption"
+     *
+     * @return A formatted string representing the timer's elapsed time and
+     * caption.
+     */
+    std::string toString() const
+    {
+        double secs = delay();
+        int    mins = static_cast<int>(secs) / 60;
+        if (mins == 0) {
+            return std::format("[{:.3f} secs]\t{}", secs, mCaption);
+        }
+        secs -= mins * 60;
+        int hours = mins / 60;
+        if (hours == 0) {
+            return std::format(
+                "[{} mins; {:.3f} secs]\t{}", mins, secs, mCaption);
+        }
+        mins -= hours * 60;
+        return std::format(
+            "[{} hours; {} mins; {:.3f} secs]\t{}",
+            hours,
+            mins,
+            secs,
+            mCaption);
+    }
+
+    /**
+     * @brief Prints the time passed between the call of start() and this member
+     * function. Works also if the timer is not stopped. Printed time is
+     * expressed in seconds.
+     */
+    void print() const { std::println("{}", toString()); }
 
     /**
      * @brief Sets the caption of the timer.
