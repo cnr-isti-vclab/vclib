@@ -31,13 +31,9 @@ public:
         assert(radius >= 0);
     }
 
-    const Point3<Scalar>& center() const { return mCenter; }
+    decltype(auto) center(this auto&& self) { return (self.mCenter); }
 
-    Point3<Scalar>& center() { return mCenter; }
-
-    const Scalar& radius() const { return mRadius; }
-
-    Scalar& radius() { return mRadius; }
+    decltype(auto) radius(this auto&& self) { return (self.mRadius); }
 
     template<typename S>
     auto cast() const
