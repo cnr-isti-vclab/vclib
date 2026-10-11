@@ -132,17 +132,11 @@ public:
      */
     std::size_t countInCell(const KeyType& k) const { return mMap.count(k); }
 
-    std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
+    auto valuesInCell(this auto&& self, const KeyType& k)
     {
-        auto p = mMap.equal_range(k);
-        return std::make_pair(Iterator(p.first), Iterator(p.second));
+        return self.mMap.equal_range(k);
     }
 
-    std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
-    {
-        auto p = mMap.equal_range(k);
-        return std::make_pair(ConstIterator(p.first), ConstIterator(p.second));
-    }
 
     void clear() { mMap.clear(); }
 
@@ -163,13 +157,9 @@ public:
             mMap.erase(it);
     }
 
-    Iterator begin() { return mMap.begin(); }
+    auto begin(this auto&& self) { return self.mMap.begin(); }
 
-    ConstIterator begin() const { return mMap.begin(); }
-
-    Iterator end() { return mMap.end(); }
-
-    ConstIterator end() const { return mMap.end(); }
+    auto end(this auto&& self) { return self.mMap.end(); }
 
 private:
     bool insertInCell(const KeyType& k, const ValueType& v)

@@ -24,17 +24,15 @@ namespace vcl {
  * value, and each element value may be stored in more than one cell if it
  * intersects with more than one cell.
  *
- * This class is made using CRTP static polymorphism
- * (https: *en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
- * The last template parameter, is the Derived class that derives from this
- * grid. This allows to avoid calling virtual member functions, which would be
- * called very often and may cause a significant overhead during queries.
+ * This class uses C++23 explicit object parameters ("deducing this")
+ * for static polymorphism, avoiding virtual member functions without
+ * requiring the CRTP pattern.
  *
- * What you need to do is to declared your Grid Data Structure as follows:
+ * What you need to do is to declare your Grid Data Structure as follows:
  *
  * template<typename GridType, typename ValueType>
  * class MyDSGrid :
- *     public AbstractGrid<GridType, ValueType, MyDSGrid<GridType, ValueType>>
+ *     public AbstractGrid<GridType, ValueType>
  * { ... };
  *
  * Make sure that your class:
@@ -44,10 +42,9 @@ namespace vcl {
  * - implements iterators Iterator and ConstIterator that iterate over pairs of
  *   <KeyType, ValueType> (see below for more details)
  * - implements the following member functions:
- *   - std::pair<Iterator, Iterator> valuesInCell(const KeyType) -> returns a
- *     pair of begin-end iterators that will allow to cycle over the elements
- *     contained in a cell. this function must be overloaded both in const and
- *     non-const versions, returning proper const or non-const iterators.
+ *   - valuesInCell(this auto&& self, const KeyType& k) -> returns a pair
+ *     of begin-end iterators that will allow to cycle over the elements
+ *     contained in a cell;
  *   - bool insertInCell(const KeyType&, const ValueType&) -> inserts the
  *     element in a Grid Cell. The returned type tells if the element has been
  *     inserted (in some implementations, insertion could not happen, e.g. when
@@ -55,7 +52,7 @@ namespace vcl {
  *   - bool eraseInCell(const KeyType&, const ValueType&) -> erases all the
  *     element equal to the given element from the given Grid Cell. The returned
  *     type tells if the element has been erased from the given cell.
- *   - Iterator end() -> classic member function that returns the end iterator
+ *   - end(this auto&& self) -> member function that returns the end iterator
  *
  * Iterators of your class must:
  * - Iterate over pairs of <KeyType, ValueType&>:
