@@ -112,13 +112,12 @@ using TexCoordd = TexCoord<double>;
 /* Concepts */
 
 /**
- * @brief A concept representing a TexCoordIndexed.
+ * @brief A concept representing a TexCoord
  *
  * The concept is satisfied when `T` is a class that instantiates or derives
- * from a TexCoordIndexed class of any scalar type.
+ * from a TexCoord class of any scalar type.
  *
- * @tparam T: The type to be tested for conformity to the
- * TexCoordIndexedConcept.
+ * @tparam T: The type to be tested for conformity to the TexCoordConcept.
  *
  * @ingroup space_core
  */
