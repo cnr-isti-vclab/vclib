@@ -14,14 +14,14 @@
 
 #include <cassert>
 #include <cmath>
-#include <iomanip>
+#include <format>
 #include <mutex>
-#include <sstream>
 #include <stack>
+#include <string>
+#include <string_view>
 
 namespace vcl {
 
-template<typename Stream>
 class Logger : public AbstractLogger
 {
     struct ProgressStatus
@@ -43,7 +43,10 @@ class Logger : public AbstractLogger
         uint         throttleCounter = 0;
     };
 
-    enum InternalLogLevel { START = DEBUG_LOG + 1, END };
+    enum InternalLogLevel {
+        START = static_cast<uint>(DEBUG_LOG) + 1,
+        END
+    };
 
     static const uint TIMER_MAX_CHAR_COUNT = 12;
 
@@ -86,8 +89,10 @@ public:
 
     double time() const override final { return mTimer.delay(); }
 
-    void startNewTask(double fromPerc, double toPerc, const std::string& action)
-        override final
+    void startNewTask(
+        double           fromPerc,
+        double           toPerc,
+        std::string_view action) override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         printLine(action, START);
@@ -105,7 +110,7 @@ public:
         updateStep();
     }
 
-    void endTask(const std::string& action) override final
+    void endTask(std::string_view action) override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         mGlobalPercProgress = mIntervals.top().second;
@@ -129,47 +134,18 @@ public:
     virtual void setPercentage(uint newPerc) override
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
-        if (newPerc >= 0 && newPerc <= 100) {
+        if (newPerc <= 100) {
             mGlobalPercProgress = (mIntervals.top().first) + mStep * newPerc;
         }
     }
 
-    void log(const std::string& msg) const override final
-    {
-        std::lock_guard<std::recursive_mutex> lock(
-            const_cast<std::recursive_mutex&>(mMutex));
-        printLine(msg, PROGRESS_LOG);
-    }
-
-    void log(const std::string& msg, LogLevel lvl) const override final
-    {
-        std::lock_guard<std::recursive_mutex> lock(
-            const_cast<std::recursive_mutex&>(mMutex));
-        printLine(msg, lvl);
-    }
-
-    void log(uint perc, const std::string& msg) override final
-    {
-        std::lock_guard<std::recursive_mutex> lock(mMutex);
-        log(perc, msg, PROGRESS_LOG);
-    }
-
-    void log(uint perc, const std::string& msg, LogLevel lvl) override final
-    {
-        std::lock_guard<std::recursive_mutex> lock(mMutex);
-        if (perc >= 0 && perc <= 100)
-            setPercentage(perc);
-
-        printLine(msg, lvl);
-    }
-
     void startProgress(
-        const std::string& msg,
-        uint               progressSize,
-        ProgressMode       mode          = ProgressMode::TIME,
-        double             printInterval = 1.0,
-        uint               startPerc     = 0,
-        uint               endPerc       = 100) override final
+        std::string_view msg,
+        uint             progressSize,
+        ProgressMode     mode          = ProgressMode::TIME,
+        double           printInterval = 1.0,
+        uint             startPerc     = 0,
+        uint             endPerc       = 100) override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         assert(printInterval > 0);
@@ -177,7 +153,7 @@ public:
 
         ProgressStatus prog;
         prog.isActive  = true;
-        prog.message   = msg;
+        prog.message   = std::string(msg);
         prog.size      = progressSize;
         prog.startPerc = startPerc;
         prog.endPerc   = endPerc;
@@ -238,7 +214,7 @@ public:
                 if (prog.perc < prog.endPerc) {
                     prog.perc = prog.endPerc;
                     if (mPrintMsgDuringProgress)
-                        log(prog.perc, prog.message, PROGRESS_LOG);
+                        print(prog.perc, prog.message, PROGRESS_LOG);
                     else
                         setPercentage(prog.perc);
                 }
@@ -272,7 +248,7 @@ public:
                         prog.perc = prog.endPerc;
 
                     if (mPrintMsgDuringProgress)
-                        log(prog.perc, prog.message, PROGRESS_LOG);
+                        print(prog.perc, prog.message, PROGRESS_LOG);
                     else
                         setPercentage(prog.perc);
 
@@ -288,7 +264,7 @@ public:
                 if (prog.perc > prog.endPerc)
                     prog.perc = prog.endPerc;
                 if (mPrintMsgDuringProgress)
-                    log(prog.perc, prog.message, PROGRESS_LOG);
+                    print(prog.perc, prog.message, PROGRESS_LOG);
                 else
                     setPercentage(prog.perc);
                 prog.lastProgress = progress;
@@ -298,125 +274,136 @@ public:
 
 protected:
     /**
-     * @brief Returns the stream corresponding to the given LogLevel.
+     * @brief Writes a formatted log line to the destination sink.
      *
-     * It should be implemented by the derived classes.
+     * Must be implemented by derived classes.
      *
-     * @param[in] lvl: the LogLevel for which the stream is requested.
-     * @return the stream corresponding to the given LogLevel.
+     * @param[in] line: the formatted line to emit.
+     * @param[in] lvl: the LogLevel corresponding to the line.
      */
-    virtual Stream* levelStream(LogLevel lvl) const = 0;
+    virtual void write(std::string_view line, LogLevel lvl) const = 0;
 
-    virtual void flush(Stream& o) const {}
+    /**
+     * @brief Flushes the output sink.
+     */
+    virtual void flush() const {}
 
 private:
+    void print(
+        std::string_view msg,
+        LogLevel         lvl = PROGRESS_LOG) const override final
+    {
+        std::lock_guard<std::recursive_mutex> lock(
+            const_cast<std::recursive_mutex&>(mMutex));
+        printLine(msg, static_cast<uint>(lvl));
+    }
+
+    void print(
+        uint             perc,
+        std::string_view msg,
+        LogLevel         lvl = PROGRESS_LOG) override final
+    {
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
+        if (perc <= 100)
+            setPercentage(perc);
+
+        printLine(msg, static_cast<uint>(lvl));
+    }
+
     void updateStep()
     {
         mStep = (mIntervals.top().second - mIntervals.top().first) / 100;
     }
 
-    void printLine(const std::string& msg, uint lvl) const
+    void printLine(std::string_view msg, uint lvl) const
     {
         if (!mPrintPerc && msg.empty())
             return;
 
-        // lvl could be also InternalLogLevel BEGIN or END
         LogLevel l = PROGRESS_LOG;
-        if (lvl <= DEBUG_LOG) {
-            l = (LogLevel) lvl;
+        if (lvl <= static_cast<uint>(DEBUG_LOG)) {
+            l = static_cast<LogLevel>(lvl);
         }
         if (l > mPrintLevel)
             return;
-        Stream* stream = levelStream(l);
 
-        if (stream) {
-            std::ostringstream ss;
-            uint               s = 0;
+        std::string line;
+        uint        s = 0;
 
-            if (mPrintPerc) {
-                s = printPercentage(ss);
+        if (mPrintPerc) {
+            uint width = 3;
+            if (mPercPrecision > 0)
+                width += 1 + mPercPrecision;
+            if (mPercPrecision == 0) {
+                line += std::format(
+                    "[{:>{}}%]", static_cast<uint>(percentage()), width);
             }
-            s += printIndentation(ss);
-            printMessage(ss, msg, lvl, s);
-            printElapsedTime(ss);
-            ss << "\n";
-            *stream << ss.str().c_str();
-            flush(*stream);
-        }
-    }
-
-    uint printPercentage(std::ostream& o) const
-    {
-        uint size = 3;
-        if (mPercPrecision > 0)
-            size += 1 + mPercPrecision;
-
-        o << "[";
-        o << std::right;
-        o << std::setw(size);
-        o << percentage() << "%]";
-        return size + 3;
-    }
-
-    uint printIndentation(std::ostream& o) const
-    {
-        uint s = 0;
-        if (mIndent) {
-            uint n = mIntervals.size() - 1;
-            for (uint i = 0; i < n; i++) {
-                o << "  ";
-                s += 2;
+            else {
+                line += std::format(
+                    "[{:>{}.{}f}%]", percentage(), width, mPercPrecision);
             }
+            s += width + 3;
         }
-        return s;
-    }
 
-    void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
-        const
-    {
-        uint maxMsgSize = mLineWidth - n;
-        if (mPrintTimer)
-            maxMsgSize -= TIMER_MAX_CHAR_COUNT;
+        if (mIndent && mIntervals.size() > 1) {
+            uint indentSpaces = (mIntervals.size() - 1) * 2;
+            line.append(indentSpaces, ' ');
+            s += indentSpaces;
+        }
+
+        std::string_view levelPrefix;
+        uint             prefixLen = 0;
         switch (lvl) {
-        case LogLevel::ERROR_LOG:
-            maxMsgSize -= 8;
-            o << " ERROR: ";
+        case static_cast<uint>(ERROR_LOG):
+            levelPrefix = " ERROR: ";
+            prefixLen   = 8;
             break;
-        case LogLevel::WARNING_LOG:
-            maxMsgSize -= 10;
-            o << " WARNING: ";
+        case static_cast<uint>(WARNING_LOG):
+            levelPrefix = " WARNING: ";
+            prefixLen   = 10;
             break;
-        case LogLevel::MESSAGE_LOG:
-        case LogLevel::PROGRESS_LOG:
-            maxMsgSize -= 1;
-            o << " ";
+        case static_cast<uint>(MESSAGE_LOG):
+        case static_cast<uint>(PROGRESS_LOG):
+            levelPrefix = " ";
+            prefixLen   = 1;
             break;
-        case LogLevel::DEBUG_LOG:
-            maxMsgSize -= 9;
-            o << " (debug) ";
+        case static_cast<uint>(DEBUG_LOG):
+            levelPrefix = " (debug) ";
+            prefixLen   = 9;
             break;
         case InternalLogLevel::START:
-            maxMsgSize -= 7;
-            o << " Start ";
+            levelPrefix = " Start ";
+            prefixLen   = 7;
             break;
         case InternalLogLevel::END:
-            maxMsgSize -= 5;
-            o << " End ";
+            levelPrefix = " End ";
+            prefixLen   = 5;
             break;
         }
-        o << std::setw(maxMsgSize);
-        o << std::left;
-        o << msg.c_str();
-    }
 
-    void printElapsedTime(std::ostream& o) const
-    {
-        if (mPrintTimer) {
-            o << "[";
-            o << std::setw(TIMER_MAX_CHAR_COUNT - 3);
-            o << std::right;
-            o << mTimer.delay() << "s]";
+        line += levelPrefix;
+        s += prefixLen;
+
+        uint maxMsgSize = mLineWidth > s ? mLineWidth - s : 0;
+        if (mPrintTimer && maxMsgSize >= TIMER_MAX_CHAR_COUNT) {
+            maxMsgSize -= TIMER_MAX_CHAR_COUNT;
         }
+
+        if (msg.size() < maxMsgSize) {
+            line += msg;
+            line.append(maxMsgSize - msg.size(), ' ');
+        }
+        else {
+            line += msg;
+        }
+
+        if (mPrintTimer) {
+            line += std::format(
+                "[{:>{}.3f}s]", mTimer.delay(), TIMER_MAX_CHAR_COUNT - 3);
+        }
+
+        write(line, l);
+        flush();
     }
 };
 

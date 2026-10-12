@@ -11,8 +11,8 @@
 #include <vclib/base/base.h>
 #include <vclib/base/pointers.h>
 
-#include <sstream>
-#include <string>
+#include <format>
+#include <string_view>
 
 namespace vcl {
 
@@ -25,13 +25,15 @@ namespace vcl {
 class AbstractLogger
 {
 public:
-    enum LogLevel {
+    enum class LogLevel {
         ERROR_LOG = 0,
         WARNING_LOG,
         MESSAGE_LOG,
         PROGRESS_LOG,
         DEBUG_LOG
     };
+
+    using enum LogLevel;
 
     enum class ProgressMode { TIME, PERCENTAGE };
 
@@ -59,11 +61,11 @@ public:
      * @brief Sets the maximum print level of the logger.
      *
      * Only messages with a level less or equal to the given level will be
-     * printed. For example, if the level is set to `LogLevel::MESSAGE`, only
-     * messages with level `LogLevel::ERROR`, `LogLevel::WARNING` and
-     * `LogLevel::MESSAGE` will be printed.
+     * printed. For example, if the level is set to `LogLevel::MESSAGE_LOG`, only
+     * messages with level `LogLevel::ERROR_LOG`, `LogLevel::WARNING_LOG` and
+     * `LogLevel::MESSAGE_LOG` will be printed.
      *
-     * @note The default level is `LogLevel::PROGRESS`.
+     * @note The default level is `LogLevel::PROGRESS_LOG`.
      *
      * @param[in] level: The maximum print level of the logger.
      */
@@ -98,220 +100,123 @@ public:
     virtual double time() const = 0;
 
     virtual void startNewTask(
-        double             fromPerc,
-        double             toPerc,
-        const std::string& action) = 0;
+        double           fromPerc,
+        double           toPerc,
+        std::string_view action) = 0;
 
-    virtual void endTask(const std::string& action) = 0;
+    virtual void endTask(std::string_view action) = 0;
 
     virtual double percentage() const = 0;
 
     virtual void setPercentage(uint newPerc) = 0;
 
-    /**
-     * @brief Prints a message to the logger, with level `LogLevel::PROGRESS`
-     * and without modifying the current percentage.
-     *
-     * @param[in] msg: The message to print.
-     */
-    virtual void log(const std::string& msg) const = 0;
+    void log(std::string_view msg, LogLevel lvl = PROGRESS_LOG) const
+    {
+        print(msg, lvl);
+    }
+
+    void log(LogLevel lvl, std::string_view msg) const
+    {
+        print(msg, lvl);
+    }
+
+    void log(uint perc, std::string_view msg, LogLevel lvl = PROGRESS_LOG)
+    {
+        print(perc, msg, lvl);
+    }
+
+    void log(uint perc, LogLevel lvl, std::string_view msg)
+    {
+        print(perc, msg, lvl);
+    }
+
+    template<typename... Args>
+        requires(sizeof...(Args) > 0)
+    void log(std::format_string<Args...> fmt, Args&&... args) const
+    {
+        print(std::format(fmt, std::forward<Args>(args)...), PROGRESS_LOG);
+    }
+
+    template<typename... Args>
+        requires(sizeof...(Args) > 0)
+    void log(LogLevel lvl, std::format_string<Args...> fmt, Args&&... args) const
+    {
+        print(std::format(fmt, std::forward<Args>(args)...), lvl);
+    }
+
+    template<typename... Args>
+        requires(sizeof...(Args) > 0)
+    void log(uint perc, std::format_string<Args...> fmt, Args&&... args)
+    {
+        print(perc, std::format(fmt, std::forward<Args>(args)...), PROGRESS_LOG);
+    }
+
+    template<typename... Args>
+        requires(sizeof...(Args) > 0)
+    void log(
+        uint                        perc,
+        LogLevel                    lvl,
+        std::format_string<Args...> fmt,
+        Args&&... args)
+    {
+        print(perc, std::format(fmt, std::forward<Args>(args)...), lvl);
+    }
 
     /**
-     * @brief Prints a message to the logger, with the given level and without
+     * @brief Starts a new progress tracking block.
+     *
+     * @param[in] msg: the message that will be printed during the progress
+     * @param[in] progressSize: the number of iterations made during the progress
+     * @param[in] mode: the mode of the progress (TIME or PERCENTAGE)
+     * @param[in] printInterval: interval of time or percentage to print
+     * @param[in] startPerc: start percentage of the progress
+     * @param[in] endPerc: end percentage of the progress
+     */
+    virtual void startProgress(
+        std::string_view msg,
+        uint             progressSize,
+        ProgressMode     mode          = ProgressMode::TIME,
+        double           printInterval = 1.0,
+        uint             startPerc     = 0,
+        uint             endPerc       = 100) = 0;
+
+    /**
+     * @brief Ends the current progress.
+     */
+    virtual void endProgress() = 0;
+
+    /**
+     * @brief Increments the current progress.
+     *
+     * @param[in] n: iteration number of the current progress.
+     */
+    virtual void progress(uint n) = 0;
+
+protected:
+    /**
+     * @brief Prints a message to the logger with the given level and without
      * modifying the current percentage.
      *
      * @param[in] msg: The message to print.
      * @param[in] lvl: The level of the message.
      */
-    virtual void log(const std::string& msg, LogLevel lvl) const = 0;
+    virtual void print(
+        std::string_view msg,
+        LogLevel         lvl = PROGRESS_LOG) const = 0;
 
     /**
-     * @brief Prints a message to the logger, with the level
-     * `LogLevel::PROGRESS` and with the given percentage.
-     *
-     * @param[in] perc: The percentage of the progress.
-     * @param[in] msg: The message to print.
-     */
-    virtual void log(uint perc, const std::string& msg) = 0;
-
-    /**
-     * @brief Prints a message to the logger, with the given level and with the
+     * @brief Prints a message to the logger with the given level and with the
      * given percentage.
      *
      * @param[in] perc: The percentage of the progress.
      * @param[in] msg: The message to print.
      * @param[in] lvl: The level of the message.
      */
-    virtual void log(uint perc, const std::string& msg, LogLevel lvl) = 0;
-
-    class LogStreamProxy;
-
-    LogStreamProxy error();
-    LogStreamProxy warning();
-    LogStreamProxy info();
-    LogStreamProxy debug();
-
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `progress` and `endProgress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member function starts a new progress.
-     * With the default arguments, will print a message from 0% to 100%, every
-     * 10%.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * log.startProgress("Computing...", vec.size());
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     *
-     * @param[in] msg: the message that will be printed during the progress
-     * @param[in] progressSize: the number of iterations made during the
-     * progress
-     * @param[in] mode: the mode of the progress, either `ProgressMode::TIME` or
-     * `ProgressMode::PERCENTAGE`, default `ProgressMode::TIME`
-     * @param[in] printInterval: interval of time (in seconds) or percentage on
-     * which print a progress message, depending on the `mode` argument, default
-     * 1.0 seconds
-     * @param[in] startPerc: start percentage of the progress, default 0%
-     * @param[in] endPerc: end percentage of the progress, default 100%
-     */
-    virtual void startProgress(
-        const std::string& msg,
-        uint               progressSize,
-        ProgressMode       mode          = ProgressMode::TIME,
-        double             printInterval = 1.0,
-        uint               startPerc     = 0,
-        uint               endPerc       = 100) = 0;
-
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `startProgress` and `progress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member function ends the current progress.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * uint s = vec.size();
-     * log.startProgress("Computing...", s);
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     */
-    virtual void endProgress() = 0;
-
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `startProgress` and `endProgress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member functions increments the current progress. Only if the
-     * current percentage reaches a new step percentage (set in the
-     * `startProgress` member function), a message will be printed by the
-     * logger.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * uint s = vec.size();
-     * log.startProgress("Computing...", s);
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     *
-     * @param[in] n: iteration number of the current progress. It must be less
-     * than the `progressSize` argument of the `startProgress` member function.
-     */
-    virtual void progress(uint n) = 0;
+    virtual void print(
+        uint             perc,
+        std::string_view msg,
+        LogLevel         lvl = PROGRESS_LOG) = 0;
 };
-
-class AbstractLogger::LogStreamProxy
-{
-    AbstractLogger&    mLogger;
-    LogLevel           mLevel;
-    std::ostringstream mStream;
-
-public:
-    LogStreamProxy(AbstractLogger& logger, LogLevel level) :
-            mLogger(logger), mLevel(level)
-    {
-    }
-
-    LogStreamProxy(const LogStreamProxy&)            = delete;
-    LogStreamProxy& operator=(const LogStreamProxy&) = delete;
-
-    LogStreamProxy(LogStreamProxy&& other) noexcept :
-            mLogger(other.mLogger), mLevel(other.mLevel),
-            mStream(std::move(other.mStream))
-    {
-    }
-
-    ~LogStreamProxy()
-    {
-        if (!mStream.str().empty()) {
-            mLogger.log(mStream.str(), mLevel);
-        }
-    }
-
-    template<typename T>
-    LogStreamProxy& operator<<(const T& val)
-    {
-        mStream << val;
-        return *this;
-    }
-
-    LogStreamProxy& operator<<(std::ostream& (*manip)(std::ostream&) )
-    {
-        mStream << manip;
-        return *this;
-    }
-};
-
-inline AbstractLogger::LogStreamProxy AbstractLogger::error()
-{
-    return LogStreamProxy(*this, ERROR_LOG);
-}
-
-inline AbstractLogger::LogStreamProxy AbstractLogger::warning()
-{
-    return LogStreamProxy(*this, WARNING_LOG);
-}
-
-inline AbstractLogger::LogStreamProxy AbstractLogger::info()
-{
-    return LogStreamProxy(*this, MESSAGE_LOG);
-}
-
-inline AbstractLogger::LogStreamProxy AbstractLogger::debug()
-{
-    return LogStreamProxy(*this, DEBUG_LOG);
-}
 
 /* Concepts */
 

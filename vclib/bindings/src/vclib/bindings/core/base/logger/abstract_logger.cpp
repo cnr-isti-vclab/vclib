@@ -22,11 +22,11 @@ void initAbstractLogger(pybind11::module& m)
 
     // define LogLevel enum
     py::enum_<AbstractLogger::LogLevel> llEnum(c, "LogLevel");
-    llEnum.value("ERROR_LOG", AbstractLogger::ERROR_LOG);
-    llEnum.value("WARNING_LOG", AbstractLogger::WARNING_LOG);
-    llEnum.value("MESSAGE_LOG", AbstractLogger::MESSAGE_LOG);
-    llEnum.value("PROGRESS_LOG", AbstractLogger::PROGRESS_LOG);
-    llEnum.value("DEBUG_LOG", AbstractLogger::DEBUG_LOG);
+    llEnum.value("ERROR_LOG", AbstractLogger::LogLevel::ERROR_LOG);
+    llEnum.value("WARNING_LOG", AbstractLogger::LogLevel::WARNING_LOG);
+    llEnum.value("MESSAGE_LOG", AbstractLogger::LogLevel::MESSAGE_LOG);
+    llEnum.value("PROGRESS_LOG", AbstractLogger::LogLevel::PROGRESS_LOG);
+    llEnum.value("DEBUG_LOG", AbstractLogger::LogLevel::DEBUG_LOG);
     llEnum.export_values();
 }
 

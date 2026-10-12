@@ -18,7 +18,9 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
 #include <compare>
+#include <format>
 
 namespace vcl {
 
@@ -1067,6 +1069,27 @@ struct hash<vcl::Point<Scalar, N>>
     size_t operator()(const vcl::Point<Scalar, N>& id) const noexcept
     {
         return id.hash();
+    }
+};
+
+template<typename Scalar, unsigned int N, typename CharT>
+struct formatter<vcl::Point<Scalar, N>, CharT> : formatter<Scalar, CharT>
+{
+    template<typename FormatContext>
+    auto format(const vcl::Point<Scalar, N>& p, FormatContext& ctx) const
+    {
+        auto out = ctx.out();
+        *out++ = static_cast<CharT>('[');
+        for (unsigned int i = 0; i < N; ++i) {
+            if (i > 0) {
+                *out++ = static_cast<CharT>(',');
+                *out++ = static_cast<CharT>(' ');
+            }
+            ctx.advance_to(out);
+            out = formatter<Scalar, CharT>::format(p(i), ctx);
+        }
+        *out++ = static_cast<CharT>(']');
+        return out;
     }
 };
 

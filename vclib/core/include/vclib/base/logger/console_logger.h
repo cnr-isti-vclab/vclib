@@ -10,47 +10,61 @@
 
 #include "logger.h"
 
-#include <iomanip>
+#include <cstdio>
+#include <print>
 
 namespace vcl {
 
-class ConsoleLogger : public Logger<std::ostream>
+class ConsoleLogger : public Logger
 {
-    std::ostream& mErrStream   = std::cerr;
-    std::ostream& mWarnStream  = std::cout;
-    std::ostream& mMsgStream   = std::cout;
-    std::ostream& mProgStream  = std::cout;
-    std::ostream& mDebugStream = std::cerr;
+    std::FILE* mErrFile   = stderr;
+    std::FILE* mWarnFile  = stdout;
+    std::FILE* mMsgFile   = stdout;
+    std::FILE* mProgFile  = stdout;
+    std::FILE* mDebugFile = stderr;
 
 public:
     ConsoleLogger() = default;
 
     ConsoleLogger(
-        std::ostream& errStream,
-        std::ostream& warnStream,
-        std::ostream& msgStream,
-        std::ostream& progStream,
-        std::ostream& debugStream) :
-            mErrStream(errStream), mWarnStream(warnStream),
-            mMsgStream(msgStream), mProgStream(progStream),
-            mDebugStream(debugStream)
+        std::FILE* errFile,
+        std::FILE* warnFile,
+        std::FILE* msgFile,
+        std::FILE* progFile,
+        std::FILE* debugFile) :
+            mErrFile(errFile), mWarnFile(warnFile),
+            mMsgFile(msgFile), mProgFile(progFile),
+            mDebugFile(debugFile)
     {
     }
 
 protected:
-    std::ostream* levelStream(LogLevel lvl) const override
+    void write(std::string_view line, LogLevel lvl) const override
+    {
+        std::FILE* out = targetFile(lvl);
+        if (out) {
+            std::println(out, "{}", line);
+        }
+    }
+
+    void flush() const override
+    {
+        std::fflush(stdout);
+        std::fflush(stderr);
+    }
+
+private:
+    std::FILE* targetFile(LogLevel lvl) const
     {
         switch (lvl) {
-        case ERROR_LOG: return &mErrStream;
-        case WARNING_LOG: return &mWarnStream;
-        case MESSAGE_LOG: return &mMsgStream;
-        case PROGRESS_LOG: return &mProgStream;
-        case DEBUG_LOG: return &mDebugStream;
+        case ERROR_LOG: return mErrFile;
+        case WARNING_LOG: return mWarnFile;
+        case MESSAGE_LOG: return mMsgFile;
+        case PROGRESS_LOG: return mProgFile;
+        case DEBUG_LOG: return mDebugFile;
         }
         return nullptr;
     }
-
-    void flush(std::ostream& o) const override { o.flush(); }
 };
 
 } // namespace vcl

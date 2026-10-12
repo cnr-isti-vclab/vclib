@@ -24,9 +24,11 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
     }
     catch (const std::exception& e) {
         log.log(
-            elementEnumString<ELEM_ID>() + " " + std::to_string(elem.index()) +
-                ": " + e.what(),
-            log.WARNING_LOG);
+            log.WARNING_LOG,
+            "{} {} : {}",
+            elementEnumString<ELEM_ID>(),
+            elem.index(),
+            e.what());
     }
 }
 
@@ -51,13 +53,13 @@ void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    log.log(0, "Clearing per-" + elementEnumString<ELEM_ID>() + " normals...");
+    log.log(0, "Clearing per-{} normals...", elementEnumString<ELEM_ID>());
 
     parallelFor(mesh.template elements<ELEM_ID>(), [](auto& e) {
         e.normal().setZero();
     });
 
-    log.log(100, "Per-" + elementEnumString<ELEM_ID>() + " normals cleared.");
+    log.log(100, "Per-{} normals cleared.", elementEnumString<ELEM_ID>());
 }
 
 /**
@@ -80,8 +82,7 @@ void normalizePerElementNormals(
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
-    log.log(
-        0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals...");
+    log.log(0, "Normalizing per-{} normals...", elementEnumString<ELEM_ID>());
 
     // define a lambda that, for each element, normalizes the normal
     auto normalize = [&](auto& elem) {
@@ -90,8 +91,7 @@ void normalizePerElementNormals(
 
     parallelFor(mesh.template elements<ELEM_ID>(), normalize);
 
-    log.log(
-        100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
+    log.log(100, "Per-{} normals normalized.", elementEnumString<ELEM_ID>());
 }
 
 /**
@@ -123,16 +123,15 @@ void multiplyPerElementNormalsByMatrix(
 
     log.log(
         0,
-        "Multiplying per-" + elementEnumString<ELEM_ID>() +
-            " normals by matrix...");
+        "Multiplying per-{} normals by matrix...",
+        elementEnumString<ELEM_ID>());
 
     multiplyNormalsByMatrix(
         mesh.template elements<ELEM_ID>() | vcl::views::normals,
         mat,
         removeScalingFromMatrix);
 
-    log.log(
-        100, "Per-" + elementEnumString<ELEM_ID>() + " normals multiplied.");
+    log.log(100, "Per-{} normals multiplied.", elementEnumString<ELEM_ID>());
 }
 
 /**
