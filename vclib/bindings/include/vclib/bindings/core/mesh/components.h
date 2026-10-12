@@ -125,7 +125,7 @@ void initComponents(pybind11::class_<ElementType, Options...>& c)
             "tex_coord",
             py::overload_cast<>(&ElementType::texCoord),
             reference);
-        c.def("set_tex_coord", [](ElementType& v, const TexCoordIndexedd& t) {
+        c.def("set_tex_coord", [](ElementType& v, const TexCoordd& t) {
             v.texCoord() = t;
         });
     }
