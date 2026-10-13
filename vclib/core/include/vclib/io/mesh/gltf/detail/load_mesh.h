@@ -48,6 +48,10 @@ int loadGltfPrimitiveMaterial(
         bool   doubleSided;
         int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
             occlusionTextureId, emissiveTextureId;
+
+        // extensions data
+        double emissiveStrength = 1.0f;
+
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -107,6 +111,20 @@ int loadGltfPrimitiveMaterial(
 
         // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
+
+        // extensions
+        // KHR_materials_emissive_strength
+        {
+            static const std::string EXT = "KHR_materials_emissive_strength";
+            static const std::string VAL = "emissiveStrength";
+            if(mat.extensions.contains(EXT)) {
+                const auto& emissiveStrengthExt = mat.extensions.at(EXT);
+                if(emissiveStrengthExt.Has(VAL))
+                    emissiveStrength = emissiveStrengthExt
+                        .Get(VAL)
+                        .GetNumberAsDouble();
+            }
+        }
 
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material&             mat,
@@ -181,6 +199,7 @@ int loadGltfPrimitiveMaterial(
             mat.doubleSided()       = doubleSided;
             mat.normalScale()       = normalScale;
             mat.occlusionStrength() = occlusionStrength;
+            mat.emissiveStrength()  = emissiveStrength;
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
