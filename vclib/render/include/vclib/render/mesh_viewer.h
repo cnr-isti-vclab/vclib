@@ -12,9 +12,9 @@
 #include "concepts/mesh_viewer.h"
 #include "editors.h"
 
-#include <vclib/render/headless_mesh_viewer.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_mesh.h>
+#include <vclib/render/headless_mesh_viewer.h>
 #include <vclib/render/settings/render_mode.h>
 
 #ifdef VCLIB_WITH_QT

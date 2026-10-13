@@ -20,7 +20,7 @@
 
 namespace vcl {
 
-enum class ViewerType {QT_WIDGET, QT_WINDOW, GLFW_WINDOW, HEADLESS, DEFAULT};
+enum class ViewerType { QT_WIDGET, QT_WINDOW, GLFW_WINDOW, HEADLESS, DEFAULT };
 
 namespace detail {
 
@@ -73,7 +73,7 @@ consteval auto viewerType()
 
 } // namespace detail
 
-template <ViewerType VwrType = ViewerType::DEFAULT>
+template<ViewerType VwrType = ViewerType::DEFAULT>
 using ViewerT = typename decltype(detail::viewerType<VwrType>())::type;
 
 /**

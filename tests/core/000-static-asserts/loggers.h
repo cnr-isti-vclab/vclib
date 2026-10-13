@@ -63,20 +63,17 @@ void loggersStaticAsserts()
         "ConsoleLogger&& does not satisfy the LoggerConcept");
 
     static_assert(
-        LoggerConcept<Logger>,
-        "Logger does not satisfy the LoggerConcept");
+        LoggerConcept<Logger>, "Logger does not satisfy the LoggerConcept");
     static_assert(
         LoggerConcept<const Logger>,
         "const Logger does not satisfy the LoggerConcept");
     static_assert(
-        LoggerConcept<Logger&>,
-        "Logger& does not satisfy the LoggerConcept");
+        LoggerConcept<Logger&>, "Logger& does not satisfy the LoggerConcept");
     static_assert(
         LoggerConcept<const Logger&>,
         "const Logger& does not satisfy the LoggerConcept");
     static_assert(
-        LoggerConcept<Logger&&>,
-        "Logger&& does not satisfy the LoggerConcept");
+        LoggerConcept<Logger&&>, "Logger&& does not satisfy the LoggerConcept");
 }
 
 #endif // LOGGERS_H

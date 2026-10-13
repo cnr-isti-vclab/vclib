@@ -47,17 +47,12 @@ void TextEditLogger::write(std::string_view line, LogLevel lvl) const
 
     QColor oldColor = mUI->textEdit->textColor();
     switch (lvl) {
-    case LogLevel::DEBUG_LOG:
-        mUI->textEdit->setTextColor(Qt::blue);
-        break;
-    case LogLevel::ERROR_LOG:
-        mUI->textEdit->setTextColor(Qt::red);
-        break;
+    case LogLevel::DEBUG_LOG: mUI->textEdit->setTextColor(Qt::blue); break;
+    case LogLevel::ERROR_LOG: mUI->textEdit->setTextColor(Qt::red); break;
     case LogLevel::WARNING_LOG:
         mUI->textEdit->setTextColor(Qt::darkYellow);
         break;
-    default:
-        break;
+    default: break;
     }
 
     mUI->textEdit->append(

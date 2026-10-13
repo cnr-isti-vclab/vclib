@@ -416,9 +416,8 @@ void MeshViewer::updateGUI()
     for (auto& obj : *mDrawableObjectVector) {
         auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
         if (mesh) {
-            mesh->setOnSelectionUpdatedCallback([this]() {
-                mUI->drawVectorTree->updateSelectionCounters();
-            });
+            mesh->setOnSelectionUpdatedCallback(
+                [this]() { mUI->drawVectorTree->updateSelectionCounters(); });
         }
     }
 

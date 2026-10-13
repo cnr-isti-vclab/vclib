@@ -146,7 +146,10 @@ public:
      * This is the color emitted by the material, independent of lighting.
      * @return A reference to the emissive color.
      */
-    decltype(auto) emissiveColor(this auto&& self) { return (self.mEmissiveColor); }
+    decltype(auto) emissiveColor(this auto&& self)
+    {
+        return (self.mEmissiveColor);
+    }
 
     /**
      * @brief Gets the alpha rendering mode.
@@ -179,7 +182,10 @@ public:
      * @brief Gets the strength of the ambient occlusion effect.
      * @return A reference to the occlusion strength, in the range [0.0, 1.0].
      */
-    decltype(auto) occlusionStrength(this auto&& self) { return (self.mOcclusionStrength); }
+    decltype(auto) occlusionStrength(this auto&& self)
+    {
+        return (self.mOcclusionStrength);
+    }
 
     /**
      * @brief Gets the emissive strength multiplier.

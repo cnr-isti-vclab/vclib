@@ -45,9 +45,7 @@ void initPointSampler(pybind11::module& m)
 
     c.def(
         "__iter__",
-        [](const PS& s) {
-            return py::make_iterator(s.begin(), s.end());
-        },
+        [](const PS& s) { return py::make_iterator(s.begin(), s.end()); },
         py::keep_alive<0, 1>());
 }
 

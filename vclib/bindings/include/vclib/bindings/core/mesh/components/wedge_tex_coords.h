@@ -27,15 +27,11 @@ void initWedgeTexCoords(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "wedge_tex_coord",
-        [](ElementType& e, uint i) {
-            return e.wedgeTexCoord(i);
-        },
+        [](ElementType& e, uint i) { return e.wedgeTexCoord(i); },
         py::return_value_policy::reference);
     c.def(
         "wedge_tex_coord_mod",
-        [](ElementType& e, int i) {
-            return e.wedgeTexCoordMod(i);
-        },
+        [](ElementType& e, int i) { return e.wedgeTexCoordMod(i); },
         py::return_value_policy::reference);
 
     c.def("set_wedge_tex_coord", &ElementType::setWedgeTexCoord);

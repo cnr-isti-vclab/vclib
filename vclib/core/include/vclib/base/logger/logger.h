@@ -43,10 +43,7 @@ class Logger : public AbstractLogger
         uint         throttleCounter = 0;
     };
 
-    enum InternalLogLevel {
-        START = static_cast<uint>(DEBUG_LOG) + 1,
-        END
-    };
+    enum InternalLogLevel { START = static_cast<uint>(DEBUG_LOG) + 1, END };
 
     static const uint TIMER_MAX_CHAR_COUNT = 12;
 
@@ -89,10 +86,8 @@ public:
 
     double time() const override final { return mTimer.delay(); }
 
-    void startNewTask(
-        double           fromPerc,
-        double           toPerc,
-        std::string_view action) override final
+    void startNewTask(double fromPerc, double toPerc, std::string_view action)
+        override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         printLine(action, START);
@@ -289,18 +284,15 @@ protected:
     virtual void flush() const {}
 
 private:
-    void print(
-        std::string_view msg,
-        LogLevel         lvl = PROGRESS_LOG) const override final
+    void print(std::string_view msg, LogLevel lvl = PROGRESS_LOG)
+        const override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         printLine(msg, static_cast<uint>(lvl));
     }
 
-    void print(
-        uint             perc,
-        std::string_view msg,
-        LogLevel         lvl = PROGRESS_LOG) override final
+    void print(uint perc, std::string_view msg, LogLevel lvl = PROGRESS_LOG)
+        override final
     {
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         if (perc <= 100)
