@@ -82,12 +82,27 @@ public:
 
     void disablePrintTimer() { mPrintTimer = false; }
 
+    /**
+     * @brief Resets the logger state, clearing any active tasks and resetting
+     * percentages.
+     */
     virtual void reset() = 0;
 
+    /**
+     * @brief Sets the maximum line width for logger output formatting.
+     *
+     * @param[in] width: Maximum line width in characters.
+     */
     void setMaxLineWidth(uint width) { mLineWidth = width; }
 
+    /**
+     * @brief Starts the logger timer.
+     */
     virtual void startTimer() = 0;
 
+    /**
+     * @brief Stops the logger timer.
+     */
     virtual void stopTimer() = 0;
 
     /**
@@ -99,15 +114,41 @@ public:
      */
     virtual double time() const = 0;
 
+    /**
+     * @brief Begins a new subtask mapped to a sub-interval of the current task
+     * percentage.
+     *
+     * @param[in] fromPerc: Start percentage of the parent task interval
+     * (0-100).
+     * @param[in] toPerc: End percentage of the parent task interval (0-100).
+     * @param[in] action: Description of the task being started.
+     */
     virtual void startNewTask(
         double           fromPerc,
         double           toPerc,
         std::string_view action) = 0;
 
+    /**
+     * @brief Concludes the current subtask and restores the previous task
+     * interval.
+     *
+     * @param[in] action: Description of the task being completed.
+     */
     virtual void endTask(std::string_view action) = 0;
 
+    /**
+     * @brief Returns the current overall progress percentage (0-100).
+     *
+     * @return Current percentage.
+     */
     virtual double percentage() const = 0;
 
+    /**
+     * @brief Updates the percentage completed within the current active task
+     * interval.
+     *
+     * @param[in] newPerc: New percentage value (0-100).
+     */
     virtual void setPercentage(uint newPerc) = 0;
 
     /**

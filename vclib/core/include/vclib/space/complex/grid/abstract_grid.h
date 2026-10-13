@@ -137,12 +137,25 @@ public:
             const RemoveCVRefAndPointer<ValueType>&,
             typename GridType::ScalarType)>;
 
+    /**
+     * @brief Checks whether the grid cell at the specified position is empty.
+     *
+     * @param[in] k: The position key of the cell to check.
+     * @return True if the cell contains no elements, false otherwise.
+     */
     bool cellEmpty(this auto&& self, const KeyType& k)
     {
         auto p = self.valuesInCell(k);
         return p.first == p.second;
     }
 
+    /**
+     * @brief Returns the number of elements contained in the grid cell at
+     * position k.
+     *
+     * @param[in] k: The position key of the cell.
+     * @return The number of elements contained in the cell.
+     */
     std::size_t countInCell(this auto&& self, const KeyType& k)
     {
         auto p = self.valuesInCell(k);
@@ -270,6 +283,12 @@ public:
         return false;
     }
 
+    /**
+     * @brief Erases all elements in the cell at the given key position.
+     *
+     * @param[in] k: The position key of the cell.
+     * @return True if at least one element was erased, false otherwise.
+     */
     bool eraseAllInCell(this auto&& self, const KeyType& k)
     {
         bool  res = false;
@@ -281,14 +300,30 @@ public:
         return res;
     }
 
-    // sphere operations
-    uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const
+    /**
+     * @brief Returns the number of elements contained in the sphere.
+     *
+     * @param[in] s: The query sphere.
+     * @return The number of elements contained in the sphere.
+     */
+    uint countInSphere(
+        this auto&&                                  self,
+        const Sphere<typename GridType::ScalarType>& s)
     {
-        return valuesInSphere(s).size();
+        return self.valuesInSphere(s).size();
     }
 
-    // vector of iterators - return type must be auto here (we still don't know
-    // the iterator type)
+    /**
+     * @brief Returns a vector of iterators to all elements intersecting the
+     * sphere.
+     *
+     * Queries the cell interval bounding the sphere and checks intersection
+     * with each candidate element. Duplicates for multi-cell elements are
+     * filtered out.
+     *
+     * @param[in] s: The query sphere.
+     * @return A vector of iterators to the matching elements.
+     */
     auto valuesInSphere(
         this auto&&                                  self,
         const Sphere<typename GridType::ScalarType>& s)
@@ -333,6 +368,11 @@ public:
         return resVec;
     }
 
+    /**
+     * @brief Erases all elements intersecting the given sphere.
+     *
+     * @param[in] s: The query sphere.
+     */
     void eraseInSphere(
         this auto&&                                  self,
         const Sphere<typename GridType::ScalarType>& s)
@@ -348,7 +388,7 @@ public:
             // for each value contained in the cell
             for (auto it = p.first; it != p.second; ++it) {
                 if (self.valueIsInSpehere(it, s)) {
-                    eraseInCell(it->first, it->second);
+                    self.eraseInCell(it->first, it->second);
                 }
             }
         }
@@ -470,9 +510,7 @@ public:
         QueryBoundedDistFunction<QueryValueType> boundDistFun =
             [&](const QueryValueType&                   q,
                 const RemoveCVRefAndPointer<ValueType>& v,
-                typename GridType::ScalarType) {
-                return distFunction(q, v);
-            };
+                typename GridType::ScalarType) { return distFunction(q, v); };
 
         dist = std::numeric_limits<typename GridType::ScalarType>::max();
 

@@ -1072,6 +1072,16 @@ struct hash<vcl::Point<Scalar, N>>
     }
 };
 
+/**
+ * @brief std::formatter specialization for vcl::Point.
+ *
+ * Formats a point as `[x, y, ...]` using the format specifications of the
+ * underlying scalar type.
+ *
+ * @tparam Scalar: The coordinate scalar type.
+ * @tparam N: The dimension of the Point.
+ * @tparam CharT: The character type of the formatting context.
+ */
 template<typename Scalar, unsigned int N, typename CharT>
 struct formatter<vcl::Point<Scalar, N>, CharT> : formatter<Scalar, CharT>
 {
@@ -1079,7 +1089,7 @@ struct formatter<vcl::Point<Scalar, N>, CharT> : formatter<Scalar, CharT>
     auto format(const vcl::Point<Scalar, N>& p, FormatContext& ctx) const
     {
         auto out = ctx.out();
-        *out++ = static_cast<CharT>('[');
+        *out++   = static_cast<CharT>('[');
         for (unsigned int i = 0; i < N; ++i) {
             if (i > 0) {
                 *out++ = static_cast<CharT>(',');

@@ -334,9 +334,8 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
                 default:
                     log.log(
                         LogType::WARNING_LOG,
-                        std::format(
-                            "Unhandled TextureType: {}",
-                            static_cast<int>(type)));
+                        "Unhandled TextureType: {}",
+                        static_cast<int>(type));
                 }
             }
         }

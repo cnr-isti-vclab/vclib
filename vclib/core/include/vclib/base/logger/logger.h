@@ -50,7 +50,7 @@ class Logger : public AbstractLogger
 
     static const uint TIMER_MAX_CHAR_COUNT = 12;
 
-    std::recursive_mutex mMutex;
+    mutable std::recursive_mutex mMutex;
 
     uint mPercPrecision = 0;
 
@@ -293,8 +293,7 @@ private:
         std::string_view msg,
         LogLevel         lvl = PROGRESS_LOG) const override final
     {
-        std::lock_guard<std::recursive_mutex> lock(
-            const_cast<std::recursive_mutex&>(mMutex));
+        std::lock_guard<std::recursive_mutex> lock(mMutex);
         printLine(msg, static_cast<uint>(lvl));
     }
 

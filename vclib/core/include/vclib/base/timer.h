@@ -39,7 +39,7 @@ public:
      * true, the timer starts.
      *
      * @param[in] caption: the caption of the timer.
-     * @param[in] _start: if true, the timer will start when the object is
+     * @param[in] start: if true, the timer will start when the object is
      * created.
      */
     explicit Timer(std::string caption = "Timer", bool start = true) :
@@ -53,13 +53,15 @@ public:
      * @brief Creates a timer with the caption "Timer". If the given boolean is
      * true, the timer starts.
      *
-     * @param[in] _start: if true, the timer will start when the object is
+     * @param[in] start: if true, the timer will start when the object is
      * created.
      */
-    Timer(bool start) : Timer(std::string("Timer"), start) {}
+    explicit Timer(bool start) : Timer(std::string("Timer"), start) {}
 
     /**
      * @brief Returns the caption of the timer.
+     *
+     * @return Reference to the caption of the timer.
      */
     decltype(auto) caption(this auto&& self) { return (self.mCaption); }
 

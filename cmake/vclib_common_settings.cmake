@@ -27,6 +27,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(-Wno-psabi)
 endif()
 
+# Disables compiler warnings for a specific CMake target.
+#
+# Arguments:
+#   target_name: The name of the target for which warnings should be disabled.
 function(vclib_disable_target_warnings target_name)
     if(TARGET ${target_name})
         if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

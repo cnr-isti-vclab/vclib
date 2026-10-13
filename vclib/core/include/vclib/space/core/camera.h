@@ -76,16 +76,45 @@ private:
 public:
     Camera() { setFieldOfViewAdaptingEyeDistance(mFovDeg); };
 
+    /**
+     * @brief Resets the camera parameters to their default values.
+     */
     void reset() { *this = {}; }
 
+    /**
+     * @brief Returns a reference to the camera center (look-at target point).
+     *
+     * @return Reference to the center point.
+     */
     decltype(auto) center(this auto&& self) { return (self.mCenter); }
 
+    /**
+     * @brief Returns a reference to the camera eye (position) point.
+     *
+     * @return Reference to the eye point.
+     */
     decltype(auto) eye(this auto&& self) { return (self.mEye); }
 
+    /**
+     * @brief Returns a reference to the camera up vector.
+     *
+     * @return Reference to the up vector.
+     */
     decltype(auto) up(this auto&& self) { return (self.mUp); }
 
+    /**
+     * @brief Returns a reference to the vertical field of view in degrees.
+     *
+     * @return Reference to the field of view angle in degrees.
+     */
     decltype(auto) fieldOfView(this auto&& self) { return (self.mFovDeg); }
 
+    /**
+     * @brief Sets the field of view in degrees while adjusting the eye distance
+     * to preserve the visible vertical extent at the target center.
+     *
+     * @param[in] fovDeg: New field of view in degrees.
+     */
     void setFieldOfViewAdaptingEyeDistance(const Scalar& fovDeg)
     {
         mFovDeg               = fovDeg;
@@ -95,20 +124,46 @@ public:
                                      std::tan((fovDeg / 2.0) / 180.0 * M_PI));
     }
 
+    /**
+     * @brief Returns a reference to the projection mode (Perspective or
+     * Orthographic).
+     *
+     * @return Reference to the projection mode.
+     */
     decltype(auto) projectionMode(this auto&& self)
     {
         return (self.mProjectionMode);
     }
 
+    /**
+     * @brief Returns a reference to the orthographic vertical height.
+     *
+     * @return Reference to the vertical height.
+     */
     decltype(auto) verticalHeight(this auto&& self)
     {
         return (self.mVerticalHeight);
     }
 
+    /**
+     * @brief Returns a reference to the aspect ratio (width / height).
+     *
+     * @return Reference to the aspect ratio.
+     */
     decltype(auto) aspectRatio(this auto&& self) { return (self.mAspect); }
 
+    /**
+     * @brief Returns a reference to the distance of the near clipping plane.
+     *
+     * @return Reference to the near plane distance.
+     */
     decltype(auto) nearPlane(this auto&& self) { return (self.mNear); }
 
+    /**
+     * @brief Returns a reference to the distance of the far clipping plane.
+     *
+     * @return Reference to the far plane distance.
+     */
     decltype(auto) farPlane(this auto&& self) { return (self.mFar); }
 
     MatrixType viewMatrix() const

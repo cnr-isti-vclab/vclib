@@ -21,11 +21,11 @@
 
 auto meshBasics()
 {
-    std::cout << "=== VCLib Example 001: Mesh Basics ===\n\n";
+    std::println("=== VCLib Example 001: Mesh Basics ===\n");
 
     /****** Creating a mesh from scratch ******/
 
-    std::cout << "=== Creating a Triangle Mesh ===" << std::endl;
+    std::println("=== Creating a Triangle Mesh ===");
 
     vcl::TriMesh mesh;
 
@@ -38,73 +38,69 @@ auto meshBasics()
     mesh.addVertex(vcl::Point3d(0, 1, 0)); // vertex 2
     mesh.addVertex(vcl::Point3d(1, 1, 0)); // vertex 3
 
-    std::cout << "Added " << mesh.vertexCount() << " vertices" << std::endl;
+    std::println("Added {} vertices", mesh.vertexCount());
 
     // Add faces (triangles) using vertex indices
     mesh.addFace(0, 1, 2); // first triangle
     mesh.addFace(1, 3, 2); // second triangle
 
-    std::cout << "Added " << mesh.faceCount() << " faces" << std::endl;
+    std::println("Added {} faces", mesh.faceCount());
 
     /****** Accessing mesh elements ******/
 
-    std::cout << "\n=== Accessing Mesh Elements ===" << std::endl;
+    std::println("\n=== Accessing Mesh Elements ===");
 
     // Access vertices by index
-    std::cout << "Vertex 0 position: " << mesh.vertex(0).position()
-              << std::endl;
-    std::cout << "Vertex 1 position: " << mesh.vertex(1).position()
-              << std::endl;
+    std::println("Vertex 0 position: {}", mesh.vertex(0).position());
+    std::println("Vertex 1 position: {}", mesh.vertex(1).position());
 
     // Access faces and their vertices
-    std::cout << "Face 0 vertices: ";
+    std::print("Face 0 vertices: ");
     for (int i = 0; i < 3; ++i) {
-        std::cout << mesh.face(0).vertex(i)->index() << " ";
+        std::print("{} ", mesh.face(0).vertex(i)->index());
         // or mesh.face(0).vertexIndex(i)
     }
-    std::cout << std::endl;
+    std::println();
 
     // Modify vertex positions
     mesh.vertex(2).position() = vcl::Point3d(0.5, 1.5, 0.2);
-    std::cout << "Modified vertex 2 position: " << mesh.vertex(2).position()
-              << std::endl;
+    std::println("Modified vertex 2 position: {}", mesh.vertex(2).position());
 
     /****** Iterating over mesh elements ******/
 
-    std::cout << "\n=== Iterating Over Elements ===" << std::endl;
+    std::println("\n=== Iterating Over Elements ===");
 
     // Iterate over all vertices
-    std::cout << "All vertex positions:" << std::endl;
+    std::println("All vertex positions:");
     for (const auto& vertex : mesh.vertices()) {
-        std::cout << "  Vertex " << vertex.index() << ": " << vertex.position()
-                  << std::endl;
+        std::println("  Vertex {}: {}", vertex.index(), vertex.position());
     }
 
     // Iterate over all faces
-    std::cout << "All faces:" << std::endl;
+    std::println("All faces:");
     for (const auto& face : mesh.faces()) {
-        std::cout << "  Face " << face.index() << ": vertices [";
+        std::print("  Face {}: vertices [", face.index());
         for (int i = 0; i < 3; ++i) {
-            std::cout << face.vertexIndex(i);
+            std::print("{}", face.vertexIndex(i));
             if (i < 2)
-                std::cout << ", ";
+                std::print(", ");
         }
-        std::cout << "]" << std::endl;
+        std::println("]");
     }
 
     /****** Working with optional components ******/
 
-    std::cout << "\n=== Optional Components ===" << std::endl;
+    std::println("\n=== Optional Components ===");
 
     // Check if color component is available
-    std::cout << "Per-vertex color enabled: " << mesh.isPerVertexColorEnabled()
-              << std::endl;
+    std::println(
+        "Per-vertex color enabled: {}", mesh.isPerVertexColorEnabled());
 
     // Enable per-vertex color component
     mesh.enablePerVertexColor();
-    std::cout << "Enabled per-vertex color" << std::endl;
-    std::cout << "Per-vertex color enabled: " << mesh.isPerVertexColorEnabled()
-              << std::endl;
+    std::println("Enabled per-vertex color");
+    std::println(
+        "Per-vertex color enabled: {}", mesh.isPerVertexColorEnabled());
 
     // Set vertex colors
     mesh.vertex(0).color() = vcl::Color::Red;
@@ -112,14 +108,14 @@ auto meshBasics()
     mesh.vertex(2).color() = vcl::Color::Blue;
     mesh.vertex(3).color() = vcl::Color::Yellow;
 
-    std::cout << "Set colors for all vertices" << std::endl;
+    std::println("Set colors for all vertices");
 
     // Enable and set face colors
     mesh.enablePerFaceColor();
     mesh.face(0).color() = vcl::Color::Cyan;
     mesh.face(1).color() = vcl::Color::Magenta;
 
-    std::cout << "Set colors for all faces" << std::endl;
+    std::println("Set colors for all faces");
 
     /******** Mesh Components ******/
 
@@ -128,7 +124,7 @@ auto meshBasics()
 
     /****** Polygon Mesh example ******/
 
-    std::cout << "\n=== Creating a Polygon Mesh ===" << std::endl;
+    std::println("\n=== Creating a Polygon Mesh ===");
 
     vcl::PolyMesh polyMesh;
 
@@ -151,33 +147,34 @@ auto meshBasics()
     face.pushVertex(&polyMesh.vertex(2));
     face.pushVertex(&polyMesh.vertex(3));
 
-    std::cout << "Created polygon with " << face.vertexCount() << " vertices"
-              << std::endl;
+    std::println("Created polygon with {} vertices", face.vertexCount());
 
     // Iterate over vertices of the polygon face
-    std::cout << "Polygon vertices: ";
+    std::print("Polygon vertices: ");
     for (vcl::uint i = 0; i < face.vertexCount(); ++i) {
-        std::cout << face.vertexIndex(i) << " ";
+        std::print("{} ", face.vertexIndex(i));
     }
-    std::cout << std::endl;
+    std::println();
 
     /****** Mesh statistics ******/
 
-    std::cout << "\n=== Mesh Statistics ===" << std::endl;
+    std::println("\n=== Mesh Statistics ===");
 
-    std::cout << "TriMesh:" << std::endl;
-    std::cout << "  Vertices: " << mesh.vertexCount() << std::endl;
-    std::cout << "  Faces: " << mesh.faceCount() << std::endl;
-    std::cout << "  Container sizes - Vertices: " << mesh.vertexContainerSize()
-              << ", Faces: " << mesh.faceContainerSize() << std::endl;
+    std::println("TriMesh:");
+    std::println("  Vertices: {}", mesh.vertexCount());
+    std::println("  Faces: {}", mesh.faceCount());
+    std::println(
+        "  Container sizes - Vertices: {}, Faces: {}",
+        mesh.vertexContainerSize(),
+        mesh.faceContainerSize());
 
-    std::cout << "PolyMesh:" << std::endl;
-    std::cout << "  Vertices: " << polyMesh.vertexCount() << std::endl;
-    std::cout << "  Faces: " << polyMesh.faceCount() << std::endl;
+    std::println("PolyMesh:");
+    std::println("  Vertices: {}", polyMesh.vertexCount());
+    std::println("  Faces: {}", polyMesh.faceCount());
 
     /****** Computing and displaying barycenter and bounding box ******/
 
-    std::cout << "\n=== Barycenter and Bounding Box ===" << std::endl;
+    std::println("\n=== Barycenter and Bounding Box ===");
 
     // Compute barycenter manually
     vcl::Point3d barycenter(0, 0, 0);
@@ -186,7 +183,7 @@ auto meshBasics()
     }
     barycenter /= mesh.vertexCount();
 
-    std::cout << "Mesh barycenter: " << barycenter << std::endl;
+    std::println("Mesh barycenter: {}", barycenter);
 
     // Find bounding box manually
     vcl::Point3d minPoint = mesh.vertex(0).position();
@@ -205,8 +202,7 @@ auto meshBasics()
         maxPoint = vcl::max(maxPoint, pos);
     }
 
-    std::cout << "Bounding box: min=" << minPoint << ", max=" << maxPoint
-              << std::endl;
+    std::println("Bounding box: min={}, max={}", minPoint, maxPoint);
 
     return std::make_tuple(mesh, polyMesh);
 }
