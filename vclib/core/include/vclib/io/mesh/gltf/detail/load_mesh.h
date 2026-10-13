@@ -113,13 +113,17 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
-        if(mat.extensions.contains("KHR_materials_emissive_strength")) {
-            const auto& emissiveStrengthExt =
-                mat.extensions.at("KHR_materials_emissive_strength");
-            if(emissiveStrengthExt.Has("emissiveStrength"))
-                emissiveStrength = emissiveStrengthExt
-                    .Get("emissiveStrength")
-                    .GetNumberAsDouble();
+        // KHR_materials_emissive_strength
+        {
+            static const std::string EXT = "KHR_materials_emissive_strength";
+            static const std::string VAL = "emissiveStrength";
+            if(mat.extensions.contains(EXT)) {
+                const auto& emissiveStrengthExt = mat.extensions.at(EXT);
+                if(emissiveStrengthExt.Has(VAL))
+                    emissiveStrength = emissiveStrengthExt
+                        .Get(VAL)
+                        .GetNumberAsDouble();
+            }
         }
 
         // function to load a texture in a material
