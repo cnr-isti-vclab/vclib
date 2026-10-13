@@ -139,8 +139,8 @@ void loadGltf(
 
     if (!warn.empty()) {
         log.log(
-            "Warnings while loading glTF file: " + warn,
-            LogType::LogLevel::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "Warnings while loading glTF file: " + warn);
     }
 
     detail::loadGltf(model, m, loadedInfo, settings, log);

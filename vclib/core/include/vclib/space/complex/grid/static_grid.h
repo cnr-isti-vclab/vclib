@@ -20,14 +20,9 @@
 namespace vcl {
 
 template<typename GridType, typename ValueType>
-class StaticGrid :
-        public AbstractGrid<
-            GridType,
-            ValueType,
-            StaticGrid<GridType, ValueType>>
+class StaticGrid : public AbstractGrid<GridType, ValueType>
 {
-    using AbsGrid =
-        AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
+    using AbsGrid = AbstractGrid<GridType, ValueType>;
 
     using PairType       = std::pair<uint, ValueType>;
     using PairComparator = FirstElementPairComparator<PairType>;
@@ -52,6 +47,12 @@ public:
     using Iterator      = StaticGridIterator<KeyType, ValueType, GridType>;
     using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
 
+    template<typename Self>
+    using GridIterator = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        ConstIterator,
+        Iterator>;
+
     StaticGrid() {}
 
     StaticGrid(const GridType& g) : AbsGrid(g) {}
@@ -63,7 +64,7 @@ public:
         const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {
-        AbsGrid::insert(begin, end);
+        this->insert(begin, end);
         build();
     }
 
@@ -139,60 +140,38 @@ public:
         return cnt;
     }
 
-    std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
+    auto valuesInCell(this auto&& self, const KeyType& k)
     {
-        uint ind = GridType::indexOfCell(k);
-        uint i   = mGrid[ind];
-        if (i < mValues.size()) {
-            std::pair<Iterator, Iterator> p;
-            p.first = Iterator(mValues.begin() + i, (const GridType&) *this);
-            while (i < mValues.size() && mValues[i].first == ind) {
+        using It = GridIterator<decltype(self)>;
+        uint ind = self.indexOfCell(k);
+        uint i   = self.mGrid[ind];
+        if (i < self.mValues.size()) {
+            std::pair<It, It> p;
+            p.first = It(
+                self.mValues.begin() + i, static_cast<const GridType&>(self));
+            while (i < self.mValues.size() && self.mValues[i].first == ind) {
                 i++;
             }
-            auto it  = i < mValues.size() ? mValues.begin() + i : mValues.end();
-            p.second = Iterator(it, (const GridType&) *this);
+            auto it = i < self.mValues.size() ? self.mValues.begin() + i :
+                                                self.mValues.end();
+            p.second = It(it, static_cast<const GridType&>(self));
             return p;
         }
         else {
-            return std::make_pair(end(), end());
+            return std::make_pair(self.end(), self.end());
         }
     }
 
-    std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
+    auto begin(this auto&& self)
     {
-        uint ind = GridType::indexOfCell(k);
-        uint i   = mGrid[ind];
-        if (i < mValues.size()) {
-            std::pair<ConstIterator, ConstIterator> p;
-            p.first =
-                ConstIterator(mValues.begin() + i, (const GridType&) *this);
-            while (i < mValues.size() && mValues[i].first == ind) {
-                i++;
-            }
-            auto it  = i < mValues.size() ? mValues.begin() + i : mValues.end();
-            p.second = ConstIterator(it, (const GridType&) *this);
-            return p;
-        }
-        else {
-            return std::make_pair(end(), end());
-        }
+        using It = GridIterator<decltype(self)>;
+        return It(self.mValues.begin(), static_cast<const GridType&>(self));
     }
 
-    Iterator begin()
+    auto end(this auto&& self)
     {
-        return Iterator(mValues.begin(), (const GridType&) *this);
-    }
-
-    ConstIterator begin() const
-    {
-        return ConstIterator(mValues.begin(), (const GridType&) *this);
-    }
-
-    Iterator end() { return Iterator(mValues.end(), (const GridType&) *this); }
-
-    ConstIterator end() const
-    {
-        return ConstIterator(mValues.end(), (const GridType&) *this);
+        using It = GridIterator<decltype(self)>;
+        return It(self.mValues.end(), static_cast<const GridType&>(self));
     }
 
 private:

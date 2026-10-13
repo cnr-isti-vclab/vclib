@@ -9,11 +9,6 @@
 
 #include "ui_text_edit_logger.h"
 
-#include <vclib/qt/gui/text_edit_logger/debug_io_device.h>
-#include <vclib/qt/gui/text_edit_logger/error_io_device.h>
-#include <vclib/qt/gui/text_edit_logger/message_io_device.h>
-#include <vclib/qt/gui/text_edit_logger/warning_io_device.h>
-
 namespace vcl::qt {
 
 TextEditLogger::TextEditLogger(QWidget* parent) :
@@ -23,13 +18,6 @@ TextEditLogger::TextEditLogger(QWidget* parent) :
     mUI->textEdit->setFontFamily("Monospace");
     mUI->textEdit->setFontPointSize(8);
 
-    mDebugIoDevice = new DebugIODevice(mUI->textEdit, this);
-
-    mDebugStream   = new QTextStream(mDebugIoDevice);
-    mErrorStream   = new QTextStream(new ErrorIODevice(mUI->textEdit, this));
-    mMsgStream     = new QTextStream(new MessageIODevice(mUI->textEdit, this));
-    mWarningStream = new QTextStream(new WarningIODevice(mUI->textEdit, this));
-
     disablePrintPercentage();
     disablePrintMessageDuringProgress();
     setPrintLevel(LogLevel::MESSAGE_LOG);
@@ -37,42 +25,49 @@ TextEditLogger::TextEditLogger(QWidget* parent) :
 
 void TextEditLogger::enableDebugLogging(bool enable)
 {
-    if (enable) {
-        mDebugIoDevice->enable();
-    }
-    else {
-        mDebugIoDevice->disable();
-    }
+    mDebugEnabled = enable;
 }
 
 void TextEditLogger::setPercentage(uint newPerc)
 {
-    vcl::Logger<QTextStream>::setPercentage(newPerc);
+    vcl::Logger::setPercentage(newPerc);
     mUI->progressBar->setValue(percentage());
     mUI->progressBar->update();
 }
 
-QTextStream* TextEditLogger::levelStream(LogLevel lvl) const
+void TextEditLogger::write(std::string_view line, LogLevel lvl) const
 {
-    switch (lvl) {
-    case LogLevel::DEBUG_LOG: return mDebugStream;
-    case LogLevel::ERROR_LOG: return mErrorStream;
-    case LogLevel::MESSAGE_LOG:
-    case LogLevel::PROGRESS_LOG: return mMsgStream;
-    case LogLevel::WARNING_LOG: return mWarningStream;
-    default: return mMsgStream;
+    if (lvl == LogLevel::DEBUG_LOG && !mDebugEnabled) {
+        return;
     }
-}
 
-void TextEditLogger::flush(QTextStream& stream) const
-{
-    stream.flush();
+    if (!mUI || !mUI->textEdit) {
+        return;
+    }
+
+    QColor oldColor = mUI->textEdit->textColor();
+    switch (lvl) {
+    case LogLevel::DEBUG_LOG:
+        mUI->textEdit->setTextColor(Qt::blue);
+        break;
+    case LogLevel::ERROR_LOG:
+        mUI->textEdit->setTextColor(Qt::red);
+        break;
+    case LogLevel::WARNING_LOG:
+        mUI->textEdit->setTextColor(Qt::darkYellow);
+        break;
+    default:
+        break;
+    }
+
+    mUI->textEdit->append(
+        QString::fromUtf8(line.data(), static_cast<qsizetype>(line.size())));
+    mUI->textEdit->setTextColor(oldColor);
 }
 
 TextEditLogger::~TextEditLogger()
 {
     delete mUI;
-    delete mMsgStream;
 }
 
 } // namespace vcl::qt

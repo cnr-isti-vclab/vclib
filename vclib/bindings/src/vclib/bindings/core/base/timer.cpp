@@ -26,7 +26,12 @@ void initBaseTimer(pybind11::module& m)
     c.def("stop_and_print", &Timer::stopAndPrint);
     c.def("print", &Timer::print);
     c.def("delay", &Timer::delay);
-    c.def("set_caption", &Timer::setCaption, "caption"_a);
+    c.def("to_string", &Timer::toString);
+    c.def("caption", [](const Timer& t) { return t.caption(); });
+    c.def(
+        "set_caption",
+        [](Timer& t, std::string cpt) { t.caption() = cpt; },
+        "caption"_a);
 }
 
 } // namespace vcl::bind

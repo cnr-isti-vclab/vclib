@@ -49,9 +49,7 @@ HausdorffDistResult hausdorffDist(
     HausdorffDistResult res;
     res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
-    log.log(
-        5,
-        "Computing distances for " + std::to_string(s.size()) + " samples...");
+    log.log(5, "Computing distances for {} samples...", s.size());
 
     log.startProgress("", s.size());
 
@@ -82,14 +80,13 @@ HausdorffDistResult hausdorffDist(
     });
 
     log.endProgress();
-    log.log(100, "Computed " + std::to_string(ns) + " distances.");
+    log.log(100, "Computed {} distances.", ns);
     if (ns != s.size()) {
         log.log(
-            100,
-            std::to_string(s.size() - ns) +
-                " samples were not counted because no closest vertex/face "
-                "was found.",
-            LogType::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "{} samples were not counted because no closest vertex/face was "
+            "found.",
+            s.size() - ns);
     }
 
     res.meanDist /= ns;
@@ -114,7 +111,7 @@ HausdorffDistResult samplerMeshHausdorff(
         meshName = m.name();
     }
 
-    log.log(0, "Building Grid on " + meshName + " vertices...");
+    log.log(0, "Building Grid on {} vertices...", meshName);
 
     StaticGrid3<const VertexType*> grid(m.vertices() | views::addrOf);
     grid.build();
@@ -142,7 +139,7 @@ HausdorffDistResult samplerMeshHausdorff(
         meshName = m.name();
     }
     if (m.faceCount() == 0) {
-        log.log(0, "Building Grid on " + meshName + " vertices...");
+        log.log(0, "Building Grid on {} vertices...", meshName);
 
         StaticGrid3<const VertexType*, ScalarType> grid(
             m.vertices() | views::addrOf);
@@ -153,7 +150,7 @@ HausdorffDistResult samplerMeshHausdorff(
         return hausdorffDist(m, s, grid, log);
     }
     else {
-        log.log(0, "Building Grid on " + meshName + " faces...");
+        log.log(0, "Building Grid on {} faces...", meshName);
 
         StaticGrid3<const FaceType*, ScalarType> grid(
             m.faces() | views::addrOf);
@@ -205,7 +202,7 @@ HausdorffDistResult hausdorffDistance(
         sampler = montecarloPointSampling(m2, nSamples, birth, config);
     }
 
-    log.log(5, meshName2 + " sampled.");
+    log.log(5, "{} sampled.", meshName2);
     log.startNewTask(
         5, 100, "Computing distance between samples and " + meshName1 + "...");
 
