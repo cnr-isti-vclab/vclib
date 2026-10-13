@@ -19,7 +19,13 @@ if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)
 elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
     message(STATUS "- Eigen - using bundled source")
     add_library(vclib-3rd-eigen INTERFACE)
-    target_include_directories(vclib-3rd-eigen INTERFACE ${VCLIB_EIGEN_DIR})
+    target_include_directories(
+        vclib-3rd-eigen
+        SYSTEM
+        INTERFACE
+            $<BUILD_INTERFACE:${VCLIB_EIGEN_DIR}>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
+    )
     add_library(Eigen3::Eigen ALIAS vclib-3rd-eigen)
 else()
     message(
@@ -41,6 +47,6 @@ if(
 )
     install(
         DIRECTORY ${VCLIB_EIGEN_DIR}/Eigen
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
     )
 endif()

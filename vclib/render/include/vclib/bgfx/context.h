@@ -192,9 +192,8 @@ public:
     {
         T* buffer = new T[size];
 
-        return std::make_pair(buffer, [](void* ptr, void*) {
-            delete[] static_cast<T*>(ptr);
-        });
+        return std::make_pair(
+            buffer, [](void* ptr, void*) { delete[] static_cast<T*>(ptr); });
     }
 
 private:

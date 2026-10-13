@@ -36,9 +36,7 @@ public:
         Base::viewerRegisterGlobalAction(
             "Toggle Bounding Box",
             {Key::B, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                this->setActive(!this->isActive());
-            });
+            [this]() { this->setActive(!this->isActive()); });
     }
 
     BoundingBoxEditorSettings& settings() override { return mSettings; }
@@ -75,9 +73,8 @@ public:
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
-                // note: the bounding box is already trasformed if the mesh has
-                // a transform matrix
-                mBoxes.push_back(DrawableBox3(m->boundingBox(), c, thickness));
+                mBoxes.push_back(DrawableBox3(
+                    m->meshProvider().boundingBox(), c, thickness));
             }
             else {
                 mBoxes.push_back(DrawableBox3(Box3f()));
@@ -111,6 +108,15 @@ public:
         if (mSettings.editMode == CURRENT_OBJECT) {
             uint id = Base::drawList()->selectedObjectId();
             if (id < mBoxes.size()) {
+                const AbstractDrawableMesh* m =
+                    dynamic_cast<const AbstractDrawableMesh*>(
+                        Base::drawList()->at(id).get());
+                if (m) {
+                    Matrix44f transform = m->meshProvider()
+                                              .transformMatrix()
+                                              .template cast<float>();
+                    bgfx::setTransform(transform.data());
+                }
                 mBoxes[id].draw(settings);
             }
         }
@@ -121,6 +127,15 @@ public:
                                 true;
 
                 if (show) {
+                    const AbstractDrawableMesh* m =
+                        dynamic_cast<const AbstractDrawableMesh*>(
+                            Base::drawList()->at(i).get());
+                    if (m) {
+                        Matrix44f transform = m->meshProvider()
+                                                  .transformMatrix()
+                                                  .template cast<float>();
+                        bgfx::setTransform(transform.data());
+                    }
                     mBoxes[i].draw(settings);
                 }
             }

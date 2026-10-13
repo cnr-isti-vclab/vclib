@@ -201,8 +201,10 @@ function(vclib_build_shader)
                 BGFX_SHADER_INCLUDE_PATH_REAL
                 NAMES "bgfx_shader.sh"
                 PATHS
+                    "${vclib_DIR}/../../../include/vclib/3rdparty/bgfx"
                     "${vclib_DIR}/../../../include/bgfx"
                     "${vclib_DIR}/../../../include"
+                    "${CMAKE_INSTALL_PREFIX}/include/vclib/3rdparty/bgfx"
                     "${CMAKE_INSTALL_PREFIX}/include/bgfx"
             )
             if(BGFX_SHADER_INCLUDE_PATH_REAL)

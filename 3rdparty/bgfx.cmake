@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.159.9485-575)
+set(BGFX_VERSION 1.164.9539-586)
 
 find_package(bgfx QUIET)
 
@@ -28,15 +28,16 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include
+        INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdf/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include>
     )
 
     # make sure that the imported targets are global
@@ -98,12 +99,19 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
     )
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(bgfx)
 
-    add_library(vclib-3rd-bgfx INTERFACE)
+    vclib_end_3rdparty_install_scope()
 
-    # there are three warnings on gcc that we need to ignore
-    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
+    # there are some warnings that we need to ignore
+    vclib_disable_target_warnings(spirv-cross) #bgfx 3rdparty
+    vclib_disable_target_warnings(l-smash) #bgfx 3rdparty
+
+    vclib_disable_target_warnings(bimg_encode) #bimg 3rdparty
+
+    add_library(vclib-3rd-bgfx INTERFACE)
 
     target_link_libraries(
         vclib-3rd-bgfx
@@ -116,7 +124,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty
+        INTERFACE $<BUILD_INTERFACE:${bgfx_SOURCE_DIR}/bgfx/3rdparty>
     )
 
     set_target_properties(

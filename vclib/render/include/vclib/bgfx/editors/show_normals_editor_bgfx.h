@@ -44,9 +44,7 @@ public:
         Base::viewerRegisterGlobalAction(
             "Toggle Show Normals",
             {Key::N, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                this->setActive(!this->isActive());
-            });
+            [this]() { this->setActive(!this->isActive()); });
     }
 
     ShowNormalsEditorSettings& settings() override { return mSettings; }
@@ -135,10 +133,20 @@ public:
         if (mSettings.editMode == CURRENT_OBJECT) {
             uint id = Base::drawList()->selectedObjectId();
             if (id < mVertexNormalsLines.size()) {
-                if (mSettings.showVertexNormals)
-                    mVertexNormalsLines[id].draw(settings);
-                if (mSettings.showFaceNormals)
-                    mFaceNormalsLines[id].draw(settings);
+                auto m = dynamic_cast<AbstractDrawableMesh*>(
+                    Base::drawList()->at(id).get());
+                if (m) {
+                    vcl::Matrix44f model =
+                        m->meshProvider().transformMatrix().cast<float>();
+                    if (mSettings.showVertexNormals) {
+                        bgfx::setTransform(model.data());
+                        mVertexNormalsLines[id].draw(settings);
+                    }
+                    if (mSettings.showFaceNormals) {
+                        bgfx::setTransform(model.data());
+                        mFaceNormalsLines[id].draw(settings);
+                    }
+                }
             }
         }
         else {
@@ -148,10 +156,20 @@ public:
                                 true;
 
                 if (show) {
-                    if (mSettings.showVertexNormals)
-                        mVertexNormalsLines[i].draw(settings);
-                    if (mSettings.showFaceNormals)
-                        mFaceNormalsLines[i].draw(settings);
+                    auto m = dynamic_cast<AbstractDrawableMesh*>(
+                        Base::drawList()->at(i).get());
+                    if (m) {
+                        vcl::Matrix44f model =
+                            m->meshProvider().transformMatrix().cast<float>();
+                        if (mSettings.showVertexNormals) {
+                            bgfx::setTransform(model.data());
+                            mVertexNormalsLines[i].draw(settings);
+                        }
+                        if (mSettings.showFaceNormals) {
+                            bgfx::setTransform(model.data());
+                            mFaceNormalsLines[i].draw(settings);
+                        }
+                    }
                 }
             }
         }
@@ -171,8 +189,6 @@ private:
                 vcl::Point3d pos = provider.vertexPosition(i);
                 vcl::Point3d n   = provider.vertexNormal(i);
                 if (n.squaredNorm() > 0) {
-                    pos *= T;
-                    n = vcl::multiplyNormalByMatrix(n, T);
                     n.normalize();
                     pts.push_back(pos);
                     pts.push_back(n); // Vector direction
@@ -198,8 +214,6 @@ private:
                 vcl::Point3d barycenter = provider.faceBarycenter(i);
                 vcl::Point3d n          = provider.faceNormal(i);
                 if (n.squaredNorm() > 0) {
-                    barycenter *= T;
-                    n = vcl::multiplyNormalByMatrix(n, T);
                     n.normalize();
                     pts.push_back(barycenter);
                     pts.push_back(n); // Vector direction

@@ -14,16 +14,6 @@
 
 namespace vcl {
 
-struct MouseButton
-{
-    enum Enum {
-        LEFT      = 0,
-        RIGHT     = 1,
-        MIDDLE    = 2,
-        NO_BUTTON = 3,
-    };
-};
-
 struct KeyModifier
 {
     enum Enum {
@@ -122,6 +112,38 @@ struct Key
 
         UNKNOWN
     };
+};
+
+struct MouseButton
+{
+    enum Enum {
+        LEFT      = 0,
+        RIGHT     = 1,
+        MIDDLE    = 2,
+        NO_BUTTON = 3,
+    };
+};
+
+struct MouseInput
+{
+    MouseButton::Enum button;
+    KeyModifiers      modifiers;
+    bool              isDoubleClick = false;
+
+    bool operator==(const MouseInput& other) const
+    {
+        return button == other.button && modifiers == other.modifiers &&
+               isDoubleClick == other.isDoubleClick;
+    }
+
+    bool operator<(const MouseInput& other) const
+    {
+        if (button != other.button)
+            return button < other.button;
+        if (modifiers != other.modifiers)
+            return modifiers.underlying() < other.modifiers.underlying();
+        return isDoubleClick < other.isDoubleClick;
+    }
 };
 
 struct ScrollAxis
@@ -355,6 +377,110 @@ inline void fromString(const std::string& str, ScrollAxis::Enum& out)
     else {
         throw std::invalid_argument(
             "fromString ScrollAxis::Enum failed to parse: '" + str + "'");
+    }
+}
+
+// --- std::pair conversions ---
+
+inline std::string toString(const MouseInput& m)
+{
+    std::string res = toString(m.modifiers);
+    if (!res.empty())
+        res += "+";
+    if (m.isDoubleClick)
+        res += "Double ";
+    res += toString(m.button);
+    return res;
+}
+
+inline void fromString(const std::string& str, MouseInput& out)
+{
+    out = {MouseButton::NO_BUTTON, {KeyModifier::NO_MODIFIER}, false};
+
+    if (str.find("Double") != std::string::npos)
+        out.isDoubleClick = true;
+
+    if (str.find("Left Click") != std::string::npos)
+        out.button = MouseButton::LEFT;
+    else if (str.find("Right Click") != std::string::npos)
+        out.button = MouseButton::RIGHT;
+    else if (str.find("Middle Click") != std::string::npos)
+        out.button = MouseButton::MIDDLE;
+
+    fromString(str, out.modifiers);
+}
+
+inline std::string toString(
+    const std::pair<MouseButton::Enum, KeyModifiers>& input)
+{
+    std::string modStr = toString(input.second);
+    std::string btnStr = toString(input.first);
+    if (modStr.empty())
+        return btnStr;
+    return modStr + "+" + btnStr;
+}
+
+inline void fromString(
+    const std::string&                          str,
+    std::pair<MouseButton::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
+    }
+}
+
+inline std::string toString(const std::pair<Key::Enum, KeyModifiers>& input)
+{
+    std::string modStr = toString(input.second);
+    std::string keyStr = toString(input.first);
+    if (modStr.empty())
+        return keyStr;
+    return modStr + "+" + keyStr;
+}
+
+inline void fromString(
+    const std::string&                  str,
+    std::pair<Key::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
+    }
+}
+
+inline std::string toString(
+    const std::pair<ScrollAxis::Enum, KeyModifiers>& input)
+{
+    std::string modStr  = toString(input.second);
+    std::string axisStr = toString(input.first);
+    if (modStr.empty())
+        return axisStr;
+    return modStr + "+" + axisStr;
+}
+
+inline void fromString(
+    const std::string&                         str,
+    std::pair<ScrollAxis::Enum, KeyModifiers>& out)
+{
+    size_t lastPlus = str.find_last_of('+');
+    if (lastPlus == std::string::npos) {
+        fromString("", out.second);
+        fromString(str, out.first);
+    }
+    else {
+        fromString(str.substr(0, lastPlus), out.second);
+        fromString(str.substr(lastPlus + 1), out.first);
     }
 }
 

@@ -22,6 +22,15 @@ set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
     "@VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES@"
 )
 
+# Helper variables for 3rdparty paths
+set(VCLIB_3RDPARTY_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/../../vclib/3rdparty")
+set(VCLIB_3RDPARTY_BIN_DIR
+    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INCLUDE_DIR
+    "${CMAKE_CURRENT_LIST_DIR}/../../../include/vclib/3rdparty"
+)
+
 if(@VCLIB_INSTALL_MODULE_CORE@)
     if(
         "@VCLIB_USED_SYSTEM_EIGEN@"
@@ -72,7 +81,11 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
         find_package(Wayland QUIET)
     endif()
     if("vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
-        find_package(bgfx QUIET PATHS "${CMAKE_CURRENT_LIST_DIR}/../bgfx")
+        find_package(
+            bgfx
+            QUIET
+            PATHS "${CMAKE_CURRENT_LIST_DIR}/../../vclib/3rdparty/cmake/bgfx"
+        )
     endif()
     if(
         "@VCLIB_USED_SYSTEM_GLFW@"
@@ -93,62 +106,48 @@ if(
         add_library(gmp SHARED IMPORTED GLOBAL)
         set_property(
             TARGET gmp
-            PROPERTY
-                IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmp.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/gmp.lib"
+        )
+        set_property(
+            TARGET gmp
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/gmp-10.dll"
         )
         set_property(
             TARGET gmp
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmp-10.dll"
-        )
-        set_property(
-            TARGET gmp
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
     if(NOT TARGET gmpxx)
         add_library(gmpxx SHARED IMPORTED GLOBAL)
         set_property(
             TARGET gmpxx
-            PROPERTY
-                IMPORTED_IMPLIB
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmpxx.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/gmpxx.lib"
+        )
+        set_property(
+            TARGET gmpxx
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/gmpxx-4.dll"
         )
         set_property(
             TARGET gmpxx
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmpxx-4.dll"
-        )
-        set_property(
-            TARGET gmpxx
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
     if(NOT TARGET mpfr)
         add_library(mpfr SHARED IMPORTED GLOBAL)
         set_property(
             TARGET mpfr
-            PROPERTY
-                IMPORTED_IMPLIB
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../lib/mpfr.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/mpfr.lib"
+        )
+        set_property(
+            TARGET mpfr
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/mpfr-6.dll"
         )
         set_property(
             TARGET mpfr
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/mpfr-6.dll"
-        )
-        set_property(
-            TARGET mpfr
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
 endif()
@@ -351,25 +350,41 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                         TARGET embree
                         PROPERTY
                             IMPORTED_IMPLIB
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../lib/embree4.lib"
+                                "${VCLIB_3RDPARTY_LIB_DIR}/embree4.lib"
                     )
                     set_property(
                         TARGET embree
                         PROPERTY
                             IMPORTED_LOCATION
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../bin/embree4.dll"
+                                "${VCLIB_3RDPARTY_BIN_DIR}/embree4.dll"
                     )
                     set_property(
                         TARGET embree
                         PROPERTY
                             INTERFACE_INCLUDE_DIRECTORIES
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../include/embree4"
+                                "${VCLIB_3RDPARTY_INCLUDE_DIR}/embree4"
+                    )
+                endif()
+                if(NOT TARGET vclib-3rd-embree-tbb)
+                    add_library(vclib-3rd-embree-tbb SHARED IMPORTED GLOBAL)
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_IMPLIB
+                                "${VCLIB_3RDPARTY_LIB_DIR}/tbb12.lib"
+                    )
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_LOCATION
+                                "${VCLIB_3RDPARTY_BIN_DIR}/tbb12.dll"
                     )
                 endif()
                 set_property(
                     TARGET vclib::vclib-3rd-embree
                     APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES embree
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES embree vclib-3rd-embree-tbb
                 )
             endif()
             set_property(

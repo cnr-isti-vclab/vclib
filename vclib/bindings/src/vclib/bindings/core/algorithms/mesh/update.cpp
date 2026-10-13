@@ -22,262 +22,238 @@ void initUpdateAlgorithms(pybind11::module& m)
     namespace py = pybind11;
     using namespace py::literals;
 
-    auto fAllMeshes =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            // bounding_box.h
+    auto fAllMeshes = []<MeshConcept MeshType>(
+                          pybind11::module& m, MeshType = MeshType()) {
+        // bounding_box.h
 
-            m.def(
-                "update_bounding_box",
-                [](MeshType& m) {
-                    return updateBoundingBox(m);
-                },
-                "mesh"_a);
+        m.def(
+            "update_bounding_box",
+            [](MeshType& m) { return updateBoundingBox(m); },
+            "mesh"_a);
 
-            // color.h
+        // color.h
 
-            m.def(
-                "set_per_vertex_color",
-                [](MeshType& m, Color c, bool onlySelected = false) {
-                    return setPerVertexColor(m, c, onlySelected);
-                },
-                "mesh"_a,
-                "color"_a         = Color::White,
-                "only_selected"_a = false);
+        m.def(
+            "set_per_vertex_color",
+            [](MeshType& m, Color c, bool onlySelected = false) {
+                return setPerVertexColor(m, c, onlySelected);
+            },
+            "mesh"_a,
+            "color"_a         = Color::White,
+            "only_selected"_a = false);
 
-            m.def(
-                "set_per_vertex_color_from_quality",
-                [](MeshType& m, Color::ColorMap cm, double minQ, double maxQ) {
-                    return setPerVertexColorFromQuality(m, cm, minQ, maxQ);
-                },
-                "mesh"_a,
-                "color_map"_a   = Color::ColorMap::RedBlue,
-                "min_quality"_a = 0,
-                "max_quality"_a = 0);
+        m.def(
+            "set_per_vertex_color_from_quality",
+            [](MeshType& m, Color::ColorMap cm, double minQ, double maxQ) {
+                return setPerVertexColorFromQuality(m, cm, minQ, maxQ);
+            },
+            "mesh"_a,
+            "color_map"_a   = Color::ColorMap::RedBlue,
+            "min_quality"_a = 0,
+            "max_quality"_a = 0);
 
-            m.def(
-                "set_per_vertex_color_from_material",
-                [](MeshType& m) {
-                    return setPerVertexColorFromMaterial(m);
-                },
-                "mesh"_a);
+        m.def(
+            "set_per_vertex_color_from_material",
+            [](MeshType& m) { return setPerVertexColorFromMaterial(m); },
+            "mesh"_a);
 
-            m.def(
-                "set_per_vertex_color_perlin_noise",
-                [](MeshType& m,
-                   Point3d&  period,
-                   Point3d&  offset,
-                   bool      onlySelected) {
-                    return setPerVertexColorPerlinNoise(
-                        m, period, offset, onlySelected);
-                },
-                "mesh"_a,
-                "period"_a,
-                "offset"_a        = Point3d(0, 0, 0),
-                "only_selected"_a = false);
+        m.def(
+            "set_per_vertex_color_perlin_noise",
+            [](MeshType& m,
+               Point3d&  period,
+               Point3d&  offset,
+               bool      onlySelected) {
+                return setPerVertexColorPerlinNoise(
+                    m, period, offset, onlySelected);
+            },
+            "mesh"_a,
+            "period"_a,
+            "offset"_a        = Point3d(0, 0, 0),
+            "only_selected"_a = false);
 
-            m.def(
-                "set_per_vertex_perlin_color",
-                [](MeshType& m,
-                   double    period,
-                   Point3d&  offset,
-                   Color&    color1,
-                   Color&    color2,
-                   bool      onlySelected) {
-                    return setPerVertexPerlinColor(
-                        m, period, offset, color1, color2, onlySelected);
-                },
-                "mesh"_a,
-                "period"_a,
-                "offset"_a        = Point3d(0, 0, 0),
-                "color1"_a        = Color::Black,
-                "color2"_a        = Color::White,
-                "only_selected"_a = false);
+        m.def(
+            "set_per_vertex_perlin_color",
+            [](MeshType& m,
+               double    period,
+               Point3d&  offset,
+               Color&    color1,
+               Color&    color2,
+               bool      onlySelected) {
+                return setPerVertexPerlinColor(
+                    m, period, offset, color1, color2, onlySelected);
+            },
+            "mesh"_a,
+            "period"_a,
+            "offset"_a        = Point3d(0, 0, 0),
+            "color1"_a        = Color::Black,
+            "color2"_a        = Color::White,
+            "only_selected"_a = false);
 
-            // normal.h
+        // normal.h
 
-            m.def(
-                "clear_per_vertex_normals",
-                [](MeshType& m) {
-                    return clearPerVertexNormals(m);
-                },
-                "mesh"_a);
+        m.def(
+            "clear_per_vertex_normals",
+            [](MeshType& m) { return clearPerVertexNormals(m); },
+            "mesh"_a);
 
-            m.def(
-                "clear_per_referenced_vertex_normals",
-                [](MeshType& m) {
-                    return clearPerReferencedVertexNormals(m);
-                },
-                "mesh"_a);
+        m.def(
+            "clear_per_referenced_vertex_normals",
+            [](MeshType& m) { return clearPerReferencedVertexNormals(m); },
+            "mesh"_a);
 
-            m.def(
-                "normalize_per_vertex_normals",
-                [](MeshType& m) {
-                    return normalizePerVertexNormals(m);
-                },
-                "mesh"_a);
+        m.def(
+            "normalize_per_vertex_normals",
+            [](MeshType& m) { return normalizePerVertexNormals(m); },
+            "mesh"_a);
 
-            m.def(
-                "normalize_per_referenced_vertex_normals",
-                [](MeshType& m) {
-                    return normalizePerReferencedVertexNormals(m);
-                },
-                "mesh"_a);
+        m.def(
+            "normalize_per_referenced_vertex_normals",
+            [](MeshType& m) { return normalizePerReferencedVertexNormals(m); },
+            "mesh"_a);
 
-            m.def(
-                "multiply_per_vertex_normals_by_matrix",
-                [](MeshType&             m,
-                   const vcl::Matrix33d& mat,
-                   bool                  removeScalingFromMatrix = true,
-                   AbstractLogger& log = vcl::nullLogger) {
-                    return multiplyPerVertexNormalsByMatrix(
-                        m, mat, removeScalingFromMatrix, log);
-                },
-                "mesh"_a,
-                "matrix"_a,
-                "remove_scaling_from_matrix"_a = true,
-                "log"_a                        = py::cast(&vcl::nullLogger));
+        m.def(
+            "multiply_per_vertex_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix33d& mat,
+               bool                  removeScalingFromMatrix = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return multiplyPerVertexNormalsByMatrix(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "remove_scaling_from_matrix"_a = true,
+            "log"_a                        = py::cast(&vcl::nullLogger));
 
-            m.def(
-                "multiply_per_vertex_normals_by_matrix",
-                [](MeshType&             m,
-                   const vcl::Matrix44d& mat,
-                   bool                  removeScalingFromMatrix = true,
-                   AbstractLogger& log = vcl::nullLogger) {
-                    return multiplyPerVertexNormalsByMatrix(
-                        m, mat, removeScalingFromMatrix, log);
-                },
-                "mesh"_a,
-                "matrix"_a,
-                "remove_scaling_from_matrix"_a = true,
-                "log"_a                        = py::cast(&vcl::nullLogger));
+        m.def(
+            "multiply_per_vertex_normals_by_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix44d& mat,
+               bool                  removeScalingFromMatrix = true,
+               AbstractLogger& log = vcl::nullLogger) {
+                return multiplyPerVertexNormalsByMatrix(
+                    m, mat, removeScalingFromMatrix, log);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "remove_scaling_from_matrix"_a = true,
+            "log"_a                        = py::cast(&vcl::nullLogger));
 
-            // quality.h
+        // quality.h
 
-            m.def(
-                "set_per_vertex_quality",
-                [](MeshType& m, double quality) {
-                    return setPerVertexQuality(m, quality);
-                },
-                "mesh"_a,
-                "quality"_a = 0.0);
+        m.def(
+            "set_per_vertex_quality",
+            [](MeshType& m, double quality) {
+                return setPerVertexQuality(m, quality);
+            },
+            "mesh"_a,
+            "quality"_a = 0.0);
 
-            m.def(
-                "clamp_per_vertex_quality",
-                [](MeshType& m, double minQ, double maxQ) {
-                    return clampPerVertexQuality(m, minQ, maxQ);
-                },
-                "mesh"_a,
-                "min_quality"_a = 0.0,
-                "max_quality"_a = 1.0);
+        m.def(
+            "clamp_per_vertex_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return clampPerVertexQuality(m, minQ, maxQ);
+            },
+            "mesh"_a,
+            "min_quality"_a = 0.0,
+            "max_quality"_a = 1.0);
 
-            m.def(
-                "normalize_per_vertex_quality",
-                [](MeshType& m, double minQ, double maxQ) {
-                    return normalizePerVertexQuality(m, minQ, maxQ);
-                },
-                "mesh"_a,
-                "min_quality"_a = 0.0,
-                "max_quality"_a = 1.0);
+        m.def(
+            "normalize_per_vertex_quality",
+            [](MeshType& m, double minQ, double maxQ) {
+                return normalizePerVertexQuality(m, minQ, maxQ);
+            },
+            "mesh"_a,
+            "min_quality"_a = 0.0,
+            "max_quality"_a = 1.0);
 
-            // selection.h
+        // selection.h
 
-            m.def(
-                "clear_vertex_selection",
-                [](MeshType& m) {
-                    return clearVertexSelection(m);
-                },
-                "mesh"_a);
+        m.def(
+            "clear_vertex_selection",
+            [](MeshType& m) { return clearVertexSelection(m); },
+            "mesh"_a);
 
-            // topology.h
+        // topology.h
 
-            m.def(
-                "clear_per_vertex_adjacent_vertices",
-                [](MeshType& m) {
-                    return clearPerVertexAdjacentVertices(m);
-                },
-                "mesh"_a);
+        m.def(
+            "clear_per_vertex_adjacent_vertices",
+            [](MeshType& m) { return clearPerVertexAdjacentVertices(m); },
+            "mesh"_a);
 
-            m.def(
-                "update_per_vertex_adjacent_vertices",
-                [](MeshType& m) {
-                    return updatePerVertexAdjacentVertices(m);
-                },
-                "mesh"_a);
+        m.def(
+            "update_per_vertex_adjacent_vertices",
+            [](MeshType& m) { return updatePerVertexAdjacentVertices(m); },
+            "mesh"_a);
 
-            // transform.h
+        // transform.h
 
-            m.def(
-                "apply_transform_matrix",
-                [](MeshType&             m,
-                   const vcl::Matrix44d& mat,
-                   bool                  updateNormals = true) {
-                    return applyTransformMatrix(m, mat, updateNormals);
-                },
-                "mesh"_a,
-                "matrix"_a,
-                "update_normals"_a = true);
+        m.def(
+            "apply_transform_matrix",
+            [](MeshType&             m,
+               const vcl::Matrix44d& mat,
+               bool                  updateNormals = true) {
+                return applyTransformMatrix(m, mat, updateNormals);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "update_normals"_a = true);
 
-            m.def(
-                "translate",
-                [](MeshType& m, const Point3d& t) {
-                    return translate(m, t);
-                },
-                "mesh"_a,
-                "translate_vector"_a);
+        m.def(
+            "translate",
+            [](MeshType& m, const Point3d& t) { return translate(m, t); },
+            "mesh"_a,
+            "translate_vector"_a);
 
-            m.def(
-                "scale",
-                [](MeshType& m, const Point3d& s) {
-                    return scale(m, s);
-                },
-                "mesh"_a,
-                "scale_vector"_a);
+        m.def(
+            "scale",
+            [](MeshType& m, const Point3d& s) { return scale(m, s); },
+            "mesh"_a,
+            "scale_vector"_a);
 
-            m.def(
-                "scale",
-                [](MeshType& m, const double& s) {
-                    return scale(m, s);
-                },
-                "mesh"_a,
-                "scale_factor"_a);
+        m.def(
+            "scale",
+            [](MeshType& m, const double& s) { return scale(m, s); },
+            "mesh"_a,
+            "scale_factor"_a);
 
-            m.def(
-                "rotate",
-                [](MeshType&             m,
-                   const vcl::Matrix33d& mat,
-                   bool                  updateNormals = true) {
-                    return rotate(m, mat, updateNormals);
-                },
-                "mesh"_a,
-                "matrix"_a,
-                "update_normals"_a = true);
+        m.def(
+            "rotate",
+            [](MeshType&             m,
+               const vcl::Matrix33d& mat,
+               bool                  updateNormals = true) {
+                return rotate(m, mat, updateNormals);
+            },
+            "mesh"_a,
+            "matrix"_a,
+            "update_normals"_a = true);
 
-            m.def(
-                "rotate",
-                [](MeshType&           m,
-                   const vcl::Point3d& axis,
-                   double              angleRad,
-                   bool                updateNormals = true) {
-                    return rotate(m, axis, angleRad, updateNormals);
-                },
-                "mesh"_a,
-                "axis"_a,
-                "angle_rad"_a,
-                "update_normals"_a = true);
+        m.def(
+            "rotate",
+            [](MeshType&           m,
+               const vcl::Point3d& axis,
+               double              angleRad,
+               bool                updateNormals = true) {
+                return rotate(m, axis, angleRad, updateNormals);
+            },
+            "mesh"_a,
+            "axis"_a,
+            "angle_rad"_a,
+            "update_normals"_a = true);
 
-            m.def(
-                "rotate_deg",
-                [](MeshType&           m,
-                   const vcl::Point3d& axis,
-                   double              angleDeg,
-                   bool                updateNormals = true) {
-                    return rotateDeg(m, axis, angleDeg, updateNormals);
-                },
-                "mesh"_a,
-                "axis"_a,
-                "angle_deg"_a,
-                "update_normals"_a = true);
-        };
+        m.def(
+            "rotate_deg",
+            [](MeshType&           m,
+               const vcl::Point3d& axis,
+               double              angleDeg,
+               bool                updateNormals = true) {
+                return rotateDeg(m, axis, angleDeg, updateNormals);
+            },
+            "mesh"_a,
+            "axis"_a,
+            "angle_deg"_a,
+            "update_normals"_a = true);
+    };
 
     defForAllMeshTypes(m, fAllMeshes);
 
@@ -295,9 +271,7 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "update_border",
-            [](MeshType& m) {
-                return vcl::updateBorder(m);
-            },
+            [](MeshType& m) { return vcl::updateBorder(m); },
             "mesh"_a);
 
         // color.h
@@ -313,16 +287,12 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "set_per_vertex_color_from_face_color",
-            [](MeshType& m) {
-                return vcl::setPerVertexColorFromFaceColor(m);
-            },
+            [](MeshType& m) { return vcl::setPerVertexColorFromFaceColor(m); },
             "mesh"_a);
 
         m.def(
             "set_per_face_color_from_vertex_color",
-            [](MeshType& m) {
-                return vcl::setPerFaceColorFromVertexColor(m);
-            },
+            [](MeshType& m) { return vcl::setPerFaceColorFromVertexColor(m); },
             "mesh"_a);
 
         m.def(
@@ -337,9 +307,7 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "set_per_face_color_from_material",
-            [](MeshType& m) {
-                return setPerFaceColorFromMaterial(m);
-            },
+            [](MeshType& m) { return setPerFaceColorFromMaterial(m); },
             "mesh"_a);
 
         m.def(
@@ -412,16 +380,12 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "clear_per_face_normals",
-            [](MeshType& m) {
-                return vcl::clearPerFaceNormals(m);
-            },
+            [](MeshType& m) { return vcl::clearPerFaceNormals(m); },
             "mesh"_a);
 
         m.def(
             "normalize_per_face_normals",
-            [](MeshType& m) {
-                return vcl::normalizePerFaceNormals(m);
-            },
+            [](MeshType& m) { return vcl::normalizePerFaceNormals(m); },
             "mesh"_a);
 
         m.def(
@@ -558,9 +522,7 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "set_per_face_quality_from_face_area",
-            [](MeshType& m) {
-                return vcl::setPerFaceQualityFromFaceArea(m);
-            },
+            [](MeshType& m) { return vcl::setPerFaceQualityFromFaceArea(m); },
             "mesh"_a);
 
         m.def(
@@ -609,16 +571,12 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "clear_face_selection",
-            [](MeshType& m) {
-                return clearFaceSelection(m);
-            },
+            [](MeshType& m) { return clearFaceSelection(m); },
             "mesh"_a);
 
         m.def(
             "clear_face_edges_selection",
-            [](MeshType& m) {
-                return clearFaceEdgesSelection(m);
-            },
+            [](MeshType& m) { return clearFaceEdgesSelection(m); },
             "mesh"_a);
 
         m.def(
@@ -643,30 +601,22 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "clear_per_vertex_adjacent_faces",
-            [](MeshType& m) {
-                return clearPerVertexAdjacentFaces(m);
-            },
+            [](MeshType& m) { return clearPerVertexAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
             "update_per_vertex_adjacent_faces",
-            [](MeshType& m) {
-                return updatePerVertexAdjacentFaces(m);
-            },
+            [](MeshType& m) { return updatePerVertexAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
             "clear_per_face_adjacent_faces",
-            [](MeshType& m) {
-                return clearPerFaceAdjacentFaces(m);
-            },
+            [](MeshType& m) { return clearPerFaceAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
             "update_per_face_adjacent_faces",
-            [](MeshType& m) {
-                return updatePerFaceAdjacentFaces(m);
-            },
+            [](MeshType& m) { return updatePerFaceAdjacentFaces(m); },
             "mesh"_a);
     };
 
@@ -687,48 +637,36 @@ void initUpdateAlgorithms(pybind11::module& m)
 
         m.def(
             "set_per_edge_color_from_vertex_color",
-            [](MeshType& m) {
-                return vcl::setPerEdgeColorFromVertexColor(m);
-            },
+            [](MeshType& m) { return vcl::setPerEdgeColorFromVertexColor(m); },
             "mesh"_a);
 
         // selection.h
 
         m.def(
             "clear_edge_selection",
-            [](MeshType& m) {
-                return clearEdgeSelection(m);
-            },
+            [](MeshType& m) { return clearEdgeSelection(m); },
             "mesh"_a);
 
         // topology.h
 
         m.def(
             "clear_per_vertex_adjacent_edges",
-            [](MeshType& m) {
-                return clearPerVertexAdjacentEdges(m);
-            },
+            [](MeshType& m) { return clearPerVertexAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
             "update_per_vertex_adjacent_edges",
-            [](MeshType& m) {
-                return updatePerVertexAdjacentEdges(m);
-            },
+            [](MeshType& m) { return updatePerVertexAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
             "clear_per_edge_adjacent_edges",
-            [](MeshType& m) {
-                return clearPerEdgeAdjacentEdges(m);
-            },
+            [](MeshType& m) { return clearPerEdgeAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
             "update_per_edge_adjacent_edges",
-            [](MeshType& m) {
-                return updatePerEdgeAdjacentEdges(m);
-            },
+            [](MeshType& m) { return updatePerEdgeAdjacentEdges(m); },
             "mesh"_a);
     };
 
@@ -738,30 +676,22 @@ void initUpdateAlgorithms(pybind11::module& m)
                                pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "clear_per_face_adjacent_edges",
-            [](MeshType& m) {
-                return clearPerFaceAdjacentEdges(m);
-            },
+            [](MeshType& m) { return clearPerFaceAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
             "update_per_face_adjacent_edges",
-            [](MeshType& m) {
-                return updatePerFaceAdjacentEdges(m);
-            },
+            [](MeshType& m) { return updatePerFaceAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
             "clear_per_edge_adjacent_faces",
-            [](MeshType& m) {
-                return clearPerEdgeAdjacentFaces(m);
-            },
+            [](MeshType& m) { return clearPerEdgeAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
             "update_per_edge_adjacent_faces",
-            [](MeshType& m) {
-                return updatePerEdgeAdjacentFaces(m);
-            },
+            [](MeshType& m) { return updatePerEdgeAdjacentFaces(m); },
             "mesh"_a);
     };
 

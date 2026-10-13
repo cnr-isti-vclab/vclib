@@ -32,6 +32,44 @@ enum class TrackballMotionType {
     MOTION_COUNT   ///< Number of motion types.
 };
 
+inline std::string toString(TrackballMotionType type)
+{
+    switch (type) {
+    case TrackballMotionType::ARC: return "Arcball Rotation";
+    case TrackballMotionType::PAN: return "Pan";
+    case TrackballMotionType::ZMOVE: return "Zoom (Translation)";
+    case TrackballMotionType::ROLL: return "Roll";
+    case TrackballMotionType::SCALE: return "Scale";
+    case TrackballMotionType::FOV: return "Field of View";
+    case TrackballMotionType::FOCUS: return "Focus";
+    case TrackballMotionType::DIR_LIGHT_ARC: return "Light Rotation";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, TrackballMotionType& out)
+{
+    if (str == "Arcball Rotation")
+        out = TrackballMotionType::ARC;
+    else if (str == "Pan")
+        out = TrackballMotionType::PAN;
+    else if (str == "Zoom (Translation)")
+        out = TrackballMotionType::ZMOVE;
+    else if (str == "Roll")
+        out = TrackballMotionType::ROLL;
+    else if (str == "Scale")
+        out = TrackballMotionType::SCALE;
+    else if (str == "Field of View")
+        out = TrackballMotionType::FOV;
+    else if (str == "Focus")
+        out = TrackballMotionType::FOCUS;
+    else if (str == "Light Rotation")
+        out = TrackballMotionType::DIR_LIGHT_ARC;
+    else
+        throw std::invalid_argument(
+            "Invalid TrackballMotionType string: " + str);
+}
+
 /**
  * @brief The TrackBall class implements a trackball (a camera combined with
  * model transformation).

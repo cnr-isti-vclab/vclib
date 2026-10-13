@@ -42,7 +42,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_NLOHMANN_JSON)
         GIT_REPOSITORY https://github.com/nlohmann/json.git
         GIT_TAG v${NLOHMANN_JSON_VERSION}
     )
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(nlohmann_json)
+
+    vclib_end_3rdparty_install_scope()
 
     add_library(vclib-3rd-nlohmann_json INTERFACE)
     target_link_libraries(

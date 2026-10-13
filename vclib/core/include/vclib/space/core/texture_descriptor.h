@@ -105,68 +105,38 @@ public:
     bool isNull() const { return mPath.empty(); }
 
     /**
-     * @brief Gets the file path of the texture.
-     * @return A const reference to the texture's file path.
-     */
-    const std::string& path() const { return mPath; }
-
-    /**
      * @brief Gets a mutable reference to the file path of the texture.
      * @return A reference to the texture's file path.
      */
-    std::string& path() { return mPath; }
-
-    /**
-     * @brief Gets the minification filter of the texture.
-     * @return The minification filter mode.
-     */
-    MinificationFilter minFilter() const { return mMinFilter; }
+    decltype(auto) path(this auto&& self) { return (self.mPath); }
 
     /**
      * @brief Gets a mutable reference to the minification filter of the
      * texture.
      * @return A reference to the minification filter mode.
      */
-    MinificationFilter& minFilter() { return mMinFilter; }
-
-    /**
-     * @brief Gets the magnification filter of the texture.
-     * @return The magnification filter mode.
-     */
-    MagnificationFilter magFilter() const { return mMagFilter; }
+    decltype(auto) minFilter(this auto&& self) { return (self.mMinFilter); }
 
     /**
      * @brief Gets a mutable reference to the magnification filter of the
      * texture.
      * @return A reference to the magnification filter mode.
      */
-    MagnificationFilter& magFilter() { return mMagFilter; }
-
-    /**
-     * @brief Gets the wrap mode for the U (S) texture coordinate.
-     * @return The U wrap mode.
-     */
-    WrapMode wrapU() const { return mWrapU; }
+    decltype(auto) magFilter(this auto&& self) { return (self.mMagFilter); }
 
     /**
      * @brief Gets a mutable reference to the wrap mode for the U (S) texture
      * coordinate.
      * @return A reference to the U wrap mode.
      */
-    WrapMode& wrapU() { return mWrapU; }
-
-    /**
-     * @brief Gets the wrap mode for the V (T) texture coordinate.
-     * @return The V wrap mode.
-     */
-    WrapMode wrapV() const { return mWrapV; }
+    decltype(auto) wrapU(this auto&& self) { return (self.mWrapU); }
 
     /**
      * @brief Gets a mutable reference to the wrap mode for the V (T) texture
      * coordinate.
      * @return A reference to the V wrap mode.
      */
-    WrapMode& wrapV() { return mWrapV; }
+    decltype(auto) wrapV(this auto&& self) { return (self.mWrapV); }
 
     /**
      * @brief Serializes the TextureDescriptor to an output stream.

@@ -16,6 +16,13 @@
 #include <QToolBar>
 #include <QWidget>
 
+#include <functional>
+#include <vector>
+
+namespace vcl {
+class AbstractInputActionMap;
+} // namespace vcl
+
 namespace vcl::qt {
 
 /**

@@ -6,7 +6,7 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 ### Build settings
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 
 # In case of building shared libraries, on windows we need to export all symbols
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -22,6 +22,24 @@ if(WIN32)
         add_compile_options(/w44244 /w44267 /w44305)
     endif()
 endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    add_compile_options(-Wno-psabi)
+endif()
+
+# Disables compiler warnings for a specific CMake target.
+#
+# Arguments:
+#   target_name: The name of the target for which warnings should be disabled.
+function(vclib_disable_target_warnings target_name)
+    if(TARGET ${target_name})
+        if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+            target_compile_options(${target_name} PRIVATE /w)
+        elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+            target_compile_options(${target_name} PRIVATE -w)
+        endif()
+    endif()
+endfunction()
 
 if(VCLIB_INSTALL_MODULE_CORE)
     set(VCLIB_CORE_EXCLUDE_FROM_ALL_OPTION)

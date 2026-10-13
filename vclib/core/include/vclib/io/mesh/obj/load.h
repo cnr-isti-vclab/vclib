@@ -522,8 +522,8 @@ void loadObj(
                 }
                 catch (CannotOpenFileException) {
                     log.log(
-                        "Cannot open material file " + mtlfile,
-                        LogType::WARNING_LOG);
+                        LogType::WARNING_LOG,
+                        "Cannot open material file " + mtlfile);
                 }
             }
             // use a new material - change currentMaterial
@@ -535,8 +535,8 @@ void loadObj(
                 }
                 else { // material not found - warning
                     log.log(
-                        "Material " + matname + " not found.",
-                        LogType::WARNING_LOG);
+                        LogType::WARNING_LOG,
+                        "Material " + matname + " not found.");
                 }
             }
             // read vertex (and for some non-standard obj files, also vertex
