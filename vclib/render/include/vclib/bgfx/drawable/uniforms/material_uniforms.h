@@ -36,8 +36,8 @@ class MaterialUniforms
         1.0  // normal scale
     };
 
-    // emissive color factor stored in RGB channels, alpha channel is unused so
-    // it can be used to store the emissive strength
+    // emissive color factor stored in RGB channels,
+    // alpha stores the emissive strength
     static inline std::array<float, 4> sEmissivePack =
         {0.0, 0.0, 0.0, 1.0};
 
