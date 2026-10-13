@@ -45,7 +45,7 @@ void main()
     const uint SAMPLE_COUNT = 1024u;
     for(uint i = 0; i < SAMPLE_COUNT; ++i)
     {
-        vec4 sample = getImportanceSample(
+        vec4 smp = getImportanceSample(
             i,
             SAMPLE_COUNT,
             N,
@@ -53,7 +53,7 @@ void main()
             roughness
         );
 
-        vec3 H = sample.xyz;
+        vec3 H = smp.xyz;
         vec3 L = normalize(reflect(-V, H));
 
         float NoL = saturate(L.z);

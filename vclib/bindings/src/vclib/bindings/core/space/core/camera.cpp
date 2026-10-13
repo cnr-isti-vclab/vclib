@@ -32,33 +32,27 @@ void initCamera(pybind11::module& m)
     pmEnum.value("PERSPECTIVE", CameraType::ProjectionMode::PERSPECTIVE);
     pmEnum.export_values();
 
-    c.def("center", py::overload_cast<>(&CameraType::center, py::const_));
+    c.def("center", [](const CameraType& cam) { return cam.center(); });
     c.def(
         "set_center",
-        [](CameraType& cam, const PointType& p) {
-            cam.center() = p;
-        },
+        [](CameraType& cam, const PointType& p) { cam.center() = p; },
         "center"_a);
 
-    c.def("eye", py::overload_cast<>(&CameraType::eye, py::const_));
+    c.def("eye", [](const CameraType& cam) { return cam.eye(); });
     c.def(
         "set_eye",
-        [](CameraType& cam, const PointType& p) {
-            cam.eye() = p;
-        },
+        [](CameraType& cam, const PointType& p) { cam.eye() = p; },
         "eye"_a);
 
-    c.def("up", py::overload_cast<>(&CameraType::up, py::const_));
+    c.def("up", [](const CameraType& cam) { return cam.up(); });
     c.def(
         "set_up",
-        [](CameraType& cam, const PointType& p) {
-            cam.up() = p;
-        },
+        [](CameraType& cam, const PointType& p) { cam.up() = p; },
         "up"_a);
 
-    c.def(
-        "field_of_view",
-        py::overload_cast<>(&CameraType::fieldOfView, py::const_));
+    c.def("field_of_view", [](const CameraType& cam) {
+        return cam.fieldOfView();
+    });
     c.def("set_field_of_view", [](CameraType& cam, const Scalar& fovDeg) {
         cam.fieldOfView() = fovDeg;
     });
@@ -68,9 +62,9 @@ void initCamera(pybind11::module& m)
         &CameraType::setFieldOfViewAdaptingEyeDistance,
         "fov_deg"_a);
 
-    c.def(
-        "projection_mode",
-        py::overload_cast<>(&CameraType::projectionMode, py::const_));
+    c.def("projection_mode", [](const CameraType& cam) {
+        return cam.projectionMode();
+    });
     c.def(
         "set_projection_mode",
         [](CameraType& cam, CameraType::ProjectionMode pm) {
@@ -78,41 +72,32 @@ void initCamera(pybind11::module& m)
         },
         "projection_mode"_a);
 
-    c.def(
-        "vertical_height",
-        py::overload_cast<>(&CameraType::verticalHeight, py::const_));
+    c.def("vertical_height", [](const CameraType& cam) {
+        return cam.verticalHeight();
+    });
     c.def(
         "set_vertical_height",
-        [](CameraType& cam, const Scalar& h) {
-            cam.verticalHeight() = h;
-        },
+        [](CameraType& cam, const Scalar& h) { cam.verticalHeight() = h; },
         "vertical_height"_a);
 
-    c.def(
-        "aspect_ratio",
-        py::overload_cast<>(&CameraType::aspectRatio, py::const_));
+    c.def("aspect_ratio", [](const CameraType& cam) {
+        return cam.aspectRatio();
+    });
     c.def(
         "set_aspect_ratio",
-        [](CameraType& cam, const Scalar& ar) {
-            cam.aspectRatio() = ar;
-        },
+        [](CameraType& cam, const Scalar& ar) { cam.aspectRatio() = ar; },
         "aspect_ratio"_a);
 
-    c.def(
-        "near_plane", py::overload_cast<>(&CameraType::nearPlane, py::const_));
+    c.def("near_plane", [](const CameraType& cam) { return cam.nearPlane(); });
     c.def(
         "set_near_plane",
-        [](CameraType& cam, const Scalar& np) {
-            cam.nearPlane() = np;
-        },
+        [](CameraType& cam, const Scalar& np) { cam.nearPlane() = np; },
         "near_plane"_a);
 
-    c.def("far_plane", py::overload_cast<>(&CameraType::farPlane, py::const_));
+    c.def("far_plane", [](const CameraType& cam) { return cam.farPlane(); });
     c.def(
         "set_far_plane",
-        [](CameraType& cam, const Scalar& fp) {
-            cam.farPlane() = fp;
-        },
+        [](CameraType& cam, const Scalar& fp) { cam.farPlane() = fp; },
         "far_plane"_a);
 
     c.def("view_matrix", &CameraType::viewMatrix);

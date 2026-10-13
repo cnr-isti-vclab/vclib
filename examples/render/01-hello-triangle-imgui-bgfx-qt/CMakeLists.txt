@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(EXAMPLE_NAME 01-hello-triangle-imgui-bgfx-qt)
+get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 set(HEADERS

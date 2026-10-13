@@ -29,9 +29,8 @@ public:
         editorButton->setChecked(mViewer.isTrackBallVisible());
         editorButton->setToolTip("Show TrackBall");
 
-        mViewer.setShortcutToggleTrackballCallback([editorButton]() {
-            editorButton->click();
-        });
+        mViewer.setShortcutToggleTrackballCallback(
+            [editorButton]() { editorButton->click(); });
 
         Base::hideSettingsButton();
 

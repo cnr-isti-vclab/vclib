@@ -43,6 +43,37 @@ public:
     using ElementType    = T;
     using ParentMeshType = T::ParentMeshType;
 
+    ElementContainer(const ElementContainer& other) :
+            ElementContainerTriggerer(other), mElemCount(other.mElemCount),
+            mParentMesh(other.mParentMesh),
+            mVerticalCompVecTuple(other.mVerticalCompVecTuple),
+            mCustomCompVecMap(other.mCustomCompVecMap)
+    {
+        mElemVec.resize(other.mElemVec.size());
+        for (uint i = 0; i < mElemVec.size(); ++i) {
+            mElemVec[i].rawCopyFrom(other.mElemVec[i]);
+        }
+    }
+
+    void swap(ElementContainer& other) noexcept
+    {
+        using std::swap;
+        swap(mElemCount, other.mElemCount);
+        swap(mParentMesh, other.mParentMesh);
+        swap(mVerticalCompVecTuple, other.mVerticalCompVecTuple);
+        swap(mCustomCompVecMap, other.mCustomCompVecMap);
+        swap(mElemVec, other.mElemVec);
+    }
+
+    ElementContainer& operator=(ElementContainer other)
+    {
+        this->swap(other);
+        return *this;
+    }
+
+    ElementContainer(ElementContainer&&)            = default;
+    ElementContainer& operator=(ElementContainer&&) = default;
+
 protected:
     ParentMeshType* mParentMesh = nullptr;
 
@@ -424,7 +455,7 @@ protected:
             if (other.element(i).deleted()) {
                 deleteElement(n + i);
             }
-            element(n + i) = other.element(i);
+            element(n + i).rawCopyFrom(other.element(i));
             element(n + i).setParentMesh(mParentMesh);
         }
         // importing also optional, vertical and custom components:

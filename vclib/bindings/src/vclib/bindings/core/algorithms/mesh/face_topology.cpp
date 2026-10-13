@@ -42,9 +42,15 @@ void initFaceTopologyAlgorithms(pybind11::module& m)
 
             m.def(
                 "flood_face_patch",
-                [](const FaceType&                       seed,
-                   std::function<bool(const FaceType&)>& selector) {
-                    return floodFacePatch(seed, selector);
+                [](const FaceType& seed, pybind11::function selector) {
+                    // We pass a pointer to the python callback instead of a
+                    // reference. This forces pybind11 to use the 'reference'
+                    // policy by default, avoiding the copy of the non-copyable
+                    // Element object.
+                    auto cppSelector = [selector](const FaceType& f) -> bool {
+                        return selector(&f).template cast<bool>();
+                    };
+                    return floodFacePatch(seed, cppSelector);
                 },
                 "seed"_a,
                 "face_selector"_a,

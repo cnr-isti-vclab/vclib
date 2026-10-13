@@ -210,8 +210,8 @@ inline uint addGltfTexture(
 {
     if (textureDescriptor.isNull()) {
         log.log(
-            "Cannot save empty texture: " + textureDescriptor.path(),
-            LogType::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "Cannot save empty texture: " + textureDescriptor.path());
 
         return UINT_NULL;
     }
@@ -219,8 +219,8 @@ inline uint addGltfTexture(
     if (saveTextureImages &&
         mesh.textureImage(textureDescriptor.path()).isNull()) {
         log.log(
-            "Cannot save empty image: " + textureDescriptor.path(),
-            LogType::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "Cannot save empty image: " + textureDescriptor.path());
 
         return UINT_NULL;
     }
@@ -333,10 +333,9 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
 
                 default:
                     log.log(
-                        std::format(
-                            "Unhandled TextureType: {}",
-                            static_cast<int>(type)),
-                        LogType::WARNING_LOG);
+                        LogType::WARNING_LOG,
+                        "Unhandled TextureType: {}",
+                        static_cast<int>(type));
                 }
             }
         }

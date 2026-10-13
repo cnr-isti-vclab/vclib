@@ -16,6 +16,11 @@ if(LINUX)
         target_link_libraries(vclib-3rd-wayland INTERFACE Wayland::Wayland)
 
         list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-wayland)
+
+        install(
+            FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindWayland.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
+        )
     else()
         message(STATUS "- Wayland - not found, skipping")
     endif()

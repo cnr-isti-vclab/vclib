@@ -31,22 +31,22 @@ public:
         const Color&   color     = Color::Black,
         float          thickness = 1.0f) : mBox(box.template cast<float>())
     {
-        mBoxLines.generalColor() = color;
-        mBoxLines.thickness()    = thickness;
+        mBoxLines.setGeneralColor(color);
+        mBoxLines.setWidth(thickness);
         updateLines();
     }
 
     DrawableBox3(const DrawableBox3& other);
 
-    DrawableBox3(DrawableBox3&& other) { swap(other); }
+    DrawableBox3(DrawableBox3&& other) noexcept { swap(other); }
 
     ~DrawableBox3() = default;
 
     DrawableBox3& operator=(DrawableBox3 other);
 
-    void swap(DrawableBox3& other);
+    void swap(DrawableBox3& other) noexcept;
 
-    friend void swap(DrawableBox3& first, DrawableBox3& second)
+    friend void swap(DrawableBox3& first, DrawableBox3& second) noexcept
     {
         first.swap(second);
     }

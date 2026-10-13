@@ -9,48 +9,30 @@
 
 #include "ui_mesh_viewer.h"
 
+#include <vclib/qt/gui/dialog_directories.h>
 #include <vclib/qt/gui/screen_shot_dialog.h>
+#include <vclib/qt/gui/settings_dialog.h>
+#include <vclib/qt/gui/settings_dialog/mesh_render_settings_tab_impl.h>
+#include <vclib/qt/gui/settings_dialog/shortcuts_settings_tab.h>
+#include <vclib/qt/gui/settings_dialog/viewer_settings_tab_impl.h>
 #include <vclib/qt/gui/toolbar_frames.h>
 #include <vclib/qt/gui/viewer_settings_frame.h>
+#include <vclib/qt/undo_redo_actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
+#include <vclib/io.h>
+
+#include <QAction>
 #include <QActionGroup>
+#include <QDialog>
 #include <QDockWidget>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QIcon>
+#include <QMessageBox>
+#include <QPushButton>
 
 namespace vcl::qt {
-
-bool KeyFilter::eventFilter(QObject* watched, QEvent* event)
-{
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-        // Ignore only the Ctrl + S shortcut override, you can customize check
-        // for your needs
-        if (keyEvent->modifiers().testFlag(Qt::ControlModifier) &&
-            keyEvent->key() == 'S') {
-            qDebug() << "Ignoring " << keyEvent->modifiers() << " + "
-                     << (char) keyEvent->key() << " for " << watched;
-            event->ignore();
-            return true;
-        }
-    }
-
-    return QObject::eventFilter(watched, event);
-}
-
-/**
- * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
- *
- * @return MeshViewerRenderApp
- */
-MeshViewerRenderApp& MeshViewer::viewer() const
-{
-    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
-}
-
-DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
-{
-    return *mUI->drawVectorTree;
-}
 
 /**
  * @brief MeshViewer constructor.
@@ -60,21 +42,40 @@ DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
  *
  * @param parent
  */
-MeshViewer::MeshViewer(QWidget* parent) :
-        QMainWindow(parent), mUI(new Ui::MeshViewer)
+MeshViewer::MeshViewer(QWidget* parent, const std::string& settingsFilePath) :
+        QMainWindow(parent), mSettingsFilePath(settingsFilePath),
+        mUI(new Ui::MeshViewer)
 {
+    if (mSettingsFilePath.empty()) {
+        std::filesystem::path configDir = vcl::appConfigDirectory("vclib");
+        mSettingsFilePath =
+            (configDir / vcl::RENDER_SETTINGS_FILE_NAME).string();
+    }
+
     mUI->setupUi(this);
 
     // give keyboard focus to the viewer widget immediately
     mUI->viewer->setFocus();
 
+    // Register Qt-specific screenshot action with dialog
+    viewer().registerGlobalAction(
+        "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
+            vcl::qt::ScreenShotDialog dialog(this);
+            if (dialog.exec() && dialog.selectedFiles().size() > 0) {
+                auto sf = dialog.selectedFiles();
+                mUI->viewer->screenshot(
+                    sf[0].toStdString(), dialog.screenMultiplierValue());
+            }
+        });
+
     // prevent any widget in the right area from stealing keyboard focus
     mUI->rightArea->setFocusPolicy(Qt::NoFocus);
-    std::function<void(QWidget*)> disableFocus = [&disableFocus](QWidget* w) {
+    auto disableFocus = [](QWidget* w) {
         w->setFocusPolicy(Qt::NoFocus);
-        for (auto* child : w->findChildren<QWidget*>(
-                 QString(), Qt::FindChildrenRecursively)) {
-            disableFocus(child);
+        for (auto* child : w->findChildren<QWidget*>()) {
+            if (!child->isWindow()) {
+                child->setFocusPolicy(Qt::NoFocus);
+            }
         }
     };
     disableFocus(mUI->rightArea);
@@ -96,12 +97,28 @@ MeshViewer::MeshViewer(QWidget* parent) :
     auto* trackballFrame = new TrackBallFrame(viewer());
     mUI->toolBar->addWidget(trackballFrame);
 
+    mUI->toolBar->addSeparator();
+    auto* notEditingFrame = new NotEditingFrame(viewer());
+    mUI->toolBar->addWidget(notEditingFrame);
+
     disableFocus(mUI->toolBar);
+
+    setupSettingsButton();
 
     /** Render Settings Frame **/
 
     mViewerSettingsFrame = new ViewerSettingsFrame(this);
-    mViewerSettingsFrame->setViewer(mUI->viewer);
+    mViewerSettingsFrame->setSettingsFilePath(mSettingsFilePath);
+    mViewerSettingsFrame->setViewerSettings(viewer().viewerSettings());
+
+    connect(
+        mViewerSettingsFrame,
+        &ViewerSettingsFrame::settingsChanged,
+        this,
+        [this](const ViewerSettings& settings) {
+            mUI->viewer->setViewerSettings(settings);
+            mUI->viewer->update();
+        });
 
     mViewerSettingsDockWidget = new QDockWidget("Viewer Settings", this);
     mViewerSettingsDockWidget->setWidget(mViewerSettingsFrame);
@@ -111,9 +128,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
     addDockWidget(Qt::RightDockWidgetArea, mViewerSettingsDockWidget);
 
     /** Events **/
-
-    // install the key filter
-    mUI->viewer->installEventFilter(new KeyFilter(this));
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // meshRenderSettingsUpdated() member function
@@ -172,11 +186,111 @@ MeshViewer::MeshViewer(QWidget* parent) :
         &QDockWidget::visibilityChanged,
         mUI->actionViewer_Settings,
         &QAction::setChecked);
-}
 
-void MeshViewer::addEditorFrame(QWidget* frame)
-{
-    mUI->toolBar->addWidget(frame);
+    connect(
+        mUI->actionSettings,
+        &QAction::triggered,
+        this,
+        &MeshViewer::openSettings);
+
+    connect(
+        mUI->actionLoad_Camera_View,
+        &QAction::triggered,
+        this,
+        &MeshViewer::loadCameraView);
+
+    connect(
+        mUI->actionSave_Camera_View,
+        &QAction::triggered,
+        this,
+        &MeshViewer::saveCameraView);
+
+    connect(
+        mUI->actionShow_Right_Area,
+        &QAction::toggled,
+        mUI->rightArea,
+        &QWidget::setVisible);
+    connect(
+        mUI->actionShow_Logger,
+        &QAction::toggled,
+        mUI->logger,
+        &QWidget::setVisible);
+    connect(
+        mUI->actionShow_Settings_Frame,
+        &QAction::toggled,
+        mUI->meshRenderSettingsFrame,
+        &QWidget::setVisible);
+    connect(
+        mUI->actionShow_Draw_Vector_Tree,
+        &QAction::toggled,
+        mUI->drawVectorTree,
+        &QWidget::setVisible);
+
+    connect(mUI->actionUndo, &QAction::triggered, this, [this]() {
+        viewer().undo();
+    });
+    connect(mUI->actionRedo, &QAction::triggered, this, [this]() {
+        viewer().redo();
+    });
+
+    mUI->drawVectorTree->setRenameFunction(
+        [this](
+            std::shared_ptr<vcl::DrawableObject> obj,
+            const std::string&                   newName) {
+            if (obj->name() != newName) {
+                auto action = std::make_unique<RenameDrawableObjectAction>(
+                    this, obj, obj->name());
+                viewer().pushUndoRedoAction(std::move(action));
+
+                obj->name() = newName;
+                updateGUI();
+            }
+        });
+
+    mUI->drawVectorTree->setDeleteFunction(
+        [this](std::shared_ptr<vcl::DrawableObject> obj) {
+            auto& vector = drawableObjects();
+            auto  it     = std::find(vector.begin(), vector.end(), obj);
+            if (it != vector.end()) {
+                uint index  = std::distance(vector.begin(), it);
+                auto action = std::make_unique<DeleteDrawableObjectAction>(
+                    this, index, obj);
+                viewer().pushUndoRedoAction(std::move(action));
+
+                removeDrawableObject(index);
+            }
+        });
+
+    // Load default global settings
+    nlohmann::json j;
+    std::string    filePath = mSettingsFilePath;
+    std::ifstream  in(filePath);
+    if (in.is_open()) {
+        try {
+            in >> j;
+            viewer().loadSettings(j);
+            setViewerSettings(viewer().viewerSettings());
+            // Editors pushed later will load their own settings via pushEditor
+        }
+        catch (...) {
+            // Ignore parse errors and reset to empty object to avoid crashes
+            j = nlohmann::json::object();
+        }
+    }
+
+    mDefaultMeshRenderSettings.setAllCapabilities(true);
+    mDefaultMeshRenderSettings.setDefaultSettingsFromCapability();
+    if (j.contains("MeshRenderSettings")) {
+        MeshRenderSettings parsedSettings =
+            j.at("MeshRenderSettings").get<MeshRenderSettings>();
+        mDefaultMeshRenderSettings.updateIfCapable(parsedSettings);
+    }
+
+    mSettingsData.addTab(std::make_shared<ViewerSettingsTabImpl>(this));
+    mSettingsData.addTab(std::make_shared<ShortcutsSettingsTab>([this]() {
+        return viewer().actionMapGroups();
+    }));
+    setupMeshRenderSettingsTabs(mSettingsData, mDefaultMeshRenderSettings);
 }
 
 MeshViewer::~MeshViewer()
@@ -252,6 +366,7 @@ void MeshViewer::setCamera(const Camera<float>& c)
 
 void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 {
+    mUI->viewer->setViewerSettings(settings);
     mViewerSettingsFrame->setViewerSettings(settings);
     if (settings.renderMode == RenderMode::CLASSIC) {
         mUI->actionClassic->setChecked(true);
@@ -263,29 +378,25 @@ void MeshViewer::setViewerSettings(const ViewerSettings& settings)
 
 const ViewerSettings& MeshViewer::viewerSettings() const
 {
-    return mViewerSettingsFrame->viewerSettings();
+    return viewer().viewerSettings();
 }
 
-void MeshViewer::setPanorama(const std::string& panorama)
+/**
+ * @brief Sets the visibility of the right area (which contains the drawable
+ * object tree, render settings, and logger).
+ * @param visible True to show the right area, false to hide it.
+ */
+void MeshViewer::setRightAreaVisible(bool visible)
 {
-    mViewerSettingsFrame->setPanorama(panorama);
+    mUI->actionShow_Right_Area->setChecked(visible);
 }
 
-void MeshViewer::keyPressEvent(QKeyEvent* event)
+/**
+ * @brief Returns true if the right area is currently visible.
+ */
+bool MeshViewer::isRightAreaVisible() const
 {
-    // show screenshot dialog on CTRL + S
-    if (event->key() == Qt::Key_S && event->modifiers() & Qt::ControlModifier) {
-        vcl::qt::ScreenShotDialog dialog(this);
-        if (dialog.exec() && dialog.selectedFiles().size() > 0) {
-            auto sf = dialog.selectedFiles();
-            mUI->viewer->screenshot(
-                sf[0].toStdString(), dialog.screenMultiplierValue());
-        }
-    }
-    else {
-        event->ignore();
-        QWidget::keyPressEvent(event);
-    }
+    return mUI->actionShow_Right_Area->isChecked();
 }
 
 void MeshViewer::fitScene()
@@ -305,9 +416,8 @@ void MeshViewer::updateGUI()
     for (auto& obj : *mDrawableObjectVector) {
         auto mesh = std::dynamic_pointer_cast<AbstractDrawableMesh>(obj);
         if (mesh) {
-            mesh->setOnSelectionUpdatedCallback([this]() {
-                mUI->drawVectorTree->updateSelectionCounters();
-            });
+            mesh->setOnSelectionUpdatedCallback(
+                [this]() { mUI->drawVectorTree->updateSelectionCounters(); });
         }
     }
 
@@ -333,6 +443,69 @@ void MeshViewer::updateGUI()
         mUI->meshRenderSettingsFrame->setEnabled(false);
     }
     mUI->viewer->update();
+}
+
+/**
+ * @brief Returns the MeshViewerRenderApp used by this MeshViewer.
+ *
+ * @return MeshViewerRenderApp
+ */
+MeshViewerRenderApp& MeshViewer::viewer() const
+{
+    return *static_cast<vcl::qt::MeshViewerRenderApp*>(mUI->viewer);
+}
+
+DrawableObjectVectorTree& MeshViewer::drawableObjectVectorTree() const
+{
+    return *mUI->drawVectorTree;
+}
+
+void MeshViewer::addEditorFrame(QWidget* frame)
+{
+    if (mSpacerAction) {
+        mUI->toolBar->insertWidget(mSpacerAction, frame);
+    }
+    else {
+        mUI->toolBar->addWidget(frame);
+    }
+}
+
+/**
+ * @brief Setup and add the settings button to the UI toolbar.
+ */
+void MeshViewer::setupSettingsButton()
+{
+    QWidget* spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    mSpacerAction = mUI->toolBar->addWidget(spacer);
+
+    QPushButton* settingsBtn = new QPushButton(this);
+    settingsBtn->setIcon(
+        QIcon::fromTheme("preferences-system", QIcon(":/icons/settings.png")));
+    settingsBtn->setIconSize(QSize(32, 32));
+    settingsBtn->setFixedSize(QSize(40, 40));
+    settingsBtn->setFocusPolicy(Qt::NoFocus);
+    settingsBtn->setToolTip("Settings");
+    settingsBtn->setStyleSheet(
+        "QPushButton {"
+        "  background-color: transparent;"
+        "  border: 1px solid transparent;"
+        "  border-radius: 4px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: palette(midlight);"
+        "  border-color: palette(dark);"
+        "}"
+        "QPushButton:pressed {"
+        "  background-color: palette(highlight);"
+        "  border-color: palette(dark);"
+        "}");
+    mUI->toolBar->addWidget(settingsBtn);
+    connect(
+        settingsBtn,
+        &QPushButton::clicked,
+        mUI->actionSettings,
+        &QAction::trigger);
 }
 
 /**
@@ -462,15 +635,76 @@ void MeshViewer::renderModeChanged()
     mUI->viewer->update();
 }
 
-void MeshViewer::setBackgroundColor(const vcl::Color& color)
+/**
+ * @brief Opens the global settings dialog to configure viewer and editors.
+ */
+void MeshViewer::openSettings()
 {
-    viewer().setBackgroundColor(color);
-    mUI->viewer->update();
+    SettingsDialog dialog(mSettingsData, this);
+
+    connect(&dialog, &SettingsDialog::applied, this, [&]() {
+        // Apply non-shortcuts settings first to avoid overwriting shortcuts
+        // with temp copies
+        for (auto& tab : mSettingsData.tabs()) {
+            if (tab->category() != "Shortcuts")
+                tab->applySettings();
+        }
+        // Apply shortcuts last so they take precedence
+        for (auto& tab : mSettingsData.tabs()) {
+            if (tab->category() == "Shortcuts")
+                tab->applySettings();
+        }
+
+        for (auto& tab : mSettingsData.tabs()) {
+            tab->updateToolbarFrames(mUI->toolBar);
+        }
+        viewer().update();
+    });
+
+    dialog.setSettingsFilePath(mSettingsFilePath);
+    dialog.exec();
 }
 
-const vcl::Color& MeshViewer::backgroundColor() const
+void MeshViewer::loadCameraView()
 {
-    return viewer().backgroundColor();
+    QString lastDir  = dialogDirectory("LoadCamera", mSettingsFilePath);
+    QString fileName = QFileDialog::getOpenFileName(
+        this, tr("Load Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
+
+    if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "LoadCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
+        try {
+            vcl::Camera<float> c = vcl::loadCamera<>(fileName.toStdString());
+            viewer().setCamera(c);
+            viewer().update();
+        }
+        catch (const std::exception& e) {
+            QMessageBox::warning(this, tr("Error loading camera"), e.what());
+        }
+    }
+}
+
+void MeshViewer::saveCameraView()
+{
+    QString lastDir  = dialogDirectory("SaveCamera", mSettingsFilePath);
+    QString fileName = QFileDialog::getSaveFileName(
+        this, tr("Save Camera View"), lastDir, tr("glTF Files (*.gltf *.glb)"));
+
+    if (!fileName.isEmpty()) {
+        setDialogDirectory(
+            "SaveCamera",
+            QFileInfo(fileName).absolutePath(),
+            mSettingsFilePath);
+        try {
+            vcl::saveCamera(viewer().camera(), fileName.toStdString());
+        }
+        catch (const std::exception& e) {
+            QMessageBox::warning(this, tr("Error saving camera"), e.what());
+        }
+    }
 }
 
 } // namespace vcl::qt

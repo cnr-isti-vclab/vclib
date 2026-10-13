@@ -33,10 +33,7 @@ public:
         sLightColor[3] = color.alphaF();
     }
 
-    static void bind()
-    {
-        sLightColorUniform.bind(sLightColor.data());
-    }
+    static void bind() { sLightColorUniform.bind(sLightColor.data()); }
 };
 
 } // namespace vcl

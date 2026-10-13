@@ -909,9 +909,10 @@ void gltfLoadMesh(
     log.endProgress();
 
     log.log(
-        "Loaded mesh '" + tm.name + "' with " +
-            std::to_string(tm.primitives.size()) + " primitives.",
-        LogType::LogLevel::MESSAGE_LOG);
+        LogType::MESSAGE_LOG,
+        "Loaded mesh '{}' with {} primitives.",
+        tm.name,
+        tm.primitives.size());
 }
 
 } // namespace vcl::detail

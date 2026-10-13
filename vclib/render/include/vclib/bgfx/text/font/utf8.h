@@ -6,8 +6,8 @@
 
 #include <stdint.h>
 
-#define UTF8_ACCEPT 0
-#define UTF8_REJECT 1
+#define VCL_UTF8_ACCEPT 0
+#define VCL_UTF8_REJECT 1
 
 namespace bgfx {
 

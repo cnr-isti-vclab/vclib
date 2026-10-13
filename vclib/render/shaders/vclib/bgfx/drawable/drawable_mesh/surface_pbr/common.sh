@@ -233,7 +233,7 @@ vec4 pbrColorLights(
     float clearcoatRoughness,
     vec3 clearcoatNormal,
     float exposure,
-    int toneMapping)
+    uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = vec3_splat(0.04);
@@ -349,7 +349,7 @@ vec4 pbrColorIbl(
     vec3 clearcoatFresnel,
     vec3 clearcoatSpecularLight,
     float exposure,
-    int toneMapping)
+    uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
 

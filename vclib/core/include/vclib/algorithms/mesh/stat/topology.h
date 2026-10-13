@@ -461,8 +461,12 @@ uint verticesToDuplicateByWedgeTexCoordsCount(
     std::list<std::list<std::pair<uint, uint>>>& facesToReassign =
         detail::dummyListOfLists)
 {
-    vcl::requirePerFaceMaterialIndex(mesh);
     vcl::requirePerFaceWedgeTexCoords(mesh);
+
+    bool hasMaterials = false;
+    if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+        hasMaterials = mesh.isPerFaceMaterialIndexEnabled();
+    }
 
     using WedgeTexCoordType  = MeshType::FaceType::WedgeTexCoordType;
     using WedgeTexCoordsInfo = detail::WedgeTexCoordsInfo<WedgeTexCoordType>;
@@ -489,7 +493,13 @@ uint verticesToDuplicateByWedgeTexCoordsCount(
             uint vi = f.vertexIndex(i);
 
             // check if the i-th wedge texcoord of the face already exists
-            WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), f.materialIndex()};
+            uint matIdx = 0;
+            if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if (hasMaterials) {
+                    matIdx = f.materialIndex();
+                }
+            }
+            WedgeTexCoordsInfo wi = {f.wedgeTexCoord(i), matIdx};
             auto               it = wedges[vi].find(wi);
             if (it == wedges[vi].end()) { // if it doesn't exist, add it
                 // if there was already a texcoord for the vertex, it means that

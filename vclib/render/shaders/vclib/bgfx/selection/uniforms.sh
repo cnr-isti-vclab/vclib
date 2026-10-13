@@ -41,7 +41,7 @@ uint linearIndex(uvec3 globalInvocationID)
 
     // linearization multipliers for X, Y, and Z dimensions
     uvec3 stride = uvec3(1, globalSizeX, globalSizeX * globalSizeY);
-    return dot(globalInvocationID, stride);
+    return uint(dot(globalInvocationID, stride));
 }
 
 #endif // VCL_BGFX_SELECTION_UNIFORMS_SH

@@ -8,6 +8,7 @@
 #ifndef VCL_SPACE_CORE_VECTOR_H
 #define VCL_SPACE_CORE_VECTOR_H
 
+#include "vector/bit_vector.h"
 #include "vector/pointer_vector.h"
 #include "vector/vector.h"
 

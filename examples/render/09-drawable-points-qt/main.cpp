@@ -69,7 +69,7 @@ std::shared_ptr<vcl::DrawablePoints> getDrawablePoints(vcl::uint nPoints)
     }
     points->setVertexColors(colors);
 
-    points->setSize(10);
+    points->setWidth(10);
     points->setColorSetting(vcl::Points::ColorSetting::GENERAL);
     points->setShading(vcl::Points::Shading::NONE);
     points->setShape(vcl::Points::Shape::SQUARE);
@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 
     QObject::connect(tslider, &QSlider::valueChanged, [=](int value) {
         std::cerr << "Size: " << value << std::endl;
-        getPoints(vec)->setSize((float) value);
+        getPoints(vec)->setWidth((float) value);
         tw->update();
     });
 

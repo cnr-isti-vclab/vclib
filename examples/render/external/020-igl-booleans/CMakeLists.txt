@@ -14,7 +14,7 @@ vclib_add_example(
     ${EXAMPLE_NAME}
     MODULE render
     LINK_MODULES external
-    EXTERNAL_EXAMPLE 020-igl-booleans
+    EXTERNAL_EXAMPLE ${EXAMPLE_NAME}
     SOURCES ${SOURCES}
 )
 
