@@ -75,6 +75,30 @@ SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(colorChanged(const QColor&)),
         this,
         SLOT(onSelectionColorChanged(const QColor&)));
+
+    connect(
+        mUI->backFaceSingleRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceSingleToggled(bool)));
+
+    connect(
+        mUI->backFaceDoubleRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceDoubleToggled(bool)));
+
+    connect(
+        mUI->backFaceCullRadioButton,
+        SIGNAL(toggled(bool)),
+        this,
+        SLOT(onBackFaceCullToggled(bool)));
+
+    connect(
+        mUI->specularCheckBox,
+        SIGNAL(checkStateChanged(Qt::CheckState)),
+        this,
+        SLOT(onSpecularChanged(Qt::CheckState)));
 }
 
 SurfaceFrame::~SurfaceFrame()
@@ -89,9 +113,12 @@ void SurfaceFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setEnabled(true);
         mUI->visibilityCheckBox->setChecked(mMRS.isSurface(VISIBLE));
         uptateShadingRadioButtonsFromSettings();
+        mUI->specularCheckBox->setEnabled(mMRS.canSurface(SPECULAR));
+        mUI->specularCheckBox->setChecked(mMRS.isSurface(SPECULAR));
         updateColorComboBoxFromSettings();
         mUI->selectionVisibilityCheckBox->setEnabled(true);
         mUI->selectionVisibilityCheckBox->setChecked(mMRS.isSurface(SELECTION));
+        updateBackFaceRadioButtonsFromSettings();
     }
     else {
         this->setEnabled(false);
@@ -187,6 +214,13 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
     mUI->selectionColorDialogPushButton->setBackgroundColor(c);
 }
 
+void SurfaceFrame::updateBackFaceRadioButtonsFromSettings()
+{
+    mUI->backFaceSingleRadioButton->setChecked(mMRS.isSurface(BACKFACE_SINGLE));
+    mUI->backFaceDoubleRadioButton->setChecked(mMRS.isSurface(BACKFACE_DOUBLE));
+    mUI->backFaceCullRadioButton->setChecked(mMRS.isSurface(BACKFACE_CULL));
+}
+
 void SurfaceFrame::onVisibilityChanged(Qt::CheckState arg1)
 {
     mMRS.setSurface(VISIBLE, arg1 == Qt::CheckState::Checked);
@@ -255,6 +289,36 @@ void SurfaceFrame::onSelectionColorChanged(const QColor& c)
 {
     // alpha is always 0.5
     mMRS.setSurfaceSelectionColor(c.redF(), c.greenF(), c.blueF(), 0.5);
+    emit settingsUpdated();
+}
+
+void SurfaceFrame::onBackFaceSingleToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_SINGLE, true);
+        emit settingsUpdated();
+    }
+}
+
+void SurfaceFrame::onBackFaceDoubleToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_DOUBLE, true);
+        emit settingsUpdated();
+    }
+}
+
+void SurfaceFrame::onBackFaceCullToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurface(BACKFACE_CULL, true);
+        emit settingsUpdated();
+    }
+}
+
+void SurfaceFrame::onSpecularChanged(Qt::CheckState arg1)
+{
+    mMRS.setSurface(SPECULAR, arg1 == Qt::CheckState::Checked);
     emit settingsUpdated();
 }
 

@@ -43,8 +43,9 @@ private:
 
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
-    bgfx::ViewId            mViewId = BGFX_INVALID_VIEW;
-    bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
+    bgfx::ViewId            mViewId          = BGFX_INVALID_VIEW;
+    bgfx::ViewId            mOffscreenViewId = BGFX_INVALID_VIEW;
+    bgfx::FrameBufferHandle mFbh             = BGFX_INVALID_HANDLE;
 
     // size of the canvas
     Point2<uint> mSize = {0, 0};
@@ -83,6 +84,8 @@ public:
         // deallocate the framebuffers
         if (bgfx::isValid(mFbh))
             bgfx::destroy(mFbh);
+        if (Context::instance().isValidViewId(mOffscreenViewId))
+            Context::instance().releaseViewId(mOffscreenViewId);
 
         // release the view id
         auto& ctx = Context::instance();
@@ -174,39 +177,28 @@ public:
         const bool newReadRequested =
             (mReadRequest != std::nullopt && mReadRequest->isPending());
 
+        bool solicit = false;
         if (newReadRequested) {
-            // ONLY draw the offscreen frame
-            offscreenFrame();
-
-            // submit the calls for blitting the offscreen depth buffer BEFORE
-            // frame() so it happens in the same execution pass
-            // (mViewOffscreenId executes last)
-            const bool solicit = mReadRequest->submit();
-
-            mCurrFrame = bgfx::frame();
-
-            // Restore view state for the main view now that the frame has been
-            // submitted
-            bgfx::setViewClear(
-                mViewId,
-                BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
-                mDefaultClearColor.rgba());
-            bgfx::setViewFrameBuffer(mViewId, mFbh);
-
-            if (solicit) {
-                // solicit new frame
-                derived()->update();
-            }
+            solicit = offscreenFrame();
         }
-        else {
-            bgfx::setViewFrameBuffer(mViewId, mFbh);
-            bgfx::touch(mViewId);
 
-            // ask the derived frame to draw all the drawer objects:
-            DerivedRenderApp::CNV::draw(derived());
-            DerivedRenderApp::CNV::postDraw(derived());
+        bgfx::setViewFrameBuffer(mViewId, mFbh);
+        bgfx::touch(mViewId);
+        bgfx::setViewClear(
+            mViewId,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            mDefaultClearColor.rgba());
+        bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
 
-            mCurrFrame = bgfx::frame();
+        // ask the derived frame to draw all the drawer objects:
+        DerivedRenderApp::CNV::draw(derived());
+        DerivedRenderApp::CNV::postDraw(derived());
+
+        mCurrFrame = bgfx::frame();
+
+        if (solicit) {
+            // solicit new frame
+            derived()->update();
         }
 
         if (mReadRequest != std::nullopt) {
@@ -236,9 +228,8 @@ public:
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
+        if (mReadRequest != std::nullopt      // read already requested
+            || point.x() < 0 || point.y() < 0 // point out of bounds
             || point.x() >= mSize.x() || point.y() >= mSize.y()) {
             return false;
         }
@@ -260,8 +251,7 @@ public:
      */
     bool onScreenshot(const std::string& filename, uint multiplier = 1)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt) {      // read already requested
+        if (mReadRequest != std::nullopt) { // read already requested
             return false;
         }
 
@@ -302,8 +292,7 @@ public:
      */
     bool onScreenshot(vcl::Image& image, uint multiplier = 1)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt) {      // read already requested
+        if (mReadRequest != std::nullopt) { // read already requested
             return false;
         }
 
@@ -344,9 +333,8 @@ public:
         const Point2i&     point,
         CallbackReadBuffer callback = nullptr)
     {
-        if (!Context::instance().supportsReadback() // feature unsupported
-            || mReadRequest != std::nullopt         // read already requested
-            || point.x() < 0 || point.y() < 0       // point out of bounds
+        if (mReadRequest != std::nullopt      // read already requested
+            || point.x() < 0 || point.y() < 0 // point out of bounds
             || point.x() >= mSize.x() || point.y() >= mSize.y()) {
             return false;
         }
@@ -359,9 +347,25 @@ public:
 
 private:
     // draw offscreen frame
-    void offscreenFrame()
+    bool offscreenFrame()
     {
         assert(mReadRequest != std::nullopt && mReadRequest->isPending());
+
+        auto originalSize   = mSize;
+        auto originalFbh    = mFbh;
+        auto originalViewId = mViewId;
+
+        // Use a permanent view ID for offscreen rendering.
+        // It's high priority so it gets a low view ID and executes before the
+        // readback blit.
+        if (mOffscreenViewId == BGFX_INVALID_VIEW) {
+            mOffscreenViewId = Context::instance().requestViewId(true);
+        }
+        mViewId = mOffscreenViewId;
+
+        // the view mode depends on the type of read request (e.g. Sequential
+        // for ID picking)
+        bgfx::setViewMode(mOffscreenViewId, mReadRequest->preferredViewMode());
 
         // Disable clear on the read request view, since its ID is higher and
         // it executes after additional views. We use mViewId to clear instead.
@@ -370,8 +374,10 @@ private:
             mReadRequest->viewId(), mReadRequest->frameBuffer());
         bgfx::touch(mReadRequest->viewId());
 
-        auto tmpFbh = mFbh;
-        mFbh        = mReadRequest->frameBuffer();
+        mSize = mReadRequest->size();
+        DerivedRenderApp::CNV::resizeDrawers(derived(), mSize.x(), mSize.y());
+
+        mFbh = mReadRequest->frameBuffer();
 
         bgfx::setViewFrameBuffer(mViewId, mFbh);
 
@@ -383,6 +389,8 @@ private:
             mViewId,
             BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
             clearValue);
+
+        bgfx::setViewRect(mViewId, 0, 0, mSize.x(), mSize.y());
 
         bgfx::touch(mViewId);
 
@@ -397,7 +405,21 @@ private:
         default: assert(false && "unsupported readback type"); break;
         }
 
-        mFbh = tmpFbh;
+        // submit the calls for blitting the offscreen depth buffer BEFORE
+        // frame() so it happens in the same execution pass
+        // (mViewOffscreenId executes last)
+        const bool solecit = mReadRequest->submit();
+
+        // Restore view state for the main view now that the frame has been
+        // submitted
+        mFbh    = originalFbh;
+        mSize   = originalSize;
+        mViewId = originalViewId;
+
+        // Restore drawers size
+        DerivedRenderApp::CNV::resizeDrawers(derived(), mSize.x(), mSize.y());
+
+        return solecit;
     }
 
     auto* derived() { return static_cast<DerivedRenderApp*>(this); }

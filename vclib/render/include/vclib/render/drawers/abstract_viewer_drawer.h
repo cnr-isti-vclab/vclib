@@ -14,9 +14,13 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/input/action_map_group.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/space/core/color.h>
+
+#include <vclib/space/core.h>
+
+#include <nlohmann/json.hpp>
 
 #include <memory>
 
@@ -33,18 +37,23 @@ namespace vcl {
 template<typename DerivedRenderApp>
 class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
 {
+public:
+    using GlobalActionCallback = std::function<void()>;
+    using GlobalActionMap      = ViewerSettings::ViewerGlobalActionMap;
+
+private:
     using Base = TrackBallEventDrawer<DerivedRenderApp>;
     using DRA  = DerivedRenderApp;
 
     bool mReadRequested = false;
 
+    bool                      mEditorsEventsEnabled = true;
+    std::function<void(bool)> mOnEditorsEventsEnabledChangedCallback;
+
+    std::map<std::string, GlobalActionCallback> mGlobalActionRegistry;
+
     // the default id for the viewer drawer is 0
     uint mId = 0;
-
-    /**
-     * @brief The background color of the canvas.
-     */
-    Color mBackgroundColor = Color::DarkGray;
 
     DrawableAxis mDrawAxis;
 
@@ -53,6 +62,9 @@ class AbstractViewerDrawer : public TrackBallEventDrawer<DerivedRenderApp>
     };
 
 protected:
+    /// @brief Manages the history of undoable actions performed in the viewer.
+    UndoRedoStack mUndoRedoStack;
+
     ViewerSettings mViewerSettings;
 
     // the list of drawable objects
@@ -71,12 +83,103 @@ public:
     using EditorType = Editor<AbstractViewerDrawer>;
     using ViewerType = AbstractViewerDrawer;
 
+    TrackballSettings& trackballSettings() override { return mViewerSettings; }
+
+    const TrackballSettings& trackballSettings() const override
+    {
+        return mViewerSettings;
+    }
+
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
+        registerGlobalActions();
     }
 
     ~AbstractViewerDrawer() = default;
+
+    bool isEditorsEventsEnabled() const { return mEditorsEventsEnabled; }
+
+    void setEditorsEventsEnabled(bool enabled)
+    {
+        if (mEditorsEventsEnabled != enabled) {
+            mEditorsEventsEnabled = enabled;
+            if (mOnEditorsEventsEnabledChangedCallback) {
+                mOnEditorsEventsEnabledChangedCallback(mEditorsEventsEnabled);
+            }
+            requestUpdate();
+        }
+    }
+
+    void toggleEditorsEventsEnabled()
+    {
+        setEditorsEventsEnabled(!mEditorsEventsEnabled);
+    }
+
+    /**
+     * @brief Pushes a new action onto the undo/redo stack.
+     * @param[in] action: The action to push.
+     */
+    void pushUndoRedoAction(std::unique_ptr<UndoRedoAction> action)
+    {
+        mUndoRedoStack.pushAction(std::move(action));
+    }
+
+    /**
+     * @brief Undoes the last action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was undone.
+     */
+    void undo()
+    {
+        if (mUndoRedoStack.undo())
+            requestUpdate();
+    }
+
+    /**
+     * @brief Redoes the last undone action in the undo/redo stack, if any.
+     * Triggers a viewer update if an action was redone.
+     */
+    void redo()
+    {
+        if (mUndoRedoStack.redo())
+            requestUpdate();
+    }
+
+    void setOnEditorsEventsEnabledChangedCallback(
+        std::function<void(bool)> callback)
+    {
+        mOnEditorsEventsEnabledChangedCallback = std::move(callback);
+    }
+
+    /**
+     * @brief Registers a global action and its default shortcut.
+     *
+     * @param[in] name: The unique name of the global action.
+     * @param[in] defaultShortcut: The default keyboard shortcut.
+     * @param[in] callback: The callback to execute when the action is
+     * triggered.
+     */
+    void registerGlobalAction(
+        const std::string&                                     name,
+        const std::vector<std::pair<Key::Enum, KeyModifiers>>& defaultShortcuts,
+        GlobalActionCallback                                   callback)
+    {
+        mGlobalActionRegistry[name] = std::move(callback);
+        mViewerSettings.globalActionMap.registerActions({
+            {name, name, defaultShortcuts}
+        });
+    }
+
+    void registerGlobalAction(
+        const std::string&                 name,
+        std::pair<Key::Enum, KeyModifiers> defaultShortcut,
+        GlobalActionCallback               callback)
+    {
+        registerGlobalAction(
+            name,
+            std::vector<std::pair<Key::Enum, KeyModifiers>> {defaultShortcut},
+            std::move(callback));
+    }
 
     const DrawableObjectVector& drawableObjectVector() const
     {
@@ -104,16 +207,56 @@ public:
 
     const ViewerSettings& viewerSettings() const { return mViewerSettings; }
 
+    std::vector<ActionMapGroup> actionMapGroups()
+    {
+        std::vector<ActionMapGroup> groups;
+
+        auto viewerMaps = mViewerSettings.actionMaps();
+        if (!viewerMaps.empty()) {
+            groups.push_back({"Viewer", std::move(viewerMaps)});
+        }
+
+        for (auto& editor : mEditors) {
+            auto editorMaps = editor->settings().actionMaps();
+            if (!editorMaps.empty()) {
+                groups.push_back({editor->name(), std::move(editorMaps)});
+            }
+        }
+
+        return groups;
+    }
+
     void setViewerSettings(const ViewerSettings& settings)
     {
         mViewerSettings = settings;
+        DRA::DRW::setCanvasDefaultClearColor(
+            derived(), settings.backgroundColor);
     }
 
-    // Default ViewerConcept placeholders. Can be shadowed by derived classes.
+    void loadSettings(const nlohmann::json& j)
+    {
+        if (j.contains("Viewer")) {
+            ViewerSettings settings = mViewerSettings;
+            settings.loadSettings(j["Viewer"]);
+            derived()->setViewerSettings(settings);
+        }
+        if (j.contains("Editors")) {
+            for (auto& editor : mEditors) {
+                if (editor)
+                    editor->loadSettings(j["Editors"]);
+            }
+        }
+    }
 
-    std::string panoramaFileName() const { return ""; }
-
-    void setPanorama(const std::string&) {}
+    void saveSettings(nlohmann::json& j) const
+    {
+        // must be nested under "Viewer" to mirror loadSettings()
+        mViewerSettings.saveSettings(j["Viewer"]);
+        for (const auto& editor : mEditors) {
+            if (editor)
+                editor->saveSettings(j["Editors"]);
+        }
+    }
 
     /**
      * @brief Pushes a new editor of the specified type into the viewer's editor
@@ -127,13 +270,20 @@ public:
      * @return A shared pointer to the newly created editor.
      */
     template<template<typename> typename ET>
-    auto pushEditor(bool active = false)
+    auto pushEditor(bool active = false, const nlohmann::json& j = {})
     {
         auto editor = std::make_shared<ET<ViewerType>>();
         mEditors.push_back(editor);
         editor->setViewer(this);
+        editor->onViewerSet();
         editor->setDrawableObjectVector(mDrawList);
         editor->setActive(active);
+
+        if (j.contains("Editors")) {
+            editor->loadSettings(j["Editors"]);
+            editor->refreshSettings();
+        }
+
         return editor;
     }
 
@@ -300,7 +450,10 @@ public:
      * @brief Retrieves the current background color.
      * @return The current background color.
      */
-    const Color& backgroundColor() const { return mBackgroundColor; }
+    const Color& backgroundColor() const
+    {
+        return mViewerSettings.backgroundColor;
+    }
 
     /**
      * @brief Sets the background color.
@@ -308,15 +461,25 @@ public:
      */
     void setBackgroundColor(const Color& color)
     {
-        mBackgroundColor = color;
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        mViewerSettings.backgroundColor = color;
+        DRA::DRW::setCanvasDefaultClearColor(derived(), color);
     }
 
-    // events
     void onInit(uint) override
     {
-        DRA::DRW::setCanvasDefaultClearColor(derived(), mBackgroundColor);
+        DRA::DRW::setCanvasDefaultClearColor(
+            derived(), mViewerSettings.backgroundColor);
         mDrawList->init();
+    }
+
+    void onDrawContent(uint viewId) override
+    {
+        Base::onDrawContent(viewId);
+
+        for (const auto& editor : mEditors) {
+            if (editor->isActive())
+                editor->drawContent(viewId);
+        }
     }
 
     void onDraw(uint viewId) override
@@ -341,33 +504,29 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyPress(key, modifiers);
+        // global actions (e.g. Escape to toggle editor events) always fire,
+        // even when editor events are disabled, otherwise they could never
+        // be used to re-enable them
+        auto actionNameOpt =
+            mViewerSettings.globalActionMap.action({key, modifiers});
+        if (actionNameOpt.has_value()) {
+            auto it = mGlobalActionRegistry.find(actionNameOpt.value());
+            if (it != mGlobalActionRegistry.end()) {
+                it->second();
+                return true;
+            }
+        }
+
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyPress(key, modifiers);
+            }
         }
 
         if (!block)
             block = Base::onKeyPress(key, modifiers);
 
-        if (!block) {
-            switch (key) {
-            case Key::R:
-                if (modifiers[KeyModifier::NO_MODIFIER])
-                    fitScene();
-                break;
-            case Key::S:
-                if (modifiers[KeyModifier::CONTROL])
-                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-                break;
-            case Key::A:
-                if (modifiers[KeyModifier::NO_MODIFIER]) {
-                    if (mCustomShortcutToggleAxisCallback)
-                        mCustomShortcutToggleAxisCallback();
-                }
-                break;
-            default: break;
-            }
-        }
         return block;
     }
 
@@ -375,9 +534,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onKeyRelease(key, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onKeyRelease(key, modifiers);
+            }
         }
 
         if (!block)
@@ -390,9 +551,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseMove(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseMove(x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -409,9 +572,21 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMousePress(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMousePress(button, x, y, modifiers);
+            }
+        }
+
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, false});
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
         }
 
         if (!block)
@@ -428,9 +603,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseRelease(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseRelease(button, x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -447,13 +624,25 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseDoubleClick(button, x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseDoubleClick(button, x, y, modifiers);
+            }
         }
 
         if (!block)
             block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, true});
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
+        }
 
         return block;
     }
@@ -463,9 +652,11 @@ public:
     {
         bool block = false;
 
-        for (const auto& editor : mEditors) {
-            if (!block && editor->isActive())
-                block = editor->onMouseScroll(x, y, modifiers);
+        if (mEditorsEventsEnabled) {
+            for (const auto& editor : mEditors) {
+                if (!block && editor->isActive())
+                    block = editor->onMouseScroll(x, y, modifiers);
+            }
         }
 
         if (!block)
@@ -476,7 +667,14 @@ public:
 
     uint canvasViewId() const { return DRA::DRW::canvasViewId(derived()); }
 
+    auto canvasFrameBuffer() const
+    {
+        return DRA::DRW::canvasFrameBuffer(derived());
+    }
+
     auto canvasSize() const { return DRA::DRW::canvasSize(derived()); }
+
+    auto dpiScale() const { return DRA::DRW::dpiScale(derived()); }
 
     void readDepthRequest(double x, double y, bool homogeneousNDC = true)
     {
@@ -562,6 +760,53 @@ public:
     }
 
 private:
+    void registerGlobalActions()
+    {
+        registerGlobalAction(
+            "Toggle Editors Events",
+            {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                toggleEditorsEventsEnabled();
+            });
+
+        registerGlobalAction(
+            "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
+                fitScene();
+            });
+
+        registerGlobalAction(
+            "Toggle Axis", {Key::A, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (mCustomShortcutToggleAxisCallback)
+                    mCustomShortcutToggleAxisCallback();
+            });
+
+        registerGlobalAction(
+            "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
+                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+            });
+
+        registerGlobalAction(
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
+                undo();
+            });
+
+        registerGlobalAction(
+            "Redo",
+            {
+                {Key::Y, {KeyModifier::CONTROL}                    },
+                {Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}}
+        },
+            [this]() {
+                redo();
+            });
+
+        registerGlobalAction(
+            "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (this->mCustomShortcutToggleTrackballCallback)
+                    this->mCustomShortcutToggleTrackballCallback();
+            });
+    }
+
     auto* derived() { return static_cast<DRA*>(this); }
 
     const auto* derived() const { return static_cast<const DRA*>(this); }

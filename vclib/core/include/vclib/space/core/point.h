@@ -10,9 +10,17 @@
 
 #include <vclib/base.h>
 
+// Restrict Eigen alignment to 16 bytes (SSE) to prevent ABI incompatibilities
+// across translation units and alignment issues with standard containers.
+#ifndef EIGEN_MAX_ALIGN_BYTES
+#define EIGEN_MAX_ALIGN_BYTES 16
+#endif
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
 #include <compare>
+#include <format>
 
 namespace vcl {
 
@@ -110,18 +118,7 @@ public:
      *
      * @return A reference to the x-component of the Point object.
      */
-    ScalarType& x() requires (N >= 1) { return at(0); }
-
-    /**
-     * @brief Returns a const reference to the x-component of the Point object.
-     *
-     * The function returns a const reference to the first component of the
-     * Point object. If the Point object has fewer than one component, calling
-     * this member function results in a compile-time error.
-     *
-     * @return A const reference to the x-component of the Point object.
-     */
-    const ScalarType& x() const requires (N >= 1) { return at(0); }
+    decltype(auto) x(this auto&& self) requires (N >= 1) { return self.at(0); }
 
     /**
      * @brief Returns a reference to the y-component of the Point object.
@@ -132,18 +129,7 @@ public:
      *
      * @return A reference to the y-component of the Point object.
      */
-    ScalarType& y() requires (N >= 2) { return at(1); }
-
-    /**
-     * @brief Returns a const reference to the y-component of the Point object.
-     *
-     * The function returns a const reference to the second component of the
-     * Point object. If the Point object has fewer than two components, calling
-     * this member function results in a compile-time error.
-     *
-     * @return A const reference to the y-component of the Point object.
-     */
-    const ScalarType& y() const requires (N >= 2) { return at(1); }
+    decltype(auto) y(this auto&& self) requires (N >= 2) { return self.at(1); }
 
     /**
      * @brief Returns a reference to the z-component of the Point object.
@@ -154,18 +140,7 @@ public:
      *
      * @return A reference to the z-component of the Point object.
      */
-    ScalarType& z() requires (N >= 3) { return at(2); }
-
-    /**
-     * @brief Returns a const reference to the z-component of the Point object.
-     *
-     * The function returns a const reference to the third component of the
-     * Point object. If the Point object has fewer than three components,
-     * calling this member function results in a compile-time error.
-     *
-     * @return A const reference to the z-component of the Point object.
-     */
-    const ScalarType& z() const requires (N >= 3) { return at(2); }
+    decltype(auto) z(this auto&& self) requires (N >= 3) { return self.at(2); }
 
     /**
      * @brief Returns a reference to the w-component of the Point object.
@@ -176,22 +151,19 @@ public:
      *
      * @return A reference to the w-component of the Point object.
      */
-    ScalarType& w() requires (N >= 4) { return at(3); }
+    decltype(auto) w(this auto&& self) requires (N >= 4) { return self.at(3); }
 
     /**
-     * @brief Returns a const reference to the w-component of the Point object.
+     * @brief Returns a reference to the i-th component of the Point object.
      *
-     * The function returns a const reference to the fourth component of the
-     * Point object. If the Point object has fewer than four components, calling
-     * this member function results in a compile-time error.
+     * The function returns a reference to the i-th component of the Point
+     * object. The index i must be in the range [0, N-1], where N is the
+     * dimensionality of the Point object.
      *
-     * @return A const reference to the w-component of the Point object.
+     * @param[in] i: The index of the component to access.
+     * @return A reference to the i-th component of the Point object.
      */
-    const ScalarType& w() const requires (N >= 4) { return at(3); }
-
-    ScalarType& at(uint i) { return Base::operator()(i); }
-
-    const ScalarType& at(uint i) const { return Base::operator()(i); }
+    decltype(auto) at(this auto&& self, uint i) { return self(i); }
 
     /**
      * @brief Casts the Point object to a different scalar type.
@@ -1097,6 +1069,37 @@ struct hash<vcl::Point<Scalar, N>>
     size_t operator()(const vcl::Point<Scalar, N>& id) const noexcept
     {
         return id.hash();
+    }
+};
+
+/**
+ * @brief std::formatter specialization for vcl::Point.
+ *
+ * Formats a point as `[x, y, ...]` using the format specifications of the
+ * underlying scalar type.
+ *
+ * @tparam Scalar: The coordinate scalar type.
+ * @tparam N: The dimension of the Point.
+ * @tparam CharT: The character type of the formatting context.
+ */
+template<typename Scalar, unsigned int N, typename CharT>
+struct formatter<vcl::Point<Scalar, N>, CharT> : formatter<Scalar, CharT>
+{
+    template<typename FormatContext>
+    auto format(const vcl::Point<Scalar, N>& p, FormatContext& ctx) const
+    {
+        auto out = ctx.out();
+        *out++   = static_cast<CharT>('[');
+        for (unsigned int i = 0; i < N; ++i) {
+            if (i > 0) {
+                *out++ = static_cast<CharT>(',');
+                *out++ = static_cast<CharT>(' ');
+            }
+            ctx.advance_to(out);
+            out = formatter<Scalar, CharT>::format(p(i), ctx);
+        }
+        *out++ = static_cast<CharT>(']');
+        return out;
     }
 };
 

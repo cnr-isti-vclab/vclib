@@ -11,6 +11,9 @@
 #include <vclib/bgfx/drawable/drawable_box3.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/editors/editor.h>
+#include <vclib/render/settings/bounding_box_editor_settings.h>
+
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 
@@ -21,12 +24,39 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 
     std::vector<DrawableBox3> mBoxes;
 
+    BoundingBoxEditorSettings mSettings;
+
 public:
-    BoundingBoxEditorBGFX()
+    BoundingBoxEditorBGFX() = default;
+
+    std::string name() const override { return "Bounding Box"; }
+
+    void onViewerSet() override
     {
-        Base::settings().customSettings["color"]     = vcl::Color();
-        Base::settings().customSettings["thickness"] = 2.0f;
-    };
+        Base::viewerRegisterGlobalAction(
+            "Toggle Bounding Box",
+            {Key::B, {KeyModifier::NO_MODIFIER}},
+            [this]() {
+                this->setActive(!this->isActive());
+            });
+    }
+
+    BoundingBoxEditorSettings& settings() override { return mSettings; }
+
+    const BoundingBoxEditorSettings& settings() const override
+    {
+        return mSettings;
+    }
+
+    void loadSettings(const nlohmann::json& j) override
+    {
+        mSettings.loadSettings(j);
+    }
+
+    void saveSettings(nlohmann::json& j) const override
+    {
+        mSettings.saveSettings(j);
+    }
 
     void setActive(bool active) override
     {
@@ -38,21 +68,15 @@ public:
     {
         mBoxes.clear();
 
-        assert(Base::settings().customSettings["color"].has_value());
-        assert(Base::settings().customSettings["thickness"].has_value());
-
-        Color c =
-            std::any_cast<Color>(Base::settings().customSettings["color"]);
-        float thickness =
-            std::any_cast<float>(Base::settings().customSettings["thickness"]);
+        Color c         = mSettings.color;
+        float thickness = mSettings.thickness;
 
         for (const auto& drawable : *Base::drawList()) {
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
-                // note: the bounding box is already trasformed if the mesh has
-                // a transform matrix
-                mBoxes.push_back(DrawableBox3(m->boundingBox(), c, thickness));
+                mBoxes.push_back(DrawableBox3(
+                    m->meshProvider().boundingBox(), c, thickness));
             }
             else {
                 mBoxes.push_back(DrawableBox3(Box3f()));
@@ -63,13 +87,8 @@ public:
 
     void refreshSettings() override
     {
-        assert(Base::settings().customSettings["color"].has_value());
-        assert(Base::settings().customSettings["thickness"].has_value());
-
-        Color c =
-            std::any_cast<Color>(Base::settings().customSettings["color"]);
-        float thickness =
-            std::any_cast<float>(Base::settings().customSettings["thickness"]);
+        Color c         = mSettings.color;
+        float thickness = mSettings.thickness;
 
         for (auto& b : mBoxes) {
             b.setColor(c);
@@ -78,29 +97,47 @@ public:
         Base::viewerUpdate();
     }
 
-    void draw(uint viewId) override
+    void drawContent(uint viewId) override
     {
         using enum EditorSettings::EditMode;
 
         DrawObjectSettings settings;
         settings.viewId = viewId;
 
-        if (Base::settings().editMode == NONE)
+        if (mSettings.editMode == NONE)
             return;
 
-        if (Base::settings().editMode == CURRENT_OBJECT) {
+        if (mSettings.editMode == CURRENT_OBJECT) {
             uint id = Base::drawList()->selectedObjectId();
             if (id < mBoxes.size()) {
+                const AbstractDrawableMesh* m =
+                    dynamic_cast<const AbstractDrawableMesh*>(
+                        Base::drawList()->at(id).get());
+                if (m) {
+                    Matrix44f transform = m->meshProvider()
+                                              .transformMatrix()
+                                              .template cast<float>();
+                    bgfx::setTransform(transform.data());
+                }
                 mBoxes[id].draw(settings);
             }
         }
         else {
             for (uint i = 0; i < mBoxes.size(); ++i) {
-                bool show = (Base::settings().editMode == VISIBLE_OBJECTS) ?
+                bool show = (mSettings.editMode == VISIBLE_OBJECTS) ?
                                 Base::drawList()->at(i)->isVisible() :
                                 true;
 
                 if (show) {
+                    const AbstractDrawableMesh* m =
+                        dynamic_cast<const AbstractDrawableMesh*>(
+                            Base::drawList()->at(i).get());
+                    if (m) {
+                        Matrix44f transform = m->meshProvider()
+                                                  .transformMatrix()
+                                                  .template cast<float>();
+                        bgfx::setTransform(transform.data());
+                    }
                     mBoxes[i].draw(settings);
                 }
             }

@@ -12,6 +12,7 @@
 #include "meshes/point_cloud.h"
 #include "meshes/poly_edge_mesh.h"
 #include "meshes/poly_mesh.h"
+#include "meshes/providers/abstract_mesh_provider.h"
 #include "meshes/tri_edge_mesh.h"
 #include "meshes/tri_mesh.h"
 
@@ -30,6 +31,7 @@ inline void initMeshes(pybind11::module& m)
     initPolyEdgeMesh(m);
     initTriMesh(m);
     initTriEdgeMesh(m);
+    initAbstractMeshProvider(m);
 }
 
 } // namespace vcl::bind

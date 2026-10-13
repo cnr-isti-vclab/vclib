@@ -220,7 +220,7 @@ public:
 
     /**
      * @brief Operator () that allows to access one element of the array. It can
-     * be used as left or right value.
+     * be used as left or right value, depending on the constness of the Array.
      *
      * @tparam I: Types of the indices used to access the element of the array.
      *
@@ -228,33 +228,14 @@ public:
      * array. A number of indices not equal to N will generate a compilation
      * error.
      *
-     * @return A reference to the element of the array.
+     * @return A reference or const reference to the element of the array.
      */
     template<typename... I>
-    Reference operator()(I... indices) requires (sizeof...(indices) == N)
-    {
-        std::size_t args[N] = {static_cast<std::size_t>(indices)...};
-        return mVec[getIndex(args)];
-    }
-
-    /**
-     * @brief Operator () that allows to access one element of the array. It can
-     * be used only as right value.
-     *
-     * @tparam I: Types of the indices used to access the element of the array.
-     *
-     * @param[in] indices: N indices that allow to access an element of the
-     * array. A number of indices not equal to N will generate a compilation
-     * error.
-     *
-     * @return A const reference to the element of the array.
-     */
-    template<typename... I>
-    ConstReference operator()(I... indices) const
+    decltype(auto) operator()(this auto&& self, I... indices)
         requires (sizeof...(indices) == N)
     {
         std::size_t args[N] = {static_cast<std::size_t>(indices)...};
-        return mVec[getIndex(args)];
+        return self.mVec[self.getIndex(args)];
     }
 
     /**
@@ -268,8 +249,8 @@ public:
      * @code{.cpp}
      * Array<int, 3> array(10, 13, 4);
      * //...
-     * int* carray = array.data(3); // carray will point to the element in
-     *                              // position (3, 0, 0).
+     * auto* carray = array.data(3); // carray will point to the element in
+     *                               // position (3, 0, 0).
      *
      * carray = array.data(5, 2); // carray will point to the element in
      *                            // position (5, 2, 0).
@@ -283,63 +264,29 @@ public:
      * @param[in] indices: A number of indices that is less than the number of
      * dimensions of the array.
      *
-     * @return A pointer to the requested subarray.
+     * @return A pointer or const pointer to the requested subarray.
      */
     template<typename... I>
-    Pointer data(I... indices) requires (sizeof...(indices) < N)
-    {
-        return const_cast<Pointer>(std::as_const(*this).data(indices...));
-    }
-
-    /**
-     * @brief Allows to get the data of the Array, through a pointer to the
-     * first element.
-     *
-     * The function also allows to get the pointer of a specific position in the
-     * array.
-     *
-     * Example:
-     * @code{.cpp}
-     * Array<int, 3> array(10, 13, 4);
-     * //...
-     * const int* carray = array.data(3); // carray will point to the element in
-     *                                    // position (3, 0, 0).
-     *
-     * carray = array.data(5, 2); // carray will point to the element in
-     *                            // position (5, 2, 0).
-     *
-     * carray = array.data(); // carray will point to the element in position
-     *                        // (0, 0, 0).
-     * @endcode
-     *
-     * @tparam I: Types of the indices used to access a subarray of the array.
-     *
-     * @param[in] indices: A number of indices that is less than the number of
-     * dimensions of the array.
-     *
-     * @return A const pointer to the requested subarray.
-     */
-    template<typename... I>
-    ConstPointer data(I... indices) const requires (sizeof...(indices) < N)
+    auto data(this auto&& self, I... indices) requires (sizeof...(indices) < N)
     {
         constexpr std::size_t n = sizeof...(indices);
         if constexpr (n == 0) {
-            return mVec.data();
+            return self.mVec.data();
         }
         else {
             std::size_t args[] = {static_cast<std::size_t>(indices)...};
             std::size_t ind    = args[0];
-            assert(args[0] < mSizes[0]);
+            assert(args[0] < self.mSizes[0]);
             uint i;
             for (i = 1; i < n; i++) {
-                assert(args[i] < mSizes[i]);
-                ind *= mSizes[i];
+                assert(args[i] < self.mSizes[i]);
+                ind *= self.mSizes[i];
                 ind += args[i];
             }
             for (; i < N; i++) {
-                ind *= mSizes[i];
+                ind *= self.mSizes[i];
             }
-            return &mVec[ind];
+            return &self.mVec[ind];
         }
     }
 
@@ -526,30 +473,16 @@ public:
     /**
      * @brief Returns an iterator to the beginning of the array.
      *
-     * @return Iterator to the beginning of the array.
+     * @return Iterator or const iterator to the beginning of the array.
      */
-    Iterator begin() { return mVec.begin(); }
+    auto begin(this auto&& self) { return self.mVec.begin(); }
 
     /**
      * @brief Returns an iterator to the end of the array.
      *
-     * @return Iterator to the end of the array.
+     * @return Iterator or const iterator to the end of the array.
      */
-    Iterator end() { return mVec.end(); }
-
-    /**
-     * @brief Returns a const iterator to the beginning of the array.
-     *
-     * @return Const iterator to the beginning of the array.
-     */
-    ConstIterator begin() const { return mVec.begin(); }
-
-    /**
-     * @brief Returns a const iterator to the end of the array.
-     *
-     * @return Const iterator to the end of the array.
-     */
-    ConstIterator end() const { return mVec.end(); }
+    auto end(this auto&& self) { return self.mVec.end(); }
 
     /// @private
     template<typename S>
@@ -603,11 +536,7 @@ private:
 
         typename std::vector<T>::iterator iterator = mVec.begin();
         NestedInitializerListsProcessor<T, N>::processElements(
-            values,
-            [&iterator](T value) {
-                *(iterator++) = value;
-            },
-            szs);
+            values, [&iterator](T value) { *(iterator++) = value; }, szs);
     }
 };
 

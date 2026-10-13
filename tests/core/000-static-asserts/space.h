@@ -24,7 +24,6 @@
 #include "space/segment.h"
 #include "space/sphere.h"
 #include "space/tex_coord.h"
-#include "space/tex_coord_indexed.h"
 #include "space/texture_descriptor.h"
 
 void spaceStaticAsserts()
@@ -45,7 +44,6 @@ void spaceStaticAsserts()
     segmentStaticAsserts();
     sphereStaticAsserts();
     texCoordStaticAsserts();
-    texCoordIndexedStaticAsserts();
     textureDescriptorStaticAsserts();
 
     using namespace vcl;

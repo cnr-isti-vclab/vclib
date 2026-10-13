@@ -10,7 +10,8 @@
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/application.h>
-#elif VCLIB_WITH_GLFW
+#endif
+#if VCLIB_WITH_GLFW
 #include <vclib/glfw/application.h>
 #include <vclib/glfw/detail/window_manager_native.h>
 #endif
@@ -19,7 +20,65 @@
 #include <vclib/bgfx/context.h>
 #endif
 
+#include <type_traits>
+
 namespace vcl {
+
+enum class ApplicationType { QT, GLFW, HEADLESS, DEFAULT };
+
+namespace detail {
+
+class HeadlessApplication
+{
+public:
+    HeadlessApplication(int& /*argc*/, char** /*argv*/) {}
+
+    ~HeadlessApplication()
+    {
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        vcl::Context::shutdown();
+#endif
+    }
+
+    int exec() { return 0; }
+};
+
+template<ApplicationType AppType>
+consteval auto toApplicationType()
+{
+    if constexpr (AppType == ApplicationType::QT) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::Application> {};
+#else
+        static_assert(false, "Qt is not available. Please enable Qt support.");
+#endif
+    }
+    else if constexpr (AppType == ApplicationType::GLFW) {
+#ifdef VCLIB_WITH_GLFW
+        return std::type_identity<glfw::Application> {};
+#else
+        static_assert(false, "GLFW is not available. Please enable GLFW support.");
+#endif
+    }
+    else if constexpr (AppType == ApplicationType::HEADLESS) {
+        return std::type_identity<HeadlessApplication> {};
+    }
+    else if constexpr (AppType == ApplicationType::DEFAULT) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::Application> {};
+#elif VCLIB_WITH_GLFW
+        return std::type_identity<glfw::Application> {};
+#else
+        return std::type_identity<HeadlessApplication> {};
+#endif
+    }
+}
+
+} // namespace detail
+
+template<ApplicationType AppType = ApplicationType::DEFAULT>
+using ApplicationT =
+    typename decltype(detail::toApplicationType<AppType>())::type;
 
 /**
  * @brief The Application class abstracts the initialization of the underlying
@@ -48,33 +107,7 @@ namespace vcl {
  * specific GUI framework (like Qt or GLFW) directly, you should use the
  * corresponding application class (e.g., qt::Application or glfw::Application).
  */
-
-#ifdef VCLIB_WITH_QT
-
-using Application = qt::Application;
-
-#elif VCLIB_WITH_GLFW
-
-using Application = glfw::Application;
-
-#else // No Qt and No GLFW
-
-class Application
-{
-public:
-    Application(int& /*argc*/, char** /*argv*/) {}
-
-    ~Application()
-    {
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-        vcl::Context::shutdown();
-#endif
-    }
-
-    int exec() { return 0; }
-};
-
-#endif
+using Application = ApplicationT<ApplicationType::DEFAULT>;
 
 /**
  * @brief Utility function to retrieve the display ID of the current
@@ -93,17 +126,19 @@ public:
  * @return a pointer to the display ID, or nullptr if the display ID cannot be
  * retrieved.
  */
-
-#ifdef VCLIB_WITH_QT
-using qt::getDisplayId;
-#elif VCLIB_WITH_GLFW
-using glfw::getDisplayId;
-#else
 inline void* getDisplayId()
 {
-    return nullptr;
-}
+    void* did = nullptr;
+#ifdef VCLIB_WITH_QT
+    did = qt::getDisplayId();
 #endif
+#ifdef VCLIB_WITH_GLFW
+    if (!did) {
+        did = glfw::getDisplayId();
+    }
+#endif
+    return did;
+}
 
 } // namespace vcl
 

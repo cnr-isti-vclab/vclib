@@ -13,6 +13,8 @@
 #include <vclib/base.h>
 #include <vclib/space/core/bit_set.h>
 
+#include <nlohmann/json.hpp>
+
 #include <array>
 
 namespace vcl {
@@ -51,10 +53,12 @@ public:
         VERT_COLORS,
         VERT_TEXCOORDS,
         VERT_TANGENT,
+        VERT_SELECTION,
 
         TRIANGLES,
         TRI_NORMALS,
         TRI_COLORS,
+        FACE_SELECTION,
         WEDGE_TEXCOORDS,
 
         WIREFRAME,
@@ -62,6 +66,7 @@ public:
         EDGES,
         EDGE_COLORS,
         EDGE_NORMALS,
+        EDGE_SELECTION,
 
         TEXTURES,
 
@@ -83,10 +88,10 @@ public:
     };
 
 private:
-    using BuffersBitSetUnderlyingType = ushort;
+    using BuffersBitSetUnderlyingType = uint;
 
     static_assert(
-        sizeof(BuffersBitSetUnderlyingType) < (uint) Buffers::COUNT,
+        sizeof(BuffersBitSetUnderlyingType) * 8 >= (uint) Buffers::COUNT,
         "BuffersBitSet is not able to store all enum Buffers values");
 
     bool mVisible;
@@ -144,6 +149,10 @@ public:
         COLOR_MESH         = VCL_MRS_SURF_COLOR_MESH,
         COLOR_USER         = VCL_MRS_SURF_COLOR_USER,
         SELECTION          = VCL_MRS_SURF_DRAW_SELECTION,
+        BACKFACE_SINGLE    = VCL_MRS_SURF_BF_SINGLE,
+        BACKFACE_DOUBLE    = VCL_MRS_SURF_BF_DOUBLE,
+        BACKFACE_CULL      = VCL_MRS_SURF_BF_CULL,
+        SPECULAR           = VCL_MRS_SURF_SPECULAR,
 
         COUNT
     };
@@ -174,6 +183,7 @@ public:
         COLOR_EDGE     = VCL_MRS_EDGES_COLOR_EDGE,
         COLOR_MESH     = VCL_MRS_EDGES_COLOR_MESH,
         COLOR_USER     = VCL_MRS_EDGES_COLOR_USER,
+        SELECTION      = VCL_MRS_EDGES_DRAW_SELECTION,
 
         COUNT
     };
@@ -427,7 +437,9 @@ private:
             Surface::SHADING_NONE,       // first
             Surface::SHADING_NORMAL_MAP, // last
             Surface::COLOR_VERTEX,       // first
-            Surface::COLOR_USER);        // last
+            Surface::COLOR_USER,         // last
+            Surface::BACKFACE_SINGLE,    // first
+            Surface::BACKFACE_CULL);     // last
 
     inline static constexpr const auto WIREFRAME_EXCLUSIVE_RANGES =
         detail::makeExclusiveReangesArray<Wireframe>(
@@ -475,6 +487,46 @@ private:
         return std::pair(toUnderlying(value), toUnderlying(value));
     }
 };
+
+/**
+ * @brief Serializes a MeshRenderInfo object to a JSON array.
+ * @param[out] j: the JSON object to populate.
+ * @param[in] mri: the MeshRenderInfo object to serialize.
+ */
+inline void to_json(nlohmann::json& j, const MeshRenderInfo& mri)
+{
+    j = nlohmann::json {
+        {"visible",   mri.visible()               },
+        {"points",    mri.points().underlying()   },
+        {"surface",   mri.surface().underlying()  },
+        {"wireframe", mri.wireframe().underlying()},
+        {"edges",     mri.edges().underlying()    }
+    };
+}
+
+/**
+ * @brief Deserializes a MeshRenderInfo object from a JSON array.
+ * @param[in] j: the JSON object to read from.
+ * @param[out] mri: the MeshRenderInfo object to populate.
+ */
+inline void from_json(const nlohmann::json& j, MeshRenderInfo& mri)
+{
+    if (j.contains("visible")) {
+        mri.visible() = j.at("visible").get<bool>();
+    }
+    if (j.contains("points")) {
+        mri.points().setUnderlying(j.at("points").get<uint16_t>());
+    }
+    if (j.contains("surface")) {
+        mri.surface().setUnderlying(j.at("surface").get<uint16_t>());
+    }
+    if (j.contains("wireframe")) {
+        mri.wireframe().setUnderlying(j.at("wireframe").get<uint16_t>());
+    }
+    if (j.contains("edges")) {
+        mri.edges().setUnderlying(j.at("edges").get<uint16_t>());
+    }
+}
 
 } // namespace vcl
 

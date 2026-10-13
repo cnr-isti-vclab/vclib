@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-2022']
+        os: ['ubuntu-22.04', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-latest']
     steps:
     - uses: actions/checkout@v7
       with:
@@ -36,9 +36,17 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         sudo apt-get update
-        sudo apt-get install cmake ninja-build
+        sudo apt-get install gcc-15 g++-15 cmake ninja-build
         sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgmp-dev libmpfr-dev libwayland-dev wayland-protocols libxkbcommon-dev
+
+    - name: Setup GCC 15 for Linux
+      if: runner.os == 'Linux'
+      run: |
+        echo "CC=gcc-15" >> $GITHUB_ENV
+        echo "CXX=g++-15" >> $GITHUB_ENV
+        echo "LDFLAGS=-static-libstdc++ -static-libgcc" >> $GITHUB_ENV
 
     - name: Install dependencies
       if: runner.os == 'Windows'
@@ -46,7 +54,7 @@ jobs:
         choco install ninja ccache
 
     - name: Ccache
-      uses: hendrikmuhs/ccache-action@v1.2.23
+      uses: hendrikmuhs/ccache-action@v1.2.24
       with:
         key: bindings-${{ matrix.os }}
         max-size: 1G
@@ -85,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-2022']
+        os: ['ubuntu-22.04', 'ubuntu-24.04-arm', 'macos-26-intel', 'macos-latest', 'windows-latest']
     steps:
     - uses: actions/checkout@v7
       with:
@@ -96,7 +104,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
-        sudo apt-get install freeglut3-dev
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev
 
     - uses: actions/download-artifact@v8
       with:

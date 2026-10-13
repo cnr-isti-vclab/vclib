@@ -13,15 +13,15 @@ $output v_color
 #include <vclib/bgfx/screenspace/primitives/uniforms/screenspace_lines_uniforms.sh>
 
 // Input buffers (bound as compute buffers for vertex shader access)
-BUFFER_RO(vertexPosBuffer, vec2, 0); // vertices
+BUFFER_RAW_RO(vertexPosBuffer, 0); // vertices
 #ifdef SCREENSPACE_LINES_COLOR_PER_VERTEX
-BUFFER_RO(vertexColBuffer, uint, 1); // vert colors
+BUFFER_RAW_RO(vertexColBuffer, 1); // vert colors
 #endif
 #ifdef SCREENSPACE_LINES_INDICES_ON
 BUFFER_RO(indexBuffer, uint, 2);     // line indices
 #endif
 #ifdef SCREENSPACE_LINES_COLOR_PER_LINE
-BUFFER_RO(lineColBuffer, uint, 3);   // line colors
+BUFFER_RAW_RO(lineColBuffer, 3);   // line colors
 #endif
 
 // Helper function to get vertex index based on indexing mode
@@ -51,8 +51,8 @@ void main()
 #endif
 
     // Fetch the two endpoints of this line
-    vec2 p0 = vertexPosBuffer[vertexIndex0];
-    vec2 p1 = vertexPosBuffer[vertexIndex1];
+    vec2 p0 = vec2(rawLoadFloat(vertexPosBuffer, vertexIndex0 * 2u), rawLoadFloat(vertexPosBuffer, vertexIndex0 * 2u + 1u));
+    vec2 p1 = vec2(rawLoadFloat(vertexPosBuffer, vertexIndex1 * 2u), rawLoadFloat(vertexPosBuffer, vertexIndex1 * 2u + 1u));
 
     // Quad expansion: map localVertex (0-5) to quad corners and UVs
     // Triangle 1: verts 0, 1, 2
@@ -111,9 +111,9 @@ void main()
 #if SCREENSPACE_LINES_COLOR_PER_VERTEX
     uint endpoint = endpointIndices[localVertex];
     uint vertIdx = endpoint == 0u ? vertexIndex0 : vertexIndex1;
-    v_color = uintABGRToVec4Color(vertexColBuffer[vertIdx]);
+    v_color = uintABGRToVec4Color(rawLoadUint(vertexColBuffer, vertIdx));
 #elif SCREENSPACE_LINES_COLOR_PER_LINE
-    v_color = uintABGRToVec4Color(lineColBuffer[lineIndex]);
+    v_color = uintABGRToVec4Color(rawLoadUint(lineColBuffer, lineIndex));
 #else
     v_color = u_linesGeneralColor;
 #endif

@@ -2,6 +2,10 @@
 
 include(CMakeFindDependencyMacro)
 
+# Add the directory containing this config file to CMAKE_MODULE_PATH so that
+# custom Find*.cmake modules (like FindWayland.cmake) can be found.
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
 # Always find Threads as it's a common dependency for several 3rdparty targets (CGAL, libigl, etc.)
 find_dependency(Threads)
 
@@ -18,12 +22,27 @@ set(VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
     "@VCLIB_RENDER_OPTIONAL_SYSTEM_LIBRARIES@"
 )
 
+# Helper variables for 3rdparty paths
+set(VCLIB_3RDPARTY_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/../../vclib/3rdparty")
+set(VCLIB_3RDPARTY_BIN_DIR
+    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/vclib/3rdparty"
+)
+set(VCLIB_3RDPARTY_INCLUDE_DIR
+    "${CMAKE_CURRENT_LIST_DIR}/../../../include/vclib/3rdparty"
+)
+
 if(@VCLIB_INSTALL_MODULE_CORE@)
     if(
         "@VCLIB_USED_SYSTEM_EIGEN@"
         AND "vclib-3rd-eigen" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
     )
         find_dependency(Eigen3)
+    endif()
+    if(
+        "@VCLIB_USED_SYSTEM_NLOHMANN_JSON@"
+        AND "vclib-3rd-nlohmann_json" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
+    )
+        find_dependency(nlohmann_json)
     endif()
 endif()
 
@@ -58,8 +77,15 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
     if("vclib-3rd-opengl" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
         find_dependency(OpenGL)
     endif()
+    if("vclib-3rd-wayland" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        find_package(Wayland QUIET)
+    endif()
     if("vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
-        find_package(bgfx QUIET)
+        find_package(
+            bgfx
+            QUIET
+            PATHS "${CMAKE_CURRENT_LIST_DIR}/../../vclib/3rdparty/cmake/bgfx"
+        )
     endif()
     if(
         "@VCLIB_USED_SYSTEM_GLFW@"
@@ -80,62 +106,48 @@ if(
         add_library(gmp SHARED IMPORTED GLOBAL)
         set_property(
             TARGET gmp
-            PROPERTY
-                IMPORTED_IMPLIB "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmp.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/gmp.lib"
+        )
+        set_property(
+            TARGET gmp
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/gmp-10.dll"
         )
         set_property(
             TARGET gmp
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmp-10.dll"
-        )
-        set_property(
-            TARGET gmp
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
     if(NOT TARGET gmpxx)
         add_library(gmpxx SHARED IMPORTED GLOBAL)
         set_property(
             TARGET gmpxx
-            PROPERTY
-                IMPORTED_IMPLIB
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../lib/gmpxx.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/gmpxx.lib"
+        )
+        set_property(
+            TARGET gmpxx
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/gmpxx-4.dll"
         )
         set_property(
             TARGET gmpxx
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/gmpxx-4.dll"
-        )
-        set_property(
-            TARGET gmpxx
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
     if(NOT TARGET mpfr)
         add_library(mpfr SHARED IMPORTED GLOBAL)
         set_property(
             TARGET mpfr
-            PROPERTY
-                IMPORTED_IMPLIB
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../lib/mpfr.lib"
+            PROPERTY IMPORTED_IMPLIB "${VCLIB_3RDPARTY_LIB_DIR}/mpfr.lib"
+        )
+        set_property(
+            TARGET mpfr
+            PROPERTY IMPORTED_LOCATION "${VCLIB_3RDPARTY_BIN_DIR}/mpfr-6.dll"
         )
         set_property(
             TARGET mpfr
             PROPERTY
-                IMPORTED_LOCATION
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../bin/mpfr-6.dll"
-        )
-        set_property(
-            TARGET mpfr
-            PROPERTY
-                INTERFACE_INCLUDE_DIRECTORIES
-                    "${CMAKE_CURRENT_LIST_DIR}/../../../include"
+                INTERFACE_INCLUDE_DIRECTORIES "${VCLIB_3RDPARTY_INCLUDE_DIR}"
         )
     endif()
 endif()
@@ -161,11 +173,40 @@ if(@VCLIB_INSTALL_MODULE_CORE@)
                 APPEND
                 PROPERTY INTERFACE_LINK_LIBRARIES Eigen3::Eigen
             )
+            set_property(
+                TARGET vclib::vclib-3rd-eigen
+                APPEND
+                PROPERTY INTERFACE_COMPILE_DEFINITIONS EIGEN_MAX_ALIGN_BYTES=16
+            )
             if(TARGET vclib::core)
                 set_property(
                     TARGET vclib::core
                     APPEND
                     PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-eigen
+                )
+            endif()
+        endif()
+    endif()
+    if(
+        "@VCLIB_USED_SYSTEM_NLOHMANN_JSON@"
+        AND "vclib-3rd-nlohmann_json" IN_LIST VCLIB_CONFIG_CORE_3RDPARTY_LIBRARIES
+    )
+        if(
+            TARGET nlohmann_json::nlohmann_json
+            AND NOT TARGET vclib::vclib-3rd-nlohmann_json
+        )
+            add_library(vclib::vclib-3rd-nlohmann_json INTERFACE IMPORTED)
+            set_property(
+                TARGET vclib::vclib-3rd-nlohmann_json
+                APPEND
+                PROPERTY INTERFACE_LINK_LIBRARIES nlohmann_json::nlohmann_json
+            )
+            if(TARGET vclib::core)
+                set_property(
+                    TARGET vclib::core
+                    APPEND
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-nlohmann_json
                 )
             endif()
         endif()
@@ -309,25 +350,41 @@ if(@VCLIB_INSTALL_MODULE_EXTERNAL@)
                         TARGET embree
                         PROPERTY
                             IMPORTED_IMPLIB
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../lib/embree4.lib"
+                                "${VCLIB_3RDPARTY_LIB_DIR}/embree4.lib"
                     )
                     set_property(
                         TARGET embree
                         PROPERTY
                             IMPORTED_LOCATION
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../bin/embree4.dll"
+                                "${VCLIB_3RDPARTY_BIN_DIR}/embree4.dll"
                     )
                     set_property(
                         TARGET embree
                         PROPERTY
                             INTERFACE_INCLUDE_DIRECTORIES
-                                "${CMAKE_CURRENT_LIST_DIR}/../../../include/embree4"
+                                "${VCLIB_3RDPARTY_INCLUDE_DIR}/embree4"
+                    )
+                endif()
+                if(NOT TARGET vclib-3rd-embree-tbb)
+                    add_library(vclib-3rd-embree-tbb SHARED IMPORTED GLOBAL)
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_IMPLIB
+                                "${VCLIB_3RDPARTY_LIB_DIR}/tbb12.lib"
+                    )
+                    set_property(
+                        TARGET vclib-3rd-embree-tbb
+                        PROPERTY
+                            IMPORTED_LOCATION
+                                "${VCLIB_3RDPARTY_BIN_DIR}/tbb12.dll"
                     )
                 endif()
                 set_property(
                     TARGET vclib::vclib-3rd-embree
                     APPEND
-                    PROPERTY INTERFACE_LINK_LIBRARIES embree
+                    PROPERTY
+                        INTERFACE_LINK_LIBRARIES embree vclib-3rd-embree-tbb
                 )
             endif()
             set_property(
@@ -450,6 +507,23 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
             endif()
         endif()
     endif()
+    if("vclib-3rd-wayland" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES)
+        if(TARGET Wayland::Wayland AND NOT TARGET vclib::vclib-3rd-wayland)
+            add_library(vclib::vclib-3rd-wayland INTERFACE IMPORTED)
+            set_property(
+                TARGET vclib::vclib-3rd-wayland
+                APPEND
+                PROPERTY INTERFACE_LINK_LIBRARIES Wayland::Wayland
+            )
+            if(TARGET vclib::render)
+                set_property(
+                    TARGET vclib::render
+                    APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES vclib::vclib-3rd-wayland
+                )
+            endif()
+        endif()
+    endif()
     if(
         "@VCLIB_USED_SYSTEM_BGFX@"
         AND "vclib-3rd-bgfx" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
@@ -480,18 +554,20 @@ if(@VCLIB_INSTALL_MODULE_RENDER@)
         "@VCLIB_USED_SYSTEM_GLFW@"
         AND "vclib-3rd-glfw" IN_LIST VCLIB_CONFIG_RENDER_3RDPARTY_LIBRARIES
     )
-        if(TARGET glfw AND NOT TARGET vclib::vclib-3rd-glfw)
-            add_library(vclib::vclib-3rd-glfw INTERFACE IMPORTED)
-            set_property(
-                TARGET vclib::vclib-3rd-glfw
-                APPEND
-                PROPERTY INTERFACE_LINK_LIBRARIES glfw
-            )
-            set_property(
-                TARGET vclib::vclib-3rd-glfw
-                APPEND
-                PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW
-            )
+        if(TARGET glfw)
+            if(NOT TARGET vclib::vclib-3rd-glfw)
+                add_library(vclib::vclib-3rd-glfw INTERFACE IMPORTED)
+                set_property(
+                    TARGET vclib::vclib-3rd-glfw
+                    APPEND
+                    PROPERTY INTERFACE_LINK_LIBRARIES glfw
+                )
+                set_property(
+                    TARGET vclib::vclib-3rd-glfw
+                    APPEND
+                    PROPERTY INTERFACE_COMPILE_DEFINITIONS VCLIB_WITH_GLFW
+                )
+            endif()
             if(TARGET vclib::render)
                 set_property(
                     TARGET vclib::render

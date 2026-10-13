@@ -120,7 +120,7 @@ public:
         uint16_t                  width,
         uint16_t                  height,
         bgfx::TextureFormat::Enum colorFormat = Context::DEFAULT_COLOR_FORMAT,
-        bgfx::TextureFormat::Enum depthFormat = Context::DEFAULT_DEPTH_FORMAT)
+        bgfx::TextureFormat::Enum depthFormat = Context::defaultDepthFormat())
     {
         destroy();
 

@@ -6,7 +6,6 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 #include <vclib/bindings/render/drawable/abstract_mesh.h>
-
 #include <vclib/bindings/render/drawable/mesh/mesh_render_info.h>
 #include <vclib/bindings/render/drawable/mesh/mesh_render_settings.h>
 
@@ -56,10 +55,10 @@ void initAbstractDrawableMesh(pybind11::module& m)
         "Updates the specified mesh buffers.",
         py::arg("buffers_to_update"));
 
-    c.def("vertex_count", &vcl::AbstractDrawableMesh::vertexCount);
-    c.def("face_count", &vcl::AbstractDrawableMesh::faceCount);
-    c.def("edge_count", &vcl::AbstractDrawableMesh::edgeCount);
-    c.def("model_matrix", &vcl::AbstractDrawableMesh::modelMatrix);
+    c.def(
+        "mesh_provider",
+        &vcl::AbstractDrawableMesh::meshProvider,
+        py::return_value_policy::reference_internal);
 }
 
 } // namespace vcl::bind
