@@ -9,14 +9,16 @@
 
 #include <vclib/bgfx/selection/uniforms.sh>
 
-BUFFER_RO(positions, vec4, 0); // coordinates (3 floats)
+#include <vclib/bgfx/drawable/mesh/mesh_render_buffers_macros.h>
+
+BUFFER_RAW_RO(positions, 0); // coordinates (3 floats)
 
 BUFFER_RO(indices, uint, 5);
 BUFFER_RW(face_selected, uint, 12); // is face selected? 1 bit per triangle (MSb first)
 
-BUFFER_RO(tri_to_poly, uint, 7);       // tri_to_poly[triIdx] = polyIdx
-BUFFER_RO(poly_to_tri_begin, uint, 8); // poly_to_tri_begin[polyIdx] = first triangle index
-BUFFER_RO(poly_to_tri_count, uint, 9); // poly_to_tri_count[polyIdx] = number of triangles
+BUFFER_RO(tri_to_poly, uint, VCL_MRB_TRI_TO_POLY_BUFFER);       // tri_to_poly[triIdx] = polyIdx
+BUFFER_RO(poly_to_tri_begin, uint, VCL_MRB_POLY_TO_TRI_BEGIN_BUFFER); // poly_to_tri_begin[polyIdx] = first triangle index
+BUFFER_RO(poly_to_tri_count, uint, VCL_MRB_POLY_TO_TRI_COUNT_BUFFER); // poly_to_tri_count[polyIdx] = number of triangles
 
 // Polygon-level ADD selection:
 // If any triangle of a polygon intersects the selection box, all triangles of
@@ -52,9 +54,9 @@ void main()
     );
 
     mat3 poss = mat3(
-        positions[(idcs[0] * 3) / 4][(idcs[0] * 3) % 4], positions[(idcs[0] * 3 + 1) / 4][(idcs[0] * 3 + 1) % 4], positions[(idcs[0] * 3 + 2) / 4][(idcs[0] * 3 + 2) % 4],
-        positions[(idcs[1] * 3) / 4][(idcs[1] * 3) % 4], positions[(idcs[1] * 3 + 1) / 4][(idcs[1] * 3 + 1) % 4], positions[(idcs[1] * 3 + 2) / 4][(idcs[1] * 3 + 2) % 4],
-        positions[(idcs[2] * 3) / 4][(idcs[2] * 3) % 4], positions[(idcs[2] * 3 + 1) / 4][(idcs[2] * 3 + 1) % 4], positions[(idcs[2] * 3 + 2) / 4][(idcs[2] * 3 + 2) % 4]
+        rawLoadFloat(positions, idcs[0] * 3), rawLoadFloat(positions, idcs[0] * 3 + 1), rawLoadFloat(positions, idcs[0] * 3 + 2),
+        rawLoadFloat(positions, idcs[1] * 3), rawLoadFloat(positions, idcs[1] * 3 + 1), rawLoadFloat(positions, idcs[1] * 3 + 2),
+        rawLoadFloat(positions, idcs[2] * 3), rawLoadFloat(positions, idcs[2] * 3 + 1), rawLoadFloat(positions, idcs[2] * 3 + 2)
     );
 
     vec4 p0Clip = mul(u_modelViewProj, vec4(poss[0].xyz, 1));

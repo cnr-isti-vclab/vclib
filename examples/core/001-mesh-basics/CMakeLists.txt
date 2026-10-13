@@ -6,7 +6,7 @@
 # obtain one at https://mozilla.org/MPL/2.0/.
 
 get_filename_component(EXAMPLE_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(vclib-example-${EXAMPLE_NAME})
+project(vclib-core-example-${EXAMPLE_NAME})
 
 set(SOURCES mesh_basics.h main.cpp)
 

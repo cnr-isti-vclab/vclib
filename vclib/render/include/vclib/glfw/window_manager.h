@@ -230,13 +230,10 @@ protected:
         int action,
         int mods)
     {
-#if defined(__linux__)
-        // Fix modifiers on X11
-        // maybe it will be fixed https://github.com/glfw/glfw/issues/1630
-        if (glfwGetPlatform() == GLFW_PLATFORM_X11) {
-            mods = fixKeyboardMods(key, action, mods);
-        }
-#endif
+        // Fix modifiers: some GLFW backends (e.g., X11, Wayland) may report
+        // incorrect modifier states when the modifier key itself is
+        // pressed/released: https://github.com/glfw/glfw/issues/1630
+        mods = fixKeyboardMods(key, action, mods);
 
         // GLFW modifiers are always set
         DerivedRenderApp::WM::setModifiers(
@@ -411,20 +408,20 @@ private:
         switch (key) {
         case GLFW_KEY_LEFT_SHIFT:
         case GLFW_KEY_RIGHT_SHIFT:
-            return (action == GLFW_PRESS) ? mods | GLFW_MOD_SHIFT :
-                                            mods & (~GLFW_MOD_SHIFT);
+            return (action != GLFW_RELEASE) ? mods | GLFW_MOD_SHIFT :
+                                              mods & (~GLFW_MOD_SHIFT);
         case GLFW_KEY_LEFT_CONTROL:
         case GLFW_KEY_RIGHT_CONTROL:
-            return (action == GLFW_PRESS) ? mods | GLFW_MOD_CONTROL :
-                                            mods & (~GLFW_MOD_CONTROL);
+            return (action != GLFW_RELEASE) ? mods | GLFW_MOD_CONTROL :
+                                              mods & (~GLFW_MOD_CONTROL);
         case GLFW_KEY_LEFT_ALT:
         case GLFW_KEY_RIGHT_ALT:
-            return (action == GLFW_PRESS) ? mods | GLFW_MOD_ALT :
-                                            mods & (~GLFW_MOD_ALT);
+            return (action != GLFW_RELEASE) ? mods | GLFW_MOD_ALT :
+                                              mods & (~GLFW_MOD_ALT);
         case GLFW_KEY_LEFT_SUPER:
         case GLFW_KEY_RIGHT_SUPER:
-            return (action == GLFW_PRESS) ? mods | GLFW_MOD_SUPER :
-                                            mods & (~GLFW_MOD_SUPER);
+            return (action != GLFW_RELEASE) ? mods | GLFW_MOD_SUPER :
+                                              mods & (~GLFW_MOD_SUPER);
         default: break;
         }
 

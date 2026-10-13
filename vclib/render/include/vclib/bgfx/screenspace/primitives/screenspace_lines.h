@@ -283,12 +283,58 @@ public:
         mIsUpdateProgramNeeded = true;
     }
 
+    /**
+     * @brief Sets vertex positions by referencing an existing VertexBuffer.
+     *
+     * If no indices are set, the interpretation depends on the topology:
+     * - For LINES topology, each pair of vertices defines one line segment.
+     * - For LINE_STRIP topology, each vertex after the first forms a line
+     *   segment with the previous vertex.
+     *
+     * @param[in] vertexCount: Number of coordinate pairs (each line uses 2
+     * points).
+     * @param[in] verts: VertexBuffer containing vertex positions.
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
     void setVertices(uint vertexCount, const VertexBuffer& verts);
 
+    /**
+     * @brief Sets line indices by referencing an existing IndexBuffer.
+     *
+     * @param[in] indexCount: Number of indices in the IndexBuffer.
+     * @param[in] indices: IndexBuffer to use for lines.
+     * The interpretation of indices depends on the topology:
+     * - For LINES topology, each pair of indices defines one line segment.
+     * - For LINE_STRIP topology, each index after the first forms a line
+     *   segment with the previous index.
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
     void setIndices(uint indexCount, const IndexBuffer& indices);
 
+    /**
+     * @brief Sets per-vertex colors by referencing an existing VertexBuffer.
+     *
+     * @param[in] vColsCount: Number of vertex colors in the VertexBuffer.
+     * @param[in] vertexColors: VertexBuffer containing per-vertex colors.
+     * Expected layout: an array of `uint` with 4 channels per color in
+     * ABGR order (A, B, G, R packed as a single 32-bit integer).
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
     void setVertexColors(uint vColsCount, const VertexBuffer& vertexColors);
 
+    /**
+     * @brief Sets per-line colors by referencing an existing IndexBuffer.
+     *
+     * @param[in] lColorCount: Number of line colors in the IndexBuffer.
+     * @param[in] lineColors: IndexBuffer containing per-line colors.
+     * Expected layout: an array of `uint` with 4 channels per color in
+     * ABGR order (A, B, G, R packed as a single 32-bit integer).
+     *
+     * @note The buffer must remain valid for the lifetime of this object.
+     */
     void setLineColors(uint lColorCount, const IndexBuffer& lineColors);
 
     /**

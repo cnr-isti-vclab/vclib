@@ -1,0 +1,17 @@
+name: Standalone Examples - Archive
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Build-Packages:
+    uses: ./.github/workflows/_build_packages.yml
+    with:
+      ref: ${{ github.ref }}
+      target: 'archive'
+
+  StandaloneExamples-Archive:
+    needs: Build-Packages
+    uses: ./.github/workflows/_standalone_examples_template.yml
+    with:
+      integration_mode: 'archive'

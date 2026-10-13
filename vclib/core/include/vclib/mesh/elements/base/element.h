@@ -65,6 +65,13 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
     static const uint COMPONENT_ID = UINT_NULL;
 
 public:
+    Element(const Element&)            = delete;
+    Element& operator=(const Element&) = delete;
+
+    Element()                     = default;
+    Element(Element&&)            = default;
+    Element& operator=(Element&&) = default;
+
     using ParentMeshType = MeshType;
 
     /**
@@ -94,6 +101,26 @@ public:
     {
         using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
         return *static_cast<const Comp*>(this);
+    }
+
+    template<uint COMP_ID>
+    auto& componentValue()
+    {
+        static_assert(
+            COMP_ID != CompId::CUSTOM_COMPONENTS,
+            "CustomComponents do not have a single value.");
+        using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
+        return this->Comp::data();
+    }
+
+    template<uint COMP_ID>
+    const auto& componentValue() const
+    {
+        static_assert(
+            COMP_ID != CompId::CUSTOM_COMPONENTS,
+            "CustomComponents do not have a single value.");
+        using Comp = comp::ComponentTypeFromID<COMP_ID, Components>;
+        return this->Comp::data();
     }
 
     template<typename ElType>
@@ -136,6 +163,12 @@ public:
     }
 
 private:
+    void rawCopyFrom(const Element& other)
+    {
+        comp::ParentMeshPointer<MeshType>::operator=(other);
+        (Comps::operator=(other), ...);
+    }
+
     // hide init and isAvailable members
     void init() {}
 

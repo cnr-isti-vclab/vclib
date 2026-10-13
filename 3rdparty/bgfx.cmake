@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.153.9385-561)
+set(BGFX_VERSION 1.164.9539-586)
 
 find_package(bgfx QUIET)
 
@@ -23,23 +23,21 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
             bgfx::bimg
             bgfx::bimg_decode
             bgfx::bimg_encode
+            vclib-3rd-stb
     )
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include
+        INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/iconfontheaders/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sdf/include>
     )
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb/include
-    )
-    target_include_directories(
-        vclib-3rd-bgfx
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/tinystl/include>
     )
 
     # make sure that the imported targets are global
@@ -101,16 +99,23 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
     )
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(bgfx)
+
+    vclib_end_3rdparty_install_scope()
+
+    # there are some warnings that we need to ignore
+    vclib_disable_target_warnings(spirv-cross) #bgfx 3rdparty
+    vclib_disable_target_warnings(l-smash) #bgfx 3rdparty
+
+    vclib_disable_target_warnings(bimg_encode) #bimg 3rdparty
 
     add_library(vclib-3rd-bgfx INTERFACE)
 
-    # there are three warnings on gcc that we need to ignore
-    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
-
     target_link_libraries(
         vclib-3rd-bgfx
-        INTERFACE bx bgfx bimg bimg_decode bimg_encode
+        INTERFACE bx bgfx bimg bimg_decode bimg_encode vclib-3rd-stb
     )
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -119,7 +124,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE ${bgfx_SOURCE_DIR}/bgfx/3rdparty
+        INTERFACE $<BUILD_INTERFACE:${bgfx_SOURCE_DIR}/bgfx/3rdparty>
     )
 
     set_target_properties(
@@ -146,4 +151,21 @@ if(TARGET vclib-3rd-bgfx)
         FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/vclib_shader_combinations.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/vclib
     )
+
+    if(UNIX AND NOT APPLE)
+        # bgfx.cmake installs a prebuilt x86-64 libdxcompiler.so on Linux into bin/.
+        # On non-x86_64 architectures (e.g. ARM64) this is a foreign-architecture binary
+        # that breaks dpkg-shlibdeps during DEB packaging. Furthermore, DirectX shader
+        # compilation is not used on Linux by VCLib.
+        install(
+            CODE
+                [[
+            file(GLOB_RECURSE _DXCOMPILER_FILES "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/*libdxcompiler.so*")
+            foreach(_F IN LISTS _DXCOMPILER_FILES)
+                message(STATUS "Removing unneeded DirectX shader compiler library: ${_F}")
+                file(REMOVE "${_F}")
+            endforeach()
+        ]]
+        )
+    endif()
 endif()

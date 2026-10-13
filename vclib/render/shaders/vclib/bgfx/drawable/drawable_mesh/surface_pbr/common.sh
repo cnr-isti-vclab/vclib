@@ -228,7 +228,7 @@ vec4 pbrColorLights(
     float specular,
     vec3 specularColor,
     float exposure,
-    int toneMapping)
+    uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
     vec3 f0_dielectric = min(vec3_splat(0.04) * specularColor, vec3_splat(1.0));
@@ -330,7 +330,7 @@ vec4 pbrColorIbl(
     float occlusion,
     vec3 emissive,
     float exposure,
-    int toneMapping)
+    uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
 

@@ -21,9 +21,7 @@ struct NotNullView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, NotNullView)
     {
-        return std::views::filter(r, [](auto* p) {
-            return p != nullptr;
-        });
+        return std::views::filter(r, [](auto* p) { return p != nullptr; });
     }
 };
 
@@ -34,9 +32,8 @@ struct DereferenceView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, DereferenceView)
     {
-        return std::views::transform(r, [](auto p) {
-            return *p;
-        });
+        return std::views::transform(
+            r, [](auto p) -> decltype(auto) { return *p; });
     }
 };
 
@@ -47,9 +44,7 @@ struct AddressOfView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, AddressOfView)
     {
-        return std::views::transform(r, [](auto& o) {
-            return &o;
-        });
+        return std::views::transform(r, [](auto& o) { return &o; });
     }
 };
 
@@ -60,9 +55,7 @@ struct ConstAddressOfView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, ConstAddressOfView)
     {
-        return std::views::transform(r, [](const auto& o) {
-            return &o;
-        });
+        return std::views::transform(r, [](const auto& o) { return &o; });
     }
 };
 

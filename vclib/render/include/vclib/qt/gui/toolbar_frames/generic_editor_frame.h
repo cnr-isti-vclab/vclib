@@ -41,8 +41,8 @@ protected:
 
     void showSettingsButton() { settingsButton()->setVisible(true); }
 
-    template<typename SettingsFrame>
-    [[nodiscard]] SettingsFrame* setSettingsFrame(EditorSettings& sts)
+    template<typename SettingsFrame, typename SettingsType>
+    [[nodiscard]] SettingsFrame* setSettingsFrame(SettingsType& sts)
     {
         QMenu*         popupMenu = new QMenu(this);
         QWidgetAction* wa        = new QWidgetAction(popupMenu);
@@ -67,6 +67,20 @@ protected:
 
 protected slots:
     virtual void refreshSettings() {};
+};
+
+/**
+ * @brief Traits struct to associate an Editor type with its Qt Frame type.
+ *
+ * Specializations of this struct should define `ToolbarFrameType` as the
+ * QWidget subclass that implements the UI frame for the specific editor. If no
+ * frame is associated, `ToolbarFrameType` defaults to `void`.
+ */
+template<template<typename> typename EditorT, typename ViewerType>
+struct EditorFrameTraits
+{
+    using ToolbarFrameType  = void;
+    using SettingsFrameType = void;
 };
 
 } // namespace vcl::qt

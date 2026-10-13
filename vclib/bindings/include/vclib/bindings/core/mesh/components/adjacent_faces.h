@@ -34,15 +34,11 @@ void initAdjacentFaces(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "adj_face",
-        [](ElementType& e, uint i) {
-            return e.adjFace(i);
-        },
+        [](ElementType& e, uint i) { return e.adjFace(i); },
         py::return_value_policy::reference);
     c.def(
         "adj_face_mod",
-        [](ElementType& e, int i) {
-            return e.adjFaceMod(i);
-        },
+        [](ElementType& e, int i) { return e.adjFaceMod(i); },
         py::return_value_policy::reference);
 
     c.def(

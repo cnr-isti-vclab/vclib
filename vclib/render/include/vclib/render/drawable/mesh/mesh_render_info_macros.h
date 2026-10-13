@@ -37,6 +37,11 @@
 #define VCL_MRS_SURF_COLOR_MESH         9  // mesh color for surface
 #define VCL_MRS_SURF_COLOR_USER         10 // user color for surface
 #define VCL_MRS_SURF_DRAW_SELECTION     11 // surface with selection color
+#define VCL_MRS_SURF_BF_SINGLE          12 // backface single-sided
+#define VCL_MRS_SURF_BF_DOUBLE          13 // backface double-sided
+#define VCL_MRS_SURF_BF_CULL            14 // backface culling
+#define VCL_MRS_SURF_SPECULAR           15 // specular shading enabled
+// #define VCL_MRS_SURF_BF_FANCY           16 // ?
 
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME         0 // draw wireframe
@@ -55,5 +60,6 @@
 #define VCL_MRS_EDGES_COLOR_EDGE     5 // edge color for edges
 #define VCL_MRS_EDGES_COLOR_MESH     6 // mesh color for edges
 #define VCL_MRS_EDGES_COLOR_USER     7 // user color for edges
+#define VCL_MRS_EDGES_DRAW_SELECTION 8 // edges with selection color
 
 #endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_INFO_MACROS_H

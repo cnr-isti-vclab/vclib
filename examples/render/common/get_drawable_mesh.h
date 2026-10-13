@@ -8,8 +8,7 @@
 #ifndef VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 #define VCLIB_RENDER_EXAMPLES_COMMON_GET_DRAWABLE_MESH_H
 
-#include <vclib/algorithms/mesh/update/color.h>
-#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms/mesh.h>
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
@@ -33,7 +32,7 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     MeshType m = vcl::loadMesh<MeshType>(filename, info, log);
 
     log.stopTimer();
-    log.log("Loaded mesh in " + std::to_string(log.time()) + " seconds.");
+    log.log("Loaded mesh in {:.3f} seconds.", log.time());
 
     if constexpr (vcl::FaceMeshConcept<MeshType>) {
         if (!info.hasPerFaceNormal()) {

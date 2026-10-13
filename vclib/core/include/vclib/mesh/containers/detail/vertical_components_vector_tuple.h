@@ -85,9 +85,7 @@ public:
 
     void clear()
     {
-        auto function = [](auto&... args) {
-            ((args.clear()), ...);
-        };
+        auto function = [](auto&... args) { ((args.clear()), ...); };
 
         std::apply(function, mVecTuple);
         mSize = 0;

@@ -7,17 +7,23 @@
 
 #include <vclib/qt/gui/screen_shot_dialog.h>
 
+#include <vclib/qt/gui/dialog_directories.h>
+
+#include <QFileInfo>
 #include <QGridLayout>
 #include <QLabel>
 
 namespace vcl::qt {
 
-ScreenShotDialog::ScreenShotDialog(QWidget* parent) :
+ScreenShotDialog::ScreenShotDialog(
+    QWidget*           parent,
+    const std::string& settingsFilePath) :
         QFileDialog(
             parent,
             "Save Screenshot",
-            "",
-            "Image Files (*.png *.jpg *.jpeg *.bmp)")
+            dialogDirectory("SaveScreenshot", settingsFilePath),
+            "Image Files (*.png *.jpg *.jpeg *.bmp)"),
+        mSettingsFilePath(settingsFilePath)
 {
     setOption(QFileDialog::DontUseNativeDialog);
     setAcceptMode(QFileDialog::AcceptSave);
@@ -40,6 +46,17 @@ ScreenShotDialog::~ScreenShotDialog()
 int ScreenShotDialog::screenMultiplierValue() const
 {
     return mMultiplierSpinBox->value();
+}
+
+void ScreenShotDialog::accept()
+{
+    if (selectedFiles().size() > 0) {
+        setDialogDirectory(
+            "SaveScreenshot",
+            QFileInfo(selectedFiles()[0]).absolutePath(),
+            mSettingsFilePath);
+    }
+    QFileDialog::accept();
 }
 
 } // namespace vcl::qt

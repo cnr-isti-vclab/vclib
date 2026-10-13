@@ -10,6 +10,11 @@
 
 #include <vclib/base.h>
 #include <vclib/render/settings/render_mode.h>
+#include <vclib/render/settings/trackball_settings.h>
+
+#include <vclib/space/core/color.h>
+
+#include <nlohmann/json.hpp>
 
 namespace vcl {
 
@@ -17,8 +22,15 @@ namespace vcl {
  * @brief Contains the settings for the viewer, such as the active render
  * mode, exposure, and background visualization options.
  */
-struct ViewerSettings
+struct ViewerSettings : public TrackballSettings
 {
+    /**
+     * @brief Global actions type, used to register actions by the viewer or
+     * editors.
+     */
+    using ViewerGlobalActionMap =
+        InputActionMap<std::pair<Key::Enum, KeyModifiers>, std::string>;
+
     /**
      * @brief The tone mapping operators available when rendering.
      */
@@ -76,6 +88,101 @@ struct ViewerSettings
      * @brief The tone mapping operator to use.
      */
     ToneMapping toneMapping = ToneMapping::ACES_HILL;
+
+    /**
+     * @brief The background color of the canvas.
+     */
+    vcl::Color backgroundColor = vcl::Color::DarkGray;
+
+    /**
+     * @brief The path to the panorama environment map.
+     */
+    std::string panoramaPath = "";
+
+    /**
+     * @brief Global actions registered by the viewer or editors.
+     */
+    ViewerGlobalActionMap globalActionMap {"Viewer Global Actions"};
+
+    /**
+     * @brief Resets the settings to their default values.
+     */
+    void resetDefaults()
+    {
+        TrackballSettings::resetDefaults();
+        renderMode               = RenderMode::CLASSIC;
+        imageBasedLighting       = false;
+        renderBackgroundPanorama = false;
+        exposure                 = 1.0f;
+        toneMapping              = ToneMapping::ACES_HILL;
+        backgroundColor          = vcl::Color::DarkGray;
+        panoramaPath             = "";
+        globalActionMap.resetToDefaults();
+    }
+
+    /**
+     * @brief Loads the settings from a JSON object.
+     * @param[in] j: the JSON object to read from.
+     */
+    void loadSettings(const nlohmann::json& j)
+    {
+        TrackballSettings::loadSettings(j);
+        globalActionMap.loadSettings(j);
+        if (j.contains("Viewer Settings")) {
+            const auto& js = j["Viewer Settings"];
+            renderMode     = static_cast<RenderMode>(
+                js.value("renderMode", static_cast<int>(renderMode)));
+            imageBasedLighting =
+                js.value("imageBasedLighting", imageBasedLighting);
+            renderBackgroundPanorama =
+                js.value("renderBackgroundPanorama", renderBackgroundPanorama);
+            exposure    = js.value("exposure", exposure);
+            toneMapping = static_cast<ToneMapping>(
+                js.value("toneMapping", static_cast<int>(toneMapping)));
+            backgroundColor = js.value("backgroundColor", backgroundColor);
+            panoramaPath    = js.value("panoramaPath", panoramaPath);
+        }
+    }
+
+    /**
+     * @brief Saves the settings to a JSON object.
+     * @param[out] j: the JSON object to write to.
+     */
+    void saveSettings(nlohmann::json& j) const
+    {
+        TrackballSettings::saveSettings(j);
+        globalActionMap.saveSettings(j);
+
+        auto& js                       = j["Viewer Settings"];
+        js["renderMode"]               = static_cast<int>(renderMode);
+        js["imageBasedLighting"]       = imageBasedLighting;
+        js["renderBackgroundPanorama"] = renderBackgroundPanorama;
+        js["exposure"]                 = exposure;
+        js["toneMapping"]              = static_cast<int>(toneMapping);
+        js["backgroundColor"]          = backgroundColor;
+        js["panoramaPath"]             = panoramaPath;
+    }
+
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
+    std::vector<std::reference_wrapper<AbstractInputActionMap>> actionMaps()
+    {
+        auto res = TrackballSettings::actionMaps();
+        res.push_back(globalActionMap);
+        return res;
+    }
+
+    /**
+     * @brief Retrieves the action maps associated with the viewer.
+     */
+    std::vector<std::reference_wrapper<const AbstractInputActionMap>>
+    actionMaps() const
+    {
+        auto res = TrackballSettings::actionMaps();
+        res.push_back(globalActionMap);
+        return res;
+    }
 };
 
 } // namespace vcl

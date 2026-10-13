@@ -17,30 +17,26 @@ void initCleanAlgorithms(pybind11::module& m)
     namespace py = pybind11;
     using namespace py::literals;
 
-    auto fAllMeshes =
-        []<MeshConcept MeshType>(pybind11::module& m, MeshType = MeshType()) {
-            m.def(
-                "remove_unreferenced_vertices",
-                [](MeshType& m) -> uint {
-                    return removeUnreferencedVertices(m);
-                },
-                "mesh"_a);
+    auto fAllMeshes = []<MeshConcept MeshType>(
+                          pybind11::module& m, MeshType = MeshType()) {
+        m.def(
+            "remove_unreferenced_vertices",
+            [](MeshType& m) -> uint { return removeUnreferencedVertices(m); },
+            "mesh"_a);
 
-            m.def(
-                "remove_duplicate_vertices",
-                [](MeshType& m) -> uint {
-                    return removeDuplicateVertices(m);
-                },
-                "mesh"_a);
+        m.def(
+            "remove_duplicate_vertices",
+            [](MeshType& m) -> uint { return removeDuplicateVertices(m); },
+            "mesh"_a);
 
-            m.def(
-                "remove_degenerate_vertices",
-                [](MeshType& m, bool deleteAlsoFaces) -> uint {
-                    return removeDegenerateVertices(m, deleteAlsoFaces);
-                },
-                "mesh"_a,
-                "delete_also_faces"_a);
-        };
+        m.def(
+            "remove_degenerate_vertices",
+            [](MeshType& m, bool deleteAlsoIncidentElements) -> uint {
+                return removeDegenerateVertices(m, deleteAlsoIncidentElements);
+            },
+            "mesh"_a,
+            "delete_also_incident_elements"_a);
+    };
 
     defForAllMeshTypes(m, fAllMeshes);
 
@@ -48,16 +44,12 @@ void initCleanAlgorithms(pybind11::module& m)
                            pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "remove_duplicate_faces",
-            [](MeshType& m) -> uint {
-                return removeDuplicateFaces(m);
-            },
+            [](MeshType& m) -> uint { return removeDuplicateFaces(m); },
             "mesh"_a);
 
         m.def(
             "remove_degenerate_faces",
-            [](MeshType& m) -> uint {
-                return removeDegenerateFaces(m);
-            },
+            [](MeshType& m) -> uint { return removeDegenerateFaces(m); },
             "mesh"_a);
     };
 

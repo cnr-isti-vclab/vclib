@@ -8,6 +8,10 @@
 #ifndef VCL_RENDER_SELECTION_SELECTION_MODE_H
 #define VCL_RENDER_SELECTION_SELECTION_MODE_H
 
+#include <stdexcept>
+#include <string>
+#include <variant>
+
 namespace vcl {
 
 /**
@@ -19,34 +23,11 @@ namespace vcl {
 enum class SelectionPrimitive { VERTEX, FACE };
 
 /**
- * @brief The selection operation to perform.
+ * @brief Atomic selection operations that do not require spatial input.
  *
- * This enum defines how a selection interacts with the current selection state.
- * The actions fall into two categories:
- *
- *   1. Box-based actions (REGULAR, ADD, SUBTRACT) - these require a
- *      user-drawn selection box (e.g. rectangle or lasso) to determine
- *      which primitives are affected.
- *
- *   2. Atomic actions (ALL, NONE, INVERT) - these operate on the entire
- *      selection set without needing any spatial input.
+ * These operate on the entire selection set without needing any selection box.
  */
-enum class SelectionAction {
-    REGULAR, ///< Replace the current selection with primitives inside the
-             ///< selection box. This is the default interaction: clicking and
-             ///< dragging a box selects only the primitives that fall within
-             ///< it, clearing any previous selection.
-
-    ADD, ///< Add primitives inside the selection box to the existing selection.
-         ///< Primitives already selected remain selected; new ones inside the
-         ///< box are appended to the selection set. Typically triggered with a
-         ///< modifier key (e.g. Ctrl+drag).
-
-    SUBTRACT, ///< Remove primitives inside the selection box from the existing
-              ///< selection. Primitives that fall within the box are
-              ///< deselected; others remain unaffected. Typically triggered
-              ///< with a modifier key (e.g. Ctrl+Shift+drag).
-
+enum class SelectionAtomicAction {
     ALL, ///< Select all primitives of the specified type, regardless of
          ///< visibility or position. No selection box is needed or used.
 
@@ -60,6 +41,75 @@ enum class SelectionAction {
            ///< everything except what is currently chosen.
 };
 
+inline std::string toString(SelectionAtomicAction action)
+{
+    switch (action) {
+    case SelectionAtomicAction::ALL: return "Select All";
+    case SelectionAtomicAction::NONE: return "Deselect All";
+    case SelectionAtomicAction::INVERT: return "Invert Selection";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, SelectionAtomicAction& out)
+{
+    if (str == "Select All")
+        out = SelectionAtomicAction::ALL;
+    else if (str == "Deselect All")
+        out = SelectionAtomicAction::NONE;
+    else if (str == "Invert Selection")
+        out = SelectionAtomicAction::INVERT;
+    else
+        throw std::invalid_argument(
+            "Invalid SelectionAtomicAction string: " + str);
+}
+
+/**
+ * @brief Box-based selection operations.
+ *
+ * These require a user-drawn selection box (e.g. rectangle or lasso) to
+ * determine which primitives are affected.
+ */
+enum class SelectionDragAction {
+    REGULAR, ///< Replace the current selection with primitives inside the
+             ///< selection box. This is the default interaction: clicking and
+             ///< dragging a box selects only the primitives that fall within
+             ///< it, clearing any previous selection.
+
+    ADD, ///< Add primitives inside the selection box to the existing selection.
+         ///< Primitives already selected remain selected; new ones inside the
+         ///< box are appended to the selection set. Typically triggered with a
+         ///< modifier key (e.g. Ctrl+drag).
+
+    SUBTRACT ///< Remove primitives inside the selection box from the existing
+             ///< selection. Primitives that fall within the box are
+             ///< deselected; others remain unaffected. Typically triggered
+             ///< with a modifier key (e.g. Ctrl+Shift+drag).
+};
+
+inline std::string toString(SelectionDragAction action)
+{
+    switch (action) {
+    case SelectionDragAction::REGULAR: return "Regular Selection";
+    case SelectionDragAction::ADD: return "Add to Selection";
+    case SelectionDragAction::SUBTRACT: return "Subtract from Selection";
+    default: return "Unknown";
+    }
+}
+
+inline void fromString(const std::string& str, SelectionDragAction& out)
+{
+    if (str == "Regular Selection")
+        out = SelectionDragAction::REGULAR;
+    else if (str == "Add to Selection")
+        out = SelectionDragAction::ADD;
+    else if (str == "Subtract from Selection")
+        out = SelectionDragAction::SUBTRACT;
+    else
+        throw std::invalid_argument(
+            "Invalid SelectionDragAction string: " + str);
+}
+
 /**
  * @brief Describes a single selection operation.
  *
@@ -70,13 +120,17 @@ enum class SelectionAction {
  *                meaningful for faces)
  *
  * Braced initialization:
- *   SelectionMode mode{SelectionPrimitive::FACE, SelectionAction::ADD, true};
+ *   SelectionMode mode{SelectionPrimitive::FACE, SelectionDragAction::ADD,
+ * true};
  */
 class SelectionMode
 {
 public:
+    using SelectionAction =
+        std::variant<SelectionDragAction, SelectionAtomicAction>;
+
     SelectionPrimitive primitive = SelectionPrimitive::VERTEX;
-    SelectionAction    action    = SelectionAction::REGULAR;
+    SelectionAction    action    = SelectionDragAction::REGULAR;
     bool               visible   = false;
 
     SelectionMode() = default;
@@ -92,12 +146,19 @@ public:
     /// Returns true for ALL / NONE / INVERT actions (no selection box needed).
     constexpr bool isAtomicAction() const
     {
-        switch (action) {
-        case SelectionAction::ALL:
-        case SelectionAction::NONE:
-        case SelectionAction::INVERT: return true;
-        default: return false;
-        }
+        return std::holds_alternative<SelectionAtomicAction>(action);
+    }
+
+    constexpr bool isAction(SelectionDragAction a) const
+    {
+        return std::holds_alternative<SelectionDragAction>(action) &&
+               std::get<SelectionDragAction>(action) == a;
+    }
+
+    constexpr bool isAction(SelectionAtomicAction a) const
+    {
+        return std::holds_alternative<SelectionAtomicAction>(action) &&
+               std::get<SelectionAtomicAction>(action) == a;
     }
 
     constexpr bool isVertexSelection() const

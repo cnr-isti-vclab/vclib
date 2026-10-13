@@ -7,19 +7,44 @@
 
 # the following examples are the same of the ones in the core module,
 # but they add a viewer at the end in order to visualize the results
-add_subdirectory(000-mesh-io)
-add_subdirectory(001-mesh-basics)
-add_subdirectory(003-mesh-creation)
-add_subdirectory(004-mesh-copy-and-transform)
-add_subdirectory(008-polymesh-specifics)
-add_subdirectory(009-mesh-custom-components)
-add_subdirectory(010-mesh-matrix-conversion)
-add_subdirectory(011-mesh-texture-and-texcoords)
-add_subdirectory(013-mesh-clean)
-add_subdirectory(014-mesh-smoothing)
-add_subdirectory(015-mesh-curvature)
-add_subdirectory(016-face-flooding)
-add_subdirectory(017-mesh-convex-hull)
-add_subdirectory(019-mesh-point-sampling)
-add_subdirectory(020-mesh-crease-edges)
-add_subdirectory(021-mesh-sphere-intersection)
+# Automatically find and add all core render examples.
+# For each directory, we check if it's a valid example by looking for a main.cpp file.
+# If a requirements.cmake is present, we include it to read EXAMPLE_REQUIRED_TARGETS
+# and ensure all required targets are available before adding the subdirectory.
+file(
+    GLOB RENDER_CORE_EXAMPLE_DIRS
+    RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*"
+)
+foreach(dir IN LISTS RENDER_CORE_EXAMPLE_DIRS)
+    if(IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/main.cpp")
+            # Reset required targets for this iteration
+            set(EXAMPLE_REQUIRED_TARGETS "")
+            if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+                include("${CMAKE_CURRENT_SOURCE_DIR}/${dir}/requirements.cmake")
+            endif()
+
+            # Verify if all the required targets (e.g., 3rd party libraries) exist
+            set(REQUIREMENTS_MET TRUE)
+            set(UNMET_REQ_PRINT "")
+            foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)
+                if(NOT TARGET ${req})
+                    set(REQUIREMENTS_MET FALSE)
+                    string(REPLACE "vclib-3rd-" "" req_print ${req})
+                    list(APPEND UNMET_REQ_PRINT ${req_print})
+                endif()
+            endforeach()
+
+            if(REQUIREMENTS_MET)
+                add_subdirectory("${dir}")
+            else()
+                message(
+                    STATUS
+                    "Skipping ${dir} due to missing req: "
+                    "${UNMET_REQ_PRINT}"
+                )
+            endif()
+        endif()
+    endif()
+endforeach()
