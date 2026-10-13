@@ -34,7 +34,7 @@ int main(int argc, char** argv)
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"
     };
 
-    uint selectedExample = DAMAGED_HELMET;
+    uint selectedExample = METAL_ROUGH_SPHERES;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
