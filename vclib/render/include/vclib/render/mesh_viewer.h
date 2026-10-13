@@ -12,19 +12,77 @@
 #include "concepts/mesh_viewer.h"
 #include "editors.h"
 
+#include <vclib/render/headless_mesh_viewer.h>
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/render/settings/render_mode.h>
 
 #ifdef VCLIB_WITH_QT
 #include <vclib/qt/mesh_viewer.h>
-#elif VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
+#endif
+#if VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
 #include <vclib/imgui/mesh_viewer.h>
 #endif
 
 #include <type_traits>
 
 namespace vcl {
+
+enum class MeshViewerType { QT, IMGUI_GLFW, HEADLESS, DEFAULT };
+
+namespace detail {
+
+template<MeshViewerType VwrType>
+consteval auto meshViewerType()
+{
+    if constexpr (VwrType == MeshViewerType::QT) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::MeshViewer> {};
+#else
+        static_assert(
+            false,
+            "Qt is not available. Please enable Qt support to use MeshViewer.");
+#endif
+    }
+    else if constexpr (VwrType == MeshViewerType::IMGUI_GLFW) {
+#if VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
+        return std::type_identity<imgui::MeshViewer> {};
+#else
+        static_assert(
+            false,
+            "GLFW+ImGui is not available. Please enable GLFW and ImGui support "
+            "to use MeshViewer.");
+#endif
+    }
+    else if constexpr (VwrType == MeshViewerType::HEADLESS) {
+        return std::type_identity<HeadlessMeshViewer> {};
+    }
+    else if constexpr (VwrType == MeshViewerType::DEFAULT) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::MeshViewer> {};
+#elif VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
+        return std::type_identity<imgui::MeshViewer> {};
+#else
+        return std::type_identity<HeadlessMeshViewer> {};
+#endif
+    }
+}
+
+// given a MeshViewerType, return the corresponding ApplicationType
+constexpr ApplicationType toApplicationType(MeshViewerType vwr)
+{
+    switch (vwr) {
+    case MeshViewerType::QT: return ApplicationType::QT;
+    case MeshViewerType::IMGUI_GLFW: return ApplicationType::GLFW;
+    case MeshViewerType::HEADLESS: return ApplicationType::HEADLESS;
+    case MeshViewerType::DEFAULT: return ApplicationType::DEFAULT;
+    }
+}
+
+} // namespace detail
+
+template<MeshViewerType VwrType = MeshViewerType::DEFAULT>
+using MeshViewerT = typename decltype(detail::meshViewerType<VwrType>())::type;
 
 /**
  * @brief The MeshViewer class is an alias to the default mesh viewer class
@@ -39,30 +97,7 @@ namespace vcl {
  * - Else, a compilation error is triggered if no GUI toolkit is available
  *   and a MeshViewer instance is created.
  */
-
-#ifdef VCLIB_WITH_QT
-
-using MeshViewer = qt::MeshViewer;
-
-#elif VCLIB_WITH_GLFW && VCLIB_WITH_IMGUI
-
-using MeshViewer = imgui::MeshViewer;
-
-#else // No Qt and no ImGui
-
-// define an unusable MeshViewer to trigger a compilation error
-struct MeshViewer
-{
-    MeshViewer()
-    {
-        static_assert(
-            false,
-            "No GUI library available for MeshViewer type definition. "
-            "Please allow usage of Qt or GLFW+ImGui.");
-    }
-};
-
-#endif // VCLIB_WITH_QT
+using MeshViewer = MeshViewerT<MeshViewerType::DEFAULT>;
 
 inline void pushDefaultEditors(MeshViewerConcept auto& viewer)
 {
@@ -129,21 +164,27 @@ void showOnMeshViewer(
     viewer.showMaximized();
 }
 
-template<MeshConcept... MeshTypes>
+template<MeshViewerType MVT = MeshViewerType::DEFAULT, MeshConcept... MeshTypes>
 int showOnMeshViewer(int argc, char** argv, MeshTypes&&... meshes)
 {
-    Application app(argc, argv);
+    ApplicationT<detail::toApplicationType(MVT)> app(argc, argv);
 
-    MeshViewer viewer;
+    MeshViewerT<MVT> viewer;
 
     pushDefaultEditors(viewer);
 
     showOnMeshViewer(argc, argv, viewer, std::forward<MeshTypes>(meshes)...);
 
+    if constexpr (MVT == MeshViewerType::HEADLESS) {
+        viewer.screenshot("HeadlessMeshViewerScreenShot.png");
+    }
+
     return app.exec();
 }
 
-template<vcl::MeshConcept MeshTypes>
+template<
+    MeshViewerType   MVT = MeshViewerType::DEFAULT,
+    vcl::MeshConcept MeshTypes>
 int showOnMeshViewer(
     int                      argc,
     char**                   argv,
@@ -151,14 +192,18 @@ int showOnMeshViewer(
     RenderMode               renderMode = RenderMode::CLASSIC,
     const std::string&       panorama   = "")
 {
-    Application app(argc, argv);
+    ApplicationT<detail::toApplicationType(MVT)> app(argc, argv);
 
-    MeshViewer viewer;
+    MeshViewerT<MVT> viewer;
 
     pushDefaultEditors(viewer);
 
     showOnMeshViewer(
         argc, argv, viewer, std::move(meshes), renderMode, panorama);
+
+    if constexpr (MVT == MeshViewerType::HEADLESS) {
+        viewer.screenshot("HeadlessMeshViewerScreenShot.png");
+    }
 
     return app.exec();
 }

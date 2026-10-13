@@ -98,16 +98,18 @@ inline void* getDisplayId()
 {
     void* displayId = nullptr;
 #ifdef Q_OS_LINUX
-    // Get the display ID depending on whether the system is using X11 or
-    // Wayland
-    if (auto x11App =
-            qApp->nativeInterface<QNativeInterface::QX11Application>()) {
-        displayId = x11App->display();
-    }
-    else if (
-        auto wayApp =
-            qApp->nativeInterface<QNativeInterface::QWaylandApplication>()) {
-        displayId = wayApp->display();
+    if (qApp) { // if the QApplication instance is created
+        // Get the display ID depending on whether the system is using X11 or
+        // Wayland
+        if (auto x11App =
+                qApp->nativeInterface<QNativeInterface::QX11Application>()) {
+            displayId = x11App->display();
+        }
+        else if (
+            auto wayApp = qApp->nativeInterface<
+                          QNativeInterface::QWaylandApplication>()) {
+            displayId = wayApp->display();
+        }
     }
 #endif
     return displayId;
