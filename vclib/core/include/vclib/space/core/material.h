@@ -192,13 +192,10 @@ public:
      * This scales the emissive color of the material.
      * @return The emissive strength factor.
      */
-    float emissiveStrength() const { return mEmissiveStrength; }
-
-    /**
-     * @brief Gets a mutable reference to the emissive strength.
-     * @return A reference to the emissive strength.
-     */
-    float& emissiveStrength() { return mEmissiveStrength; }
+    decltype(auto) emissiveStrength(this auto&& self)
+    {
+        return (self.mEmissiveStrength);
+    }
 
     /**
      * @brief Gets the texture descriptor for the base color texture.
