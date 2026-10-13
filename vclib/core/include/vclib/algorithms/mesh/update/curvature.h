@@ -264,7 +264,7 @@ void updatePrincipalCurvaturePCA(
         PositionType         bp, eigenvalues;
         if (montecarloSampling) {
             Sphere s(v.position(), radius);
-            auto vec = pGrid.valuesInSphere(s); // vector of iterators
+            auto   vec = pGrid.valuesInSphere(s); // vector of iterators
             std::vector<PositionType> points;
             points.reserve(vec.size());
             for (const auto& it : vec) {

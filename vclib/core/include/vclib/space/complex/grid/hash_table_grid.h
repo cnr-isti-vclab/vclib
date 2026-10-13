@@ -137,7 +137,6 @@ public:
         return self.mMap.equal_range(k);
     }
 
-
     void clear() { mMap.clear(); }
 
     bool eraseAllInCell(const KeyType& k)

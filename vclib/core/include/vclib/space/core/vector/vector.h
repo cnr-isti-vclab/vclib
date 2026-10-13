@@ -223,7 +223,10 @@ public:
      * @throws std::out_of_range If `i` is not within the range of valid indices
      * for the Vector.
      */
-    decltype(auto) at(this auto&& self, uint i) { return self.mContainer.at(i); }
+    decltype(auto) at(this auto&& self, uint i)
+    {
+        return self.mContainer.at(i);
+    }
 
     /**
      * @brief Access the specified element, computing first the module of the

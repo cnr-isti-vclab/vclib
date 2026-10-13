@@ -765,9 +765,7 @@ private:
         registerGlobalAction(
             "Toggle Editors Events",
             {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                toggleEditorsEventsEnabled();
-            });
+            [this]() { toggleEditorsEventsEnabled(); });
 
         registerGlobalAction(
             "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
@@ -786,9 +784,7 @@ private:
             });
 
         registerGlobalAction(
-            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
-                undo();
-            });
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() { undo(); });
 
         registerGlobalAction(
             "Redo",
@@ -796,9 +792,7 @@ private:
                 {Key::Y, {KeyModifier::CONTROL}                    },
                 {Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}}
         },
-            [this]() {
-                redo();
-            });
+            [this]() { redo(); });
 
         registerGlobalAction(
             "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {

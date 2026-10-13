@@ -152,8 +152,8 @@ public:
             while (i < self.mValues.size() && self.mValues[i].first == ind) {
                 i++;
             }
-            auto it = i < self.mValues.size() ? self.mValues.begin() + i :
-                                                self.mValues.end();
+            auto it  = i < self.mValues.size() ? self.mValues.begin() + i :
+                                                 self.mValues.end();
             p.second = It(it, static_cast<const GridType&>(self));
             return p;
         }

@@ -434,13 +434,9 @@ public:
         float tFar  = std::numeric_limits<float>::infinity()) const
         requires Ray3Concept<std::ranges::range_value_t<R>>
     {
-        auto getOriginView = [](const auto& r) {
-            return r.origin();
-        };
+        auto getOriginView = [](const auto& r) { return r.origin(); };
 
-        auto getDirectionView = [](const auto& r) {
-            return r.direction();
-        };
+        auto getDirectionView = [](const auto& r) { return r.direction(); };
 
         auto origins    = rays | std::views::transform(getOriginView);
         auto directions = rays | std::views::transform(getDirectionView);

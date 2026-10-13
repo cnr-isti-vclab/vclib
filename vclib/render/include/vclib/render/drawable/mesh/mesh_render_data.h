@@ -26,7 +26,8 @@ namespace vcl {
  * The class uses C++23 explicit object parameters ("deducing this") to allow
  * this class to call functions to set the buffers (that are managed by the
  * derived class, since they depend on the rendering backend used) when the
- * user requires to update the mesh data (that may be all the data, or a subset).
+ * user requires to update the mesh data (that may be all the data, or a
+ * subset).
  *
  * It also provides a set of protected functions that may be used by the derived
  * class to fill the buffers in a consistent way, managing automatically all the

@@ -57,7 +57,8 @@ consteval auto toApplicationType()
 #ifdef VCLIB_WITH_GLFW
         return std::type_identity<glfw::Application> {};
 #else
-        static_assert(false, "GLFW is not available. Please enable GLFW support.");
+        static_assert(
+            false, "GLFW is not available. Please enable GLFW support.");
 #endif
     }
     else if constexpr (AppType == ApplicationType::HEADLESS) {
