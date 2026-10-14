@@ -49,12 +49,15 @@ int loadGltfPrimitiveMaterial(
         int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
             occlusionTextureId, emissiveTextureId;
 
+        // extensions data
         double clearcoat = 0.0;
         double clearcoatRoughness = 0.0;
         double clearcoatNormalScale = 1.0;
         int clearcoatTextureId = -1;
         int clearcoatRoughnessTextureId = -1;
         int clearcoatNormalTextureId = -1;
+
+        double emissiveStrength = 1.0f;
 
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -116,6 +119,7 @@ int loadGltfPrimitiveMaterial(
         // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
 
+        // extensions
         // clearcoat
         if(mat.extensions.contains("KHR_materials_clearcoat")) {
             const auto& clearcoatExt = mat.extensions.at("KHR_materials_clearcoat");
@@ -154,6 +158,18 @@ int loadGltfPrimitiveMaterial(
                     clearcoatNormalScale = clearcoatNormalTexture
                         .Get("scale")
                         .GetNumberAsDouble();
+            }
+        }
+
+        // KHR_materials_emissive_strength
+        {
+            static const std::string EXT = "KHR_materials_emissive_strength";
+            static const std::string VAL = "emissiveStrength";
+            if (mat.extensions.contains(EXT)) {
+                const auto& emissiveStrengthExt = mat.extensions.at(EXT);
+                if (emissiveStrengthExt.Has(VAL))
+                    emissiveStrength =
+                        emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
             }
         }
 
@@ -230,6 +246,7 @@ int loadGltfPrimitiveMaterial(
             mat.doubleSided()          = doubleSided;
             mat.normalScale()          = normalScale;
             mat.occlusionStrength()    = occlusionStrength;
+            mat.emissiveStrength()     = emissiveStrength;
             mat.clearcoat()            = clearcoat;
             mat.clearcoatRoughness()   = clearcoatRoughness;
             mat.clearcoatNormalScale() = clearcoatNormalScale;

@@ -23,6 +23,7 @@ int main(int argc, char** argv)
         DAMAGED_HELMET,
         CLEARCOAT_CAR_PAINT,
         CLEARCOAT_WICKER,
+        COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
 
@@ -33,7 +34,8 @@ int main(int argc, char** argv)
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/ClearCoatCarPaint/ClearCoatCarPaint.gltf",
-        "/gltf/ClearcoatWicker/ClearcoatWicker.gltf"};
+        "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
+        "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
     uint selectedExample = CLEARCOAT_CAR_PAINT;
 
@@ -124,6 +126,8 @@ int main(int argc, char** argv)
             std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
                       << std::endl;
             std::cout << "  clearcoatNormalScale: " << mat.clearcoatNormalScale()
+                      << std::endl;
+            std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);
