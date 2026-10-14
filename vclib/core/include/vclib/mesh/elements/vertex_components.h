@@ -14,6 +14,7 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
+#include "../components/gaussian_splat.h"
 #include "../components/mark.h"
 #include "../components/material_index.h"
 #include "../components/normal.h"
@@ -70,6 +71,10 @@ template<typename T>
 concept HasOptionalColor = comp::HasOptionalColor<T>;
 template<typename T>
 concept HasCustomComponents = comp::HasCustomComponents<T>;
+template<typename T>
+concept HasGaussianSplat = comp::HasGaussianSplat<T>;
+template<typename T>
+concept HasOptionalGaussianSplat = comp::HasOptionalGaussianSplat<T>;
 template<typename T>
 concept HasPosition = comp::HasPosition<T>;
 template<typename T>
@@ -237,6 +242,33 @@ using OptionalColor = comp::Color<ParentVertexType, true>;
 /* Port CustomComponents class into vert namespace */
 template<typename ParentVertexType>
 using CustomComponents = comp::CustomComponents<ParentVertexType>;
+
+/* Port GaussianSplat class into vert namespace */
+template<typename ScalarType>
+using GaussianSplat = comp::GaussianSplat<ScalarType>;
+
+using GaussianSplatf = comp::GaussianSplatf<>;
+using GaussianSplatd = comp::GaussianSplatd<>;
+
+template<typename ScalarType, typename ParentVertexType>
+using VerticalGaussianSplat =
+    comp::GaussianSplat<ScalarType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalGaussianSplatf = comp::GaussianSplatf<ParentVertexType>;
+template<typename ParentVertexType>
+using VerticalGaussianSplatd = comp::GaussianSplatd<ParentVertexType>;
+
+template<typename ScalarType, typename ParentVertexType>
+using OptionalGaussianSplat =
+    comp::GaussianSplat<ScalarType, ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalGaussianSplatf =
+    comp::GaussianSplatf<ParentVertexType, true>;
+template<typename ParentVertexType>
+using OptionalGaussianSplatd =
+    comp::GaussianSplatd<ParentVertexType, true>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<>;

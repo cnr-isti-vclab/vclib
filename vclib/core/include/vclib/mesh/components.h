@@ -15,6 +15,7 @@
 #include "components/bounding_box.h"
 #include "components/color.h"
 #include "components/custom_components.h"
+#include "components/gaussian_splat.h"
 #include "components/mark.h"
 #include "components/material_index.h"
 #include "components/materials.h"
