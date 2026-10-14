@@ -133,7 +133,7 @@ void main()
         emissiveTexture = emissiveTex(texcoord).rgb;
     }
 
-    vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
+    vec3 emissiveColor = u_emissiveFactor * emissiveTexture * u_emissiveStrength;
 
     float anisotropyStrength = u_anisotropyStrength;
     vec2 anisotropyRotation, anisotropyDirection;

@@ -23,6 +23,7 @@ int main(int argc, char** argv)
         DAMAGED_HELMET,
         ANISOTROPY_ROTATION_TEST,
         CARBON_FIBRE,
+        COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
 
@@ -33,9 +34,10 @@ int main(int argc, char** argv)
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
-        "/gltf/CarbonFibre/CarbonFibre.gltf"};
+        "/gltf/CarbonFibre/CarbonFibre.gltf",
+        "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = CARBON_FIBRE;
+    uint selectedExample = ANISOTROPY_ROTATION_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -115,6 +117,8 @@ int main(int argc, char** argv)
             std::cout << "  anisotropyStrength: " << mat.anisotropyStrength()
                       << std::endl;
             std::cout << "  anisotropyRotation: " << mat.anisotropyRotation()
+                      << std::endl;
+            std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);

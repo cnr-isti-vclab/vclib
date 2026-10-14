@@ -49,9 +49,11 @@ int loadGltfPrimitiveMaterial(
         int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
             occlusionTextureId, emissiveTextureId;
 
+        // extensions data
         double anisotropyStrength = 0.0;
         double anisotropyRotation = 0.0;
         int anisotropyTextureId = -1;
+        double emissiveStrength = 1.0f;
 
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -113,29 +115,44 @@ int loadGltfPrimitiveMaterial(
         // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
 
-        // anisotropy
-        if (mat.extensions.contains("KHR_materials_anisotropy")) {
-            const auto& anisotropyExt =
-                mat.extensions.at("KHR_materials_anisotropy");
+        // extensions
 
-            if (anisotropyExt.Has("anisotropyStrength")) {
-                anisotropyStrength = anisotropyExt
-                    .Get("anisotropyStrength")
-                    .GetNumberAsDouble();
-                anisotropyStrength = std::clamp(anisotropyStrength, 0.0, 1.0);
-            }
+        // KHR_materials_anisotropy
+        {
+            if (mat.extensions.contains("KHR_materials_anisotropy")) {
+                const auto& anisotropyExt =
+                    mat.extensions.at("KHR_materials_anisotropy");
 
-            if (anisotropyExt.Has("anisotropyRotation")) {
-                anisotropyRotation = anisotropyExt
-                    .Get("anisotropyRotation")
-                    .GetNumberAsDouble();
-            }
-
-            if (anisotropyExt.Has("anisotropyTexture")) {
-                auto& tex = anisotropyExt.Get("anisotropyTexture");
-                if (tex.Has("index")) {
-                    anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                if (anisotropyExt.Has("anisotropyStrength")) {
+                    anisotropyStrength = anisotropyExt.Get("anisotropyStrength")
+                                             .GetNumberAsDouble();
+                    anisotropyStrength =
+                        std::clamp(anisotropyStrength, 0.0, 1.0);
                 }
+
+                if (anisotropyExt.Has("anisotropyRotation")) {
+                    anisotropyRotation = anisotropyExt.Get("anisotropyRotation")
+                                             .GetNumberAsDouble();
+                }
+
+                if (anisotropyExt.Has("anisotropyTexture")) {
+                    auto& tex = anisotropyExt.Get("anisotropyTexture");
+                    if (tex.Has("index")) {
+                        anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                    }
+                }
+            }
+        }
+
+        // KHR_materials_emissive_strength
+        {
+            static const std::string EXT = "KHR_materials_emissive_strength";
+            static const std::string VAL = "emissiveStrength";
+            if (mat.extensions.contains(EXT)) {
+                const auto& emissiveStrengthExt = mat.extensions.at(EXT);
+                if (emissiveStrengthExt.Has(VAL))
+                    emissiveStrength =
+                        emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
             }
         }
 
@@ -214,6 +231,7 @@ int loadGltfPrimitiveMaterial(
             mat.occlusionStrength()  = occlusionStrength;
             mat.anisotropyStrength() = anisotropyStrength;
             mat.anisotropyRotation() = anisotropyRotation;
+            mat.emissiveStrength()   = emissiveStrength;
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
