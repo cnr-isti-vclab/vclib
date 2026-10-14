@@ -86,6 +86,13 @@ void initMaterial(pybind11::module& m)
         "set_occlusion_strength",
         [](Material& m, float v) { m.occlusionStrength() = v; },
         "occlusion_strength"_a);
+    c.def("emissive_strength", [](const Material& m) {
+        return m.emissiveStrength();
+    });
+    c.def(
+        "set_emissive_strength",
+        [](Material& m, float v) { m.emissiveStrength() = v; },
+        "emissive_strength"_a);
     c.def("base_color_texture_descriptor", [](const Material& m) {
         return m.baseColorTextureDescriptor();
     });
