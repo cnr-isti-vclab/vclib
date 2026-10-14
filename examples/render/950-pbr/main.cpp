@@ -22,6 +22,7 @@ int main(int argc, char** argv)
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
         SPECULAR_TEST,
+        COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
 
@@ -31,7 +32,8 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
-        "/gltf/SpecularTest/SpecularTest.gltf"};
+        "/gltf/SpecularTest/SpecularTest.gltf",
+        "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
     uint selectedExample = SPECULAR_TEST;
 
@@ -115,6 +117,8 @@ int main(int argc, char** argv)
                       << std::endl;
             std::cout << "  specularFactor: " << mat.specular() << std::endl;
             std::cout << "  specularColorFactor: " << mat.specularColor()
+                      << std::endl;
+            std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
             printTextureInfo(mat, METALLIC_ROUGHNESS);

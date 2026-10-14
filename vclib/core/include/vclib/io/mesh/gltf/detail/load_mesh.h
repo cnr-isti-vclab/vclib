@@ -49,10 +49,12 @@ int loadGltfPrimitiveMaterial(
         int    baseColorTextureId, metallicRoughnessTextureId, normalTextureId,
             occlusionTextureId, emissiveTextureId;
 
+        // extensions data
         double specular = 1.0;
         Point3f specularColor = Point3f(1.0, 1.0, 1.0);
         int specularTextureId = -1;
         int specularColorTextureId = -1;
+        double emissiveStrength = 1.0f;
 
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -114,7 +116,8 @@ int loadGltfPrimitiveMaterial(
         // occlusionStrength
         occlusionStrength = mat.occlusionTexture.strength;
 
-        // specular
+        // extensions
+        // KHR_materials_specular
         if(mat.extensions.contains("KHR_materials_specular"))
         {
             const auto& specularExt = mat.extensions.at("KHR_materials_specular");
@@ -142,7 +145,18 @@ int loadGltfPrimitiveMaterial(
                     .Get("specularColorTexture")
                     .Get("index")
                     .GetNumberAsInt();
-
+        }
+        
+        // KHR_materials_emissive_strength
+        {
+            static const std::string EXT = "KHR_materials_emissive_strength";
+            static const std::string VAL = "emissiveStrength";
+            if (mat.extensions.contains(EXT)) {
+                const auto& emissiveStrengthExt = mat.extensions.at(EXT);
+                if (emissiveStrengthExt.Has(VAL))
+                    emissiveStrength =
+                        emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
+            }
         }
 
         // function to load a texture in a material
@@ -220,6 +234,7 @@ int loadGltfPrimitiveMaterial(
             mat.occlusionStrength() = occlusionStrength;
             mat.specular()          = specular;
             mat.specularColor()     = specularColor;
+            mat.emissiveStrength()  = emissiveStrength;
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(

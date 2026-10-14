@@ -132,7 +132,7 @@ void main()
         emissiveTexture = emissiveTex(texcoord).rgb;
     }
 
-    vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
+    vec3 emissiveColor = u_emissiveFactor * emissiveTexture * u_emissiveStrength;
 
     float specular = u_specularFactor;
     if (useTexture && isSpecularTextureAvailable())

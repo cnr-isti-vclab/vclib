@@ -18,7 +18,8 @@ TEST_CASE("PBR Rendering")
         "MetalRoughSpheres/MetalRoughSpheres.gltf",
         "CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
-        "SpecularTest/SpecularTest.gltf"};
+        "SpecularTest/SpecularTest.gltf",
+        "CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
     std::vector<float> angles = {0.0f, 3.14159265f / 4.0f};
 
     for (const auto& meshName : meshes) {
