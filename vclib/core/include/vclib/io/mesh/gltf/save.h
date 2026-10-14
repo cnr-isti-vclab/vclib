@@ -13,6 +13,8 @@
 
 #include <vclib/algorithms/mesh.h>
 
+#include <algorithm>
+
 #include <tiny_gltf.h>
 
 namespace vcl {
@@ -82,9 +84,9 @@ inline std::pair<uint, tinygltf::Accessor&> addGltfAccessor(
     accessor.componentType       = componentType;
     accessor.type                = type;
     // count = bytes / (comp_bytes * num_comp_in_type)
-    accessor.count = bufferView.second.byteLength /
-                     (tinygltf::GetComponentSizeInBytes(componentType) *
-                      tinygltf::GetNumComponentsInType(type));
+    accessor.count      = bufferView.second.byteLength /
+                          (tinygltf::GetComponentSizeInBytes(componentType) *
+                           tinygltf::GetNumComponentsInType(type));
     accessor.normalized = normalized;
 
     return {index, accessor};
@@ -376,6 +378,25 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
 
     // alphaCutoff
     tMaterial.alphaCutoff = material.alphaCutoff();
+
+    // extensions
+    // KHR_materials_emissive_strength
+    if (material.emissiveStrength() != 1.0f) {
+        static const std::string EXT = "KHR_materials_emissive_strength";
+        static const std::string VAL = "emissiveStrength";
+
+        tinygltf::Value::Object emissiveStrengthExt;
+        emissiveStrengthExt[VAL] =
+            tinygltf::Value(static_cast<double>(material.emissiveStrength()));
+        tMaterial.extensions[EXT] = tinygltf::Value(emissiveStrengthExt);
+
+        if (std::find(
+                model.extensionsUsed.begin(),
+                model.extensionsUsed.end(),
+                EXT) == model.extensionsUsed.end()) {
+            model.extensionsUsed.emplace_back(EXT);
+        }
+    }
 
     return {index, tMaterial};
 }
@@ -893,6 +914,11 @@ void saveGltf(
             settings.saveTextureImages, // saveTextureImages
         log);
 
+    std::string ext      = toLower(FileInfo::extension(filename));
+    bool        isBinary = (ext == ".glb")  ? true :
+                           (ext == ".gltf") ? false :
+                                              settings.binary;
+
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
         &model,
@@ -900,7 +926,7 @@ void saveGltf(
         settings.embedBuffers, // embedImages
         settings.embedBuffers, // embedBuffers
         true,                  // pretty print
-        settings.binary);      // write binary
+        isBinary);             // write binary
 
     if (!success)
         throw std::runtime_error(
@@ -965,6 +991,11 @@ void saveGltf(
             log);
     }
 
+    std::string ext      = toLower(FileInfo::extension(filename));
+    bool        isBinary = (ext == ".glb")  ? true :
+                           (ext == ".gltf") ? false :
+                                              settings.binary;
+
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
         &model,
@@ -972,7 +1003,7 @@ void saveGltf(
         settings.embedBuffers, // embedImages
         settings.embedBuffers, // embedBuffers
         true,                  // pretty print
-        settings.binary);      // write binary
+        isBinary);             // write binary
 
     if (!success)
         throw std::runtime_error(
