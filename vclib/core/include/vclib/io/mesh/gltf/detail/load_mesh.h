@@ -117,12 +117,11 @@ int loadGltfPrimitiveMaterial(
         {
             static const std::string EXT = "KHR_materials_emissive_strength";
             static const std::string VAL = "emissiveStrength";
-            if(mat.extensions.contains(EXT)) {
+            if (mat.extensions.contains(EXT)) {
                 const auto& emissiveStrengthExt = mat.extensions.at(EXT);
-                if(emissiveStrengthExt.Has(VAL))
-                    emissiveStrength = emissiveStrengthExt
-                        .Get(VAL)
-                        .GetNumberAsDouble();
+                if (emissiveStrengthExt.Has(VAL))
+                    emissiveStrength =
+                        emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
             }
         }
 

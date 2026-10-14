@@ -38,8 +38,7 @@ class MaterialUniforms
 
     // emissive color factor stored in RGB channels,
     // alpha stores the emissive strength
-    static inline std::array<float, 4> sEmissivePack =
-        {0.0, 0.0, 0.0, 1.0};
+    static inline std::array<float, 4> sEmissivePack = {0.0, 0.0, 0.0, 1.0};
 
     // alpha cutoff and maybe other alpha related settings can be stored here
     static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
@@ -81,7 +80,6 @@ public:
         sFactorsPack[1] = m.roughness();
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
-
 
         sEmissivePack[0] = m.emissiveColor().redF();
         sEmissivePack[1] = m.emissiveColor().greenF();
