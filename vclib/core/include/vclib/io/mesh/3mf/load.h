@@ -49,8 +49,37 @@ void load3mf(
         // Read the 3MF file into the model
         reader->ReadFromFile(filename);
 
-        // TODO
-        // Extract mesh objects from the model...
+        Lib3MF::PMeshObjectIterator mesh_it = model->GetMeshObjects();
+        mesh_it->MoveNext();
+        Lib3MF::PMeshObject mesh_3mf_format = mesh_it->GetCurrentMeshObject();
+
+        std::vector<Lib3MF::sPosition> vertices;
+        std::vector<Lib3MF::sTriangle> triangles;
+        mesh_3mf_format->GetVertices(vertices);
+        mesh_3mf_format->GetTriangleIndices(triangles);
+
+        auto mit = m.begin();
+        
+        using PositionType = typename MeshType::VertexType::PositionType;
+
+        (*mit).addVertices(mesh_3mf_format->GetVertexCount());
+        for(int i = 0; Lib3MF::sPosition vertex : vertices){
+            (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
+        }
+
+        if constexpr (HasFaces<MeshType>){
+            uint fi = (*mit).addFaces(mesh_3mf_format->GetTriangleCount());
+            for(Lib3MF::sTriangle triangle : triangles){
+                auto& f = (*mit).face(fi);
+                if constexpr (HasPolygons<MeshType>) {
+                    f.resizeVertices(3);
+                }
+                for(int j=0; j<3; ++j){
+                    f.setVertex(j, triangle.m_Indices[j]);
+                }
+            }
+        }
+
     }
     catch (Lib3MF::ELib3MFException& e) {
         throw CannotOpenFileException("Failed to load 3MF file: " + filename);
