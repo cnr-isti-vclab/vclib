@@ -68,6 +68,7 @@ void load3mf(
         (*mit).addVertices(mesh_3mf_format->GetVertexCount());
         for(int i = 0; Lib3MF::sPosition vertex : vertices){
             (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
+            ++i;
         }
         (*iit).setVertices();
 
@@ -81,6 +82,7 @@ void load3mf(
                 for(int j=0; j<3; ++j){
                     f.setVertex(j, triangle.m_Indices[j]);
                 }
+                ++fi;
             }
             (*iit).setTriangleMesh();
             (*iit).setFaces();
