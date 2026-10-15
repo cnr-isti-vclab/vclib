@@ -97,6 +97,22 @@ concept HasPerVertexColor =
     vert::HasColor<typename RemoveRef<MeshType>::VertexType>;
 
 /**
+ * @brief Concept that checks if a Mesh has the per Vertex GuassianSplat
+ * component.
+ *
+ * Evaluates to true if GaussianSplat is part of the Vertex element, whether it
+ * is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup vertex_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerVertexGaussianSplat =
+    HasVertices<MeshType> &&
+    vert::HasGaussianSplat<typename RemoveRef<MeshType>::VertexType>;
+
+/**
  * @brief Concept that checks if a Mesh has the per Vertex Mark component.
  *
  * Evaluates to true if Mark is part of the Vertex element, whether it is
@@ -280,6 +296,22 @@ bool enableIfPerVertexColorOptional(MeshType& m)
 {
     return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::COLOR>(
         m);
+}
+
+template<MeshConcept MeshType>
+bool isPerVertexGaussianSplatAvailable(const MeshType& m)
+{
+    return isPerElementComponentAvailable<
+        ElemId::VERTEX,
+        CompId::GAUSSIAN_SPLAT>(m);
+}
+
+template<MeshConcept MeshType>
+bool enableIfPerVertexGaussianSplatOptional(MeshType& m)
+{
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::GAUSSIAN_SPLAT>(m);
 }
 
 template<MeshConcept MeshType>

@@ -716,6 +716,48 @@ public:
         Base::template disableOptionalComponent<typename T::Color>();
     }
 
+    // GaussianSplat
+
+    /**
+     * @brief Checks if the vertex Optional GaussianSplat is enabled.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalGaussianSplat Component.
+     *
+     * @return true if the Optional GaussianSplat is enabled, false otherwise.
+     */
+    bool isPerVertexGaussianSplatEnabled() const
+        requires vert::HasOptionalGaussianSplat<T>
+    {
+        return Base::template isOptionalComponentEnabled<
+            typename T::GaussianSplat>();
+    }
+
+    /**
+     * @brief Enables the Optional GaussianSplat of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalGaussianSplat Component.
+     */
+    void enablePerVertexGaussianSplat()
+        requires vert::HasOptionalGaussianSplat<T>
+    {
+        Base::template enableOptionalComponent<typename T::GaussianSplat>();
+    }
+
+    /**
+     * @brief Container::disableVertexGaussianSplat disables the Optional
+     * GaussianSplat of the vertex.
+     *
+     * @note This function is available only if the Vertex Element has the
+     * OptionalGaussianSplat Component.
+     */
+    void disablePerVertexGaussianSplat()
+        requires vert::HasOptionalGaussianSplat<T>
+    {
+        Base::template disableOptionalComponent<typename T::GaussianSplat>();
+    }
+
     // Mark
 
     /**

@@ -12,6 +12,7 @@
 #include "components/adj_faces.h"
 #include "components/adj_vertices.h"
 #include "components/colors.h"
+#include "components/gaussian_splats.h"
 #include "components/normals.h"
 #include "components/positions.h"
 #include "components/principal_curvatures.h"
