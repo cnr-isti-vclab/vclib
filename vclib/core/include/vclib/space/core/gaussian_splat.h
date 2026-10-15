@@ -94,6 +94,30 @@ public:
     }
 
     /**
+     * @brief Returns a the logarithmic scale of the GaussianSplate object.
+     *
+     * @return The logarithmic scale of the GaussianSplate object.
+     */
+    PointType logScale() const {
+        PointType logScale;
+
+        logScale.at(0) = log(mScale.at(0));
+        logScale.at(1) = log(mScale.at(1));
+        logScale.at(2) = log(mScale.at(2));
+
+        return logScale;
+    }
+
+    /**
+     * @brief Sets the scale of the GaussianSplate object from a logarithmic scale.
+     */
+    void setScaleFromLogScale(const PointType& logScale) {
+        mScale[0] = exp(logScale.at(0));
+        mScale[1] = exp(logScale.at(1));
+        mScale[2] = exp(logScale.at(2));
+    }
+
+    /**
      * @brief Returns a reference to the rotation of the GaussianSplate object.
      *
      * @return A reference to the rotation of the GaussianSplate object.
