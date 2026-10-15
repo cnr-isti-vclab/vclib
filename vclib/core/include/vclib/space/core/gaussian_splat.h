@@ -191,12 +191,22 @@ public:
      * spherical harmonics coefficients of the GaussianSplat object.
      */
     template<typename... Scalars>
-    void setSHCoeff(Scalars... scalars) requires (sizeof...(scalars) == SHCoeffCount)
+    void setSHCoeffs(Scalars... scalars) requires (sizeof...(scalars) == SHCoeffCount)
     {
         ScalarType args[SHCoeffCount] = {static_cast<ScalarType>(scalars)...};
         for (uint i = 0; i < SHCoeffCount; i++)
             mSHCoeffs[i] = args[i];
     }
+
+    /**
+     * @brief Sets all the spherical harmonics coefficients of the
+     * GaussianSplat object by making a copy of the specified coefficients.
+     *
+     *
+     * @param[in] coeffs: The vector argument used to set the
+     * spherical harmonics coefficients of the GaussianSplat object.
+     */
+    void setSHCoeffs(const SHCoeffVecType& coeffs) { mSHCoeffs = coeffs; }
 };
 
 } // namespace vcl
