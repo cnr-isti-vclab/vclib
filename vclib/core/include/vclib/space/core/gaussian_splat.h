@@ -278,6 +278,23 @@ using GaussianSplatf = GaussianSplat<float>;
  */
 using GaussianSplatd = GaussianSplat<double>;
 
+/* Concepts */
+
+/**
+ * @brief A concept representing a GaussianSplat.
+ *
+ * The concept is satisfied when `T` is a class that instantiates or derives
+ * from a GaussianSplat class having any Scalar type.
+ *
+ * @tparam T: The type to be tested for conformity to the GaussianSplatConcept.
+ *
+ * @ingroup space_core
+ */
+template<typename T>
+concept GaussianSplatConcept = std::derived_from< // same type or derived type
+    std::remove_cvref_t<T>,
+    GaussianSplat<typename RemoveRef<T>::ScalarType>>;
+
 } // namespace vcl
 
 #endif // GAUSSIAN_SPLAT_H
