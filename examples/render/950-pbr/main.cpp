@@ -18,9 +18,11 @@ int main(int argc, char** argv)
     enum GLTFExamples {
         METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
         METAL_ROUGH_SPHERES,
-        NORMAL_TENGENT_MIRROR_TEST,
+        NORMAL_TANGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        ANISOTROPY_ROTATION_TEST,
+        CARBON_FIBRE,
         COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
@@ -31,9 +33,11 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
+        "/gltf/CarbonFibre/CarbonFibre.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = ANISOTROPY_ROTATION_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -53,7 +57,7 @@ int main(int argc, char** argv)
         "/panoramas/uffizi.hdr",
         "/panoramas/uffizi.ktx"};
 
-    uint selectedPanorama = UFFIZI_KTX;
+    uint selectedPanorama = COLOSSEUM_HDR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
@@ -74,6 +78,9 @@ int main(int argc, char** argv)
         }
         else if (type == EMISSIVE) {
             typeName = "emissive";
+        }
+        else if (type == ANISOTROPY) {
+            typeName = "anisotropy";
         }
 
         std::cout << "  " << typeName << "Texture: ";
@@ -107,6 +114,10 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  anisotropyStrength: " << mat.anisotropyStrength()
+                      << std::endl;
+            std::cout << "  anisotropyRotation: " << mat.anisotropyRotation()
+                      << std::endl;
             std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
@@ -114,6 +125,7 @@ int main(int argc, char** argv)
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, ANISOTROPY);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;

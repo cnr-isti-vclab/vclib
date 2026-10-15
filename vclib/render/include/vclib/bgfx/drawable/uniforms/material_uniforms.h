@@ -43,6 +43,8 @@ class MaterialUniforms
     // alpha cutoff and maybe other alpha related settings can be stored here
     static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
 
+    static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
+
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
         bgfx::UniformType::Vec4};
@@ -54,6 +56,9 @@ class MaterialUniforms
         bgfx::UniformType::Vec4};
     static inline StaticUniform sAlphaPackUniform {
         "u_alphaPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sAnisotropyPackUniform {
+        "u_anisotropyPack",
         bgfx::UniformType::Vec4};
 
 public:
@@ -81,6 +86,9 @@ public:
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
 
+        sAnisotropyPack[0] = m.anisotropyStrength();
+        sAnisotropyPack[1] = m.anisotropyRotation();
+
         sEmissivePack[0] = m.emissiveColor().redF();
         sEmissivePack[1] = m.emissiveColor().greenF();
         sEmissivePack[2] = m.emissiveColor().blueF();
@@ -91,6 +99,7 @@ public:
     {
         sBaseColorUniform.bind(sBaseColor.data());
         sFactorsPackUniform.bind(sFactorsPack.data());
+        sAnisotropyPackUniform.bind(sAnisotropyPack.data());
         sEmissivePackUniform.bind(sEmissivePack.data());
         sAlphaPackUniform.bind(sAlphaPack.data());
     }
