@@ -149,18 +149,8 @@ public:
      */
     Matrix33<ScalarType> covariance() const {
         Matrix33<ScalarType> rot = mRotation.normalized().toRotationMatrix();
-        Matrix33<ScalarType> sc2 = Matrix33<ScalarType>::Zero();
-
-        /*
-         *  Since the rotation matrix is diagonal, the matrix
-         *  multiplied by its transpose is the rotation matrix
-         *  with its diagonal coefficients squared.
-        */
-        sc2(0, 0) = mScale[0] * mScale[0];
-        sc2(1, 1) = mScale[1] * mScale[1];
-        sc2(2, 2) = mScale[2] * mScale[2];
-
-        return rot * sc2 * rot.transpose();
+        Matrix33<ScalarType> rs = rot * mScale.asDiagonal();
+        return rs * rs.transpose();
     }
 
     /**
