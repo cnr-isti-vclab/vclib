@@ -69,52 +69,28 @@ public:
     }
 
     /**
-     * @brief Returns a const reference to the maximum curvature direction.
-     * @return A const reference to the maximum curvature direction.
-     */
-    const Point3<Scalar>& maxDir() const { return mDir1; }
-
-    /**
      * @brief Returns a reference to the maximum curvature direction.
      * @return A reference to the maximum curvature direction.
      */
-    Point3<Scalar>& maxDir() { return mDir1; }
-
-    /**
-     * @brief Returns a const reference to the minimum curvature direction.
-     * @return A const reference to the minimum curvature direction.
-     */
-    const Point3<Scalar>& minDir() const { return mDir2; }
+    decltype(auto) maxDir(this auto&& self) { return (self.mDir1); }
 
     /**
      * @brief Returns a reference to the minimum curvature direction.
      * @return A reference to the minimum curvature direction.
      */
-    Point3<Scalar>& minDir() { return mDir2; }
-
-    /**
-     * @brief Returns a const reference to the maximum curvature value.
-     * @return A const reference to the maximum curvature value.
-     */
-    const Scalar& maxValue() const { return mK1; }
+    decltype(auto) minDir(this auto&& self) { return (self.mDir2); }
 
     /**
      * @brief Returns a reference to the maximum curvature value.
      * @return A reference to the maximum curvature value.
      */
-    Scalar& maxValue() { return mK1; }
-
-    /**
-     * @brief Returns a const reference to the minimum curvature value.
-     * @return A const reference to the minimum curvature value.
-     */
-    const Scalar& minValue() const { return mK2; }
+    decltype(auto) maxValue(this auto&& self) { return (self.mK1); }
 
     /**
      * @brief Returns a reference to the minimum curvature value.
      * @return A reference to the minimum curvature value.
      */
-    Scalar& minValue() { return mK2; }
+    decltype(auto) minValue(this auto&& self) { return (self.mK2); }
 
     /**
      * @brief Serializes the principal curvature to the given output stream.

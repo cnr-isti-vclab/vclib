@@ -32,10 +32,10 @@
 namespace vcl {
 
 template<MeshConcept Mesh>
-class MeshRenderBuffers : public MeshRenderData<MeshRenderBuffers<Mesh>>
+class MeshRenderBuffers : public MeshRenderData
 {
     using MeshType = Mesh;
-    using Base     = MeshRenderData<MeshRenderBuffers<MeshType>>;
+    using Base     = MeshRenderData;
     using MRI      = MeshRenderInfo;
 
     friend Base;

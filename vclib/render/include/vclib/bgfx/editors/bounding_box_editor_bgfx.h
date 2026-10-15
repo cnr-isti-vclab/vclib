@@ -36,9 +36,7 @@ public:
         Base::viewerRegisterGlobalAction(
             "Toggle Bounding Box",
             {Key::B, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                this->setActive(!this->isActive());
-            });
+            [this]() { this->setActive(!this->isActive()); });
     }
 
     BoundingBoxEditorSettings& settings() override { return mSettings; }

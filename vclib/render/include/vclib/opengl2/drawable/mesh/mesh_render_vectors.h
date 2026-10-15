@@ -21,10 +21,10 @@
 namespace vcl {
 
 template<MeshConcept Mesh>
-class MeshRenderVectors : public MeshRenderData<MeshRenderVectors<Mesh>>
+class MeshRenderVectors : public MeshRenderData
 {
     using MeshType = Mesh;
-    using Base     = MeshRenderData<MeshRenderVectors<MeshType>>;
+    using Base     = MeshRenderData;
     using MRI      = MeshRenderInfo;
 
     friend Base;

@@ -1,8 +1,8 @@
 # Visual Computing Library
 
-The Visual Computing Library is a C++20 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of of functionalities for low level and high level mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
+The Visual Computing Library is a C++23 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of functionalities for low level and high level mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
 
-All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vclib/tree/main/vclib) directory inside the root of the repository. They are written in C++20, and can be built with CMake. The python side of the library is then generated using [pybind11](https://pybind11.readthedocs.io/en/stable/).
+All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vclib/tree/main/vclib) directory inside the root of the repository. They are written in C++23, and can be built with CMake. The python side of the library is then generated using [pybind11](https://pybind11.readthedocs.io/en/stable/).
 
 The library is divided in several modules, each one with a specific purpose:
 

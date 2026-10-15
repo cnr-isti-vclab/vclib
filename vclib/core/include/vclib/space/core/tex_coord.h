@@ -61,13 +61,9 @@ public:
         }
     }
 
-    Scalar u() const { return mCoord.x(); }
+    decltype(auto) u(this auto&& self) { return self.mCoord.x(); }
 
-    Scalar v() const { return mCoord.y(); }
-
-    Scalar& u() { return mCoord.x(); }
-
-    Scalar& v() { return mCoord.y(); }
+    decltype(auto) v(this auto&& self) { return self.mCoord.y(); }
 
     void setU(Scalar s)
     {
@@ -92,13 +88,15 @@ public:
     void deserialize(std::istream& is) { mCoord.deserialize(is); }
 
     // operators
-    Scalar& operator()(uint i) { return mCoord[i]; }
+    decltype(auto) operator()(this auto&& self, uint i)
+    {
+        return self.mCoord[i];
+    }
 
-    const Scalar& operator()(uint i) const { return mCoord[i]; }
-
-    Scalar& operator[](uint i) { return mCoord[i]; }
-
-    const Scalar& operator[](uint i) const { return mCoord[i]; }
+    decltype(auto) operator[](this auto&& self, uint i)
+    {
+        return self.mCoord[i];
+    }
 
     auto operator<=>(const TexCoord& t1) const = default;
 };
