@@ -64,7 +64,7 @@ public:
     using SHCoeffVecType = std::array<ScalarType, SHCoeffCount>;
 
 private:
-    PointType      mScale{0, 0, 0};
+    PointType      mScale{1, 1, 1};
     QuatType       mRotation{1, 0, 0, 0}; // Identity rotation
     SHCoeffVecType mSHCoeffs{}; // Initialized to zeros
 
