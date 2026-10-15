@@ -10,24 +10,24 @@
 
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_FactorsPack;
-uniform vec4 u_clearcoatPack;
-uniform vec4 u_emissivePack;
 uniform vec4 u_alphaPack;
+uniform vec4 u_emissivePack;
+uniform vec4 u_clearcoatPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
 #define u_metallicFactor u_FactorsPack.b
 #define u_normalScale u_FactorsPack.a
 
+#define u_alphaCutoff u_alphaPack.x
+#define isAlphaModeMask() (u_alphaCutoff >= 0.0)
+
 #define u_emissiveFactor u_emissivePack.rgb
 #define u_emissiveStrength u_emissivePack.a
-
-#define u_alphaCutoff u_alphaPack.x
 
 #define u_clearcoatFactor u_clearcoatPack.r
 #define u_clearcoatRoughnessFactor u_clearcoatPack.g
 #define u_clearcoatNormalScale u_clearcoatPack.b
 
-#define isAlphaModeMask() (u_alphaCutoff >= 0.0)
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_MATERIAL_UNIFORMS_SH
