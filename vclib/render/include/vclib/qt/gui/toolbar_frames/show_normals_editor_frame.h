@@ -56,9 +56,7 @@ public:
             sf,
             &ShowNormalsEditorSettingsFrame::contentUpdated,
             this,
-            [this]() {
-                refreshContent();
-            });
+            [this]() { refreshContent(); });
 
         mShowNormalsEditor->setOnStateUpdatedCallback([this, editorButton]() {
             editorButton->setChecked(mShowNormalsEditor->isActive());

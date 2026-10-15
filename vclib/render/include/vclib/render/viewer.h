@@ -8,13 +8,73 @@
 #ifndef VCL_RENDER_VIEWER_H
 #define VCL_RENDER_VIEWER_H
 
+#include <vclib/render/headless_viewer.h>
+
 #ifdef VCLIB_WITH_QT
+#include <vclib/qt/viewer_widget.h>
 #include <vclib/qt/viewer_window.h>
-#elif VCLIB_WITH_GLFW
+#endif
+#ifdef VCLIB_WITH_GLFW
 #include <vclib/glfw/viewer_window.h>
 #endif
 
 namespace vcl {
+
+enum class ViewerType { QT_WIDGET, QT_WINDOW, GLFW_WINDOW, HEADLESS, DEFAULT };
+
+namespace detail {
+
+template<ViewerType VwrType>
+consteval auto viewerType()
+{
+    if constexpr (VwrType == ViewerType::QT_WIDGET) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::ViewerWidget> {};
+#else
+        static_assert(
+            false,
+            "Qt is not available. Please enable Qt support to use "
+            "ViewerWidget.");
+#endif
+    }
+    else if constexpr (VwrType == ViewerType::QT_WINDOW) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::ViewerWindow> {};
+#else
+        static_assert(
+            false,
+            "Qt is not available. Please enable Qt support to use "
+            "ViewerWindow.");
+#endif
+    }
+    else if constexpr (VwrType == ViewerType::GLFW_WINDOW) {
+#if VCLIB_WITH_GLFW
+        return std::type_identity<glfw::ViewerWindow> {};
+#else
+        static_assert(
+            false,
+            "GLFW is not available. Please enable GLFW to support "
+            "ViewerWindow.");
+#endif
+    }
+    else if constexpr (VwrType == ViewerType::HEADLESS) {
+        return std::type_identity<HeadlessViewer> {};
+    }
+    else if constexpr (VwrType == ViewerType::DEFAULT) {
+#ifdef VCLIB_WITH_QT
+        return std::type_identity<qt::ViewerWindow> {};
+#elif VCLIB_WITH_GLFW
+        return std::type_identity<glfw::ViewerWindow> {};
+#else
+        return std::type_identity<HeadlessViewer> {};
+#endif
+    }
+}
+
+} // namespace detail
+
+template<ViewerType VwrType = ViewerType::DEFAULT>
+using ViewerT = typename decltype(detail::viewerType<VwrType>())::type;
 
 /**
  * @brief The Viewer class is an alias to the default viewer class used in
@@ -27,50 +87,20 @@ namespace vcl {
  * - Else, a compilation error is triggered if no window manager is available
  *   and a Viewer instance is created.
  *
- * If you are using Qt, make sure to initialize a `QApplication` instance before
- * creating any Viewer instance. An example of always safe Viewer creation is
- * provided below:
+ * Make sure to initialize a `vcl::Application` instance before creating any
+ * Viewer instance. An example of always safe Viewer creation is provided below:
  *
  * @code{.cpp}
  * int main(int argc, char** argv) {
- * #ifdef VCLIB_WITH_QT
- *     QApplication app(argc, argv);
- * #endif
+ *     vcl::Application app(argc, argv);
  *     vcl::Viewer viewer;
  *     // use viewer...
  *     viewer.show();
- * #ifdef VCLIB_WITH_QT
  *     return app.exec();
- * #else
- *     return 0;
- * #endif
  * }
  * @endcode
  */
-
-#ifdef VCLIB_WITH_QT
-
-using Viewer = qt::ViewerWindow;
-
-#elif VCLIB_WITH_GLFW
-
-using Viewer = glfw::ViewerWindow;
-
-#else // No Qt and no GLFW
-
-// define an unusable Viewer to trigger a compilation error
-struct Viewer
-{
-    Viewer()
-    {
-        static_assert(
-            false,
-            "No Window Manager available for Viewer type definition. "
-            "Please allow usage of Qt or GLFW.");
-    }
-};
-
-#endif // VCLIB_WITH_GLFW
+using Viewer = ViewerT<ViewerType::DEFAULT>;
 
 } // namespace vcl
 
