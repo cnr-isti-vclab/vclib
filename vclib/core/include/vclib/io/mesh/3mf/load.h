@@ -52,32 +52,28 @@ void load3mf(
         using PositionType = typename MeshType::VertexType::PositionType;
 
         Lib3MF::PMeshObjectIterator mesh_it = model->GetMeshObjects();
-        uint n_mesh = mesh_it->Count();
-        m.resize(n_mesh);
-        loadedInfo.resize(n_mesh);
-        
-        auto mit = m.begin();
-        auto iit = loadedInfo.begin();
         
         while(mesh_it->MoveNext()){
             Lib3MF::PMeshObject mesh_3mf_format = mesh_it->GetCurrentMeshObject();
+            MeshType new_mesh;
+            MeshInfo new_infos;
 
             std::vector<Lib3MF::sPosition> vertices;
             std::vector<Lib3MF::sTriangle> triangles;
             mesh_3mf_format->GetVertices(vertices);
             mesh_3mf_format->GetTriangleIndices(triangles);
             
-            (*mit).addVertices(mesh_3mf_format->GetVertexCount());
+            new_mesh.addVertices(mesh_3mf_format->GetVertexCount());
             for(int i = 0; Lib3MF::sPosition vertex : vertices){
-                (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
+                new_mesh.vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
                 ++i;
             }
-            (*iit).setVertices();
+            new_infos.setVertices();
 
             if constexpr (HasFaces<MeshType>){
-                uint fi = (*mit).addFaces(mesh_3mf_format->GetTriangleCount());
+                uint fi = new_mesh.addFaces(mesh_3mf_format->GetTriangleCount());
                 for(Lib3MF::sTriangle triangle : triangles){
-                    auto& f = (*mit).face(fi);
+                    auto& f = new_mesh.face(fi);
                     if constexpr (HasPolygons<MeshType>) {
                         f.resizeVertices(3);
                     }
@@ -86,15 +82,15 @@ void load3mf(
                     }
                     ++fi;
                 }
-                (*iit).setTriangleMesh();
-                (*iit).setFaces();
-                (*iit).setPerFaceVertexReferences();
+                new_infos.setTriangleMesh();
+                new_infos.setFaces();
+                new_infos.setPerFaceVertexReferences();
             }
 
-            ++mit;
-            ++iit;
+            m.push_back(std::move(new_mesh));
+            loadedInfo.push_back(std::move(new_infos));
         }
-        
+
     }
     catch (Lib3MF::ELib3MFException& e) {
         throw CannotOpenFileException("Failed to load 3MF file: " + filename);
