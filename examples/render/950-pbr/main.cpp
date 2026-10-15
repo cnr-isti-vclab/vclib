@@ -21,6 +21,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        SPECULAR_TEST,
         COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
@@ -31,9 +32,10 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/SpecularTest/SpecularTest.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = SPECULAR_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -75,6 +77,12 @@ int main(int argc, char** argv)
         else if (type == EMISSIVE) {
             typeName = "emissive";
         }
+        else if (type == SPECULAR) {
+            typeName = "specular";
+        }
+        else if (type == SPECULAR_COLOR) {
+            typeName = "specularColor";
+        }
 
         std::cout << "  " << typeName << "Texture: ";
         if (!texture.isNull()) {
@@ -107,6 +115,9 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  specularFactor: " << mat.specular() << std::endl;
+            std::cout << "  specularColorFactor: " << mat.specularColor()
+                      << std::endl;
             std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
@@ -114,6 +125,8 @@ int main(int argc, char** argv)
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, SPECULAR);
+            printTextureInfo(mat, SPECULAR_COLOR);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;
