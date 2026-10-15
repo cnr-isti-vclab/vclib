@@ -53,16 +53,13 @@ void initTextureDescriptor(pybind11::module& m)
 
     c.def("is_null", &TextureDescriptor::isNull);
 
-    c.def("path", py::overload_cast<>(&TextureDescriptor::path, py::const_));
+    c.def("path", [](const TextureDescriptor& t) { return t.path(); });
     c.def(
         "set_path",
-        [](TextureDescriptor& t, const std::string& p) {
-            t.path() = p;
-        },
+        [](TextureDescriptor& t, const std::string& p) { t.path() = p; },
         "path"_a);
     c.def(
-        "min_filter",
-        py::overload_cast<>(&TextureDescriptor::minFilter, py::const_));
+        "min_filter", [](const TextureDescriptor& t) { return t.minFilter(); });
     c.def(
         "set_min_filter",
         [](TextureDescriptor& t, TextureDescriptor::MinificationFilter mf) {
@@ -70,22 +67,21 @@ void initTextureDescriptor(pybind11::module& m)
         },
         "min_filter"_a);
     c.def(
-        "mag_filter",
-        py::overload_cast<>(&TextureDescriptor::magFilter, py::const_));
+        "mag_filter", [](const TextureDescriptor& t) { return t.magFilter(); });
     c.def(
         "set_mag_filter",
         [](TextureDescriptor& t, TextureDescriptor::MagnificationFilter mf) {
             t.magFilter() = mf;
         },
         "mag_filter"_a);
-    c.def("wrap_u", py::overload_cast<>(&TextureDescriptor::wrapU, py::const_));
+    c.def("wrap_u", [](const TextureDescriptor& t) { return t.wrapU(); });
     c.def(
         "set_wrap_u",
         [](TextureDescriptor& t, TextureDescriptor::WrapMode wm) {
             t.wrapU() = wm;
         },
         "wrap_u"_a);
-    c.def("wrap_v", py::overload_cast<>(&TextureDescriptor::wrapV, py::const_));
+    c.def("wrap_v", [](const TextureDescriptor& t) { return t.wrapV(); });
     c.def(
         "set_wrap_v",
         [](TextureDescriptor& t, TextureDescriptor::WrapMode wm) {

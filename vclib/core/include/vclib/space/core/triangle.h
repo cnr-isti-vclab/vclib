@@ -42,21 +42,16 @@ public:
      * @param[in] i: Index of the point to return.
      * @return The i-th point of the triangle.
      */
-    const PointT& point(uint i) const { return mPoints.at(i); }
+    decltype(auto) point(this auto&& self, uint i)
+    {
+        return self.mPoints.at(i);
+    }
 
-    PointT& point(uint i) { return mPoints.at(i); }
+    decltype(auto) point0(this auto&& self) { return self.mPoints[0]; }
 
-    PointT& point0() { return mPoints[0]; }
+    decltype(auto) point1(this auto&& self) { return self.mPoints[1]; }
 
-    const PointT& point0() const { return mPoints[0]; }
-
-    PointT& point1() { return mPoints[1]; }
-
-    const PointT& point1() const { return mPoints[1]; }
-
-    PointT& point2() { return mPoints[2]; }
-
-    const PointT& point2() const { return mPoints[2]; }
+    decltype(auto) point2(this auto&& self) { return self.mPoints[2]; }
 
     /**
      * @brief Returns the length of the i-th side of the triangle.

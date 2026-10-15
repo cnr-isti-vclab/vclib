@@ -35,14 +35,10 @@ void defCopy(pybind11::class_<Class, Options...>& c)
 {
     using namespace pybind11::literals;
 
-    c.def("__copy__", [](const Class& self) {
-        return Class(self);
-    });
+    c.def("__copy__", [](const Class& self) { return Class(self); });
     c.def(
         "__deepcopy__",
-        [](const Class& self, pybind11::dict) {
-            return Class(self);
-        },
+        [](const Class& self, pybind11::dict) { return Class(self); },
         "memo"_a);
 }
 

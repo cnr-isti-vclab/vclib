@@ -127,38 +127,16 @@ public:
     }
 
     /**
-     * @brief Returns the origin of the frame.
-     * @return Origin point.
-     */
-    const PointType& origin() const { return mOrigin; }
-
-    /**
      * @brief Returns a reference to the origin of the frame.
      * @return Origin point.
      */
-    PointType& origin() { return mOrigin; }
-
-    /**
-     * @brief Returns the orthonormal basis of the frame.
-     * @return The `OrthoBasis` component.
-     */
-    const BasisType& basis() const { return mBasis; }
+    decltype(auto) origin(this auto&& self) { return (self.mOrigin); }
 
     /**
      * @brief Returns a reference to the orthonormal basis of the frame.
      * @return The `OrthoBasis` component.
      */
-    BasisType& basis() { return mBasis; }
-
-    /**
-     * @brief Returns the i-th basis vector of the frame.
-     *
-     * Convenience forwarder to `basis().axis(i)`.
-     *
-     * @param[in] i: Axis index (0-based, must be < N).
-     * @return i-th orthonormal basis vector.
-     */
-    const PointType& axis(uint i) const { return mBasis.axis(i); }
+    decltype(auto) basis(this auto&& self) { return (self.mBasis); }
 
     /**
      * @brief Returns a reference to the i-th basis vector of the frame.
@@ -168,7 +146,10 @@ public:
      * @param[in] i: Axis index (0-based, must be < N).
      * @return i-th orthonormal basis vector.
      */
-    PointType& axis(uint i) { return mBasis.axis(i); }
+    decltype(auto) axis(this auto&& self, uint i)
+    {
+        return self.mBasis.axis(i);
+    }
 
     /**
      * @brief Converts a point expressed in local (frame) coordinates to world
