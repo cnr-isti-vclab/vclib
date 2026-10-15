@@ -171,9 +171,17 @@ public:
         return mSHCoeffs;
     }
 
-    ScalarType& shCoeffAt(uint i) requires (i < SHCoeffCount) { return mSHCoeffs[i]; }
+    ScalarType& shCoeffAt(uint i) {
+        assert(i < SHCoeffCount);
 
-    const ScalarType& shCoeffAt(uint i) const requires (i < SHCoeffCount) { return mSHCoeffs[i]; }
+        return mSHCoeffs[i];
+    }
+
+    const ScalarType& shCoeffAt(uint i) const  {
+        assert(i < SHCoeffCount);
+
+        return mSHCoeffs[i];
+    }
 
     /**
      * @brief Sets all the spherical harmonics coefficients of the
