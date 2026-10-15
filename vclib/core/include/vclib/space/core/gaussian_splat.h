@@ -207,6 +207,32 @@ public:
      * spherical harmonics coefficients of the GaussianSplat object.
      */
     void setSHCoeffs(const SHCoeffVecType& coeffs) { mSHCoeffs = coeffs; }
+
+    /**
+     * @brief Casts the GaussianSplat object to a different scalar type.
+     *
+     * The function returns a new GaussianSplat object with the same attributes
+     * as the original object, but with each scalar value casted to a different type.
+     *
+     * @tparam S: The scalar type to cast to.
+     *
+     * @return A new GaussianSplat object with the same attributes as the original
+     * object, but with each scalar value casted to a different type.
+     */
+    template<typename S>
+    auto cast() const
+    {
+        if constexpr (std::is_same<ScalarType, S>) {
+            return *this;
+        }
+        else {
+            return GaussianSplat<S>(
+                mScale.template cast<S>(),
+                mRotation.template cast<S>(),
+                mSHCoeffs.template cast<S>()
+            );
+        }
+    }
 };
 
 } // namespace vcl
