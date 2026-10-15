@@ -241,6 +241,19 @@ public:
             );
         }
     }
+
+    bool operator==(const GaussianSplat& gs) const
+    {
+        for (uint i = 0; i < mSHCoeffCount; ++i) {
+            if (mSHCoeffs[i] != gs.mSHCoeffs[i])
+                return false;
+        }
+
+        return mScale == gs.mScale &&
+               mRotation == gs.mRotation;
+    }
+
+    bool operator!=(const GaussianSplat& gs) const { return !(*this == gs); }
 };
 
 } // namespace vcl
