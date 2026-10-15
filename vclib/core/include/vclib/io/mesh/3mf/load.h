@@ -58,7 +58,10 @@ void load3mf(
         mesh_3mf_format->GetVertices(vertices);
         mesh_3mf_format->GetTriangleIndices(triangles);
 
+        m.resize(1);
+        loadedInfo.resize(1);
         auto mit = m.begin();
+        auto iit = loadedInfo.begin();
         
         using PositionType = typename MeshType::VertexType::PositionType;
 
@@ -66,6 +69,7 @@ void load3mf(
         for(int i = 0; Lib3MF::sPosition vertex : vertices){
             (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
         }
+        (*iit).setVertices();
 
         if constexpr (HasFaces<MeshType>){
             uint fi = (*mit).addFaces(mesh_3mf_format->GetTriangleCount());
@@ -78,6 +82,9 @@ void load3mf(
                     f.setVertex(j, triangle.m_Indices[j]);
                 }
             }
+            (*iit).setTriangleMesh();
+            (*iit).setFaces();
+            (*iit).setPerFaceVertexReferences();
         }
 
     }
