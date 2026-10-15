@@ -230,7 +230,7 @@ public:
     template<typename S>
     auto cast() const
     {
-        if constexpr (std::is_same<ScalarType, S>) {
+        if constexpr (std::is_same_v<ScalarType, S>) {
             return *this;
         }
         else {
@@ -244,7 +244,7 @@ public:
 
     bool operator==(const GaussianSplat& gs) const
     {
-        for (uint i = 0; i < mSHCoeffCount; ++i) {
+        for (uint i = 0; i < SHCoeffCount; ++i) {
             if (mSHCoeffs[i] != gs.mSHCoeffs[i])
                 return false;
         }
