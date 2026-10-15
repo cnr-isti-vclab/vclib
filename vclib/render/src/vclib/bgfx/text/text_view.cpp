@@ -19,8 +19,7 @@ TextView::TextView()
 
 TextView::~TextView()
 {
-    if (isTextEnabled())
-        Context::instance().releaseViewId(mView);
+    enableText(false);
 }
 
 void TextView::init(uint width, uint height)
@@ -41,25 +40,21 @@ void TextView::init(uint width, uint height)
 void TextView::enableText(bool b)
 {
     auto& ctx = Context::instance();
-    if (ctx.isValidViewId(mView)) {
-        if (!b) {
-            ctx.releaseViewId(mView);
-            mView = BGFX_INVALID_VIEW;
+    if (mTextEnabled == b)
+        return;
+
+    mTextEnabled = b;
+    if (!b) {
+        for (auto& pair : mViews) {
+            ctx.releaseViewId(pair.second);
         }
-    }
-    else {
-        if (b) {
-            mView = ctx.requestViewId();
-            updateProjMatrix();
-            bgfx::setViewRect(mView, 0, 0, mWidth, mHeight);
-            bgfx::touch(mView);
-        }
+        mViews.clear();
     }
 }
 
 bool TextView::isTextEnabled() const
 {
-    return Context::instance().isValidViewId(mView);
+    return mTextEnabled;
 }
 
 void TextView::setTextFont(VclFont::Enum font, uint fontSize)
@@ -93,16 +88,29 @@ void TextView::appendTransientText(
     mTextManager.appendTransientText(pos, text, color);
 }
 
-void TextView::frame(bgfx::FrameBufferHandle fbh)
+void TextView::frame(bgfx::ViewId parentViewId, bgfx::FrameBufferHandle fbh)
 {
     static uint cnt = 0;
     if (isTextEnabled()) {
-        bgfx::setViewFrameBuffer(mView, fbh);
-        bgfx::touch(mView);
+        auto&        ctx = Context::instance();
+        bgfx::ViewId myView;
 
-        bgfx::setViewTransform(mView, mTextViewMatrix, mTextProjMatrix);
+        auto it = mViews.find(parentViewId);
+        if (it == mViews.end()) {
+            myView               = ctx.requestViewId();
+            mViews[parentViewId] = myView;
+            bgfx::setViewRect(myView, 0, 0, mWidth, mHeight);
+        }
+        else {
+            myView = it->second;
+        }
 
-        mTextManager.submit(mView);
+        bgfx::setViewFrameBuffer(myView, fbh);
+        bgfx::touch(myView);
+
+        bgfx::setViewTransform(myView, mTextViewMatrix, mTextProjMatrix);
+
+        mTextManager.submit(myView);
     }
 }
 
@@ -113,8 +121,10 @@ void TextView::resize(uint width, uint height)
 
     if (isTextEnabled()) {
         updateProjMatrix();
-        bgfx::setViewRect(mView, 0, 0, mWidth, mHeight);
-        bgfx::touch(mView);
+        for (auto& pair : mViews) {
+            bgfx::setViewRect(pair.second, 0, 0, mWidth, mHeight);
+            bgfx::touch(pair.second);
+        }
     }
 }
 

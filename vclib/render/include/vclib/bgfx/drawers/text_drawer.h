@@ -38,7 +38,7 @@ public:
     void onDraw(uint viewId) override final
     {
         auto fbh = DerivedRenderApp::DRW::canvasFrameBuffer(derived());
-        mTextView.frame(fbh);
+        mTextView.frame(viewId, fbh);
     }
 
     // text
