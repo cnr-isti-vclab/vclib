@@ -94,7 +94,7 @@ public:
     }
 
     /**
-     * @brief Returns a the logarithmic scale of the GaussianSplate object.
+     * @brief Returns the logarithmic scale of the GaussianSplate object.
      *
      * @return The logarithmic scale of the GaussianSplate object.
      */
@@ -158,7 +158,7 @@ public:
      *
      * @return A reference to the spherical harmonics coefficients of the GaussianSplate object.
      */
-    SHCoeffVecType& shCoeff() {
+    SHCoeffVecType& shCoeffs() {
         return mSHCoeffs;
     }
 
@@ -167,7 +167,7 @@ public:
      *
      * @return A const reference to the spherical harmonics coefficients of the GaussianSplate object.
      */
-    const SHCoeffVecType& shCoeff() const {
+    const SHCoeffVecType& shCoeffs() const {
         return mSHCoeffs;
     }
 
