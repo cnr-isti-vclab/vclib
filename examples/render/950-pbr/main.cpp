@@ -21,7 +21,6 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
-        CLEARCOAT_CAR_PAINT,
         CLEARCOAT_WICKER,
         COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
@@ -33,11 +32,10 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
-        "/gltf/ClearCoatCarPaint/ClearCoatCarPaint.gltf",
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = CLEARCOAT_CAR_PAINT;
+    uint selectedExample = CLEARCOAT_WICKER;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
