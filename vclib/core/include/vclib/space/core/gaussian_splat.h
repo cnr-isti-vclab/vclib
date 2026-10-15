@@ -256,6 +256,28 @@ public:
     bool operator!=(const GaussianSplat& gs) const { return !(*this == gs); }
 };
 
+/* Specialization Aliases */
+
+/**
+ * @brief A convenience alias for GaussianSplat with floating-point components.
+ *
+ * The GaussianSplatf alias is a shorthand for a GaussianSplat class template
+ * specialization with floating-point components.
+ *
+ * @ingroup space_core
+ */
+using GaussianSplatf = GaussianSplat<float>;
+
+/**
+ * @brief A convenience alias for GaussianSplat with double-precision components.
+ *
+ * The GaussianSplatd alias is a shorthand for a GaussianSplat class template
+ * specialization with double-precision components.
+ *
+ * @ingroup space_core
+ */
+using GaussianSplatd = GaussianSplat<double>;
+
 } // namespace vcl
 
 #endif // GAUSSIAN_SPLAT_H
