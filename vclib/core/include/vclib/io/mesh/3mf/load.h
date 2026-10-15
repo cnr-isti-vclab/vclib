@@ -48,47 +48,53 @@ void load3mf(
 
         // Read the 3MF file into the model
         reader->ReadFromFile(filename);
-
-        Lib3MF::PMeshObjectIterator mesh_it = model->GetMeshObjects();
-        mesh_it->MoveNext();
-        Lib3MF::PMeshObject mesh_3mf_format = mesh_it->GetCurrentMeshObject();
-
-        std::vector<Lib3MF::sPosition> vertices;
-        std::vector<Lib3MF::sTriangle> triangles;
-        mesh_3mf_format->GetVertices(vertices);
-        mesh_3mf_format->GetTriangleIndices(triangles);
-
-        m.resize(1);
-        loadedInfo.resize(1);
-        auto mit = m.begin();
-        auto iit = loadedInfo.begin();
         
         using PositionType = typename MeshType::VertexType::PositionType;
 
-        (*mit).addVertices(mesh_3mf_format->GetVertexCount());
-        for(int i = 0; Lib3MF::sPosition vertex : vertices){
-            (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
-            ++i;
-        }
-        (*iit).setVertices();
+        Lib3MF::PMeshObjectIterator mesh_it = model->GetMeshObjects();
+        uint n_mesh = mesh_it->Count();
+        m.resize(n_mesh);
+        loadedInfo.resize(n_mesh);
+        
+        auto mit = m.begin();
+        auto iit = loadedInfo.begin();
+        
+        while(mesh_it->MoveNext()){
+            Lib3MF::PMeshObject mesh_3mf_format = mesh_it->GetCurrentMeshObject();
 
-        if constexpr (HasFaces<MeshType>){
-            uint fi = (*mit).addFaces(mesh_3mf_format->GetTriangleCount());
-            for(Lib3MF::sTriangle triangle : triangles){
-                auto& f = (*mit).face(fi);
-                if constexpr (HasPolygons<MeshType>) {
-                    f.resizeVertices(3);
-                }
-                for(int j=0; j<3; ++j){
-                    f.setVertex(j, triangle.m_Indices[j]);
-                }
-                ++fi;
+            std::vector<Lib3MF::sPosition> vertices;
+            std::vector<Lib3MF::sTriangle> triangles;
+            mesh_3mf_format->GetVertices(vertices);
+            mesh_3mf_format->GetTriangleIndices(triangles);
+            
+            (*mit).addVertices(mesh_3mf_format->GetVertexCount());
+            for(int i = 0; Lib3MF::sPosition vertex : vertices){
+                (*mit).vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
+                ++i;
             }
-            (*iit).setTriangleMesh();
-            (*iit).setFaces();
-            (*iit).setPerFaceVertexReferences();
-        }
+            (*iit).setVertices();
 
+            if constexpr (HasFaces<MeshType>){
+                uint fi = (*mit).addFaces(mesh_3mf_format->GetTriangleCount());
+                for(Lib3MF::sTriangle triangle : triangles){
+                    auto& f = (*mit).face(fi);
+                    if constexpr (HasPolygons<MeshType>) {
+                        f.resizeVertices(3);
+                    }
+                    for(int j=0; j<3; ++j){
+                        f.setVertex(j, triangle.m_Indices[j]);
+                    }
+                    ++fi;
+                }
+                (*iit).setTriangleMesh();
+                (*iit).setFaces();
+                (*iit).setPerFaceVertexReferences();
+            }
+
+            ++mit;
+            ++iit;
+        }
+        
     }
     catch (Lib3MF::ELib3MFException& e) {
         throw CannotOpenFileException("Failed to load 3MF file: " + filename);
