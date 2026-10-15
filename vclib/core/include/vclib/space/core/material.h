@@ -103,7 +103,7 @@ private:
     bool mDoubleSided = false;
 
     // extension PBR properties
-    float mClearcoat = 0.0f;
+    float mClearcoatFactor = 0.0f;
 
     float mClearcoatRoughness = 0.0f;
 
@@ -203,10 +203,13 @@ public:
     }
 
     /**
-     * @brief Gets the clearcoat value.
-     * @return The clearcoat value, in the range [0.0, 1.0].
+     * @brief Gets the clearcoat factor.
+     * @return The clearcoat factor value, in the range [0.0, 1.0].
      */
-    decltype(auto) clearcoat(this auto&& self) { return (self.mClearcoat); }
+    decltype(auto) clearcoatFactor(this auto&& self)
+    {
+        return (self.mClearcoatFactor);
+    }
 
     /**
      * @brief Gets the clearcoat roughness value.
@@ -284,7 +287,7 @@ public:
         vcl::serialize(os, mEmissiveStrength);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
-        vcl::serialize(os, mClearcoat);
+        vcl::serialize(os, mClearcoatFactor);
         vcl::serialize(os, mClearcoatRoughness);
         vcl::serialize(os, mClearcoatNormalScale);
     }
@@ -305,7 +308,7 @@ public:
         vcl::deserialize(is, mEmissiveStrength);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
-        vcl::deserialize(is, mClearcoat);
+        vcl::deserialize(is, mClearcoatFactor);
         vcl::deserialize(is, mClearcoatRoughness);
         vcl::deserialize(is, mClearcoatNormalScale);
     }

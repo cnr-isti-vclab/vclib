@@ -50,7 +50,7 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
-        double clearcoat = 0.0;
+        double clearcoatFactor = 0.0;
         double clearcoatRoughness = 0.0;
         double clearcoatNormalScale = 1.0;
         int clearcoatTextureId = -1;
@@ -120,44 +120,53 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
-        // clearcoat
-        if(mat.extensions.contains("KHR_materials_clearcoat")) {
-            const auto& clearcoatExt = mat.extensions.at("KHR_materials_clearcoat");
 
-            if (clearcoatExt.Has("clearcoatFactor"))
-                clearcoat = clearcoatExt
-                    .Get("clearcoatFactor")
-                    .GetNumberAsDouble();
+        // KHR_materials_clearcoat
+        {
+            static const std::string EXT = "KHR_materials_clearcoat";
+            static const std::string FACTOR = "clearcoatFactor";
+            static const std::string ROUGH = "clearcoatRoughnessFactor";
+            static const std::string TEXTURE = "clearcoatTexture";
+            static const std::string ROUGH_TEX = "clearcoatRoughnessTexture";
+            static const std::string NORMAL_TEX = "clearcoatNormalTexture";
+            if(mat.extensions.contains(EXT)) {
+                const auto& clearcoatExt = mat.extensions.at(EXT);
 
-            if (clearcoatExt.Has("clearcoatRoughnessFactor"))
-                clearcoatRoughness = clearcoatExt
-                    .Get("clearcoatRoughnessFactor")
-                    .GetNumberAsDouble();
-
-            if (clearcoatExt.Has("clearcoatTexture")) {
-                clearcoatTextureId = clearcoatExt
-                    .Get("clearcoatTexture")
-                    .Get("index")
-                    .GetNumberAsInt();
-            }
-
-            if (clearcoatExt.Has("clearcoatRoughnessTexture")) {
-                clearcoatRoughnessTextureId = clearcoatExt
-                    .Get("clearcoatRoughnessTexture")
-                    .Get("index")
-                    .GetNumberAsInt();
-            }
-
-            if (clearcoatExt.Has("clearcoatNormalTexture")) {
-                const auto& clearcoatNormalTexture = clearcoatExt
-                    .Get("clearcoatNormalTexture");
-                clearcoatNormalTextureId = clearcoatNormalTexture
-                    .Get("index")
-                    .GetNumberAsInt();
-                if(clearcoatNormalTexture.Has("scale"))
-                    clearcoatNormalScale = clearcoatNormalTexture
-                        .Get("scale")
+                if (clearcoatExt.Has(FACTOR))
+                    clearcoatFactor = clearcoatExt
+                        .Get(FACTOR)
                         .GetNumberAsDouble();
+
+                if (clearcoatExt.Has(ROUGH))
+                    clearcoatRoughness = clearcoatExt
+                        .Get(ROUGH)
+                        .GetNumberAsDouble();
+
+                if (clearcoatExt.Has(TEXTURE)) {
+                    clearcoatTextureId = clearcoatExt
+                        .Get(TEXTURE)
+                        .Get("index")
+                        .GetNumberAsInt();
+                }
+
+                if (clearcoatExt.Has(ROUGH_TEX)) {
+                    clearcoatRoughnessTextureId = clearcoatExt
+                        .Get(ROUGH_TEX)
+                        .Get("index")
+                        .GetNumberAsInt();
+                }
+
+                if (clearcoatExt.Has(NORMAL_TEX)) {
+                    const auto& clearcoatNormalTexture = clearcoatExt
+                        .Get(NORMAL_TEX);
+                    clearcoatNormalTextureId = clearcoatNormalTexture
+                        .Get("index")
+                        .GetNumberAsInt();
+                    if(clearcoatNormalTexture.Has("scale"))
+                        clearcoatNormalScale = clearcoatNormalTexture
+                            .Get("scale")
+                            .GetNumberAsDouble();
+                }
             }
         }
 
@@ -247,7 +256,7 @@ int loadGltfPrimitiveMaterial(
             mat.normalScale()          = normalScale;
             mat.occlusionStrength()    = occlusionStrength;
             mat.emissiveStrength()     = emissiveStrength;
-            mat.clearcoat()            = clearcoat;
+            mat.clearcoatFactor()      = clearcoatFactor;
             mat.clearcoatRoughness()   = clearcoatRoughness;
             mat.clearcoatNormalScale() = clearcoatNormalScale;
             loadTextureInMaterial(
@@ -265,9 +274,13 @@ int loadGltfPrimitiveMaterial(
             loadTextureInMaterial(
                 mat, clearcoatTextureId, Material::TextureType::CLEARCOAT);
             loadTextureInMaterial(
-                mat, clearcoatRoughnessTextureId, Material::TextureType::CLEARCOAT_ROUGHNESS);
+                mat,
+                clearcoatRoughnessTextureId,
+                Material::TextureType::CLEARCOAT_ROUGHNESS);
             loadTextureInMaterial(
-                mat, clearcoatNormalTextureId, Material::TextureType::CLEARCOAT_NORMAL);
+                mat,
+                clearcoatNormalTextureId,
+                Material::TextureType::CLEARCOAT_NORMAL);
             m.pushMaterial(mat);
             idx = m.materialCount() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {

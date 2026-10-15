@@ -89,7 +89,7 @@ public:
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
 
-        sClearcoatPack[0] = m.clearcoat();
+        sClearcoatPack[0] = m.clearcoatFactor();
         sClearcoatPack[1] = m.clearcoatRoughness();
         sClearcoatPack[2] = m.clearcoatNormalScale();
 

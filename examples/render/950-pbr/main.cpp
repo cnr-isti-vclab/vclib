@@ -122,7 +122,8 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
-            std::cout << "  clearcoat: " << mat.clearcoat() << std::endl;
+            std::cout << "  clearcoatFactor: " << mat.clearcoatFactor()
+                      << std::endl;
             std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
                       << std::endl;
             std::cout << "  clearcoatNormalScale: " << mat.clearcoatNormalScale()
