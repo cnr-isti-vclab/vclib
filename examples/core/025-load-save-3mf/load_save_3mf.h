@@ -15,13 +15,13 @@
 auto load3mf()
 {
     vcl::TriMesh box;
-    vcl::loadMesh(box, VCLIB_EXAMPLE_MESHES_PATH "box.3mf");
+    vcl::loadMesh(box, VCLIB_EXAMPLE_MESHES_PATH "/box.3mf");
 
     vcl::TriMesh dodecaChainLoop = vcl::loadMesh<vcl::TriMesh>(
-        VCLIB_EXAMPLE_MESHES_PATH "dodeca_chain_loop.3mf");
+        VCLIB_EXAMPLE_MESHES_PATH "/dodeca_chain_loop.3mf");
 
     auto cubeGears =
-        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "cube_gears.3mf");
+        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_gears.3mf");
 
     return std::make_tuple(box, dodecaChainLoop, cubeGears);
 }
