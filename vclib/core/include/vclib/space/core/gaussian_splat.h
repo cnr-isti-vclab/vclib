@@ -71,7 +71,7 @@ private:
 public:
     GaussianSplat() = default;
 
-    GaussianSplat(const PointType scale, const QuatType& rotation, const SHCoeffVecType& shCoeffs) :
+    GaussianSplat(const PointType& scale, const QuatType& rotation, const SHCoeffVecType& shCoeffs) :
         mScale(scale), mRotation(rotation), mSHCoeffs(shCoeffs)
     {}
 
