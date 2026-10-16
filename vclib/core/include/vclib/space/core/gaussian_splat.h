@@ -253,8 +253,19 @@ public:
     void serialize(std::ostream& os) const
     {
         mScale.serialize(os);
-        vcl::serialize(os, mRotation.coeffs().data(), 4);
+        vcl::serializeN(os, mRotation.coeffs().data(), 4);
         vcl::serializeN(os, mSHCoeffs.data(), SHCoeffCount);
+    }
+
+    /**
+     * @brief Deserializes the 3d gaussian from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        mScale.deserialize(is);
+        vcl::deserializeN(is, mRotation.coeffs().begin(), 4);
+        vcl::deserializeN(is, mSHCoeffs.begin(), SHCoeffCount);
     }
 };
 
