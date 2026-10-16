@@ -207,7 +207,6 @@ public:
      * @brief Sets all the spherical harmonics coefficients of the
      * GaussianSplat object by making a copy of the specified coefficients.
      *
-     *
      * @param[in] coeffs: The vector argument used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
      */
@@ -246,6 +245,17 @@ public:
     }
 
     bool operator==(const GaussianSplat& gs) const = default;
+
+    /**
+     * @brief Serializes the 3d gaussian to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        mScale.serialize(os);
+        vcl::serialize(os, mRotation.coeffs().data(), 4);
+        vcl::serializeN(os, mSHCoeffs.data(), SHCoeffCount);
+    }
 };
 
 /* Specialization Aliases */
