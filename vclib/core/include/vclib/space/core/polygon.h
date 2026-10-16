@@ -135,14 +135,10 @@ public:
      *
      * @param[in] i: the index of the point to return.
      */
-    PointT& point(uint i) { return mPoints.at(i); }
-
-    /**
-     * @brief Returns the point at index i in the polygon.
-     *
-     * @param[in] i: the index of the point to return.
-     */
-    const PointT& point(uint i) const { return mPoints.at(i); }
+    decltype(auto) point(this auto&& self, uint i)
+    {
+        return self.mPoints.at(i);
+    }
 
     /**
      * @brief Returns the side length of the i-th side of the polygon.
@@ -222,37 +218,20 @@ public:
      * @param i: the index of the point to return.
      * @return The i-th point of the polygon.
      */
-    PointType& operator[](uint i) { return mPoints[i]; }
-
-    /**
-     * @brief Returns the i-th point of the polygon.
-     *
-     * @param i: the index of the point to return.
-     * @return The i-th point of the polygon.
-     */
-    const PointType& operator[](uint i) const { return mPoints[i]; }
+    decltype(auto) operator[](this auto&& self, uint i)
+    {
+        return self.mPoints[i];
+    }
 
     /**
      * @brief Returns an iterator pointing to the first point of the polygon.
      */
-    Iterator begin() { return mPoints.begin(); }
+    auto begin(this auto&& self) { return self.mPoints.begin(); }
 
     /**
      * @brief Returns an iterator pointing past the last point of the polygon.
      */
-    Iterator end() { return mPoints.end(); }
-
-    /**
-     * @brief Returns a const iterator pointing to the first point of the
-     * polygon.
-     */
-    ConstIterator begin() const { return mPoints.begin(); }
-
-    /**
-     * @brief Returns a const iterator pointing past the last point of the
-     * polygon.
-     */
-    ConstIterator end() const { return mPoints.end(); }
+    auto end(this auto&& self) { return self.mPoints.end(); }
 
     // static member functions
 

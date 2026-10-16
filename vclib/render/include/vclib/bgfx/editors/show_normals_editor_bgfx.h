@@ -44,9 +44,7 @@ public:
         Base::viewerRegisterGlobalAction(
             "Toggle Show Normals",
             {Key::N, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                this->setActive(!this->isActive());
-            });
+            [this]() { this->setActive(!this->isActive()); });
     }
 
     ShowNormalsEditorSettings& settings() override { return mSettings; }

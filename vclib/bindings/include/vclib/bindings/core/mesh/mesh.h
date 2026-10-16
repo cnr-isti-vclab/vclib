@@ -70,9 +70,7 @@ void initMesh(pybind11::module& m, const std::string& name)
 
     c.def(
         "append",
-        [](MeshType& m, const MeshType& o) {
-            m.append(o);
-        },
+        [](MeshType& m, const MeshType& o) { m.append(o); },
         "other_mesh"_a);
 
     auto importFromFun = []<MeshConcept OtherMeshType>(
