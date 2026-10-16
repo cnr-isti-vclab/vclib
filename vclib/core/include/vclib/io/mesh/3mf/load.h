@@ -51,38 +51,26 @@ void load3mf(
         
         using PositionType = typename MeshType::VertexType::PositionType;
 
+        MeshType newMesh;
+        MeshInfo newInfos;
         std::vector<Lib3MF::sPosition> vertices;
         std::vector<Lib3MF::sTriangle> triangles;
         Lib3MF::PMeshObjectIterator meshIt = model->GetMeshObjects();
         
         while(meshIt->MoveNext()){
-            MeshType newMesh;
-            MeshInfo newInfos;
             Lib3MF::PMeshObject currentMeshObject = meshIt->GetCurrentMeshObject();
 
             currentMeshObject->GetVertices(vertices);
             currentMeshObject->GetTriangleIndices(triangles);
             
-            //vertexPositionsFromBuffer(newMesh, vertices.data(), currentMeshObject->GetVertexCount());
-            newMesh.addVertices(currentMeshObject->GetVertexCount());
-            for(int i = 0; Lib3MF::sPosition vertex : vertices){
-                newMesh.vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
-                ++i;
-            }
+            vertexPositionsFromBuffer(newMesh, vertices.data()->m_Coordinates, currentMeshObject->GetVertexCount());
+            
             newInfos.setVertices();
 
             if constexpr (HasFaces<MeshType>){
-                uint fi = newMesh.addFaces(currentMeshObject->GetTriangleCount());
-                for(Lib3MF::sTriangle triangle : triangles){
-                    auto& f = newMesh.face(fi);
-                    if constexpr (HasPolygons<MeshType>) {
-                        f.resizeVertices(3);
-                    }
-                    for(int j=0; j<3; ++j){
-                        f.setVertex(j, triangle.m_Indices[j]);
-                    }
-                    ++fi;
-                }
+
+                faceIndicesFromBuffer(newMesh, triangles.data()->m_Indices, currentMeshObject->GetTriangleCount());
+                
                 newInfos.setTriangleMesh();
                 newInfos.setFaces();
                 newInfos.setPerFaceVertexReferences();
