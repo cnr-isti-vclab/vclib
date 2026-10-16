@@ -13,17 +13,6 @@
 
 #include <vclib/space/core.h>
 
-namespace vcl {
-
-// PlaceHolder
-// TODO: remove this...
-template<typename Scalar>
-class GaussianSplat
-{
-};
-
-} // namespace vcl
-
 namespace vcl::comp {
 
 /**
