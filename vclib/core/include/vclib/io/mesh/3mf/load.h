@@ -60,6 +60,8 @@ void load3mf(
         while(meshIt->MoveNext()){
             Lib3MF::PMeshObject currentMeshObject = meshIt->GetCurrentMeshObject();
 
+            newMesh.name() = currentMeshObject->GetName();
+
             currentMeshObject->GetVertices(vertices);
             currentMeshObject->GetTriangleIndices(triangles);
             
