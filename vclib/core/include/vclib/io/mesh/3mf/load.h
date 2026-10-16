@@ -51,29 +51,30 @@ void load3mf(
         
         using PositionType = typename MeshType::VertexType::PositionType;
 
-        Lib3MF::PMeshObjectIterator mesh_it = model->GetMeshObjects();
+        std::vector<Lib3MF::sPosition> vertices;
+        std::vector<Lib3MF::sTriangle> triangles;
+        Lib3MF::PMeshObjectIterator meshIt = model->GetMeshObjects();
         
-        while(mesh_it->MoveNext()){
-            Lib3MF::PMeshObject mesh_3mf_format = mesh_it->GetCurrentMeshObject();
-            MeshType new_mesh;
-            MeshInfo new_infos;
+        while(meshIt->MoveNext()){
+            MeshType newMesh;
+            MeshInfo newInfos;
+            Lib3MF::PMeshObject currentMeshObject = meshIt->GetCurrentMeshObject();
 
-            std::vector<Lib3MF::sPosition> vertices;
-            std::vector<Lib3MF::sTriangle> triangles;
-            mesh_3mf_format->GetVertices(vertices);
-            mesh_3mf_format->GetTriangleIndices(triangles);
+            currentMeshObject->GetVertices(vertices);
+            currentMeshObject->GetTriangleIndices(triangles);
             
-            new_mesh.addVertices(mesh_3mf_format->GetVertexCount());
+            //vertexPositionsFromBuffer(newMesh, vertices.data(), currentMeshObject->GetVertexCount());
+            newMesh.addVertices(currentMeshObject->GetVertexCount());
             for(int i = 0; Lib3MF::sPosition vertex : vertices){
-                new_mesh.vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
+                newMesh.vertex(i).position() = PositionType(vertex.m_Coordinates[0], vertex.m_Coordinates[1], vertex.m_Coordinates[2]);
                 ++i;
             }
-            new_infos.setVertices();
+            newInfos.setVertices();
 
             if constexpr (HasFaces<MeshType>){
-                uint fi = new_mesh.addFaces(mesh_3mf_format->GetTriangleCount());
+                uint fi = newMesh.addFaces(currentMeshObject->GetTriangleCount());
                 for(Lib3MF::sTriangle triangle : triangles){
-                    auto& f = new_mesh.face(fi);
+                    auto& f = newMesh.face(fi);
                     if constexpr (HasPolygons<MeshType>) {
                         f.resizeVertices(3);
                     }
@@ -82,13 +83,13 @@ void load3mf(
                     }
                     ++fi;
                 }
-                new_infos.setTriangleMesh();
-                new_infos.setFaces();
-                new_infos.setPerFaceVertexReferences();
+                newInfos.setTriangleMesh();
+                newInfos.setFaces();
+                newInfos.setPerFaceVertexReferences();
             }
 
-            m.push_back(std::move(new_mesh));
-            loadedInfo.push_back(std::move(new_infos));
+            m.push_back(std::move(newMesh));
+            loadedInfo.push_back(std::move(newInfos));
         }
 
     }
