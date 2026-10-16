@@ -6,6 +6,7 @@
 #include "matrix/matrix.h"
 
 #include <array>
+#include <algorithm>
 
 namespace vcl {
 
@@ -230,10 +231,16 @@ public:
             return *this;
         }
         else {
+            std::array<S, SHCoeffCount> coeffs;
+
+            std::transform(mSHCoeffs.begin(), mSHCoeffs.end(), coeffs.begin(), [](ScalarType value) {
+                return static_cast<S>(value);
+            });
+
             return GaussianSplat<S>(
                 mScale.template cast<S>(),
                 mRotation.template cast<S>(),
-                mSHCoeffs.template cast<S>()
+                coeffs
             );
         }
     }
