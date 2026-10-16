@@ -200,11 +200,7 @@ public:
      */
     template<typename... Scalars>
     void setSHCoeffs(Scalars... scalars) requires (sizeof...(scalars) == SHCoeffCount)
-    {
-        ScalarType args[SHCoeffCount] = {static_cast<ScalarType>(scalars)...};
-        for (uint i = 0; i < SHCoeffCount; i++)
-            mSHCoeffs[i] = args[i];
-    }
+    { mSHCoeffs = { static_cast<ScalarType>(scalars)... }; }
 
     /**
      * @brief Sets all the spherical harmonics coefficients of the
