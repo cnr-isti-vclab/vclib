@@ -242,18 +242,7 @@ public:
         }
     }
 
-    bool operator==(const GaussianSplat& gs) const
-    {
-        for (uint i = 0; i < SHCoeffCount; ++i) {
-            if (mSHCoeffs[i] != gs.mSHCoeffs[i])
-                return false;
-        }
-
-        return mScale == gs.mScale &&
-               mRotation == gs.mRotation;
-    }
-
-    bool operator!=(const GaussianSplat& gs) const { return !(*this == gs); }
+    bool operator==(const GaussianSplat& gs) const = default;
 };
 
 /* Specialization Aliases */
