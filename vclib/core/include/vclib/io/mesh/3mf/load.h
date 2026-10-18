@@ -168,11 +168,11 @@ void load3mf(
         
         std::vector<Lib3MF::sPosition> vertices;
         std::vector<Lib3MF::sTriangle> triangles;
-        Matrix44m transformMatrix = Matrix44m::Identity();
-
+        
         while(buildIt->MoveNext()){
             Lib3MF::PBuildItem currBuildItem = buildIt->GetCurrent();
             Lib3MF::PObject currObject = currBuildItem->GetObjectResource();
+            Matrix44m transformMatrix = Matrix44m::Identity();
 
             if(currBuildItem->HasObjectTransform()){
                 transformMatrix = detail::sTransformToVclMatrix<Matrix44m>(currBuildItem->GetObjectTransform()) * transformMatrix;
