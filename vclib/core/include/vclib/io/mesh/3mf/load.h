@@ -26,7 +26,115 @@ namespace vcl {
 
 namespace detail {
 
-// implementation details here...
+    template<Matrix44Concept MatrixType>
+    MatrixType sTransformToVclMatrix(Lib3MF::sTransform m){
+        MatrixType vclMatrix = MatrixType::Identity();
+
+        for(int i=0; i<4; i++){
+            for(int j=0; j<3; j++){
+                vclMatrix(j, i) = m.m_Fields[i][j];
+            }
+        }
+
+        return vclMatrix;
+    }
+
+    template<MeshConcept MeshType>
+    void read3mfVertices(
+        MeshType& m,
+        Lib3MF::PMeshObject meshObject,
+        std::vector<Lib3MF::sPosition>& vertices
+    ){
+        vertexPositionsFromBuffer(m, vertices.data()->m_Coordinates, meshObject->GetVertexCount());
+    }
+
+    template<MeshConcept MeshType>
+    void read3mfTriangles(
+        MeshType& m,
+        Lib3MF::PMeshObject meshObject,
+        std::vector<Lib3MF::sTriangle>& triangles
+    ){
+        faceIndicesFromBuffer(m, triangles.data()->m_Indices, meshObject->GetTriangleCount());
+    }
+
+    template<MeshConcept MeshType, Matrix44Concept MatrixType>
+    void readMeshObject(
+        std::vector<MeshType>& m,
+        std::vector<MeshInfo>& info,
+        Lib3MF::PMeshObject meshObject,
+        std::vector<Lib3MF::sPosition>& vertices,
+        std::vector<Lib3MF::sTriangle>& triangles,
+        MatrixType& transf
+    ){
+        MeshType newMesh;
+        MeshInfo newInfos;
+
+        meshObject->GetVertices(vertices);
+        meshObject->GetTriangleIndices(triangles);
+            
+        if constexpr (HasName<MeshType>){
+            newMesh.name() = meshObject->GetName();
+        }
+            
+        read3mfVertices(newMesh, meshObject, vertices);
+        newInfos.setVertices();
+
+        if constexpr (HasFaces<MeshType>){
+            read3mfTriangles(newMesh, meshObject, triangles);
+
+            newInfos.setTriangleMesh();
+            newInfos.setFaces();
+            newInfos.setPerFaceVertexReferences();
+        }
+
+        if (HasTransformMatrix<MeshType>) {
+            newMesh.transformMatrix() = transf;
+        }
+        else {
+            // if the mesh does not have a transform matrix, apply the
+            // transformation matrix to the vertices
+            vcl::applyTransformMatrix(newMesh, transf);
+        }
+
+        m.push_back(std::move(newMesh));
+        info.push_back(std::move(newInfos));
+    }
+
+    template<MeshConcept MeshType, Matrix44Concept MatrixType>
+    void readComponentsObject(
+        std::vector<MeshType>& m,
+        std::vector<MeshInfo>& info,
+        Lib3MF::PComponentsObject componentsObject,
+        std::vector<Lib3MF::sPosition>& vertices,
+        std::vector<Lib3MF::sTriangle>& triangles,
+        MatrixType transf,
+        Lib3MF::PModel model
+    ){
+        uint const nComponents = componentsObject->GetComponentCount();
+
+        for(int i=0; i<nComponents; i++){
+            Lib3MF::PComponent currComponent = componentsObject->GetComponent(i);
+            Lib3MF::PObject currObject = currComponent->GetObjectResource();
+            MatrixType componentTransform;
+
+            if(currComponent->HasTransform()){
+                componentTransform = sTransformToVclMatrix<MatrixType>(currComponent->GetTransform()) * transf;
+            }else{
+                componentTransform = transf;
+            }
+
+            if(currObject->IsMeshObject()){
+                Lib3MF::PMeshObject currMeshObject = model->GetMeshObjectByID(currObject->GetUniqueResourceID());
+
+                readMeshObject(m, info, currMeshObject, vertices, triangles, componentTransform); 
+            }else if(currObject->IsComponentsObject()){
+                Lib3MF::PComponentsObject currComponentsObject = model->GetComponentsObjectByID(currObject->GetUniqueResourceID());
+
+                readComponentsObject(m, info, currComponentsObject, vertices, triangles, componentTransform, model);
+            }
+
+        }
+    }
 
 } // namespace detail
 
@@ -48,38 +156,38 @@ void load3mf(
 
         // Read the 3MF file into the model
         reader->ReadFromFile(filename);
-        
-        using PositionType = typename MeshType::VertexType::PositionType;
 
-        MeshType newMesh;
-        MeshInfo newInfos;
+        using ScalarType = MeshType::ScalarType;
+
+        using Matrix44m = std::conditional_t<
+            HasTransformMatrix<MeshType>,
+            typename MeshType::TransformMatrixType,
+            Matrix44<ScalarType>>;
+
+        Lib3MF::PBuildItemIterator buildIt = model->GetBuildItems();
+        
         std::vector<Lib3MF::sPosition> vertices;
         std::vector<Lib3MF::sTriangle> triangles;
-        Lib3MF::PMeshObjectIterator meshIt = model->GetMeshObjects();
-        
-        while(meshIt->MoveNext()){
-            Lib3MF::PMeshObject currentMeshObject = meshIt->GetCurrentMeshObject();
+        Matrix44m transformMatrix = Matrix44m::Identity();
 
-            newMesh.name() = currentMeshObject->GetName();
+        while(buildIt->MoveNext()){
+            Lib3MF::PBuildItem currBuildItem = buildIt->GetCurrent();
+            Lib3MF::PObject currObject = currBuildItem->GetObjectResource();
 
-            currentMeshObject->GetVertices(vertices);
-            currentMeshObject->GetTriangleIndices(triangles);
-            
-            vertexPositionsFromBuffer(newMesh, vertices.data()->m_Coordinates, currentMeshObject->GetVertexCount());
-            
-            newInfos.setVertices();
-
-            if constexpr (HasFaces<MeshType>){
-
-                faceIndicesFromBuffer(newMesh, triangles.data()->m_Indices, currentMeshObject->GetTriangleCount());
-                
-                newInfos.setTriangleMesh();
-                newInfos.setFaces();
-                newInfos.setPerFaceVertexReferences();
+            if(currBuildItem->HasObjectTransform()){
+                transformMatrix = detail::sTransformToVclMatrix<Matrix44m>(currBuildItem->GetObjectTransform()) * transformMatrix;
             }
 
-            m.push_back(std::move(newMesh));
-            loadedInfo.push_back(std::move(newInfos));
+            if(currObject->IsMeshObject()){
+                Lib3MF::PMeshObject currMeshObject = model->GetMeshObjectByID(currObject->GetUniqueResourceID());
+
+                detail::readMeshObject(m, loadedInfo, currMeshObject, vertices, triangles, transformMatrix);
+            }else if(currObject->IsComponentsObject()){
+                Lib3MF::PComponentsObject currComponentsObject = model->GetComponentsObjectByID(currObject->GetUniqueResourceID());
+
+                detail::readComponentsObject(m, loadedInfo, currComponentsObject, vertices, triangles, transformMatrix, model);
+            }
+            
         }
 
     }
