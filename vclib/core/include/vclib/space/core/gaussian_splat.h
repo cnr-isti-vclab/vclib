@@ -1,12 +1,19 @@
-#ifndef GAUSSIAN_SPLAT_H
-#define GAUSSIAN_SPLAT_H
+// VCLib - Visual Computing Library
+// Copyright (C) 2021-2026 Visual Computing Lab, ISTI - CNR.
+//
+// This Source Code Form is subject to the terms of the Mozilla Public License,
+// v. 2.0. If a copy of the MPL was not distributed with this file, You can
+// obtain one at https://mozilla.org/MPL/2.0/.
 
+#ifndef VCL_SPACE_CORE_GAUSSIAN_SPLAT_H
+#define VCL_SPACE_CORE_GAUSSIAN_SPLAT_H
+
+#include "matrix.h"
 #include "point.h"
 #include "quaternion.h"
-#include "matrix/matrix.h"
 
-#include <array>
 #include <algorithm>
+#include <array>
 
 namespace vcl {
 
@@ -23,7 +30,7 @@ namespace vcl {
  * The base color (spherical harmonics coefficients of order l = 0) of
  * the 3D gaussian must be stored in the color component of the vertex.
  * The opacity component of the 3D gaussian must be stored in the color
- * component of the vector.
+ * component of the vertex.
  *
  * @tparam Scalar: The scalar type of the point components.
  *
@@ -56,84 +63,68 @@ public:
      * l = 1, 2, 3. The coefficients of order l = 0 are stored in the color
      * component of the vertex.
      */
-    static constexpr uint SHCoeffCount = 45; // l = 1..3 -> (3+5+7)*3 = 45
+    static constexpr uint SH_COEFF_COUNT = 45; // l = 1..3 -> (3+5+7)*3 = 45
 
     /**
-     * @brief The type of spherical harmonics coefficients vector of the
+     * @brief The type of spherical harmonics coefficients array of the
      * 3D gaussian.
      */
-    using SHCoeffVecType = std::array<ScalarType, SHCoeffCount>;
+    using SHCoeffArrayType = std::array<ScalarType, SH_COEFF_COUNT>;
 
 private:
-    PointType      mScale{1, 1, 1};
-    QuatType       mRotation{1, 0, 0, 0}; // Identity rotation
-    SHCoeffVecType mSHCoeffs{}; // Initialized to zeros
+    PointType        mScale {1, 1, 1};
+    QuatType         mRotation {1, 0, 0, 0}; // Identity rotation
+    SHCoeffArrayType mSHCoeffs {};           // Initialized to zeros
 
 public:
     GaussianSplat() = default;
 
-    GaussianSplat(const PointType& scale, const QuatType& rotation, const SHCoeffVecType& shCoeffs) :
-        mScale(scale), mRotation(rotation), mSHCoeffs(shCoeffs)
-    {}
-
-    /**
-     * @brief Returns a reference to the scale of the GaussianSplate object.
-     *
-     * @return A reference to the scale of the GaussianSplate object.
-     */
-    PointType& scale() {
-        return mScale;
+    GaussianSplat(
+        const PointType&        scale,
+        const QuatType&         rotation,
+        const SHCoeffArrayType& shCoeffs) :
+            mScale(scale), mRotation(rotation), mSHCoeffs(shCoeffs)
+    {
     }
 
     /**
-     * @brief Returns a const reference to the scale of the GaussianSplate object.
+     * @brief Returns a reference to the scale of the GaussianSplat object.
      *
-     * @return A const reference to the scale of the GaussianSplate object.
+     * @return A reference to the scale of the GaussianSplat object.
      */
-    const PointType& scale() const {
-        return mScale;
-    }
+    decltype(auto) scale(this auto&& self) { return (self.mScale); }
 
     /**
-     * @brief Returns the logarithmic scale of the GaussianSplate object.
+     * @brief Returns a reference to the rotation of the GaussianSplat object.
      *
-     * @return The logarithmic scale of the GaussianSplate object.
+     * @return A reference to the rotation of the GaussianSplat object.
      */
-    PointType logScale() const {
-        PointType logScale;
-
-        logScale.at(0) = log(mScale.at(0));
-        logScale.at(1) = log(mScale.at(1));
-        logScale.at(2) = log(mScale.at(2));
-
-        return logScale;
-    }
+    decltype(auto) rotation(this auto&& self) { return (self.mRotation); }
 
     /**
-     * @brief Sets the scale of the GaussianSplate object from a logarithmic scale.
+     * @brief Returns a reference to the spherical harmonics coefficients of the
+     * GaussianSplat object.
+     *
+     * @return A reference to the spherical harmonics coefficients of the
+     * GaussianSplat object.
      */
-    void setScaleFromLogScale(const PointType& logScale) {
-        mScale[0] = exp(logScale.at(0));
-        mScale[1] = exp(logScale.at(1));
-        mScale[2] = exp(logScale.at(2));
-    }
+    decltype(auto) shCoeffs(this auto&& self) { return (self.mSHCoeffs); }
 
     /**
-     * @brief Returns a reference to the rotation of the GaussianSplate object.
+     * @brief Returns a reference to the spherical harmonics coefficient at the
+     * specified index of the GaussianSplat object.
      *
-     * @return A reference to the rotation of the GaussianSplate object.
+     * @param[in] i: The index of the spherical harmonics coefficient to
+     * retrieve. Must be less than SH_COEFF_COUNT.
+     *
+     * @return A reference to the spherical harmonics coefficient at the
+     * specified index of the GaussianSplat object.
      */
-    QuatType& rotation() {
-        return mRotation;
-    }
+    decltype(auto) shCoeffAt(this auto&& self, uint i)
+    {
+        assert(i < self.SH_COEFF_COUNT);
 
-    /**
-     * @brief Returns a const reference to the rotation of the GaussianSplate object.
-     *
-     * @return A const reference to the rotation of the GaussianSplate object.
-     */
-    const QuatType& rotation() const {
-        return mRotation;
+        return self.mSHCoeffs[i];
     }
 
     /**
@@ -148,40 +139,33 @@ public:
      *
      * @return The covariance matrix of the 3D gaussian.
      */
-    Matrix33<ScalarType> covariance() const {
+    Matrix33<ScalarType> covariance() const
+    {
         Matrix33<ScalarType> rot = mRotation.normalized().toRotationMatrix();
-        Matrix33<ScalarType> rs = rot * mScale.asDiagonal();
+        Matrix33<ScalarType> rs  = rot * mScale.asDiagonal();
         return rs * rs.transpose();
     }
 
     /**
-     * @brief Returns a reference to the spherical harmonics coefficients of the GaussianSplate object.
+     * @brief Returns the logarithmic scale of the GaussianSplat object.
      *
-     * @return A reference to the spherical harmonics coefficients of the GaussianSplate object.
+     * @return The logarithmic scale of the GaussianSplat object.
      */
-    SHCoeffVecType& shCoeffs() {
-        return mSHCoeffs;
+    PointType logScale() const
+    {
+        return PointType(
+            std::log(mScale[0]), std::log(mScale[1]), std::log(mScale[2]));
     }
 
     /**
-     * @brief Returns a const reference to the spherical harmonics coefficients of the GaussianSplate object.
-     *
-     * @return A const reference to the spherical harmonics coefficients of the GaussianSplate object.
+     * @brief Sets the scale of the GaussianSplat object from a logarithmic
+     * scale.
      */
-    const SHCoeffVecType& shCoeffs() const {
-        return mSHCoeffs;
-    }
-
-    ScalarType& shCoeffAt(uint i) {
-        assert(i < SHCoeffCount);
-
-        return mSHCoeffs[i];
-    }
-
-    const ScalarType& shCoeffAt(uint i) const  {
-        assert(i < SHCoeffCount);
-
-        return mSHCoeffs[i];
+    void setScaleFromLogScale(const PointType& logScale)
+    {
+        mScale[0] = std::exp(logScale[0]);
+        mScale[1] = std::exp(logScale[1]);
+        mScale[2] = std::exp(logScale[2]);
     }
 
     /**
@@ -192,7 +176,7 @@ public:
      * are used to set the spherical harmonics coefficients of the GaussianSplat
      * object. The number of arguments must be equal to the number of spherical
      * harmonics coefficients of the GaussianSplat object, which
-     * is determined by the static member SHCoeffCount.
+     * is determined by the static member SH_COEFF_COUNT.
      *
      * @tparam Scalars: The types of the scalar arguments.
      *
@@ -200,28 +184,32 @@ public:
      * spherical harmonics coefficients of the GaussianSplat object.
      */
     template<typename... Scalars>
-    void setSHCoeffs(Scalars... scalars) requires (sizeof...(scalars) == SHCoeffCount)
-    { mSHCoeffs = { static_cast<ScalarType>(scalars)... }; }
+    void setSHCoeffs(Scalars... scalars)
+        requires (sizeof...(scalars) == SH_COEFF_COUNT)
+    {
+        mSHCoeffs = {static_cast<ScalarType>(scalars)...};
+    }
 
     /**
      * @brief Sets all the spherical harmonics coefficients of the
      * GaussianSplat object by making a copy of the specified coefficients.
      *
-     * @param[in] coeffs: The vector argument used to set the
+     * @param[in] coeffs: The array argument used to set the
      * spherical harmonics coefficients of the GaussianSplat object.
      */
-    void setSHCoeffs(const SHCoeffVecType& coeffs) { mSHCoeffs = coeffs; }
+    void setSHCoeffs(const SHCoeffArrayType& coeffs) { mSHCoeffs = coeffs; }
 
     /**
      * @brief Casts the GaussianSplat object to a different scalar type.
      *
      * The function returns a new GaussianSplat object with the same attributes
-     * as the original object, but with each scalar value casted to a different type.
+     * as the original object, but with each scalar value casted to a different
+     * type.
      *
      * @tparam S: The scalar type to cast to.
      *
-     * @return A new GaussianSplat object with the same attributes as the original
-     * object, but with each scalar value casted to a different type.
+     * @return A new GaussianSplat object with the same attributes as the
+     * original object, but with each scalar value casted to a different type.
      */
     template<typename S>
     auto cast() const
@@ -230,17 +218,18 @@ public:
             return *this;
         }
         else {
-            std::array<S, SHCoeffCount> coeffs;
+            std::array<S, SH_COEFF_COUNT> coeffs;
 
-            std::transform(mSHCoeffs.begin(), mSHCoeffs.end(), coeffs.begin(), [](ScalarType value) {
-                return static_cast<S>(value);
-            });
+            std::transform(
+                mSHCoeffs.begin(),
+                mSHCoeffs.end(),
+                coeffs.begin(),
+                [](ScalarType value) { return static_cast<S>(value); });
 
             return GaussianSplat<S>(
                 mScale.template cast<S>(),
                 mRotation.template cast<S>(),
-                coeffs
-            );
+                coeffs);
         }
     }
 
@@ -254,7 +243,7 @@ public:
     {
         mScale.serialize(os);
         vcl::serializeN(os, mRotation.coeffs().data(), 4);
-        vcl::serializeN(os, mSHCoeffs.data(), SHCoeffCount);
+        vcl::serializeN(os, mSHCoeffs.data(), SH_COEFF_COUNT);
     }
 
     /**
@@ -264,8 +253,8 @@ public:
     void deserialize(std::istream& is)
     {
         mScale.deserialize(is);
-        vcl::deserializeN(is, mRotation.coeffs().begin(), 4);
-        vcl::deserializeN(is, mSHCoeffs.begin(), SHCoeffCount);
+        vcl::deserializeN(is, mRotation.coeffs().data(), 4);
+        vcl::deserializeN(is, mSHCoeffs.begin(), SH_COEFF_COUNT);
     }
 };
 
@@ -282,7 +271,8 @@ public:
 using GaussianSplatf = GaussianSplat<float>;
 
 /**
- * @brief A convenience alias for GaussianSplat with double-precision components.
+ * @brief A convenience alias for GaussianSplat with double-precision
+ * components.
  *
  * The GaussianSplatd alias is a shorthand for a GaussianSplat class template
  * specialization with double-precision components.
@@ -310,4 +300,4 @@ concept GaussianSplatConcept = std::derived_from< // same type or derived type
 
 } // namespace vcl
 
-#endif // GAUSSIAN_SPLAT_H
+#endif // VCL_SPACE_CORE_GAUSSIAN_SPLAT_H
