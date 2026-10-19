@@ -20,25 +20,35 @@ auto load3mf()
     vcl::TriMesh dodecaChainLoop = vcl::loadMesh<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/dodeca_chain_loop.3mf");
 
-    auto cubeGears =
-        vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_gears.3mf");
+    auto cubeGears = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                                 "/cube_gears.3mf");
 
     return std::make_tuple(box, dodecaChainLoop, cubeGears);
+}
+
+auto load3mfMeshes()
+{
+    auto cubeGears = vcl::loadMeshes<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                                   "/outProduction.3mf");
+
+    return cubeGears;
 }
 
 void save3mf(const vcl::MeshConcept auto&... meshes)
 {
     std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
-    size_t i = 0;
+    size_t      i           = 0;
 
-    ([&](const auto& m) {
-        std::string mName = "/mesh_" + std::to_string(i++) + ".3mf";
-        if (!m.name().empty()) {
-            mName = "/" + m.name() + ".3mf";
-        }
-        std::string filename = resultsPath + mName;
-        vcl::saveMesh(m, filename);
-    }(meshes), ...);
+    (
+        [&](const auto& m) {
+            std::string mName = "/mesh_" + std::to_string(i++) + ".3mf";
+            if (!m.name().empty()) {
+                mName = "/" + m.name() + ".3mf";
+            }
+            std::string filename = resultsPath + mName;
+            vcl::saveMesh(m, filename);
+        }(meshes),
+        ...);
 }
 
 #endif // LOAD_SAVE_3MF_H
