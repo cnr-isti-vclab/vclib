@@ -11,15 +11,28 @@
 
 int main(int argc, char** argv)
 {
+    constexpr bool TEST_MULTI_MESH = true;
+
     try {
-        auto [mesh0, mesh1, mesh2] = load3mf();
+        if constexpr (TEST_MULTI_MESH) {
+            auto meshes = load3mfMeshes();
 
-        vcl::updatePerVertexAndFaceNormals(mesh0);
-        vcl::updatePerVertexAndFaceNormals(mesh1);
-        vcl::updatePerVertexAndFaceNormals(mesh2);
+            for (auto& mesh : meshes) {
+                vcl::updatePerVertexAndFaceNormals(mesh);
+            }
 
-        return vcl::showOnMeshViewer(
-            argc, argv, std::move(mesh0), std::move(mesh1), std::move(mesh2));
+            return vcl::showOnMeshViewer(argc, argv, std::move(meshes));
+        }
+        else {
+            auto [mesh0, mesh1, mesh2] = load3mf();
+
+            vcl::updatePerVertexAndFaceNormals(mesh0);
+            vcl::updatePerVertexAndFaceNormals(mesh1);
+            vcl::updatePerVertexAndFaceNormals(mesh2);
+
+            return vcl::showOnMeshViewer(
+                argc, argv, std::move(mesh0), std::move(mesh1), std::move(mesh2));
+        }
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
