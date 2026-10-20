@@ -21,14 +21,12 @@ namespace vcl {
  * @brief The GaussianSplat class represents a 3D gaussian with:
  * - a scale (3 scalars) component
  * - a rotation (1 quat = 4 scalars) component
- * - 45 spherical harmonics components
+ * - 48 spherical harmonics components
  *
  * The Covariance matrix of the 3D gaussian can be calculated from
  * the scale and rotation components.
  * The position of the 3D gaussian must be stored in the position
  * component of the vertex.
- * The base color (spherical harmonics coefficients of order l = 0) of
- * the 3D gaussian must be stored in the color component of the vertex.
  * The opacity component of the 3D gaussian must be stored in the color
  * component of the vertex.
  *
@@ -60,10 +58,9 @@ public:
 
     /**
      * @brief The number of the spherical harmonics coefficients of order
-     * l = 1, 2, 3. The coefficients of order l = 0 are stored in the color
-     * component of the vertex.
+     * l = 0, 1, 2, 3.
      */
-    static constexpr uint SH_COEFF_COUNT = 45; // l = 1..3 -> (3+5+7)*3 = 45
+    static constexpr uint SH_COEFF_COUNT = 48; // l = 0..3 -> (1+3+5+7)*3 = 48
 
     /**
      * @brief The type of spherical harmonics coefficients array of the
