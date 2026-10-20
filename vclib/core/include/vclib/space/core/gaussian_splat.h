@@ -19,6 +19,7 @@ namespace vcl {
 
 /**
  * @brief The GaussianSplat class represents a 3D gaussian with:
+ * - an opacity (1 scalar) component
  * - a scale (3 scalars) component
  * - a rotation (1 quat = 4 scalars) component
  * - 48 spherical harmonics components
@@ -26,8 +27,6 @@ namespace vcl {
  * The Covariance matrix of the 3D gaussian can be calculated from
  * the scale and rotation components.
  * The position of the 3D gaussian must be stored in the position
- * component of the vertex.
- * The opacity component of the 3D gaussian must be stored in the color
  * component of the vertex.
  *
  * @tparam Scalar: The scalar type of the point components.
@@ -69,6 +68,7 @@ public:
     using SHCoeffArrayType = std::array<ScalarType, SH_COEFF_COUNT>;
 
 private:
+    ScalarType       mOpacity{1};
     PointType        mScale {1, 1, 1};
     QuatType         mRotation {1, 0, 0, 0}; // Identity rotation
     SHCoeffArrayType mSHCoeffs {};           // Initialized to zeros
@@ -83,6 +83,13 @@ public:
             mScale(scale), mRotation(rotation), mSHCoeffs(shCoeffs)
     {
     }
+
+    /**
+     * @brief Returns a reference to the opacity of the GaussianSplat object.
+     *
+     * @return A reference to the opacity of the GaussianSplat object.
+     */
+    decltype(auto) opacity(this auto&& self) { return (self.mOpacity); }
 
     /**
      * @brief Returns a reference to the scale of the GaussianSplat object.
@@ -238,6 +245,7 @@ public:
      */
     void serialize(std::ostream& os) const
     {
+        vcl::serialize(os, mOpacity);
         mScale.serialize(os);
         vcl::serializeN(os, mRotation.coeffs().data(), 4);
         vcl::serializeN(os, mSHCoeffs.data(), SH_COEFF_COUNT);
@@ -249,6 +257,7 @@ public:
      */
     void deserialize(std::istream& is)
     {
+        vcl::deserialize(is, mOpacity);
         mScale.deserialize(is);
         vcl::deserializeN(is, mRotation.coeffs().data(), 4);
         vcl::deserializeN(is, mSHCoeffs.begin(), SH_COEFF_COUNT);
