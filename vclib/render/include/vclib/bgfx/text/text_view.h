@@ -11,16 +11,24 @@
 #include "../context.h"
 #include "text_manager.h"
 
+#include <unordered_map>
+
 namespace vcl {
 
 class TextView
 {
-    TextManager  mTextManager;
-    bgfx::ViewId mView = BGFX_INVALID_VIEW;
-    float        mTextViewMatrix[16];
-    float        mTextProjMatrix[16];
-    uint         mWidth  = 0;
-    uint         mHeight = 0;
+    TextManager mTextManager;
+
+    // association between the parent view and the text view
+    // (each parent view has its own text view, so that the text can be rendered
+    // on top of it)
+    std::unordered_map<bgfx::ViewId, bgfx::ViewId> mViews;
+
+    bool  mTextEnabled = false;
+    float mTextViewMatrix[16];
+    float mTextProjMatrix[16];
+    uint  mWidth  = 0;
+    uint  mHeight = 0;
 
 public:
     TextView();
@@ -46,7 +54,7 @@ public:
         const std::string&  text,
         const vcl::Color&   color = vcl::Color::Black);
 
-    void frame(bgfx::FrameBufferHandle fbh);
+    void frame(bgfx::ViewId parentViewId, bgfx::FrameBufferHandle fbh);
 
     void resize(uint width, uint height);
 
