@@ -172,9 +172,8 @@ float pbrSpecular(
  *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
  * @return The IBL Fresnel term.
  */
-vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
+vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0, float specularWeight)
 {
-    float specularWeight = 1.0; // related to some extension, for now use a neutral value
     // see https://bruop.github.io/ibl/#single_scattering_results at Single Scattering Results
     // Roughness dependent fresnel, from Fdez-Aguera
     vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
@@ -226,12 +225,15 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float specular,
+    vec3 specularColor,
     float exposure,
     uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
-    vec3 f0_dielectric = vec3_splat(0.04);
+    vec3 f0_dielectric = min(vec3_splat(0.04) * specularColor, vec3_splat(1.0));
     vec3 f90 = vec3_splat(1.0);
+    vec3 f90_dielectric = vec3_splat(specular);
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
@@ -255,7 +257,7 @@ vec4 pbrColorLights(
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
-        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, abs(VoH));
+        vec3 dielectric_fresnel = F_Schlick(f0_dielectric * specular, f90_dielectric, abs(VoH));
         // Metals have the surface color as base reflectivity since no light gets absorbed
         vec3 metal_fresnel = F_Schlick(color.rgb, f90, abs(VoH));
 

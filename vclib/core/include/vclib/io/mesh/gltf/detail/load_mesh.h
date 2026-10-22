@@ -50,6 +50,10 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
+        double specular = 1.0;
+        Point3f specularColor = Point3f(1.0, 1.0, 1.0);
+        int specularTextureId = -1;
+        int specularColorTextureId = -1;
         double emissiveStrength = 1.0f;
 
         const tinygltf::Material& mat = model.materials[p.material];
@@ -113,6 +117,36 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
+        // KHR_materials_specular
+        if(mat.extensions.contains("KHR_materials_specular"))
+        {
+            const auto& specularExt = mat.extensions.at("KHR_materials_specular");
+
+            if(specularExt.Has("specularFactor"))
+                specular = specularExt
+                    .Get("specularFactor")
+                    .GetNumberAsDouble();
+
+            if(specularExt.Has("specularColorFactor"))
+                for(uint i = 0; i < 3; i++)
+                    specularColor[i] = specularExt
+                        .Get("specularColorFactor")
+                        .Get(i)
+                        .GetNumberAsDouble();
+
+            if(specularExt.Has("specularTexture"))
+                specularTextureId = specularExt
+                    .Get("specularTexture")
+                    .Get("index")
+                    .GetNumberAsInt();
+
+            if(specularExt.Has("specularColorTexture"))
+                specularColorTextureId = specularExt
+                    .Get("specularColorTexture")
+                    .Get("index")
+                    .GetNumberAsInt();
+        }
+        
         // KHR_materials_emissive_strength
         {
             static const std::string EXT = "KHR_materials_emissive_strength";
@@ -198,6 +232,8 @@ int loadGltfPrimitiveMaterial(
             mat.doubleSided()       = doubleSided;
             mat.normalScale()       = normalScale;
             mat.occlusionStrength() = occlusionStrength;
+            mat.specular()          = specular;
+            mat.specularColor()     = specularColor;
             mat.emissiveStrength()  = emissiveStrength;
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
@@ -211,6 +247,10 @@ int loadGltfPrimitiveMaterial(
                 mat, occlusionTextureId, Material::TextureType::OCCLUSION);
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, specularTextureId, Material::TextureType::SPECULAR);
+            loadTextureInMaterial(
+                mat, specularColorTextureId, Material::TextureType::SPECULAR_COLOR);
             m.pushMaterial(mat);
             idx = m.materialCount() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {
