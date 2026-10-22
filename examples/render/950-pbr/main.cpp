@@ -21,6 +21,8 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        CLEARCOAT_TEST,
+        CLEARCOAT_WICKER,
         COMPARE_EMISSIVE_STRENGTH,
         COUNT_EXAMPLES
     };
@@ -31,9 +33,11 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/ClearCoatTest/ClearCoatTest.gltf",
+        "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = CLEARCOAT_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -42,6 +46,7 @@ int main(int argc, char** argv)
         UFFIZI_EXR,
         UFFIZI_HDR,
         UFFIZI_KTX,
+        ST_PETER_EXR,
         COUNT_PANORAMAS
     };
 
@@ -51,9 +56,10 @@ int main(int argc, char** argv)
         "/panoramas/pisa.hdr",
         "/panoramas/uffizi.exr",
         "/panoramas/uffizi.hdr",
-        "/panoramas/uffizi.ktx"};
+        "/panoramas/uffizi.ktx",
+        "/panoramas/st_peter.exr"};
 
-    uint selectedPanorama = UFFIZI_KTX;
+    uint selectedPanorama = COLOSSEUM_HDR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
@@ -74,6 +80,15 @@ int main(int argc, char** argv)
         }
         else if (type == EMISSIVE) {
             typeName = "emissive";
+        }
+        else if (type == CLEARCOAT) {
+            typeName = "clearcoat";
+        }
+        else if (type == CLEARCOAT_ROUGHNESS) {
+            typeName = "clearcoatRoughness";
+        }
+        else if (type == CLEARCOAT_NORMAL) {
+            typeName = "clearcoatNormal";
         }
 
         std::cout << "  " << typeName << "Texture: ";
@@ -107,6 +122,12 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  clearcoatFactor: " << mat.clearcoatFactor()
+                      << std::endl;
+            std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
+                      << std::endl;
+            std::cout << "  clearcoatNormalScale: " << mat.clearcoatNormalScale()
+                      << std::endl;
             std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);
@@ -114,6 +135,9 @@ int main(int argc, char** argv)
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, CLEARCOAT);
+            printTextureInfo(mat, CLEARCOAT_ROUGHNESS);
+            printTextureInfo(mat, CLEARCOAT_NORMAL);
             std::cout << "  ------------------------" << std::endl;
         }
         std::cout << "------------------------" << std::endl;
