@@ -28,6 +28,15 @@ namespace vcl {
 
 namespace detail {
 
+template<MeshConcept MeshType, Matrix44Concept MatrixType>
+void readObjects(
+    std::vector<MeshType>&,
+    std::vector<MeshInfo>&,
+    const Lib3MF::PObject&,
+    const MatrixType&,
+    const Lib3MF::PModel&,
+    bool);
+
 template<Matrix44Concept MatrixType>
 MatrixType sTransformToVclMatrix(const Lib3MF::sTransform& m)
 {
@@ -61,12 +70,73 @@ void read3mfTriangles(
         faceIndicesFromBuffer(m, triangles.data()->m_Indices, triangles.size());
 }
 
+template<MeshConcept MeshType>
+void read3mfColors(
+    MeshType&             m,
+    const Lib3MF::sColor& meshColor,
+    const uint&           faceID)
+{
+    const vcl::Color c = vcl::Color(
+        meshColor.m_Red,
+        meshColor.m_Green,
+        meshColor.m_Blue,
+        meshColor.m_Alpha);
+
+    m.face(faceID).color() = c;
+}
+
+template<MeshConcept MeshType>
+void readBaseMaterial(
+    MeshType&             m,
+    const uint&           uniqueResourceID,
+    const uint&           propertyID,
+    const Lib3MF::PModel& model)
+{
+}
+
+template<MeshConcept MeshType>
+void readFaceProperties(
+    MeshType&             m,
+    MeshInfo&             info,
+    const uint&           uniqueResourceID,
+    const uint&           propertyID,
+    const uint&           faceID,
+    const Lib3MF::PModel& model)
+{
+    switch (model->GetPropertyTypeByID(uniqueResourceID)) {
+    case Lib3MF::ePropertyType::BaseMaterial:
+        if constexpr (HasPerFaceColor<MeshType>) {
+            enableIfPerFaceColorOptional(m);
+            read3mfColors(
+                m,
+                model->GetBaseMaterialGroupByID(uniqueResourceID)
+                    ->GetDisplayColor(propertyID),
+                faceID);
+            info.setPerFaceColor();
+        }
+        break;
+    case Lib3MF::ePropertyType::Colors:
+        if constexpr (HasPerFaceColor<MeshType>) {
+            enableIfPerFaceColorOptional(m);
+            read3mfColors(
+                m,
+                model->GetColorGroupByID(uniqueResourceID)
+                    ->GetColor(propertyID),
+                faceID);
+            info.setPerFaceColor();
+        }
+        break;
+    }
+}
+
 template<MeshConcept MeshType, Matrix44Concept MatrixType>
 void readMeshObject(
     std::vector<MeshType>&     m,
     std::vector<MeshInfo>&     info,
     const Lib3MF::PMeshObject& meshObject,
-    const MatrixType&          transf)
+    const MatrixType&          transf,
+    const Lib3MF::PModel&      model,
+    bool                       enableOptionalComponents)
 {
     MeshType newMesh;
     MeshInfo newInfos;
@@ -101,6 +171,75 @@ void readMeshObject(
         vcl::applyTransformMatrix(newMesh, transf);
     }
 
+    if (enableOptionalComponents) {
+        const uint                  nTriangles = meshObject->GetTriangleCount();
+        Lib3MF::sTriangleProperties triangleProperties;
+        uint                        uniqueResourceID, propertyID;
+        const bool                  hasPerMeshProperties =
+            meshObject->GetObjectLevelProperty(uniqueResourceID, propertyID);
+
+        for (uint i = 0; i < nTriangles; i++) {
+            meshObject->GetTriangleProperties(i, triangleProperties);
+
+            if (hasPerMeshProperties || triangleProperties.m_ResourceID != 0) {
+                if (triangleProperties.m_ResourceID != 0) {
+                    const bool isBaseMaterialGroup =
+                        model->GetPropertyTypeByID(
+                            triangleProperties.m_ResourceID) ==
+                                Lib3MF::ePropertyType::BaseMaterial ?
+                            true :
+                            false;
+                    const bool trianglePropertiesIDsAllEQ =
+                        triangleProperties.m_PropertyIDs[0] ==
+                                    triangleProperties.m_PropertyIDs[1] &&
+                                triangleProperties.m_PropertyIDs[0] ==
+                                    triangleProperties.m_PropertyIDs[2] ?
+                            true :
+                            false;
+
+                    if (!isBaseMaterialGroup && !trianglePropertiesIDsAllEQ) {
+                        // Use per-vertex properties
+                    }
+                    else if (
+                        trianglePropertiesIDsAllEQ &&
+                        triangleProperties.m_PropertyIDs[0] != 0) {
+                        // Use per-face properties
+
+                        readFaceProperties(
+                            newMesh,
+                            newInfos,
+                            triangleProperties.m_ResourceID,
+                            triangleProperties.m_PropertyIDs[0],
+                            i,
+                            model);
+                    }
+                    else if (hasPerMeshProperties) {
+                        // Invalid per-face base material property
+
+                        readFaceProperties(
+                            newMesh,
+                            newInfos,
+                            uniqueResourceID,
+                            propertyID,
+                            i,
+                            model);
+                    }
+                }
+                else {
+                    // Use per-mesh properties
+
+                    readFaceProperties(
+                        newMesh,
+                        newInfos,
+                        uniqueResourceID,
+                        propertyID,
+                        i,
+                        model);
+                }
+            }
+        }
+    }
+
     m.push_back(std::move(newMesh));
     info.push_back(std::move(newInfos));
 }
@@ -111,7 +250,8 @@ void readComponentsObject(
     std::vector<MeshInfo>&           info,
     const Lib3MF::PComponentsObject& componentsObject,
     const MatrixType&                transf,
-    const Lib3MF::PModel&            model)
+    const Lib3MF::PModel&            model,
+    bool                             enableOptionalComponents)
 {
     const uint nComponents = componentsObject->GetComponentCount();
 
@@ -129,20 +269,43 @@ void readComponentsObject(
             componentTransform = transf;
         }
 
-        if (currObject->IsMeshObject()) {
-            const Lib3MF::PMeshObject currMeshObject =
-                model->GetMeshObjectByID(currObject->GetUniqueResourceID());
+        readObjects(
+            m,
+            info,
+            currObject,
+            componentTransform,
+            model,
+            enableOptionalComponents);
+    }
+}
 
-            readMeshObject(m, info, currMeshObject, componentTransform);
-        }
-        else if (currObject->IsComponentsObject()) {
-            const Lib3MF::PComponentsObject currComponentsObject =
-                model->GetComponentsObjectByID(
-                    currObject->GetUniqueResourceID());
+template<MeshConcept MeshType, Matrix44Concept MatrixType>
+void readObjects(
+    std::vector<MeshType>& m,
+    std::vector<MeshInfo>& info,
+    const Lib3MF::PObject& currObject,
+    const MatrixType&      transf,
+    const Lib3MF::PModel&  model,
+    bool                   enableOptionalComponents)
+{
+    if (currObject->IsMeshObject()) {
+        const Lib3MF::PMeshObject currMeshObject =
+            model->GetMeshObjectByID(currObject->GetUniqueResourceID());
 
-            readComponentsObject(
-                m, info, currComponentsObject, componentTransform, model);
-        }
+        readMeshObject(
+            m, info, currMeshObject, transf, model, enableOptionalComponents);
+    }
+    else if (currObject->IsComponentsObject()) {
+        const Lib3MF::PComponentsObject currComponentsObject =
+            model->GetComponentsObjectByID(currObject->GetUniqueResourceID());
+
+        readComponentsObject(
+            m,
+            info,
+            currComponentsObject,
+            transf,
+            model,
+            enableOptionalComponents);
     }
 }
 
@@ -188,25 +351,13 @@ void load3mf(
                                           currBuildItem->GetObjectTransform());
             }
 
-            if (currObject->IsMeshObject()) {
-                const Lib3MF::PMeshObject currMeshObject =
-                    model->GetMeshObjectByID(currObject->GetUniqueResourceID());
-
-                detail::readMeshObject(
-                    m, loadedInfo, currMeshObject, transformMatrix);
-            }
-            else if (currObject->IsComponentsObject()) {
-                const Lib3MF::PComponentsObject currComponentsObject =
-                    model->GetComponentsObjectByID(
-                        currObject->GetUniqueResourceID());
-
-                detail::readComponentsObject(
-                    m,
-                    loadedInfo,
-                    currComponentsObject,
-                    transformMatrix,
-                    model);
-            }
+            detail::readObjects(
+                m,
+                loadedInfo,
+                currObject,
+                transformMatrix,
+                model,
+                settings.enableOptionalComponents);
         }
     }
     catch (Lib3MF::ELib3MFException& e) {
