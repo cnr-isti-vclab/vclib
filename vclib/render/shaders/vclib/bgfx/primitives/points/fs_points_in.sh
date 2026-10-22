@@ -6,13 +6,19 @@
 // obtain one at https://mozilla.org/MPL/2.0/.
 
 $input v_normal, v_texcoord0, v_color, v_selected
+$input v_worldPos, v_discardFlag
 
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.sh>
 #include <vclib/bgfx/shaders_common.sh>
 
 void main()
 {
+#if POINTS_SECTION_ON
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#endif
+
     vec4 color = v_color;
 
 #if POINTS_SHAPE_CIRCLE
