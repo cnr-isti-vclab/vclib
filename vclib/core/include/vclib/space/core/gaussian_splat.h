@@ -56,10 +56,13 @@ public:
     using QuatType = Quaternion<ScalarType>;
 
     /**
-     * @brief The number of the spherical harmonics coefficients of order
-     * l = 0, 1, 2, 3.
+     * @brief The number of the spherical harmonics coefficients
      */
-    static constexpr uint SH_COEFF_COUNT = 48; // l = 0..3 -> (1+3+5+7)*3 = 48
+    static constexpr uint SH_DEGREE = 3;
+    static constexpr uint SH_COLOR = 3; // RGB color channels
+    static constexpr uint SH_COEFF_COUNT =
+        SH_COLOR * (SH_DEGREE+1)*(SH_DEGREE+1);
+        // e.g. l = 0..3 -> (1+3+5+7)*3 = 48
 
     /**
      * @brief The type of spherical harmonics coefficients array of the
