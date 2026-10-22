@@ -53,6 +53,7 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
+        ANISOTROPY, ///< The anisotropy texture. Stored in linear color space.
         COUNT      ///< Utility value to get the number of texture types.
     };
 
@@ -63,7 +64,8 @@ public:
                 "metallicRoughnessTex",
                 "normalTex",
                 "occlusionTex",
-                "emissiveTex"};
+                "emissiveTex",
+                "anisotropyTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =
@@ -94,6 +96,10 @@ private:
     bool mDoubleSided = false;
 
     // extension PBR properties
+    float mAnisotropyStrength = 0.0f;
+
+    float mAnisotropyRotation = 0.0f;
+    
     float mEmissiveStrength = 1.0f;
 
 public:
@@ -182,10 +188,28 @@ public:
      * @brief Gets the strength of the ambient occlusion effect.
      * @return A reference to the occlusion strength, in the range [0.0, 1.0].
      */
-    decltype(auto) occlusionStrength(this auto&& self)
-    {
+     decltype(auto) occlusionStrength(this auto&& self)
+     {
         return (self.mOcclusionStrength);
-    }
+     }
+
+    /**
+     * @brief Gets the anisotropy strength of the material.
+     * @return The anisotropy strength, in the range [0.0, 1.0].
+     */
+     decltype(auto) anisotropyStrength(this auto&& self)
+     {
+         return (self.mAnisotropyStrength);
+     }
+
+    /**
+     * @brief Gets the anisotropy rotation of the material.
+     * @return The anisotropy rotation, in radians.
+     */
+     decltype(auto) anisotropyRotation(this auto&& self)
+     {
+         return (self.mAnisotropyRotation);
+     }
 
     /**
      * @brief Gets the emissive strength multiplier.
@@ -242,6 +266,8 @@ public:
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         vcl::serialize(os, mNormalScale);
         vcl::serialize(os, mOcclusionStrength);
+        vcl::serialize(os, mAnisotropyStrength);
+        vcl::serialize(os, mAnisotropyRotation);
         vcl::serialize(os, mEmissiveStrength);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
@@ -260,6 +286,8 @@ public:
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         vcl::deserialize(is, mNormalScale);
         vcl::deserialize(is, mOcclusionStrength);
+        vcl::deserialize(is, mAnisotropyStrength);
+        vcl::deserialize(is, mAnisotropyRotation);
         vcl::deserialize(is, mEmissiveStrength);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
@@ -291,6 +319,7 @@ public:
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
+        case TextureType::ANISOTROPY:
         default: return Image::ColorSpace::LINEAR;
         }
     }
