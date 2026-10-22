@@ -104,6 +104,7 @@ void readFaceProperties(
     const Lib3MF::PModel& model)
 {
     switch (model->GetPropertyTypeByID(uniqueResourceID)) {
+    case Lib3MF::ePropertyType::NoPropertyType: break;
     case Lib3MF::ePropertyType::BaseMaterial:
         if constexpr (HasPerFaceColor<MeshType>) {
             enableIfPerFaceColorOptional(m);
@@ -115,6 +116,7 @@ void readFaceProperties(
             info.setPerFaceColor();
         }
         break;
+    case Lib3MF::ePropertyType::TexCoord: break;
     case Lib3MF::ePropertyType::Colors:
         if constexpr (HasPerFaceColor<MeshType>) {
             enableIfPerFaceColorOptional(m);
@@ -126,6 +128,8 @@ void readFaceProperties(
             info.setPerFaceColor();
         }
         break;
+    case Lib3MF::ePropertyType::Composite: break;
+    case Lib3MF::ePropertyType::Multi: break;
     }
 }
 
