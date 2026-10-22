@@ -13,17 +13,6 @@
 
 #include <vclib/space/core.h>
 
-namespace vcl {
-
-// PlaceHolder
-// TODO: remove this...
-template<typename Scalar>
-class GaussianSplat
-{
-};
-
-} // namespace vcl
-
 namespace vcl::comp {
 
 /**
@@ -103,14 +92,12 @@ protected:
 
     void serialize(std::ostream& os) const
     {
-        // TODO: Uncomment when GaussianSplat serialization is implemented
-        // gaussianSplat().serialize(os);
+        gaussianSplat().serialize(os);
     }
 
     void deserialize(std::istream& is)
     {
-        // TODO: Uncomment when GaussianSplat deserialization is implemented
-        // gaussianSplat().deserialize(is);
+        gaussianSplat().deserialize(is);
     }
 };
 
