@@ -29,7 +29,7 @@ namespace vcl {
 namespace detail {
 
 template<MeshConcept MeshType, Matrix44Concept MatrixType>
-void readObjects(
+void readObject(
     std::vector<MeshType>&,
     std::vector<MeshInfo>&,
     const Lib3MF::PObject&,
@@ -98,9 +98,9 @@ template<MeshConcept MeshType>
 void readFaceProperties(
     MeshType&             m,
     MeshInfo&             info,
-    const uint&           uniqueResourceID,
-    const uint&           propertyID,
-    const uint&           faceID,
+    uint                  uniqueResourceID,
+    uint                  propertyID,
+    uint                  faceID,
     const Lib3MF::PModel& model)
 {
     switch (model->GetPropertyTypeByID(uniqueResourceID)) {
@@ -190,23 +190,17 @@ void readMeshObject(
                     const bool isBaseMaterialGroup =
                         model->GetPropertyTypeByID(
                             triangleProperties.m_ResourceID) ==
-                                Lib3MF::ePropertyType::BaseMaterial ?
-                            true :
-                            false;
+                        Lib3MF::ePropertyType::BaseMaterial;
                     const bool trianglePropertiesIDsAllEQ =
                         triangleProperties.m_PropertyIDs[0] ==
-                                    triangleProperties.m_PropertyIDs[1] &&
-                                triangleProperties.m_PropertyIDs[0] ==
-                                    triangleProperties.m_PropertyIDs[2] ?
-                            true :
-                            false;
+                            triangleProperties.m_PropertyIDs[1] &&
+                        triangleProperties.m_PropertyIDs[0] ==
+                            triangleProperties.m_PropertyIDs[2];
 
                     if (!isBaseMaterialGroup && !trianglePropertiesIDsAllEQ) {
                         // Use per-vertex properties
                     }
-                    else if (
-                        trianglePropertiesIDsAllEQ &&
-                        triangleProperties.m_PropertyIDs[0] != 0) {
+                    else if (trianglePropertiesIDsAllEQ) {
                         // Use per-face properties
 
                         readFaceProperties(
@@ -273,7 +267,7 @@ void readComponentsObject(
             componentTransform = transf;
         }
 
-        readObjects(
+        readObject(
             m,
             info,
             currObject,
@@ -284,7 +278,7 @@ void readComponentsObject(
 }
 
 template<MeshConcept MeshType, Matrix44Concept MatrixType>
-void readObjects(
+void readObject(
     std::vector<MeshType>& m,
     std::vector<MeshInfo>& info,
     const Lib3MF::PObject& currObject,
@@ -355,7 +349,7 @@ void load3mf(
                                           currBuildItem->GetObjectTransform());
             }
 
-            detail::readObjects(
+            detail::readObject(
                 m,
                 loadedInfo,
                 currObject,
