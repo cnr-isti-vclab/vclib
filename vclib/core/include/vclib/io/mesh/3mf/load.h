@@ -213,20 +213,24 @@ void readObjectLevelProperty(
     switch (model->GetPropertyTypeByID(uniqueResourceID)) {
     case Lib3MF::ePropertyType::NoPropertyType: break;
     case Lib3MF::ePropertyType::BaseMaterial:
-        resourcesMap.baseMaterialGroupsMap.insert(
-            {uniqueResourceID,
-             model->GetBaseMaterialGroupByID(uniqueResourceID)});
-        m.color() = sColorToVclColor(
-            resourcesMap.baseMaterialGroupsMap.at(uniqueResourceID)
-                ->GetDisplayColor(propertyID));
+        if constexpr (HasColor<MeshType>) {
+            resourcesMap.baseMaterialGroupsMap.insert(
+                {uniqueResourceID,
+                 model->GetBaseMaterialGroupByID(uniqueResourceID)});
+            m.color() = sColorToVclColor(
+                resourcesMap.baseMaterialGroupsMap.at(uniqueResourceID)
+                    ->GetDisplayColor(propertyID));
+        }
         break;
     case Lib3MF::ePropertyType::TexCoord: break;
     case Lib3MF::ePropertyType::Colors:
-        resourcesMap.colorGroupsMap.insert(
-            {uniqueResourceID, model->GetColorGroupByID(uniqueResourceID)});
-        m.color() =
-            sColorToVclColor(resourcesMap.colorGroupsMap.at(uniqueResourceID)
-                                 ->GetColor(propertyID));
+        if constexpr (HasColor<MeshType>) {
+            resourcesMap.colorGroupsMap.insert(
+                {uniqueResourceID, model->GetColorGroupByID(uniqueResourceID)});
+            m.color() = sColorToVclColor(
+                resourcesMap.colorGroupsMap.at(uniqueResourceID)
+                    ->GetColor(propertyID));
+        }
         break;
     case Lib3MF::ePropertyType::Composite: break;
     case Lib3MF::ePropertyType::Multi: break;
