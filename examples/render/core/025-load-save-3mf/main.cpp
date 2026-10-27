@@ -31,7 +31,11 @@ int main(int argc, char** argv)
             vcl::updatePerVertexAndFaceNormals(mesh2);
 
             return vcl::showOnMeshViewer(
-                argc, argv, std::move(mesh0), std::move(mesh1), std::move(mesh2));
+                argc,
+                argv,
+                std::move(mesh0),
+                std::move(mesh1),
+                std::move(mesh2));
         }
     }
     catch (const std::exception& e) {

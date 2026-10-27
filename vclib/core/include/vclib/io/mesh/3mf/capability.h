@@ -33,6 +33,8 @@ inline MeshInfo _3mfFormatCapability()
 
     info.setPerFaceVertexReferences();
 
+    info.setPerFaceColor();
+
     // TODO: add other informations
 
     return info;
