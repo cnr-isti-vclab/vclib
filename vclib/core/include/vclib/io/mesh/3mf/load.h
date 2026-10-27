@@ -94,15 +94,9 @@ bool readTriangleBaseMaterial(
     const bool trianglePropertiesIDsAllEQ =
         propertyID[0] == propertyID[1] && propertyID[0] == propertyID[2];
 
-    Lib3MF::PBaseMaterialGroup bmg;
-    try {
-        bmg = resourcesMap.baseMaterialGroupsMap.at(uniqueResourceID);
-    }
-    catch (const std::exception& e) {
-        resourcesMap.baseMaterialGroupsMap.insert(
-            {uniqueResourceID,
-             model->GetBaseMaterialGroupByID(uniqueResourceID)});
-        bmg = resourcesMap.baseMaterialGroupsMap.at(uniqueResourceID);
+    auto& bmg = resourcesMap.baseMaterialGroupsMap[uniqueResourceID];
+    if (!bmg) {
+        bmg = model->GetBaseMaterialGroupByID(uniqueResourceID);
     }
 
     if (trianglePropertiesIDsAllEQ) {
@@ -135,14 +129,9 @@ bool readTriangleColors(
     const bool trianglePropertiesIDsAllEQ =
         propertyID[0] == propertyID[1] && propertyID[0] == propertyID[2];
 
-    Lib3MF::PColorGroup cg;
-    try {
-        cg = resourcesMap.colorGroupsMap.at(uniqueResourceID);
-    }
-    catch (const std::exception& e) {
-        resourcesMap.colorGroupsMap.insert(
-            {uniqueResourceID, model->GetColorGroupByID(uniqueResourceID)});
-        cg = resourcesMap.colorGroupsMap.at(uniqueResourceID);
+    auto& cg = resourcesMap.colorGroupsMap[uniqueResourceID];
+    if (!cg) {
+        cg = model->GetColorGroupByID(uniqueResourceID);
     }
 
     if (trianglePropertiesIDsAllEQ) {
@@ -214,22 +203,18 @@ void readObjectLevelProperty(
     case Lib3MF::ePropertyType::NoPropertyType: break;
     case Lib3MF::ePropertyType::BaseMaterial:
         if constexpr (HasColor<MeshType>) {
-            resourcesMap.baseMaterialGroupsMap.insert(
-                {uniqueResourceID,
-                 model->GetBaseMaterialGroupByID(uniqueResourceID)});
-            m.color() = sColorToVclColor(
-                resourcesMap.baseMaterialGroupsMap.at(uniqueResourceID)
-                    ->GetDisplayColor(propertyID));
+            auto mat = model->GetBaseMaterialGroupByID(uniqueResourceID);
+            resourcesMap.baseMaterialGroupsMap.insert({uniqueResourceID, mat});
+            m.color() = sColorToVclColor(mat->GetDisplayColor(propertyID));
         }
         break;
     case Lib3MF::ePropertyType::TexCoord: break;
     case Lib3MF::ePropertyType::Colors:
         if constexpr (HasColor<MeshType>) {
+            auto col = model->GetColorGroupByID(uniqueResourceID);
             resourcesMap.colorGroupsMap.insert(
-                {uniqueResourceID, model->GetColorGroupByID(uniqueResourceID)});
-            m.color() = sColorToVclColor(
-                resourcesMap.colorGroupsMap.at(uniqueResourceID)
-                    ->GetColor(propertyID));
+                {uniqueResourceID, col});
+            m.color() = sColorToVclColor(col->GetColor(propertyID));
         }
         break;
     case Lib3MF::ePropertyType::Composite: break;
