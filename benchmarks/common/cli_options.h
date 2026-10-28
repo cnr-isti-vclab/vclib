@@ -47,7 +47,7 @@ inline CommonOptions parseCommonOptions(int argc, char** argv)
         }
         else {
             opts.extraArgs.push_back(arg);
-            if (i + 1 < argc && !std::string(argv[i + 1]).starts_with("-")) {
+            while (i + 1 < argc && !std::string(argv[i + 1]).starts_with("-")) {
                 opts.extraArgs.push_back(argv[++i]);
             }
         }

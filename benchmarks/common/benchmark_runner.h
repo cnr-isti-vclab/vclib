@@ -50,7 +50,21 @@ inline void invokeBenchmarkFunc(F&& f)
 
 inline size_t getPeakRSS()
 {
-#if defined(__APPLE__) && defined(__MACH__)
+#if defined(__linux__)
+    std::ifstream status("/proc/self/status");
+    std::string   line;
+    while (std::getline(status, line)) {
+        if (line.rfind("VmHWM:", 0) == 0) {
+            size_t start = line.find_first_of("0123456789");
+            if (start != std::string::npos) {
+                return std::stoul(line.substr(start)); // KB
+            }
+        }
+    }
+    struct rusage rusage;
+    getrusage(RUSAGE_SELF, &rusage);
+    return static_cast<size_t>(rusage.ru_maxrss); // KB
+#elif defined(__APPLE__) && defined(__MACH__)
     struct rusage rusage;
     getrusage(RUSAGE_SELF, &rusage);
     return static_cast<size_t>(rusage.ru_maxrss / 1024); // KB
