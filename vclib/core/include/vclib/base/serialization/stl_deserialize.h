@@ -15,6 +15,7 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace vcl {
@@ -154,6 +155,17 @@ void deserialize(std::istream& is, std::vector<std::any>& v)
             e = std::move(obj);
         }
     }
+}
+
+/*
+ * std::pair
+ */
+
+template<typename T1, typename T2>
+void deserialize(std::istream& is, std::pair<T1, T2>& p)
+{
+    deserialize(is, p.first);
+    deserialize(is, p.second);
 }
 
 } // namespace vcl

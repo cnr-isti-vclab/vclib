@@ -99,7 +99,7 @@ public:
     void serialize(std::ostream& os) const
     {
         mDir1.serialize(os);
-        mDir1.serialize(os);
+        mDir2.serialize(os);
         vcl::serialize(os, mK1);
         vcl::serialize(os, mK2);
     }

@@ -15,6 +15,7 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace vcl {
@@ -137,6 +138,17 @@ void serialize(std::ostream& os, const std::vector<std::any>& v)
             serialize(os, std::any_cast<T>(e));
         }
     }
+}
+
+/*
+ * std::pair
+ */
+
+template<typename T1, typename T2>
+void serialize(std::ostream& os, const std::pair<T1, T2>& p)
+{
+    serialize(os, p.first);
+    serialize(os, p.second);
 }
 
 } // namespace vcl
