@@ -211,6 +211,9 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] clearcoat: The clearcoat layer intensity, ranges from 0 (no clearcoat layer) to 1 (full clearcoat layer).
+ * @param[in] clearcoatRoughness: The roughness of the clearcoat layer, ranges from 0 (optically flat) to 1 (very irregular surface).
+ * @param[in] clearcoatNormal: The normal of the clearcoat layer, must be normalized.
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
@@ -226,6 +229,9 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float clearcoat,
+    float clearcoatRoughness,
+    vec3 clearcoatNormal,
     float exposure,
     uint toneMapping)
 {
@@ -237,6 +243,9 @@ vec4 pbrColorLights(
     vec3 V = normalize(cameraEyePos - vPos);
     
     float NoV = clampedDot(normal, V);
+    float clearcoatNoV = clampedDot(clearcoatNormal, V);
+
+    vec3 clearcoatFresnel = clearcoat * F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
     UNROLL
     for(int i = 0; i < LIGHT_COUNT; ++i)
@@ -244,7 +253,9 @@ vec4 pbrColorLights(
         // incoming light direction and contribution
         vec3 lightDir = normalize(-lightDirs[i]);
         float NoL = clampedDot(normal, lightDir);
+        float clearcoatNoL = clampedDot(clearcoatNormal, lightDir);
         vec3 lightIntensity = lightIntensities[i] * lightColors[i] * NoL;
+        vec3 clearcoatLightIntensity = lightIntensities[i] * lightColors[i] * clearcoatNoL;
 
         // halfway vector, same angle with both view direction and incoming light direction
         // corresponds to the normal that one microfacet must have to directly reflect the light into the eye
@@ -252,6 +263,8 @@ vec4 pbrColorLights(
         // related dot products
         float NoH = clampedDot(normal, H);
         float VoH = clampedDot(V, H);
+        
+        float clearcoatNoH = clampedDot(clearcoatNormal, H);
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
@@ -272,9 +285,13 @@ vec4 pbrColorLights(
         // dielectric surfaces reflect both diffuse and specular light
         vec3 l_dielectric_brdf = mix(l_diffuse, l_specular_dielectric, dielectric_fresnel);
 
+        vec3 l_clearcoat_brdf = clearcoatLightIntensity * pbrSpecular(clearcoatNoV, clearcoatNoH, clearcoatNoL, clearcoatRoughness);
+
         // final color is a mix of both dielectric and metallic BRDFs based on the metalness of the surface
         // the interpolation is needed as we consider the metallic value as ranged instead of binary
         vec3 l_color = mix(l_dielectric_brdf, l_metal_brdf, metallic);
+        
+        l_color = mix(l_color, l_clearcoat_brdf, clearcoatFresnel);
 
         finalColor += l_color;
     }
@@ -314,6 +331,8 @@ vec4 pbrColorLights(
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] occlusion: The ambient occlusion factor, ranges from 0 (fully occluded) to 1 (not occluded).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] clearcoatFresnel: The Fresnel factor for the clearcoat layer (RGB).
+ * @param[in] clearcoatSpecularLight: The incoming specular light color (RGB) for the clearcoat layer.
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
@@ -327,6 +346,8 @@ vec4 pbrColorIbl(
     float metallic,
     float occlusion,
     vec3 emissive,
+    vec3 clearcoatFresnel,
+    vec3 clearcoatSpecularLight,
     float exposure,
     uint toneMapping)
 {
@@ -342,6 +363,8 @@ vec4 pbrColorIbl(
     vec3 f_dielectric_brdf_ibl = mix(f_diffuse, f_specular_dielectric, dielectricFresnel);
 
     finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
+
+    finalColor = mix(finalColor, clearcoatSpecularLight, clearcoatFresnel);
 
     finalColor *= occlusion;
 
