@@ -36,12 +36,18 @@ class MaterialUniforms
         1.0  // normal scale
     };
 
+    // alpha cutoff and maybe other alpha related settings can be stored here
+    static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
+
     // emissive color factor stored in RGB channels,
     // alpha stores the emissive strength
     static inline std::array<float, 4> sEmissivePack = {0.0, 0.0, 0.0, 1.0};
 
-    // alpha cutoff and maybe other alpha related settings can be stored here
-    static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
+    static inline std::array<float, 4> sClearcoatPack = {
+        0.0, // clearcoat factor
+        0.0, // clearcoat roughness factor
+        1.0, // clearcoat normal scale
+        0.0};
 
     static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
 
@@ -51,11 +57,14 @@ class MaterialUniforms
     static inline StaticUniform sFactorsPackUniform {
         "u_FactorsPack",
         bgfx::UniformType::Vec4};
+    static inline StaticUniform sAlphaPackUniform {
+        "u_alphaPack",
+        bgfx::UniformType::Vec4};
     static inline StaticUniform sEmissivePackUniform {
         "u_emissivePack",
         bgfx::UniformType::Vec4};
-    static inline StaticUniform sAlphaPackUniform {
-        "u_alphaPack",
+    static inline StaticUniform sClearcoatPackUniform {
+        "u_clearcoatPack",
         bgfx::UniformType::Vec4};
     static inline StaticUniform sAnisotropyPackUniform {
         "u_anisotropyPack",
@@ -93,15 +102,20 @@ public:
         sEmissivePack[1] = m.emissiveColor().greenF();
         sEmissivePack[2] = m.emissiveColor().blueF();
         sEmissivePack[3] = m.emissiveStrength();
+
+        sClearcoatPack[0] = m.clearcoatFactor();
+        sClearcoatPack[1] = m.clearcoatRoughness();
+        sClearcoatPack[2] = m.clearcoatNormalScale();
     }
 
     static void bind()
     {
         sBaseColorUniform.bind(sBaseColor.data());
         sFactorsPackUniform.bind(sFactorsPack.data());
-        sAnisotropyPackUniform.bind(sAnisotropyPack.data());
-        sEmissivePackUniform.bind(sEmissivePack.data());
         sAlphaPackUniform.bind(sAlphaPack.data());
+        sEmissivePackUniform.bind(sEmissivePack.data());
+        sClearcoatPackUniform.bind(sClearcoatPack.data());
+        sAnisotropyPackUniform.bind(sAnisotropyPack.data());
     }
 };
 
