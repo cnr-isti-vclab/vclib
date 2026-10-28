@@ -94,13 +94,17 @@ private:
         DragMotionMap map("Trackball Drag Motions");
         map.registerActions({
             {ARC,
-             "Arcball Rotation",                  {MouseInput {LEFT, {NO_MODIFIER}, false}}   },
-            {PAN,           "Pan",                {MouseInput {LEFT, {CONTROL}, false}}       },
-            {ZMOVE,         "Zoom (Translation)", {MouseInput {LEFT, {ALT}, false}}           },
-            {SCALE,         "Scale",              {MouseInput {LEFT, {SHIFT}, false}}         },
-            {ROLL,          "Roll",               {MouseInput {MIDDLE, {CONTROL}, false}}     },
+             "Arcball Rotation", {MouseInput {LEFT, {NO_MODIFIER}, false}}},
+            {
+             PAN, "Pan",
+             {MouseInput {LEFT, {CONTROL}, false},
+                 MouseInput {MIDDLE, {NO_MODIFIER}, false}},
+             },
+            {ZMOVE, "Zoom (Translation)", {MouseInput {LEFT, {ALT}, false}}},
+            {SCALE, "Scale", {MouseInput {LEFT, {SHIFT}, false}}},
+            {ROLL, "Roll", {MouseInput {MIDDLE, {CONTROL}, false}}},
             {DIR_LIGHT_ARC,
-             "Light Rotation",                    {MouseInput {LEFT, {SHIFT, CONTROL}, false}}}
+             "Light Rotation", {MouseInput {LEFT, {SHIFT, CONTROL}, false}}}
         });
         return map;
     }

@@ -53,9 +53,16 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
-        SPECULAR,
-        SPECULAR_COLOR,
-        COUNT ///< Utility value to get the number of texture types.
+        CLEARCOAT, ///< The clearcoat layer texture. Stored in linear color
+                   ///< space.
+        CLEARCOAT_ROUGHNESS, ///< The roughness of the clearcoat layer (R
+                             ///< channel). Stored in linear color space.
+        CLEARCOAT_NORMAL, ///< The normal map for the clearcoat layer. Stored in
+                          ///< linear color space.
+        ANISOTROPY, ///< The anisotropy texture. Stored in linear color space.
+        SPECULAR,   ///< The specular texture. Stored in linear color space.
+        SPECULAR_COLOR, ///< The specular color texture. Stored in sRGB color space.
+        COUNT       ///< Utility value to get the number of texture types.
     };
 
     inline static const std::
@@ -66,6 +73,10 @@ public:
                 "normalTex",
                 "occlusionTex",
                 "emissiveTex",
+                "clearcoatTex",
+                "clearcoatRoughnessTex",
+                "clearcoatNormalTex",
+                "anisotropyTex",
                 "specularTex",
                 "specularColorTex"};
 
@@ -103,6 +114,12 @@ private:
     Point3f mSpecularColor = Point3f(1.0, 1.0, 1.0);
 
     // extension PBR properties
+    float mClearcoatFactor = 0.0f;
+
+    float mClearcoatRoughness = 0.0f;
+
+    float mClearcoatNormalScale = 1.0f;
+
     float mEmissiveStrength = 1.0f;
 
 public:
@@ -212,6 +229,33 @@ public:
     }
 
     /**
+     * @brief Gets the clearcoat factor.
+     * @return The clearcoat factor value, in the range [0.0, 1.0].
+     */
+    decltype(auto) clearcoatFactor(this auto&& self)
+    {
+        return (self.mClearcoatFactor);
+    }
+
+    /**
+     * @brief Gets the clearcoat roughness value.
+     * @return The clearcoat roughness value, in the range [0.0, 1.0].
+     */
+    decltype(auto) clearcoatRoughness(this auto&& self)
+    {
+        return (self.mClearcoatRoughness);
+    }
+
+    /**
+     * @brief Gets the clearcoat normal scale value.
+     * @return The clearcoat normal scale value, in the range [0.0, 1.0].
+     */
+    decltype(auto) clearcoatNormalScale(this auto&& self)
+    {
+        return (self.mClearcoatNormalScale);
+    }
+
+    /**
      * @brief Gets the emissive strength multiplier.
      * This scales the emissive color of the material.
      * @return The emissive strength factor.
@@ -266,9 +310,12 @@ public:
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         vcl::serialize(os, mNormalScale);
         vcl::serialize(os, mOcclusionStrength);
+        vcl::serialize(os, mEmissiveStrength);
+        vcl::serialize(os, mClearcoatFactor);
+        vcl::serialize(os, mClearcoatRoughness);
+        vcl::serialize(os, mClearcoatNormalScale);
         vcl::serialize(os, mSpecular);
         mSpecularColor.serialize(os);
-        vcl::serialize(os, mEmissiveStrength);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
     }
@@ -286,9 +333,12 @@ public:
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         vcl::deserialize(is, mNormalScale);
         vcl::deserialize(is, mOcclusionStrength);
+        vcl::deserialize(is, mEmissiveStrength);
+        vcl::deserialize(is, mClearcoatFactor);
+        vcl::deserialize(is, mClearcoatRoughness);
+        vcl::deserialize(is, mClearcoatNormalScale);
         vcl::deserialize(is, mSpecular);
         mSpecularColor.deserialize(is);
-        vcl::deserialize(is, mEmissiveStrength);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
     }
@@ -320,6 +370,10 @@ public:
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
+        case TextureType::CLEARCOAT:
+        case TextureType::CLEARCOAT_ROUGHNESS:
+        case TextureType::CLEARCOAT_NORMAL:
+        case TextureType::ANISOTROPY:
         case TextureType::SPECULAR:
         default: return Image::ColorSpace::LINEAR;
         }

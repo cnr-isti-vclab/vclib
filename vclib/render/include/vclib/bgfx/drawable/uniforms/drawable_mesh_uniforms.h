@@ -28,9 +28,21 @@ class DrawableMeshUniforms
     // sMeshData[1]: as uint, first chunk primitive id drawn
     // sMeshData[2]: 8 texture stages with 4 bit each, to specify if texture is
     //    used (value != 15) and which stage is used for each texture (as uint):
-    //    brdfLut|specularColor|specular|emissive|occlusion|normal|metallRough|baseColor
-    inline static std::array<float, 4> sMeshData =
-        {0.0, 0.0, std::bit_cast<float>(0xFFFFFFFF), 0.0};
+    //    clearcoatNormal|
+    //    clearcoatRoughness|
+    //    clearcoat|
+    //    emissive|
+    //    occlusion|
+    //    normal|
+    //    metallRough|
+    //    baseColor
+    // sMeshData[3]: 8 texture stages with 4 bit each similar to sMeshData[2]:
+    //    brdfLut|none|none|none|none|specularColor|specular|anisotropy
+    inline static std::array<float, 4> sMeshData = {
+        0.0,
+        0.0,
+        std::bit_cast<float>(0xFFFFFFFF),
+        std::bit_cast<float>(0xFFFFFFFF)};
 
     inline static StaticUniform sMeshColorUniform {
         "u_meshColor",
@@ -46,10 +58,14 @@ public:
         NORMAL,
         OCCLUSION,
         EMISSIVE,
+        CLEARCOAT,
+        CLEARCOAT_ROUGHNESS,
+        CLEARCOAT_NORMAL,
+        ANISOTROPY,
         SPECULAR,
         SPECULAR_COLOR,
-        BRDF_LUT,
-        COUNT
+        BRDF_LUT = 15,
+        COUNT    = 16
     };
 
     DrawableMeshUniforms() = delete;
@@ -74,15 +90,14 @@ public:
     {
         // 8 texture stages with 4 bit each, all set to 15 (not used)
         sMeshData[2] = std::bit_cast<float>(0xFFFFFFFF);
+        sMeshData[3] = std::bit_cast<float>(0xFFFFFFFF);
     }
 
     static void setTextureStage(TextureType type, uint8_t stage)
     {
         assert(toUnderlying(type) < toUnderlying(TextureType::COUNT));
 
-        if (toUnderlying(type) < 8) { // use z component to store texture stages
-            setZTextureStage(toUnderlying(type), stage);
-        }
+        setZWTextureStage(toUnderlying(type), stage);
     }
 
     static void setFirstChunkIndex(uint firstChunkIndex)
@@ -97,13 +112,14 @@ public:
     }
 
 private:
-    static void setZTextureStage(uint8_t pos, uint8_t stage)
+    static void setZWTextureStage(uint8_t pos, uint8_t stage)
     {
-        uint value = std::bit_cast<uint>(sMeshData[2]);
+        float& component = pos < 8 ? sMeshData[2] : sMeshData[3];
+        uint   value     = std::bit_cast<uint>(component);
 
-        set4BitStageValue(value, pos, stage);
+        set4BitStageValue(value, pos % 8, stage);
 
-        sMeshData[2] = std::bit_cast<float>(value);
+        component = std::bit_cast<float>(value);
     }
 
     static void set4BitStageValue(uint& value, uint8_t pos, uint8_t stage)
