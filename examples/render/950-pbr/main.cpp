@@ -126,8 +126,8 @@ int main(int argc, char** argv)
                       << std::endl;
             std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
                       << std::endl;
-            std::cout << "  clearcoatNormalScale: " << mat.clearcoatNormalScale()
-                      << std::endl;
+            std::cout << "  clearcoatNormalScale: "
+                      << mat.clearcoatNormalScale() << std::endl;
             std::cout << "  emissiveStrength: " << mat.emissiveStrength()
                       << std::endl;
             printTextureInfo(mat, BASE_COLOR);

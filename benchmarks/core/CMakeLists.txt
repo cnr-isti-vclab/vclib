@@ -10,4 +10,3 @@ project(vclib-core-benchmarks)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 add_subdirectory(mesh)
-

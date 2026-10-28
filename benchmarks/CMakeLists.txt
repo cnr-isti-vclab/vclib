@@ -14,9 +14,6 @@ target_include_directories(
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/common
 )
 
-target_link_libraries(
-    vclib-benchmarks-common
-    INTERFACE vclib-3rd-nlohmann_json
-)
+target_link_libraries(vclib-benchmarks-common INTERFACE vclib-3rd-nlohmann_json)
 
 add_subdirectory(core)

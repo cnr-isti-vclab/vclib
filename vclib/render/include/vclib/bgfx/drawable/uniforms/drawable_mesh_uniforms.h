@@ -112,7 +112,7 @@ private:
     static void setZWTextureStage(uint8_t pos, uint8_t stage)
     {
         float& component = pos < 8 ? sMeshData[2] : sMeshData[3];
-        uint value = std::bit_cast<uint>(component);
+        uint   value     = std::bit_cast<uint>(component);
 
         set4BitStageValue(value, pos % 8, stage);
 

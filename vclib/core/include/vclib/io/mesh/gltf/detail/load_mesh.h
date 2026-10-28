@@ -50,12 +50,12 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
-        double clearcoatFactor = 0.0;
-        double clearcoatRoughness = 0.0;
-        double clearcoatNormalScale = 1.0;
-        int clearcoatTextureId = -1;
-        int clearcoatRoughnessTextureId = -1;
-        int clearcoatNormalTextureId = -1;
+        double clearcoatFactor             = 0.0;
+        double clearcoatRoughness          = 0.0;
+        double clearcoatNormalScale        = 1.0;
+        int    clearcoatTextureId          = -1;
+        int    clearcoatRoughnessTextureId = -1;
+        int    clearcoatNormalTextureId    = -1;
 
         double emissiveStrength = 1.0f;
 
@@ -123,49 +123,43 @@ int loadGltfPrimitiveMaterial(
 
         // KHR_materials_clearcoat
         {
-            static const std::string EXT = "KHR_materials_clearcoat";
-            static const std::string FACTOR = "clearcoatFactor";
-            static const std::string ROUGH = "clearcoatRoughnessFactor";
-            static const std::string TEXTURE = "clearcoatTexture";
-            static const std::string ROUGH_TEX = "clearcoatRoughnessTexture";
+            static const std::string EXT        = "KHR_materials_clearcoat";
+            static const std::string FACTOR     = "clearcoatFactor";
+            static const std::string ROUGH      = "clearcoatRoughnessFactor";
+            static const std::string TEXTURE    = "clearcoatTexture";
+            static const std::string ROUGH_TEX  = "clearcoatRoughnessTexture";
             static const std::string NORMAL_TEX = "clearcoatNormalTexture";
-            if(mat.extensions.contains(EXT)) {
+            if (mat.extensions.contains(EXT)) {
                 const auto& clearcoatExt = mat.extensions.at(EXT);
 
                 if (clearcoatExt.Has(FACTOR))
-                    clearcoatFactor = clearcoatExt
-                        .Get(FACTOR)
-                        .GetNumberAsDouble();
+                    clearcoatFactor =
+                        clearcoatExt.Get(FACTOR).GetNumberAsDouble();
 
                 if (clearcoatExt.Has(ROUGH))
-                    clearcoatRoughness = clearcoatExt
-                        .Get(ROUGH)
-                        .GetNumberAsDouble();
+                    clearcoatRoughness =
+                        clearcoatExt.Get(ROUGH).GetNumberAsDouble();
 
                 if (clearcoatExt.Has(TEXTURE)) {
-                    clearcoatTextureId = clearcoatExt
-                        .Get(TEXTURE)
-                        .Get("index")
-                        .GetNumberAsInt();
+                    clearcoatTextureId =
+                        clearcoatExt.Get(TEXTURE).Get("index").GetNumberAsInt();
                 }
 
                 if (clearcoatExt.Has(ROUGH_TEX)) {
-                    clearcoatRoughnessTextureId = clearcoatExt
-                        .Get(ROUGH_TEX)
-                        .Get("index")
-                        .GetNumberAsInt();
+                    clearcoatRoughnessTextureId = clearcoatExt.Get(ROUGH_TEX)
+                                                      .Get("index")
+                                                      .GetNumberAsInt();
                 }
 
                 if (clearcoatExt.Has(NORMAL_TEX)) {
-                    const auto& clearcoatNormalTexture = clearcoatExt
-                        .Get(NORMAL_TEX);
-                    clearcoatNormalTextureId = clearcoatNormalTexture
-                        .Get("index")
-                        .GetNumberAsInt();
-                    if(clearcoatNormalTexture.Has("scale"))
-                        clearcoatNormalScale = clearcoatNormalTexture
-                            .Get("scale")
-                            .GetNumberAsDouble();
+                    const auto& clearcoatNormalTexture =
+                        clearcoatExt.Get(NORMAL_TEX);
+                    clearcoatNormalTextureId =
+                        clearcoatNormalTexture.Get("index").GetNumberAsInt();
+                    if (clearcoatNormalTexture.Has("scale"))
+                        clearcoatNormalScale =
+                            clearcoatNormalTexture.Get("scale")
+                                .GetNumberAsDouble();
                 }
             }
         }

@@ -59,7 +59,7 @@ public:
                              ///< channel). Stored in linear color space.
         CLEARCOAT_NORMAL, ///< The normal map for the clearcoat layer. Stored in
                           ///< linear color space.
-        COUNT ///< Utility value to get the number of texture types.
+        COUNT             ///< Utility value to get the number of texture types.
     };
 
     inline static const std::

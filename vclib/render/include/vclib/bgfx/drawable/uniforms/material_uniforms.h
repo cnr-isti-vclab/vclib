@@ -35,7 +35,7 @@ class MaterialUniforms
         1.0, // metallic
         1.0  // normal scale
     };
-    
+
     // alpha cutoff and maybe other alpha related settings can be stored here
     static inline std::array<float, 4> sAlphaPack = {-1.0, 0.0, 0.0, 0.0};
 
@@ -62,7 +62,8 @@ class MaterialUniforms
         "u_emissivePack",
         bgfx::UniformType::Vec4};
     static inline StaticUniform sClearcoatPackUniform {
-        "u_clearcoatPack",bgfx::UniformType::Vec4};
+        "u_clearcoatPack",
+        bgfx::UniformType::Vec4};
 
 public:
     MaterialUniforms() = delete;
@@ -88,12 +89,12 @@ public:
         sFactorsPack[1] = m.roughness();
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
-        
+
         sEmissivePack[0] = m.emissiveColor().redF();
         sEmissivePack[1] = m.emissiveColor().greenF();
         sEmissivePack[2] = m.emissiveColor().blueF();
         sEmissivePack[3] = m.emissiveStrength();
-        
+
         sClearcoatPack[0] = m.clearcoatFactor();
         sClearcoatPack[1] = m.clearcoatRoughness();
         sClearcoatPack[2] = m.clearcoatNormalScale();
