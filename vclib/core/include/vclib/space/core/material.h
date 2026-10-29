@@ -377,6 +377,7 @@ public:
         switch (type) {
         case TextureType::BASE_COLOR:
         case TextureType::EMISSIVE:
+        case TextureType::SPECULAR_COLOR: return Image::ColorSpace::SRGB;
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
@@ -385,7 +386,6 @@ public:
         case TextureType::CLEARCOAT_NORMAL:
         case TextureType::ANISOTROPY:
         case TextureType::SPECULAR:
-        case TextureType::SPECULAR_COLOR: return Image::ColorSpace::SRGB;
         default: return Image::ColorSpace::LINEAR;
         }
     }
