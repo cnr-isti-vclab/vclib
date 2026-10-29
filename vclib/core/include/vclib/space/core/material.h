@@ -59,7 +59,10 @@ public:
                              ///< channel). Stored in linear color space.
         CLEARCOAT_NORMAL, ///< The normal map for the clearcoat layer. Stored in
                           ///< linear color space.
-        COUNT             ///< Utility value to get the number of texture types.
+        ANISOTROPY, ///< The anisotropy texture. Stored in linear color space.
+        SPECULAR,   ///< The specular texture. Stored in linear color space.
+        SPECULAR_COLOR, ///< The specular color texture. Stored in sRGB color space.
+        COUNT       ///< Utility value to get the number of texture types.
     };
 
     inline static const std::
@@ -72,7 +75,10 @@ public:
                 "emissiveTex",
                 "clearcoatTex",
                 "clearcoatRoughnessTex",
-                "clearcoatNormalTex"};
+                "clearcoatNormalTex",
+                "anisotropyTex",
+                "specularTex",
+                "specularColorTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =
@@ -111,6 +117,11 @@ private:
 
     float mEmissiveStrength = 1.0f;
 
+    float mSpecularFactor = 1.0f;
+
+    // needs to be HDR
+    Point3f mSpecularColor = Point3f(1.0, 1.0, 1.0);
+
 public:
     /**
      * @brief Default constructor.
@@ -121,7 +132,13 @@ public:
      * - Base Color: White
      * - Metallic: 0.0
      * - Roughness: 1.0
+     * - Emissive Strength: 1.0
      * - Emissive Color: Black
+     * - Clearcoat Factor: 0.0
+     * - Clearcoat Roughness: 0.0
+     * - Clearcoat Normal Scale: 1.0
+     * - Specular Factor: 1.0
+     * - Specular Color: (1.0, 1.0, 1.0)
      * - Alpha Mode: ALPHA_OPAQUE
      * - Alpha Cutoff: 0.5
      * - Double Sided: false
@@ -204,7 +221,8 @@ public:
 
     /**
      * @brief Gets the clearcoat factor.
-     * @return The clearcoat factor value, in the range [0.0, 1.0].
+     * @return A reference to the clearcoat factor value,
+     * in the range [0.0, 1.0].
      */
     decltype(auto) clearcoatFactor(this auto&& self)
     {
@@ -213,7 +231,7 @@ public:
 
     /**
      * @brief Gets the clearcoat roughness value.
-     * @return The clearcoat roughness value, in the range [0.0, 1.0].
+     * @return A reference to the clearcoat roughness value, in the range [0.0, 1.0].
      */
     decltype(auto) clearcoatRoughness(this auto&& self)
     {
@@ -222,7 +240,8 @@ public:
 
     /**
      * @brief Gets the clearcoat normal scale value.
-     * @return The clearcoat normal scale value, in the range [0.0, 1.0].
+     * @return A reference to the clearcoat normal scale value,
+     * in the range [0.0, 1.0].
      */
     decltype(auto) clearcoatNormalScale(this auto&& self)
     {
@@ -232,11 +251,29 @@ public:
     /**
      * @brief Gets the emissive strength multiplier.
      * This scales the emissive color of the material.
-     * @return The emissive strength factor.
+     * @return A reference to the emissive strength value.
      */
     decltype(auto) emissiveStrength(this auto&& self)
     {
         return (self.mEmissiveStrength);
+    }
+    /**
+     * @brief Gets the specular factor of the material.
+     * @return A reference to the specular factor value,
+     * in the range [0.0, 1.0].
+     */
+    decltype(auto) specularFactor(this auto&& self)
+    {
+        return (self.mSpecularFactor);
+    }
+
+    /**
+     * @brief Gets the specular color of the material.
+     * @return A const reference to the specular color.
+     */
+    decltype(auto) specularColor(this auto&& self)
+    {
+        return (self.mSpecularColor);
     }
 
     /**
@@ -285,11 +322,13 @@ public:
         vcl::serialize(os, mNormalScale);
         vcl::serialize(os, mOcclusionStrength);
         vcl::serialize(os, mEmissiveStrength);
-        vcl::serialize(os, mTextureDescriptors);
-        vcl::serialize(os, mDoubleSided);
         vcl::serialize(os, mClearcoatFactor);
         vcl::serialize(os, mClearcoatRoughness);
         vcl::serialize(os, mClearcoatNormalScale);
+        vcl::serialize(os, mSpecularFactor);
+        mSpecularColor.serialize(os);
+        vcl::serialize(os, mTextureDescriptors);
+        vcl::serialize(os, mDoubleSided);
     }
 
     /**
@@ -306,11 +345,13 @@ public:
         vcl::deserialize(is, mNormalScale);
         vcl::deserialize(is, mOcclusionStrength);
         vcl::deserialize(is, mEmissiveStrength);
-        vcl::deserialize(is, mTextureDescriptors);
-        vcl::deserialize(is, mDoubleSided);
         vcl::deserialize(is, mClearcoatFactor);
         vcl::deserialize(is, mClearcoatRoughness);
         vcl::deserialize(is, mClearcoatNormalScale);
+        vcl::deserialize(is, mSpecularFactor);
+        mSpecularColor.deserialize(is);
+        vcl::deserialize(is, mTextureDescriptors);
+        vcl::deserialize(is, mDoubleSided);
     }
 
     /**
@@ -335,13 +376,16 @@ public:
     {
         switch (type) {
         case TextureType::BASE_COLOR:
-        case TextureType::EMISSIVE: return Image::ColorSpace::SRGB;
+        case TextureType::EMISSIVE:
+        case TextureType::SPECULAR_COLOR: return Image::ColorSpace::SRGB;
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
         case TextureType::CLEARCOAT:
         case TextureType::CLEARCOAT_ROUGHNESS:
         case TextureType::CLEARCOAT_NORMAL:
+        case TextureType::ANISOTROPY:
+        case TextureType::SPECULAR:
         default: return Image::ColorSpace::LINEAR;
         }
     }

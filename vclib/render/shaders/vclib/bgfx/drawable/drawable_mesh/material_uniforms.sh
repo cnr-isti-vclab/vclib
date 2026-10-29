@@ -13,6 +13,7 @@ uniform vec4 u_FactorsPack;
 uniform vec4 u_alphaPack;
 uniform vec4 u_emissivePack;
 uniform vec4 u_clearcoatPack;
+uniform vec4 u_specularPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
@@ -29,5 +30,7 @@ uniform vec4 u_clearcoatPack;
 #define u_clearcoatRoughnessFactor u_clearcoatPack.g
 #define u_clearcoatNormalScale u_clearcoatPack.b
 
+#define u_specularColor u_specularPack.rgb
+#define u_specularFactor u_specularPack.a
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_MATERIAL_UNIFORMS_SH

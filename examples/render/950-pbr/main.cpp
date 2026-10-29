@@ -21,6 +21,7 @@ int main(int argc, char** argv)
         NORMAL_TENGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        SPECULAR_TEST,
         CLEARCOAT_TEST,
         CLEARCOAT_WICKER,
         COMPARE_EMISSIVE_STRENGTH,
@@ -33,11 +34,12 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/SpecularTest/SpecularTest.gltf",
         "/gltf/ClearCoatTest/ClearCoatTest.gltf",
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = METAL_ROUGH_SPHERES;
+    uint selectedExample = SPECULAR_TEST;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -81,6 +83,12 @@ int main(int argc, char** argv)
         else if (type == EMISSIVE) {
             typeName = "emissive";
         }
+        else if (type == SPECULAR) {
+            typeName = "specular";
+        }
+        else if (type == SPECULAR_COLOR) {
+            typeName = "specularColor";
+        }
         else if (type == CLEARCOAT) {
             typeName = "clearcoat";
         }
@@ -122,6 +130,10 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  specularFactor: " << mat.specularFactor()
+                      << std::endl;
+            std::cout << "  specularColorFactor: " << mat.specularColor()
+                      << std::endl;
             std::cout << "  clearcoatFactor: " << mat.clearcoatFactor()
                       << std::endl;
             std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
@@ -135,6 +147,8 @@ int main(int argc, char** argv)
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, SPECULAR);
+            printTextureInfo(mat, SPECULAR_COLOR);
             printTextureInfo(mat, CLEARCOAT);
             printTextureInfo(mat, CLEARCOAT_ROUGHNESS);
             printTextureInfo(mat, CLEARCOAT_NORMAL);

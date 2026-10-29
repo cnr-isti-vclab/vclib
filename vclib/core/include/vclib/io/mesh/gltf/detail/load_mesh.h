@@ -50,15 +50,18 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
-        double clearcoatFactor             = 0.0;
-        double clearcoatRoughness          = 0.0;
-        double clearcoatNormalScale        = 1.0;
-        int    clearcoatTextureId          = -1;
-        int    clearcoatRoughnessTextureId = -1;
-        int    clearcoatNormalTextureId    = -1;
-
-        double emissiveStrength = 1.0f;
-
+        double  clearcoatFactor             = 0.0;
+        double  clearcoatRoughness          = 0.0;
+        double  clearcoatNormalScale        = 1.0;
+        int     clearcoatTextureId          = -1;
+        int     clearcoatRoughnessTextureId = -1;
+        int     clearcoatNormalTextureId    = -1;
+        double  emissiveStrength            = 1.0f;
+        double  specularFactor              = 1.0;
+        Point3f specularColor               = Point3f(1.0, 1.0, 1.0);
+        int     specularTextureId           = -1;
+        int     specularColorTextureId      = -1;
+        
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -176,6 +179,39 @@ int loadGltfPrimitiveMaterial(
             }
         }
 
+        // KHR_materials_specular
+        {
+            static const std::string EXT        = "KHR_materials_specular";
+            static const std::string FACTOR     = "specularFactor";
+            static const std::string COLOR      = "specularColorFactor";
+            static const std::string TEXTURE    = "specularTexture";
+            static const std::string COLOR_TEX  = "specularColorTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& specularExt =
+                    mat.extensions.at(EXT);
+
+                if (specularExt.Has(FACTOR))
+                    specularFactor =
+                        specularExt.Get(FACTOR).GetNumberAsDouble();
+
+                if (specularExt.Has(COLOR))
+                    for (uint i = 0; i < 3; i++)
+                        specularColor[i] = specularExt.Get(COLOR)
+                                            .Get(i)
+                                            .GetNumberAsDouble();
+
+                if (specularExt.Has(TEXTURE))
+                    specularTextureId = specularExt.Get(TEXTURE)
+                                            .Get("index")
+                                            .GetNumberAsInt();
+
+                if (specularExt.Has(COLOR_TEX))
+                    specularColorTextureId = specularExt.Get(COLOR_TEX)
+                                                .Get("index")
+                                                .GetNumberAsInt();
+            }
+        }
+
         // function to load a texture in a material
         auto loadTextureInMaterial = [&](Material&             mat,
                                          int                   textureId,
@@ -249,6 +285,8 @@ int loadGltfPrimitiveMaterial(
             mat.doubleSided()          = doubleSided;
             mat.normalScale()          = normalScale;
             mat.occlusionStrength()    = occlusionStrength;
+            mat.specularFactor()       = specularFactor;
+            mat.specularColor()        = specularColor;
             mat.emissiveStrength()     = emissiveStrength;
             mat.clearcoatFactor()      = clearcoatFactor;
             mat.clearcoatRoughness()   = clearcoatRoughness;
@@ -275,6 +313,12 @@ int loadGltfPrimitiveMaterial(
                 mat,
                 clearcoatNormalTextureId,
                 Material::TextureType::CLEARCOAT_NORMAL);
+            loadTextureInMaterial(
+                mat, specularTextureId, Material::TextureType::SPECULAR);
+            loadTextureInMaterial(
+                mat,
+                specularColorTextureId,
+                Material::TextureType::SPECULAR_COLOR);
             m.pushMaterial(mat);
             idx = m.materialCount() - 1; // index of the added material
             if constexpr (HasColor<MeshType>) {

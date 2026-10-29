@@ -70,7 +70,10 @@ vec4 textureStage(uint stage, vec2 texcoord)
 // - 6 -> clearcoat roughness
 // - 7 -> clearcoat normal
 // u_textureStagesW:
-// - 0 -> brdf lut
+// - 0 -> anisotropy
+// - 1 -> specular
+// - 2 -> specular color
+// - 7 -> brdf lut
 //
 // to get the actual stage index:
 //    textureStageBitField(u_textureStagesZ, pos);
@@ -132,7 +135,6 @@ bool isClearcoatTextureAvailable()
     return textureStageBitField(u_textureStagesZ, 5) != 0xF;
 }
 
-
 vec4 clearcoatTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesZ, 5), texcoord);
@@ -142,7 +144,6 @@ bool isClearcoatRoughnessTextureAvailable()
 {
     return textureStageBitField(u_textureStagesZ, 6) != 0xF;
 }
-
 
 vec4 clearcoatRoughnessTex(vec2 texcoord)
 {
@@ -154,20 +155,49 @@ bool isClearcoatNormalTextureAvailable()
     return textureStageBitField(u_textureStagesZ, 7) != 0xF;
 }
 
-
 vec4 clearcoatNormalTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesZ, 7), texcoord);
 }
 
-bool isBrdfLutTextureAvailable()
+bool isAnisotropyTextureAvailable()
 {
     return textureStageBitField(u_textureStagesW, 0) != 0xF;
 }
 
-vec4 brdfLutTex(vec2 texcoord)
+vec4 anisotropyTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesW, 0), texcoord);
+}
+
+bool isSpecularTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesW, 1) != 0xF;
+}
+
+vec4 specularTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesW, 1), texcoord);
+}
+
+bool isSpecularColorTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesW, 2) != 0xF;
+}
+
+vec4 specularColorTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesW, 2), texcoord);
+}
+
+bool isBrdfLutTextureAvailable()
+{
+    return textureStageBitField(u_textureStagesW, 7) != 0xF;
+}
+
+vec4 brdfLutTex(vec2 texcoord)
+{
+    return textureStage(textureStageBitField(u_textureStagesW, 7), texcoord);
 }
 
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH

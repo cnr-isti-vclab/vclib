@@ -36,8 +36,8 @@ class DrawableMeshUniforms
     //    normal|
     //    metallRough|
     //    baseColor
-    // sMeshData[3]: 8 texture stages with 4 bit each similar to sMeshData[2]
-    //   none|none|none|none|none|none|none|brdfLut
+    // sMeshData[3]: 8 texture stages with 4 bit each similar to sMeshData[2]:
+    //    brdfLut|none|none|none|none|specularColor|specular|anisotropy
     inline static std::array<float, 4> sMeshData = {
         0.0,
         0.0,
@@ -61,8 +61,11 @@ public:
         CLEARCOAT,
         CLEARCOAT_ROUGHNESS,
         CLEARCOAT_NORMAL,
-        BRDF_LUT,
-        COUNT
+        ANISOTROPY,
+        SPECULAR,
+        SPECULAR_COLOR,
+        BRDF_LUT = 15,
+        COUNT    = 16
     };
 
     DrawableMeshUniforms() = delete;

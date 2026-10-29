@@ -49,6 +49,9 @@ class MaterialUniforms
         1.0, // clearcoat normal scale
         0.0};
 
+    // specular color (RGB) and specular factor (A)
+    static inline std::array<float, 4> sSpecularPack = {1.0, 1.0, 1.0, 1.0};
+
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
         bgfx::UniformType::Vec4};
@@ -63,6 +66,9 @@ class MaterialUniforms
         bgfx::UniformType::Vec4};
     static inline StaticUniform sClearcoatPackUniform {
         "u_clearcoatPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sSpecularPackUniform {
+        "u_specularPack",
         bgfx::UniformType::Vec4};
 
 public:
@@ -90,6 +96,11 @@ public:
         sFactorsPack[2] = m.metallic();
         sFactorsPack[3] = m.normalScale();
 
+        sSpecularPack[0] = m.specularColor()[0];
+        sSpecularPack[1] = m.specularColor()[1];
+        sSpecularPack[2] = m.specularColor()[2];
+        sSpecularPack[3] = m.specularFactor();
+
         sEmissivePack[0] = m.emissiveColor().redF();
         sEmissivePack[1] = m.emissiveColor().greenF();
         sEmissivePack[2] = m.emissiveColor().blueF();
@@ -107,6 +118,7 @@ public:
         sAlphaPackUniform.bind(sAlphaPack.data());
         sEmissivePackUniform.bind(sEmissivePack.data());
         sClearcoatPackUniform.bind(sClearcoatPack.data());
+        sSpecularPackUniform.bind(sSpecularPack.data());
     }
 };
 
