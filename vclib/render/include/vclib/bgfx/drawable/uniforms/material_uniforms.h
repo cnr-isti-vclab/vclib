@@ -51,6 +51,9 @@ class MaterialUniforms
 
     static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
 
+    // specular color (RGB) and specular factor (A)
+    static inline std::array<float, 4> sSpecularPack = {1.0, 1.0, 1.0, 1.0};
+
     static inline StaticUniform sBaseColorUniform {
         "u_baseColorFactor",
         bgfx::UniformType::Vec4};
@@ -68,6 +71,9 @@ class MaterialUniforms
         bgfx::UniformType::Vec4};
     static inline StaticUniform sAnisotropyPackUniform {
         "u_anisotropyPack",
+        bgfx::UniformType::Vec4};
+    static inline StaticUniform sSpecularPackUniform {
+        "u_specularPack",
         bgfx::UniformType::Vec4};
 
 public:
@@ -98,6 +104,11 @@ public:
         sAnisotropyPack[0] = m.anisotropyStrength();
         sAnisotropyPack[1] = m.anisotropyRotation();
 
+        sSpecularPack[0] = m.specularColor()[0];
+        sSpecularPack[1] = m.specularColor()[1];
+        sSpecularPack[2] = m.specularColor()[2];
+        sSpecularPack[3] = m.specularFactor();
+
         sEmissivePack[0] = m.emissiveColor().redF();
         sEmissivePack[1] = m.emissiveColor().greenF();
         sEmissivePack[2] = m.emissiveColor().blueF();
@@ -116,6 +127,7 @@ public:
         sEmissivePackUniform.bind(sEmissivePack.data());
         sClearcoatPackUniform.bind(sClearcoatPack.data());
         sAnisotropyPackUniform.bind(sAnisotropyPack.data());
+        sSpecularPackUniform.bind(sSpecularPack.data());
     }
 };
 

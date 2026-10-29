@@ -199,4 +199,5 @@ vec4 brdfLutTex(vec2 texcoord)
 {
     return textureStage(textureStageBitField(u_textureStagesW, 7), texcoord);
 }
+
 #endif // VCL_BGFX_DRAWABLE_DRAWABLE_MESH_TEXTURE_UNIFORMS_SH

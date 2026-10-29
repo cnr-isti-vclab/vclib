@@ -23,6 +23,7 @@ int main(int argc, char** argv)
         DAMAGED_HELMET,
         ANISOTROPY_ROTATION_TEST,
         CARBON_FIBRE,
+        SPECULAR_TEST,
         CLEARCOAT_TEST,
         CLEARCOAT_WICKER,
         COMPARE_EMISSIVE_STRENGTH,
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
         "/gltf/CarbonFibre/CarbonFibre.gltf",
+        "/gltf/SpecularTest/SpecularTest.gltf",
         "/gltf/ClearCoatTest/ClearCoatTest.gltf",
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
@@ -88,6 +90,12 @@ int main(int argc, char** argv)
         else if (type == ANISOTROPY) {
             typeName = "anisotropy";
         }
+        else if (type == SPECULAR) {
+            typeName = "specular";
+        }
+        else if (type == SPECULAR_COLOR) {
+            typeName = "specularColor";
+        }
         else if (type == CLEARCOAT) {
             typeName = "clearcoat";
         }
@@ -133,6 +141,10 @@ int main(int argc, char** argv)
                       << std::endl;
             std::cout << "  anisotropyRotation: " << mat.anisotropyRotation()
                       << std::endl;
+            std::cout << "  specularFactor: " << mat.specularFactor()
+                      << std::endl;
+            std::cout << "  specularColorFactor: " << mat.specularColor()
+                      << std::endl;
             std::cout << "  clearcoatFactor: " << mat.clearcoatFactor()
                       << std::endl;
             std::cout << "  clearcoatRoughness: " << mat.clearcoatRoughness()
@@ -147,6 +159,8 @@ int main(int argc, char** argv)
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
             printTextureInfo(mat, ANISOTROPY);
+            printTextureInfo(mat, SPECULAR);
+            printTextureInfo(mat, SPECULAR_COLOR);
             printTextureInfo(mat, CLEARCOAT);
             printTextureInfo(mat, CLEARCOAT_ROUGHNESS);
             printTextureInfo(mat, CLEARCOAT_NORMAL);
