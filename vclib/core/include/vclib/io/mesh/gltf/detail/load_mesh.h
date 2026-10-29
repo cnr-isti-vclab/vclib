@@ -61,7 +61,7 @@ int loadGltfPrimitiveMaterial(
         Point3f specularColor               = Point3f(1.0, 1.0, 1.0);
         int     specularTextureId           = -1;
         int     specularColorTextureId      = -1;
-        
+
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -181,14 +181,13 @@ int loadGltfPrimitiveMaterial(
 
         // KHR_materials_specular
         {
-            static const std::string EXT        = "KHR_materials_specular";
-            static const std::string FACTOR     = "specularFactor";
-            static const std::string COLOR      = "specularColorFactor";
-            static const std::string TEXTURE    = "specularTexture";
-            static const std::string COLOR_TEX  = "specularColorTexture";
+            static const std::string EXT       = "KHR_materials_specular";
+            static const std::string FACTOR    = "specularFactor";
+            static const std::string COLOR     = "specularColorFactor";
+            static const std::string TEXTURE   = "specularTexture";
+            static const std::string COLOR_TEX = "specularColorTexture";
             if (mat.extensions.contains(EXT)) {
-                const auto& specularExt =
-                    mat.extensions.at(EXT);
+                const auto& specularExt = mat.extensions.at(EXT);
 
                 if (specularExt.Has(FACTOR))
                     specularFactor =
@@ -196,19 +195,17 @@ int loadGltfPrimitiveMaterial(
 
                 if (specularExt.Has(COLOR))
                     for (uint i = 0; i < 3; i++)
-                        specularColor[i] = specularExt.Get(COLOR)
-                                            .Get(i)
-                                            .GetNumberAsDouble();
+                        specularColor[i] =
+                            specularExt.Get(COLOR).Get(i).GetNumberAsDouble();
 
                 if (specularExt.Has(TEXTURE))
-                    specularTextureId = specularExt.Get(TEXTURE)
-                                            .Get("index")
-                                            .GetNumberAsInt();
+                    specularTextureId =
+                        specularExt.Get(TEXTURE).Get("index").GetNumberAsInt();
 
                 if (specularExt.Has(COLOR_TEX))
                     specularColorTextureId = specularExt.Get(COLOR_TEX)
-                                                .Get("index")
-                                                .GetNumberAsInt();
+                                                 .Get("index")
+                                                 .GetNumberAsInt();
             }
         }
 

@@ -61,8 +61,9 @@ public:
                           ///< linear color space.
         ANISOTROPY, ///< The anisotropy texture. Stored in linear color space.
         SPECULAR,   ///< The specular texture. Stored in linear color space.
-        SPECULAR_COLOR, ///< The specular color texture. Stored in sRGB color space.
-        COUNT       ///< Utility value to get the number of texture types.
+        SPECULAR_COLOR, ///< The specular color texture. Stored in sRGB color
+                        ///< space.
+        COUNT           ///< Utility value to get the number of texture types.
     };
 
     inline static const std::
@@ -231,7 +232,8 @@ public:
 
     /**
      * @brief Gets the clearcoat roughness value.
-     * @return A reference to the clearcoat roughness value, in the range [0.0, 1.0].
+     * @return A reference to the clearcoat roughness value, in the range
+     * [0.0, 1.0].
      */
     decltype(auto) clearcoatRoughness(this auto&& self)
     {
@@ -257,6 +259,7 @@ public:
     {
         return (self.mEmissiveStrength);
     }
+
     /**
      * @brief Gets the specular factor of the material.
      * @return A reference to the specular factor value,
