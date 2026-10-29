@@ -130,7 +130,8 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
-            std::cout << "  specularFactor: " << mat.specular() << std::endl;
+            std::cout << "  specularFactor: " << mat.specularFactor()
+                      << std::endl;
             std::cout << "  specularColorFactor: " << mat.specularColor()
                       << std::endl;
             std::cout << "  clearcoatFactor: " << mat.clearcoatFactor()

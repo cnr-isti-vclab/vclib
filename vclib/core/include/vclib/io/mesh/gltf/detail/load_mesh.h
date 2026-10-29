@@ -50,18 +50,18 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
-        double specular               = 1.0;
-        Point3f specularColor         = Point3f(1.0, 1.0, 1.0);
-        int    specularTextureId      = -1;
-        int    specularColorTextureId = -1;
-        double clearcoatFactor             = 0.0;
-        double clearcoatRoughness          = 0.0;
-        double clearcoatNormalScale        = 1.0;
-        int    clearcoatTextureId          = -1;
-        int    clearcoatRoughnessTextureId = -1;
-        int    clearcoatNormalTextureId    = -1;
-        double emissiveStrength = 1.0f;
-
+        double  clearcoatFactor             = 0.0;
+        double  clearcoatRoughness          = 0.0;
+        double  clearcoatNormalScale        = 1.0;
+        int     clearcoatTextureId          = -1;
+        int     clearcoatRoughnessTextureId = -1;
+        int     clearcoatNormalTextureId    = -1;
+        double  emissiveStrength            = 1.0f;
+        double  specularFactor              = 1.0;
+        Point3f specularColor               = Point3f(1.0, 1.0, 1.0);
+        int     specularTextureId           = -1;
+        int     specularColorTextureId      = -1;
+        
         const tinygltf::Material& mat = model.materials[p.material];
 
         std::string matName = mat.name;
@@ -124,30 +124,6 @@ int loadGltfPrimitiveMaterial(
 
         // extensions
 
-        // KHR_materials_specular
-        if (mat.extensions.contains("KHR_materials_specular")) {
-            const auto& specularExt = mat.extensions.at("KHR_materials_specular");
-
-            if (specularExt.Has("specularFactor"))
-                specular = specularExt.Get("specularFactor").GetNumberAsDouble();
-
-            if (specularExt.Has("specularColorFactor"))
-                for (uint i = 0; i < 3; i++)
-                    specularColor[i] = specularExt.Get("specularColorFactor")
-                                           .Get(i)
-                                           .GetNumberAsDouble();
-
-            if (specularExt.Has("specularTexture"))
-                specularTextureId = specularExt.Get("specularTexture")
-                                        .Get("index")
-                                        .GetNumberAsInt();
-
-            if (specularExt.Has("specularColorTexture"))
-                specularColorTextureId = specularExt.Get("specularColorTexture")
-                                             .Get("index")
-                                             .GetNumberAsInt();
-        }
-
         // KHR_materials_clearcoat
         {
             static const std::string EXT        = "KHR_materials_clearcoat";
@@ -190,6 +166,7 @@ int loadGltfPrimitiveMaterial(
                 }
             }
         }
+
         // KHR_materials_emissive_strength
         {
             static const std::string EXT = "KHR_materials_emissive_strength";
@@ -199,6 +176,39 @@ int loadGltfPrimitiveMaterial(
                 if (emissiveStrengthExt.Has(VAL))
                     emissiveStrength =
                         emissiveStrengthExt.Get(VAL).GetNumberAsDouble();
+            }
+        }
+
+        // KHR_materials_specular
+        {
+            static const std::string EXT        = "KHR_materials_specular";
+            static const std::string FACTOR     = "specularFactor";
+            static const std::string COLOR      = "specularColorFactor";
+            static const std::string TEXTURE    = "specularTexture";
+            static const std::string COLOR_TEX  = "specularColorTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& specularExt =
+                    mat.extensions.at(EXT);
+
+                if (specularExt.Has(FACTOR))
+                    specularFactor =
+                        specularExt.Get(FACTOR).GetNumberAsDouble();
+
+                if (specularExt.Has(COLOR))
+                    for (uint i = 0; i < 3; i++)
+                        specularColor[i] = specularExt.Get(COLOR)
+                                            .Get(i)
+                                            .GetNumberAsDouble();
+
+                if (specularExt.Has(TEXTURE))
+                    specularTextureId = specularExt.Get(TEXTURE)
+                                            .Get("index")
+                                            .GetNumberAsInt();
+
+                if (specularExt.Has(COLOR_TEX))
+                    specularColorTextureId = specularExt.Get(COLOR_TEX)
+                                                .Get("index")
+                                                .GetNumberAsInt();
             }
         }
 
@@ -275,7 +285,7 @@ int loadGltfPrimitiveMaterial(
             mat.doubleSided()          = doubleSided;
             mat.normalScale()          = normalScale;
             mat.occlusionStrength()    = occlusionStrength;
-            mat.specular()             = specular;
+            mat.specularFactor()       = specularFactor;
             mat.specularColor()        = specularColor;
             mat.emissiveStrength()     = emissiveStrength;
             mat.clearcoatFactor()      = clearcoatFactor;

@@ -148,7 +148,7 @@ void main()
     if (useTexture && isSpecularTextureAvailable())
         specular *= specularTex(texcoord).a;
 
-    vec3 specularColor = u_specularColorFactor;
+    vec3 specularColor = u_specularColor;
     if (useTexture && isSpecularColorTextureAvailable())
         specularColor *= specularColorTex(texcoord).rgb;
 
