@@ -71,6 +71,15 @@
             }
         },
         {
+            "name": "do-not-exclude-benchmarks",
+            "hidden": true,
+            "displayName": "Include Benchmarks",
+            "description": "Do not exclude benchmarks",
+            "cacheVariables": {
+                "VCLIB_EXCLUDE_BENCHMARKS_TARGETS": "OFF"
+            }
+        },
+        {
             "name": "build-external-module",
             "hidden": true,
             "displayName": "Build External Module",
@@ -144,6 +153,13 @@
             "inherits": ["vclib-core-release", "do-not-exclude-examples-and-tests"],
             "displayName": "VCLib::Core - CI",
             "description": "Core with build and test examples and tests"
+        },
+        {
+            "name": "vclib-core-benchmarks",
+            "inherits": ["release", "do-not-exclude-benchmarks"],
+            "displayName": "VCLib::Core - Benchmarks",
+            "description": "Core with benchmarks (Release)",
+            "binaryDir": "${sourceDir}/out/build/${presetName}"
         },
         {
             "name": "vclib-external-debug",
@@ -367,6 +383,14 @@
                 "VCLIB_RENDER_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON"
             }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "vclib-core-benchmarks",
+            "configurePreset": "vclib-core-benchmarks",
+            "displayName": "VCLib::Core - Benchmarks",
+            "targets": ["vclib-core-benchmark-mesh"]
         }
     ]
 }

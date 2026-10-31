@@ -217,6 +217,9 @@ _deps
 build/*
 out/*
 
+# Benchmark reports
+scripts/benchmarks/results/
+
 # Local History for Visual Studio Code
 */.history/
 
