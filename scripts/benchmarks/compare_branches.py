@@ -123,7 +123,15 @@ def run_benchmark(binary: Path, dataset_args, iterations, json_path, cpu):
             cmd = ["taskset", "-c", cpu, *cmd]
         else:
             print("Warning: taskset not found, ignoring --cpu")
-    run(cmd)
+    try:
+        run(cmd)
+    except subprocess.CalledProcessError:
+        sys.exit(
+            f"\nThe benchmark failed. If it printed 'No benchmark selected', "
+            f"the selected benchmarks are not available in this branch: check "
+            f"the filters and that their sources are enabled in "
+            f"benchmarks/core/mesh/CMakeLists.txt."
+        )
 
 
 def main():
