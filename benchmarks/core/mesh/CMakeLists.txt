@@ -11,10 +11,12 @@ project(vclib-core-benchmark-${BENCHMARK_NAME})
 set(SOURCES
     types.h
     load_matrices.h
+    test_load.h
     test_building.h
     test_bounding_box.h
     test_normals.h
     test_traversal.h
+    test_topology.h
     test_transform.h
     test_copy.h
     test_compact.h

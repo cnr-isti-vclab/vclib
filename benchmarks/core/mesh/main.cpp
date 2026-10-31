@@ -13,10 +13,15 @@
 #include "test_building.h"
 #include "test_compact.h"
 #include "test_copy.h"
+#include "test_load.h"
 #include "test_normals.h"
+#include "test_topology.h"
 #include "test_transform.h"
 #include "test_traversal.h"
 #include "types.h"
+
+#include <vclib/algorithms.h>
+#include <vclib/io.h>
 
 #include <filesystem>
 #include <iostream>
@@ -64,9 +69,9 @@ int main(int argc, char** argv)
 #endif
     }
 
-    std::string      datasetName;
-    Eigen::MatrixX3d V;
-    Eigen::MatrixX3i F;
+    std::string datasetName;
+    bench::Mesh mesh;
+    bool        fromFile = false;
 
     try {
         if (gridRows > 0) {
@@ -74,15 +79,13 @@ int main(int argc, char** argv)
             std::println(
                 "Generating synthetic grid {}x{}...", gridRows, gridCols);
             auto grid = bench::makeGridMatrices(gridRows, gridCols);
-            V         = std::move(grid.vertices);
-            F         = std::move(grid.faces);
+            vcl::meshFromMatrices(mesh, grid.vertices, grid.faces);
         }
         else {
+            fromFile    = true;
             datasetName = fs::path(meshPath).filename().string();
-            std::println("Loading mesh matrices from: {}", meshPath);
-            auto mats = bench::loadMeshMatrices(meshPath);
-            V         = std::move(mats.vertices);
-            F         = std::move(mats.faces);
+            std::println("Loading mesh from: {}", meshPath);
+            mesh = vcl::loadMesh<bench::Mesh>(meshPath);
         }
     }
     catch (const std::exception& e) {
@@ -91,29 +94,37 @@ int main(int argc, char** argv)
     }
 
     nlohmann::json metadata = {
-        {"vertices", V.rows()},
-        {"faces",    F.rows()}
+        {"vertices", mesh.vertexCount()},
+        {"faces",    mesh.faceCount()  }
     };
 
     std::println("==================================================");
     std::println("VCLib Mesh Benchmark [Version: V1 (Baseline)]");
     std::println(
-        "Dataset: {} ({} vertices, {} faces)", datasetName, V.rows(), F.rows());
+        "Dataset: {} ({} vertices, {} faces)",
+        datasetName,
+        mesh.vertexCount(),
+        mesh.faceCount());
     std::println("Iterations: {}, Warmup: {}", opts.iterations, opts.warmup);
     std::println("==================================================");
 
     bench::BenchmarkRunner runner(
         "v1", datasetName, metadata, opts.iterations, opts.warmup);
-    bench::Mesh mesh;
 
-    // Building
-    bench::benchmarkBuilding(runner, V, F, mesh, opts.iterations);
+    // Loading from file (the loaded mesh is the one used by all the others)
+    if (fromFile) {
+        bench::benchmarkLoad(runner, meshPath, opts.iterations);
+    }
+
+    // Conversions from/to matrices
+    bench::benchmarkBuilding(runner, mesh, opts.iterations);
 
     // High-level library algorithms
     bench::benchmarkBoundingBox(runner, mesh, opts.iterations);
     bench::benchmarkTraversal(runner, mesh, opts.iterations);
     bench::benchmarkNormals(runner, mesh, opts.iterations);
     bench::benchmarkTransform(runner, mesh, opts.iterations);
+    bench::benchmarkTopology(runner, mesh, opts.iterations);
 
     // Element management & containers
     bench::benchmarkCopy(runner, mesh, opts.iterations);

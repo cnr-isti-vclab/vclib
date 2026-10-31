@@ -12,47 +12,42 @@
 
 #include <benchmark_runner.h>
 
+#include <vclib/algorithms.h>
+
 #include <Eigen/Core>
 
 namespace bench {
 
-inline void buildMesh(
-    Mesh&                   m,
-    const Eigen::MatrixX3d& V,
-    const Eigen::MatrixX3i& F)
-{
-    m.clear();
-    const auto numV = V.rows();
-    m.resizeVertices(numV);
-    for (int i = 0; i < numV; ++i) {
-        m.vertex(i).position() = {V(i, 0), V(i, 1), V(i, 2)};
-    }
-
-    const auto numF = F.rows();
-    m.resizeFaces(numF);
-    for (int i = 0; i < numF; ++i) {
-        m.face(i).setVertex(0, F(i, 0));
-        m.face(i).setVertex(1, F(i, 1));
-        m.face(i).setVertex(2, F(i, 2));
-    }
-}
-
+/**
+ * @brief Benchmarks the conversions between a mesh and the V/F matrices.
+ *
+ * The matrices are obtained from the given (already loaded) mesh, which is
+ * never modified: the meshes built from the matrices are discarded.
+ */
 inline void benchmarkBuilding(
-    BenchmarkRunner&        runner,
-    const Eigen::MatrixX3d& V,
-    const Eigen::MatrixX3i& F,
-    Mesh&                   outM,
-    int                     iterations = -1)
+    BenchmarkRunner& runner,
+    const Mesh&      m,
+    int              iterations = -1)
 {
+    Eigen::MatrixX3d V;
+    Eigen::MatrixX3i F;
+
     runner.run(
-        "mesh_building",
+        "export_matrices",
         [&]() {
-            Mesh m;
-            buildMesh(m, V, F);
+            V = vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m);
+            F = vcl::faceVertexIndicesMatrix<Eigen::MatrixX3i>(m);
         },
         iterations);
 
-    buildMesh(outM, V, F);
+    runner.run(
+        "import_matrices",
+        [&]() {
+            Mesh newM;
+            vcl::meshFromMatrices(newM, V, F);
+            doNotOptimize(newM);
+        },
+        iterations);
 }
 
 } // namespace bench
