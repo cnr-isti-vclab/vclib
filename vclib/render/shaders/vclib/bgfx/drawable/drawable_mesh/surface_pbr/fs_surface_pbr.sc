@@ -7,12 +7,16 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+// cross section
+$input v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/drawable/drawable_mesh/surface_pbr/common.sh>
 
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/material_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/render_settings_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/texture_uniforms.sh>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #include <vclib/bgfx/drawable/uniforms/directional_light_uniforms.sh>
 
 #include <vclib/bgfx/drawers/uniforms/viewer_drawer_uniforms.sh>
@@ -34,6 +38,8 @@ SAMPLERCUBE(s_specular, VCL_MRB_CUBEMAP1);
 
 void main()
 {
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+
     // texcoord to use
     bool useTexture = isSurfaceTexVertex() || isSurfaceTexWedge();
 
