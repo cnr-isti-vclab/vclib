@@ -5,21 +5,16 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef TEST_TRANSFORM_H
-#define TEST_TRANSFORM_H
+#include "../benchmark.h"
 
-#include "types.h"
-
-#include <benchmark_runner.h>
-
-#include <vclib/algorithms.h>
+#include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/space/core.h>
 
 #include <cmath>
 
-namespace bench {
+namespace {
 
-inline vcl::Matrix44d createSampleTransformMatrix()
+vcl::Matrix44d createSampleTransformMatrix()
 {
     vcl::Matrix44d m = vcl::Matrix44d::Identity();
     vcl::Point3d   axis(1.0, 1.0, 1.0);
@@ -49,19 +44,10 @@ inline vcl::Matrix44d createSampleTransformMatrix()
     return m;
 }
 
-inline void benchmarkTransform(
-    BenchmarkRunner& runner,
-    Mesh&            m,
-    int              iterations = -1)
-{
+} // namespace
+
+BENCH("update/transform/apply_transform_matrix", [](bench::State& s) {
     const vcl::Matrix44d mat = createSampleTransformMatrix();
-
-    runner.run(
-        "apply_transform_matrix",
-        [&]() { vcl::applyTransformMatrix(m, mat, true); },
-        iterations);
-}
-
-} // namespace bench
-
-#endif // TEST_TRANSFORM_H
+    bench::Mesh          m   = s.copyMesh();
+    s.run([&]() { vcl::applyTransformMatrix(m, mat, true); });
+});

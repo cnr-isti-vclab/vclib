@@ -9,17 +9,22 @@ get_filename_component(BENCHMARK_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(vclib-core-benchmark-${BENCHMARK_NAME})
 
 set(SOURCES
+    benchmark.h
+    compat.h
+    grid.h
     types.h
-    load_matrices.h
-    test_load.h
-    test_building.h
-    test_bounding_box.h
-    test_normals.h
-    test_traversal.h
-    test_topology.h
-    test_transform.h
-    test_copy.h
-    test_compact.h
+    import_export/export_matrix.cpp
+    import_export/import_matrix.cpp
+    io/load_mesh.cpp
+    mesh/copy.cpp
+    mesh/delete_and_compact.cpp
+    stat/barycenter.cpp
+    stat/bounding_box.cpp
+    stat/geometry.cpp
+    stat/topology.cpp
+    update/normal.cpp
+    update/topology.cpp
+    update/transform.cpp
     main.cpp
 )
 

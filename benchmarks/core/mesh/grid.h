@@ -5,8 +5,8 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef LOAD_MATRICES_H
-#define LOAD_MATRICES_H
+#ifndef BENCH_GRID_H
+#define BENCH_GRID_H
 
 #include <vclib/base.h>
 
@@ -78,4 +78,4 @@ inline MeshMatrices<Eigen::MatrixX3d, Eigen::MatrixX3i> makeGridMatrices(
 
 } // namespace bench
 
-#endif // LOAD_MATRICES_H
+#endif // BENCH_GRID_H

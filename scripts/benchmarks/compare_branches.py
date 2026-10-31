@@ -14,10 +14,18 @@ Examples:
     python scripts/benchmarks/compare_branches.py main
     python scripts/benchmarks/compare_branches.py main --mesh bunny.obj
     python scripts/benchmarks/compare_branches.py main --grid 2000 2000 -n 20
+    python scripts/benchmarks/compare_branches.py main --filter 'stat/*'
+    python scripts/benchmarks/compare_branches.py main --config my_bench.json
+
+The benchmarks to run can be selected with --filter/--exclude/--config (see the
+--help of the benchmark executable): the options are forwarded to both
+executables. The branches must contain the benchmark selection options,
+otherwise the executable ignores them and runs all the benchmarks.
 """
 
 import argparse
 import datetime
+import json
 import os
 import re
 import shutil
@@ -68,7 +76,10 @@ def current_branch_name() -> str:
 
 
 def prepare_worktree(ref: str) -> Path:
-    commit = git("rev-parse", "--verify", f"{ref}^{{commit}}")
+    try:
+        commit = git("rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}")
+    except subprocess.CalledProcessError:
+        sys.exit(f"Unknown branch or git ref: {ref}")
     path = WORKTREES_DIR / safe_name(ref)
 
     if (path / ".git").exists():
@@ -104,7 +115,9 @@ def find_binary(source_dir: Path) -> Path:
 
 
 def run_benchmark(binary: Path, dataset_args, iterations, json_path, cpu):
-    cmd = [binary, *dataset_args, "--iterations", iterations, "--json", json_path]
+    cmd = [binary, *dataset_args, "--json", json_path]
+    if iterations is not None:
+        cmd += ["--iterations", iterations]
     if cpu is not None:
         if shutil.which("taskset"):
             cmd = ["taskset", "-c", cpu, *cmd]
@@ -126,12 +139,38 @@ def main():
         nargs=2,
         type=int,
         metavar=("ROWS", "COLS"),
-        default=[1000, 1000],
         help="Size of the synthetic grid used when --mesh is not given "
         "(default: 1000 1000)",
     )
     parser.add_argument(
-        "-n", "--iterations", type=int, default=10, help="Iterations (default: 10)"
+        "--filter",
+        action="append",
+        default=[],
+        metavar="PATTERN",
+        help="Run only the benchmarks matching the pattern (repeatable)",
+    )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="PATTERN",
+        help="Do not run the benchmarks matching the pattern (repeatable)",
+    )
+    parser.add_argument(
+        "--include-slow",
+        action="store_true",
+        help="Run also the benchmarks marked as slow",
+    )
+    parser.add_argument(
+        "--config",
+        help="JSON configuration file of the benchmarks (selection, dataset, "
+        "iterations)",
+    )
+    parser.add_argument(
+        "-n",
+        "--iterations",
+        type=int,
+        help="Iterations (default: the value of the config file, or 10)",
     )
     parser.add_argument("-j", "--jobs", type=int, help="Parallel build jobs")
     parser.add_argument("--cpu", help="Pin the benchmarks to this CPU (taskset)")
@@ -149,13 +188,40 @@ def main():
     parser.add_argument("--no-color", action="store_true", help="Disable colors")
     args = parser.parse_args()
 
+    config_has_dataset = False
+    config_path = None
+    if args.config:
+        config_path = Path(args.config).resolve()
+        if not config_path.is_file():
+            sys.exit(f"Config file not found: {config_path}")
+        with open(config_path) as f:
+            config = json.load(f)
+        config_has_dataset = "mesh" in config or "grid" in config
+        if args.iterations is None and "iterations" not in config:
+            args.iterations = 10
+    elif args.iterations is None:
+        args.iterations = 10
+
     if args.mesh:
         mesh = Path(args.mesh).resolve()
         if not mesh.is_file():
             sys.exit(f"Mesh file not found: {mesh}")
         dataset_args = [mesh]
-    else:
+    elif args.grid:
         dataset_args = ["--grid", *args.grid]
+    elif config_has_dataset:
+        dataset_args = []  # the dataset is described by the config file
+    else:
+        dataset_args = ["--grid", 1000, 1000]
+
+    for pattern in args.filter:
+        dataset_args += ["--filter", pattern]
+    for pattern in args.exclude:
+        dataset_args += ["--exclude", pattern]
+    if args.include_slow:
+        dataset_args.append("--include-slow")
+    if config_path:
+        dataset_args += ["--config", config_path]
 
     this_name = current_branch_name()
     other_name = args.branch

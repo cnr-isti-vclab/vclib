@@ -5,26 +5,17 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include "benchmark.h"
+#include "compat.h"
+#include "types.h"
+
+#include <benchmark_registry.h>
 #include <benchmark_runner.h>
 #include <cli_options.h>
 
-#include "load_matrices.h"
-#include "test_bounding_box.h"
-#include "test_building.h"
-#include "test_compact.h"
-#include "test_copy.h"
-#include "test_load.h"
-#include "test_normals.h"
-#include "test_topology.h"
-#include "test_transform.h"
-#include "test_traversal.h"
-#include "types.h"
-
-#include <vclib/algorithms.h>
 #include <vclib/io.h>
 
 #include <filesystem>
-#include <iostream>
 #include <print>
 #include <string>
 
@@ -45,9 +36,35 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    // Parse mesh-specific args from extraArgs
-    int gridRows = 0;
-    int gridCols = 0;
+    nlohmann::json config;
+    try {
+        config = bench::loadConfig(opts);
+    }
+    catch (const std::exception& e) {
+        std::println(stderr, "Error loading the configuration: {}", e.what());
+        return 1;
+    }
+
+    const auto& registry = bench::Registry::instance();
+    const auto  selected = registry.select(bench::makeFilter(opts));
+
+    if (opts.listOnly) {
+        for (const auto* entry : selected) {
+            std::println("{}{}", entry->name, entry->slow ? " (slow)" : "");
+        }
+        return 0;
+    }
+
+    if (selected.empty()) {
+        std::println(stderr, "No benchmark selected.");
+        return 1;
+    }
+
+    // Dataset: the command line has the precedence over the config file
+    int         gridRows = 0;
+    int         gridCols = 0;
+    std::string meshPath;
+
     for (size_t i = 0; i < opts.extraArgs.size(); ++i) {
         if (opts.extraArgs[i] == "--grid" && i + 2 < opts.extraArgs.size()) {
             gridRows = std::stoi(opts.extraArgs[i + 1]);
@@ -56,33 +73,38 @@ int main(int argc, char** argv)
         }
     }
 
-    std::string meshPath;
     if (!opts.positionalArgs.empty()) {
         meshPath = opts.positionalArgs[0];
     }
     else if (gridRows == 0) {
+        if (config.contains("mesh")) {
+            meshPath = config["mesh"].get<std::string>();
+        }
+        else if (config.contains("grid")) {
+            gridRows = config["grid"].at(0).get<int>();
+            gridCols = config["grid"].at(1).get<int>();
+        }
+        else {
 #ifdef VCLIB_EXAMPLE_MESHES_PATH
-        meshPath = VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj";
+            meshPath = VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj";
 #else
-        gridRows = 500;
-        gridCols = 500;
+            gridRows = 500;
+            gridCols = 500;
 #endif
+        }
     }
 
     std::string datasetName;
     bench::Mesh mesh;
-    bool        fromFile = false;
 
     try {
-        if (gridRows > 0) {
+        if (meshPath.empty()) {
             datasetName = std::format("grid_{}x{}", gridRows, gridCols);
             std::println(
                 "Generating synthetic grid {}x{}...", gridRows, gridCols);
-            auto grid = bench::makeGridMatrices(gridRows, gridCols);
-            vcl::meshFromMatrices(mesh, grid.vertices, grid.faces);
+            bench::buildGridMesh(mesh, gridRows, gridCols);
         }
         else {
-            fromFile    = true;
             datasetName = fs::path(meshPath).filename().string();
             std::println("Loading mesh from: {}", meshPath);
             mesh = vcl::loadMesh<bench::Mesh>(meshPath);
@@ -105,30 +127,21 @@ int main(int argc, char** argv)
         datasetName,
         mesh.vertexCount(),
         mesh.faceCount());
-    std::println("Iterations: {}, Warmup: {}", opts.iterations, opts.warmup);
+    std::println(
+        "Benchmarks: {}, Iterations: {}, Warmup: {}",
+        selected.size(),
+        opts.iterations,
+        opts.warmup);
     std::println("==================================================");
 
     bench::BenchmarkRunner runner(
         "v1", datasetName, metadata, opts.iterations, opts.warmup);
+    bench::Context context(std::move(mesh), datasetName, meshPath);
 
-    // Loading from file (the loaded mesh is the one used by all the others)
-    if (fromFile) {
-        bench::benchmarkLoad(runner, meshPath, opts.iterations);
+    for (const auto* entry : selected) {
+        bench::State state(runner, context, entry->name, opts.iterations);
+        entry->func(state);
     }
-
-    // Conversions from/to matrices
-    bench::benchmarkBuilding(runner, mesh, opts.iterations);
-
-    // High-level library algorithms
-    bench::benchmarkBoundingBox(runner, mesh, opts.iterations);
-    bench::benchmarkTraversal(runner, mesh, opts.iterations);
-    bench::benchmarkNormals(runner, mesh, opts.iterations);
-    bench::benchmarkTransform(runner, mesh, opts.iterations);
-    bench::benchmarkTopology(runner, mesh, opts.iterations);
-
-    // Element management & containers
-    bench::benchmarkCopy(runner, mesh, opts.iterations);
-    bench::benchmarkDeleteAndCompact(runner, mesh, opts.iterations);
 
     std::println("==================================================");
     std::println("Benchmark completed successfully.");
