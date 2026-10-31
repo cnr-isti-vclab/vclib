@@ -171,22 +171,24 @@ public:
     {
         const FaceType* nf = mFace->adjFace(mEdge);
         if (nf != nullptr) {
-            short oldEdge = mEdge;
-            mEdge         = nf->indexOfAdjFace(mFace);
-            if (mEdge < 0) {
-                // non-manifold edge. I need to find the edge that has the
-                // current vertex
-                const auto* v0 = mFace->vertex(oldEdge);
-                const auto* v1 = mFace->vertexMod(oldEdge + 1);
-                mEdge          = nf->indexOfEdge(v0, v1);
-                // if this assert fails, it means that the edge was not found.
-                // you probably need to update adjacency information of the mesh
-                assert(mEdge >= 0 && mEdge < nf->vertexCount());
-                if (mEdge < 0) {
-                    *this = MeshPos<FaceType>(); // reset to null
-                    return false;
-                }
+            // The edge of the adjacent face must be found using the vertices
+            // of the current edge: searching the position of the current face
+            // in the adjacent faces of nf is not enough, because nf could be
+            // adjacent to the current face along more than one edge (e.g. two
+            // faces with the same vertices), and in this case the first match
+            // could be the wrong edge, leading to wrong (and possibly endless)
+            // navigations.
+            const auto* v0      = mFace->vertex(mEdge);
+            const auto* v1      = mFace->vertexMod(mEdge + 1);
+            short       newEdge = nf->indexOfEdge(v0, v1);
+            // if this assert fails, it means that the edge was not found.
+            // you probably need to update adjacency information of the mesh
+            assert(newEdge >= 0 && newEdge < nf->vertexCount());
+            if (newEdge < 0) {
+                *this = MeshPos<FaceType>(); // reset to null
+                return false;
             }
+            mEdge = newEdge;
             mFace = nf;
             return true;
         }
