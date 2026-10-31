@@ -50,6 +50,9 @@ int loadGltfPrimitiveMaterial(
             occlusionTextureId, emissiveTextureId;
 
         // extensions data
+        double anisotropyStrength          = 0.0;
+        double anisotropyRotation          = 0.0;
+        int    anisotropyTextureId         = -1;
         double  clearcoatFactor             = 0.0;
         double  clearcoatRoughness          = 0.0;
         double  clearcoatNormalScale        = 1.0;
@@ -123,6 +126,33 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
+
+        // KHR_materials_anisotropy
+        {
+            if (mat.extensions.contains("KHR_materials_anisotropy")) {
+                const auto& anisotropyExt =
+                    mat.extensions.at("KHR_materials_anisotropy");
+
+                if (anisotropyExt.Has("anisotropyStrength")) {
+                    anisotropyStrength = anisotropyExt.Get("anisotropyStrength")
+                                             .GetNumberAsDouble();
+                    anisotropyStrength =
+                        std::clamp(anisotropyStrength, 0.0, 1.0);
+                }
+
+                if (anisotropyExt.Has("anisotropyRotation")) {
+                    anisotropyRotation = anisotropyExt.Get("anisotropyRotation")
+                                             .GetNumberAsDouble();
+                }
+
+                if (anisotropyExt.Has("anisotropyTexture")) {
+                    auto& tex = anisotropyExt.Get("anisotropyTexture");
+                    if (tex.Has("index")) {
+                        anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                    }
+                }
+            }
+        }
 
         // KHR_materials_clearcoat
         {
@@ -284,10 +314,13 @@ int loadGltfPrimitiveMaterial(
             mat.occlusionStrength()    = occlusionStrength;
             mat.specularFactor()       = specularFactor;
             mat.specularColor()        = specularColor;
+            mat.anisotropyStrength()   = anisotropyStrength;
+            mat.anisotropyRotation()   = anisotropyRotation;
             mat.emissiveStrength()     = emissiveStrength;
             mat.clearcoatFactor()      = clearcoatFactor;
             mat.clearcoatRoughness()   = clearcoatRoughness;
             mat.clearcoatNormalScale() = clearcoatNormalScale;
+
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
@@ -300,6 +333,8 @@ int loadGltfPrimitiveMaterial(
                 mat, occlusionTextureId, Material::TextureType::OCCLUSION);
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, anisotropyTextureId, Material::TextureType::ANISOTROPY);
             loadTextureInMaterial(
                 mat, clearcoatTextureId, Material::TextureType::CLEARCOAT);
             loadTextureInMaterial(
