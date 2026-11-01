@@ -17,8 +17,14 @@
 namespace vcl {
 
 /**
- * @brief The MeshInertia class provides several for computing Polyhedral Mass
+ * @brief The MeshInertia class provides methods for computing Polyhedral Mass
  * properties (like inertia tensor, volume, etc).
+ *
+ * The mesh must bound a closed, consistently oriented polyhedron with planar
+ * faces. A uniform density of one is assumed. Volume and inertia are signed:
+ * outward-facing winding gives positive mass, and reversing all faces negates
+ * volume and inertia. Center of mass and inertia methods require nonzero
+ * signed volume. Degenerate faces are ignored.
  *
  * The algorithm is based on a three step reduction of the volume integrals
  * to successively simpler integrals. The algorithm is designed to minimize
@@ -65,8 +71,8 @@ public:
         double nx, ny, nz;
 
         for (const FaceType& f : m.faces()) {
-            if (faceArea(f) > std::numeric_limits<float>::min()) {
-                Point3<ScalarType> fn = faceNormal(f);
+            if (faceArea(f) > 0) {
+                Point3d fn = faceNormal(f).template cast<double>();
                 fn.normalize();
 
                 nx = std::abs(fn[0]);
@@ -107,12 +113,16 @@ public:
     }
 
     /**
-     * @brief Returns the volume (or mass) of the mesh.
+    * @brief Returns the signed volume (or mass at unit density) of the mesh.
      * Meaningful only if the mesh is watertight.
      * @return
      */
     ScalarType volume() const { return mT0; }
 
+    /**
+     * @brief Returns the center of mass of the mesh.
+     * @pre The signed volume is nonzero.
+     */
     Point3<ScalarType> centerOfMass() const
     {
         Point3<ScalarType> r;
@@ -122,6 +132,10 @@ public:
         return r;
     }
 
+    /**
+     * @brief Returns the inertia tensor about the center of mass.
+     * @pre The signed volume is nonzero.
+     */
     template<typename Matrix33>
     Matrix33 inertiaTensor() const
     {
@@ -148,17 +162,19 @@ public:
     }
 
     /**
-     * @brief Computes the inertia tensor mesh.
+    * @brief Computes the eigendecomposition of the centroidal inertia tensor.
      *
      * The result is factored as eigenvalues and eigenvectors (as ROWS).
+    * @pre The signed volume is nonzero.
      *
-     * @param[out] eigenValues
-     * @param[out] eigenVector
+    * @param[out] eigenVectors Matrix containing the eigenvectors as rows.
+    * @param[out] eigenValues Point containing the eigenvalues in ascending
+    * order.
      */
     template<typename Matrix33>
     void inertiaTensorEigen(
-        Matrix33&           eigenValues,
-        Point3<ScalarType>& eigenVector) const
+        Matrix33&           eigenVectors,
+        Point3<ScalarType>& eigenValues) const
     {
         Eigen::Matrix3d it = inertiaTensor<Eigen::Matrix3d>();
         Eigen::SelfAdjointEigenSolver<Eigen::Matrix3d> eig(it);
@@ -168,23 +184,23 @@ public:
         c_vec.transposeInPlace();
         for (uint i = 0; i < 3; i++)
             for (uint j = 0; j < 3; j++)
-                eigenValues(i, j) = c_vec(i, j);
-        eigenVector = Point3<ScalarType>(c_val);
+                eigenVectors(i, j) = c_vec(i, j);
+            eigenValues = Point3<ScalarType>(c_val.template cast<ScalarType>());
     }
 
 private:
-    static ScalarType sqr(const ScalarType& x) { return x * x; }
+    static double sqr(double x) { return x * x; }
 
-    static ScalarType cube(const ScalarType& x) { return x * x * x; }
+    static double cube(double x) { return x * x * x; }
 
-    void faceIntegrals(const FaceType& f, const Point3<ScalarType>& n)
+    void faceIntegrals(FaceConcept auto&& f, const Point3d& n)
     {
-        ScalarType w;
+        double     w;
         double     k1, k2, k3, k4;
 
         projectionIntegrals(f);
 
-        w  = -f.vertex(0)->position().dot(n);
+        w  = -f.vertex(0)->position().template cast<double>().dot(n);
         k1 = 1 / n[mC];
         k2 = k1 * k1;
         k3 = k2 * k1;
@@ -220,7 +236,7 @@ private:
      * @brief Computes various integrations over projection of the given face
      * @param f
      */
-    void projectionIntegrals(const FaceType& f)
+    void projectionIntegrals(FaceConcept auto&& f)
     {
         double a0, a1, da;
         double b0, b1, db;
