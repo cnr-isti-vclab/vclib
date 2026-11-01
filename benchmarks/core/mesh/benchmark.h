@@ -182,15 +182,13 @@ public:
 #define BENCH_CONCAT(a, b)      BENCH_CONCAT_IMPL(a, b)
 
 /// Registers a benchmark: BENCH(name, [](bench::State& s) { ... });
-#define BENCH(NAME, ...)                                    \
-    static const bench::Registrar BENCH_CONCAT(             \
-        benchRegistrar,                                     \
-        __LINE__)(NAME, __VA_ARGS__)
+#define BENCH(NAME, ...)                                                  \
+    static const bench::Registrar BENCH_CONCAT(benchRegistrar, __LINE__)( \
+        NAME, __VA_ARGS__)
 
 /// Registers a benchmark that runs only if requested (see --include-slow).
-#define BENCH_SLOW(NAME, ...)                               \
-    static const bench::Registrar BENCH_CONCAT(             \
-        benchRegistrar,                                     \
-        __LINE__)(NAME, __VA_ARGS__, true)
+#define BENCH_SLOW(NAME, ...)                                             \
+    static const bench::Registrar BENCH_CONCAT(benchRegistrar, __LINE__)( \
+        NAME, __VA_ARGS__, true)
 
 #endif // BENCH_BENCHMARK_H

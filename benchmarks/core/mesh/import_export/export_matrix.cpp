@@ -15,9 +15,8 @@ BENCH(
     "import_export/export_matrix/vertex_positions_matrix",
     [](bench::State& s) {
         const bench::Mesh& m = s.mesh();
-        s.run([&]() {
-            return vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m);
-        });
+        s.run(
+            [&]() { return vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m); });
     });
 
 BENCH(

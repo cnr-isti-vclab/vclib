@@ -52,7 +52,8 @@ BENCH(
         if (!bench::hasWedgeTexCoords(m))
             return s.skip("the mesh has no wedge texture coordinates");
 
-        s.run([&]() { return vcl::verticesToDuplicateByWedgeTexCoordsCount(m); });
+        s.run(
+            [&]() { return vcl::verticesToDuplicateByWedgeTexCoordsCount(m); });
     });
 
 BENCH("stat/topology/referenced_vertices", [](bench::State& s) {

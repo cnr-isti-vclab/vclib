@@ -34,7 +34,8 @@ inline bool globMatch(std::string_view pattern, std::string_view text)
     std::size_t star = std::string_view::npos, mark = 0;
 
     while (t < text.size()) {
-        if (p < pattern.size() && (pattern[p] == '?' || pattern[p] == text[t])) {
+        if (p < pattern.size() &&
+            (pattern[p] == '?' || pattern[p] == text[t])) {
             ++p;
             ++t;
         }
@@ -74,16 +75,17 @@ struct BenchmarkFilter
     std::vector<std::string> excludes;
     bool                     includeSlow = false;
 
-    static bool patternMatches(const std::string& pattern, const std::string& name)
+    static bool patternMatches(
+        const std::string& pattern,
+        const std::string& name)
     {
         if (pattern.find_first_of("*?") != std::string::npos)
             return globMatch(pattern, name);
         std::string_view p = pattern;
         while (p.ends_with('/'))
             p.remove_suffix(1);
-        return name == p ||
-               (name.size() > p.size() && name.starts_with(p) &&
-                name[p.size()] == '/');
+        return name == p || (name.size() > p.size() && name.starts_with(p) &&
+                             name[p.size()] == '/');
     }
 
     bool selects(const std::string& name, bool slow) const
