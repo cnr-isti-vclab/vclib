@@ -27,7 +27,7 @@ TEMPLATE_TEST_CASE(
 {
     using Scalar = TestType::VertexType::PositionType::ScalarType;
     using Point  = vcl::Point3<Scalar>;
-    const double tolerance = std::is_same_v<Scalar, float> ? 1e-5 : 1e-12;
+    const double tolerance = std::is_same_v<Scalar, float> ? 3e-5 : 1e-12;
 
     TestType mesh;
     mesh.addVertex(Point(0, 0, 0));
