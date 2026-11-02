@@ -25,8 +25,8 @@ TEMPLATE_TEST_CASE(
     vcl::TriMesh,
     vcl::TriMeshf)
 {
-    using Scalar = TestType::VertexType::PositionType::ScalarType;
-    using Point  = vcl::Point3<Scalar>;
+    using Scalar           = TestType::VertexType::PositionType::ScalarType;
+    using Point            = vcl::Point3<Scalar>;
     const double tolerance = std::is_same_v<Scalar, float> ? 3e-5 : 1e-12;
 
     TestType mesh;
@@ -44,7 +44,9 @@ TEMPLATE_TEST_CASE(
     expected << 3.75, 0.3, 0.4, 0.3, 3.0, 0.6, 0.4, 0.6, 1.95;
     double expectedVolume = 4.0;
 
-    SECTION("Original") {}
+    SECTION("Original")
+    {
+    }
     SECTION("Rotated and translated")
     {
         const Eigen::Matrix3d rotation =
@@ -60,7 +62,7 @@ TEMPLATE_TEST_CASE(
                 (rotation * position + translation).template cast<Scalar>());
         }
         expectedCenter = rotation * expectedCenter + translation;
-        expected = (rotation * expected * rotation.transpose()).eval();
+        expected       = (rotation * expected * rotation.transpose()).eval();
     }
     SECTION("Reversed winding")
     {
@@ -70,7 +72,7 @@ TEMPLATE_TEST_CASE(
             face.setVertex(1, first);
         }
         expectedVolume = -expectedVolume;
-        expected = -expected;
+        expected       = -expected;
     }
     SECTION("Degenerate and deleted faces")
     {
@@ -80,18 +82,19 @@ TEMPLATE_TEST_CASE(
     }
 
     const vcl::MeshInertia inertia(mesh);
-    REQUIRE(inertia.volume() ==
-            Catch::Approx(expectedVolume).epsilon(tolerance));
+    REQUIRE(
+        inertia.volume() == Catch::Approx(expectedVolume).epsilon(tolerance));
     const auto center = inertia.centerOfMass();
     for (vcl::uint axis = 0; axis < 3; ++axis) {
-        REQUIRE(center[axis] ==
-                Catch::Approx(expectedCenter[axis]).epsilon(tolerance));
+        REQUIRE(
+            center[axis] ==
+            Catch::Approx(expectedCenter[axis]).epsilon(tolerance));
     }
     const auto tensor = inertia.template inertiaTensor<Eigen::Matrix3d>();
     REQUIRE(tensor.isApprox(expected, tolerance));
 
     Eigen::Matrix3d eigenvectors;
-    Point eigenvalues;
+    Point           eigenvalues;
     inertia.inertiaTensorEigen(eigenvectors, eigenvalues);
     REQUIRE((eigenvectors * eigenvectors.transpose())
                 .isApprox(Eigen::Matrix3d::Identity(), tolerance));
@@ -111,11 +114,17 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMeshf)
 {
     using Scalar = TestType::VertexType::PositionType::ScalarType;
-    using Point = vcl::Point3<Scalar>;
+    using Point  = vcl::Point3<Scalar>;
     TestType mesh;
     mesh.addVertices(
-        Point(0, 0, 0), Point(2, 0, 0), Point(2, 3, 0), Point(0, 3, 0),
-        Point(0, 0, 4), Point(2, 0, 4), Point(2, 3, 4), Point(0, 3, 4));
+        Point(0, 0, 0),
+        Point(2, 0, 0),
+        Point(2, 3, 0),
+        Point(0, 3, 0),
+        Point(0, 0, 4),
+        Point(2, 0, 4),
+        Point(2, 3, 4),
+        Point(0, 3, 4));
     mesh.addFace(0, 3, 2, 1);
     mesh.addFace(4, 5, 6, 7);
     mesh.addFace(0, 1, 5, 4);
@@ -128,8 +137,8 @@ TEMPLATE_TEST_CASE(
     REQUIRE(inertia.centerOfMass() == Point(1, 1.5, 2));
     Eigen::Matrix3d expected = Eigen::Matrix3d::Zero();
     expected.diagonal() << 50, 40, 26;
-    REQUIRE(inertia.template inertiaTensor<Eigen::Matrix3d>()
-                .isApprox(expected, 1e-12));
+    REQUIRE(inertia.template inertiaTensor<Eigen::Matrix3d>().isApprox(
+        expected, 1e-12));
 }
 
 TEST_CASE("Mesh inertia at small scales", "[mesh-inertia]")
@@ -160,11 +169,14 @@ TEST_CASE("Mesh inertia at small scales", "[mesh-inertia]")
 TEST_CASE("Mesh inertia with zero volume", "[mesh-inertia]")
 {
     vcl::TriMesh mesh;
-    SECTION("Empty") {}
+    SECTION("Empty")
+    {
+    }
     SECTION("Planar")
     {
         mesh.addVertices(
-            vcl::Point3d(0, 0, 0), vcl::Point3d(1, 0, 0),
+            vcl::Point3d(0, 0, 0),
+            vcl::Point3d(1, 0, 0),
             vcl::Point3d(0, 1, 0));
         mesh.addFace(0, 1, 2);
     }

@@ -39,9 +39,8 @@ BENCH("space/mesh_inertia/volume", [](bench::State& state) {
 });
 
 BENCH("space/mesh_inertia/center_of_mass", [](bench::State& state) {
-    runMassProperty(state, [](const Inertia& inertia) {
-        return inertia.centerOfMass();
-    });
+    runMassProperty(
+        state, [](const Inertia& inertia) { return inertia.centerOfMass(); });
 });
 
 BENCH("space/mesh_inertia/inertia_tensor", [](bench::State& state) {
@@ -53,8 +52,8 @@ BENCH("space/mesh_inertia/inertia_tensor", [](bench::State& state) {
 BENCH("space/mesh_inertia/inertia_tensor_eigen", [](bench::State& state) {
     runMassProperty(state, [](const Inertia& inertia) {
         Eigen::Matrix3d eigenvectors;
-        vcl::Point3d eigenvalues;
+        vcl::Point3d    eigenvalues;
         inertia.inertiaTensorEigen(eigenvectors, eigenvalues);
-        return std::pair{eigenvectors, eigenvalues};
+        return std::pair {eigenvectors, eigenvalues};
     });
 });

@@ -113,7 +113,7 @@ public:
     }
 
     /**
-    * @brief Returns the signed volume (or mass at unit density) of the mesh.
+     * @brief Returns the signed volume (or mass at unit density) of the mesh.
      * Meaningful only if the mesh is watertight.
      * @return
      */
@@ -162,14 +162,14 @@ public:
     }
 
     /**
-    * @brief Computes the eigendecomposition of the centroidal inertia tensor.
+     * @brief Computes the eigendecomposition of the centroidal inertia tensor.
      *
      * The result is factored as eigenvalues and eigenvectors (as ROWS).
-    * @pre The signed volume is nonzero.
+     * @pre The signed volume is nonzero.
      *
-    * @param[out] eigenVectors Matrix containing the eigenvectors as rows.
-    * @param[out] eigenValues Point containing the eigenvalues in ascending
-    * order.
+     * @param[out] eigenVectors Matrix containing the eigenvectors as rows.
+     * @param[out] eigenValues Point containing the eigenvalues in ascending
+     * order.
      */
     template<typename Matrix33>
     void inertiaTensorEigen(
@@ -185,7 +185,7 @@ public:
         for (uint i = 0; i < 3; i++)
             for (uint j = 0; j < 3; j++)
                 eigenVectors(i, j) = c_vec(i, j);
-            eigenValues = Point3<ScalarType>(c_val.template cast<ScalarType>());
+        eigenValues = Point3<ScalarType>(c_val.template cast<ScalarType>());
     }
 
 private:
@@ -195,8 +195,8 @@ private:
 
     void faceIntegrals(FaceConcept auto&& f, const Point3d& n)
     {
-        double     w;
-        double     k1, k2, k3, k4;
+        double w;
+        double k1, k2, k3, k4;
 
         projectionIntegrals(f);
 
