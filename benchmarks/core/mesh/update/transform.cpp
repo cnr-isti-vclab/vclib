@@ -46,8 +46,10 @@ vcl::Matrix44d createSampleTransformMatrix()
 
 } // namespace
 
-BENCH("update/transform/apply_transform_matrix", [](bench::State& s) {
-    const vcl::Matrix44d mat = createSampleTransformMatrix();
-    bench::Mesh          m   = s.copyMesh();
-    s.run([&]() { vcl::applyTransformMatrix(m, mat, true); });
-});
+BENCH(
+    "update/transform/apply_transform_matrix",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const vcl::Matrix44d mat = createSampleTransformMatrix();
+        Mesh                 m   = s.copyMesh();
+        s.run([&]() { vcl::applyTransformMatrix(m, mat, true); });
+    });

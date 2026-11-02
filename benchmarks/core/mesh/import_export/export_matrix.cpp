@@ -13,16 +13,16 @@
 
 BENCH(
     "import_export/export_matrix/vertex_positions_matrix",
-    [](bench::State& s) {
-        const bench::Mesh& m = s.mesh();
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
         s.run(
             [&]() { return vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(m); });
     });
 
 BENCH(
     "import_export/export_matrix/face_vertex_indices_matrix",
-    [](bench::State& s) {
-        const bench::Mesh& m = s.mesh();
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
         s.run([&]() {
             return vcl::faceVertexIndicesMatrix<Eigen::MatrixX3i>(m);
         });

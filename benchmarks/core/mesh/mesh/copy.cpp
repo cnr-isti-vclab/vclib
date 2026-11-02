@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-BENCH("mesh/copy", [](bench::State& s) {
-    const bench::Mesh& m = s.mesh();
-    s.run([&]() { return bench::Mesh(m); });
+BENCH("mesh/copy", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
+    s.run([&]() { return Mesh(m); });
 });

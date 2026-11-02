@@ -9,7 +9,7 @@
 
 #include <vclib/algorithms/mesh/stat/geometry.h>
 
-BENCH("stat/geometry/surface_area", [](bench::State& s) {
-    const bench::Mesh& m = s.mesh();
+BENCH("stat/geometry/surface_area", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
     s.run([&]() { return vcl::surfaceArea(m); });
 });

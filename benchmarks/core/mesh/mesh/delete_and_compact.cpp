@@ -9,7 +9,8 @@
 
 namespace {
 
-void deleteQuarterOfFaces(bench::Mesh& m)
+template<typename Mesh>
+void deleteQuarterOfFaces(Mesh& m)
 {
     for (vcl::uint i = 0; i < m.faceContainerSize(); i += 4) {
         m.deleteFace(i);
@@ -18,16 +19,16 @@ void deleteQuarterOfFaces(bench::Mesh& m)
 
 } // namespace
 
-BENCH("mesh/delete_faces_25_percent", [](bench::State& s) {
-    const bench::Mesh& base = s.mesh();
-    bench::Mesh        m    = s.copyMesh();
+BENCH("mesh/delete_faces_25_percent", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& base = s.mesh();
+    Mesh        m    = s.copyMesh();
 
     s.run([&]() { m = base; }, [&]() { deleteQuarterOfFaces(m); });
 });
 
-BENCH("mesh/compact_after_deletion", [](bench::State& s) {
-    const bench::Mesh& base = s.mesh();
-    bench::Mesh        m    = s.copyMesh();
+BENCH("mesh/compact_after_deletion", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& base = s.mesh();
+    Mesh        m    = s.copyMesh();
 
     s.run(
         [&]() {

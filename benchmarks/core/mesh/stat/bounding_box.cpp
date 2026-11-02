@@ -9,7 +9,9 @@
 
 #include <vclib/algorithms/mesh/stat/bounding_box.h>
 
-BENCH("stat/bounding_box/bounding_box", [](bench::State& s) {
-    const bench::Mesh& m = s.mesh();
-    s.run([&]() { return vcl::boundingBox(m); });
-});
+BENCH(
+    "stat/bounding_box/bounding_box",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
+        s.run([&]() { return vcl::boundingBox(m); });
+    });

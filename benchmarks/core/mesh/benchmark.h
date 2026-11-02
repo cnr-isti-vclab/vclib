@@ -35,14 +35,17 @@
  * function that receives a State:
  *
  * @code{.cpp}
- * BENCH("stat/bounding_box/bounding_box", [](bench::State& s) {
- *     const bench::Mesh& m = s.mesh();
- *     s.run([&]() { return vcl::boundingBox(m); });
- * });
+ * BENCH("stat/bounding_box/bounding_box",
+ *     []<typename Mesh>(bench::State<Mesh>& s) {
+ *         const Mesh& m = s.mesh();
+ *         s.run([&]() { return vcl::boundingBox(m); });
+ *     });
  * @endcode
  *
  * The State gives access to the dataset and to some prepared meshes (that are
  * not part of the measurement), and measures the function given to run().
+ * Each generic benchmark is registered for every mesh type in types.h. The
+ * executable selects the typed registry before running any measurements.
  */
 
 namespace bench {
@@ -51,6 +54,7 @@ namespace bench {
  * @brief The dataset of the benchmarks and some meshes derived from it, that
  * are created only when requested.
  */
+template<typename Mesh>
 class Context
 {
     Mesh        mMesh;
@@ -106,17 +110,18 @@ public:
  * @brief The state of a running benchmark: it allows to access the dataset and
  * to measure the function to benchmark.
  */
+template<typename Mesh>
 class State
 {
     BenchmarkRunner& mRunner;
-    Context&         mContext;
+    Context<Mesh>&   mContext;
     std::string      mName;
     int              mIterations;
 
 public:
     State(
         BenchmarkRunner& runner,
-        Context&         context,
+        Context<Mesh>&   context,
         std::string      name,
         int              iterations) :
             mRunner(runner), mContext(context), mName(std::move(name)),
@@ -165,14 +170,19 @@ public:
     }
 };
 
-using Registry = BenchmarkRegistry<State>;
+template<typename Mesh>
+using Registry = BenchmarkRegistry<State<Mesh>>;
 
 class Registrar
 {
 public:
-    Registrar(std::string name, Registry::Func func, bool slow = false)
+    template<typename Func>
+    Registrar(std::string name, Func func, bool slow = false)
     {
-        Registry::instance().add(std::move(name), std::move(func), slow);
+        forEachMeshType([&](auto type, std::string_view) {
+            using Mesh = typename decltype(type)::type;
+            Registry<Mesh>::instance().add(name, func, slow);
+        });
     }
 };
 
@@ -181,7 +191,7 @@ public:
 #define BENCH_CONCAT_IMPL(a, b) a##b
 #define BENCH_CONCAT(a, b)      BENCH_CONCAT_IMPL(a, b)
 
-/// Registers a benchmark: BENCH(name, [](bench::State& s) { ... });
+/// Registers a benchmark for all supported mesh types using a generic lambda.
 #define BENCH(NAME, ...)                                                  \
     static const bench::Registrar BENCH_CONCAT(benchRegistrar, __LINE__)( \
         NAME, __VA_ARGS__)

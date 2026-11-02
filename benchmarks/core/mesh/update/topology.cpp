@@ -15,51 +15,60 @@
 
 namespace {
 
-bench::Mesh meshWithTopologyComponents(const bench::State& s)
+template<typename Mesh>
+Mesh meshWithTopologyComponents(const bench::State<Mesh>& s)
 {
-    bench::Mesh m = s.copyMesh();
+    Mesh m = s.copyMesh();
     bench::enableTopologyComponents(m);
     return m;
 }
 
 } // namespace
 
-BENCH("update/topology/update_per_vertex_adjacent_faces", [](bench::State& s) {
-    bench::Mesh m = meshWithTopologyComponents(s);
-    s.run([&]() { vcl::updatePerVertexAdjacentFaces(m); });
-});
+BENCH(
+    "update/topology/update_per_vertex_adjacent_faces",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
+        s.run([&]() { vcl::updatePerVertexAdjacentFaces(m); });
+    });
 
 BENCH(
     "update/topology/update_per_vertex_adjacent_vertices",
-    [](bench::State& s) {
-        bench::Mesh m = meshWithTopologyComponents(s);
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
         s.run([&]() { vcl::updatePerVertexAdjacentVertices(m); });
     });
 
-BENCH("update/topology/update_per_face_adjacent_faces", [](bench::State& s) {
-    bench::Mesh m = meshWithTopologyComponents(s);
-    s.run([&]() { vcl::updatePerFaceAdjacentFaces(m); });
-});
+BENCH(
+    "update/topology/update_per_face_adjacent_faces",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
+        s.run([&]() { vcl::updatePerFaceAdjacentFaces(m); });
+    });
 
-BENCH("update/topology/clear_per_vertex_adjacent_faces", [](bench::State& s) {
-    bench::Mesh m = meshWithTopologyComponents(s);
-    s.run(
-        [&]() { vcl::updatePerVertexAdjacentFaces(m); },
-        [&]() { vcl::clearPerVertexAdjacentFaces(m); });
-});
+BENCH(
+    "update/topology/clear_per_vertex_adjacent_faces",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
+        s.run(
+            [&]() { vcl::updatePerVertexAdjacentFaces(m); },
+            [&]() { vcl::clearPerVertexAdjacentFaces(m); });
+    });
 
 BENCH(
     "update/topology/clear_per_vertex_adjacent_vertices",
-    [](bench::State& s) {
-        bench::Mesh m = meshWithTopologyComponents(s);
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
         s.run(
             [&]() { vcl::updatePerVertexAdjacentVertices(m); },
             [&]() { vcl::clearPerVertexAdjacentVertices(m); });
     });
 
-BENCH("update/topology/clear_per_face_adjacent_faces", [](bench::State& s) {
-    bench::Mesh m = meshWithTopologyComponents(s);
-    s.run(
-        [&]() { vcl::updatePerFaceAdjacentFaces(m); },
-        [&]() { vcl::clearPerFaceAdjacentFaces(m); });
-});
+BENCH(
+    "update/topology/clear_per_face_adjacent_faces",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = meshWithTopologyComponents(s);
+        s.run(
+            [&]() { vcl::updatePerFaceAdjacentFaces(m); },
+            [&]() { vcl::clearPerFaceAdjacentFaces(m); });
+    });

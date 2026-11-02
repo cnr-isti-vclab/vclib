@@ -8,7 +8,9 @@
 #ifndef VCL_BENCHMARKS_CLI_OPTIONS_H
 #define VCL_BENCHMARKS_CLI_OPTIONS_H
 
+#include <map>
 #include <print>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -30,7 +32,10 @@ struct CommonOptions
     std::vector<std::string> extraArgs;
 };
 
-inline CommonOptions parseCommonOptions(int argc, char** argv)
+inline CommonOptions parseCommonOptions(
+    int                              argc,
+    char**                           argv,
+    const std::map<std::string, int>& extraOptionArities = {})
 {
     CommonOptions opts;
 
@@ -69,8 +74,23 @@ inline CommonOptions parseCommonOptions(int argc, char** argv)
         }
         else {
             opts.extraArgs.push_back(arg);
-            while (i + 1 < argc && !std::string(argv[i + 1]).starts_with("-")) {
-                opts.extraArgs.push_back(argv[++i]);
+            if (const auto it = extraOptionArities.find(arg);
+                it != extraOptionArities.end()) {
+                for (int n = 0; n < it->second; ++n) {
+                    if (i + 1 >= argc ||
+                        std::string(argv[i + 1]).starts_with("-")) {
+                        throw std::invalid_argument(
+                            arg + " requires " + std::to_string(it->second) +
+                            " argument(s)");
+                    }
+                    opts.extraArgs.push_back(argv[++i]);
+                }
+            }
+            else {
+                while (i + 1 < argc &&
+                       !std::string(argv[i + 1]).starts_with("-")) {
+                    opts.extraArgs.push_back(argv[++i]);
+                }
             }
         }
     }

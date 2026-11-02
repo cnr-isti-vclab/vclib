@@ -83,6 +83,17 @@ def split_group(name: str):
     return "", name
 
 
+def require_mesh_type(report: dict, requested: str, label: str):
+    actual = report.get("metadata", {}).get("mesh_type")
+    if actual != requested:
+        sys.exit(
+            f"Mesh type mismatch for {label}: requested '{requested}', "
+            f"reported '{actual if actual is not None else 'missing'}'. "
+            "Make sure the executable supports --mesh-type and reports it "
+            "in metadata.mesh_type."
+        )
+
+
 def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: str = None, use_color: bool = True):
     name_a = label_a or data_a.get("version") or "A"
     name_b = label_b or data_b.get("version") or "B"
@@ -96,10 +107,24 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
 
     # Metadata summary
     meta_a = data_a.get("metadata", {})
-    meta_str = ""
-    if meta_a:
-        meta_items = [f"{k}: {v:,}" if isinstance(v, (int, float)) else f"{k}: {v}" for k, v in meta_a.items()]
-        meta_str = f" ({', '.join(meta_items)})"
+    meta_b = data_b.get("metadata", {})
+
+    def format_metadata(metadata):
+        return ", ".join(
+            f"{k}: {v:,}" if isinstance(v, (int, float)) else f"{k}: {v}"
+            for k, v in metadata.items()
+        )
+
+    dataset_line = f"Dataset: {dataset_str}"
+    metadata_lines = []
+    if meta_a == meta_b:
+        if meta_a:
+            dataset_line += f" ({format_metadata(meta_a)})"
+    else:
+        metadata_lines = [
+            f"Metadata ({name_a}): {format_metadata(meta_a)}",
+            f"Metadata ({name_b}): {format_metadata(meta_b)}",
+        ]
 
     headers = [
         "Benchmark Name",
@@ -165,8 +190,12 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
             widths[i] = max(widths[i], visible_len(cell))
 
     title = f"VCLib Benchmark Comparison: {name_a} vs {name_b}"
-    dataset_line = f"Dataset: {dataset_str}{meta_str}"
-    total = max(sum(widths) + 2 * (len(widths) - 1), len(title), len(dataset_line))
+    total = max(
+        sum(widths) + 2 * (len(widths) - 1),
+        len(title),
+        len(dataset_line),
+        *(len(line) for line in metadata_lines),
+    )
 
     def format_row(row):
         cells = [pad(row[0], widths[0], left=True)]
@@ -176,6 +205,8 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
     print("=" * total)
     print(title)
     print(dataset_line)
+    for line in metadata_lines:
+        print(line)
     print("=" * total)
     print(format_row(headers))
     print("-" * total)
@@ -204,6 +235,7 @@ def main():
     parser.add_argument("--bin-a", help="Path to first benchmark executable")
     parser.add_argument("--bin-b", help="Path to second benchmark executable")
     parser.add_argument("--args", default="", help="Additional arguments forwarded to both benchmark binaries")
+    parser.add_argument("--mesh-type", help="Mesh representation forwarded to both binaries (and verified in their reports)")
     parser.add_argument("--label-a", help="Custom label for report/binary A")
     parser.add_argument("--label-b", help="Custom label for report/binary B")
     parser.add_argument("--iterations", type=int, default=5, help="Number of benchmark iterations")
@@ -221,6 +253,18 @@ def main():
 
         try:
             extra = shlex.split(args.args)
+            if args.mesh_type is not None:
+                extra += ["--mesh-type", args.mesh_type]
+            forwarded_parser = argparse.ArgumentParser(
+                add_help=False, allow_abbrev=False
+            )
+            forwarded_parser.add_argument("--mesh-type")
+            forwarded_parser.add_argument("--config")
+            forwarded, _ = forwarded_parser.parse_known_args(extra)
+            mesh_type = forwarded.mesh_type
+            if mesh_type is None and forwarded.config:
+                with open(forwarded.config) as f:
+                    mesh_type = json.load(f).get("mesh_type")
             cmd_a = [args.bin_a, "--json", path_a, "--iterations", str(args.iterations)] + extra
             cmd_b = [args.bin_b, "--json", path_b, "--iterations", str(args.iterations)] + extra
 
@@ -238,6 +282,10 @@ def main():
             with open(path_b, "r") as fb:
                 data_b = json.load(fb)
 
+            if mesh_type is not None:
+                require_mesh_type(data_a, mesh_type, label_a)
+                require_mesh_type(data_b, mesh_type, label_b)
+
             print("\n")
             compare_reports(data_a, data_b, label_a=args.label_a, label_b=args.label_b, use_color=use_color)
         finally:
@@ -249,6 +297,8 @@ def main():
 
     # Mode 2: Compare two existing JSON report files
     if args.report_a and args.report_b:
+        if args.mesh_type is not None:
+            parser.error("--mesh-type requires --bin-a and --bin-b")
         with open(args.report_a, "r") as fa:
             data_a = json.load(fa)
         with open(args.report_b, "r") as fb:

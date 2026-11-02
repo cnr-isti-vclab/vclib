@@ -21,31 +21,13 @@
 
 namespace fs = std::filesystem;
 
-int main(int argc, char** argv)
+template<typename Mesh>
+int runBenchmarks(
+    const bench::CommonOptions& opts,
+    const nlohmann::json&        config,
+    std::string_view            meshType)
 {
-    auto opts = bench::parseCommonOptions(argc, argv);
-
-    if (opts.helpRequested) {
-        bench::printCommonHelp(
-            argv[0],
-            "VCLib Core Mesh Benchmark",
-            "[mesh_path] [--grid <rows> <cols>]");
-        std::println("Mesh Specific Options:");
-        std::println(
-            "  --grid <rows> <cols>  Generate a synthetic triangulated grid");
-        return 0;
-    }
-
-    nlohmann::json config;
-    try {
-        config = bench::loadConfig(opts);
-    }
-    catch (const std::exception& e) {
-        std::println(stderr, "Error loading the configuration: {}", e.what());
-        return 1;
-    }
-
-    const auto& registry = bench::Registry::instance();
+    const auto& registry = bench::Registry<Mesh>::instance();
     const auto  selected = registry.select(bench::makeFilter(opts));
 
     if (opts.listOnly) {
@@ -95,7 +77,7 @@ int main(int argc, char** argv)
     }
 
     std::string datasetName;
-    bench::Mesh mesh;
+    Mesh        mesh;
 
     try {
         if (meshPath.empty()) {
@@ -107,7 +89,7 @@ int main(int argc, char** argv)
         else {
             datasetName = fs::path(meshPath).filename().string();
             std::println("Loading mesh from: {}", meshPath);
-            mesh = vcl::loadMesh<bench::Mesh>(meshPath);
+            mesh = vcl::loadMesh<Mesh>(meshPath);
         }
     }
     catch (const std::exception& e) {
@@ -116,12 +98,14 @@ int main(int argc, char** argv)
     }
 
     nlohmann::json metadata = {
-        {"vertices", mesh.vertexCount()},
-        {"faces",    mesh.faceCount()  }
+        {"mesh_type", meshType          },
+        {"vertices",  mesh.vertexCount()},
+        {"faces",     mesh.faceCount()  }
     };
 
     std::println("==================================================");
     std::println("VCLib Mesh Benchmark [Version: V1 (Baseline)]");
+    std::println("Mesh type: {}", meshType);
     std::println(
         "Dataset: {} ({} vertices, {} faces)",
         datasetName,
@@ -136,10 +120,10 @@ int main(int argc, char** argv)
 
     bench::BenchmarkRunner runner(
         "v1", datasetName, metadata, opts.iterations, opts.warmup);
-    bench::Context context(std::move(mesh), datasetName, meshPath);
+    bench::Context<Mesh> context(std::move(mesh), datasetName, meshPath);
 
     for (const auto* entry : selected) {
-        bench::State state(runner, context, entry->name, opts.iterations);
+        bench::State<Mesh> state(runner, context, entry->name, opts.iterations);
         entry->func(state);
     }
 
@@ -151,4 +135,73 @@ int main(int argc, char** argv)
     }
 
     return 0;
+}
+
+int main(int argc, char** argv)
+{
+    try {
+        auto opts = bench::parseCommonOptions(
+            argc, argv, {{"--grid", 2}, {"--mesh-type", 1}});
+
+        std::string supportedTypes;
+        bench::forEachMeshType([&](auto, std::string_view name) {
+            if (!supportedTypes.empty())
+                supportedTypes += ", ";
+            supportedTypes += name;
+        });
+
+        if (opts.helpRequested) {
+            bench::printCommonHelp(
+                argv[0],
+                "VCLib Core Mesh Benchmark",
+                "[mesh_path] [--grid <rows> <cols>] [--mesh-type <type>]");
+            std::println("Mesh Specific Options:");
+            std::println(
+                "  --grid <rows> <cols>  Generate a synthetic triangulated "
+                "grid");
+            std::println(
+                "  --mesh-type <type>   Mesh representation (default: "
+                "trimesh)");
+            std::println(
+                "                       Supported: {}", supportedTypes);
+            std::println(
+                "                       Config key: \"mesh_type\"; CLI takes "
+                "precedence");
+            return 0;
+        }
+
+        const auto  config = bench::loadConfig(opts);
+        std::string meshType;
+        bool        meshTypeSet = false;
+        for (size_t i = 0; i < opts.extraArgs.size(); ++i) {
+            if (opts.extraArgs[i] == "--mesh-type") {
+                meshType = opts.extraArgs[++i];
+                meshTypeSet = true;
+            }
+        }
+        if (!meshTypeSet)
+            meshType = config.value("mesh_type", std::string("trimesh"));
+
+        bool matched = false;
+        int  result  = 1;
+        bench::forEachMeshType([&](auto type, std::string_view name) {
+            if (meshType == name) {
+                matched = true;
+                result = runBenchmarks<typename decltype(type)::type>(
+                    opts, config, name);
+            }
+        });
+        if (!matched) {
+            std::println(
+                stderr,
+                "Unknown mesh type '{}'. Supported types: {}",
+                meshType,
+                supportedTypes);
+        }
+        return result;
+    }
+    catch (const std::exception& e) {
+        std::println(stderr, "Error: {}", e.what());
+        return 1;
+    }
 }

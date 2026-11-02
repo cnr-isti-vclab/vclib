@@ -12,11 +12,13 @@
 
 #include <Eigen/Core>
 
-BENCH("import_export/import_matrix/mesh_from_matrices", [](bench::State& s) {
-    const Eigen::MatrixX3d V =
-        vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(s.mesh());
-    const Eigen::MatrixX3i F =
-        vcl::faceVertexIndicesMatrix<Eigen::MatrixX3i>(s.mesh());
+BENCH(
+    "import_export/import_matrix/mesh_from_matrices",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Eigen::MatrixX3d V =
+            vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(s.mesh());
+        const Eigen::MatrixX3i F =
+            vcl::faceVertexIndicesMatrix<Eigen::MatrixX3i>(s.mesh());
 
-    s.run([&]() { return vcl::meshFromMatrices<bench::Mesh>(V, F); });
-});
+        s.run([&]() { return vcl::meshFromMatrices<Mesh>(V, F); });
+    });

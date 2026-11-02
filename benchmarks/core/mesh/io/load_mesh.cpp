@@ -10,10 +10,10 @@
 #include <vclib/io.h>
 
 // The loading includes the time spent reading the file.
-BENCH("io/load_mesh", [](bench::State& s) {
+BENCH("io/load_mesh", []<typename Mesh>(bench::State<Mesh>& s) {
     if (s.meshPath().empty())
         return s.skip("the dataset is not a file");
 
     const std::string& path = s.meshPath();
-    s.run([&]() { return vcl::loadMesh<bench::Mesh>(path); });
+    s.run([&]() { return vcl::loadMesh<Mesh>(path); });
 });

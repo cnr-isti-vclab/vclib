@@ -10,9 +10,23 @@
 
 #include <vclib/meshes/tri_mesh.h>
 
+#include <string_view>
+#include <type_traits>
+
 namespace bench {
 
-using Mesh = vcl::TriMesh;
+template<typename Func>
+void forEachMeshType(Func&& func)
+{
+    func(std::type_identity<vcl::TriMesh> {}, std::string_view("trimesh"));
+    func(std::type_identity<vcl::TriMeshf> {}, std::string_view("trimeshf"));
+    func(
+        std::type_identity<vcl::TriMeshIndexed> {},
+        std::string_view("trimesh-indexed"));
+    func(
+        std::type_identity<vcl::TriMeshIndexedf> {},
+        std::string_view("trimesh-indexedf"));
+}
 
 } // namespace bench
 

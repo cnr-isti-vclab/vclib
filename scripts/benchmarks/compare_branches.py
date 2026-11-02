@@ -16,11 +16,13 @@ Examples:
     python scripts/benchmarks/compare_branches.py main --grid 2000 2000 -n 20
     python scripts/benchmarks/compare_branches.py main --filter 'stat/*'
     python scripts/benchmarks/compare_branches.py main --config my_bench.json
+    python scripts/benchmarks/compare_branches.py main --mesh-type trimesh-indexed
 
-The benchmarks to run can be selected with --filter/--exclude/--config (see the
---help of the benchmark executable): the options are forwarded to both
-executables. The branches must contain the benchmark selection options,
-otherwise the executable ignores them and runs all the benchmarks.
+The benchmark selection and --mesh-type options are forwarded to both
+executables. Mesh types: trimesh (default), trimeshf, trimesh-indexed and
+trimesh-indexedf. The config key "mesh_type" is used unless --mesh-type is given.
+When a mesh type is requested, both reports must confirm it; older executables
+that silently ignore the option are rejected.
 """
 
 import argparse
@@ -32,6 +34,8 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+from compare import require_mesh_type
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
@@ -114,7 +118,9 @@ def find_binary(source_dir: Path) -> Path:
     sys.exit(f"Benchmark executable not found in {base}")
 
 
-def run_benchmark(binary: Path, dataset_args, iterations, json_path, cpu):
+def run_benchmark(
+    binary: Path, dataset_args, iterations, json_path, cpu, mesh_type=None
+):
     cmd = [binary, *dataset_args, "--json", json_path]
     if iterations is not None:
         cmd += ["--iterations", iterations]
@@ -132,6 +138,9 @@ def run_benchmark(binary: Path, dataset_args, iterations, json_path, cpu):
             f"the filters and that their sources are enabled in "
             f"benchmarks/core/mesh/CMakeLists.txt."
         )
+    if mesh_type is not None:
+        with open(json_path) as f:
+            require_mesh_type(json.load(f), mesh_type, str(binary))
 
 
 def main():
@@ -149,6 +158,11 @@ def main():
         metavar=("ROWS", "COLS"),
         help="Size of the synthetic grid used when --mesh is not given "
         "(default: 1000 1000)",
+    )
+    parser.add_argument(
+        "--mesh-type",
+        help="Mesh representation used by both binaries (default: config "
+        "mesh_type, or trimesh). Both reports must confirm the requested type.",
     )
     parser.add_argument(
         "--filter",
@@ -198,6 +212,7 @@ def main():
 
     config_has_dataset = False
     config_path = None
+    mesh_type = args.mesh_type
     if args.config:
         config_path = Path(args.config).resolve()
         if not config_path.is_file():
@@ -205,6 +220,8 @@ def main():
         with open(config_path) as f:
             config = json.load(f)
         config_has_dataset = "mesh" in config or "grid" in config
+        if mesh_type is None:
+            mesh_type = config.get("mesh_type")
         if args.iterations is None and "iterations" not in config:
             args.iterations = 10
     elif args.iterations is None:
@@ -230,6 +247,8 @@ def main():
         dataset_args.append("--include-slow")
     if config_path:
         dataset_args += ["--config", config_path]
+    if args.mesh_type is not None:
+        dataset_args += ["--mesh-type", args.mesh_type]
 
     this_name = current_branch_name()
     other_name = args.branch
@@ -259,7 +278,9 @@ def main():
         (this_name, bin_this, json_this),
     ):
         print(f"\n>>> Running benchmark [{label}]")
-        run_benchmark(binary, dataset_args, args.iterations, json_path, args.cpu)
+        run_benchmark(
+            binary, dataset_args, args.iterations, json_path, args.cpu, mesh_type
+        )
 
     print("\n>>> Comparison\n")
     compare_cmd = [

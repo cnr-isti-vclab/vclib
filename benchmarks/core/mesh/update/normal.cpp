@@ -9,34 +9,38 @@
 
 #include <vclib/algorithms/mesh/update/normal.h>
 
-BENCH("update/normal/update_per_face_normals", [](bench::State& s) {
-    bench::Mesh m = s.copyMesh();
-    s.run([&]() { vcl::updatePerFaceNormals(m); });
-});
+BENCH(
+    "update/normal/update_per_face_normals",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = s.copyMesh();
+        s.run([&]() { vcl::updatePerFaceNormals(m); });
+    });
 
-BENCH("update/normal/update_per_vertex_normals", [](bench::State& s) {
-    bench::Mesh m = s.copyMesh();
-    s.run([&]() { vcl::updatePerVertexNormals(m); });
-});
+BENCH(
+    "update/normal/update_per_vertex_normals",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = s.copyMesh();
+        s.run([&]() { vcl::updatePerVertexNormals(m); });
+    });
 
 BENCH(
     "update/normal/update_per_vertex_normals_from_face_normals",
-    [](bench::State& s) {
-        bench::Mesh m = s.copyMesh();
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = s.copyMesh();
         vcl::updatePerFaceNormals(m);
         s.run([&]() { vcl::updatePerVertexNormalsFromFaceNormals(m); });
     });
 
 BENCH(
     "update/normal/update_per_vertex_normals_angle_weighted",
-    [](bench::State& s) {
-        bench::Mesh m = s.copyMesh();
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = s.copyMesh();
         s.run([&]() { vcl::updatePerVertexNormalsAngleWeighted(m); });
     });
 
 BENCH(
     "update/normal/update_per_vertex_normals_nelson_max_weighted",
-    [](bench::State& s) {
-        bench::Mesh m = s.copyMesh();
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        Mesh m = s.copyMesh();
         s.run([&]() { vcl::updatePerVertexNormalsNelsonMaxWeighted(m); });
     });

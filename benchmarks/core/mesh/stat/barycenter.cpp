@@ -9,7 +9,7 @@
 
 #include <vclib/algorithms/mesh/stat/barycenter.h>
 
-BENCH("stat/barycenter/barycenter", [](bench::State& s) {
-    const bench::Mesh& m = s.mesh();
+BENCH("stat/barycenter/barycenter", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
     s.run([&]() { return vcl::barycenter(m); });
 });
