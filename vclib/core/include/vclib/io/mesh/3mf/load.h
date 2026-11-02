@@ -120,9 +120,8 @@ TextureDescriptor::WrapMode inline eTextureTileStyleToVclWrapMode(
     case Lib3MF::eTextureTileStyle::Mirror:
         return TextureDescriptor::WrapMode::MIRRORED_REPEAT;
     case Lib3MF::eTextureTileStyle::Clamp:
-        return TextureDescriptor::WrapMode::CLAMP_TO_EDGE;
     case Lib3MF::eTextureTileStyle::NoTileStyle:
-        return TextureDescriptor::WrapMode::REPEAT;
+        return TextureDescriptor::WrapMode::CLAMP_TO_EDGE;
     }
 
     throw MalformedFileException("Invalid 3mf wrapping mode");
