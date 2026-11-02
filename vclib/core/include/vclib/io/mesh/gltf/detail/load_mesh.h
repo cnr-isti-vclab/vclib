@@ -318,8 +318,6 @@ int loadGltfPrimitiveMaterial(
             mat.occlusionStrength()    = occlusionStrength;
             mat.specularFactor()       = specularFactor;
             mat.specularColor()        = specularColor;
-            mat.anisotropyStrength()   = anisotropyStrength;
-            mat.anisotropyRotation()   = anisotropyRotation;
             mat.emissiveStrength()     = emissiveStrength;
             mat.clearcoatFactor()      = clearcoatFactor;
             mat.clearcoatRoughness()   = clearcoatRoughness;
