@@ -91,7 +91,7 @@ template<VclTextureFilter TextureFilterType>
 TextureFilterType eTextureFilterToVclFilter(const Lib3MF::eTextureFilter& tf)
 {
     switch (tf) {
-    case Lib3MF::eTextureFilter::Auto: return TextureFilterType::NONE;
+    case Lib3MF::eTextureFilter::Auto:
     case Lib3MF::eTextureFilter::Linear: return TextureFilterType::LINEAR;
     case Lib3MF::eTextureFilter::Nearest: return TextureFilterType::NEAREST;
     }
@@ -164,11 +164,13 @@ int read3mfTexture(
 
     texture.path() = uri;
     texture.minFilter() =
-        eTextureFilterToVclFilter<TextureDescriptor::MinificationFilter>(
-            textureProperty->GetFilter());
+        textureFilter == Lib3MF::eTextureFilter::Auto ?
+            TextureDescriptor::MinificationFilter::LINEAR_MIPMAP_LINEAR :
+            eTextureFilterToVclFilter<TextureDescriptor::MinificationFilter>(
+                textureFilter);
     texture.magFilter() =
         eTextureFilterToVclFilter<TextureDescriptor::MagnificationFilter>(
-            textureProperty->GetFilter());
+            textureFilter);
     texture.wrapU() = eTextureTileStyleToVclWrapMode(wrapU);
     texture.wrapV() = eTextureTileStyleToVclWrapMode(wrapV);
 
