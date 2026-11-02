@@ -830,51 +830,50 @@ private:
             mMaterialTextures.at(path) = std::move(tex);
         };
 
-        auto loadImageAndSetTexture = [&](const std::pair<std::string, uint>&
-                                              pathPair) {
-            const std::string& path = pathPair.first;
+        auto loadImageAndSetTexture =
+            [&](const std::pair<std::string, uint>& pathPair) {
+                const std::string& path = pathPair.first;
 
-            uint materialId  = pathPair.second / N_TEXTURE_TYPES;
-            uint textureType = pathPair.second % N_TEXTURE_TYPES;
-            // copy the image because it could be not loaded,
-            // and at the end it needs to be mirrored.
-            vcl::Image txtImg = mesh.textureImage(path);
-            if (txtImg.isNull()) { // try to load it just for rendering
-                try {
-                    txtImg = vcl::loadImage(mesh.meshBasePath() + path);
-                    txtImg.colorSpace() = Material::textureTypeToColorSpace(
-                        static_cast<Material::TextureType>(textureType));
+                uint materialId  = pathPair.second / N_TEXTURE_TYPES;
+                uint textureType = pathPair.second % N_TEXTURE_TYPES;
+                // copy the image because it could be not loaded,
+                // and at the end it needs to be mirrored.
+                vcl::Image txtImg = mesh.textureImage(path);
+                if (txtImg.isNull()) { // try to load it just for rendering
+                    try {
+                        txtImg = vcl::loadImage(mesh.meshBasePath() + path);
+                        txtImg.colorSpace() = Material::textureTypeToColorSpace(
+                            static_cast<Material::TextureType>(textureType));
+                    }
+                    catch (...) {
+                        // do nothing
+                    }
+                    if (txtImg.isNull()) {
+                        // still null, use a dummy texture
+                        txtImg = createCheckBoardImage(512);
+                    }
                 }
-                catch (...) {
-                    // do nothing
+
+                // if loading succeeded (or dummy texture has been created)
+                if (!txtImg.isNull()) {
+                    const TextureDescriptor& tex =
+                        mesh.material(materialId)
+                            .textureDescriptor(textureType);
+                    using enum TextureDescriptor::MinificationFilter;
+
+                    TextureDescriptor::MinificationFilter minFilter =
+                        tex.minFilter();
+
+                    bool hasMips =
+                        minFilter >= NEAREST_MIPMAP_NEAREST ||
+                        minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
+
+                    txtImg.mirror();
+                    setTexture(txtImg, path, hasMips,
+                        textureType ==
+                            toUnderlying(Material::TextureType::NORMAL));
                 }
-                if (txtImg.isNull()) {
-                    // still null, use a dummy texture
-                    txtImg = createCheckBoardImage(512);
-                }
-            }
-
-            // if loading succeeded (or dummy texture has been created)
-            if (!txtImg.isNull()) {
-                const TextureDescriptor& tex =
-                    mesh.material(materialId).textureDescriptor(textureType);
-                using enum TextureDescriptor::MinificationFilter;
-
-                TextureDescriptor::MinificationFilter minFilter =
-                    tex.minFilter();
-
-                bool hasMips =
-                    minFilter >= NEAREST_MIPMAP_NEAREST ||
-                    minFilter == NONE; // default LINEAR_MIPMAP_LINEAR
-
-                txtImg.mirror();
-                setTexture(
-                    txtImg,
-                    path,
-                    hasMips,
-                    textureType == toUnderlying(Material::TextureType::NORMAL));
-            }
-        };
+            };
 
         mMaterialTextures.clear();
 
