@@ -22,6 +22,7 @@ int main(int argc, char** argv)
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
         ANISOTROPY_ROTATION_TEST,
+        ANISOTROPY_BARN_LAMP,
         CARBON_FIBRE,
         SPECULAR_TEST,
         CLEARCOAT_TEST,
@@ -37,13 +38,14 @@ int main(int argc, char** argv)
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
+        "/gltf/AnisotropyBarnLamp/AnisotropyBarnLamp.gltf",
         "/gltf/CarbonFibre/CarbonFibre.gltf",
         "/gltf/SpecularTest/SpecularTest.gltf",
         "/gltf/ClearCoatTest/ClearCoatTest.gltf",
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = ANISOTROPY_ROTATION_TEST;
+    uint selectedExample = ANISOTROPY_BARN_LAMP;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
@@ -65,7 +67,7 @@ int main(int argc, char** argv)
         "/panoramas/uffizi.ktx",
         "/panoramas/st_peter.exr"};
 
-    uint selectedPanorama = COLOSSEUM_HDR;
+    uint selectedPanorama = PISA_HDR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);

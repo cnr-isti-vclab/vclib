@@ -219,10 +219,10 @@ public:
      * @brief Gets the strength of the ambient occlusion effect.
      * @return A reference to the occlusion strength, in the range [0.0, 1.0].
      */
-     decltype(auto) occlusionStrength(this auto&& self)
-     {
+    decltype(auto) occlusionStrength(this auto&& self)
+    {
         return (self.mOcclusionStrength);
-     }
+    }
 
     /**
      * @brief Gets the anisotropy strength of the material.
