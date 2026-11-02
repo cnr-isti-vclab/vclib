@@ -49,7 +49,11 @@ class MaterialUniforms
         1.0, // clearcoat normal scale
         0.0};
 
-    static inline std::array<float, 4> sAnisotropyPack = {0.0, 0.0, 0.0, 0.0};
+    static inline std::array<float, 4> sAnisotropyPack = {
+        0.0, // anisotropy strength
+        0.0, // anisotropy rotation
+        0.0,
+        0.0};
 
     // specular color (RGB) and specular factor (A)
     static inline std::array<float, 4> sSpecularPack = {1.0, 1.0, 1.0, 1.0};

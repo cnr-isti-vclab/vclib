@@ -13,8 +13,8 @@ uniform vec4 u_FactorsPack;
 uniform vec4 u_alphaPack;
 uniform vec4 u_emissivePack;
 uniform vec4 u_clearcoatPack;
-uniform vec4 u_anisotropyPack;
 uniform vec4 u_specularPack;
+uniform vec4 u_anisotropyPack;
 
 #define u_occlusionStrength u_FactorsPack.r
 #define u_roughnessFactor u_FactorsPack.g
