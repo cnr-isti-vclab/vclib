@@ -18,6 +18,7 @@ set(SOURCES
     io/load_mesh.cpp
     mesh/copy.cpp
     mesh/delete_and_compact.cpp
+    point_sampling.cpp
     space/mesh_inertia.cpp
     stat/barycenter.cpp
     stat/bounding_box.cpp

@@ -182,15 +182,16 @@ auto covarianceMatrixOfMesh(const MeshType& m)
  * the sample is computed so that it linearly maps the quality between
  * diskradius and diskradius*variance
  *
- * @param m
- * @param weights
- * @param diskRadius
- * @param radiusVariance
- * @param invert
- * @return
+ * @param[in] m: Input mesh.
+ * @param[in] weights: A range of scalars having the i-th entry associated to
+ * the vertex having index i. Note: weights.size() == m.vertexContainerSize().
+ * @param[in] diskRadius: Base disk radius.
+ * @param[in] radiusVariance: Variance multiplier for the maximum radius.
+ * @param[in] invert: If true, invert the mapping.
+ * @return A vector of radii having size == m.vertexContainerSize().
  */
-template<typename ScalarType, MeshConcept MeshType>
-std::vector<ScalarType> vertexRadiusFromWeights(
+template<MeshConcept MeshType>
+auto vertexRadiusFromWeights(
     const MeshType& m,
     Range auto&&    weights,
     double          diskRadius,
@@ -198,19 +199,36 @@ std::vector<ScalarType> vertexRadiusFromWeights(
     bool            invert = false)
 {
     using VertexType = MeshType::VertexType;
+    using ScalarType = VertexType::PositionType::ScalarType;
 
-    assert(std::ranges::size(weights) == m.vertexCount());
+    assert(std::ranges::size(weights) == m.vertexContainerSize());
 
     std::vector<ScalarType> radius(m.vertexContainerSize());
-    const auto [min, max] = std::ranges::minmax_element(weights);
+    if (m.vertexCount() == 0) {
+        return radius;
+    }
+
+    auto it = std::ranges::begin(weights);
+    auto activeWeights =
+        m.vertices() | std::views::transform([&](const auto& v) {
+            return it[m.index(v)];
+        });
+    const auto [min, max] = std::ranges::minmax(activeWeights);
 
     double minRad   = diskRadius;
     double maxRad   = diskRadius * radiusVariance;
-    double deltaQ   = *max - *min;
+    double deltaQ   = max - min;
     double deltaRad = maxRad - minRad;
-    for (const auto& [v, w] : std::views::zip(m.vertices(), weights)) {
-        double num         = invert ? (*max - w) : (w - *min);
-        radius[m.index(v)] = minRad + deltaRad * (num / deltaQ);
+
+    for (const auto& v : m.vertices()) {
+        if (deltaQ == 0.0) {
+            radius[m.index(v)] = minRad;
+        }
+        else {
+            auto   w           = it[m.index(v)];
+            double num         = invert ? (max - w) : (w - min);
+            radius[m.index(v)] = minRad + deltaRad * (num / deltaQ);
+        }
     }
 
     return radius;

@@ -384,10 +384,9 @@ auto faceUniformPointSampling(
  * stored in the birthVertices vector.
  *
  * @tparam MeshType: A type that satisfies the MeshConcept
- * @tparam ScalarType: The scalar type used for the weights
  *
  * @param[in] m: The input mesh to sample from.
- * @param[in] weights: A vector of scalars having the i-th entry associated to
+ * @param[in] weights: A range of scalars having the i-th entry associated to
  * the vertex having index i. Note: weights.size() == m.vertexContainerSize().
  * @param[in] nSamples: The number of vertices to sample.
  * @param[out] birthVertices: A vector to store the indices of the vertices that
@@ -400,15 +399,17 @@ auto faceUniformPointSampling(
  *
  * @ingroup point_sampling
  */
-template<MeshConcept MeshType, typename ScalarType>
+template<MeshConcept MeshType>
 auto vertexWeightedPointSampling(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    uint                           nSamples,
-    std::vector<uint>&             birthVertices,
-    RandomConfig                   config = std::monostate())
+    const MeshType&    m,
+    Range auto&&       weights,
+    uint               nSamples,
+    std::vector<uint>& birthVertices,
+    RandomConfig       config = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
+
+    assert(std::ranges::size(weights) == m.vertexContainerSize());
 
     return callWithRandomGenerator(config, [&](std::mt19937& gen) {
         if (nSamples >= m.vertexCount()) {
@@ -421,7 +422,7 @@ auto vertexWeightedPointSampling(
         birthVertices.clear();
 
         std::discrete_distribution<> dist(
-            std::begin(weights), std::end(weights));
+            std::ranges::begin(weights), std::ranges::end(weights));
 
         std::vector<bool> visited(m.vertexContainerSize(), false);
         uint              nVisited = 0;
@@ -448,10 +449,9 @@ auto vertexWeightedPointSampling(
  * vertices are sampled.
  *
  * @tparam MeshType: A type that satisfies the MeshConcept
- * @tparam ScalarType: The scalar type used for the weights
  *
  * @param[in] m: The input mesh to sample from.
- * @param[in] weights: A vector of scalars having the i-th entry associated to
+ * @param[in] weights: A range of scalars having the i-th entry associated to
  * the vertex having index i. Note: weights.size() == m.vertexContainerSize().
  * @param[in] nSamples: The number of vertices to sample.
  * @param[in] config: RandomConfig that determines how to provide the random
@@ -462,12 +462,12 @@ auto vertexWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<MeshConcept MeshType, typename ScalarType>
+template<MeshConcept MeshType>
 auto vertexWeightedPointSampling(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    uint                           nSamples,
-    RandomConfig                   config = std::monostate())
+    const MeshType& m,
+    Range auto&&    weights,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     std::vector<uint> v;
     return vertexWeightedPointSampling(m, weights, nSamples, v, config);
@@ -483,10 +483,9 @@ auto vertexWeightedPointSampling(
  * The sampled point on each face is the face barycenter.
  *
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
- * @tparam ScalarType: The scalar type used for the weights
  *
  * @param[in] m: The mesh to sample from.
- * @param[in] weights: A vector of scalars having the i-th entry associated to
+ * @param[in] weights: A range of scalars having the i-th entry associated to
  * the face having index i. Note: weights.size() == m.faceContainerSize().
  * @param[in] nSamples: The number of samples to take.
  * @param[out] birthFaces: A vector to store the indices of the faces that were
@@ -498,15 +497,17 @@ auto vertexWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<FaceMeshConcept MeshType, typename ScalarType>
+template<FaceMeshConcept MeshType>
 auto faceWeightedPointSampling(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    uint                           nSamples,
-    std::vector<uint>&             birthFaces,
-    RandomConfig                   config = std::monostate())
+    const MeshType&    m,
+    Range auto&&       weights,
+    uint               nSamples,
+    std::vector<uint>& birthFaces,
+    RandomConfig       config = std::monostate())
 {
     using PointType = MeshType::VertexType::PositionType;
+
+    assert(std::ranges::size(weights) == m.faceContainerSize());
 
     return callWithRandomGenerator(config, [&](std::mt19937& gen) {
         if (nSamples >= m.faceCount()) {
@@ -521,7 +522,7 @@ auto faceWeightedPointSampling(
         birthFaces.clear();
 
         std::discrete_distribution<> dist(
-            std::begin(weights), std::end(weights));
+            std::ranges::begin(weights), std::ranges::end(weights));
 
         std::vector<bool> visited(m.faceContainerSize(), false);
         uint              nVisited = 0;
@@ -550,10 +551,9 @@ auto faceWeightedPointSampling(
  * The sampled point on each face is the face barycenter.
  *
  * @tparam MeshType: A type that satisfies the FaceMeshConcept
- * @tparam ScalarType: The scalar type used for the weights
  *
  * @param[in] m: The mesh to sample from.
- * @param[in] weights: A vector of scalars having the i-th entry associated to
+ * @param[in] weights: A range of scalars having the i-th entry associated to
  * the face having index i. Note: weights.size() == m.faceContainerSize().
  * @param[in] nSamples: The number of samples to take.
  * @param[in] config: RandomConfig that determines how to provide the random
@@ -563,12 +563,12 @@ auto faceWeightedPointSampling(
  *
  * @ingroup point_sampling
  */
-template<FaceMeshConcept MeshType, typename ScalarType>
+template<FaceMeshConcept MeshType>
 auto faceWeightedPointSampling(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    uint                           nSamples,
-    RandomConfig                   config = std::monostate())
+    const MeshType& m,
+    Range auto&&    weights,
+    uint            nSamples,
+    RandomConfig    config = std::monostate())
 {
     std::vector<uint> v;
     return faceWeightedPointSampling(m, weights, nSamples, v, config);
@@ -660,7 +660,7 @@ auto vertexAreaWeightedPointSampling(
     RandomConfig    config = std::monostate())
 {
     using VertexType = MeshType::VertexType;
-    using ScalarType = VertexType::ScalarType;
+    using ScalarType = VertexType::PositionType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
     std::vector<ScalarType> weights(m.vertexContainerSize(), 0);
@@ -909,22 +909,43 @@ auto montecarloPoissonPointSampling(
     });
 }
 
-template<FaceMeshConcept MeshType, typename ScalarType>
+/**
+ * @brief Samples points on the faces of the mesh using a Montecarlo approach
+ * where faces are weighted by the vertex radii computed from vertex weights.
+ *
+ * @tparam MeshType: A type that satisfies the FaceMeshConcept
+ *
+ * @param[in] m: The input mesh to sample from.
+ * @param[in] weights: A range of scalars having the i-th entry associated to
+ * the vertex having index i. Note: weights.size() == m.vertexContainerSize().
+ * @param[in] nSamples: The number of points to sample.
+ * @param[in] variance: The radius variance factor.
+ * @param[in] config: RandomConfig that determines how to provide the random
+ * number generator.
+ *
+ * @return A PointSampler object containing the sampled points.
+ *
+ * @ingroup point_sampling
+ */
+template<FaceMeshConcept MeshType>
 auto vertexWeightedMontecarloPointSampling(
-    const MeshType&                m,
-    const std::vector<ScalarType>& weights,
-    uint                           nSamples,
-    double                         variance,
-    RandomConfig                   config = std::monostate())
+    const MeshType& m,
+    Range auto&&    weights,
+    uint            nSamples,
+    double          variance,
+    RandomConfig    config = std::monostate())
 {
-    using PointType = MeshType::VertexType::PositionType;
-    using FaceType  = MeshType::FaceType;
+    using PointType  = MeshType::VertexType::PositionType;
+    using MeshScalar = PointType::ScalarType;
+    using FaceType   = MeshType::FaceType;
+
+    assert(std::ranges::size(weights) == m.vertexContainerSize());
 
     // lambda function to compute radius weighted area of a face
     auto weightedArea = [](const FaceType&                f,
                            const MeshType&                m,
-                           const std::vector<ScalarType>& r) -> ScalarType {
-        ScalarType averageQ = 0;
+                           const std::vector<MeshScalar>& r) -> MeshScalar {
+        MeshScalar averageQ = 0;
         for (uint i = 0; i < f.vertexCount(); ++i)
             averageQ += r[m.index(f.vertex(i))];
 
@@ -935,14 +956,13 @@ auto vertexWeightedMontecarloPointSampling(
     return callWithRandomGenerator(config, [&](std::mt19937& gen) {
         PointSampler<PointType> ps;
 
-        std::vector<ScalarType> radius =
-            vertexRadiusFromWeights(m, weights, 1.0, variance, true);
+        auto radius = vertexRadiusFromWeights(m, weights, 1.0, variance, true);
 
-        ScalarType wArea = 0;
+        MeshScalar wArea = 0;
         for (const FaceType& f : m.faces())
             wArea += weightedArea(f, m, radius);
 
-        ScalarType samplePerAreaUnit = nSamples / wArea;
+        MeshScalar samplePerAreaUnit = nSamples / wArea;
         // Montecarlo sampling.
         double floatSampleNum = 0.0;
         for (const FaceType& f : m.faces()) {
@@ -955,7 +975,7 @@ auto vertexWeightedMontecarloPointSampling(
             for (uint i = 0; i < faceSampleNum; i++)
                 ps.add(
                     f,
-                    randomPolygonBarycentricCoordinate<ScalarType>(
+                    randomPolygonBarycentricCoordinate<MeshScalar>(
                         f.vertexCount(), gen));
 
             floatSampleNum -= (double) faceSampleNum;

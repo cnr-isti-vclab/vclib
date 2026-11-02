@@ -51,6 +51,35 @@
 namespace bench {
 
 /**
+ * @brief Selects a subset of the vertices, faces and edges of the given mesh.
+ * By default, selects every other element (50%).
+ */
+template<typename Mesh>
+void selectElements(Mesh& m, vcl::uint step = 2)
+{
+    for (auto& v : m.vertices()) {
+        v.selected() = (m.index(v) % step == 0);
+    }
+
+    if constexpr (vcl::FaceMeshConcept<Mesh>) {
+        for (auto& f : m.faces()) {
+            f.selected() = (m.index(f) % step == 0);
+            if constexpr (requires { f.edgeSelected(0); }) {
+                for (vcl::uint i = 0; i < f.vertexCount(); ++i) {
+                    f.edgeSelected(i) = ((m.index(f) + i) % step == 0);
+                }
+            }
+        }
+    }
+
+    if constexpr (vcl::EdgeMeshConcept<Mesh>) {
+        for (auto& e : m.edges()) {
+            e.selected() = (m.index(e) % step == 0);
+        }
+    }
+}
+
+/**
  * @brief The dataset of the benchmarks and some meshes derived from it, that
  * are created only when requested.
  */
@@ -62,6 +91,8 @@ class Context
     std::string mMeshPath;
 
     std::unique_ptr<Mesh> mMeshWithTopology;
+    std::unique_ptr<Mesh> mMeshWithSelection;
+    std::unique_ptr<Mesh> mMeshWithQuality;
 
 public:
     Context(Mesh mesh, std::string datasetName, std::string meshPath = "") :
@@ -104,6 +135,41 @@ public:
         }
         return *mMeshWithTopology;
     }
+
+    /**
+     * @brief The input mesh with vertices, faces, and edges selected. It is
+     * created at the first call and shared among the benchmarks, therefore it
+     * must not be modified.
+     */
+    const Mesh& meshWithSelection()
+    {
+        if (!mMeshWithSelection) {
+            mMeshWithSelection = std::make_unique<Mesh>(mMesh);
+            selectElements(*mMeshWithSelection);
+        }
+        return *mMeshWithSelection;
+    }
+
+    /**
+     * @brief A copy of the input mesh with vertices, faces, and edges selected,
+     * that the benchmark is free to modify.
+     */
+    Mesh copyMeshWithSelection() { return meshWithSelection(); }
+
+    /**
+     * @brief The input mesh with vertex and face qualities enabled and
+     * initialized. It is created at the first call and shared among the
+     * benchmarks, therefore it must not be modified.
+     */
+    const Mesh& meshWithQuality()
+    {
+        if (!mMeshWithQuality) {
+            mMeshWithQuality = std::make_unique<Mesh>(mMesh);
+            enableQualityComponents(*mMeshWithQuality);
+            initQuality(*mMeshWithQuality);
+        }
+        return *mMeshWithQuality;
+    }
 };
 
 /**
@@ -136,6 +202,12 @@ public:
     Mesh copyMesh() const { return mContext.copyMesh(); }
 
     const Mesh& meshWithTopology() { return mContext.meshWithTopology(); }
+
+    const Mesh& meshWithSelection() { return mContext.meshWithSelection(); }
+
+    Mesh copyMeshWithSelection() { return mContext.copyMeshWithSelection(); }
+
+    const Mesh& meshWithQuality() { return mContext.meshWithQuality(); }
 
     const std::string& meshPath() const { return mContext.meshPath(); }
 
