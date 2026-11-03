@@ -111,11 +111,12 @@ void DrawableEnvironment::setAndGenerateTextures(
     // cube side for irradiance and specular
     uint irrSpecCubeSide = ceilDiv(cubeSide, 4);
 
-    mSpecularMipLevels = bimg::imageGetNumMips(
-                             bimg::TextureFormat::RGBA32F,
-                             irrSpecCubeSide,
-                             irrSpecCubeSide) /
-                         2; // ignore too low mips
+    mSpecularMipLevels = uint8_t(std::max(2,
+        bimg::imageGetNumMips(
+            bimg::TextureFormat::RGBA32F,
+            irrSpecCubeSide,
+            irrSpecCubeSide) - 2) // ignore too low mips
+        );
 
     if (!image.m_cubeMap) { // equirect
         mHdrTexture.set(
