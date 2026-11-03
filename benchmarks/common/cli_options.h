@@ -33,8 +33,8 @@ struct CommonOptions
 };
 
 inline CommonOptions parseCommonOptions(
-    int                              argc,
-    char**                           argv,
+    int                               argc,
+    char**                            argv,
     const std::map<std::string, int>& extraOptionArities = {})
 {
     CommonOptions opts;

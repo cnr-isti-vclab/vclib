@@ -30,8 +30,7 @@ vcl::uint sampleCountForVertices(const Mesh& m, bool onlySelected = false)
 template<typename Mesh>
 vcl::uint sampleCountForFaces(const Mesh& m, bool onlySelected = false)
 {
-    vcl::uint count =
-        onlySelected ? vcl::faceSelectionCount(m) : m.faceCount();
+    vcl::uint count = onlySelected ? vcl::faceSelectionCount(m) : m.faceCount();
     if (count <= 1) {
         return 0;
     }
@@ -114,9 +113,7 @@ BENCH(
             if (nSamples == 0) {
                 return s.skip("not enough faces to sample");
             }
-            s.run([&]() {
-                return vcl::faceUniformPointSampling(m, nSamples);
-            });
+            s.run([&]() { return vcl::faceUniformPointSampling(m, nSamples); });
         }
     });
 
@@ -351,4 +348,3 @@ BENCH(
             });
         }
     });
-

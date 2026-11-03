@@ -210,9 +210,8 @@ auto vertexRadiusFromWeights(
 
     auto it = std::ranges::begin(weights);
     auto activeWeights =
-        m.vertices() | std::views::transform([&](const auto& v) {
-            return it[m.index(v)];
-        });
+        m.vertices() |
+        std::views::transform([&](const auto& v) { return it[m.index(v)]; });
     const auto [min, max] = std::ranges::minmax(activeWeights);
 
     double minRad   = diskRadius;
