@@ -341,8 +341,8 @@ public:
      *
      * In addition to pushing the objects to the underlying vector, this helper
      * safely calls `init()` on each newly added object (required to initialize
-     * OpenGL/BGFX buffers) and calls `refreshEditors()` once at the end to update
-     * any GUI components, avoiding redundant editor refreshes.
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` once at the end to
+     * update any GUI components, avoiding redundant editor refreshes.
      *
      * @tparam R A range type satisfying std::ranges::input_range.
      * @param[in] objs: The range of objects to add (either concrete

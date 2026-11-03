@@ -122,7 +122,7 @@ void showOnMeshViewer(
             return std::make_shared<MType>(std::forward<decltype(m)>(m));
         }
         else {
-            auto dm = vcl::makeDrawable(std::forward<decltype(m)>(m));
+            auto dm      = vcl::makeDrawable(std::forward<decltype(m)>(m));
             using DMType = decltype(dm);
             return std::make_shared<DMType>(std::move(dm));
         }

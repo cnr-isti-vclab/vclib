@@ -148,7 +148,8 @@ public:
     }
 
     /**
-     * @brief Adds a collection/range of drawable objects to the end of the scene.
+     * @brief Adds a collection/range of drawable objects to the end of the
+     * scene.
      * @param[in] objs: The range of objects to add.
      * @return The starting ID assigned to the new objects.
      */
