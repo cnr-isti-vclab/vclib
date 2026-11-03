@@ -24,7 +24,9 @@
 #include <vclib/imgui/mesh_viewer.h>
 #endif
 
+#include <memory>
 #include <type_traits>
+#include <vector>
 
 namespace vcl {
 
@@ -114,17 +116,22 @@ void showOnMeshViewer(
     MeshViewerConcept auto& viewer,
     MeshTypes&&... meshes)
 {
-    auto prepare = [](auto&& m) -> decltype(auto) {
+    auto prepare = [](auto&& m) -> std::shared_ptr<DrawableObject> {
         using MType = std::remove_cvref_t<decltype(m)>;
         if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MType>) {
-            return std::forward<decltype(m)>(m);
+            return std::make_shared<MType>(std::forward<decltype(m)>(m));
         }
         else {
-            return vcl::makeDrawable(std::forward<decltype(m)>(m));
+            auto dm = vcl::makeDrawable(std::forward<decltype(m)>(m));
+            using DMType = decltype(dm);
+            return std::make_shared<DMType>(std::move(dm));
         }
     };
 
-    (viewer.pushDrawableObject(prepare(std::forward<MeshTypes>(meshes))), ...);
+    std::vector<std::shared_ptr<DrawableObject>> drawables;
+    drawables.reserve(sizeof...(MeshTypes));
+    (drawables.push_back(prepare(std::forward<MeshTypes>(meshes))), ...);
+    viewer.pushDrawableObjects(std::move(drawables));
 
     viewer.fitScene();
 
@@ -140,13 +147,17 @@ void showOnMeshViewer(
     RenderMode               renderMode = RenderMode::CLASSIC,
     const std::string&       panorama   = "")
 {
-    for (auto&& mesh : meshes) {
-        if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
-            viewer.pushDrawableObject(std::move(mesh));
+    if constexpr (std::is_base_of_v<vcl::AbstractDrawableMesh, MeshTypes>) {
+        viewer.pushDrawableObjects(std::move(meshes));
+    }
+    else {
+        using DMType = vcl::DrawableMesh<std::remove_cvref_t<MeshTypes>>;
+        std::vector<DMType> drawableMeshes;
+        drawableMeshes.reserve(meshes.size());
+        for (auto&& mesh : meshes) {
+            drawableMeshes.push_back(vcl::makeDrawable(std::move(mesh)));
         }
-        else {
-            viewer.pushDrawableObject(vcl::makeDrawable(std::move(mesh)));
-        }
+        viewer.pushDrawableObjects(std::move(drawableMeshes));
     }
 
     auto sts = viewer.viewerSettings();

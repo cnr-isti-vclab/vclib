@@ -14,6 +14,7 @@
 #include <vclib/render/editors.h>
 
 #include <utility>
+#include <vector>
 
 namespace vcl {
 
@@ -41,6 +42,11 @@ concept MeshViewerConcept = requires (
         { obj.pushDrawableObject(obj1) } -> std::same_as<uint>;
         { obj.pushDrawableObject(std::move(obj2)) } -> std::same_as<uint>;
         { obj.pushDrawableObject(obj3) } -> std::same_as<uint>;
+
+        {
+            obj.pushDrawableObjects(
+                std::vector<std::shared_ptr<vcl::DrawableObject>>())
+        } -> std::same_as<uint>;
 
         { obj.insertDrawableObject(0, obj1) } -> std::same_as<bool>;
         { obj.insertDrawableObject(0, std::move(obj2)) } -> std::same_as<bool>;

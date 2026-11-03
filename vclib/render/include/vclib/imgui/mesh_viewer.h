@@ -18,6 +18,8 @@
 #include <vclib/render/render_app.h>
 #include <vclib/render/settings/viewer_settings.h>
 
+#include <ranges>
+
 namespace vcl::imgui {
 
 /**
@@ -105,6 +107,18 @@ public:
     uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
     {
         return mApp.pushDrawableObject(std::move(obj));
+    }
+
+    /**
+     * @brief Adds a collection/range of drawable objects to the end of the scene.
+     * @param objs The range of objects to add.
+     * @return The starting ID assigned to the new objects.
+     */
+    template<typename R>
+    requires std::ranges::input_range<R>
+    uint pushDrawableObjects(R&& objs)
+    {
+        return mApp.pushDrawableObjects(std::forward<R>(objs));
     }
 
     /**
