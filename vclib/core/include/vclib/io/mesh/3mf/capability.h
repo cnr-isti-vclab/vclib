@@ -35,7 +35,15 @@ inline MeshInfo _3mfFormatCapability()
 
     info.setPerFaceColor();
 
-    // TODO: add other informations
+    info.setPerFaceMaterialIndex();
+
+    info.setPerFaceWedgeTexCoords();
+
+    info.setMaterials();
+
+    info.setMeshColor();
+
+    info.setMeshTransformMatrix();
 
     return info;
 }
