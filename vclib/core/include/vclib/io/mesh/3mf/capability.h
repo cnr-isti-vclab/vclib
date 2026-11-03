@@ -41,10 +41,6 @@ inline MeshInfo _3mfFormatCapability()
 
     info.setMaterials();
 
-    info.setMeshColor();
-
-    info.setMeshTransformMatrix();
-
     return info;
 }
 

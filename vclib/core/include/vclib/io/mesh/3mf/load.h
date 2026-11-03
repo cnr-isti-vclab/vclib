@@ -9,6 +9,7 @@
 #define VCL_IO_MESH_3MF_LOAD_H
 
 #include <vclib/io/file_info.h>
+#include <vclib/io/image/load.h>
 #include <vclib/io/mesh/settings.h>
 
 #include <vclib/algorithms/mesh.h>
@@ -162,32 +163,19 @@ int read3mfTexture(
     texture.wrapV() = eTextureTileStyleToVclWrapMode(wrapV);
 
     if (settings.loadTextureImages) {
-        if constexpr (HasTextureImages<MeshType>) {
-            std::vector<unsigned char> buffer;
-            textureAttachment->WriteToBuffer(buffer);
-            int w = 0, h = 0;
+        std::vector<unsigned char> buffer;
+        textureAttachment->WriteToBuffer(buffer);
 
-            std::unique_ptr<stbi_uc, decltype(&stbi_image_free)> pixels(
-                stbi_load_from_memory(
-                    buffer.data(),
-                    static_cast<int>(buffer.size()),
-                    &w,
-                    &h,
-                    nullptr,
-                    STBI_rgb_alpha),
-                stbi_image_free);
+        Image timg = loadImage(buffer.data(), buffer.size());
 
-            if (!pixels) {
-                throw MalformedFileException("Cannot decode 3MF texture");
-            }
-
-            Image timg = Image(pixels.get(), w, h);
-
-            timg.colorSpace() = Material::textureTypeToColorSpace(
-                Material::TextureType::BASE_COLOR);
-
-            m.pushTextureImage(uri, std::move(timg));
+        if (timg.isNull()) {
+            throw MalformedFileException("Cannot decode 3MF texture");
         }
+
+        timg.colorSpace() = Material::textureTypeToColorSpace(
+            Material::TextureType::BASE_COLOR);
+
+        m.pushTextureImage(uri, std::move(timg));
     }
 
     m.pushMaterial(mat);

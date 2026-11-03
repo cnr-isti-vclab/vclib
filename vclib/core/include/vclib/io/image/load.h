@@ -73,10 +73,43 @@ inline std::shared_ptr<unsigned char> loadImageData(
     throw UnknownFileFormatException(ff.extensions().front());
 }
 
+inline std::shared_ptr<unsigned char> loadImageData(
+    const void* buffer,
+    std::size_t size,
+    int&        w,
+    int&        h)
+{
+#ifdef VCLIB_WITH_QT
+    auto ptrQt = qt::loadImageData(buffer, size, w, h);
+    if (ptrQt) {
+        return ptrQt;
+    }
+#endif
+
+#ifdef VCLIB_WITH_STB
+    auto ptrStb = stb::loadImageData(buffer, size, w, h);
+    if (ptrStb) {
+        return ptrStb;
+    }
+#endif
+
+    return nullptr;
+}
+
 inline Image loadImage(const std::string& filename)
 {
     int  w, h;
     auto data = loadImageData(filename, w, h);
+    if (!data) {
+        return Image();
+    }
+    return Image(data.get(), w, h);
+}
+
+inline Image loadImage(const void* buffer, std::size_t size)
+{
+    int  w, h;
+    auto data = loadImageData(buffer, size, w, h);
     if (!data) {
         return Image();
     }
