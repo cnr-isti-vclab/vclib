@@ -261,13 +261,20 @@ bool readTriangleTexCoords(
         HasMaterials<MeshType> && HasPerFaceWedgeTexCoords<MeshType> &&
         HasPerFaceMaterialIndex<MeshType>) {
         if (canStoreFaceTexCoords(m, settings.enableOptionalComponents)) {
-            auto& tcg    = resourcesMap.texture2DGroupsMap[uniqueResourceID];
-            auto& mIndex = resourcesMap.materialIndicesMap[uniqueResourceID];
+            auto& tcg = resourcesMap.texture2DGroupsMap[uniqueResourceID];
             if (!tcg) {
-                tcg          = model->GetTexture2DGroupByID(uniqueResourceID);
-                const auto a = tcg->GetTexture2D()->GetAttachment();
+                tcg = model->GetTexture2DGroupByID(uniqueResourceID);
+            }
 
-                mIndex = read3mfTexture(m, tcg->GetTexture2D(), a, settings);
+            auto mIndex =
+                resourcesMap.materialIndicesMap
+                    .try_emplace(tcg->GetTexture2D()->GetUniqueResourceID(), -1)
+                    .first;
+
+            if (mIndex->second == -1) {
+                const auto a = tcg->GetTexture2D()->GetAttachment();
+                mIndex->second =
+                    read3mfTexture(m, tcg->GetTexture2D(), a, settings);
             }
 
             using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
@@ -283,7 +290,7 @@ bool readTriangleTexCoords(
             m.face(faceID).wedgeTexCoord(2) =
                 WedgeTexCoordType(uv2.m_U, uv2.m_V);
 
-            m.face(faceID).materialIndex() = mIndex;
+            m.face(faceID).materialIndex() = mIndex->second;
 
             return true;
         }
