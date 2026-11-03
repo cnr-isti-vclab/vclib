@@ -34,6 +34,8 @@ class ShowNormalsEditorBGFX : public Editor<ViewerDrawer>
 
     ShowNormalsEditorSettings mSettings;
 
+    bool mDirty = true;
+
 public:
     ShowNormalsEditorBGFX() = default;
 
@@ -67,10 +69,25 @@ public:
     void setActive(bool active) override
     {
         Base::setActive(active);
+        if (active && mDirty) {
+            updateNormalLines();
+        }
         Base::viewerUpdate();
     }
 
     void refresh() override
+    {
+        if (!Base::isActive()) {
+            mVertexNormalsLines.clear();
+            mFaceNormalsLines.clear();
+            mDirty = true;
+            return;
+        }
+
+        updateNormalLines();
+    }
+
+    void updateNormalLines()
     {
         mVertexNormalsLines.clear();
         mFaceNormalsLines.clear();
@@ -93,6 +110,7 @@ public:
             }
         }
 
+        mDirty = false;
         refreshSettings();
     }
 
@@ -122,6 +140,10 @@ public:
 
     void drawContent(uint viewId) override
     {
+        if (mDirty) {
+            updateNormalLines();
+        }
+
         using enum EditorSettings::EditMode;
 
         DrawObjectSettings settings;

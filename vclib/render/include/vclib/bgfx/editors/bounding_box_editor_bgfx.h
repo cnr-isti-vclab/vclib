@@ -26,6 +26,8 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 
     BoundingBoxEditorSettings mSettings;
 
+    bool mDirty = true;
+
 public:
     BoundingBoxEditorBGFX() = default;
 
@@ -59,10 +61,24 @@ public:
     void setActive(bool active) override
     {
         Base::setActive(active);
+        if (active && mDirty) {
+            updateBoxes();
+        }
         Base::viewerUpdate();
     }
 
     void refresh() override
+    {
+        if (!Base::isActive()) {
+            mBoxes.clear();
+            mDirty = true;
+            return;
+        }
+
+        updateBoxes();
+    }
+
+    void updateBoxes()
     {
         mBoxes.clear();
 
@@ -80,6 +96,7 @@ public:
                 mBoxes.push_back(DrawableBox3(Box3f()));
             }
         }
+        mDirty = false;
         Base::viewerUpdate();
     }
 
@@ -97,6 +114,10 @@ public:
 
     void drawContent(uint viewId) override
     {
+        if (mDirty) {
+            updateBoxes();
+        }
+
         using enum EditorSettings::EditMode;
 
         DrawObjectSettings settings;
