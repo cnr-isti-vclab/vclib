@@ -10,6 +10,7 @@ project(vclib-core-benchmark-${BENCHMARK_NAME})
 
 set(SOURCES
     benchmark.h
+    clean.cpp
     compat.h
     grid.h
     types.h
