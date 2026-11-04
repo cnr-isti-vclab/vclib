@@ -198,7 +198,7 @@ template<MeshConcept MeshType>
 bool readTriangleBaseMaterial(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     bool                  enableOptionalComponents,
@@ -230,7 +230,7 @@ template<MeshConcept MeshType>
 bool readTriangleColors(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     bool                  enableOptionalComponents,
@@ -262,7 +262,7 @@ template<MeshConcept MeshType>
 bool readTriangleTexCoords(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     const LoadSettings&   settings,
@@ -316,7 +316,7 @@ template<MeshConcept MeshType>
 void readTriangleProperties(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     const LoadSettings&   settings,
@@ -462,11 +462,11 @@ void readMeshObject(
     }
 
     if constexpr (HasFaces<MeshType>) {
-        const uint                  nTriangles = meshObject->GetTriangleCount();
-        Lib3MF::sTriangleProperties triangleProperties;
+        std::vector<Lib3MF::sTriangleProperties> allTriangleProperties;
+        meshObject->GetAllTriangleProperties(allTriangleProperties);
 
-        for (uint i = 0; i < nTriangles; i++) {
-            meshObject->GetTriangleProperties(i, triangleProperties);
+        for (uint i = 0; i < allTriangleProperties.size(); i++) {
+            const auto& triangleProperties = allTriangleProperties[i];
 
             if (triangleProperties.m_ResourceID != 0) {
                 readTriangleProperties(
