@@ -39,7 +39,7 @@ int main(int argc, char** argv)
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = SPECULAR_TEST;
+    uint selectedExample = METAL_ROUGH_SPHERES_NO_TEXTURES;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,
