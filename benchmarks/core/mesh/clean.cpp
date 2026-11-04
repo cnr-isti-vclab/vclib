@@ -31,21 +31,19 @@ BENCH(
             [&]() { return vcl::removeDuplicateVertices(m); });
     });
 
-BENCH(
-    "clean/remove_duplicate_faces",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
-            return s.skip("the mesh has no faces");
-        }
-        else {
-            const Mesh& base = s.mesh();
-            Mesh        m    = s.copyMesh();
+BENCH("clean/remove_duplicate_faces", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("the mesh has no faces");
+    }
+    else {
+        const Mesh& base = s.mesh();
+        Mesh        m    = s.copyMesh();
 
-            s.run(
-                [&]() { m = base; },
-                [&]() { return vcl::removeDuplicateFaces(m); });
-        }
-    });
+        s.run(
+            [&]() { m = base; },
+            [&]() { return vcl::removeDuplicateFaces(m); });
+    }
+});
 
 BENCH(
     "clean/remove_degenerate_vertices",
