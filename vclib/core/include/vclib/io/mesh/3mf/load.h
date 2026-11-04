@@ -29,12 +29,18 @@ namespace vcl {
 
 namespace detail {
 
+struct Texture2DGroupData
+{
+    Lib3MF::PTexture2DGroup group;
+    int                     materialIndex = -1;
+};
+
 struct ResourcesMap
 {
     std::unordered_map<uint, Lib3MF::PBaseMaterialGroup> baseMaterialGroupsMap;
     std::unordered_map<uint, Lib3MF::PColorGroup>        colorGroupsMap;
-    std::unordered_map<uint, Lib3MF::PTexture2DGroup>    texture2DGroupsMap;
-    std::unordered_map<uint, int>                        materialIndicesMap;
+    std::unordered_map<uint, Texture2DGroupData>         texture2DGroupsMap;
+    std::unordered_map<uint, int>                        textureToMaterialIndexMap;
     std::unordered_map<uint, Lib3MF::ePropertyType>      propertyTypesMap;
 };
 
@@ -141,6 +147,11 @@ int read3mfTexture(
     const Lib3MF::PAttachment& textureAttachment,
     const LoadSettings&        settings)
 {
+    if (!textureAttachment) {
+        throw MalformedFileException(
+            "Texture attachment not found in 3MF package");
+    }
+
     Material                mat;
     vcl::TextureDescriptor& texture =
         mat.textureDescriptor(Material::TextureType::BASE_COLOR);
@@ -261,27 +272,29 @@ bool readTriangleTexCoords(
         HasMaterials<MeshType> && HasPerFaceWedgeTexCoords<MeshType> &&
         HasPerFaceMaterialIndex<MeshType>) {
         if (canStoreFaceTexCoords(m, settings.enableOptionalComponents)) {
-            auto& tcg = resourcesMap.texture2DGroupsMap[uniqueResourceID];
-            if (!tcg) {
-                tcg = model->GetTexture2DGroupByID(uniqueResourceID);
-            }
+            auto& groupData = resourcesMap.texture2DGroupsMap[uniqueResourceID];
+            if (!groupData.group) {
+                groupData.group =
+                    model->GetTexture2DGroupByID(uniqueResourceID);
+                const auto tex2D   = groupData.group->GetTexture2D();
+                const uint tex2DId = tex2D->GetUniqueResourceID();
 
-            auto mIndex =
-                resourcesMap.materialIndicesMap
-                    .try_emplace(tcg->GetTexture2D()->GetUniqueResourceID(), -1)
-                    .first;
+                auto [it, inserted] =
+                    resourcesMap.textureToMaterialIndexMap.try_emplace(
+                        tex2DId, -1);
+                if (inserted || it->second == -1) {
+                    const auto a = tex2D->GetAttachment();
+                    it->second   = read3mfTexture(m, tex2D, a, settings);
+                }
 
-            if (mIndex->second == -1) {
-                const auto a = tcg->GetTexture2D()->GetAttachment();
-                mIndex->second =
-                    read3mfTexture(m, tcg->GetTexture2D(), a, settings);
+                groupData.materialIndex = it->second;
             }
 
             using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
 
-            const auto& uv0 = tcg->GetTex2Coord(propertyID[0]);
-            const auto& uv1 = tcg->GetTex2Coord(propertyID[1]);
-            const auto& uv2 = tcg->GetTex2Coord(propertyID[2]);
+            const auto& uv0 = groupData.group->GetTex2Coord(propertyID[0]);
+            const auto& uv1 = groupData.group->GetTex2Coord(propertyID[1]);
+            const auto& uv2 = groupData.group->GetTex2Coord(propertyID[2]);
 
             m.face(faceID).wedgeTexCoord(0) =
                 WedgeTexCoordType(uv0.m_U, uv0.m_V);
@@ -290,7 +303,7 @@ bool readTriangleTexCoords(
             m.face(faceID).wedgeTexCoord(2) =
                 WedgeTexCoordType(uv2.m_U, uv2.m_V);
 
-            m.face(faceID).materialIndex() = mIndex->second;
+            m.face(faceID).materialIndex() = groupData.materialIndex;
 
             return true;
         }
