@@ -158,8 +158,7 @@
             "name": "vclib-core-benchmarks",
             "inherits": ["release", "do-not-exclude-benchmarks"],
             "displayName": "VCLib::Core - Benchmarks",
-            "description": "Core with benchmarks (Release)",
-            "binaryDir": "${sourceDir}/out/build/${presetName}"
+            "description": "Core with benchmarks (Release)"
         },
         {
             "name": "vclib-external-debug",
@@ -383,14 +382,6 @@
                 "VCLIB_RENDER_BUILD_TESTS": "OFF",
                 "VCLIB_REQUIRES_QT": "ON"
             }
-        }
-    ],
-    "buildPresets": [
-        {
-            "name": "vclib-core-benchmarks",
-            "configurePreset": "vclib-core-benchmarks",
-            "displayName": "VCLib::Core - Benchmarks",
-            "targets": ["vclib-core-benchmark-mesh"]
         }
     ]
 }
