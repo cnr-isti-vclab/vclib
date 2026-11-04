@@ -45,7 +45,8 @@ inline std::shared_ptr<unsigned char> loadImageData(
         img.convertTo(QImage::Format_RGBA8888);
 
         ptr = std::shared_ptr<unsigned char>(
-            new unsigned char[img.width() * img.height() * 4]);
+            new unsigned char[img.width() * img.height() * 4],
+            std::default_delete<unsigned char[]>());
         std::copy(
             img.bits(), img.bits() + img.width() * img.height() * 4, ptr.get());
 
@@ -68,7 +69,8 @@ inline std::shared_ptr<unsigned char> loadImageData(
         img.convertTo(QImage::Format_RGBA8888);
 
         ptr = std::shared_ptr<unsigned char>(
-            new unsigned char[img.width() * img.height() * 4]);
+            new unsigned char[img.width() * img.height() * 4],
+            std::default_delete<unsigned char[]>());
         std::copy(
             img.bits(), img.bits() + img.width() * img.height() * 4, ptr.get());
 

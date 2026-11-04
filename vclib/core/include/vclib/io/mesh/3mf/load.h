@@ -147,9 +147,9 @@ int read3mfTexture(
     const Lib3MF::PAttachment& textureAttachment,
     const LoadSettings&        settings)
 {
-    if (!textureAttachment) {
+    if (!textureAttachment || !textureProperty) {
         throw MalformedFileException(
-            "Texture attachment not found in 3MF package");
+            "Texture attachment or property not found in 3MF package");
     }
 
     Material                mat;
@@ -276,7 +276,11 @@ bool readTriangleTexCoords(
             if (!groupData.group) {
                 groupData.group =
                     model->GetTexture2DGroupByID(uniqueResourceID);
-                const auto tex2D   = groupData.group->GetTexture2D();
+                const auto tex2D = groupData.group->GetTexture2D();
+                if (!tex2D) {
+                    throw MalformedFileException(
+                        "3MF Texture2DGroup is missing Texture2D reference");
+                }
                 const uint tex2DId = tex2D->GetUniqueResourceID();
 
                 auto [it, inserted] =
@@ -545,6 +549,10 @@ void load3mf(
     const LoadSettings&    settings = LoadSettings(),
     LogType&               log      = nullLogger)
 {
+    if (!FileInfo::exists(filename)) {
+        throw CannotOpenFileException(filename);
+    }
+
     try {
         // entrypoint to the 3MF library
         Lib3MF::PWrapper wrapper = Lib3MF::CWrapper::loadLibrary();
@@ -582,7 +590,7 @@ void load3mf(
         }
     }
     catch (Lib3MF::ELib3MFException& e) {
-        throw CannotOpenFileException(
+        throw MalformedFileException(
             "Failed to load 3MF file: " + filename + ":\n" + e.what());
     }
 }
