@@ -67,7 +67,7 @@ int main(int argc, char** argv)
         "/panoramas/uffizi.ktx",
         "/panoramas/st_peter.exr"};
 
-    uint selectedPanorama = PISA_HDR;
+    uint selectedPanorama = COLOSSEUM_HDR;
 
     std::vector<vcl::TriMesh> meshes = vcl::loadMeshes<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH + gltfExampleFilenames[selectedExample]);
