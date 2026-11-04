@@ -13,6 +13,10 @@
 #endif
 
 #include <QApplication>
+#if defined(Q_OS_MACOS) && defined(VCLIB_RENDER_BACKEND_BGFX)
+#include <QColorSpace>
+#include <QSurfaceFormat>
+#endif
 
 namespace vcl::qt {
 
@@ -50,7 +54,8 @@ inline void initXcb()
  * @brief Utility function to create a QApplication instance with the XCB
  * platform plugin initialized. This function calls initXcb() before creating
  * the QApplication instance to ensure that the XCB platform plugin is used on
- * Linux.
+ * Linux. On macOS with bgfx, it also defaults the surface color space to sRGB
+ * unless the application has explicitly selected another color space.
  *
  * This function can be used as a drop-in replacement for the QApplication
  * constructor in the main function.
@@ -73,6 +78,15 @@ inline void initXcb()
 inline QApplication qAppl(int& argc, char** argv)
 {
     initXcb();
+#if defined(Q_OS_MACOS) && defined(VCLIB_RENDER_BACKEND_BGFX)
+    // Qt propagates this color space to Metal layers when attaching them and
+    // when the window's backing properties change. VCLib outputs encoded sRGB.
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    if (!format.colorSpace().isValid()) {
+        format.setColorSpace(QColorSpace::SRgb);
+        QSurfaceFormat::setDefaultFormat(format);
+    }
+#endif
     return QApplication(argc, argv);
 }
 
