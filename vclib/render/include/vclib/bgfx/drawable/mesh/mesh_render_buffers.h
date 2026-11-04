@@ -199,7 +199,7 @@ public:
     {
         // TODO: streams cannot be higher than
         // "bgfx::getCaps()->limits.maxVertexStreams". Buffers must be bound
-        // only if necessary (using MeshRenderSettings) right now, this is
+        // only if necessary (using MeshRenderSettings). right now, this is
         // managed only for uvs (per vertex or per wedge, not both).
         // We MUST be sure that the limit is not exceeded.
 

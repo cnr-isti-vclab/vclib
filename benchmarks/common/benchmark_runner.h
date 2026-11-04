@@ -107,13 +107,28 @@ public:
     template<typename Func>
     void run(const std::string& name, Func&& func, int iterations = -1)
     {
+        runWithSetup(name, []() {}, func, iterations);
+    }
+
+    /**
+     * @brief Runs a benchmark calling the (not timed) setup function before
+     * each execution (warmup included) of the (timed) function.
+     */
+    template<typename Setup, typename Func>
+    void runWithSetup(
+        const std::string& name,
+        Setup&&            setup,
+        Func&&             func,
+        int                iterations = -1)
+    {
         if (iterations <= 0) {
             iterations = mDefaultIterations;
         }
 
-        std::println("Running {:<35} ({} iters)...", name, iterations);
+        std::println("Running {:<45} ({} iters)...", name, iterations);
 
         if (mWarmup) {
+            setup();
             invokeBenchmarkFunc(func);
         }
 
@@ -124,6 +139,7 @@ public:
 
         vcl::Timer timer("", false);
         for (int i = 0; i < iterations; ++i) {
+            setup();
             timer.start();
             invokeBenchmarkFunc(func);
             timer.stop();

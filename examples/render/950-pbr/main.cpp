@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
         "/gltf/CompareEmissiveStrength/CompareEmissiveStrength.gltf"};
 
-    uint selectedExample = ANISOTROPY_BARN_LAMP;
+    uint selectedExample = METAL_ROUGH_SPHERES_NO_TEXTURES;
 
     enum PanoramasExamples {
         COLOSSEUM_HDR,

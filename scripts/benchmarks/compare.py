@@ -9,6 +9,7 @@ import argparse
 import json
 import math
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -26,6 +27,16 @@ def format_time(ms: float) -> str:
         return f"{ms * 1000000.0:7.1f} ns"
 
 
+def format_ratio(ratio: float) -> str:
+    if ratio >= 1000.0:
+        return ">1000x"
+    if ratio >= 100.0:
+        return f"{ratio:.0f}x"
+    if ratio < 0.01:
+        return "<0.01x"
+    return f"{ratio:.2f}x"
+
+
 def format_speedup(a_ms: float, b_ms: float, use_color: bool = True) -> str:
     if b_ms <= 0:
         return "N/A"
@@ -34,20 +45,17 @@ def format_speedup(a_ms: float, b_ms: float, use_color: bool = True) -> str:
 
     if ratio >= 1.05:
         # B is faster than A
-        text = f"{ratio:5.2f}x (+{pct:5.1f}%)"
-        if use_color:
-            text = f"\033[92m{text}\033[0m"  # Green
+        text = f"{format_ratio(ratio)} (+{pct:.1f}%)"
+        color = "\033[92m"  # Green
     elif ratio <= 0.95:
         # A is faster than B
-        text = f"{ratio:5.2f}x ({pct:5.1f}%)"
-        if use_color:
-            text = f"\033[91m{text}\033[0m"  # Red
+        text = f"{format_ratio(ratio)} ({pct:.1f}%)"
+        color = "\033[91m"  # Red
     else:
-        text = f"{ratio:5.2f}x (  0.0%)"
-        if use_color:
-            text = f"\033[93m{text}\033[0m"  # Yellow
+        text = f"{format_ratio(ratio)} (0.0%)"
+        color = "\033[93m"  # Yellow
 
-    return text
+    return f"{color}{text}\033[0m" if use_color else text
 
 
 def format_rss(rss_a: float, rss_b: float) -> str:
@@ -55,7 +63,35 @@ def format_rss(rss_a: float, rss_b: float) -> str:
         return f"{rss_a:.1f} / {rss_b:.1f} MB"
     delta_pct = (rss_b - rss_a) / rss_a * 100.0
     sign = "+" if delta_pct > 0 else ""
-    return f"{rss_a:5.1f} / {rss_b:5.1f} MB ({sign}{delta_pct:4.1f}%)"
+    return f"{rss_a:.1f} / {rss_b:.1f} MB ({sign}{delta_pct:.1f}%)"
+
+
+def visible_len(text: str) -> int:
+    return len(re.sub(r"\033\[[0-9;]*m", "", text))
+
+
+def pad(text: str, width: int, left: bool = False) -> str:
+    fill = " " * max(0, width - visible_len(text))
+    return text + fill if left else fill + text
+
+
+def split_group(name: str):
+    """Splits 'a/b/c' in ('a/b', 'c'); names without '/' have no group."""
+    if "/" in name:
+        group, short = name.rsplit("/", 1)
+        return group, short
+    return "", name
+
+
+def require_mesh_type(report: dict, requested: str, label: str):
+    actual = report.get("metadata", {}).get("mesh_type")
+    if actual != requested:
+        sys.exit(
+            f"Mesh type mismatch for {label}: requested '{requested}', "
+            f"reported '{actual if actual is not None else 'missing'}'. "
+            "Make sure the executable supports --mesh-type and reports it "
+            "in metadata.mesh_type."
+        )
 
 
 def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: str = None, use_color: bool = True):
@@ -71,64 +107,123 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
 
     # Metadata summary
     meta_a = data_a.get("metadata", {})
-    meta_str = ""
-    if meta_a:
-        meta_items = [f"{k}: {v:,}" if isinstance(v, (int, float)) else f"{k}: {v}" for k, v in meta_a.items()]
-        meta_str = f" ({', '.join(meta_items)})"
+    meta_b = data_b.get("metadata", {})
 
-    col_a = f"{name_a} Median"
-    col_b = f"{name_b} Median"
-    col_speedup = f"Speedup ({name_b}/{name_a})"
-    col_rss = f"Peak RSS ({name_a}/{name_b})"
+    def format_metadata(metadata):
+        return ", ".join(
+            f"{k}: {v:,}" if isinstance(v, (int, float)) else f"{k}: {v}"
+            for k, v in metadata.items()
+        )
 
-    print("=" * 110)
-    print(f"VCLib Benchmark Comparison: {name_a} vs {name_b}")
-    print(f"Dataset: {dataset_str}{meta_str}")
-    print("=" * 110)
-    header = f"{'Benchmark Name':<32} {col_a:>14} {col_b:>14} {col_speedup:>20} {col_rss:>24}"
-    print(header)
-    print("-" * 110)
+    dataset_line = f"Dataset: {dataset_str}"
+    metadata_lines = []
+    if meta_a == meta_b:
+        if meta_a:
+            dataset_line += f" ({format_metadata(meta_a)})"
+    else:
+        metadata_lines = [
+            f"Metadata ({name_a}): {format_metadata(meta_a)}",
+            f"Metadata ({name_b}): {format_metadata(meta_b)}",
+        ]
+
+    headers = [
+        "Benchmark Name",
+        f"{name_a} Median",
+        f"{name_b} Median",
+        f"Speedup ({name_b}/{name_a})",
+        f"Peak RSS ({name_a}/{name_b})",
+    ]
 
     all_names = list(benches_a.keys())
     for name in benches_b.keys():
         if name not in all_names:
             all_names.append(name)
 
-    speedups = []
-
+    # Benchmarks are grouped by the path of their name (e.g. stat/topology)
+    groups = {}
     for name in all_names:
-        ba = benches_a.get(name)
-        bb = benches_b.get(name)
+        group, short = split_group(name)
+        groups.setdefault(group, []).append((name, short))
 
-        if ba is None:
-            print(f"{name:<32} {'--':>14} {format_time(bb['time_median_ms']):>14} {f'{name_b} only':>20}")
-            continue
-        if bb is None:
-            print(f"{name:<32} {format_time(ba['time_median_ms']):>14} {'--':>14} {f'{name_a} only':>20}")
-            continue
+    speedups = []
+    ignored = 0
+    # each entry is either a group title (str) or a row (list of 5 str)
+    lines = []
 
-        ta = ba["time_median_ms"]
-        tb = bb["time_median_ms"]
-        rssa = ba.get("peak_rss_mb", 0.0)
-        rssb = bb.get("peak_rss_mb", 0.0)
+    for group, items in groups.items():
+        if group:
+            lines.append(group)
+        for name, short in items:
+            display = f"  {short}" if group else short
+            ba = benches_a.get(name)
+            bb = benches_b.get(name)
 
-        speedup_str = format_speedup(ta, tb, use_color=use_color)
-        rss_str = format_rss(rssa, rssb)
+            if ba is None:
+                lines.append([display, "--", format_time(bb["time_median_ms"]), f"{name_b} only", ""])
+                continue
+            if bb is None:
+                lines.append([display, format_time(ba["time_median_ms"]), "--", f"{name_a} only", ""])
+                continue
 
-        if tb > 0:
-            speedups.append(ta / tb)
+            ta = ba["time_median_ms"]
+            tb = bb["time_median_ms"]
+            # benchmarks below 1 µs on both sides are just noise
+            if tb > 0 and max(ta, tb) >= 0.001:
+                speedups.append(ta / tb)
+            else:
+                ignored += 1
 
-        pad = 20
-        if use_color and ("\033[" in speedup_str):
-            pad += 9
+            lines.append(
+                [
+                    display,
+                    format_time(ta),
+                    format_time(tb),
+                    format_speedup(ta, tb, use_color=use_color),
+                    format_rss(ba.get("peak_rss_mb", 0.0), bb.get("peak_rss_mb", 0.0)),
+                ]
+            )
 
-        print(f"{name:<32} {format_time(ta):>14} {format_time(tb):>14} {speedup_str:>{pad}} {rss_str:>24}")
+    rows = [line for line in lines if not isinstance(line, str)]
+    widths = [visible_len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            widths[i] = max(widths[i], visible_len(cell))
 
-    print("=" * 110)
+    title = f"VCLib Benchmark Comparison: {name_a} vs {name_b}"
+    total = max(
+        sum(widths) + 2 * (len(widths) - 1),
+        len(title),
+        len(dataset_line),
+        *(len(line) for line in metadata_lines),
+    )
+
+    def format_row(row):
+        cells = [pad(row[0], widths[0], left=True)]
+        cells += [pad(cell, widths[i]) for i, cell in enumerate(row[1:], start=1)]
+        return "  ".join(cells).rstrip()
+
+    print("=" * total)
+    print(title)
+    print(dataset_line)
+    for line in metadata_lines:
+        print(line)
+    print("=" * total)
+    print(format_row(headers))
+    print("-" * total)
+
+    for line in lines:
+        if isinstance(line, str):
+            print(f"\033[1m{line}\033[0m" if use_color else line)
+        else:
+            print(format_row(line))
+
+    print("=" * total)
     if speedups:
         geom_mean = math.exp(sum(math.log(s) for s in speedups) / len(speedups))
         print(f"Geometric Mean Speedup: {geom_mean:.2f}x ({name_b} relative to {name_a}) across {len(speedups)} benchmarks")
-        print("=" * 110)
+        if ignored:
+            print(f"(benchmarks faster than 1 µs in both reports are not included: {ignored})")
+        print("=" * total)
 
 
 def main():
@@ -140,6 +235,7 @@ def main():
     parser.add_argument("--bin-a", help="Path to first benchmark executable")
     parser.add_argument("--bin-b", help="Path to second benchmark executable")
     parser.add_argument("--args", default="", help="Additional arguments forwarded to both benchmark binaries")
+    parser.add_argument("--mesh-type", help="Mesh representation forwarded to both binaries (and verified in their reports)")
     parser.add_argument("--label-a", help="Custom label for report/binary A")
     parser.add_argument("--label-b", help="Custom label for report/binary B")
     parser.add_argument("--iterations", type=int, default=5, help="Number of benchmark iterations")
@@ -157,6 +253,18 @@ def main():
 
         try:
             extra = shlex.split(args.args)
+            if args.mesh_type is not None:
+                extra += ["--mesh-type", args.mesh_type]
+            forwarded_parser = argparse.ArgumentParser(
+                add_help=False, allow_abbrev=False
+            )
+            forwarded_parser.add_argument("--mesh-type")
+            forwarded_parser.add_argument("--config")
+            forwarded, _ = forwarded_parser.parse_known_args(extra)
+            mesh_type = forwarded.mesh_type
+            if mesh_type is None and forwarded.config:
+                with open(forwarded.config) as f:
+                    mesh_type = json.load(f).get("mesh_type")
             cmd_a = [args.bin_a, "--json", path_a, "--iterations", str(args.iterations)] + extra
             cmd_b = [args.bin_b, "--json", path_b, "--iterations", str(args.iterations)] + extra
 
@@ -174,6 +282,10 @@ def main():
             with open(path_b, "r") as fb:
                 data_b = json.load(fb)
 
+            if mesh_type is not None:
+                require_mesh_type(data_a, mesh_type, label_a)
+                require_mesh_type(data_b, mesh_type, label_b)
+
             print("\n")
             compare_reports(data_a, data_b, label_a=args.label_a, label_b=args.label_b, use_color=use_color)
         finally:
@@ -185,6 +297,8 @@ def main():
 
     # Mode 2: Compare two existing JSON report files
     if args.report_a and args.report_b:
+        if args.mesh_type is not None:
+            parser.error("--mesh-type requires --bin-a and --bin-b")
         with open(args.report_a, "r") as fa:
             data_a = json.load(fa)
         with open(args.report_b, "r") as fb:

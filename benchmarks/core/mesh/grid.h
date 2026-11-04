@@ -5,12 +5,10 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-#ifndef LOAD_MATRICES_H
-#define LOAD_MATRICES_H
+#ifndef BENCH_GRID_H
+#define BENCH_GRID_H
 
-#include <vclib/algorithms.h>
-#include <vclib/io.h>
-#include <vclib/meshes.h>
+#include <vclib/base.h>
 
 #include <Eigen/Core>
 
@@ -26,26 +24,6 @@ struct MeshMatrices
     VMatrix vertices;
     FMatrix faces;
 };
-
-/**
- * @brief Loads a mesh from the given file path and returns its vertex positions
- * and face vertex indices as Eigen matrices.
- *
- * @param[in] path The path to the mesh file (e.g. .obj, .ply, .off, .stl).
- * @return MeshMatrices containing vertices (V x 3) and faces (F x 3).
- */
-template<
-    typename VMatrix = Eigen::MatrixX3d,
-    typename FMatrix = Eigen::MatrixX3i>
-inline MeshMatrices<VMatrix, FMatrix> loadMeshMatrices(const std::string& path)
-{
-    vcl::TriMesh mesh = vcl::loadMesh<vcl::TriMesh>(path);
-
-    MeshMatrices<VMatrix, FMatrix> matrices;
-    matrices.vertices = vcl::vertexPositionsMatrix<VMatrix>(mesh);
-    matrices.faces    = vcl::faceVertexIndicesMatrix<FMatrix>(mesh);
-    return matrices;
-}
 
 /**
  * @brief Generates a regular triangulated grid as Eigen matrices.
@@ -100,4 +78,4 @@ inline MeshMatrices<Eigen::MatrixX3d, Eigen::MatrixX3i> makeGridMatrices(
 
 } // namespace bench
 
-#endif // LOAD_MATRICES_H
+#endif // BENCH_GRID_H

@@ -46,21 +46,8 @@ void main()
     vec4 vertexBaseColor  = vec4_splat(1.0);
     vec4 textureBaseColor = vec4_splat(1.0);
 
-    // color to use per vertex
-    // if the user selected per face, per mesh or per user, override
-    if (isSurfaceColorFace()) {
-        vertexBaseColor = uintABGRToVec4Color(rawLoadUint(primitiveColors, primitiveID));
-    }
-    else if (isSurfaceColorMesh()) {
-        vertexBaseColor = u_meshColor;
-    }
-    else if (isSurfaceColorUser()) {
-        vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
-    }
-    else {
-        if (isPerVertexColorAvailable())
-            vertexBaseColor = v_color; // per-vertex color available
-    }
+    if (isPerVertexColorAvailable())
+        vertexBaseColor = v_color; // per-vertex color available
 
     if (useTexture && isBaseColorTextureAvailable()) {
         // base color texture available

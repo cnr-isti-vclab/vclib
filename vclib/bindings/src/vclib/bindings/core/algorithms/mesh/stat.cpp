@@ -48,7 +48,7 @@ void initStatAlgorithms(pybind11::module& m)
                double                     diskRadius,
                double                     radiusVariance,
                bool                       invert) {
-                return vcl::vertexRadiusFromWeights<double>(
+                return vcl::vertexRadiusFromWeights(
                     m, weights, diskRadius, radiusVariance, invert);
             },
             py::arg("mesh"),
