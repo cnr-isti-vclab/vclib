@@ -50,6 +50,24 @@ inline std::shared_ptr<unsigned char> loadImageData(
     return ptr;
 }
 
+inline std::shared_ptr<unsigned char> loadImageData(
+    const void* buffer,
+    std::size_t size,
+    int&        w,
+    int&        h)
+{
+    std::shared_ptr<unsigned char> ptr(
+        stbi_load_from_memory(
+            reinterpret_cast<const stbi_uc*>(buffer),
+            static_cast<int>(size),
+            &w,
+            &h,
+            nullptr,
+            4),
+        stbi_image_free);
+    return ptr;
+}
+
 } // namespace vcl::stb
 
 #endif // VCL_IO_IMAGE_STB_LOAD_H

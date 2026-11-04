@@ -9,6 +9,7 @@
 #define VCL_IO_MESH_3MF_LOAD_H
 
 #include <vclib/io/file_info.h>
+#include <vclib/io/image/load.h>
 #include <vclib/io/mesh/settings.h>
 
 #include <vclib/algorithms/mesh.h>
@@ -28,18 +29,44 @@ namespace vcl {
 
 namespace detail {
 
+struct Texture2DGroupData
+{
+    Lib3MF::PTexture2DGroup group;
+    int                     materialIndex = -1;
+};
+
 struct ResourcesMap
 {
     std::unordered_map<uint, Lib3MF::PBaseMaterialGroup> baseMaterialGroupsMap;
     std::unordered_map<uint, Lib3MF::PColorGroup>        colorGroupsMap;
+    std::unordered_map<uint, Texture2DGroupData>         texture2DGroupsMap;
+    std::unordered_map<uint, int>                        textureToMaterialIndexMap;
     std::unordered_map<uint, Lib3MF::ePropertyType>      propertyTypesMap;
+};
+
+struct MeshInfoFlags
+{
+    bool faceColorsFlag    = false;
+    bool faceTexCoordsFlag = false;
 };
 
 template<MeshConcept MeshType>
 bool canStoreFaceColors(MeshType& m, bool enableOptionalComponents)
+
 {
     return isPerFaceColorAvailable(m) ||
            (enableOptionalComponents && enableIfPerFaceColorOptional(m));
+}
+
+template<MeshConcept MeshType>
+bool canStoreFaceTexCoords(MeshType& m, bool enableOptionalComponents)
+{
+    return (isPerFaceWedgeTexCoordsAvailable(m) ||
+            (enableOptionalComponents &&
+             enableIfPerFaceWedgeTexCoordsOptional(m))) &&
+           (isPerFaceMaterialIndexAvailable(m) ||
+            (enableOptionalComponents &&
+             enableIfPerFaceMaterialIndexOptional(m)));
 }
 
 template<Matrix44Concept MatrixType>
@@ -59,6 +86,39 @@ MatrixType sTransformToVclMatrix(const Lib3MF::sTransform& m)
 vcl::Color inline sColorToVclColor(const Lib3MF::sColor& c)
 {
     return vcl::Color(c.m_Red, c.m_Green, c.m_Blue, c.m_Alpha);
+}
+
+template<typename T>
+concept VclTextureFilter =
+    std::same_as<T, TextureDescriptor::MinificationFilter> ||
+    std::same_as<T, TextureDescriptor::MagnificationFilter>;
+
+template<VclTextureFilter TextureFilterType>
+TextureFilterType eTextureFilterToVclFilter(const Lib3MF::eTextureFilter& tf)
+{
+    switch (tf) {
+    case Lib3MF::eTextureFilter::Auto:
+    case Lib3MF::eTextureFilter::Linear: return TextureFilterType::LINEAR;
+    case Lib3MF::eTextureFilter::Nearest: return TextureFilterType::NEAREST;
+    }
+
+    throw MalformedFileException("Invalid 3mf filter");
+}
+
+TextureDescriptor::WrapMode inline eTextureTileStyleToVclWrapMode(
+    const Lib3MF::eTextureTileStyle& ttt)
+{
+    switch (ttt) {
+    case Lib3MF::eTextureTileStyle::Wrap:
+        return TextureDescriptor::WrapMode::REPEAT;
+    case Lib3MF::eTextureTileStyle::Mirror:
+        return TextureDescriptor::WrapMode::MIRRORED_REPEAT;
+    case Lib3MF::eTextureTileStyle::Clamp:
+    case Lib3MF::eTextureTileStyle::NoTileStyle:
+        return TextureDescriptor::WrapMode::CLAMP_TO_EDGE;
+    }
+
+    throw MalformedFileException("Invalid 3mf wrapping mode");
 }
 
 template<MeshConcept MeshType>
@@ -81,10 +141,64 @@ void read3mfTriangles(
 }
 
 template<MeshConcept MeshType>
+int read3mfTexture(
+    MeshType&                  m,
+    const Lib3MF::PTexture2D&  textureProperty,
+    const Lib3MF::PAttachment& textureAttachment,
+    const LoadSettings&        settings)
+{
+    if (!textureAttachment || !textureProperty) {
+        throw MalformedFileException(
+            "Texture attachment or property not found in 3MF package");
+    }
+
+    Material                mat;
+    vcl::TextureDescriptor& texture =
+        mat.textureDescriptor(Material::TextureType::BASE_COLOR);
+
+    std::string               uri = textureAttachment->GetPath();
+    Lib3MF::eTextureTileStyle wrapU, wrapV;
+    textureProperty->GetTileStyleUV(wrapU, wrapV);
+    Lib3MF::eTextureFilter textureFilter = textureProperty->GetFilter();
+
+    texture.path() = uri;
+    texture.minFilter() =
+        textureFilter == Lib3MF::eTextureFilter::Auto ?
+            TextureDescriptor::MinificationFilter::LINEAR_MIPMAP_LINEAR :
+            eTextureFilterToVclFilter<TextureDescriptor::MinificationFilter>(
+                textureFilter);
+    texture.magFilter() =
+        eTextureFilterToVclFilter<TextureDescriptor::MagnificationFilter>(
+            textureFilter);
+    texture.wrapU() = eTextureTileStyleToVclWrapMode(wrapU);
+    texture.wrapV() = eTextureTileStyleToVclWrapMode(wrapV);
+
+    if (settings.loadTextureImages) {
+        std::vector<unsigned char> buffer;
+        textureAttachment->WriteToBuffer(buffer);
+
+        Image timg = loadImage(buffer.data(), buffer.size());
+
+        if (timg.isNull()) {
+            throw MalformedFileException("Cannot decode 3MF texture");
+        }
+
+        timg.colorSpace() = Material::textureTypeToColorSpace(
+            Material::TextureType::BASE_COLOR);
+
+        m.pushTextureImage(uri, std::move(timg));
+    }
+
+    m.pushMaterial(mat);
+
+    return m.materialCount() - 1;
+}
+
+template<MeshConcept MeshType>
 bool readTriangleBaseMaterial(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     bool                  enableOptionalComponents,
@@ -116,7 +230,7 @@ template<MeshConcept MeshType>
 bool readTriangleColors(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
     bool                  enableOptionalComponents,
@@ -145,14 +259,73 @@ bool readTriangleColors(
 }
 
 template<MeshConcept MeshType>
-bool readTriangleProperties(
+bool readTriangleTexCoords(
     MeshType&             m,
     uint                  uniqueResourceID,
-    uint                  propertyID[3],
+    const uint            propertyID[3],
     uint                  faceID,
     const Lib3MF::PModel& model,
-    bool                  enableOptionalComponents,
+    const LoadSettings&   settings,
     ResourcesMap&         resourcesMap)
+{
+    if constexpr (
+        HasMaterials<MeshType> && HasPerFaceWedgeTexCoords<MeshType> &&
+        HasPerFaceMaterialIndex<MeshType>) {
+        if (canStoreFaceTexCoords(m, settings.enableOptionalComponents)) {
+            auto& groupData = resourcesMap.texture2DGroupsMap[uniqueResourceID];
+            if (!groupData.group) {
+                groupData.group =
+                    model->GetTexture2DGroupByID(uniqueResourceID);
+                const auto tex2D = groupData.group->GetTexture2D();
+                if (!tex2D) {
+                    throw MalformedFileException(
+                        "3MF Texture2DGroup is missing Texture2D reference");
+                }
+                const uint tex2DId = tex2D->GetUniqueResourceID();
+
+                auto [it, inserted] =
+                    resourcesMap.textureToMaterialIndexMap.try_emplace(
+                        tex2DId, -1);
+                if (inserted || it->second == -1) {
+                    const auto a = tex2D->GetAttachment();
+                    it->second   = read3mfTexture(m, tex2D, a, settings);
+                }
+
+                groupData.materialIndex = it->second;
+            }
+
+            using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
+
+            const auto& uv0 = groupData.group->GetTex2Coord(propertyID[0]);
+            const auto& uv1 = groupData.group->GetTex2Coord(propertyID[1]);
+            const auto& uv2 = groupData.group->GetTex2Coord(propertyID[2]);
+
+            m.face(faceID).wedgeTexCoord(0) =
+                WedgeTexCoordType(uv0.m_U, uv0.m_V);
+            m.face(faceID).wedgeTexCoord(1) =
+                WedgeTexCoordType(uv1.m_U, uv1.m_V);
+            m.face(faceID).wedgeTexCoord(2) =
+                WedgeTexCoordType(uv2.m_U, uv2.m_V);
+
+            m.face(faceID).materialIndex() = groupData.materialIndex;
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+template<MeshConcept MeshType>
+void readTriangleProperties(
+    MeshType&             m,
+    uint                  uniqueResourceID,
+    const uint            propertyID[3],
+    uint                  faceID,
+    const Lib3MF::PModel& model,
+    const LoadSettings&   settings,
+    ResourcesMap&         resourcesMap,
+    MeshInfoFlags&        infoFlags)
 {
     auto it = resourcesMap.propertyTypesMap.find(uniqueResourceID);
     if (it == resourcesMap.propertyTypesMap.end()) {
@@ -164,31 +337,40 @@ bool readTriangleProperties(
     }
 
     switch (it->second) {
-    case Lib3MF::ePropertyType::NoPropertyType: return false;
+    case Lib3MF::ePropertyType::NoPropertyType: break;
     case Lib3MF::ePropertyType::BaseMaterial:
-        return readTriangleBaseMaterial(
+        infoFlags.faceColorsFlag |= readTriangleBaseMaterial(
             m,
             uniqueResourceID,
             propertyID,
             faceID,
             model,
-            enableOptionalComponents,
+            settings.enableOptionalComponents,
             resourcesMap);
-    case Lib3MF::ePropertyType::TexCoord: return false;
+        break;
+    case Lib3MF::ePropertyType::TexCoord:
+        infoFlags.faceTexCoordsFlag |= readTriangleTexCoords(
+            m,
+            uniqueResourceID,
+            propertyID,
+            faceID,
+            model,
+            settings,
+            resourcesMap);
+        break;
     case Lib3MF::ePropertyType::Colors:
-        return readTriangleColors(
+        infoFlags.faceColorsFlag |= readTriangleColors(
             m,
             uniqueResourceID,
             propertyID,
             faceID,
             model,
-            enableOptionalComponents,
+            settings.enableOptionalComponents,
             resourcesMap);
-    case Lib3MF::ePropertyType::Composite: return false;
-    case Lib3MF::ePropertyType::Multi: return false;
+        break;
+    case Lib3MF::ePropertyType::Composite: break;
+    case Lib3MF::ePropertyType::Multi: break;
     }
-
-    return false;
 }
 
 template<MeshConcept MeshType>
@@ -237,7 +419,7 @@ void readMeshObject(
     const Lib3MF::PMeshObject& meshObject,
     const MatrixType&          transf,
     const Lib3MF::PModel&      model,
-    bool                       enableOptionalComponents)
+    const LoadSettings&        settings)
 {
     MeshType newMesh;
     MeshInfo newInfos;
@@ -272,9 +454,10 @@ void readMeshObject(
         vcl::applyTransformMatrix(newMesh, transf);
     }
 
-    ResourcesMap resourcesMap;
-    uint         uniqueResourceID, propertyID;
-    const bool   hasObjectLevelProperty =
+    ResourcesMap  resourcesMap;
+    MeshInfoFlags infoFlags;
+    uint          uniqueResourceID, propertyID;
+    const bool    hasObjectLevelProperty =
         meshObject->GetObjectLevelProperty(uniqueResourceID, propertyID);
 
     if (hasObjectLevelProperty) {
@@ -283,28 +466,32 @@ void readMeshObject(
     }
 
     if constexpr (HasFaces<MeshType>) {
-        bool                        faceColorFlag = false;
-        const uint                  nTriangles = meshObject->GetTriangleCount();
-        Lib3MF::sTriangleProperties triangleProperties;
+        std::vector<Lib3MF::sTriangleProperties> allTriangleProperties;
+        meshObject->GetAllTriangleProperties(allTriangleProperties);
 
-        for (uint i = 0; i < nTriangles; i++) {
-            meshObject->GetTriangleProperties(i, triangleProperties);
+        for (uint i = 0; i < allTriangleProperties.size(); i++) {
+            const auto& triangleProperties = allTriangleProperties[i];
 
             if (triangleProperties.m_ResourceID != 0) {
-                const bool hasFaceColor = readTriangleProperties(
+                readTriangleProperties(
                     newMesh,
                     triangleProperties.m_ResourceID,
                     triangleProperties.m_PropertyIDs,
                     i,
                     model,
-                    enableOptionalComponents,
-                    resourcesMap);
-                faceColorFlag = faceColorFlag || hasFaceColor;
+                    settings,
+                    resourcesMap,
+                    infoFlags);
             }
         }
 
-        if (faceColorFlag)
+        if (infoFlags.faceColorsFlag)
             newInfos.setPerFaceColor();
+        if (infoFlags.faceTexCoordsFlag) {
+            newInfos.setMaterials();
+            newInfos.setPerFaceMaterialIndex();
+            newInfos.setPerFaceWedgeTexCoords();
+        }
     }
 
     m.push_back(std::move(newMesh));
@@ -318,14 +505,13 @@ void readObject(
     const Lib3MF::PObject& currObject,
     const MatrixType&      transf,
     const Lib3MF::PModel&  model,
-    bool                   enableOptionalComponents)
+    const LoadSettings&    settings)
 {
     if (currObject->IsMeshObject()) {
         const Lib3MF::PMeshObject currMeshObject =
             model->GetMeshObjectByID(currObject->GetUniqueResourceID());
 
-        readMeshObject(
-            m, info, currMeshObject, transf, model, enableOptionalComponents);
+        readMeshObject(m, info, currMeshObject, transf, model, settings);
     }
     else if (currObject->IsComponentsObject()) {
         // recursive call: for each component, read the corresponding object and
@@ -348,13 +534,7 @@ void readObject(
                 componentTransform = transf;
             }
 
-            readObject(
-                m,
-                info,
-                currObj,
-                componentTransform,
-                model,
-                enableOptionalComponents);
+            readObject(m, info, currObj, componentTransform, model, settings);
         }
     }
 }
@@ -369,6 +549,10 @@ void load3mf(
     const LoadSettings&    settings = LoadSettings(),
     LogType&               log      = nullLogger)
 {
+    if (!FileInfo::exists(filename)) {
+        throw CannotOpenFileException(filename);
+    }
+
     try {
         // entrypoint to the 3MF library
         Lib3MF::PWrapper wrapper = Lib3MF::CWrapper::loadLibrary();
@@ -402,16 +586,11 @@ void load3mf(
             }
 
             detail::readObject(
-                m,
-                loadedInfo,
-                currObject,
-                transformMatrix,
-                model,
-                settings.enableOptionalComponents);
+                m, loadedInfo, currObject, transformMatrix, model, settings);
         }
     }
     catch (Lib3MF::ELib3MFException& e) {
-        throw CannotOpenFileException(
+        throw MalformedFileException(
             "Failed to load 3MF file: " + filename + ":\n" + e.what());
     }
 }
