@@ -49,7 +49,7 @@ mat3 tangentFrameFromGivenVectors(vec3 tangent, vec3 bitangent, vec3 normal, boo
  */
 mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
-    // see https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+    // modified from https://learnopengl.com/Advanced-Lighting/Normal-Mapping
 
     // get UV derivatives
     vec2 uv_dx = dFdx(UV); // = vec2(du1, dv1)
@@ -63,6 +63,11 @@ mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacin
             uv_dy = vec2(0.0, 1.0);
     */
 
+    vec3 p_dx = dFdx(position);
+    vec3 p_dy = dFdy(position);
+
+    float invDet = 1.0 / (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+
     // compute tangent based on the fact that the edges of the triangle can be expressed as:
     // e1 = du1 * t + dv1 * b
     // e2 = du2 * t + dv2 * b
@@ -70,15 +75,18 @@ mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacin
     // e1 = dFdx(position)
     // e2 = dFdy(position)
     // we can solve the linear system to find just t:
-    vec3 t_ =
-        (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
-        (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+    vec3 t_ = ( uv_dy.y * p_dx - uv_dx.y * p_dy) * invDet;
+    // compute also b from uv derivatives
+    vec3 b_ = (-uv_dy.x * p_dx + uv_dx.x * p_dy) * invDet;
 
     vec3 n = normalize(normal);
     // computed tangent t_ may not be orthogonal to normal, make it so
     vec3 t = normalize(t_ - n * dot(n, t_));
     // compute bitangent as cross product (orthongonal to both normal and tangent)
     vec3 b = cross(n, t);
+
+    // Match the bitangent orientation to increasing texture V.
+    b *= dot(b, b_) < 0.0 ? -1.0 : 1.0;
 
     if(!frontFacing)
     {
