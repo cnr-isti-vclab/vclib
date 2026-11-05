@@ -157,7 +157,8 @@ void main()
         anisotropyDirection = normalize(mul(anisotropyDirection, anisotropyRot));
 
         anisotropicTangent = normalize(mul(vec3(anisotropyDirection, 0.0), tangentFrame));
-        anisotropicBitangent = normalize(cross(normal, anisotropicTangent));
+        // use geometric normal from tangent frame for bitangent calculation
+        anisotropicBitangent = normalize(cross(tangentFrame[2], anisotropicTangent));
     }
 
     float specular = u_specularFactor;
