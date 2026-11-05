@@ -7,7 +7,7 @@
 
 #include "benchmark.h"
 
-#include <vclib/algorithms/mesh/point_sampling.h>
+#include <vclib/algorithms/mesh.h>
 
 #include <algorithm>
 #include <vector>

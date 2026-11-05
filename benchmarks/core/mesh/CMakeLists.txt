@@ -26,6 +26,7 @@ set(SOURCES
     stat/bounding_box.cpp
     stat/geometry.cpp
     stat/topology.cpp
+    update/curvature.cpp
     update/normal.cpp
     update/topology.cpp
     update/transform.cpp

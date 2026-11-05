@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/stat/bounding_box.h>
+#include <vclib/algorithms/mesh.h>
 
 BENCH(
     "stat/bounding_box/bounding_box",

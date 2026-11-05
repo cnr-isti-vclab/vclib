@@ -1,6 +1,6 @@
 #include "../benchmark.h"
 
-#include <vclib/space/complex/mesh_inertia.h>
+#include <vclib/space/complex.h>
 
 #include <cmath>
 #include <utility>

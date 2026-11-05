@@ -7,11 +7,11 @@
 
 #include "benchmark.h"
 
-#include <vclib/algorithms/mesh/convex_hull.h>
+#include <vclib/algorithms/mesh.h>
 
 #include <vector>
 
-BENCH(
+BENCH_SLOW(
     "convex_hull/convex_hull",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if constexpr (!vcl::FaceMeshConcept<Mesh>) {

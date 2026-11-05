@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/update/transform.h>
+#include <vclib/algorithms/mesh.h>
 #include <vclib/space/core.h>
 
 #include <cmath>
