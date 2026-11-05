@@ -16,6 +16,7 @@
 
 #include <vclib/algorithms/mesh/update/topology.h>
 
+#include <cstdint>
 #include <memory>
 #include <print>
 #include <string>
@@ -89,15 +90,20 @@ class Context
     Mesh        mMesh;
     std::string mDatasetName;
     std::string mMeshPath;
+    uint32_t    mSeed = 0;
 
     std::unique_ptr<Mesh> mMeshWithTopology;
     std::unique_ptr<Mesh> mMeshWithSelection;
     std::unique_ptr<Mesh> mMeshWithQuality;
 
 public:
-    Context(Mesh mesh, std::string datasetName, std::string meshPath = "") :
+    Context(
+        Mesh        mesh,
+        std::string datasetName,
+        std::string meshPath = "",
+        uint32_t    seed     = 0) :
             mMesh(std::move(mesh)), mDatasetName(std::move(datasetName)),
-            mMeshPath(std::move(meshPath))
+            mMeshPath(std::move(meshPath)), mSeed(seed)
     {
     }
 
@@ -113,6 +119,11 @@ public:
      * empty if the mesh has been generated.
      */
     const std::string& meshPath() const { return mMeshPath; }
+
+    /**
+     * @brief The random seed configured for the benchmark run.
+     */
+    uint32_t seed() const { return mSeed; }
 
     /**
      * @brief A copy of the input mesh, that the benchmark is free to modify.
@@ -210,6 +221,11 @@ public:
     const Mesh& meshWithQuality() { return mContext.meshWithQuality(); }
 
     const std::string& meshPath() const { return mContext.meshPath(); }
+
+    /**
+     * @brief The random seed configured for the benchmark run.
+     */
+    uint32_t seed() const { return mContext.seed(); }
 
     /**
      * @brief Measures the given function. If it returns a value, the value is

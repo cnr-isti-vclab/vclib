@@ -195,6 +195,8 @@ inline nlohmann::json loadConfig(CommonOptions& opts)
         opts.includeSlow = config["include_slow"].get<bool>();
     if (!opts.iterationsSet && config.contains("iterations"))
         opts.iterations = config["iterations"].get<int>();
+    if (!opts.seed.has_value() && config.contains("seed"))
+        opts.seed = config["seed"].get<uint32_t>();
 
     return config;
 }

@@ -17,6 +17,7 @@
 
 #include <filesystem>
 #include <print>
+#include <random>
 #include <string>
 
 namespace fs = std::filesystem;
@@ -97,10 +98,13 @@ int runBenchmarks(
         return 1;
     }
 
+    const uint32_t seed = opts.seed.value_or(std::random_device{}());
+
     nlohmann::json metadata = {
         {"mesh_type", meshType          },
         {"vertices",  mesh.vertexCount()},
-        {"faces",     mesh.faceCount()  }
+        {"faces",     mesh.faceCount()  },
+        {"seed",      seed              }
     };
 
     std::println("==================================================");
@@ -112,15 +116,16 @@ int runBenchmarks(
         mesh.vertexCount(),
         mesh.faceCount());
     std::println(
-        "Benchmarks: {}, Iterations: {}, Warmup: {}",
+        "Benchmarks: {}, Iterations: {}, Warmup: {}, Seed: {}",
         selected.size(),
         opts.iterations,
-        opts.warmup);
+        opts.warmup,
+        seed);
     std::println("==================================================");
 
     bench::BenchmarkRunner runner(
         "v1", datasetName, metadata, opts.iterations, opts.warmup);
-    bench::Context<Mesh> context(std::move(mesh), datasetName, meshPath);
+    bench::Context<Mesh> context(std::move(mesh), datasetName, meshPath, seed);
 
     for (const auto* entry : selected) {
         bench::State<Mesh> state(runner, context, entry->name, opts.iterations);

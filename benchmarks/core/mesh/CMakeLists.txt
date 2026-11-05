@@ -12,6 +12,7 @@ set(SOURCES
     benchmark.h
     clean.cpp
     compat.h
+    convex_hull.cpp
     grid.h
     types.h
     import_export/export_matrix.cpp

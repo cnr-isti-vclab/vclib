@@ -29,6 +29,7 @@ import argparse
 import datetime
 import json
 import os
+import random
 import re
 import shutil
 import subprocess
@@ -194,6 +195,11 @@ def main():
         type=int,
         help="Iterations (default: the value of the config file, or 10)",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for benchmarks (default: random int, shared between branches)",
+    )
     parser.add_argument("-j", "--jobs", type=int, help="Parallel build jobs")
     parser.add_argument("--cpu", help="Pin the benchmarks to this CPU (taskset)")
     parser.add_argument(
@@ -249,6 +255,17 @@ def main():
         dataset_args += ["--config", config_path]
     if args.mesh_type is not None:
         dataset_args += ["--mesh-type", args.mesh_type]
+
+    seed = args.seed
+    if seed is None and config_path:
+        with open(config_path) as f:
+            cfg = json.load(f)
+            seed = cfg.get("seed")
+    if seed is None:
+        seed = random.randint(1, 2**31 - 1)
+
+    dataset_args += ["--seed", str(seed)]
+    print(f"Random seed: {seed}")
 
     this_name = current_branch_name()
     other_name = args.branch

@@ -8,7 +8,9 @@
 #ifndef VCL_BENCHMARKS_CLI_OPTIONS_H
 #define VCL_BENCHMARKS_CLI_OPTIONS_H
 
+#include <cstdint>
 #include <map>
+#include <optional>
 #include <print>
 #include <stdexcept>
 #include <string>
@@ -25,6 +27,7 @@ struct CommonOptions
     bool                     helpRequested = false;
     bool                     listOnly      = false;
     bool                     includeSlow   = false;
+    std::optional<uint32_t>  seed;
     std::string              configPath;
     std::vector<std::string> includes; // --filter
     std::vector<std::string> excludes; // --exclude
@@ -47,6 +50,9 @@ inline CommonOptions parseCommonOptions(
         else if (arg == "--iterations" && i + 1 < argc) {
             opts.iterations    = std::stoi(argv[++i]);
             opts.iterationsSet = true;
+        }
+        else if (arg == "--seed" && i + 1 < argc) {
+            opts.seed = static_cast<uint32_t>(std::stoul(argv[++i]));
         }
         else if (arg == "--filter" && i + 1 < argc) {
             opts.includes.push_back(argv[++i]);
@@ -111,6 +117,8 @@ inline void printCommonHelp(
     std::println(
         "  --iterations <N>      Number of measurement iterations (default: "
         "5)");
+    std::println(
+        "  --seed <N>            Random seed for randomized benchmarks");
     std::println(
         "  --no-warmup           Disable the initial warmup execution");
     std::println("Benchmark Selection Options:");
