@@ -17,6 +17,7 @@ set(SOURCES
     types.h
     import_export/export_matrix.cpp
     import_export/import_matrix.cpp
+    import_export/render_buffers.cpp
     io/load_mesh.cpp
     mesh/copy.cpp
     mesh/delete_and_compact.cpp
