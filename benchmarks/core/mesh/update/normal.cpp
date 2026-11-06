@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/algorithms/mesh.h>
 
 BENCH(
     "update/normal/update_per_face_normals",

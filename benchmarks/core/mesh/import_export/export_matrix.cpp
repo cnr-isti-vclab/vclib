@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/import_export/export_matrix.h>
+#include <vclib/algorithms/mesh.h>
 
 #include <Eigen/Core>
 

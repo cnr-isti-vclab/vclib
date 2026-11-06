@@ -7,7 +7,7 @@
 
 #include "benchmark.h"
 
-#include <vclib/algorithms/mesh/clean.h>
+#include <vclib/algorithms/mesh.h>
 
 BENCH(
     "clean/remove_unreferenced_vertices",

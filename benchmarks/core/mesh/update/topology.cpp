@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/update/topology.h>
+#include <vclib/algorithms/mesh.h>
 
 // The update functions clear the adjacencies before computing them, therefore
 // each iteration starts from the same state. The clear functions are measured

@@ -7,9 +7,7 @@
 
 #include "../benchmark.h"
 
-// face_topology.h is needed by stat/topology.h but it is not included by it
-#include <vclib/algorithms/mesh/face_topology.h>
-#include <vclib/algorithms/mesh/stat/topology.h>
+#include <vclib/algorithms/mesh.h>
 
 #include <vector>
 

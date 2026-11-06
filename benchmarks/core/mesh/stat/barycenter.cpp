@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/stat/barycenter.h>
+#include <vclib/algorithms/mesh.h>
 
 BENCH("stat/barycenter/barycenter", []<typename Mesh>(bench::State<Mesh>& s) {
     const Mesh& m = s.mesh();

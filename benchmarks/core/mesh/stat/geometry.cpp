@@ -7,7 +7,7 @@
 
 #include "../benchmark.h"
 
-#include <vclib/algorithms/mesh/stat/geometry.h>
+#include <vclib/algorithms/mesh.h>
 
 BENCH("stat/geometry/surface_area", []<typename Mesh>(bench::State<Mesh>& s) {
     const Mesh& m = s.mesh();
