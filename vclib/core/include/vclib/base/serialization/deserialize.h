@@ -54,7 +54,7 @@ void deserialize(std::istream& is, T& data, std::endian endian)
  * @param[in] size: number of elements to deserialize.
  * @param[in] endian: endian format of the deserialization.
  */
-template<typename T>
+template<IsNotClass T>
 void deserializeN(
     std::istream& is,
     T*            data,
@@ -66,18 +66,23 @@ void deserializeN(
     }
 }
 
-template<typename T, typename... Others>
-void deserialize(std::istream& is, T& data, Others&... others)
+template<typename T>
+requires (HasMemberDeserialize<T> || IsNotClass<T>)
+void deserialize(std::istream& is, T& data)
 {
-    if constexpr (Serializable<T>) {
+    if constexpr (HasMemberDeserialize<T>) {
         data.deserialize(is);
     }
     else {
         deserialize(is, data, std::endian::little);
     }
-    if constexpr (sizeof...(Others) > 0) {
-        deserialize(is, others...);
-    }
+}
+
+template<typename T, typename T2, typename... Others>
+void deserialize(std::istream& is, T& data, T2& second, Others&... others)
+{
+    deserialize(is, data);
+    deserialize(is, second, others...);
 }
 
 } // namespace vcl

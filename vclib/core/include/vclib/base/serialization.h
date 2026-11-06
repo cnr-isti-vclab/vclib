@@ -11,4 +11,18 @@
 #include "serialization/stl_deserialize.h"
 #include "serialization/stl_serialize.h"
 
+namespace vcl {
+
+/**
+ * @brief Concept that evaluates true if a type can be serialized and
+ * deserialized.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept Serializable =
+    CanSerialize<T> && (IsConst<T> || CanDeserialize<T>);
+
+} // namespace vcl
+
 #endif // VCL_BASE_SERIALIZATION_H
