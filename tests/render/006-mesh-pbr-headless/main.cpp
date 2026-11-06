@@ -18,6 +18,7 @@ TEST_CASE("PBR Rendering")
         "MetalRoughSpheres/MetalRoughSpheres.gltf",
         "CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
+        "AnisotropyRotationTest/AnisotropyRotationTest.gltf",
         "SpecularTest/SpecularTest.gltf",
         "ClearcoatWicker/ClearcoatWicker.gltf",
         "CompareEmissiveStrength/CompareEmissiveStrength.gltf"};

@@ -18,9 +18,12 @@ int main(int argc, char** argv)
     enum GLTFExamples {
         METAL_ROUGH_SPHERES_NO_TEXTURES = 0,
         METAL_ROUGH_SPHERES,
-        NORMAL_TENGENT_MIRROR_TEST,
+        NORMAL_TANGENT_MIRROR_TEST,
         COMPARE_AMBIENT_OCCLUSION,
         DAMAGED_HELMET,
+        ANISOTROPY_ROTATION_TEST,
+        ANISOTROPY_BARN_LAMP,
+        CARBON_FIBRE,
         SPECULAR_TEST,
         CLEARCOAT_TEST,
         CLEARCOAT_WICKER,
@@ -34,6 +37,9 @@ int main(int argc, char** argv)
         "/gltf/NormalTangentMirrorTest/NormalTangentMirrorTest.gltf",
         "/gltf/CompareAmbientOcclusion/CompareAmbientOcclusion.gltf",
         "/gltf/DamagedHelmet/DamagedHelmet.gltf",
+        "/gltf/AnisotropyRotationTest/AnisotropyRotationTest.gltf",
+        "/gltf/AnisotropyBarnLamp/AnisotropyBarnLamp.gltf",
+        "/gltf/CarbonFibre/CarbonFibre.gltf",
         "/gltf/SpecularTest/SpecularTest.gltf",
         "/gltf/ClearCoatTest/ClearCoatTest.gltf",
         "/gltf/ClearcoatWicker/ClearcoatWicker.gltf",
@@ -83,6 +89,9 @@ int main(int argc, char** argv)
         else if (type == EMISSIVE) {
             typeName = "emissive";
         }
+        else if (type == ANISOTROPY) {
+            typeName = "anisotropy";
+        }
         else if (type == SPECULAR) {
             typeName = "specular";
         }
@@ -130,6 +139,10 @@ int main(int argc, char** argv)
             std::cout << "  normalScale: " << mat.normalScale() << std::endl;
             std::cout << "  occlusionStrength: " << mat.occlusionStrength()
                       << std::endl;
+            std::cout << "  anisotropyStrength: " << mat.anisotropyStrength()
+                      << std::endl;
+            std::cout << "  anisotropyRotation: " << mat.anisotropyRotation()
+                      << std::endl;
             std::cout << "  specularFactor: " << mat.specularFactor()
                       << std::endl;
             std::cout << "  specularColorFactor: " << mat.specularColor()
@@ -147,6 +160,7 @@ int main(int argc, char** argv)
             printTextureInfo(mat, NORMAL);
             printTextureInfo(mat, OCCLUSION);
             printTextureInfo(mat, EMISSIVE);
+            printTextureInfo(mat, ANISOTROPY);
             printTextureInfo(mat, SPECULAR);
             printTextureInfo(mat, SPECULAR_COLOR);
             printTextureInfo(mat, CLEARCOAT);

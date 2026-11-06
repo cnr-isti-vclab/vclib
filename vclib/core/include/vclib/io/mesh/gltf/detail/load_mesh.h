@@ -56,11 +56,14 @@ int loadGltfPrimitiveMaterial(
         int     clearcoatTextureId          = -1;
         int     clearcoatRoughnessTextureId = -1;
         int     clearcoatNormalTextureId    = -1;
-        double  emissiveStrength            = 1.0f;
         double  specularFactor              = 1.0;
         Point3f specularColor               = Point3f(1.0, 1.0, 1.0);
         int     specularTextureId           = -1;
         int     specularColorTextureId      = -1;
+        double  emissiveStrength            = 1.0f;
+        double  anisotropyStrength          = 0.0;
+        double  anisotropyRotation          = 0.0;
+        int     anisotropyTextureId         = -1;
 
         const tinygltf::Material& mat = model.materials[p.material];
 
@@ -123,6 +126,37 @@ int loadGltfPrimitiveMaterial(
         occlusionStrength = mat.occlusionTexture.strength;
 
         // extensions
+
+        // KHR_materials_anisotropy
+        {
+            static const std::string EXT        = "KHR_materials_anisotropy";
+            static const std::string STRENGTH   = "anisotropyStrength";
+            static const std::string ROTATION   = "anisotropyRotation";
+            static const std::string TEXTURE    = "anisotropyTexture";
+            if (mat.extensions.contains(EXT)) {
+                const auto& anisotropyExt =
+                    mat.extensions.at(EXT);
+
+                if (anisotropyExt.Has(STRENGTH)) {
+                    anisotropyStrength = anisotropyExt.Get(STRENGTH)
+                                             .GetNumberAsDouble();
+                    anisotropyStrength =
+                        std::clamp(anisotropyStrength, 0.0, 1.0);
+                }
+
+                if (anisotropyExt.Has(ROTATION)) {
+                    anisotropyRotation = anisotropyExt.Get(ROTATION)
+                                             .GetNumberAsDouble();
+                }
+
+                if (anisotropyExt.Has(TEXTURE)) {
+                    auto& tex = anisotropyExt.Get(TEXTURE);
+                    if (tex.Has("index")) {
+                        anisotropyTextureId = tex.Get("index").GetNumberAsInt();
+                    }
+                }
+            }
+        }
 
         // KHR_materials_clearcoat
         {
@@ -288,6 +322,9 @@ int loadGltfPrimitiveMaterial(
             mat.clearcoatFactor()      = clearcoatFactor;
             mat.clearcoatRoughness()   = clearcoatRoughness;
             mat.clearcoatNormalScale() = clearcoatNormalScale;
+            mat.anisotropyStrength()   = anisotropyStrength;
+            mat.anisotropyRotation()   = anisotropyRotation;
+
             loadTextureInMaterial(
                 mat, baseColorTextureId, Material::TextureType::BASE_COLOR);
             loadTextureInMaterial(
@@ -300,6 +337,8 @@ int loadGltfPrimitiveMaterial(
                 mat, occlusionTextureId, Material::TextureType::OCCLUSION);
             loadTextureInMaterial(
                 mat, emissiveTextureId, Material::TextureType::EMISSIVE);
+            loadTextureInMaterial(
+                mat, anisotropyTextureId, Material::TextureType::ANISOTROPY);
             loadTextureInMaterial(
                 mat, clearcoatTextureId, Material::TextureType::CLEARCOAT);
             loadTextureInMaterial(

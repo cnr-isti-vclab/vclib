@@ -110,6 +110,10 @@ private:
     bool mDoubleSided = false;
 
     // extension PBR properties
+    float mAnisotropyStrength = 0.0f;
+
+    float mAnisotropyRotation = 0.0f;
+
     float mClearcoatFactor = 0.0f;
 
     float mClearcoatRoughness = 0.0f;
@@ -221,6 +225,24 @@ public:
     }
 
     /**
+     * @brief Gets the anisotropy strength of the material.
+     * @return The anisotropy strength, in the range [0.0, 1.0].
+     */
+     decltype(auto) anisotropyStrength(this auto&& self)
+     {
+         return (self.mAnisotropyStrength);
+     }
+
+    /**
+     * @brief Gets the anisotropy rotation of the material.
+     * @return The anisotropy rotation, in radians.
+     */
+     decltype(auto) anisotropyRotation(this auto&& self)
+     {
+         return (self.mAnisotropyRotation);
+     }
+
+    /**
      * @brief Gets the clearcoat factor.
      * @return A reference to the clearcoat factor value,
      * in the range [0.0, 1.0].
@@ -328,6 +350,8 @@ public:
         vcl::serialize(os, mClearcoatFactor);
         vcl::serialize(os, mClearcoatRoughness);
         vcl::serialize(os, mClearcoatNormalScale);
+        vcl::serialize(os, mAnisotropyStrength);
+        vcl::serialize(os, mAnisotropyRotation);
         vcl::serialize(os, mSpecularFactor);
         mSpecularColor.serialize(os);
         vcl::serialize(os, mTextureDescriptors);
@@ -351,6 +375,8 @@ public:
         vcl::deserialize(is, mClearcoatFactor);
         vcl::deserialize(is, mClearcoatRoughness);
         vcl::deserialize(is, mClearcoatNormalScale);
+        vcl::deserialize(is, mAnisotropyStrength);
+        vcl::deserialize(is, mAnisotropyRotation);
         vcl::deserialize(is, mSpecularFactor);
         mSpecularColor.deserialize(is);
         vcl::deserialize(is, mTextureDescriptors);
