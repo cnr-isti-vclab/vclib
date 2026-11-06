@@ -228,19 +228,19 @@ public:
      * @brief Gets the anisotropy strength of the material.
      * @return The anisotropy strength, in the range [0.0, 1.0].
      */
-     decltype(auto) anisotropyStrength(this auto&& self)
-     {
-         return (self.mAnisotropyStrength);
-     }
+    decltype(auto) anisotropyStrength(this auto&& self)
+    {
+        return (self.mAnisotropyStrength);
+    }
 
     /**
      * @brief Gets the anisotropy rotation of the material.
      * @return The anisotropy rotation, in radians.
      */
-     decltype(auto) anisotropyRotation(this auto&& self)
-     {
-         return (self.mAnisotropyRotation);
-     }
+    decltype(auto) anisotropyRotation(this auto&& self)
+    {
+        return (self.mAnisotropyRotation);
+    }
 
     /**
      * @brief Gets the clearcoat factor.

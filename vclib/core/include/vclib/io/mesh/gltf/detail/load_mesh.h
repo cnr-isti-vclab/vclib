@@ -129,24 +129,23 @@ int loadGltfPrimitiveMaterial(
 
         // KHR_materials_anisotropy
         {
-            static const std::string EXT        = "KHR_materials_anisotropy";
-            static const std::string STRENGTH   = "anisotropyStrength";
-            static const std::string ROTATION   = "anisotropyRotation";
-            static const std::string TEXTURE    = "anisotropyTexture";
+            static const std::string EXT      = "KHR_materials_anisotropy";
+            static const std::string STRENGTH = "anisotropyStrength";
+            static const std::string ROTATION = "anisotropyRotation";
+            static const std::string TEXTURE  = "anisotropyTexture";
             if (mat.extensions.contains(EXT)) {
-                const auto& anisotropyExt =
-                    mat.extensions.at(EXT);
+                const auto& anisotropyExt = mat.extensions.at(EXT);
 
                 if (anisotropyExt.Has(STRENGTH)) {
-                    anisotropyStrength = anisotropyExt.Get(STRENGTH)
-                                             .GetNumberAsDouble();
+                    anisotropyStrength =
+                        anisotropyExt.Get(STRENGTH).GetNumberAsDouble();
                     anisotropyStrength =
                         std::clamp(anisotropyStrength, 0.0, 1.0);
                 }
 
                 if (anisotropyExt.Has(ROTATION)) {
-                    anisotropyRotation = anisotropyExt.Get(ROTATION)
-                                             .GetNumberAsDouble();
+                    anisotropyRotation =
+                        anisotropyExt.Get(ROTATION).GetNumberAsDouble();
                 }
 
                 if (anisotropyExt.Has(TEXTURE)) {
