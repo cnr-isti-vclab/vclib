@@ -98,7 +98,7 @@ int runBenchmarks(
         return 1;
     }
 
-    const uint32_t seed = opts.seed.value_or(std::random_device{}());
+    const uint32_t seed = opts.seed.value_or(std::random_device {}());
 
     nlohmann::json metadata = {
         {"mesh_type", meshType          },

@@ -51,7 +51,8 @@ void enableCurvatureComponents(Mesh& m)
 {
     if constexpr (requires { m.enablePerVertexPrincipalCurvature(); }) {
         m.enablePerVertexPrincipalCurvature();
-    } else if constexpr (requires { m.enableVertexPrincipalCurvature(); }) {
+    }
+    else if constexpr (requires { m.enableVertexPrincipalCurvature(); }) {
         m.enableVertexPrincipalCurvature();
     }
 }
