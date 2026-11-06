@@ -19,6 +19,8 @@ elseif(VCLIB_ALLOW_DOWNLOAD_CATCH2)
     )
 
     FetchContent_MakeAvailable(Catch2)
+
+    vclib_disable_target_warnings(Catch2)
 else()
     message(
         FATAL_ERROR

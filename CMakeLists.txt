@@ -37,6 +37,13 @@ option(
     ON
 )
 
+# If true, benchmarks targets will be excluded from the build
+option(
+    VCLIB_EXCLUDE_BENCHMARKS_TARGETS
+    "Exclude benchmarks targets from the build"
+    ON
+)
+
 # If true, the examples and tests of VCLib will be built just setting
 # the INCLUDE_PATH of the core module (no cmake targets).
 option(
@@ -153,6 +160,13 @@ set_target_properties(
 )
 
 add_subdirectory(${VCLIB_TESTS_DIR})
+
+set(VCLIB_BENCHMARKS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES VCLIB_BENCHMARKS_DIR ${VCLIB_BENCHMARKS_DIR}
+)
+add_subdirectory(${VCLIB_BENCHMARKS_DIR})
 
 # Install
 if(

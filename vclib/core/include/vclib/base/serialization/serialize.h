@@ -54,7 +54,7 @@ void serialize(std::ostream& os, const T& data, std::endian endian)
  * @param[in] size: number of elements to serialize.
  * @param[in] endian: endian format of the serialization.
  */
-template<typename T>
+template<IsNotClass T>
 void serializeN(
     std::ostream& os,
     const T*      data,
@@ -66,18 +66,23 @@ void serializeN(
     }
 }
 
-template<typename T, typename... Others>
-void serialize(std::ostream& os, const T& data, const Others&... others)
+template<typename T>
+requires (HasMemberSerialize<T> || IsNotClass<T>)
+void serialize(std::ostream& os, const T& data)
 {
-    if constexpr (Serializable<T>) {
+    if constexpr (HasMemberSerialize<T>) {
         data.serialize(os);
     }
     else {
         serialize(os, data, std::endian::little);
     }
-    if constexpr (sizeof...(Others) > 0) {
-        serialize(os, others...);
-    }
+}
+
+template<typename T, typename T2, typename... Others>
+void serialize(std::ostream& os, const T& data, const T2& second, const Others&... others)
+{
+    serialize(os, data);
+    serialize(os, second, others...);
 }
 
 } // namespace vcl

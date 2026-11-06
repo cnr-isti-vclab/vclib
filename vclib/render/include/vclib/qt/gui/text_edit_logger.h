@@ -9,7 +9,6 @@
 #define VCL_QT_GUI_TEXT_EDIT_LOGGER_H
 
 #include <vclib/base.h>
-#include <vclib/qt/gui/text_edit_logger/debug_io_device.h>
 
 #include <QFrame>
 
@@ -19,21 +18,15 @@ namespace Ui {
 class TextEditLogger;
 } // namespace Ui
 
-class TextEditLogger : public QFrame, public vcl::Logger<QTextStream>
+class TextEditLogger : public QFrame, public vcl::Logger
 {
     Q_OBJECT
 
     Ui::TextEditLogger* mUI;
-
-    DebugIODevice* mDebugIoDevice;
-
-    QTextStream* mDebugStream;
-    QTextStream* mErrorStream;
-    QTextStream* mMsgStream;
-    QTextStream* mWarningStream;
+    bool                mDebugEnabled = false;
 
 public:
-    using Logger<QTextStream>::startTimer;
+    using Logger::startTimer;
 
     explicit TextEditLogger(QWidget* parent = nullptr);
     ~TextEditLogger();
@@ -46,9 +39,7 @@ public:
     void setPercentage(uint newPerc) override;
 
 protected:
-    QTextStream* levelStream(LogLevel lvl) const override;
-
-    void flush(QTextStream& stream) const override;
+    void write(std::string_view line, LogLevel lvl) const override;
 };
 
 } // namespace vcl::qt

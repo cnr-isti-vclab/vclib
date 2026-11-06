@@ -32,15 +32,11 @@ void initAdjacentVertices(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "adj_vertex",
-        [](ElementType& e, uint i) {
-            return e.adjVertex(i);
-        },
+        [](ElementType& e, uint i) { return e.adjVertex(i); },
         py::return_value_policy::reference);
     c.def(
         "adj_vertex_mod",
-        [](ElementType& e, int i) {
-            return e.adjVertexMod(i);
-        },
+        [](ElementType& e, int i) { return e.adjVertexMod(i); },
         py::return_value_policy::reference);
 
     c.def(

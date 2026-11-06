@@ -20,21 +20,15 @@ void initSphere(pybind11::module& m)
     c.def(py::init<>());
     c.def(py::init<Point3d, double>(), "center"_a, "radius"_a);
 
-    c.def("center", py::overload_cast<>(&Sphered::center, py::const_));
+    c.def("center", [](const Sphered& s) { return s.center(); });
     c.def(
         "set_center",
-        [](Sphered& s, const Point3d& c) {
-            s.center() = c;
-        },
+        [](Sphered& s, const Point3d& c) { s.center() = c; },
         "center"_a);
 
-    c.def("radius", py::overload_cast<>(&Sphered::radius, py::const_));
+    c.def("radius", [](const Sphered& s) { return s.radius(); });
     c.def(
-        "set_radius",
-        [](Sphered& s, double r) {
-            s.radius() = r;
-        },
-        "radius"_a);
+        "set_radius", [](Sphered& s, double r) { s.radius() = r; }, "radius"_a);
 
     c.def("diameter", &Sphered::diameter);
     c.def("circumference", &Sphered::circumference);

@@ -23,17 +23,11 @@ void initCommonFlags(pybind11::class_<ElementType, Options...>& c)
 
     c.def("deleted", &ElementType::deleted);
     c.def("selected", py::overload_cast<>(&ElementType::selected, py::const_));
-    c.def("set_selected", [](ElementType& e, bool s) {
-        e.selected() = s;
-    });
+    c.def("set_selected", [](ElementType& e, bool s) { e.selected() = s; });
     c.def("on_border", py::overload_cast<>(&ElementType::onBorder, py::const_));
     c.def("visited", py::overload_cast<>(&ElementType::visited, py::const_));
-    c.def("set_visited", [](ElementType& e, bool v) {
-        e.visited() = v;
-    });
-    c.def("user_bit", [](ElementType& e, uint i) {
-        return e.userBit(i);
-    });
+    c.def("set_visited", [](ElementType& e, bool v) { e.visited() = v; });
+    c.def("user_bit", [](ElementType& e, uint i) { return e.userBit(i); });
     c.def("set_user_bit", [](ElementType& e, uint i, bool b) {
         e.userBit(i) = b;
     });
@@ -47,9 +41,7 @@ void initBitFlags(pybind11::class_<ElementType, Options...>& c)
 {
     namespace py = pybind11;
 
-    c.def("set_on_border", [](ElementType& e, bool b) {
-        e.onBorder() = b;
-    });
+    c.def("set_on_border", [](ElementType& e, bool b) { e.onBorder() = b; });
 }
 
 } // namespace vcl::bind

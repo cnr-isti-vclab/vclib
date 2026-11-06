@@ -34,15 +34,11 @@ void initAdjacentEdges(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "adj_edge",
-        [](ElementType& e, uint i) {
-            return e.adjEdge(i);
-        },
+        [](ElementType& e, uint i) { return e.adjEdge(i); },
         py::return_value_policy::reference);
     c.def(
         "adj_edge_mod",
-        [](ElementType& e, int i) {
-            return e.adjEdgeMod(i);
-        },
+        [](ElementType& e, int i) { return e.adjEdgeMod(i); },
         py::return_value_policy::reference);
 
     c.def(

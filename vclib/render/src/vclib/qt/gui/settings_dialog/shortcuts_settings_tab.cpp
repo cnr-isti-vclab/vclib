@@ -81,9 +81,7 @@ QWidget* ShortcutsSettingsTab::createWidget(QWidget* parent)
                 bindingsWidget,
                 &InputBindingsWidget::bindingsChanged,
                 bindingsWidget,
-                [this]() {
-                    checkConflicts();
-                });
+                [this]() { checkConflicts(); });
 
             QObject::connect(
                 toggleButton,

@@ -223,9 +223,7 @@ decltype(auto) callWithDistribution(const DistConfig<T>& distConf, Func&& func)
     else if (
         auto* custom =
             std::get_if<std::function<T(std::mt19937&)>>(&distConf)) {
-        return func([&custom](std::mt19937& g) {
-            return (*custom)(g);
-        });
+        return func([&custom](std::mt19937& g) { return (*custom)(g); });
     }
     // Case 3: The user provides std::monostate or no config, use default
     // uniform distribution with standard bounds based on the type T

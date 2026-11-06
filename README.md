@@ -12,9 +12,9 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/cnr-isti-vclab/vclib)
 
-The Visual Computing Library is a C++20 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of functionalities for mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
+The Visual Computing Library is a C++23 and python modern, multi-platform Mesh and Geometry Processing library. It provides a set of functionalities for mesh processing, rendering and visualization, and it is designed to be easily extensible customizable, and easily integrable in other projects.
 
-All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vclib/tree/main/vclib) directory inside the root of the repository. They are written in C++20, and can be built with CMake. The python side of the library is then generated using [pybind11](https://pybind11.readthedocs.io/en/stable/).
+All the modules can be found in the [vclib](https://github.com/cnr-isti-vclab/vclib/tree/main/vclib) directory inside the root of the repository. They are written in C++23, and can be built with CMake. The python side of the library is then generated using [pybind11](https://pybind11.readthedocs.io/en/stable/).
 
 The library is divided in several modules, each one with a specific purpose:
 
@@ -23,6 +23,16 @@ The library is divided in several modules, each one with a specific purpose:
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
   - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
   - **Bindings**: contains the python bindings of the library.
+
+## Requirements
+
+VCLib requires a **C++23** capable compiler and **CMake >= 3.24**.
+
+Minimum supported compiler versions:
+- **GCC 14** or later
+- **Clang 18** or later
+- **Apple Clang** (Xcode 16.3 or later)
+- **MSVC 19.37** (Visual Studio 2022 version 17.7) or later
 
 ## Documentation
 

@@ -212,9 +212,7 @@ protected:
     void setElements(Rng&& r) requires InputRange<Rng, Elem*>
     {
         if constexpr (STORE_INDICES) {
-            auto conv = [&](auto v) {
-                return indexFromPointer(v);
-            };
+            auto conv = [&](auto v) { return indexFromPointer(v); };
 
             Base::container().set(r | std::views::transform(conv));
         }
@@ -230,9 +228,7 @@ protected:
             Base::container().set(r);
         }
         else {
-            auto conv = [&](auto i) {
-                return elemFromParent(i);
-            };
+            auto conv = [&](auto i) { return elemFromParent(i); };
 
             Base::container().set(r | std::views::transform(conv));
         }

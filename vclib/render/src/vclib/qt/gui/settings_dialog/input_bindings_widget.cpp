@@ -58,9 +58,7 @@ InputBindingsWidget::InputBindingsWidget(
         for (const auto& action : actions) {
             mPendingBindings[action.id] = action.defaultInputs;
         }
-        QTimer::singleShot(0, this, [this]() {
-            populateTable();
-        });
+        QTimer::singleShot(0, this, [this]() { populateTable(); });
         emit bindingsChanged();
     });
 }
@@ -198,9 +196,8 @@ void InputBindingsWidget::populateTable()
                         }
 
                         // Queue a safe table redraw to reflect the deletion
-                        QTimer::singleShot(0, this, [this]() {
-                            populateTable();
-                        });
+                        QTimer::singleShot(
+                            0, this, [this]() { populateTable(); });
                         emit bindingsChanged();
                     });
             }

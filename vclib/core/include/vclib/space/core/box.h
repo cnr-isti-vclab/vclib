@@ -77,28 +77,14 @@ public:
      *
      * @return A reference to the minimum point of the box.
      */
-    PointT& min() { return mMin; }
-
-    /**
-     * @brief Returns a const reference to the minimum point of the box.
-     *
-     * @return A const reference to the minimum point of the box.
-     */
-    const PointT& min() const { return mMin; }
+    decltype(auto) min(this auto&& self) { return (self.mMin); }
 
     /**
      * @brief Returns a reference to the maximum point of the box.
      *
      * @return A reference to the maximum point of the box.
      */
-    PointT& max() { return mMax; }
-
-    /**
-     * @brief Returns a const reference to the maximum point of the box.
-     *
-     * @return A const reference to the maximum point of the box.
-     */
-    const PointT& max() const { return mMax; }
+    decltype(auto) max(this auto&& self) { return (self.mMax); }
 
     template<typename Scalar>
     auto cast() const

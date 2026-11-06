@@ -20,20 +20,12 @@ int main()
     auto brainMeshes = bestHeightfieldOrientation("brain.ply", "Brain", 10);
 
     // for each mesh in the std::tuple
-    std::apply(
-        [&](const auto&... mesh) {
-            (fnSave(mesh), ...);
-        },
-        brainMeshes);
+    std::apply([&](const auto&... mesh) { (fnSave(mesh), ...); }, brainMeshes);
 
     auto bunnyMeshes = bestHeightfieldOrientation("bunny.obj", "Bunny", 100);
 
     // for each mesh in the std::tuple
-    std::apply(
-        [&](const auto&... mesh) {
-            (fnSave(mesh), ...);
-        },
-        bunnyMeshes);
+    std::apply([&](const auto&... mesh) { (fnSave(mesh), ...); }, bunnyMeshes);
 
     return 0;
 }

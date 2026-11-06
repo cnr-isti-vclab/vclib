@@ -79,9 +79,7 @@ public:
                     QAbstractEventDispatcher::instance(),
                     &QAbstractEventDispatcher::aboutToBlock,
                     this,
-                    [this]() {
-                        update();
-                    });
+                    [this]() { update(); });
             }
         }
         else {

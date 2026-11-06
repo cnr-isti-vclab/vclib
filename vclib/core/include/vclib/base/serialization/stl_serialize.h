@@ -15,11 +15,59 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace vcl {
 
-/// STL Serialize specializations ///
+namespace detail {
+template<typename T>
+struct CanSerializeImpl;
+} // namespace detail
+
+/**
+ * @brief Concept that evaluates true if an object can be serialized to an
+ * output stream.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept CanSerialize = detail::CanSerializeImpl<T>::value;
+
+/// STL Serialize declarations ///
+
+inline void serialize(std::ostream& os, const std::string& s);
+
+template<CanSerialize T, std::size_t N>
+void serialize(std::ostream& os, const std::array<T, N>& a);
+
+template<CanSerialize K, CanSerialize V>
+void serialize(std::ostream& os, const std::map<K, V>& m);
+
+template<CanSerialize K, CanSerialize V>
+void serialize(std::ostream& os, const std::unordered_map<K, V>& m);
+
+template<CanSerialize T>
+void serialize(std::ostream& os, const std::vector<T>& v);
+
+template<CanSerialize T>
+void serialize(std::ostream& os, const std::vector<std::any>& v);
+
+template<CanSerialize T1, CanSerialize T2>
+void serialize(std::ostream& os, const std::pair<T1, T2>& p);
+
+namespace detail {
+
+template<typename T>
+struct CanSerializeImpl {
+    static constexpr bool value = requires (std::ostream& os, const T& e) {
+        serialize(os, e);
+    };
+};
+
+} // namespace detail
+
+/// STL Serialize definitions ///
 
 /*
  * std::string
@@ -36,18 +84,11 @@ inline void serialize(std::ostream& os, const std::string& s)
  * std::array
  */
 
-template<typename T, std::size_t N>
+template<CanSerialize T, std::size_t N>
 void serialize(std::ostream& os, const std::array<T, N>& a)
 {
-    if constexpr (Serializable<T>) {
-        for (const T& v : a) {
-            v.serialize(os);
-        }
-    }
-    else {
-        for (const T& e : a) {
-            serialize(os, e);
-        }
+    for (const T& e : a) {
+        serialize(os, e);
     }
 }
 
@@ -55,24 +96,14 @@ void serialize(std::ostream& os, const std::array<T, N>& a)
  * std::map
  */
 
-template<typename K, typename V>
+template<CanSerialize K, CanSerialize V>
 void serialize(std::ostream& os, const std::map<K, V>& m)
 {
     std::size_t size = m.size();
     serialize(os, size);
     for (const auto& [key, value] : m) {
-        if constexpr (Serializable<K>) {
-            key.serialize(os);
-        }
-        else {
-            serialize(os, key);
-        }
-        if constexpr (Serializable<V>) {
-            value.serialize(os);
-        }
-        else {
-            serialize(os, value);
-        }
+        serialize(os, key);
+        serialize(os, value);
     }
 }
 
@@ -80,24 +111,14 @@ void serialize(std::ostream& os, const std::map<K, V>& m)
  * std::unordered_map
  */
 
-template<typename K, typename V>
+template<CanSerialize K, CanSerialize V>
 void serialize(std::ostream& os, const std::unordered_map<K, V>& m)
 {
     std::size_t size = m.size();
     serialize(os, size);
     for (const auto& [key, value] : m) {
-        if constexpr (Serializable<K>) {
-            key.serialize(os);
-        }
-        else {
-            serialize(os, key);
-        }
-        if constexpr (Serializable<V>) {
-            value.serialize(os);
-        }
-        else {
-            serialize(os, value);
-        }
+        serialize(os, key);
+        serialize(os, value);
     }
 }
 
@@ -105,38 +126,35 @@ void serialize(std::ostream& os, const std::unordered_map<K, V>& m)
  * std::vector
  */
 
-template<typename T>
+template<CanSerialize T>
 void serialize(std::ostream& os, const std::vector<T>& v)
 {
     std::size_t size = v.size();
     serialize(os, size);
-    if constexpr (Serializable<T>) {
-        for (const T& e : v) {
-            e.serialize(os);
-        }
-    }
-    else {
-        for (const T& e : v) {
-            serialize(os, e);
-        }
+    for (const T& e : v) {
+        serialize(os, e);
     }
 }
 
-template<typename T>
+template<CanSerialize T>
 void serialize(std::ostream& os, const std::vector<std::any>& v)
 {
     std::size_t size = v.size();
     serialize(os, size);
-    if constexpr (Serializable<T>) {
-        for (const std::any& e : v) {
-            std::any_cast<T>(e).serialize(os);
-        }
+    for (const std::any& e : v) {
+        serialize(os, std::any_cast<const T&>(e));
     }
-    else {
-        for (const std::any& e : v) {
-            serialize(os, std::any_cast<T>(e));
-        }
-    }
+}
+
+/*
+ * std::pair
+ */
+
+template<CanSerialize T1, CanSerialize T2>
+void serialize(std::ostream& os, const std::pair<T1, T2>& p)
+{
+    serialize(os, p.first);
+    serialize(os, p.second);
 }
 
 } // namespace vcl

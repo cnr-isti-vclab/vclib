@@ -55,9 +55,8 @@ T random(
     RandomConfig  config   = std::monostate())
 {
     return callWithDistribution(distConf, [&](auto&& distFunc) {
-        return callWithRandomGenerator(config, [&](std::mt19937& gen) {
-            return distFunc(gen);
-        });
+        return callWithRandomGenerator(
+            config, [&](std::mt19937& gen) { return distFunc(gen); });
     });
 }
 
