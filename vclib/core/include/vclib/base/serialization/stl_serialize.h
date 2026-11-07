@@ -59,10 +59,10 @@ void serialize(std::ostream& os, const std::pair<T1, T2>& p);
 namespace detail {
 
 template<typename T>
-struct CanSerializeImpl {
-    static constexpr bool value = requires (std::ostream& os, const T& e) {
-        serialize(os, e);
-    };
+struct CanSerializeImpl
+{
+    static constexpr bool value =
+        requires (std::ostream& os, const T& e) { serialize(os, e); };
 };
 
 } // namespace detail

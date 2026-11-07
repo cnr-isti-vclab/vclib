@@ -59,10 +59,10 @@ void deserialize(std::istream& is, std::pair<T1, T2>& p);
 namespace detail {
 
 template<typename T>
-struct CanDeserializeImpl {
-    static constexpr bool value = requires (std::istream& is, T& e) {
-        deserialize(is, e);
-    };
+struct CanDeserializeImpl
+{
+    static constexpr bool value =
+        requires (std::istream& is, T& e) { deserialize(is, e); };
 };
 
 } // namespace detail
