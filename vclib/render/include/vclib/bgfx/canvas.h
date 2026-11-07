@@ -323,15 +323,18 @@ public:
      * @brief Automatically called by the DerivedRenderApp when a drawer asks
      * to read the ID at a specific point.
      *
-     * @param point The point where the ID must be read.
-     * @param callback The callback function that will be called when the ID is
+     * @param point: The point where the ID must be read.
+     * @param callback: The callback function that will be called when the ID is
      * read.
+     * @param radius: The radius of the area around the point where the ID must
+     * be read. If radius is 0, only the point is read.
      * @return true id the red Id request is successfully submitted, false
      * otherwise.
      */
     [[nodiscard]] bool onReadId(
         const Point2i&     point,
-        CallbackReadBuffer callback = nullptr)
+        CallbackReadBuffer callback = nullptr,
+        uint               radius = 0)
     {
         if (mReadRequest != std::nullopt      // read already requested
             || point.x() < 0 || point.y() < 0 // point out of bounds
@@ -340,8 +343,8 @@ public:
         }
 
         mReadRequest.emplace(
-            ReadFromGPUBuffer::Target::ID, mSize, mDefaultClearColor);
-        mReadRequest->setPendingRead(point, callback);
+            ReadFromGPUBuffer::Target::ID, mSize, vcl::Color::White);
+        mReadRequest->setPendingRead(point, callback, radius);
         return true;
     }
 
