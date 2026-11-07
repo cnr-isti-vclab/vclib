@@ -7,9 +7,18 @@
 
 $input a_position
 
+// cross section
+$output v_worldPos, v_discardFlag
+
 #include <vclib/bgfx/shaders_common.sh>
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 
 void main()
 {
+    v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+
+    // discard flag - used to discard the whole vertex, but in fragment shader
+    v_discardFlag = computeDiscardFlag(v_worldPos);
 }
