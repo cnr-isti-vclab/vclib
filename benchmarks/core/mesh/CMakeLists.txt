@@ -13,20 +13,24 @@ set(SOURCES
     clean.cpp
     compat.h
     convex_hull.cpp
+    distance.cpp
     grid.h
     types.h
     import_export/export_matrix.cpp
     import_export/import_matrix.cpp
     import_export/render_buffers.cpp
     io/load_mesh.cpp
+    io/save_mesh.cpp
     mesh/copy.cpp
     mesh/delete_and_compact.cpp
     point_sampling.cpp
+    smooth.cpp
     space/mesh_inertia.cpp
     stat/barycenter.cpp
     stat/bounding_box.cpp
     stat/geometry.cpp
     stat/topology.cpp
+    update/border.cpp
     update/curvature.cpp
     update/normal.cpp
     update/topology.cpp
