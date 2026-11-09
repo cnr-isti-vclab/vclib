@@ -66,9 +66,10 @@ public:
         Shading      shading        = Shading::NONE;
         Shape        shape          = Shape::SQUARE;
         Color        generalColor   = Color::Black;
-        float                depthOffset    = 0.0f;
-        Color                selectionColor = Color(0x88FF9732, Color::Format::ABGR);
-        bool                 selectionVisibility = false;
+        float        depthOffset    = 0.0f;
+        Color        selectionColor = Color(0x88FF9732, Color::Format::ABGR);
+        bool         selectionVisibility = false;
+        
         CrossSectionSettings crossSectionSettings;
     };
 
