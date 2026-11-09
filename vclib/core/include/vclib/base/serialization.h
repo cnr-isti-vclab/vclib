@@ -20,8 +20,7 @@ namespace vcl {
  * @ingroup util_concepts
  */
 template<typename T>
-concept Serializable =
-    CanSerialize<T> && (IsConst<T> || CanDeserialize<T>);
+concept Serializable = CanSerialize<T> && (IsConst<T> || CanDeserialize<T>);
 
 } // namespace vcl
 

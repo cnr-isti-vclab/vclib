@@ -79,7 +79,11 @@ void serialize(std::ostream& os, const T& data)
 }
 
 template<typename T, typename T2, typename... Others>
-void serialize(std::ostream& os, const T& data, const T2& second, const Others&... others)
+void serialize(
+    std::ostream& os,
+    const T&      data,
+    const T2&     second,
+    const Others&... others)
 {
     serialize(os, data);
     serialize(os, second, others...);
