@@ -8,15 +8,13 @@
 #ifdef SURFACE_SECTION_ON
 // cross section
 $input v_worldPos, v_discardFlag
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #endif
 
 #include <vclib/bgfx/shaders_common.sh>
 
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
-
-#ifdef SURFACE_SECTION_ON
-#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
-#endif
 
 void main()
 {

@@ -10,17 +10,14 @@ $input a_position
 #ifdef SURFACE_SECTION_ON
 // cross section
 $output v_worldPos, v_discardFlag
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
 #endif
 
 #include <vclib/bgfx/shaders_common.sh>
 
-#ifdef SURFACE_SECTION_ON
-#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
-#endif
-
 void main()
 {
-
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
 #ifdef SURFACE_SECTION_ON
     v_worldPos = mul(u_model[0], vec4(a_position, 1.0)).xyz;
