@@ -24,9 +24,7 @@ BENCH("smooth/laplacian_smoothing", []<typename Mesh>(bench::State<Mesh>& s) {
         const Mesh& base = s.mesh();
         Mesh        m    = s.copyMesh();
 
-        s.run(
-            [&]() { m = base; },
-            [&]() { vcl::laplacianSmoothing(m, 5); });
+        s.run([&]() { m = base; }, [&]() { vcl::laplacianSmoothing(m, 5); });
     }
 });
 

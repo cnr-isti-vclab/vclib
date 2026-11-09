@@ -33,7 +33,7 @@ BENCH("io/save_mesh/save_ply_binary", []<typename Mesh>(bench::State<Mesh>& s) {
 
     const auto tmpPath =
         std::filesystem::temp_directory_path() / "vclib_bench_save_binary.ply";
-    TempFileRemover   remover{tmpPath};
+    TempFileRemover   remover {tmpPath};
     const std::string pathStr = tmpPath.string();
 
     vcl::SaveSettings settings;
@@ -49,7 +49,7 @@ BENCH("io/save_mesh/save_ply_ascii", []<typename Mesh>(bench::State<Mesh>& s) {
 
     const auto tmpPath =
         std::filesystem::temp_directory_path() / "vclib_bench_save_ascii.ply";
-    TempFileRemover   remover{tmpPath};
+    TempFileRemover   remover {tmpPath};
     const std::string pathStr = tmpPath.string();
 
     vcl::SaveSettings settings;
@@ -65,7 +65,7 @@ BENCH("io/save_mesh/save_obj", []<typename Mesh>(bench::State<Mesh>& s) {
 
     const auto tmpPath =
         std::filesystem::temp_directory_path() / "vclib_bench_save.obj";
-    TempFileRemover   remover{tmpPath};
+    TempFileRemover   remover {tmpPath};
     const std::string pathStr = tmpPath.string();
 
     s.run([&]() { vcl::saveMesh(s.mesh(), pathStr); });
@@ -83,9 +83,9 @@ BENCH("io/save_mesh/save_stl_binary", []<typename Mesh>(bench::State<Mesh>& s) {
             return s.skip("the mesh has no faces");
         }
 
-        const auto tmpPath =
-            std::filesystem::temp_directory_path() / "vclib_bench_save_binary.stl";
-        TempFileRemover   remover{tmpPath};
+        const auto tmpPath = std::filesystem::temp_directory_path() /
+                             "vclib_bench_save_binary.stl";
+        TempFileRemover   remover {tmpPath};
         const std::string pathStr = tmpPath.string();
 
         vcl::SaveSettings settings;
@@ -102,7 +102,7 @@ BENCH("io/save_mesh/save_off", []<typename Mesh>(bench::State<Mesh>& s) {
 
     const auto tmpPath =
         std::filesystem::temp_directory_path() / "vclib_bench_save.off";
-    TempFileRemover   remover{tmpPath};
+    TempFileRemover   remover {tmpPath};
     const std::string pathStr = tmpPath.string();
 
     s.run([&]() { vcl::saveMesh(s.mesh(), pathStr); });
@@ -123,7 +123,7 @@ BENCH("io/save_mesh/save_glb", []<typename Mesh>(bench::State<Mesh>& s) {
 
         const auto tmpPath =
             std::filesystem::temp_directory_path() / "vclib_bench_save.glb";
-        TempFileRemover   remover{tmpPath};
+        TempFileRemover   remover {tmpPath};
         const std::string pathStr = tmpPath.string();
 
         vcl::SaveSettings settings;

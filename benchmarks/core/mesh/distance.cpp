@@ -21,7 +21,8 @@ vcl::uint sampleCountForVertices(const Mesh& m)
     if (m.vertexCount() <= 1) {
         return 0;
     }
-    return std::max<vcl::uint>(1, std::min(DEFAULT_SAMPLES, m.vertexCount() / 2));
+    return std::max<vcl::uint>(
+        1, std::min(DEFAULT_SAMPLES, m.vertexCount() / 2));
 }
 
 } // namespace

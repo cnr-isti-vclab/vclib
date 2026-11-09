@@ -9,25 +9,21 @@
 
 #include <vclib/algorithms/mesh.h>
 
-BENCH(
-    "update/border/update_border",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+BENCH("update/border/update_border", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("the mesh has no faces");
+    }
+    else {
+        if (s.mesh().vertexCount() == 0) {
+            return s.skip("the mesh has no vertices");
+        }
+        if (s.mesh().faceCount() == 0) {
             return s.skip("the mesh has no faces");
         }
-        else {
-            if (s.mesh().vertexCount() == 0) {
-                return s.skip("the mesh has no vertices");
-            }
-            if (s.mesh().faceCount() == 0) {
-                return s.skip("the mesh has no faces");
-            }
 
-            const Mesh& base = s.mesh();
-            Mesh        m    = s.copyMesh();
+        const Mesh& base = s.mesh();
+        Mesh        m    = s.copyMesh();
 
-            s.run(
-                [&]() { m = base; },
-                [&]() { vcl::updateBorder(m); });
-        }
-    });
+        s.run([&]() { m = base; }, [&]() { vcl::updateBorder(m); });
+    }
+});
