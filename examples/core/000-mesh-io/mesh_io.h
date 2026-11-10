@@ -20,7 +20,7 @@
 
 auto loadMeshes()
 {
-    std::cout << "=== VCLib Example 000: Mesh I/O ===\n\n";
+    std::println("=== VCLib Example 000: Mesh I/O ===\n");
 
     /****** Load ******/
 
@@ -44,8 +44,7 @@ auto loadMeshes()
     vcl::MeshInfo info;
     vcl::loadMesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", info);
 
-    std::cout << "Mesh has per face color: " << info.hasPerFaceColor()
-              << std::endl;
+    std::println("Mesh has per face color: {}", info.hasPerFaceColor());
 
     // You can control settings for loading a mesh using the LoadSettings object
     // It allows to choose whether to enable optional components (see example

@@ -116,18 +116,11 @@ public:
     }
 
     /**
-     * @brief Returns the i-th basis vector.
-     * @param[in] i: Axis index (0-based, must be < N).
-     * @return i-th orthonormal basis vector.
-     */
-    const PointType& axis(uint i) const { return mAxes[i]; }
-
-    /**
      * @brief Returns a reference to the i-th basis vector.
      * @param[in] i: Axis index (0-based, must be < N).
      * @return i-th orthonormal basis vector.
      */
-    PointType& axis(uint i) { return mAxes[i]; }
+    decltype(auto) axis(this auto&& self, uint i) { return self.mAxes[i]; }
 
     /**
      * @brief Transforms a direction vector from local to world coordinates.

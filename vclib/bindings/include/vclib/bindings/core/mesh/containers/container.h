@@ -112,9 +112,7 @@ void initContainer(
 
     v.def(
         "__iter__",
-        [](ElemView& t) {
-            return py::make_iterator(t.begin(), t.end());
-        },
+        [](ElemView& t) { return py::make_iterator(t.begin(), t.end()); },
         py::keep_alive<0, 1>());
 
     c.def(

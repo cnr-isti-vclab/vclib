@@ -31,9 +31,8 @@ public:
 
         Base::hideSettingsButton();
 
-        mViewer.setShortcutToggleAxisCallback([editorButton]() {
-            editorButton->click();
-        });
+        mViewer.setShortcutToggleAxisCallback(
+            [editorButton]() { editorButton->click(); });
 
         connect(editorButton, &QPushButton::clicked, this, [this]() {
             mViewer.toggleAxisVisibility();

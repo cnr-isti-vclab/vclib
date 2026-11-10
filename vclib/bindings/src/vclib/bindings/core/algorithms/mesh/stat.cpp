@@ -22,9 +22,8 @@ void initStatAlgorithms(pybind11::module& m)
                           pybind11::module& m, MeshType = MeshType()) {
         // barycenter.h
 
-        m.def("barycenter", [](const MeshType& m) {
-            return vcl::barycenter(m);
-        });
+        m.def(
+            "barycenter", [](const MeshType& m) { return vcl::barycenter(m); });
 
         m.def("quality_weighted_barycenter", [](const MeshType& m) {
             return vcl::qualityWeightedBarycenter(m);
@@ -49,7 +48,7 @@ void initStatAlgorithms(pybind11::module& m)
                double                     diskRadius,
                double                     radiusVariance,
                bool                       invert) {
-                return vcl::vertexRadiusFromWeights<double>(
+                return vcl::vertexRadiusFromWeights(
                     m, weights, diskRadius, radiusVariance, invert);
             },
             py::arg("mesh"),
@@ -116,9 +115,7 @@ void initStatAlgorithms(pybind11::module& m)
 
         // geometry.h
 
-        m.def("volume", [](const MeshType& m) {
-            return vcl::volume(m);
-        });
+        m.def("volume", [](const MeshType& m) { return vcl::volume(m); });
 
         m.def("surface_area", [](const MeshType& m) {
             return vcl::surfaceArea(m);
@@ -197,9 +194,8 @@ void initStatAlgorithms(pybind11::module& m)
             return vcl::isWaterTight(m);
         });
 
-        m.def("hole_count", [](const MeshType& m) {
-            return vcl::holeCount(m);
-        });
+        m.def(
+            "hole_count", [](const MeshType& m) { return vcl::holeCount(m); });
 
         m.def("connected_components", [](const MeshType& m) {
             return vcl::connectedComponents(m);

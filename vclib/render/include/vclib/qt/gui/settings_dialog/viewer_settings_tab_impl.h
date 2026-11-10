@@ -42,9 +42,7 @@ public:
         QObject::connect(
             mFrame,
             &ViewerSettingsFrame::settingsChanged,
-            [this](const ViewerSettings& sts) {
-                mTempSettings = sts;
-            });
+            [this](const ViewerSettings& sts) { mTempSettings = sts; });
 
         return mFrame;
     }

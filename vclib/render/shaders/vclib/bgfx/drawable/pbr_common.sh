@@ -170,6 +170,11 @@ float D_GGX(
     float NoH,
     float alpha2)
 {
+    // Ideal mirror case: if alpha2 is 0, the surface is perfectly smooth and no microfacet distribution is needed.
+    // This also prevents division by zero in the subsequent calculations.
+    if (alpha2 == 0.0)
+        return 0.0;
+
     float NoH2 = NoH * NoH;
     float denom = NoH2 * (alpha2 - 1.0) + 1.0;
     return alpha2 / (PI * denom * denom);

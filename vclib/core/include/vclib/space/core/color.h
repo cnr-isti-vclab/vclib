@@ -142,49 +142,25 @@ public:
      * @brief Returns the red component of this color [0-255]
      * @return red component of this color
      */
-    uint8_t red() const { return x(); }
+    decltype(auto) red(this auto&& self) { return self.x(); }
 
     /**
      * @brief Returns the green component of this color [0-255]
      * @return green component of this color
      */
-    uint8_t green() const { return y(); }
+    decltype(auto) green(this auto&& self) { return self.y(); }
 
     /**
      * @brief Returns the blue component of this color [0-255]
      * @return blue component of this color
      */
-    uint8_t blue() const { return z(); }
+    decltype(auto) blue(this auto&& self) { return self.z(); }
 
     /**
      * @brief Returns the alpha component of this color [0-255]
      * @return alpha component of this color
      */
-    uint8_t alpha() const { return w(); }
-
-    /**
-     * @brief Returns the red component of this color [0-255]
-     * @return red component of this color
-     */
-    uint8_t& red() { return x(); }
-
-    /**
-     * @brief Returns the green component of this color [0-255]
-     * @return green component of this color
-     */
-    uint8_t& green() { return y(); }
-
-    /**
-     * @brief Returns the blue component of this color [0-255]
-     * @return blue component of this color
-     */
-    uint8_t& blue() { return z(); }
-
-    /**
-     * @brief Returns the alpha component of this color [0-255]
-     * @return alpha component of this color
-     */
-    uint8_t& alpha() { return w(); }
+    decltype(auto) alpha(this auto&& self) { return self.w(); }
 
     /**
      * @brief Returns the float red component of this color [0-1]

@@ -49,7 +49,7 @@ mat3 tangentFrameFromGivenVectors(vec3 tangent, vec3 bitangent, vec3 normal, boo
  */
 mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacing)
 {
-    // see https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+    // modified from https://learnopengl.com/Advanced-Lighting/Normal-Mapping
 
     // get UV derivatives
     vec2 uv_dx = dFdx(UV); // = vec2(du1, dv1)
@@ -63,6 +63,11 @@ mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacin
             uv_dy = vec2(0.0, 1.0);
     */
 
+    vec3 p_dx = dFdx(position);
+    vec3 p_dy = dFdy(position);
+
+    float invDet = 1.0 / (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+
     // compute tangent based on the fact that the edges of the triangle can be expressed as:
     // e1 = du1 * t + dv1 * b
     // e2 = du2 * t + dv2 * b
@@ -70,15 +75,18 @@ mat3 tangentFrameFromNormal(vec3 normal, vec3 position, vec2 UV, bool frontFacin
     // e1 = dFdx(position)
     // e2 = dFdy(position)
     // we can solve the linear system to find just t:
-    vec3 t_ =
-        (uv_dy.y * dFdx(position) - uv_dx.y * dFdy(position)) /
-        (uv_dx.x * uv_dy.y - uv_dy.x * uv_dx.y);
+    vec3 t_ = ( uv_dy.y * p_dx - uv_dx.y * p_dy) * invDet;
+    // compute also b from uv derivatives
+    vec3 b_ = (-uv_dy.x * p_dx + uv_dx.x * p_dy) * invDet;
 
     vec3 n = normalize(normal);
     // computed tangent t_ may not be orthogonal to normal, make it so
     vec3 t = normalize(t_ - n * dot(n, t_));
     // compute bitangent as cross product (orthongonal to both normal and tangent)
     vec3 b = cross(n, t);
+
+    // Match the bitangent orientation to increasing texture V.
+    b *= dot(b, b_) < 0.0 ? -1.0 : 1.0;
 
     if(!frontFacing)
     {
@@ -172,9 +180,8 @@ float pbrSpecular(
  *  the amount of light reflected when looking at a surface with a 0 degree angle (right above).
  * @return The IBL Fresnel term.
  */
-vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
+vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0, float specularWeight)
 {
-    float specularWeight = 1.0; // related to some extension, for now use a neutral value
     // see https://bruop.github.io/ibl/#single_scattering_results at Single Scattering Results
     // Roughness dependent fresnel, from Fdez-Aguera
     vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
@@ -188,6 +195,84 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
 
     return FssEss + FmsEms;
 }
+
+// GGX Distribution Anisotropic (Same as Babylon.js)
+// https://blog.selfshadow.com/publications/s2012-shading-course/burley/s2012_pbs_disney_brdf_notes_v3.pdf Addenda
+float D_GGX_anisotropic(
+    float NoH,
+    float ToH,
+    float BoH,
+    float at,
+    float ab)
+{
+    float a2 = at * ab;
+    vec3 f = vec3(ab * ToH, at * BoH, a2 * NoH);
+    float w2 = a2 / dot(f, f);
+    return a2 * w2 * w2 / PI;
+}
+
+// GGX Mask/Shadowing Anisotropic (Same as Babylon.js - smithVisibility_GGXCorrelated_Anisotropic)
+// Heitz http://jcgt.org/published/0003/02/03/paper.pdf
+float V_GGX_anisotropic(
+    float NoL,
+    float NoV,
+    float BoV,
+    float ToV,
+    float ToL,
+    float BoL,
+    float at,
+    float ab)
+{
+    float GGXV = NoL * length(vec3(at * ToV, ab * BoV, NoV));
+    float GGXL = NoV * length(vec3(at * ToL, ab * BoL, NoL));
+    float GGXSum = GGXV + GGXL;
+    return GGXSum > 0.0 ? 0.5 / GGXSum : 0.0;
+}
+
+float pbrSpecularAnisotropic(
+    float roughness,
+    float anisotropy,
+    vec3 N,
+    vec3 V,
+    vec3 L,
+    vec3 H,
+    vec3 T,
+    vec3 B)
+{
+    float alphaRoughness = roughness * roughness;
+    // Roughness along the anisotropy bitangent is the material roughness, while the tangent roughness increases with anisotropy.
+    float at = mix(alphaRoughness, 1.0, anisotropy * anisotropy);
+    float ab = clamp(alphaRoughness, 0.001, 1.0);
+
+    float NoL = clamp(dot(N, L), 0.0, 1.0);
+    float NoH = clamp(dot(N, H), 0.001, 1.0);
+    float NoV = clampedDot(N, V);
+
+    return
+        V_GGX_anisotropic(NoL, NoV, dot(B, V), dot(T, V), dot(T, L), dot(B, L), at, ab) *
+        D_GGX_anisotropic(NoH, dot(T, H), dot(B, H), at, ab);
+}
+
+/**
+ * @brief Computes a bent normal used to modify the reflection direction in order to simulate anisotropic reflections.
+ * @param[in] normal: The original normal vector.
+ * @param[in] view: The view direction vector (must be normalized).
+ * @param[in] anisotropyDirection: The direction of anisotropy (must be normalized).
+ * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
+ * @param[in] roughness: The surface roughness (between 0 and 1).
+ * @return The bent normal vector.
+ *
+ * @note TODO: check this function, is it used only for the IBL (environment map) reflection direction?
+ */
+vec3 bendNormal(vec3 normal, vec3 view, vec3 anisotropyDirection, float anisotropyStrength, float roughness)
+{
+    float bendFactor = 1.0 - anisotropyStrength * (1.0 - roughness);
+    float bendFactor4 = bendFactor * bendFactor * bendFactor * bendFactor;
+
+    vec3 anisotropicNormal = cross(cross(anisotropyDirection, view), anisotropyDirection);
+    return normalize(mix(anisotropicNormal, normal, bendFactor4));
+}
+
 /**
  * @brief Color computed for Physically Based Rendering (PBR).
  * The incoming light colors are altered by:
@@ -211,6 +296,14 @@ vec3 iblGgxFresnel(vec2 brdf, float NoV, float roughness, vec3 F0)
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] roughness: The roughness of the fragment's material, ranges from 0 (optically flat) to 1 (very irregular surface).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] anisotropyStrength: The strength of the anisotropy effect (between 0 and 1).
+ * @param[in] anisotropicTangent: The tangent vector for anisotropy.
+ * @param[in] anisotropicBitangent: The bitangent vector for anisotropy.
+ * @param[in] clearcoat: The clearcoat layer intensity, ranges from 0 (no clearcoat layer) to 1 (full clearcoat layer).
+ * @param[in] clearcoatRoughness: The roughness of the clearcoat layer, ranges from 0 (optically flat) to 1 (very irregular surface).
+ * @param[in] clearcoatNormal: The normal of the clearcoat layer, must be normalized.
+ * @param[in] specular: The specular factor.
+ * @param[in] specularColor: The specular color (RGB).
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
@@ -226,17 +319,29 @@ vec4 pbrColorLights(
     float metallic,
     float roughness,
     vec3 emissive,
+    float anisotropyStrength,
+    vec3 anisotropicTangent,
+    vec3 anisotropicBitangent,
+    float clearcoat,
+    float clearcoatRoughness,
+    vec3 clearcoatNormal,
+    float specular,
+    vec3 specularColor,
     float exposure,
     uint toneMapping)
 {
     vec3 finalColor = vec3_splat(0.0);
-    vec3 f0_dielectric = vec3_splat(0.04);
+    vec3 f0_dielectric = min(vec3_splat(0.04) * specularColor, vec3_splat(1.0));
     vec3 f90 = vec3_splat(1.0);
+    vec3 f90_dielectric = vec3_splat(specular);
 
     // view direction
     vec3 V = normalize(cameraEyePos - vPos);
     
     float NoV = clampedDot(normal, V);
+    float clearcoatNoV = clampedDot(clearcoatNormal, V);
+
+    vec3 clearcoatFresnel = clearcoat * F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
     UNROLL
     for(int i = 0; i < LIGHT_COUNT; ++i)
@@ -244,7 +349,9 @@ vec4 pbrColorLights(
         // incoming light direction and contribution
         vec3 lightDir = normalize(-lightDirs[i]);
         float NoL = clampedDot(normal, lightDir);
+        float clearcoatNoL = clampedDot(clearcoatNormal, lightDir);
         vec3 lightIntensity = lightIntensities[i] * lightColors[i] * NoL;
+        vec3 clearcoatLightIntensity = lightIntensities[i] * lightColors[i] * clearcoatNoL;
 
         // halfway vector, same angle with both view direction and incoming light direction
         // corresponds to the normal that one microfacet must have to directly reflect the light into the eye
@@ -252,10 +359,12 @@ vec4 pbrColorLights(
         // related dot products
         float NoH = clampedDot(normal, H);
         float VoH = clampedDot(V, H);
+        
+        float clearcoatNoH = clampedDot(clearcoatNormal, H);
 
         // Fresnel factors for both dielectric and metallic surfaces
         // 0.04 is an approximation of F0 averaged around many dielectric materials
-        vec3 dielectric_fresnel = F_Schlick(f0_dielectric, f90, abs(VoH));
+        vec3 dielectric_fresnel = F_Schlick(f0_dielectric * specular, f90_dielectric, abs(VoH));
         // Metals have the surface color as base reflectivity since no light gets absorbed
         vec3 metal_fresnel = F_Schlick(color.rgb, f90, abs(VoH));
 
@@ -263,8 +372,21 @@ vec4 pbrColorLights(
         vec3 l_diffuse = lightIntensity * pbrDiffuse(color.rgb);
 
         // specular component for both metallic and dielectric surfaces
-        vec3 l_specular_metal = lightIntensity * pbrSpecular(NoV, NoH, NoL, roughness);
-        vec3 l_specular_dielectric = l_specular_metal;
+        vec3 l_specular_metal, l_specular_dielectric;
+        if(anisotropyStrength > 0.0) // anisotropic version of the specular component
+            l_specular_metal = lightIntensity * pbrSpecularAnisotropic(
+                roughness,
+                anisotropyStrength,
+                normal,
+                V,
+                lightDir,
+                H,
+                anisotropicTangent,
+                anisotropicBitangent);
+        else
+            l_specular_metal = lightIntensity * pbrSpecular(NoV, NoH, NoL, roughness);
+
+        l_specular_dielectric = l_specular_metal;
 
         // metallic surfaces reflect only specular light
         vec3 l_metal_brdf = metal_fresnel * l_specular_metal;
@@ -272,9 +394,13 @@ vec4 pbrColorLights(
         // dielectric surfaces reflect both diffuse and specular light
         vec3 l_dielectric_brdf = mix(l_diffuse, l_specular_dielectric, dielectric_fresnel);
 
+        vec3 l_clearcoat_brdf = clearcoatLightIntensity * pbrSpecular(clearcoatNoV, clearcoatNoH, clearcoatNoL, clearcoatRoughness);
+
         // final color is a mix of both dielectric and metallic BRDFs based on the metalness of the surface
         // the interpolation is needed as we consider the metallic value as ranged instead of binary
         vec3 l_color = mix(l_dielectric_brdf, l_metal_brdf, metallic);
+        
+        l_color = mix(l_color, l_clearcoat_brdf, clearcoatFresnel);
 
         finalColor += l_color;
     }
@@ -314,6 +440,8 @@ vec4 pbrColorLights(
  * @param[in] metallic: The metalness of the fragment's material, ranges from 0 (dielectric) to 1 (metal). 
  * @param[in] occlusion: The ambient occlusion factor, ranges from 0 (fully occluded) to 1 (not occluded).
  * @param[in] emissive: The emissive color (RGB) of the fragment's material.
+ * @param[in] clearcoatFresnel: The Fresnel factor for the clearcoat layer (RGB).
+ * @param[in] clearcoatSpecularLight: The incoming specular light color (RGB) for the clearcoat layer.
  * @param[in] exposure: The exposure factor.
  * @param[in] toneMapping: The tone mapping operator to use.
  * @return The color (RGB) reflected by the fragment, tone mapped and gamma corrected.
@@ -327,6 +455,8 @@ vec4 pbrColorIbl(
     float metallic,
     float occlusion,
     vec3 emissive,
+    vec3 clearcoatFresnel,
+    vec3 clearcoatSpecularLight,
     float exposure,
     uint toneMapping)
 {
@@ -342,6 +472,8 @@ vec4 pbrColorIbl(
     vec3 f_dielectric_brdf_ibl = mix(f_diffuse, f_specular_dielectric, dielectricFresnel);
 
     finalColor = mix(f_dielectric_brdf_ibl, f_metal_brdf_ibl, metallic);
+
+    finalColor = mix(finalColor, clearcoatSpecularLight, clearcoatFresnel);
 
     finalColor *= occlusion;
 

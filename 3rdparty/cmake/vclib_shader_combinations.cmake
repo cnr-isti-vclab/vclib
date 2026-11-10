@@ -5,6 +5,16 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
+function(_vclib_write_file_if_different FILE_PATH CONTENT)
+    if(EXISTS "${FILE_PATH}")
+        file(READ "${FILE_PATH}" EXISTING_CONTENT)
+        if("${EXISTING_CONTENT}" STREQUAL "${CONTENT}")
+            return()
+        endif()
+    endif()
+    file(WRITE "${FILE_PATH}" "${CONTENT}")
+endfunction()
+
 ##
 # @brief Recursively generates shader files for all combinations of the remaining dimensions.
 #
@@ -63,7 +73,12 @@ function(
             )
             string(APPEND VS_CONTENT "${VS_DEFINES}\n")
             string(APPEND VS_CONTENT "#include \"${VS_IN}\"\n")
-            file(WRITE "${VS_OUT_PATH}" "${VS_CONTENT}")
+            _vclib_write_file_if_different("${VS_OUT_PATH}" "${VS_CONTENT}")
+            set_property(
+                GLOBAL
+                APPEND
+                PROPERTY VCLIB_GENERATED_SC_FILES "${VS_OUT_PATH}"
+            )
 
             file(
                 RELATIVE_PATH
@@ -102,7 +117,12 @@ function(
             )
             string(APPEND FS_CONTENT "${FS_DEFINES}\n")
             string(APPEND FS_CONTENT "#include \"${FS_IN}\"\n")
-            file(WRITE "${FS_OUT_PATH}" "${FS_CONTENT}")
+            _vclib_write_file_if_different("${FS_OUT_PATH}" "${FS_CONTENT}")
+            set_property(
+                GLOBAL
+                APPEND
+                PROPERTY VCLIB_GENERATED_SC_FILES "${FS_OUT_PATH}"
+            )
 
             file(
                 RELATIVE_PATH
@@ -118,9 +138,12 @@ function(
             )
         endif()
 
-        file(APPEND "${COMBO_OUT_FILE}" "${ENUM_PREFIX}${PROGRAM_SUFFIX_UC}\n")
-        file(APPEND "${COMBO_OUT_FILE}" "    ${VS_REL_PATH}\n")
-        file(APPEND "${COMBO_OUT_FILE}" "    ${FS_REL_PATH}\n\n")
+        set_property(
+            GLOBAL
+            APPEND_STRING
+            PROPERTY VCLIB_COMBO_CONFIG_CONTENT
+            "${ENUM_PREFIX}${PROGRAM_SUFFIX_UC}\n    ${VS_REL_PATH}\n    ${FS_REL_PATH}\n\n"
+        )
 
         return()
     endif()
@@ -209,9 +232,11 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
         "${CMAKE_CURRENT_BINARY_DIR}/shaders/embedded_vf_combo_programs.config"
     )
 
-    # Append to the output file (which is initialized by vclib_generate_all_shaders_from_configs)
-    file(
-        APPEND "${COMBO_OUT_FILE}"
+    # Append to the output property (which is initialized by vclib_generate_all_shaders_from_configs)
+    set_property(
+        GLOBAL
+        APPEND_STRING
+        PROPERTY VCLIB_COMBO_CONFIG_CONTENT
         "# Auto-generated combinations from ${CONFIG_FILE}\n\n"
     )
 
@@ -408,15 +433,32 @@ function(vclib_generate_all_shaders_from_configs DIR_PATH)
     # Initialize the output combo file once
     get_filename_component(COMBO_OUT_DIR "${COMBO_OUT_FILE}" DIRECTORY)
 
-    # Clean up old generated shaders to prevent issues when changing branches
-    file(REMOVE_RECURSE "${COMBO_OUT_DIR}")
+    # Initialize global properties for combo config content and generated sc files
+    set_property(
+        GLOBAL
+        PROPERTY VCLIB_COMBO_CONFIG_CONTENT
+        "# Auto-generated combinations\n\n"
+    )
+    set_property(GLOBAL PROPERTY VCLIB_GENERATED_SC_FILES "")
 
     file(MAKE_DIRECTORY "${COMBO_OUT_DIR}")
-    file(WRITE "${COMBO_OUT_FILE}" "# Auto-generated combinations\n\n")
 
     file(GLOB_RECURSE ALL_CONFIGS "${DIR_PATH}/*.config")
     foreach(CONFIG_FILE ${ALL_CONFIGS})
         vclib_generate_shaders_from_config("${CONFIG_FILE}")
+    endforeach()
+
+    # Write COMBO_OUT_FILE only if content changed
+    get_property(FINAL_COMBO_CONTENT GLOBAL PROPERTY VCLIB_COMBO_CONFIG_CONTENT)
+    _vclib_write_file_if_different("${COMBO_OUT_FILE}" "${FINAL_COMBO_CONTENT}")
+
+    # Clean up old/orphaned generated shaders (e.g. from deleted combinations or branch changes)
+    file(GLOB_RECURSE EXISTING_SC_FILES "${COMBO_OUT_DIR}/*.sc")
+    get_property(CURRENT_GENERATED_SC GLOBAL PROPERTY VCLIB_GENERATED_SC_FILES)
+    foreach(EXISTING_FILE ${EXISTING_SC_FILES})
+        if(NOT "${EXISTING_FILE}" IN_LIST CURRENT_GENERATED_SC)
+            file(REMOVE "${EXISTING_FILE}")
+        endif()
     endforeach()
 
     # Propagate the collected config files to the parent scope

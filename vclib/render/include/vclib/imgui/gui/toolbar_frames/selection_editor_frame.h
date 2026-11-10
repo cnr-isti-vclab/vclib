@@ -107,9 +107,7 @@ private:
         bool onlyVisible = sts.onlyVisible;
         ImGui::Checkbox(
             "Only Visible Faces",
-            [&] {
-                return onlyVisible;
-            },
+            [&] { return onlyVisible; },
             [&](bool v) {
                 sts.onlyVisible = v;
                 mEditor->refreshSettings();

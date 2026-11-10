@@ -301,9 +301,7 @@ void multiplyPointsByMatrix(R&& points, const MatrixType& mat)
 
     Matrix44<ScalarType> m44 = mat.template cast<ScalarType>();
 
-    parallelFor(points, [&](auto& point) {
-        point *= m44;
-    });
+    parallelFor(points, [&](auto& point) { point *= m44; });
 }
 
 template<Range R, Matrix33Concept MatrixType>
@@ -322,9 +320,7 @@ void multiplyNormalsByMatrix(
         removeScalingFromMatrixInPlace(m33);
     }
 
-    parallelFor(normals, [&](auto& normal) {
-        normal = m33 * normal;
-    });
+    parallelFor(normals, [&](auto& normal) { normal = m33 * normal; });
 }
 
 template<Range R, Matrix44Concept MatrixType>

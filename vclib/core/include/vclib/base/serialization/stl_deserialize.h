@@ -15,11 +15,59 @@
 #include <map>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace vcl {
 
-/// STL Deserialize specializations ///
+namespace detail {
+template<typename T>
+struct CanDeserializeImpl;
+} // namespace detail
+
+/**
+ * @brief Concept that evaluates true if an object can be deserialized from an
+ * input stream.
+ *
+ * @ingroup util_concepts
+ */
+template<typename T>
+concept CanDeserialize = detail::CanDeserializeImpl<T>::value;
+
+/// STL Deserialize declarations ///
+
+inline void deserialize(std::istream& is, std::string& s);
+
+template<CanDeserialize T, std::size_t N>
+void deserialize(std::istream& is, std::array<T, N>& a);
+
+template<CanDeserialize K, CanDeserialize V>
+void deserialize(std::istream& is, std::map<K, V>& m);
+
+template<CanDeserialize K, CanDeserialize V>
+void deserialize(std::istream& is, std::unordered_map<K, V>& m);
+
+template<CanDeserialize T>
+void deserialize(std::istream& is, std::vector<T>& v);
+
+template<CanDeserialize T>
+void deserialize(std::istream& is, std::vector<std::any>& v);
+
+template<CanDeserialize T1, CanDeserialize T2>
+void deserialize(std::istream& is, std::pair<T1, T2>& p);
+
+namespace detail {
+
+template<typename T>
+struct CanDeserializeImpl
+{
+    static constexpr bool value =
+        requires (std::istream& is, T& e) { deserialize(is, e); };
+};
+
+} // namespace detail
+
+/// STL Deserialize definitions ///
 
 /*
  * std::string
@@ -37,18 +85,11 @@ inline void deserialize(std::istream& is, std::string& s)
  * std::array
  */
 
-template<typename T, std::size_t N>
+template<CanDeserialize T, std::size_t N>
 void deserialize(std::istream& is, std::array<T, N>& a)
 {
-    if constexpr (Serializable<T>) {
-        for (T& v : a) {
-            v.deserialize(is);
-        }
-    }
-    else {
-        for (T& e : a) {
-            deserialize(is, e);
-        }
+    for (T& e : a) {
+        deserialize(is, e);
     }
 }
 
@@ -56,7 +97,7 @@ void deserialize(std::istream& is, std::array<T, N>& a)
  * map
  */
 
-template<typename K, typename V>
+template<CanDeserialize K, CanDeserialize V>
 void deserialize(std::istream& is, std::map<K, V>& m)
 {
     m.clear();
@@ -64,20 +105,9 @@ void deserialize(std::istream& is, std::map<K, V>& m)
     deserialize(is, size);
     for (std::size_t i = 0; i < size; ++i) {
         K key;
-        if constexpr (Serializable<K>) {
-            key.deserialize(is);
-        }
-        else {
-            deserialize(is, key);
-        }
-
+        deserialize(is, key);
         V value;
-        if constexpr (Serializable<V>) {
-            value.deserialize(is);
-        }
-        else {
-            deserialize(is, value);
-        }
+        deserialize(is, value);
         m.insert({std::move(key), std::move(value)});
     }
 }
@@ -86,7 +116,7 @@ void deserialize(std::istream& is, std::map<K, V>& m)
  * unordered_map
  */
 
-template<typename K, typename V>
+template<CanDeserialize K, CanDeserialize V>
 void deserialize(std::istream& is, std::unordered_map<K, V>& m)
 {
     m.clear();
@@ -94,20 +124,9 @@ void deserialize(std::istream& is, std::unordered_map<K, V>& m)
     deserialize(is, size);
     for (std::size_t i = 0; i < size; ++i) {
         K key;
-        if constexpr (Serializable<K>) {
-            key.deserialize(is);
-        }
-        else {
-            deserialize(is, key);
-        }
-
+        deserialize(is, key);
         V value;
-        if constexpr (Serializable<V>) {
-            value.deserialize(is);
-        }
-        else {
-            deserialize(is, value);
-        }
+        deserialize(is, value);
         m.insert({std::move(key), std::move(value)});
     }
 }
@@ -116,44 +135,39 @@ void deserialize(std::istream& is, std::unordered_map<K, V>& m)
  * std::vector
  */
 
-template<typename T>
+template<CanDeserialize T>
 void deserialize(std::istream& is, std::vector<T>& v)
 {
     std::size_t size;
     deserialize(is, size);
     v.resize(size);
-    if constexpr (Serializable<T>) {
-        for (T& e : v) {
-            e.deserialize(is);
-        }
-    }
-    else {
-        for (T& e : v) {
-            deserialize(is, e);
-        }
+    for (T& e : v) {
+        deserialize(is, e);
     }
 }
 
-template<typename T>
+template<CanDeserialize T>
 void deserialize(std::istream& is, std::vector<std::any>& v)
 {
     std::size_t size;
     deserialize(is, size);
     v.resize(size);
-    if constexpr (Serializable<T>) {
-        for (std::any& e : v) {
-            T obj;
-            obj.deserialize(is);
-            e = std::move(obj);
-        }
+    for (std::any& e : v) {
+        T obj;
+        deserialize(is, obj);
+        e = std::move(obj);
     }
-    else {
-        for (std::any& e : v) {
-            T obj;
-            deserialize(is, obj);
-            e = std::move(obj);
-        }
-    }
+}
+
+/*
+ * std::pair
+ */
+
+template<CanDeserialize T1, CanDeserialize T2>
+void deserialize(std::istream& is, std::pair<T1, T2>& p)
+{
+    deserialize(is, p.first);
+    deserialize(is, p.second);
 }
 
 } // namespace vcl

@@ -87,17 +87,6 @@ cmake_dependent_option(
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 include(poolstl_tbb.cmake)
 
-# Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS "Allow use of bundled ZipViews source" ON)
-cmake_dependent_option(
-    VCLIB_ALLOW_INSTALL_ZIP_VIEWS
-    "Allow install ZipViews source"
-    ON
-    "VCLIB_ALLOW_INSTALL_3RDPARTY_LIBRARIES"
-    OFF
-)
-include(zip-views.cmake)
-
 # === OPTIONAL === #
 
 # IO or RENDER 3rd Party libraries

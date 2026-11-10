@@ -37,9 +37,7 @@ void initAbstractDrawableMesh(pybind11::module& m)
 
     c.def(
         "update_buffers",
-        [](vcl::AbstractDrawableMesh& self) {
-            self.updateBuffers();
-        },
+        [](vcl::AbstractDrawableMesh& self) { self.updateBuffers(); },
         "Updates the mesh buffers using the default buffers mask.");
 
     c.def(

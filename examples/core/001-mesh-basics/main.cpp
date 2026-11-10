@@ -13,7 +13,7 @@ int main()
 
     /****** Save the created mesh ******/
 
-    std::cout << "\n=== Saving Mesh ===" << std::endl;
+    std::println("\n=== Saving Mesh ===");
 
     try {
         std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
@@ -21,13 +21,13 @@ int main()
         vcl::saveMesh(mesh, resultsPath + "/001_mesh-basics_triangle.ply");
         vcl::saveMesh(polyMesh, resultsPath + "/001_mesh-basics_polygon.ply");
 
-        std::cout << "Saved meshes to results directory" << std::endl;
+        std::println("Saved meshes to results directory");
     }
     catch (const std::exception& e) {
-        std::cerr << "Error in saving: " << e.what() << "\n";
+        std::println(stderr, "Error in saving: {}", e.what());
     }
 
-    std::cout << "Example completed successfully!\n";
+    std::println("Example completed successfully!");
 
     return 0;
 }

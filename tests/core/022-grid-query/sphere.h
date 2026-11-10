@@ -92,6 +92,7 @@ void facesInSpheresTest(
                       << vsG[i].size() << std::endl;
         }
         REQUIRE(vsBF[i].size() == vsG[i].size());
+        REQUIRE(grid.countInSphere(spheres[i]) == vsG[i].size());
         for (vcl::uint j = 0; j < vsBF[i].size(); j++) {
             auto it = std::find(vsBF[i].begin(), vsBF[i].end(), vsG[i][j]);
             if (it == vsBF[i].end()) {

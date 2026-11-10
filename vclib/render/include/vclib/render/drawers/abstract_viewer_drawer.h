@@ -23,6 +23,7 @@
 #include <nlohmann/json.hpp>
 
 #include <memory>
+#include <ranges>
 
 namespace vcl {
 
@@ -332,6 +333,62 @@ public:
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
+    }
+
+    /**
+     * @brief Helper function to add a collection/range of DrawableObjects to
+     * the scene in batch.
+     *
+     * In addition to pushing the objects to the underlying vector, this helper
+     * safely calls `init()` on each newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` once at the end to
+     * update any GUI components, avoiding redundant editor refreshes.
+     *
+     * @tparam R A range type satisfying std::ranges::input_range.
+     * @param[in] objs: The range of objects to add (either concrete
+     * DrawableObjects or std::shared_ptr<DrawableObject>).
+     * @return The starting index of the newly added objects in the draw list.
+     */
+    template<typename R>
+    requires std::ranges::input_range<R>
+    uint pushDrawableObjects(R&& objs)
+    {
+        uint startIdx = mDrawList->size();
+        for (auto&& obj : objs) {
+            using ElementType = std::remove_cvref_t<decltype(obj)>;
+            constexpr bool canMove =
+                std::is_rvalue_reference_v<decltype(obj)> ||
+                std::is_rvalue_reference_v<R&&>;
+
+            if constexpr (std::is_convertible_v<
+                              ElementType,
+                              std::shared_ptr<DrawableObject>>) {
+                if constexpr (canMove) {
+                    mDrawList->pushBack(std::move(obj));
+                }
+                else {
+                    mDrawList->pushBack(obj);
+                }
+            }
+            else {
+                static_assert(
+                    std::derived_from<ElementType, DrawableObject> &&
+                        (!std::is_abstract_v<ElementType>),
+                    "Objects must derive from DrawableObject and not be "
+                    "abstract.");
+                if constexpr (canMove) {
+                    mDrawList->pushBack(std::move(obj));
+                }
+                else {
+                    mDrawList->pushBack(obj);
+                }
+            }
+            mDrawList->back()->init();
+        }
+        if (mDrawList->size() > startIdx) {
+            refreshEditors();
+        }
+        return startIdx;
     }
 
     bool removeDrawableObject(uint id)
@@ -802,9 +859,7 @@ private:
         registerGlobalAction(
             "Toggle Editors Events",
             {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
-            [this]() {
-                toggleEditorsEventsEnabled();
-            });
+            [this]() { toggleEditorsEventsEnabled(); });
 
         registerGlobalAction(
             "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
@@ -823,9 +878,7 @@ private:
             });
 
         registerGlobalAction(
-            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() {
-                undo();
-            });
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() { undo(); });
 
         registerGlobalAction(
             "Redo",
@@ -833,9 +886,7 @@ private:
                 {Key::Y, {KeyModifier::CONTROL}                    },
                 {Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}}
         },
-            [this]() {
-                redo();
-            });
+            [this]() { redo(); });
 
         registerGlobalAction(
             "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {

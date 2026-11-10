@@ -82,10 +82,150 @@ function(_vclib_target_ide_add_assets target_name)
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
+# TODO: Temporary override of bgfx_compile_shaders from bgfx.cmake to add support
+# for DEPENDS and DEPFILE (shaderc --depends).
+# Remove once upstream PR https://github.com/bkaradzic/bgfx.cmake/pull/117 is merged and tagged.
+function(bgfx_compile_shaders)
+    set(options AS_HEADERS NO_SOURCE_GROUP)
+    set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR)
+    set(multiValueArgs SHADERS INCLUDE_DIRS DEFINES PROFILES DEPENDS)
+    cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" "${ARGN}")
+
+    if(ARGS_PROFILES)
+        set(PROFILES ${ARGS_PROFILES})
+    else()
+        set(PROFILES spirv)
+        list(APPEND PROFILES 430 300_es)
+        if(BGFX_CONFIG_RENDERER_WEBGPU)
+            list(APPEND PROFILES wgsl)
+        endif()
+    endif()
+    if(IOS)
+        set(PLATFORM IOS)
+        if(NOT ARGS_PROFILES)
+            list(APPEND PROFILES metal)
+        endif()
+    elseif(ANDROID)
+        set(PLATFORM ANDROID)
+    elseif(UNIX AND NOT APPLE)
+        set(PLATFORM LINUX)
+    elseif(EMSCRIPTEN)
+        set(PLATFORM ASM_JS)
+    elseif(APPLE)
+        set(PLATFORM OSX)
+        if(NOT ARGS_PROFILES)
+            list(APPEND PROFILES metal)
+        endif()
+    elseif(
+        WIN32
+        OR MINGW
+        OR MSYS
+        OR CYGWIN
+    )
+        set(PLATFORM WINDOWS)
+        if(NOT ARGS_PROFILES)
+            list(APPEND PROFILES s_5_0 s_6_0)
+        endif()
+    elseif(ORBIS) # ORBIS should be defined by a PS4 CMake toolchain
+        set(PLATFORM ORBIS)
+        if(NOT ARGS_PROFILES)
+            list(APPEND PROFILES pssl)
+        endif()
+    else()
+        message(error "shaderc: Unsupported platform")
+    endif()
+
+    set(ALL_OUTPUTS "")
+    foreach(SHADER_FILE ${ARGS_SHADERS})
+        if(NOT ARGS_NO_SOURCE_GROUP)
+            source_group("Shaders" FILES "${SHADER_FILE}")
+        endif()
+        get_filename_component(SHADER_FILE_BASENAME ${SHADER_FILE} NAME)
+        get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
+        get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
+
+        # Build output targets and their commands
+        set(OUTPUTS "")
+        set(COMMANDS "")
+        set(MKDIR_COMMANDS "")
+        set(FIRST_PROFILE TRUE)
+        set(FIRST_OUTPUT "")
+        foreach(PROFILE ${PROFILES})
+            _bgfx_get_profile_path_ext(${PROFILE} PROFILE_PATH_EXT)
+            _bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
+            if(ARGS_AS_HEADERS)
+                set(HEADER_PREFIX .h)
+            endif()
+            set(OUTPUT ${ARGS_OUTPUT_DIR}/${PROFILE_PATH_EXT}/${SHADER_FILE_BASENAME}.bin${HEADER_PREFIX})
+            if(FIRST_PROFILE)
+                set(FIRST_OUTPUT ${OUTPUT})
+            endif()
+            set(PLATFORM_I ${PLATFORM})
+            if(PROFILE STREQUAL "spirv")
+                set(PLATFORM_I LINUX)
+            endif()
+            set(BIN2C_PART "")
+            if(ARGS_AS_HEADERS)
+                set(BIN2C_PART BIN2C ${SHADER_FILE_NAME_WE}_${PROFILE_EXT})
+            endif()
+
+            set(DEPENDS_OPTION "")
+            if(FIRST_PROFILE AND CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
+                set(DEPENDS_OPTION DEPENDS)
+            endif()
+
+            _bgfx_shaderc_parse(
+                CLI #
+                ${BIN2C_PART} #
+                ${DEPENDS_OPTION} #
+                ${ARGS_TYPE} ${PLATFORM_I} WERROR "$<$<CONFIG:Debug,RelWithDebInfo>:DEBUG>"
+                FILE ${SHADER_FILE_ABSOLUTE}
+                OUTPUT ${OUTPUT}
+                PROFILE ${PROFILE}
+                O "$<IF:$<CONFIG:Debug>,0,3>"
+                VARYINGDEF ${ARGS_VARYING_DEF}
+                INCLUDES ${BGFX_SHADER_INCLUDE_PATH} ${ARGS_INCLUDE_DIRS}
+                DEFINES ${ARGS_DEFINES}
+            )
+            list(APPEND OUTPUTS ${OUTPUT})
+            list(APPEND ALL_OUTPUTS ${OUTPUT})
+            list(
+                APPEND
+                MKDIR_COMMANDS
+                COMMAND
+                ${CMAKE_COMMAND}
+                -E
+                make_directory
+                ${ARGS_OUTPUT_DIR}/${PROFILE_PATH_EXT}
+            )
+            list(APPEND COMMANDS COMMAND bgfx::shaderc ${CLI})
+            set(FIRST_PROFILE FALSE)
+        endforeach()
+
+        set(DEPFILE_ARG "")
+        if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles" AND FIRST_OUTPUT)
+            set(DEPFILE_ARG DEPFILE "${FIRST_OUTPUT}.d")
+        endif()
+
+        add_custom_command(
+            OUTPUT ${OUTPUTS}
+            COMMAND ${MKDIR_COMMANDS} ${COMMANDS}
+            MAIN_DEPENDENCY ${SHADER_FILE_ABSOLUTE}
+            DEPENDS ${ARGS_VARYING_DEF} ${ARGS_DEPENDS}
+            ${DEPFILE_ARG}
+        )
+    endforeach()
+
+    if(DEFINED ARGS_OUT_FILES_VAR)
+        set(${ARGS_OUT_FILES_VAR} ${ALL_OUTPUTS} PARENT_SCOPE)
+    endif()
+endfunction()
+
 # vclib_build_shader(
 #   SHADER <shader_file>
 #   OUT_DIR <output_directory>
 #   [VARYING_DEF <varying_def_file>]
+#   [DEPENDS <dep1> <dep2> ...]
 #   [AS_HEADER]
 #   [OUT_FILES_VAR <variable_name>]
 # )
@@ -94,7 +234,7 @@ function(vclib_build_shader)
     # options: AS_HEADER
     set(options AS_HEADER)
     set(oneValueArgs SHADER OUT_DIR VARYING_DEF OUT_FILES_VAR)
-    set(multiValueArgs INCLUDE_DIRS)
+    set(multiValueArgs INCLUDE_DIRS DEPENDS)
     cmake_parse_arguments(
         ARG
         "${options}"
@@ -108,6 +248,11 @@ function(vclib_build_shader)
     endif()
     if(NOT ARG_OUT_DIR)
         message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
+    endif()
+
+    get_filename_component(FILE_EXT "${ARG_SHADER}" EXT)
+    if(NOT "${FILE_EXT}" STREQUAL ".sc")
+        return()
     endif()
 
     set(BGFX_VF_PROFILES
@@ -248,6 +393,12 @@ function(vclib_build_shader)
             set(OUT_FILES_ARG "")
         endif()
 
+        if(ARG_DEPENDS)
+            set(DEPENDS_ARG DEPENDS ${ARG_DEPENDS})
+        else()
+            set(DEPENDS_ARG "")
+        endif()
+
         bgfx_compile_shaders(
             TYPE ${TYPE}
             SHADERS ${ARG_SHADER}
@@ -257,6 +408,7 @@ function(vclib_build_shader)
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
             NO_SOURCE_GROUP
+            ${DEPENDS_ARG}
             ${OUT_FILES_ARG}
         )
 
@@ -292,6 +444,12 @@ function(vclib_build_shaders_to_headers)
             set(VARYING_DEF_FILE
                 "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc"
             )
+            file(
+                GLOB DIR_DEPS
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.config"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sh"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sc"
+            )
         else()
             file(
                 RELATIVE_PATH
@@ -301,6 +459,7 @@ function(vclib_build_shaders_to_headers)
             )
             get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
             set(VARYING_DEF_FILE "")
+            set(DIR_DEPS "")
         endif()
         set(OUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
 
@@ -310,12 +469,14 @@ function(vclib_build_shaders_to_headers)
                 OUT_DIR ${OUT_DIR}
                 VARYING_DEF "${VARYING_DEF_FILE}"
                 INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}"
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         else()
             vclib_build_shader(
                 SHADER ${SHADER}
                 OUT_DIR ${OUT_DIR}
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         endif()

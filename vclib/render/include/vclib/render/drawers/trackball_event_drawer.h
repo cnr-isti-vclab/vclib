@@ -79,9 +79,7 @@ private:
 
 protected:
     std::function<void(void)> mCustomShortcutToggleTrackballCallback =
-        [this]() {
-            toggleTrackBallVisibility();
-        };
+        [this]() { toggleTrackBallVisibility(); };
 
 public:
     TrackBallEventDrawerT(uint width = 1024, uint height = 768) :
@@ -556,81 +554,73 @@ private:
         using TBED = TrackBallEventDrawerT;
 
         return {
-            {"Reset Trackball",
-             [](TBED& d) {
-                 d.reset();
-             }},
+            {"Reset Trackball",         [](TBED& d) { d.reset(); }           },
             {"Reset Directional Light",
-             [](TBED& d) {
-                 d.mTrackball.resetDirectionalLight();
-             }},
+             [](TBED& d) { d.mTrackball.resetDirectionalLight(); }           },
 
             // rotate
             {"Rotate X+",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate Y-",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate Y+",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate X-",
              [](TBED& d) {
                  rotate(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
 
             // translate
             {"Translate Y+",
              [](TBED& d) {
                  translate(d.mTrackball, UNIT_Y * DISCRETE_TRANSLATION_STEP);
-             }},
+             }                                                               },
             {"Translate Y-",
              [](TBED& d) {
                  translate(d.mTrackball, -UNIT_Y * DISCRETE_TRANSLATION_STEP);
-             }},
+             }                                                               },
             {"Translate X-",
              [](TBED& d) {
                  translate(d.mTrackball, -UNIT_X * DISCRETE_TRANSLATION_STEP);
-             }},
+             }                                                               },
             {"Translate X+",
              [](TBED& d) {
                  translate(d.mTrackball, UNIT_X * DISCRETE_TRANSLATION_STEP);
-             }},
+             }                                                               },
 
             // set view
-            {"View Front",
-             [](TBED& d) {
-                 d.mTrackball.reset();
-             }},
+            {"View Front",              [](TBED& d) { d.mTrackball.reset(); }},
             {"View Top",
              [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_X, M_PI_2);
-             }},
+             }                                                               },
             {"View Right",
              [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, -M_PI_2);
-             }},
+             }                                                               },
             {"View Back",
              [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, M_PI);
-             }},
+             }                                                               },
             {"View Bottom",
              [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_X, -M_PI_2);
-             }},
+             }                                                               },
             {"View Left",
              [](TBED& d) {
                  d.mTrackball.reset();
                  rotate(d.mTrackball, UNIT_Y, M_PI_2);
-             }},
+             }                                                               },
 
             // projection mode
             {"Toggle Projection",
@@ -641,25 +631,25 @@ private:
                          Camera<Scalar>::ProjectionMode::ORTHO :
                          Camera<Scalar>::ProjectionMode::PERSPECTIVE;
                  d.mTrackball.setProjectionMode(v);
-             }},
+             }                                                               },
 
             // rotate light
             {"Rotate Light X+",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_X, DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate Light Y-",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_Y, -DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate Light Y+",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_Y, DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
             {"Rotate Light X-",
              [](TBED& d) {
                  rotateLight(d.mTrackball, UNIT_X, -DISCRETE_ROTATION_STEP);
-             }},
+             }                                                               },
         };
     }
 };

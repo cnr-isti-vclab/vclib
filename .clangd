@@ -1,0 +1,9 @@
+CompileFlags:
+  CompilationDatabase: .
+
+Diagnostics:
+  UnusedIncludes: None
+  Suppress:
+    - unused-includes
+
+

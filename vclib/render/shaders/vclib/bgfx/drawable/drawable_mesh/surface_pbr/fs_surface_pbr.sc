@@ -46,21 +46,8 @@ void main()
     vec4 vertexBaseColor  = vec4_splat(1.0);
     vec4 textureBaseColor = vec4_splat(1.0);
 
-    // color to use per vertex
-    // if the user selected per face, per mesh or per user, override
-    if (isSurfaceColorFace()) {
-        vertexBaseColor = uintABGRToVec4Color(rawLoadUint(primitiveColors, primitiveID));
-    }
-    else if (isSurfaceColorMesh()) {
-        vertexBaseColor = u_meshColor;
-    }
-    else if (isSurfaceColorUser()) {
-        vertexBaseColor = uintABGRToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
-    }
-    else {
-        if (isPerVertexColorAvailable())
-            vertexBaseColor = v_color; // per-vertex color available
-    }
+    if (isPerVertexColorAvailable())
+        vertexBaseColor = v_color; // per-vertex color available
 
     if (useTexture && isBaseColorTextureAvailable()) {
         // base color texture available
@@ -86,6 +73,25 @@ void main()
     float metallic = u_metallicFactor * metallicRoughnessTexture.b; // metallic is stored in B channel
     float roughness = u_roughnessFactor * metallicRoughnessTexture.g; // roughness is stored in G channel
 
+    // tangent frame is used when normal texture, clearcoat normal
+    // texture, or anisotropy is available
+    mat3 tangentFrame = mat3( // init required by direct3d, not useful anyway
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0
+    );
+    if ((useTexture && (isNormalTextureAvailable() || isClearcoatNormalTextureAvailable())) ||
+        u_anisotropyStrength > 0.0) {
+        if (isPerVertexTangentAvailable()) {
+            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
+            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
+        }
+        else {
+            // construct tangent frame using vertex normals
+            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
+        }
+    }
+
     // normal
     vec3 normal;
 
@@ -101,16 +107,6 @@ void main()
         // scale normal's x and y as requested by gltf 2.0 specification
         normalTexture *= vec3(u_normalScale, u_normalScale, 1.0);
 
-        mat3 tangentFrame;
-
-        if (isPerVertexTangentAvailable()) {
-            vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
-            tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
-        }
-        else {
-            // construct tangent frame using vertex normals
-            tangentFrame = tangentFrameFromNormal(v_normal, v_position, texcoord, vcl_FrontFacing);
-        }
 
         // change the basis of the normal provided by the texture
         // from tangent space to the space used for computations
@@ -132,24 +128,112 @@ void main()
         emissiveTexture = emissiveTex(texcoord).rgb;
     }
 
-    vec3 emissiveColor = u_emissiveFactor * emissiveTexture;
+    vec3 emissiveColor = u_emissiveFactor * emissiveTexture * u_emissiveStrength;
+
+    // anisotropy
+    float anisotropyStrength = u_anisotropyStrength;
+    vec2 anisotropyRotation, anisotropyDirection;
+    vec3 anisotropicTangent = vec3_splat(0.0), anisotropicBitangent = vec3_splat(0.0);
+    if (anisotropyStrength > 0.0)
+    {
+        anisotropyRotation = vec2(cos(u_anisotropyRotation), sin(u_anisotropyRotation));
+        anisotropyDirection = vec2(1.0, 0.0);
+
+        if (useTexture && isAnisotropyTextureAvailable())
+        {
+            vec3 anisotropyData = anisotropyTex(texcoord).rgb;
+
+            anisotropyDirection = anisotropyData.rg;
+            anisotropyDirection *= 2.0;
+            anisotropyDirection -= 1.0; // remap from [0,1] to [-1,1]
+            anisotropyDirection = normalize(anisotropyDirection);
+
+            anisotropyStrength *= anisotropyData.b; // anisotropy strength in blue channel
+            anisotropyStrength = clamp(anisotropyStrength, 0.0, 1.0);
+        }
+
+        // rotate anisotropy
+        mat2 anisotropyRot = mat2(anisotropyRotation.x, anisotropyRotation.y, -anisotropyRotation.y, anisotropyRotation.x);
+        anisotropyDirection = normalize(mul(anisotropyDirection, anisotropyRot));
+
+        anisotropicTangent = normalize(mul(vec3(anisotropyDirection, 0.0), tangentFrame));
+        // use geometric normal from tangent frame for bitangent calculation
+        anisotropicBitangent = normalize(cross(tangentFrame[2], anisotropicTangent));
+    }
+
+    float specular = u_specularFactor;
+    if (useTexture && isSpecularTextureAvailable())
+        specular *= specularTex(texcoord).a;
+
+    vec3 specularColor = u_specularColor;
+    if (useTexture && isSpecularColorTextureAvailable())
+        specularColor *= specularColorTex(texcoord).rgb;
+
+    // clearcoat
+    float clearcoat = u_clearcoatFactor;
+    if (useTexture && isClearcoatTextureAvailable()) {
+        // clearcoat texture available
+        clearcoat *= clearcoatTex(texcoord).r; // clearcoat is stored in R channel
+    }
+
+    float clearcoatRoughness = u_clearcoatRoughnessFactor;
+    if (useTexture && isClearcoatRoughnessTextureAvailable()) {
+        // clearcoat roughness texture available
+        clearcoatRoughness *= clearcoatRoughnessTex(texcoord).g; // clearcoat roughness is stored in G channel
+    }
+
+    vec3 clearcoatNormal;
+    if(useTexture && isClearcoatNormalTextureAvailable()) {
+        // clearcoat normal texture available
+        vec3 clearcoatNormalTexture = clearcoatNormalTex(texcoord).xyz;
+
+        // remapping normals
+        // from [0,1] to [-1,1] for x and y (red and green)
+        // from (0.5,1] to (0,1] for z (blue)
+        clearcoatNormalTexture *= 2.0;
+        clearcoatNormalTexture -= 1.0;
+        clearcoatNormalTexture *= vec3(u_clearcoatNormalScale, u_clearcoatNormalScale, 1.0);
+
+        // change the basis of the normal provided by the texture
+        // from tangent space to the space used for computations
+        clearcoatNormal = mul(clearcoatNormalTexture, tangentFrame);
+
+        clearcoatNormal = normalize(clearcoatNormal);
+    } else {
+        clearcoatNormal = normalize(v_normal);
+        if (!vcl_FrontFacing)
+            clearcoatNormal *= -1.0;
+    }
 
     if(useImageBasedLighting())
     {
         // view direction
         vec3 V = normalize(-v_position); // camera is at the origin
 
-        vec3 reflection = normalize(reflect(-V, normal));
+        vec3 reflection;
+        if(anisotropyStrength > 0.0)
+        {
+            vec3 bentNormal = bendNormal(normal, V, anisotropicBitangent, anisotropyStrength, roughness);
+            reflection = normalize(reflect(-V, bentNormal));
+        }
+        else
+        {
+            reflection = normalize(reflect(-V, normal));
+        }
+        vec3 clearcoatReflection = normalize(reflect(-V, clearcoatNormal));
 
         reflection = normalize(mul(u_invView, vec4(reflection, 0.0)).xyz);
+        clearcoatReflection = normalize(mul(u_invView, vec4(clearcoatReflection, 0.0)).xyz);
 
         // convert from camera to world space
         normal = normalize(mul(u_invView, vec4(normal, 0.0)).xyz);
         V = normalize(mul(u_invView, vec4(V, 0.0)).xyz);
+        clearcoatNormal = normalize(mul(u_invView, vec4(clearcoatNormal, 0.0)).xyz);
 
         float NoV = clampedDot(normal, V);
+        float clearcoatNoV = clampedDot(clearcoatNormal, V);
 
-        vec3 f0_dielectric = vec3_splat(0.04);
+        vec3 f0_dielectric = min(vec3_splat(0.04) * specularColor, vec3_splat(1.0));
         vec3 f90 = vec3_splat(1.0);
 
         // diffuse light
@@ -157,13 +241,16 @@ void main()
 
         // specular light
         float specularMipLevel = roughness * (u_specularMipLevels - 1.0);
+        float clearcoatSpecularMipLevel = clearcoatRoughness * (u_specularMipLevels - 1.0);
         
         vec3 specularLight = textureCubeLod(s_specular, leftHand(reflection), specularMipLevel).rgb;
+        vec3 clearcoatSpecularLight = textureCubeLod(s_specular, leftHand(clearcoatReflection), clearcoatSpecularMipLevel).rgb;
 
         // Fresnel
         vec2 brdf = brdfLutTex(vec2(NoV, roughness)).rg;
-        vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb);
-        vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric);
+        vec3 metalFresnel = iblGgxFresnel(brdf, NoV, roughness, baseColor.rgb, 1.0);
+        vec3 dielectricFresnel = iblGgxFresnel(brdf, NoV, roughness, f0_dielectric, specular);
+        vec3 clearcoatFresnel = clearcoat * F_Schlick(f0_dielectric, f90, clearcoatNoV);
 
         // occlusion
         float occlusion = 1.0;
@@ -182,6 +269,8 @@ void main()
             metallic,
             occlusion,
             emissiveColor,
+            clearcoatFresnel,
+            clearcoatSpecularLight,
             u_exposure,
             u_toneMapping
         );
@@ -214,6 +303,14 @@ void main()
             metallic,
             roughness,
             emissiveColor,
+            anisotropyStrength,
+            anisotropicTangent,
+            anisotropicBitangent,
+            clearcoat,
+            clearcoatRoughness,
+            clearcoatNormal,
+            specular,
+            specularColor,
             u_exposure,
             u_toneMapping
         );
