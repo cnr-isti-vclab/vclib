@@ -8,6 +8,7 @@
 #include <vclib/bgfx/primitives/points.h>
 
 #include <vclib/bgfx/context.h>
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.h>
 #include <vclib/bgfx/primitives/uniforms/points_uniforms.h>
 
 #include <stdexcept>
@@ -161,6 +162,19 @@ void Points::draw(bgfx::ViewId viewId, uint64_t state) const
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
 
+    // cross section settings
+    if (mSettings.crossSectionSettings.isEnabled()) {
+        using enum CrossSectionSettings::CrossSectionType;
+        CrossSectionUniforms::set(
+            mSettings.crossSectionSettings.lower(),
+            mSettings.crossSectionSettings.upper(),
+            mSettings.crossSectionSettings.type() == PER_FRAGMENT);
+    }
+    else {
+        CrossSectionUniforms::set();
+    }
+    CrossSectionUniforms::bind();
+
     bgfx::submit(viewId, mProgram);
 }
 
@@ -195,6 +209,19 @@ void Points::drawId(bgfx::ViewId viewId, uint32_t id, uint64_t state) const
 
     // Bind the updated uniforms to the shader stage.
     PointsUniforms::bind();
+
+    // cross section settings
+    if (mSettings.crossSectionSettings.isEnabled()) {
+        using enum CrossSectionSettings::CrossSectionType;
+        CrossSectionUniforms::set(
+            mSettings.crossSectionSettings.lower(),
+            mSettings.crossSectionSettings.upper(),
+            mSettings.crossSectionSettings.type() == PER_FRAGMENT);
+    }
+    else {
+        CrossSectionUniforms::set();
+    }
+    CrossSectionUniforms::bind();
 
     bgfx::submit(viewId, mIdProgram);
 }
@@ -268,21 +295,24 @@ bgfx::ProgramHandle Points::pointsProgramSelector() const
     constexpr uint N_COLOR_MODES     = 2;
     constexpr uint N_SHAPE_MODES     = 2;
     constexpr uint N_SELECTION_MODES = 2;
+    constexpr uint N_SECTION_MODES   = 2;
 
     uint shading = toUnderlying(mSettings.shading);
     uint color   = toUnderlying(mSettings.colorSetting);
     uint shape   = toUnderlying(mSettings.shape);
     uint select  = mSettings.selectionVisibility ? 1 : 0;
+    uint section = mSettings.crossSectionSettings.isEnabled() ? 1 : 0;
 
     // the first shader of all the combinations
     uint base = toUnderlying(
-        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF);
+        PRIMITIVE_POINTS_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SELECTION_OFF_SECTION_OFF);
 
     uint offset = linearizeIndex<
         N_SHADING_MODES,
         N_COLOR_MODES,
         N_SHAPE_MODES,
-        N_SELECTION_MODES>(shading, color, shape, select);
+        N_SELECTION_MODES,
+        N_SECTION_MODES>(shading, color, shape, select, section);
 
     uint program = base + offset;
 
@@ -300,13 +330,20 @@ bgfx::ProgramHandle Points::pointsIdProgramSelector() const
 {
     using enum VertFragProgram;
 
-    uint shape = toUnderlying(mSettings.shape);
+    constexpr uint N_SHAPE_MODES     = 2;
+    constexpr uint N_SECTION_MODES   = 2;
+
+    uint shape   = toUnderlying(mSettings.shape);
+    uint section = mSettings.crossSectionSettings.isEnabled() ? 1 : 0;
 
     // the first shader of all the combinations
     uint base = toUnderlying(
-        PRIMITIVE_POINTS_ID_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE);
+        PRIMITIVE_POINTS_ID_SHADING_NONE_COLOR_GENERAL_SHAPE_SQUARE_SECTION_OFF);
 
-    uint program = base + shape;
+    uint offset =
+        linearizeIndex<N_SHAPE_MODES, N_SECTION_MODES>(shape, section);
+
+    uint program = base + offset;
 
     ProgramManager& pm = Context::instance().programManager();
     return pm.getProgram(VertFragProgram(program));

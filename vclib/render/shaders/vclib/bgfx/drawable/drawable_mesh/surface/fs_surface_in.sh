@@ -7,6 +7,13 @@
 
 $input v_position, v_normal, v_tangent, v_color, v_texcoord0, v_texcoord1
 
+#ifdef SURFACE_SECTION_ON
+// cross section
+$input v_worldPos, v_discardFlag
+
+#include <vclib/bgfx/drawable/uniforms/cross_section_uniforms.sh>
+#endif
+
 #include <vclib/bgfx/drawable/drawable_mesh/mesh_data_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/render_settings_uniforms.sh>
 #include <vclib/bgfx/drawable/drawable_mesh/texture_uniforms.sh>
@@ -32,6 +39,10 @@ DECLARE_FETCH_VEC3_FROM_FLOAT(fetchPrimitiveNormal, primitiveNormals)
 
 void main()
 {
+#ifdef SURFACE_SECTION_ON
+    discardIfCrossSectionClipped(v_discardFlag, v_worldPos);
+#endif
+
     // color
     vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 
