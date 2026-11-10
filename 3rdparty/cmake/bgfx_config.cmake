@@ -140,10 +140,12 @@ function(vclib_build_shader)
         list(
             APPEND BGFX_VF_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
         list(
             APPEND BGFX_COMPUTE_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
     endif()
 
