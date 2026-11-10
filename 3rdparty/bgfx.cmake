@@ -5,7 +5,7 @@
 # v. 2.0. If a copy of the MPL was not distributed with this file, You can
 # obtain one at https://mozilla.org/MPL/2.0/.
 
-set(BGFX_VERSION 1.164.9539-586)
+set(BGFX_VERSION 1.168.9624-612)
 
 find_package(bgfx QUIET)
 
@@ -57,9 +57,9 @@ if(VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
 
     # for each path in BGFX_INCLUDE_PATH:
     foreach(PATH ${BGFX_INCLUDE_PATH})
-        # if $PATH/bgfx_shader.sh exists
         if(EXISTS ${PATH}/bgfx_shader.sh)
-            # set BGFX_SHADER_INCLUDE_PATH to $PATH/bgfx
+            set(BGFX_SHADER_INCLUDE_PATH ${PATH})
+        elseif(EXISTS ${PATH}/bgfx/bgfx_shader.sh)
             set(BGFX_SHADER_INCLUDE_PATH ${PATH}/bgfx)
         endif()
     endforeach(PATH ${BGFX_INCLUDE_PATH})
@@ -93,7 +93,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
     endif()
 
     FetchContent_Declare(
-        bgfx
+        bgfx.cmake
         GIT_REPOSITORY https://github.com/bkaradzic/bgfx.cmake
         GIT_TAG v${BGFX_VERSION}
         ${BGFX_EXCLUDE_FROM_ALL_OPTION}
@@ -101,9 +101,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     vclib_begin_3rdparty_install_scope()
 
-    FetchContent_MakeAvailable(bgfx)
+    FetchContent_MakeAvailable(bgfx.cmake)
 
     vclib_end_3rdparty_install_scope()
+
+    FetchContent_GetProperties(bgfx SOURCE_DIR BGFX_SOURCE_DIR)
 
     # there are some warnings that we need to ignore
     vclib_disable_target_warnings(spirv-cross) #bgfx 3rdparty
@@ -124,12 +126,12 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BGFX)
 
     target_include_directories(
         vclib-3rd-bgfx
-        INTERFACE $<BUILD_INTERFACE:${bgfx_SOURCE_DIR}/bgfx/3rdparty>
+        INTERFACE $<BUILD_INTERFACE:${BGFX_SOURCE_DIR}/3rdparty>
     )
 
     set_target_properties(
         vclib-3rd-bgfx
-        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${bgfx_SOURCE_DIR}/bgfx/src
+        PROPERTIES BGFX_SHADER_INCLUDE_PATH ${BGFX_SOURCE_DIR}/src
     )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
