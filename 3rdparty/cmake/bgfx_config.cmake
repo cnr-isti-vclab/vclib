@@ -201,7 +201,10 @@ function(vclib_build_shader)
             TARGET ${BGFX_TARGET}
             PROPERTY BGFX_SHADER_INCLUDE_PATH
         )
-        if(NOT BGFX_SHADER_INCLUDE_PATH OR NOT EXISTS "${BGFX_SHADER_INCLUDE_PATH}/bgfx_shader.sh")
+        if(
+            NOT BGFX_SHADER_INCLUDE_PATH
+            OR NOT EXISTS "${BGFX_SHADER_INCLUDE_PATH}/bgfx_shader.sh"
+        )
             # When consuming VCLib from an installation, the bgfx_shader.sh path
             # might not be explicitly exposed via target properties. We search for it
             # using paths relative to the vclib package directory or install prefix.
