@@ -140,9 +140,9 @@ public:
         if (!mMeshWithTopology) {
             mMeshWithTopology = std::make_unique<Mesh>(mMesh);
             enableTopologyComponents(*mMeshWithTopology);
-            vcl::updatePerVertexAdjacentFaces(*mMeshWithTopology);
-            vcl::updatePerVertexAdjacentVertices(*mMeshWithTopology);
-            vcl::updatePerFaceAdjacentFaces(*mMeshWithTopology);
+            vcl::updateVertexAdjacentFaces(*mMeshWithTopology);
+            vcl::updateVertexAdjacentVertices(*mMeshWithTopology);
+            vcl::updateFaceAdjacentFaces(*mMeshWithTopology);
         }
         return *mMeshWithTopology;
     }

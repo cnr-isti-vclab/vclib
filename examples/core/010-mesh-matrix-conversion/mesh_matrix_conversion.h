@@ -39,7 +39,7 @@ auto meshMatrixConversion()
     // Load a textured mesh with normals and colors
     vcl::TriMesh mesh = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                                     "/bunny_textured.ply");
-    vcl::updatePerVertexNormals(mesh);
+    vcl::updateVertexNormals(mesh);
 
     // Enable and set some colors for demonstration
     mesh.enablePerVertexColor();
@@ -174,7 +174,7 @@ auto meshMatrixConversion()
     std::cout << "Created cube mesh: " << cubeMesh.vertexCount()
               << " vertices, " << cubeMesh.faceCount() << " faces" << std::endl;
 
-    vcl::updatePerVertexAndFaceNormals(cubeMesh);
+    vcl::updateVertexAndFaceNormals(cubeMesh);
 
     return std::make_tuple(importedMesh, cubeMesh);
 }

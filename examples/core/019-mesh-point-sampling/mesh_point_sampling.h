@@ -31,7 +31,7 @@ auto meshPointSampling()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny Mesh";
 
-    vcl::updatePerVertexAndFaceNormals(originalMesh);
+    vcl::updateVertexAndFaceNormals(originalMesh);
 
     std::cout << "Loaded mesh with " << originalMesh.vertexCount()
               << " vertices and " << originalMesh.faceCount() << " faces"

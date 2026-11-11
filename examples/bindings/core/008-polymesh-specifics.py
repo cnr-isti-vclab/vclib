@@ -94,7 +94,7 @@ def polymesh_specifics():
     # PART 4: ADJACENCY IN POLYMESH
     print("\n\nPART 4: Adjacency in PolyMesh\n-----------------------------")
     poly_mesh_loaded.enable_per_face_adjacent_faces()
-    vcl.update_per_face_adjacent_faces(poly_mesh_loaded)
+    vcl.update_face_adjacent_faces(poly_mesh_loaded)
     print("Face-face adjacency enabled for PolyMesh")
     if poly_mesh_loaded.face_count() > 0:
         face = poly_mesh_loaded.face(0)

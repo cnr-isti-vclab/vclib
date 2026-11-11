@@ -33,7 +33,7 @@ MeshType createAxisCylinder(double unitLength, bool fromOrigin = false)
         vcl::translate(cylinder, vcl::Point3d(0, unitLength * 0.5, 0));
     }
 
-    vcl::updatePerVertexNormals(cylinder);
+    vcl::updateVertexNormals(cylinder);
 
     return cylinder;
 }
@@ -78,7 +78,7 @@ MeshType createAxisConeSpheres(double unitLength, bool fromOrigin = false)
     MeshType     sp  = vcl::createSphere<MeshType>(s);
     coneSpheres.append(sp);
 
-    vcl::updatePerVertexNormals(coneSpheres);
+    vcl::updateVertexNormals(coneSpheres);
 
     return coneSpheres;
 }

@@ -186,7 +186,7 @@ TEMPLATE_TEST_CASE(
     SECTION("TriMesh - Cube (Normals)")
     {
         TriMesh tm = vcl::createCube<TriMesh>();
-        vcl::updatePerVertexNormals(tm);
+        vcl::updateVertexNormals(tm);
 
         std::ostringstream oss;
         vcl::saveOff(tm, oss);
@@ -209,10 +209,10 @@ TEMPLATE_TEST_CASE(
     SECTION("PolyMesh - Cube (Normals and Colors)")
     {
         PolyMesh pm = vcl::createCube<PolyMesh>();
-        vcl::updatePerVertexNormals(pm);
+        vcl::updateVertexNormals(pm);
 
         pm.enablePerVertexColor();
-        vcl::setPerVertexColor(pm, vcl::Color::Blue);
+        vcl::setVertexColor(pm, vcl::Color::Blue);
 
         std::ostringstream oss;
         vcl::saveOff(pm, oss);

@@ -105,7 +105,7 @@ BENCH(
         Mesh base = s.copyMesh();
         if constexpr (vcl::FaceMeshConcept<Mesh>) {
             if (base.faceCount() > 0) {
-                vcl::updatePerVertexNormals(base);
+                vcl::updateVertexNormals(base);
             }
         }
         Mesh m = base;

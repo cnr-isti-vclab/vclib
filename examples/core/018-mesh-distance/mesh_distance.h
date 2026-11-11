@@ -33,7 +33,7 @@ void meshDistance()
 
     // Prepare mesh for distance computation
     vcl::updateBoundingBox(mesh);
-    vcl::updatePerFaceNormals(mesh);
+    vcl::updateFaceNormals(mesh);
 
     /****** Create a smoothed version ******/
 
@@ -47,7 +47,7 @@ void meshDistance()
     std::cout << "Applied 5 iterations of Laplacian smoothing" << std::endl;
 
     // Update normals for the smoothed mesh
-    vcl::updatePerFaceNormals(smoothedMesh);
+    vcl::updateFaceNormals(smoothedMesh);
 
     /****** Compute distance between original and smoothed mesh ******/
 
@@ -74,7 +74,7 @@ void meshDistance()
     vcl::TriMesh taubinMesh = mesh;
     vcl::taubinSmoothing(
         taubinMesh, 5, 0.5f, -0.53f); // 5 iterations, lambda=0.5, mu=-0.53
-    vcl::updatePerFaceNormals(taubinMesh);
+    vcl::updateFaceNormals(taubinMesh);
 
     // Compute distance for Taubin smoothing
     auto taubinResult = vcl::hausdorffDistance(
@@ -108,7 +108,7 @@ void meshDistance()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     vcl::updateBoundingBox(cube);
-    vcl::updatePerFaceNormals(cube);
+    vcl::updateFaceNormals(cube);
 
     auto cubeResult =
         vcl::hausdorffDistance(mesh, cube, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
