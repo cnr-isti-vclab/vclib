@@ -31,16 +31,16 @@ inline MeshInfo objFormatCapability()
 
     info.setMaterials();
 
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexTexCoord();
+    info.setVertexPosition();
+    info.setVertexNormal();
+    info.setVertexColor();
+    info.setVertexTexCoord();
 
-    info.setPerFaceVertexReferences();
-    info.setPerFaceWedgeTexCoords();
-    info.setPerFaceMaterialIndex();
+    info.setFaceVertexReferences();
+    info.setFaceWedgeTexCoords();
+    info.setFaceMaterialIndex();
 
-    info.setPerEdgeVertexReferences();
+    info.setEdgeVertexReferences();
 
     return info;
 }

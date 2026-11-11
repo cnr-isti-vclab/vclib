@@ -31,13 +31,13 @@ inline MeshInfo gltfFormatCapability()
 
     info.setMaterials();
 
-    info.setPerVertexPosition();
-    info.setPerVertexNormal();
-    info.setPerVertexColor();
-    info.setPerVertexTexCoord();
-    info.setPerVertexMaterialIndex();
+    info.setVertexPosition();
+    info.setVertexNormal();
+    info.setVertexColor();
+    info.setVertexTexCoord();
+    info.setVertexMaterialIndex();
 
-    info.setPerFaceVertexReferences();
+    info.setFaceVertexReferences();
 
     return info;
 }

@@ -81,9 +81,9 @@ void saveObj(
     // if the mesh has both vertex and wedge texcords, will be saved just wedges
     // because obj does not allow to save them both. In any case, also vertex
     // texcoords will result saved as wedge texcoords in the final file.
-    if (meshInfo.hasPerVertexTexCoord() &&
-        meshInfo.hasPerFaceWedgeTexCoords()) {
-        meshInfo.setPerVertexTexCoord(false);
+    if (meshInfo.hasVertexTexCoord() &&
+        meshInfo.hasFaceWedgeTexCoords()) {
+        meshInfo.setVertexTexCoord(false);
     }
 
     std::ofstream mtlftmp;
@@ -124,7 +124,7 @@ void saveObj(
         io::writeDouble(fp, v.position().y(), false);
         io::writeDouble(fp, v.position().z(), false);
         if constexpr (HasPerVertexColor<MeshType>) {
-            if (meshInfo.hasPerVertexColor()) {
+            if (meshInfo.hasVertexColor()) {
                 io::writeFloat(fp, v.color().redF(), false);
                 io::writeFloat(fp, v.color().greenF(), false);
                 io::writeFloat(fp, v.color().blueF(), false);
@@ -133,7 +133,7 @@ void saveObj(
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {
-            if (meshInfo.hasPerVertexNormal()) {
+            if (meshInfo.hasVertexNormal()) {
                 fp << "vn ";
                 io::writeDouble(fp, v.normal().x(), false);
                 io::writeDouble(fp, v.normal().y(), false);
@@ -142,7 +142,7 @@ void saveObj(
             }
         }
         if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (meshInfo.hasPerVertexTexCoord()) {
+            if (meshInfo.hasVertexTexCoord()) {
                 fp << "vt ";
                 io::writeFloat(fp, v.texCoord().u(), false);
                 io::writeFloat(fp, v.texCoord().v(), false);
@@ -174,7 +174,7 @@ void saveObj(
                     }
                 }
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-                    if (meshInfo.hasPerFaceWedgeTexCoords()) {
+                    if (meshInfo.hasFaceWedgeTexCoords()) {
                         using WedgeTexCoordType = FaceType::WedgeTexCoordType;
                         for (const WedgeTexCoordType wt : f.wedgeTexCoords()) {
                             fp << "vt ";
@@ -191,7 +191,7 @@ void saveObj(
                     if constexpr (HasPerVertexTexCoord<MeshType>) {
                         // we wrote texcoords along with vertices, each texcoord
                         // has the same index of its vertex
-                        if (meshInfo.hasPerVertexTexCoord()) {
+                        if (meshInfo.hasVertexTexCoord()) {
                             fp << "/" << vIndices[m.index(v)] + 1;
                         }
                     }
@@ -199,7 +199,7 @@ void saveObj(
                         // we wrote texcoords before the face; indices are
                         // consecutive and wedge coords are the same of the
                         // number of vertices of the face
-                        if (meshInfo.hasPerFaceWedgeTexCoords()) {
+                        if (meshInfo.hasFaceWedgeTexCoords()) {
                             fp << "/" << wedgeTexCoord++;
                         }
                     }
