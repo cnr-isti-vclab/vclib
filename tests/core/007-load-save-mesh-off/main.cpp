@@ -163,7 +163,7 @@ TEMPLATE_TEST_CASE(
 
         std::ostringstream oss;
         vcl::MeshInfo      i(tm);
-        i.setPerVertexNormal(false);
+        i.setVertexNormal(false);
         vcl::SaveSettings settings;
         settings.info = i;
         vcl::saveOff(tm, oss, settings);
