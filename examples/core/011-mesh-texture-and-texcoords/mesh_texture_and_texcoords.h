@@ -19,7 +19,7 @@
 // 4. Working with texture images and paths
 // 5. Enabling texture coordinate components dynamically
 
-auto meshTextureAndTexCoords()
+inline auto meshTextureAndTexCoords()
 {
     std::cout << "=== VCLib - Texture and TexCoords Example ===" << std::endl;
 

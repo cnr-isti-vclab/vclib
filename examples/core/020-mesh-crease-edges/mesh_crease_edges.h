@@ -18,7 +18,7 @@
 // 2. Face edge filtering and extraction
 // 3. Creating edge meshes from selected crease edges
 
-auto meshCreaseEdges()
+inline auto meshCreaseEdges()
 {
     std::cout << "=== VCLib Example 020: Mesh Crease Edges ===\n\n";
 

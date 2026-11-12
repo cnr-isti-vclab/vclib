@@ -12,7 +12,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-void meshTopologyStatistics()
+inline void meshTopologyStatistics()
 {
     std::cout << "=== VCLib Example 012: Mesh Topology Statistics ===\n\n";
 

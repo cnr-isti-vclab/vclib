@@ -17,7 +17,7 @@
 // 2. Smoothing a mesh and computing distance with original
 // 3. Using different distance sampling methods
 
-void meshDistance()
+inline void meshDistance()
 {
     std::cout << "=== VCLib Example 018: Mesh Distance ===\n\n";
 

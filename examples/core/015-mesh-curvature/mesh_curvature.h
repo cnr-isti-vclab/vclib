@@ -17,7 +17,7 @@
 // 2. Principal curvature using PCA method
 // 3. Color mapping based on mean and Gaussian curvature
 
-auto meshCurvature()
+inline auto meshCurvature()
 {
     std::cout << "=== VCLib Example 015: Mesh Curvature ===\n\n";
 

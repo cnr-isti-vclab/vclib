@@ -17,7 +17,7 @@
 // 2. Add custom components to the mesh itself
 // 3. Use custom components for algorithm development and data storage
 
-auto meshCustomComponents()
+inline auto meshCustomComponents()
 {
     std::cout << "=== VCLib Example 009: Mesh Custom Components ===\n\n";
 

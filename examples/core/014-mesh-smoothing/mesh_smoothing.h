@@ -18,7 +18,7 @@
 // 3. Taubin smoothing (low-pass filter)
 // 4. Per-vertex normal smoothing for point clouds
 
-auto meshSmoothing()
+inline auto meshSmoothing()
 {
     std::cout << "=== VCLib Example 014: Mesh Smoothing ===\n\n";
 

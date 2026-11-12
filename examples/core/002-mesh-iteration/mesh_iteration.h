@@ -18,7 +18,7 @@
 // 4. Filtering and transforming during iteration
 // 5. Working with polygon meshes and variable topology
 
-void meshIteration()
+inline void meshIteration()
 {
     std::cout << "=== VCLib Example 002: Mesh Iteration ===\n\n";
 

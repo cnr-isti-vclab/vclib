@@ -28,7 +28,7 @@ inline vcl::Color randomColor()
     return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
 }
 
-auto meshMatrixConversion()
+inline auto meshMatrixConversion()
 {
     std::cout << "=== VCLib Example 010: Mesh Matrix Conversion ===\n\n";
 

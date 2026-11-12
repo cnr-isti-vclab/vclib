@@ -17,7 +17,7 @@
 // to find all connected faces that satisfy the selection condition, using a
 // depth-first search approach.
 
-auto faceFlooding()
+inline auto faceFlooding()
 {
     std::cout << "=== VCLib Example 016: Face Flooding ===\n\n";
 

@@ -15,7 +15,7 @@
 // This example demonstrates how to compute the convex hull of a point set
 // using the incremental convex hull algorithm provided by VCLib.
 
-auto meshConvexHull()
+inline auto meshConvexHull()
 {
     std::cout << "=== VCLib Example 017: Convex Hull ===\n\n";
 

@@ -17,7 +17,7 @@
 // 2. Use different weighting algorithms for vertex normals
 // 3. Manipulate normals with transformations
 
-auto meshNormals()
+inline auto meshNormals()
 {
     std::cout << "=== VCLib Example 005: Mesh Normals ===\n\n";
 
