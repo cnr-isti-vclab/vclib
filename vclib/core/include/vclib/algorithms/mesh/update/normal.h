@@ -76,9 +76,7 @@ void clearElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
-void normalizeElementNormals(
-    MeshConcept auto& mesh,
-    LogType&          log = nullLogger)
+void normalizeElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
@@ -239,9 +237,7 @@ void clearFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
  * @see normalizeElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void normalizeVertexNormals(
-    MeshConcept auto& mesh,
-    LogType&          log = nullLogger)
+void normalizeVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
     normalizeElementNormals<ElemId::VERTEX>(mesh, log);
 }
@@ -263,9 +259,7 @@ void normalizeVertexNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void normalizeReferencedVertexNormals(
-    MeshType& mesh,
-    LogType&  log = nullLogger)
+void normalizeReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 {
     requirePerVertexNormal(mesh);
 
@@ -295,9 +289,7 @@ void normalizeReferencedVertexNormals(
  * @see normalizeElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void normalizeFaceNormals(
-    FaceMeshConcept auto& mesh,
-    LogType&              log = nullLogger)
+void normalizeFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
 {
     normalizeElementNormals<ElemId::FACE>(mesh, log);
 }

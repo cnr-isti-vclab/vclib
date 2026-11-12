@@ -160,21 +160,18 @@ auto meshNormals()
     std::cout << "\nIn this example we learned:\n\n";
 
     std::cout << "1. FACE NORMALS:\n";
-    std::cout
-        << "   - updateFaceNormals(): calculates normals for all faces\n";
+    std::cout << "   - updateFaceNormals(): calculates normals for all faces\n";
     std::cout << "   - Face normals are perpendicular to the face surface\n\n";
 
     std::cout << "2. VERTEX NORMALS - DIFFERENT WEIGHTING:\n";
     std::cout << "   - updateVertexNormals(): area-weighted average\n";
-    std::cout
-        << "   - updateVertexNormalsFromFaceNormals(): uniform weight\n";
+    std::cout << "   - updateVertexNormalsFromFaceNormals(): uniform weight\n";
     std::cout << "   - updateVertexNormalsAngleWeighted(): angle-weighted\n";
     std::cout << "   - updateVertexNormalsNelsonMaxWeighted(): Nelson-Max "
                  "method\n\n";
 
     std::cout << "3. NORMAL MANIPULATION:\n";
-    std::cout
-        << "   - multiplyFaceNormalsByMatrix(): transform face normals\n";
+    std::cout << "   - multiplyFaceNormalsByMatrix(): transform face normals\n";
     std::cout << "   - multiplyVertexNormalsByMatrix(): transform vertex "
                  "normals\n";
     std::cout << "   - Useful for flipping, rotating, or scaling normals\n\n";

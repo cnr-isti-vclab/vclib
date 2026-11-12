@@ -156,8 +156,7 @@ TEMPLATE_TEST_CASE(
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
 
-    EdgeMesh creaseEdges =
-        vcl::faceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
+    EdgeMesh creaseEdges = vcl::faceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
 
     THEN("The mesh has 36 * 2 crease edges")
     {

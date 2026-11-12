@@ -121,8 +121,7 @@ private:
         false};
 
     // Tell the data type for each component of each element
-    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS>
-        mElemComponentsType;
+    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS> mElemComponentsType;
 
     // Store name and type of element custom components
     std::array<std::vector<CustomComponent>, NUM_ELEMENTS>
@@ -370,10 +369,7 @@ public:
      * @brief Returns true if the current object has Vertex Normals.
      * @return true if the current object has Vertex Normals.
      */
-    bool hasVertexNormal() const
-    {
-        return hasElementComponent(VERTEX, NORMAL);
-    }
+    bool hasVertexNormal() const { return hasElementComponent(VERTEX, NORMAL); }
 
     /**
      * @brief Returns true if the current object has Vertex Tangents.
@@ -388,10 +384,7 @@ public:
      * @brief Returns true if the current object has Vertex Colors.
      * @return true if the current object has Vertex Colors.
      */
-    bool hasVertexColor() const
-    {
-        return hasElementComponent(VERTEX, COLOR);
-    }
+    bool hasVertexColor() const { return hasElementComponent(VERTEX, COLOR); }
 
     /**
      * @brief Returns true if the current object has Vertex Quality.
@@ -453,17 +446,11 @@ public:
         return hasElementComponent(FACE, BIT_FLAGS);
     }
 
-    bool hasFaceNormal() const
-    {
-        return hasElementComponent(FACE, NORMAL);
-    }
+    bool hasFaceNormal() const { return hasElementComponent(FACE, NORMAL); }
 
     bool hasFaceColor() const { return hasElementComponent(FACE, COLOR); }
 
-    bool hasFaceQuality() const
-    {
-        return hasElementComponent(FACE, QUALITY);
-    }
+    bool hasFaceQuality() const { return hasElementComponent(FACE, QUALITY); }
 
     bool hasFaceWedgeTexCoords() const
     {
@@ -506,25 +493,16 @@ public:
 
     bool hasEdgeColor() const { return hasElementComponent(EDGE, COLOR); }
 
-    bool hasEdgeNormal() const
-    {
-        return hasElementComponent(EDGE, NORMAL);
-    }
+    bool hasEdgeNormal() const { return hasElementComponent(EDGE, NORMAL); }
 
-    bool hasEdgeQuality() const
-    {
-        return hasElementComponent(EDGE, QUALITY);
-    }
+    bool hasEdgeQuality() const { return hasElementComponent(EDGE, QUALITY); }
 
     bool hasEdgeCustomComponents() const
     {
         return hasElementComponent(EDGE, CUSTOM_COMPONENTS);
     }
 
-    bool hasMaterials() const
-    {
-        return hasElementComponent(MESH, MATERIALS);
-    }
+    bool hasMaterials() const { return hasElementComponent(MESH, MATERIALS); }
 
     /*
      * Setter functions: they are used by the load functions to tell which
@@ -565,7 +543,7 @@ public:
 
     void setElementComponent(Element el, Component c, bool b, DataType t)
     {
-        mElements[el]             = b;
+        mElements[el]          = b;
         mElemComponents[el][c] = b;
         if (b)
             mElemComponentsType(el, c) = t;
@@ -617,8 +595,7 @@ public:
 
     void setVertexCustomComponents(bool b = true)
     {
-        setElementComponent(
-            VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
+        setElementComponent(VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setFaces(bool b = true) { setElement(FACE, b); }
@@ -648,16 +625,12 @@ public:
         setElementComponent(FACE, QUALITY, b, t);
     }
 
-    void setFaceWedgeTexCoords(
-        bool     b = true,
-        DataType t = PrimitiveType::FLOAT)
+    void setFaceWedgeTexCoords(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setElementComponent(FACE, WEDGE_TEXCOORDS, b, t);
     }
 
-    void setFaceMaterialIndex(
-        bool     b = true,
-        DataType t = PrimitiveType::USHORT)
+    void setFaceMaterialIndex(bool b = true, DataType t = PrimitiveType::USHORT)
     {
         setElementComponent(FACE, MATERIAL_INDEX, b, t);
     }
@@ -709,15 +682,13 @@ public:
         const std::string& name,
         DataType           t)
     {
-        setElementComponent(
-            el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
+        setElementComponent(el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
         mElemCustomComponents[el].emplace_back(name, t);
     }
 
     void clearElementCustomComponents(Element el)
     {
-        setElementComponent(
-            el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
+        setElementComponent(el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
         mElemCustomComponents[el].clear();
     }
 
@@ -726,30 +697,21 @@ public:
         addElementCustomComponent(VERTEX, name, t);
     }
 
-    void clearVertexCustomComponents()
-    {
-        clearElementCustomComponents(VERTEX);
-    }
+    void clearVertexCustomComponents() { clearElementCustomComponents(VERTEX); }
 
     void addFaceCustomComponent(const std::string& name, DataType t)
     {
         addElementCustomComponent(FACE, name, t);
     }
 
-    void clearFaceCustomComponents()
-    {
-        clearElementCustomComponents(FACE);
-    }
+    void clearFaceCustomComponents() { clearElementCustomComponents(FACE); }
 
     void addEdgeCustomComponent(const std::string& name, DataType t)
     {
         addElementCustomComponent(EDGE, name, t);
     }
 
-    void clearEdgeCustomComponents()
-    {
-        clearElementCustomComponents(EDGE);
-    }
+    void clearEdgeCustomComponents() { clearElementCustomComponents(EDGE); }
 
     /*
      * Getter Component type functions : they are used mostly by save functions
@@ -811,10 +773,7 @@ public:
         return elementComponentType(FACE, NORMAL);
     }
 
-    DataType faceColorType() const
-    {
-        return elementComponentType(FACE, COLOR);
-    }
+    DataType faceColorType() const { return elementComponentType(FACE, COLOR); }
 
     DataType faceQualityType() const
     {
@@ -841,10 +800,7 @@ public:
         return elementComponentType(EDGE, NORMAL);
     }
 
-    DataType edgeColorType() const
-    {
-        return elementComponentType(EDGE, COLOR);
-    }
+    DataType edgeColorType() const { return elementComponentType(EDGE, COLOR); }
 
     DataType edgeQualityType() const
     {
@@ -893,8 +849,7 @@ public:
                     mElemComponents[i][j] && info.mElemComponents[i][j];
 
                 if (res.mElemComponents[i][j]) {
-                    res.mElemComponentsType(i, j) =
-                        mElemComponentsType(i, j);
+                    res.mElemComponentsType(i, j) = mElemComponentsType(i, j);
                 }
             }
         }
@@ -965,9 +920,7 @@ private:
 };
 
 template<uint ELEM_ID, MeshConcept MeshType>
-void addElementCustomComponent(
-    MeshType&                        m,
-    const MeshInfo::CustomComponent& cc)
+void addElementCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
     case PrimitiveType::CHAR:
@@ -1001,9 +954,7 @@ void addElementCustomComponent(
 }
 
 template<MeshConcept MeshType>
-void addVertexCustomComponent(
-    MeshType&                        m,
-    const MeshInfo::CustomComponent& cc)
+void addVertexCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
     addElementCustomComponent<ElemId::VERTEX>(m, cc);
 }

@@ -81,8 +81,7 @@ void saveObj(
     // if the mesh has both vertex and wedge texcords, will be saved just wedges
     // because obj does not allow to save them both. In any case, also vertex
     // texcoords will result saved as wedge texcoords in the final file.
-    if (meshInfo.hasVertexTexCoord() &&
-        meshInfo.hasFaceWedgeTexCoords()) {
+    if (meshInfo.hasVertexTexCoord() && meshInfo.hasFaceWedgeTexCoords()) {
         meshInfo.setVertexTexCoord(false);
     }
 

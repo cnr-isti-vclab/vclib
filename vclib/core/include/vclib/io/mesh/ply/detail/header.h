@@ -206,9 +206,7 @@ public:
                 case ply::alpha: mod.setVertexColor(); break;
                 case ply::quality: mod.setVertexQuality(); break;
                 case ply::texture_u: mod.setVertexTexCoord(); break;
-                case ply::material_index:
-                    mod.setVertexMaterialIndex();
-                    break;
+                case ply::material_index: mod.setVertexMaterialIndex(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addVertexCustomComponent(
@@ -222,9 +220,7 @@ public:
             mod.setFaces();
             for (const PlyProperty& p : mElements[mFaceElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setFaceVertexReferences();
-                    break;
+                case ply::vertex_indices: mod.setFaceVertexReferences(); break;
                 case ply::bit_flags: mod.setFaceBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
@@ -250,9 +246,7 @@ public:
             for (const PlyProperty& p :
                  mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setFaceVertexReferences();
-                    break;
+                case ply::vertex_indices: mod.setFaceVertexReferences(); break;
                 case ply::nx:
                 case ply::ny:
                 case ply::nz: mod.setFaceNormal(); break;
@@ -270,9 +264,7 @@ public:
             mod.setEdges();
             for (const PlyProperty& p : mElements[mEdgeElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setEdgeVertexReferences();
-                    break;
+                case ply::vertex_indices: mod.setEdgeVertexReferences(); break;
                 case ply::bit_flags: mod.setEdgeBitFlags(); break;
                 case ply::nx:
                 case ply::ny:

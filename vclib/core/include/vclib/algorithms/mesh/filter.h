@@ -210,9 +210,8 @@ OutMeshType vertexMeshFilter(
          vertexFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
-            m, vertexFilter, saveBirthIndicesInCustomComponent);
+    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        m, vertexFilter, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -249,9 +248,8 @@ OutMeshType vertexMeshFilter(
     Range auto&&      vertexFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    return detail::
-        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
-            m, vertexFilterRng, saveBirthIndicesInCustomComponent);
+    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        m, vertexFilterRng, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -286,9 +284,8 @@ OutMeshType vertexSelectionMeshFilter(
 {
     auto selView = m.vertices() | views::selection;
 
-    return detail::
-        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
-            m, selView, saveBirthIndicesInCustomComponent);
+    return detail::elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        m, selView, saveBirthIndicesInCustomComponent);
 }
 
 /**

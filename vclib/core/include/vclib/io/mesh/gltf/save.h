@@ -614,8 +614,7 @@ void addMeshToTinygltfModel(
             }
 
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-                if (meshInfo.hasVertexMaterialIndex() &&
-                    !usePerFaceMaterial) {
+                if (meshInfo.hasVertexMaterialIndex() && !usePerFaceMaterial) {
                     exportMaterials      = true;
                     usePerVertexMaterial = true;
                 }
