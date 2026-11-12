@@ -34,18 +34,18 @@ void initUpdateAlgorithms(pybind11::module& m)
         // color.h
 
         m.def(
-            "set_per_vertex_color",
+            "set_vertex_color",
             [](MeshType& m, Color c, bool onlySelected = false) {
-                return setPerVertexColor(m, c, onlySelected);
+                return setVertexColor(m, c, onlySelected);
             },
             "mesh"_a,
             "color"_a         = Color::White,
             "only_selected"_a = false);
 
         m.def(
-            "set_per_vertex_color_from_quality",
+            "set_vertex_color_from_quality",
             [](MeshType& m, Color::ColorMap cm, double minQ, double maxQ) {
-                return setPerVertexColorFromQuality(m, cm, minQ, maxQ);
+                return setVertexColorFromQuality(m, cm, minQ, maxQ);
             },
             "mesh"_a,
             "color_map"_a   = Color::ColorMap::RedBlue,
@@ -53,17 +53,17 @@ void initUpdateAlgorithms(pybind11::module& m)
             "max_quality"_a = 0);
 
         m.def(
-            "set_per_vertex_color_from_material",
-            [](MeshType& m) { return setPerVertexColorFromMaterial(m); },
+            "set_vertex_color_from_material",
+            [](MeshType& m) { return setVertexColorFromMaterial(m); },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_color_perlin_noise",
+            "set_vertex_color_perlin_noise",
             [](MeshType& m,
                Point3d&  period,
                Point3d&  offset,
                bool      onlySelected) {
-                return setPerVertexColorPerlinNoise(
+                return setVertexColorPerlinNoise(
                     m, period, offset, onlySelected);
             },
             "mesh"_a,
@@ -72,14 +72,14 @@ void initUpdateAlgorithms(pybind11::module& m)
             "only_selected"_a = false);
 
         m.def(
-            "set_per_vertex_perlin_color",
+            "set_vertex_perlin_color",
             [](MeshType& m,
                double    period,
                Point3d&  offset,
                Color&    color1,
                Color&    color2,
                bool      onlySelected) {
-                return setPerVertexPerlinColor(
+                return setVertexPerlinColor(
                     m, period, offset, color1, color2, onlySelected);
             },
             "mesh"_a,
@@ -92,32 +92,32 @@ void initUpdateAlgorithms(pybind11::module& m)
         // normal.h
 
         m.def(
-            "clear_per_vertex_normals",
-            [](MeshType& m) { return clearPerVertexNormals(m); },
+            "clear_vertex_normals",
+            [](MeshType& m) { return clearVertexNormals(m); },
             "mesh"_a);
 
         m.def(
-            "clear_per_referenced_vertex_normals",
-            [](MeshType& m) { return clearPerReferencedVertexNormals(m); },
+            "clear_referenced_vertex_normals",
+            [](MeshType& m) { return clearReferencedVertexNormals(m); },
             "mesh"_a);
 
         m.def(
-            "normalize_per_vertex_normals",
-            [](MeshType& m) { return normalizePerVertexNormals(m); },
+            "normalize_vertex_normals",
+            [](MeshType& m) { return normalizeVertexNormals(m); },
             "mesh"_a);
 
         m.def(
-            "normalize_per_referenced_vertex_normals",
-            [](MeshType& m) { return normalizePerReferencedVertexNormals(m); },
+            "normalize_referenced_vertex_normals",
+            [](MeshType& m) { return normalizeReferencedVertexNormals(m); },
             "mesh"_a);
 
         m.def(
-            "multiply_per_vertex_normals_by_matrix",
+            "multiply_vertex_normals_by_matrix",
             [](MeshType&             m,
                const vcl::Matrix33d& mat,
                bool                  removeScalingFromMatrix = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return multiplyPerVertexNormalsByMatrix(
+                return multiplyVertexNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
             "mesh"_a,
@@ -126,12 +126,12 @@ void initUpdateAlgorithms(pybind11::module& m)
             "log"_a                        = py::cast(&vcl::nullLogger));
 
         m.def(
-            "multiply_per_vertex_normals_by_matrix",
+            "multiply_vertex_normals_by_matrix",
             [](MeshType&             m,
                const vcl::Matrix44d& mat,
                bool                  removeScalingFromMatrix = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return multiplyPerVertexNormalsByMatrix(
+                return multiplyVertexNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
             "mesh"_a,
@@ -142,26 +142,26 @@ void initUpdateAlgorithms(pybind11::module& m)
         // quality.h
 
         m.def(
-            "set_per_vertex_quality",
+            "set_vertex_quality",
             [](MeshType& m, double quality) {
-                return setPerVertexQuality(m, quality);
+                return setVertexQuality(m, quality);
             },
             "mesh"_a,
             "quality"_a = 0.0);
 
         m.def(
-            "clamp_per_vertex_quality",
+            "clamp_vertex_quality",
             [](MeshType& m, double minQ, double maxQ) {
-                return clampPerVertexQuality(m, minQ, maxQ);
+                return clampVertexQuality(m, minQ, maxQ);
             },
             "mesh"_a,
             "min_quality"_a = 0.0,
             "max_quality"_a = 1.0);
 
         m.def(
-            "normalize_per_vertex_quality",
+            "normalize_vertex_quality",
             [](MeshType& m, double minQ, double maxQ) {
-                return normalizePerVertexQuality(m, minQ, maxQ);
+                return normalizeVertexQuality(m, minQ, maxQ);
             },
             "mesh"_a,
             "min_quality"_a = 0.0,
@@ -177,13 +177,13 @@ void initUpdateAlgorithms(pybind11::module& m)
         // topology.h
 
         m.def(
-            "clear_per_vertex_adjacent_vertices",
-            [](MeshType& m) { return clearPerVertexAdjacentVertices(m); },
+            "clear_vertex_adjacent_vertices",
+            [](MeshType& m) { return clearVertexAdjacentVertices(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_vertex_adjacent_vertices",
-            [](MeshType& m) { return updatePerVertexAdjacentVertices(m); },
+            "update_vertex_adjacent_vertices",
+            [](MeshType& m) { return updateVertexAdjacentVertices(m); },
             "mesh"_a);
 
         // transform.h
@@ -277,28 +277,28 @@ void initUpdateAlgorithms(pybind11::module& m)
         // color.h
 
         m.def(
-            "set_per_face_color",
+            "set_face_color",
             [](MeshType& m, Color c, bool onlySelected = false) {
-                return vcl::setPerFaceColor(m, c, onlySelected);
+                return vcl::setFaceColor(m, c, onlySelected);
             },
             "mesh"_a,
             "color"_a         = Color::White,
             "only_selected"_a = false);
 
         m.def(
-            "set_per_vertex_color_from_face_color",
-            [](MeshType& m) { return vcl::setPerVertexColorFromFaceColor(m); },
+            "set_vertex_color_from_face_color",
+            [](MeshType& m) { return vcl::setVertexColorFromFaceColor(m); },
             "mesh"_a);
 
         m.def(
-            "set_per_face_color_from_vertex_color",
-            [](MeshType& m) { return vcl::setPerFaceColorFromVertexColor(m); },
+            "set_face_color_from_vertex_color",
+            [](MeshType& m) { return vcl::setFaceColorFromVertexColor(m); },
             "mesh"_a);
 
         m.def(
-            "set_per_face_color_from_quality",
+            "set_face_color_from_quality",
             [](MeshType& m, Color::ColorMap cm, double minQ, double maxQ) {
-                return vcl::setPerFaceColorFromQuality(m, cm, minQ, maxQ);
+                return vcl::setFaceColorFromQuality(m, cm, minQ, maxQ);
             },
             "mesh"_a,
             "color_map"_a   = Color::ColorMap::RedBlue,
@@ -306,17 +306,17 @@ void initUpdateAlgorithms(pybind11::module& m)
             "max_quality"_a = 0);
 
         m.def(
-            "set_per_face_color_from_material",
-            [](MeshType& m) { return setPerFaceColorFromMaterial(m); },
+            "set_face_color_from_material",
+            [](MeshType& m) { return setFaceColorFromMaterial(m); },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_color_from_face_border_flag",
+            "set_vertex_color_from_face_border_flag",
             [](MeshType& m,
                Color     borderColor   = Color::Blue,
                Color     internalColor = Color::White,
                Color     mixColor      = Color::Cyan) {
-                return vcl::setPerVertexColorFromFaceBorderFlag(
+                return vcl::setVertexColorFromFaceBorderFlag(
                     m, borderColor, internalColor, mixColor);
             },
             "mesh"_a,
@@ -325,26 +325,26 @@ void initUpdateAlgorithms(pybind11::module& m)
             "mix_color"_a      = Color::Cyan);
 
         m.def(
-            "set_per_face_color_from_connected_components",
+            "set_face_color_from_connected_components",
             [](MeshType&                          m,
                const std::vector<std::set<uint>>& connectedComponents) {
-                return vcl::setPerFaceColorFromConnectedComponents(
+                return vcl::setFaceColorFromConnectedComponents(
                     m, connectedComponents);
             },
             "mesh"_a,
             "connected_components"_a);
 
         m.def(
-            "set_per_face_color_from_connected_components",
+            "set_face_color_from_connected_components",
             [](MeshType& m) {
-                return vcl::setPerFaceColorFromConnectedComponents(m);
+                return vcl::setFaceColorFromConnectedComponents(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_face_color_scattering",
+            "set_face_color_scattering",
             [](MeshType& m, uint nColors = 50, bool checkFauxEdges = true) {
-                return vcl::setPerFaceColorScattering(
+                return vcl::setFaceColorScattering(
                     m, nColors, checkFauxEdges);
             },
             "mesh"_a,
@@ -354,7 +354,7 @@ void initUpdateAlgorithms(pybind11::module& m)
         // curvature.h
 
         m.def(
-            "update_per_vertex_principal_curvature",
+            "update_vertex_principal_curvature",
             [](MeshType&                   m,
                PrincipalCurvatureAlgorithm alg,
                double                      radius,
@@ -379,22 +379,22 @@ void initUpdateAlgorithms(pybind11::module& m)
         // normal.h
 
         m.def(
-            "clear_per_face_normals",
-            [](MeshType& m) { return vcl::clearPerFaceNormals(m); },
+            "clear_face_normals",
+            [](MeshType& m) { return vcl::clearFaceNormals(m); },
             "mesh"_a);
 
         m.def(
-            "normalize_per_face_normals",
-            [](MeshType& m) { return vcl::normalizePerFaceNormals(m); },
+            "normalize_face_normals",
+            [](MeshType& m) { return vcl::normalizeFaceNormals(m); },
             "mesh"_a);
 
         m.def(
-            "multiply_per_face_normals_by_matrix",
+            "multiply_face_normals_by_matrix",
             [](MeshType&             m,
                const vcl::Matrix33d& mat,
                bool                  removeScalingFromMatrix = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::multiplyPerFaceNormalsByMatrix(
+                return vcl::multiplyFaceNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
             "mesh"_a,
@@ -403,12 +403,12 @@ void initUpdateAlgorithms(pybind11::module& m)
             "log"_a                        = py::cast(&vcl::nullLogger));
 
         m.def(
-            "multiply_per_face_normals_by_matrix",
+            "multiply_face_normals_by_matrix",
             [](MeshType&             m,
                const vcl::Matrix44d& mat,
                bool                  removeScalingFromMatrix = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::multiplyPerFaceNormalsByMatrix(
+                return vcl::multiplyFaceNormalsByMatrix(
                     m, mat, removeScalingFromMatrix, log);
             },
             "mesh"_a,
@@ -417,33 +417,33 @@ void initUpdateAlgorithms(pybind11::module& m)
             "log"_a                        = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_face_normals",
+            "update_face_normals",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerFaceNormals(m, normalize, log);
+                return vcl::updateFaceNormals(m, normalize, log);
             },
             "mesh"_a,
             "normalize"_a = true,
             "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_vertex_normals",
+            "update_vertex_normals",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexNormals(m, normalize, log);
+                return vcl::updateVertexNormals(m, normalize, log);
             },
             "mesh"_a,
             "normalize"_a = true,
             "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_vertex_normals_from_face_normals",
+            "update_vertex_normals_from_face_normals",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexNormalsFromFaceNormals(
+                return vcl::updateVertexNormalsFromFaceNormals(
                     m, normalize, log);
             },
             "mesh"_a,
@@ -451,22 +451,22 @@ void initUpdateAlgorithms(pybind11::module& m)
             "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_vertex_and_face_normals",
+            "update_vertex_and_face_normals",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexAndFaceNormals(m, normalize, log);
+                return vcl::updateVertexAndFaceNormals(m, normalize, log);
             },
             "mesh"_a,
             "normalize"_a = true,
             "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_vertex_normals_angle_weighted",
+            "update_vertex_normals_angle_weighted",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexNormalsAngleWeighted(
+                return vcl::updateVertexNormalsAngleWeighted(
                     m, normalize, log);
             },
             "mesh"_a,
@@ -474,11 +474,11 @@ void initUpdateAlgorithms(pybind11::module& m)
             "log"_a       = py::cast(&vcl::nullLogger));
 
         m.def(
-            "update_per_vertex_normals_nelson_max_weighted",
+            "update_vertex_normals_nelson_max_weighted",
             [](MeshType& m,
                bool      normalize = true,
                AbstractLogger& log = vcl::nullLogger) {
-                return vcl::updatePerVertexNormalsNelsonMaxWeighted(
+                return vcl::updateVertexNormalsNelsonMaxWeighted(
                     m, normalize, log);
             },
             "mesh"_a,
@@ -488,82 +488,82 @@ void initUpdateAlgorithms(pybind11::module& m)
         // quality.h
 
         m.def(
-            "set_per_face_quality",
+            "set_face_quality",
             [](MeshType& m, double quality) {
-                return vcl::setPerFaceQuality(m, quality);
+                return vcl::setFaceQuality(m, quality);
             },
             "mesh"_a,
             "quality"_a = 0.0);
 
         m.def(
-            "clamp_per_face_quality",
+            "clamp_face_quality",
             [](MeshType& m, double minQ, double maxQ) {
-                return vcl::clampPerFaceQuality(m, minQ, maxQ);
+                return vcl::clampFaceQuality(m, minQ, maxQ);
             },
             "mesh"_a,
             "min_quality"_a = 0.0,
             "max_quality"_a = 1.0);
 
         m.def(
-            "normalize_per_face_quality",
+            "normalize_face_quality",
             [](MeshType& m, double minQ, double maxQ) {
-                return vcl::normalizePerFaceQuality(m, minQ, maxQ);
+                return vcl::normalizeFaceQuality(m, minQ, maxQ);
             },
             "mesh"_a,
             "min_quality"_a = 0.0,
             "max_quality"_a = 1.0);
 
         m.def(
-            "set_per_vertex_quality_from_vertex_valence",
+            "set_vertex_quality_from_vertex_valence",
             [](MeshType& m) {
-                return vcl::setPerVertexQualityFromVertexValence(m);
+                return vcl::setVertexQualityFromVertexValence(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_face_quality_from_face_area",
-            [](MeshType& m) { return vcl::setPerFaceQualityFromFaceArea(m); },
+            "set_face_quality_from_face_area",
+            [](MeshType& m) { return vcl::setFaceQualityFromFaceArea(m); },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_gaussian",
+            "set_vertex_quality_from_principal_curvature_gaussian",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureGaussian(m);
+                return setVertexQualityFromPrincipalCurvatureGaussian(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_mean",
+            "set_vertex_quality_from_principal_curvature_mean",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureMean(m);
+                return setVertexQualityFromPrincipalCurvatureMean(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_min_value",
+            "set_vertex_quality_from_principal_curvature_min_value",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureMinValue(m);
+                return setVertexQualityFromPrincipalCurvatureMinValue(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_max_value",
+            "set_vertex_quality_from_principal_curvature_max_value",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureMaxValue(m);
+                return setVertexQualityFromPrincipalCurvatureMaxValue(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_shape_index",
+            "set_vertex_quality_from_principal_curvature_shape_index",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureShapeIndex(m);
+                return setVertexQualityFromPrincipalCurvatureShapeIndex(m);
             },
             "mesh"_a);
 
         m.def(
-            "set_per_vertex_quality_from_principal_curvature_curvedness",
+            "set_vertex_quality_from_principal_curvature_curvedness",
             [](MeshType& m) {
-                return setPerVertexQualityFromPrincipalCurvatureCurvedness(m);
+                return setVertexQualityFromPrincipalCurvatureCurvedness(m);
             },
             "mesh"_a);
 
@@ -600,23 +600,23 @@ void initUpdateAlgorithms(pybind11::module& m)
         // topology.h
 
         m.def(
-            "clear_per_vertex_adjacent_faces",
-            [](MeshType& m) { return clearPerVertexAdjacentFaces(m); },
+            "clear_vertex_adjacent_faces",
+            [](MeshType& m) { return clearVertexAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_vertex_adjacent_faces",
-            [](MeshType& m) { return updatePerVertexAdjacentFaces(m); },
+            "update_vertex_adjacent_faces",
+            [](MeshType& m) { return updateVertexAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
-            "clear_per_face_adjacent_faces",
-            [](MeshType& m) { return clearPerFaceAdjacentFaces(m); },
+            "clear_face_adjacent_faces",
+            [](MeshType& m) { return clearFaceAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_face_adjacent_faces",
-            [](MeshType& m) { return updatePerFaceAdjacentFaces(m); },
+            "update_face_adjacent_faces",
+            [](MeshType& m) { return updateFaceAdjacentFaces(m); },
             "mesh"_a);
     };
 
@@ -627,17 +627,17 @@ void initUpdateAlgorithms(pybind11::module& m)
         // color.h
 
         m.def(
-            "set_per_edge_color",
+            "set_edge_color",
             [](MeshType& m, Color c, bool onlySelected = false) {
-                return vcl::setPerEdgeColor(m, c, onlySelected);
+                return vcl::setEdgeColor(m, c, onlySelected);
             },
             "mesh"_a,
             "color"_a         = Color::White,
             "only_selected"_a = false);
 
         m.def(
-            "set_per_edge_color_from_vertex_color",
-            [](MeshType& m) { return vcl::setPerEdgeColorFromVertexColor(m); },
+            "set_edge_color_from_vertex_color",
+            [](MeshType& m) { return vcl::setEdgeColorFromVertexColor(m); },
             "mesh"_a);
 
         // selection.h
@@ -650,23 +650,23 @@ void initUpdateAlgorithms(pybind11::module& m)
         // topology.h
 
         m.def(
-            "clear_per_vertex_adjacent_edges",
-            [](MeshType& m) { return clearPerVertexAdjacentEdges(m); },
+            "clear_vertex_adjacent_edges",
+            [](MeshType& m) { return clearVertexAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_vertex_adjacent_edges",
-            [](MeshType& m) { return updatePerVertexAdjacentEdges(m); },
+            "update_vertex_adjacent_edges",
+            [](MeshType& m) { return updateVertexAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
-            "clear_per_edge_adjacent_edges",
-            [](MeshType& m) { return clearPerEdgeAdjacentEdges(m); },
+            "clear_edge_adjacent_edges",
+            [](MeshType& m) { return clearEdgeAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_edge_adjacent_edges",
-            [](MeshType& m) { return updatePerEdgeAdjacentEdges(m); },
+            "update_edge_adjacent_edges",
+            [](MeshType& m) { return updateEdgeAdjacentEdges(m); },
             "mesh"_a);
     };
 
@@ -675,23 +675,23 @@ void initUpdateAlgorithms(pybind11::module& m)
     auto fFaceEdgeMeshes = []<FaceEdgeMeshConcept MeshType>(
                                pybind11::module& m, MeshType = MeshType()) {
         m.def(
-            "clear_per_face_adjacent_edges",
-            [](MeshType& m) { return clearPerFaceAdjacentEdges(m); },
+            "clear_face_adjacent_edges",
+            [](MeshType& m) { return clearFaceAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_face_adjacent_edges",
-            [](MeshType& m) { return updatePerFaceAdjacentEdges(m); },
+            "update_face_adjacent_edges",
+            [](MeshType& m) { return updateFaceAdjacentEdges(m); },
             "mesh"_a);
 
         m.def(
-            "clear_per_edge_adjacent_faces",
-            [](MeshType& m) { return clearPerEdgeAdjacentFaces(m); },
+            "clear_edge_adjacent_faces",
+            [](MeshType& m) { return clearEdgeAdjacentFaces(m); },
             "mesh"_a);
 
         m.def(
-            "update_per_edge_adjacent_faces",
-            [](MeshType& m) { return updatePerEdgeAdjacentFaces(m); },
+            "update_edge_adjacent_faces",
+            [](MeshType& m) { return updateEdgeAdjacentFaces(m); },
             "mesh"_a);
     };
 

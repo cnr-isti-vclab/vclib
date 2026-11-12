@@ -23,7 +23,7 @@ int main()
     auto helmet = vcl::loadMesh<vcl::PolyMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj", loadSettings);
     vcl::updateBoundingBox(helmet);
-    vcl::updatePerVertexAndFaceNormals(helmet);
+    vcl::updateVertexAndFaceNormals(helmet);
 
     // test normals normalization
     // for (auto& norm : mesh.vertices() | vcl::views::normals)
@@ -58,7 +58,7 @@ int main()
         VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj", loadSettings);
     auto bimba = vcl::loadMesh<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj", loadSettings);
-    vcl::updatePerVertexAndFaceNormals(bimba);
+    vcl::updateVertexAndFaceNormals(bimba);
 
     std::vector<vcl::TriMesh> meshes {std::move(bunny), std::move(bimba)};
 
@@ -109,7 +109,7 @@ int main()
 
     bte.append(tmp);
 
-    vcl::updatePerVertexAndFaceNormals(bte);
+    vcl::updateVertexAndFaceNormals(bte);
 
     std::cout << "Number of vertices: " << bte.vertexCount() << std::endl;
     std::cout << "Number of faces: " << bte.faceCount() << std::endl;
@@ -132,7 +132,7 @@ int main()
     auto damagedHelmet = vcl::loadMesh<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/gltf/DamagedHelmet/DamagedHelmet.gltf",
         loadSettings);
-    vcl::updatePerVertexAndFaceNormals(damagedHelmet);
+    vcl::updateVertexAndFaceNormals(damagedHelmet);
 
     saveSettings.binary            = false;
     saveSettings.saveTextureImages = true;
@@ -151,7 +151,7 @@ int main()
     auto cesiumMilkTruck = vcl::loadMesh<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/gltf/CesiumMilkTruck/CesiumMilkTruck.gltf",
         loadSettings);
-    vcl::updatePerVertexAndFaceNormals(cesiumMilkTruck);
+    vcl::updateVertexAndFaceNormals(cesiumMilkTruck);
 
     saveSettings.binary            = false;
     saveSettings.saveTextureImages = true;
@@ -170,7 +170,7 @@ int main()
     auto spot = vcl::loadMesh<vcl::PolyMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/spot/spot_quadrangulated.obj",
         loadSettings);
-    vcl::updatePerVertexAndFaceNormals(spot);
+    vcl::updateVertexAndFaceNormals(spot);
 
     saveSettings.binary            = false;
     saveSettings.saveTextureImages = true;

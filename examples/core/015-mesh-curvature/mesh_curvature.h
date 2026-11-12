@@ -40,9 +40,9 @@ auto meshCurvature()
     originalMesh.enablePerVertexColor();
     originalMesh.enablePerVertexQuality();
 
-    vcl::updatePerVertexAndFaceNormals(originalMesh);
-    vcl::updatePerFaceAdjacentFaces(originalMesh);
-    vcl::updatePerVertexAdjacentFaces(originalMesh);
+    vcl::updateVertexAndFaceNormals(originalMesh);
+    vcl::updateFaceAdjacentFaces(originalMesh);
+    vcl::updateVertexAdjacentFaces(originalMesh);
 
     /****** Principal Curvature with Taubin95 Algorithm ******/
 
@@ -62,10 +62,10 @@ auto meshCurvature()
     }
 
     // Color mapping based on mean curvature
-    vcl::setPerVertexQualityFromPrincipalCurvatureMean(taubinMesh);
+    vcl::setVertexQualityFromPrincipalCurvatureMean(taubinMesh);
     vcl::Histogramd h = vcl::vertexQualityHistogram(taubinMesh);
 
-    vcl::setPerVertexColorFromQuality(
+    vcl::setVertexColorFromQuality(
         taubinMesh,
         vcl::Color::ColorMap::RedBlue,
         h.valueAtPercentile(0.1),
@@ -91,10 +91,10 @@ auto meshCurvature()
     }
 
     // Color mapping based on Gaussian curvature
-    vcl::setPerVertexQualityFromPrincipalCurvatureGaussian(pcaMesh);
+    vcl::setVertexQualityFromPrincipalCurvatureGaussian(pcaMesh);
     vcl::Histogramd h2 = vcl::vertexQualityHistogram(pcaMesh);
 
-    vcl::setPerVertexColorFromQuality(
+    vcl::setVertexColorFromQuality(
         pcaMesh,
         vcl::Color::ColorMap::RedBlue,
         h2.valueAtPercentile(0.05),
@@ -129,7 +129,7 @@ auto meshCurvature()
 
     vcl::Histogramd h3 = vcl::vertexQualityHistogram(generalMesh);
 
-    vcl::setPerVertexColorFromQuality(
+    vcl::setVertexColorFromQuality(
         generalMesh,
         vcl::Color::ColorMap::RedBlue,
         h3.valueAtPercentile(0.1),

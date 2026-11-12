@@ -240,7 +240,7 @@ uint triangulatedFaceCount(const FaceMeshConcept auto& mesh)
  * mesh.
  *
  * The function requires that per-vertex adjacent vertices have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentVertices).
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentVertices).
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * adjacent vertices available.
@@ -299,7 +299,7 @@ uint largestPerElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
  * @brief Returns the largest number of per-vertex adjacent faces in the mesh.
  *
  * The function requires that per-vertex adjacent faces have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentFaces).
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentFaces).
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * adjacent faces available.
@@ -371,7 +371,7 @@ uint largestPerElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of per-vertex adjacent edges in the mesh.
  *
  * The function requires that per-vertex adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentEdges).
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentEdges).
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * adjacent edges available.
@@ -390,7 +390,7 @@ uint largestPerVertexAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of per-face adjacent edges in the mesh.
  *
  * The function requires that per-face adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerFaceAdjacentEdges).
+ * precomputed for the mesh (see @ref vcl::updateFaceAdjacentEdges).
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * adjacent edges available.
@@ -411,7 +411,7 @@ uint largestPerFaceAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of per-edge adjacent edges in the mesh.
  *
  * The function requires that per-edge adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerEdgeAdjacentEdges).
+ * precomputed for the mesh (see @ref vcl::updateEdgeAdjacentEdges).
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-edge
  * adjacent edges available.

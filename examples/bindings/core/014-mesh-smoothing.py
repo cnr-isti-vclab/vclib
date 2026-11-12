@@ -36,7 +36,7 @@ def mesh_smoothing():
     print(f"  Vertices: {original_mesh.vertex_count()}")
     print(f"  Faces: {original_mesh.face_count()}")
 
-    vcl.update_per_vertex_and_face_normals(original_mesh)
+    vcl.update_vertex_and_face_normals(original_mesh)
 
     # Laplacian Smoothing with Uniform Weights
     print("\n=== Laplacian Smoothing (Uniform Weights) ===")
@@ -51,7 +51,7 @@ def mesh_smoothing():
 
     print("Laplacian smoothing (10 iterations) completed.")
 
-    vcl.update_per_vertex_and_face_normals(laplacian_mesh)
+    vcl.update_vertex_and_face_normals(laplacian_mesh)
 
     # Laplacian Smoothing with Cotangent Weights
     print("\n=== Laplacian Smoothing (Cotangent Weights) ===")
@@ -66,7 +66,7 @@ def mesh_smoothing():
 
     print("Cotangent Laplacian smoothing (10 iterations) completed.")
 
-    vcl.update_per_vertex_and_face_normals(cotangent_mesh)
+    vcl.update_vertex_and_face_normals(cotangent_mesh)
 
     # Taubin Smoothing
     print("\n=== Taubin Smoothing ===")
@@ -81,7 +81,7 @@ def mesh_smoothing():
 
     print("Taubin smoothing (50 iterations, lambda=0.5, mu=-0.53) completed.")
 
-    vcl.update_per_vertex_and_face_normals(taubin_mesh)
+    vcl.update_vertex_and_face_normals(taubin_mesh)
 
     # Normal Smoothing for Point Cloud
     print("\n=== Normal Smoothing ===")

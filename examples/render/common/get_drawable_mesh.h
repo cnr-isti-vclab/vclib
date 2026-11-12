@@ -36,10 +36,10 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
 
     if constexpr (vcl::FaceMeshConcept<MeshType>) {
         if (!info.hasFaceNormal()) {
-            vcl::updatePerFaceNormals(m);
+            vcl::updateFaceNormals(m);
         }
         if (!info.hasVertexNormal()) {
-            vcl::updatePerVertexNormalsFromFaceNormals(m);
+            vcl::updateVertexNormalsFromFaceNormals(m);
         }
     }
 

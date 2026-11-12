@@ -29,12 +29,12 @@ auto meshCreaseEdges()
     // Create a cylinder that will have clear crease edges
     vcl::TriMesh cylinder = vcl::createCylinder<vcl::TriMesh>(1.0, 2.0, 24);
     cylinder.name()       = "Cylinder";
-    vcl::updatePerVertexAndFaceNormals(cylinder);
+    vcl::updateVertexAndFaceNormals(cylinder);
 
     // Create an icosahedron for comparison
     vcl::TriMesh icosahedron = vcl::createIcosahedron<vcl::TriMesh>();
     icosahedron.name()       = "Icosahedron";
-    vcl::updatePerVertexAndFaceNormals(icosahedron);
+    vcl::updateVertexAndFaceNormals(icosahedron);
 
     std::cout << "Created cylinder: " << cylinder.vertexCount() << " vertices, "
               << cylinder.faceCount() << " faces" << std::endl;
@@ -50,8 +50,8 @@ auto meshCreaseEdges()
     cylinder.enablePerFaceAdjacentFaces();
     icosahedron.enablePerFaceAdjacentFaces();
 
-    vcl::updatePerFaceAdjacentFaces(cylinder);
-    vcl::updatePerFaceAdjacentFaces(icosahedron);
+    vcl::updateFaceAdjacentFaces(cylinder);
+    vcl::updateFaceAdjacentFaces(icosahedron);
 
     // Select crease edges with different angle thresholds
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(60.0), vcl::toRad(60.0));

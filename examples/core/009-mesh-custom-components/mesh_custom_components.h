@@ -236,7 +236,7 @@ auto meshCustomComponents()
 
     // Apply smoothing only to flagged vertices
     mesh.enablePerVertexAdjacentVertices();
-    vcl::updatePerVertexAdjacentVertices(mesh);
+    vcl::updateVertexAdjacentVertices(mesh);
 
     for (const auto& vertex : mesh.vertices()) {
         if (vertex.customComponent<int>("processingFlag") == 1) {
