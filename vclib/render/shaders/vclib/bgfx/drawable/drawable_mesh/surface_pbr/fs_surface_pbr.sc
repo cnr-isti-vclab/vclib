@@ -37,17 +37,17 @@ void main()
     // texcoord to use
     bool useTexture = isSurfaceTexVertex() || isSurfaceTexWedge();
 
-    vec2 texcoord = v_texcoord0; // per vertex
+    vec2 texcoord = v_texcoord0; // vertex texcoord
     if (isSurfaceTexWedge()) {
-        texcoord = v_texcoord1; // per wedge
+        texcoord = v_texcoord1; // wedge texcoord
     }
 
     // base color
     vec4 vertexBaseColor  = vec4_splat(1.0);
     vec4 textureBaseColor = vec4_splat(1.0);
 
-    if (isPerVertexColorAvailable())
-        vertexBaseColor = v_color; // per-vertex color available
+    if (isVertexColorAvailable())
+        vertexBaseColor = v_color; // vertex color available
 
     if (useTexture && isBaseColorTextureAvailable()) {
         // base color texture available
@@ -82,7 +82,7 @@ void main()
     );
     if ((useTexture && (isNormalTextureAvailable() || isClearcoatNormalTextureAvailable())) ||
         u_anisotropyStrength > 0.0) {
-        if (isPerVertexTangentAvailable()) {
+        if (isVertexTangentAvailable()) {
             vec3 bitangent = cross(normalize(v_normal), normalize(v_tangent.xyz)) * v_tangent.w;
             tangentFrame = tangentFrameFromGivenVectors(v_tangent.xyz, bitangent, v_normal, vcl_FrontFacing);
         }
