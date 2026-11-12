@@ -30,7 +30,7 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
 
     // 5. Extract edge mesh
     vcl::EdgeMesh em =
-        vcl::perFaceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
+        vcl::faceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
 
     // Ensure the edge mesh has the required components
     em.enablePerVertexColor();

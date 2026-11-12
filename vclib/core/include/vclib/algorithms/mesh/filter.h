@@ -17,7 +17,7 @@ namespace vcl {
 namespace detail {
 
 template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
-OutMeshType perElementMeshFilter(
+OutMeshType elementMeshFilter(
     const InMeshType& m,
     Range auto&&      elemFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
@@ -57,7 +57,7 @@ OutMeshType perElementMeshFilter(
 }
 
 template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
-OutMeshType perElementMeshFilter(
+OutMeshType elementMeshFilter(
     const InMeshType&                                                m,
     const std::function<bool(
         const typename InMeshType::template ElementType<ELEM_ID>&)>& elemFilter,
@@ -66,12 +66,12 @@ OutMeshType perElementMeshFilter(
     auto view =
         m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
 
-    return perElementMeshFilter<OutMeshType, ELEM_ID, InMeshType>(
+    return elementMeshFilter<OutMeshType, ELEM_ID, InMeshType>(
         m, view, saveBirthIndicesInCustomComponent);
 }
 
 template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
-OutMeshType perElementMeshFilterWithVRefs(
+OutMeshType elementMeshFilterWithVRefs(
     const InMeshType& m,
     Range auto&&      elemFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
@@ -161,7 +161,7 @@ OutMeshType perElementMeshFilterWithVRefs(
 }
 
 template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
-OutMeshType perElementMeshFilterWithVRefs(
+OutMeshType elementMeshFilterWithVRefs(
     const InMeshType&                                                m,
     const std::function<bool(
         const typename InMeshType::template ElementType<ELEM_ID>&)>& elemFilter,
@@ -170,7 +170,7 @@ OutMeshType perElementMeshFilterWithVRefs(
     auto view =
         m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
 
-    return perElementMeshFilterWithVRefs<OutMeshType, ELEM_ID, InMeshType>(
+    return elementMeshFilterWithVRefs<OutMeshType, ELEM_ID, InMeshType>(
         m, view, saveBirthIndicesInCustomComponent);
 }
 
@@ -196,22 +196,22 @@ OutMeshType perElementMeshFilterWithVRefs(
  * a boolean value that tells whether the vertex should be put in the output
  * mesh.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The name of the
- * custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The name of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering the vertices of the input mesh `m`.
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
-OutMeshType perVertexMeshFilter(
+OutMeshType vertexMeshFilter(
     const InMeshType& m,
     const std::function<bool(const typename InMeshType::VertexType&)>&
          vertexFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
             m, vertexFilter, saveBirthIndicesInCustomComponent);
 }
 
@@ -236,21 +236,21 @@ OutMeshType perVertexMeshFilter(
  * one for each vertex of the input mesh. Its type must satisfy the `Range`
  * concept.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The name of the
- * custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The name of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering the vertices of the input mesh `m`.
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
-OutMeshType perVertexMeshFilter(
+OutMeshType vertexMeshFilter(
     const InMeshType& m,
     Range auto&&      vertexFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
             m, vertexFilterRng, saveBirthIndicesInCustomComponent);
 }
 
@@ -271,23 +271,23 @@ OutMeshType perVertexMeshFilter(
  *
  * @param[in] m: input mesh
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The name of the
- * custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The name of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering by selection the vertices of the
  * input mesh `m`.
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
-OutMeshType perVertexSelectionMeshFilter(
+OutMeshType vertexSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     auto selView = m.vertices() | views::selection;
 
     return detail::
-        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+        elementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
             m, selView, saveBirthIndicesInCustomComponent);
 }
 
@@ -313,22 +313,22 @@ OutMeshType perVertexSelectionMeshFilter(
  * boolean value that tells whether the face should be imported in the output
  * mesh or not.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per face CustomComponents
- * component, will set a per vertex/per face custom component of type `uint` in
- * the output mesh telling, for each vertex/face, the index of its birth
- * vertex/birth face in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or face CustomComponents component, will
+ * set a vertex/face custom component of type `uint` in the output mesh telling,
+ * for each vertex/face, the index of its birth vertex/birth face in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthFace"`.
  *
  * @return A new Mesh created by filtering the faces of the input mesh `m`.
  */
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
-OutMeshType perFaceMeshFilter(
+OutMeshType faceMeshFilter(
     const InMeshType&                                                m,
     const std::function<bool(const typename InMeshType::FaceType&)>& faceFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
             m, faceFilter, saveBirthIndicesInCustomComponent);
 }
 
@@ -354,22 +354,22 @@ OutMeshType perFaceMeshFilter(
  * one for each face of the input mesh. Its type must satisfy the `Range`
  * concept.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per face CustomComponents
- * component, will set a per vertex/per face custom component of type `uint` in
- * the output mesh telling, for each vertex/face, the index of its birth
- * vertex/birth face in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or face CustomComponents component, will
+ * set a vertex/face custom component of type `uint` in the output mesh telling,
+ * for each vertex/face, the index of its birth vertex/birth face in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthFace"`.
  *
  * @return A new Mesh created by filtering the faces of the input mesh `m`.
  */
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
-OutMeshType perFaceMeshFilter(
+OutMeshType faceMeshFilter(
     const InMeshType& m,
     Range auto&&      faceFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
             m, faceFilterRng, saveBirthIndicesInCustomComponent);
 }
 
@@ -378,7 +378,7 @@ OutMeshType perFaceMeshFilter(
  * faces of the input mesh `m`. Only vertices belonging to the imported faces
  * will be imported in the output mesh.
  *
- * Only the delected faces and their vertices will be put in the output mesh.
+ * Only the selected faces and their vertices will be put in the output mesh.
  * Only the order of the faces in the output mesh is preserved.
  *
  * By default, the type of the output mesh will be the same of the input mesh
@@ -391,24 +391,24 @@ OutMeshType perFaceMeshFilter(
  *
  * @param[in] m: input mesh
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per face CustomComponents
- * component, will set a per vertex/per face custom component of type `uint` in
- * the output mesh telling, for each vertex/face, the index of its birth
- * vertex/birth face in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or face CustomComponents component, will
+ * set a vertex/face custom component of type `uint` in the output mesh telling,
+ * for each vertex/face, the index of its birth vertex/birth face in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthFace"`.
  *
  * @return A new Mesh created by filtering the selected faces of the input mesh
  * `m`.
  */
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
-OutMeshType perFaceSelectionMeshFilter(
+OutMeshType faceSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     auto selView = m.faces() | views::selection;
 
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
             m, selView, saveBirthIndicesInCustomComponent);
 }
 
@@ -434,22 +434,22 @@ OutMeshType perFaceSelectionMeshFilter(
  * boolean value that tells whether the edge should be imported in the output
  * mesh or not.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per edge CustomComponents
- * component, will set a per vertex/per edge custom component of type `uint` in
- * the output mesh telling, for each vertex/edge, the index of its birth
- * vertex/birth edge in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or edge CustomComponents component, will
+ * set a vertex/edge custom component of type `uint` in the output mesh telling,
+ * for each vertex/edge, the index of its birth vertex/birth edge in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthEdge"`.
  *
  * @return A new Mesh created by filtering the edges of the input mesh `m`.
  */
 template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
-OutMeshType perEdgeMeshFilter(
+OutMeshType edgeMeshFilter(
     const InMeshType&                                                m,
     const std::function<bool(const typename InMeshType::EdgeType&)>& edgeFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
             m, edgeFilter, saveBirthIndicesInCustomComponent);
 }
 
@@ -475,22 +475,22 @@ OutMeshType perEdgeMeshFilter(
  * one for each edge of the input mesh. Its type must satisfy the `Range`
  * concept.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per edge CustomComponents
- * component, will set a per vertex/per edge custom component of type `uint` in
- * the output mesh telling, for each vertex/edge, the index of its birth
- * vertex/birth edge in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or edge CustomComponents component, will
+ * set a vertex/edge custom component of type `uint` in the output mesh telling,
+ * for each vertex/edge, the index of its birth vertex/birth edge in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthEdge"`.
  *
  * @return A new Mesh created by filtering the edges of the input mesh `m`.
  */
 template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
-OutMeshType perEdgeMeshFilter(
+OutMeshType edgeMeshFilter(
     const InMeshType& m,
     Range auto&&      edgeFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
             m, edgeFilterRng, saveBirthIndicesInCustomComponent);
 }
 
@@ -512,24 +512,24 @@ OutMeshType perEdgeMeshFilter(
  *
  * @param[in] m: input mesh
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex and/or per edge CustomComponents
- * component, will set a per vertex/per edge custom component of type `uint` in
- * the output mesh telling, for each vertex/edge, the index of its birth
- * vertex/birth edge in the input mesh. The names of the custom components are
+ * output mesh type has the vertex and/or edge CustomComponents component, will
+ * set a vertex/edge custom component of type `uint` in the output mesh telling,
+ * for each vertex/edge, the index of its birth vertex/birth edge in the input
+ * mesh. The names of the custom components are
  * `"birthVertex"` and `"birthEdge"`.
  *
  * @return A new Mesh created by filtering the selected edges of the input mesh
  * `m`.
  */
 template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
-OutMeshType perEdgeSelectionMeshFilter(
+OutMeshType edgeSelectionMeshFilter(
     const InMeshType& m,
     bool              saveBirthIndicesInCustomComponent = true)
 {
     auto selView = m.edges() | views::selection;
 
     return detail::
-        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+        elementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
             m, selView, saveBirthIndicesInCustomComponent);
 }
 
@@ -554,15 +554,15 @@ OutMeshType perEdgeSelectionMeshFilter(
  * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
  * have duplicated edges (same vertices, also in different order).
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The names of
- * the custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The names of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering the face edges of the input mesh `m`.
  */
 template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
-OutMeshType perFaceEdgeMeshFilter(
+OutMeshType faceEdgeMeshFilter(
     const InMeshType& m,
     const std::function<bool(const typename InMeshType::FaceType&, uint)>&
          faceEdgeFilter,
@@ -573,7 +573,7 @@ OutMeshType perFaceEdgeMeshFilter(
     using OutEdgeType  = OutMeshType::EdgeType;
 
     OutMeshType res;
-    // todo: enable only per vertex same optional components of m
+    // todo: enable only vertex same optional components of m
     res.enableSameOptionalComponentsOf(m);
 
     // enable the custom component birthVertex
@@ -645,15 +645,15 @@ OutMeshType perFaceEdgeMeshFilter(
  * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
  * have duplicated edges (same vertices, also in different order).
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The names of
- * the custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The names of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering the face edges of the input mesh `m`.
  */
 template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
-OutMeshType perFaceEdgeMeshFilter(
+OutMeshType faceEdgeMeshFilter(
     const InMeshType&                      m,
     const std::function<bool(uint, uint)>& faceEdgeFilter,
     bool                                   dontDuplicateEdges = true,
@@ -663,7 +663,7 @@ OutMeshType perFaceEdgeMeshFilter(
         return faceEdgeFilter(m.index(f), ei);
     };
 
-    return perFaceEdgeMeshFilter<OutMeshType, InMeshType>(
+    return faceEdgeMeshFilter<OutMeshType, InMeshType>(
         m, filter, dontDuplicateEdges, saveBirthIndicesInCustomComponent);
 }
 
@@ -683,16 +683,16 @@ OutMeshType perFaceEdgeMeshFilter(
  * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
  * have duplicated edges (same vertices, also in different order).
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
- * output mesh type has the per vertex CustomComponents component, will set a
- * per vertex custom component of type `uint` in the output mesh telling, for
- * each vertex, the index of its birth vertex in the input mesh. The names of
- * the custom component is `"birthVertex"`.
+ * output mesh type has the vertex CustomComponents component, will set a vertex
+ * custom component of type `uint` in the output mesh telling, for each vertex,
+ * the index of its birth vertex in the input mesh. The names of the custom
+ * component is `"birthVertex"`.
  *
  * @return A new Mesh created by filtering the selected face edges of the input
  * mesh `m`.
  */
 template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
-OutMeshType perFaceEdgeSelectionMeshFilter(
+OutMeshType faceEdgeSelectionMeshFilter(
     const InMeshType& m,
     bool              dontDuplicateEdges                = true,
     bool              saveBirthIndicesInCustomComponent = true)
@@ -701,7 +701,7 @@ OutMeshType perFaceEdgeSelectionMeshFilter(
         return f.edgeSelected(ei);
     };
 
-    return perFaceEdgeMeshFilter<OutMeshType, InMeshType>(
+    return faceEdgeMeshFilter<OutMeshType, InMeshType>(
         m, filter, dontDuplicateEdges, saveBirthIndicesInCustomComponent);
 }
 
