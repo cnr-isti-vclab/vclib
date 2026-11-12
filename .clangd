@@ -1,5 +1,9 @@
 CompileFlags:
   CompilationDatabase: .
+  Remove:
+    - -fmodules-ts
+    - -fmodule-mapper=*
+    - -fdeps-format=*
 
 Diagnostics:
   UnusedIncludes: None
