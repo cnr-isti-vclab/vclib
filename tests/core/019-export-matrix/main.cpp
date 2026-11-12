@@ -368,7 +368,7 @@ void testVertexAdjacentVerticesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
 
-    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesCount(tm);
+    vcl::uint lva = vcl::largestVertexAdjacentVerticesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lva);
@@ -412,7 +412,7 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentFacesMatrix<MatrixType>(tm);
 
-    vcl::uint lfa = vcl::largestPerVertexAdjacentFacesCount(tm);
+    vcl::uint lfa = vcl::largestVertexAdjacentFacesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lfa);

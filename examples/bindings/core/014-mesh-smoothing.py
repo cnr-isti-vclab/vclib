@@ -19,7 +19,7 @@ from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 # 1. Laplacian smoothing with uniform weights
 # 2. Laplacian smoothing with cotangent weights
 # 3. Taubin smoothing (low-pass filter)
-# 4. Per-vertex normal smoothing for point clouds
+# 4. Vertex normal smoothing for point clouds
 
 
 def mesh_smoothing():
@@ -90,11 +90,11 @@ def mesh_smoothing():
     normal_mesh.set_name("Normal Smoothed")
 
     start_time = time.time()
-    vcl.smooth_per_vertex_normals_point_cloud(normal_mesh, 10, 3)
+    vcl.smooth_vertex_normals_point_cloud(normal_mesh, 10, 3)
     elapsed_time = time.time() - start_time
     print(f"Normal smoothing took: {elapsed_time*1000:.2f} ms")
 
-    print("Per-vertex normal smoothing (10 neighbors, 3 iterations) completed.")
+    print("Vertex normal smoothing (10 neighbors, 3 iterations) completed.")
 
     # Display mesh statistics
     print("\n=== Mesh Statistics ===")

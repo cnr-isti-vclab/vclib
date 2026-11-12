@@ -174,7 +174,7 @@ void initStatAlgorithms(pybind11::module& m)
 
         // topology.h
 
-        m.def("count_per_face_vertex_references", [](const MeshType& m) {
+        m.def("face_vertex_references_count", [](const MeshType& m) {
             return vcl::faceVertexReferencesCount(m);
         });
 
