@@ -250,30 +250,30 @@ void initMeshInfo(pybind11::module& m)
         "clear_edge_custom_components",
         &MeshInfo::clearEdgeCustomComponents);
 
-    c.def("per_element_component_type", &MeshInfo::perElementComponentType);
-    c.def("per_vertex_position_type", &MeshInfo::perVertexPositionType);
-    c.def("per_vertex_normal_type", &MeshInfo::perVertexNormalType);
-    c.def("per_vertex_color_type", &MeshInfo::perVertexColorType);
-    c.def("per_vertex_quality_type", &MeshInfo::perVertexQualityType);
-    c.def("per_vertex_tex_coord_type", &MeshInfo::perVertexTexCoordType);
+    c.def("element_component_type", &MeshInfo::elementComponentType);
+    c.def("vertex_position_type", &MeshInfo::vertexPositionType);
+    c.def("vertex_normal_type", &MeshInfo::vertexNormalType);
+    c.def("vertex_color_type", &MeshInfo::vertexColorType);
+    c.def("vertex_quality_type", &MeshInfo::vertexQualityType);
+    c.def("vertex_tex_coord_type", &MeshInfo::vertexTexCoordType);
     c.def(
-        "per_vertex_material_index_type",
-        &MeshInfo::perVertexMaterialIndexType);
-    c.def("per_face_normal_type", &MeshInfo::perFaceNormalType);
-    c.def("per_face_color_type", &MeshInfo::perFaceColorType);
-    c.def("per_face_quality_type", &MeshInfo::perFaceQualityType);
+        "vertex_material_index_type",
+        &MeshInfo::vertexMaterialIndexType);
+    c.def("face_normal_type", &MeshInfo::faceNormalType);
+    c.def("face_color_type", &MeshInfo::faceColorType);
+    c.def("face_quality_type", &MeshInfo::faceQualityType);
     c.def(
-        "per_face_wedge_tex_coords_type", &MeshInfo::perFaceWedgeTexCoordsType);
-    c.def("per_face_material_index_type", &MeshInfo::perFaceMaterialIndexType);
-    c.def("per_edge_normal_type", &MeshInfo::perEdgeNormalType);
-    c.def("per_edge_color_type", &MeshInfo::perEdgeColorType);
-    c.def("per_edge_quality_type", &MeshInfo::perEdgeQualityType);
+        "face_wedge_tex_coords_type", &MeshInfo::faceWedgeTexCoordsType);
+    c.def("face_material_index_type", &MeshInfo::faceMaterialIndexType);
+    c.def("edge_normal_type", &MeshInfo::edgeNormalType);
+    c.def("edge_color_type", &MeshInfo::edgeColorType);
+    c.def("edge_quality_type", &MeshInfo::edgeQualityType);
 
     c.def(
-        "per_element_custom_components", &MeshInfo::perElementCustomComponents);
-    c.def("per_vertex_custom_components", &MeshInfo::perVertexCustomComponents);
-    c.def("per_face_custom_components", &MeshInfo::perFaceCustomComponents);
-    c.def("per_edge_custom_components", &MeshInfo::perEdgeCustomComponents);
+        "element_custom_components", &MeshInfo::elementCustomComponents);
+    c.def("vertex_custom_components", &MeshInfo::vertexCustomComponents);
+    c.def("face_custom_components", &MeshInfo::faceCustomComponents);
+    c.def("edge_custom_components", &MeshInfo::edgeCustomComponents);
 
     c.def("intersect", &MeshInfo::intersect);
 }

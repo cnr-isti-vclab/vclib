@@ -414,11 +414,11 @@ public:
             if (info.hasVertexPosition()) {
                 PlyProperty px, py, pz;
                 px.name = ply::x;
-                px.type = info.perVertexPositionType();
+                px.type = info.vertexPositionType();
                 py.name = ply::y;
-                py.type = info.perVertexPositionType();
+                py.type = info.vertexPositionType();
                 pz.name = ply::z;
-                pz.type = info.perVertexPositionType();
+                pz.type = info.vertexPositionType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
@@ -426,17 +426,17 @@ public:
             if (info.hasVertexBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perVertexBitFlagsType();
+                bf.type = info.vertexBitFlagsType();
                 vElem.properties.push_back(bf);
             }
             if (info.hasVertexNormal()) {
                 PlyProperty vnx, vny, vnz;
                 vnx.name = ply::nx;
-                vnx.type = info.perVertexNormalType();
+                vnx.type = info.vertexNormalType();
                 vny.name = ply::ny;
-                vny.type = info.perVertexNormalType();
+                vny.type = info.vertexNormalType();
                 vnz.name = ply::nz;
-                vnz.type = info.perVertexNormalType();
+                vnz.type = info.vertexNormalType();
                 vElem.properties.push_back(vnx);
                 vElem.properties.push_back(vny);
                 vElem.properties.push_back(vnz);
@@ -444,13 +444,13 @@ public:
             if (info.hasVertexColor()) {
                 PlyProperty vcr, vcg, vcb, vca;
                 vcr.name = ply::red;
-                vcr.type = info.perVertexColorType();
+                vcr.type = info.vertexColorType();
                 vcg.name = ply::green;
-                vcg.type = info.perVertexColorType();
+                vcg.type = info.vertexColorType();
                 vcb.name = ply::blue;
-                vcb.type = info.perVertexColorType();
+                vcb.type = info.vertexColorType();
                 vca.name = ply::alpha;
-                vca.type = info.perVertexColorType();
+                vca.type = info.vertexColorType();
                 vElem.properties.push_back(vcr);
                 vElem.properties.push_back(vcg);
                 vElem.properties.push_back(vcb);
@@ -459,26 +459,26 @@ public:
             if (info.hasVertexQuality()) {
                 PlyProperty vs;
                 vs.name = ply::quality;
-                vs.type = info.perVertexQualityType();
+                vs.type = info.vertexQualityType();
                 vElem.properties.push_back(vs);
             }
             if (info.hasVertexTexCoord()) {
                 PlyProperty tcu, tcv;
                 tcu.name = ply::texture_u;
-                tcu.type = info.perVertexTexCoordType();
+                tcu.type = info.vertexTexCoordType();
                 tcv.name = ply::texture_v;
-                tcv.type = info.perVertexTexCoordType();
+                tcv.type = info.vertexTexCoordType();
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
             }
             if (info.hasVertexMaterialIndex()) {
                 PlyProperty tcn;
                 tcn.name = ply::material_index;
-                tcn.type = info.perVertexMaterialIndexType();
+                tcn.type = info.vertexMaterialIndexType();
                 vElem.properties.push_back(tcn);
             }
             if (info.hasVertexCustomComponents()) {
-                for (const auto& cc : info.perVertexCustomComponents()) {
+                for (const auto& cc : info.vertexCustomComponents()) {
                     if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
@@ -505,17 +505,17 @@ public:
             if (info.hasFaceBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perFaceBitFlagsType();
+                bf.type = info.faceBitFlagsType();
                 fElem.properties.push_back(bf);
             }
             if (info.hasFaceNormal()) {
                 PlyProperty fnx, fny, fnz;
                 fnx.name = ply::nx;
-                fnx.type = info.perFaceNormalType();
+                fnx.type = info.faceNormalType();
                 fny.name = ply::ny;
-                fny.type = info.perFaceNormalType();
+                fny.type = info.faceNormalType();
                 fnz.name = ply::nz;
-                fnz.type = info.perFaceNormalType();
+                fnz.type = info.faceNormalType();
                 fElem.properties.push_back(fnx);
                 fElem.properties.push_back(fny);
                 fElem.properties.push_back(fnz);
@@ -523,13 +523,13 @@ public:
             if (info.hasFaceColor()) {
                 PlyProperty fcr, fcg, fcb, fca;
                 fcr.name = ply::red;
-                fcr.type = info.perFaceColorType();
+                fcr.type = info.faceColorType();
                 fcg.name = ply::green;
-                fcg.type = info.perFaceColorType();
+                fcg.type = info.faceColorType();
                 fcb.name = ply::blue;
-                fcb.type = info.perFaceColorType();
+                fcb.type = info.faceColorType();
                 fca.name = ply::alpha;
-                fca.type = info.perFaceColorType();
+                fca.type = info.faceColorType();
                 fElem.properties.push_back(fcr);
                 fElem.properties.push_back(fcg);
                 fElem.properties.push_back(fcb);
@@ -538,7 +538,7 @@ public:
             if (info.hasFaceQuality()) {
                 PlyProperty fs;
                 fs.name = ply::quality;
-                fs.type = info.perFaceQualityType();
+                fs.type = info.faceQualityType();
                 fElem.properties.push_back(fs);
             }
             if (info.hasFaceWedgeTexCoords()) {
@@ -546,17 +546,17 @@ public:
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type         = info.perFaceWedgeTexCoordsType();
+                tc.type         = info.faceWedgeTexCoordsType();
                 fElem.properties.push_back(tc);
             }
             if (info.hasFaceMaterialIndex()) {
                 PlyProperty tn;
                 tn.name = ply::material_index;
-                tn.type = info.perFaceMaterialIndexType();
+                tn.type = info.faceMaterialIndexType();
                 fElem.properties.push_back(tn);
             }
             if (info.hasFaceCustomComponents()) {
-                for (const auto& cc : info.perFaceCustomComponents()) {
+                for (const auto& cc : info.faceCustomComponents()) {
                     if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
@@ -585,7 +585,7 @@ public:
             if (info.hasEdgeBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perEdgeBitFlagsType();
+                bf.type = info.edgeBitFlagsType();
                 eElem.properties.push_back(bf);
             }
             mElements.push_back(eElem);

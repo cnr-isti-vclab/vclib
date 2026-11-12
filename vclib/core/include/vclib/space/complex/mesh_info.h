@@ -71,7 +71,7 @@ public:
      * file.
      *
      * @note: MESH is not an element, but it is used since some components can
-     * be stored per mesh.
+     * be stored in the MESH.
      */
     enum Element { VERTEX, FACE, EDGE, MESH, NUM_ELEMENTS };
 
@@ -116,7 +116,7 @@ private:
     // Tell if elements are present in the file
     std::bitset<NUM_ELEMENTS> mElements = {false};
 
-    // Tell if per element components are present in the file
+    // Tell if element components are present in the file
     std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> mElemComponents = {
         false};
 
@@ -124,7 +124,7 @@ private:
     Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS>
         mElemComponentsType;
 
-    // Store name and type of per element custom components
+    // Store name and type of element custom components
     std::array<std::vector<CustomComponent>, NUM_ELEMENTS>
         mElemCustomComponents;
 
@@ -436,8 +436,8 @@ public:
     bool hasFaces() const { return hasElement(FACE); }
 
     /**
-     * @brief Returns true if the current object has per Face Vertex References.
-     * @return true if the current object has per Face Vertex References.
+     * @brief Returns true if the current object has Face Vertex References.
+     * @return true if the current object has Face Vertex References.
      */
     bool hasFaceVertexReferences() const
     {
@@ -756,118 +756,118 @@ public:
      * to know the type that needs to use to save a given Component
      */
 
-    DataType perElementComponentType(Element el, Component comp) const
+    DataType elementComponentType(Element el, Component comp) const
     {
         return mElemComponentsType(el, comp);
     }
 
-    DataType perVertexPositionType() const
+    DataType vertexPositionType() const
     {
-        return perElementComponentType(VERTEX, POSITION);
+        return elementComponentType(VERTEX, POSITION);
     }
 
-    DataType perVertexBitFlagsType() const
+    DataType vertexBitFlagsType() const
     {
-        return perElementComponentType(VERTEX, BIT_FLAGS);
+        return elementComponentType(VERTEX, BIT_FLAGS);
     }
 
-    DataType perVertexNormalType() const
+    DataType vertexNormalType() const
     {
-        return perElementComponentType(VERTEX, NORMAL);
+        return elementComponentType(VERTEX, NORMAL);
     }
 
-    DataType perVertexTangentType() const
+    DataType vertexTangentType() const
     {
-        return perElementComponentType(VERTEX, TANGENT);
+        return elementComponentType(VERTEX, TANGENT);
     }
 
-    DataType perVertexColorType() const
+    DataType vertexColorType() const
     {
-        return perElementComponentType(VERTEX, COLOR);
+        return elementComponentType(VERTEX, COLOR);
     }
 
-    DataType perVertexQualityType() const
+    DataType vertexQualityType() const
     {
-        return perElementComponentType(VERTEX, QUALITY);
+        return elementComponentType(VERTEX, QUALITY);
     }
 
-    DataType perVertexTexCoordType() const
+    DataType vertexTexCoordType() const
     {
-        return perElementComponentType(VERTEX, TEXCOORD);
+        return elementComponentType(VERTEX, TEXCOORD);
     }
 
-    DataType perVertexMaterialIndexType() const
+    DataType vertexMaterialIndexType() const
     {
-        return perElementComponentType(VERTEX, MATERIAL_INDEX);
+        return elementComponentType(VERTEX, MATERIAL_INDEX);
     }
 
-    DataType perFaceBitFlagsType() const
+    DataType faceBitFlagsType() const
     {
-        return perElementComponentType(FACE, BIT_FLAGS);
+        return elementComponentType(FACE, BIT_FLAGS);
     }
 
-    DataType perFaceNormalType() const
+    DataType faceNormalType() const
     {
-        return perElementComponentType(FACE, NORMAL);
+        return elementComponentType(FACE, NORMAL);
     }
 
-    DataType perFaceColorType() const
+    DataType faceColorType() const
     {
-        return perElementComponentType(FACE, COLOR);
+        return elementComponentType(FACE, COLOR);
     }
 
-    DataType perFaceQualityType() const
+    DataType faceQualityType() const
     {
-        return perElementComponentType(FACE, QUALITY);
+        return elementComponentType(FACE, QUALITY);
     }
 
-    DataType perFaceWedgeTexCoordsType() const
+    DataType faceWedgeTexCoordsType() const
     {
-        return perElementComponentType(FACE, WEDGE_TEXCOORDS);
+        return elementComponentType(FACE, WEDGE_TEXCOORDS);
     }
 
-    DataType perFaceMaterialIndexType() const
+    DataType faceMaterialIndexType() const
     {
-        return perElementComponentType(FACE, MATERIAL_INDEX);
+        return elementComponentType(FACE, MATERIAL_INDEX);
     }
 
-    DataType perEdgeBitFlagsType() const
+    DataType edgeBitFlagsType() const
     {
-        return perElementComponentType(EDGE, BIT_FLAGS);
+        return elementComponentType(EDGE, BIT_FLAGS);
     }
 
-    DataType perEdgeNormalType() const
+    DataType edgeNormalType() const
     {
-        return perElementComponentType(EDGE, NORMAL);
+        return elementComponentType(EDGE, NORMAL);
     }
 
-    DataType perEdgeColorType() const
+    DataType edgeColorType() const
     {
-        return perElementComponentType(EDGE, COLOR);
+        return elementComponentType(EDGE, COLOR);
     }
 
-    DataType perEdgeQualityType() const
+    DataType edgeQualityType() const
     {
-        return perElementComponentType(EDGE, QUALITY);
+        return elementComponentType(EDGE, QUALITY);
     }
 
-    const std::vector<CustomComponent>& perElementCustomComponents(
+    const std::vector<CustomComponent>& elementCustomComponents(
         Element el) const
     {
         return mElemCustomComponents[el];
     }
 
-    const std::vector<CustomComponent>& perVertexCustomComponents() const
+    const std::vector<CustomComponent>& vertexCustomComponents() const
     {
         return mElemCustomComponents[VERTEX];
     }
 
-    const std::vector<CustomComponent>& perFaceCustomComponents() const
+    const std::vector<CustomComponent>& faceCustomComponents() const
     {
         return mElemCustomComponents[FACE];
     }
 
-    const std::vector<CustomComponent>& perEdgeCustomComponents() const
+    const std::vector<CustomComponent>& edgeCustomComponents() const
     {
         return mElemCustomComponents[EDGE];
     }
@@ -1069,7 +1069,7 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
         }
         if (info.hasVertexCustomComponents()) {
             if constexpr (HasPerVertexCustomComponents<MeshType>) {
-                for (const auto& cc : info.perVertexCustomComponents()) {
+                for (const auto& cc : info.vertexCustomComponents()) {
                     addVertexCustomComponent(m, cc);
                 }
             }
@@ -1111,7 +1111,7 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
             }
             if (info.hasFaceCustomComponents()) {
                 if constexpr (HasPerFaceCustomComponents<MeshType>) {
-                    for (const auto& cc : info.perFaceCustomComponents()) {
+                    for (const auto& cc : info.faceCustomComponents()) {
                         addFaceCustomComponent(m, cc);
                     }
                 }
@@ -1147,7 +1147,7 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
             }
             if (info.hasEdgeCustomComponents()) {
                 if constexpr (HasPerEdgeCustomComponents<MeshType>) {
-                    for (const auto& cc : info.perEdgeCustomComponents()) {
+                    for (const auto& cc : info.edgeCustomComponents()) {
                         addEdgeCustomComponent(m, cc);
                     }
                 }
