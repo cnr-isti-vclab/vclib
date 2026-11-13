@@ -19,7 +19,7 @@ from paths import VCLIB_EXAMPLE_MESHES_PATH, VCLIB_PYTHON_RESULTS_PATH
 # 1. Laplacian smoothing with uniform weights
 # 2. Laplacian smoothing with cotangent weights
 # 3. Taubin smoothing (low-pass filter)
-# 4. Per-vertex normal smoothing for point clouds
+# 4. Vertex normal smoothing for point clouds
 
 
 def mesh_smoothing():
@@ -36,7 +36,7 @@ def mesh_smoothing():
     print(f"  Vertices: {original_mesh.vertex_count()}")
     print(f"  Faces: {original_mesh.face_count()}")
 
-    vcl.update_per_vertex_and_face_normals(original_mesh)
+    vcl.update_vertex_and_face_normals(original_mesh)
 
     # Laplacian Smoothing with Uniform Weights
     print("\n=== Laplacian Smoothing (Uniform Weights) ===")
@@ -51,7 +51,7 @@ def mesh_smoothing():
 
     print("Laplacian smoothing (10 iterations) completed.")
 
-    vcl.update_per_vertex_and_face_normals(laplacian_mesh)
+    vcl.update_vertex_and_face_normals(laplacian_mesh)
 
     # Laplacian Smoothing with Cotangent Weights
     print("\n=== Laplacian Smoothing (Cotangent Weights) ===")
@@ -66,7 +66,7 @@ def mesh_smoothing():
 
     print("Cotangent Laplacian smoothing (10 iterations) completed.")
 
-    vcl.update_per_vertex_and_face_normals(cotangent_mesh)
+    vcl.update_vertex_and_face_normals(cotangent_mesh)
 
     # Taubin Smoothing
     print("\n=== Taubin Smoothing ===")
@@ -81,7 +81,7 @@ def mesh_smoothing():
 
     print("Taubin smoothing (50 iterations, lambda=0.5, mu=-0.53) completed.")
 
-    vcl.update_per_vertex_and_face_normals(taubin_mesh)
+    vcl.update_vertex_and_face_normals(taubin_mesh)
 
     # Normal Smoothing for Point Cloud
     print("\n=== Normal Smoothing ===")
@@ -90,11 +90,11 @@ def mesh_smoothing():
     normal_mesh.set_name("Normal Smoothed")
 
     start_time = time.time()
-    vcl.smooth_per_vertex_normals_point_cloud(normal_mesh, 10, 3)
+    vcl.smooth_vertex_normals_point_cloud(normal_mesh, 10, 3)
     elapsed_time = time.time() - start_time
     print(f"Normal smoothing took: {elapsed_time*1000:.2f} ms")
 
-    print("Per-vertex normal smoothing (10 neighbors, 3 iterations) completed.")
+    print("Vertex normal smoothing (10 neighbors, 3 iterations) completed.")
 
     # Display mesh statistics
     print("\n=== Mesh Statistics ===")

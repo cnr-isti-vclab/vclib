@@ -49,7 +49,7 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
-void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
+void clearElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
@@ -76,9 +76,7 @@ void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
-void normalizePerElementNormals(
-    MeshConcept auto& mesh,
-    LogType&          log = nullLogger)
+void normalizeElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
@@ -113,7 +111,7 @@ void normalizePerElementNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, typename MScalar, LoggerConcept LogType = NullLogger>
-void multiplyPerElementNormalsByMatrix(
+void multiplyElementNormalsByMatrix(
     MeshConcept auto& mesh,
     Matrix33<MScalar> mat,
     bool              removeScalingFromMatrix = true,
@@ -154,7 +152,7 @@ void multiplyPerElementNormalsByMatrix(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, typename MScalar, LoggerConcept LogType = NullLogger>
-void multiplyPerElementNormalsByMatrix(
+void multiplyElementNormalsByMatrix(
     MeshConcept auto&        mesh,
     const Matrix44<MScalar>& mat,
     bool                     removeScalingFromMatrix = true,
@@ -163,19 +161,19 @@ void multiplyPerElementNormalsByMatrix(
     requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
-    multiplyPerElementNormalsByMatrix<ELEM_ID>(
+    multiplyElementNormalsByMatrix<ELEM_ID>(
         mesh, m33, removeScalingFromMatrix, log);
 }
 
 /**
- * @brief Same as clearPerElementNormals, but for the vertex normals.
+ * @brief Same as clearElementNormals, but for the vertex normals.
  *
- * @see clearPerElementNormals
+ * @see clearElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
+void clearVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    clearPerElementNormals<ElemId::VERTEX>(mesh, log);
+    clearElementNormals<ElemId::VERTEX>(mesh, log);
 }
 
 /**
@@ -196,7 +194,7 @@ void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
+void clearReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 {
     requirePerVertexNormal(mesh);
 
@@ -223,27 +221,25 @@ void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 }
 
 /**
- * @brief Same as clearPerElementNormals, but for the face normals.
+ * @brief Same as clearElementNormals, but for the face normals.
  *
- * @see clearPerElementNormals
+ * @see clearElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void clearPerFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
+void clearFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    clearPerElementNormals<ElemId::FACE>(mesh, log);
+    clearElementNormals<ElemId::FACE>(mesh, log);
 }
 
 /**
- * @brief Same as normalizePerElementNormals, but for the vertex normals.
+ * @brief Same as normalizeElementNormals, but for the vertex normals.
  *
- * @see normalizePerElementNormals
+ * @see normalizeElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void normalizePerVertexNormals(
-    MeshConcept auto& mesh,
-    LogType&          log = nullLogger)
+void normalizeVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    normalizePerElementNormals<ElemId::VERTEX>(mesh, log);
+    normalizeElementNormals<ElemId::VERTEX>(mesh, log);
 }
 
 /**
@@ -263,9 +259,7 @@ void normalizePerVertexNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void normalizePerReferencedVertexNormals(
-    MeshType& mesh,
-    LogType&  log = nullLogger)
+void normalizeReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 {
     requirePerVertexNormal(mesh);
 
@@ -290,52 +284,50 @@ void normalizePerReferencedVertexNormals(
 }
 
 /**
- * @brief Same as normalizePerElementNormals, but for the face normals.
+ * @brief Same as normalizeElementNormals, but for the face normals.
  *
- * @see normalizePerElementNormals
+ * @see normalizeElementNormals
  */
 template<LoggerConcept LogType = NullLogger>
-void normalizePerFaceNormals(
-    FaceMeshConcept auto& mesh,
-    LogType&              log = nullLogger)
+void normalizeFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    normalizePerElementNormals<ElemId::FACE>(mesh, log);
+    normalizeElementNormals<ElemId::FACE>(mesh, log);
 }
 
 /**
- * @brief Same as multiplyPerElementNormalsByMatrix, but for the vertex
+ * @brief Same as multiplyElementNormalsByMatrix, but for the vertex
  * normals.
  *
  * Accepts both 3x3 and 4x4 matrices.
  *
- * @see multiplyPerElementNormalsByMatrix
+ * @see multiplyElementNormalsByMatrix
  */
 template<typename Matrix, LoggerConcept LogType = NullLogger>
-void multiplyPerVertexNormalsByMatrix(
+void multiplyVertexNormalsByMatrix(
     MeshConcept auto& mesh,
     const Matrix&     mat,
     bool              removeScalingFromMatrix = true,
     LogType&          log                     = nullLogger)
 {
-    multiplyPerElementNormalsByMatrix<ElemId::VERTEX>(
+    multiplyElementNormalsByMatrix<ElemId::VERTEX>(
         mesh, mat, removeScalingFromMatrix, log);
 }
 
 /**
- * @brief Same as multiplyPerElementNormalsByMatrix, but for the face normals.
+ * @brief Same as multiplyElementNormalsByMatrix, but for the face normals.
  *
  * Accepts both 3x3 and 4x4 matrices.
  *
- * @see multiplyPerElementNormalsByMatrix
+ * @see multiplyElementNormalsByMatrix
  */
 template<typename Matrix, LoggerConcept LogType = NullLogger>
-void multiplyPerFaceNormalsByMatrix(
+void multiplyFaceNormalsByMatrix(
     FaceMeshConcept auto& mesh,
     const Matrix&         mat,
     bool                  removeScalingFromMatrix = true,
     LogType&              log                     = nullLogger)
 {
-    multiplyPerElementNormalsByMatrix<ElemId::FACE>(
+    multiplyElementNormalsByMatrix<ElemId::FACE>(
         mesh, mat, removeScalingFromMatrix, log);
 }
 
@@ -355,7 +347,7 @@ void multiplyPerFaceNormalsByMatrix(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerFaceNormals(
+void updateFaceNormals(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -373,7 +365,7 @@ void updatePerFaceNormals(
 
     if (normalize) {
         log.startNewTask(50, 100, "Normalizing per-Face normals...");
-        normalizePerFaceNormals(mesh, log);
+        normalizeFaceNormals(mesh, log);
         log.endTask("Normalizing per-Face normals...");
     }
 
@@ -398,7 +390,7 @@ void updatePerFaceNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerVertexNormals(
+void updateVertexNormals(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -409,7 +401,7 @@ void updatePerVertexNormals(
     log.log(0, "Updating per-Vertex normals...");
 
     log.startNewTask(0, 20, "Clearing per-Vertex normals...");
-    clearPerReferencedVertexNormals(mesh, log);
+    clearReferencedVertexNormals(mesh, log);
     log.endTask("Clearing per-Vertex normals...");
 
     log.log(20, "Updating per-Vertex normals...");
@@ -422,7 +414,7 @@ void updatePerVertexNormals(
 
     if (normalize) {
         log.startNewTask(80, 100, "Normalizing per-Vertex normals...");
-        normalizePerReferencedVertexNormals(mesh, log);
+        normalizeReferencedVertexNormals(mesh, log);
         log.endTask("Normalizing per-Vertex normals...");
     }
 
@@ -447,7 +439,7 @@ void updatePerVertexNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerVertexNormalsFromFaceNormals(
+void updateVertexNormalsFromFaceNormals(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -460,7 +452,7 @@ void updatePerVertexNormalsFromFaceNormals(
     log.log(0, "Updating per-Vertex normals...");
 
     log.startNewTask(0, 20, "Clearing per-Vertex normals...");
-    clearPerReferencedVertexNormals(mesh, log);
+    clearReferencedVertexNormals(mesh, log);
     log.endTask("Clearing per-Vertex normals...");
 
     log.log(20, "Updating per-Vertex normals...");
@@ -473,7 +465,7 @@ void updatePerVertexNormalsFromFaceNormals(
 
     if (normalize) {
         log.startNewTask(80, 100, "Normalizing per-Vertex normals...");
-        normalizePerReferencedVertexNormals(mesh, log);
+        normalizeReferencedVertexNormals(mesh, log);
         log.endTask("Normalizing per-Vertex normals...");
     }
 
@@ -484,8 +476,8 @@ void updatePerVertexNormalsFromFaceNormals(
  * @brief Computes the face normals and then vertex normal as the angle weighted
  * average.
  *
- * The result is the same as calling updatePerFaceNormals() and then
- * updatePerVertexNormals(), but it is more efficient because it exploits the
+ * The result is the same as calling updateFaceNormals() and then
+ * updateVertexNormals(), but it is more efficient because it exploits the
  * (not yet normalized) face normals to compute the vertex normals.
  *
  * Requirements:
@@ -501,7 +493,7 @@ void updatePerVertexNormalsFromFaceNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerVertexAndFaceNormals(
+void updateVertexAndFaceNormals(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -509,16 +501,16 @@ void updatePerVertexAndFaceNormals(
     log.log(0, "Updating per-Vertex and per-Face normals...");
 
     log.startNewTask(0, 40, "Updating per-Face normals...");
-    updatePerFaceNormals(mesh, false, log); // normals are not normalized here
+    updateFaceNormals(mesh, false, log); // normals are not normalized here
     log.endTask("");
 
     log.startNewTask(40, 80, "Updating per-Vertex normals...");
-    updatePerVertexNormalsFromFaceNormals(mesh, normalize, log);
+    updateVertexNormalsFromFaceNormals(mesh, normalize, log);
     log.endTask("");
 
     if (normalize) {
         log.startNewTask(80, 100, "Normalizing per-Face normals...");
-        normalizePerFaceNormals(mesh, log);
+        normalizeFaceNormals(mesh, log);
         log.endTask("");
     }
 
@@ -553,7 +545,7 @@ void updatePerVertexAndFaceNormals(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerVertexNormalsAngleWeighted(
+void updateVertexNormalsAngleWeighted(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -565,7 +557,7 @@ void updatePerVertexNormalsAngleWeighted(
     log.log(0, "Updating per-Vertex normals...");
 
     log.startNewTask(0, 5, "Clearing per-Vertex normals...");
-    clearPerReferencedVertexNormals(mesh, log);
+    clearReferencedVertexNormals(mesh, log);
     log.endTask("Clearing per-Vertex normals...");
 
     log.log(5, "Updating per-Vertex normals...");
@@ -589,7 +581,7 @@ void updatePerVertexNormalsAngleWeighted(
 
     if (normalize) {
         log.startNewTask(95, 100, "Normalizing per-Vertex normals...");
-        normalizePerReferencedVertexNormals(mesh, log);
+        normalizeReferencedVertexNormals(mesh, log);
         log.endTask("Normalizing per-Vertex normals...");
     }
 
@@ -627,7 +619,7 @@ void updatePerVertexNormalsAngleWeighted(
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<LoggerConcept LogType = NullLogger>
-void updatePerVertexNormalsNelsonMaxWeighted(
+void updateVertexNormalsNelsonMaxWeighted(
     FaceMeshConcept auto& mesh,
     bool                  normalize = true,
     LogType&              log       = nullLogger)
@@ -638,7 +630,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(
     log.log(0, "Updating per-Vertex normals...");
 
     log.startNewTask(0, 5, "Clearing per-Vertex normals...");
-    clearPerReferencedVertexNormals(mesh, log);
+    clearReferencedVertexNormals(mesh, log);
     log.endTask("Clearing per-Vertex normals...");
 
     log.log(5, "Updating per-Vertex normals...");
@@ -660,7 +652,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(
 
     if (normalize) {
         log.startNewTask(95, 100, "Normalizing per-Vertex normals...");
-        normalizePerReferencedVertexNormals(mesh, log);
+        normalizeReferencedVertexNormals(mesh, log);
         log.endTask("Normalizing per-Vertex normals...");
     }
 

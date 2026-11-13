@@ -42,9 +42,9 @@ def mesh_curvature():
     original_mesh.enable_per_vertex_color()
     original_mesh.enable_per_vertex_quality()
 
-    vcl.update_per_vertex_and_face_normals(original_mesh)
-    vcl.update_per_face_adjacent_faces(original_mesh)
-    vcl.update_per_vertex_adjacent_faces(original_mesh)
+    vcl.update_vertex_and_face_normals(original_mesh)
+    vcl.update_face_adjacent_faces(original_mesh)
+    vcl.update_vertex_adjacent_faces(original_mesh)
 
     # Principal Curvature with Taubin95 Algorithm
     print("\n=== Principal Curvature (Taubin95) ===")
@@ -53,15 +53,15 @@ def mesh_curvature():
     taubin_mesh.set_name("Taubin95 Curvature")
 
     start_time = time.time()
-    vcl.update_per_vertex_principal_curvature(taubin_mesh, algorithm=vcl.PrincipalCurvatureAlgorithm.TAUBIN95)
+    vcl.update_vertex_principal_curvature(taubin_mesh, algorithm=vcl.PrincipalCurvatureAlgorithm.TAUBIN95)
     elapsed_time = time.time() - start_time
     print(f"Taubin95 principal curvature took: {elapsed_time*1000:.2f} ms")
 
     # Color mapping based on mean curvature
-    vcl.set_per_vertex_quality_from_principal_curvature_mean(taubin_mesh)
+    vcl.set_vertex_quality_from_principal_curvature_mean(taubin_mesh)
     h = vcl.vertex_quality_histogram(taubin_mesh)
 
-    vcl.set_per_vertex_color_from_quality(
+    vcl.set_vertex_color_from_quality(
         taubin_mesh,
         vcl.Color.ColorMap.RED_BLUE,
         h.value_at_percentile(0.1),
@@ -79,15 +79,15 @@ def mesh_curvature():
     radius = vcl.bounding_box(pca_mesh).diagonal() * 0.05
 
     start_time = time.time()
-    vcl.update_per_vertex_principal_curvature(pca_mesh, algorithm=vcl.PrincipalCurvatureAlgorithm.PCA, radius=radius)
+    vcl.update_vertex_principal_curvature(pca_mesh, algorithm=vcl.PrincipalCurvatureAlgorithm.PCA, radius=radius)
     elapsed_time = time.time() - start_time
     print(f"PCA principal curvature took: {elapsed_time*1000:.2f} ms")
 
     # Color mapping based on Gaussian curvature
-    vcl.set_per_vertex_quality_from_principal_curvature_gaussian(pca_mesh)
+    vcl.set_vertex_quality_from_principal_curvature_gaussian(pca_mesh)
     h2 = vcl.vertex_quality_histogram(pca_mesh)
 
-    vcl.set_per_vertex_color_from_quality(
+    vcl.set_vertex_color_from_quality(
         pca_mesh,
         vcl.Color.ColorMap.RED_BLUE,
         h2.value_at_percentile(0.05),
@@ -103,7 +103,7 @@ def mesh_curvature():
     general_mesh.set_name("General Curvature")
 
     start_time = time.time()
-    vcl.update_per_vertex_principal_curvature(general_mesh, vcl.PrincipalCurvatureAlgorithm.TAUBIN95)
+    vcl.update_vertex_principal_curvature(general_mesh, vcl.PrincipalCurvatureAlgorithm.TAUBIN95)
     elapsed_time = time.time() - start_time
     print(f"General principal curvature took: {elapsed_time*1000:.2f} ms")
 
@@ -115,7 +115,7 @@ def mesh_curvature():
 
     h3 = vcl.vertex_quality_histogram(general_mesh)
 
-    vcl.set_per_vertex_color_from_quality(
+    vcl.set_vertex_color_from_quality(
         general_mesh,
         vcl.Color.ColorMap.RED_BLUE,
         h3.value_at_percentile(0.1),

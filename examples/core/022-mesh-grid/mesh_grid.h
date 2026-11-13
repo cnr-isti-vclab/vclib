@@ -22,7 +22,7 @@
 // 4. Using grids with points and mesh faces
 // 5. Spatial queries: nearest neighbor, k-closest, sphere queries
 
-void meshGridExamples()
+inline void meshGridExamples()
 {
     std::cout << "=== VCLib Example 022: Mesh Grid Structures ===\n\n";
 

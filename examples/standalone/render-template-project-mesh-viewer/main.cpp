@@ -28,7 +28,7 @@ int main(int argc, char** argv)
 
     // It's usually a good idea to compute per-vertex and per-face normals
     // so the renderer can properly shade the mesh.
-    vcl::updatePerVertexAndFaceNormals(mesh);
+    vcl::updateVertexAndFaceNormals(mesh);
 
     // Convert the mesh into a DrawableMesh which the viewer can render
     auto drawableMesh = vcl::makeDrawable(std::move(mesh));

@@ -36,17 +36,17 @@ BENCH(
     });
 
 BENCH(
-    "stat/topology/largest_per_vertex_adjacent_vertices_count",
+    "stat/topology/largest_vertex_adjacent_vertices_count",
     []<typename Mesh>(bench::State<Mesh>& s) {
         const Mesh& m = s.meshWithTopology();
-        s.run([&]() { return vcl::largestPerVertexAdjacentVerticesCount(m); });
+        s.run([&]() { return vcl::largestVertexAdjacentVerticesCount(m); });
     });
 
 BENCH(
-    "stat/topology/largest_per_vertex_adjacent_faces_count",
+    "stat/topology/largest_vertex_adjacent_faces_count",
     []<typename Mesh>(bench::State<Mesh>& s) {
         const Mesh& m = s.meshWithTopology();
-        s.run([&]() { return vcl::largestPerVertexAdjacentFacesCount(m); });
+        s.run([&]() { return vcl::largestVertexAdjacentFacesCount(m); });
     });
 
 BENCH(

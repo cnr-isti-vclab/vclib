@@ -19,7 +19,7 @@
 // 3. Montecarlo sampling
 // 4. Poisson sampling
 
-auto meshPointSampling()
+inline auto meshPointSampling()
 {
     std::cout << "=== VCLib Example 019: Mesh Point Sampling ===\n\n";
 
@@ -31,7 +31,7 @@ auto meshPointSampling()
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
     originalMesh.name() = "Original Bunny Mesh";
 
-    vcl::updatePerVertexAndFaceNormals(originalMesh);
+    vcl::updateVertexAndFaceNormals(originalMesh);
 
     std::cout << "Loaded mesh with " << originalMesh.vertexCount()
               << " vertices and " << originalMesh.faceCount() << " faces"

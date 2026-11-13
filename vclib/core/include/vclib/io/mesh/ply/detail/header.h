@@ -195,23 +195,21 @@ public:
                 switch (p.name) {
                 case ply::x:
                 case ply::y:
-                case ply::z: mod.setPerVertexPosition(); break;
-                case ply::bit_flags: mod.setPerVertexBitFlags(); break;
+                case ply::z: mod.setVertexPosition(); break;
+                case ply::bit_flags: mod.setVertexBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
-                case ply::nz: mod.setPerVertexNormal(); break;
+                case ply::nz: mod.setVertexNormal(); break;
                 case ply::red:
                 case ply::green:
                 case ply::blue:
-                case ply::alpha: mod.setPerVertexColor(); break;
-                case ply::quality: mod.setPerVertexQuality(); break;
-                case ply::texture_u: mod.setPerVertexTexCoord(); break;
-                case ply::material_index:
-                    mod.setPerVertexMaterialIndex();
-                    break;
+                case ply::alpha: mod.setVertexColor(); break;
+                case ply::quality: mod.setVertexQuality(); break;
+                case ply::texture_u: mod.setVertexTexCoord(); break;
+                case ply::material_index: mod.setVertexMaterialIndex(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
-                        mod.addPerVertexCustomComponent(
+                        mod.addVertexCustomComponent(
                             p.unknownPropertyName, (MeshInfo::DataType) p.type);
                     }
                 default: break;
@@ -222,23 +220,21 @@ public:
             mod.setFaces();
             for (const PlyProperty& p : mElements[mFaceElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setPerFaceVertexReferences();
-                    break;
-                case ply::bit_flags: mod.setPerFaceBitFlags(); break;
+                case ply::vertex_indices: mod.setFaceVertexReferences(); break;
+                case ply::bit_flags: mod.setFaceBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
-                case ply::nz: mod.setPerFaceNormal(); break;
+                case ply::nz: mod.setFaceNormal(); break;
                 case ply::red:
                 case ply::green:
                 case ply::blue:
-                case ply::alpha: mod.setPerFaceColor(); break;
-                case ply::quality: mod.setPerFaceQuality(); break;
-                case ply::material_index: mod.setPerFaceMaterialIndex(); break;
-                case ply::texcoord: mod.setPerFaceWedgeTexCoords(); break;
+                case ply::alpha: mod.setFaceColor(); break;
+                case ply::quality: mod.setFaceQuality(); break;
+                case ply::material_index: mod.setFaceMaterialIndex(); break;
+                case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
                 case ply::unknown:
                     if (p.type <= ply::PropertyType::DOUBLE) {
-                        mod.addPerFaceCustomComponent(
+                        mod.addFaceCustomComponent(
                             p.unknownPropertyName, (MeshInfo::DataType) p.type);
                     }
                 default: break;
@@ -250,18 +246,16 @@ public:
             for (const PlyProperty& p :
                  mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setPerFaceVertexReferences();
-                    break;
+                case ply::vertex_indices: mod.setFaceVertexReferences(); break;
                 case ply::nx:
                 case ply::ny:
-                case ply::nz: mod.setPerFaceNormal(); break;
+                case ply::nz: mod.setFaceNormal(); break;
                 case ply::red:
                 case ply::green:
                 case ply::blue:
-                case ply::alpha: mod.setPerFaceColor(); break;
-                case ply::quality: mod.setPerFaceQuality(); break;
-                case ply::texcoord: mod.setPerFaceWedgeTexCoords(); break;
+                case ply::alpha: mod.setFaceColor(); break;
+                case ply::quality: mod.setFaceQuality(); break;
+                case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
                 default: break;
                 }
             }
@@ -270,18 +264,16 @@ public:
             mod.setEdges();
             for (const PlyProperty& p : mElements[mEdgeElemPos].properties) {
                 switch (p.name) {
-                case ply::vertex_indices:
-                    mod.setPerEdgeVertexReferences();
-                    break;
-                case ply::bit_flags: mod.setPerEdgeBitFlags(); break;
+                case ply::vertex_indices: mod.setEdgeVertexReferences(); break;
+                case ply::bit_flags: mod.setEdgeBitFlags(); break;
                 case ply::nx:
                 case ply::ny:
-                case ply::nz: mod.setPerEdgeNormal(); break;
+                case ply::nz: mod.setEdgeNormal(); break;
                 case ply::red:
                 case ply::green:
                 case ply::blue:
-                case ply::alpha: mod.setPerEdgeColor(); break;
-                case ply::quality: mod.setPerEdgeQuality(); break;
+                case ply::alpha: mod.setEdgeColor(); break;
+                case ply::quality: mod.setEdgeQuality(); break;
                 default: break;
                 }
             }
@@ -411,74 +403,74 @@ public:
             mVertElemPos = mElements.size();
             PlyElement vElem;
             vElem.type = ply::VERTEX;
-            if (info.hasPerVertexPosition()) {
+            if (info.hasVertexPosition()) {
                 PlyProperty px, py, pz;
                 px.name = ply::x;
-                px.type = info.perVertexPositionType();
+                px.type = info.vertexPositionType();
                 py.name = ply::y;
-                py.type = info.perVertexPositionType();
+                py.type = info.vertexPositionType();
                 pz.name = ply::z;
-                pz.type = info.perVertexPositionType();
+                pz.type = info.vertexPositionType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
             }
-            if (info.hasPerVertexBitFlags()) {
+            if (info.hasVertexBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perVertexBitFlagsType();
+                bf.type = info.vertexBitFlagsType();
                 vElem.properties.push_back(bf);
             }
-            if (info.hasPerVertexNormal()) {
+            if (info.hasVertexNormal()) {
                 PlyProperty vnx, vny, vnz;
                 vnx.name = ply::nx;
-                vnx.type = info.perVertexNormalType();
+                vnx.type = info.vertexNormalType();
                 vny.name = ply::ny;
-                vny.type = info.perVertexNormalType();
+                vny.type = info.vertexNormalType();
                 vnz.name = ply::nz;
-                vnz.type = info.perVertexNormalType();
+                vnz.type = info.vertexNormalType();
                 vElem.properties.push_back(vnx);
                 vElem.properties.push_back(vny);
                 vElem.properties.push_back(vnz);
             }
-            if (info.hasPerVertexColor()) {
+            if (info.hasVertexColor()) {
                 PlyProperty vcr, vcg, vcb, vca;
                 vcr.name = ply::red;
-                vcr.type = info.perVertexColorType();
+                vcr.type = info.vertexColorType();
                 vcg.name = ply::green;
-                vcg.type = info.perVertexColorType();
+                vcg.type = info.vertexColorType();
                 vcb.name = ply::blue;
-                vcb.type = info.perVertexColorType();
+                vcb.type = info.vertexColorType();
                 vca.name = ply::alpha;
-                vca.type = info.perVertexColorType();
+                vca.type = info.vertexColorType();
                 vElem.properties.push_back(vcr);
                 vElem.properties.push_back(vcg);
                 vElem.properties.push_back(vcb);
                 vElem.properties.push_back(vca);
             }
-            if (info.hasPerVertexQuality()) {
+            if (info.hasVertexQuality()) {
                 PlyProperty vs;
                 vs.name = ply::quality;
-                vs.type = info.perVertexQualityType();
+                vs.type = info.vertexQualityType();
                 vElem.properties.push_back(vs);
             }
-            if (info.hasPerVertexTexCoord()) {
+            if (info.hasVertexTexCoord()) {
                 PlyProperty tcu, tcv;
                 tcu.name = ply::texture_u;
-                tcu.type = info.perVertexTexCoordType();
+                tcu.type = info.vertexTexCoordType();
                 tcv.name = ply::texture_v;
-                tcv.type = info.perVertexTexCoordType();
+                tcv.type = info.vertexTexCoordType();
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
             }
-            if (info.hasPerVertexMaterialIndex()) {
+            if (info.hasVertexMaterialIndex()) {
                 PlyProperty tcn;
                 tcn.name = ply::material_index;
-                tcn.type = info.perVertexMaterialIndexType();
+                tcn.type = info.vertexMaterialIndexType();
                 vElem.properties.push_back(tcn);
             }
-            if (info.hasPerVertexCustomComponents()) {
-                for (const auto& cc : info.perVertexCustomComponents()) {
+            if (info.hasVertexCustomComponents()) {
+                for (const auto& cc : info.vertexCustomComponents()) {
                     if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
@@ -494,7 +486,7 @@ public:
             mFaceElemPos = mElements.size();
             PlyElement fElem;
             fElem.type = ply::FACE;
-            if (info.hasPerFaceVertexReferences()) {
+            if (info.hasFaceVertexReferences()) {
                 PlyProperty vids;
                 vids.list         = true;
                 vids.name         = ply::vertex_indices;
@@ -502,61 +494,61 @@ public:
                 vids.listSizeType = PrimitiveType::UCHAR;
                 fElem.properties.push_back(vids);
             }
-            if (info.hasPerFaceBitFlags()) {
+            if (info.hasFaceBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perFaceBitFlagsType();
+                bf.type = info.faceBitFlagsType();
                 fElem.properties.push_back(bf);
             }
-            if (info.hasPerFaceNormal()) {
+            if (info.hasFaceNormal()) {
                 PlyProperty fnx, fny, fnz;
                 fnx.name = ply::nx;
-                fnx.type = info.perFaceNormalType();
+                fnx.type = info.faceNormalType();
                 fny.name = ply::ny;
-                fny.type = info.perFaceNormalType();
+                fny.type = info.faceNormalType();
                 fnz.name = ply::nz;
-                fnz.type = info.perFaceNormalType();
+                fnz.type = info.faceNormalType();
                 fElem.properties.push_back(fnx);
                 fElem.properties.push_back(fny);
                 fElem.properties.push_back(fnz);
             }
-            if (info.hasPerFaceColor()) {
+            if (info.hasFaceColor()) {
                 PlyProperty fcr, fcg, fcb, fca;
                 fcr.name = ply::red;
-                fcr.type = info.perFaceColorType();
+                fcr.type = info.faceColorType();
                 fcg.name = ply::green;
-                fcg.type = info.perFaceColorType();
+                fcg.type = info.faceColorType();
                 fcb.name = ply::blue;
-                fcb.type = info.perFaceColorType();
+                fcb.type = info.faceColorType();
                 fca.name = ply::alpha;
-                fca.type = info.perFaceColorType();
+                fca.type = info.faceColorType();
                 fElem.properties.push_back(fcr);
                 fElem.properties.push_back(fcg);
                 fElem.properties.push_back(fcb);
                 fElem.properties.push_back(fca);
             }
-            if (info.hasPerFaceQuality()) {
+            if (info.hasFaceQuality()) {
                 PlyProperty fs;
                 fs.name = ply::quality;
-                fs.type = info.perFaceQualityType();
+                fs.type = info.faceQualityType();
                 fElem.properties.push_back(fs);
             }
-            if (info.hasPerFaceWedgeTexCoords()) {
+            if (info.hasFaceWedgeTexCoords()) {
                 PlyProperty tc;
                 tc.list         = true;
                 tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type         = info.perFaceWedgeTexCoordsType();
+                tc.type         = info.faceWedgeTexCoordsType();
                 fElem.properties.push_back(tc);
             }
-            if (info.hasPerFaceMaterialIndex()) {
+            if (info.hasFaceMaterialIndex()) {
                 PlyProperty tn;
                 tn.name = ply::material_index;
-                tn.type = info.perFaceMaterialIndexType();
+                tn.type = info.faceMaterialIndexType();
                 fElem.properties.push_back(tn);
             }
-            if (info.hasPerFaceCustomComponents()) {
-                for (const auto& cc : info.perFaceCustomComponents()) {
+            if (info.hasFaceCustomComponents()) {
+                for (const auto& cc : info.faceCustomComponents()) {
                     if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
@@ -572,7 +564,7 @@ public:
             mEdgeElemPos = mElements.size();
             PlyElement eElem;
             eElem.type = ply::EDGE;
-            if (info.hasPerEdgeVertexReferences()) {
+            if (info.hasEdgeVertexReferences()) {
                 PlyProperty v1;
                 v1.name = ply::vertex1;
                 v1.type = PrimitiveType::UINT;
@@ -582,10 +574,10 @@ public:
                 v2.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v2);
             }
-            if (info.hasPerEdgeBitFlags()) {
+            if (info.hasEdgeBitFlags()) {
                 PlyProperty bf;
                 bf.name = ply::bit_flags;
-                bf.type = info.perEdgeBitFlagsType();
+                bf.type = info.edgeBitFlagsType();
                 eElem.properties.push_back(bf);
             }
             mElements.push_back(eElem);

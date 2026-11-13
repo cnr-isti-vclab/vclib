@@ -86,41 +86,30 @@ void initMeshInfo(pybind11::module& m)
     c.def("is_quad_mesh", &MeshInfo::isQuadMesh);
     c.def("is_polygon_mesh", &MeshInfo::isPolygonMesh);
     c.def("has_element", &MeshInfo::hasElement);
-    c.def("has_per_element_component", &MeshInfo::hasPerElementComponent);
+    c.def("has_element_component", &MeshInfo::hasElementComponent);
 
     c.def("has_vertices", &MeshInfo::hasVertices);
-    c.def("has_per_vertex_position", &MeshInfo::hasPerVertexPosition);
-    c.def("has_per_vertex_normal", &MeshInfo::hasPerVertexNormal);
-    c.def("has_per_vertex_color", &MeshInfo::hasPerVertexColor);
-    c.def("has_per_vertex_quality", &MeshInfo::hasPerVertexQuality);
-    c.def("has_per_vertex_tex_coord", &MeshInfo::hasPerVertexTexCoord);
-    c.def(
-        "has_per_vertex_material_index", &MeshInfo::hasPerVertexMaterialIndex);
-    c.def(
-        "has_per_vertex_custom_components",
-        &MeshInfo::hasPerVertexCustomComponents);
+    c.def("has_vertex_position", &MeshInfo::hasVertexPosition);
+    c.def("has_vertex_normal", &MeshInfo::hasVertexNormal);
+    c.def("has_vertex_color", &MeshInfo::hasVertexColor);
+    c.def("has_vertex_quality", &MeshInfo::hasVertexQuality);
+    c.def("has_vertex_tex_coord", &MeshInfo::hasVertexTexCoord);
+    c.def("has_vertex_material_index", &MeshInfo::hasVertexMaterialIndex);
+    c.def("has_vertex_custom_components", &MeshInfo::hasVertexCustomComponents);
     c.def("has_faces", &MeshInfo::hasFaces);
-    c.def(
-        "has_per_face_vertex_references",
-        &MeshInfo::hasPerFaceVertexReferences);
-    c.def("has_per_face_normal", &MeshInfo::hasPerFaceNormal);
-    c.def("has_per_face_color", &MeshInfo::hasPerFaceColor);
-    c.def("has_per_face_quality", &MeshInfo::hasPerFaceQuality);
-    c.def("has_per_face_wedge_tex_coords", &MeshInfo::hasPerFaceWedgeTexCoords);
-    c.def("has_per_face_material_index", &MeshInfo::hasPerFaceMaterialIndex);
-    c.def(
-        "has_per_face_custom_components",
-        &MeshInfo::hasPerFaceCustomComponents);
+    c.def("has_face_vertex_references", &MeshInfo::hasFaceVertexReferences);
+    c.def("has_face_normal", &MeshInfo::hasFaceNormal);
+    c.def("has_face_color", &MeshInfo::hasFaceColor);
+    c.def("has_face_quality", &MeshInfo::hasFaceQuality);
+    c.def("has_face_wedge_tex_coords", &MeshInfo::hasFaceWedgeTexCoords);
+    c.def("has_face_material_index", &MeshInfo::hasFaceMaterialIndex);
+    c.def("has_face_custom_components", &MeshInfo::hasFaceCustomComponents);
     c.def("has_edges", &MeshInfo::hasEdges);
-    c.def(
-        "has_per_edge_vertex_references",
-        &MeshInfo::hasPerEdgeVertexReferences);
-    c.def("has_per_edge_color", &MeshInfo::hasPerEdgeColor);
-    c.def("has_per_edge_normal", &MeshInfo::hasPerEdgeNormal);
-    c.def("has_per_edge_quality", &MeshInfo::hasPerEdgeQuality);
-    c.def(
-        "has_per_edge_custom_components",
-        &MeshInfo::hasPerEdgeCustomComponents);
+    c.def("has_edge_vertex_references", &MeshInfo::hasEdgeVertexReferences);
+    c.def("has_edge_color", &MeshInfo::hasEdgeColor);
+    c.def("has_edge_normal", &MeshInfo::hasEdgeNormal);
+    c.def("has_edge_quality", &MeshInfo::hasEdgeQuality);
+    c.def("has_edge_custom_components", &MeshInfo::hasEdgeCustomComponents);
     c.def("has_materials", &MeshInfo::hasMaterials);
 
     c.def("update_mesh_type", &MeshInfo::updateMeshType);
@@ -131,149 +120,129 @@ void initMeshInfo(pybind11::module& m)
     c.def("set_polygon_mesh", &MeshInfo::setPolygonMesh);
     c.def("set_mesh_type", &MeshInfo::setMeshType);
     c.def("set_element", &MeshInfo::setElement, "el"_a, "b"_a = true);
-    c.def("set_per_element_component", &MeshInfo::setPerElementComponent);
+    c.def("set_element_component", &MeshInfo::setElementComponent);
     c.def("set_vertices", &MeshInfo::setVertices, "b"_a = true);
     c.def(
-        "set_per_vertex_position",
-        &MeshInfo::setPerVertexPosition,
+        "set_vertex_position",
+        &MeshInfo::setVertexPosition,
         "b"_a = true,
         "t"_a = DOUBLE);
     c.def(
-        "set_per_vertex_normal",
-        &MeshInfo::setPerVertexNormal,
+        "set_vertex_normal",
+        &MeshInfo::setVertexNormal,
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
-        "set_per_vertex_color",
-        &MeshInfo::setPerVertexColor,
+        "set_vertex_color",
+        &MeshInfo::setVertexColor,
         "b"_a = true,
         "t"_a = UCHAR);
     c.def(
-        "set_per_vertex_quality",
-        &MeshInfo::setPerVertexQuality,
+        "set_vertex_quality",
+        &MeshInfo::setVertexQuality,
         "b"_a = true,
         "t"_a = DOUBLE);
     c.def(
-        "set_per_vertex_tex_coord",
-        &MeshInfo::setPerVertexTexCoord,
+        "set_vertex_tex_coord",
+        &MeshInfo::setVertexTexCoord,
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
-        "set_per_vertex_material_index",
-        &MeshInfo::setPerVertexMaterialIndex,
+        "set_vertex_material_index",
+        &MeshInfo::setVertexMaterialIndex,
         "b"_a = true,
         "t"_a = USHORT);
     c.def(
-        "set_per_vertex_custom_components",
-        &MeshInfo::setPerVertexCustomComponents,
+        "set_vertex_custom_components",
+        &MeshInfo::setVertexCustomComponents,
         "b"_a = true);
     c.def("set_faces", &MeshInfo::setFaces, "b"_a = true);
     c.def(
-        "set_per_face_vertex_references",
-        &MeshInfo::setPerFaceVertexReferences,
+        "set_face_vertex_references",
+        &MeshInfo::setFaceVertexReferences,
         "b"_a = true);
     c.def(
-        "set_per_face_normal",
-        &MeshInfo::setPerFaceNormal,
+        "set_face_normal",
+        &MeshInfo::setFaceNormal,
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
-        "set_per_face_color",
-        &MeshInfo::setPerFaceColor,
-        "b"_a = true,
-        "t"_a = UCHAR);
+        "set_face_color", &MeshInfo::setFaceColor, "b"_a = true, "t"_a = UCHAR);
     c.def(
-        "set_per_face_quality",
-        &MeshInfo::setPerFaceQuality,
+        "set_face_quality",
+        &MeshInfo::setFaceQuality,
         "b"_a = true,
         "t"_a = DOUBLE);
     c.def(
-        "set_per_face_wedge_tex_coords",
-        &MeshInfo::setPerFaceWedgeTexCoords,
+        "set_face_wedge_tex_coords",
+        &MeshInfo::setFaceWedgeTexCoords,
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
-        "set_per_face_material_index",
-        &MeshInfo::setPerFaceMaterialIndex,
+        "set_face_material_index",
+        &MeshInfo::setFaceMaterialIndex,
         "b"_a = true,
         "t"_a = USHORT);
     c.def(
-        "set_per_face_custom_components",
-        &MeshInfo::setPerFaceCustomComponents,
+        "set_face_custom_components",
+        &MeshInfo::setFaceCustomComponents,
         "b"_a = true);
     c.def("set_edges", &MeshInfo::setEdges, "b"_a = true);
     c.def(
-        "set_per_edge_vertex_references",
-        &MeshInfo::setPerEdgeVertexReferences,
+        "set_edge_vertex_references",
+        &MeshInfo::setEdgeVertexReferences,
         "b"_a = true);
     c.def(
-        "set_per_edge_color",
-        &MeshInfo::setPerEdgeColor,
-        "b"_a = true,
-        "t"_a = UCHAR);
+        "set_edge_color", &MeshInfo::setEdgeColor, "b"_a = true, "t"_a = UCHAR);
     c.def(
-        "set_per_edge_normal",
-        &MeshInfo::setPerEdgeNormal,
+        "set_edge_normal",
+        &MeshInfo::setEdgeNormal,
         "b"_a = true,
         "t"_a = FLOAT);
     c.def(
-        "set_per_edge_quality",
-        &MeshInfo::setPerEdgeQuality,
+        "set_edge_quality",
+        &MeshInfo::setEdgeQuality,
         "b"_a = true,
         "t"_a = QUALITY);
     c.def(
-        "set_per_edge_custom_components",
-        &MeshInfo::setPerEdgeCustomComponents,
+        "set_edge_custom_components",
+        &MeshInfo::setEdgeCustomComponents,
         "b"_a = true);
     c.def("set_materials", &MeshInfo::setMaterials, "b"_a = true);
 
+    c.def("add_element_custom_component", &MeshInfo::addElementCustomComponent);
     c.def(
-        "add_per_element_custom_component",
-        &MeshInfo::addPerElementCustomComponent);
+        "clear_element_custom_components",
+        &MeshInfo::clearElementCustomComponents);
+    c.def("add_vertex_custom_component", &MeshInfo::addVertexCustomComponent);
     c.def(
-        "clear_per_element_custom_components",
-        &MeshInfo::clearPerElementCustomComponents);
-    c.def(
-        "add_per_vertex_custom_component",
-        &MeshInfo::addPerVertexCustomComponent);
-    c.def(
-        "clear_per_vertex_custom_components",
-        &MeshInfo::clearPerVertexCustomComponents);
-    c.def(
-        "add_per_face_custom_component", &MeshInfo::addPerFaceCustomComponent);
-    c.def(
-        "clear_per_face_custom_components",
-        &MeshInfo::clearPerFaceCustomComponents);
-    c.def(
-        "add_per_edge_custom_component", &MeshInfo::addPerEdgeCustomComponent);
-    c.def(
-        "clear_per_edge_custom_components",
-        &MeshInfo::clearPerEdgeCustomComponents);
+        "clear_vertex_custom_components",
+        &MeshInfo::clearVertexCustomComponents);
+    c.def("add_face_custom_component", &MeshInfo::addFaceCustomComponent);
+    c.def("clear_face_custom_components", &MeshInfo::clearFaceCustomComponents);
+    c.def("add_edge_custom_component", &MeshInfo::addEdgeCustomComponent);
+    c.def("clear_edge_custom_components", &MeshInfo::clearEdgeCustomComponents);
 
-    c.def("per_element_component_type", &MeshInfo::perElementComponentType);
-    c.def("per_vertex_position_type", &MeshInfo::perVertexPositionType);
-    c.def("per_vertex_normal_type", &MeshInfo::perVertexNormalType);
-    c.def("per_vertex_color_type", &MeshInfo::perVertexColorType);
-    c.def("per_vertex_quality_type", &MeshInfo::perVertexQualityType);
-    c.def("per_vertex_tex_coord_type", &MeshInfo::perVertexTexCoordType);
-    c.def(
-        "per_vertex_material_index_type",
-        &MeshInfo::perVertexMaterialIndexType);
-    c.def("per_face_normal_type", &MeshInfo::perFaceNormalType);
-    c.def("per_face_color_type", &MeshInfo::perFaceColorType);
-    c.def("per_face_quality_type", &MeshInfo::perFaceQualityType);
-    c.def(
-        "per_face_wedge_tex_coords_type", &MeshInfo::perFaceWedgeTexCoordsType);
-    c.def("per_face_material_index_type", &MeshInfo::perFaceMaterialIndexType);
-    c.def("per_edge_normal_type", &MeshInfo::perEdgeNormalType);
-    c.def("per_edge_color_type", &MeshInfo::perEdgeColorType);
-    c.def("per_edge_quality_type", &MeshInfo::perEdgeQualityType);
+    c.def("element_component_type", &MeshInfo::elementComponentType);
+    c.def("vertex_position_type", &MeshInfo::vertexPositionType);
+    c.def("vertex_normal_type", &MeshInfo::vertexNormalType);
+    c.def("vertex_color_type", &MeshInfo::vertexColorType);
+    c.def("vertex_quality_type", &MeshInfo::vertexQualityType);
+    c.def("vertex_tex_coord_type", &MeshInfo::vertexTexCoordType);
+    c.def("vertex_material_index_type", &MeshInfo::vertexMaterialIndexType);
+    c.def("face_normal_type", &MeshInfo::faceNormalType);
+    c.def("face_color_type", &MeshInfo::faceColorType);
+    c.def("face_quality_type", &MeshInfo::faceQualityType);
+    c.def("face_wedge_tex_coords_type", &MeshInfo::faceWedgeTexCoordsType);
+    c.def("face_material_index_type", &MeshInfo::faceMaterialIndexType);
+    c.def("edge_normal_type", &MeshInfo::edgeNormalType);
+    c.def("edge_color_type", &MeshInfo::edgeColorType);
+    c.def("edge_quality_type", &MeshInfo::edgeQualityType);
 
-    c.def(
-        "per_element_custom_components", &MeshInfo::perElementCustomComponents);
-    c.def("per_vertex_custom_components", &MeshInfo::perVertexCustomComponents);
-    c.def("per_face_custom_components", &MeshInfo::perFaceCustomComponents);
-    c.def("per_edge_custom_components", &MeshInfo::perEdgeCustomComponents);
+    c.def("element_custom_components", &MeshInfo::elementCustomComponents);
+    c.def("vertex_custom_components", &MeshInfo::vertexCustomComponents);
+    c.def("face_custom_components", &MeshInfo::faceCustomComponents);
+    c.def("edge_custom_components", &MeshInfo::edgeCustomComponents);
 
     c.def("intersect", &MeshInfo::intersect);
 }

@@ -5,5 +5,5 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
-flat vec4 v_color : COLOR0;
-vec2 v_texcoord1  : TEXCOORD1;
+flat vec4 v_color : COLOR0    = vec4(0.0, 0.0, 0.0, 0.0);
+vec2 v_texcoord1  : TEXCOORD1 = vec2(0.0, 0.0);

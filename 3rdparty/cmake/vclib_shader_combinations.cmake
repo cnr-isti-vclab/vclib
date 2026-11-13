@@ -141,8 +141,9 @@ function(
         set_property(
             GLOBAL
             APPEND_STRING
-            PROPERTY VCLIB_COMBO_CONFIG_CONTENT
-            "${ENUM_PREFIX}${PROGRAM_SUFFIX_UC}\n    ${VS_REL_PATH}\n    ${FS_REL_PATH}\n\n"
+            PROPERTY
+                VCLIB_COMBO_CONFIG_CONTENT
+                    "${ENUM_PREFIX}${PROGRAM_SUFFIX_UC}\n    ${VS_REL_PATH}\n    ${FS_REL_PATH}\n\n"
         )
 
         return()
@@ -236,8 +237,9 @@ function(vclib_generate_shaders_from_config CONFIG_FILE)
     set_property(
         GLOBAL
         APPEND_STRING
-        PROPERTY VCLIB_COMBO_CONFIG_CONTENT
-        "# Auto-generated combinations from ${CONFIG_FILE}\n\n"
+        PROPERTY
+            VCLIB_COMBO_CONFIG_CONTENT
+                "# Auto-generated combinations from ${CONFIG_FILE}\n\n"
     )
 
     # Initialize variables
@@ -436,8 +438,7 @@ function(vclib_generate_all_shaders_from_configs DIR_PATH)
     # Initialize global properties for combo config content and generated sc files
     set_property(
         GLOBAL
-        PROPERTY VCLIB_COMBO_CONFIG_CONTENT
-        "# Auto-generated combinations\n\n"
+        PROPERTY VCLIB_COMBO_CONFIG_CONTENT "# Auto-generated combinations\n\n"
     )
     set_property(GLOBAL PROPERTY VCLIB_GENERATED_SC_FILES "")
 

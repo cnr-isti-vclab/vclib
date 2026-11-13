@@ -46,7 +46,7 @@ inline void meshTopology()
 
     // Enable and compute vertex-face adjacency
     mesh.enablePerVertexAdjacentFaces();
-    vcl::updatePerVertexAdjacentFaces(mesh);
+    vcl::updateVertexAdjacentFaces(mesh);
 
     std::cout << "Vertex-face adjacency enabled and computed\n\n";
 
@@ -87,7 +87,7 @@ inline void meshTopology()
 
     // Enable and compute vertex-vertex adjacency
     mesh.enablePerVertexAdjacentVertices();
-    vcl::updatePerVertexAdjacentVertices(mesh);
+    vcl::updateVertexAdjacentVertices(mesh);
 
     std::cout << "Vertex-vertex adjacency enabled and computed\n\n";
 
@@ -132,7 +132,7 @@ inline void meshTopology()
 
     // Enable and compute face-face adjacency
     mesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(mesh);
+    vcl::updateFaceAdjacentFaces(mesh);
 
     std::cout << "Face-face adjacency enabled and computed\n\n";
 
@@ -258,19 +258,19 @@ inline void meshTopology()
 
     std::cout << "1. VERTEX-FACE ADJACENCY:\n";
     std::cout << "   - enablePerVertexAdjacentFaces() + "
-                 "updatePerVertexAdjacentFaces()\n";
+                 "updateVertexAdjacentFaces()\n";
     std::cout << "   - Find all faces incident to a vertex\n";
     std::cout << "   - Useful for local surface analysis\n\n";
 
     std::cout << "2. VERTEX-VERTEX ADJACENCY:\n";
     std::cout << "   - enablePerVertexAdjacentVertices() + "
-                 "updatePerVertexAdjacentVertices()\n";
+                 "updateVertexAdjacentVertices()\n";
     std::cout << "   - Find all vertices connected by an edge\n";
     std::cout << "   - Essential for graph-based algorithms\n\n";
 
     std::cout << "3. FACE-FACE ADJACENCY:\n";
     std::cout
-        << "   - enablePerFaceAdjacentFaces() + updatePerFaceAdjacentFaces()\n";
+        << "   - enablePerFaceAdjacentFaces() + updateFaceAdjacentFaces()\n";
     std::cout << "   - Find faces sharing an edge\n";
     std::cout << "   - Identify border edges (null adjacencies)\n\n";
 

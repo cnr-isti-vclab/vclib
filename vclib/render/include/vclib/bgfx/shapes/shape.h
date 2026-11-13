@@ -56,7 +56,7 @@ public:
     {
         using MRI = MeshRenderInfo;
 
-        vcl::updatePerVertexNormals(mesh);
+        vcl::updateVertexNormals(mesh);
 
         MRI::BuffersBitSet btf = {
             MRI::Buffers::VERTICES,

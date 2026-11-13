@@ -108,7 +108,7 @@ int runBenchmarks(
     };
 
     std::println("==================================================");
-    std::println("VCLib Mesh Benchmark [Version: V1 (Baseline)]");
+    std::println("VCLib Mesh Benchmark");
     std::println("Mesh type: {}", meshType);
     std::println(
         "Dataset: {} ({} vertices, {} faces)",
