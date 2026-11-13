@@ -4,3 +4,4 @@ It has been modified with the following goals:
 - Remove the dependency on the bgfx example-common library, that is not needed for the purpose of this project and it depends on ImGui.
 - Insert the original classes and functions under bgfx namespace, to avoid conflicts with other libraries.
 - Use the vclib-render stb-TrueType library instead of the one used by bgfx
+- Fix `FontManager::addBitmap` and `FontManager::addGlyphBitmap` to return `false` when `Atlas::addRegion` fails (`UINT16_MAX`), preventing out-of-bounds reads on `Atlas::m_regions` when the font atlas is full.
