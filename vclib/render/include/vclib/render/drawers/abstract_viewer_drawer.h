@@ -765,10 +765,10 @@ public:
                 return;
             }
 
-            // unproject the point
-            const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-            auto          unproj = unprojectScreenPosition(
-                p2d, MatrixType(proj * view), vp, homogeneousNDC);
+            // unproject the point (p is in window coordinates, top-left origin)
+            const Point3f winPos(p.x(), p.y(), depth);
+            auto          unproj = unprojectWindowPosition(
+                winPos, MatrixType(proj * view), vp, homogeneousNDC);
 
             this->focus(unproj);
             derived()->update();

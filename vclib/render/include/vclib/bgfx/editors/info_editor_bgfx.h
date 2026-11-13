@@ -8,6 +8,7 @@
 #ifndef VCL_BGFX_EDITORS_INFO_EDITOR_BGFX_H
 #define VCL_BGFX_EDITORS_INFO_EDITOR_BGFX_H
 
+#include <vclib/bgfx/context.h>
 #include <vclib/bgfx/primitives/lines.h>
 #include <vclib/bgfx/primitives/points.h>
 #include <vclib/bgfx/text/text_view.h>
@@ -16,6 +17,7 @@
 #include <vclib/render/editors/editor.h>
 #include <vclib/render/settings/info_editor_settings.h>
 
+#include <vclib/algorithms/core.h>
 #include <vclib/space/complex.h>
 
 #include <optional>
@@ -304,14 +306,20 @@ private:
         const vcl::Matrix44f& projMatrix,
         const Point2<uint>&   size) const
     {
-        vcl::Point4f p(point3d.x(), point3d.y(), point3d.z(), 1.0f);
-        p = projMatrix * (viewMatrix * p);
-
-        if (p.w() != 0.0f) {
-            p /= p.w();
-            return vcl::Point2f(
-                (p.x() + 1.0f) * 0.5f * size.x(),
-                (1.0f - p.y()) * 0.5f * size.y());
+        const vcl::Point4f vp(0.0f, 0.0f, size.x(), size.y());
+        const bool         homogeneousNDC =
+            Context::instance().capabilites().homogeneousDepth;
+        try {
+            vcl::Point3f winPos = vcl::projectWindowPosition(
+                vcl::Point3f(point3d.cast<float>()),
+                vcl::Matrix44f(projMatrix * viewMatrix),
+                vp,
+                homogeneousNDC);
+            if (winPos.z() >= 0.0f && winPos.z() <= 1.0f) {
+                return vcl::Point2f(winPos.x(), winPos.y());
+            }
+        }
+        catch (const std::runtime_error&) {
         }
         return std::nullopt;
     }
