@@ -20,21 +20,6 @@ namespace vcl::detail {
 // File-local helpers (mirrored from the old read_framebuffer_request.cpp)
 // ============================================================================
 
-static Point2<uint16_t> blitDepthSize(Point2<uint> fbSize)
-{
-    assert(fbSize.x() != 0 && fbSize.y() != 0);
-
-    switch (Context::renderType()) {
-    case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12:
-        return {uint16_t(fbSize.x()), uint16_t(fbSize.y())};
-    case bgfx::RendererType::Vulkan:
-    case bgfx::RendererType::Metal: return {1, 1};
-    default: assert(false && "blit depth unsupported for this render type");
-    }
-    return {0, 0};
-}
-
 static bgfx::TextureFormat::Enum offscreenColorFormat()
 {
     return bgfx::TextureFormat::RGBA8;
@@ -87,16 +72,13 @@ ReadFromGPUBuffer::ReadFromGPUBuffer(
     }
     mSize = size;
 
-    // Determine blit texture size and format
-    bgfx::TextureFormat::Enum blitFormat;
-    if (target == Target::DEPTH) {
-        mBlitSize  = blitDepthSize(size);
-        blitFormat = offscreenDepthFormat();
-    }
-    else { // COLOR or ID
-        mBlitSize  = size.cast<uint16_t>();
-        blitFormat = offscreenColorFormat();
-    }
+    // Determine blit texture size and format.
+    // Note: bgfx requires depth texture blits to copy the whole mip on all
+    // backends, so mBlitSize always matches the full framebuffer size.
+    mBlitSize = size.cast<uint16_t>();
+    const bgfx::TextureFormat::Enum blitFormat =
+        (target == Target::DEPTH) ? offscreenDepthFormat() :
+                                    offscreenColorFormat();
 
     // Pre-allocate readback data buffer
     const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
@@ -201,6 +183,7 @@ void ReadFromGPUBuffer::swap(ReadFromGPUBuffer& other) noexcept
     swap(mReadData, other.mReadData);
     swap(mReadCallback, other.mReadCallback);
     swap(mPoint, other.mPoint);
+    swap(mSize, other.mSize);
     // FRAMEBUFFER
     swap(mOffscreenFbh, other.mOffscreenFbh);
     swap(mViewOffscreenId, other.mViewOffscreenId);
@@ -454,24 +437,15 @@ void ReadFromGPUBuffer::submitFramebufferBlit()
     switch (mTarget) {
     case Target::DEPTH: {
         assert(std::holds_alternative<FloatData>(mReadData));
-        const uint pixelCount = uint(mBlitSize.x()) * uint(mBlitSize.y());
-        if (pixelCount == 1) {
-            // Vulkan/Metal: blit only the queried pixel
-            bgfx::TextureRegion dstRegion;
-            dstRegion.init(mBlitTexture, 0, 0, 1, 1);
-            bgfx::TextureRegion srcRegion;
-            srcRegion.init(
-                srcBuffer, uint16_t(mPoint.x()), uint16_t(mPoint.y()), 1, 1);
-            bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
-        }
-        else {
-            // D3D: blit the full depth buffer; pixel extracted in performRead
-            bgfx::TextureRegion dstRegion;
-            dstRegion.handle = mBlitTexture;
-            bgfx::TextureRegion srcRegion;
-            srcRegion.handle = srcBuffer;
-            bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
-        }
+        // Blit the full depth buffer (bgfx requires whole-mip blits for depth
+        // textures on all backends); the queried pixel is extracted in
+        // performFramebufferRead.
+        bgfx::TextureRegion dstRegion;
+        dstRegion.handle = mBlitTexture;
+        bgfx::TextureRegion srcRegion;
+        srcRegion.handle = srcBuffer;
+        bgfx::blit(mViewOffscreenId, dstRegion, srcRegion);
+
         bgfx::TextureRegion readRegion;
         readRegion.handle = mBlitTexture;
         mFrameAvailable =
