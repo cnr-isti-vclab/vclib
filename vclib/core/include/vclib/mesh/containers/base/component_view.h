@@ -66,6 +66,9 @@ public:
     {
     }
 
+    template<CompId, typename>
+    friend class ComponentView;
+
     // Implicit conversion from mutable ComponentView to const ComponentView
     template<typename OtherContainerType>
     requires std::is_same_v<Container, const OtherContainerType>

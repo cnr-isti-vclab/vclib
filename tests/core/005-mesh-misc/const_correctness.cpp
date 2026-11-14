@@ -69,6 +69,48 @@ inline void testConstElementProxies(MyMesh& mesh, const MyMesh& constMesh)
     }
 }
 
+inline void testProxyAndComponentViewConversions(MyMesh& mesh, const MyMesh& constMesh)
+{
+    // ElementContainerProxy mutable to const conversion
+    auto vProxy = mesh.vertices();
+    decltype(constMesh.vertices()) constVProxy = vProxy;
+    REQUIRE(constVProxy.size() == 4);
+
+    // ComponentView mutable to const conversion
+    auto posView = mesh.vertices().positions();
+    decltype(constMesh.vertices().positions()) constPosView = posView;
+    REQUIRE(constPosView.size() == 4);
+    REQUIRE(constPosView[0] == Point3f(0.0f, 0.0f, 1.0f));
+}
+
+inline void testIteratorArithmetic(MyMesh& mesh)
+{
+    auto it = mesh.vertices().begin();
+    auto it2 = it + 2;
+    // Test operator-(integral) when literal 1 is passed
+    auto it1 = it2 - 1;
+    REQUIRE(it1.index() == 1);
+    // Test operator-(iterator) difference
+    REQUIRE((it2 - it1) == 1);
+    REQUIRE((it1 - it) == 1);
+    // Test friend operator+(integral, it)
+    auto it1_from_left = 1 + it;
+    REQUIRE(it1_from_left == it1);
+}
+
+inline void testIndexIfCompact(MyMesh& mesh)
+{
+    // Test indexIfCompact<ELEM_ID>(i)
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(0) == 0);
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(1) == 1);
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(2) == 2);
+
+    mesh.deleteVertex(1);
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(0) == 0);
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(1) == MyMesh::NULL_INDEX);
+    REQUIRE(mesh.indexIfCompact<ElemId::VERTEX>(2) == 1);
+}
+
 TEST_CASE("Const Correctness")
 {
     MyMesh        mesh      = createSampleQuadMesh();
@@ -77,4 +119,7 @@ TEST_CASE("Const Correctness")
     testConstMeshColors(constMesh);
     testConstComponentViews(constMesh);
     testConstElementProxies(mesh, constMesh);
+    testProxyAndComponentViewConversions(mesh, constMesh);
+    testIteratorArithmetic(mesh);
+    testIndexIfCompact(mesh);
 }

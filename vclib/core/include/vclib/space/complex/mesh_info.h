@@ -193,7 +193,7 @@ public:
         }
         if constexpr (HasVertexMaterialIndex<Mesh>) {
             if (m.isVertexMaterialIndexAvailable()) {
-                setVertexMaterialIndex(true, PrimitiveType::UINT);
+                setVertexMaterialIndex(true, PrimitiveType::USHORT);
             }
         }
         if constexpr (HasVertexCustomComponents<Mesh>) {
@@ -248,7 +248,7 @@ public:
             }
             if constexpr (HasFaceMaterialIndex<Mesh>) {
                 if (m.isFaceMaterialIndexAvailable()) {
-                    setFaceMaterialIndex(true, PrimitiveType::UINT);
+                    setFaceMaterialIndex(true, PrimitiveType::USHORT);
                 }
             }
             if constexpr (HasFaceCustomComponents<Mesh>) {

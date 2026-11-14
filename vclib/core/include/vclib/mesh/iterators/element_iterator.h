@@ -85,10 +85,10 @@ public:
     pointer operator->() const { return pointer(operator*()); }
 
     friend ElementIterator operator+(
-        difference_type        n,
+        std::integral auto     n,
         const ElementIterator& it)
     {
-        return it + n;
+        return it + static_cast<difference_type>(n);
     }
 };
 

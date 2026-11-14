@@ -156,7 +156,7 @@ TEST_CASE("Mesh Info - Mesh Info From Mesh")
         REQUIRE(info.hasMaterials());
         REQUIRE(info.hasFaces());
         REQUIRE(info.hasFaceMaterialIndex());
-        REQUIRE(info.faceMaterialIndexType() == PrimitiveType::UINT);
+        REQUIRE(info.faceMaterialIndexType() == PrimitiveType::USHORT);
     }
 
     // 7. CCMesh (Custom Components)

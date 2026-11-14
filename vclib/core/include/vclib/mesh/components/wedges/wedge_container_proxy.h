@@ -41,8 +41,28 @@ class WedgeContainerProxy :
 {
     FaceType mFace;
 
+    template<typename Self>
+    using ResolvedFace = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>>,
+        typename std::remove_cvref_t<
+            decltype(std::declval<FaceType&>().parentContainer())>::ConstElementType,
+        FaceType>;
+
 public:
+    template<typename>
+    friend class WedgeContainerProxy;
+
     WedgeContainerProxy(FaceType face) : mFace(face) {}
+
+    const FaceType& parentFace() const { return mFace; }
+
+    // Converting constructor from mutable to const (or convertible) FaceType
+    template<typename OtherFace>
+        requires std::convertible_to<OtherFace, FaceType>
+    WedgeContainerProxy(const WedgeContainerProxy<OtherFace>& other)
+        : mFace(other.parentFace())
+    {
+    }
 
     /**
      * @brief Number of wedges in the face (matches vertex count).
@@ -61,7 +81,7 @@ public:
      */
     decltype(auto) operator[](this auto&& self, uint i)
     {
-        return WedgeProxy<FaceType>(self.mFace, i);
+        return WedgeProxy<ResolvedFace<decltype(self)>>(self.mFace, i);
     }
 
     /**
@@ -73,7 +93,7 @@ public:
     decltype(auto) at(this auto&& self, uint i)
     {
         assert(i < self.size());
-        return WedgeProxy<FaceType>(self.mFace, i);
+        return WedgeProxy<ResolvedFace<decltype(self)>>(self.mFace, i);
     }
 
     decltype(auto) front(this auto&& self) { return self[0]; }
@@ -84,12 +104,12 @@ public:
 
     auto begin(this auto&& self)
     {
-        return WedgeIterator<FaceType>(self.mFace, 0);
+        return WedgeIterator<ResolvedFace<decltype(self)>>(self.mFace, 0);
     }
 
     auto end(this auto&& self)
     {
-        return WedgeIterator<FaceType>(self.mFace, self.size());
+        return WedgeIterator<ResolvedFace<decltype(self)>>(self.mFace, self.size());
     }
 
     /* Component Views */

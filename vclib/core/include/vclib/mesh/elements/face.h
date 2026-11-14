@@ -34,6 +34,13 @@ template<typename ContainerType>
 class Face : public ElementProxy<ElemId::FACE, ContainerType>
 {
     using Base = ElementProxy<ElemId::FACE, ContainerType>;
+    
+    template<typename Self>
+    using ResolvedFace = std::conditional_t<
+        std::is_const_v<std::remove_reference_t<Self>> ||
+        std::is_const_v<ContainerType>,
+        Face<const std::remove_const_t<ContainerType>>,
+        Face<ContainerType>>;
 
 public:
     using typename Base::Components;
@@ -41,6 +48,7 @@ public:
     using typename Base::ParentMeshType;
     using Base::NULL_INDEX;
 
+public:
     static constexpr int VERTEX_COUNT = comp::
         ComponentTypeT<CompId::VERTEX_REFERENCES, Components>::VERTEX_COUNT;
 
@@ -94,7 +102,8 @@ public:
     decltype(auto) wedge(this auto&& self, uint i)
     {
         assert(i < self.vertexCount());
-        return comp::WedgeProxy(self, i);
+        using TargetFace = ResolvedFace<decltype(self)>;
+        return comp::WedgeProxy<TargetFace>(self, i);
     }
 
     /**
@@ -118,7 +127,8 @@ public:
      */
     decltype(auto) wedges(this auto&& self)
     {
-        return comp::WedgeContainerProxy(self);
+        using TargetFace = ResolvedFace<decltype(self)>;
+        return comp::WedgeContainerProxy<TargetFace>(self);
     }
 
 protected:

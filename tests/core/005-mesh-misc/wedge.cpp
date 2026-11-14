@@ -315,3 +315,50 @@ TEST_CASE("Wedge - Poly To Tri Wedges")
         }
     }
 }
+
+TEST_CASE("Wedge - Const Correctness and Conversions")
+{
+    WedgeMesh wm;
+    wm.addVertices(3);
+    uint fi = wm.addFace(0, 1, 2);
+    auto f = wm.face(fi);
+    f.wedge(0).color() = Color::Red;
+    f.wedge(0).texCoord() = TexCoordf(0.5f, 0.5f);
+
+    // Mutation via wedges().front()
+    f.wedges().front().color() = Color::Green;
+    REQUIRE(f.wedge(0).color() == Color::Green);
+    f.wedges().front().color() = Color::Red;
+
+    const WedgeMesh& cwm = wm;
+    const auto& cf = cwm.face(0);
+
+    // Access through const Face returns read-only references
+    static_assert(std::is_same_v<decltype(cf.wedge(0).color()), const Color&>);
+    static_assert(std::is_same_v<decltype(cf.wedge(0).texCoord()), const TexCoordf&>);
+    static_assert(std::is_same_v<decltype(cf.wedge(0).vertex()), WedgeMesh::ConstVertex>);
+    REQUIRE(cf.wedge(0).color() == Color::Red);
+
+    // Access through const Face& reference to mutable face
+    const auto& constFaceRef = f;
+    static_assert(std::is_same_v<decltype(constFaceRef.wedge(0).color()), const Color&>);
+
+    // WedgeProxy conversion mutable -> const
+    WedgeMesh::ConstFace cFace = cf;
+    comp::WedgeProxy<WedgeMesh::Face> mutWedge = f.wedge(0);
+    comp::WedgeProxy<WedgeMesh::ConstFace> constWedge = mutWedge;
+    REQUIRE(constWedge == mutWedge);
+    REQUIRE(constWedge.index() == 0);
+
+    // WedgeContainerProxy conversion mutable -> const
+    comp::WedgeContainerProxy<WedgeMesh::Face> mutWedges = f.wedges();
+    comp::WedgeContainerProxy<WedgeMesh::ConstFace> constWedges = mutWedges;
+    REQUIRE(constWedges.size() == 3);
+
+    // WedgeIterator conversion mutable -> const and difference
+    comp::WedgeIterator<WedgeMesh::Face> mutIt = mutWedges.begin();
+    comp::WedgeIterator<WedgeMesh::ConstFace> constIt = mutIt;
+    REQUIRE(mutIt == constIt);
+    REQUIRE((constWedges.end() - mutIt) == 3);
+    REQUIRE((mutWedges.end() - constIt) == 3);
+}

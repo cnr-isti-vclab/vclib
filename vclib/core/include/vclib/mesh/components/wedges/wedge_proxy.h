@@ -58,9 +58,35 @@ public:
     using IndexType =
         typename std::remove_cvref_t<FaceType>::IndexType;
 
+    template<typename>
+    friend class WedgeProxy;
+
     WedgeProxy() = default;
 
     WedgeProxy(FaceType face, uint index) : mFace(face), mIndex(index) {}
+
+    // Converting constructor from mutable to const (or convertible) FaceType
+    template<typename OtherFace>
+        requires std::convertible_to<OtherFace, FaceType>
+    WedgeProxy(const WedgeProxy<OtherFace>& other)
+        : mFace(other.parentFace()), mIndex(other.index())
+    {
+    }
+
+    template<typename OtherFace>
+    bool operator==(const WedgeProxy<OtherFace>& other) const
+    {
+        return mFace == other.parentFace() && mIndex == other.index();
+    }
+
+    template<typename OtherFace>
+    auto operator<=>(const WedgeProxy<OtherFace>& other) const
+    {
+        if (auto cmp = mFace <=> other.parentFace(); cmp != 0) {
+            return cmp;
+        }
+        return mIndex <=> other.index();
+    }
 
     /**
      * @brief Swaps this WedgeProxy handle with another one.

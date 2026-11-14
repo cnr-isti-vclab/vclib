@@ -60,6 +60,9 @@ public:
     {
     }
 
+    template<typename>
+    friend class ElementContainerProxy;
+
     // Implicit conversion from mutable proxy to const proxy
     template<typename OtherContainerType>
     requires std::is_same_v<Container, const OtherContainerType>

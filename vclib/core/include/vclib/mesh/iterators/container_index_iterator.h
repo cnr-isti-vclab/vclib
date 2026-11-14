@@ -18,6 +18,17 @@
 namespace vcl::mesh {
 
 /**
+ * @brief Concept that checks whether a type T is an index-based container iterator
+ * compatible with ContainerIndexIterator.
+ */
+template<typename T>
+concept ContainerIndexIteratorConcept =
+    (!std::integral<T>) && requires(const T& it) {
+        it.index();
+        it.parentContainer();
+    };
+
+/**
  * @brief Base class for random-access iterators that index into an
  * ElementContainer.
  *
@@ -167,62 +178,68 @@ public:
     }
 
     // Addition
-    auto operator+(this const auto& self, difference_type n)
+    auto operator+(this const auto& self, std::integral auto n)
     {
         auto tmp = self;
-        tmp += n;
+        tmp += static_cast<difference_type>(n);
         return tmp;
     }
 
     // Subtraction (offset)
-    auto operator-(this const auto& self, difference_type n)
+    auto operator-(this const auto& self, std::integral auto n)
     {
         auto tmp = self;
-        tmp -= n;
+        tmp -= static_cast<difference_type>(n);
         return tmp;
     }
 
     // Subtraction (difference between iterators)
-    template<typename OtherIt>
+    template<ContainerIndexIteratorConcept OtherIt>
     difference_type operator-(this const auto& self, const OtherIt& other)
     {
         return self.differenceImpl(other);
     }
 
     // Subscript
-    decltype(auto) operator[](this const auto& self, difference_type n)
+    decltype(auto) operator[](this const auto& self, std::integral auto n)
     {
-        return *(self + n);
+        return *(self + static_cast<difference_type>(n));
     }
 
     // Comparisons
-    bool operator==(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    bool operator==(this const auto& self, const OtherIt& other)
     {
         return self.mIndex == other.index() &&
                self.mContainer == other.parentContainer();
     }
 
-    auto operator<=>(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    auto operator<=>(this const auto& self, const OtherIt& other)
     {
         return self.mIndex <=> other.index();
     }
 
-    bool operator<(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    bool operator<(this const auto& self, const OtherIt& other)
     {
         return self.mIndex < other.index();
     }
 
-    bool operator<=(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    bool operator<=(this const auto& self, const OtherIt& other)
     {
         return self.mIndex <= other.index();
     }
 
-    bool operator>(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    bool operator>(this const auto& self, const OtherIt& other)
     {
         return self.mIndex > other.index();
     }
 
-    bool operator>=(this const auto& self, const auto& other)
+    template<ContainerIndexIteratorConcept OtherIt>
+    bool operator>=(this const auto& self, const OtherIt& other)
     {
         return self.mIndex >= other.index();
     }

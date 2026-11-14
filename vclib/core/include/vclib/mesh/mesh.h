@@ -817,17 +817,17 @@ public:
 
     /**
      * @brief Returns the new index of the element at index `i` of the container
-     * of ELEM_ID after compaction, or NULL_INDEX if
-     * the element is deleted.
+     * of ELEM_ID after compaction, or NULL_INDEX if the element is deleted.
      *
      * @tparam ELEM_ID: the ID of the element.
      * @param[in] i: the index of the element.
      * @return the new index after compaction, or NULL_INDEX if deleted.
      */
     template<ElemId ELEM_ID>
-    auto compactIndices(std::size_t i) const requires (hasContainerOf<ELEM_ID>())
+    IndexType indexIfCompact(IndexType i) const
+        requires (hasContainerOf<ELEM_ID>())
     {
-        return ContainerType<ELEM_ID>::elementCompactIndices(i);
+        return ContainerType<ELEM_ID>::elementIndexIfCompact(i);
     }
 
     /**
