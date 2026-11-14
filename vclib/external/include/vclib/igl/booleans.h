@@ -26,6 +26,17 @@ namespace vcl::igl {
 
 namespace detail {
 
+template<typename T, typename Fallback = Point3d>
+struct NormalTypeHelper {
+    using type = Fallback;
+};
+
+template<typename T, typename Fallback>
+requires requires { typename T::NormalType; }
+struct NormalTypeHelper<T, Fallback> {
+    using type = typename T::NormalType;
+};
+
 /**
  * @brief Rebuilds polygons from triangulated mesh boolean results.
  *
@@ -286,12 +297,21 @@ void transferFaceComponents(
         }
     };
 
-    bool transferNormals =
-        m0.isFaceNormalAvailable() || m1.isFaceNormalAvailable();
-    bool transferColors =
-        m0.isFaceColorAvailable() || m1.isFaceColorAvailable();
-    bool transferQuality = m0.isFaceQualityAvailable() ||
-                           m1.isFaceQualityAvailable();
+    bool transferNormals = false;
+    if constexpr (HasFaceNormal<MeshType>) {
+        transferNormals =
+            m0.isFaceNormalAvailable() || m1.isFaceNormalAvailable();
+    }
+    bool transferColors = false;
+    if constexpr (HasFaceColor<MeshType>) {
+        transferColors =
+            m0.isFaceColorAvailable() || m1.isFaceColorAvailable();
+    }
+    bool transferQuality = false;
+    if constexpr (HasFaceQuality<MeshType>) {
+        transferQuality =
+            m0.isFaceQualityAvailable() || m1.isFaceQualityAvailable();
+    }
 
     if (transferNormals || transferColors || transferQuality) {
         if (transferNormals)
@@ -335,12 +355,21 @@ void transferVertexComponents(
 
     // Determine which vertex components need to be transferred to the output
     // mesh based on their availability in the input meshes.
-    bool transferNormals = m0.isVertexNormalAvailable() ||
-                           m1.isVertexNormalAvailable();
-    bool transferColors = m0.isVertexColorAvailable() ||
-                          m1.isVertexColorAvailable();
-    bool transferQuality = m0.isVertexQualityAvailable() ||
-                           m1.isVertexQualityAvailable();
+    bool transferNormals = false;
+    if constexpr (HasVertexNormal<MeshType>) {
+        transferNormals =
+            m0.isVertexNormalAvailable() || m1.isVertexNormalAvailable();
+    }
+    bool transferColors = false;
+    if constexpr (HasVertexColor<MeshType>) {
+        transferColors =
+            m0.isVertexColorAvailable() || m1.isVertexColorAvailable();
+    }
+    bool transferQuality = false;
+    if constexpr (HasVertexQuality<MeshType>) {
+        transferQuality =
+            m0.isVertexQualityAvailable() || m1.isVertexQualityAvailable();
+    }
 
     if (!transferNormals && !transferColors && !transferQuality)
         return;
@@ -615,14 +644,12 @@ MeshType meshBoolean(const MeshType& m0, const MeshType& m1, MeshBoolean op)
         }
     }
 
-    // TODO: before returning, we should post-process the output mesh to
-    // transfer the vertex attributes (e.g., vertex colors, etc.) from the
-    // input meshes to the output mesh.
-
     auto out = vcl::meshFromMatrices<MeshType>(VR, FR);
 
-    using FNormalType = FaceType<MeshType>::NormalType;
-    using VNormalType = VertexType<MeshType>::NormalType;
+    using FNormalType =
+        detail::NormalTypeHelper<FaceType<MeshType>, Point3<ScalarType>>::type;
+    using VNormalType = detail::
+        NormalTypeHelper<VertexType<MeshType>, Point3<ScalarType>>::type;
 
     detail::transferFaceComponents(
         m0, m1, indices, out, FNormalType(), Color::Gray, 0.0);

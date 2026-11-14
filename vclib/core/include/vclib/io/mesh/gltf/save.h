@@ -128,7 +128,7 @@ inline void addGltfIndexedPrimitive(
     uint                 byteLength,
     const GltfAccessors& accessors,
     int                  mode,
-    uint                 materialIndex = UINT_NULL)
+    ushort               materialIndex = USHORT_NULL)
 {
     auto indBufView = addGltfBufferView(
         model,
@@ -144,7 +144,7 @@ inline void addGltfIndexedPrimitive(
     auto primitive = addGltfPrimitive(mesh, accessors, mode);
 
     primitive.second.indices = indAccessor.first;
-    if (materialIndex != UINT_NULL) {
+    if (materialIndex != USHORT_NULL) {
         primitive.second.material = materialIndex;
     }
 }
@@ -697,11 +697,11 @@ void addMeshToTinygltfModel(
                     oldFaceIndices.push_back(f.index());
                 }
 
-                uint                           lastMaterialIndex = UINT_NULL;
-                std::unordered_map<uint, uint> modelMaterialIndices {};
-                uint chunkByteOffset    = indAlloc.second;
-                uint chunkLength        = 0;
-                uint modelMaterialIndex = UINT_NULL;
+                ushort                             lastMaterialIndex = USHORT_NULL;
+                std::unordered_map<ushort, ushort> modelMaterialIndices {};
+                uint   chunkByteOffset    = indAlloc.second;
+                uint   chunkLength        = 0;
+                ushort modelMaterialIndex = USHORT_NULL;
                 std::unordered_map<std::size_t, uint> addedTextures = {};
                 std::unordered_map<std::string, uint> addedImages   = {};
                 std::unordered_map<std::size_t, uint> addedSamplers = {};
@@ -751,29 +751,34 @@ void addMeshToTinygltfModel(
                     // Material changed: end previous chunk
                     flushChunk();
 
-                    if (materialIndex != USHORT_NULL &&
-                        materialIndex < m.materialCount()) {
-                        // the material is added to the model if not already
-                        // present
-                        if (!modelMaterialIndices.contains(materialIndex)) {
-                            auto material = addGltfMaterial(
-                                tModel,
-                                m,
-                                m.material(materialIndex),
-                                addedTextures,
-                                addedImages,
-                                addedSamplers,
-                                saveTextureImages,
-                                log);
-                            modelMaterialIndices[materialIndex] =
-                                material.first;
-                        }
+                    if constexpr (HasMaterials<MeshType>) {
+                        if (materialIndex != USHORT_NULL &&
+                            materialIndex < m.materialCount()) {
+                            // the material is added to the model if not already
+                            // present
+                            if (!modelMaterialIndices.contains(materialIndex)) {
+                                auto material = addGltfMaterial(
+                                    tModel,
+                                    m,
+                                    m.material(materialIndex),
+                                    addedTextures,
+                                    addedImages,
+                                    addedSamplers,
+                                    saveTextureImages,
+                                    log);
+                                modelMaterialIndices[materialIndex] =
+                                    material.first;
+                            }
 
-                        modelMaterialIndex =
-                            modelMaterialIndices.at(materialIndex);
+                            modelMaterialIndex =
+                                modelMaterialIndices.at(materialIndex);
+                        }
+                        else {
+                            modelMaterialIndex = USHORT_NULL;
+                        }
                     }
                     else {
-                        modelMaterialIndex = UINT_NULL;
+                        modelMaterialIndex = USHORT_NULL;
                     }
 
                     // start new chunk

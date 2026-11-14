@@ -157,7 +157,7 @@ void writePlyEdges(
     }
 
     // indices of vertices that do not consider deleted vertices
-    std::vector<uint> vIndices = mesh.vertexCompactIndices();
+    auto vIndices = mesh.vertexCompactIndices();
 
     for (EdgeType e : mesh.edges()) {
         for (const PlyProperty& p : header.edgeProperties()) {
