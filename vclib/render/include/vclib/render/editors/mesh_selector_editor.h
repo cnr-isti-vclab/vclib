@@ -70,17 +70,18 @@ public:
         auto action = mSettings.mouseBindings.action({button, modifiers});
         if (action.has_value() &&
             action.value() == MeshSelectorAction::SELECT_MESH) {
-            auto callback = [&](uint id) {
-                if (id == vcl::UINT_NULL)
-                    return;
+            auto callback =
+                [&](uint id, ushort /*elementType*/, uint /*elementId*/) {
+                    if (id == vcl::UINT_NULL)
+                        return;
 
-                if (mOnObjectSelectedFunction)
-                    mOnObjectSelectedFunction(id);
-                else
-                    Base::drawList()->setSelectedObjectId(id);
-            };
+                    if (mOnObjectSelectedFunction)
+                        mOnObjectSelectedFunction(id);
+                    else
+                        Base::drawList()->setSelectedObjectId(id);
+                };
 
-            Base::viewerReadIdRequest(x, y, callback);
+            Base::viewerReadElementIdRequest(x, y, callback);
             return true; // Smart blocking: consumed event
         }
 
@@ -100,17 +101,18 @@ public:
         auto action = mSettings.mouseBindings.action({button, modifiers, true});
         if (action.has_value() &&
             action.value() == MeshSelectorAction::SELECT_MESH) {
-            auto callback = [&](uint id) {
-                if (id == vcl::UINT_NULL)
-                    return;
+            auto callback =
+                [&](ushort id, ushort /*elementType*/, uint /*elementId*/) {
+                    if (id == vcl::USHORT_NULL)
+                        return;
 
-                if (mOnObjectSelectedFunction)
-                    mOnObjectSelectedFunction(id);
-                else
-                    Base::drawList()->setSelectedObjectId(id);
-            };
+                    if (mOnObjectSelectedFunction)
+                        mOnObjectSelectedFunction(id);
+                    else
+                        Base::drawList()->setSelectedObjectId(id);
+                };
 
-            Base::viewerReadIdRequest(x, y, callback);
+            Base::viewerReadElementIdRequest(x, y, callback);
             return true; // Smart blocking: consumed event
         }
 

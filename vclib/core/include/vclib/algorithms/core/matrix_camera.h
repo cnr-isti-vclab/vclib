@@ -315,6 +315,86 @@ PointType unprojectScreenPosition(
     return p.template head<3>() / p.w();
 }
 
+/**
+ * @brief Projects a 3D point to a window position
+ *
+ * This function projects a 3D point to a window position using the given
+ * model view projection matrix, the viewport and a flag indicating if the NDC
+ * coordinates are homogeneous.
+ *
+ * Unlike @ref projectScreenPosition (which assumes the OpenGL viewport
+ * convention with the origin at the bottom-left corner and the Y axis pointing
+ * upwards), this function assumes window coordinates: the origin of the
+ * viewport is at the top-left corner of the window, with the X axis pointing
+ * rightwards and the Y axis pointing downwards.
+ *
+ * @param[in] pt: The 3D point to project
+ * @param[in] modelViewProjection: The model view projection matrix (or any
+ * transform+projection matrix, depending on the space to project from)
+ * @param[in] viewport: The viewport (x, y, width, height) in window coordinates
+ * @param[in] homogeneousNDC: Flag to indicate if the NDC coordinates are
+ * homogeneous (i.e., z is in [-1,1] if true, or [0,1] otherwise)
+ * @return The projected window position (with x and y in window coordinates and
+ * normalized depth z in [0,1])
+ *
+ * @see projectScreenPosition
+ *
+ * @ingroup algorithms_core
+ */
+template<MatrixConcept Matrix44, Point3Concept PointType>
+PointType projectWindowPosition(
+    const PointType&                         pt,
+    const Matrix44&                          modelViewProjection,
+    const Point4<typename Matrix44::Scalar>& viewport,
+    bool                                     homogeneousNDC)
+{
+    PointType res = projectScreenPosition(
+        pt, modelViewProjection, viewport, homogeneousNDC);
+    res.y() = viewport[3] + 2.0 * viewport[1] - res.y();
+    return res;
+}
+
+/**
+ * @brief Unprojects a window position to a 3D point
+ *
+ * This function unprojects a window position to a 3D point using the given
+ * model view projection matrix, the viewport and a flag indicating if the NDC
+ * coordinates are homogeneous.
+ *
+ * Unlike @ref unprojectScreenPosition (which assumes the OpenGL viewport
+ * convention with the origin at the bottom-left corner and the Y axis pointing
+ * upwards), this function assumes window coordinates: the origin of the
+ * viewport is at the top-left corner of the window, with the X axis pointing
+ * rightwards and the Y axis pointing downwards.
+ *
+ * @param[in] windowPos: The window position to unproject (with x and y in
+ * window coordinates and normalized depth z in [0,1])
+ * @param[in] modelViewProjection: The model view projection matrix (or any
+ * transform+projection matrix, depending on the space to unproject to)
+ * @param[in] viewport: The viewport (x, y, width, height) in window coordinates
+ * @param[in] homogeneousNDC: Flag to indicate if the NDC coordinates are
+ * homogeneous (i.e., z is in [-1,1] if true, or [0,1] otherwise)
+ * @return The unprojected 3D point
+ *
+ * @see unprojectScreenPosition
+ *
+ * @ingroup algorithms_core
+ */
+template<MatrixConcept Matrix44, Point3Concept PointType>
+PointType unprojectWindowPosition(
+    const PointType&                         windowPos,
+    const Matrix44&                          modelViewProjection,
+    const Point4<typename Matrix44::Scalar>& viewport,
+    bool                                     homogeneousNDC)
+{
+    PointType screenPos(
+        windowPos.x(),
+        viewport[3] + 2.0 * viewport[1] - windowPos.y(),
+        windowPos.z());
+    return unprojectScreenPosition(
+        screenPos, modelViewProjection, viewport, homogeneousNDC);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_CORE_MATRIX_CAMERA_H

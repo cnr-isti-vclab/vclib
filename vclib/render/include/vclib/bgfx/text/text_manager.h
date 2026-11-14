@@ -23,7 +23,8 @@ class TextManager
     bgfx::TextBufferHandle   mStaticText;
     bgfx::TextBufferHandle   mTransientText;
 
-    bgfx::FontHandle mCurrentFont = BGFX_INVALID_HANDLE;
+    std::string mCurrentFontName;
+    uint16_t    mCurrentFontSize = 20;
 
 public:
     TextManager();

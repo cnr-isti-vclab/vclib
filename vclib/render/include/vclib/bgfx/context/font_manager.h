@@ -12,8 +12,10 @@
 #include <vclib/bgfx/text/font/font_manager.h>
 #include <vclib/bgfx/text/text_manager.h>
 
+#include <list>
 #include <map>
 #include <string>
+#include <utility>
 
 namespace vcl {
 
@@ -22,12 +24,19 @@ namespace vcl {
  * @brief Manages loading, caching, and retrieval of fonts using bgfx.
  *
  * This class handles both predefined/embedded fonts and custom fonts loaded
- * from files or memory. It caches the loaded TrueType handles and generated
- * FontHandle objects for specific pixel sizes.
+ * from files or memory. Each font is rasterized once as a Signed Distance Field
+ * (SDF) base font, while requested pixel sizes are served via lightweight
+ * scaled font handles managed with an LRU cache.
  */
 class FontManager
 {
     friend TextManager;
+
+    using FontKey = std::pair<std::string, uint16_t>;
+
+    inline static constexpr uint32_t    BASE_SDF_FONT_SIZE      = 48;
+    inline static constexpr uint16_t    SDF_GLYPH_PADDING       = 8;
+    inline static constexpr std::size_t MAX_CACHED_SCALED_FONTS = 32;
 
     /// The underlying bgfx font manager.
     bgfx::FontManager mFontManager;
@@ -35,9 +44,16 @@ class FontManager
     /// Map caching loaded TrueType font handles by font name.
     std::map<std::string, bgfx::TrueTypeHandle> mTTMap;
 
-    /// Map caching generated bgfx font handles by a pair of font name and font
-    /// size (in pixels).
-    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> mFontMap;
+    /// Map caching base SDF bgfx font handles by font name.
+    std::map<std::string, bgfx::FontHandle> mBaseFontMap;
+
+    /// LRU list of cached scaled font keys (most recently used at front).
+    std::list<FontKey> mFontLRU;
+
+    /// Map caching scaled bgfx font handles and their LRU position by a pair of
+    /// font name and font size (in pixels).
+    std::map<FontKey, std::pair<bgfx::FontHandle, std::list<FontKey>::iterator>>
+        mFontMap;
 
 public:
     /**

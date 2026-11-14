@@ -30,10 +30,12 @@ void TextManager::init()
         &Context::instance().fontManager().getBGFXFontManager());
 
     mTransientText = mTextBufferManager->createTextBuffer(
-        FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
+        FONT_TYPE_DISTANCE, bgfx::BufferType::Transient);
 
     mStaticText = mTextBufferManager->createTextBuffer(
-        FONT_TYPE_ALPHA, bgfx::BufferType::Static);
+        FONT_TYPE_DISTANCE, bgfx::BufferType::Static);
+
+    setCurrentFont(VclFont::DROID_SANS, 20);
 }
 
 void TextManager::loadFont(
@@ -51,14 +53,15 @@ void TextManager::clear()
 
 void TextManager::setCurrentFont(VclFont::Enum font, uint16_t fontSize)
 {
-    mCurrentFont =
-        Context::instance().fontManager().getFontHandle(font, fontSize);
+    Context::instance().fontManager().loadFont(font);
+    mCurrentFontName = VclFont::FONT_NAMES[font];
+    mCurrentFontSize = fontSize;
 }
 
 void TextManager::setCurrentFont(const std::string& fontName, uint16_t fontSize)
 {
-    mCurrentFont =
-        Context::instance().fontManager().getFontHandle(fontName, fontSize);
+    mCurrentFontName = fontName;
+    mCurrentFontSize = fontSize;
 }
 
 void TextManager::appendTransientText(
@@ -66,10 +69,13 @@ void TextManager::appendTransientText(
     const std::string& text,
     const Color&       color)
 {
+    bgfx::FontHandle font = Context::instance().fontManager().getFontHandle(
+        mCurrentFontName, mCurrentFontSize);
+
     mTextBufferManager->setTextColor(mTransientText, color.rgba());
 
     mTextBufferManager->setPenPosition(mTransientText, pos.x(), pos.y());
-    mTextBufferManager->appendText(mTransientText, mCurrentFont, text.c_str());
+    mTextBufferManager->appendText(mTransientText, font, text.c_str());
 }
 
 void TextManager::appendStaticText(
@@ -77,10 +83,13 @@ void TextManager::appendStaticText(
     const std::string& text,
     const Color&       color)
 {
+    bgfx::FontHandle font = Context::instance().fontManager().getFontHandle(
+        mCurrentFontName, mCurrentFontSize);
+
     mTextBufferManager->setTextColor(mStaticText, color.rgba());
 
     mTextBufferManager->setPenPosition(mStaticText, pos.x(), pos.y());
-    mTextBufferManager->appendText(mStaticText, mCurrentFont, text.c_str());
+    mTextBufferManager->appendText(mStaticText, font, text.c_str());
 }
 
 void TextManager::submit(uint viewId)
