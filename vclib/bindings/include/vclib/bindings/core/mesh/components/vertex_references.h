@@ -15,7 +15,23 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <stdexcept>
+
 namespace vcl::bind {
+
+namespace detail {
+
+template<typename ElementType>
+void checkVertexRefs(const ElementType& e)
+{
+    if (!e.isValid()) {
+        throw std::runtime_error(
+            "Cannot access vertex references on an invalid or null element "
+            "proxy.");
+    }
+}
+
+} // namespace detail
 
 template<ElementConcept ElementType, typename... Options>
 void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
@@ -26,99 +42,141 @@ void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
 
     static const int N = ElementType::VERTEX_COUNT;
 
-    c.def("vertex_count", [](const ElementType& e) { return e.vertexCount(); });
+    c.def("vertex_count", [](const ElementType& e) {
+        detail::checkVertexRefs(e);
+        return e.vertexCount();
+    });
 
-    c.def("vertex", [](ElementType& e, uint i) -> VertexType {
-        if (i >= e.vertexCount()) {
-            throw py::index_error();
-        }
-        return e.vertex(i);
-    });
-    c.def("vertex_mod", [](ElementType& e, int i) -> VertexType {
-        return e.vertexMod(i);
-    });
+    c.def(
+        "vertex",
+        [](ElementType& e, uint i) -> VertexType {
+            detail::checkVertexRefs(e);
+            if (i >= e.vertexCount()) {
+                throw py::index_error();
+            }
+            return e.vertex(i);
+        },
+        py::keep_alive<0, 1>());
+
+    c.def(
+        "vertex_mod",
+        [](ElementType& e, int i) -> VertexType {
+            detail::checkVertexRefs(e);
+            if (e.vertexCount() == 0) {
+                throw py::index_error("Element has no vertices");
+            }
+            return e.vertexMod(i);
+        },
+        py::keep_alive<0, 1>());
 
     c.def("vertex_index", [](const ElementType& e, uint i) {
+        detail::checkVertexRefs(e);
         if (i >= e.vertexCount()) {
             throw py::index_error();
         }
         return e.vertexIndex(i);
     });
     c.def("vertex_index_mod", [](const ElementType& e, int i) {
+        detail::checkVertexRefs(e);
+        if (e.vertexCount() == 0) {
+            throw py::index_error("Element has no vertices");
+        }
         return e.vertexIndexMod(i);
     });
 
     c.def("set_vertex", [](ElementType& e, uint i, const VertexType& v) {
+        detail::checkVertexRefs(e);
         if (i >= e.vertexCount()) {
             throw py::index_error();
         }
         e.setVertex(i, v);
     });
     c.def("set_vertex", [](ElementType& e, uint i, uint vi) {
+        detail::checkVertexRefs(e);
         if (i >= e.vertexCount()) {
             throw py::index_error();
         }
         e.setVertex(i, vi);
     });
     c.def("set_vertex_mod", [](ElementType& e, int i, const VertexType& v) {
+        detail::checkVertexRefs(e);
+        if (e.vertexCount() == 0) {
+            throw py::index_error("Element has no vertices");
+        }
         e.setVertexMod(i, v);
     });
     c.def("set_vertex_mod", [](ElementType& e, int i, uint vi) {
+        detail::checkVertexRefs(e);
+        if (e.vertexCount() == 0) {
+            throw py::index_error("Element has no vertices");
+        }
         e.setVertexMod(i, vi);
     });
 
     c.def("set_vertices", [](ElementType& e, const std::vector<uint>& v) {
+        detail::checkVertexRefs(e);
         e.setVertices(v);
     });
 
     c.def("set_vertices", [](ElementType& e, const std::vector<VertexType>& v) {
+        detail::checkVertexRefs(e);
         e.setVertices(v);
     });
 
     c.def("contains_vertex", [](const ElementType& e, const VertexType& v) {
+        detail::checkVertexRefs(e);
         return e.containsVertex(v);
     });
     c.def("contains_vertex", [](const ElementType& e, uint vi) {
+        detail::checkVertexRefs(e);
         return e.containsVertex(vi);
     });
     c.def("index_of_vertex", [](const ElementType& e, const VertexType& v) {
+        detail::checkVertexRefs(e);
         return e.indexOfVertex(v);
     });
     c.def("index_of_vertex", [](const ElementType& e, uint vi) {
+        detail::checkVertexRefs(e);
         return e.indexOfVertex(vi);
     });
     c.def(
         "index_of_edge",
         [](const ElementType& e, const VertexType& v1, const VertexType& v2) {
+            detail::checkVertexRefs(e);
             return e.indexOfEdge(v1, v2);
         });
-    c.def(
-        "index_of_edge", [](const ElementType& e, uint vi1, uint vi2) {
-            return e.indexOfEdge(vi1, vi2);
-        });
+    c.def("index_of_edge", [](const ElementType& e, uint vi1, uint vi2) {
+        detail::checkVertexRefs(e);
+        return e.indexOfEdge(vi1, vi2);
+    });
 
     if constexpr (N < 0) {
         c.def("resize_vertices", [](ElementType& e, uint n) {
+            detail::checkVertexRefs(e);
             e.resizeVertices(n);
         });
         c.def("push_vertex", [](ElementType& e, const VertexType& v) {
+            detail::checkVertexRefs(e);
             e.pushVertex(v);
         });
         c.def("push_vertex", [](ElementType& e, uint vi) {
+            detail::checkVertexRefs(e);
             e.pushVertex(vi);
         });
-        c.def(
-            "insert_vertex",
-            [](ElementType& e, uint i, const VertexType& v) {
-                e.insertVertex(i, v);
-            });
+        c.def("insert_vertex", [](ElementType& e, uint i, const VertexType& v) {
+            detail::checkVertexRefs(e);
+            e.insertVertex(i, v);
+        });
         c.def("insert_vertex", [](ElementType& e, uint i, uint vi) {
+            detail::checkVertexRefs(e);
             e.insertVertex(i, vi);
         });
         c.def("erase_vertex", [](ElementType& e, uint i) {
+            detail::checkVertexRefs(e);
             e.eraseVertex(i);
         });
         c.def("clear_vertices", [](ElementType& e) {
+            detail::checkVertexRefs(e);
             e.clearVertices();
         });
     }
@@ -134,22 +192,31 @@ void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
             py::keep_alive<0, 1>());
 
         v.def("__len__", [](const VertexView& v) { return v.size(); });
-        v.def("__getitem__", [](VertexView& v, int i) {
-            int s = static_cast<int>(v.size());
-            if (i < 0) {
-                i += s;
-            }
-            if (i < 0 || i >= s) {
-                throw py::index_error();
-            }
-            return v[static_cast<uint>(i)];
-        });
+        v.def(
+            "__getitem__",
+            [](VertexView& v, int i) {
+                int s = static_cast<int>(v.size());
+                if (i < 0) {
+                    i += s;
+                }
+                if (i < 0 || i >= s) {
+                    throw py::index_error();
+                }
+                return v[static_cast<uint>(i)];
+            },
+            py::keep_alive<0, 1>());
         v.def("__bool__", [](const VertexView& v) { return !v.empty(); });
 
         registeredTypes.insert(typeid(VertexView));
     }
 
-    c.def("vertices", [](ElementType& e) { return e.vertices(); });
+    c.def(
+        "vertices",
+        [](ElementType& e) {
+            detail::checkVertexRefs(e);
+            return e.vertices();
+        },
+        py::keep_alive<0, 1>());
 
     using VertexIndexView =
         decltype(std::declval<const ElementType&>().vertexIndices());
@@ -180,9 +247,13 @@ void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
         registeredTypes.insert(typeid(VertexIndexView));
     }
 
-    c.def("vertex_indices", [](const ElementType& e) {
-        return e.vertexIndices();
-    });
+    c.def(
+        "vertex_indices",
+        [](const ElementType& e) {
+            detail::checkVertexRefs(e);
+            return e.vertexIndices();
+        },
+        py::keep_alive<0, 1>());
 }
 
 } // namespace vcl::bind

@@ -12,6 +12,8 @@
 
 #include <vclib/mesh/components/base/base.h>
 
+#include <cassert>
+
 namespace vcl::comp {
 
 /**
@@ -45,6 +47,12 @@ protected:
     // needs to be static to be accessible from the derived classes
     static decltype(auto) compData(auto&& self)
     {
+        assert(self.isValid() && "Element proxy is invalid!");
+        if constexpr (OPT) {
+            assert(
+                self.parentContainer().template isComponentAvailable<COMP_ID>() &&
+                "Component is optional and not currently enabled in the container!");
+        }
         return self.parentContainer().template vector<COMP_ID>()[self.index()];
     }
 };

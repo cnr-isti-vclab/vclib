@@ -29,8 +29,14 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
     pybind11::class_<WedgeType> w(c, "Wedge");
 
     w.def("index", [](const WedgeType& self) { return self.index(); });
-    w.def("parent_face", [](WedgeType& self) { return self.parentFace(); });
-    w.def("vertex", [](WedgeType& self) { return self.vertex(); });
+    w.def(
+        "parent_face",
+        [](WedgeType& self) { return self.parentFace(); },
+        py::keep_alive<0, 1>());
+    w.def(
+        "vertex",
+        [](WedgeType& self) { return self.vertex(); },
+        py::keep_alive<0, 1>());
     w.def("vertex_index", [](const WedgeType& self) {
         return self.vertexIndex();
     });
@@ -43,9 +49,21 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
     if constexpr (comp::HasWedgeColors<FaceType>) {
         w.def(
             "color",
-            [](WedgeType& self) -> auto& { return self.color(); },
+            [](WedgeType& self) -> auto& {
+                if (!self.isColorAvailable()) {
+                    throw MissingComponentException(
+                        "Component 'WEDGE_COLORS' is not available or enabled "
+                        "on this face.");
+                }
+                return self.color();
+            },
             py::return_value_policy::reference_internal);
         w.def("set_color", [](WedgeType& self, const Color& col) {
+            if (!self.isColorAvailable()) {
+                throw MissingComponentException(
+                    "Component 'WEDGE_COLORS' is not available or enabled on "
+                    "this face.");
+            }
             self.color() = col;
         });
         w.def("is_color_available", [](const WedgeType& self) {
@@ -56,9 +74,21 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
     if constexpr (comp::HasWedgeTexCoords<FaceType>) {
         w.def(
             "tex_coord",
-            [](WedgeType& self) -> auto& { return self.texCoord(); },
+            [](WedgeType& self) -> auto& {
+                if (!self.isTexCoordAvailable()) {
+                    throw MissingComponentException(
+                        "Component 'WEDGE_TEX_COORDS' is not available or "
+                        "enabled on this face.");
+                }
+                return self.texCoord();
+            },
             py::return_value_policy::reference_internal);
         w.def("set_tex_coord", [](WedgeType& self, const TexCoordd& tc) {
+            if (!self.isTexCoordAvailable()) {
+                throw MissingComponentException(
+                    "Component 'WEDGE_TEX_COORDS' is not available or enabled "
+                    "on this face.");
+            }
             self.texCoord() = tc;
         });
         w.def("is_tex_coord_available", [](const WedgeType& self) {
@@ -69,9 +99,21 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
     if constexpr (comp::HasWedgeNormals<FaceType>) {
         w.def(
             "normal",
-            [](WedgeType& self) -> auto& { return self.normal(); },
+            [](WedgeType& self) -> auto& {
+                if (!self.isNormalAvailable()) {
+                    throw MissingComponentException(
+                        "Component 'WEDGE_NORMALS' is not available or enabled "
+                        "on this face.");
+                }
+                return self.normal();
+            },
             py::return_value_policy::reference_internal);
         w.def("set_normal", [](WedgeType& self, const Point3d& n) {
+            if (!self.isNormalAvailable()) {
+                throw MissingComponentException(
+                    "Component 'WEDGE_NORMALS' is not available or enabled on "
+                    "this face.");
+            }
             self.normal() = n;
         });
         w.def("is_normal_available", [](const WedgeType& self) {
@@ -87,16 +129,19 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
             return self.size();
         });
 
-        wcp.def("__getitem__", [](WedgeContainerType& self, int i) {
-            int s = static_cast<int>(self.size());
-            if (i < 0) {
-                i += s;
-            }
-            if (i < 0 || i >= s) {
-                throw py::index_error();
-            }
-            return self[static_cast<uint>(i)];
-        });
+        wcp.def(
+            "__getitem__",
+            [](WedgeContainerType& self, int i) {
+                int s = static_cast<int>(self.size());
+                if (i < 0) {
+                    i += s;
+                }
+                if (i < 0 || i >= s) {
+                    throw py::index_error();
+                }
+                return self[static_cast<uint>(i)];
+            },
+            py::keep_alive<0, 1>());
 
         wcp.def("__bool__", [](const WedgeContainerType& self) {
             return !self.empty();
@@ -117,16 +162,19 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 cv.def("__len__", [](const WedgeColorsView& v) {
                     return v.size();
                 });
-                cv.def("__getitem__", [](WedgeColorsView& v, int i) {
-                    int s = static_cast<int>(v.size());
-                    if (i < 0) {
-                        i += s;
-                    }
-                    if (i < 0 || i >= s) {
-                        throw py::index_error();
-                    }
-                    return v[static_cast<uint>(i)];
-                });
+                cv.def(
+                    "__getitem__",
+                    [](WedgeColorsView& v, int i) -> auto& {
+                        int s = static_cast<int>(v.size());
+                        if (i < 0) {
+                            i += s;
+                        }
+                        if (i < 0 || i >= s) {
+                            throw py::index_error();
+                        }
+                        return v[static_cast<uint>(i)];
+                    },
+                    py::return_value_policy::reference_internal);
                 cv.def("__bool__", [](const WedgeColorsView& v) {
                     return !v.empty();
                 });
@@ -138,9 +186,17 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                     py::keep_alive<0, 1>());
                 registeredTypes.insert(typeid(WedgeColorsView));
             }
-            wcp.def("colors", [](WedgeContainerType& self) {
-                return self.colors();
-            });
+            wcp.def(
+                "colors",
+                [](WedgeContainerType& self) {
+                    if (!self.isColorsAvailable()) {
+                        throw MissingComponentException(
+                            "Component 'WEDGE_COLORS' is not available or "
+                            "enabled on this face.");
+                    }
+                    return self.colors();
+                },
+                py::keep_alive<0, 1>());
             wcp.def("is_colors_available", [](const WedgeContainerType& self) {
                 return self.isColorsAvailable();
             });
@@ -155,16 +211,19 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 tv.def("__len__", [](const WedgeTexCoordsView& v) {
                     return v.size();
                 });
-                tv.def("__getitem__", [](WedgeTexCoordsView& v, int i) {
-                    int s = static_cast<int>(v.size());
-                    if (i < 0) {
-                        i += s;
-                    }
-                    if (i < 0 || i >= s) {
-                        throw py::index_error();
-                    }
-                    return v[static_cast<uint>(i)];
-                });
+                tv.def(
+                    "__getitem__",
+                    [](WedgeTexCoordsView& v, int i) -> auto& {
+                        int s = static_cast<int>(v.size());
+                        if (i < 0) {
+                            i += s;
+                        }
+                        if (i < 0 || i >= s) {
+                            throw py::index_error();
+                        }
+                        return v[static_cast<uint>(i)];
+                    },
+                    py::return_value_policy::reference_internal);
                 tv.def("__bool__", [](const WedgeTexCoordsView& v) {
                     return !v.empty();
                 });
@@ -176,9 +235,17 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                     py::keep_alive<0, 1>());
                 registeredTypes.insert(typeid(WedgeTexCoordsView));
             }
-            wcp.def("tex_coords", [](WedgeContainerType& self) {
-                return self.texCoords();
-            });
+            wcp.def(
+                "tex_coords",
+                [](WedgeContainerType& self) {
+                    if (!self.isTexCoordsAvailable()) {
+                        throw MissingComponentException(
+                            "Component 'WEDGE_TEX_COORDS' is not available or "
+                            "enabled on this face.");
+                    }
+                    return self.texCoords();
+                },
+                py::keep_alive<0, 1>());
             wcp.def(
                 "is_tex_coords_available", [](const WedgeContainerType& self) {
                     return self.isTexCoordsAvailable();
@@ -193,16 +260,19 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 nv.def("__len__", [](const WedgeNormalsView& v) {
                     return v.size();
                 });
-                nv.def("__getitem__", [](WedgeNormalsView& v, int i) {
-                    int s = static_cast<int>(v.size());
-                    if (i < 0) {
-                        i += s;
-                    }
-                    if (i < 0 || i >= s) {
-                        throw py::index_error();
-                    }
-                    return v[static_cast<uint>(i)];
-                });
+                nv.def(
+                    "__getitem__",
+                    [](WedgeNormalsView& v, int i) -> auto& {
+                        int s = static_cast<int>(v.size());
+                        if (i < 0) {
+                            i += s;
+                        }
+                        if (i < 0 || i >= s) {
+                            throw py::index_error();
+                        }
+                        return v[static_cast<uint>(i)];
+                    },
+                    py::return_value_policy::reference_internal);
                 nv.def("__bool__", [](const WedgeNormalsView& v) {
                     return !v.empty();
                 });
@@ -214,9 +284,17 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                     py::keep_alive<0, 1>());
                 registeredTypes.insert(typeid(WedgeNormalsView));
             }
-            wcp.def("normals", [](WedgeContainerType& self) {
-                return self.normals();
-            });
+            wcp.def(
+                "normals",
+                [](WedgeContainerType& self) {
+                    if (!self.isNormalsAvailable()) {
+                        throw MissingComponentException(
+                            "Component 'WEDGE_NORMALS' is not available or "
+                            "enabled on this face.");
+                    }
+                    return self.normals();
+                },
+                py::keep_alive<0, 1>());
             wcp.def("is_normals_available", [](const WedgeContainerType& self) {
                 return self.isNormalsAvailable();
             });
@@ -226,20 +304,30 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
     }
 
     // 3. Define methods on FaceType
-    c.def("wedge", [](FaceType& self, uint i) {
-        if (i >= self.vertexCount()) {
-            throw py::index_error();
-        }
-        return self.wedge(i);
-    });
+    c.def(
+        "wedge",
+        [](FaceType& self, uint i) {
+            if (i >= self.vertexCount()) {
+                throw py::index_error();
+            }
+            return self.wedge(i);
+        },
+        py::keep_alive<0, 1>());
 
-    c.def("wedge_mod", [](FaceType& self, int i) {
-        return self.wedgeMod(i);
-    });
+    c.def(
+        "wedge_mod",
+        [](FaceType& self, int i) {
+            if (self.vertexCount() == 0) {
+                throw py::index_error("Face has no vertices");
+            }
+            return self.wedgeMod(i);
+        },
+        py::keep_alive<0, 1>());
 
-    c.def("wedges", [](FaceType& self) {
-        return self.wedges();
-    });
+    c.def(
+        "wedges",
+        [](FaceType& self) { return self.wedges(); },
+        py::keep_alive<0, 1>());
 }
 
 } // namespace vcl::bind

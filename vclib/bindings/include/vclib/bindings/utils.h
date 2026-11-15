@@ -13,10 +13,54 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 
+#include <optional>
 #include <set>
 #include <sstream>
 
 namespace vcl::bind {
+
+namespace detail {
+
+template<typename It, typename ElemType>
+struct NullableElementIterator
+{
+    using iterator_category = std::forward_iterator_tag;
+    using value_type        = std::optional<ElemType>;
+    using difference_type   = std::ptrdiff_t;
+    using pointer           = const std::optional<ElemType>*;
+    using reference         = std::optional<ElemType>;
+
+    It current;
+
+    reference operator*() const
+    {
+        auto e = *current;
+        if (!e.isValid()) {
+            return std::nullopt;
+        }
+        return e;
+    }
+
+    NullableElementIterator& operator++()
+    {
+        ++current;
+        return *this;
+    }
+
+    NullableElementIterator operator++(int)
+    {
+        NullableElementIterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    bool operator==(const NullableElementIterator& other) const
+    {
+        return current == other.current;
+    }
+};
+
+} // namespace detail
 
 using RegisteredTypesSet = std::set<std::type_index>;
 
@@ -35,6 +79,7 @@ void defCopy(pybind11::class_<Class, Options...>& c)
 {
     using namespace pybind11::literals;
 
+    c.def("copy", [](const Class& self) { return Class(self); });
     c.def("__copy__", [](const Class& self) { return Class(self); });
     c.def(
         "__deepcopy__",

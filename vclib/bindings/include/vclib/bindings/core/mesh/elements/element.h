@@ -55,8 +55,14 @@ void initElement(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "parent_mesh",
-        [](ElementType& v) -> auto& { return v.parentMesh(); },
-        py::return_value_policy::reference);
+        [](ElementType& v) -> auto& {
+            if (!v.isValid()) {
+                throw std::runtime_error(
+                    "Cannot get parent mesh of an invalid element proxy.");
+            }
+            return v.parentMesh();
+        },
+        py::return_value_policy::reference_internal);
 }
 
 } // namespace vcl::bind

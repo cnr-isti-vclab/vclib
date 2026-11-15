@@ -203,7 +203,7 @@ void initMeshInfo(pybind11::module& m)
         "set_edge_quality",
         &MeshInfo::setEdgeQuality,
         "b"_a = true,
-        "t"_a = QUALITY);
+        "t"_a = DOUBLE);
     c.def(
         "set_edge_custom_components",
         &MeshInfo::setEdgeCustomComponents,

@@ -66,8 +66,12 @@ void initContainer(
     c.def(
         name.c_str(),
         [](MeshType& t, uint i) -> Element {
+            if (i >= t.template containerSize<ELEM_ID>()) {
+                throw py::index_error();
+            }
             return t.template element<ELEM_ID>(i);
-        });
+        },
+        py::keep_alive<0, 1>());
 
     c.def((name + "_count").c_str(), [](const MeshType& t) {
         return t.template count<ELEM_ID>();
@@ -126,16 +130,19 @@ void initContainer(
 
         v.def("__len__", [](const ElemView& t) { return t.size(); });
 
-        v.def("__getitem__", [](ElemView& t, int i) {
-            int s = static_cast<int>(t.size());
-            if (i < 0) {
-                i += s;
-            }
-            if (i < 0 || i >= s) {
-                throw py::index_error();
-            }
-            return t[static_cast<uint>(i)];
-        });
+        v.def(
+            "__getitem__",
+            [](ElemView& t, int i) {
+                int s = static_cast<int>(t.size());
+                if (i < 0) {
+                    i += s;
+                }
+                if (i < 0 || i >= s) {
+                    throw py::index_error();
+                }
+                return *(t.begin() + i);
+            },
+            py::keep_alive<0, 1>());
 
         v.def("__bool__", [](const ElemView& t) { return !t.empty(); });
         v.def("is_compact", [](const ElemView& t) { return t.isCompact(); });
@@ -145,61 +152,88 @@ void initContainer(
         if constexpr (comp::HasPosition<Container>) {
             initComponentView<CompId::POSITION, Container>(
                 c, "_" + capitalName + "PositionsView");
-            v.def("positions", [](ElemView& self) { return self.positions(); });
+            v.def(
+                "positions",
+                [](ElemView& self) { return self.positions(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasNormal<Container>) {
             initComponentView<CompId::NORMAL, Container>(
                 c, "_" + capitalName + "NormalsView");
-            v.def("normals", [](ElemView& self) { return self.normals(); });
+            v.def(
+                "normals",
+                [](ElemView& self) { return self.normals(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasColor<Container>) {
             initComponentView<CompId::COLOR, Container>(
                 c, "_" + capitalName + "ColorsView");
-            v.def("colors", [](ElemView& self) { return self.colors(); });
+            v.def(
+                "colors",
+                [](ElemView& self) { return self.colors(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasQuality<Container>) {
             initComponentView<CompId::QUALITY, Container>(
                 c, "_" + capitalName + "QualitiesView");
-            v.def("qualities", [](ElemView& self) { return self.qualities(); });
+            v.def(
+                "qualities",
+                [](ElemView& self) { return self.qualities(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasTexCoord<Container>) {
             initComponentView<CompId::TEX_COORD, Container>(
                 c, "_" + capitalName + "TexCoordsView");
-            v.def("tex_coords", [](ElemView& self) { return self.texCoords(); });
+            v.def(
+                "tex_coords",
+                [](ElemView& self) { return self.texCoords(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasTangent<Container>) {
             initComponentView<CompId::TANGENT, Container>(
                 c, "_" + capitalName + "TangentsView");
-            v.def("tangents", [](ElemView& self) { return self.tangents(); });
+            v.def(
+                "tangents",
+                [](ElemView& self) { return self.tangents(); },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasPrincipalCurvature<Container>) {
             initComponentView<CompId::PRINCIPAL_CURVATURE, Container>(
                 c, "_" + capitalName + "PrincipalCurvaturesView");
-            v.def("principal_curvatures", [](ElemView& self) {
-                return self.principalCurvatures();
-            });
+            v.def(
+                "principal_curvatures",
+                [](ElemView& self) {
+                    return self.principalCurvatures();
+                },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasMaterialIndex<Container>) {
             initComponentView<CompId::MATERIAL_INDEX, Container>(
                 c, "_" + capitalName + "MaterialIndicesView");
-            v.def("material_indices", [](ElemView& self) {
-                return self.materialIndices();
-            });
+            v.def(
+                "material_indices",
+                [](ElemView& self) {
+                    return self.materialIndices();
+                },
+                py::keep_alive<0, 1>());
         }
 
         if constexpr (comp::HasStaticVertexReferences<Container>) {
             initComponentView<CompId::VERTEX_REFERENCES, Container>(
                 c, "_" + capitalName + "VertexIndicesView");
-            v.def("vertex_indices", [](ElemView& self) {
-                return self.vertexIndices();
-            });
+            v.def(
+                "vertex_indices",
+                [](ElemView& self) {
+                    return self.vertexIndices();
+                },
+                py::keep_alive<0, 1>());
         }
 
         registeredTypes.insert(typeid(ElemView));
@@ -210,7 +244,8 @@ void initContainer(
         [](MeshType& t, bool jumpDeleted) {
             return t.template elements<ELEM_ID>(jumpDeleted);
         },
-        py::arg("jump_deleted") = true);
+        py::arg("jump_deleted") = true,
+        py::keep_alive<0, 1>());
 
     // optional components
 
