@@ -20,6 +20,18 @@
 
 namespace vcl {
 
+namespace detail {
+
+template<typename T>
+inline constexpr bool IsRawSerializable =
+    std::endian::native == std::endian::little &&
+    std::is_trivially_copyable_v<T> &&
+    (std::has_unique_object_representations_v<T> ||
+     std::is_floating_point_v<T>) &&
+    !std::is_same_v<T, bool>;
+
+} // namespace detail
+
 /**
  * @brief A tuple of parallel vectors, where each vector stores a specific type.
  *
@@ -516,15 +528,12 @@ private:
     {
         if (mVecEnabled[I]) {
             const auto& vec = std::get<I>(mVecTuple);
-            using ElemType  = std::tuple_element_t<I, std::tuple<Types...>>;
-            if constexpr (
-                std::endian::native == std::endian::little &&
-                std::is_trivially_copyable_v<ElemType> &&
-                !std::is_same_v<ElemType, bool>) {
+            using IType  = std::tuple_element_t<I, std::tuple<Types...>>;
+            if constexpr (detail::IsRawSerializable<IType>) {
                 if (mSize > 0) {
                     os.write(
                         reinterpret_cast<const char*>(vec.data()),
-                        static_cast<std::streamsize>(mSize * sizeof(ElemType)));
+                        static_cast<std::streamsize>(mSize * sizeof(IType)));
                 }
             }
             else {
@@ -547,15 +556,12 @@ private:
         auto& vec = std::get<I>(mVecTuple);
         if (mVecEnabled[I]) {
             vec.resize(mSize);
-            using ElemType = std::tuple_element_t<I, std::tuple<Types...>>;
-            if constexpr (
-                std::endian::native == std::endian::little &&
-                std::is_trivially_copyable_v<ElemType> &&
-                !std::is_same_v<ElemType, bool>) {
+            using IType = std::tuple_element_t<I, std::tuple<Types...>>;
+            if constexpr (detail::IsRawSerializable<IType>) {
                 if (mSize > 0) {
                     is.read(
                         reinterpret_cast<char*>(vec.data()),
-                        static_cast<std::streamsize>(mSize * sizeof(ElemType)));
+                        static_cast<std::streamsize>(mSize * sizeof(IType)));
                 }
             }
             else {

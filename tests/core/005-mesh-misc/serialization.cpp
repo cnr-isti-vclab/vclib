@@ -90,6 +90,48 @@ TEST_CASE("Serialization - Parallel Vectors Tuple Serialization")
             pvtRead.get<std::string>()[2] ==
             "gamma_with_longer_string_beyond_sso");
     }
+
+    // 3. ParallelVectorsTuple with std::pair (e.g. Tangent with padding)
+    {
+        using TangentPVT =
+            vcl::ParallelVectorsTuple<std::pair<vcl::Point3d, bool>>;
+        static_assert(vcl::Serializable<TangentPVT>);
+
+        TangentPVT pvt;
+        pvt.enable<std::pair<vcl::Point3d, bool>>();
+        pvt.resize(2);
+        pvt.get<std::pair<vcl::Point3d, bool>>()[0] = {
+            vcl::Point3d(1.0, 2.0, 3.0), true};
+        pvt.get<std::pair<vcl::Point3d, bool>>()[1] = {
+            vcl::Point3d(4.0, 5.0, 6.0), false};
+
+        std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
+        vcl::serialize(ss, pvt);
+
+        // Verify serialized stream does not include struct padding:
+        // Size: 8 bytes (mSize) + 1 byte (array<bool, 1>) + 2 * (24 bytes for Point3d + 1 byte for bool) = 9 + 50 = 59 bytes.
+        // If raw memcpy had been used, sizeof(std::pair<Point3d, bool>) is 32 bytes (with 7 bytes padding),
+        // resulting in 9 + 64 = 73 bytes.
+        std::string       s            = ss.str();
+        const std::size_t expectedSize = sizeof(std::size_t) +
+                                         sizeof(bool) * 1 +
+                                         2 * (sizeof(double) * 3 + sizeof(bool));
+        REQUIRE(s.size() == expectedSize);
+
+        TangentPVT pvtRead;
+        vcl::deserialize(ss, pvtRead);
+
+        REQUIRE(pvtRead.size() == 2);
+        REQUIRE(pvtRead.isEnabled<std::pair<vcl::Point3d, bool>>());
+        REQUIRE(
+            pvtRead.get<std::pair<vcl::Point3d, bool>>()[0].first ==
+            vcl::Point3d(1.0, 2.0, 3.0));
+        REQUIRE(pvtRead.get<std::pair<vcl::Point3d, bool>>()[0].second == true);
+        REQUIRE(
+            pvtRead.get<std::pair<vcl::Point3d, bool>>()[1].first ==
+            vcl::Point3d(4.0, 5.0, 6.0));
+        REQUIRE(pvtRead.get<std::pair<vcl::Point3d, bool>>()[1].second == false);
+    }
 }
 
 TEST_CASE("Serialization - Mesh Serialization")
@@ -206,6 +248,38 @@ TEST_CASE("Serialization - Mesh Serialization")
                 caughtBadVersion = true;
             }
             REQUIRE(caughtBadVersion);
+        }
+
+        // 3c. Truncated Magic Header (less than 8 bytes)
+        {
+            std::string       badTruncatedData = "vcl_"; // only 4 bytes
+            std::stringstream ssBad(
+                badTruncatedData,
+                std::ios::in | std::ios::out | std::ios::binary);
+            bool caughtTruncated = false;
+            try {
+                MyMesh mRead;
+                mRead.deserialize(ssBad);
+            }
+            catch (const std::runtime_error& e) {
+                caughtTruncated = true;
+            }
+            REQUIRE(caughtTruncated);
+        }
+
+        // 3d. Empty Stream (0 bytes)
+        {
+            std::stringstream ssEmpty(
+                "", std::ios::in | std::ios::out | std::ios::binary);
+            bool caughtEmpty = false;
+            try {
+                MyMesh mRead;
+                mRead.deserialize(ssEmpty);
+            }
+            catch (const std::runtime_error& e) {
+                caughtEmpty = true;
+            }
+            REQUIRE(caughtEmpty);
         }
     }
 
@@ -446,5 +520,29 @@ TEST_CASE("Serialization - Mesh Serialization")
         REQUIRE(tmRead.vertex(0).tangentRightHanded() == true);
         REQUIRE(tmRead.vertex(1).tangent() == Point3f(4.0f, 5.0f, 6.0f));
         REQUIRE(tmRead.vertex(1).tangentRightHanded() == false);
+    }
+
+    // 12. OptionalTangentMesh serialization test (with Tangent3d)
+    {
+        OptionalTangentMesh otm;
+        otm.enableVertexTangent();
+        otm.addVertices(2);
+        otm.vertex(0).tangent()            = Point3d(1.0, 2.0, 3.0);
+        otm.vertex(0).tangentRightHanded() = true;
+        otm.vertex(1).tangent()            = Point3d(4.0, 5.0, 6.0);
+        otm.vertex(1).tangentRightHanded() = false;
+
+        std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
+        otm.serialize(ss);
+
+        OptionalTangentMesh otmRead;
+        otmRead.deserialize(ss);
+
+        REQUIRE(otmRead.isVertexTangentAvailable());
+        REQUIRE(otmRead.vertexCount() == 2);
+        REQUIRE(otmRead.vertex(0).tangent() == Point3d(1.0, 2.0, 3.0));
+        REQUIRE(otmRead.vertex(0).tangentRightHanded() == true);
+        REQUIRE(otmRead.vertex(1).tangent() == Point3d(4.0, 5.0, 6.0));
+        REQUIRE(otmRead.vertex(1).tangentRightHanded() == false);
     }
 }

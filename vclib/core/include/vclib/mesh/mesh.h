@@ -544,7 +544,7 @@ public:
     {
         char magic[8];
         is.read(magic, 8);
-        if (std::memcmp(magic, "vcl_mesh", 8) != 0) {
+        if (is.gcount() != 8 || std::memcmp(magic, "vcl_mesh", 8) != 0) {
             throw std::runtime_error(
                 "Invalid mesh file header: expected 'vcl_mesh'");
         }
