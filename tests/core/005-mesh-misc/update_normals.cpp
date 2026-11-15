@@ -8,6 +8,7 @@
 #include "types.h"
 
 #include <vclib/algorithms/mesh.h>
+#include <vclib/meshes.h>
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -86,4 +87,139 @@ TEST_CASE("Update Normals")
     for (uint i = 0; i < 3; ++i) {
         REQUIRE((m.vertex(i).normal() - expectedRotated).norm() < 1e-5f);
     }
+}
+
+TEST_CASE("Transform - rotate mixed scalar types")
+{
+    // TriMeshf uses float, rotate with Matrix33d (double)
+    vcl::TriMeshf m = vcl::createCube<vcl::TriMeshf>();
+    vcl::updateVertexAndFaceNormals(m);
+
+    Point3f origV0 = m.vertex(0).position();
+    Point3f origN0 = m.vertex(0).normal();
+
+    // Rotate 90 degrees around Z axis: (x, y, z) -> (-y, x, z)
+    Matrix33d rotZ;
+    rotZ << 0.0, -1.0, 0.0,
+            1.0,  0.0, 0.0,
+            0.0,  0.0, 1.0;
+
+    vcl::rotate(m, rotZ);
+
+    Point3f expectedV0(-origV0.y(), origV0.x(), origV0.z());
+    Point3f expectedN0(-origN0.y(), origN0.x(), origN0.z());
+    REQUIRE((m.vertex(0).position() - expectedV0).norm() < 1e-5f);
+    REQUIRE((m.vertex(0).normal() - expectedN0).norm() < 1e-5f);
+}
+
+TEST_CASE("Transform - EdgeNormals")
+{
+    vcl::TriEdgeMesh m;
+    m.enableElementComponent<ElemId::EDGE, CompId::NORMAL>();
+    m.addVertices(3);
+    m.vertex(0).position() = Point3d(0.0, 0.0, 0.0);
+    m.vertex(1).position() = Point3d(1.0, 0.0, 0.0);
+    m.vertex(2).position() = Point3d(0.0, 1.0, 0.0);
+    m.addFace(0, 1, 2);
+    m.addEdge(0, 1);
+    m.edge(0).normal() = Point3d(0.0, 0.0, 1.0);
+
+    // Rotate 90 deg around X: (0, 0, 1) -> (0, -1, 0)
+    Matrix33d rotX;
+    rotX << 1.0,  0.0,  0.0,
+            0.0,  0.0, -1.0,
+            0.0,  1.0,  0.0;
+    vcl::rotate(m, rotX);
+
+    REQUIRE((m.edge(0).normal() - Point3d(0.0, -1.0, 0.0)).norm() < 1e-5);
+
+    // Transform with Matrix44d
+    Matrix44d t44 = Matrix44d::Identity();
+    t44.block<3, 3>(0, 0) = rotX;
+    vcl::applyTransformMatrix(m, t44);
+    // (0, -1, 0) rotated by 90 deg around X -> (0, 0, -1)
+    REQUIRE((m.edge(0).normal() - Point3d(0.0, 0.0, -1.0)).norm() < 1e-5);
+}
+
+TEST_CASE("Transform - WedgeNormals")
+{
+    using WedgeMeshType = Mesh<
+        mesh::VertexContainer<VertexComponents<vert::BitFlags, vert::Position3d>>,
+        mesh::FaceContainer<FaceComponents<
+            face::BitFlags,
+            face::TriangleVertexReferences<vcl::uint>,
+            face::TriangleWedgeNormals3d>>>;
+
+    WedgeMeshType m;
+    m.addVertices(3);
+    m.vertex(0).position() = Point3d(0.0, 0.0, 0.0);
+    m.vertex(1).position() = Point3d(1.0, 0.0, 0.0);
+    m.vertex(2).position() = Point3d(0.0, 1.0, 0.0);
+    m.addFace(0, 1, 2);
+    for (auto w : m.face(0).wedges()) {
+        w.normal() = Point3d(0.0, 0.0, 1.0);
+    }
+
+    Matrix33d rotX;
+    rotX << 1.0,  0.0,  0.0,
+            0.0,  0.0, -1.0,
+            0.0,  1.0,  0.0;
+    vcl::rotate(m, rotX);
+
+    for (auto w : m.face(0).wedges()) {
+        REQUIRE((w.normal() - Point3d(0.0, -1.0, 0.0)).norm() < 1e-5);
+    }
+}
+
+TEST_CASE("Transform - Tangent and PrincipalCurvature")
+{
+    using FullGeomMesh = Mesh<
+        mesh::VertexContainer<VertexComponents<
+            vert::BitFlags,
+            vert::Position3d,
+            vert::Normal3d,
+            vert::Tangent3d,
+            vert::PrincipalCurvatured>>,
+        mesh::FaceContainer<FaceComponents<
+            face::BitFlags,
+            face::TriangleVertexReferences<vcl::uint>,
+            face::Normal3d>>>;
+
+    FullGeomMesh m;
+    m.addVertices(3);
+    m.vertex(0).position() = Point3d(0.0, 0.0, 0.0);
+    m.vertex(1).position() = Point3d(1.0, 0.0, 0.0);
+    m.vertex(2).position() = Point3d(0.0, 1.0, 0.0);
+    m.addFace(0, 1, 2);
+
+    m.vertex(0).normal() = Point3d(0.0, 0.0, 1.0);
+    m.vertex(0).tangent() = Point3d(1.0, 0.0, 0.0);
+    m.vertex(0).tangentRightHanded() = true;
+
+    m.vertex(0).principalCurvature().maxDir() = Point3d(1.0, 0.0, 0.0);
+    m.vertex(0).principalCurvature().minDir() = Point3d(0.0, 1.0, 0.0);
+    m.vertex(0).principalCurvature().maxValue() = 2.0;
+    m.vertex(0).principalCurvature().minValue() = 0.5;
+
+    // A. Rotate 90 deg around Z: (x, y, z) -> (-y, x, z)
+    Matrix33d rotZ;
+    rotZ << 0.0, -1.0, 0.0,
+            1.0,  0.0, 0.0,
+            0.0,  0.0, 1.0;
+
+    vcl::rotate(m, rotZ);
+
+    REQUIRE((m.vertex(0).tangent() - Point3d(0.0, 1.0, 0.0)).norm() < 1e-5);
+    REQUIRE(m.vertex(0).tangentRightHanded() == true);
+    REQUIRE((m.vertex(0).principalCurvature().maxDir() - Point3d(0.0, 1.0, 0.0)).norm() < 1e-5);
+    REQUIRE((m.vertex(0).principalCurvature().minDir() - Point3d(-1.0, 0.0, 0.0)).norm() < 1e-5);
+    REQUIRE(m.vertex(0).principalCurvature().maxValue() == 2.0);
+    REQUIRE(m.vertex(0).principalCurvature().minValue() == 0.5);
+
+    // B. Reflection (det < 0): scale X by -1
+    Matrix44d refX = Matrix44d::Identity();
+    refX(0, 0) = -1.0;
+    vcl::applyTransformMatrix(m, refX);
+
+    REQUIRE(m.vertex(0).tangentRightHanded() == false); // flipped!
 }

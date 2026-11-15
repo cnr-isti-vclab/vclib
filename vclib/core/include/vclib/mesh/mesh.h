@@ -1382,6 +1382,33 @@ private:
                     }
                 }
             }
+
+            if constexpr (comp::HasComponent<CompId::TANGENT, Cont>) {
+                if (this->Cont::template isComponentAvailable<CompId::TANGENT>()) {
+                    auto tanview = this->template elements<ELEM_ID>(startFrom) |
+                                   views::tangents;
+                    multiplyNormalsByMatrix(tanview, matrix);
+
+                    Matrix33<double> m33 =
+                        matrix.template cast<double>().block(0, 0, 3, 3);
+                    if (m33.determinant() < 0) {
+                        for (auto e : this->template elements<ELEM_ID>(startFrom)) {
+                            e.tangentRightHanded() = !e.tangentRightHanded();
+                        }
+                    }
+                }
+            }
+
+            if constexpr (comp::HasComponent<CompId::PRINCIPAL_CURVATURE, Cont>) {
+                if (this->Cont::template isComponentAvailable<CompId::PRINCIPAL_CURVATURE>()) {
+                    for (auto e : this->template elements<ELEM_ID>(startFrom)) {
+                        e.principalCurvature().maxDir() =
+                            multiplyNormalByMatrix(e.principalCurvature().maxDir(), matrix);
+                        e.principalCurvature().minDir() =
+                            multiplyNormalByMatrix(e.principalCurvature().minDir(), matrix);
+                    }
+                }
+            }
         }
     }
 
