@@ -29,7 +29,7 @@ namespace vcl {
  *
  * @ingroup base
  */
-enum class CompId
+enum class CompId : uint
 {
     BIT_FLAGS = 0,
     POSITION,
@@ -90,9 +90,6 @@ constexpr const char* COMPONENT_ENUM_STRINGS[static_cast<uint>(CompId::COMPONENT
 /**
  * @brief The ComponentString class is used to retrieve the string associated
  * to a COMP_ID value, trough its member 'str'.
- *
- * If you use a custom component class, you should specialize this struct with
- * your COMP_ID value (that is >= COMPONENT_COUNT).
  *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  *

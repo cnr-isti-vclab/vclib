@@ -393,7 +393,8 @@ struct ScalarTypeHelper
 // 1. Types directly exposing ScalarType (e.g. Point3f, Point3d)
 template<typename T>
 requires (
-    !MeshConcept<T> && !VertexConcept<T> &&
+    !MeshConcept<T> && !VertexConcept<T> && !FaceConcept<T> &&
+    !EdgeConcept<T> && !WedgeConcept<T> &&
     requires { typename T::ScalarType; })
 struct ScalarTypeHelper<T>
 {
@@ -419,6 +420,20 @@ template<FaceConcept F>
 struct ScalarTypeHelper<F>
 {
     using type = typename ScalarTypeHelper<typename VertexTypeHelper<F>::type>::type;
+};
+
+// 5. EdgeConcept (scalar of the referenced vertices)
+template<EdgeConcept E>
+struct ScalarTypeHelper<E>
+{
+    using type = typename ScalarTypeHelper<typename VertexTypeHelper<E>::type>::type;
+};
+
+// 6. WedgeConcept (scalar of the referenced vertex)
+template<WedgeConcept W>
+struct ScalarTypeHelper<W>
+{
+    using type = typename ScalarTypeHelper<typename VertexTypeHelper<W>::type>::type;
 };
 
 // ============================================================================

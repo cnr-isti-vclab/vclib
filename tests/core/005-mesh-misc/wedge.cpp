@@ -92,6 +92,8 @@ TEST_CASE("Wedge - Wedge Concepts")
     static_assert(std::is_same_v<
                   TexCoordType<WedgeType<WedgeMesh::Face>>,
                   vcl::TexCoordf>);
+    static_assert(
+        std::is_same_v<ScalarType<WedgeType<WedgeMesh::Face>>, float>);
 }
 
 TEST_CASE("Wedge - Triangle Wedges")

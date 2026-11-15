@@ -11,6 +11,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <iterator>
+#include <ranges>
+#include <sstream>
 #include <vector>
 
 TEST_CASE("Adjacencies")
@@ -81,6 +84,21 @@ TEST_CASE("Adjacencies")
     }
     REQUIRE(count == 3);
 
+    // Test setAdjFaces single-pass input_range (static)
+    {
+        std::istringstream iss("0 1 0");
+        auto streamRange = std::ranges::subrange(
+            std::istream_iterator<vcl::uint>(iss),
+            std::istream_iterator<vcl::uint>());
+        f0.setAdjFaces(streamRange);
+        REQUIRE(f0.adjFaceIndex(0) == 0);
+        REQUIRE(f0.adjFaceIndex(1) == 1);
+        REQUIRE(f0.adjFaceIndex(2) == 0);
+        // restore original
+        f0.setAdjFace(0, vcl::NULL_INDEX<uint>);
+        f0.setAdjFace(2, vcl::NULL_INDEX<uint>);
+    }
+
     // 2. Dynamic vertex adjacencies (AdjacentFaces and AdjacentVertices on
     // Vertex)
     auto v0 = m.vertex(0);
@@ -144,6 +162,20 @@ TEST_CASE("Adjacencies")
         ++adjCount;
     }
     REQUIRE(adjCount == 3);
+
+    // Test setAdjVertices single-pass input_range (dynamic)
+    {
+        std::istringstream iss("0 1 2");
+        auto streamRange = std::ranges::subrange(
+            std::istream_iterator<vcl::uint>(iss),
+            std::istream_iterator<vcl::uint>());
+        v3.setAdjVertices(streamRange);
+        REQUIRE(v3.adjVertexCount() == 3);
+        REQUIRE(v3.adjVertexIndex(0) == 0);
+        REQUIRE(v3.adjVertexIndex(1) == 1);
+        REQUIRE(v3.adjVertexIndex(2) == 2);
+        v3.clearAdjVertices();
+    }
 
     // 3. Compaction test
     AdjMesh mComp = m;

@@ -9,6 +9,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <iterator>
+#include <ranges>
+#include <sstream>
+
 inline void testTriangleReferences(MyMesh& mesh)
 {
     auto testF = mesh.face(0);
@@ -54,6 +58,18 @@ inline void testTriangleReferences(MyMesh& mesh)
     REQUIRE(
         (testF.vertexIndex(0) == 0 && testF.vertexIndex(1) == 1 &&
          testF.vertexIndex(2) == 2));
+
+    // Test setVertices single-pass input_range (std::istream_iterator)
+    {
+        std::istringstream iss("2 0 1");
+        auto streamRange = std::ranges::subrange(
+            std::istream_iterator<vcl::uint>(iss),
+            std::istream_iterator<vcl::uint>());
+        testF.setVertices(streamRange);
+        REQUIRE(testF.vertexIndex(0) == 2);
+        REQUIRE(testF.vertexIndex(1) == 0);
+        REQUIRE(testF.vertexIndex(2) == 1);
+    }
 }
 
 TEST_CASE("Vertex References - Polygon References")
@@ -98,6 +114,19 @@ TEST_CASE("Vertex References - Polygon References")
 
     f.clearVertices();
     REQUIRE(f.vertexCount() == 0);
+
+    // Test setVertices single-pass input_range on dynamic Polygon
+    {
+        std::istringstream iss("1 3 4");
+        auto streamRange = std::ranges::subrange(
+            std::istream_iterator<vcl::uint>(iss),
+            std::istream_iterator<vcl::uint>());
+        f.setVertices(streamRange);
+        REQUIRE(f.vertexCount() == 3);
+        REQUIRE(f.vertexIndex(0) == 1);
+        REQUIRE(f.vertexIndex(1) == 3);
+        REQUIRE(f.vertexIndex(2) == 4);
+    }
 }
 
 TEST_CASE("Vertex References")

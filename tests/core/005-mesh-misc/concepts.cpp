@@ -701,8 +701,14 @@ TEST_CASE("Concepts - Traits")
     static_assert(std::is_same_v<ScalarType<SimpleMesh>, float>);
     static_assert(std::is_same_v<ScalarType<const SimpleMesh&>, float>);
     static_assert(std::is_same_v<ScalarType<SimpleMesh::Vertex>, float>);
+    static_assert(std::is_same_v<ScalarType<SimpleMesh::Face>, float>);
+    static_assert(std::is_same_v<ScalarType<MyEdgeMesh::Edge>, float>);
     static_assert(std::is_same_v<ScalarType<Point3f>, float>);
     static_assert(std::is_same_v<ScalarType<Point3d>, double>);
+
+    // Enum underlying types
+    static_assert(std::is_same_v<std::underlying_type_t<CompId>, uint>);
+    static_assert(std::is_same_v<std::underlying_type_t<ElemId>, uint>);
 
     // 7. NormalType
     static_assert(std::is_same_v<NormalType<MyMesh::Vertex>, Point3f>);

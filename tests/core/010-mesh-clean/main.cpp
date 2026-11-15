@@ -260,3 +260,84 @@ TEMPLATE_TEST_CASE(
         REQUIRE(t.vertexCount() == 18844 - nv);
     }
 }
+
+TEST_CASE("Check Mesh References")
+{
+    using namespace vcl;
+
+    SECTION("Valid TriMesh")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        REQUIRE(checkMeshReferences(tm));
+    }
+
+    SECTION("TriMesh with Out-of-Range Vertex Reference")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        tm.face(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with NULL_INDEX Vertex Reference")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        tm.face(0).setVertexIndex(0, TriMesh::NULL_INDEX);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with Reference to Deleted Vertex")
+    {
+        TriMesh tm;
+        populateTriMesh(tm);
+        // vertex 1 is referenced by face 0
+        tm.deleteVertex(1);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("TriMesh with Face Adjacencies")
+    {
+        TriMesh tm;
+        tm.enableFaceAdjacentFaces();
+        populateTriMesh(tm);
+        updateFaceAdjacentFaces(tm);
+        REQUIRE(checkMeshReferences(tm));
+
+        // Corrupt adjacency: out of range
+        tm.face(0).setAdjFace(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+
+        // Corrupt adjacency: pointing to deleted face
+        tm.face(0).setAdjFace(0, 1);
+        tm.deleteFace(1);
+        REQUIRE_THROWS_AS(checkMeshReferences(tm), InconsistentMeshException);
+    }
+
+    SECTION("EdgeMesh with Edge References")
+    {
+        EdgeMesh em;
+        populateEdgeMesh(em);
+        REQUIRE(checkMeshReferences(em));
+
+        // Out of range vertex in edge
+        em.edge(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(em), InconsistentMeshException);
+
+        // Deleted vertex referenced in edge
+        em.edge(0).setVertexIndex(0, 0);
+        em.deleteVertex(0);
+        REQUIRE_THROWS_AS(checkMeshReferences(em), InconsistentMeshException);
+    }
+
+    SECTION("PolyMesh References")
+    {
+        PolyMesh pm;
+        populatePolyMesh(pm);
+        REQUIRE(checkMeshReferences(pm));
+
+        pm.face(0).setVertexIndex(0, 9999);
+        REQUIRE_THROWS_AS(checkMeshReferences(pm), InconsistentMeshException);
+    }
+}

@@ -276,14 +276,29 @@ public:
     void setVertices(this auto&& self, Rng&& rng)
     {
         if constexpr (N >= 0) {
-            assert(std::ranges::distance(rng) == N);
+            Base::setRefs(self, std::forward<Rng>(rng));
         }
         else {
-            self.resizeVertices(std::ranges::distance(rng));
-        }
-        uint i = 0;
-        for (auto&& v : rng) {
-            self.setVertex(i++, v);
+            if constexpr (std::ranges::sized_range<Rng>) {
+                self.resizeVertices(std::ranges::size(rng));
+                uint i = 0;
+                for (auto&& v : rng) {
+                    self.setVertex(i++, v);
+                }
+            }
+            else if constexpr (std::ranges::forward_range<Rng>) {
+                self.resizeVertices(std::ranges::distance(rng));
+                uint i = 0;
+                for (auto&& v : rng) {
+                    self.setVertex(i++, v);
+                }
+            }
+            else {
+                self.resizeVertices(0);
+                for (auto&& v : rng) {
+                    self.pushVertex(v);
+                }
+            }
         }
     }
 
@@ -297,11 +312,14 @@ public:
     void setVertices(this auto&& self, const Args&... args)
         requires (sizeof...(Args) > 1 && (sizeof...(Args) == N || N < 0))
     {
-        if constexpr (N < 0) {
-            self.resizeVertices(sizeof...(Args));
+        if constexpr (N >= 0) {
+            Base::setRefs(self, args...);
         }
-        uint i = 0;
-        (self.setVertex(i++, args), ...);
+        else {
+            self.resizeVertices(sizeof...(Args));
+            uint i = 0;
+            (self.setVertex(i++, args), ...);
+        }
     }
 
     /**

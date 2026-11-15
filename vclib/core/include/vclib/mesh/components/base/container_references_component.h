@@ -107,6 +107,31 @@ public:
         return TARGET_ELEM_ID == REF_ELEM_ID;
     }
 
+    /**
+     * @brief Returns the number of referenced elements stored in this
+     * component.
+     * @param[in] self: The component / element proxy object.
+     * @return The number of referenced elements.
+     */
+    static uint refCount(const auto& self)
+    {
+        return Base::container(self).size();
+    }
+
+    /**
+     * @brief Returns the global element index of the i-th referenced element.
+     * @param[in] self: The component / element proxy object.
+     * @param[in] i: The 0-based local position in this reference container (0
+     * <= i < refCount()).
+     * @return The global index (IndexType) in the target ElementContainer, or
+     * NULL_INDEX if unassigned.
+     */
+    static IndexType refIndex(const auto& self, uint i)
+    {
+        assert(i < refCount(self));
+        return Base::container(self)[i];
+    }
+
 protected:
     /**
      * @brief Updates the stored reference indices according to the newIndices
@@ -170,31 +195,6 @@ protected:
                        NULL_INDEX :
                        static_cast<IndexType>(idx);
         }
-    }
-
-    /**
-     * @brief Returns the number of referenced elements stored in this
-     * component.
-     * @param[in] self: The component / element proxy object.
-     * @return The number of referenced elements.
-     */
-    static uint refCount(const auto& self)
-    {
-        return Base::container(self).size();
-    }
-
-    /**
-     * @brief Returns the global element index of the i-th referenced element.
-     * @param[in] self: The component / element proxy object.
-     * @param[in] i: The 0-based local position in this reference container (0
-     * <= i < refCount()).
-     * @return The global index (IndexType) in the target ElementContainer, or
-     * NULL_INDEX if unassigned.
-     */
-    static IndexType refIndex(const auto& self, uint i)
-    {
-        assert(i < refCount(self));
-        return Base::container(self)[i];
     }
 
     /**
@@ -308,14 +308,45 @@ protected:
     static void setRefs(auto&& self, Rng&& rng)
     {
         if constexpr (N >= 0) {
-            assert(std::ranges::distance(rng) == N);
+            if constexpr (std::ranges::sized_range<Rng>) {
+                assert(std::ranges::size(rng) == static_cast<std::size_t>(N));
+            }
+            uint i = 0;
+            for (auto&& item : rng) {
+                assert(i < static_cast<uint>(N));
+                setRef(self, i++, item);
+            }
+            assert(i == static_cast<uint>(N));
         }
         else if constexpr (!TTVC) {
-            resizeRefs(self, std::ranges::distance(rng));
+            if constexpr (std::ranges::sized_range<Rng>) {
+                resizeRefs(self, std::ranges::size(rng));
+                uint i = 0;
+                for (auto&& item : rng) {
+                    setRef(self, i++, item);
+                }
+            }
+            else if constexpr (std::ranges::forward_range<Rng>) {
+                resizeRefs(self, std::ranges::distance(rng));
+                uint i = 0;
+                for (auto&& item : rng) {
+                    setRef(self, i++, item);
+                }
+            }
+            else {
+                clearRefs(self);
+                for (auto&& item : rng) {
+                    pushRef(self, item);
+                }
+            }
         }
-        uint i = 0;
-        for (auto&& item : rng) {
-            setRef(self, i++, item);
+        else {
+            uint i = 0;
+            for (auto&& item : rng) {
+                assert(i < refCount(self));
+                setRef(self, i++, item);
+            }
+            assert(i == refCount(self));
         }
     }
 

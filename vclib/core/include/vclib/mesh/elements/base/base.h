@@ -35,7 +35,7 @@ namespace vcl {
  *
  * @ingroup base
  */
-enum class ElemId
+enum class ElemId : uint
 {
     VERTEX = 0,
     FACE,
