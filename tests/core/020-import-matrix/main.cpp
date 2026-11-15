@@ -1043,3 +1043,40 @@ TEST_CASE("Import mesh - error handling")
             vcl::WrongSizeException);
     }
 }
+
+TEST_CASE("Import Material Index Sentinels", "[import][sentinels]")
+{
+    using TriMesh = vcl::TriMesh;
+    TriMesh mesh;
+    mesh.addVertices(3);
+    mesh.addFace(0, 1, 2);
+
+    SECTION("Import from signed integers")
+    {
+        std::vector<int> vertMat = {5, -1, 100};
+        vcl::vertexMaterialIndicesFromRange(mesh, vertMat);
+        REQUIRE(mesh.isVertexMaterialIndexAvailable());
+        REQUIRE(mesh.vertex(0).materialIndex() == 5);
+        REQUIRE(mesh.vertex(1).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(mesh.vertex(2).materialIndex() == 100);
+
+        std::vector<int> faceMat = {-1};
+        vcl::faceMaterialIndicesFromRange(mesh, faceMat);
+        REQUIRE(mesh.isFaceMaterialIndexAvailable());
+        REQUIRE(mesh.face(0).materialIndex() == vcl::USHORT_NULL);
+    }
+
+    SECTION("Import from floating point")
+    {
+        std::vector<double> vertMat = {12.0, -1.0, 99.0};
+        vcl::vertexMaterialIndicesFromRange(mesh, vertMat);
+        REQUIRE(mesh.vertex(0).materialIndex() == 12);
+        REQUIRE(mesh.vertex(1).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(mesh.vertex(2).materialIndex() == 99);
+
+        std::vector<double> faceMat = {-1.0};
+        vcl::faceMaterialIndicesFromRange(mesh, faceMat);
+        REQUIRE(mesh.face(0).materialIndex() == vcl::USHORT_NULL);
+    }
+}
+

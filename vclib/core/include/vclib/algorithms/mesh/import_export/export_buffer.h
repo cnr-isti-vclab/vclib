@@ -244,8 +244,8 @@ void faceVertexIndicesToBuffer(
  * times `largestFaceSize`). For each face that has less vertices than the
  * largest face size, the remaining indices are set to the sentinel value of the
  * buffer element type (i.e. `static_cast<BufferValueType>(-1)`, which is `-1`
- * for signed integer types or the maximum representable value for unsigned
- * integer types).
+ * for signed integer types, `-1.0` for floating-point types, or the maximum
+ * representable value for unsigned integer types).
  *
  * For triangle meshes, you can set `largestFaceSize` to 3. For polygonal
  * meshes, you can use the function @ref vcl::largestFaceSize to get the largest
@@ -1527,6 +1527,12 @@ void vertexTexCoordsToBuffer(
  * the mesh. The buffer must be preallocated with the correct size (number of
  * vertices).
  *
+ * For vertices that have no material assigned (`vcl::USHORT_NULL`), the
+ * corresponding buffer entry is set to the sentinel value of the buffer element
+ * type (i.e. `static_cast<BufferValueType>(-1)`, which is `-1` for signed
+ * integer types, `-1.0` for floating-point types, or the maximum representable
+ * value for unsigned integer types).
+ *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
@@ -1541,11 +1547,14 @@ template<MeshConcept MeshType>
 void vertexMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
     using IndexType = typename MeshType::IndexType;
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
 
     requireVertexMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& v : mesh.vertices()) {
-        buffer[i] = v.materialIndex();
+        auto mi = v.materialIndex();
+        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1563,6 +1572,12 @@ void vertexMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * For each face, the function takes the material index of the first vertex of
  * the face and stores it in the buffer.
  *
+ * If the first vertex of a face has no material assigned (`vcl::USHORT_NULL`),
+ * the corresponding entry is set to the sentinel value of the buffer element
+ * type (i.e. `static_cast<BufferValueType>(-1)`, which is `-1` for signed
+ * integer types, `-1.0` for floating-point types, or the maximum representable
+ * value for unsigned integer types).
+ *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the face indices of the mesh. This scenario is possible when
  * the mesh has deleted faces. To be sure to have a direct correspondence,
@@ -1579,12 +1594,14 @@ void vertexMaterialIndicesAsFaceMaterialIndicesToBuffer(
     auto*           buffer)
 {
     using IndexType = typename MeshType::IndexType;
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
 
     requireVertexMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& f : mesh.faces()) {
-        auto ti   = f.vertex(0).materialIndex();
-        buffer[i] = ti;
+        auto mi = f.vertex(0).materialIndex();
+        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1603,6 +1620,12 @@ void vertexMaterialIndicesAsFaceMaterialIndicesToBuffer(
  * takes the material index of the first vertex of the face that contains the
  * triangle and stores it in the buffer.
  *
+ * If the first vertex of a face has no material assigned (`vcl::USHORT_NULL`),
+ * the corresponding entries are set to the sentinel value of the buffer element
+ * type (i.e. `static_cast<BufferValueType>(-1)`, which is `-1` for signed
+ * integer types, `-1.0` for floating-point types, or the maximum representable
+ * value for unsigned integer types).
+ *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
  * vcl::triangulatedFaceIndicesToBuffer function to get the index map.
@@ -1619,14 +1642,18 @@ void vertexMaterialIndicesAsTriangulatedFaceMaterialIndicesToBuffer(
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap)
 {
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+
     requireVertexMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
-        auto ti    = f.vertex(0).materialIndex();
+        auto mi    = f.vertex(0).materialIndex();
+        auto val   = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         auto first = indexMap.triangleBegin(f.index());
         auto last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
-            buffer[t] = ti;
+            buffer[t] = val;
         }
     }
 }
@@ -1712,6 +1739,12 @@ void faceWedgeTexCoordsToBuffer(
  * appear in the mesh. The buffer must be preallocated with the correct size
  * (number of faces).
  *
+ * For faces that have no material assigned (`vcl::USHORT_NULL`), the
+ * corresponding buffer entry is set to the sentinel value of the buffer element
+ * type (i.e. `static_cast<BufferValueType>(-1)`, which is `-1` for signed
+ * integer types, `-1.0` for floating-point types, or the maximum representable
+ * value for unsigned integer types).
+ *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the face indices of the mesh. This scenario is possible when
  * the mesh has deleted faces. To be sure to have a direct correspondence,
@@ -1726,11 +1759,14 @@ template<FaceMeshConcept MeshType>
 void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
 {
     using IndexType = typename MeshType::IndexType;
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
 
     requireFaceMaterialIndex(mesh);
 
     for (IndexType i = 0; const auto& f : mesh.faces()) {
-        buffer[i] = f.materialIndex();
+        auto mi = f.materialIndex();
+        buffer[i] = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         ++i;
     }
 }
@@ -1743,6 +1779,13 @@ void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
  * buffer. Material indices are stored in the buffer following the order the
  * faces appear in the mesh. The buffer must be preallocated with the correct
  * size (number of triangles).
+ *
+ * For triangles derived from faces that have no material assigned
+ * (`vcl::USHORT_NULL`), the corresponding buffer entries are set to the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
@@ -1762,13 +1805,18 @@ void triangulatedFaceMaterialIndicesToBuffer(
     auto*                    buffer,
     const TriPolyIndexBiMap& indexMap)
 {
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
+
     requireFaceMaterialIndex(mesh);
 
     for (const auto& f : mesh.faces()) {
+        auto mi    = f.materialIndex();
+        auto val   = (mi == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(mi);
         auto first = indexMap.triangleBegin(f.index());
         auto last  = first + indexMap.triangleCount(f.index());
         for (auto t = first; t < last; ++t) {
-            buffer[t] = f.materialIndex();
+            buffer[t] = val;
         }
     }
 }
@@ -1898,6 +1946,13 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
  * @note The buffer must be preallocated with the correct size (total number of
  * vertices).
  *
+ * For vertices originating from faces that have no material assigned
+ * (`vcl::USHORT_NULL`), the corresponding buffer entries are set to the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
+ *
  * @tparam MeshType: The type of the mesh.
  *
  * @param[in] mesh: The mesh from which take the face material indices.
@@ -1919,6 +1974,8 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
     auto*                                                             buffer)
 {
     using IndexType = typename MeshType::IndexType;
+    using BufferValueType = std::remove_cvref_t<decltype(buffer[0])>;
+    const auto SENTINEL = detail::bufferSentinel<BufferValueType>();
 
     requireFaceMaterialIndex(mesh);
 
@@ -1930,7 +1987,7 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
     for (const auto& v : mesh.vertices()) {
         auto fInd  = vertWedgeMap[vi].first;
         auto ti    = mesh.face(fInd).materialIndex();
-        buffer[vi] = ti;
+        buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
         ++vi;
     }
 
@@ -1942,7 +1999,7 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
         auto        fInd = p.first;
 
         auto ti    = mesh.face(fInd).materialIndex();
-        buffer[vi] = ti;
+        buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
         ++vi;
     }
 }
@@ -1953,10 +2010,11 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
  * the user must provide the size of the largest adjacency list with the
  * `largestAdjacentVerticesSize` parameter.
  * For vertices that have less adjacent vertices than
- * `largestAdjacentVerticesSize`, the remaining entries are filled with the
- * sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * `largestAdjacentVerticesSize`, or for entries that have no adjacent vertex
+ * (e.g. boundary vertices), the entries are filled with the sentinel value of
+ * the buffer element type (i.e. `static_cast<BufferValueType>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * You can use the function @ref vcl::largestVertexAdjacentVerticesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2005,7 +2063,9 @@ void vertexAdjacentVerticesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjVertexIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ?
+                    SENTINEL :
+                    static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value
@@ -2021,10 +2081,12 @@ void vertexAdjacentVerticesToBuffer(
  * element of a Mesh. The number of adjacent faces for each ELEM_ID can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentFacesSize` parameter. For elements that have less
- * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent faces than `largestAdjacentFacesSize`, or for entries that have no
+ * adjacent face (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestElementAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2074,7 +2136,9 @@ void elementAdjacentFacesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjFaceIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ?
+                    SENTINEL :
+                    static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value
@@ -2090,10 +2154,12 @@ void elementAdjacentFacesToBuffer(
  * of a Mesh. The number of adjacent faces for each vertex can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentFacesSize` parameter. For elements that have less
- * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent faces than `largestAdjacentFacesSize`, or for entries that have no
+ * adjacent face (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestVertexAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2165,10 +2231,12 @@ void faceAdjacentFacesToBuffer(
  * of a Mesh. The number of adjacent faces for each edge can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentFacesSize` parameter. For elements that have less
- * adjacent faces than `largestAdjacentFacesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent faces than `largestAdjacentFacesSize`, or for entries that have no
+ * adjacent face (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestEdgeAdjacentFacesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2208,10 +2276,12 @@ void edgeAdjacentFacesToBuffer(
  * element of a Mesh. The number of adjacent edges for each ELEM_ID can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentEdgesSize` parameter. For elements that have less
- * adjacent faces than `largestAdjacentEdgesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent edges than `largestAdjacentEdgesSize`, or for entries that have no
+ * adjacent edge (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestElementAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2261,7 +2331,9 @@ void elementAdjacentEdgesToBuffer(
         uint adjIndex = 0;
         for (auto idx : v.adjEdgeIndices()) {
             at(buffer, i, adjIndex, NUM_ROWS, NUM_COLS, storage) =
-                static_cast<BufferValueType>(idx);
+                idx == MeshType::NULL_INDEX ?
+                    SENTINEL :
+                    static_cast<BufferValueType>(idx);
             ++adjIndex;
         }
         // fill the remaining entries with the sentinel value
@@ -2277,10 +2349,12 @@ void elementAdjacentEdgesToBuffer(
  * of a Mesh. The number of adjacent edges for each vertex can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentEdgesSize` parameter. For elements that have less
- * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent edges than `largestAdjacentEdgesSize`, or for entries that have no
+ * adjacent edge (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestVertexAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2319,10 +2393,12 @@ void vertexAdjacentEdgesToBuffer(
  * of a Mesh. The number of adjacent edges for each face can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentEdgesSize` parameter. For elements that have less
- * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent edges than `largestAdjacentEdgesSize`, or for entries that have no
+ * adjacent edge (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestFaceAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:
@@ -2362,10 +2438,12 @@ void faceAdjacentEdgesToBuffer(
  * of a Mesh. The number of adjacent edges for each edge can be
  * different, so the user must provide the size of the largest adjacency list
  * with the `largestAdjacentEdgesSize` parameter. For elements that have less
- * adjacent edges than `largestAdjacentEdgesSize`, the remaining entries
- * are filled with the sentinel value of the buffer element type (i.e.
- * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types or
- * the maximum representable value for unsigned integer types).
+ * adjacent edges than `largestAdjacentEdgesSize`, or for entries that have no
+ * adjacent edge (e.g. boundary elements), the entries are filled with the
+ * sentinel value of the buffer element type (i.e.
+ * `static_cast<BufferValueType>(-1)`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * You can use the function @ref vcl::largestEdgeAdjacentEdgesCount to
  * get the largest adjacency size and allocate the buffer accordingly:

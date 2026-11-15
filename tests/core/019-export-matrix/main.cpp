@@ -994,3 +994,64 @@ TEMPLATE_TEST_CASE(
         }
     }
 }
+
+TEST_CASE("Export Material Index and Adjacency Sentinels", "[export][sentinels]")
+{
+    using TriMesh = vcl::TriMesh;
+    TriMesh mesh;
+    mesh.addVertices(3);
+    mesh.addFace(0, 1, 2);
+
+    SECTION("Material Index Sentinel Export")
+    {
+        mesh.enableVertexMaterialIndex();
+        mesh.enableFaceMaterialIndex();
+
+        mesh.vertex(0).materialIndex() = 0;
+        mesh.vertex(1).materialIndex() = 42;
+        mesh.vertex(2).materialIndex() = vcl::USHORT_NULL;
+
+        mesh.face(0).materialIndex() = vcl::USHORT_NULL;
+
+        auto vMatInt = vcl::vertexMaterialIndicesVector<Eigen::VectorXi>(mesh);
+        REQUIRE(vMatInt.size() == 3);
+        REQUIRE(vMatInt(0) == 0);
+        REQUIRE(vMatInt(1) == 42);
+        REQUIRE(vMatInt(2) == -1);
+
+        auto vMatDouble =
+            vcl::vertexMaterialIndicesVector<Eigen::VectorXd>(mesh);
+        REQUIRE(vMatDouble.size() == 3);
+        REQUIRE(vMatDouble(0) == 0.0);
+        REQUIRE(vMatDouble(1) == 42.0);
+        REQUIRE(vMatDouble(2) == -1.0);
+
+        auto fMatInt = vcl::faceMaterialIndicesVector<Eigen::VectorXi>(mesh);
+        REQUIRE(fMatInt.size() == 1);
+        REQUIRE(fMatInt(0) == -1);
+
+        auto fMatDouble = vcl::faceMaterialIndicesVector<Eigen::VectorXd>(mesh);
+        REQUIRE(fMatDouble.size() == 1);
+        REQUIRE(fMatDouble(0) == -1.0);
+    }
+
+    SECTION("64-bit Adjacency Sentinel Export")
+    {
+        mesh.enableFaceAdjacentFaces();
+        vcl::updateFaceAdjacentFaces(mesh);
+
+        // Since it's a single triangle, all adjacent faces are NULL_INDEX
+        auto fAdj64 = vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int64_t>>(mesh);
+        REQUIRE(fAdj64.rows() == 1);
+        REQUIRE(fAdj64.cols() == 3);
+        REQUIRE(fAdj64(0, 0) == -1);
+        REQUIRE(fAdj64(0, 1) == -1);
+        REQUIRE(fAdj64(0, 2) == -1);
+
+        auto fAdjInt = vcl::faceAdjacentFacesMatrix<EigenRowMatrix<int>>(mesh);
+        REQUIRE(fAdjInt(0, 0) == -1);
+        REQUIRE(fAdjInt(0, 1) == -1);
+        REQUIRE(fAdjInt(0, 2) == -1);
+    }
+}
+

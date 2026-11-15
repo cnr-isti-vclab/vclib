@@ -161,7 +161,9 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
  *
  * If the mesh is polygonal, the matrix will have a number of columns equal to
  * the largest polygon of the mesh, and unused values will be set to the
- * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1027,6 +1029,12 @@ Matrix vertexTexCoordsMatrix(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * material indices available.
  *
+ * If a vertex has no material assigned (`vcl::USHORT_NULL`), the corresponding
+ * entry is set to the sentinel value of the vector scalar type
+ * (`detail::bufferSentinel<Scalar>()`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
+ *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
@@ -1106,6 +1114,12 @@ Matrix faceWedgeTexCoordsMatrix(const MeshType& mesh)
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * material indices available.
+ *
+ * If a face has no material assigned (`vcl::USHORT_NULL`), the corresponding
+ * entry is set to the sentinel value of the vector scalar type
+ * (`detail::bufferSentinel<Scalar>()`, which is `-1` for signed integer types,
+ * `-1.0` for floating-point types, or the maximum representable value for
+ * unsigned integer types).
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible
@@ -1189,8 +1203,11 @@ Container<Container<T>> vertexAdjacentVerticesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#V*LVA Matrix of integers containing the adjacent vertex
  * indices for each vertex of a Mesh. LVA is the largest vertex adjacency size
- * of the mesh. The unused values will be set to the sentinel value of the
- * matrix scalar type (`static_cast<Scalar>(-1)`).
+ * of the mesh. The unused values, as well as entries corresponding to boundary
+ * or missing adjacent vertices, will be set to the sentinel value of the
+ * matrix scalar type (`static_cast<Scalar>(-1)`, which is `-1` for signed
+ * integer types, `-1.0` for floating-point types, or the maximum representable
+ * value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1301,8 +1318,11 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#E*LFA Matrix of integers containing the adjacent face
  * indices for each ELEM_ID element of a Mesh. LFA is the largest face
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent faces, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1397,8 +1417,11 @@ Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#V*LFA Matrix of integers containing the adjacent face
  * indices for each vertex of a Mesh. LFA is the largest face
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent faces, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1479,8 +1502,11 @@ Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#F*LFA Matrix of integers containing the adjacent face
  * indices for each face of a Mesh. LFA is the largest face
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent faces, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1562,8 +1588,11 @@ Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#E*LFA Matrix of integers containing the adjacent face
  * indices for each edge of a Mesh. LFA is the largest face
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent faces, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1672,8 +1701,11 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#E*LEA Matrix of integers containing the adjacent edge
  * indices for each ELEM_ID element of a Mesh. LEA is the largest edge
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent edges, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1768,8 +1800,11 @@ Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#V*LEA Matrix of integers containing the adjacent edge
  * indices for each vertex of a Mesh. LEA is the largest edge
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent edges, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1856,8 +1891,11 @@ Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#F*LEA Matrix of integers containing the adjacent edge
  * indices for each face of a Mesh. LEA is the largest edge
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent edges, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *
@@ -1939,8 +1977,11 @@ Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)
 /**
  * @brief Get a \#E*LEA Matrix of integers containing the adjacent edge
  * indices for each edge of a Mesh. LEA is the largest edge
- * adjacency size of the mesh. The unused values will be set to the sentinel
- * value of the matrix scalar type (`static_cast<Scalar>(-1)`).
+ * adjacency size of the mesh. The unused values, as well as entries
+ * corresponding to boundary or missing adjacent edges, will be set to the
+ * sentinel value of the matrix scalar type (`static_cast<Scalar>(-1)`, which is
+ * `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * This function works with every Matrix type that satisfies the MatrixConcept.
  *

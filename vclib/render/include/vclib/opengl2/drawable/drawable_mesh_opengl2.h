@@ -398,8 +398,11 @@ private:
                     int   vid0_ptr = 3 * vid0;
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.vertexTextureIDsBufferData()[tid]];
+                    auto texIdx = mMRD.vertexTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
@@ -432,8 +435,11 @@ private:
                     int   vid0_ptr = 3 * vid0;
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.wedgeTextureIDsBufferData()[tid]];
+                    auto texIdx = mMRD.wedgeTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);

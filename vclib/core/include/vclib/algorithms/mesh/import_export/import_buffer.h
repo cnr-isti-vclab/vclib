@@ -130,7 +130,9 @@ void vertexPositionsFromBuffer(
  * If the MeshType is a polygonal mesh, the size of each polygonal face is
  * determined by counting the number of valid vertex indices in each row of the
  * input buffer. Valid vertex indices are non-negative and not equal to the
- * buffer scalar type sentinel value (`static_cast<BufferValueType>(-1)`).
+ * buffer scalar type sentinel value (`static_cast<BufferValueType>(-1)`, which
+ * is `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
@@ -1131,6 +1133,12 @@ void vertexTexCoordsFromBuffer(
  * The function enables the per-vertex material index component if it is not
  * already enabled.
  *
+ * Values in the buffer equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the buffer scalar sentinel value
+ * (`static_cast<BufferValueType>(-1)`) are interpreted as unassigned materials
+ * and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  * @param[in/out] mesh: the mesh on which import the input vertex material
@@ -1148,7 +1156,7 @@ void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
     requireVertexMaterialIndex(mesh);
 
     for (IndexType i = 0; auto v : mesh.vertices()) {
-        v.materialIndex() = buffer[i];
+        v.materialIndex() = detail::toMaterialIndex(buffer[i]);
         ++i;
     }
 }
@@ -1232,6 +1240,12 @@ void faceWedgeTexCoordsFromBuffer(
  * The function enables the per-face material index component if it is not
  * already enabled.
  *
+ * Values in the buffer equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the buffer scalar sentinel value
+ * (`static_cast<BufferValueType>(-1)`) are interpreted as unassigned materials
+ * and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  * @param[in/out] mesh: the mesh on which import the input face material
@@ -1249,7 +1263,7 @@ void faceMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
     requireFaceMaterialIndex(mesh);
 
     for (IndexType i = 0; auto f : mesh.faces()) {
-        f.materialIndex() = buffer[i];
+        f.materialIndex() = detail::toMaterialIndex(buffer[i]);
         ++i;
     }
 }

@@ -226,8 +226,9 @@ void vertexPositionsFromMatrix(
  *
  * If the MeshType is a polygonal mesh, the size of each polygonal face is
  * determined by counting the number of valid vertex indices in each row of the
- * input face matrix. Valid vertex indices are non-negative and not equal to
- * MeshType::NULL_INDEX.
+ * input face matrix. Valid vertex indices are non-negative and not equal to the
+ * matrix scalar sentinel value (`static_cast<Scalar>(-1)`) or
+ * `MeshType::NULL_INDEX`.
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
@@ -995,6 +996,12 @@ void vertexTexCoordsFromMatrix(MeshType& mesh, const VTMatrix& vertexTexCoords)
  * The function enables the per-vertex material indices component if it is not
  * already enabled.
  *
+ * Values in the range equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the range scalar sentinel value
+ * (`static_cast<std::ranges::range_value_t<R>>(-1)`) are interpreted as
+ * unassigned materials and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  * @tparam R: the type of the input range. It must satisfy the Range concept.
@@ -1017,7 +1024,7 @@ void vertexMaterialIndicesFromRange(MeshType& mesh, R&& materialIndices)
 
     auto tt = materialIndices.begin();
     for (auto v : mesh.vertices()) {
-        v.materialIndex() = *tt;
+        v.materialIndex() = detail::toMaterialIndex(*tt);
         ++tt;
     }
 }
@@ -1075,6 +1082,12 @@ void faceWedgeTexCoordsFromMatrix(
  * The function enables the per-face material index component if it is not
  * already enabled.
  *
+ * Values in the range equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the range scalar sentinel value
+ * (`static_cast<std::ranges::range_value_t<R>>(-1)`) are interpreted as
+ * unassigned materials and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  * @tparam R: the type of the input range. It must satisfy the Range concept.
@@ -1097,7 +1110,7 @@ void faceMaterialIndicesFromRange(MeshType& mesh, R&& materialIndices)
 
     auto tt = materialIndices.begin();
     for (auto f : mesh.faces()) {
-        f.materialIndex() = *tt;
+        f.materialIndex() = detail::toMaterialIndex(*tt);
         ++tt;
     }
 }
