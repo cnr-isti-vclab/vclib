@@ -92,10 +92,11 @@ void compactVector(
  * // (vec[0] moved to position 2, vec[1] moved to position 0, etc.)
  * @endcode
  */
-template<typename T, typename... Args>
+template<typename T, typename Index = uint, typename... Args>
+requires std::unsigned_integral<Index>
 void permuteInPlace(
-    std::vector<T, Args...>& vec,
-    const std::vector<uint>& newIndices)
+    std::vector<T, Args...>&  vec,
+    const std::vector<Index>& newIndices)
 {
     using std::swap;
 
@@ -103,17 +104,17 @@ void permuteInPlace(
 
     std::vector<bool> visited(vec.size(), false);
 
-    for (uint i = 0; i < vec.size(); ++i) {
+    for (std::size_t i = 0; i < vec.size(); ++i) {
         if (visited[i] || newIndices[i] == i) {
             continue;
         }
 
-        uint current = i;
-        T    temp    = std::move(vec[i]);
+        std::size_t current = i;
+        T           temp    = std::move(vec[i]);
 
         while (!visited[current]) {
             visited[current] = true;
-            int next         = newIndices[current];
+            std::size_t next = newIndices[current];
             swap(temp, vec[next]);
             current = next;
         }

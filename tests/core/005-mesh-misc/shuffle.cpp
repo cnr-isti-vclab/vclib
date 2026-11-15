@@ -8,6 +8,7 @@
 #include "types.h"
 
 #include <vclib/algorithms/mesh.h>
+#include <vclib/base.h>
 #include <vclib/meshes.h>
 #include <vclib/space/complex.h>
 
@@ -243,5 +244,21 @@ TEST_CASE("Shuffle - Sort Proxy Vector and StaticGrid Do Not Corrupt Mesh")
         REQUIRE(f.vertexIndex(1) == origFaces[idx][1]);
         REQUIRE(f.vertexIndex(2) == origFaces[idx][2]);
         ++idx;
+    }
+}
+
+TEST_CASE("Permute - permuteInPlace 32 and 64 bit")
+{
+    {
+        std::vector<std::string> vec        = {"zero", "one", "two", "three"};
+        std::vector<uint>        newIndices = {2, 0, 3, 1};
+        vcl::permuteInPlace(vec, newIndices);
+        REQUIRE((vec == std::vector<std::string> {"one", "three", "zero", "two"}));
+    }
+    {
+        std::vector<std::string> vec        = {"zero", "one", "two", "three"};
+        std::vector<uint64_t>    newIndices = {2, 0, 3, 1};
+        vcl::permuteInPlace(vec, newIndices);
+        REQUIRE((vec == std::vector<std::string> {"one", "three", "zero", "two"}));
     }
 }

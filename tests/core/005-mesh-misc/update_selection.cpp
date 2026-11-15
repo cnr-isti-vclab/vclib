@@ -265,3 +265,26 @@ TEST_CASE("Update Selection - Selection Exceptions")
     assertThrowsMissingSelectionComponent(
         [&]() { vcl::selectCreaseFaceEdges(tet, 0.0, 1.0); });
 }
+
+TEST_CASE("Update Selection - 64-bit selection count return type")
+{
+    vcl::TriMesh64 m;
+    m.addVertex(Point3d(0, 0, 0));
+    m.addVertex(Point3d(1, 0, 0));
+    m.addVertex(Point3d(0, 1, 0));
+    m.addFace(0, 1, 2);
+
+    m.vertex(0).selected() = true;
+    m.vertex(2).selected() = true;
+    m.face(0).selected()   = true;
+
+    static_assert(
+        std::same_as<decltype(vcl::vertexSelectionCount(m)), uint64_t>);
+    static_assert(
+        std::same_as<decltype(vcl::faceSelectionCount(m)), uint64_t>);
+    static_assert(
+        std::same_as<decltype(vcl::faceEdgesSelectionCount(m)), uint64_t>);
+
+    REQUIRE(vcl::vertexSelectionCount(m) == 2);
+    REQUIRE(vcl::faceSelectionCount(m) == 1);
+}

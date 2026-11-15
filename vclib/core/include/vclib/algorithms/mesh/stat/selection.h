@@ -22,10 +22,11 @@ namespace vcl {
  * @return The number of selected elements.
  */
 template<ElemId ELEM_ID, MeshConcept MeshType>
-uint elementSelectionCount(const MeshType& m)
+auto elementSelectionCount(const MeshType& m)
 {
-    return std::ranges::distance(
-        m.template elements<ELEM_ID>() | views::selected);
+    using IndexType = typename MeshType::IndexType;
+    return static_cast<IndexType>(
+        std::ranges::distance(m.template elements<ELEM_ID>() | views::selected));
 }
 
 /**
@@ -34,7 +35,7 @@ uint elementSelectionCount(const MeshType& m)
  * @return The number of selected vertices.
  */
 template<MeshConcept MeshType>
-uint vertexSelectionCount(const MeshType& m)
+auto vertexSelectionCount(const MeshType& m)
 {
     return elementSelectionCount<ElemId::VERTEX>(m);
 }
@@ -45,7 +46,7 @@ uint vertexSelectionCount(const MeshType& m)
  * @return The number of selected faces.
  */
 template<FaceMeshConcept MeshType>
-uint faceSelectionCount(const MeshType& m)
+auto faceSelectionCount(const MeshType& m)
 {
     return elementSelectionCount<ElemId::FACE>(m);
 }
@@ -61,9 +62,10 @@ uint faceSelectionCount(const MeshType& m)
  * @return The number of selected edges.
  */
 template<FaceMeshConcept MeshType>
-uint faceEdgesSelectionCount(const MeshType& m)
+auto faceEdgesSelectionCount(const MeshType& m)
 {
-    uint cnt = 0;
+    using IndexType = typename MeshType::IndexType;
+    IndexType cnt   = 0;
     for (const auto& f : m.faces()) {
         for (uint i = 0; i < f.vertexCount(); ++i) {
             if (f.edgeSelected(i)) {
@@ -81,7 +83,7 @@ uint faceEdgesSelectionCount(const MeshType& m)
  * @return The number of selected edges.
  */
 template<EdgeMeshConcept MeshType>
-uint edgeSelectionCount(const MeshType& m)
+auto edgeSelectionCount(const MeshType& m)
 {
     return elementSelectionCount<ElemId::EDGE>(m);
 }

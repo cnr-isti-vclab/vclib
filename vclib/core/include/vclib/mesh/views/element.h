@@ -17,7 +17,7 @@ namespace vcl {
 
 template<typename T>
 concept HasIndexMember = requires(T&& t) {
-    { t.index() } -> std::convertible_to<uint>;
+    { t.index() } -> std::unsigned_integral;
 };
 
 template<typename R>
@@ -32,7 +32,7 @@ struct UnsupportedElementView
 {
 };
 
-inline constexpr auto index = [](auto&& p) -> uint {
+inline constexpr auto index = [](auto&& p) {
     return p.index();
 };
 
@@ -63,7 +63,7 @@ inline constexpr auto elements = detail::UnsupportedElementView {};
  *
  * Example:
  * @code{.cpp}
- * for (uint id : mesh.vertices() | views::indices) {
+ * for (auto id : mesh.vertices() | views::indices) {
  *     // ...
  * }
  * @endcode

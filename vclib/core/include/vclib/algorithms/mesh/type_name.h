@@ -42,10 +42,10 @@ constexpr std::string meshTypeName()
             name += "Edge";
 
         name += "Mesh";
+    }
 
-        if constexpr (std::same_as<typename MeshType::Vertex::IndexType, uint64_t>) {
-            name += "64";
-        }
+    if constexpr (std::same_as<typename MeshType::Vertex::IndexType, uint64_t>) {
+        name += "64";
     }
 
     if constexpr (std::same_as<ScalarType, float>)

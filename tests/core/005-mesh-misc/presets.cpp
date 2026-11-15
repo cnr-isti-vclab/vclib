@@ -5,6 +5,7 @@
 // v. 2.0. If a copy of the MPL was not distributed with this file, You can
 // obtain one at https://mozilla.org/MPL/2.0/.
 
+#include <vclib/algorithms/mesh.h>
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
 
@@ -191,4 +192,32 @@ TEST_CASE("Presets")
         TPM tpm;
         REQUIRE((tpm.vertexCount() == 0 && tpm.faceCount() == 0));
     }
+}
+
+TEST_CASE("Mesh Type Names")
+{
+    REQUIRE(vcl::meshTypeName<vcl::PointCloud>() == "PointCloud");
+    REQUIRE(vcl::meshTypeName<vcl::PointCloudf>() == "PointCloudf");
+    REQUIRE(vcl::meshTypeName<vcl::PointCloud64>() == "PointCloud64");
+    REQUIRE(vcl::meshTypeName<vcl::PointCloud64f>() == "PointCloud64f");
+
+    REQUIRE(vcl::meshTypeName<vcl::TriMesh>() == "TriMesh");
+    REQUIRE(vcl::meshTypeName<vcl::TriMeshf>() == "TriMeshf");
+    REQUIRE(vcl::meshTypeName<vcl::TriMesh64>() == "TriMesh64");
+    REQUIRE(vcl::meshTypeName<vcl::TriMesh64f>() == "TriMesh64f");
+
+    REQUIRE(vcl::meshTypeName<vcl::PolyMesh>() == "PolyMesh");
+    REQUIRE(vcl::meshTypeName<vcl::PolyMeshf>() == "PolyMeshf");
+    REQUIRE(vcl::meshTypeName<vcl::PolyMesh64>() == "PolyMesh64");
+    REQUIRE(vcl::meshTypeName<vcl::PolyMesh64f>() == "PolyMesh64f");
+
+    REQUIRE(vcl::meshTypeName<vcl::EdgeMesh>() == "EdgeMesh");
+    REQUIRE(vcl::meshTypeName<vcl::EdgeMeshf>() == "EdgeMeshf");
+    REQUIRE(vcl::meshTypeName<vcl::EdgeMesh64>() == "EdgeMesh64");
+    REQUIRE(vcl::meshTypeName<vcl::EdgeMesh64f>() == "EdgeMesh64f");
+
+    REQUIRE(vcl::meshTypeName<vcl::TriEdgeMesh>() == "TriEdgeMesh");
+    REQUIRE(vcl::meshTypeName<vcl::TriEdgeMeshf>() == "TriEdgeMeshf");
+    REQUIRE(vcl::meshTypeName<vcl::TriEdgeMesh64>() == "TriEdgeMesh64");
+    REQUIRE(vcl::meshTypeName<vcl::TriEdgeMesh64f>() == "TriEdgeMesh64f");
 }

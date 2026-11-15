@@ -7,6 +7,8 @@
 
 #include "types.h"
 
+#include <vclib/meshes.h>
+
 #include <catch2/catch_test_macros.hpp>
 
 #include <ranges>
@@ -131,6 +133,26 @@ TEST_CASE("Views - Element Views")
         vIndices.push_back(idx);
     }
     REQUIRE((vIndices == std::vector<uint> {0, 2, 3}));
+
+    // --- 8. 64-bit mesh indices view without truncation ---
+    vcl::TriMesh64 m64;
+    m64.addVertex(Point3d(0, 0, 0));
+    m64.addVertex(Point3d(1, 0, 0));
+    m64.addVertex(Point3d(0, 1, 0));
+    m64.addFace(0, 1, 2);
+
+    static_assert(std::same_as<
+        std::ranges::range_value_t<decltype(m64.vertices() | views::indices)>,
+        uint64_t>);
+    static_assert(std::same_as<
+        std::ranges::range_value_t<decltype(m64.faces() | views::indices)>,
+        uint64_t>);
+
+    std::vector<uint64_t> v64Indices;
+    for (auto idx : m64.vertices() | views::indices) {
+        v64Indices.push_back(idx);
+    }
+    REQUIRE((v64Indices == std::vector<uint64_t> {0, 1, 2}));
 }
 
 TEST_CASE("Views - Selection Views")

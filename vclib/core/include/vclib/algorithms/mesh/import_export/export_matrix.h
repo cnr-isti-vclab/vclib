@@ -145,7 +145,7 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
 {
     requireVertexCompactness(mesh);
 
-    uint nIndices = faceVertexReferencesCount(mesh);
+    auto nIndices = faceVertexReferencesCount(mesh);
 
     Vect fV(nIndices);
 
