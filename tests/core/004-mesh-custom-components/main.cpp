@@ -54,7 +54,31 @@ TEMPLATE_TEST_CASE(
     REQUIRE(tmp == 8);
     REQUIRE(m.vertex(9).template customComponent<int>("flag") == 8);
 
+    // Test Iterator operator[] and random_access_iterator concept
+    static_assert(
+        std::random_access_iterator<
+            typename vcl::CustomComponentVectorHandle<int>::Iterator>);
+    static_assert(
+        std::random_access_iterator<
+            typename vcl::CustomComponentVectorHandle<int>::ConstIterator>);
+    auto it = v.begin();
+    REQUIRE(it[0] == 4);
+    REQUIRE(it[1] == 2);
+
     m.deleteVertexCustomComponent("flag");
 
     REQUIRE(!m.hasVertexCustomComponent("flag"));
+
+    // Test replacement of a custom component with a different type
+    m.template addVertexCustomComponent<int>("val");
+    m.vertex(0).template customComponent<int>("val") = 42;
+    m.template addVertexCustomComponent<float>("val");
+    REQUIRE(m.template isVertexCustomComponentOfType<float>("val"));
+    REQUIRE(!m.template isVertexCustomComponentOfType<int>("val"));
+    REQUIRE(m.vertex(0).template customComponent<float>("val") == 0.0f);
+
+    // Test resize and const access
+    m.resizeVertices(20);
+    const TriMesh& constM = m;
+    REQUIRE(constM.vertex(15).template customComponent<float>("val") == 0.0f);
 }

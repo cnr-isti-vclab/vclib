@@ -79,18 +79,21 @@ public:
 template<>
 class CustomComponentsVectorMap<true>
 {
+    using FactoryFn = std::any (*)();
+
     // the actual map containing, for each name of a custom component, the
     // vector of values (a value for each element(vertex/face...) of the mesh)
     std::unordered_map<std::string, std::vector<std::any>> mMap;
-    // map that stores if some custom components need to be initialized.
-    // this happens when we resize the container of an element: we need to
-    // resize also the vectors of the custom components, but we cannot
-    // initialize them with the right type (because we don't know it in resize
-    // phase). The initialization will be made when the type is known (get of
-    // the custom component vector).
-    mutable std::unordered_map<std::string, bool> mNeedToInitialize;
     // types used for each custom component
     std::unordered_map<std::string, std::type_index> mCompType;
+    // default constructor factories for initializing new elements on resize
+    std::unordered_map<std::string, FactoryFn> mFactory;
+
+    template<typename CompType>
+    static std::any createDefault()
+    {
+        return CompType();
+    }
 
 public:
     /**
@@ -99,8 +102,8 @@ public:
     void clear()
     {
         mMap.clear();
-        mNeedToInitialize.clear();
         mCompType.clear();
+        mFactory.clear();
     }
 
     /**
@@ -111,8 +114,8 @@ public:
     {
         using std::swap;
         swap(mMap, other.mMap);
-        swap(mNeedToInitialize, other.mNeedToInitialize);
         swap(mCompType, other.mCompType);
+        swap(mFactory, other.mFactory);
     }
 
     friend void swap(
@@ -140,16 +143,18 @@ public:
      */
     void resize(std::size_t size)
     {
-        for (auto& p : mMap) {
-            // At this call, we don't know statically the types of each custom
-            // component, therefore we cannot initialize them (std::any of each
-            // vector will be in an invalid state). Therefore, we mark all the
-            // resized custom components as 'needToInitialize'. Initiaization
-            // will be made just on the uninitialized values of the vectors at
-            // the first access of each custom component.
-            if (p.second.size() < size)
-                mNeedToInitialize.at(p.first) = true;
-            p.second.resize(size);
+        for (auto& [name, vec] : mMap) {
+            const std::size_t oldSize = vec.size();
+            if (size > oldSize) {
+                vec.resize(size);
+                auto factory = mFactory.at(name);
+                for (std::size_t i = oldSize; i < size; ++i) {
+                    vec[i] = factory();
+                }
+            }
+            else {
+                vec.resize(size);
+            }
         }
     }
 
@@ -198,9 +203,9 @@ public:
     void addNewComponent(const std::string& name, std::size_t size)
     {
         std::vector<std::any>& v = mMap[name];
-        v.resize(size, CompType());
-        mNeedToInitialize[name] = false;
-        mCompType.emplace(name, typeid(CompType));
+        v.assign(size, CompType());
+        mCompType.insert_or_assign(name, typeid(CompType));
+        mFactory.insert_or_assign(name, &createDefault<CompType>);
     }
 
     /**
@@ -211,8 +216,8 @@ public:
     void deleteComponent(const std::string& name)
     {
         mMap.erase(name);
-        mNeedToInitialize.erase(name);
         mCompType.erase(name);
+        mFactory.erase(name);
     }
 
     /**
@@ -318,17 +323,7 @@ public:
         const std::string& compName) const
     {
         checkComponentType<CompType>(compName);
-        std::vector<std::any>& v =
-            const_cast<std::vector<std::any>&>(mMap.at(compName));
-        // if the component needs to be initialized (e.g. we made a resize)
-        if (mNeedToInitialize.at(compName)) {
-            for (std::any& a : v) {
-                if (!a.has_value())
-                    a = CompType();
-            }
-            mNeedToInitialize.at(compName) = false;
-        }
-        return v;
+        return mMap.at(compName);
     }
 
     /**
@@ -337,9 +332,6 @@ public:
      *
      * If the CompType does not mach with the type associated with compName,
      * thows a vcl::BadCustomComponentTypeException.
-     *
-     * This function will initialize all the uninitialized values of the
-     * accessed custom component.
      *
      * @tparam CompType: the type of the custom component to return.
      * @param[in] compName: the name of the custom component to return.
@@ -350,16 +342,7 @@ public:
     std::vector<std::any>& componentVector(const std::string& compName)
     {
         checkComponentType<CompType>(compName);
-        std::vector<std::any>& v = mMap.at(compName);
-        // if the component needs to be initialized (e.g. we made a resize)
-        if (mNeedToInitialize.at(compName)) {
-            for (std::any& a : v) {
-                if (!a.has_value())
-                    a = CompType();
-            }
-            mNeedToInitialize.at(compName) = false;
-        }
-        return v;
+        return mMap.at(compName);
     }
 
     void importSameCustomComponentFrom(
@@ -403,8 +386,6 @@ public:
             allComponentNamesOfType<CompType>();
         vcl::serialize(os, compNames);
         for (const auto& name : compNames) {
-            bool b = mNeedToInitialize.at(name);
-            vcl::serialize(os, b);
             const std::vector<std::any>& v = componentVector<CompType>(name);
             vcl::serialize<CompType>(os, v);
         }
@@ -429,13 +410,11 @@ public:
         std::vector<std::string> compNames;
         vcl::deserialize(is, compNames);
         for (const auto& name : compNames) {
-            bool b;
-            vcl::deserialize(is, b);
             std::vector<std::any> v;
             vcl::deserialize<CompType>(is, v);
-            mMap[name]              = std::move(v);
-            mNeedToInitialize[name] = b;
+            mMap[name] = std::move(v);
             mCompType.insert_or_assign(name, typeid(CompType));
+            mFactory.insert_or_assign(name, &createDefault<CompType>);
         }
     }
 

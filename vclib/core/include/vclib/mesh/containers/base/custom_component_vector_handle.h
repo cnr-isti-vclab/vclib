@@ -11,6 +11,8 @@
 #include <vclib/base.h>
 
 #include <any>
+#include <functional>
+#include <ranges>
 #include <vector>
 
 namespace vcl {
@@ -43,45 +45,32 @@ class CustomComponentVectorHandle
 {
     std::vector<std::reference_wrapper<T>> mVec;
 
+    struct Unwrap {
+        constexpr T& operator()(std::reference_wrapper<T> r) const noexcept
+        {
+            return r.get();
+        }
+    };
+
+    struct ConstUnwrap {
+        constexpr const T& operator()(std::reference_wrapper<T> r) const noexcept
+        {
+            return r.get();
+        }
+    };
+
 public:
-    class Iterator : public std::vector<std::reference_wrapper<T>>::iterator
-    {
-        using Base = std::vector<std::reference_wrapper<T>>::iterator;
+    using ViewType = decltype(
+        std::declval<std::vector<std::reference_wrapper<T>>&>() |
+        std::views::transform(Unwrap{}));
+    using ConstViewType = decltype(
+        std::declval<const std::vector<std::reference_wrapper<T>>&>() |
+        std::views::transform(ConstUnwrap{}));
 
-    public:
-        using value_type = T;
-        using reference  = value_type&;
-        using pointer    = value_type*;
+    using Iterator      = std::ranges::iterator_t<ViewType>;
+    using ConstIterator = std::ranges::iterator_t<ConstViewType>;
 
-        using Base::Base;
-
-        Iterator(Base it) : Base(it) {}
-
-        reference operator*() const { return Base::operator*().get(); }
-
-        pointer operator->() const { return &(Base::operator*().get()); }
-    };
-
-    class ConstIterator :
-            public std::vector<std::reference_wrapper<T>>::const_iterator
-    {
-        using Base = std::vector<std::reference_wrapper<T>>::const_iterator;
-
-    public:
-        using value_type = T;
-        using reference  = const value_type&;
-        using pointer    = const value_type*;
-
-        using Base::Base;
-
-        ConstIterator(Base it) : Base(it) {}
-
-        reference operator*() const { return Base::operator*().get(); }
-
-        pointer operator->() const { return &(Base::operator*().get()); }
-    };
-
-    CustomComponentVectorHandle() {}
+    CustomComponentVectorHandle() = default;
 
     CustomComponentVectorHandle(std::vector<std::any>& cc)
     {
@@ -115,10 +104,7 @@ public:
 
     T& at(std::size_t i) { return mVec.at(i).get(); }
 
-    const T& at(std::size_t i) const
-    {
-        return mVec.at(i).get();
-    }
+    const T& at(std::size_t i) const { return mVec.at(i).get(); }
 
     T& front() { return mVec.front().get(); }
 
@@ -132,18 +118,25 @@ public:
 
     T& operator[](std::size_t i) { return mVec[i].get(); }
 
-    const T& operator[](std::size_t i) const
+    const T& operator[](std::size_t i) const { return mVec[i].get(); }
+
+    Iterator begin() { return (mVec | std::views::transform(Unwrap{})).begin(); }
+
+    Iterator end() { return (mVec | std::views::transform(Unwrap{})).end(); }
+
+    ConstIterator begin() const
     {
-        return mVec[i].get();
+        return (mVec | std::views::transform(ConstUnwrap{})).begin();
     }
 
-    Iterator begin() { return Iterator(mVec.begin()); }
+    ConstIterator end() const
+    {
+        return (mVec | std::views::transform(ConstUnwrap{})).end();
+    }
 
-    Iterator end() { return Iterator(mVec.end()); }
+    ConstIterator cbegin() const { return begin(); }
 
-    ConstIterator begin() const { return ConstIterator(mVec.begin()); }
-
-    ConstIterator end() const { return ConstIterator(mVec.end()); }
+    ConstIterator cend() const { return end(); }
 };
 
 template<typename T>
