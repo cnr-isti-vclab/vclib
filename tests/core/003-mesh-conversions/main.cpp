@@ -55,6 +55,11 @@ TEMPLATE_TEST_CASE(
         }
     }
 
+    PolyMesh pmNoOpt;
+    REQUIRE(!pmNoOpt.isFaceWedgeTexCoordsAvailable());
+    pmNoOpt.importFrom(tm);
+    REQUIRE(!pmNoOpt.isFaceWedgeTexCoordsAvailable());
+
     PolyMesh pm;
     REQUIRE(!pm.isFaceWedgeTexCoordsAvailable());
     pm.enableSameOptionalComponentsOf(tm);
@@ -171,6 +176,35 @@ TEMPLATE_TEST_CASE(
         THEN("The imported trimesh has 12 faces")
         {
             REQUIRE(tm.faceCount() == 12);
+        }
+    }
+
+    GIVEN("When importing a PolyMesh with degenerate face into TriMesh")
+    {
+        PolyMesh pmDeg;
+        pmDeg.addVertices(4);
+        pmDeg.vertex(0).position() = {0.0, 0.0, 0.0};
+        pmDeg.vertex(1).position() = {1.0, 0.0, 0.0};
+        pmDeg.vertex(2).position() = {1.0, 1.0, 0.0};
+        pmDeg.vertex(3).position() = {0.0, 1.0, 0.0};
+
+        auto f0 = pmDeg.addFace();
+        pmDeg.face(f0).pushVertex(0);
+        pmDeg.face(f0).pushVertex(1);
+        pmDeg.face(f0).pushVertex(2);
+        pmDeg.face(f0).pushVertex(3);
+
+        auto f1 = pmDeg.addFace();
+        pmDeg.face(f1).pushVertex(0);
+        pmDeg.face(f1).pushVertex(1);
+
+        TriMesh tm;
+        tm.importFrom(pmDeg);
+
+        THEN("The degenerate face is deleted and the quad is triangulated into 2 faces")
+        {
+            REQUIRE(tm.faceCount() == 2);
+            REQUIRE(tm.face(f1).deleted());
         }
     }
 }

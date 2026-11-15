@@ -1168,7 +1168,6 @@ protected:
     {
         if constexpr (OtherMesh::template hasContainerOf<ELEMENT_ID>()) {
             const auto& c = m.template container<ELEMENT_ID>();
-            enableSameOptionalComponentsOf(c);
             clearElements();
             const std::size_t n = c.size();
             addElements(n);

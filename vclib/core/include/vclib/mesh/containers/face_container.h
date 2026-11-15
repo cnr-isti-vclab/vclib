@@ -813,6 +813,9 @@ protected:
                                 importTriCorners(fk, mf, tris, t);
                             }
                         }
+                        else {
+                            this->deleteFace(mf.index());
+                        }
                     }
                 }
             }
@@ -820,6 +823,19 @@ protected:
     }
 
 private:
+    template<std::unsigned_integral OtherIndex>
+    static constexpr Index castIndex(OtherIndex idx) noexcept
+    {
+        if constexpr (std::same_as<Index, OtherIndex>) {
+            return idx;
+        }
+        else {
+            return idx == vcl::NULL_INDEX<OtherIndex> ?
+                       NULL_INDEX :
+                       static_cast<Index>(idx);
+        }
+    }
+
     template<typename OtherFace>
     static void importTriCorners(
         Face&                    f,
@@ -828,7 +844,7 @@ private:
         uint                     basetri)
     {
         for (uint j = 0; j < 3; ++j) {
-            f.setVertex(j, mf.vertexIndex(tris[basetri + j]));
+            f.setVertex(j, castIndex(mf.vertexIndex(tris[basetri + j])));
         }
 
         // Wedge Colors

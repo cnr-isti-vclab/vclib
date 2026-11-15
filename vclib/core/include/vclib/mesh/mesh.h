@@ -387,10 +387,9 @@ public:
      * MeshType, to be sure that all the available data contained in the
      * MeshType mesh will be imported.
      *
-     * This function:
-     * - disables all the optional components that are not available in m
-     * - enables all the optional components that are available in m (which can
-     *   be both optional or not)
+     * This function enables all the optional components of this mesh that are
+     * available (optional or not) in m. Existing components already enabled in
+     * this mesh are not disabled.
      *
      * Example of usage:
      *
