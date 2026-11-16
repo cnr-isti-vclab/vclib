@@ -34,7 +34,7 @@ template<typename ContainerType>
 class Face : public ElementProxy<ElemId::FACE, ContainerType>
 {
     using Base = ElementProxy<ElemId::FACE, ContainerType>;
-    
+
     template<typename Self>
     using ResolvedFace = std::conditional_t<
         std::is_const_v<std::remove_reference_t<Self>> ||

@@ -9,7 +9,7 @@ def update_element_enum(element):
     """Adds the element to ElemId and to ELEMENT_ENUM_STRINGS."""
     path = 'elements/base/base.h'
     text = common.read_file(element, path)
-    if re.search(rf'^\s+{element.name_upper},$', text, re.M):
+    if re.search(rf'^\s+{element.name_upper}(\s*=.*)?\s*,\s*$', text, re.M):
         return
 
     text = text.replace(
@@ -20,8 +20,9 @@ def update_element_enum(element):
         r'ELEMENT_ENUM_STRINGS\[static_cast<uint>\(ElemId::ELEMENT_COUNT\)\] = \{\n.*?\n\};',
         text, re.S)
     block = m.group(0)
-    new_block = block[:-len('};')] + f'    "{element.upper_camel}",\n' + '};'
-    text = text.replace(block, new_block, 1)
+    if f'"{element.upper_camel}"' not in block:
+        new_block = block[:-len('};')] + f'    "{element.upper_camel}",\n' + '};'
+        text = text.replace(block, new_block, 1)
     common.update_file(element, path, text)
 
 

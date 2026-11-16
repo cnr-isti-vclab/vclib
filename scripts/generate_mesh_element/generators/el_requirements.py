@@ -49,6 +49,8 @@ def _mesh_concepts(element):
 
 
 def _update_mesh_concepts_base(element):
+    if element.name_upper == 'VERTEX':
+        return
     path = 'requirements/mesh_concepts/base.h'
     text = common.read_file(element, path)
     has_name = f'Has{element.plural_upper_camel}'

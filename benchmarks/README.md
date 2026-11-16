@@ -47,10 +47,8 @@ Widths are measured from the C++ types, not inferred from their CLI names.
 Use `--help` for all options and `--list` to inspect the selected benchmarks
 without loading a dataset.
 
-During the v2 port, not all IO formats and algorithms are available. Use OBJ or
-PLY for file datasets, or a generated grid. Empty datasets are rejected rather
-than producing misleading measurements; unported import/export benchmarks remain
-disabled in the target's CMake source list.
+All supported IO formats and import/export algorithms are available. Empty
+datasets are rejected rather than producing misleading measurements.
 
 ## Adding benchmarks
 
