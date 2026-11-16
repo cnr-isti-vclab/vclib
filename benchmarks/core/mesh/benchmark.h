@@ -148,6 +148,12 @@ public:
     }
 
     /**
+     * @brief A copy of the input mesh with topology (adjacencies) enabled and
+     * updated, that the benchmark is free to modify.
+     */
+    Mesh copyMeshWithTopology() { return meshWithTopology(); }
+
+    /**
      * @brief The input mesh with vertices, faces, and edges selected. It is
      * created at the first call and shared among the benchmarks, therefore it
      * must not be modified.
@@ -213,6 +219,8 @@ public:
     Mesh copyMesh() const { return mContext.copyMesh(); }
 
     const Mesh& meshWithTopology() { return mContext.meshWithTopology(); }
+
+    Mesh copyMeshWithTopology() { return mContext.copyMeshWithTopology(); }
 
     const Mesh& meshWithSelection() { return mContext.meshWithSelection(); }
 

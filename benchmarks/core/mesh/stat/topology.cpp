@@ -107,3 +107,50 @@ BENCH(
         const Mesh& m = s.meshWithTopology();
         s.run([&]() { return vcl::connectedComponentCount(m); });
     });
+
+BENCH("stat/topology/face_flooding", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("not a face mesh");
+    }
+    else {
+        Mesh m = s.copyMeshWithTopology();
+        if (m.faceCount() == 0) {
+            return s.skip("mesh has no faces");
+        }
+
+        using Handle = decltype(bench::getFaceHandle(m, 0));
+        std::vector<Handle> stack;
+        stack.reserve(m.faceCount());
+
+        s.run(
+            [&]() {
+                stack.clear();
+                for (auto&& f : m.faces()) {
+                    bench::setFaceVisited(f, false);
+                }
+            },
+            [&]() {
+                Handle start = bench::getFaceHandle(m, 0);
+                bench::setFaceVisited(start, true);
+                stack.push_back(start);
+
+                std::size_t visitedCount = 0;
+
+                while (!stack.empty()) {
+                    Handle curr = stack.back();
+                    stack.pop_back();
+                    ++visitedCount;
+
+                    const vcl::uint nAdj = bench::getAdjFaceCount(curr);
+                    for (vcl::uint i = 0; i < nAdj; ++i) {
+                        auto adj = bench::getAdjFace(curr, i);
+                        if (bench::isFaceValid(adj) && !bench::isFaceVisited(adj)) {
+                            bench::setFaceVisited(adj, true);
+                            stack.push_back(adj);
+                        }
+                    }
+                }
+                return visitedCount;
+            });
+    }
+});
