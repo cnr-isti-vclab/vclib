@@ -191,6 +191,30 @@ TEMPLATE_TEST_CASE(
             tm.template customComponent<vcl::Point3f>("perMesh") ==
             vcl::Point3f(1, 2, 3));
     }
+
+    SECTION("Test Import from non-compact VCG mesh")
+    {
+        VCGMesh vcgMeshNonCompact;
+        vcg::tri::io::ImporterPLY<VCGMesh>::Open(
+            vcgMeshNonCompact, VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+
+        // Delete face 0 and an extra vertex in VCG
+        vcg::tri::Allocator<VCGMesh>::DeleteFace(vcgMeshNonCompact, vcgMeshNonCompact.face[0]);
+        auto& newV = *vcg::tri::Allocator<VCGMesh>::AddVertices(vcgMeshNonCompact, 1);
+        newV.P() = vcg::Point3f(5, 5, 5);
+        vcg::tri::Allocator<VCGMesh>::DeleteVertex(vcgMeshNonCompact, newV);
+
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMeshNonCompact);
+
+        REQUIRE(tm.vertexCount() == 8);
+        REQUIRE(tm.faceCount() == 11);
+
+        for (const auto& f : tm.faces()) {
+            for (uint vi = 0; vi < 3; ++vi) {
+                REQUIRE(f.vertexIndex(vi) < tm.vertexCount());
+            }
+        }
+    }
 }
 
 TEMPLATE_TEST_CASE(
@@ -256,6 +280,28 @@ TEMPLATE_TEST_CASE(
                     f.vertexIndex(vi) ==
                     vcg::tri::Index(vcgMesh, vcgf.V(vi)));
             }
+        }
+    }
+
+    SECTION("Test Non-compact Mesh Export")
+    {
+        TriMesh nonCompact = vcl::createCube<TriMesh>();
+        nonCompact.deleteFace(0);
+        auto vExtra = nonCompact.addVertex(typename TriMesh::Vertex::PositionType(10, 10, 10));
+        nonCompact.deleteVertex(vExtra);
+
+        REQUIRE(!nonCompact.isCompact());
+
+        VCGMesh vcgMesh;
+        vcl::vc::exportMeshToVCGMesh(nonCompact, vcgMesh);
+
+        REQUIRE(vcgMesh.VN() == nonCompact.vertexCount());
+        REQUIRE(vcgMesh.FN() == nonCompact.faceCount());
+
+        for (unsigned int fi = 0; fi < vcgMesh.FN(); ++fi) {
+            REQUIRE(vcgMesh.face[fi].V(0) != nullptr);
+            REQUIRE(vcgMesh.face[fi].V(1) != nullptr);
+            REQUIRE(vcgMesh.face[fi].V(2) != nullptr);
         }
     }
 }

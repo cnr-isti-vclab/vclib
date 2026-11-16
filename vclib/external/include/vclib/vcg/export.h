@@ -8,6 +8,7 @@
 #ifndef VCL_VCG_EXPORT_H
 #define VCL_VCG_EXPORT_H
 
+#include <vclib/algorithms/mesh/utility.h>
 #include <vclib/mesh/requirements.h>
 
 #include <vcg/complex/complex.h>
@@ -79,11 +80,14 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
     if constexpr (HasFaces<MeshType>) {
         vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceCount());
 
+        auto vCompIndices = vcl::detail::vertCompactIndices(mesh, true);
+        auto vIndex       = vcl::detail::vIndexLambda(mesh, vCompIndices);
+
         uint fi = 0;
         for (const auto& f : mesh.faces()) {
-            vcgMesh.face[fi].V(0) = &vcgMesh.vert[f.vertexIndex(0)];
-            vcgMesh.face[fi].V(1) = &vcgMesh.vert[f.vertexIndex(1)];
-            vcgMesh.face[fi].V(2) = &vcgMesh.vert[f.vertexIndex(2)];
+            vcgMesh.face[fi].V(0) = &vcgMesh.vert[vIndex(f, 0)];
+            vcgMesh.face[fi].V(1) = &vcgMesh.vert[vIndex(f, 1)];
+            vcgMesh.face[fi].V(2) = &vcgMesh.vert[vIndex(f, 2)];
 
             // flags
             vcgMesh.face[fi].Flags() = f.exportFlagsToVCGFormat();

@@ -169,6 +169,8 @@ void importMeshFromVCGMesh(
             });
     }
 
+    std::vector<uint> vcgToVclVert(vcgMesh.vert.size(), UINT_NULL);
+
     // vertices
     for (uint i = 0; i < vcgMesh.vert.size(); i++) {
         if (!vcgMesh.vert[i].IsD()) {
@@ -176,6 +178,8 @@ void importMeshFromVCGMesh(
                 vcgMesh.vert[i].P()[0],
                 vcgMesh.vert[i].P()[1],
                 vcgMesh.vert[i].P()[2]));
+
+            vcgToVclVert[i] = vi;
 
             auto vertex = mesh.vertex(vi);
 
@@ -238,10 +242,10 @@ void importMeshFromVCGMesh(
                 // for each supported type, apply the lampda function that adds
                 // the custom components of the type T that are in the vcgMesh
                 vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
-                    [&vertex, &vcgMesh, vi]<typename T>() {
+                    [&vertex, &vcgMesh, i]<typename T>() {
                         detail::importCustomComponentsOfTypeFromVCGMesh<
                             ElemId::VERTEX,
-                            T>(vertex, vcgMesh, vi);
+                            T>(vertex, vcgMesh, i);
                     });
             }
         }
@@ -273,8 +277,8 @@ void importMeshFromVCGMesh(
                     face.resizeVertices(3);
                 }
                 for (uint j = 0; j < 3; ++j) {
-                    uint vi = vcg::tri::Index(vcgMesh, vcgMesh.face[i].V(j));
-                    face.setVertex(j, vi);
+                    uint vcgVi = vcg::tri::Index(vcgMesh, vcgMesh.face[i].V(j));
+                    face.setVertex(j, vcgToVclVert[vcgVi]);
                 }
 
                 // flags
@@ -350,10 +354,10 @@ void importMeshFromVCGMesh(
                     // adds the custom components of the type T that are in the
                     // vcgMesh
                     vcl::ForEachType<detail::SupportedCustomComponentTypes>::
-                        apply([&face, &vcgMesh, fi]<typename T>() {
+                        apply([&face, &vcgMesh, i]<typename T>() {
                             detail::importCustomComponentsOfTypeFromVCGMesh<
                                 ElemId::FACE,
-                                T>(face, vcgMesh, fi);
+                                T>(face, vcgMesh, i);
                         });
                 }
             }

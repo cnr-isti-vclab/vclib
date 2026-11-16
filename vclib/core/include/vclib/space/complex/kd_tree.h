@@ -131,14 +131,98 @@ public:
         const PointType& queryPoint,
         Scalar&          dist = dummyScalar) const
     {
+        PointType p;
+        return nearestNeighborImpl(queryPoint, dist, p);
+    }
+
+    PointType nearestNeighbor(
+        const PointType& queryPoint,
+        Scalar&          dist = dummyScalar) const
+    {
+        PointType p;
+        nearestNeighborImpl(queryPoint, dist, p);
+        return p;
+    }
+
+    /**
+     * @brief Performs the k nearest neighbour query.
+     *
+     * This algorithm uses the simple distance to the split plane to prune
+     * nodes. A more elaborated approach consists to track the closest corner of
+     * the cell relatively to the current query point. This strategy allows to
+     * save about 5% of the leaves. However, in practice the slight overhead due
+     * to this tracking reduces the overall performance.
+     *
+     * This algorithm also use a simple stack while a priority queue using the
+     * squared distances to the cells as a priority values allows to save about
+     * 10% of the leaves. But, again, priority queue insertions and deletions
+     * are quite involved, and therefore a simple stack is by far much faster.
+     *
+     * The result of the query, the k-nearest neighbors, are stored into a
+     * vector, and they are sorted on order of neighbohood.
+     */
+    std::vector<std::size_t> kNearestNeighborsIndices(
+        const PointType&     queryPoint,
+        uint                 k,
+        std::vector<Scalar>& distances = dummyScalars) const
+    {
+        std::vector<std::size_t> res;
+        kNearestNeighborsImpl(queryPoint, k, &res, nullptr, distances);
+        return res;
+    }
+
+    std::vector<PointType> kNearestNeighbors(
+        const PointType&     queryPoint,
+        uint                 k,
+        std::vector<Scalar>& distances = dummyScalars) const
+    {
+        std::vector<PointType> res;
+        kNearestNeighborsImpl(queryPoint, k, nullptr, &res, distances);
+        return res;
+    }
+
+    /**
+     * @brief Performs the distance query.
+     *
+     * The result of the query, all the points within the distance dist form the
+     * query point, is the vector of the indeces and the vector of the distances
+     * from the query point.
+     */
+    std::vector<std::size_t> neighborsIndicesInDistance(
+        const PointType&     queryPoint,
+        Scalar               dist,
+        std::vector<Scalar>& distances = dummyScalars) const
+    {
+        std::vector<std::size_t> res;
+        neighborsInDistanceImpl(queryPoint, dist, &res, nullptr, distances);
+        return res;
+    }
+
+    std::vector<PointType> neighborsInDistance(
+        const PointType&     queryPoint,
+        Scalar               dist,
+        std::vector<Scalar>& distances = dummyScalars) const
+    {
+        std::vector<PointType> res;
+        neighborsInDistanceImpl(queryPoint, dist, nullptr, &res, distances);
+        return res;
+    }
+
+private:
+    std::size_t nearestNeighborImpl(
+        const PointType& queryPoint,
+        Scalar&          dist,
+        PointType&       closestPoint) const
+    {
         std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
         mNodeStack[0].sq     = 0.;
         unsigned int count   = 1;
 
-        std::size_t minIndex = mIndices.size() / 2;
-        Scalar      minDist  = queryPoint.squaredDist(mPoints[minIndex]);
-        minIndex             = mIndices[minIndex];
+        std::size_t minPointPos = mIndices.size() / 2;
+        Scalar      minDist     = queryPoint.squaredDist(mPoints[minPointPos]);
+        std::size_t minIndex    = mIndices[minPointPos];
+        closestPoint            = mPoints[minPointPos];
 
         while (count) {
             QueryNode&  qnode = mNodeStack[count - 1];
@@ -152,8 +236,9 @@ public:
                         Scalar pointSquareDist =
                             queryPoint.squaredDist(mPoints[i]);
                         if (pointSquareDist < minDist) {
-                            minDist  = pointSquareDist;
-                            minIndex = mIndices[i];
+                            minDist      = pointSquareDist;
+                            minIndex     = mIndices[i];
+                            closestPoint = mPoints[i];
                         }
                     }
                 }
@@ -183,34 +268,12 @@ public:
         return minIndex;
     }
 
-    PointType nearestNeighbor(
-        const PointType& queryPoint,
-        Scalar&          dist = dummyScalar) const
-    {
-        return mPoints[nearestNeighborIndex(queryPoint, dist)];
-    }
-
-    /**
-     * @brief Performs the k nearest neighbour query.
-     *
-     * This algorithm uses the simple distance to the split plane to prune
-     * nodes. A more elaborated approach consists to track the closest corner of
-     * the cell relatively to the current query point. This strategy allows to
-     * save about 5% of the leaves. However, in practice the slight overhead due
-     * to this tracking reduces the overall performance.
-     *
-     * This algorithm also use a simple stack while a priority queue using the
-     * squared distances to the cells as a priority values allows to save about
-     * 10% of the leaves. But, again, priority queue insertions and deletions
-     * are quite involved, and therefore a simple stack is by far much faster.
-     *
-     * The result of the query, the k-nearest neighbors, are stored into a
-     * vector, and they are sorted on order of neighbohood.
-     */
-    std::vector<std::size_t> kNearestNeighborsIndices(
-        const PointType&     queryPoint,
-        uint                 k,
-        std::vector<Scalar>& distances = dummyScalars) const
+    void kNearestNeighborsImpl(
+        const PointType&          queryPoint,
+        uint                      k,
+        std::vector<std::size_t>* indices,
+        std::vector<PointType>*   points,
+        std::vector<Scalar>&      distances) const
     {
         struct P
         {
@@ -301,46 +364,28 @@ public:
             }
         }
         distances.clear();
-        std::vector<std::size_t> res;
+        if (indices) indices->clear();
+        if (points) points->clear();
 
         uint i = 0;
         while (!neighborQueue.empty() && i < k) {
-            res.push_back(neighborQueue.top().i);
+            if (indices) indices->push_back(neighborQueue.top().i);
+            if (points) points->push_back(neighborQueue.top().p);
             distances.push_back(queryPoint.dist(neighborQueue.top().p));
             neighborQueue.pop();
             i++;
         }
-        return res;
     }
 
-    std::vector<PointType> kNearestNeighbors(
-        const PointType&     queryPoint,
-        uint                 k,
-        std::vector<Scalar>& distances = dummyScalars) const
+    void neighborsInDistanceImpl(
+        const PointType&          queryPoint,
+        Scalar                    dist,
+        std::vector<std::size_t>* indices,
+        std::vector<PointType>*   points,
+        std::vector<Scalar>&      distances) const
     {
-        std::vector<std::size_t> dists =
-            kNearestNeighborsIndices(queryPoint, k, distances);
-        std::vector<PointType> res;
-        res.reserve(dists.size());
-        for (std::size_t k : dists) {
-            res.push_back(mPoints[k]);
-        }
-        return res;
-    }
-
-    /**
-     * @brief Performs the distance query.
-     *
-     * The result of the query, all the points within the distance dist form the
-     * query point, is the vector of the indeces and the vector of the distances
-     * from the query point.
-     */
-    std::vector<std::size_t> neighborsIndicesInDistance(
-        const PointType&     queryPoint,
-        Scalar               dist,
-        std::vector<Scalar>& distances = dummyScalars) const
-    {
-        std::vector<std::size_t> queryPoints;
+        if (indices) indices->clear();
+        if (points) points->clear();
         distances.clear();
         std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
@@ -358,9 +403,10 @@ public:
                     unsigned int end = node.start + node.size;
                     for (unsigned int i = node.start; i < end; ++i) {
                         Scalar pointSquareDist =
-                            queryPoint.squareDist(mPoints[i]);
+                            queryPoint.squaredDist(mPoints[i]);
                         if (pointSquareDist < squareDist) {
-                            queryPoints.push_back(mIndices[i]);
+                            if (indices) indices->push_back(mIndices[i]);
+                            if (points) points->push_back(mPoints[i]);
                             distances.push_back(queryPoint.dist(mPoints[i]));
                         }
                     }
@@ -387,25 +433,7 @@ public:
                 --count;
             }
         }
-        return queryPoints;
     }
-
-    std::vector<PointType> neighborsInDistance(
-        const PointType&     queryPoint,
-        Scalar               dist,
-        std::vector<Scalar>& distances = dummyScalars) const
-    {
-        std::vector<std::size_t> dists =
-            neighborsIndicesInDistance(queryPoint, dist, distances);
-        std::vector<PointType> res;
-        res.reserve(dists.size());
-        for (std::size_t k : dists) {
-            res.push_back(mPoints[k]);
-        }
-        return res;
-    }
-
-private:
     /**
      * @brief Rrecursively builds the kdtree
      *

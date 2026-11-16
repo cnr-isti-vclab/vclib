@@ -318,3 +318,60 @@ TEMPLATE_TEST_CASE(
         }
     }
 }
+
+TEMPLATE_TEST_CASE(
+    "Wedge driven duplication on non-compact mesh...",
+    "",
+    vcl::TriMesh,
+    vcl::TriMesh64)
+{
+    using TriMesh   = TestType;
+    using IndexType = typename TriMesh::IndexType;
+
+    TriMesh tm =
+        vcl::loadMesh<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_textured.ply");
+
+    // Add an isolated vertex (unreferenced), then delete face 0
+    auto extraV =
+        tm.addVertex(typename TriMesh::Vertex::PositionType(10, 10, 10));
+    tm.deleteFace(0);
+
+    REQUIRE(!tm.isCompact());
+
+    std::vector<std::pair<IndexType, vcl::uint>>          vertWedgeMap;
+    std::list<IndexType>                                  vertsToDuplicate;
+    std::list<std::list<std::pair<IndexType, vcl::uint>>> facesToReassign;
+    auto nV = vcl::verticesToDuplicateByWedgeTexCoordsCount(
+        tm, vertWedgeMap, vertsToDuplicate, facesToReassign);
+
+    REQUIRE(vertWedgeMap.size() == tm.vertexContainerSize());
+
+    // 1. TexCoords buffer
+    std::vector<double> texCoordBuffer((tm.vertexCount() + nV) * 2, 0.0);
+    vcl::wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
+        tm, vertWedgeMap, facesToReassign, texCoordBuffer.data());
+
+    // 2. Face Material Indices as Duplicated Vertex Material Indices
+    // (extraV is unreferenced, so vertWedgeMap[extraV].first == NULL_INDEX)
+    std::vector<int> matBuffer(tm.vertexCount() + nV, 0);
+    vcl::faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
+        tm, vertWedgeMap, facesToReassign, matBuffer.data());
+    // The unreferenced vertex row should be SENTINEL (-1)
+    auto vertCompIndices = vcl::detail::vertCompactIndices(tm, true);
+    IndexType extraVRow =
+        vertCompIndices.empty() ? extraV : vertCompIndices[extraV];
+    REQUIRE(matBuffer[extraVRow] == -1);
+
+    // 3. Replace Triangulated Face Vertex Indices
+    vcl::TriPolyIndexBiMap indexMap;
+    std::vector<IndexType> triBuffer(tm.faceCount() * 3);
+    vcl::triangulatedFaceVertexIndicesToBuffer(tm, triBuffer.data(), indexMap);
+    vcl::replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
+        tm, vertsToDuplicate, facesToReassign, indexMap, triBuffer.data());
+
+    // 4. Replace Face Vertex Indices
+    std::vector<IndexType> faceBuffer(tm.faceCount() * 3);
+    vcl::faceVertexIndicesToBuffer(tm, faceBuffer.data());
+    vcl::replaceFaceVertexIndicesByVertexDuplicationToBuffer(
+        tm, vertsToDuplicate, facesToReassign, faceBuffer.data(), 3);
+}

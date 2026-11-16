@@ -1887,10 +1887,10 @@ void wedgeTexCoordsAsDuplicatedVertexTexCoordsToBuffer(
     IndexType vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
         TexCoordType w;
-        auto         fInd = vertWedgeMap[vi].first;
-        auto         wInd = vertWedgeMap[vi].second;
+        auto         fInd = vertWedgeMap[v.index()].first;
+        auto         wInd = vertWedgeMap[v.index()].second;
 
-        // check if the vi is referenced
+        // check if the vertex is referenced
         if (fInd != MeshType::NULL_INDEX && wInd != UINT_NULL) {
             w = mesh.face(fInd).wedge(wInd).texCoord();
         }
@@ -1985,9 +1985,14 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
     // the vertWedgeMap to get the material index in the face
     IndexType vi = 0; // current vertex (or current row in the matrix)
     for (const auto& v : mesh.vertices()) {
-        auto fInd  = vertWedgeMap[vi].first;
-        auto ti    = mesh.face(fInd).materialIndex();
-        buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+        auto fInd  = vertWedgeMap[v.index()].first;
+        if (fInd != MeshType::NULL_INDEX) {
+            auto ti    = mesh.face(fInd).materialIndex();
+            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+        }
+        else {
+            buffer[vi] = SENTINEL;
+        }
         ++vi;
     }
 
@@ -1998,8 +2003,13 @@ void faceMaterialIndicesAsDuplicatedVertexMaterialIndicesToBuffer(
         const auto& p    = list.front();
         auto        fInd = p.first;
 
-        auto ti    = mesh.face(fInd).materialIndex();
-        buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+        if (fInd != MeshType::NULL_INDEX) {
+            auto ti    = mesh.face(fInd).materialIndex();
+            buffer[vi] = (ti == USHORT_NULL) ? SENTINEL : static_cast<BufferValueType>(ti);
+        }
+        else {
+            buffer[vi] = SENTINEL;
+        }
         ++vi;
     }
 }
