@@ -83,7 +83,7 @@ namespace vcl {
  * @param[in] mesh: The mesh from which take the positions.
  * @param[in] vertsToDuplicate: The list of vertices to duplicate: each element
  * is the index of a vertex in the mesh, that must be appended to the buffer.
- * @param[in/out] buffer: The buffer where to append the duplicated vertices.
+ * @param[in,out] buffer: The buffer where to append the duplicated vertices.
  * @param[in] storage: The storage type of the matrix (row or column major).
  *
  * @ingroup append_replace_to_buffer
@@ -206,7 +206,7 @@ void replaceFaceVertexIndicesByVertexDuplicationToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with @ref
- * triangulatedFaceIndicesToBuffer function that export triangulated face
+ * triangulatedFaceVertexIndicesToBuffer function that export triangulated face
  * indices. e.g.:
  *
  * @code{.cpp}
@@ -314,12 +314,12 @@ void replaceTriangulatedFaceVertexIndicesByVertexDuplicationToBuffer(
  * triangles in the same order of the faces in the mesh.
  *
  * @param[in] mesh: The input mesh.
- * @param[in/out] buffer: The buffer where the face vertex indices are stored
+ * @param[in,out] buffer: The buffer where the face vertex indices are stored
  * and must be permuted. The buffer is modified in place.
  * @param[in] func: The face comparator function that defines the new order of
  * the faces. The function must take as input two faces and return true if the
  * first face must be placed before the second face in the new order.
- * @param[in/out] indexMap: The map from triangle index to face index. The
+ * @param[in,out] indexMap: The map from triangle index to face index. The
  * function updates the map to keep it consistent with the new order of the
  * triangles in the buffer.
  */
@@ -600,7 +600,7 @@ void appendDuplicateVertexColorsToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
- * vertexColorToBuffer function:
+ * vertexColorsToBuffer function:
  *
  * @code{.cpp}
  *
@@ -798,7 +798,7 @@ void appendDuplicateVertexTexCoordsToBuffer(
  *
  * Typical usage of this function is after the @ref
  * verticesToDuplicateByWedgeTexCoordsCount function and along with the @ref
- * vertexTangentToBuffer function:
+ * vertexTangentsToBuffer function:
  *
  * @code{.cpp}
  *

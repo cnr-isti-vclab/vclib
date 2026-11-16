@@ -749,7 +749,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Test the number of vertices to duplicate")
     {
-        //REQUIRE(vcl::verticesToDuplicateByWedgeTexCoordsCount(tm1) == 0);
+        REQUIRE(vcl::verticesToDuplicateByWedgeTexCoordsCount(tm1) == 0);
     }
 
     TriMesh tm2 =

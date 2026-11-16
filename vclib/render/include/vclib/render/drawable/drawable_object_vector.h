@@ -22,8 +22,6 @@ namespace vcl {
  * DrawableObject instances. It provides templated convenience methods to add
  * concrete derived classes directly by value/reference, automatically wrapping
  * them in a shared pointer to take ownership of a copy of the object.
- *
- * @ingroup render_drawable
  */
 class DrawableObjectVector :
         public PointerVector<std::shared_ptr<DrawableObject>>,

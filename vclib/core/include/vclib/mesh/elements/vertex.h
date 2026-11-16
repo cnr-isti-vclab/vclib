@@ -124,7 +124,7 @@ struct VertexComponents<vcl::TypeWrapper<Comps...>> : VertexComponents<Comps...>
  * The concept is satisfied when T satisfies ElementConcept, has ELEMENT_ID ==
  * ElemId::VERTEX, and has BitFlags and Position components.
  *
- * @ingroup vertex_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept VertexConcept =
@@ -137,7 +137,7 @@ concept VertexConcept =
  * @brief Concept that checks whether a type T is a valid component list for a
  * Vertex.
  *
- * @ingroup vertex_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept HasRequiredVertexComponents =

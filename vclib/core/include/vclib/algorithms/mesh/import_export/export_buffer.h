@@ -588,7 +588,7 @@ void wireframeVertexIndicesToBuffer(
  * @code{.cpp}
  * std::vector<bool> vec(myMesh.elementCount<ElemId::VERTEX>());
  * vcl::elementSelectionToBuffer<ElemId::VERTEX>(myMesh, vec.data());
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the element indices of the mesh. This scenario is possible
@@ -625,7 +625,7 @@ void elementSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @code{.cpp}
  * std::vector<bool> vec(myMesh.vertexCount());
  * vcl::vertexSelectionToBuffer(myMesh, vec.data());
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -656,7 +656,7 @@ void vertexSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @code{.cpp}
  * std::vector<bool> vec(myMesh.faceCount());
  * vcl::faceSelectionToBuffer(myMesh, vec.data());
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the face indices of the mesh. This scenario is possible
@@ -687,7 +687,7 @@ void faceSelectionToBuffer(const MeshType& mesh, auto* buffer)
  * @code{.cpp}
  * std::vector<bool> vec(myMesh.edgeCount());
  * vcl::edgeSelectionToBuffer(myMesh, vec.data());
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the buffer
  * correspond to the edge indices of the mesh. This scenario is possible
@@ -838,7 +838,7 @@ void faceNormalsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
  * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
@@ -1126,7 +1126,7 @@ void faceColorsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
  * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
@@ -1216,7 +1216,7 @@ void faceColorsToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
  * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *
@@ -1628,7 +1628,7 @@ void vertexMaterialIndicesAsFaceMaterialIndicesToBuffer(
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceIndicesToBuffer function to get the index map.
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map.
  *
  * @param[in] mesh: input mesh
  * @param[out] buffer: preallocated buffer
@@ -1789,7 +1789,7 @@ void faceMaterialIndicesToBuffer(const MeshType& mesh, auto* buffer)
  *
  * The function requires an already computed index map, which maps each triangle
  * to the face index and vice versa. You can use the @ref
- * vcl::triangulatedFaceIndicesToBuffer function to get the index map. You can
+ * vcl::triangulatedFaceVertexIndicesToBuffer function to get the index map. You can
  * use the function @ref vcl::triangulatedFaceCount to get the number of
  * resulting triangles and allocate the buffer accordingly.
  *

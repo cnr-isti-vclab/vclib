@@ -131,7 +131,7 @@ struct EdgeComponents<vcl::TypeWrapper<Comps...>> : EdgeComponents<Comps...>
 /**
  * @brief Concept that checks whether a type T is an Edge element.
  *
- * @ingroup edge_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept EdgeConcept =
@@ -144,7 +144,7 @@ concept EdgeConcept =
  * @brief Concept that checks whether a type T is a valid component list for an
  * Edge.
  *
- * @ingroup edge_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept HasRequiredEdgeComponents =

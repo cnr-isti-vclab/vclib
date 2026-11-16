@@ -699,25 +699,17 @@ public:
      *
      * If the new size is greater than the old one, new Elements are added to
      * the container, and a reallocation may happen. If the new size is smaller
-     * than the old one, the container will keep its first non-deleted `n`
-     * Elements, and the remaining Elements are marked as deleted.
+     * than the old one, the container is truncated to `n` Elements (elements
+     * beyond `n` are removed).
      *
      * The function requires that the Mesh has a Container of Elements having ID
      * ELEM_ID. Otherwise, a compiler error will be triggered.
      *
-     * @warning The given size `n` is relative to the number of non-deleted
-     * Elements, not to the size of the Element container. For example, if you
-     * have a mesh with 10 Faces and faceContainerSize() == 20, calling
-     * resize<ElemId::FACE>(5) will not cause a reallocation of the container,
-     * but will mark as deleted the least 5 non-deleted Faces of the container.
-     * In the same scenario, calling resize<ElemId::FACE>(15) will result in a
-     * Face container having 15 new Faces and faceContainerSize() == 25. The
-     * latest 5 Faces will be the newly added.
-     *
-     * @warning Any references to deleted Elements in the Mesh will be left
-     * unchanged, and therefore will point to invalid Elements. This means that
-     * if you call this member function with a lower number of Elements, you'll
-     * need to manually manage the references/indices to the deleted Elements.
+     * @warning Any references or indices to removed Elements in the Mesh will
+     * be left unchanged, and therefore will point to invalid Elements. This
+     * means that if you call this member function with a lower number of
+     * Elements, you'll need to manually manage the references/indices to the
+     * removed Elements.
      *
      * @tparam ELEM_ID: the ID of the element.
      * @param[in] n: the new size of the container in the mesh.

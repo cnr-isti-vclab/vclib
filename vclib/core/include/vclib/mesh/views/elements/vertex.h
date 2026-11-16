@@ -19,7 +19,7 @@ namespace vcl {
 /**
  * @brief Concept that checks whether Rng is a valid range of vertices.
  *
- * @ingroup vertex_concepts
+ * @ingroup element_concepts
  */
 template<typename Rng>
 concept VertexRangeConcept =

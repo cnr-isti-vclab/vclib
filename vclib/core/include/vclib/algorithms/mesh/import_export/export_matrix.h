@@ -37,7 +37,7 @@ namespace vcl {
  *
  * @code{.cpp}
  * Eigen::MatrixX3d V = vcl::vertexPositionsMatrix<Eigen::MatrixX3d>(myMesh);
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -78,7 +78,7 @@ Matrix vertexPositionsMatrix(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi F = vcl::faceSizesVector<Eigen::VectorXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
@@ -171,7 +171,7 @@ Vect faceVertexIndicesVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::MatrixXi F = vcl::faceVertexIndicesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
@@ -218,7 +218,7 @@ Matrix faceVertexIndicesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi F =
  *     vcl::triangulatedFaceVertexIndicesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
@@ -310,7 +310,7 @@ Matrix edgeVertexIndicesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::VectorXi S =
  *     vcl::elementSelectionVector<ElemId::VERTEX, Eigen::VectorXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the element indices of the mesh. This scenario is possible
@@ -347,7 +347,7 @@ Vect elementSelectionVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi S = vcl::vertexSelectionVector<Eigen::VectorXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -380,7 +380,7 @@ Vect vertexSelectionVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi S = vcl::faceSelectionVector<Eigen::VectorXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible
@@ -414,7 +414,7 @@ Vect faceSelectionVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi S = vcl::edgeSelectionVector<Eigen::VectorXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the edge indices of the mesh. This scenario is possible
@@ -1153,7 +1153,7 @@ Vect faceMaterialIndicesVector(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::vertexAdjacentVerticesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-vertex AdjacentVertices component must be computed before
  * calling this function.
@@ -1257,10 +1257,10 @@ Matrix vertexAdjacentVerticesMatrix(const MeshType& mesh)
  * Usage example with std::vector:
  *
  * @code{.cpp}
- * std::vector<std::vector<vcl::uint>> =
+ * std::vector<std::vector<vcl::uint>> vec =
  *     vcl::elementAdjacentFacesVectors<
- *         ElemID::VERTEX, std::vector, vcl::uint>(myMesh);
- * @endif
+ *         ElemId::VERTEX, std::vector, vcl::uint>(myMesh);
+ * @endcode
  *
  * @note The per-element AdjacentFaces component must be computed before
  * calling this function.
@@ -1331,7 +1331,7 @@ Container<Container<T>> elementAdjacentFacesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi FA =
  *     vcl::elementAdjacentFacesMatrix<ElemId::VERTEX, Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the face container is not
  * compact.
@@ -1380,7 +1380,7 @@ Matrix elementAdjacentFacesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::vertexAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-vertex AdjacentFaces component must be computed before
  * calling this function.
@@ -1430,7 +1430,7 @@ Container<Container<T>> vertexAdjacentFacesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi FA =
  *     vcl::vertexAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the face container is not
  * compact.
@@ -1470,7 +1470,7 @@ Matrix vertexAdjacentFacesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::faceAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-face AdjacentFaces component must be computed before
  * calling this function.
@@ -1515,7 +1515,7 @@ Container<Container<T>> faceAdjacentFacesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi FA =
  *     vcl::faceAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the face container is not
  * compact.
@@ -1550,7 +1550,7 @@ Matrix faceAdjacentFacesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::edgeAdjacentFacesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-edge AdjacentFaces component must be computed before
  * calling this function.
@@ -1601,7 +1601,7 @@ Container<Container<T>> edgeAdjacentFacesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi FA =
  *     vcl::edgeAdjacentFacesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the face container is not
  * compact.
@@ -1643,7 +1643,7 @@ Matrix edgeAdjacentFacesMatrix(const MeshType& mesh)
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::elementAdjacentEdgesVectors<
  *         ElemID::VERTEX, std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-element AdjacentEdges component must be computed before
  * calling this function.
@@ -1714,7 +1714,7 @@ Container<Container<T>> elementAdjacentEdgesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi EA =
  *     vcl::elementAdjacentEdgesMatrix<ElemId::VERTEX, Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the edge container is not
  * compact.
@@ -1763,7 +1763,7 @@ Matrix elementAdjacentEdgesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::vertexAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-vertex AdjacentEdges component must be computed before
  * calling this function.
@@ -1813,7 +1813,7 @@ Container<Container<T>> vertexAdjacentEdgesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi EA =
  *     vcl::vertexAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the edge container is not
  * compact.
@@ -1853,7 +1853,7 @@ Matrix vertexAdjacentEdgesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::faceAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-face AdjacentEdges component must be computed before
  * calling this function.
@@ -1904,7 +1904,7 @@ Container<Container<T>> faceAdjacentEdgesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi EA =
  *     vcl::faceAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the edge container is not
  * compact.
@@ -1945,7 +1945,7 @@ Matrix faceAdjacentEdgesMatrix(const MeshType& mesh)
  * @code{.cpp}
  * std::vector<std::vector<vcl::uint>> =
  *     vcl::edgeAdjacentEdgesVectors<std::vector, vcl::uint>(myMesh);
- * @endif
+ * @endcode
  *
  * @note The per-edge AdjacentEdges component must be computed before
  * calling this function.
@@ -1990,7 +1990,7 @@ Container<Container<T>> edgeAdjacentEdgesVectors(const MeshType& mesh)
  * @code{.cpp}
  * Eigen::MatrixXi EA =
  *     vcl::edgeAdjacentEdgesMatrix<Eigen::MatrixXi>(myMesh);
- * @endif
+ * @endcode
  *
  * @throws vcl::MissingCompactnessException if the edge container is not
  * compact.

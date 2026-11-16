@@ -21,8 +21,6 @@ namespace vcl {
  * scene, but do not represent physical geometry of the model.
  * Consequently, they do not provide bounding boxes and are not usually part
  * of the core object vectors.
- *
- * @ingroup render_gizmos
  */
 class AbstractGizmo
 {

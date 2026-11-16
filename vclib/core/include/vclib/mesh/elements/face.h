@@ -183,7 +183,7 @@ struct FaceComponents<vcl::TypeWrapper<Comps...>> : FaceComponents<Comps...>
 /**
  * @brief Concept that checks whether a type T is a Face element.
  *
- * @ingroup face_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept FaceConcept =
@@ -196,7 +196,7 @@ concept FaceConcept =
  * @brief Concept that checks whether a type T is a valid component list for a
  * Face.
  *
- * @ingroup face_concepts
+ * @ingroup element_concepts
  */
 template<typename T>
 concept HasRequiredFaceComponents =

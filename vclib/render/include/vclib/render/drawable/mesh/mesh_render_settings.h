@@ -371,10 +371,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the primitive.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -416,10 +416,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the points.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -494,10 +494,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the surface.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -560,10 +560,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the wireframe.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *
@@ -621,10 +621,10 @@ public:
      * If the capability does not allow to set the given option, the function
      * does nothing and it returns `false`. Otherwise, it returns `true`.
      *
-     * If the option does not have a range (e.g. VISIBLE), the @param b
+     * If the option does not have a range (e.g. VISIBLE), the @p b
      * parameter will be used to set the option to the edges.
      *
-     * If the option has a range (e.g. the range SHADING_*), the @param b is not
+     * If the option has a range (e.g. the range SHADING_*), the @p b is not
      * considered. The given option is set to `true`, and all the other options
      * of the range are automatically set to `false`.
      *

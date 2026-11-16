@@ -147,22 +147,6 @@ inline void faceComponentsStaticAsserts()
         HasFaceQuality<TriMesh&&>,
         "TriMesh&& does not satisfy the HasFaceQuality");
 
-    // static_assert(
-    //     HasFaceWedgeColors<TriMesh>,
-    //     "TriMesh does not satisfy the HasFaceWedgeColors");
-    // static_assert(
-    //     HasFaceWedgeColors<const TriMesh>,
-    //     "const TriMesh does not satisfy the HasFaceWedgeColors");
-    // static_assert(
-    //     HasFaceWedgeColors<TriMesh&>,
-    //     "TriMesh& does not satisfy the HasFaceWedgeColors");
-    // static_assert(
-    //     HasFaceWedgeColors<const TriMesh&>,
-    //     "const TriMesh& does not satisfy the HasFaceWedgeColors");
-    // static_assert(
-    //     HasFaceWedgeColors<TriMesh&&>,
-    //     "TriMesh&& does not satisfy the HasFaceWedgeColors");
-
     static_assert(
         HasFaceWedgeTexCoords<TriMesh>,
         "TriMesh does not satisfy the HasFaceWedgeTexCoords");

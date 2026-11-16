@@ -619,7 +619,6 @@ auto verticesToDuplicateByWedgeTexCoordsCount(const MeshType& mesh)
  * vertex of the mesh, if it is referenced.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<
     typename Container = std::vector<bool>,
@@ -681,7 +680,6 @@ Container referencedVertices(
  * @return The number of non-deleted unreferenced vertices in the mesh.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<MeshConcept MeshType>
 auto unreferencedVertexCount(const MeshType& m, bool onlyFaces = false)
@@ -711,7 +709,6 @@ auto unreferencedVertexCount(const MeshType& m, bool onlyFaces = false)
  * @return The number of non-manifold vertices in the input mesh.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
 auto nonManifoldVertexCount(const MeshType& m)
@@ -741,7 +738,6 @@ auto nonManifoldVertexCount(const MeshType& m)
  * `false` otherwise.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m)
@@ -768,7 +764,6 @@ bool isWaterTight(const MeshType& m)
  * @return The number of holes in the input mesh.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
 auto holeCount(const MeshType& m) requires HasFaceAdjacentFaces<MeshType>
@@ -823,7 +818,6 @@ auto holeCount(const MeshType& m) requires HasFaceAdjacentFaces<MeshType>
  * component.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
 auto connectedComponents(const MeshType& m)
@@ -895,7 +889,6 @@ auto connectedComponents(const MeshType& m)
  * @return The number of connected components of the input mesh.
  *
  * @ingroup mesh_stat
- * @ingroup clean
  */
 template<FaceMeshConcept MeshType>
 auto connectedComponentCount(const MeshType& m)

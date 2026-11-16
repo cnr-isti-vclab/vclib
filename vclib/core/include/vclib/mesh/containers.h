@@ -12,4 +12,12 @@
 #include "containers/face_container.h"
 #include "containers/vertex_container.h"
 
+/**
+ * @defgroup containers Containers
+ * @ingroup mesh
+ *
+ * @brief List of container classes managing storage of Vertices, Faces, and
+ * Edges in a Mesh.
+ */
+
 #endif // VCL_MESH_CONTAINERS_H

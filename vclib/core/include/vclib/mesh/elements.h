@@ -14,4 +14,11 @@
 #include "elements/face.h"
 #include "elements/vertex.h"
 
+/**
+ * @defgroup elements Elements
+ * @ingroup mesh
+ *
+ * @brief List of element proxies and types for Vertices, Faces, and Edges.
+ */
+
 #endif // VCL_MESH_ELEMENTS_H

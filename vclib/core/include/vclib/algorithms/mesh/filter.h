@@ -297,7 +297,7 @@ OutMeshType vertexSelectionMeshFilter(
  * input mesh `m` filtered using the `faceFilter` function. Only vertices
  * belonging to the imported faces will be imported in the output mesh.
  *
- * Only the faces for which the `faceFilter` function returns  true` and their
+ * Only the faces for which the `faceFilter` function returns `true` and their
  * vertices will be put in the output mesh. Only the order of the faces in the
  * output mesh is preserved.
  *
@@ -418,7 +418,7 @@ OutMeshType faceSelectionMeshFilter(
  * input mesh `m` filtered using the `edgeFilter` function. Only vertices
  * belonging to the imported edges will be imported in the output mesh.
  *
- * Only the edges for which the `edgeFilter` function returns  true` and their
+ * Only the edges for which the `edgeFilter` function returns `true` and their
  * vertices will be put in the output mesh. Only the order of the edges in the
  * output mesh is preserved.
  *
@@ -540,7 +540,7 @@ OutMeshType edgeSelectionMeshFilter(
  * `faceEdgeFilter` function. Only vertices belonging to the imported face edges
  * will be imported in the output mesh.
  *
- * Only the edges for which the `faceEdgeFilter` function returns  true` and
+ * Only the edges for which the `faceEdgeFilter` function returns `true` and
  * their vertices will be put in the output mesh.
  *
  * @tparam InMeshType: type of the input mesh. It must satisfy the
@@ -635,7 +635,7 @@ OutMeshType faceEdgeMeshFilter(
  * `faceEdgeFilter` function. Only vertices belonging to the imported face edges
  * will be imported in the output mesh.
  *
- * Only the edges for which the `faceEdgeFilter` function returns  true` and
+ * Only the edges for which the `faceEdgeFilter` function returns `true` and
  * their vertices will be put in the output mesh.
  *
  * @tparam InMeshType: type of the input mesh. It must satisfy the

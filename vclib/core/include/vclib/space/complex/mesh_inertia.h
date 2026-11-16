@@ -37,7 +37,7 @@ namespace vcl {
  * For more information, check out:
  *
  * <b>Brian Mirtich,</b>
- * ``Fast and Accurate Computation of Polyhedral Mass Properties,''
+ * "Fast and Accurate Computation of Polyhedral Mass Properties,"
  * journal of graphics tools, volume 1, number 2, 1996
  *
  * @ingroup space_complex
