@@ -164,3 +164,32 @@ TEMPLATE_TEST_CASE(
         REQUIRE(count == expectedStlSize);
     }
 }
+
+TEST_CASE("Save binary STL polygon mesh writes triangulated face count", "[io][stl]")
+{
+    vcl::PolyMesh pm = vcl::createCube<vcl::PolyMesh>();
+    REQUIRE(pm.faceCount() == 6);
+
+    vcl::SaveSettings settings;
+    settings.binary = true;
+
+    std::ostringstream ss;
+    vcl::saveStl(pm, ss, settings);
+
+    std::string str = ss.str();
+    REQUIRE(str.size() >= 84);
+
+    uint32_t numTris = 0;
+    std::memcpy(&numTris, str.data() + 80, sizeof(uint32_t));
+    REQUIRE(numTris == 12);
+
+    // Each triangle in binary STL is 50 bytes (12 floats + 2 bytes attribute)
+    REQUIRE(str.size() == 84 + 12 * 50);
+
+    // Reloading into TriMesh should successfully load all 12 triangles
+    std::istringstream iss(str);
+    vcl::TriMesh tm;
+    vcl::MeshInfo info;
+    vcl::loadStl(tm, iss, info, true);
+    REQUIRE(tm.faceCount() == 12);
+}

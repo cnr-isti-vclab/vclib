@@ -107,17 +107,17 @@ void setPlyFaceWedgeTexCoords(
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Stream>
 void readPlyFaceProperty(
-    Stream&     file,
-    MeshType&   mesh,
-    FaceType&   f,
-    PlyProperty p,
-    MeshInfo&   loadedInfo,
-    bool        vcgGenerated = false,
-    std::endian end          = std::endian::little)
+    Stream&                           file,
+    MeshType&                         mesh,
+    FaceType&                         f,
+    PlyProperty                       p,
+    std::vector<IndexType<MeshType>>& vids,
+    MeshInfo&                         loadedInfo,
+    bool                              vcgGenerated = false,
+    std::endian                       end          = std::endian::little)
 {
     using IndexType = IndexType<MeshType>;
-    bool              hasBeenRead = false;
-    std::vector<IndexType> vids; // contains the vertex ids of the actual face
+    bool hasBeenRead = false;
     if (p.name == ply::vertex_indices) { // loading vertex indices
         uint fSize = io::readPrimitiveType<uint>(file, p.listSizeType, end);
         loadedInfo.updateMeshType(fSize);
@@ -257,11 +257,12 @@ void readPlyFaceTxt(
 {
     Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token          = spaceTokenizer.begin();
+    std::vector<IndexType<MeshType>> vids;
     for (const PlyProperty& p : faceProperties) {
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");
         }
-        readPlyFaceProperty(token, mesh, f, p, loadedInfo, vcgGenerated);
+        readPlyFaceProperty(token, mesh, f, p, vids, loadedInfo, vcgGenerated);
     }
 }
 
@@ -275,8 +276,9 @@ void readPlyFaceBin(
     std::endian                   end,
     bool                          vcgGenerated = false)
 {
+    std::vector<IndexType<MeshType>> vids;
     for (const PlyProperty& p : faceProperties) {
-        readPlyFaceProperty(file, mesh, f, p, loadedInfo, vcgGenerated, end);
+        readPlyFaceProperty(file, mesh, f, p, vids, loadedInfo, vcgGenerated, end);
     }
 }
 

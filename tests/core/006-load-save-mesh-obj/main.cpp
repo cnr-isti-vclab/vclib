@@ -255,4 +255,46 @@ TEMPLATE_TEST_CASE(
         REQUIRE(info.hasFaces());
         REQUIRE(info.hasEdges());
     }
+
+    SECTION("Face 0 without usemtl followed by usemtl")
+    {
+        info.clear();
+        TriMesh tm;
+        std::string objStr =
+            "v 0 0 0\nv 1 0 0\nv 0 1 0\n"
+            "v 0 0 1\nv 1 0 1\nv 0 1 1\n"
+            "f 1 2 3\n"
+            "usemtl mat1\n"
+            "f 4 5 6\n";
+        std::string mtlStr =
+            "newmtl mat1\n"
+            "Kd 1.0 0.5 0.2\n";
+        std::istringstream objStream(objStr);
+        std::istringstream mtlStream(mtlStr);
+        std::vector<std::istream*> mtlStreams = {&mtlStream};
+        vcl::loadObj(tm, objStream, mtlStreams, info);
+        REQUIRE(tm.vertexCount() == 6);
+        REQUIRE(tm.faceCount() == 2);
+        REQUIRE(tm.isFaceMaterialIndexAvailable());
+        REQUIRE(tm.face(0).materialIndex() == vcl::USHORT_NULL);
+        REQUIRE(tm.face(1).materialIndex() == 0);
+    }
+}
+
+TEST_CASE("ObjMaterial serialization with map_Ke", "[io][obj]")
+{
+    vcl::detail::ObjMaterial mat;
+    mat.matName = "test_material";
+    mat.map_Ke = "emissive.png";
+    std::ostringstream ss;
+    ss << mat;
+    std::string s = ss.str();
+    REQUIRE(s.find("map_Ke emissive.png") != std::string::npos);
+
+    vcl::detail::ObjMaterial matEmpty;
+    matEmpty.matName = "test_empty";
+    std::ostringstream ssEmpty;
+    ssEmpty << matEmpty;
+    std::string sEmpty = ssEmpty.str();
+    REQUIRE(sEmpty.find("map_Ke") == std::string::npos);
 }

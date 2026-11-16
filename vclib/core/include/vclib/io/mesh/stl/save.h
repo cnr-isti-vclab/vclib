@@ -12,6 +12,7 @@
 #include <vclib/io/write.h>
 
 #include <vclib/algorithms/core.h>
+#include <vclib/algorithms/mesh/stat/topology.h>
 #include <vclib/space/complex.h>
 #include <vclib/version.h>
 
@@ -104,11 +105,12 @@ void saveStl(
     detail::writeStlHeader(fp, settings);
 
     if constexpr (HasFaces<MeshType>) {
+        uint numTris = triangulatedFaceCount(m);
         if (settings.binary) {
-            io::writeInt(fp, m.faceCount());
+            io::writeInt(fp, numTris);
         }
 
-        log.startProgress("Saving STL file", m.faceCount());
+        log.startProgress("Saving STL file", numTris);
 
         for (auto f : m.faces()) {
             // For each triangle write the normal, the 3 vert positions and a

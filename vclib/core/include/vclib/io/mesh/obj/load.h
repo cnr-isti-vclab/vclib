@@ -164,7 +164,7 @@ void loadObjMaterials(
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
             Material m = mat.toMaterial();
-            mat.matId  = mesh.materialCount();
+            mat.matId  = static_cast<ushort>(mesh.materialCount());
             mesh.pushMaterial(m);
         }
     }
@@ -296,7 +296,8 @@ void readObjFace(
 
     // material
     if constexpr (HasFaceMaterialIndex<MeshType>) {
-        if (fid == 0 && currentMaterial.matId != UINT_NULL) {
+        if (currentMaterial.matId != USHORT_NULL &&
+            !loadedInfo.hasFaceMaterialIndex()) {
             if (settings.enableOptionalComponents) {
                 enableIfFaceMaterialIndexOptional(m);
                 loadedInfo.setFaceMaterialIndex();

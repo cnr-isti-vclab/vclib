@@ -52,6 +52,53 @@ std::istringstream plyPolyCube()
     return ss;
 }
 
+std::istringstream plyPolyWithWedgeTexCoords()
+{
+    std::string s =
+        "ply\n"
+        "format ascii 1.0\n"
+        "element vertex 4\n"
+        "property float x\n"
+        "property float y\n"
+        "property float z\n"
+        "element face 1\n"
+        "property list uchar int vertex_indices\n"
+        "property list uchar float texcoord\n"
+        "end_header\n"
+        "0.0 0.0 0.0\n"
+        "1.0 0.0 0.0\n"
+        "1.0 1.0 0.0\n"
+        "0.0 1.0 0.0\n"
+        "4 0 1 2 3 8 0.0 0.0 1.0 0.0 1.0 1.0 0.0 1.0\n";
+    return std::istringstream(s);
+}
+
+std::istringstream plyEdgeWithProperties()
+{
+    std::string s =
+        "ply\n"
+        "format ascii 1.0\n"
+        "element vertex 2\n"
+        "property float x\n"
+        "property float y\n"
+        "property float z\n"
+        "element edge 1\n"
+        "property int vertex1\n"
+        "property int vertex2\n"
+        "property float nx\n"
+        "property float ny\n"
+        "property float nz\n"
+        "property uchar red\n"
+        "property uchar green\n"
+        "property uchar blue\n"
+        "property float quality\n"
+        "end_header\n"
+        "0.0 0.0 0.0\n"
+        "1.0 0.0 0.0\n"
+        "0 1 0.0 1.0 0.0 255 128 64 42.5\n";
+    return std::istringstream(s);
+}
+
 std::istringstream plyTriCube()
 {
     // string containing a triangulted cube in PLY format
@@ -204,5 +251,42 @@ TEMPLATE_TEST_CASE(
         vcl::loadPly(pm, ss, info);
         REQUIRE(pm.vertexCount() == 8);
         REQUIRE(pm.edgeCount() == 4);
+    }
+
+    SECTION("TriMesh - PolyWithWedgeTexCoords (split face with wedge UV)")
+    {
+        TriMesh tm;
+        auto    ss = plyPolyWithWedgeTexCoords();
+        vcl::loadPly(tm, ss, info);
+        REQUIRE(tm.vertexCount() == 4);
+        REQUIRE(tm.faceCount() == 2);
+        REQUIRE(tm.isFaceWedgeTexCoordsAvailable());
+        // Verify texcoords for both generated triangles match polygon vertices
+        for (uint ff = 0; ff < tm.faceCount(); ++ff) {
+            for (uint i = 0; i < 3; ++i) {
+                uint vid = tm.face(ff).vertexIndex(i);
+                float expectedU = (vid == 1 || vid == 2) ? 1.0f : 0.0f;
+                float expectedV = (vid >= 2) ? 1.0f : 0.0f;
+                REQUIRE(tm.face(ff).wedge(i).texCoord().u() == expectedU);
+                REQUIRE(tm.face(ff).wedge(i).texCoord().v() == expectedV);
+            }
+        }
+    }
+
+    SECTION("EdgeMesh - Edge with Normal, Color, Quality")
+    {
+        EdgeMesh em;
+        auto     ss = plyEdgeWithProperties();
+        vcl::loadPly(em, ss, info);
+        REQUIRE(em.vertexCount() == 2);
+        REQUIRE(em.edgeCount() == 1);
+        REQUIRE(em.isEdgeNormalAvailable());
+        REQUIRE(em.isEdgeColorAvailable());
+        REQUIRE(em.isEdgeQualityAvailable());
+        REQUIRE(em.edge(0).normal().y() == 1.0);
+        REQUIRE(em.edge(0).color().red() == 255);
+        REQUIRE(em.edge(0).color().green() == 128);
+        REQUIRE(em.edge(0).color().blue() == 64);
+        REQUIRE(em.edge(0).quality() == 42.5);
     }
 }

@@ -62,7 +62,8 @@ void readPlyEdgeProperty(
                 using Scalar = EdgeType::NormalType::ScalarType;
                 int    a     = p.name - ply::nx;
                 Scalar n     = io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead  = true;
+                e.normal()[a] = n;
+                hasBeenRead   = true;
             }
         }
     }
@@ -73,7 +74,8 @@ void readPlyEdgeProperty(
                 int           a = p.name - ply::red;
                 unsigned char c =
                     io::readPrimitiveType<unsigned char>(file, p.type, end);
-                hasBeenRead = true;
+                e.color()[a] = c;
+                hasBeenRead  = true;
             }
         }
     }
@@ -83,6 +85,7 @@ void readPlyEdgeProperty(
             if (mesh.isEdgeQualityAvailable()) {
                 QualityType s =
                     io::readPrimitiveType<QualityType>(file, p.type, end);
+                e.quality() = s;
                 hasBeenRead = true;
             }
         }

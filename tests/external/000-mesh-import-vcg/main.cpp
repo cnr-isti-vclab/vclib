@@ -210,7 +210,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceCount() == 11);
 
         for (const auto& f : tm.faces()) {
-            for (uint vi = 0; vi < 3; ++vi) {
+            for (vcl::uint vi = 0; vi < 3; ++vi) {
                 REQUIRE(f.vertexIndex(vi) < tm.vertexCount());
             }
         }

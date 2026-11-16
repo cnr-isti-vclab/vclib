@@ -104,3 +104,22 @@ TEMPLATE_TEST_CASE(
         }
     }
 }
+
+TEST_CASE("Non-indexed glTF primitive loading on PolyMesh", "[io][gltf]")
+{
+    vcl::PolyMesh pm;
+    // Add 9 vertices: vertices 0..2 from a first primitive, vertices 3..8 from a second non-indexed primitive
+    pm.addVertices(9);
+    bool ok = vcl::detail::populateGltfTriangles<vcl::PolyMesh, uint>(
+        pm, 3, nullptr, 0);
+    REQUIRE(ok);
+    REQUIRE(pm.faceCount() == 2);
+    REQUIRE(pm.face(0).vertexCount() == 3);
+    REQUIRE(pm.face(1).vertexCount() == 3);
+    REQUIRE(pm.face(0).vertexIndex(0) == 3);
+    REQUIRE(pm.face(0).vertexIndex(1) == 4);
+    REQUIRE(pm.face(0).vertexIndex(2) == 5);
+    REQUIRE(pm.face(1).vertexIndex(0) == 6);
+    REQUIRE(pm.face(1).vertexIndex(1) == 7);
+    REQUIRE(pm.face(1).vertexIndex(2) == 8);
+}
