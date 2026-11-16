@@ -1055,3 +1055,54 @@ TEST_CASE("Export Material Index and Adjacency Sentinels", "[export][sentinels]"
     }
 }
 
+TEST_CASE("TriPolyIndexBiMap - isMappingTrivial and exportBuffer cleanup")
+{
+    SECTION("isMappingTrivial")
+    {
+        vcl::TriPolyIndexBiMap map;
+        REQUIRE(map.isMappingTrivial());
+
+        // Identity 1:1 mapping: 0->0, 1->1, 2->2
+        map.insert(0, 0);
+        map.insert(1, 1);
+        map.insert(2, 2);
+        REQUIRE(map.isMappingTrivial());
+
+        // Permuted mapping: polygon 0 -> triangle 1, polygon 1 -> triangle 0
+        vcl::TriPolyIndexBiMap permutedMap;
+        permutedMap.insert(1, 0);
+        permutedMap.insert(0, 1);
+        REQUIRE_FALSE(permutedMap.isMappingTrivial());
+
+        // Non-trivial 1:N mapping (quad triangulated into 2 triangles)
+        vcl::TriPolyIndexBiMap multiMap;
+        multiMap.insert(0, 0);
+        multiMap.insert(1, 0);
+        REQUIRE_FALSE(multiMap.isMappingTrivial());
+
+        // Non-trivial mapping with gap (deleted face in middle)
+        vcl::TriPolyIndexBiMap gapMap;
+        gapMap.insert(0, 0);
+        gapMap.insert(1, 2); // polygon 1 was deleted
+        REQUIRE_FALSE(gapMap.isMappingTrivial());
+    }
+
+    SECTION("triangulatedFaceVertexIndicesToBuffer clears detail::indexMap on TriMesh")
+    {
+        vcl::TriMesh tm;
+        tm.addVertices(3);
+        tm.vertex(0).position() = vcl::Point3d(0, 0, 0);
+        tm.vertex(1).position() = vcl::Point3d(1, 0, 0);
+        tm.vertex(2).position() = vcl::Point3d(0, 1, 0);
+        tm.addFace(0, 1, 2);
+
+        std::vector<vcl::uint> buffer(3);
+        // Call using default indexMap argument (&detail::indexMap)
+        vcl::triangulatedFaceVertexIndicesToBuffer(tm, buffer.data());
+
+        // detail::indexMap should be empty after the call
+        REQUIRE(vcl::detail::indexMap.triangleCount() == 0);
+        REQUIRE(vcl::detail::indexMap.polygonCount() == 0);
+    }
+}
+

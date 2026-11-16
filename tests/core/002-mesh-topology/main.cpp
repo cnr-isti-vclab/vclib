@@ -890,3 +890,55 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.edge(3).containsAdjEdge(tm.edge(2)));
     }
 }
+
+SCENARIO("Test updateFaceAdjacentFaces on mesh with boundary edges")
+{
+    GIVEN("A single-triangle mesh with boundary edges")
+    {
+        vcl::TriMesh tm;
+        tm.addVertices(3);
+        tm.vertex(0).position() = vcl::Point3d(0, 0, 0);
+        tm.vertex(1).position() = vcl::Point3d(1, 0, 0);
+        tm.vertex(2).position() = vcl::Point3d(0, 1, 0);
+
+        tm.addFace(0, 1, 2);
+
+        tm.enableFaceAdjacentFaces();
+        // Initialize with non-null values to verify they are all set to NULL_INDEX
+        tm.face(0).setAdjFace(0, 0);
+        tm.face(0).setAdjFace(1, 0);
+        tm.face(0).setAdjFace(2, 0);
+
+        vcl::updateFaceAdjacentFaces(tm);
+
+        REQUIRE(tm.face(0).adjFaceIndex(0) == vcl::TriMesh::NULL_INDEX);
+        REQUIRE(tm.face(0).adjFaceIndex(1) == vcl::TriMesh::NULL_INDEX);
+        REQUIRE(tm.face(0).adjFaceIndex(2) == vcl::TriMesh::NULL_INDEX);
+    }
+
+    GIVEN("A two-triangle mesh sharing one edge")
+    {
+        vcl::TriMesh tm;
+        tm.addVertices(4);
+        tm.vertex(0).position() = vcl::Point3d(0, 0, 0);
+        tm.vertex(1).position() = vcl::Point3d(1, 0, 0);
+        tm.vertex(2).position() = vcl::Point3d(1, 1, 0);
+        tm.vertex(3).position() = vcl::Point3d(0, 1, 0);
+
+        tm.addFace(0, 1, 2);
+        tm.addFace(0, 2, 3);
+
+        tm.enableFaceAdjacentFaces();
+        vcl::updateFaceAdjacentFaces(tm);
+
+        // Edge (0, 2) is shared between face 0 (edge index 2) and face 1 (edge index 0)
+        REQUIRE(tm.face(0).adjFaceIndex(2) == 1);
+        REQUIRE(tm.face(1).adjFaceIndex(0) == 0);
+
+        // All boundary edges (including the last in the sorted list) must be NULL_INDEX
+        REQUIRE(tm.face(0).adjFaceIndex(0) == vcl::TriMesh::NULL_INDEX);
+        REQUIRE(tm.face(0).adjFaceIndex(1) == vcl::TriMesh::NULL_INDEX);
+        REQUIRE(tm.face(1).adjFaceIndex(1) == vcl::TriMesh::NULL_INDEX);
+        REQUIRE(tm.face(1).adjFaceIndex(2) == vcl::TriMesh::NULL_INDEX);
+    }
+}

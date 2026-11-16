@@ -342,20 +342,18 @@ void updateFaceAdjacentFaces(MeshType& mesh)
             // make cyclic adj on the same edge)
             auto i = base;
             auto j = i + 1;
-            if (j != vec.end()) {
-                // case of cluster composed of one element. adj of i is nullptr
-                if (*i != *j) {
-                    mesh.face(i->f).setAdjFace(i->e, MeshType::NULL_INDEX);
+            if (j == vec.end() || *i != *j) {
+                // case of cluster composed of one element. adj of i is NULL_INDEX
+                mesh.face(i->f).setAdjFace(i->e, MeshType::NULL_INDEX);
+            }
+            else { // at least two edges in the cluster
+                while (j != vec.end() && *i == *j) {
+                    mesh.face(i->f).setAdjFace(i->e, j->f);
+                    ++i;
+                    ++j;
                 }
-                else { // at least two edges in the cluster
-                    while (j != vec.end() && *i == *j) {
-                        mesh.face(i->f).setAdjFace(i->e, j->f);
-                        ++i;
-                        ++j;
-                    }
-                    // i now is the last element that was equal to first
-                    mesh.face(i->f).setAdjFace(i->e, first->f);
-                }
+                // i now is the last element that was equal to first
+                mesh.face(i->f).setAdjFace(i->e, first->f);
             }
 
             // j is the first different edge from first (or it is vec.end()!)

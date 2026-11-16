@@ -293,6 +293,8 @@ protected:
         using std::swap;
         swap(mNumVerts, other.mNumVerts);
         swap(mNumTris, other.mNumTris);
+        swap(mNumEdges, other.mNumEdges);
+        swap(nWireframeLines, other.nWireframeLines);
         swap(mVertWedgeMap, other.mVertWedgeMap);
         swap(mVertsToDuplicate, other.mVertsToDuplicate);
         swap(mFacesToReassign, other.mFacesToReassign);

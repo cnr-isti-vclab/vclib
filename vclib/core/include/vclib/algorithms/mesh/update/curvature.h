@@ -77,7 +77,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
 
         weights.reserve(vertices.size());
 
-        for (int i = 0; i < vertices.size(); ++i) {
+        for (size_t i = 0; i < vertices.size(); ++i) {
             if (vertices[i].isBorder) {
                 weights.push_back(vertices[i].doubleArea / totalDoubleAreaSize);
             }
@@ -85,7 +85,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
                 weights.push_back(
                     0.5f *
                     (vertices[i].doubleArea +
-                     vertices[(i - 1) % vertices.size()].doubleArea) /
+                     vertices[(i + vertices.size() - 1) % vertices.size()]
+                         .doubleArea) /
                     totalDoubleAreaSize);
             }
             assert(weights.back() < 1.0f);
@@ -135,75 +136,36 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
         Eigen::Matrix<ScalarType, 1, 3> T1 = Q.col(1);
         Eigen::Matrix<ScalarType, 1, 3> T2 = Q.col(2);
 
-        // find sin and cos for the Givens rotation
-        ScalarType s, c;
-        // Gabriel Taubin hint and Valentino Fiorin impementation
-        ScalarType alpha = QtMQ(1, 1) - QtMQ(2, 2);
-        ScalarType beta  = QtMQ(2, 1);
-
-        ScalarType h[2];
-        ScalarType delta =
-            std::sqrt(4.0f * std::pow(alpha, 2) + 16.0f * std::pow(beta, 2));
-        h[0] = (2.0f * alpha + delta) / (2.0f * beta);
-        h[1] = (2.0f * alpha - delta) / (2.0f * beta);
-
-        ScalarType t[2];
-        ScalarType bestC, bestS;
-        ScalarType minError = std::numeric_limits<ScalarType>::infinity();
-        for (uint i = 0; i < 2; i++) {
-            delta = std::sqrt(std::pow(h[i], 2) + 4.0f);
-            t[0]  = (h[i] + delta) / 2.0f;
-            t[1]  = (h[i] - delta) / 2.0f;
-
-            for (uint j = 0; j < 2; j++) {
-                ScalarType squaredT    = std::pow(t[j], 2);
-                ScalarType denominator = 1.0f + squaredT;
-
-                s = (2.0f * t[j]) / denominator;
-                c = (1 - squaredT) / denominator;
-
-                ScalarType approximation =
-                    c * s * alpha + (std::pow(c, 2) - std::pow(s, 2)) * beta;
-                ScalarType angleSimilarity =
-                    std::abs(std::acos(c) / std::asin(s));
-                ScalarType error =
-                    std::abs(1.0f - angleSimilarity) + std::abs(approximation);
-                if (error < minError) {
-                    minError = error;
-                    bestC    = c;
-                    bestS    = s;
-                }
-            }
-        }
-        c = bestC;
-        s = bestS;
-
-        Eigen::Matrix2f minor2x2;
-        Eigen::Matrix2f S;
-
-        // diagonalize M
+        // diagonalize the 2x2 restriction of M in the tangent plane basis (T1, T2)
+        Eigen::Matrix<ScalarType, 2, 2> minor2x2;
         minor2x2(0, 0) = QtMQ(1, 1);
         minor2x2(0, 1) = QtMQ(1, 2);
         minor2x2(1, 0) = QtMQ(2, 1);
         minor2x2(1, 1) = QtMQ(2, 2);
 
-        S(0, 0) = S(1, 1) = c;
-        S(0, 1)           = s;
-        S(1, 0)           = -1.0f * s;
+        Eigen::SelfAdjointEigenSolver<Eigen::Matrix<ScalarType, 2, 2>> es(
+            minor2x2);
+        // es.eigenvalues() are sorted in ascending order: lambda0 <= lambda1
+        ScalarType l0 = es.eigenvalues()[0];
+        ScalarType l1 = es.eigenvalues()[1];
 
-        Eigen::Matrix2f StMS = S.transpose() * minor2x2 * S;
+        // Taubin95 formula:
+        // k0 = 3*l0 - l1
+        // k1 = 3*l1 - l0
+        // Since l0 <= l1, k0 <= k1 holds: (3*l1 - l0) - (3*l0 - l1) = 4*(l1 - l0) >= 0
+        ScalarType k0 = 3.0f * l0 - l1;
+        ScalarType k1 = 3.0f * l1 - l0;
 
-        // compute curvatures and curvature directions
-        ScalarType principalCurv1 = (3.0f * StMS(0, 0)) - StMS(1, 1);
-        ScalarType principalCurv2 = (3.0f * StMS(1, 1)) - StMS(0, 0);
+        auto ev0 = es.eigenvectors().col(0);
+        auto ev1 = es.eigenvectors().col(1);
 
-        Eigen::Matrix<ScalarType, 1, 3> principalDir1 = T1 * c - T2 * s;
-        Eigen::Matrix<ScalarType, 1, 3> principalDir2 = T1 * s + T2 * c;
+        Eigen::Matrix<ScalarType, 1, 3> dir0 = T1 * ev0[0] + T2 * ev0[1];
+        Eigen::Matrix<ScalarType, 1, 3> dir1 = T1 * ev1[0] + T2 * ev1[1];
 
-        v.principalCurvature().maxDir()   = principalDir1;
-        v.principalCurvature().minDir()   = principalDir2;
-        v.principalCurvature().maxValue() = principalCurv1;
-        v.principalCurvature().minValue() = principalCurv2;
+        v.principalCurvature().maxValue() = k1;
+        v.principalCurvature().minValue() = k0;
+        v.principalCurvature().maxDir()   = dir1.normalized();
+        v.principalCurvature().minDir()   = dir0.normalized();
 
         log.progress(v.index());
     }

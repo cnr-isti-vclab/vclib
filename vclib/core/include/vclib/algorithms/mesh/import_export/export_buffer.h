@@ -402,7 +402,7 @@ void triangulatedFaceVertexIndicesToBuffer(
             ++t;
         }
 
-        return faceVertexIndicesToBuffer(
+        faceVertexIndicesToBuffer(
             mesh, buffer, 3, storage, getIndicesAsIfContainerCompact);
     }
     else {

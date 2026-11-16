@@ -22,6 +22,9 @@
 #endif
 
 #ifdef __APPLE__
+#ifndef GL_SILENCE_DEPRECATION
+#define GL_SILENCE_DEPRECATION
+#endif
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
@@ -93,7 +96,30 @@ public:
         mMRS.setDefaultSettingsFromCapability();
     }
 
+    DrawableMeshOpenGL2(const DrawableMeshOpenGL2& drawableMesh) :
+            AbstractDrawableMesh(
+                static_cast<const AbstractDrawableMesh&>(drawableMesh)),
+            MeshType(drawableMesh)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        updateBuffers();
+        mMRS.setDefaultSettingsFromCapability();
+    }
+
+    DrawableMeshOpenGL2(DrawableMeshOpenGL2&& drawableMesh)
+    {
+        swap(drawableMesh);
+    }
+
     ~DrawableMeshOpenGL2() = default;
+
+    DrawableMeshOpenGL2& operator=(DrawableMeshOpenGL2 drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void swap(DrawableMeshOpenGL2& other)
     {

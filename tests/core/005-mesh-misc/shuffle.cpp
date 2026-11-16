@@ -262,3 +262,22 @@ TEST_CASE("Permute - permuteInPlace 32 and 64 bit")
         REQUIRE((vec == std::vector<std::string> {"one", "three", "zero", "two"}));
     }
 }
+
+TEST_CASE("Curvature - Taubin95 on Sphere")
+{
+    vcl::Sphere<double> s(vcl::Point3d(0, 0, 0), 1.0);
+    vcl::TriMesh mesh = vcl::createSphereIcosahedron<vcl::TriMesh>(s, 2);
+    mesh.enableVertexPrincipalCurvature();
+    mesh.enableVertexAdjacentFaces();
+    mesh.enableFaceAdjacentFaces();
+    vcl::updateFaceAdjacentFaces(mesh);
+    vcl::updateVertexAdjacentFaces(mesh);
+
+    vcl::updatePrincipalCurvatureTaubin95(mesh);
+
+    for (auto v : mesh.vertices()) {
+        // For a unit sphere, both principal curvatures should be approximately 1.0
+        REQUIRE(std::abs(v.principalCurvature().maxValue() - 1.0) < 0.2);
+        REQUIRE(std::abs(v.principalCurvature().minValue() - 1.0) < 0.2);
+    }
+}
