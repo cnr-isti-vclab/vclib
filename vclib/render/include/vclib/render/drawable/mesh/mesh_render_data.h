@@ -652,7 +652,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexPositionsBuffer(const MeshConcept auto&) {}
+    void setVertexPositionsBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of vertex selection buffer and
@@ -670,7 +672,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexSelectionBuffer(const MeshConcept auto&) {}
+    void setVertexSelectionBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of vertex normals buffer and sends
@@ -688,7 +692,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexNormalsBuffer(const MeshConcept auto&) {}
+    void setVertexNormalsBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of vertex colors buffer and sends
@@ -706,7 +712,7 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexColorsBuffer(const MeshConcept auto&) {}
+    void setVertexColorsBuffer([[maybe_unused]] const MeshConcept auto& mesh) {}
 
     /**
      * @brief Function that sets the content of vertex texture coordinates
@@ -724,7 +730,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexTexCoordsBuffer(const MeshConcept auto&) {}
+    void setVertexTexCoordsBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of vertex tangent buffer and sends
@@ -742,7 +750,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexTangentsBuffer(const MeshConcept auto&) {}
+    void setVertexTangentsBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of wedge texture coordinates buffer
@@ -765,7 +775,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setWedgeTexCoordsBuffer(const MeshConcept auto&) {}
+    void setWedgeTexCoordsBuffer([[maybe_unused]] const MeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of triangle indices buffer and
@@ -783,7 +795,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTriangleIndicesBuffer(const FaceMeshConcept auto&) {};
+    void setTriangleIndicesBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of triangle selection buffer and
@@ -801,7 +816,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTriangleSelectionBuffer(const FaceMeshConcept auto&) {};
+    void setTriangleSelectionBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of triangle normals buffer and
@@ -819,7 +837,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTriangleNormalsBuffer(const FaceMeshConcept auto&) {}
+    void setTriangleNormalsBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of triangle colors buffer and
@@ -837,7 +858,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTriangleColorsBuffer(const FaceMeshConcept auto&) {}
+    void setTriangleColorsBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of vertex material indices buffer
@@ -859,7 +883,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setVertexMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setVertexMaterialIndicesBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of face material indices buffer and
@@ -877,7 +904,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setFaceMaterialIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setFaceMaterialIndicesBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of wireframe indices buffer and
@@ -895,7 +925,10 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setWireframeIndicesBuffer(const FaceMeshConcept auto&) {}
+    void setWireframeIndicesBuffer(
+        [[maybe_unused]] const FaceMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of edge indices buffer and sends
@@ -913,7 +946,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setEdgeIndicesBuffer(const EdgeMeshConcept auto&) {}
+    void setEdgeIndicesBuffer([[maybe_unused]] const EdgeMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of edge normals buffer and sends
@@ -931,7 +966,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setEdgeNormalsBuffer(const EdgeMeshConcept auto&) {}
+    void setEdgeNormalsBuffer([[maybe_unused]] const EdgeMeshConcept auto& mesh)
+    {
+    }
 
     /**
      * @brief Function that sets the content of edge colors buffer and sends
@@ -949,7 +986,9 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setEdgeColorsBuffer(const EdgeMeshConcept auto&) {}
+    void setEdgeColorsBuffer([[maybe_unused]] const EdgeMeshConcept auto& mesh)
+    {
+    }
 
     void setEdgeSelectionBuffer(const EdgeMeshConcept auto&) {}
 
@@ -966,7 +1005,7 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setTextures(const MeshConcept auto&) {}
+    void setTextures([[maybe_unused]] const MeshConcept auto& mesh) {}
 
     /**
      * @brief Function that sets the mesh additional data from the mesh.
@@ -976,7 +1015,7 @@ protected:
      *
      * @param[in] mesh: the input mesh from which to get the data
      */
-    void setMeshAdditionalData(const MeshConcept auto&) {}
+    void setMeshAdditionalData([[maybe_unused]] const MeshConcept auto& mesh) {}
 
 private:
     template<MeshConcept MeshType>

@@ -56,7 +56,7 @@ namespace vcl {
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input vertices.
+ * @param[in,out] mesh: the mesh on which import the input vertices.
  * @param[in] buffer: a contiguous array containing the positions of the
  * vertices of the mesh.
  * @param[in] vertexCount: the number of vertices contained in the input
@@ -155,7 +155,7 @@ void vertexPositionsFromBuffer(
  * FaceMeshConcept.
  * @tparam FMatrix: the type of the input face matrix. It must satisfy the
  * MatrixConcept.
- * @param[in/out] mesh: the mesh on which import the input faces.
+ * @param[in,out] mesh: the mesh on which import the input faces.
  * @param[in] buffer: a contiguous array of \#F*faceSize values containing the
  * indices of the vertices of the faces of the mesh.
  * @param[in] faceCount: the number of faces contained in the input buffer.
@@ -282,7 +282,7 @@ void faceIndicesFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edges.
+ * @param[in,out] mesh: the mesh on which import the input edges.
  * @param[in] buffer: a contiguous array of \#E*2 values containing the indices
  * of the vertices of the edges of the mesh.
  * @param[in] edgeCount: the number of edges contained in the input buffer.
@@ -346,7 +346,7 @@ void edgeIndicesFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element selection.
+ * @param[in,out] mesh: the mesh on which import the input element selection.
  * @param[in] buffer: the input element selection buffer.
  *
  * @ingroup import_buffer
@@ -371,7 +371,7 @@ void elementSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in,out] mesh: the mesh on which import the input vertex selection.
  * @param[in] buffer: the input vertex selection buffer.
  *
  * @ingroup import_buffer
@@ -391,7 +391,7 @@ void vertexSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in,out] mesh: the mesh on which import the input face selection.
  * @param[in] buffer: the input face selection buffer.
  *
  * @ingroup import_buffer
@@ -411,7 +411,7 @@ void faceSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in,out] mesh: the mesh on which import the input edge selection.
  * @param[in] buffer: the input edge selection buffer.
  *
  * @ingroup import_buffer
@@ -425,7 +425,7 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 /**
  * @brief Sets the element identified by `ELEM_ID` normals of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * #E*3 scalars, where each row contains the 3 components of the normal of a
+ * \#E*3 scalars, where each row contains the 3 components of the normal of a
  * element.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
@@ -440,7 +440,7 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element normals.
+ * @param[in,out] mesh: the mesh on which import the input element normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * elements of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -482,8 +482,8 @@ void elementNormalsFromBuffer(
 
 /**
  * @brief Sets the vertex normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*3 scalars, where each
- * row contains the 3 components of the normal of a vertex.
+ * buffer, that is expected to be a contiguous array of \#V*3 scalars, where
+ * each row contains the 3 components of the normal of a vertex.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of vertices of the mesh. The extra normals are ignored.
@@ -496,7 +496,7 @@ void elementNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex normals.
+ * @param[in,out] mesh: the mesh on which import the input vertex normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * vertices of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -520,8 +520,8 @@ void vertexNormalsFromBuffer(
 
 /**
  * @brief Sets the face normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
- * row contains the 3 components of the normal of a face.
+ * buffer, that is expected to be a contiguous array of \#F*3 scalars, where
+ * each row contains the 3 components of the normal of a face.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of faces of the mesh. The extra normals are ignored.
@@ -534,7 +534,7 @@ void vertexNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face normals.
+ * @param[in,out] mesh: the mesh on which import the input face normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * faces of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -558,8 +558,8 @@ void faceNormalsFromBuffer(
 
 /**
  * @brief Sets the edge normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
- * row contains the 3 components of the normal of a edge.
+ * buffer, that is expected to be a contiguous array of \#E*3 scalars, where
+ * each row contains the 3 components of the normal of a edge.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of edges of the mesh. The extra normals are ignored.
@@ -572,7 +572,7 @@ void faceNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge normals.
+ * @param[in,out] mesh: the mesh on which import the input edge normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * edges of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -597,7 +597,7 @@ void edgeNormalsFromBuffer(
 /**
  * @brief Sets the element identified by `ELEM_ID` colors of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * #E*3 or #E*4 scalars, where each row contains the 3 or 4 components of the
+ * \#E*3 or \#E*4 scalars, where each row contains the 3 or 4 components of the
  * color of a element.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -618,7 +618,7 @@ void edgeNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element colors.
+ * @param[in,out] mesh: the mesh on which import the input element colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -687,8 +687,8 @@ void elementColorsFromBuffer(
 
 /**
  * @brief Sets the element identified by `ELEM_ID` color of the given input
- * `mesh` from the input buffer, that is expected to be a contiguous array of #E
- * 32 bit values, on each of them the color is packed using the provided
+ * `mesh` from the input buffer, that is expected to be a contiguous array of
+ * \#E 32 bit values, on each of them the color is packed using the provided
  * `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -700,7 +700,7 @@ void elementColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element color.
+ * @param[in,out] mesh: the mesh on which import the input element color.
  * @param[in] buffer: the input element color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -726,7 +726,7 @@ void elementColorsFromBuffer(
 
 /**
  * @brief Sets the vertex colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*3 or #V*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#V*3 or \#V*4 scalars,
  * where each row contains the 3 or 4 components of the color of a vertex.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -746,7 +746,7 @@ void elementColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex colors.
+ * @param[in,out] mesh: the mesh on which import the input vertex colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -776,7 +776,7 @@ void vertexColorsFromBuffer(
 
 /**
  * @brief Sets the vertex color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#V 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -787,7 +787,7 @@ void vertexColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex color.
+ * @param[in,out] mesh: the mesh on which import the input vertex color.
  * @param[in] buffer: the input vertex color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -806,7 +806,7 @@ void vertexColorsFromBuffer(
 
 /**
  * @brief Sets the face colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 or #F*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#F*3 or \#F*4 scalars,
  * where each row contains the 3 or 4 components of the color of a face.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -826,7 +826,7 @@ void vertexColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face colors.
+ * @param[in,out] mesh: the mesh on which import the input face colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -856,7 +856,7 @@ void faceColorsFromBuffer(
 
 /**
  * @brief Sets the face color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#F 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -867,7 +867,7 @@ void faceColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face color.
+ * @param[in,out] mesh: the mesh on which import the input face color.
  * @param[in] buffer: the input face color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -885,7 +885,7 @@ void faceColorsFromBuffer(
 
 /**
  * @brief Sets the edge colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #E*3 or #E*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#E*3 or \#E*4 scalars,
  * where each row contains the 3 or 4 components of the color of a edge.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -905,7 +905,7 @@ void faceColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge colors.
+ * @param[in,out] mesh: the mesh on which import the input edge colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -935,7 +935,7 @@ void edgeColorsFromBuffer(
 
 /**
  * @brief Sets the edge color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#E 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -946,7 +946,7 @@ void edgeColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge color.
+ * @param[in,out] mesh: the mesh on which import the input edge color.
  * @param[in] buffer: the input edge color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -965,7 +965,7 @@ void edgeColorsFromBuffer(
 /**
  * @brief Sets the element identified by `ELEM_ID` quality of the given input
  * `mesh` from the input quality buffer, that is expected to be a contiguous
- * array of #E scalars, where each value contains the quality of a element.
+ * array of \#E scalars, where each value contains the quality of a element.
  *
  * If not specified, the number of quality values in the input buffer is assumed
  * to be at least the number of ELEM_ID elements of the mesh. The extra quality
@@ -976,7 +976,7 @@ void edgeColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element quality.
+ * @param[in,out] mesh: the mesh on which import the input element quality.
  * @param[in] buffer: the input element quality buffer.
  *
  * @ingroup import_buffer
@@ -997,7 +997,7 @@ void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the vertex quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #V scalars,
+ * quality buffer, that is expected to be a contiguous array of \#V scalars,
  * where each value contains the quality of a vertex.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -1009,7 +1009,7 @@ void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex quality.
+ * @param[in,out] mesh: the mesh on which import the input vertex quality.
  * @param[in] buffer: the input vertex quality buffer.
  *
  * @ingroup import_buffer
@@ -1022,7 +1022,7 @@ void vertexQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the face quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * quality buffer, that is expected to be a contiguous array of \#F scalars,
  * where each value contains the quality of a face.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -1034,7 +1034,7 @@ void vertexQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face quality.
+ * @param[in,out] mesh: the mesh on which import the input face quality.
  * @param[in] buffer: the input face quality buffer.
  *
  * @ingroup import_buffer
@@ -1047,7 +1047,7 @@ void faceQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the edge quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * quality buffer, that is expected to be a contiguous array of \#E scalars,
  * where each value contains the quality of a edge.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -1059,7 +1059,7 @@ void faceQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge quality.
+ * @param[in,out] mesh: the mesh on which import the input edge quality.
  * @param[in] buffer: the input edge quality buffer.
  *
  * @ingroup import_buffer
@@ -1072,8 +1072,8 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the vertex texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*2 scalars, where each
- * row contains the 2 components of the texture coordinates of a vertex.
+ * buffer, that is expected to be a contiguous array of \#V*2 scalars, where
+ * each row contains the 2 components of the texture coordinates of a vertex.
  *
  * If not specified, the number of texcoords in the input buffer is assumed to
  * be at least the number of vertices of the mesh. The extra texcoords are
@@ -1085,7 +1085,7 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input texcoords.
+ * @param[in,out] mesh: the mesh on which import the input texcoords.
  * @param[in] buffer: a contiguous array containing the texcoords of the
  * vertices of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -1124,7 +1124,7 @@ void vertexTexCoordsFromBuffer(
 /**
  * @brief Sets the vertex material indices of the given input `mesh` from the
  * input material indices buffer, that is expected to be a contiguous array of
- * #V scalars, where each value contains the material index of a vertex.
+ * \#V scalars, where each value contains the material index of a vertex.
  *
  * If not specified, the number of material indices values in the input buffer
  * is assumed to be at least the number of vertices of the mesh. The extra
@@ -1141,7 +1141,7 @@ void vertexTexCoordsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex material
+ * @param[in,out] mesh: the mesh on which import the input vertex material
  * indices.
  * @param[in] buffer: the input vertex material indices buffer.
  *
@@ -1163,7 +1163,7 @@ void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the face wedge texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*(LFS*2) of scalars,
+ * buffer, that is expected to be a contiguous array of \#F*(LFS*2) of scalars,
  * where each row contains the 2*largetFaceSize components of the wedge texture
  * coordinates of a face.
  *
@@ -1184,7 +1184,7 @@ void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input wedge texcoords.
+ * @param[in,out] mesh: the mesh on which import the input wedge texcoords.
  * @param[in] buffer: a contiguous array containing the wedge texcoords of the
  * faces of the mesh.
  * @param[in] largestFaceSize: the largest size of the faces, that corresponds
@@ -1231,7 +1231,7 @@ void faceWedgeTexCoordsFromBuffer(
 /**
  * @brief Sets the face material indices of the given input `mesh` from
  * the input material indices buffer, that is expected to be a contiguous array
- * of #F scalars, where each value contains the material index of a face.
+ * of \#F scalars, where each value contains the material index of a face.
  *
  * If not specified, the number of material indices values in the input
  * buffer is assumed to be at least the number of faces of the mesh. The
@@ -1248,7 +1248,7 @@ void faceWedgeTexCoordsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face material
+ * @param[in,out] mesh: the mesh on which import the input face material
  * indices.
  * @param[in] buffer: the input face material indices buffer.
  *

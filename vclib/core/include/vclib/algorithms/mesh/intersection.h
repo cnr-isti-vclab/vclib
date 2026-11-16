@@ -249,9 +249,16 @@ MeshType intersection(
 }
 
 /**
- * @copydoc intersection(const MeshType&, const PlaneType&)
+ * @brief Compute the intersection between a mesh and a ball.
  *
- * The tolerance is set as 1/10^5*2*pi*radius.
+ * Same as intersection(const MeshType&, const Sphere<SScalar>&, double), where
+ * the tolerance is set as 1/10^5*2*pi*radius.
+ *
+ * @note The returned mesh is a triangle soup
+ *
+ * @param m
+ * @param sphere
+ * @return
  *
  * @ingroup intersection_mesh
  */

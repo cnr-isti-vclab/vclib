@@ -251,7 +251,7 @@ auto triangulatedFaceCount(const FaceMeshConcept auto& mesh)
  * mesh.
  *
  * The function requires that vertex adjacent vertices have been
- * precomputed for the mesh (see @ref vcl::updateVertexAdjacentVertices).
+ * precomputed for the mesh (see `vcl::updateVertexAdjacentVertices`).
  *
  * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent vertices available.
@@ -310,7 +310,7 @@ uint largestElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
  * @brief Returns the largest number of vertex adjacent faces in the mesh.
  *
  * The function requires that vertex adjacent faces have been
- * precomputed for the mesh (see @ref vcl::updateVertexAdjacentFaces).
+ * precomputed for the mesh (see `vcl::updateVertexAdjacentFaces`).
  *
  * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent faces available.
@@ -382,7 +382,7 @@ uint largestElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of vertex adjacent edges in the mesh.
  *
  * The function requires that vertex adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updateVertexAdjacentEdges).
+ * precomputed for the mesh (see `vcl::updateVertexAdjacentEdges`).
  *
  * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent edges available.
@@ -401,7 +401,7 @@ uint largestVertexAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of face adjacent edges in the mesh.
  *
  * The function requires that face adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updateFaceAdjacentEdges).
+ * precomputed for the mesh (see `vcl::updateFaceAdjacentEdges`).
  *
  * @throws vcl::MissingComponentException if the mesh does not have face
  * adjacent edges available.
@@ -422,7 +422,7 @@ uint largestFaceAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
  * @brief Returns the largest number of edge adjacent edges in the mesh.
  *
  * The function requires that edge adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updateEdgeAdjacentEdges).
+ * precomputed for the mesh (see `vcl::updateEdgeAdjacentEdges`).
  *
  * @throws vcl::MissingComponentException if the mesh does not have edge
  * adjacent edges available.

@@ -103,7 +103,6 @@ public:
     /**
      * @brief Returns a reference of the name of the object, that allows to
      * modify it.
-     * @param[in] name: The name of the object.
      */
     virtual std::string& name() { return mObjName; }
 
@@ -116,7 +115,6 @@ public:
     /**
      * @brief Returns a reference of the info of the object, that allows to
      * modify it.
-     * @param[in] info: The info of the object.
      */
     std::string& info() { return mInfo; }
 

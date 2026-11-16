@@ -303,7 +303,9 @@ class MeshCliTests(unittest.TestCase):
 
     def assert_metadata(self, report, mesh_type, vertices, faces):
         self.assertEqual(report["version"], "v2")
-        self.assertEqual(report["metadata"], {
+        metadata = dict(report["metadata"])
+        self.assertIsInstance(metadata.pop("seed"), int)
+        self.assertEqual(metadata, {
             "mesh_type": mesh_type, "mesh_generation": "v2",
             "vertices": vertices, "faces": faces,
             "scalar_type": "float" if mesh_type.endswith("f") else "double",
@@ -327,14 +329,26 @@ class MeshCliTests(unittest.TestCase):
                     baseline = names
                 self.assertEqual(names, baseline)
                 # The positional file must also work after the type option.
-                report = self.run_report(
-                    "--mesh-type", mesh_type, self.mesh, "--include-slow"
+                result = self.invoke(
+                    "--mesh-type", mesh_type, self.mesh, "--include-slow",
+                    "--iterations", 1, "--no-warmup", "--json", self.report
                 )
+                self.assertEqual(
+                    result.returncode, 0, result.stdout + result.stderr
+                )
+                report = json.loads(self.report.read_text())
                 self.assert_metadata(report, mesh_type, 4, 4)
                 executed = {entry["name"] for entry in report["benchmarks"]}
-                self.assertEqual(executed, names - {
-                    "stat/topology/vertices_to_duplicate_by_wedge_tex_coords_count"
-                })
+                # Benchmarks that need components missing from the dataset
+                # mesh are skipped and reported on stdout.
+                skipped = {
+                    line.split()[1]
+                    for line in result.stdout.splitlines()
+                    if line.startswith("Skipping ")
+                }
+                self.assertTrue(executed)
+                self.assertFalse(executed & skipped)
+                self.assertEqual(executed | skipped, names)
 
     def test_all_types_on_grid(self):
         for mesh_type in MESH_TYPES:

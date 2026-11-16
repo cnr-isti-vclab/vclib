@@ -145,8 +145,6 @@ public:
 
     /**
      * @brief Copy constructor. Deep copies elements, components, and state.
-     *
-     * @param other The container to copy from.
      */
     ElementContainer(const ElementContainer&) = default;
 

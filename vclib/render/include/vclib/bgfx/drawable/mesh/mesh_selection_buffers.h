@@ -141,7 +141,7 @@ public:
      *
      * @param[in] maxElements: max(numVerts, numTris).
      */
-    void initReadbackHandler(uint) {}
+    void initReadbackHandler([[maybe_unused]] uint maxElements) {}
 
     // --- Set calls
 
