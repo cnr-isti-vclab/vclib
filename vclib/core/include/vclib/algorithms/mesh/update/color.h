@@ -77,7 +77,7 @@ void setElemColorFromMaterial(MeshType& m)
     requireElementComponent<ELEM_ID, CompId::MATERIAL_INDEX>(m);
 
     for (auto e : m.template elements<ELEM_ID>()) {
-        uint matIndex = e.materialIndex();
+        ushort matIndex = e.materialIndex();
         if (matIndex < m.materialCount()) {
             e.color() = m.materials()[matIndex].baseColor();
         }

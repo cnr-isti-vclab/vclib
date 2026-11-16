@@ -885,7 +885,7 @@ private:
             // map is used to avoid duplicates, then is moved to a vector for
             // parallel processing
             std::map<std::string, uint> texturePaths;
-            for (uint i = 0; i < mesh.materialCount(); ++i) {
+            for (ushort i = 0; i < mesh.materialCount(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                     const vcl::TextureDescriptor& td =
                         mesh.material(i).textureDescriptor(j);

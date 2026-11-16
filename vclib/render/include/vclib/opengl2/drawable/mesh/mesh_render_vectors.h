@@ -347,7 +347,7 @@ private:
 
         if constexpr (vcl::HasMaterials<MeshType>) {
             mTextures.reserve(mesh.materialCount());
-            for (uint i = 0; i < mesh.materialCount(); ++i) {
+            for (ushort i = 0; i < mesh.materialCount(); ++i) {
                 const auto& texture =
                     mesh.material(i).baseColorTextureDescriptor();
 

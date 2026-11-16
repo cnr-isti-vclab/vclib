@@ -76,6 +76,9 @@ public:
     /// @brief Exposes the Material type used by this component.
     using MaterialType = Material;
 
+    /// @brief Type used for indexing materials in the component.
+    using MaterialIndexType = ushort;
+
     // iterators
 
     /// @brief Iterator for the vector of materials.
@@ -99,7 +102,10 @@ public:
      * @brief Returns the number of materials of the mesh.
      * @return The total number of materials.
      */
-    uint materialCount() const { return mats().size(); }
+    ushort materialCount() const
+    {
+        return static_cast<ushort>(mats().size());
+    }
 
     /**
      * @brief Returns the number of texture images stored in the component.
@@ -121,7 +127,11 @@ public:
      * @param[in] i: The index of the material.
      * @return The Material object.
      */
-    decltype(auto) material(this auto&& self, uint i) { return self.mats()[i]; }
+    decltype(auto) material(this auto&& self, ushort i)
+    {
+        assert(i < self.materialCount());
+        return self.mats()[i];
+    }
 
     /**
      * @brief Returns the texture image associated to the given texture path.
@@ -158,13 +168,21 @@ public:
      * @brief Adds a material to the vector of materials.
      * @param[in] mat: The material to add.
      */
-    void pushMaterial(const Material& mat) { mats().push_back(mat); }
+    void pushMaterial(const Material& mat)
+    {
+        assert(mats().size() < USHORT_NULL);
+        mats().push_back(mat);
+    }
 
     /**
      * @brief Adds a material to the vector of materials (move version).
      * @param[in] mat: The material to add.
      */
-    void pushMaterial(Material&& mat) { mats().push_back(std::move(mat)); }
+    void pushMaterial(Material&& mat)
+    {
+        assert(mats().size() < USHORT_NULL);
+        mats().push_back(std::move(mat));
+    }
 
     /**
      * @brief Adds a texture image to the map of texture images.

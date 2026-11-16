@@ -262,9 +262,9 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceCount() == 2);
         REQUIRE(tm.isFaceWedgeTexCoordsAvailable());
         // Verify texcoords for both generated triangles match polygon vertices
-        for (uint ff = 0; ff < tm.faceCount(); ++ff) {
-            for (uint i = 0; i < 3; ++i) {
-                uint vid = tm.face(ff).vertexIndex(i);
+        for (vcl::uint ff = 0; ff < tm.faceCount(); ++ff) {
+            for (vcl::uint i = 0; i < 3; ++i) {
+                vcl::uint vid = tm.face(ff).vertexIndex(i);
                 float expectedU = (vid == 1 || vid == 2) ? 1.0f : 0.0f;
                 float expectedV = (vid >= 2) ? 1.0f : 0.0f;
                 REQUIRE(tm.face(ff).wedge(i).texCoord().u() == expectedU);

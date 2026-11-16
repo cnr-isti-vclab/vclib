@@ -456,14 +456,14 @@ public:
         }
 
         if constexpr (mesh::HasMaterials<Mesh<Args...>>) {
-            uint nMaterials = this->materialCount();
+            ushort nMaterials = this->materialCount();
 
             // mapping from material indices of m to material indices of this
-            std::vector<uint> mapping(m.materialCount());
+            std::vector<ushort> mapping(m.materialCount());
 
             // for each material of the other mesh, add it to this mesh
             // if it does not exist yet
-            for (uint i = 0; i < m.materialCount(); ++i) {
+            for (ushort i = 0; i < m.materialCount(); ++i) {
                 auto it = std::find(
                     this->materialBegin(), this->materialEnd(), m.material(i));
 
@@ -472,7 +472,8 @@ public:
                     mapping[i] = nMaterials++;
                 }
                 else {
-                    mapping[i] = std::distance(this->materialBegin(), it);
+                    mapping[i] = static_cast<ushort>(
+                        std::distance(this->materialBegin(), it));
                 }
             }
 
@@ -1429,8 +1430,7 @@ private:
                     for (auto e : this->template elements<ELEM_ID>(startFrom)) {
                         if (e.materialIndex() != USHORT_NULL &&
                             e.materialIndex() < mapping.size()) {
-                            e.materialIndex() =
-                                static_cast<ushort>(mapping[e.materialIndex()]);
+                            e.materialIndex() = mapping[e.materialIndex()];
                         }
                     }
                 }

@@ -162,11 +162,11 @@ void readPlyFaceProperty(
             }
         }
     }
-    // loading texture id associated to ALL the wedges
+    // loading material index associated to ALL the wedges
     else if (p.name == ply::material_index) {
         if constexpr (HasFaceMaterialIndex<MeshType>) {
             if (mesh.isFaceMaterialIndexAvailable()) {
-                uint n      = io::readPrimitiveType<uint>(file, p.type, end);
+                ushort n    = io::readPrimitiveType<ushort>(file, p.type, end);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh

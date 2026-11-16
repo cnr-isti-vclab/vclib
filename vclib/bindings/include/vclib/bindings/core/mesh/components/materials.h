@@ -36,7 +36,7 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
         "path"_a);
     c.def(
         "material",
-        [](const MeshType& t, uint i) -> const Material& {
+        [](const MeshType& t, ushort i) -> const Material& {
             if (i >= t.materialCount()) {
                 throw py::index_error();
             }
@@ -45,7 +45,7 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
         py::return_value_policy::reference_internal);
     c.def(
         "set_material",
-        [](MeshType& t, uint i, const Material& m) {
+        [](MeshType& t, ushort i, const Material& m) {
             if (i >= t.materialCount()) {
                 throw py::index_error();
             }

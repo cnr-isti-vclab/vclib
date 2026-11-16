@@ -110,7 +110,7 @@ inline auto meshTextureAndTexCoords()
     std::cout << "   ✓ Mesh has " << meshWedgeTexCoords.materialCount()
               << " materials" << std::endl;
 
-    for (vcl::uint i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
+    for (vcl::ushort i = 0; i < meshWedgeTexCoords.materialCount(); ++i) {
         // access to the baseColor texture descriptor
         const auto& texture =
             meshWedgeTexCoords.material(i).baseColorTextureDescriptor();
