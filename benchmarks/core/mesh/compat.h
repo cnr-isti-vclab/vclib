@@ -16,6 +16,7 @@
 #include "types.h"
 
 #include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
 
 namespace bench {
 
@@ -35,25 +36,18 @@ template<typename Mesh>
 void enableQualityComponents(Mesh& m)
 {
     if constexpr (vcl::HasPerVertexQuality<Mesh>) {
-        if constexpr (requires { m.enablePerVertexQuality(); }) {
-            m.enablePerVertexQuality();
-        }
+        vcl::enableIfPerVertexQualityOptional(m);
     }
     if constexpr (vcl::FaceMeshConcept<Mesh> && vcl::HasPerFaceQuality<Mesh>) {
-        if constexpr (requires { m.enablePerFaceQuality(); }) {
-            m.enablePerFaceQuality();
-        }
+        vcl::enableIfPerFaceQualityOptional(m);
     }
 }
 
 template<typename Mesh>
 void enableCurvatureComponents(Mesh& m)
 {
-    if constexpr (requires { m.enablePerVertexPrincipalCurvature(); }) {
-        m.enablePerVertexPrincipalCurvature();
-    }
-    else if constexpr (requires { m.enableVertexPrincipalCurvature(); }) {
-        m.enableVertexPrincipalCurvature();
+    if constexpr (vcl::HasPerVertexPrincipalCurvature<Mesh>) {
+        vcl::enableIfPerVertexPrincipalCurvatureOptional(m);
     }
 }
 
@@ -77,7 +71,10 @@ void initQuality(Mesh& m)
 template<typename Mesh>
 bool hasWedgeTexCoords(const Mesh& m)
 {
-    return m.isPerFaceWedgeTexCoordsEnabled();
+    if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+        return m.isPerFaceWedgeTexCoordsEnabled();
+    }
+    return false;
 }
 
 /**
@@ -88,76 +85,6 @@ void buildGridMesh(Mesh& m, vcl::uint rows, vcl::uint cols)
 {
     auto grid = makeGridMatrices(rows, cols);
     vcl::meshFromMatrices(m, grid.vertices, grid.faces);
-}
-
-template<typename Mesh>
-using MeshPosition = std::remove_cvref_t<
-    decltype(std::declval<const Mesh&>().vertex(0).position())>;
-
-template<typename F>
-inline bool isFaceValid(const F& f)
-{
-    if constexpr (std::is_pointer_v<std::remove_cvref_t<F>>) {
-        return f != nullptr;
-    }
-    else {
-        return bool(f);
-    }
-}
-
-template<typename F>
-inline bool isFaceVisited(const F& f)
-{
-    if constexpr (std::is_pointer_v<std::remove_cvref_t<F>>) {
-        return f->visited();
-    }
-    else {
-        return f.visited();
-    }
-}
-
-template<typename F>
-inline void setFaceVisited(F&& f, bool v)
-{
-    if constexpr (std::is_pointer_v<std::remove_cvref_t<F>>) {
-        f->visited() = v;
-    }
-    else {
-        f.visited() = v;
-    }
-}
-
-template<typename F>
-inline vcl::uint getAdjFaceCount(const F& f)
-{
-    if constexpr (std::is_pointer_v<std::remove_cvref_t<F>>) {
-        return f->adjFaceCount();
-    }
-    else {
-        return f.adjFaceCount();
-    }
-}
-
-template<typename F>
-inline auto getAdjFace(const F& f, vcl::uint i)
-{
-    if constexpr (std::is_pointer_v<std::remove_cvref_t<F>>) {
-        return f->adjFace(i);
-    }
-    else {
-        return f.adjFace(i);
-    }
-}
-
-template<typename Mesh>
-inline auto getFaceHandle(Mesh& m, vcl::uint i)
-{
-    if constexpr (std::is_pointer_v<decltype(m.face(0).adjFace(0))>) {
-        return &m.face(i);
-    }
-    else {
-        return m.face(i);
-    }
 }
 
 } // namespace bench

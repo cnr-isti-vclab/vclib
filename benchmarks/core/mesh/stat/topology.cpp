@@ -118,35 +118,33 @@ BENCH("stat/topology/face_flooding", []<typename Mesh>(bench::State<Mesh>& s) {
             return s.skip("mesh has no faces");
         }
 
-        using Handle = decltype(bench::getFaceHandle(m, 0));
-        std::vector<Handle> stack;
+        using Face = typename Mesh::FaceType;
+        std::vector<Face*> stack;
         stack.reserve(m.faceCount());
 
         s.run(
             [&]() {
                 stack.clear();
-                for (auto&& f : m.faces()) {
-                    bench::setFaceVisited(f, false);
+                for (auto& f : m.faces()) {
+                    f.visited() = false;
                 }
             },
             [&]() {
-                Handle start = bench::getFaceHandle(m, 0);
-                bench::setFaceVisited(start, true);
+                Face* start = &m.face(0);
+                start->visited() = true;
                 stack.push_back(start);
 
                 std::size_t visitedCount = 0;
 
                 while (!stack.empty()) {
-                    Handle curr = stack.back();
+                    Face* curr = stack.back();
                     stack.pop_back();
                     ++visitedCount;
 
-                    const vcl::uint nAdj = bench::getAdjFaceCount(curr);
-                    for (vcl::uint i = 0; i < nAdj; ++i) {
-                        auto adj = bench::getAdjFace(curr, i);
-                        if (bench::isFaceValid(adj) &&
-                            !bench::isFaceVisited(adj)) {
-                            bench::setFaceVisited(adj, true);
+                    for (vcl::uint i = 0; i < curr->adjFaceCount(); ++i) {
+                        Face* adj = curr->adjFace(i);
+                        if (adj != nullptr && !adj->visited()) {
+                            adj->visited() = true;
                             stack.push_back(adj);
                         }
                     }
