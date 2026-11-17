@@ -84,8 +84,18 @@ def current_branch_name() -> str:
 
 def prepare_worktree(ref: str) -> Path:
     try:
-        commit = git("rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}")
+        git("worktree", "prune")
     except subprocess.CalledProcessError:
+        pass
+
+    commit = None
+    for candidate in [ref, f"origin/{ref}"]:
+        try:
+            commit = git("rev-parse", "--verify", "--quiet", f"{candidate}^{{commit}}")
+            break
+        except subprocess.CalledProcessError:
+            continue
+    if not commit:
         sys.exit(f"Unknown branch or git ref: {ref}")
     path = WORKTREES_DIR / safe_name(ref)
 
@@ -93,7 +103,11 @@ def prepare_worktree(ref: str) -> Path:
         git("checkout", "--detach", commit, cwd=path, capture=False)
     else:
         WORKTREES_DIR.mkdir(parents=True, exist_ok=True)
-        git("worktree", "add", "--detach", path, commit, capture=False)
+        try:
+            git("worktree", "add", "--detach", "-f", path, commit, capture=False)
+        except subprocess.CalledProcessError:
+            git("worktree", "prune")
+            git("worktree", "add", "--detach", "-f", path, commit, capture=False)
     return path
 
 
@@ -106,7 +120,15 @@ def build(source_dir: Path, jobs) -> Path:
     configure += [f"-D{k}={v}" for k, v in CMAKE_DEFINES.items()]
     run(configure)
 
-    compile_cmd = ["cmake", "--build", build_dir, "--target", BENCH_TARGET]
+    compile_cmd = [
+        "cmake",
+        "--build",
+        build_dir,
+        "--config",
+        "Release",
+        "--target",
+        BENCH_TARGET,
+    ]
     if jobs:
         compile_cmd += ["-j", str(jobs)]
     run(compile_cmd)
@@ -115,9 +137,15 @@ def build(source_dir: Path, jobs) -> Path:
 
 def find_binary(source_dir: Path) -> Path:
     base = source_dir / BUILD_SUBDIR / BENCH_BIN_SUBDIR
-    for name in (BENCH_TARGET, BENCH_TARGET + ".exe"):
-        if (base / name).exists():
-            return base / name
+    for name in (
+        BENCH_TARGET,
+        BENCH_TARGET + ".exe",
+        f"Release/{BENCH_TARGET}.exe",
+        f"Release/{BENCH_TARGET}",
+    ):
+        p = base / name
+        if p.exists():
+            return p
     sys.exit(f"Benchmark executable not found in {base}")
 
 
