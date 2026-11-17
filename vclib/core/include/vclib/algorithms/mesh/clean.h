@@ -179,9 +179,8 @@ uint removeUnreferencedVertices(MeshType& m)
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
     if (n < m.vertexCount()) {
-        deleteVerticesIf(m, [&](const VertexType& v) {
-            return !refVertices[m.index(v)];
-        });
+        deleteVerticesIf(
+            m, [&](const VertexType& v) { return !refVertices[m.index(v)]; });
     }
 
     return n;
@@ -351,9 +350,8 @@ uint removeDegenerateVertices(MeshType& m, bool deleteAlsoIncidentElements)
 {
     using VertexType = MeshType::VertexType;
 
-    uint count_vd = deleteVerticesIf(m, [](const VertexType& v) {
-        return v.position().isDegenerate();
-    });
+    uint count_vd = deleteVerticesIf(
+        m, [](const VertexType& v) { return v.position().isDegenerate(); });
 
     if (deleteAlsoIncidentElements) {
         uint dummy = 0;

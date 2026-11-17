@@ -41,7 +41,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Update Face Normals")
     {
-        vcl::updatePerFaceNormals(tm);
+        vcl::updateFaceNormals(tm);
 
         REQUIRE(tm.face(0).normal() == FNormalType(0, 0, -1));
         REQUIRE(tm.face(1).normal() == FNormalType(0, 0, -1));
@@ -63,7 +63,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Update Vertex Normals - Area Weighted")
     {
-        vcl::updatePerVertexNormals(tm);
+        vcl::updateVertexNormals(tm);
 
         const VNScalar a = 1 / std::sqrt(3.0);
         const VNScalar b = 1 / 3.0;
@@ -93,7 +93,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Update Vertex Normals - Angle Weighted")
     {
-        vcl::updatePerVertexNormalsAngleWeighted(tm);
+        vcl::updateVertexNormalsAngleWeighted(tm);
 
         const VNScalar a = 1 / std::sqrt(3.0);
 
@@ -154,7 +154,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Clear Referenced Vertex Normals")
     {
-        vcl::clearPerReferencedVertexNormals(tem);
+        vcl::clearReferencedVertexNormals(tem);
 
         REQUIRE(tem.vertex(0).normal() == VNormalType(0, 0, 0));
         REQUIRE(tem.vertex(1).normal() == VNormalType(0, 0, 0));
@@ -167,7 +167,7 @@ TEMPLATE_TEST_CASE(
 
     THEN("Normalize Referenced Vertex Normals")
     {
-        vcl::normalizePerReferencedVertexNormals(tem);
+        vcl::normalizeReferencedVertexNormals(tem);
 
         const VNScalar a = 1 / std::sqrt(3.0);
 

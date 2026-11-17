@@ -66,7 +66,7 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
         vclib-3rd-imgui
         INTERFACE
             $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/..>
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/imgui>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/imgui>
     )
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
@@ -82,17 +82,17 @@ if(VCLIB_ALLOW_DOWNLOAD_IMGUI)
                 ${imgui_SOURCE_DIR}/imstb_textedit.h
                 ${imgui_SOURCE_DIR}/imstb_truetype.h
                 ${imgui_SOURCE_DIR}/imconfig.h
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imgui
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/imgui
         )
         install(
             DIRECTORY ${imgui_SOURCE_DIR}/backends/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imgui/backends
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/imgui/backends
             FILES_MATCHING
             PATTERN "imgui_impl_*.h"
         )
         install(
             DIRECTORY ${imgui_SOURCE_DIR}/misc/cpp/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imgui/misc/cpp
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/imgui/misc/cpp
             FILES_MATCHING
             PATTERN "*.h"
         )

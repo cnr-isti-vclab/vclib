@@ -30,19 +30,15 @@ void initConsoleLogger(pybind11::module& m)
 
     c.def(
         "log",
-        [](ConsoleLogger& self, const std::string& msg) {
-            self.log(msg);
-        },
+        [](ConsoleLogger& self, const std::string& msg) { self.log(msg); },
         py::arg("msg"));
     c.def(
         "log",
         [](ConsoleLogger&          self,
-           const std::string&      msg,
-           ConsoleLogger::LogLevel lvl) {
-            self.log(msg, lvl);
-        },
-        py::arg("msg"),
-        py::arg("lvl"));
+           ConsoleLogger::LogLevel lvl,
+           const std::string&      msg) { self.log(lvl, msg); },
+        py::arg("lvl"),
+        py::arg("msg"));
 
     c.def(
         "log",
@@ -56,13 +52,11 @@ void initConsoleLogger(pybind11::module& m)
         "log",
         [](ConsoleLogger&          self,
            uint                    perc,
-           const std::string&      msg,
-           ConsoleLogger::LogLevel lvl) {
-            self.log(perc, msg, lvl);
-        },
+           ConsoleLogger::LogLevel lvl,
+           const std::string&      msg) { self.log(perc, lvl, msg); },
         py::arg("perc"),
-        py::arg("msg"),
-        py::arg("lvl"));
+        py::arg("lvl"),
+        py::arg("msg"));
 }
 
 } // namespace vcl::bind

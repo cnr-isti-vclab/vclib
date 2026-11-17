@@ -136,9 +136,7 @@ public:
     {
         mVecEnabled.fill(true);
         if (mSize > 0) {
-            auto func = [this](auto&& vec) {
-                vec.resize(mSize);
-            };
+            auto func = [this](auto&& vec) { vec.resize(mSize); };
             applyToAllEnabledVectors<TUPLE_SIZE - 1>(func);
         }
     }
@@ -152,9 +150,7 @@ public:
     void disableAllVectors()
     {
         mVecEnabled.fill(false);
-        auto func = [](auto& vec) {
-            vec.clear();
-        };
+        auto func = [](auto& vec) { vec.clear(); };
         std::apply(func, mVecTuple);
         // don't change the size!
     }
@@ -206,9 +202,7 @@ public:
     void resize(std::size_t size)
     {
         if constexpr (TUPLE_SIZE > 0) {
-            auto func = [this, size](auto&& vec) {
-                vec.resize(size);
-            };
+            auto func = [this, size](auto&& vec) { vec.resize(size); };
             applyToAllEnabledVectors<TUPLE_SIZE - 1>(func);
         }
         mSize = size;
@@ -223,9 +217,7 @@ public:
     void reserve(std::size_t size)
     {
         if constexpr (TUPLE_SIZE > 0) {
-            auto func = [this, size](auto&& vec) {
-                vec.reserve(size);
-            };
+            auto func = [this, size](auto&& vec) { vec.reserve(size); };
             applyToAllEnabledVectors<TUPLE_SIZE - 1>(func);
         }
     }
@@ -237,9 +229,7 @@ public:
     void clear()
     {
         if constexpr (TUPLE_SIZE > 0) {
-            auto func = [](auto& vec) {
-                vec.clear();
-            };
+            auto func = [](auto& vec) { vec.clear(); };
             applyToAllEnabledVectors<TUPLE_SIZE - 1>(func);
         }
         mSize = 0;

@@ -18,19 +18,19 @@ vcl::DrawableMesh<vcl::EdgeMesh> getDrawableEdgeMesh()
     vcl::TriMesh icosahedron = vcl::createIcosahedron<vcl::TriMesh>();
 
     // 2. Compute normals on faces and vertices
-    vcl::updatePerFaceNormals(icosahedron);
-    vcl::updatePerVertexNormalsFromFaceNormals(icosahedron);
+    vcl::updateFaceNormals(icosahedron);
+    vcl::updateVertexNormalsFromFaceNormals(icosahedron);
 
     // 3. Compute adjacency
     icosahedron.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(icosahedron);
+    vcl::updateFaceAdjacentFaces(icosahedron);
 
     // 4. Select crease edges (all edges of icosahedron since it's angular)
     vcl::selectCreaseFaceEdges(icosahedron, -vcl::toRad(1.f), vcl::toRad(1.f));
 
     // 5. Extract edge mesh
     vcl::EdgeMesh em =
-        vcl::perFaceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
+        vcl::faceEdgeSelectionMeshFilter<vcl::EdgeMesh>(icosahedron);
 
     // Ensure the edge mesh has the required components
     em.enablePerVertexColor();

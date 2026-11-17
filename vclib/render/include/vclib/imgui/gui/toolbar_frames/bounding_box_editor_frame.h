@@ -98,9 +98,7 @@ private:
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##BBColor",
-            [&] {
-                return sts.color;
-            },
+            [&] { return sts.color; },
             [&](vcl::Color c) {
                 sts.color = c;
                 mEditor->refreshSettings();

@@ -66,28 +66,14 @@ public:
      *
      * @return A reference to the origin of the line.
      */
-    PointT& origin() { return mOrigin; }
-
-    /**
-     * @brief Returns the origin of the line.
-     *
-     * @return A const reference to the origin of the line.
-     */
-    const PointT& origin() const { return mOrigin; }
+    decltype(auto) origin(this auto&& self) { return (self.mOrigin); }
 
     /**
      * @brief Returns the direction of the line.
      *
      * @return A reference to the direction of the line.
      */
-    PointT& direction() { return mDirection; }
-
-    /**
-     * @brief Returns the direction of the line.
-     *
-     * @return A reference to the direction of the line.
-     */
-    const PointT& direction() const { return mDirection; }
+    decltype(auto) direction(this auto&& self) { return (self.mDirection); }
 
     /**
      * @brief Returns the normalized direction of the line.

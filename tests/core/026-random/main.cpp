@@ -32,9 +32,7 @@ TEST_CASE("Random int with custom DistConfig")
     std::mt19937 gen(42);
 
     // Custom dist: always return 5 when seed is used — deterministic.
-    auto custom = [](std::mt19937&) -> int {
-        return 5;
-    };
+    auto custom = [](std::mt19937&) -> int { return 5; };
 
     int val = vcl::random<int>(custom, gen);
     REQUIRE(val == 5);
@@ -75,9 +73,7 @@ TEST_CASE("Random float with custom DistConfig")
 {
     std::mt19937 gen(42);
 
-    auto custom = [](std::mt19937&) -> double {
-        return 3.14;
-    };
+    auto custom = [](std::mt19937&) -> double { return 3.14; };
 
     double val = vcl::random<double>(custom, gen);
     REQUIRE(vcl::epsilonEquals(val, 3.14));
@@ -158,9 +154,7 @@ TEST_CASE("Same seeded mt19937 produces a deterministic float sequence")
 
 TEST_CASE("Random with custom Dist and monostate Config works")
 {
-    auto dist = [](std::mt19937&) -> int {
-        return 42;
-    };
+    auto dist = [](std::mt19937&) -> int { return 42; };
     REQUIRE(vcl::random<int>(dist) == 42);
 }
 

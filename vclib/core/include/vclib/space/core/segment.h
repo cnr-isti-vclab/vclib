@@ -63,28 +63,14 @@ public:
      *
      * @return A reference to the first endpoint of the segment.
      */
-    PointT& p0() { return mPoint0; }
-
-    /**
-     * @brief Returns the first endpoint of the segment.
-     *
-     * @return A const reference to the first endpoint of the segment.
-     */
-    const PointT& p0() const { return mPoint0; }
+    decltype(auto) p0(this auto&& self) { return (self.mPoint0); }
 
     /**
      * @brief Returns the second endpoint of the segment.
      *
      * @return A reference to the second endpoint of the segment.
      */
-    PointT& p1() { return mPoint1; }
-
-    /**
-     * @brief Returns the second endpoint of the segment.
-     *
-     * @return A reference to the second endpoint of the segment.
-     */
-    const PointT& p1() const { return mPoint1; }
+    decltype(auto) p1(this auto&& self) { return (self.mPoint1); }
 
     PointT midPoint() const { return (mPoint0 + mPoint1) / 2.0; }
 

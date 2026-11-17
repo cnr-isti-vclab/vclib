@@ -14,15 +14,16 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/drawers/event_drawer.h>
 #include <vclib/render/editors.h>
+#include <vclib/render/input/action_map_group.h>
 #include <vclib/render/read_buffer_types.h>
 #include <vclib/render/settings/viewer_settings.h>
-#include <vclib/render/undo_redo/undo_redo_stack.h>
 
 #include <vclib/space/core.h>
 
 #include <nlohmann/json.hpp>
 
 #include <memory>
+#include <ranges>
 
 namespace vcl {
 
@@ -93,6 +94,7 @@ public:
     AbstractViewerDrawer(uint width = 1024, uint height = 768) :
             Base(width, height)
     {
+        registerGlobalActions();
     }
 
     ~AbstractViewerDrawer() = default;
@@ -159,15 +161,25 @@ public:
      * triggered.
      */
     void registerGlobalAction(
+        const std::string&                                     name,
+        const std::vector<std::pair<Key::Enum, KeyModifiers>>& defaultShortcuts,
+        GlobalActionCallback                                   callback)
+    {
+        mGlobalActionRegistry[name] = std::move(callback);
+        mViewerSettings.globalActionMap.registerActions({
+            {name, name, defaultShortcuts}
+        });
+    }
+
+    void registerGlobalAction(
         const std::string&                 name,
         std::pair<Key::Enum, KeyModifiers> defaultShortcut,
         GlobalActionCallback               callback)
     {
-        mGlobalActionRegistry[name] = std::move(callback);
-        // Set the default shortcut only if the action isn't already mapped
-        if (!mViewerSettings.globalActionMap.input(name).has_value()) {
-            mViewerSettings.globalActionMap.setBinding(name, defaultShortcut);
-        }
+        registerGlobalAction(
+            name,
+            std::vector<std::pair<Key::Enum, KeyModifiers>> {defaultShortcut},
+            std::move(callback));
     }
 
     const DrawableObjectVector& drawableObjectVector() const
@@ -196,6 +208,25 @@ public:
 
     const ViewerSettings& viewerSettings() const { return mViewerSettings; }
 
+    std::vector<ActionMapGroup> actionMapGroups()
+    {
+        std::vector<ActionMapGroup> groups;
+
+        auto viewerMaps = mViewerSettings.actionMaps();
+        if (!viewerMaps.empty()) {
+            groups.push_back({"Viewer", std::move(viewerMaps)});
+        }
+
+        for (auto& editor : mEditors) {
+            auto editorMaps = editor->settings().actionMaps();
+            if (!editorMaps.empty()) {
+                groups.push_back({editor->name(), std::move(editorMaps)});
+            }
+        }
+
+        return groups;
+    }
+
     void setViewerSettings(const ViewerSettings& settings)
     {
         mViewerSettings = settings;
@@ -205,9 +236,9 @@ public:
 
     void loadSettings(const nlohmann::json& j)
     {
-        if (j.contains("ViewerSettings")) {
+        if (j.contains("Viewer")) {
             ViewerSettings settings = mViewerSettings;
-            settings.loadSettings(j);
+            settings.loadSettings(j["Viewer"]);
             derived()->setViewerSettings(settings);
         }
         if (j.contains("Editors")) {
@@ -220,7 +251,8 @@ public:
 
     void saveSettings(nlohmann::json& j) const
     {
-        mViewerSettings.saveSettings(j);
+        // must be nested under "Viewer" to mirror loadSettings()
+        mViewerSettings.saveSettings(j["Viewer"]);
         for (const auto& editor : mEditors) {
             if (editor)
                 editor->saveSettings(j["Editors"]);
@@ -301,6 +333,62 @@ public:
         mDrawList->back()->init();
         refreshEditors();
         return mDrawList->size() - 1;
+    }
+
+    /**
+     * @brief Helper function to add a collection/range of DrawableObjects to
+     * the scene in batch.
+     *
+     * In addition to pushing the objects to the underlying vector, this helper
+     * safely calls `init()` on each newly added object (required to initialize
+     * OpenGL/BGFX buffers) and calls `refreshEditors()` once at the end to
+     * update any GUI components, avoiding redundant editor refreshes.
+     *
+     * @tparam R A range type satisfying std::ranges::input_range.
+     * @param[in] objs: The range of objects to add (either concrete
+     * DrawableObjects or std::shared_ptr<DrawableObject>).
+     * @return The starting index of the newly added objects in the draw list.
+     */
+    template<typename R>
+    requires std::ranges::input_range<R>
+    uint pushDrawableObjects(R&& objs)
+    {
+        uint startIdx = mDrawList->size();
+        for (auto&& obj : objs) {
+            using ElementType = std::remove_cvref_t<decltype(obj)>;
+            constexpr bool canMove =
+                std::is_rvalue_reference_v<decltype(obj)> ||
+                std::is_rvalue_reference_v<R&&>;
+
+            if constexpr (std::is_convertible_v<
+                              ElementType,
+                              std::shared_ptr<DrawableObject>>) {
+                if constexpr (canMove) {
+                    mDrawList->pushBack(std::move(obj));
+                }
+                else {
+                    mDrawList->pushBack(obj);
+                }
+            }
+            else {
+                static_assert(
+                    std::derived_from<ElementType, DrawableObject> &&
+                        (!std::is_abstract_v<ElementType>),
+                    "Objects must derive from DrawableObject and not be "
+                    "abstract.");
+                if constexpr (canMove) {
+                    mDrawList->pushBack(std::move(obj));
+                }
+                else {
+                    mDrawList->pushBack(obj);
+                }
+            }
+            mDrawList->back()->init();
+        }
+        if (mDrawList->size() > startIdx) {
+            refreshEditors();
+        }
+        return startIdx;
     }
 
     bool removeDrawableObject(uint id)
@@ -473,17 +561,20 @@ public:
     {
         bool block = false;
 
-        if (mEditorsEventsEnabled) {
-            auto actionNameOpt =
-                mViewerSettings.globalActionMap.action({key, modifiers});
-            if (actionNameOpt.has_value()) {
-                auto it = mGlobalActionRegistry.find(actionNameOpt.value());
-                if (it != mGlobalActionRegistry.end()) {
-                    it->second();
-                    return true;
-                }
+        // global actions (e.g. Escape to toggle editor events) always fire,
+        // even when editor events are disabled, otherwise they could never
+        // be used to re-enable them
+        auto actionNameOpt =
+            mViewerSettings.globalActionMap.action({key, modifiers});
+        if (actionNameOpt.has_value()) {
+            auto it = mGlobalActionRegistry.find(actionNameOpt.value());
+            if (it != mGlobalActionRegistry.end()) {
+                it->second();
+                return true;
             }
+        }
 
+        if (mEditorsEventsEnabled) {
             for (const auto& editor : mEditors) {
                 if (!block && editor->isActive())
                     block = editor->onKeyPress(key, modifiers);
@@ -493,48 +584,6 @@ public:
         if (!block)
             block = Base::onKeyPress(key, modifiers);
 
-        if (!block) {
-            switch (key) {
-            case Key::ESCAPE:
-                if (modifiers[KeyModifier::NO_MODIFIER]) {
-                    toggleEditorsEventsEnabled();
-                    block = true;
-                }
-                break;
-            case Key::R:
-                if (modifiers[KeyModifier::NO_MODIFIER])
-                    fitScene();
-                break;
-            case Key::S:
-                if (modifiers[KeyModifier::CONTROL])
-                    DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
-                break;
-            case Key::A:
-                if (modifiers[KeyModifier::NO_MODIFIER]) {
-                    if (mCustomShortcutToggleAxisCallback)
-                        mCustomShortcutToggleAxisCallback();
-                }
-                break;
-            case Key::Z:
-                if (modifiers[KeyModifier::CONTROL] &&
-                    modifiers[KeyModifier::SHIFT]) {
-                    redo();
-                    block = true;
-                }
-                else if (modifiers[KeyModifier::CONTROL]) {
-                    undo();
-                    block = true;
-                }
-                break;
-            case Key::Y:
-                if (modifiers[KeyModifier::CONTROL]) {
-                    redo();
-                    block = true;
-                }
-                break;
-            default: break;
-            }
-        }
         return block;
     }
 
@@ -587,6 +636,16 @@ public:
             }
         }
 
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, false});
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
+        }
+
         if (!block)
             block = Base::onMousePress(button, x, y, modifiers);
 
@@ -631,6 +690,16 @@ public:
 
         if (!block)
             block = Base::onMouseDoubleClick(button, x, y, modifiers);
+
+        if (!block) {
+            auto actionOpt =
+                Base::mouseAtomicMap().action({button, modifiers, true});
+            if (actionOpt.has_value() &&
+                actionOpt.value() == TrackballMotionType::FOCUS) {
+                derived()->readDepthRequest(x, y, true);
+                block = true;
+            }
+        }
 
         return block;
     }
@@ -748,6 +817,47 @@ public:
     }
 
 private:
+    void registerGlobalActions()
+    {
+        registerGlobalAction(
+            "Toggle Editors Events",
+            {Key::ESCAPE, {KeyModifier::NO_MODIFIER}},
+            [this]() { toggleEditorsEventsEnabled(); });
+
+        registerGlobalAction(
+            "Fit Scene", {Key::R, {KeyModifier::NO_MODIFIER}}, [this]() {
+                fitScene();
+            });
+
+        registerGlobalAction(
+            "Toggle Axis", {Key::A, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (mCustomShortcutToggleAxisCallback)
+                    mCustomShortcutToggleAxisCallback();
+            });
+
+        registerGlobalAction(
+            "Take Screenshot", {Key::S, {KeyModifier::CONTROL}}, [this]() {
+                DRA::DRW::screenshot(derived(), "viewer_screenshot.png");
+            });
+
+        registerGlobalAction(
+            "Undo", {Key::Z, {KeyModifier::CONTROL}}, [this]() { undo(); });
+
+        registerGlobalAction(
+            "Redo",
+            {
+                {Key::Y, {KeyModifier::CONTROL}                    },
+                {Key::Z, {KeyModifier::CONTROL, KeyModifier::SHIFT}}
+        },
+            [this]() { redo(); });
+
+        registerGlobalAction(
+            "Toggle Trackball", {Key::T, {KeyModifier::NO_MODIFIER}}, [this]() {
+                if (this->mCustomShortcutToggleTrackballCallback)
+                    this->mCustomShortcutToggleTrackballCallback();
+            });
+    }
+
     auto* derived() { return static_cast<DRA*>(this); }
 
     const auto* derived() const { return static_cast<const DRA*>(this); }

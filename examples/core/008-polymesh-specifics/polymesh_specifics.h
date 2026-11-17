@@ -17,7 +17,7 @@
 // 2. Work with polygonal faces of variable size
 // 3. Use PolyMesh-specific operations and features
 
-auto polymeshSpecifics()
+inline auto polymeshSpecifics()
 {
     std::cout << "=== VCLib Example 008: PolyMesh Specifics ===\n\n";
 
@@ -175,7 +175,7 @@ auto polymeshSpecifics()
 
     // Enable face-face adjacency
     polyMeshLoaded.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(polyMeshLoaded);
+    vcl::updateFaceAdjacentFaces(polyMeshLoaded);
 
     std::cout << "Face-face adjacency enabled for PolyMesh\n";
 

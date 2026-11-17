@@ -10,8 +10,6 @@
 
 #include "abstract_logger.h"
 
-#include <string>
-
 namespace vcl {
 
 /**
@@ -36,24 +34,18 @@ public:
 
     double time() const override final { return 0; }
 
-    void startNewTask(double, double, const std::string&) override final {}
+    void startNewTask(double, double, std::string_view) override final {}
 
-    void endTask(const std::string&) override final {}
+    void endTask(std::string_view) override final {}
 
     double percentage() const override final { return 0; }
 
     void setPercentage(uint) override final {}
 
-    void log(const std::string&) const override final {}
-
-    void log(const std::string&, LogLevel) const override final {}
-
-    void log(uint, const std::string&) override final {}
-
-    void log(uint, const std::string&, LogLevel) override final {}
+    void log(auto&&...) const noexcept {}
 
     void startProgress(
-        const std::string&,
+        std::string_view,
         uint,
         ProgressMode = ProgressMode::TIME,
         double       = 1.0,
@@ -65,6 +57,15 @@ public:
     void endProgress() override final {}
 
     void progress(uint) override final {}
+
+private:
+    void print(std::string_view, LogLevel = PROGRESS_LOG) const override final
+    {
+    }
+
+    void print(uint, std::string_view, LogLevel = PROGRESS_LOG) override final
+    {
+    }
 };
 
 /**

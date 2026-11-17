@@ -30,16 +30,12 @@ void initMaterials(pybind11::class_<MeshType, Options...>& c)
         py::overload_cast<>(&MeshType::meshBasePath, py::const_));
     c.def(
         "set_mesh_base_path",
-        [](MeshType& t, const std::string& p) {
-            t.meshBasePath() = p;
-        },
+        [](MeshType& t, const std::string& p) { t.meshBasePath() = p; },
         "path"_a);
     c.def("material", py::overload_cast<uint>(&MeshType::material, py::const_));
     c.def(
         "set_material",
-        [](MeshType& t, uint i, const Material& m) {
-            t.material(i) = m;
-        },
+        [](MeshType& t, uint i, const Material& m) { t.material(i) = m; },
         "index"_a,
         "material"_a);
     c.def("texture_image", &MeshType::textureImage);

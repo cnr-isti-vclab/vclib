@@ -29,6 +29,7 @@
 #include <QMainWindow>
 
 #include <fstream>
+#include <ranges>
 
 class QDockWidget;
 
@@ -39,17 +40,6 @@ class MeshViewer;
 } // namespace Ui
 
 class ViewerSettingsFrame;
-
-class KeyFilter : public QObject
-{
-    Q_OBJECT
-
-public:
-    KeyFilter(QObject* parent = nullptr) : QObject(parent) {}
-
-protected:
-    bool eventFilter(QObject* obj, QEvent* event) override;
-};
 
 class MeshViewer : public QMainWindow
 {
@@ -122,13 +112,7 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     uint pushDrawableObject(ObjType&& obj)
     {
-        if constexpr (std::is_base_of_v<
-                          vcl::AbstractDrawableMesh,
-                          std::remove_cvref_t<ObjType>>) {
-            auto rs = obj.renderSettings();
-            rs.updateIfCapable(mDefaultMeshRenderSettings);
-            obj.setRenderSettings(rs);
-        }
+        applyDefaultMeshRenderSettings(obj);
         uint id = viewer().pushDrawableObject(std::forward<ObjType>(obj));
         updateGUI();
         return id;
@@ -141,13 +125,26 @@ public:
      */
     uint pushDrawableObject(std::shared_ptr<vcl::DrawableObject> obj)
     {
-        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
-        if (mesh) {
-            MeshRenderSettings rs = mesh->renderSettings();
-            rs.updateIfCapable(mDefaultMeshRenderSettings);
-            mesh->setRenderSettings(rs);
-        }
+        applyDefaultMeshRenderSettings(obj);
         uint id = viewer().pushDrawableObject(std::move(obj));
+        updateGUI();
+        return id;
+    }
+
+    /**
+     * @brief Adds a collection/range of drawable objects to the end of the
+     * scene.
+     * @param[in] objs: The range of objects to add.
+     * @return The starting ID assigned to the new objects.
+     */
+    template<typename R>
+    requires std::ranges::input_range<R>
+    uint pushDrawableObjects(R&& objs)
+    {
+        for (auto&& obj : objs) {
+            applyDefaultMeshRenderSettings(obj);
+        }
+        uint id = viewer().pushDrawableObjects(std::forward<R>(objs));
         updateGUI();
         return id;
     }
@@ -168,13 +165,7 @@ public:
     template<vcl::DrawableObjectConcept ObjType>
     bool insertDrawableObject(uint pos, ObjType&& obj)
     {
-        if constexpr (std::is_base_of_v<
-                          vcl::AbstractDrawableMesh,
-                          std::remove_cvref_t<ObjType>>) {
-            auto rs = obj.renderSettings();
-            rs.updateIfCapable(mDefaultMeshRenderSettings);
-            obj.setRenderSettings(rs);
-        }
+        applyDefaultMeshRenderSettings(obj);
         bool success =
             viewer().insertDrawableObject(pos, std::forward<ObjType>(obj));
         if (success)
@@ -193,12 +184,7 @@ public:
         uint                                 pos,
         std::shared_ptr<vcl::DrawableObject> obj)
     {
-        auto mesh = std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
-        if (mesh) {
-            MeshRenderSettings rs = mesh->renderSettings();
-            rs.updateIfCapable(mDefaultMeshRenderSettings);
-            mesh->setRenderSettings(rs);
-        }
+        applyDefaultMeshRenderSettings(obj);
         bool success = viewer().insertDrawableObject(pos, std::move(obj));
         if (success)
             updateGUI();
@@ -326,9 +312,35 @@ protected:
 
     void addEditorFrame(QWidget* frame);
 
-    void keyPressEvent(QKeyEvent* event) override;
+    void addSettingsTab(std::shared_ptr<SettingsDialogTab> tab)
+    {
+        mSettingsData.addTab(std::move(tab));
+    }
 
 private:
+    void applyDefaultMeshRenderSettings(auto& obj)
+    {
+        using ValType = std::remove_cvref_t<decltype(obj)>;
+        if constexpr (std::is_convertible_v<
+                          ValType,
+                          std::shared_ptr<vcl::DrawableObject>>) {
+            auto mesh =
+                std::dynamic_pointer_cast<vcl::AbstractDrawableMesh>(obj);
+            if (mesh) {
+                MeshRenderSettings rs = mesh->renderSettings();
+                rs.updateIfCapable(mDefaultMeshRenderSettings);
+                mesh->setRenderSettings(rs);
+            }
+        }
+        else if constexpr (std::is_base_of_v<
+                               vcl::AbstractDrawableMesh,
+                               ValType>) {
+            auto rs = obj.renderSettings();
+            rs.updateIfCapable(mDefaultMeshRenderSettings);
+            obj.setRenderSettings(rs);
+        }
+    }
+
     void setupSettingsButton();
 
 private slots:

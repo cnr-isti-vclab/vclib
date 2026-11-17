@@ -62,9 +62,7 @@ concept BoundedDistFunctionExists =
 template<typename Obj1, typename Obj2>
 auto distFunction()
 {
-    auto f = [](const Obj1& o1, const Obj2& o2) {
-        return distance(o1, o2);
-    };
+    auto f = [](const Obj1& o1, const Obj2& o2) { return distance(o1, o2); };
 
     return f;
 }

@@ -33,7 +33,11 @@ elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
         ${GLFW_EXCLUDE_FROM_ALL_OPTION}
     )
 
+    vclib_begin_3rdparty_install_scope()
+
     FetchContent_MakeAvailable(glfw3)
+
+    vclib_end_3rdparty_install_scope()
 
     set(VCLIB_USES_GLFW TRUE)
 endif()

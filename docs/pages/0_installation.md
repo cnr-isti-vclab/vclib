@@ -6,14 +6,15 @@ The library can be used both as a C++ library and as a Python library.
 
 ## C++
 
-VCLib requires a compiler that supports C++20 and **CMake >= 3.24**.
+VCLib requires a compiler that supports C++23 and **CMake >= 3.24**.
 
 ### Supported Compilers
 
-VCLib uses modern C++20 features. The supported compilers are:
-- **GCC 13.3** (default in Ubuntu 24.04) or later
-- **Apple Clang 16** (Xcode 16.2 on macOS) / **Clang 17** or later
-- **MSVC 19.36** (Visual Studio 2022) or later
+VCLib uses modern C++23 features. The minimum supported compilers are:
+- **GCC 14** or later
+- **Clang 18** or later
+- **Apple Clang** (Xcode 16.3 or later)
+- **MSVC 19.37** (Visual Studio 2022 version 17.7) or later
 
 ### 1. Pre-built Packages & Installers (Recommended)
 

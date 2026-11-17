@@ -13,6 +13,8 @@
 
 #include <vclib/algorithms/mesh.h>
 
+#include <algorithm>
+
 #include <tiny_gltf.h>
 
 namespace vcl {
@@ -210,8 +212,8 @@ inline uint addGltfTexture(
 {
     if (textureDescriptor.isNull()) {
         log.log(
-            "Cannot save empty texture: " + textureDescriptor.path(),
-            LogType::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "Cannot save empty texture: " + textureDescriptor.path());
 
         return UINT_NULL;
     }
@@ -219,8 +221,8 @@ inline uint addGltfTexture(
     if (saveTextureImages &&
         mesh.textureImage(textureDescriptor.path()).isNull()) {
         log.log(
-            "Cannot save empty image: " + textureDescriptor.path(),
-            LogType::WARNING_LOG);
+            LogType::WARNING_LOG,
+            "Cannot save empty image: " + textureDescriptor.path());
 
         return UINT_NULL;
     }
@@ -333,10 +335,9 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
 
                 default:
                     log.log(
-                        std::format(
-                            "Unhandled TextureType: {}",
-                            static_cast<int>(type)),
-                        LogType::WARNING_LOG);
+                        LogType::WARNING_LOG,
+                        "Unhandled TextureType: {}",
+                        static_cast<int>(type));
                 }
             }
         }
@@ -378,6 +379,25 @@ inline std::pair<uint, tinygltf::Material&> addGltfMaterial(
     // alphaCutoff
     tMaterial.alphaCutoff = material.alphaCutoff();
 
+    // extensions
+    // KHR_materials_emissive_strength
+    if (material.emissiveStrength() != 1.0f) {
+        static const std::string EXT = "KHR_materials_emissive_strength";
+        static const std::string VAL = "emissiveStrength";
+
+        tinygltf::Value::Object emissiveStrengthExt;
+        emissiveStrengthExt[VAL] =
+            tinygltf::Value(static_cast<double>(material.emissiveStrength()));
+        tMaterial.extensions[EXT] = tinygltf::Value(emissiveStrengthExt);
+
+        if (std::find(
+                model.extensionsUsed.begin(),
+                model.extensionsUsed.end(),
+                EXT) == model.extensionsUsed.end()) {
+            model.extensionsUsed.emplace_back(EXT);
+        }
+    }
+
     return {index, tMaterial};
 }
 
@@ -399,14 +419,14 @@ void addMeshToTinygltfModel(
 
     bool exportWedgeTexCoord = false;
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-        if (meshInfo.hasPerFaceWedgeTexCoords()) {
+        if (meshInfo.hasFaceWedgeTexCoords()) {
             exportWedgeTexCoord = true;
         }
     }
 
     bool exportVertexTexCoord = false;
     if constexpr (HasPerVertexTexCoord<MeshType>) {
-        if (meshInfo.hasPerVertexTexCoord() && !exportWedgeTexCoord) {
+        if (meshInfo.hasVertexTexCoord() && !exportWedgeTexCoord) {
             exportVertexTexCoord = true;
         }
     }
@@ -464,7 +484,7 @@ void addMeshToTinygltfModel(
     accessors.pos = posAccessor.first;
 
     if constexpr (HasPerVertexColor<MeshType>) {
-        if (meshInfo.hasPerVertexColor()) {
+        if (meshInfo.hasVertexColor()) {
             auto  colAlloc = allocateInGltfBuffer(tModel, 4 * totalVertices);
             uint* ud       = reinterpret_cast<uint*>(
                 tModel.buffers[colAlloc.first].data.data() + colAlloc.second);
@@ -488,7 +508,7 @@ void addMeshToTinygltfModel(
         }
     }
     if constexpr (HasPerVertexNormal<MeshType>) {
-        if (meshInfo.hasPerVertexNormal()) {
+        if (meshInfo.hasVertexNormal()) {
             auto normAlloc =
                 allocateInGltfBuffer(tModel, 3 * totalVertices * sizeof(float));
             fd = reinterpret_cast<float*>(
@@ -548,7 +568,7 @@ void addMeshToTinygltfModel(
         accessors.texCoord = texCoordAccessor.first;
     }
     if constexpr (HasPerVertexTangent<MeshType>) {
-        if (meshInfo.hasPerVertexTangent()) {
+        if (meshInfo.hasVertexTangent()) {
             auto tangentAlloc =
                 allocateInGltfBuffer(tModel, 4 * totalVertices * sizeof(float));
             fd = reinterpret_cast<float*>(
@@ -587,15 +607,14 @@ void addMeshToTinygltfModel(
             bool usePerVertexMaterial = false;
 
             if constexpr (HasPerFaceMaterialIndex<MeshType>) {
-                if (meshInfo.hasPerFaceMaterialIndex()) {
+                if (meshInfo.hasFaceMaterialIndex()) {
                     exportMaterials    = true;
                     usePerFaceMaterial = true;
                 }
             }
 
             if constexpr (HasPerVertexMaterialIndex<MeshType>) {
-                if (meshInfo.hasPerVertexMaterialIndex() &&
-                    !usePerFaceMaterial) {
+                if (meshInfo.hasVertexMaterialIndex() && !usePerFaceMaterial) {
                     exportMaterials      = true;
                     usePerVertexMaterial = true;
                 }
@@ -894,6 +913,11 @@ void saveGltf(
             settings.saveTextureImages, // saveTextureImages
         log);
 
+    std::string ext      = toLower(FileInfo::extension(filename));
+    bool        isBinary = (ext == ".glb")  ? true :
+                           (ext == ".gltf") ? false :
+                                              settings.binary;
+
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
         &model,
@@ -901,7 +925,7 @@ void saveGltf(
         settings.embedBuffers, // embedImages
         settings.embedBuffers, // embedBuffers
         true,                  // pretty print
-        settings.binary);      // write binary
+        isBinary);             // write binary
 
     if (!success)
         throw std::runtime_error(
@@ -966,6 +990,11 @@ void saveGltf(
             log);
     }
 
+    std::string ext      = toLower(FileInfo::extension(filename));
+    bool        isBinary = (ext == ".glb")  ? true :
+                           (ext == ".gltf") ? false :
+                                              settings.binary;
+
     tinygltf::TinyGLTF gltf;
     bool               success = gltf.WriteGltfSceneToFile(
         &model,
@@ -973,7 +1002,7 @@ void saveGltf(
         settings.embedBuffers, // embedImages
         settings.embedBuffers, // embedBuffers
         true,                  // pretty print
-        settings.binary);      // write binary
+        isBinary);             // write binary
 
     if (!success)
         throw std::runtime_error(

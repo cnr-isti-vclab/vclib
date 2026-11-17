@@ -11,9 +11,9 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/input.h>
 #include <vclib/render/settings/editor_settings.h>
-#include <vclib/render/undo_redo/undo_redo_action.h>
 
 #include <vclib/base.h>
+#include <vclib/space/core.h>
 
 #include <nlohmann/json.hpp>
 

@@ -9,6 +9,7 @@
 #define VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 
 #include <vclib/mesh/components/quality.h>
+#include <vclib/mesh/views/component.h>
 
 #include <vclib/base.h>
 
@@ -39,6 +40,9 @@ struct QualityView
 } // namespace detail
 
 inline constexpr detail::QualityView quality;
+
+template<>
+inline constexpr auto component<CompId::QUALITY> = quality;
 
 } // namespace vcl::views
 

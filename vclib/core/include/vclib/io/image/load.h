@@ -123,8 +123,9 @@ void loadTextureImages(
                         Image img = loadImage(basePath + tex.path());
                         if (img.isNull()) {
                             log.log(
-                                "Cannot load texture " + tex.path(),
-                                LogType::WARNING_LOG);
+                                LogType::WARNING_LOG,
+                                "Cannot load texture {}",
+                                tex.path());
                         }
                         else {
                             img.colorSpace() =

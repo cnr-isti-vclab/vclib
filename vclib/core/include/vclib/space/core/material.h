@@ -53,7 +53,17 @@ public:
         OCCLUSION, ///< The ambient occlusion map (R channel). Stored in linear
                    ///< color space.
         EMISSIVE,  ///< The emissive color texture. Stored in sRGB color space.
-        COUNT      ///< Utility value to get the number of texture types.
+        CLEARCOAT, ///< The clearcoat layer texture. Stored in linear color
+                   ///< space.
+        CLEARCOAT_ROUGHNESS, ///< The roughness of the clearcoat layer (R
+                             ///< channel). Stored in linear color space.
+        CLEARCOAT_NORMAL, ///< The normal map for the clearcoat layer. Stored in
+                          ///< linear color space.
+        ANISOTROPY, ///< The anisotropy texture. Stored in linear color space.
+        SPECULAR,   ///< The specular texture. Stored in linear color space.
+        SPECULAR_COLOR, ///< The specular color texture. Stored in sRGB color
+                        ///< space.
+        COUNT           ///< Utility value to get the number of texture types.
     };
 
     inline static const std::
@@ -63,7 +73,13 @@ public:
                 "metallicRoughnessTex",
                 "normalTex",
                 "occlusionTex",
-                "emissiveTex"};
+                "emissiveTex",
+                "clearcoatTex",
+                "clearcoatRoughnessTex",
+                "clearcoatNormalTex",
+                "anisotropyTex",
+                "specularTex",
+                "specularColorTex"};
 
 private:
     inline static const uint N_TEXTURE_TYPE =
@@ -93,6 +109,24 @@ private:
 
     bool mDoubleSided = false;
 
+    // extension PBR properties
+    float mAnisotropyStrength = 0.0f;
+
+    float mAnisotropyRotation = 0.0f;
+
+    float mClearcoatFactor = 0.0f;
+
+    float mClearcoatRoughness = 0.0f;
+
+    float mClearcoatNormalScale = 1.0f;
+
+    float mEmissiveStrength = 1.0f;
+
+    float mSpecularFactor = 1.0f;
+
+    // needs to be HDR
+    Point3f mSpecularColor = Point3f(1.0, 1.0, 1.0);
+
 public:
     /**
      * @brief Default constructor.
@@ -103,7 +137,13 @@ public:
      * - Base Color: White
      * - Metallic: 0.0
      * - Roughness: 1.0
+     * - Emissive Strength: 1.0
      * - Emissive Color: Black
+     * - Clearcoat Factor: 0.0
+     * - Clearcoat Roughness: 0.0
+     * - Clearcoat Normal Scale: 1.0
+     * - Specular Factor: 1.0
+     * - Specular Color: (1.0, 1.0, 1.0)
      * - Alpha Mode: ALPHA_OPAQUE
      * - Alpha Cutoff: 0.5
      * - Double Sided: false
@@ -115,194 +155,182 @@ public:
 
     /**
      * @brief Gets the name of the material.
-     * @return A const reference to the material's name.
-     */
-    const std::string& name() const { return mName; }
-
-    /**
-     * @brief Gets a mutable reference to the name of the material.
      * @return A reference to the material's name.
      */
-    std::string& name() { return mName; }
+    decltype(auto) name(this auto&& self) { return (self.mName); }
 
     /**
      * @brief Gets the base color of the material.
      * This is used as a tint if a base color texture is present.
-     * @return A const reference to the base color.
-     */
-    const Color& baseColor() const { return mBaseColor; }
-
-    /**
-     * @brief Gets a mutable reference to the base color of the material.
      * @return A reference to the base color.
      */
-    Color& baseColor() { return mBaseColor; }
+    decltype(auto) baseColor(this auto&& self) { return (self.mBaseColor); }
 
     /**
      * @brief Gets the metallic factor of the material.
-     * @return The metallic factor, in the range [0.0, 1.0].
+     * @return A reference to the metallic factor, in the range [0.0, 1.0].
      */
-    float metallic() const { return mMetallic; }
-
-    /**
-     * @brief Gets a mutable reference to the metallic factor of the material.
-     * @return A reference to the metallic factor.
-     */
-    float& metallic() { return mMetallic; }
+    decltype(auto) metallic(this auto&& self) { return (self.mMetallic); }
 
     /**
      * @brief Gets the roughness factor of the material.
-     * @return The roughness factor, in the range [0.0, 1.0].
+     * @return A reference to the roughness factor, in the range [0.0, 1.0].
      */
-    float roughness() const { return mRoughness; }
-
-    /**
-     * @brief Gets a mutable reference to the roughness factor of the material.
-     * @return A reference to the roughness factor.
-     */
-    float& roughness() { return mRoughness; }
+    decltype(auto) roughness(this auto&& self) { return (self.mRoughness); }
 
     /**
      * @brief Gets the emissive color of the material.
      * This is the color emitted by the material, independent of lighting.
-     * @return A const reference to the emissive color.
-     */
-    const Color& emissiveColor() const { return mEmissiveColor; }
-
-    /**
-     * @brief Gets a mutable reference to the emissive color of the material.
      * @return A reference to the emissive color.
      */
-    Color& emissiveColor() { return mEmissiveColor; }
+    decltype(auto) emissiveColor(this auto&& self)
+    {
+        return (self.mEmissiveColor);
+    }
 
     /**
      * @brief Gets the alpha rendering mode.
-     * @return The current alpha mode (Opaque, Mask, or Blend).
+     * @return A reference to the current alpha mode (Opaque, Mask, or Blend).
      */
-    AlphaMode alphaMode() const { return mAlphaMode; }
-
-    /**
-     * @brief Gets a mutable reference to the alpha rendering mode.
-     * @return A reference to the alpha mode.
-     */
-    AlphaMode& alphaMode() { return mAlphaMode; }
+    decltype(auto) alphaMode(this auto&& self) { return (self.mAlphaMode); }
 
     /**
      * @brief Gets the alpha cutoff value.
      * This value is used only when the alpha mode is `ALPHA_MASK`.
-     * @return The alpha cutoff value, in the range [0.0, 1.0].
+     * @return A reference to the alpha cutoff value, in the range [0.0, 1.0].
      */
-    float alphaCutoff() const { return mAlphaCutoff; }
-
-    /**
-     * @brief Gets a mutable reference to the alpha cutoff value.
-     * @return A reference to the alpha cutoff value.
-     */
-    float& alphaCutoff() { return mAlphaCutoff; }
+    decltype(auto) alphaCutoff(this auto&& self) { return (self.mAlphaCutoff); }
 
     /**
      * @brief Checks if the material is double-sided.
      * If true, both front and back faces of polygons with this material should
      * be rendered.
-     * @return True if the material is double-sided, false otherwise.
-     */
-    bool doubleSided() const { return mDoubleSided; }
-
-    /**
-     * @brief Gets a mutable reference to the double-sided property.
      * @return A reference to the double-sided flag.
      */
-    bool& doubleSided() { return mDoubleSided; }
+    decltype(auto) doubleSided(this auto&& self) { return (self.mDoubleSided); }
 
     /**
      * @brief Gets the scalar multiplier for the normal map.
-     * @return The normal scale factor.
+     * @return A reference to the normal scale factor.
      */
-    float normalScale() const { return mNormalScale; }
-
-    /**
-     * @brief Gets a mutable reference to the normal scale.
-     * @return A reference to the normal scale.
-     */
-    float& normalScale() { return mNormalScale; }
+    decltype(auto) normalScale(this auto&& self) { return (self.mNormalScale); }
 
     /**
      * @brief Gets the strength of the ambient occlusion effect.
-     * @return The occlusion strength, in the range [0.0, 1.0].
+     * @return A reference to the occlusion strength, in the range [0.0, 1.0].
      */
-    float occlusionStrength() const { return mOcclusionStrength; }
-
-    /**
-     * @brief Gets a mutable reference to the occlusion strength.
-     * @return A reference to the occlusion strength.
-     */
-    float& occlusionStrength() { return mOcclusionStrength; }
-
-    /**
-     * @brief Gets the texture descriptor for the base color texture.
-     * @return A const reference to the base color texture descriptor.
-     */
-    const TextureDescriptor& baseColorTextureDescriptor() const
+    decltype(auto) occlusionStrength(this auto&& self)
     {
-        using enum TextureType;
-        return mTextureDescriptors[toUnderlying(BASE_COLOR)];
+        return (self.mOcclusionStrength);
     }
 
     /**
-     * @brief Gets a mutable reference to the texture descriptor for the base
-     * color texture.
+     * @brief Gets the anisotropy strength of the material.
+     * @return The anisotropy strength, in the range [0.0, 1.0].
+     */
+    decltype(auto) anisotropyStrength(this auto&& self)
+    {
+        return (self.mAnisotropyStrength);
+    }
+
+    /**
+     * @brief Gets the anisotropy rotation of the material.
+     * @return The anisotropy rotation, in radians.
+     */
+    decltype(auto) anisotropyRotation(this auto&& self)
+    {
+        return (self.mAnisotropyRotation);
+    }
+
+    /**
+     * @brief Gets the clearcoat factor.
+     * @return A reference to the clearcoat factor value,
+     * in the range [0.0, 1.0].
+     */
+    decltype(auto) clearcoatFactor(this auto&& self)
+    {
+        return (self.mClearcoatFactor);
+    }
+
+    /**
+     * @brief Gets the clearcoat roughness value.
+     * @return A reference to the clearcoat roughness value, in the range
+     * [0.0, 1.0].
+     */
+    decltype(auto) clearcoatRoughness(this auto&& self)
+    {
+        return (self.mClearcoatRoughness);
+    }
+
+    /**
+     * @brief Gets the clearcoat normal scale value.
+     * @return A reference to the clearcoat normal scale value,
+     * in the range [0.0, 1.0].
+     */
+    decltype(auto) clearcoatNormalScale(this auto&& self)
+    {
+        return (self.mClearcoatNormalScale);
+    }
+
+    /**
+     * @brief Gets the emissive strength multiplier.
+     * This scales the emissive color of the material.
+     * @return A reference to the emissive strength value.
+     */
+    decltype(auto) emissiveStrength(this auto&& self)
+    {
+        return (self.mEmissiveStrength);
+    }
+
+    /**
+     * @brief Gets the specular factor of the material.
+     * @return A reference to the specular factor value,
+     * in the range [0.0, 1.0].
+     */
+    decltype(auto) specularFactor(this auto&& self)
+    {
+        return (self.mSpecularFactor);
+    }
+
+    /**
+     * @brief Gets the specular color of the material.
+     * @return A const reference to the specular color.
+     */
+    decltype(auto) specularColor(this auto&& self)
+    {
+        return (self.mSpecularColor);
+    }
+
+    /**
+     * @brief Gets the texture descriptor for the base color texture.
      * @return A reference to the base color texture descriptor.
      */
-    TextureDescriptor& baseColorTextureDescriptor()
+    decltype(auto) baseColorTextureDescriptor(this auto&& self)
     {
         using enum TextureType;
-        return mTextureDescriptors[toUnderlying(BASE_COLOR)];
+        return (self.mTextureDescriptors[toUnderlying(BASE_COLOR)]);
     }
 
     /**
      * @brief Gets the texture descriptor for a given texture type index.
      * @param[in] type: The integer index of the texture type. Must be less than
      * `TextureType::COUNT`.
-     * @return A const reference to the corresponding texture descriptor.
+     * @return A reference to the corresponding texture descriptor.
      */
-    const TextureDescriptor& textureDescriptor(uint type) const
+    decltype(auto) textureDescriptor(this auto&& self, uint type)
     {
         assert(type < N_TEXTURE_TYPE);
-        return mTextureDescriptors[type];
+        return (self.mTextureDescriptors[type]);
     }
 
     /**
      * @brief Gets the texture descriptor for a given texture type.
      * @param[in] type: The TextureType enum value.
-     * @return A const reference to the corresponding texture descriptor.
-     */
-    const TextureDescriptor& textureDescriptor(TextureType type) const
-    {
-        return textureDescriptor(toUnderlying(type));
-    }
-
-    /**
-     * @brief Gets a mutable reference to the texture descriptor for a given
-     * texture type index.
-     * @param[in] type: The integer index of the texture type. Must be less than
-     * `TextureType::COUNT`.
      * @return A reference to the corresponding texture descriptor.
      */
-    TextureDescriptor& textureDescriptor(uint type)
+    decltype(auto) textureDescriptor(this auto&& self, TextureType type)
     {
-        assert(type < N_TEXTURE_TYPE);
-        return mTextureDescriptors[type];
-    }
-
-    /**
-     * @brief Gets a mutable reference to the texture descriptor for a given
-     * texture type.
-     * @param[in] type: The TextureType enum value.
-     * @return A reference to the corresponding texture descriptor.
-     */
-    TextureDescriptor& textureDescriptor(TextureType type)
-    {
-        return textureDescriptor(toUnderlying(type));
+        return self.textureDescriptor(toUnderlying(type));
     }
 
     /**
@@ -318,6 +346,14 @@ public:
         vcl::serialize(os, mAlphaMode, mAlphaCutoff);
         vcl::serialize(os, mNormalScale);
         vcl::serialize(os, mOcclusionStrength);
+        vcl::serialize(os, mEmissiveStrength);
+        vcl::serialize(os, mClearcoatFactor);
+        vcl::serialize(os, mClearcoatRoughness);
+        vcl::serialize(os, mClearcoatNormalScale);
+        vcl::serialize(os, mAnisotropyStrength);
+        vcl::serialize(os, mAnisotropyRotation);
+        vcl::serialize(os, mSpecularFactor);
+        mSpecularColor.serialize(os);
         vcl::serialize(os, mTextureDescriptors);
         vcl::serialize(os, mDoubleSided);
     }
@@ -335,6 +371,14 @@ public:
         vcl::deserialize(is, mAlphaMode, mAlphaCutoff);
         vcl::deserialize(is, mNormalScale);
         vcl::deserialize(is, mOcclusionStrength);
+        vcl::deserialize(is, mEmissiveStrength);
+        vcl::deserialize(is, mClearcoatFactor);
+        vcl::deserialize(is, mClearcoatRoughness);
+        vcl::deserialize(is, mClearcoatNormalScale);
+        vcl::deserialize(is, mAnisotropyStrength);
+        vcl::deserialize(is, mAnisotropyRotation);
+        vcl::deserialize(is, mSpecularFactor);
+        mSpecularColor.deserialize(is);
         vcl::deserialize(is, mTextureDescriptors);
         vcl::deserialize(is, mDoubleSided);
     }
@@ -361,10 +405,16 @@ public:
     {
         switch (type) {
         case TextureType::BASE_COLOR:
-        case TextureType::EMISSIVE: return Image::ColorSpace::SRGB;
+        case TextureType::EMISSIVE:
+        case TextureType::SPECULAR_COLOR: return Image::ColorSpace::SRGB;
         case TextureType::METALLIC_ROUGHNESS:
         case TextureType::NORMAL:
         case TextureType::OCCLUSION:
+        case TextureType::CLEARCOAT:
+        case TextureType::CLEARCOAT_ROUGHNESS:
+        case TextureType::CLEARCOAT_NORMAL:
+        case TextureType::ANISOTROPY:
+        case TextureType::SPECULAR:
         default: return Image::ColorSpace::LINEAR;
         }
     }

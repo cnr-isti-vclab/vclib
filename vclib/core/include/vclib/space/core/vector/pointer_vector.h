@@ -58,6 +58,8 @@ class PointerVector : protected Vector<T, N>
 {
     using Base = Vector<T, N>;
 
+    friend Base;
+
 public:
     // types
     using ValueType = Base::ValueType;
@@ -79,19 +81,13 @@ public:
     // constructors
     using Base::Vector;
 
-    // exposing members of base class, later we will redefine const member
-    // functions
-    using Base::at;
-    using Base::atMod;
-    using Base::back;
+    // exposing members of base class, later we will redefine the accessor
+    // member functions
     using Base::clear;
     using Base::contains;
-    using Base::data;
     using Base::empty;
     using Base::erase;
     using Base::fill;
-    using Base::find;
-    using Base::front;
     using Base::indexOf;
     using Base::insert;
     using Base::pushBack;
@@ -99,33 +95,52 @@ public:
     using Base::set;
     using Base::size;
     using Base::swap;
-    using Base::operator[];
-    using Base::operator();
-    using Base::begin;
-    using Base::end;
 
-    // const member function redefinitions: return types change to const
+    // accessor member function redefinitions: when const, return types change
+    // to const (pointers to const).
+    // here deducing this cannot be used because we are changing the return
+    // type of the const member function, so we need to define both of them
+
+    Reference at(uint i) { return Base::at(i); }
 
     ConstValueType at(uint i) const { return Base::at(i); }
 
-    ConstValueType atMod(uint i) const { return Base::atMod(i); }
+    Reference atMod(int i) { return Base::atMod(i); }
+
+    ConstValueType atMod(int i) const { return Base::atMod(i); }
+
+    Reference front() { return Base::front(); }
 
     ConstValueType front() const { return Base::front(); }
 
+    Reference back() { return Base::back(); }
+
     ConstValueType back() const { return Base::back(); }
 
+    Pointer data() { return Base::data(); }
+
     ConstPointer data() const { return Base::data(); }
+
+    Iterator find(const MakeConstPointer<T>& e) { return Base::find(e); }
 
     ConstIterator find(const MakeConstPointer<T>& e) const
     {
         return Base::find(e);
     }
 
+    Reference operator[](uint i) { return Base::operator[](i); }
+
     ConstValueType operator[](uint i) const { return Base::operator[](i); }
+
+    Reference operator()(uint i) { return Base::operator()(i); }
 
     ConstValueType operator()(uint i) const { return Base::operator()(i); }
 
+    Iterator begin() { return Base::begin(); }
+
     ConstIterator begin() const { return Base::begin(); }
+
+    Iterator end() { return Base::end(); }
 
     ConstIterator end() const { return Base::end(); }
 };

@@ -40,8 +40,8 @@ void populateTexCoord(pybind11::class_<TexCoordType, Options...>& c)
 
     defCopy(c);
 
-    c.def("u", py::overload_cast<>(&TexCoordType::u, py::const_));
-    c.def("v", py::overload_cast<>(&TexCoordType::v, py::const_));
+    c.def("u", [](const TexCoordType& T) { return T.u(); });
+    c.def("v", [](const TexCoordType& T) { return T.v(); });
     c.def("set_u", &TexCoordType::setU);
     c.def("set_v", &TexCoordType::setV);
 

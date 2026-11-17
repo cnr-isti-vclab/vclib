@@ -39,7 +39,7 @@ elseif(VCLIB_ALLOW_DOWNLOAD_BOOST)
     if(VCLIB_ALLOW_INSTALL_BOOST)
         install(
             DIRECTORY "${boost_SOURCE_DIR}/boost"
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
         )
     endif()
 else()

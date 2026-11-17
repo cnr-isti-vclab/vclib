@@ -23,7 +23,7 @@
 #ifdef _WIN32
 #include VCLIB_BGFX_SHADER(COMMON_PATH, dxbc, CS_NAME.sc.bin.h)
 
-// #include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, CS_NAME.sc.bin.h)
+#include VCLIB_BGFX_SHADER(COMMON_PATH, dxil, CS_NAME.sc.bin.h)
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
 #include VCLIB_BGFX_SHADER(COMMON_PATH, mtl, CS_NAME.sc.bin.h)
@@ -49,9 +49,8 @@ bgfx::EmbeddedShader::Data ComputeLoader<ComputeProgram::@PR_NAME_UC@>::
         return {
             type, VCLIB_JOIN(CS_NAME, dxbc), sizeof(VCLIB_JOIN(CS_NAME, dxbc))};
     case bgfx::RendererType::Direct3D12:
-        // return {
-        //     type, VCLIB_JOIN(CS_NAME, dxil), sizeof(VCLIB_JOIN(CS_NAME,
-        //     dxil))};
+        return {
+            type, VCLIB_JOIN(CS_NAME, dxil), sizeof(VCLIB_JOIN(CS_NAME, dxil))};
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:

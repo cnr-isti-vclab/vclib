@@ -21,16 +21,12 @@ void initCleanAlgorithms(pybind11::module& m)
                           pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "remove_unreferenced_vertices",
-            [](MeshType& m) -> uint {
-                return removeUnreferencedVertices(m);
-            },
+            [](MeshType& m) -> uint { return removeUnreferencedVertices(m); },
             "mesh"_a);
 
         m.def(
             "remove_duplicate_vertices",
-            [](MeshType& m) -> uint {
-                return removeDuplicateVertices(m);
-            },
+            [](MeshType& m) -> uint { return removeDuplicateVertices(m); },
             "mesh"_a);
 
         m.def(
@@ -48,16 +44,12 @@ void initCleanAlgorithms(pybind11::module& m)
                            pybind11::module& m, MeshType = MeshType()) {
         m.def(
             "remove_duplicate_faces",
-            [](MeshType& m) -> uint {
-                return removeDuplicateFaces(m);
-            },
+            [](MeshType& m) -> uint { return removeDuplicateFaces(m); },
             "mesh"_a);
 
         m.def(
             "remove_degenerate_faces",
-            [](MeshType& m) -> uint {
-                return removeDegenerateFaces(m);
-            },
+            [](MeshType& m) -> uint { return removeDegenerateFaces(m); },
             "mesh"_a);
     };
 

@@ -23,22 +23,43 @@ public:
     using PointType  = Point3<Scalar>;
     using BoxType    = Box3<Scalar>;
 
+    /**
+     * @brief Constructs an uninitialized Sphere.
+     */
     Sphere() {}
 
+    /**
+     * @brief Constructs a Sphere with a given center point and radius.
+     *
+     * @param[in] center: The center point of the sphere.
+     * @param[in] radius: The radius of the sphere (must be non-negative).
+     */
     Sphere(const Point3<Scalar>& center, Scalar radius) :
             mCenter(center), mRadius(radius)
     {
         assert(radius >= 0);
     }
 
-    const Point3<Scalar>& center() const { return mCenter; }
+    /**
+     * @brief Returns a reference to the center point of the sphere.
+     *
+     * @return Reference to the center point.
+     */
+    decltype(auto) center(this auto&& self) { return (self.mCenter); }
 
-    Point3<Scalar>& center() { return mCenter; }
+    /**
+     * @brief Returns a reference to the radius of the sphere.
+     *
+     * @return Reference to the radius.
+     */
+    decltype(auto) radius(this auto&& self) { return (self.mRadius); }
 
-    const Scalar& radius() const { return mRadius; }
-
-    Scalar& radius() { return mRadius; }
-
+    /**
+     * @brief Casts the sphere to another scalar type.
+     *
+     * @tparam S: The destination scalar type.
+     * @return A Sphere with scalar type S.
+     */
     template<typename S>
     auto cast() const
     {
@@ -50,14 +71,41 @@ public:
         }
     }
 
+    /**
+     * @brief Returns the diameter of the sphere (2 * radius).
+     *
+     * @return The diameter.
+     */
     Scalar diameter() const { return 2 * mRadius; }
 
+    /**
+     * @brief Returns the circumference of the sphere (2 * pi * radius).
+     *
+     * @return The circumference.
+     */
     Scalar circumference() const { return 2 * M_PI * mRadius; }
 
+    /**
+     * @brief Returns the surface area of the sphere (4 * pi * radius^2).
+     *
+     * @return The surface area.
+     */
     Scalar surfaceArea() const { return 4 * M_PI * std::pow(mRadius, 2); }
 
+    /**
+     * @brief Returns the volume of the sphere (4/3 * pi * radius^3).
+     *
+     * @return The volume.
+     */
     Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(mRadius, 3); }
 
+    /**
+     * @brief Checks whether a point lies inside or on the boundary of the
+     * sphere.
+     *
+     * @param[in] p: The query point.
+     * @return True if the distance between p and the center is <= radius.
+     */
     bool isInside(const Point3<Scalar>& p) const
     {
         return mCenter.dist(p) <= mRadius;

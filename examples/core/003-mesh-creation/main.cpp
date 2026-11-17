@@ -24,8 +24,8 @@ int main()
     vcl::MeshInfo info;
     info.setVertices();
     info.setFaces();
-    info.setPerVertexPosition(true, vcl::PrimitiveType::FLOAT);
-    info.setPerFaceVertexReferences();
+    info.setVertexPosition(true, vcl::PrimitiveType::FLOAT);
+    info.setFaceVertexReferences();
 
     vcl::SaveSettings settings;
     settings.info = info;

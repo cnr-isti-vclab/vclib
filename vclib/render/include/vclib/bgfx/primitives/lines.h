@@ -24,6 +24,15 @@ namespace vcl {
 class Lines
 {
 public:
+    static const uint64_t DEFAULT_DRAW_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_ALPHA;
+
+    static const uint64_t DEFAULT_DRAW_ID_STATE =
+        0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+        BGFX_STATE_DEPTH_TEST_LEQUAL |
+        BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_ONE, BGFX_STATE_BLEND_ZERO);
+
     /**
      * @brief Specifies how line colors are determined during rendering.
      */
@@ -206,6 +215,21 @@ public:
      * @brief Returns the number of indices in the set.
      */
     uint indexCount() const { return mIndexCount; }
+
+    /**
+     * @brief Returns the number of line segments in the set.
+     */
+    uint linesCount() const
+    {
+        uint nv = mIndices.isValid() ? mIndexCount : mVerPosCount;
+        if (mTopology == Topology::LINES || mTopology == Topology::VECTORS) {
+            return nv / 2;
+        }
+        else if (mTopology == Topology::LINE_STRIP) {
+            return nv > 1 ? nv - 1 : 0;
+        }
+        return 0;
+    }
 
     /**
      * @brief Sets line coordinates from a range of 3D points.
@@ -605,9 +629,12 @@ public:
      */
     float vectorLength() const { return mVectorLength; }
 
-    void draw(bgfx::ViewId viewId) const;
+    void draw(bgfx::ViewId viewId, uint64_t state = DEFAULT_DRAW_STATE) const;
 
-    void drawId(bgfx::ViewId viewId, uint32_t id) const;
+    void drawId(
+        bgfx::ViewId viewId,
+        uint32_t     id,
+        uint64_t     state = DEFAULT_DRAW_ID_STATE) const;
 
 private:
     void                checkAndUpdateProgram() const;

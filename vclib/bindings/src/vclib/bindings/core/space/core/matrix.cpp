@@ -26,9 +26,8 @@ void populteMatrix(pybind11::module& m)
     py::class_<M> c(m, cName.c_str(), py::buffer_protocol());
     c.def(py::init<>());
     // allow to initialize Matrix with py::buffer
-    c.def(py::init([](const py::buffer& b) {
-        return pyBufferToEigen<R, C>(b);
-    }));
+    c.def(
+        py::init([](const py::buffer& b) { return pyBufferToEigen<R, C>(b); }));
     py::implicitly_convertible<py::buffer, M>();
 
     defCopy(c);

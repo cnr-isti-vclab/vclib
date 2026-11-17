@@ -28,7 +28,8 @@ DrawableObjectItem::DrawableObjectItem(
     // leave setText and setFlags AFTER setCheckState.
     // for some reason, they trigger the itemCheckStateChanged signal...
     setFlags(
-        Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable);
+        Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable |
+        Qt::ItemIsEditable);
     setText(0, QString::fromStdString(obj->name()));
 
     // add mesh item

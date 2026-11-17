@@ -47,9 +47,8 @@ void populatePoint(pybind11::module& m)
 
     defCopy(c);
 
-    c.def_property_readonly_static("DIM", [](py::object /* self */) {
-        return P::DIM;
-    });
+    c.def_property_readonly_static(
+        "DIM", [](py::object /* self */) { return P::DIM; });
 
     c.def_buffer([](P& p) -> py::buffer_info {
         return py::buffer_info(
@@ -76,9 +75,8 @@ void populatePoint(pybind11::module& m)
             py::arg("y"),
             py::arg("z"));
 
-        c.def("cross", [](const P& p1, const P& p2) {
-            return P(p1.cross(p2));
-        });
+        c.def(
+            "cross", [](const P& p1, const P& p2) { return P(p1.cross(p2)); });
         c.def("ortho_base", &P::orthoBase);
     }
     if constexpr (DIM == 4) {
@@ -91,28 +89,20 @@ void populatePoint(pybind11::module& m)
     }
 
     if constexpr (DIM >= 1) {
-        c.def("x", py::overload_cast<>(&P::x, py::const_));
-        c.def("set_x", [](P& p, Scalar v) {
-            p.x() = v;
-        });
+        c.def("x", [](const P& p) { return p.x(); });
+        c.def("set_x", [](P& p, Scalar v) { p.x() = v; });
     }
     if constexpr (DIM >= 2) {
-        c.def("y", py::overload_cast<>(&P::y, py::const_));
-        c.def("set_y", [](P& p, Scalar v) {
-            p.y() = v;
-        });
+        c.def("y", [](const P& p) { return p.y(); });
+        c.def("set_y", [](P& p, Scalar v) { p.y() = v; });
     }
     if constexpr (DIM >= 3) {
-        c.def("z", py::overload_cast<>(&P::z, py::const_));
-        c.def("set_z", [](P& p, Scalar v) {
-            p.z() = v;
-        });
+        c.def("z", [](const P& p) { return p.z(); });
+        c.def("set_z", [](P& p, Scalar v) { p.z() = v; });
     }
     if constexpr (DIM >= 4) {
-        c.def("w", py::overload_cast<>(&P::w, py::const_));
-        c.def("set_w", [](P& p, Scalar v) {
-            p.w() = v;
-        });
+        c.def("w", [](const P& p) { return p.w(); });
+        c.def("set_w", [](P& p, Scalar v) { p.w() = v; });
     }
 
     c.def("is_degenerate", &P::isDegenerate);
@@ -127,9 +117,7 @@ void populatePoint(pybind11::module& m)
         return Matrix<Scalar, DIM, DIM>(p1.outerProduct(p2));
     });
 
-    c.def("dot", [](const P& p1, const P& p2) {
-        return p1.dot(p2);
-    });
+    c.def("dot", [](const P& p1, const P& p2) { return p1.dot(p2); });
     c.def("norm", &P::norm);
 
     // operators
@@ -166,17 +154,13 @@ void populatePoint(pybind11::module& m)
 
     m.def(
         "min",
-        [](const P& p1, const P& p2) {
-            return vcl::min(p1, p2);
-        },
+        [](const P& p1, const P& p2) { return vcl::min(p1, p2); },
         py::arg("p1"),
         py::arg("p2"));
 
     m.def(
         "max",
-        [](const P& p1, const P& p2) {
-            return vcl::max(p1, p2);
-        },
+        [](const P& p1, const P& p2) { return vcl::max(p1, p2); },
         py::arg("p1"),
         py::arg("p2"));
 }

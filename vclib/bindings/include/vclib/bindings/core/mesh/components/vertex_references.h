@@ -30,15 +30,11 @@ void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "vertex",
-        [](ElementType& e, uint i) {
-            return e.vertex(i);
-        },
+        [](ElementType& e, uint i) { return e.vertex(i); },
         py::return_value_policy::reference);
     c.def(
         "vertex_mod",
-        [](ElementType& e, int i) {
-            return e.vertexMod(i);
-        },
+        [](ElementType& e, int i) { return e.vertexMod(i); },
         py::return_value_policy::reference);
 
     c.def(
@@ -106,9 +102,7 @@ void initVertexReferences(pybind11::class_<ElementType, Options...>& c)
         pybind11::class_<VertexView> v(c, "_VertexReferencesRange");
         v.def(
             "__iter__",
-            [](VertexView& v) {
-                return py::make_iterator(v.begin(), v.end());
-            },
+            [](VertexView& v) { return py::make_iterator(v.begin(), v.end()); },
             py::keep_alive<0, 1>());
 
         registeredTypes.insert(typeid(VertexView));

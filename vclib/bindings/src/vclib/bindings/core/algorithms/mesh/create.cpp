@@ -62,9 +62,7 @@ void initCreateAlgorithms(pybind11::module& m)
                const Point3d& p2,
                double         rb,
                double         rt,
-               uint           s) {
-                return vcl::createCone<MeshType>(p1, p2, rb, rt, s);
-            },
+               uint s) { return vcl::createCone<MeshType>(p1, p2, rb, rt, s); },
             "p1"_a,
             "p2"_a,
             "radius_bottom"_a,
@@ -78,9 +76,7 @@ void initCreateAlgorithms(pybind11::module& m)
                const Point3d& p2,
                double         rb,
                double         rt,
-               uint           s) {
-                m = vcl::createCone<MeshType>(p1, p2, rb, rt, s);
-            },
+               uint s) { m = vcl::createCone<MeshType>(p1, p2, rb, rt, s); },
             "mesh"_a,
             "p1"_a,
             "p2"_a,
@@ -125,9 +121,7 @@ void initCreateAlgorithms(pybind11::module& m)
                const Point3d& p1,
                const Point3d& p2,
                double         r,
-               uint           s) {
-                m = vcl::createCylinder<MeshType>(p1, p2, r, s);
-            },
+               uint s) { m = vcl::createCylinder<MeshType>(p1, p2, r, s); },
             "mesh"_a,
             "p1"_a,
             "p2"_a,
@@ -138,15 +132,12 @@ void initCreateAlgorithms(pybind11::module& m)
 
         name = "create_dodecahedron_" +
                camelCaseToSnakeCase(meshTypeName<MeshType>());
-        m.def(name.c_str(), []() {
-            return vcl::createDodecahedron<MeshType>();
-        });
+        m.def(
+            name.c_str(), []() { return vcl::createDodecahedron<MeshType>(); });
 
         m.def(
             "create_dodecahedron",
-            [](MeshType& m) {
-                m = vcl::createDodecahedron<MeshType>();
-            },
+            [](MeshType& m) { m = vcl::createDodecahedron<MeshType>(); },
             "mesh"_a);
 
         // hexahedron.h
@@ -194,9 +185,7 @@ void initCreateAlgorithms(pybind11::module& m)
                camelCaseToSnakeCase(meshTypeName<MeshType>());
         m.def(
             name.c_str(),
-            [](bool nv = false) {
-                return vcl::createIcosahedron<MeshType>();
-            },
+            [](bool nv = false) { return vcl::createIcosahedron<MeshType>(); },
             "normalize_vertices"_a = false);
 
         m.def(

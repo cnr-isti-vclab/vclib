@@ -117,8 +117,9 @@ void saveTextureImages(
                     const Image& img = mesh.textureImage(t.path());
                     if (img.isNull() || t.isNull()) {
                         log.log(
-                            "Cannot save empty texture " + t.path(),
-                            LogType::WARNING_LOG);
+                            LogType::WARNING_LOG,
+                            "Cannot save null texture {}",
+                            t.path());
                     }
                     else {
                         saveImage(img, basePath + t.path());

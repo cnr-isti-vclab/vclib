@@ -23,8 +23,8 @@ if(VCLIB_ALLOW_DOWNLOAD_STB)
         INTERFACE
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/stb_include/stb>
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/stb>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}>
+            $<INSTALL_INTERFACE:${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}/stb>
     )
     target_compile_definitions(vclib-3rd-stb INTERFACE VCLIB_WITH_STB)
     list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-stb)
@@ -33,7 +33,7 @@ if(VCLIB_ALLOW_DOWNLOAD_STB)
         # Export for installation
         install(
             DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/stb_include/stb
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
             FILES_MATCHING
             PATTERN "*.h"
             PATTERN "deprecated" EXCLUDE

@@ -96,9 +96,7 @@ private:
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##SNVertexColor",
-            [&] {
-                return sts.vertexNormalColor;
-            },
+            [&] { return sts.vertexNormalColor; },
             [&](vcl::Color c) {
                 sts.vertexNormalColor = c;
                 mEditor->refreshSettings();
@@ -112,9 +110,7 @@ private:
         ImGui::SameLine();
         ImGui::ColorEdit4(
             "##SNFaceColor",
-            [&] {
-                return sts.faceNormalColor;
-            },
+            [&] { return sts.faceNormalColor; },
             [&](vcl::Color c) {
                 sts.faceNormalColor = c;
                 mEditor->refreshSettings();

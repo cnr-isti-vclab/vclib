@@ -38,82 +38,64 @@ void initMaterial(pybind11::module& m)
 
     c.def(py::init<>());
 
-    c.def("base_color", py::overload_cast<>(&Material::baseColor, py::const_));
+    c.def("base_color", [](const Material& m) { return m.baseColor(); });
     c.def(
         "set_base_color",
-        [](Material& m, const Color& c) {
-            m.baseColor() = c;
-        },
+        [](Material& m, const Color& c) { m.baseColor() = c; },
         "base_color"_a);
-    c.def("metallic", py::overload_cast<>(&Material::metallic, py::const_));
+    c.def("metallic", [](const Material& m) { return m.metallic(); });
     c.def(
         "set_metallic",
-        [](Material& m, float v) {
-            m.metallic() = v;
-        },
+        [](Material& m, float v) { m.metallic() = v; },
         "metallic"_a);
-    c.def("roughness", py::overload_cast<>(&Material::roughness, py::const_));
+    c.def("roughness", [](const Material& m) { return m.roughness(); });
     c.def(
         "set_roughness",
-        [](Material& m, float v) {
-            m.roughness() = v;
-        },
+        [](Material& m, float v) { m.roughness() = v; },
         "roughness"_a);
     c.def(
-        "emissive_color",
-        py::overload_cast<>(&Material::emissiveColor, py::const_));
+        "emissive_color", [](const Material& m) { return m.emissiveColor(); });
     c.def(
         "set_emissive_color",
-        [](Material& m, const Color& c) {
-            m.emissiveColor() = c;
-        },
+        [](Material& m, const Color& c) { m.emissiveColor() = c; },
         "emissive_color"_a);
-    c.def("alpha_mode", py::overload_cast<>(&Material::alphaMode, py::const_));
+    c.def("alpha_mode", [](const Material& m) { return m.alphaMode(); });
     c.def(
         "set_alpha_mode",
-        [](Material& m, Material::AlphaMode v) {
-            m.alphaMode() = v;
-        },
+        [](Material& m, Material::AlphaMode v) { m.alphaMode() = v; },
         "alpha_mode"_a);
-    c.def(
-        "alpha_cutoff",
-        py::overload_cast<>(&Material::alphaCutoff, py::const_));
+    c.def("alpha_cutoff", [](const Material& m) { return m.alphaCutoff(); });
     c.def(
         "set_alpha_cutoff",
-        [](Material& m, float v) {
-            m.alphaCutoff() = v;
-        },
+        [](Material& m, float v) { m.alphaCutoff() = v; },
         "alpha_cutoff"_a);
-    c.def(
-        "double_sided",
-        py::overload_cast<>(&Material::doubleSided, py::const_));
+    c.def("double_sided", [](const Material& m) { return m.doubleSided(); });
     c.def(
         "set_double_sided",
-        [](Material& m, bool v) {
-            m.doubleSided() = v;
-        },
+        [](Material& m, bool v) { m.doubleSided() = v; },
         "double_sided"_a);
-    c.def(
-        "normal_scale",
-        py::overload_cast<>(&Material::normalScale, py::const_));
+    c.def("normal_scale", [](const Material& m) { return m.normalScale(); });
     c.def(
         "set_normal_scale",
-        [](Material& m, float v) {
-            m.normalScale() = v;
-        },
+        [](Material& m, float v) { m.normalScale() = v; },
         "normal_scale"_a);
-    c.def(
-        "occlusion_strength",
-        py::overload_cast<>(&Material::occlusionStrength, py::const_));
+    c.def("occlusion_strength", [](const Material& m) {
+        return m.occlusionStrength();
+    });
     c.def(
         "set_occlusion_strength",
-        [](Material& m, float v) {
-            m.occlusionStrength() = v;
-        },
+        [](Material& m, float v) { m.occlusionStrength() = v; },
         "occlusion_strength"_a);
+    c.def("emissive_strength", [](const Material& m) {
+        return m.emissiveStrength();
+    });
     c.def(
-        "base_color_texture_descriptor",
-        py::overload_cast<>(&Material::baseColorTextureDescriptor, py::const_));
+        "set_emissive_strength",
+        [](Material& m, float v) { m.emissiveStrength() = v; },
+        "emissive_strength"_a);
+    c.def("base_color_texture_descriptor", [](const Material& m) {
+        return m.baseColorTextureDescriptor();
+    });
     c.def(
         "set_base_color_texture_descriptor",
         [](Material& m, const TextureDescriptor& t) {
@@ -121,9 +103,9 @@ void initMaterial(pybind11::module& m)
         },
         "base_color_texture_descriptor"_a);
 
-    c.def(
-        "texture_descriptor",
-        py::overload_cast<uint>(&Material::textureDescriptor, py::const_));
+    c.def("texture_descriptor", [](const Material& m, uint type) {
+        return m.textureDescriptor(type);
+    });
     c.def(
         "set_texture_descriptor",
         [](Material& m, uint type, const TextureDescriptor& t) {
@@ -133,15 +115,14 @@ void initMaterial(pybind11::module& m)
         "texture_descriptor"_a);
     c.def(
         "texture_descriptor",
-        py::overload_cast<Material::TextureType>(
-            &Material::textureDescriptor, py::const_));
+        [](const Material& m, Material::TextureType type) {
+            return m.textureDescriptor(type);
+        });
     c.def(
         "set_texture_descriptor",
         [](Material&                m,
            Material::TextureType    type,
-           const TextureDescriptor& t) {
-            m.textureDescriptor(type) = t;
-        },
+           const TextureDescriptor& t) { m.textureDescriptor(type) = t; },
         "type"_a,
         "texture_descriptor"_a);
 

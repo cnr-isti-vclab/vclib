@@ -24,17 +24,15 @@ namespace vcl {
  * value, and each element value may be stored in more than one cell if it
  * intersects with more than one cell.
  *
- * This class is made using CRTP static polymorphism
- * (https: *en.wikipedia.org/wiki/Curiously_recurring_template_pattern).
- * The last template parameter, is the Derived class that derives from this
- * grid. This allows to avoid calling virtual member functions, which would be
- * called very often and may cause a significant overhead during queries.
+ * This class uses C++23 explicit object parameters ("deducing this")
+ * for static polymorphism, avoiding virtual member functions without
+ * requiring the CRTP pattern.
  *
- * What you need to do is to declared your Grid Data Structure as follows:
+ * What you need to do is to declare your Grid Data Structure as follows:
  *
  * template<typename GridType, typename ValueType>
  * class MyDSGrid :
- *     public AbstractGrid<GridType, ValueType, MyDSGrid<GridType, ValueType>>
+ *     public AbstractGrid<GridType, ValueType>
  * { ... };
  *
  * Make sure that your class:
@@ -44,10 +42,9 @@ namespace vcl {
  * - implements iterators Iterator and ConstIterator that iterate over pairs of
  *   <KeyType, ValueType> (see below for more details)
  * - implements the following member functions:
- *   - std::pair<Iterator, Iterator> valuesInCell(const KeyType) -> returns a
- *     pair of begin-end iterators that will allow to cycle over the elements
- *     contained in a cell. this function must be overloaded both in const and
- *     non-const versions, returning proper const or non-const iterators.
+ *   - valuesInCell(this auto&& self, const KeyType& k) -> returns a pair
+ *     of begin-end iterators that will allow to cycle over the elements
+ *     contained in a cell;
  *   - bool insertInCell(const KeyType&, const ValueType&) -> inserts the
  *     element in a Grid Cell. The returned type tells if the element has been
  *     inserted (in some implementations, insertion could not happen, e.g. when
@@ -55,7 +52,7 @@ namespace vcl {
  *   - bool eraseInCell(const KeyType&, const ValueType&) -> erases all the
  *     element equal to the given element from the given Grid Cell. The returned
  *     type tells if the element has been erased from the given cell.
- *   - Iterator end() -> classic member function that returns the end iterator
+ *   - end(this auto&& self) -> member function that returns the end iterator
  *
  * Iterators of your class must:
  * - Iterate over pairs of <KeyType, ValueType&>:
@@ -86,7 +83,7 @@ namespace vcl {
  *
  * @ingroup space_complex
  */
-template<typename GridType, typename ValueType, typename DerivedGrid>
+template<typename GridType, typename ValueType>
 class AbstractGrid : public GridType
 {
 public:
@@ -140,15 +137,28 @@ public:
             const RemoveCVRefAndPointer<ValueType>&,
             typename GridType::ScalarType)>;
 
-    bool cellEmpty(const KeyType& k) const
+    /**
+     * @brief Checks whether the grid cell at the specified position is empty.
+     *
+     * @param[in] k: The position key of the cell to check.
+     * @return True if the cell contains no elements, false otherwise.
+     */
+    bool cellEmpty(this auto&& self, const KeyType& k)
     {
-        auto p = derived()->valuesInCell(k);
+        auto p = self.valuesInCell(k);
         return p.first == p.second;
     }
 
-    std::size_t countInCell(const KeyType& k) const
+    /**
+     * @brief Returns the number of elements contained in the grid cell at
+     * position k.
+     *
+     * @param[in] k: The position key of the cell.
+     * @return The number of elements contained in the cell.
+     */
+    std::size_t countInCell(this auto&& self, const KeyType& k)
     {
-        auto p = derived()->valuesInCell(k);
+        auto p = self.valuesInCell(k);
         return std::distance(p.first, p.second);
     }
 
@@ -163,7 +173,7 @@ public:
      * @param v
      * @return
      */
-    bool insert(const ValueType& v)
+    bool insert(this auto&& self, const ValueType& v)
     {
         const VT* vv = addressOfObj(v);
 
@@ -180,30 +190,30 @@ public:
                     p = *vv;
                 else
                     p = vv->position();
-                bmin = bmax = GridType::cell(p);
+                bmin = bmax = self.cell(p);
             }
             else { // else, call the boundingBox function
                 // bounding box of value
                 typename GridType::BBoxType bb = boundingBox(*vv);
 
-                bmin = GridType::cell(bb.min()); // first cell where insert
-                bmax = GridType::cell(bb.max()); // last cell where insert
+                bmin = self.cell(bb.min()); // first cell where insert
+                bmax = self.cell(bb.max()); // last cell where insert
             }
 
             bool ins = false;
 
             // custom intersection function between cell and value
-            if (mIntersectsFun) {
-                for (const auto& cell : GridType::cells(bmin, bmax)) {
-                    if (mIntersectsFun(
-                            GridType::cellBox(cell), dereferencePtr(v))) {
-                        ins |= derived()->insertInCell(cell, v);
+            if (self.mIntersectsFun) {
+                for (const auto& cell : self.cells(bmin, bmax)) {
+                    if (self.mIntersectsFun(
+                            self.cellBox(cell), dereferencePtr(v))) {
+                        ins |= self.insertInCell(cell, v);
                     }
                 }
             }
             else {
-                for (const auto& cell : GridType::cells(bmin, bmax)) {
-                    ins |= derived()->insertInCell(cell, v);
+                for (const auto& cell : self.cells(bmin, bmax)) {
+                    ins |= self.insertInCell(cell, v);
                 }
             }
             return ins;
@@ -219,11 +229,11 @@ public:
      * @return The number of inserted elements.
      */
     template<typename ObjIterator>
-    uint insert(ObjIterator begin, ObjIterator end)
+    uint insert(this auto&& self, ObjIterator begin, ObjIterator end)
     {
         uint cnt = 0;
         for (ObjIterator it = begin; it != end; ++it)
-            if (insert(*it))
+            if (self.insert(*it))
                 cnt++;
         return cnt;
     }
@@ -236,12 +246,12 @@ public:
      * @return The number of inserted elements.
      */
     template<Range Rng>
-    uint insert(Rng&& r)
+    uint insert(this auto&& self, Rng&& r)
     {
-        return insert(std::ranges::begin(r), std::ranges::end(r));
+        return self.insert(std::ranges::begin(r), std::ranges::end(r));
     }
 
-    bool erase(const ValueType& v)
+    bool erase(this auto&& self, const ValueType& v)
     {
         const VT* vv = addressOfObj(v);
 
@@ -255,46 +265,71 @@ public:
                     p = *vv;
                 else
                     p = vv->position();
-                bmin = bmax = GridType::cell(p);
+                bmin = bmax = self.cell(p);
             }
             else {
                 typename GridType::BBoxType bb = boundingBox(*vv);
 
-                bmin = GridType::cell(bb.min);
-                bmax = GridType::cell(bb.max);
+                bmin = self.cell(bb.min);
+                bmax = self.cell(bb.max);
             }
 
             bool found = false;
-            for (const auto& cell : GridType::cells(bmin, bmax)) {
-                found |= derived()->eraseInCell(cell, v);
+            for (const auto& cell : self.cells(bmin, bmax)) {
+                found |= self.eraseInCell(cell, v);
             }
             return found;
         }
         return false;
     }
 
-    bool eraseAllInCell(const KeyType& k)
+    /**
+     * @brief Erases all elements in the cell at the given key position.
+     *
+     * @param[in] k: The position key of the cell.
+     * @return True if at least one element was erased, false otherwise.
+     */
+    bool eraseAllInCell(this auto&& self, const KeyType& k)
     {
         bool  res = false;
-        auto& p   = derived()->valuesInCell(k);
+        auto& p   = self.valuesInCell(k);
         // for each value contained in the cell
         for (auto it = p.first; it != p.second; ++it) {
-            res |= derived()->eraseInCell(k, it->second);
+            res |= self.eraseInCell(k, it->second);
         }
         return res;
     }
 
-    // sphere operations
-    uint countInSphere(const Sphere<typename GridType::ScalarType>& s) const
+    /**
+     * @brief Returns the number of elements contained in the sphere.
+     *
+     * @param[in] s: The query sphere.
+     * @return The number of elements contained in the sphere.
+     */
+    uint countInSphere(
+        this auto&&                                  self,
+        const Sphere<typename GridType::ScalarType>& s)
     {
-        return valuesInSphere(s).size();
+        return self.valuesInSphere(s).size();
     }
 
-    // vector of iterators - return type must be auto here (we still don't know
-    // the iterator type)
-    auto valuesInSphere(const Sphere<typename GridType::ScalarType>& s) const
+    /**
+     * @brief Returns a vector of iterators to all elements intersecting the
+     * sphere.
+     *
+     * Queries the cell interval bounding the sphere and checks intersection
+     * with each candidate element. Duplicates for multi-cell elements are
+     * filtered out.
+     *
+     * @param[in] s: The query sphere.
+     * @return A vector of iterators to the matching elements.
+     */
+    auto valuesInSphere(
+        this auto&&                                  self,
+        const Sphere<typename GridType::ScalarType>& s)
     {
-        using Iter    = DerivedGrid::ConstIterator;
+        using Iter =
+            std::decay_t<decltype(self.valuesInCell(KeyType {}).first)>;
         using IterSet = std::set<Iter, IterComparator<Iter>>;
 
         // will use this set only if the value type is not a point -- that is
@@ -305,16 +340,16 @@ public:
         std::vector<Iter> resVec;
 
         // interval of cells containing the sphere
-        KeyType first = GridType::cell(s.center() - s.radius());
-        KeyType last  = GridType::cell(s.center() + s.radius());
+        KeyType first = self.cell(s.center() - s.radius());
+        KeyType last  = self.cell(s.center() + s.radius());
 
         // for each cell in the interval
-        for (const KeyType& c : GridType::cells(first, last)) {
+        for (const KeyType& c : self.cells(first, last)) {
             // p is a pair of iterators
-            const auto& p = derived()->valuesInCell(c);
+            const auto& p = self.valuesInCell(c);
             // for each value contained in the cell
             for (auto it = p.first; it != p.second; ++it) {
-                if (valueIsInSpehere(it, s)) {
+                if (self.valueIsInSpehere(it, s)) {
                     if constexpr (!PointConcept<VT> && !VertexConcept<VT>) {
                         valuesSet.insert(it);
                     }
@@ -333,20 +368,27 @@ public:
         return resVec;
     }
 
-    void eraseInSphere(const Sphere<typename GridType::ScalarType>& s)
+    /**
+     * @brief Erases all elements intersecting the given sphere.
+     *
+     * @param[in] s: The query sphere.
+     */
+    void eraseInSphere(
+        this auto&&                                  self,
+        const Sphere<typename GridType::ScalarType>& s)
     {
         // interval of cells containing the sphere
-        KeyType first = GridType::cell(s.center() - s.radius());
-        KeyType last  = GridType::cell(s.center() + s.radius());
+        KeyType first = self.cell(s.center() - s.radius());
+        KeyType last  = self.cell(s.center() + s.radius());
 
         // for each cell in the interval
-        for (const KeyType& c : GridType::cells(first, last)) {
+        for (const KeyType& c : self.cells(first, last)) {
             // p is a pair of iterators
-            const auto& p = derived()->valuesInCell(c);
+            const auto& p = self.valuesInCell(c);
             // for each value contained in the cell
             for (auto it = p.first; it != p.second; ++it) {
-                if (valueIsInSpehere(it, s)) {
-                    eraseInCell(it->first, it->second);
+                if (self.valueIsInSpehere(it, s)) {
+                    self.eraseInCell(it->first, it->second);
                 }
             }
         }
@@ -355,27 +397,28 @@ public:
     // closest queries
     template<typename QueryValueType>
     auto closestValue(
+        this auto&&                              self,
         const QueryValueType&                    qv,
         QueryBoundedDistFunction<QueryValueType> distFunction,
-        typename GridType::ScalarType&           dist) const
+        typename GridType::ScalarType&           dist)
     {
         using ScalarType = GridType::ScalarType;
         using PointType  = GridType::PointType;
-        using ResType    = DerivedGrid::ConstIterator;
+        using ResType    = decltype(self.end());
 
         using QVT         = RemoveCVRefAndPointer<QueryValueType>;
         const QVT* qvv    = addressOfObj(qv);
-        ResType    result = derived()->end();
+        ResType    result = self.end();
 
         if (qvv) {
             typename GridType::ScalarType maxDist = dist;
 
-            const ScalarType cellDiagonal = GridType::cellDiagonal();
+            const ScalarType cellDiag = self.cellDiagonal();
 
             // bbox of query value
             typename GridType::BBoxType bb = boundingBox(*qvv);
 
-            ScalarType centerDist = cellDiagonal;
+            ScalarType centerDist = cellDiag;
             PointType  center     = bb.center();
 
             // we first look just on the cells where the query value lies
@@ -385,13 +428,14 @@ public:
             Boxui currentIntervalBox;
             Boxui lastIntervalBox = currentIntervalBox;
             // first cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.min()));
+            currentIntervalBox.add(self.cell(bb.min()));
             // last cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.max()));
+            currentIntervalBox.add(self.cell(bb.max()));
 
             // looking just on cells where query lies
-            ScalarType tmp = cellDiagonal;
-            result = closestInCells(qv, tmp, currentIntervalBox, distFunction);
+            ScalarType tmp = cellDiag;
+            result =
+                self.closestInCells(qv, tmp, currentIntervalBox, distFunction);
 
             // we have found (maybe) the closest value contained in the cell(s)
             // where the query value lies (if the cells were empty, we did not
@@ -400,7 +444,7 @@ public:
             // if we found a value, we update the dist, which becames the
             // max dist value. We will use it for the final search of the
             // closest value
-            if (result != derived()->end()) {
+            if (result != self.end()) {
                 dist       = tmp;
                 centerDist = dist;
             }
@@ -414,40 +458,40 @@ public:
 
                 do {
                     lastIntervalBox = currentIntervalBox;
-                    currentIntervalBox.add(GridType::cell(center - centerDist));
-                    currentIntervalBox.add(GridType::cell(center + centerDist));
+                    currentIntervalBox.add(self.cell(center - centerDist));
+                    currentIntervalBox.add(self.cell(center + centerDist));
 
-                    result = closestInCells(
+                    result = self.closestInCells(
                         qv,
                         dist,
                         currentIntervalBox,
                         distFunction,
                         lastIntervalBox);
 
-                    end = result != derived()->end();
+                    end = result != self.end();
                     end |= (centerDist > maxDist);
                     end |=
-                        (center - centerDist < GridType::min() &&
-                         center + centerDist > GridType::max());
+                        (center - centerDist < self.min() &&
+                         center + centerDist > self.max());
 
                     // update the centerDist for the next loop (after computing
                     // the end loop condition!!)
-                    centerDist += cellDiagonal;
+                    centerDist += cellDiag;
                 } while (!end);
             }
 
-            if (result != derived()->end()) {
+            if (result != self.end()) {
                 // last check: look in all the cells inside the sphere of radius
                 // dist, in case there is a closest value
-                currentIntervalBox.add(GridType::cell(center - dist));
-                currentIntervalBox.add(GridType::cell(center + dist));
-                auto r = closestInCells(
+                currentIntervalBox.add(self.cell(center - dist));
+                currentIntervalBox.add(self.cell(center + dist));
+                auto r = self.closestInCells(
                     qv,
                     dist,
                     currentIntervalBox,
                     distFunction,
                     lastIntervalBox);
-                if (r != derived()->end()) {
+                if (r != self.end()) {
                     result = r;
                 }
             }
@@ -458,46 +502,47 @@ public:
 
     template<typename QueryValueType>
     auto closestValue(
+        this auto&&                       self,
         const QueryValueType&             qv,
         QueryDistFunction<QueryValueType> distFunction,
-        typename GridType::ScalarType&    dist) const
+        typename GridType::ScalarType&    dist)
     {
         QueryBoundedDistFunction<QueryValueType> boundDistFun =
             [&](const QueryValueType&                   q,
                 const RemoveCVRefAndPointer<ValueType>& v,
-                typename GridType::ScalarType) {
-                return distFunction(q, v);
-            };
+                typename GridType::ScalarType) { return distFunction(q, v); };
 
         dist = std::numeric_limits<typename GridType::ScalarType>::max();
 
-        return closestValue(qv, boundDistFun, dist);
+        return self.closestValue(qv, boundDistFun, dist);
     }
 
     template<typename QueryValueType>
     auto closestValue(
+        this auto&&                       self,
         const QueryValueType&             qv,
-        QueryDistFunction<QueryValueType> distFunction) const
+        QueryDistFunction<QueryValueType> distFunction)
     {
         typename GridType::ScalarType maxDist =
             std::numeric_limits<typename GridType::ScalarType>::max();
-        return closestValue(qv, distFunction, maxDist);
+        return self.closestValue(qv, distFunction, maxDist);
     }
 
     template<typename QueryValueType>
     auto closestValue(
+        this auto&&                    self,
         const QueryValueType&          qv,
-        typename GridType::ScalarType& dist) const
+        typename GridType::ScalarType& dist)
     {
         std::function f = boundedDistFunction<
             QueryValueType,
             RemoveCVRefAndPointer<ValueType>,
             typename GridType::ScalarType>();
-        return closestValue(qv, f, dist);
+        return self.closestValue(qv, f, dist);
     }
 
     template<typename QueryValueType>
-    auto closestValue(const QueryValueType& qv) const
+    auto closestValue(this auto&& self, const QueryValueType& qv)
     {
         std::function f = boundedDistFunction<
             QueryValueType,
@@ -505,26 +550,28 @@ public:
             typename GridType::ScalarType>();
         typename GridType::ScalarType maxDist =
             std::numeric_limits<typename GridType::ScalarType>::max();
-        return closestValue(qv, f, maxDist);
+        return self.closestValue(qv, f, maxDist);
     }
 
     template<typename QueryValueType>
     auto kClosestValues(
+        this auto&&                       self,
         const QueryValueType&             qv,
         uint                              n,
-        QueryDistFunction<QueryValueType> distFunction) const
+        QueryDistFunction<QueryValueType> distFunction)
     {
-        using ResType = std::vector<typename DerivedGrid::ConstIterator>;
+        using ResIt   = decltype(self.end());
+        using ResType = std::vector<ResIt>;
         // KClosest Types
-        using KClosestPairType = std::pair<
-            typename GridType::ScalarType,
-            typename DerivedGrid::ConstIterator>;
+        using KClosestPairType =
+            std::pair<typename GridType::ScalarType, ResIt>;
         using KClosestSet = std::
             set<KClosestPairType, DistIterPairComparator<KClosestPairType>>;
 
         Boxui ignore; // will contain the interval of cells already visited
 
-        KClosestSet set = valuesInCellNeighborhood(qv, n, distFunction, ignore);
+        KClosestSet set =
+            self.valuesInCellNeighborhood(qv, n, distFunction, ignore);
 
         auto it = set.size() >= n ? std::next(set.begin(), n - 1) : set.end();
         // if we didn't found n values, it means that there aren't n values in
@@ -545,16 +592,16 @@ public:
             // and we look in all of these cells
             Boxui currentIntervalBox;
             // first cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.min()));
+            currentIntervalBox.add(self.cell(bb.min()));
             // last cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.max()));
+            currentIntervalBox.add(self.cell(bb.max()));
 
             // for all the cells in the current interval box
-            for (const KeyType& c : GridType::cells(
+            for (const KeyType& c : self.cells(
                      currentIntervalBox.min(), currentIntervalBox.max())) {
                 if (!ignore.isInside(c)) {
                     // get the values of the cell c
-                    const auto& p = derived()->valuesInCell(c);
+                    const auto& p = self.valuesInCell(c);
                     // for each value contained in the cell c
                     for (auto it = p.first; it != p.second; ++it) {
                         auto tmp = distFunction(qv, dereferencePtr(it->second));
@@ -578,13 +625,13 @@ public:
     }
 
     template<typename QueryValueType>
-    auto kClosestValues(const QueryValueType& qv, uint n) const
+    auto kClosestValues(this auto&& self, const QueryValueType& qv, uint n)
     {
         // get the default dist function between the query value and the
         // elements of the grid
         std::function f =
             distFunction<QueryValueType, RemoveCVRefAndPointer<ValueType>>();
-        return kClosestValues(qv, n, f);
+        return self.kClosestValues(qv, n, f);
     }
 
 protected:
@@ -754,13 +801,6 @@ private:
         }
     };
 
-    DerivedGrid* derived() { return static_cast<DerivedGrid*>(this); }
-
-    const DerivedGrid* derived() const
-    {
-        return static_cast<const DerivedGrid*>(this);
-    }
-
     // std::deque<ValueType> values;
 
     /**
@@ -798,21 +838,20 @@ private:
      */
     template<typename QueryValueType>
     auto closestInCells(
+        this auto&&                              self,
         const QueryValueType&                    qv,
         typename GridType::ScalarType&           dist,
         const Boxui&                             interval,
         QueryBoundedDistFunction<QueryValueType> distFunction,
-        const Boxui&                             ignore = Boxui()) const
+        const Boxui&                             ignore = Boxui())
     {
-        using ResType = DerivedGrid::ConstIterator;
-        ResType res   = derived()->end();
+        auto res = self.end();
 
         // for each cell in the interval
-        for (const KeyType& c :
-             GridType::cells(interval.min(), interval.max())) {
+        for (const KeyType& c : self.cells(interval.min(), interval.max())) {
             if (!ignore.isInsideStrict(c)) {
                 // p is a pair of iterators
-                const auto& p = derived()->valuesInCell(c);
+                const auto& p = self.valuesInCell(c);
                 // for each value contained in the cell
                 for (auto it = p.first; it != p.second; ++it) {
                     auto tmp =
@@ -829,15 +868,16 @@ private:
 
     template<typename QueryValueType>
     auto valuesInCellNeighborhood(
+        this auto&&                       self,
         const QueryValueType&             qv,
         uint                              n,
         QueryDistFunction<QueryValueType> distFunction,
-        Boxui&                            ignore) const
+        Boxui&                            ignore)
     {
         // types used for K closest neighbors queries
-        using KClosestPairType = std::pair<
-            typename GridType::ScalarType,
-            typename DerivedGrid::ConstIterator>;
+        using ResIt = decltype(self.end());
+        using KClosestPairType =
+            std::pair<typename GridType::ScalarType, ResIt>;
         using KClosestSet = std::
             set<KClosestPairType, DistIterPairComparator<KClosestPairType>>;
 
@@ -851,17 +891,17 @@ private:
             // bbox of query value
             typename GridType::BBoxType bb = boundingBox(*qvv);
             // first cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.min()));
+            currentIntervalBox.add(self.cell(bb.min()));
             // last cell where look for closest
-            currentIntervalBox.add(GridType::cell(bb.max()));
+            currentIntervalBox.add(self.cell(bb.max()));
 
             ignore.setNull();
             while (res.size() < n && currentIntervalBox != ignore) {
                 // for each cell in the interval
-                for (const KeyType& c : GridType::cells(
+                for (const KeyType& c : self.cells(
                          currentIntervalBox.min(), currentIntervalBox.max())) {
                     if (!ignore.isInside(c)) {
-                        const auto& p = derived()->valuesInCell(c);
+                        const auto& p = self.valuesInCell(c);
 
                         // for each value contained in the cell
                         for (auto it = p.first; it != p.second; ++it) {
@@ -875,8 +915,7 @@ private:
                 for (uint i = 0; i < currentIntervalBox.min().DIM; ++i) {
                     if (currentIntervalBox.min()(i) != 0)
                         currentIntervalBox.min()(i)--;
-                    if (currentIntervalBox.max()(i) !=
-                        GridType::cellCount(i) - 1)
+                    if (currentIntervalBox.max()(i) != self.cellCount(i) - 1)
                         currentIntervalBox.max()(i)++;
                 }
             }

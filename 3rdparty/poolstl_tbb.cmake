@@ -62,7 +62,7 @@ if(
     if(VCLIB_ALLOW_INSTALL_POOLSTL)
         install(
             DIRECTORY ${POOLSTL_INCLUDE_DIRS}/poolstl
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            DESTINATION ${VCLIB_3RDPARTY_INSTALL_INCLUDEDIR}
         )
     endif()
 else()

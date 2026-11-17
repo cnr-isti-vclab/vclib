@@ -35,9 +35,7 @@ void initComponents(pybind11::class_<ElementType, Options...>& c)
     if constexpr (!MeshConcept<ElementType>) {
         c.def("index", &ElementType::index);
 
-        c.def("parent_mesh", [](ElementType& v) {
-            return v.parentMesh();
-        });
+        c.def("parent_mesh", [](ElementType& v) { return v.parentMesh(); });
     }
 
     if constexpr (comp::HasAdjacentEdges<ElementType>) {
@@ -72,9 +70,8 @@ void initComponents(pybind11::class_<ElementType, Options...>& c)
     }
     if constexpr (comp::HasColor<ElementType>) {
         c.def("color", py::overload_cast<>(&ElementType::color), reference);
-        c.def("set_color", [](ElementType& v, const Color& c) {
-            v.color() = c;
-        });
+        c.def(
+            "set_color", [](ElementType& v, const Color& c) { v.color() = c; });
     }
     if constexpr (comp::HasPosition<ElementType>) {
         c.def(
@@ -116,16 +113,14 @@ void initComponents(pybind11::class_<ElementType, Options...>& c)
 
     if constexpr (comp::HasQuality<ElementType>) {
         c.def("quality", py::overload_cast<>(&ElementType::quality));
-        c.def("set_quality", [](ElementType& v, double q) {
-            v.quality() = q;
-        });
+        c.def("set_quality", [](ElementType& v, double q) { v.quality() = q; });
     }
     if constexpr (comp::HasTexCoord<ElementType>) {
         c.def(
             "tex_coord",
             py::overload_cast<>(&ElementType::texCoord),
             reference);
-        c.def("set_tex_coord", [](ElementType& v, const TexCoordIndexedd& t) {
+        c.def("set_tex_coord", [](ElementType& v, const TexCoordd& t) {
             v.texCoord() = t;
         });
     }

@@ -46,9 +46,7 @@ auto bruteForceKNearestFaces(
         std::sort(
             facesAndDists.begin(),
             facesAndDists.end(),
-            [](const auto& a, const auto& b) {
-                return a.second < b.second;
-            });
+            [](const auto& a, const auto& b) { return a.second < b.second; });
 
         nearestAndDists[i] = std::vector<std::pair<vcl::uint, ScalarType>>(
             facesAndDists.begin(), facesAndDists.begin() + k);

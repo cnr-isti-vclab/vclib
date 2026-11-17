@@ -18,7 +18,7 @@
 // 4. Filtering and transforming during iteration
 // 5. Working with polygon meshes and variable topology
 
-void meshIteration()
+inline void meshIteration()
 {
     std::cout << "=== VCLib Example 002: Mesh Iteration ===\n\n";
 
@@ -102,7 +102,7 @@ void meshIteration()
 
     // Enable adjacency information
     mesh.enablePerVertexAdjacentFaces();
-    vcl::updatePerVertexAdjacentFaces(mesh);
+    vcl::updateVertexAdjacentFaces(mesh);
 
     // Iterate over faces adjacent to each vertex
     for (int count = 0; const auto& vertex : mesh.vertices()) {
@@ -123,7 +123,7 @@ void meshIteration()
 
     // Enable face-to-face adjacency
     mesh.enablePerFaceAdjacentFaces();
-    vcl::updatePerFaceAdjacentFaces(mesh);
+    vcl::updateFaceAdjacentFaces(mesh);
 
     std::cout << "\nFace adjacencies:" << std::endl;
     for (int count = 0; const auto& face : mesh.faces()) {
@@ -151,6 +151,18 @@ void meshIteration()
     std::cout << "Vertex positions using views:" << std::endl;
     for (int count = 0; const auto& position :
                         mesh | vcl::views::vertices | vcl::views::positions) {
+        if (count >= 3)
+            break;
+        std::cout << "  Position " << count << ": " << position << std::endl;
+        count++;
+    }
+
+    // Alternatively, iterate using generic component view
+    std::cout << "\nVertex positions using generic component view:"
+              << std::endl;
+    for (int count = 0; const auto& position :
+                        mesh | vcl::views::elements<vcl::ElemId::VERTEX> |
+                            vcl::views::component<vcl::CompId::POSITION>) {
         if (count >= 3)
             break;
         std::cout << "  Position " << count << ": " << position << std::endl;

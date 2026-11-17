@@ -27,15 +27,11 @@ void initWedgeColors(pybind11::class_<ElementType, Options...>& c)
 
     c.def(
         "wedge_color",
-        [](ElementType& e, uint i) {
-            return e.wedgeColor(i);
-        },
+        [](ElementType& e, uint i) { return e.wedgeColor(i); },
         py::return_value_policy::reference);
     c.def(
         "wedge_color_mod",
-        [](ElementType& e, int i) {
-            return e.wedgeColorMod(i);
-        },
+        [](ElementType& e, int i) { return e.wedgeColorMod(i); },
         py::return_value_policy::reference);
 
     c.def("set_wedge_color", &ElementType::setWedgeColor);

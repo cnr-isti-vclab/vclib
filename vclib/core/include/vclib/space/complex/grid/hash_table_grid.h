@@ -32,21 +32,14 @@ namespace vcl {
  * @ingroup space_complex
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
-class HashTableGrid :
-        public AbstractGrid<
-            GridType,
-            ValueType,
-            HashTableGrid<GridType, ValueType, AllowDuplicates>>
+class HashTableGrid : public AbstractGrid<GridType, ValueType>
 {
     static_assert(
         AllowDuplicates || std::equality_comparable<ValueType>,
         "Not allowing duplicates in a Spatial Data Structures means that "
         "ValueType must implement operator==.");
 
-    using AbsGrid = AbstractGrid<
-        GridType,
-        ValueType,
-        HashTableGrid<GridType, ValueType, AllowDuplicates>>;
+    using AbsGrid = AbstractGrid<GridType, ValueType>;
 
     friend AbsGrid;
 
@@ -90,7 +83,7 @@ public:
         const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {
-        AbsGrid::insert(begin, end);
+        this->insert(begin, end);
     }
 
     template<Range Rng>
@@ -139,16 +132,9 @@ public:
      */
     std::size_t countInCell(const KeyType& k) const { return mMap.count(k); }
 
-    std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
+    auto valuesInCell(this auto&& self, const KeyType& k)
     {
-        auto p = mMap.equal_range(k);
-        return std::make_pair(Iterator(p.first), Iterator(p.second));
-    }
-
-    std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
-    {
-        auto p = mMap.equal_range(k);
-        return std::make_pair(ConstIterator(p.first), ConstIterator(p.second));
+        return self.mMap.equal_range(k);
     }
 
     void clear() { mMap.clear(); }
@@ -165,18 +151,14 @@ public:
 
     void eraseInSphere(const Sphere<typename GridType::ScalarType>& s)
     {
-        std::vector<ConstIterator> toDel = AbsGrid::valuesInSphere(s);
-        for (auto& it : toDel)
+        auto toDelVec = this->valuesInSphere(s);
+        for (auto& it : toDelVec)
             mMap.erase(it);
     }
 
-    Iterator begin() { return mMap.begin(); }
+    auto begin(this auto&& self) { return self.mMap.begin(); }
 
-    ConstIterator begin() const { return mMap.begin(); }
-
-    Iterator end() { return mMap.end(); }
-
-    ConstIterator end() const { return mMap.end(); }
+    auto end(this auto&& self) { return self.mMap.end(); }
 
 private:
     bool insertInCell(const KeyType& k, const ValueType& v)

@@ -368,7 +368,7 @@ void testVertexAdjacentVerticesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentVerticesMatrix<MatrixType>(tm);
 
-    vcl::uint lva = vcl::largestPerVertexAdjacentVerticesCount(tm);
+    vcl::uint lva = vcl::largestVertexAdjacentVerticesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lva);
@@ -412,7 +412,7 @@ void testVertexAdjacentFacesMatrix(const auto& tm)
 {
     auto adjMatrix = vcl::vertexAdjacentFacesMatrix<MatrixType>(tm);
 
-    vcl::uint lfa = vcl::largestPerVertexAdjacentFacesCount(tm);
+    vcl::uint lfa = vcl::largestVertexAdjacentFacesCount(tm);
 
     REQUIRE(adjMatrix.rows() == tm.vertexCount());
     REQUIRE(adjMatrix.cols() == lfa);
@@ -707,7 +707,7 @@ TEMPLATE_TEST_CASE(
     {
         using ScalarType = typename TriMesh::VertexType::NormalType::ScalarType;
 
-        vcl::updatePerVertexNormals(tm);
+        vcl::updateVertexNormals(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -735,7 +735,7 @@ TEMPLATE_TEST_CASE(
     {
         using ScalarType = typename TriMesh::FaceType::NormalType::ScalarType;
 
-        vcl::updatePerFaceNormals(tm);
+        vcl::updateFaceNormals(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -879,7 +879,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-vertex adjacency information first
         tm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(tm);
+        vcl::updateVertexAdjacentVertices(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -899,7 +899,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-vertex adjacency information first
         tm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(tm);
+        vcl::updateVertexAdjacentVertices(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -919,7 +919,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-vertex adjacent faces information first
         tm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(tm);
+        vcl::updateVertexAdjacentFaces(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -939,7 +939,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-vertex adjacent faces information first
         tm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(tm);
+        vcl::updateVertexAdjacentFaces(tm);
 
         SECTION("Eigen Row Major")
         {
@@ -959,7 +959,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-face adjacent faces information first
         tm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(tm);
+        vcl::updateFaceAdjacentFaces(tm);
 
         SECTION("std::vector<std::vector<vcl::uint>>")
         {
@@ -979,7 +979,7 @@ TEMPLATE_TEST_CASE(
     {
         // Update per-face adjacent faces information first
         tm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(tm);
+        vcl::updateFaceAdjacentFaces(tm);
 
         SECTION("Eigen Row Major")
         {

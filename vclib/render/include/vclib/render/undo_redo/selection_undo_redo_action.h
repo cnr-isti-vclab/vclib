@@ -8,8 +8,6 @@
 #ifndef VCL_RENDER_UNDO_REDO_SELECTION_UNDO_REDO_ACTION_H
 #define VCL_RENDER_UNDO_REDO_SELECTION_UNDO_REDO_ACTION_H
 
-#include "undo_redo_action.h"
-
 #include <vclib/render/drawable/abstract_drawable_mesh.h>
 
 #include <vclib/space/core.h>

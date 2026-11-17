@@ -47,8 +47,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
 
     log.log(0, "Updating per vertex normals...");
 
-    updatePerVertexNormalsAngleWeighted(m);
-    normalizePerVertexNormals(m);
+    updateVertexNormalsAngleWeighted(m);
+    normalizeVertexNormals(m);
 
     log.log(5, "Computing per vertex curvature...");
     // log every 5%, starting from 5% to 100%
@@ -239,16 +239,15 @@ void updatePrincipalCurvaturePCA(
     using NormalType   = VertexType::NormalType;
     using FaceType     = MeshType::FaceType;
 
-    using VGrid         = StaticGrid3<VertexType*, ScalarType>;
-    using VGridIterator = VGrid::ConstIterator;
+    using VGrid = StaticGrid3<VertexType*, ScalarType>;
 
     VGrid      pGrid;
     ScalarType area;
 
     log.log(0, "Updating per vertex normals...");
 
-    updatePerVertexNormalsAngleWeighted(m);
-    normalizePerVertexNormals(m);
+    updateVertexNormalsAngleWeighted(m);
+    normalizeVertexNormals(m);
 
     log.log(0, "Computing per vertex curvature...");
     log.startProgress("", m.vertexCount());
@@ -264,9 +263,9 @@ void updatePrincipalCurvaturePCA(
         Matrix33<ScalarType> A, eigenvectors;
         PositionType         bp, eigenvalues;
         if (montecarloSampling) {
-            Sphere                     s(v.position(), radius);
-            std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
-            std::vector<PositionType>  points;
+            Sphere s(v.position(), radius);
+            auto   vec = pGrid.valuesInSphere(s); // vector of iterators
+            std::vector<PositionType> points;
             points.reserve(vec.size());
             for (const auto& it : vec) {
                 points.push_back(it->second->position());

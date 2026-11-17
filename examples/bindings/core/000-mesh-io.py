@@ -45,7 +45,7 @@ def load_meshes():
 
     info = vcl.MeshInfo()
     vcl.load_mesh(mesh0, VCLIB_EXAMPLE_MESHES_PATH + "/bunny.obj", info)
-    print("Mesh has per face color: " + str(info.has_per_face_color()))
+    print("Mesh has per face color: " + str(info.has_face_color()))
 
     # You can control settings fro loading a mesh using the load function arguments.
     # They allow to choose whether to enable optional components (see example
@@ -66,14 +66,14 @@ def save_meshes(mesh0, mesh1):
     # using a MeshInfo object
 
     save_info = vcl.MeshInfo()
-    save_info.set_per_vertex_position()
+    save_info.set_vertex_position()
     save_info.set_faces(False) # do not save faces - only point cloud
 
     vcl.save_mesh(mesh0, VCLIB_PYTHON_RESULTS_PATH + "/000_mesh-io_bunny-cloud.obj", info = save_info)
 
     # You can also specify other settings for saving
     save_info.set_faces(True)
-    save_info.set_per_face_vertex_references(True)
+    save_info.set_face_vertex_references(True)
 
     # Save in ply ASCII format
     vcl.save_mesh(mesh0, VCLIB_PYTHON_RESULTS_PATH + "/000_mesh-io_bunny-ascii.ply", info = save_info, binary = False)

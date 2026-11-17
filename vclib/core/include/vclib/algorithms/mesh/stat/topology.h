@@ -236,21 +236,21 @@ uint triangulatedFaceCount(const FaceMeshConcept auto& mesh)
 }
 
 /**
- * @brief Returns the largest number of per-vertex adjacent vertices in the
+ * @brief Returns the largest number of vertex adjacent vertices in the
  * mesh.
  *
- * The function requires that per-vertex adjacent vertices have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentVertices).
+ * The function requires that vertex adjacent vertices have been
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentVertices).
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent vertices available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the MeshConcept.
- * @return The largest number of per-vertex adjacent vertices in the mesh.
+ * @return The largest number of vertex adjacent vertices in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
+uint largestVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
 {
     requirePerVertexAdjacentVertices(mesh);
 
@@ -264,25 +264,25 @@ uint largestPerVertexAdjacentVerticesCount(const MeshConcept auto& mesh)
 }
 
 /**
- * @brief Returns the largest number of per-ELEM_ID element adjacent faces in
+ * @brief Returns the largest number of element adjacent faces in
  * the mesh.
  *
- * The function requires that per-ELEM_ID element adjacent faces have been
- * precomputed for the mesh (see `vcl::updatePer<Element>AdjacentFaces`).
+ * The function requires that element adjacent faces have been
+ * precomputed for the mesh (see `vcl::update<Element>AdjacentFaces`).
  *
  * @note If the element has Tied To Vertex Count Adjacent Faces, the returned
  * value is equal to the number of vertices of the element.
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * @throws vcl::MissingComponentException if the mesh does not have element
  * adjacent faces available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the FaceMeshConcept.
- * @return The largest number of per-element adjacent faces in the mesh.
+ * @return The largest number of element adjacent faces in the mesh.
  *
  * @ingroup mesh_stat
  */
 template<uint ELEM_ID>
-uint largestPerElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
+uint largestElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_FACES>(mesh);
 
@@ -296,65 +296,65 @@ uint largestPerElementAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 }
 
 /**
- * @brief Returns the largest number of per-vertex adjacent faces in the mesh.
+ * @brief Returns the largest number of vertex adjacent faces in the mesh.
  *
- * The function requires that per-vertex adjacent faces have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentFaces).
+ * The function requires that vertex adjacent faces have been
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentFaces).
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent faces available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the FaceMeshConcept.
- * @return The largest number of per-vertex adjacent faces in the mesh.
+ * @return The largest number of vertex adjacent faces in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentFacesCount(const FaceMeshConcept auto& mesh)
+uint largestVertexAdjacentFacesCount(const FaceMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentFacesCount<ElemId::VERTEX>(mesh);
+    return largestElementAdjacentFacesCount<ElemId::VERTEX>(mesh);
 }
 
 /**
- * @brief Returns the largest number of per-edge adjacent faces in the mesh.
+ * @brief Returns the largest number of edge adjacent faces in the mesh.
  *
- * The function requires that per-edge adjacent faces have been
+ * The function requires that edge adjacent faces have been
  * precomputed for the mesh.
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * @throws vcl::MissingComponentException if the mesh does not have edge
  * adjacent faces available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the FaceMeshConcept and
  * EdgeMeshConcept.
- * @return The largest number of per-edge adjacent faces in the mesh.
+ * @return The largest number of edge adjacent faces in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerEdgeAdjacentFacesCount(const FaceMeshConcept auto& mesh)
+uint largestEdgeAdjacentFacesCount(const FaceMeshConcept auto& mesh)
     requires EdgeMeshConcept<decltype(mesh)>
 {
-    return largestPerElementAdjacentFacesCount<ElemId::EDGE>(mesh);
+    return largestElementAdjacentFacesCount<ElemId::EDGE>(mesh);
 }
 
 /**
- * @brief Returns the largest number of per-ELEM_ID element adjacent edges in
+ * @brief Returns the largest number of ELEM_ID element adjacent edges in
  * the mesh.
  *
- * The function requires that per-ELEM_ID element adjacent edges have been
- * precomputed for the mesh (see `vcl::updatePer<Element>AdjacentEdges`).
+ * The function requires that ELEM_ID element adjacent edges have been
+ * precomputed for the mesh (see `vcl::update<Element>AdjacentEdges`).
  *
  * @note If the element has Tied To Vertex Count Adjacent Edges, the returned
  * value is equal to the number of vertices of the element.
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * @throws vcl::MissingComponentException if the mesh does not have element
  * adjacent edges available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the EdgeMeshConcept.
- * @return The largest number of per-element adjacent edges in the mesh.
+ * @return The largest number of element adjacent edges in the mesh.
  *
  * @ingroup mesh_stat
  */
 template<uint ELEM_ID>
-uint largestPerElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
+uint largestElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
     requirePerElementComponent<ELEM_ID, CompId::ADJACENT_EDGES>(mesh);
 
@@ -368,62 +368,62 @@ uint largestPerElementAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 }
 
 /**
- * @brief Returns the largest number of per-vertex adjacent edges in the mesh.
+ * @brief Returns the largest number of vertex adjacent edges in the mesh.
  *
- * The function requires that per-vertex adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerVertexAdjacentEdges).
+ * The function requires that vertex adjacent edges have been
+ * precomputed for the mesh (see @ref vcl::updateVertexAdjacentEdges).
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * @throws vcl::MissingComponentException if the mesh does not have vertex
  * adjacent edges available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the EdgeMeshConcept.
- * @return The largest number of per-vertex adjacent edges in the mesh.
+ * @return The largest number of vertex adjacent edges in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerVertexAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
+uint largestVertexAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentEdgesCount<ElemId::VERTEX>(mesh);
+    return largestElementAdjacentEdgesCount<ElemId::VERTEX>(mesh);
 }
 
 /**
- * @brief Returns the largest number of per-face adjacent edges in the mesh.
+ * @brief Returns the largest number of face adjacent edges in the mesh.
  *
- * The function requires that per-face adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerFaceAdjacentEdges).
+ * The function requires that face adjacent edges have been
+ * precomputed for the mesh (see @ref vcl::updateFaceAdjacentEdges).
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * @throws vcl::MissingComponentException if the mesh does not have face
  * adjacent edges available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the EdgeMeshConcept and
  * FaceMeshConcept.
- * @return The largest number of per-face adjacent edges in the mesh.
+ * @return The largest number of face adjacent edges in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerFaceAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
+uint largestFaceAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
     requires FaceMeshConcept<decltype(mesh)>
 {
-    return largestPerElementAdjacentEdgesCount<ElemId::FACE>(mesh);
+    return largestElementAdjacentEdgesCount<ElemId::FACE>(mesh);
 }
 
 /**
- * @brief Returns the largest number of per-edge adjacent edges in the mesh.
+ * @brief Returns the largest number of edge adjacent edges in the mesh.
  *
- * The function requires that per-edge adjacent edges have been
- * precomputed for the mesh (see @ref vcl::updatePerEdgeAdjacentEdges).
+ * The function requires that edge adjacent edges have been
+ * precomputed for the mesh (see @ref vcl::updateEdgeAdjacentEdges).
  *
- * @throws vcl::MissingComponentException if the mesh does not have per-edge
+ * @throws vcl::MissingComponentException if the mesh does not have edge
  * adjacent edges available.
  *
  * @param[in] mesh: The input mesh. It must satisfy the EdgeMeshConcept.
- * @return The largest number of per-edge adjacent edges in the mesh.
+ * @return The largest number of edge adjacent edges in the mesh.
  *
  * @ingroup mesh_stat
  */
-uint largestPerEdgeAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
+uint largestEdgeAdjacentEdgesCount(const EdgeMeshConcept auto& mesh)
 {
-    return largestPerElementAdjacentEdgesCount<ElemId::EDGE>(mesh);
+    return largestElementAdjacentEdgesCount<ElemId::EDGE>(mesh);
 }
 
 /**
@@ -712,11 +712,11 @@ bool isWaterTight(const MeshType& m)
  * This function counts the number of holes in the input mesh, where a hole is
  * defined as a closed loop of border edges. The function uses a depth-first
  * search algorithm to traverse the mesh and find all the holes. The function
- * requires the input MeshType to have per-face adjacent faces, and uses the
+ * requires the input MeshType to have face adjacent faces, and uses the
  * `vcl::requirePerFaceAdjacentFaces` function to enforce this requirement.
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
- * FaceMeshConcept and have per-face adjacent faces.
+ * FaceMeshConcept and have face adjacent faces.
  *
  * @param[in] m: The input mesh for which to count the number of holes.
  *
@@ -768,11 +768,11 @@ uint holeCount(const MeshType& m) requires HasPerFaceAdjacentFaces<MeshType>
  * connected component and contains the face indices of the mesh that compose
  * it. The function uses a depth-first search algorithm to traverse the mesh and
  * find the connected components. The function requires the input MeshType to
- * have per-face adjacent faces, and uses the `vcl::requirePerFaceAdjacentFaces`
+ * have face adjacent faces, and uses the `vcl::requirePerFaceAdjacentFaces`
  * function to enforce this requirement.
  *
  * @tparam MeshType: The type of the input Mesh. It must satisfy the
- * FaceMeshConcept and have per-face adjacent faces.
+ * FaceMeshConcept and have face adjacent faces.
  *
  * @param[in] m: The input mesh for which to compute the connected components.
  * @return A vector of sets representing the connected components of the input
@@ -844,7 +844,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
  * connected components and then returns the size of the resulting vector.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the
- * FaceMeshConcept and have per-face adjacent faces.
+ * FaceMeshConcept and have face adjacent faces.
  *
  * @param[in] m: The input mesh for which to compute the number of connected
  * components.
