@@ -12,7 +12,7 @@
 BENCH(
     "mesh/views_stream/raw_indices",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        const Mesh& m = s.mesh();
+        const Mesh& m  = s.mesh();
         using Position = typename Mesh::VertexType::PositionType;
         s.run([&]() {
             Position sum;
@@ -28,7 +28,7 @@ BENCH(
 BENCH(
     "mesh/views_stream/element_proxies",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        const Mesh& m = s.mesh();
+        const Mesh& m  = s.mesh();
         using Position = typename Mesh::VertexType::PositionType;
         s.run([&]() {
             Position sum;
@@ -47,7 +47,7 @@ BENCH(
     });
 
 BENCH("mesh/views_stream/pipe_views", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
+    const Mesh& m  = s.mesh();
     using Position = typename Mesh::VertexType::PositionType;
     s.run([&]() {
         Position sum;

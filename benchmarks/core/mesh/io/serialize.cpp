@@ -9,51 +9,56 @@
 
 #include <sstream>
 
-BENCH("io/binary_serialize/serialize", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
-    if (m.vertexCount() == 0) {
-        return s.skip("mesh has no vertices");
-    }
+BENCH(
+    "io/binary_serialize/serialize",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
+        if (m.vertexCount() == 0) {
+            return s.skip("mesh has no vertices");
+        }
 
-    std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
-
-    s.run(
-        [&]() {
-            ss.str("");
-            ss.clear();
-            ss.seekp(0);
-        },
-        [&]() {
-            m.serialize(ss);
-            return ss.tellp();
-        });
-});
-
-BENCH("io/binary_serialize/deserialize", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
-    if (m.vertexCount() == 0) {
-        return s.skip("mesh has no vertices");
-    }
-
-    std::string buffer;
-    {
         std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
-        m.serialize(ss);
-        buffer = ss.str();
-    }
 
-    std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
-    Mesh              dst;
+        s.run(
+            [&]() {
+                ss.str("");
+                ss.clear();
+                ss.seekp(0);
+            },
+            [&]() {
+                m.serialize(ss);
+                return ss.tellp();
+            });
+    });
 
-    s.run(
-        [&]() {
-            ss.str(buffer);
-            ss.clear();
-            ss.seekg(0);
-            dst.clear();
-        },
-        [&]() {
-            dst.deserialize(ss);
-            return dst.vertexCount();
-        });
-});
+BENCH(
+    "io/binary_serialize/deserialize",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
+        if (m.vertexCount() == 0) {
+            return s.skip("mesh has no vertices");
+        }
+
+        std::string buffer;
+        {
+            std::stringstream ss(
+                std::ios::in | std::ios::out | std::ios::binary);
+            m.serialize(ss);
+            buffer = ss.str();
+        }
+
+        std::stringstream ss(std::ios::in | std::ios::out | std::ios::binary);
+        Mesh              dst;
+
+        s.run(
+            [&]() {
+                ss.str(buffer);
+                ss.clear();
+                ss.seekg(0);
+                dst.clear();
+            },
+            [&]() {
+                dst.deserialize(ss);
+                return dst.vertexCount();
+            });
+    });
