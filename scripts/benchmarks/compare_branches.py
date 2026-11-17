@@ -100,7 +100,7 @@ def prepare_worktree(ref: str) -> Path:
     path = WORKTREES_DIR / safe_name(ref)
 
     if (path / ".git").exists():
-        git("checkout", "--detach", commit, cwd=path, capture=False)
+        git("checkout", "--detach", "-f", commit, cwd=path, capture=False)
     else:
         WORKTREES_DIR.mkdir(parents=True, exist_ok=True)
         try:
