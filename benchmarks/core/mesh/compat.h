@@ -91,8 +91,8 @@ void buildGridMesh(Mesh& m, vcl::uint rows, vcl::uint cols)
 }
 
 template<typename Mesh>
-using MeshPosition =
-    std::remove_cvref_t<decltype(std::declval<const Mesh&>().vertex(0).position())>;
+using MeshPosition = std::remove_cvref_t<
+    decltype(std::declval<const Mesh&>().vertex(0).position())>;
 
 template<typename F>
 inline bool isFaceValid(const F& f)

@@ -9,47 +9,53 @@
 
 #include <vclib/mesh/views.h>
 
-BENCH("mesh/views_stream/raw_indices", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
-    s.run([&]() {
-        bench::MeshPosition<Mesh> sum;
-        sum.setZero();
-        const std::size_t n = m.vertexContainerSize();
-        for (std::size_t i = 0; i < n; ++i) {
-            sum += m.vertex(i).position();
-        }
-        return sum;
-    });
-});
-
-BENCH("mesh/views_stream/element_proxies", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
-    s.run([&]() {
-        bench::MeshPosition<Mesh> sum;
-        sum.setZero();
-        for (const auto& v : m.vertices()) {
-            sum += v.position();
-        }
-        return sum;
-    });
-});
-
-BENCH("mesh/views_stream/component_view", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m = s.mesh();
-    if constexpr (requires { m.vertices().positions(); }) {
+BENCH(
+    "mesh/views_stream/raw_indices",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
         s.run([&]() {
             bench::MeshPosition<Mesh> sum;
             sum.setZero();
-            for (const auto& p : m.vertices().positions()) {
-                sum += p;
+            const std::size_t n = m.vertexContainerSize();
+            for (std::size_t i = 0; i < n; ++i) {
+                sum += m.vertex(i).position();
             }
             return sum;
         });
-    }
-    else {
-        s.skip("component_view not available on legacy AoS mesh");
-    }
-});
+    });
+
+BENCH(
+    "mesh/views_stream/element_proxies",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
+        s.run([&]() {
+            bench::MeshPosition<Mesh> sum;
+            sum.setZero();
+            for (const auto& v : m.vertices()) {
+                sum += v.position();
+            }
+            return sum;
+        });
+    });
+
+BENCH(
+    "mesh/views_stream/component_view",
+    []<typename Mesh>(bench::State<Mesh>& s) {
+        const Mesh& m = s.mesh();
+        if constexpr (requires { m.vertices().positions(); }) {
+            s.run([&]() {
+                bench::MeshPosition<Mesh> sum;
+                sum.setZero();
+                for (const auto& p : m.vertices().positions()) {
+                    sum += p;
+                }
+                return sum;
+            });
+        }
+        else {
+            s.skip("component_view not available on legacy AoS mesh");
+        }
+    });
 
 BENCH("mesh/views_stream/pipe_views", []<typename Mesh>(bench::State<Mesh>& s) {
     const Mesh& m = s.mesh();

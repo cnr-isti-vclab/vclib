@@ -144,7 +144,8 @@ BENCH("stat/topology/face_flooding", []<typename Mesh>(bench::State<Mesh>& s) {
                     const vcl::uint nAdj = bench::getAdjFaceCount(curr);
                     for (vcl::uint i = 0; i < nAdj; ++i) {
                         auto adj = bench::getAdjFace(curr, i);
-                        if (bench::isFaceValid(adj) && !bench::isFaceVisited(adj)) {
+                        if (bench::isFaceValid(adj) &&
+                            !bench::isFaceVisited(adj)) {
                             bench::setFaceVisited(adj, true);
                             stack.push_back(adj);
                         }
