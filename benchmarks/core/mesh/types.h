@@ -8,7 +8,7 @@
 #ifndef BENCH_TYPES_H
 #define BENCH_TYPES_H
 
-#include <vclib/meshes/tri_mesh.h>
+#include <vclib/meshes.h>
 
 #include <string_view>
 #include <type_traits>

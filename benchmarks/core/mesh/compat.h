@@ -16,6 +16,7 @@
 #include "types.h"
 
 #include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
 
 namespace bench {
 
@@ -52,10 +53,7 @@ void enableQualityComponents(Mesh& m)
 template<typename Mesh>
 void enableCurvatureComponents(Mesh& m)
 {
-    if constexpr (requires { m.enablePerVertexPrincipalCurvature(); }) {
-        m.enablePerVertexPrincipalCurvature();
-    }
-    else if constexpr (requires { m.enableVertexPrincipalCurvature(); }) {
+    if constexpr (vcl::HasVertexOptionalPrincipalCurvature<Mesh>) {
         m.enableVertexPrincipalCurvature();
     }
 }
@@ -80,7 +78,10 @@ void initQuality(Mesh& m)
 template<typename Mesh>
 bool hasWedgeTexCoords(const Mesh& m)
 {
-    return m.template isFaceComponentAvailable<vcl::CompId::WEDGE_TEX_COORDS>();
+    if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
+        return m.template isFaceComponentAvailable<vcl::CompId::WEDGE_TEX_COORDS>();
+    }
+    return false;
 }
 
 /**
