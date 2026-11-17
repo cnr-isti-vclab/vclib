@@ -37,6 +37,8 @@ class InfoEditorBGFX : public Editor<ViewerDrawer>
 {
     using Base = Editor<ViewerDrawer>;
 
+    static constexpr uint ELEMENT_ID_READ_RADIUS = 3;
+
     ushort mLastObjectId    = USHORT_NULL;
     ushort mLastElementType = USHORT_NULL;
     uint   mLastElementId   = 0;
@@ -294,7 +296,8 @@ public:
                 Base::viewerUpdate();
             };
 
-            Base::viewerReadElementIdRequest(x, y, callback, 3);
+            Base::viewerReadElementIdRequest(
+                x, y, callback, ELEMENT_ID_READ_RADIUS);
         }
         return block;
     }
