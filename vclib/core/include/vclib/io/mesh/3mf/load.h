@@ -435,14 +435,14 @@ void readMeshObject(
 
     read3mfVertices(newMesh, vertices);
     newInfos.setVertices();
-    newInfos.setPerVertexPosition();
+    newInfos.setVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         read3mfTriangles(newMesh, triangles);
 
         newInfos.setTriangleMesh();
         newInfos.setFaces();
-        newInfos.setPerFaceVertexReferences();
+        newInfos.setFaceVertexReferences();
     }
 
     if constexpr (HasTransformMatrix<MeshType>) {
@@ -486,11 +486,11 @@ void readMeshObject(
         }
 
         if (infoFlags.faceColorsFlag)
-            newInfos.setPerFaceColor();
+            newInfos.setFaceColor();
         if (infoFlags.faceTexCoordsFlag) {
             newInfos.setMaterials();
-            newInfos.setPerFaceMaterialIndex();
-            newInfos.setPerFaceWedgeTexCoords();
+            newInfos.setFaceMaterialIndex();
+            newInfos.setFaceWedgeTexCoords();
         }
     }
 

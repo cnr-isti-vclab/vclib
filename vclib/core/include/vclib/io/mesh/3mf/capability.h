@@ -29,15 +29,15 @@ inline MeshInfo _3mfFormatCapability()
     info.setVertices();
     info.setFaces();
 
-    info.setPerVertexPosition();
+    info.setVertexPosition();
 
-    info.setPerFaceVertexReferences();
+    info.setFaceVertexReferences();
 
-    info.setPerFaceColor();
+    info.setFaceColor();
 
-    info.setPerFaceMaterialIndex();
+    info.setFaceMaterialIndex();
 
-    info.setPerFaceWedgeTexCoords();
+    info.setFaceWedgeTexCoords();
 
     info.setMaterials();
 
