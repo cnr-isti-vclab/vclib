@@ -240,8 +240,8 @@ public:
      * the iterators begin and end, listed in counterclockwise order,
      * representing a polygon.
      *
-     * The normal is computed as the normalized sum of the cross products of
-     * each triplet of consecutive points.
+     * The normal is computed using Newell's method in a single forward pass over
+     * the polygon boundary, minimizing iterator dereferences and copies.
      *
      * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
@@ -254,22 +254,31 @@ public:
         std::is_same_v<typename Iterator::value_type, PointT> &&
         PointT::DIM == 3)
     {
-        // compute the sum of normals for each triplet of consecutive points
+        if (begin == end) {
+            return PointT::Zero();
+        }
+
         PointT sum;
         sum.setZero();
-        for (auto i = begin; i != end; ++i) {
-            auto i1 = i;
-            ++i1;
-            if (i1 == end)
-                i1 = begin;
 
-            auto i2 = i1;
-            ++i2;
-            if (i2 == end)
-                i2 = begin;
+        const auto first = *begin;
+        auto       prev  = first;
+        auto       it    = begin;
+        ++it;
 
-            sum += (*i1 - *i).cross(*i2 - *i);
+        for (; it != end; ++it) {
+            const auto curr = *it;
+            sum[0] += (prev[1] - curr[1]) * (prev[2] + curr[2]);
+            sum[1] += (prev[2] - curr[2]) * (prev[0] + curr[0]);
+            sum[2] += (prev[0] - curr[0]) * (prev[1] + curr[1]);
+            prev = curr;
         }
+
+        // Close the loop from last to first point
+        sum[0] += (prev[1] - first[1]) * (prev[2] + first[2]);
+        sum[1] += (prev[2] - first[2]) * (prev[0] + first[0]);
+        sum[2] += (prev[0] - first[0]) * (prev[1] + first[1]);
+
         sum.normalize();
         return sum;
     }

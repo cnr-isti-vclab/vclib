@@ -19,16 +19,18 @@ namespace detail {
 template<ElemId ELEM_ID, LoggerConcept LogType = NullLogger>
 void normalizeNoThrow(auto elem, LogType& log = nullLogger)
 {
-    try {
-        elem.normal().normalize();
+    using PointType = std::remove_cvref_t<decltype(elem.normal())>;
+    using Scalar    = typename PointType::Scalar;
+    const Scalar sqrNorm = elem.normal().squaredNorm();
+    if (sqrNorm > Scalar(0)) [[likely]] {
+        elem.normal() /= std::sqrt(sqrNorm);
     }
-    catch (const std::exception& e) {
+    else [[unlikely]] {
         log.log(
             log.WARNING_LOG,
-            "{} {} : {}",
+            "{} {} : normal is zero",
             elementEnumString<ELEM_ID>(),
-            elem.index(),
-            e.what());
+            elem.index());
     }
 }
 
@@ -203,10 +205,10 @@ void clearReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
         using Elem = Cont::ElementType; // the Element type of Cont
         if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto e : mesh.template elements<Elem::ELEMENT_ID>()) {
-                for (auto v : e.vertices()) {
+                for (auto vi : e.vertexIndices()) {
                     // normal().setZero() does not compile on gcc (Release) with
                     // Eigen 5.0.1
-                    v.normal() = {0., 0., 0.};
+                    mesh.vertex(vi).normal() = {0., 0., 0.};
                 }
             }
         }
@@ -268,8 +270,8 @@ void normalizeReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
         using Elem = Cont::ElementType; // the Element type of Cont
         if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto e : mesh.template elements<Elem::ELEMENT_ID>()) {
-                for (auto v : e.vertices()) {
-                    detail::normalizeNoThrow<ElemId::VERTEX>(v, log);
+                for (auto vi : e.vertexIndices()) {
+                    detail::normalizeNoThrow<ElemId::VERTEX>(mesh.vertex(vi), log);
                 }
             }
         }
@@ -407,8 +409,9 @@ void updateVertexNormals(
     log.log(20, "Updating per-Vertex normals...");
 
     for (auto f : mesh.faces()) {
-        for (auto v : f.vertices()) {
-            v.normal() += faceNormal(f).template cast<NScalar>();
+        const auto fn = faceNormal(f).template cast<NScalar>();
+        for (auto vi : f.vertexIndices()) {
+            mesh.vertex(vi).normal() += fn;
         }
     }
 
@@ -458,8 +461,9 @@ void updateVertexNormalsFromFaceNormals(
     log.log(20, "Updating per-Vertex normals...");
 
     for (auto f : mesh.faces()) {
-        for (auto v : f.vertices()) {
-            v.normal() += f.normal().template cast<ScalarType>();
+        const auto fn = f.normal().template cast<ScalarType>();
+        for (auto vi : f.vertexIndices()) {
+            mesh.vertex(vi).normal() += fn;
         }
     }
 
