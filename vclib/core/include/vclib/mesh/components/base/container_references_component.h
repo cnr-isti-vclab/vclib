@@ -9,6 +9,7 @@
 #define VCL_MESH_COMPONENTS_BASE_CONTAINER_REFERENCES_COMPONENT_H
 
 #include "container_component.h"
+#include "ref_elements_view.h"
 #include "reference_vector.h"
 
 #include <vclib/mesh/elements/base/base.h>
@@ -547,9 +548,10 @@ protected:
     static decltype(auto) refElements(auto&& self)
     {
         auto& m = self.parentContainer().parentMesh();
-        return Base::container(self) | std::views::transform([&m](auto idx) {
-                   return m.template element<REF_ELEM_ID>(idx);
-               });
+        using MeshT = std::remove_reference_t<decltype(m)>;
+        using ContT = std::remove_reference_t<decltype(Base::container(self))>;
+        return RefElementsView<MeshT, ContT, REF_ELEM_ID>(
+            m, Base::container(self));
     }
 };
 
