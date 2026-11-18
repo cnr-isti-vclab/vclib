@@ -57,7 +57,17 @@ CMAKE_DEFINES = {
     "VCLIB_COMPILE_WARNINGS_AS_ERRORS": "OFF",
 }
 if sys.platform == "win32":
-    CMAKE_DEFINES["CMAKE_CXX_FLAGS"] = "/EHsc"
+    # /EHsc is an MSVC-specific flag. Do not pass it if compiling with GCC/MinGW or Clang++.
+    cxx_is_gnu = any(
+        tool in os.environ.get("CXX", "").lower() for tool in ("g++", "gcc", "clang++")
+    ) or (not shutil.which("cl") and shutil.which("g++"))
+    if not cxx_is_gnu:
+        CMAKE_DEFINES["CMAKE_CXX_FLAGS"] = "/EHsc"
+    else:
+        # MinGW GCC implements C++23 <print> (std::print, std::println) terminal routines in libstdc++exp.a
+        CMAKE_DEFINES["CMAKE_CXX_STANDARD_LIBRARIES"] = (
+            "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lstdc++exp"
+        )
 
 
 def run(cmd, cwd=None, capture=False):
