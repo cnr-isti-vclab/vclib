@@ -35,11 +35,11 @@ inline vcl::DrawableMesh<MeshType> getDrawableMesh(
     log.log("Loaded mesh in {:.3f} seconds.", log.time());
 
     if constexpr (vcl::FaceMeshConcept<MeshType>) {
-        if (!info.hasPerFaceNormal()) {
-            vcl::updatePerFaceNormals(m);
+        if (!info.hasFaceNormal()) {
+            vcl::updateFaceNormals(m);
         }
-        if (!info.hasPerVertexNormal()) {
-            vcl::updatePerVertexNormalsFromFaceNormals(m);
+        if (!info.hasVertexNormal()) {
+            vcl::updateVertexNormalsFromFaceNormals(m);
         }
     }
 

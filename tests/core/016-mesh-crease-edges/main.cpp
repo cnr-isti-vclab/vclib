@@ -28,7 +28,7 @@ TEMPLATE_TEST_CASE(
     TriMesh cylinder = vcl::createCylinder<TriMesh>(1, 1, 36);
     cylinder.enablePerFaceAdjacentFaces();
 
-    vcl::updatePerFaceAdjacentFaces(cylinder);
+    vcl::updateFaceAdjacentFaces(cylinder);
 
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));

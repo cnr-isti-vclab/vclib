@@ -26,6 +26,8 @@ class BoundingBoxEditorBGFX : public Editor<ViewerDrawer>
 
     BoundingBoxEditorSettings mSettings;
 
+    bool mDirty = true; // Indicates whether GPU box buffers need updating
+
 public:
     BoundingBoxEditorBGFX() = default;
 
@@ -59,17 +61,55 @@ public:
     void setActive(bool active) override
     {
         Base::setActive(active);
+        // Lazily allocate/synchronize box buffers only when activated
+        if (active && mDirty) {
+            updateBoxes();
+        }
         Base::viewerUpdate();
     }
 
     void refresh() override
     {
-        mBoxes.clear();
+        // When inactive, release GPU buffers immediately and defer updates
+        if (!Base::isActive()) {
+            mBoxes.clear();
+            mDirty = true;
+            return;
+        }
+
+        updateBoxes();
+    }
+
+    void updateBoxes()
+    {
+        const uint currentSize = mBoxes.size();
+        const uint targetSize  = Base::drawList()->size();
+
+        // 1. Shrink if objects were removed
+        if (currentSize > targetSize) {
+            mBoxes.resize(targetSize);
+        }
 
         Color c         = mSettings.color;
         float thickness = mSettings.thickness;
 
-        for (const auto& drawable : *Base::drawList()) {
+        // 2. Incremental update for existing objects (avoids GPU buffer churn
+        // if unchanged)
+        const uint commonCount = std::min(currentSize, targetSize);
+        for (uint i = 0; i < commonCount; ++i) {
+            const auto&                 drawable = Base::drawList()->at(i);
+            const AbstractDrawableMesh* m =
+                dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
+            Box3d targetBox = m ? m->meshProvider().boundingBox() : Box3d();
+            if (mBoxes[i].boundingBox() != targetBox) {
+                mBoxes[i].setBox(targetBox);
+            }
+        }
+
+        // 3. Append bounding boxes for newly added objects
+        mBoxes.reserve(targetSize);
+        for (uint i = commonCount; i < targetSize; ++i) {
+            const auto&                 drawable = Base::drawList()->at(i);
             const AbstractDrawableMesh* m =
                 dynamic_cast<const AbstractDrawableMesh*>(drawable.get());
             if (m) {
@@ -77,9 +117,11 @@ public:
                     m->meshProvider().boundingBox(), c, thickness));
             }
             else {
-                mBoxes.push_back(DrawableBox3(Box3f()));
+                mBoxes.push_back(DrawableBox3(Box3f(), c, thickness));
             }
         }
+
+        mDirty = false;
         Base::viewerUpdate();
     }
 
@@ -97,6 +139,11 @@ public:
 
     void drawContent(uint viewId) override
     {
+        // Ensure box buffers are synchronized before drawing
+        if (mDirty) {
+            updateBoxes();
+        }
+
         using enum EditorSettings::EditMode;
 
         DrawObjectSettings settings;

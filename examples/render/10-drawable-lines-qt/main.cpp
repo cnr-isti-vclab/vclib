@@ -33,7 +33,7 @@ std::shared_ptr<vcl::DrawableLines> getDrawableLines(
         // load bunny and use its vertices as points
         auto m = vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                              "/bunny_simplified.obj");
-        vcl::updatePerVertexAndFaceNormals(m);
+        vcl::updateVertexAndFaceNormals(m);
 
         if (topo == vcl::Lines::Topology::VECTORS) {
             std::vector<vcl::Point3d> pts;

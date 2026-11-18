@@ -253,14 +253,14 @@ void readMeshObject(
 
     read3mfVertices(newMesh, vertices);
     newInfos.setVertices();
-    newInfos.setPerVertexPosition();
+    newInfos.setVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         read3mfTriangles(newMesh, triangles);
 
         newInfos.setTriangleMesh();
         newInfos.setFaces();
-        newInfos.setPerFaceVertexReferences();
+        newInfos.setFaceVertexReferences();
     }
 
     if constexpr (HasTransformMatrix<MeshType>) {
@@ -304,7 +304,7 @@ void readMeshObject(
         }
 
         if (faceColorFlag)
-            newInfos.setPerFaceColor();
+            newInfos.setFaceColor();
     }
 
     m.push_back(std::move(newMesh));

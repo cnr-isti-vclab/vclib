@@ -18,7 +18,7 @@ int main(int argc, char** argv)
             auto meshes = load3mfMeshes();
 
             for (auto& mesh : meshes) {
-                vcl::updatePerVertexAndFaceNormals(mesh);
+                vcl::updateVertexAndFaceNormals(mesh);
             }
 
             return vcl::showOnMeshViewer(argc, argv, std::move(meshes));
@@ -26,9 +26,9 @@ int main(int argc, char** argv)
         else {
             auto [mesh0, mesh1, mesh2] = load3mf();
 
-            vcl::updatePerVertexAndFaceNormals(mesh0);
-            vcl::updatePerVertexAndFaceNormals(mesh1);
-            vcl::updatePerVertexAndFaceNormals(mesh2);
+            vcl::updateVertexAndFaceNormals(mesh0);
+            vcl::updateVertexAndFaceNormals(mesh1);
+            vcl::updateVertexAndFaceNormals(mesh2);
 
             return vcl::showOnMeshViewer(
                 argc,

@@ -29,11 +29,11 @@ inline MeshInfo _3mfFormatCapability()
     info.setVertices();
     info.setFaces();
 
-    info.setPerVertexPosition();
+    info.setVertexPosition();
 
-    info.setPerFaceVertexReferences();
+    info.setFaceVertexReferences();
 
-    info.setPerFaceColor();
+    info.setFaceColor();
 
     // TODO: add other informations
 

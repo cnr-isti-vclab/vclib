@@ -120,8 +120,8 @@ if __name__ == "__main__":
     save_info = vcl.MeshInfo()
     save_info.set_vertices()
     save_info.set_faces()
-    save_info.set_per_vertex_position(True, vcl.MeshInfo.FLOAT)
-    save_info.set_per_face_vertex_references()
+    save_info.set_vertex_position(True, vcl.MeshInfo.FLOAT)
+    save_info.set_face_vertex_references()
     
     print("\n=== Saving Meshes ===")
     

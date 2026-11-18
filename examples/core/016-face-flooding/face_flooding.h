@@ -17,7 +17,7 @@
 // to find all connected faces that satisfy the selection condition, using a
 // depth-first search approach.
 
-auto faceFlooding()
+inline auto faceFlooding()
 {
     std::cout << "=== VCLib Example 016: Face Flooding ===\n\n";
 
@@ -30,12 +30,12 @@ auto faceFlooding()
     m.enablePerFaceColor();
 
     // Update topology and normals
-    vcl::updatePerFaceAdjacentFaces(m);
-    vcl::updatePerVertexAndFaceNormals(m);
+    vcl::updateFaceAdjacentFaces(m);
+    vcl::updateVertexAndFaceNormals(m);
     vcl::updateBoundingBox(m);
 
     // Initialize face colors
-    vcl::setPerFaceColor(m, vcl::Color::LightGray);
+    vcl::setFaceColor(m, vcl::Color::LightGray);
 
     std::cout << "Mesh loaded: " << m.faceCount() << " faces\n";
 
