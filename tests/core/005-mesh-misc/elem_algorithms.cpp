@@ -33,6 +33,40 @@ TEST_CASE("Elem Algorithms - Ear Cut Concepts")
     static_assert(!FaceConcept<SimplePolyMesh::ConstVertex>);
 }
 
+TEST_CASE("Elem Algorithms - Polygon Normal")
+{
+    const Point3d expectedZ(0.0, 0.0, 1.0);
+
+    const std::vector<Point3d> triangle = {
+        Point3d(0.0, 0.0, 0.0),
+        Point3d(2.0, 0.0, 0.0),
+        Point3d(0.0, 1.0, 0.0),
+    };
+    REQUIRE(Polygon3d::normal(triangle).isApprox(expectedZ, 1e-12));
+
+    const std::vector<Point3d> quad = {
+        Point3d(0.0, 0.0, 0.0),
+        Point3d(2.0, 0.0, 0.0),
+        Point3d(2.0, 1.0, 1.0),
+        Point3d(0.0, 1.0, 1.0),
+    };
+    const Point3d quadNormal =
+        ((quad[2] - quad[0]).cross(quad[3] - quad[1])).normalized();
+    REQUIRE(Polygon3d::normal(quad).isApprox(quadNormal, 1e-12));
+
+    const std::vector<Point3d> pentagon = {
+        Point3d(0.0, 0.0, 0.0),
+        Point3d(2.0, 0.0, 0.0),
+        Point3d(2.0, 1.0, 0.0),
+        Point3d(1.0, 2.0, 0.0),
+        Point3d(0.0, 1.0, 0.0),
+    };
+    REQUIRE(Polygon3d::normal(pentagon).isApprox(expectedZ, 1e-12));
+
+    REQUIRE(Polygon3d::normal(std::vector<Point3d> {}).isApprox(
+        Point3d::Zero(), 1e-12));
+}
+
 TEST_CASE("Elem Algorithms - Ear Cut Quad")
 {
     SimplePolyMesh poly;

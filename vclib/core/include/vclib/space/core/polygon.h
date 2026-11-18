@@ -240,8 +240,8 @@ public:
      * the iterators begin and end, listed in counterclockwise order,
      * representing a polygon.
      *
-     * The normal is computed using Newell's method in a single forward pass over
-     * the polygon boundary, minimizing iterator dereferences and copies.
+     * Triangles and quads use their direct, short formulas. Larger polygons use
+     * Newell's method in a single forward pass over the polygon boundary.
      *
      * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
@@ -258,26 +258,58 @@ public:
             return PointT::Zero();
         }
 
-        PointT sum;
-        sum.setZero();
-
         const auto first = *begin;
         auto       prev  = first;
         auto       it    = begin;
         ++it;
 
+        if (it == end) {
+            return PointT::Zero();
+        }
+
+        const auto second = *it;
+        ++it;
+        if (it == end) {
+            return PointT::Zero();
+        }
+
+        const auto third = *it;
+        ++it;
+        if (it == end) {
+            PointT normal = (second - first).cross(third - first);
+            normal.normalize();
+            return normal;
+        }
+
+        const auto fourth = *it;
+        ++it;
+        if (it == end) {
+            PointT normal = (third - first).cross(fourth - second);
+            normal.normalize();
+            return normal;
+        }
+
+        PointT sum;
+        sum.setZero();
+
+        const auto addNewellEdge = [&sum](const PointT& a, const PointT& b) {
+            sum[0] += (a[1] - b[1]) * (a[2] + b[2]);
+            sum[1] += (a[2] - b[2]) * (a[0] + b[0]);
+            sum[2] += (a[0] - b[0]) * (a[1] + b[1]);
+        };
+
+        addNewellEdge(first, second);
+        addNewellEdge(second, third);
+        addNewellEdge(third, fourth);
+
+        prev = fourth;
         for (; it != end; ++it) {
             const auto curr = *it;
-            sum[0] += (prev[1] - curr[1]) * (prev[2] + curr[2]);
-            sum[1] += (prev[2] - curr[2]) * (prev[0] + curr[0]);
-            sum[2] += (prev[0] - curr[0]) * (prev[1] + curr[1]);
+            addNewellEdge(prev, curr);
             prev = curr;
         }
 
-        // Close the loop from last to first point
-        sum[0] += (prev[1] - first[1]) * (prev[2] + first[2]);
-        sum[1] += (prev[2] - first[2]) * (prev[0] + first[0]);
-        sum[2] += (prev[0] - first[0]) * (prev[1] + first[1]);
+        addNewellEdge(prev, first);
 
         sum.normalize();
         return sum;
