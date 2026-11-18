@@ -104,6 +104,7 @@ int Application::exec() {
         for (auto it = mWindows.begin(); it != mWindows.end(); ) {
             WindowManagerBase* win = *it;
             if (win->shouldClose()) {
+                win->destroyWindow();
                 it = mWindows.erase(it);
             } else {
                 ++it;

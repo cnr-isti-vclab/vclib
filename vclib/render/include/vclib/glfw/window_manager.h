@@ -41,6 +41,7 @@ class WindowManager : public WindowManagerBase
     Point2d mLastPressedPos    = {0, 0};
 
 protected:
+    // the actual GLFW window handle and content scaling factors
     GLFWwindow* mWindow = nullptr;
     float       mScaleX = 1.0f; // content scaling
     float       mScaleY = 1.0f;
@@ -217,6 +218,15 @@ public:
 
     GLFWwindow* glfwWindow() const override {
         return mWindow;
+    }
+
+    void destroyWindow() override
+    {
+        if (mWindow) {
+            // the render resources must be released while the window is valid
+            DerivedRenderApp::WM::close(derived());
+            cleanup();
+        }
     }
 
     // WindowManagerBase GLFW callback interface implementation

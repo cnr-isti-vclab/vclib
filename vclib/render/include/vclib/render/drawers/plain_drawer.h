@@ -35,6 +35,9 @@ public:
 
     virtual void onPostDraw() {}
 
+    // called when the window is closed: release the resources bound to it
+    virtual void onClose() {}
+
 protected:
     auto* derived() { return static_cast<DRA*>(this); }
 

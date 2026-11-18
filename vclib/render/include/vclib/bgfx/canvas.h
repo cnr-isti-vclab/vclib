@@ -79,19 +79,7 @@ public:
         onResize(width, height);
     }
 
-    ~CanvasBGFX()
-    {
-        // deallocate the framebuffers
-        if (bgfx::isValid(mFbh))
-            bgfx::destroy(mFbh);
-        if (Context::instance().isValidViewId(mOffscreenViewId))
-            Context::instance().releaseViewId(mOffscreenViewId);
-
-        // release the view id
-        auto& ctx = Context::instance();
-        if (ctx.isValidViewId(mViewId))
-            ctx.releaseViewId(mViewId);
-    }
+    ~CanvasBGFX() { releaseResources(); }
 
     Point2<uint> size() const { return mSize; }
 
@@ -146,6 +134,20 @@ public:
      * class.
      */
     void onInit() {}
+
+    /**
+     * @brief Automatically called by the DerivedRenderApp when the window is
+     * closed, before the native window is destroyed. It releases all the bgfx
+     * resources bound to the window. The canvas is left empty.
+     */
+    void onClose()
+    {
+        if (bgfx::isValid(mFbh) || Context::instance().isValidViewId(mViewId)) {
+            releaseResources();
+            // process the deferred destruction of the resources
+            bgfx::frame();
+        }
+    }
 
     /**
      * @brief Automatically called by the DerivedRenderApp when the window
@@ -427,6 +429,25 @@ private:
     const auto* derived() const
     {
         return static_cast<const DerivedRenderApp*>(this);
+    }
+
+private:
+    void releaseResources()
+    {
+        mReadRequest = std::nullopt;
+
+        if (bgfx::isValid(mFbh))
+            bgfx::destroy(mFbh);
+        mFbh = BGFX_INVALID_HANDLE;
+
+        auto& ctx = Context::instance();
+        if (ctx.isValidViewId(mOffscreenViewId))
+            ctx.releaseViewId(mOffscreenViewId);
+        mOffscreenViewId = BGFX_INVALID_VIEW;
+
+        if (ctx.isValidViewId(mViewId))
+            ctx.releaseViewId(mViewId);
+        mViewId = BGFX_INVALID_VIEW;
     }
 };
 

@@ -30,6 +30,8 @@ public:
         mTextView.init(width, height);
     }
 
+    void onClose() override final { mTextView.enableText(false); }
+
     void onResize(uint width, uint height) override final
     {
         mTextView.resize(width, height);

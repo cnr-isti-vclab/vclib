@@ -149,6 +149,13 @@ public:
     }
 
     /**
+     * @brief Automatically called by the DerivedRenderApp when the window is
+     * closed, before the native window is destroyed. The canvas does not own
+     * any OpenGL resource, therefore there is nothing to release.
+     */
+    void onClose() {}
+
+    /**
      * @brief Automatically called by the DerivedRenderApp when the window
      * is resized.
      * @param width

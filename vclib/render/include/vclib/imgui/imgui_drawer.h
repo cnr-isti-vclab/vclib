@@ -36,6 +36,8 @@ class ImGuiDrawer : public BlockerEventDrawer<DerivedRenderApp>
     bgfx::ViewId mImguiViewId = BGFX_INVALID_VIEW;
 #endif
 
+    bool mInitialized = false;
+
 protected:
     using DRA = DerivedRenderApp;
 
@@ -55,34 +57,17 @@ public:
 
     ImGuiDrawer(uint, uint) : ImGuiDrawer() {}
 
-    ~ImGuiDrawer()
-    {
-        // cleanup
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-        ImGui_ImplOpenGL2_Shutdown();
-#elif defined(VCLIB_RENDER_BACKEND_BGFX)
-        ImGui_ImplBgfx_Shutdown();
-        vcl::Context::instance().releaseViewId(mImguiViewId);
-        mImguiViewId = BGFX_INVALID_VIEW;
-#endif // VCLIB_RENDER_BACKEND_*
-#ifdef VCLIB_WITH_GLFW
-        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::GLFW_WINDOW) {
-            ImGui_ImplGlfw_Shutdown();
-        }
-#endif // VCLIB_WITH_GLFW
-#ifdef VCLIB_WITH_QT
-        if constexpr (DRA::WINDOW_MANAGER_ID == WindowManagerId::QT_WIDGET) {
-            ImGui_ImplQt_Shutdown();
-        }
-#endif // VCLIB_WITH
-        ImGui::DestroyContext();
-    }
+    ~ImGuiDrawer() { release(); }
+
+    // releases the imgui backends and context bound to the window
+    virtual void onClose() { release(); }
 
     virtual void onInit(uint)
     {
         // setup ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
+        mInitialized = true;
         ImGuiIO& io = ImGui::GetIO();
         // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -224,6 +209,38 @@ private:
     auto* derived() { return static_cast<DRA*>(this); }
 
     const auto* derived() const { return static_cast<const DRA*>(this); }
+
+    // idempotent: leaves the drawer empty
+    void release()
+    {
+        if (mInitialized) {
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
+            ImGui_ImplOpenGL2_Shutdown();
+#elif defined(VCLIB_RENDER_BACKEND_BGFX)
+            ImGui_ImplBgfx_Shutdown();
+#endif // VCLIB_RENDER_BACKEND_*
+#ifdef VCLIB_WITH_GLFW
+            if constexpr (DRA::WINDOW_MANAGER_ID ==
+                          WindowManagerId::GLFW_WINDOW) {
+                ImGui_ImplGlfw_Shutdown();
+            }
+#endif // VCLIB_WITH_GLFW
+#ifdef VCLIB_WITH_QT
+            if constexpr (DRA::WINDOW_MANAGER_ID ==
+                          WindowManagerId::QT_WIDGET) {
+                ImGui_ImplQt_Shutdown();
+            }
+#endif // VCLIB_WITH_QT
+            ImGui::DestroyContext();
+            mInitialized = false;
+        }
+#ifdef VCLIB_RENDER_BACKEND_BGFX
+        if (vcl::Context::instance().isValidViewId(mImguiViewId)) {
+            vcl::Context::instance().releaseViewId(mImguiViewId);
+        }
+        mImguiViewId = BGFX_INVALID_VIEW;
+#endif
+    }
 
     bool wantCapture(bool mouse = true)
     {

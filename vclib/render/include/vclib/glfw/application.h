@@ -25,6 +25,9 @@ public:
     virtual bool shouldClose() const = 0;
     virtual GLFWwindow* glfwWindow() const = 0;
 
+    // releases all the resources bound to the window and destroys it
+    virtual void destroyWindow() = 0;
+
     // GLFW callback handling methods (to be called by Application)
     virtual void onGlfwFramebufferSize(int width, int height) = 0;
     virtual void onGlfwContentScale(float xscale, float yscale) = 0;

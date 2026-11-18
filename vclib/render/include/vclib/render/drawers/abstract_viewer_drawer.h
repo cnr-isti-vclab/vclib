@@ -529,6 +529,14 @@ public:
         mDrawList->init();
     }
 
+    void onClose() override
+    {
+        // drop the editors and our reference to the drawable objects, so that
+        // their resources are released (if they are not shared elsewhere)
+        mEditors.clear();
+        mDrawList = std::make_shared<DrawableObjectVector>();
+    }
+
     void onDrawContent(uint viewId) override
     {
         Base::onDrawContent(viewId);

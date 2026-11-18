@@ -178,6 +178,27 @@ private:
 
     void wmPaint() { CanvasType::onPaint(); }
 
+    void wmClose()
+    {
+        // release the resources of the drawers (in reverse order of
+        // initialization), then the ones of the canvas
+        closeDrawers<Drawers...>();
+        if constexpr (requires(CanvasType& c) { c.onClose(); }) {
+            CanvasType::onClose();
+        }
+    }
+
+    template<template<typename> typename D, template<typename> typename... Others>
+    void closeDrawers()
+    {
+        if constexpr (sizeof...(Others) > 0) {
+            closeDrawers<Others...>();
+        }
+        if constexpr (requires(D<RenderApp>& d) { d.onClose(); }) {
+            static_cast<D<RenderApp>*>(this)->onClose();
+        }
+    }
+
     void wmSetModifiers(const KeyModifiers& modifiers)
     {
         mKeyModifiers = modifiers;
@@ -425,6 +446,16 @@ class RenderApp<WindowManagerT, CanvasT, Drawers...>::WM
      * triggers a paint event.
      */
     static void paint(RenderApp* r) { r->wmPaint(); }
+
+    /**
+     * @brief The WindowManagerType calls this member function right before the
+     * window is destroyed. The RenderApp propagates the close event to each
+     * Drawer object (in reverse order) and to the CanvasType, by calling their
+     * optional `onClose()` member function, that must release all the
+     * resources bound to the window. It must be called while the native window
+     * is still valid.
+     */
+    static void close(RenderApp* r) { r->wmClose(); }
 
     /**
      * @brief The WindowManagerType calls this member function when the current
