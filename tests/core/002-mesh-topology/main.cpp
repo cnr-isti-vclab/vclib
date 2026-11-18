@@ -97,7 +97,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Faces")
     {
         tm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(tm);
+        vcl::updateVertexAdjacentFaces(tm);
 
         REQUIRE(tm.vertex(0).adjFaceCount() == 3);
         REQUIRE(tm.vertex(0).adjFace(0) == &tm.face(0));
@@ -155,7 +155,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Vertices")
     {
         tm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(tm);
+        vcl::updateVertexAdjacentVertices(tm);
 
         REQUIRE(tm.vertex(0).adjVertexCount() == 3);
         REQUIRE(tm.vertex(0).adjVertex(0) == &tm.vertex(1));
@@ -213,7 +213,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Face Adjacent Faces")
     {
         tm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(tm);
+        vcl::updateFaceAdjacentFaces(tm);
 
         REQUIRE(tm.face(0).adjFaceCount() == 3);
         REQUIRE(tm.face(0).adjFace(0) == &tm.face(1));
@@ -360,7 +360,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Faces")
     {
         pm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(pm);
+        vcl::updateVertexAdjacentFaces(pm);
 
         REQUIRE(pm.vertex(0).adjFaceCount() == 3);
         REQUIRE(pm.vertex(0).adjFace(0) == &pm.face(0));
@@ -418,7 +418,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Vertices")
     {
         pm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(pm);
+        vcl::updateVertexAdjacentVertices(pm);
 
         REQUIRE(pm.vertex(0).adjVertexCount() == 3);
         REQUIRE(pm.vertex(0).adjVertex(0) == &pm.vertex(1));
@@ -476,7 +476,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Face Adjacent Faces")
     {
         pm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(pm);
+        vcl::updateFaceAdjacentFaces(pm);
 
         REQUIRE(pm.face(0).adjFaceCount() == 3);
         REQUIRE(pm.face(0).adjFace(0) == &pm.face(1));
@@ -601,7 +601,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Faces")
     {
         pm.enablePerVertexAdjacentFaces();
-        vcl::updatePerVertexAdjacentFaces(pm);
+        vcl::updateVertexAdjacentFaces(pm);
 
         REQUIRE(pm.vertex(0).adjFaceCount() == 3);
         REQUIRE(pm.vertex(0).adjFace(0) == &pm.face(0));
@@ -647,7 +647,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Vertices")
     {
         pm.enablePerVertexAdjacentVertices();
-        vcl::updatePerVertexAdjacentVertices(pm);
+        vcl::updateVertexAdjacentVertices(pm);
 
         REQUIRE(pm.vertex(0).adjVertexCount() == 3);
         REQUIRE(pm.vertex(0).adjVertex(0) == &pm.vertex(1));
@@ -693,7 +693,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Face Adjacent Faces")
     {
         pm.enablePerFaceAdjacentFaces();
-        vcl::updatePerFaceAdjacentFaces(pm);
+        vcl::updateFaceAdjacentFaces(pm);
 
         REQUIRE(pm.face(0).adjFaceCount() == 4);
         REQUIRE(pm.face(0).adjFace(0) == &pm.face(4));
@@ -804,7 +804,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Vertex Adjacent Edges")
     {
         tm.enablePerVertexAdjacentEdges();
-        vcl::updatePerVertexAdjacentEdges(tm);
+        vcl::updateVertexAdjacentEdges(tm);
 
         REQUIRE(tm.vertex(0).adjEdgeCount() == 0);
         REQUIRE(tm.vertex(1).adjEdgeCount() == 0);
@@ -827,7 +827,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Face Adjacent Edges")
     {
         tm.enablePerFaceAdjacentEdges();
-        vcl::updatePerFaceAdjacentEdges(tm);
+        vcl::updateFaceAdjacentEdges(tm);
 
         REQUIRE(tm.face(0).adjEdgeCount() == 0);
         REQUIRE(tm.face(1).adjEdgeCount() == 0);
@@ -854,7 +854,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Edge Adjacent Faces")
     {
         tm.enablePerEdgeAdjacentFaces();
-        vcl::updatePerEdgeAdjacentFaces(tm);
+        vcl::updateEdgeAdjacentFaces(tm);
 
         REQUIRE(tm.edge(0).adjFaceCount() == 2);
         REQUIRE(tm.edge(0).containsAdjFace(&tm.face(6)));
@@ -873,7 +873,7 @@ TEMPLATE_TEST_CASE(
     THEN("Test Per Edge Adjacent Edges")
     {
         tm.enablePerEdgeAdjacentEdges();
-        vcl::updatePerEdgeAdjacentEdges(tm);
+        vcl::updateEdgeAdjacentEdges(tm);
 
         REQUIRE(tm.edge(0).adjEdgeCount() == 2);
         REQUIRE(tm.edge(0).containsAdjEdge(&tm.edge(3)));

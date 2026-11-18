@@ -42,7 +42,7 @@ TEMPLATE_TEST_CASE(
         TestMesh m = loadMesh<TestMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
         scale(m, 100.0);
-        updatePerVertexAndFaceNormals(m);
+        updateVertexAndFaceNormals(m);
 
         Point3<ScalarType> bestNormal =
             embree::findBestOrientationByHeightfieldExteriorVolume(

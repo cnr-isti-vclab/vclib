@@ -141,7 +141,7 @@ MeshType makeTetrahedron(
         result.enablePerFaceAdjacentFaces();
     }
 
-    updatePerFaceAdjacentFaces(result);
+    updateFaceAdjacentFaces(result);
 
     return result;
 }

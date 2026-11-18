@@ -14,6 +14,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace vcl {
 
@@ -68,6 +69,15 @@ concept ViewerConcept = requires (
 
         {
             obj.pushDrawableObject(std::shared_ptr<vcl::DrawableObject>())
+        } -> std::same_as<uint>;
+
+        {
+            obj.pushDrawableObjects(std::vector<detail::DummyDrawableObject>())
+        } -> std::same_as<uint>;
+
+        {
+            obj.pushDrawableObjects(
+                std::vector<std::shared_ptr<vcl::DrawableObject>>())
         } -> std::same_as<uint>;
 
         { obj.refreshEditors() } -> std::same_as<void>;

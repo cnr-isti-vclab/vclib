@@ -32,11 +32,11 @@ void saveOff(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    if (meshInfo.hasPerVertexNormal())
+    if (meshInfo.hasVertexNormal())
         fp << "N";
-    if (meshInfo.hasPerVertexColor())
+    if (meshInfo.hasVertexColor())
         fp << "C";
-    if (meshInfo.hasPerVertexTexCoord())
+    if (meshInfo.hasVertexTexCoord())
         fp << "ST";
     fp << "OFF" << std::endl;
 
@@ -70,7 +70,7 @@ void saveOff(
             io::writeDouble(fp, v.position().z(), false);
 
             if constexpr (HasPerVertexColor<MeshType>) {
-                if (meshInfo.hasPerVertexColor()) {
+                if (meshInfo.hasVertexColor()) {
                     io::writeInt(fp, v.color().red(), false);
                     io::writeInt(fp, v.color().green(), false);
                     io::writeInt(fp, v.color().blue(), false);
@@ -78,14 +78,14 @@ void saveOff(
                 }
             }
             if constexpr (HasPerVertexNormal<MeshType>) {
-                if (meshInfo.hasPerVertexNormal()) {
+                if (meshInfo.hasVertexNormal()) {
                     io::writeDouble(fp, v.normal().x(), false);
                     io::writeDouble(fp, v.normal().y(), false);
                     io::writeDouble(fp, v.normal().z(), false);
                 }
             }
             if constexpr (HasPerVertexTexCoord<MeshType>) {
-                if (meshInfo.hasPerVertexTexCoord()) {
+                if (meshInfo.hasVertexTexCoord()) {
                     io::writeDouble(fp, v.texCoord().u(), false);
                     io::writeDouble(fp, v.texCoord().v(), false);
                 }
@@ -109,7 +109,7 @@ void saveOff(
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }
             if constexpr (HasPerFaceColor<MeshType>) {
-                if (meshInfo.hasPerFaceColor()) {
+                if (meshInfo.hasFaceColor()) {
                     io::writeInt(fp, f.color().red(), false);
                     io::writeInt(fp, f.color().green(), false);
                     io::writeInt(fp, f.color().blue(), false);

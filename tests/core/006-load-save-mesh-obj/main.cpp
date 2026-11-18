@@ -154,7 +154,7 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(info.isTriangleMesh());
 
-        REQUIRE(info.hasPerFaceWedgeTexCoords());
+        REQUIRE(info.hasFaceWedgeTexCoords());
         REQUIRE(info.hasMaterials());
     }
 

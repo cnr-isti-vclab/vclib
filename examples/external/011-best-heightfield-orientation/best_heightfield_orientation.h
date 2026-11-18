@@ -30,7 +30,7 @@ auto bestHeightfieldOrientation(
     m.name()  = name + "_input";
 
     scale(m, scaleFactor);
-    updatePerVertexAndFaceNormals(m);
+    updateVertexAndFaceNormals(m);
 
     vcl::Timer timer(name + " Best Orientation");
     Point3d bestNormal = embree::findBestOrientationByHeightfieldExteriorVolume(
@@ -61,7 +61,7 @@ auto bestHeightfieldOrientation(
 
     vcl::rotate(outMeshes.exteriorVolumeMesh, rMatrix);
     outMeshes.exteriorVolumeMesh.name() = name + "_exterior_volume";
-    updatePerVertexAndFaceNormals(outMeshes.exteriorVolumeMesh);
+    updateVertexAndFaceNormals(outMeshes.exteriorVolumeMesh);
 
     vcl::rotate(outMeshes.grid2dMesh, rMatrix);
     outMeshes.grid2dMesh.name() = name + "_grid_2d";

@@ -27,7 +27,7 @@ TEMPLATE_TEST_CASE(
 
     Mesh m1 = vcl::createCube<Mesh>();
 
-    vcl::updatePerVertexAndFaceNormals(m1);
+    vcl::updateVertexAndFaceNormals(m1);
 
     m1.template addPerVertexCustomComponent<float>("v_comp");
 
@@ -78,7 +78,7 @@ TEMPLATE_TEST_CASE(
     WHEN("Appending a mesh")
     {
         Mesh m2 = vcl::createTetrahedron<Mesh>();
-        vcl::updatePerVertexAndFaceNormals(m2);
+        vcl::updateVertexAndFaceNormals(m2);
 
         m2.template addPerVertexCustomComponent<float>("v_comp");
 

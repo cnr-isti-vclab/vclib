@@ -34,7 +34,7 @@ def mesh_distance():
 
     # Prepare mesh for distance computation
     vcl.update_bounding_box(mesh)
-    vcl.update_per_face_normals(mesh)
+    vcl.update_face_normals(mesh)
 
     # Create a smoothed version
     print("\n=== Creating Smoothed Version ===")
@@ -47,7 +47,7 @@ def mesh_distance():
     print("Applied 5 iterations of Laplacian smoothing")
 
     # Update normals for the smoothed mesh
-    vcl.update_per_face_normals(smoothed_mesh)
+    vcl.update_face_normals(smoothed_mesh)
 
     # Compute distance between original and smoothed mesh
     print("\n=== Computing Distance (Original vs Smoothed) ===")
@@ -69,7 +69,7 @@ def mesh_distance():
     taubin_mesh = vcl.TriMesh(mesh)
     vcl.taubin_smoothing(
         taubin_mesh, 5, 0.5, -0.53)  # 5 iterations, lambda=0.5, mu=-0.53
-    vcl.update_per_face_normals(taubin_mesh)
+    vcl.update_face_normals(taubin_mesh)
 
     # Compute distance for Taubin smoothing
     taubin_result = vcl.hausdorff_distance(
@@ -101,7 +101,7 @@ def mesh_distance():
     vcl.load_mesh(cube, f"{VCLIB_EXAMPLE_MESHES_PATH}/cube_tri.ply")
 
     vcl.update_bounding_box(cube)
-    vcl.update_per_face_normals(cube)
+    vcl.update_face_normals(cube)
 
     cube_result = vcl.hausdorff_distance(
         mesh, cube, vcl.HAUSDORFF_VERTEX_UNIFORM)

@@ -47,8 +47,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger)
 
     log.log(0, "Updating per vertex normals...");
 
-    updatePerVertexNormalsAngleWeighted(m);
-    normalizePerVertexNormals(m);
+    updateVertexNormalsAngleWeighted(m);
+    normalizeVertexNormals(m);
 
     log.log(5, "Computing per vertex curvature...");
     // log every 5%, starting from 5% to 100%
@@ -246,8 +246,8 @@ void updatePrincipalCurvaturePCA(
 
     log.log(0, "Updating per vertex normals...");
 
-    updatePerVertexNormalsAngleWeighted(m);
-    normalizePerVertexNormals(m);
+    updateVertexNormalsAngleWeighted(m);
+    normalizeVertexNormals(m);
 
     log.log(0, "Computing per vertex curvature...");
     log.startProgress("", m.vertexCount());

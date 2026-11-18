@@ -23,7 +23,7 @@
 // 3. Use transformation matrices
 // 4. Combine multiple meshes through append
 
-auto meshCopyAndTransform()
+inline auto meshCopyAndTransform()
 {
     std::cout << "=== VCLib Example 004: Mesh Copy and Transform ===\n\n";
 

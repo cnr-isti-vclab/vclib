@@ -72,9 +72,9 @@ public:
         sDrawPack[1] = std::bit_cast<float>(d1);
 
         uint capabilities = 0;
-        if (settings.hasPerVertexColor())
+        if (settings.hasVertexColor())
             capabilities |= 1;
-        if (settings.hasPerVertexTangent())
+        if (settings.hasVertexTangent())
             capabilities |= 2;
         sDrawPack[2] = std::bit_cast<float>(capabilities);
 

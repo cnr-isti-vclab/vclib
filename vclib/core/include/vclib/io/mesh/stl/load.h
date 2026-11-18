@@ -91,13 +91,13 @@ void readStlBin(
 
     if (settings.enableOptionalComponents) {
         if (colored)
-            loadedInfo.setPerFaceColor();
+            loadedInfo.setFaceColor();
         enableOptionalComponentsFromInfo(loadedInfo, m);
     }
     else if (colored) {
         if constexpr (HasPerFaceColor<MeshType>) {
             if (isPerFaceColorAvailable(m))
-                loadedInfo.setPerFaceColor();
+                loadedInfo.setFaceColor();
         }
     }
 
@@ -302,12 +302,12 @@ void loadStl(
 {
     loadedInfo.clear();
     loadedInfo.setVertices();
-    loadedInfo.setPerVertexPosition();
+    loadedInfo.setVertexPosition();
 
     if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();
-        loadedInfo.setPerFaceVertexReferences();
-        loadedInfo.setPerFaceNormal();
+        loadedInfo.setFaceVertexReferences();
+        loadedInfo.setFaceNormal();
     }
 
     log.log(0, "Loading STL file");

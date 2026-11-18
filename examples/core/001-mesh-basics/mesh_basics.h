@@ -19,7 +19,7 @@
 // 4. Working with optional components
 // 5. Basic mesh information and iteration
 
-auto meshBasics()
+inline auto meshBasics()
 {
     std::println("=== VCLib Example 001: Mesh Basics ===\n");
 

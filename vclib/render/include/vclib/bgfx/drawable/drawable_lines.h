@@ -225,6 +225,21 @@ public:
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }
+
+    /**
+     * @brief Returns the number of vertices in the line set.
+     */
+    uint vertexCount() const { return Lines::vertexCount(); }
+
+    /**
+     * @brief Returns the number of indices in the line set.
+     */
+    uint indexCount() const { return Lines::indexCount(); }
+
+    /**
+     * @brief Returns the number of line segments in the line set.
+     */
+    uint linesCount() const { return Lines::linesCount(); }
 };
 
 } // namespace vcl

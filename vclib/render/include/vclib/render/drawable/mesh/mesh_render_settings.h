@@ -25,8 +25,8 @@ namespace vcl {
  *
  * Render capabilities store what can be actually rendered of a vcl::Mesh (e.g.
  * it will be possible to render the surface of the mesh if the Mesh has Faces,
- * or it will be possible to render per Face colors only if the Mesh has
- * **enabled** per face colors).
+ * or it will be possible to render Face colors only if the Mesh has
+ * **enabled** face colors).
  *
  * The render status of this class is **guaranteed to be consistent** to the
  * render capabilities.
@@ -60,8 +60,8 @@ class MeshRenderSettings
     MeshRenderInfo mCapability; // capabilities of the mesh
     MeshRenderInfo mDrawMode;   // current rendering settings
 
-    bool mHasPerVertexColor   = false;
-    bool mHasPerVertexTangent = false;
+    bool mHasVertexColor   = false;
+    bool mHasVertexTangent = false;
 
     float mPointWidth          = 3;
     float mPointUserColor[4]   = {1, 1, 0, 1}; // TODO: change to uint?
@@ -107,9 +107,9 @@ public:
      */
     MeshRenderInfo drawMode() const { return mDrawMode; }
 
-    bool hasPerVertexColor() const { return mHasPerVertexColor; }
+    bool hasVertexColor() const { return mHasVertexColor; }
 
-    bool hasPerVertexTangent() const { return mHasPerVertexTangent; }
+    bool hasVertexTangent() const { return mHasVertexTangent; }
 
     bool operator==(const MeshRenderSettings&) const = default;
 
@@ -807,8 +807,8 @@ public:
             }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                mHasPerVertexColor = vcl::isPerVertexColorAvailable(m);
-                if (mHasPerVertexColor) {
+                mHasVertexColor = vcl::isPerVertexColorAvailable(m);
+                if (mHasVertexColor) {
                     setPointsCapability(MRI::Points::COLOR_VERTEX);
                 }
             }
@@ -873,10 +873,10 @@ public:
                         // the normal map texture).
                         if (hasTexCoords && m.materialCount() > 0 &&
                             vcl::isPerVertexNormalAvailable(m)) {
-                            mHasPerVertexTangent =
+                            mHasVertexTangent =
                                 vcl::isPerVertexTangentAvailable(m);
 
-                            if (mHasPerVertexTangent) {
+                            if (mHasVertexTangent) {
                                 setSurfaceCapability(
                                     MRI::Surface::SHADING_NORMAL_MAP);
                             }
@@ -1122,8 +1122,8 @@ inline void to_json(nlohmann::json& j, const MeshRenderSettings& mrs)
 {
     j = nlohmann::json {
         {"drawMode",            mrs.mDrawMode              },
-        {"hasPerVertexColor",   mrs.mHasPerVertexColor     },
-        {"hasPerVertexTangent", mrs.mHasPerVertexTangent   },
+        {"hasVertexColor",      mrs.mHasVertexColor        },
+        {"hasVertexTangent",    mrs.mHasVertexTangent      },
         {"pointWidth",          mrs.mPointWidth            },
         {"pointUserColor",      mrs.pointUserColor()       },
         {"surfUserColor",       mrs.surfaceUserColor()     },
@@ -1141,10 +1141,10 @@ inline void from_json(const nlohmann::json& j, MeshRenderSettings& mrs)
 {
     if (j.contains("drawMode"))
         j.at("drawMode").get_to(mrs.mDrawMode);
-    if (j.contains("hasPerVertexColor"))
-        j.at("hasPerVertexColor").get_to(mrs.mHasPerVertexColor);
-    if (j.contains("hasPerVertexTangent"))
-        j.at("hasPerVertexTangent").get_to(mrs.mHasPerVertexTangent);
+    if (j.contains("hasVertexColor"))
+        j.at("hasVertexColor").get_to(mrs.mHasVertexColor);
+    if (j.contains("hasVertexTangent"))
+        j.at("hasVertexTangent").get_to(mrs.mHasVertexTangent);
     if (j.contains("pointWidth"))
         j.at("pointWidth").get_to(mrs.mPointWidth);
     if (j.contains("pointUserColor")) {
