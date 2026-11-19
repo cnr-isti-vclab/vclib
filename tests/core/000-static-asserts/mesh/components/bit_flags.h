@@ -14,9 +14,9 @@ void bitFlagsComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
-    using TriMeshFace   = trimesh::Face<float, true>;
-    using PolyMeshFace  = polymesh::Face<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
+    using TriMeshFace   = FaceType<TriMesh>;
+    using PolyMeshFace  = FaceType<PolyMesh>;
 
     // test only the bit flag component
     static_assert(

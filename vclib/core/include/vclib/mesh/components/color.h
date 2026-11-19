@@ -8,8 +8,7 @@
 #ifndef VCL_MESH_COMPONENTS_COLOR_H
 #define VCL_MESH_COMPONENTS_COLOR_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -17,45 +16,23 @@ namespace vcl::comp {
 
 /**
  * @brief The Color class represents a RGBA color that will be part of an
- * Element (e.g. Vertex, Face, ...) or Mesh.
+ * Element (e.g. Vertex, Face...).
  *
  * Allows to get and set an object of type Color.
  *
  * For example, if you have a Vertex Element `v` with the Color component,
- * you'll be able to access to this component member functions from `v`:
+ * you'll be able to access this component's member functions from `v`:
  *
  * @code{.cpp}
- * vcl::Color c = v.color();
+ * auto c = v.color();
  * @endcode
- *
- * @note This component can be both used for Elements and Meshes.
- *
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ParentElemType = void, bool OPT = false>
-class Color :
-        public Component<
-            Color<ParentElemType, OPT>,
-            CompId::COLOR,
-            vcl::Color,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+template<bool OPT = false>
+class Color : public Component<CompId::COLOR, vcl::Color, OPT>
 {
-    using Base = Component<
-        Color<ParentElemType, OPT>,
-        CompId::COLOR,
-        vcl::Color,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::COLOR, vcl::Color, OPT>;
 
 public:
     /**
@@ -66,98 +43,64 @@ public:
     /* Constructors */
 
     /**
-     * @brief Initilizes the color to black (with alpha 255).
+     * @brief Initializes the Color component.
      */
     Color() = default;
 
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the color of the element.
-     * @return a const reference of the color of the element.
+     * @brief Returns a reference to the color of the element.
+     * Propagates constness automatically from the caller (proxy).
+     * @return a reference to the color of the element.
      */
-    const vcl::Color& color() const { return Base::data(); }
-
-    /**
-     * @brief Returns a reference pf the color of the element.
-     * @return a reference pf the color of the element.
-     */
-    vcl::Color& color() { return Base::data(); }
+    decltype(auto) color(this auto&& self) { return Base::compData(self); }
 
 protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const { color().serialize(os); }
-
-    void deserialize(std::istream& is) { color().deserialize(is); }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 };
 
-/* concepts */
+/* Aliases */
+
+using OptionalColor = Color<true>;
+
+/* Concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element or a
- * Mesh) has the Color component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the Color
+ * component (COMP_ID = CompId::COLOR).
  *
- * The concept is satisfied if T is a class that inherits from vcl::comp::Color,
- * with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal Color
- * component and the vertical OptionalColor component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * Color component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
- *
- * @tparam T: The type to be tested for conformity to the HasColor.
+ * @tparam T: The type to be tested for conformity to HasColor.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasColor = TB::IsDerivedFromSpecializationOfV<T, Color>;
+concept HasColor = HasComponent<CompId::COLOR, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element or a
- * Mesh) has the Color component (inherits from it), and that the component is
- * optional.
+ * @brief A concept that checks whether a type T has the Color component and it is optional.
  *
- * @tparam T: The type to be tested for conformity to the HasOptionalColor.
+ * @tparam T: The type to be tested for conformity to HasOptionalColor.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalColor =
-    HasColor<T> && IsOptionalComponent<typename RemoveRef<T>::Color>;
+    HasColor<T> && HasOptionalComponent<CompId::COLOR, T>;
 
-/* importFrom function */
+/* Implementation of member functions */
 
-template<typename ParentElemType, bool OPT>
-template<typename Element>
-void Color<ParentElemType, OPT>::importFrom(const Element& e, bool)
+template<bool OPT>
+template<typename OtherElement>
+void Color<OPT>::importFrom(this auto&& self, const OtherElement& other, bool)
 {
-    if constexpr (HasColor<Element>) {
-        if (isColorAvailableOn(e)) {
-            color() = e.color();
+    if constexpr (HasColor<OtherElement>) {
+        if (other.template isComponentAvailable<CompId::COLOR>()) {
+            self.color() = other.color();
         }
     }
-}
-
-/* Detector function to check if a class has Color available */
-
-/**
- * @brief Checks if the given Element has Color component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has Color component available, `false`
- * otherwise.
- */
-bool isColorAvailableOn(const auto& element)
-{
-    return isComponentAvailableOn<CompId::COLOR>(element);
 }
 
 } // namespace vcl::comp

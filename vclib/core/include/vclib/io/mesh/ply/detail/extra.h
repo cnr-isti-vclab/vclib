@@ -89,13 +89,13 @@ void readPlyMaterialIndexPostProcessing(
         if (mesh.materialCount() > 0) {
             if (loadedInfo.hasVertexTexCoord() &&
                 !loadedInfo.hasVertexMaterialIndex()) {
-                if constexpr (HasPerVertexMaterialIndex<MeshType>) {
+                if constexpr (HasVertexMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
-                        enableIfPerVertexMaterialIndexOptional(mesh);
+                        enableIfVertexMaterialIndexOptional(mesh);
                         loadedInfo.setVertexMaterialIndex();
                     }
                     if (loadedInfo.hasVertexMaterialIndex()) {
-                        for (auto& v : mesh.vertices()) {
+                        for (auto v : mesh.vertices()) {
                             v.materialIndex() = 0;
                         }
                     }
@@ -103,13 +103,13 @@ void readPlyMaterialIndexPostProcessing(
             }
             if (loadedInfo.hasFaceWedgeTexCoords() &&
                 !loadedInfo.hasFaceMaterialIndex()) {
-                if constexpr (HasPerFaceMaterialIndex<MeshType>) {
+                if constexpr (HasFaceMaterialIndex<MeshType>) {
                     if (settings.enableOptionalComponents) {
-                        enableIfPerFaceMaterialIndexOptional(mesh);
+                        enableIfFaceMaterialIndexOptional(mesh);
                         loadedInfo.setFaceMaterialIndex();
                     }
                     if (loadedInfo.hasFaceMaterialIndex()) {
-                        for (auto& f : mesh.faces()) {
+                        for (auto f : mesh.faces()) {
                             f.materialIndex() = 0;
                         }
                     }

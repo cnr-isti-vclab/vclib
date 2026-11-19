@@ -253,7 +253,11 @@ private:
             // Using a zero vector for degenerate normals guarantees
             // linesCount() == vCount for reliable synchronization without
             // rendering artifacts.
-            for (uint i = 0; i < vCount; ++i) {
+            uint cSize = provider.vertexContainerSize();
+            for (uint i = 0; i < cSize; ++i) {
+                if (provider.isVertexDeleted(i)) {
+                    continue;
+                }
                 vcl::Point3d pos = provider.vertexPosition(i);
                 vcl::Point3d n   = provider.vertexNormal(i);
                 if (n.squaredNorm() > 0) {
@@ -284,7 +288,11 @@ private:
             // Using a zero vector for degenerate normals guarantees
             // linesCount() == fCount for reliable synchronization without
             // rendering artifacts.
-            for (uint i = 0; i < fCount; ++i) {
+            uint cSize = provider.faceContainerSize();
+            for (uint i = 0; i < cSize; ++i) {
+                if (provider.isFaceDeleted(i)) {
+                    continue;
+                }
                 vcl::Point3d barycenter = provider.faceBarycenter(i);
                 vcl::Point3d n          = provider.faceNormal(i);
                 if (n.squaredNorm() > 0) {

@@ -1,0 +1,12 @@
+//@concepts
+template<typename T>
+concept HasAdjacentVertices = comp::HasAdjacentVertices<T>;
+template<typename T>
+concept HasOptionalAdjacentVertices = comp::HasOptionalAdjacentVertices<T>;
+//@aliases
+/* Port AdjacentVertices class into %EL_NS% namespace */
+template<std::unsigned_integral Index = uint>
+using AdjacentVertices = comp::AdjacentVertices<-1, Index>;
+
+template<std::unsigned_integral Index = uint>
+using OptionalAdjacentVertices = comp::AdjacentVertices<-1, Index, false, true>;

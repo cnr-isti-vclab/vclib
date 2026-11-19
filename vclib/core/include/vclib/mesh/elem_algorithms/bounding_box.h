@@ -9,6 +9,7 @@
 #define VCL_MESH_ELEM_ALGORITHMS_BOUNDING_BOX_H
 
 #include <vclib/mesh/elements.h>
+#include <vclib/mesh/traits.h>
 
 #include <vclib/space/core.h>
 
@@ -31,28 +32,8 @@ namespace vcl {
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType& v)
 {
-    return Box<typename VertexType::PositionType>(v.position());
-}
-
-/**
- * @brief Compute the bounding box of a vertex pointer
- *
- * Given a pointer to a vertex `v`, this function computes and returns the
- * bounding box of the vertex. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam VertexType: The type of the vertex. It must satisfy the
- * VertexConcept.
- *
- * @param[in] v: A pointer to the input vertex to compute the bounding box of
- * @return The bounding box of the input vertex
- *
- * @ingroup core_bounding_box
- */
-template<VertexConcept VertexType>
-auto boundingBox(const VertexType* v)
-{
-    return Box<typename VertexType::PositionType>(v->position());
+    using PositionType = PositionType<VertexType>;
+    return Box<PositionType>(v.position());
 }
 
 /**
@@ -63,7 +44,7 @@ auto boundingBox(const VertexType* v)
  *
  * @tparam FaceType: The type of the face. It must satisfy the FaceConcept.
  *
- * @param[in] f The input face to compute the bounding box of
+ * @param[in] f: The input face to compute the bounding box of
  * @return The bounding box of the input face
  *
  * @ingroup core_bounding_box
@@ -71,36 +52,12 @@ auto boundingBox(const VertexType* v)
 template<FaceConcept FaceType>
 auto boundingBox(const FaceType& f)
 {
-    using VertexType = FaceType::VertexType;
+    using PositionType = PositionType<VertexType<FaceType>>;
 
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : f.vertices())
-        b.add(v->position());
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of a face pointer
- *
- * Given a pointer to a face `f`, this function computes and returns the
- * bounding box of the face. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam FaceType: The type of the face. It must satisfy the FaceConcept.
- *
- * @param[in] f: A pointer to the input face to compute the bounding box of
- * @return The bounding box of the input face
- *
- * @ingroup core_bounding_box
- */
-template<FaceConcept FaceType>
-auto boundingBox(const FaceType* f)
-{
-    using VertexType = FaceType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : f->vertices())
-        b.add(v->position());
+    Box<PositionType> b;
+    for (const auto& v : f.vertices()) {
+        b.add(v.position());
+    }
     return b;
 }
 
@@ -120,36 +77,12 @@ auto boundingBox(const FaceType* f)
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType& e)
 {
-    using VertexType = EdgeType::VertexType;
+    using PositionType = PositionType<VertexType<EdgeType>>;
 
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : e.vertices())
-        b.add(v->position());
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of an edge pointer
- *
- * Given a pointer to an edge `e`, this function computes and returns the
- * bounding box of the edge. The bounding box is represented by a `vcl::Box`
- * object.
- *
- * @tparam EdgeType: The type of the edge. It must satisfy the EdgeConcept.
- * @param[in] e: A pointer to the input edge to compute the bounding box of
- *
- * @return The bounding box of the input edge
- *
- * @ingroup core_bounding_box
- */
-template<EdgeConcept EdgeType>
-auto boundingBox(const EdgeType* e)
-{
-    using VertexType = EdgeType::VertexType;
-
-    Box<typename VertexType::PositionType> b;
-    for (const VertexType* v : e->vertices())
-        b.add(v->position());
+    Box<PositionType> b;
+    for (const auto& v : e.vertices()) {
+        b.add(v.position());
+    }
     return b;
 }
 

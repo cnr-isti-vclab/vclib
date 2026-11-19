@@ -47,7 +47,7 @@ if(CAN_BUILD_VCLIB_RENDER_EXAMPLES)
                     )
                 endif()
 
-                # Verify the required targets (e.g., 3rd party libraries) exist
+                # Verify if required targets (e.g., 3rd party libraries) exist
                 set(REQUIREMENTS_MET TRUE)
                 set(UNMET_REQ_PRINT "")
                 foreach(req IN LISTS EXAMPLE_REQUIRED_TARGETS)

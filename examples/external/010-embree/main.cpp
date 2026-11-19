@@ -52,9 +52,9 @@ int main()
             std::cout << "Vertices of the hit triangle:\n";
 
             uint        base = tId * 3;
-            const auto& v0   = *m.face(faceId).vertex(triangulation[base + 0]);
-            const auto& v1   = *m.face(faceId).vertex(triangulation[base + 1]);
-            const auto& v2   = *m.face(faceId).vertex(triangulation[base + 2]);
+            const auto& v0   = m.face(faceId).vertex(triangulation[base + 0]);
+            const auto& v1   = m.face(faceId).vertex(triangulation[base + 1]);
+            const auto& v2   = m.face(faceId).vertex(triangulation[base + 2]);
 
             std::cout << " - Vertex " << v0.index() << ": " << v0.position()
                       << "\n";

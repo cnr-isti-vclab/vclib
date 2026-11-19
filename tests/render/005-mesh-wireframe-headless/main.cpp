@@ -12,10 +12,10 @@ static const std::string TEST_NAME = "005-mesh-wireframe-headless";
 
 void addPerVertexColor(auto& m)
 {
-    m.enablePerVertexColor();
+    m.enableVertexColor();
 
     // Deterministically assign colors to vertices
-    for (auto& v : m.vertices()) {
+    for (auto v : m.vertices()) {
         if (v.index() % 3 == 0)
             v.color() = vcl::Color::Red;
         else if (v.index() % 3 == 1)

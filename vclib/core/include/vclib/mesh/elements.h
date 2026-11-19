@@ -8,8 +8,17 @@
 #ifndef VCL_MESH_ELEMENTS_H
 #define VCL_MESH_ELEMENTS_H
 
+#include "elements/base/base.h"
+#include "elements/base/element_proxy.h"
 #include "elements/edge.h"
 #include "elements/face.h"
 #include "elements/vertex.h"
+
+/**
+ * @defgroup elements Elements
+ * @ingroup mesh
+ *
+ * @brief List of element proxies and types for Vertices, Faces, and Edges.
+ */
 
 #endif // VCL_MESH_ELEMENTS_H

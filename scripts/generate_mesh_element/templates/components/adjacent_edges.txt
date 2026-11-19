@@ -1,0 +1,12 @@
+//@concepts
+template<typename T>
+concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
+template<typename T>
+concept HasOptionalAdjacentEdges = comp::HasOptionalAdjacentEdges<T>;
+//@aliases
+/* Port AdjacentEdges class into %EL_NS% namespace */
+template<std::unsigned_integral Index = uint>
+using AdjacentEdges = comp::AdjacentEdges<-1, Index>;
+
+template<std::unsigned_integral Index = uint>
+using OptionalAdjacentEdges = comp::AdjacentEdges<-1, Index, false, true>;

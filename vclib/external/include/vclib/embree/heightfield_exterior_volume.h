@@ -134,7 +134,7 @@ ScalarType processCell(
                     const auto v1  = v0 + grid.cellLength(1);
                     VMesh      hex = createHexahedron<VMesh>(
                         Point3d(u0, v0, prevT), Point3d(u1, v1, tHit));
-                    for (auto& vert : hex.vertices()) {
+                    for (auto vert : hex.vertices()) {
                         const PointType p =
                             vert.position().template cast<ScalarType>();
                         vert.position() =
@@ -383,8 +383,8 @@ auto findBestOrientationByHeightfieldExteriorVolume(
 {
     using namespace vcl;
 
-    using PointType  = MeshType::VertexType::PositionType;
-    using ScalarType = typename PointType::ScalarType;
+    using PointType  = PositionType<MeshType>;
+    using ScalarType = PointType::ScalarType;
 
     if (nDirections == 0) {
         throw std::invalid_argument(
@@ -394,7 +394,7 @@ auto findBestOrientationByHeightfieldExteriorVolume(
     log.startNewTask(
         0, 100, "Finding best orientation by heightfield exterior volume...");
 
-    requirePerFaceNormal(m);
+    requireFaceNormal(m);
 
     Box3<ScalarType> bbox = boundingBox(m);
 

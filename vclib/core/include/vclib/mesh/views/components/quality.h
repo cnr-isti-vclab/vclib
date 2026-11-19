@@ -8,42 +8,76 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 #define VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 
-#include <vclib/mesh/components/quality.h>
-#include <vclib/mesh/views/component.h>
+#include "../component.h"
 
 #include <vclib/base.h>
 
 #include <ranges>
 
-namespace vcl::views {
+namespace vcl {
+
+template<typename T>
+concept HasQualityMember = requires(T&& t) {
+    { t.quality() };
+};
+
+template<typename R>
+concept QualitiesRangeConcept =
+    std::ranges::range<R> &&
+    (requires(R&& r) {
+        { std::forward<R>(r).qualities() } -> std::ranges::range;
+    } || HasQualityMember<std::ranges::range_reference_t<R>>);
+
+template<typename R>
+concept QualityRangeConcept = QualitiesRangeConcept<R>;
+
+namespace views {
 
 namespace detail {
 
-inline constexpr auto quality = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->quality();
-    else
-        return p.quality();
+inline constexpr auto getQuality = [](auto&& p) -> decltype(auto) {
+    return p.quality();
 };
 
-struct QualityView
+struct QualitiesView : std::ranges::range_adaptor_closure<QualitiesView>
 {
-    constexpr QualityView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, QualityView)
+    template<QualitiesRangeConcept R>
+    constexpr auto operator()(R&& r) const
     {
-        return std::forward<R>(r) | std::views::transform(quality);
+        if constexpr (requires {
+                          {
+                              std::forward<R>(r).qualities()
+                          } -> std::ranges::range;
+                      }) {
+            return std::forward<R>(r).qualities();
+        }
+        else {
+            return std::forward<R>(r) | std::views::transform(getQuality);
+        }
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::QualityView quality;
+/**
+ * @brief View adaptor that transforms a range of elements into a range of their qualities.
+ *
+ * When applied directly to an ElementContainerProxy (e.g. `mesh.vertices() | views::qualities` or
+ * `mesh.faces() | views::qualities`), it directly returns a contiguous ComponentView over the SoA buffer
+ * without proxy overhead.
+ *
+ * When applied to a filtered or transformed range (e.g. `mesh.vertices() | views::selected | views::qualities`),
+ * it transforms each element to its quality reference.
+ *
+ * @ingroup views
+ */
+inline constexpr detail::QualitiesView qualities;
+inline constexpr auto quality = qualities;
 
 template<>
-inline constexpr auto component<CompId::QUALITY> = quality;
+inline constexpr auto component<CompId::QUALITY> = qualities;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_QUALITY_H

@@ -138,7 +138,7 @@ BENCH(
 BENCH(
     "point_sampling/vertex_weighted_point_sampling",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        using Scalar             = typename Mesh::ScalarType;
+        using Scalar             = vcl::ScalarType<Mesh>;
         const Mesh&     m        = s.mesh();
         const vcl::uint nSamples = sampleCountForVertices(m);
         if (nSamples == 0) {
@@ -160,7 +160,7 @@ BENCH(
             return s.skip("the mesh has no faces");
         }
         else {
-            using Scalar             = typename Mesh::ScalarType;
+            using Scalar             = vcl::ScalarType<Mesh>;
             const Mesh&     m        = s.mesh();
             const vcl::uint nSamples = sampleCountForFaces(m);
             if (nSamples == 0) {
@@ -179,7 +179,7 @@ BENCH(
 BENCH(
     "point_sampling/vertex_quality_weighted_point_sampling",
     []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::HasPerVertexQuality<Mesh>) {
+        if constexpr (!vcl::HasVertexQuality<Mesh>) {
             return s.skip("the mesh has no vertex quality component");
         }
         else {
@@ -200,7 +200,7 @@ BENCH(
         if constexpr (!vcl::FaceMeshConcept<Mesh>) {
             return s.skip("the mesh has no faces");
         }
-        else if constexpr (!vcl::HasPerFaceQuality<Mesh>) {
+        else if constexpr (!vcl::HasFaceQuality<Mesh>) {
             return s.skip("the mesh has no face quality component");
         }
         else {
@@ -310,7 +310,7 @@ BENCH(
             return s.skip("the mesh has no faces");
         }
         else {
-            using Scalar             = typename Mesh::ScalarType;
+            using Scalar             = vcl::ScalarType<Mesh>;
             const Mesh&     m        = s.mesh();
             const vcl::uint nSamples = sampleCountForVertices(m);
             if (nSamples == 0) {
@@ -333,7 +333,7 @@ BENCH(
         if constexpr (!vcl::FaceMeshConcept<Mesh>) {
             return s.skip("the mesh has no faces");
         }
-        else if constexpr (!vcl::HasPerVertexQuality<Mesh>) {
+        else if constexpr (!vcl::HasVertexQuality<Mesh>) {
             return s.skip("the mesh has no vertex quality component");
         }
         else {

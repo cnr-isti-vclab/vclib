@@ -9,15 +9,16 @@
 #define VCL_MESH_H
 
 #include "mesh/components.h"
+#include "mesh/containers.h"
 #include "mesh/elem_algorithms.h"
 #include "mesh/elements.h"
 #include "mesh/exceptions.h"
-#include "mesh/iterators/face/edge_adj_face_iterator.h"
+#include "mesh/iterators.h"
 #include "mesh/mesh.h"
 #include "mesh/mesh_components.h"
-#include "mesh/mesh_containers.h"
 #include "mesh/requirements.h"
 #include "mesh/tmp_meshes.h"
+#include "mesh/traits.h"
 #include "mesh/views.h"
 
 #endif // VCL_MESH_H

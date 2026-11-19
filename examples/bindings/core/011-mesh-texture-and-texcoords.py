@@ -40,7 +40,7 @@ def mesh_texture_and_texcoords():
           f"{mesh_vertex_texcoords.face_count()} faces")
 
     # Check if mesh has vertex texture coordinates
-    if mesh_vertex_texcoords.is_per_vertex_tex_coord_enabled():
+    if mesh_vertex_texcoords.is_vertex_tex_coord_available():
         print("   - Mesh has vertex texture coordinates")
 
         # Access first few vertex texture coordinates
@@ -48,7 +48,7 @@ def mesh_texture_and_texcoords():
         for i in range(min(3, mesh_vertex_texcoords.vertex_count())):
             tex_coord = mesh_vertex_texcoords.vertex(i).tex_coord()
             print(f"     Vertex {i}: ({tex_coord.u()}, {tex_coord.v()})")
-            if mesh_vertex_texcoords.is_per_vertex_material_index_enabled():
+            if mesh_vertex_texcoords.is_vertex_material_index_available():
                 print(f"        material_id {mesh_vertex_texcoords.vertex(i).material_index()}")
     else:
         print("   - Mesh does not have vertex texture coordinates")
@@ -63,18 +63,24 @@ def mesh_texture_and_texcoords():
           f"{mesh_wedge_texcoords.face_count()} faces")
 
     # Check if mesh has wedge texture coordinates
-    if mesh_wedge_texcoords.is_per_face_wedge_tex_coords_enabled():
+    if mesh_wedge_texcoords.is_face_wedge_tex_coords_available():
         print("   - Mesh has wedge texture coordinates")
 
         # Access first few face wedge texture coordinates
         print("   First face wedge texture coordinates:")
         if mesh_wedge_texcoords.face_count() > 0:
             face = mesh_wedge_texcoords.face(0)
-            if mesh_wedge_texcoords.is_per_face_material_index_enabled():
+            if mesh_wedge_texcoords.is_face_material_index_available():
                 print(f"     material_id: {face.material_index()}")
             for i in range(face.vertex_count()):
-                tex_coord = face.wedge_tex_coord(i)
+                tex_coord = face.wedge(i).tex_coord()
                 print(f"     Wedge {i}: ({tex_coord.u()}, {tex_coord.v()})")
+
+            # Iteration over wedges
+            print("   Iterating through face.wedges():")
+            for w in face.wedges():
+                tc = w.tex_coord()
+                print(f"     Corner {w.index()} (vertex {w.vertex_index()}): ({tc.u()}, {tc.v()})")
 
     else:
         print("   - Mesh does not have wedge texture coordinates")
@@ -98,8 +104,8 @@ def mesh_texture_and_texcoords():
     custom_mesh.set_name("Custom Textured Mesh")
 
     # Enable texture coordinate components
-    custom_mesh.enable_per_vertex_tex_coord()
-    custom_mesh.enable_per_face_wedge_tex_coords()
+    custom_mesh.enable_vertex_tex_coord()
+    custom_mesh.enable_face_wedge_tex_coords()
 
     # Add vertices with texture coordinates
     custom_mesh.add_vertices(4)
@@ -115,14 +121,14 @@ def mesh_texture_and_texcoords():
     # Add faces with wedge texture coordinates
     custom_mesh.add_faces(2)
     custom_mesh.face(0).set_vertices([0, 1, 2])
-    custom_mesh.face(0).set_wedge_tex_coord(0, [0.0, 0.0])
-    custom_mesh.face(0).set_wedge_tex_coord(1, [1.0, 0.0])
-    custom_mesh.face(0).set_wedge_tex_coord(2, [1.0, 1.0])
+    custom_mesh.face(0).wedge(0).set_tex_coord([0.0, 0.0])
+    custom_mesh.face(0).wedge(1).set_tex_coord([1.0, 0.0])
+    custom_mesh.face(0).wedge(2).set_tex_coord([1.0, 1.0])
 
     custom_mesh.face(1).set_vertices([0, 2, 3])
-    custom_mesh.face(1).set_wedge_tex_coord(0, [0.0, 0.0])
-    custom_mesh.face(1).set_wedge_tex_coord(1, [1.0, 1.0])
-    custom_mesh.face(1).set_wedge_tex_coord(2, [0.0, 1.0])
+    custom_mesh.face(1).wedge(0).set_tex_coord([0.0, 0.0])
+    custom_mesh.face(1).wedge(1).set_tex_coord([1.0, 1.0])
+    custom_mesh.face(1).wedge(2).set_tex_coord([0.0, 1.0])
 
     # Add material from the previously loaded mesh
     custom_mesh.push_material(mesh_wedge_texcoords.material(0))
@@ -139,12 +145,12 @@ def mesh_texture_and_texcoords():
 
     print(f"   Created custom mesh with {custom_mesh.vertex_count()} vertices "
           f"and {custom_mesh.face_count()} faces")
-    print(f"   - Has vertex texture coordinates: {custom_mesh.is_per_vertex_tex_coord_enabled()}")
-    print(f"   - Has wedge texture coordinates: {custom_mesh.is_per_face_wedge_tex_coords_enabled()}")
+    print(f"   - Has vertex texture coordinates: {custom_mesh.is_vertex_tex_coord_available()}")
+    print(f"   - Has wedge texture coordinates: {custom_mesh.is_face_wedge_tex_coords_available()}")
 
     # Example 5: Iterating through texture coordinates using views
     print("\n5. Iterating through texture coordinates...")
-    if mesh_vertex_texcoords.is_per_vertex_tex_coord_enabled():
+    if mesh_vertex_texcoords.is_vertex_tex_coord_available():
         print("   Vertex texture coordinates range:")
         min_tex_coord = vcl.Point2(float('inf'), float('inf'))
         max_tex_coord = vcl.Point2(float('-inf'), float('-inf'))

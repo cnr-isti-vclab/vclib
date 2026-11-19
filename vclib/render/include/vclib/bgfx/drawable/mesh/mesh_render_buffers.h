@@ -291,14 +291,14 @@ public:
         uint                      chunkNumber,
         const MeshType&           m) const
     {
-        uint materialId = Base::materialIndex(mrs, chunkNumber);
+        ushort materialId = Base::materialIndex(mrs, chunkNumber);
 
         uint boundTextures = 0;
 
         DrawableMeshUniforms::TextureType tt =
             DrawableMeshUniforms::TextureType::BASE_COLOR;
 
-        if (materialId != UINT_NULL) {
+        if (materialId != USHORT_NULL) {
             for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                 const auto& td = m.material(materialId).textureDescriptor(j);
                 const std::string& path = td.path();
@@ -892,7 +892,7 @@ private:
             // map is used to avoid duplicates, then is moved to a vector for
             // parallel processing
             std::map<std::string, uint> texturePaths;
-            for (uint i = 0; i < mesh.materialCount(); ++i) {
+            for (ushort i = 0; i < mesh.materialCount(); ++i) {
                 for (uint j = 0; j < N_TEXTURE_TYPES; ++j) {
                     const vcl::TextureDescriptor& td =
                         mesh.material(i).textureDescriptor(j);
@@ -920,7 +920,7 @@ private:
 
     void setMeshAdditionalData(const MeshType& mesh) // override
     {
-        if constexpr (HasColor<MeshType>) {
+        if constexpr (HasMeshColor<MeshType>) {
             mMeshColor = mesh.color();
         }
     }

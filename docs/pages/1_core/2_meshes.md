@@ -9,7 +9,7 @@ VCLib provides a set of prebuilt mesh data structures:
 - (ToDo: QuadMesh)
 - (ToDo: volumetric data structures)
 
-All these meshes store scalar values using `double` floating-point precision, but the library provides also the alternative with the `f` suffix that stores scalars using single floating point precision (vcl::TriMeshf, vcl::PolyMeshf, ...).
+All these meshes store scalar values using `double` floating-point precision, but the library provides also the alternative with the `f` suffix that stores scalars using single floating point precision (vcl::TriMeshf, vcl::PolyMeshf, ...). Moreover, the meshes that have the `64` suffix (vcl::TriMesh64, vcl::TriMesh64f, ...) use `uint64_t` instead of `uint` as type of the indices of their Elements, allowing to store more than 2^32 Elements.
 
 All the prebuilt data structures are documented in the @ref meshes group.
 

@@ -12,3 +12,4 @@
 #include "polygon/geometry.h"
 
 #endif // VCL_MESH_ELEM_ALGORITHMS_POLYGON_H
+

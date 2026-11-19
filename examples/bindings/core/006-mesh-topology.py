@@ -39,7 +39,7 @@ def mesh_topology():
     print(f"-----------------------------\n")
 
     # Enable and compute vertex-face adjacency
-    mesh.enable_per_vertex_adjacent_faces()
+    mesh.enable_vertex_adjacent_faces()
     vcl.update_vertex_adjacent_faces(mesh)
 
     print(f"Vertex-face adjacency enabled and computed\n\n")
@@ -67,7 +67,7 @@ def mesh_topology():
     print(f"-------------------------------\n")
 
     # Enable and compute vertex-vertex adjacency
-    mesh.enable_per_vertex_adjacent_vertices()
+    mesh.enable_vertex_adjacent_vertices()
     vcl.update_vertex_adjacent_vertices(mesh)
 
     print(f"Vertex-vertex adjacency enabled and computed\n\n")
@@ -101,7 +101,7 @@ def mesh_topology():
     print(f"----------------------------\n")
 
     # Enable and compute face-face adjacency
-    mesh.enable_per_face_adjacent_faces()
+    mesh.enable_face_adjacent_faces()
     vcl.update_face_adjacent_faces(mesh)
 
     print(f"Face-face adjacency enabled and computed\n\n")

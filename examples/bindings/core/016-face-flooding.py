@@ -30,8 +30,8 @@ def face_flooding():
     vcl.load_mesh(m, f"{VCLIB_EXAMPLE_MESHES_PATH}/bunny.obj")
 
     # Enable required components
-    m.enable_per_face_adjacent_faces()
-    m.enable_per_face_color()
+    m.enable_face_adjacent_faces()
+    m.enable_face_color()
 
     # Update topology and normals
     vcl.update_face_adjacent_faces(m)

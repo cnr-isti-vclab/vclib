@@ -8,220 +8,113 @@
 #ifndef VCL_MESH_COMPONENTS_BASE_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASE_CONTAINER_COMPONENT_H
 
-#include "component.h"
-
-#include <vclib/space/core.h>
+#include <vclib/mesh/components/base/component.h>
+#include <vclib/space/core/vector/vector.h>
 
 namespace vcl::comp {
 
-namespace detail {
-
-// small alias to differentiate between components having only a container or
-// components having a container and an additional data type:
-// - if AD is void, no additional data and the component will have only a Vector
-// - if AD is not void, there is additional data, and the component will have
-//   a tuple containing a Vector and the additional data
-template<
-    typename DC,
-    uint CT,
-    typename T,
-    int N,
-    typename AD,
-    typename El,
-    bool v,
-    bool o,
-    bool TT,
-    typename... PT>
-using ContCompBase = std::conditional_t<
-    std::is_same_v<AD, void>,
-    Component<DC, CT, Vector<T, N>, El, v, o, PT...>,
-    Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, v, o, PT...>>;
-
-} // namespace detail
-
-/// @cond VCLIB_HIDDEN_DOCS
-
 /**
- * @brief The ContainerComponent class is the base class for all the components
- * of VCLib that store a container of objects of a given type T.
+ * @brief Base class for all components that store a collection of elements
+ * (statically sized with std::array if N >= 0, or dynamically with std::vector
+ * if N < 0).
  *
- * A component that inherits from this class will have all the features of the
- * @ref Component class, plus automatic storage of the data in a Container of
- * objects that could have static or dynamic size, and the possibility to tie
- * the size of the Container to the number of Vertices of the Element (E.g.
- * useful for some Face components like AdjacentFaces or WedgeTexCoords).
+ * It wraps vcl::Vector<T, N> and provides type information and access helpers
+ * for derived components, without polluting the ElementProxy interface with
+ * generic methods that would cause collisions in multiple inheritance.
  *
- * For further details , please refer to the page @ref implement_component page.
+ * ### ContainerComponent vs ElementContainer Indexing
  *
- * @tparam DerivedComponent: The type of the Derived Component. It is used to
- * implement the CRTP pattern.
- * @tparam COMPONENT_ID: The id of the component. It is a value of the enum
- * ComponentIDEnum, or an integer value that is not already used by any other
- * component. It is used to identify the component at compile time.
- * @tparam T: The type of the data that the component needs to store in a
- * Container. E.g. a WedgeTexCoord component would have vcl::TexCoordd as
- * DataType.
- * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the
- * size is dynamic.
- * @tparam AdditionalData: the type of additional data that could be stored
- * outside the Container. If you don't have additional data. set AdditionalData
- * = void. E.g. a WedgeTexCoord component stores a short as AdditionalData that
- * indicates the texture index used by all the Wedge TexCoords.
- * @tparam ParentElemType: The Parent Element type is used to get access to the
- * Element that has the component (and, in case, to the Mesh that has the
- * Element). If the component doesn't need to access the Element, this type can
- * be void. Note: if the component is vertical (or optional), this type cannot
- * be void.
- * @tparam VERT: Boolean that tells if the component is vertical. If the
- * component is vertical, this parameter must be true. Note: to be vertical,
- * this parameter must be true, and ElementType must be the type of the Element
- * that has the component (the 'parent' Element Type).
- * @tparam OPT: When a component is vertical, it could be optional, that means
- * that could be enabled/disabled at runtime. To make the component optional,
- * this template parameter must be true.
- * @tparam TTVC: "Tied To Vertex Count", this boolean tells whether the
- * component should leave liberty to control the size of the Container to the
- * user, or it should be tied to the vertex count and changed automatically
- * when the number of vertices changes. E.g. a WedgeTexCoord component is a
- * Container that should be tied to the vertex count, meaning that the number
- * of texture coordinates should be always be the same of the number of
- * vertices. Setting this value to true will tie the size of this container to
- * the number of vertices.
- * @tparam PointedTypes: Variadic Template types of all the Pointer types that
- * the component stores, and that need to be updated when some reallocation
- * happens.
+ * Classes deriving from ContainerComponent (such as VertexReferences,
+ * AdjacentFaces, AdjacentEdges, AdjacentVertices, and Wedges) store collections
+ * of items per mesh element. In this context, it is crucial to distinguish:
+ *
+ * - **Local Container Positions (`uint`)**:
+ *   Indices used to access, insert, or erase items in this container (e.g.,
+ *   `pos` in `insert(pos, ...)` or `erase(pos)`) represent the 0-based offset
+ *   or position within this local collection. They are always typed as `uint`
+ *   (`uint32_t`) with `vcl::UINT_NULL` as the invalid/not-found sentinel value.
+ *
+ * - **Global Element Indices (`IndexType`)**:
+ *   When the stored items `T` are references to other mesh elements (as in
+ *   ContainerReferencesComponent), the *values* stored inside this container
+ *   are global indices pointing to elements in the mesh's `ElementContainer`
+ *   (e.g. `VertexContainer`). These global indices are typed as `IndexType` (32
+ *   or 64 bit) with `vcl::NULL_INDEX<IndexType>` as the invalid/null sentinel
+ *   value.
+ *
+ * @tparam COMP_ID: The unique identifier of the component.
+ * @tparam T: The type of the elements stored in the container.
+ * @tparam N: The size of the container. If N >= 0, static size. If N < 0,
+ * dynamic size.
+ * @tparam TTVC: True if the component's container size is tied to the vertex
+ * count of the parent element.
+ * @tparam Container: The container type to use. Defaults to vcl::Vector<T, N>.
  */
 template<
-    typename DerivedComponent, // CRTP pattern, derived class
-    uint COMP_ID,              // component id
-    typename T,                // data stored in container
-    int N,                     // container size
-    typename AdditionalData,   // additional data outside container
-    typename ParentElemType,   // parent element type
-    bool VERT,                 // true if component vertical
-    bool OPT,                  // true if component vertical and optional
-    bool TTVC,                 // true if container size tied to vertex count
-    typename... PointedTypes>  // types of pointers stored by the component
-class ContainerComponent :
-        public detail::ContCompBase<
-            DerivedComponent,
-            COMP_ID,
-            T,
-            N,
-            AdditionalData,
-            ParentElemType,
-            VERT,
-            OPT,
-            TTVC,
-            PointedTypes...>
+    CompId COMP_ID,
+    typename T,
+    int  N,
+    bool TTVC,
+    bool OPT           = false,
+    typename Container = vcl::Vector<T, N>>
+class ContainerComponent : public Component<COMP_ID, Container, OPT>
 {
-    static constexpr bool HAS_ADDITIONAL_DATA =
-        !std::is_same_v<AdditionalData, void>;
-
-    using Base = detail::ContCompBase<
-        DerivedComponent,
-        COMP_ID,
-        T,
-        N,
-        AdditionalData,
-        ParentElemType,
-        VERT,
-        OPT,
-        TTVC,
-        PointedTypes...>;
+    using Base = Component<COMP_ID, Container, OPT>;
 
 public:
-    /**
-     * @brief Boolean that tells if this component stores a container having its
-     * size tied to the number of the vertices of the Element.
-     *
-     * E.g. suppose to have a Polygonal Face f (dynamic number of vertices),
-     * having 5 vertices (and 5 edges). This means that if the Face has the
-     * AdjacentFaces component, then it should store 5 adjacent faces (the same
-     * number of the vertices). In this case, the AdjacentFaces component will
-     * have the boolean TIED_TO_VERTEX_COUNT set to true.
-     */
-    static const bool TIED_TO_VERTEX_COUNT = TTVC;
-
-    static const int SIZE = N;
+    static constexpr bool TIED_TO_VERTEX_COUNT = TTVC;
 
 protected:
-    /* Iterator Types declaration */
+    using ValueType     = T;
+    using ContainerType = Container;
 
-    using Iterator      = Vector<T, N>::Iterator;
-    using ConstIterator = Vector<T, N>::ConstIterator;
-
-    /* Constructor */
-
-    /*
-     * Create a container of T objects.
-     * If this Container is a static array, all its element will be initialized
-     * to T(). If this Container is a dynamic vector, it will be an empty
-     * container.
-     */
-    ContainerComponent()
+    static decltype(auto) container(auto&& self)
     {
-        if constexpr (!Base::IS_VERTICAL) {
-            if constexpr (N >= 0) {
-                Base::data().fill(T());
-            }
-        }
+        return Base::compData(self);
     }
 
-    /*
-     * Create a container of Objects.
-     * If this Container is a static array, all its element will be initialized
-     * to T(). If this Container is a dynamic vector, it will be an empty
-     * container.
-     */
-    void init()
+    void resize(this auto&& self, uint n) requires (N < 0)
     {
-        if constexpr (N >= 0) {
-            // I'll use the array, N is >= 0.
-            // There will be a static number of objects.
-            container().fill(T());
-        }
-        else {
-            // I'll use the vector, because N is < 0.
-            // There will be a dynamic number of objects.
-            container().clear();
-        }
+        container(self).resize(n);
     }
 
-    Vector<T, N>& container()
+    void pushBack(this auto&& self) requires (N < 0)
     {
-        if constexpr (HAS_ADDITIONAL_DATA) {
-            return std::get<0>(Base::data());
-        }
-        else {
-            return Base::data();
-        }
+        container(self).pushBack();
     }
 
-    const Vector<T, N>& container() const
+    void pushBack(this auto&& self, const T& v) requires (N < 0)
     {
-        if constexpr (HAS_ADDITIONAL_DATA) {
-            return std::get<0>(Base::data());
-        }
-        else {
-            return Base::data();
-        }
+        container(self).pushBack(v);
     }
 
-    template<typename AdDt = AdditionalData>
-    AdDt& additionalData() requires (HAS_ADDITIONAL_DATA)
+    void pushBack(this auto&& self, T&& v) requires (N < 0)
     {
-        return std::get<1>(Base::data());
+        container(self).pushBack(std::move(v));
     }
 
-    template<typename AdDt = AdditionalData>
-    const AdDt& additionalData() const requires (HAS_ADDITIONAL_DATA)
+    void insert(this auto&& self, uint pos) requires (N < 0)
     {
-        return std::get<1>(Base::data());
+        container(self).insert(pos);
     }
+
+    void insert(this auto&& self, uint pos, const T& v) requires (N < 0)
+    {
+        container(self).insert(pos, v);
+    }
+
+    void insert(this auto&& self, uint pos, T&& v) requires (N < 0)
+    {
+        container(self).insert(pos, std::move(v));
+    }
+
+    void erase(this auto&& self, uint pos) requires (N < 0)
+    {
+        container(self).erase(pos);
+    }
+
+    void clear(this auto&& self) requires (N < 0) { container(self).clear(); }
 };
-
-/// @endcond
 
 } // namespace vcl::comp
 

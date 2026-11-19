@@ -301,14 +301,12 @@ void readOffVertices(
     uint            nv,
     LogType&        log)
 {
-    using VertexType = MeshType::VertexType;
-
     const uint nTexCoords = fileInfo.hasVertexTexCoord() ? 2 : 0;
 
     log.startProgress("Reading vertices", nv);
     mesh.addVertices(nv);
     for (uint i = 0; i < nv; i++) {
-        VertexType& v = mesh.vertex(i);
+        auto v = mesh.vertex(i);
 
         Tokenizer           tokens = readAndTokenizeNextNonCommentLine(file);
         Tokenizer::iterator token  = tokens.begin();
@@ -319,8 +317,8 @@ void readOffVertices(
             v.position()[j] = io::readDouble<double>(token);
         }
 
-        if constexpr (HasPerVertexNormal<MeshType>) {
-            if (isPerVertexNormalAvailable(mesh) &&
+        if constexpr (HasVertexNormal<MeshType>) {
+            if (mesh.isVertexNormalAvailable() &&
                 fileInfo.hasVertexNormal()) {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
@@ -339,8 +337,8 @@ void readOffVertices(
         const int  nColorComponents =
             (int) tokens.size() - nReadComponents - nTexCoords;
 
-        if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColor()) {
+        if constexpr (HasVertexColor<MeshType>) {
+            if (mesh.isVertexColorAvailable() && fileInfo.hasVertexColor()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(
@@ -357,8 +355,8 @@ void readOffVertices(
             readOffColor(token, nColorComponents);
         }
 
-        if constexpr (HasPerVertexTexCoord<MeshType>) {
-            if (isPerVertexTexCoordAvailable(mesh) &&
+        if constexpr (HasVertexTexCoord<MeshType>) {
+            if (mesh.isVertexTexCoordAvailable() &&
                 fileInfo.hasVertexTexCoord()) {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
@@ -388,7 +386,7 @@ void readOffFaces(
     LogType&            log)
 {
     if constexpr (HasFaces<MeshType>) {
-        using FaceType = MeshType::FaceType;
+        using FaceType = FaceType<MeshType>;
 
         mesh.reserveFaces(nf);
         log.startProgress("Reading faces", nf);
@@ -397,7 +395,7 @@ void readOffFaces(
             Tokenizer tokens          = readAndTokenizeNextNonCommentLine(file);
             Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
-            FaceType& f = mesh.face(mesh.faceCount() - 1);
+            FaceType f = mesh.face(mesh.faceCount() - 1);
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
@@ -438,16 +436,16 @@ void readOffFaces(
 
             // read face color
             if (token != tokens.end()) { // there are colors to read
-                if constexpr (HasPerFaceColor<MeshType>) {
-                    if (isPerFaceColorAvailable(mesh) ||
+                if constexpr (HasFaceColor<MeshType>) {
+                    if (mesh.isFaceColorAvailable() ||
                         (settings.enableOptionalComponents &&
-                         enableIfPerFaceColorOptional(mesh))) {
+                         enableIfFaceColorOptional(mesh))) {
                         loadedInfo.setFaceColor();
                         f.color() = readOffColor(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
-                        for (uint ff = mesh.index(f); ff < mesh.faceCount();
+                        for (uint ff = f.index(); ff < mesh.faceCount();
                              ++ff) {
                             mesh.face(ff).color() = f.color();
                         }

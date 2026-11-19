@@ -47,8 +47,9 @@ inline auto loadMeshes()
     std::println("Mesh has per face color: {}", info.hasFaceColor());
 
     // You can control settings for loading a mesh using the LoadSettings object
-    // It allows to choose whether to enable optional components (see example
-    // TODO) and whether to load texture images or not.
+    // It allows to choose whether to enable optional components and whether to
+    // load texture images or not.
+
     vcl::LoadSettings loadSettings;
     loadSettings.loadTextureImages = true;
     vcl::loadMesh(
@@ -83,6 +84,7 @@ inline void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
     saveInfo.setFaceVertexReferences(true);
     saveSettings.info   = saveInfo;
     saveSettings.binary = false; // save in ASCII format
+
     vcl::saveMesh(
         mesh0, resultsPath + "/000_mesh-io_bunny-ascii.ply", saveSettings);
 }

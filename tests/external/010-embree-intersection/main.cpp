@@ -62,7 +62,7 @@ auto bruteForceRayIntersection(const MeshType& m, const RayType& ray)
         auto       p = vcl::intersection(ray, f, t);
         if (p.has_value() && (t < minT)) {
             minT         = t;
-            closestFace  = m.index(f);
+            closestFace  = f.index();
             closestPoint = p.value();
         }
     }
@@ -71,7 +71,7 @@ auto bruteForceRayIntersection(const MeshType& m, const RayType& ray)
 }
 
 using Meshes        = std::tuple<vcl::TriMesh, vcl::PolyMesh>;
-using MeshesIndexed = std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using Meshes64 = std::tuple<vcl::TriMesh64, vcl::PolyMesh64>;
 
 static const vcl::uint N_RAYS_TEST = 10000;
 
@@ -82,7 +82,7 @@ TEMPLATE_TEST_CASE(
     "Embree ray-triangle intersection vs brute force",
     "",
     Meshes,
-    MeshesIndexed)
+    Meshes64)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
@@ -91,7 +91,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION(vcl::meshTypeName<TriMesh>().c_str())
     {
-        using PointType  = TriMesh::VertexType::PositionType;
+        using PointType  = PositionType<TriMesh>;
         using ScalarType = PointType::ScalarType;
         using RayType    = Ray<PointType>;
 
@@ -151,11 +151,11 @@ TEMPLATE_TEST_CASE(
                     vcl::Point3f baryCoords = std::get<1>(embreeResults[i]);
                     uint         triID      = std::get<2>(embreeResults[i]);
 
-                    auto&                   face = tm.face(embreeFaceID);
+                    auto                    face = tm.face(embreeFaceID);
                     vcl::Point3<ScalarType> embreePoint =
-                        face.vertex(0)->position() * baryCoords.x() +
-                        face.vertex(1)->position() * baryCoords.y() +
-                        face.vertex(2)->position() * baryCoords.z();
+                        face.vertex(0).position() * baryCoords.x() +
+                        face.vertex(1).position() * baryCoords.y() +
+                        face.vertex(2).position() * baryCoords.z();
 
                     ScalarType dist = (embreePoint - brutePoint).norm();
                     if (dist < ScalarType(1e-5)) {
@@ -191,7 +191,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION(vcl::meshTypeName<PolyMesh>().c_str())
     {
-        using PointType  = PolyMesh::VertexType::PositionType;
+        using PointType  = PositionType<PolyMesh>;
         using ScalarType = PointType::ScalarType;
         using RayType    = Ray<PointType>;
 
@@ -253,14 +253,14 @@ TEMPLATE_TEST_CASE(
                     vcl::Point3f baryCoords = std::get<1>(embreeResults[i]);
                     uint         triID      = std::get<2>(embreeResults[i]);
 
-                    auto& face = pm.face(embreeFaceID);
-                    auto  tris = vcl::earCut(face);
+                    auto face = pm.face(embreeFaceID);
+                    auto tris = vcl::earCut(face);
 
                     vcl::Point3<ScalarType> embreePoint =
-                        pm.vertex(tris[triID * 3]).position() * baryCoords.x() +
-                        pm.vertex(tris[triID * 3 + 1]).position() *
+                        face.vertex(tris[triID * 3]).position() * baryCoords.x() +
+                        face.vertex(tris[triID * 3 + 1]).position() *
                             baryCoords.y() +
-                        pm.vertex(tris[triID * 3 + 2]).position() *
+                        face.vertex(tris[triID * 3 + 2]).position() *
                             baryCoords.z();
 
                     ScalarType dist = (embreePoint - brutePoint).norm();

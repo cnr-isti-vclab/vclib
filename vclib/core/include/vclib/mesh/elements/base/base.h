@@ -35,14 +35,12 @@ namespace vcl {
  *
  * @ingroup base
  */
-struct ElemId
+enum class ElemId : uint
 {
-    enum Enum : uint {
-        VERTEX = 0,
-        FACE,
-        EDGE,
-        ELEMENT_COUNT,
-    };
+    VERTEX = 0,
+    FACE,
+    EDGE,
+    ELEMENT_COUNT,
 };
 
 /**
@@ -51,7 +49,7 @@ struct ElemId
  *
  * @ingroup base
  */
-constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENT_COUNT] = {
+constexpr const char* ELEMENT_ENUM_STRINGS[static_cast<uint>(ElemId::ELEMENT_COUNT)] = {
     "Vertex",
     "Face",
     "Edge",
@@ -68,14 +66,14 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENT_COUNT] = {
  *
  * @ingroup base
  */
-template<uint ELEM_ID>
+template<ElemId ELEM_ID>
 struct ElementString
 {
     /**
      * @brief The string associated to the ELEM_ID.
      */
     const char* str = ELEM_ID < ElemId::ELEMENT_COUNT ?
-                          ELEMENT_ENUM_STRINGS[ELEM_ID] :
+                          ELEMENT_ENUM_STRINGS[static_cast<uint>(ELEM_ID)] :
                           nullptr;
 };
 
@@ -87,7 +85,7 @@ struct ElementString
  *
  * @ingroup base
  */
-template<uint ELEM_ID>
+template<ElemId ELEM_ID>
 constexpr const char* elementEnumCString()
 {
     static_assert(
@@ -107,7 +105,7 @@ constexpr const char* elementEnumCString()
  * @ingroup base
  */
 // Todo: make this function constexpr when upgrading to C++23.
-template<uint ELEM_ID>
+template<ElemId ELEM_ID>
 const std::string& elementEnumString()
 {
     static const std::string str = elementEnumCString<ELEM_ID>();

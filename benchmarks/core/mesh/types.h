@@ -21,11 +21,11 @@ void forEachMeshType(Func&& func)
     func(std::type_identity<vcl::TriMesh> {}, std::string_view("trimesh"));
     func(std::type_identity<vcl::TriMeshf> {}, std::string_view("trimeshf"));
     func(
-        std::type_identity<vcl::TriMeshIndexed> {},
-        std::string_view("trimesh-indexed"));
+        std::type_identity<vcl::TriMesh64> {},
+        std::string_view("trimesh64"));
     func(
-        std::type_identity<vcl::TriMeshIndexedf> {},
-        std::string_view("trimesh-indexedf"));
+        std::type_identity<vcl::TriMesh64f> {},
+        std::string_view("trimesh64f"));
 }
 
 } // namespace bench

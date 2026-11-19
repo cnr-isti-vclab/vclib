@@ -17,6 +17,8 @@
 
 inline auto meshSphereIntersection()
 {
+    using SSphere = vcl::Sphere<vcl::ScalarType<vcl::TriMesh>>;
+
     std::cout << "=== VCLib Example 021: Mesh-Sphere Intersection ===\n\n";
 
     /****** Load base mesh ******/
@@ -39,14 +41,14 @@ inline auto meshSphereIntersection()
     std::cout << "\n=== Defining Intersection Spheres ===" << std::endl;
 
     // Center sphere that intersects the bunny's body
-    vcl::Sphere<vcl::TriMesh::ScalarType> centerSphere(
+    SSphere centerSphere(
         {0.28, 0.18, 0.49}, 0.08);
 
     // Smaller sphere that intersects only part of the ears
-    vcl::Sphere<vcl::TriMesh::ScalarType> earSphere({0.25, 0.47, 0.27}, 0.04);
+    SSphere earSphere({0.25, 0.47, 0.27}, 0.04);
 
     // Larger sphere that encompasses most of the mesh
-    vcl::Sphere<vcl::TriMesh::ScalarType> largeSphere({0.28, 0.18, 0.49}, 0.15);
+    SSphere largeSphere({0.28, 0.18, 0.49}, 0.15);
 
     std::cout << "Center sphere: radius " << centerSphere.radius() << " at ("
               << centerSphere.center().x() << ", " << centerSphere.center().y()

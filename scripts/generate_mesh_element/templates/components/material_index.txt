@@ -1,0 +1,9 @@
+//@concepts
+template<typename T>
+concept HasMaterialIndex = comp::HasMaterialIndex<T>;
+template<typename T>
+concept HasOptionalMaterialIndex = comp::HasOptionalMaterialIndex<T>;
+//@aliases
+/* Port MaterialIndex class into %EL_NS% namespace */
+using MaterialIndex         = comp::MaterialIndex<false>;
+using OptionalMaterialIndex = comp::OptionalMaterialIndex;

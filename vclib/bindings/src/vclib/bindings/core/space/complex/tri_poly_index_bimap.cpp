@@ -25,7 +25,7 @@ void initTriPolyIndexBimap(pybind11::module& m)
         "triangle_begin", &TriPolyIndexBiMap::triangleBegin, "polygon_index"_a);
     c.def(
         "triangle_count",
-        py::overload_cast<uint>(&TriPolyIndexBiMap::triangleCount, py::const_),
+        py::overload_cast<std::size_t>(&TriPolyIndexBiMap::triangleCount, py::const_),
         "polygon_index"_a);
     c.def("clear", &TriPolyIndexBiMap::clear);
     c.def(

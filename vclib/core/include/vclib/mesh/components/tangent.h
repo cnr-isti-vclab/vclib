@@ -8,117 +8,88 @@
 #ifndef VCL_MESH_COMPONENTS_TANGENT_H
 #define VCL_MESH_COMPONENTS_TANGENT_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
+#include "normal.h"
 
-#include <vclib/mesh/elements/base/base.h>
-#include <vclib/mesh/exceptions.h>
+#include "../exceptions.h"
 
 #include <vclib/base.h>
 #include <vclib/space/core.h>
 
+#include <utility>
+
 namespace vcl::comp {
 
 /**
- * @brief The Tangent class represents a N-Dimensional tangent vector that will
- * be part of an Element (e.g. Vertex, Face...).
- *
- * Allows to get and set objects that represent a tangent. The type of these
- * object must satisfy the PointConcept.
+ * @brief The Tangent class represents a component that stores a tangent vector
+ * and a boolean indicating handedness (right-handed if true) of a mesh element.
  *
  * For example, if you have a Vertex Element `v` with the Tangent component,
- * you'll be able to access to this component member functions from `v`:
+ * you'll be able to access this component member functions from `v`:
  *
  * @code{.cpp}
- * auto tn = v.tangent();
+ * auto& tn = v.tangent();
+ * bool rh = v.tangentRightHanded();
+ * auto btn = v.bitangent(); // requires Normal component
  * @endcode
  *
- * @tparam P: The type of the tangent. This template argument must be a type
- * that satisfies the PointConcept.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam P: The type of the tangent vector. This template argument must satisfy
+ * the PointConcept.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<PointConcept P, typename ParentElemType = void, bool OPT = false>
-class Tangent :
-        public Component<
-            Tangent<P, ParentElemType, OPT>,
-            CompId::TANGENT,
-            std::pair<P, bool>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+template<PointConcept P, bool OPT = false>
+class Tangent : public Component<CompId::TANGENT, std::pair<P, bool>, OPT>
 {
-    using Base = Component<
-        Tangent<P, ParentElemType, OPT>,
-        CompId::TANGENT,
-        std::pair<P, bool>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::TANGENT, std::pair<P, bool>, OPT>;
 
 public:
     /**
-     * @brief Expose the type of the Tangent.
+     * @brief Expose the type of the Tangent vector.
      */
     using TangentType = P;
 
     /* Constructors */
 
     /**
-     * @brief Initilizes the Tangent to (0, 0, 0) right handed.
+     * @brief Default constructor.
      */
-    Tangent()
-    {
-        if constexpr (!Base::IS_VERTICAL) {
-            init();
-        }
-    }
+    Tangent() = default;
+
+    /* Default value */
 
     /**
-     * @private
-     * @brief Initializes the tangent to (0, 0, 0) right handed.
-     *
-     * It is made in the init function since the component could be not
-     * available during construction (e.g. if the component is optional and not
-     * enabled).
-     *
-     * This member function is hidden by the element that inherits this class.
+     * @brief Returns the default value for the Tangent component:
+     * zero vector and right-handed (true).
      */
-    void init() { Base::data().second = true; }
+    static std::pair<P, bool> defaultValue()
+    {
+        return {P{}, true};
+    }
 
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the tangent of the element.
-     * @return a const reference of the tangent of the element.
+     * @brief Returns a reference to the tangent vector of the element.
+     * Propagates constness automatically from the caller (proxy).
+     * @return a reference to the tangent vector of the element.
      */
-    const P& tangent() const { return Base::data().first; }
+    decltype(auto) tangent(this auto&& self)
+    {
+        return (Base::compData(self).first);
+    }
 
     /**
-     * @brief Returns a reference of the tangent of the element.
-     * @return a reference of the tangent of the element.
+     * @brief Returns a reference to the boolean indicating if the tangent
+     * is right-handed.
+     * Propagates constness automatically from the caller (proxy).
+     * @return a reference to the boolean indicating if the tangent is right-handed.
      */
-    P& tangent() { return Base::data().first; }
-
-    /**
-     * @brief Returns true if the tangent is right handed, false otherwise.
-     * @return true if the tangent is right handed, false otherwise.
-     */
-    bool tangentRightHanded() const { return Base::data().second; }
-
-    /**
-     * @brief Returns a reference to the boolean that indicates if the tangent
-     * is right handed.
-     * @return a reference to the boolean that indicates if the tangent is
-     * right handed.
-     */
-    bool& tangentRightHanded() { return Base::data().second; }
+    decltype(auto) tangentRightHanded(this auto&& self)
+    {
+        return (Base::compData(self).second);
+    }
 
     /**
      * @brief Computes and returns the bitangent vector using the tangent and
@@ -129,116 +100,82 @@ public:
      * handedness of the tangent.
      *
      * @throws vcl::MissingComponentException if the Normal component is not
-     * enabled on the parent element.
+     * available or not enabled on the element.
      *
      * @return The computed bitangent vector.
      */
-    P bitangent() const
+    P bitangent(this auto&& self)
     {
-        const ParentElemType& parent =
-            static_cast<const ParentElemType&>(*this);
-
-        if (isComponentAvailableOn<CompId::NORMAL>(parent)) {
-            // compute bitangent using the tangent and normal
-            // assuming that normal is available
-            const auto& n = static_cast<const ParentElemType&>(*this).normal();
-            return tangentRightHanded() ? n.cross(tangent()) :
-                                          tangent().cross(n);
+        if constexpr (HasNormal<decltype(self)>) {
+            if (self.template isComponentAvailable<CompId::NORMAL>()) {
+                const auto& n = self.normal();
+                if constexpr (std::is_same_v<
+                                  typename P::ScalarType,
+                                  typename std::remove_cvref_t<
+                                      decltype(n)>::ScalarType>) {
+                    return self.tangentRightHanded() ? n.cross(self.tangent()) :
+                                                       self.tangent().cross(n);
+                }
+                else {
+                    auto nCast = n.template cast<typename P::ScalarType>();
+                    return self.tangentRightHanded() ?
+                               nCast.cross(self.tangent()) :
+                               self.tangent().cross(nCast);
+                }
+            }
         }
-        else {
-            throw MissingComponentException(
-                "Per " +
-                std::string(elementEnumString<ParentElemType::ELEMENT_ID>()) +
-                " Normal Component is not enabled.");
-            return P();
-        }
+        throw MissingComponentException(
+            "Normal Component is not available on this element.");
     }
 
 protected:
     // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const
-    {
-        tangent().serialize(os);
-        vcl::serialize(os, tangentRightHanded());
-    }
-
-    void deserialize(std::istream& is)
-    {
-        tangent().deserialize(is);
-        vcl::deserialize(is, tangentRightHanded());
-    }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& e, bool = true);
 };
 
 /* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the Tangent component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * Tangent component (COMP_ID = CompId::TANGENT).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::Tangent, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * Tangent component and the vertical OptionalTangent component,
- * therefore it does not guarantee that a template Element type that satisfies
- * this concept provides Tangent component at runtime (it is guaranteed
- * only that the proper member functions are available at compile time).
- *
- * @tparam T: The type to be tested for conformity to the HasTangent.
+ * @tparam T: The type to be tested for conformity to HasTangent.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTangent = TTB::IsDerivedFromSpecializationOfV<T, Tangent>;
+concept HasTangent = HasComponent<CompId::TANGENT, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the Tangent component (inherits from it), and that the component is
- * optional.
+ * @brief A concept that checks whether a type T has the Tangent component
+ * and it is optional.
  *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalTangent.
+ * @tparam T: The type to be tested for conformity to HasOptionalTangent.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalTangent =
-    HasTangent<T> && IsOptionalComponent<typename RemoveRef<T>::Tangent>;
+    HasTangent<T> && HasOptionalComponent<CompId::TANGENT, T>;
 
 /* importFrom function */
 
-template<PointConcept P, typename ParentElemType, bool OPT>
-template<typename Element>
-void Tangent<P, ParentElemType, OPT>::importFrom(const Element& e, bool)
+template<PointConcept P, bool OPT>
+template<typename OtherElement>
+void Tangent<P, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& e,
+    bool)
 {
-    using ScalarType = TangentType::ScalarType;
-    if constexpr (HasTangent<Element>) {
-        if (isTangentAvailableOn(e)) {
-            tangent()            = e.tangent().template cast<ScalarType>();
-            tangentRightHanded() = e.tangentRightHanded();
+    using ScalarType = typename TangentType::ScalarType;
+    if constexpr (HasTangent<OtherElement>) {
+        if (e.template isComponentAvailable<CompId::TANGENT>()) {
+            self.tangent()            = e.tangent().template cast<ScalarType>();
+            self.tangentRightHanded() = e.tangentRightHanded();
         }
     }
-}
-
-/* Detector function to check if a class has Tangent available */
-
-/**
- * @brief Checks if the given Element has Tangent component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has Tangent component available, `false`
- * otherwise.
- */
-bool isTangentAvailableOn(const auto& element)
-{
-    return isComponentAvailableOn<CompId::TANGENT>(element);
 }
 
 /* Specialization Aliases */
@@ -248,46 +185,47 @@ bool isTangentAvailableOn(const auto& element)
  * dimensional Points.
  *
  * @tparam Scalar: The scalar type of the point.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
-using Tangent3 = Tangent<Point3<Scalar>, ElementType, OPT>;
+template<typename Scalar, bool OPT = false>
+using Tangent3 = Tangent<Point3<Scalar>, OPT>;
 
 /**
  * @brief The Tangent3f class is an alias of the Tangent component that uses
  * 3 dimensional Points with float precision.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
- *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Tangent3f = Tangent3<float, ElementType, OPT>;
+using Tangent3f = Tangent3<float, false>;
 
 /**
  * @brief The Tangent3d class is an alias of the Tangent component that uses
  * 3 dimensional Points with double precision.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @ingroup components
+ */
+using Tangent3d = Tangent3<double, false>;
+
+template<typename Scalar>
+using OptionalTangent3 = Tangent3<Scalar, true>;
+
+/**
+ * @brief The OptionalTangent3f class is an alias of the Tangent component that uses
+ * 3 dimensional Points with float precision and is optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Tangent3d = Tangent3<double, ElementType, OPT>;
+using OptionalTangent3f = Tangent3<float, true>;
+
+/**
+ * @brief The OptionalTangent3d class is an alias of the Tangent component that uses
+ * 3 dimensional Points with double precision and is optional.
+ *
+ * @ingroup components
+ */
+using OptionalTangent3d = Tangent3<double, true>;
 
 } // namespace vcl::comp
 

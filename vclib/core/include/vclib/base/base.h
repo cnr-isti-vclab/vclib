@@ -10,6 +10,7 @@
 
 #include <array>
 #include <cassert>
+#include <concepts>
 #include <cstdint>
 #include <limits>
 #include <memory>
@@ -44,7 +45,22 @@ constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
  *
  * @ingroup base
  */
-constexpr uint USHORT_NULL = std::numeric_limits<ushort>::max();
+constexpr ushort USHORT_NULL = std::numeric_limits<ushort>::max();
+
+/**
+ * @brief The NULL_INDEX variable template represents a null / invalid sentinel
+ * value for a generic unsigned integral index type, which is the maximum value
+ * that can be represented with that type.
+ *
+ * Allows to fully use all the possible values (except one) that can be
+ * represented in an unsigned integer, with the possibility to flag whether the
+ * index is not initialized or is set to null.
+ *
+ * @tparam Index An unsigned integral type. Defaults to uint (uint32_t).
+ * @ingroup base
+ */
+template<std::unsigned_integral Index = uint>
+inline constexpr Index NULL_INDEX = std::numeric_limits<Index>::max();
 
 /**
  * @brief A simple type that enumerates the main primitive types.

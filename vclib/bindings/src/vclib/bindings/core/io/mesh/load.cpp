@@ -51,7 +51,11 @@ void initLoadMesh(pybind11::module& m)
                    MeshInfo&          loadedInfo,
                    bool               enableOptionalComponents,
                    bool               loadTextureImages) {
-                    return vcl::loadMesh<MeshType>(filename);
+                    LoadSettings settings;
+                    settings.enableOptionalComponents = enableOptionalComponents;
+                    settings.loadTextureImages        = loadTextureImages;
+                    return vcl::loadMesh<MeshType>(
+                        filename, loadedInfo, settings);
                 },
                 py::arg("filename"),
                 py::arg("loaded_info")                = MeshInfo(),
