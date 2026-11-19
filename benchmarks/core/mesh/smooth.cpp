@@ -96,7 +96,7 @@ BENCH("smooth/taubin_smoothing", []<typename Mesh>(bench::State<Mesh>& s) {
 });
 
 BENCH(
-    "smooth/smooth_per_vertex_normals_point_cloud",
+    "smooth/smooth_vertex_normals_point_cloud",
     []<typename Mesh>(bench::State<Mesh>& s) {
         if (s.mesh().vertexCount() < 10) {
             return s.skip("not enough vertices (< 10)");
@@ -105,12 +105,12 @@ BENCH(
         Mesh base = s.copyMesh();
         if constexpr (vcl::FaceMeshConcept<Mesh>) {
             if (base.faceCount() > 0) {
-                vcl::updatePerVertexNormals(base);
+                vcl::updateVertexNormals(base);
             }
         }
         Mesh m = base;
 
         s.run(
             [&]() { m = base; },
-            [&]() { vcl::smoothPerVertexNormalsPointCloud(m, 10, 3); });
+            [&]() { vcl::smoothVertexNormalsPointCloud(m, 10, 3); });
     });

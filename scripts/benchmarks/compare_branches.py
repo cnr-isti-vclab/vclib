@@ -52,7 +52,10 @@ BENCH_BIN_SUBDIR = Path("benchmarks") / "core" / "mesh"
 CMAKE_DEFINES = {
     "CMAKE_BUILD_TYPE": "Release",
     "VCLIB_EXCLUDE_BENCHMARKS_TARGETS": "OFF",
+    "VCLIB_COMPILE_WARNINGS_AS_ERRORS": "OFF",
 }
+if sys.platform == "win32":
+    CMAKE_DEFINES["CMAKE_CXX_FLAGS"] = "/EHsc"
 
 
 def run(cmd, cwd=None, capture=False):

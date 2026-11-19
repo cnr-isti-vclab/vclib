@@ -86,6 +86,7 @@ endfunction()
 #   SHADER <shader_file>
 #   OUT_DIR <output_directory>
 #   [VARYING_DEF <varying_def_file>]
+#   [DEPENDS <dep1> <dep2> ...]
 #   [AS_HEADER]
 #   [OUT_FILES_VAR <variable_name>]
 # )
@@ -94,7 +95,7 @@ function(vclib_build_shader)
     # options: AS_HEADER
     set(options AS_HEADER)
     set(oneValueArgs SHADER OUT_DIR VARYING_DEF OUT_FILES_VAR)
-    set(multiValueArgs INCLUDE_DIRS)
+    set(multiValueArgs INCLUDE_DIRS DEPENDS)
     cmake_parse_arguments(
         ARG
         "${options}"
@@ -108,6 +109,11 @@ function(vclib_build_shader)
     endif()
     if(NOT ARG_OUT_DIR)
         message(FATAL_ERROR "vclib_build_shader: missing OUT_DIR argument")
+    endif()
+
+    get_filename_component(FILE_EXT "${ARG_SHADER}" EXT)
+    if(NOT "${FILE_EXT}" STREQUAL ".sc")
+        return()
     endif()
 
     set(BGFX_VF_PROFILES
@@ -134,10 +140,12 @@ function(vclib_build_shader)
         list(
             APPEND BGFX_VF_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
         list(
             APPEND BGFX_COMPUTE_PROFILES
             s_5_0 # dxbc, dx11
+            s_6_0 # dxil, dx12
         )
     endif()
 
@@ -193,7 +201,10 @@ function(vclib_build_shader)
             TARGET ${BGFX_TARGET}
             PROPERTY BGFX_SHADER_INCLUDE_PATH
         )
-        if(NOT BGFX_SHADER_INCLUDE_PATH)
+        if(
+            NOT BGFX_SHADER_INCLUDE_PATH
+            OR NOT EXISTS "${BGFX_SHADER_INCLUDE_PATH}/bgfx_shader.sh"
+        )
             # When consuming VCLib from an installation, the bgfx_shader.sh path
             # might not be explicitly exposed via target properties. We search for it
             # using paths relative to the vclib package directory or install prefix.
@@ -248,6 +259,12 @@ function(vclib_build_shader)
             set(OUT_FILES_ARG "")
         endif()
 
+        if(ARG_DEPENDS)
+            set(DEPENDS_ARG DEPENDS ${ARG_DEPENDS})
+        else()
+            set(DEPENDS_ARG "")
+        endif()
+
         bgfx_compile_shaders(
             TYPE ${TYPE}
             SHADERS ${ARG_SHADER}
@@ -257,6 +274,7 @@ function(vclib_build_shader)
             ${PROFILES_ARGUMENT}
             ${AS_HEADER_OPTION}
             NO_SOURCE_GROUP
+            ${DEPENDS_ARG}
             ${OUT_FILES_ARG}
         )
 
@@ -292,6 +310,12 @@ function(vclib_build_shaders_to_headers)
             set(VARYING_DEF_FILE
                 "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/varying.def.sc"
             )
+            file(
+                GLOB DIR_DEPS
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.config"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sh"
+                "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}/*.sc"
+            )
         else()
             file(
                 RELATIVE_PATH
@@ -301,6 +325,7 @@ function(vclib_build_shaders_to_headers)
             )
             get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
             set(VARYING_DEF_FILE "")
+            set(DIR_DEPS "")
         endif()
         set(OUT_DIR ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
 
@@ -310,12 +335,14 @@ function(vclib_build_shaders_to_headers)
                 OUT_DIR ${OUT_DIR}
                 VARYING_DEF "${VARYING_DEF_FILE}"
                 INCLUDE_DIRS "${VCLIB_RENDER_SHADER_DIR}/vclib/bgfx/${DIR_PATH}"
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         else()
             vclib_build_shader(
                 SHADER ${SHADER}
                 OUT_DIR ${OUT_DIR}
+                DEPENDS ${DIR_DEPS}
                 AS_HEADER
             )
         endif()

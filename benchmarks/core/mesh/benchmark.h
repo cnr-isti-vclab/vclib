@@ -140,12 +140,18 @@ public:
         if (!mMeshWithTopology) {
             mMeshWithTopology = std::make_unique<Mesh>(mMesh);
             enableTopologyComponents(*mMeshWithTopology);
-            vcl::updatePerVertexAdjacentFaces(*mMeshWithTopology);
-            vcl::updatePerVertexAdjacentVertices(*mMeshWithTopology);
-            vcl::updatePerFaceAdjacentFaces(*mMeshWithTopology);
+            vcl::updateVertexAdjacentFaces(*mMeshWithTopology);
+            vcl::updateVertexAdjacentVertices(*mMeshWithTopology);
+            vcl::updateFaceAdjacentFaces(*mMeshWithTopology);
         }
         return *mMeshWithTopology;
     }
+
+    /**
+     * @brief A copy of the input mesh with topology (adjacencies) enabled and
+     * updated, that the benchmark is free to modify.
+     */
+    Mesh copyMeshWithTopology() { return meshWithTopology(); }
 
     /**
      * @brief The input mesh with vertices, faces, and edges selected. It is
@@ -213,6 +219,8 @@ public:
     Mesh copyMesh() const { return mContext.copyMesh(); }
 
     const Mesh& meshWithTopology() { return mContext.meshWithTopology(); }
+
+    Mesh copyMeshWithTopology() { return mContext.copyMeshWithTopology(); }
 
     const Mesh& meshWithSelection() { return mContext.meshWithSelection(); }
 

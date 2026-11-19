@@ -15,7 +15,8 @@
 #include "grid.h"
 #include "types.h"
 
-#include <vclib/algorithms/mesh/import_export/import_matrix.h>
+#include <vclib/algorithms/mesh.h>
+#include <vclib/mesh.h>
 
 namespace bench {
 
@@ -35,25 +36,18 @@ template<typename Mesh>
 void enableQualityComponents(Mesh& m)
 {
     if constexpr (vcl::HasPerVertexQuality<Mesh>) {
-        if constexpr (requires { m.enablePerVertexQuality(); }) {
-            m.enablePerVertexQuality();
-        }
+        vcl::enableIfPerVertexQualityOptional(m);
     }
     if constexpr (vcl::FaceMeshConcept<Mesh> && vcl::HasPerFaceQuality<Mesh>) {
-        if constexpr (requires { m.enablePerFaceQuality(); }) {
-            m.enablePerFaceQuality();
-        }
+        vcl::enableIfPerFaceQualityOptional(m);
     }
 }
 
 template<typename Mesh>
 void enableCurvatureComponents(Mesh& m)
 {
-    if constexpr (requires { m.enablePerVertexPrincipalCurvature(); }) {
-        m.enablePerVertexPrincipalCurvature();
-    }
-    else if constexpr (requires { m.enableVertexPrincipalCurvature(); }) {
-        m.enableVertexPrincipalCurvature();
+    if constexpr (vcl::HasPerVertexPrincipalCurvature<Mesh>) {
+        vcl::enableIfPerVertexPrincipalCurvatureOptional(m);
     }
 }
 
@@ -77,7 +71,10 @@ void initQuality(Mesh& m)
 template<typename Mesh>
 bool hasWedgeTexCoords(const Mesh& m)
 {
-    return m.isPerFaceWedgeTexCoordsEnabled();
+    if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
+        return m.isPerFaceWedgeTexCoordsEnabled();
+    }
+    return false;
 }
 
 /**

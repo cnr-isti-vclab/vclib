@@ -36,17 +36,17 @@ BENCH(
     });
 
 BENCH(
-    "stat/topology/largest_per_vertex_adjacent_vertices_count",
+    "stat/topology/largest_vertex_adjacent_vertices_count",
     []<typename Mesh>(bench::State<Mesh>& s) {
         const Mesh& m = s.meshWithTopology();
-        s.run([&]() { return vcl::largestPerVertexAdjacentVerticesCount(m); });
+        s.run([&]() { return vcl::largestVertexAdjacentVerticesCount(m); });
     });
 
 BENCH(
-    "stat/topology/largest_per_vertex_adjacent_faces_count",
+    "stat/topology/largest_vertex_adjacent_faces_count",
     []<typename Mesh>(bench::State<Mesh>& s) {
         const Mesh& m = s.meshWithTopology();
-        s.run([&]() { return vcl::largestPerVertexAdjacentFacesCount(m); });
+        s.run([&]() { return vcl::largestVertexAdjacentFacesCount(m); });
     });
 
 BENCH(
@@ -107,3 +107,49 @@ BENCH(
         const Mesh& m = s.meshWithTopology();
         s.run([&]() { return vcl::connectedComponentCount(m); });
     });
+
+BENCH("stat/topology/face_flooding", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("not a face mesh");
+    }
+    else {
+        Mesh m = s.copyMeshWithTopology();
+        if (m.faceCount() == 0) {
+            return s.skip("mesh has no faces");
+        }
+
+        using Face = typename Mesh::FaceType;
+        std::vector<Face*> stack;
+        stack.reserve(m.faceCount());
+
+        s.run(
+            [&]() {
+                stack.clear();
+                for (auto& f : m.faces()) {
+                    f.visited() = false;
+                }
+            },
+            [&]() {
+                Face* start      = &m.face(0);
+                start->visited() = true;
+                stack.push_back(start);
+
+                std::size_t visitedCount = 0;
+
+                while (!stack.empty()) {
+                    Face* curr = stack.back();
+                    stack.pop_back();
+                    ++visitedCount;
+
+                    for (vcl::uint i = 0; i < curr->adjFaceCount(); ++i) {
+                        Face* adj = curr->adjFace(i);
+                        if (adj != nullptr && !adj->visited()) {
+                            adj->visited() = true;
+                            stack.push_back(adj);
+                        }
+                    }
+                }
+                return visitedCount;
+            });
+    }
+});

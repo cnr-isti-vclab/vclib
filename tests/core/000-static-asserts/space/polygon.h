@@ -8,9 +8,9 @@
 #ifndef POLYGON_H
 #define POLYGON_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void polygonStaticAsserts()
+inline void polygonStaticAsserts()
 {
     using namespace vcl;
 

@@ -8,7 +8,7 @@
 #include "../benchmark.h"
 
 #include <vclib/algorithms/mesh.h>
-#include <vclib/space/complex/tri_poly_index_bimap.h>
+#include <vclib/space/complex.h>
 
 #include <list>
 #include <utility>

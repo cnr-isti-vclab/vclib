@@ -19,7 +19,7 @@
 // 4. Creating meshes with custom parameters
 // 5. Saving created meshes to files
 
-auto meshCreation()
+inline auto meshCreation()
 {
     std::cout << "=== VCLib Example 003: Mesh Creation ===" << std::endl;
 

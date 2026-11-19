@@ -42,7 +42,7 @@ def mesh_matrix_conversion():
 
     # Load a textured mesh with normals and colors
     mesh = vcl.load_tri_mesh(VCLIB_EXAMPLE_MESHES_PATH + "/bunny_textured.ply")
-    vcl.update_per_vertex_normals(mesh)
+    vcl.update_vertex_normals(mesh)
 
     # Enable and set some colors for demonstration
     mesh.enable_per_vertex_color()
@@ -154,7 +154,7 @@ def mesh_matrix_conversion():
 
     print(f"Created cube mesh: {cube_mesh.vertex_count()} vertices, {cube_mesh.face_count()} faces")
 
-    vcl.update_per_vertex_and_face_normals(cube_mesh)
+    vcl.update_vertex_and_face_normals(cube_mesh)
 
     return imported_mesh, cube_mesh
 

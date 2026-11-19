@@ -26,49 +26,49 @@ Mesh meshWithTopologyComponents(const bench::State<Mesh>& s)
 } // namespace
 
 BENCH(
-    "update/topology/update_per_vertex_adjacent_faces",
+    "update/topology/update_vertex_adjacent_faces",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
-        s.run([&]() { vcl::updatePerVertexAdjacentFaces(m); });
+        s.run([&]() { vcl::updateVertexAdjacentFaces(m); });
     });
 
 BENCH(
-    "update/topology/update_per_vertex_adjacent_vertices",
+    "update/topology/update_vertex_adjacent_vertices",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
-        s.run([&]() { vcl::updatePerVertexAdjacentVertices(m); });
+        s.run([&]() { vcl::updateVertexAdjacentVertices(m); });
     });
 
 BENCH(
-    "update/topology/update_per_face_adjacent_faces",
+    "update/topology/update_face_adjacent_faces",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
-        s.run([&]() { vcl::updatePerFaceAdjacentFaces(m); });
+        s.run([&]() { vcl::updateFaceAdjacentFaces(m); });
     });
 
 BENCH(
-    "update/topology/clear_per_vertex_adjacent_faces",
+    "update/topology/clear_vertex_adjacent_faces",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
         s.run(
-            [&]() { vcl::updatePerVertexAdjacentFaces(m); },
-            [&]() { vcl::clearPerVertexAdjacentFaces(m); });
+            [&]() { vcl::updateVertexAdjacentFaces(m); },
+            [&]() { vcl::clearVertexAdjacentFaces(m); });
     });
 
 BENCH(
-    "update/topology/clear_per_vertex_adjacent_vertices",
+    "update/topology/clear_vertex_adjacent_vertices",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
         s.run(
-            [&]() { vcl::updatePerVertexAdjacentVertices(m); },
-            [&]() { vcl::clearPerVertexAdjacentVertices(m); });
+            [&]() { vcl::updateVertexAdjacentVertices(m); },
+            [&]() { vcl::clearVertexAdjacentVertices(m); });
     });
 
 BENCH(
-    "update/topology/clear_per_face_adjacent_faces",
+    "update/topology/clear_face_adjacent_faces",
     []<typename Mesh>(bench::State<Mesh>& s) {
         Mesh m = meshWithTopologyComponents(s);
         s.run(
-            [&]() { vcl::updatePerFaceAdjacentFaces(m); },
-            [&]() { vcl::clearPerFaceAdjacentFaces(m); });
+            [&]() { vcl::updateFaceAdjacentFaces(m); },
+            [&]() { vcl::clearFaceAdjacentFaces(m); });
     });
