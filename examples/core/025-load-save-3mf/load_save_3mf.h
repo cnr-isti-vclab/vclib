@@ -15,7 +15,9 @@
 auto load3mf()
 {
     vcl::TriMesh box;
-    vcl::loadMesh(box, VCLIB_EXAMPLE_MESHES_PATH "/box.3mf");
+    vcl::LoadSettings ls;
+    ls.loadTextureImages = true;
+    vcl::loadMesh(box, VCLIB_EXAMPLE_MESHES_PATH "/multipletextures.3mf", ls);
 
     vcl::TriMesh dodecaChainLoop = vcl::loadMesh<vcl::TriMesh>(
         VCLIB_EXAMPLE_MESHES_PATH "/dodeca_chain_loop_color.3mf");

@@ -45,12 +45,37 @@ inline std::shared_ptr<unsigned char> loadImageData(
         img.convertTo(QImage::Format_RGBA8888);
 
         ptr = std::shared_ptr<unsigned char>(
-            new unsigned char[img.width() * img.height() * 4]);
+            new unsigned char[img.width() * img.height() * 4],
+            std::default_delete<unsigned char[]>());
         std::copy(
             img.bits(), img.bits() + img.width() * img.height() * 4, ptr.get());
 
         w = QImage(filename.c_str()).width();
         h = QImage(filename.c_str()).height();
+    }
+    return ptr;
+}
+
+inline std::shared_ptr<unsigned char> loadImageData(
+    const void* buffer,
+    std::size_t size,
+    int&        w,
+    int&        h)
+{
+    std::shared_ptr<unsigned char> ptr;
+    QImage                         img = QImage::fromData(
+        reinterpret_cast<const unsigned char*>(buffer), static_cast<int>(size));
+    if (!img.isNull()) {
+        img.convertTo(QImage::Format_RGBA8888);
+
+        ptr = std::shared_ptr<unsigned char>(
+            new unsigned char[img.width() * img.height() * 4],
+            std::default_delete<unsigned char[]>());
+        std::copy(
+            img.bits(), img.bits() + img.width() * img.height() * 4, ptr.get());
+
+        w = img.width();
+        h = img.height();
     }
     return ptr;
 }

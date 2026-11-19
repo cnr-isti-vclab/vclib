@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv)
 {
-    constexpr bool TEST_MULTI_MESH = true;
+    constexpr bool TEST_MULTI_MESH = false;
 
     try {
         if constexpr (TEST_MULTI_MESH) {
