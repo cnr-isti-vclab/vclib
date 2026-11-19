@@ -18,7 +18,7 @@
 // - OFF
 // - STL
 
-auto loadMeshes()
+inline auto loadMeshes()
 {
     std::println("=== VCLib Example 000: Mesh I/O ===\n");
 

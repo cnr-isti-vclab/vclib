@@ -11,7 +11,7 @@
 #include <vclib/embree/heightfield_exterior_volume.h>
 #include <vclib/io.h>
 
-auto bestHeightfieldOrientation(
+inline auto bestHeightfieldOrientation(
     const std::string& filename,
     const std::string& name,
     double             scaleFactor)

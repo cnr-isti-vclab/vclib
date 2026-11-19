@@ -9,7 +9,7 @@
 #define POINT_SAMPLER_H
 
 #include <vclib/mesh.h>
-#include <vclib/space.h>
+#include <vclib/space/complex.h>
 
 inline void pointSamplerStaticAsserts()
 {
