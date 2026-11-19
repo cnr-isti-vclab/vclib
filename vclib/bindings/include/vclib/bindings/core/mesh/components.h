@@ -41,7 +41,7 @@ void checkElementComponent(const ElementType& el)
             throw MissingComponentException(
                 std::string("Component '") +
                 vcl::componentEnumString<COMP_ID>() +
-                "' is not available or enabled on this element.");
+                "' is not available on this element.");
         }
     }
 }

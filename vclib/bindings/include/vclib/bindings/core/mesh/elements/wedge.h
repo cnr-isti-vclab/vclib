@@ -52,8 +52,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
             [](WedgeType& self) -> auto& {
                 if (!self.isColorAvailable()) {
                     throw MissingComponentException(
-                        "Component 'WEDGE_COLORS' is not available or enabled "
-                        "on this face.");
+                        "Component 'WEDGE_COLORS' is not available on this "
+                        "face.");
                 }
                 return self.color();
             },
@@ -61,8 +61,7 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
         w.def("set_color", [](WedgeType& self, const Color& col) {
             if (!self.isColorAvailable()) {
                 throw MissingComponentException(
-                    "Component 'WEDGE_COLORS' is not available or enabled on "
-                    "this face.");
+                    "Component 'WEDGE_COLORS' is not available on this face.");
             }
             self.color() = col;
         });
@@ -77,8 +76,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
             [](WedgeType& self) -> auto& {
                 if (!self.isTexCoordAvailable()) {
                     throw MissingComponentException(
-                        "Component 'WEDGE_TEX_COORDS' is not available or "
-                        "enabled on this face.");
+                        "Component 'WEDGE_TEX_COORDS' is not available on this "
+                        "face.");
                 }
                 return self.texCoord();
             },
@@ -86,8 +85,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
         w.def("set_tex_coord", [](WedgeType& self, const TexCoordd& tc) {
             if (!self.isTexCoordAvailable()) {
                 throw MissingComponentException(
-                    "Component 'WEDGE_TEX_COORDS' is not available or enabled "
-                    "on this face.");
+                    "Component 'WEDGE_TEX_COORDS' is not available on this "
+                    "face.");
             }
             self.texCoord() = tc;
         });
@@ -102,8 +101,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
             [](WedgeType& self) -> auto& {
                 if (!self.isNormalAvailable()) {
                     throw MissingComponentException(
-                        "Component 'WEDGE_NORMALS' is not available or enabled "
-                        "on this face.");
+                        "Component 'WEDGE_NORMALS' is not available on this "
+                        "face.");
                 }
                 return self.normal();
             },
@@ -111,8 +110,7 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
         w.def("set_normal", [](WedgeType& self, const Point3d& n) {
             if (!self.isNormalAvailable()) {
                 throw MissingComponentException(
-                    "Component 'WEDGE_NORMALS' is not available or enabled on "
-                    "this face.");
+                    "Component 'WEDGE_NORMALS' is not available on this face.");
             }
             self.normal() = n;
         });
@@ -191,8 +189,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 [](WedgeContainerType& self) {
                     if (!self.isColorsAvailable()) {
                         throw MissingComponentException(
-                            "Component 'WEDGE_COLORS' is not available or "
-                            "enabled on this face.");
+                            "Component 'WEDGE_COLORS' is not available on this "
+                            "face.");
                     }
                     return self.colors();
                 },
@@ -240,8 +238,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 [](WedgeContainerType& self) {
                     if (!self.isTexCoordsAvailable()) {
                         throw MissingComponentException(
-                            "Component 'WEDGE_TEX_COORDS' is not available or "
-                            "enabled on this face.");
+                            "Component 'WEDGE_TEX_COORDS' is not available on "
+                            "this face.");
                     }
                     return self.texCoords();
                 },
@@ -289,8 +287,8 @@ void initWedge(pybind11::class_<FaceType, Options...>& c)
                 [](WedgeContainerType& self) {
                     if (!self.isNormalsAvailable()) {
                         throw MissingComponentException(
-                            "Component 'WEDGE_NORMALS' is not available or "
-                            "enabled on this face.");
+                            "Component 'WEDGE_NORMALS' is not available on "
+                            "this face.");
                     }
                     return self.normals();
                 },

@@ -32,8 +32,7 @@ void checkAdjVertices(const ElementType& e)
     }
     if (!e.template isComponentAvailable<CompId::ADJACENT_VERTICES>()) {
         throw MissingComponentException(
-            "Component 'ADJACENT_VERTICES' is not available or enabled on this "
-            "element.");
+            "Component 'ADJACENT_VERTICES' is not available on this element.");
     }
 }
 

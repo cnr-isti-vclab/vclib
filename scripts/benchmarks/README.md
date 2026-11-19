@@ -99,9 +99,8 @@ After building the benchmark executable:
 python -m unittest discover -s scripts/benchmarks -p 'test_*.py'
 ```
 
-The tests cover all four v2 mesh types on generated grids and an OBJ mesh,
-registry consistency, CLI/config precedence, independent A/B selection,
-invalid options, metadata, provenance, and coverage warnings.
-CLI tests use the executable built by the benchmark preset; set
+The tests cover all four mesh types on generated grids and a mesh file, registry
+consistency, CLI/config precedence, invalid options, metadata, and the comparison
+scripts. CLI tests use the executable built by the benchmark preset; set
 `VCLIB_MESH_BENCHMARK` to use another path. CLI tests are skipped if the executable
 does not exist.

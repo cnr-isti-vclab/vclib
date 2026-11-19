@@ -32,8 +32,7 @@ void checkAdjFaces(const ElementType& e)
     }
     if (!e.template isComponentAvailable<CompId::ADJACENT_FACES>()) {
         throw MissingComponentException(
-            "Component 'ADJACENT_FACES' is not available or enabled on this "
-            "element.");
+            "Component 'ADJACENT_FACES' is not available on this element.");
     }
 }
 

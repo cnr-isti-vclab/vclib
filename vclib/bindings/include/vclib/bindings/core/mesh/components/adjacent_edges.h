@@ -32,8 +32,7 @@ void checkAdjEdges(const ElementType& e)
     }
     if (!e.template isComponentAvailable<CompId::ADJACENT_EDGES>()) {
         throw MissingComponentException(
-            "Component 'ADJACENT_EDGES' is not available or enabled on this "
-            "element.");
+            "Component 'ADJACENT_EDGES' is not available on this element.");
     }
 }
 
