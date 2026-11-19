@@ -296,6 +296,12 @@ def main():
         help="Remove the worktree of the other branch at the end "
         "(it is kept by default to speed up the next runs)",
     )
+    parser.add_argument(
+        "--markdown",
+        "--md",
+        dest="markdown",
+        help="Path to write the markdown comparison report (default: scripts/benchmarks/results/<stamp>_<ref_a>_vs_<ref_b>.md)",
+    )
     parser.add_argument("--no-color", action="store_true", help="Disable colors")
     args = parser.parse_args()
 
@@ -375,6 +381,11 @@ def main():
     stamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     json_other = RESULTS_DIR / f"{stamp}_{safe_name(other_name)}.json"
     json_this = RESULTS_DIR / f"{stamp}_{safe_name(this_name)}.json"
+    md_report = (
+        Path(args.markdown).resolve()
+        if args.markdown
+        else RESULTS_DIR / f"{stamp}_{safe_name(other_name)}_vs_{safe_name(this_name)}.md"
+    )
 
     for label, binary, json_path, source_dir, mesh_type in (
         (other_name, bin_other, json_other, other_dir, mesh_type_a),
@@ -402,12 +413,14 @@ def main():
         other_name,
         "--label-b",
         this_name,
+        "--markdown",
+        str(md_report),
     ]
     if args.no_color or not sys.stdout.isatty():
         compare_cmd.append("--no-color")
     run(compare_cmd)
 
-    print(f"\nReports saved in:\n  {json_other}\n  {json_this}")
+    print(f"\nReports saved in:\n  {json_other}\n  {json_this}\n  {md_report}")
 
     if args.remove_worktree:
         git("worktree", "remove", "--force", other_dir, capture=False)
