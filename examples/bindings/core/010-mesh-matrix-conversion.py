@@ -45,8 +45,8 @@ def mesh_matrix_conversion():
     vcl.update_vertex_normals(mesh)
 
     # Enable and set some colors for demonstration
-    mesh.enable_per_vertex_color()
-    mesh.enable_per_face_color()
+    mesh.enable_vertex_color()
+    mesh.enable_face_color()
     for v in mesh.vertices():
         v.set_color(random_color())
     for f in mesh.faces():

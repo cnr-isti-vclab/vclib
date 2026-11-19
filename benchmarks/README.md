@@ -14,15 +14,15 @@ Use `--mesh-type` to choose the representation at runtime:
 
 ```sh
 out/build/vclib-core-benchmarks/benchmarks/core/mesh/vclib-core-benchmark-mesh \
-    --mesh-type trimesh-indexed --grid 1000 1000 --json report.json
+    --mesh-type trimesh64 --grid 1000 1000 --json report.json
 ```
 
-| CLI name | C++ type |
-|----------|----------|
-| `trimesh` (default) | `vcl::TriMesh` |
-| `trimeshf` | `vcl::TriMeshf` |
-| `trimesh-indexed` | `vcl::TriMeshIndexed` |
-| `trimesh-indexedf` | `vcl::TriMeshIndexedf` |
+| CLI name | C++ type | Scalar | Reference representation |
+|---------------|----------|--------|--------------------------|
+| `trimesh` (default) | `vcl::TriMesh` | double | 32-bit indices |
+| `trimeshf` | `vcl::TriMeshf` | float | 32-bit indices |
+| `trimesh64` | `vcl::TriMesh64` | double | 64-bit indices |
+| `trimesh64f` | `vcl::TriMesh64f` | float | 64-bit indices |
 
 The same option applies when passing a mesh file instead of `--grid`.
 All four types are compiled into one executable; selection happens outside the
@@ -32,7 +32,7 @@ The `--config` JSON file also accepts a `mesh_type` key:
 
 ```json
 {
-    "mesh_type": "trimesh-indexed",
+    "mesh_type": "trimesh64",
     "grid": [1000, 1000],
     "include": ["stat/*"],
     "iterations": 10

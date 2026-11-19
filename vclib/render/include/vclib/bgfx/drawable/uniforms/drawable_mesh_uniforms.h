@@ -73,7 +73,7 @@ public:
     template<MeshConcept MeshType>
     static void setColor(const MeshType& m)
     {
-        if constexpr (HasColor<MeshType>) {
+        if constexpr (HasMeshColor<MeshType>) {
             sMeshColor[0] = m.color().redF();
             sMeshColor[1] = m.color().greenF();
             sMeshColor[2] = m.color().blueF();

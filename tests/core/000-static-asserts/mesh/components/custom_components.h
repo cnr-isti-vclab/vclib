@@ -14,11 +14,9 @@ void customComponentsComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
 
-    using TmpTriMeshVertex = detail::tmpMesh::TriVertex;
-
-    using CustomComponents = vert::CustomComponents<TriMeshVertex>;
+    using CustomComponents = vert::CustomComponents;
 
     // test only the customComponent component
     static_assert(
@@ -55,23 +53,6 @@ void customComponentsComponentStaticAsserts()
     static_assert(
         comp::HasCustomComponents<TriMeshVertex&&>,
         "TriMeshVertex&& does not satisfy the HasCustomComponents concept");
-
-    static_assert(
-        !comp::HasCustomComponents<TmpTriMeshVertex>,
-        "TmpTriMeshVertex does satisfy the HasCustomComponents concept");
-    static_assert(
-        !comp::HasCustomComponents<const TmpTriMeshVertex>,
-        "const TmpTriMeshVertex does satisfy the HasCustomComponents concept");
-    static_assert(
-        !comp::HasCustomComponents<TmpTriMeshVertex&>,
-        "TmpTriMeshVertex& does satisfy the HasCustomComponents concept");
-    static_assert(
-        !comp::HasCustomComponents<const TmpTriMeshVertex&>,
-        "const TmpTriMeshVertex& does satisfy the HasCustomComponents "
-        "concept");
-    static_assert(
-        !comp::HasCustomComponents<TmpTriMeshVertex&&>,
-        "TmpTriMeshVertex&& does satisfy the HasCustomComponents concept");
 
     static_assert(
         comp::HasCustomComponents<TriMesh>,

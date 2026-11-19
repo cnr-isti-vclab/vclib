@@ -117,10 +117,10 @@ TEST_CASE("Points Color Modes")
             [](vcl::HeadlessMeshViewer& mv) {
                 auto mesh = getDrawableMesh<vcl::TriMesh>("bimba.obj");
 
-                mesh.enablePerVertexColor(); // Enable per vertex color
+                mesh.enableVertexColor(); // Enable per vertex color
                 mesh.updateRenderSettingsCapabilities();
                 // Deterministically assign colors to vertices
-                for (auto& v : mesh.vertices()) {
+                for (auto v : mesh.vertices()) {
                     if (v.index() % 3 == 0)
                         v.color() = vcl::Color::Red;
                     else if (v.index() % 3 == 1)
@@ -205,7 +205,7 @@ TEST_CASE("Points Selection")
                 mesh.updateRenderSettingsCapabilities();
 
                 // Deterministically assign selection to vertices
-                for (auto& v : mesh.vertices()) {
+                for (auto v : mesh.vertices()) {
                     if (v.index() % 5 == 0)
                         v.selected() = true;
                 }

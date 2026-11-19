@@ -42,6 +42,7 @@ foreach(MODULE ${PYTHON_MODULES})
         CONFIGURE_DEPENDS
         "src/vclib/bindings/${MODULE}/*.cpp"
     )
+
     list(APPEND MODULE_HEADERS "include/vclib/bindings/utils.h")
     list(APPEND MODULE_SOURCES "src/vclib/bindings/${MODULE}.cpp")
 

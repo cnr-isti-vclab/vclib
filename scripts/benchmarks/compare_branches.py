@@ -16,17 +16,19 @@ Examples:
     python scripts/benchmarks/compare_branches.py main --grid 2000 2000 -n 20
     python scripts/benchmarks/compare_branches.py main --filter 'stat/*'
     python scripts/benchmarks/compare_branches.py main --config my_bench.json
-    python scripts/benchmarks/compare_branches.py main --mesh-type trimesh-indexed
+    python scripts/benchmarks/compare_branches.py main --mesh-type-a trimesh-indexed --mesh-type-b trimesh
 
-The benchmark selection and --mesh-type options are forwarded to both
-executables. Mesh types: trimesh (default), trimeshf, trimesh-indexed and
-trimesh-indexedf. The config key "mesh_type" is used unless --mesh-type is given.
-When a mesh type is requested, both reports must confirm it; older executables
-that silently ignore the option are rejected.
+Mesh type names are native to each executable; there is no implicit mapping.
+--mesh-type sets the same name for both sides; --mesh-type-a/--mesh-type-b
+select the baseline/current types independently. Config keys: mesh_type,
+mesh_type_a, mesh_type_b. CLI options override the config.
+Both reports must confirm the requested type; executables that silently ignore
+the option are rejected. Provenance is saved alongside the benchmark results.
 """
 
 import argparse
 import datetime
+import hashlib
 import json
 import os
 import random
@@ -36,7 +38,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from compare import require_mesh_type
+from compare import add_mesh_type_options, require_mesh_type, resolve_mesh_types
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
@@ -55,7 +57,17 @@ CMAKE_DEFINES = {
     "VCLIB_COMPILE_WARNINGS_AS_ERRORS": "OFF",
 }
 if sys.platform == "win32":
-    CMAKE_DEFINES["CMAKE_CXX_FLAGS"] = "/EHsc"
+    # /EHsc is an MSVC-specific flag. Do not pass it if compiling with GCC/MinGW or Clang++.
+    cxx_is_gnu = any(
+        tool in os.environ.get("CXX", "").lower() for tool in ("g++", "gcc", "clang++")
+    ) or (not shutil.which("cl") and shutil.which("g++"))
+    if not cxx_is_gnu:
+        CMAKE_DEFINES["CMAKE_CXX_FLAGS"] = "/EHsc"
+    else:
+        # MinGW GCC implements C++23 <print> (std::print, std::println) terminal routines in libstdc++exp.a
+        CMAKE_DEFINES["CMAKE_CXX_STANDARD_LIBRARIES"] = (
+            "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lstdc++exp"
+        )
 
 
 def run(cmd, cwd=None, capture=False):
@@ -85,16 +97,30 @@ def current_branch_name() -> str:
 
 def prepare_worktree(ref: str) -> Path:
     try:
-        commit = git("rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}")
+        git("worktree", "prune")
     except subprocess.CalledProcessError:
+        pass
+
+    commit = None
+    for candidate in [ref, f"origin/{ref}"]:
+        try:
+            commit = git("rev-parse", "--verify", "--quiet", f"{candidate}^{{commit}}")
+            break
+        except subprocess.CalledProcessError:
+            continue
+    if not commit:
         sys.exit(f"Unknown branch or git ref: {ref}")
     path = WORKTREES_DIR / safe_name(ref)
 
     if (path / ".git").exists():
-        git("checkout", "--detach", commit, cwd=path, capture=False)
+        git("checkout", "--detach", "-f", commit, cwd=path, capture=False)
     else:
         WORKTREES_DIR.mkdir(parents=True, exist_ok=True)
-        git("worktree", "add", "--detach", path, commit, capture=False)
+        try:
+            git("worktree", "add", "--detach", "-f", path, commit, capture=False)
+        except subprocess.CalledProcessError:
+            git("worktree", "prune")
+            git("worktree", "add", "--detach", "-f", path, commit, capture=False)
     return path
 
 
@@ -107,7 +133,15 @@ def build(source_dir: Path, jobs) -> Path:
     configure += [f"-D{k}={v}" for k, v in CMAKE_DEFINES.items()]
     run(configure)
 
-    compile_cmd = ["cmake", "--build", build_dir, "--target", BENCH_TARGET]
+    compile_cmd = [
+        "cmake",
+        "--build",
+        build_dir,
+        "--config",
+        "Release",
+        "--target",
+        BENCH_TARGET,
+    ]
     if jobs:
         compile_cmd += ["-j", str(jobs)]
     run(compile_cmd)
@@ -116,9 +150,15 @@ def build(source_dir: Path, jobs) -> Path:
 
 def find_binary(source_dir: Path) -> Path:
     base = source_dir / BUILD_SUBDIR / BENCH_BIN_SUBDIR
-    for name in (BENCH_TARGET, BENCH_TARGET + ".exe"):
-        if (base / name).exists():
-            return base / name
+    for name in (
+        BENCH_TARGET,
+        BENCH_TARGET + ".exe",
+        f"Release/{BENCH_TARGET}.exe",
+        f"Release/{BENCH_TARGET}",
+    ):
+        p = base / name
+        if p.exists():
+            return p
     sys.exit(f"Benchmark executable not found in {base}")
 
 
@@ -147,6 +187,50 @@ def run_benchmark(
             require_mesh_type(json.load(f), mesh_type, str(binary))
 
 
+def record_provenance(
+    json_path: Path, source_dir: Path, binary: Path, ref: str,
+    reused_binary: bool, dataset_args, iterations, cpu,
+):
+    cache_path = source_dir / BUILD_SUBDIR / "CMakeCache.txt"
+    build_config = {}
+    if cache_path.is_file():
+        for line in cache_path.read_text().splitlines():
+            if not line or line.startswith(("//", "#")) or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.split(":", 1)[0]
+            if key.startswith(("CMAKE_", "VCLIB_")):
+                build_config[key] = value
+    else:
+        print(f"Warning: build cache not found: {cache_path}")
+    with open(binary, "rb") as f:
+        digest = hashlib.sha256()
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            digest.update(chunk)
+        binary_hash = digest.hexdigest()
+    with open(json_path) as f:
+        report = json.load(f)
+    report["provenance"] = {
+        "ref": ref,
+        "source_commit": git("rev-parse", "HEAD", cwd=source_dir),
+        "source_dirty": bool(git("status", "--porcelain", cwd=source_dir)),
+        "binary_sha256": binary_hash,
+        "reused_binary": reused_binary,
+        "build_cache": build_config,
+        "benchmark_args": [str(arg) for arg in dataset_args],
+        "iterations_override": iterations,
+        "cpu_requested": cpu,
+        "config": None,
+    }
+    if "--config" in dataset_args:
+        config_path = dataset_args[dataset_args.index("--config") + 1]
+        with open(config_path) as f:
+            report["provenance"]["config"] = json.load(f)
+    with open(json_path, "w") as f:
+        json.dump(report, f, indent=2)
+        f.write("\n")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
@@ -163,11 +247,7 @@ def main():
         help="Size of the synthetic grid used when --mesh is not given "
         "(default: 1000 1000)",
     )
-    parser.add_argument(
-        "--mesh-type",
-        help="Mesh representation used by both binaries (default: config "
-        "mesh_type, or trimesh). Both reports must confirm the requested type.",
-    )
+    add_mesh_type_options(parser)
     parser.add_argument(
         "--filter",
         action="append",
@@ -221,19 +301,19 @@ def main():
 
     config_has_dataset = False
     config_path = None
-    mesh_type = args.mesh_type
+    config = {}
     if args.config:
         config_path = Path(args.config).resolve()
         if not config_path.is_file():
             sys.exit(f"Config file not found: {config_path}")
         with open(config_path) as f:
             config = json.load(f)
-        config_has_dataset = "mesh" in config or "grid" in config
-        if mesh_type is None:
-            mesh_type = config.get("mesh_type")
-        if args.iterations is None and "iterations" not in config:
-            args.iterations = 10
-    elif args.iterations is None:
+    try:
+        mesh_type_a, mesh_type_b = resolve_mesh_types(args, config)
+    except ValueError as e:
+        parser.error(str(e))
+    config_has_dataset = "mesh" in config or "grid" in config
+    if args.iterations is None and "iterations" not in config:
         args.iterations = 10
 
     if args.mesh:
@@ -256,8 +336,6 @@ def main():
         dataset_args.append("--include-slow")
     if config_path:
         dataset_args += ["--config", config_path]
-    if args.mesh_type is not None:
-        dataset_args += ["--mesh-type", args.mesh_type]
 
     seed = args.seed
     if seed is None and config_path:
@@ -284,6 +362,11 @@ def main():
         for label, src in ((other_name, other_dir), (this_name, REPO_ROOT)):
             print(f"\n>>> Building [{label}]")
             build(src, args.jobs)
+    else:
+        print(
+            "Warning: --no-build reuses existing binaries; the recorded source "
+            "commit and build cache do not prove which sources built them."
+        )
 
     bin_other = find_binary(other_dir)
     bin_this = find_binary(REPO_ROOT)
@@ -293,13 +376,20 @@ def main():
     json_other = RESULTS_DIR / f"{stamp}_{safe_name(other_name)}.json"
     json_this = RESULTS_DIR / f"{stamp}_{safe_name(this_name)}.json"
 
-    for label, binary, json_path in (
-        (other_name, bin_other, json_other),
-        (this_name, bin_this, json_this),
+    for label, binary, json_path, source_dir, mesh_type in (
+        (other_name, bin_other, json_other, other_dir, mesh_type_a),
+        (this_name, bin_this, json_this, REPO_ROOT, mesh_type_b),
     ):
         print(f"\n>>> Running benchmark [{label}]")
+        side_args = list(dataset_args)
+        if mesh_type is not None:
+            side_args += ["--mesh-type", mesh_type]
         run_benchmark(
-            binary, dataset_args, args.iterations, json_path, args.cpu, mesh_type
+            binary, side_args, args.iterations, json_path, args.cpu, mesh_type
+        )
+        record_provenance(
+            json_path, source_dir, binary, label, args.no_build,
+            side_args, args.iterations, args.cpu,
         )
 
     print("\n>>> Comparison\n")

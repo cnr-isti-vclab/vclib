@@ -27,43 +27,50 @@ namespace bench {
 template<typename Mesh>
 void enableTopologyComponents(Mesh& m)
 {
-    m.enablePerVertexAdjacentFaces();
-    m.enablePerVertexAdjacentVertices();
-    m.enablePerFaceAdjacentFaces();
+    if constexpr (vcl::HasVertexOptionalAdjacentFaces<Mesh>) {
+        m.enableVertexAdjacentFaces();
+    }
+    if constexpr (vcl::HasVertexOptionalAdjacentVertices<Mesh>) {
+        m.enableVertexAdjacentVertices();
+    }
+    if constexpr (vcl::HasFaceOptionalAdjacentFaces<Mesh>) {
+        m.enableFaceAdjacentFaces();
+    }
 }
 
 template<typename Mesh>
 void enableQualityComponents(Mesh& m)
 {
-    if constexpr (vcl::HasPerVertexQuality<Mesh>) {
-        vcl::enableIfPerVertexQualityOptional(m);
+    if constexpr (vcl::HasVertexOptionalQuality<Mesh>) {
+        m.enableVertexQuality();
     }
-    if constexpr (vcl::FaceMeshConcept<Mesh> && vcl::HasPerFaceQuality<Mesh>) {
-        vcl::enableIfPerFaceQualityOptional(m);
+    if constexpr (
+        vcl::FaceMeshConcept<Mesh> && vcl::HasFaceOptionalQuality<Mesh>) {
+        m.enableFaceQuality();
     }
 }
 
 template<typename Mesh>
 void enableCurvatureComponents(Mesh& m)
 {
-    if constexpr (vcl::HasPerVertexPrincipalCurvature<Mesh>) {
-        vcl::enableIfPerVertexPrincipalCurvatureOptional(m);
+    if constexpr (vcl::HasVertexOptionalPrincipalCurvature<Mesh>) {
+        m.enableVertexPrincipalCurvature();
     }
 }
 
 template<typename Mesh>
 void initQuality(Mesh& m)
 {
-    if constexpr (vcl::HasPerVertexQuality<Mesh>) {
-        for (auto& v : m.vertices()) {
-            v.quality() = static_cast<typename Mesh::VertexType::QualityType>(
-                m.index(v) + 1);
+    if constexpr (vcl::HasVertexQuality<Mesh>) {
+        using QType = vcl::VertexType<Mesh>::QualityType;
+        for (auto&& v : m.vertices()) {
+            v.quality() = static_cast<QType>(v.index() + 1);
         }
     }
-    if constexpr (vcl::FaceMeshConcept<Mesh> && vcl::HasPerFaceQuality<Mesh>) {
-        for (auto& f : m.faces()) {
-            f.quality() = static_cast<typename Mesh::FaceType::QualityType>(
-                m.index(f) + 1);
+    if constexpr (vcl::FaceMeshConcept<Mesh> && vcl::HasFaceQuality<Mesh>) {
+        using QType = vcl::FaceType<Mesh>::QualityType;
+        for (auto&& f : m.faces()) {
+            f.quality() = static_cast<QType>(f.index() + 1);
         }
     }
 }
@@ -71,8 +78,8 @@ void initQuality(Mesh& m)
 template<typename Mesh>
 bool hasWedgeTexCoords(const Mesh& m)
 {
-    if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>) {
-        return m.isPerFaceWedgeTexCoordsEnabled();
+    if constexpr (vcl::HasFaceWedgeTexCoords<Mesh>) {
+        return m.template isFaceComponentAvailable<vcl::CompId::WEDGE_TEX_COORDS>();
     }
     return false;
 }
@@ -84,6 +91,7 @@ template<typename Mesh>
 void buildGridMesh(Mesh& m, vcl::uint rows, vcl::uint cols)
 {
     auto grid = makeGridMatrices(rows, cols);
+
     vcl::meshFromMatrices(m, grid.vertices, grid.faces);
 }
 

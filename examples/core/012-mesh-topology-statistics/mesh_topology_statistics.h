@@ -24,7 +24,7 @@ inline void meshTopologyStatistics()
     vcl::TriMesh rangeMesh =
         vcl::loadMesh<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/rangemap.ply");
 
-    rangeMesh.enablePerFaceAdjacentFaces();
+    rangeMesh.enableFaceAdjacentFaces();
     vcl::updateFaceAdjacentFaces(rangeMesh);
 
     std::cout << "Range mesh: " << rangeMesh.vertexCount() << " vertices, "
@@ -54,7 +54,7 @@ inline void meshTopologyStatistics()
     mesh.name() = "Brain Mesh";
 
     // Enable adjacency information for topology checks
-    mesh.enablePerFaceAdjacentFaces();
+    mesh.enableFaceAdjacentFaces();
     vcl::updateFaceAdjacentFaces(mesh);
 
     // Check if mesh is water tight

@@ -30,7 +30,6 @@ void trimeshStaticAsserts()
     static_assert(
         !PolygonMeshConcept<TriMesh>, "The TriMesh is a valid Polygon Mesh.");
 
-    static_assert(HasVertices<TriMesh>, "");
     static_assert(HasFaces<TriMesh>, "");
     static_assert(!HasEdges<TriMesh>, "");
 
@@ -47,11 +46,10 @@ void trimeshStaticAsserts()
     static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
     static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");
 
-    static_assert(comp::HasColor<TriMesh::VertexType>, "");
-    static_assert(comp::HasOptionalColor<TriMesh::VertexType>, "");
+    static_assert(comp::HasColor<VertexType<TriMesh>>, "");
+    static_assert(comp::HasOptionalColor<VertexType<TriMesh>>, "");
     static_assert(
-        comp::
-            HasOptionalComponentOfType<TriMesh::Face, CompId::WEDGE_TEX_COORDS>,
+        comp::HasOptionalComponent<CompId::WEDGE_TEX_COORDS, FaceType<TriMesh>>,
         "");
 
     static_assert(HasBoundingBox<TriMesh>, "");

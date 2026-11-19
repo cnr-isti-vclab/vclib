@@ -15,9 +15,11 @@
 
 #include <vclib/io.h>
 
+#include <climits>
 #include <filesystem>
 #include <print>
 #include <random>
+#include <stdexcept>
 #include <string>
 
 namespace fs = std::filesystem;
@@ -92,18 +94,28 @@ int runBenchmarks(
             std::println("Loading mesh from: {}", meshPath);
             mesh = vcl::loadMesh<Mesh>(meshPath);
         }
+        if (mesh.vertexCount() == 0 || mesh.faceCount() == 0) {
+            throw std::runtime_error(
+                "The dataset has no vertices or faces. Check the input and "
+                "whether its file format is supported by this mesh version.");
+        }
     }
     catch (const std::exception& e) {
         std::println(stderr, "Error loading dataset: {}", e.what());
         return 1;
     }
 
-    const uint32_t seed = opts.seed.value_or(std::random_device {}());
-
+    const uint32_t seed = opts.seed.value_or(std::random_device{}());
+    using Scalar = typename Mesh::PositionType::ScalarType;
     nlohmann::json metadata = {
-        {"mesh_type", meshType          },
-        {"vertices",  mesh.vertexCount()},
-        {"faces",     mesh.faceCount()  },
+        {"mesh_type",       meshType},
+        {"mesh_generation", "v2"},
+        {"scalar_type",     std::is_same_v<Scalar, float> ? "float" : "double"},
+        {"scalar_bits",     sizeof(Scalar) * CHAR_BIT},
+        {"reference_kind",  "index"},
+        {"reference_bits",  sizeof(typename Mesh::IndexType) * CHAR_BIT},
+        {"vertices",        mesh.vertexCount()},
+        {"faces",           mesh.faceCount()},
         {"seed",      seed              }
     };
 
@@ -124,7 +136,7 @@ int runBenchmarks(
     std::println("==================================================");
 
     bench::BenchmarkRunner runner(
-        "v1", datasetName, metadata, opts.iterations, opts.warmup);
+        "v2", datasetName, metadata, opts.iterations, opts.warmup);
     bench::Context<Mesh> context(std::move(mesh), datasetName, meshPath, seed);
 
     for (const auto* entry : selected) {

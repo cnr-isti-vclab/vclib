@@ -8,12 +8,19 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
 #define VCL_MESH_ELEM_ALGORITHMS_INTERSECTION_H
 
+#include "polygon/ear_cut.h"
+
 #include <vclib/mesh/elements.h>
+#include <vclib/mesh/requirements.h>
+#include <vclib/mesh/traits.h>
 
 #include <vclib/algorithms/core.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
+
+using vcl::intersect;
+using vcl::intersection;
 
 /**
  * @brief Checks if a face intersects a box.
@@ -41,29 +48,39 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
     if constexpr (TriangleFaceConcept<FaceType>) {
         return intersect(
             TriangleWrapper(
-                f.vertex(0)->position(),
-                f.vertex(1)->position(),
-                f.vertex(2)->position()),
+                f.vertex(0).position(),
+                f.vertex(1).position(),
+                f.vertex(2).position()),
             box);
     }
     else {
-        bool b = false;
-
-        std::vector<uint> tris = earCut(f);
-        for (uint i = 0; i < tris.size() && !b; i += 3) {
-            b |= intersect(
+        if (f.vertexCount() == 3) {
+            return intersect(
                 TriangleWrapper(
-                    f.vertex(tris[i])->position(),
-                    f.vertex(tris[i + 1])->position(),
-                    f.vertex(tris[i + 2])->position()),
+                    f.vertex(0).position(),
+                    f.vertex(1).position(),
+                    f.vertex(2).position()),
                 box);
         }
-        return b;
+        else {
+            bool b = false;
+
+            std::vector<uint> tris = earCut(f);
+            for (uint i = 0; i < tris.size() && !b; i += 3) {
+                b |= intersect(
+                    TriangleWrapper(
+                        f.vertex(tris[i]).position(),
+                        f.vertex(tris[i + 1]).position(),
+                        f.vertex(tris[i + 2]).position()),
+                    box);
+            }
+            return b;
+        }
     }
 }
 
 /**
- * @copydoc intersect(const FaceType&, const Box<PointType>&)
+ * @copydoc vcl::intersect(const FaceType&, const Box<PointType>&)
  *
  * @ingroup core_intersection
  */
@@ -103,9 +120,9 @@ bool intersect(
     if constexpr (TriangleFaceConcept<FaceType>) {
         return intersect(
             TriangleWrapper(
-                f.vertex(0)->position(),
-                f.vertex(1)->position(),
-                f.vertex(2)->position()),
+                f.vertex(0).position(),
+                f.vertex(1).position(),
+                f.vertex(2).position()),
             sphere,
             witness,
             res);
@@ -114,9 +131,9 @@ bool intersect(
         if (f.vertexCount() == 3) {
             return intersect(
                 TriangleWrapper(
-                    f.vertex(0)->position(),
-                    f.vertex(1)->position(),
-                    f.vertex(2)->position()),
+                    f.vertex(0).position(),
+                    f.vertex(1).position(),
+                    f.vertex(2).position()),
                 sphere,
                 witness,
                 res);
@@ -132,9 +149,9 @@ bool intersect(
             for (uint i = 0; i < tris.size() && !b; i += 3) {
                 b |= intersect(
                     TriangleWrapper(
-                        f.vertex(tris[i])->position(),
-                        f.vertex(tris[i + 1])->position(),
-                        f.vertex(tris[i + 2])->position()),
+                        f.vertex(tris[i]).position(),
+                        f.vertex(tris[i + 1]).position(),
+                        f.vertex(tris[i + 2]).position()),
                     sphere,
                     w,
                     r);
@@ -147,6 +164,21 @@ bool intersect(
             return b;
         }
     }
+}
+/**
+ * @copydoc vcl::intersect(const FaceType&, const Sphere<SScalar>&,
+ * PointType&, std::pair<SScalar, SScalar>&)
+ *
+ * @ingroup core_intersection
+ */
+template<typename SScalar, FaceConcept FaceType, PointConcept PointType>
+bool intersect(
+    const Sphere<SScalar>&       sphere,
+    const FaceType&              f,
+    PointType&                   witness,
+    std::pair<SScalar, SScalar>& res)
+{
+    return intersect(f, sphere, witness, res);
 }
 
 /**
@@ -173,7 +205,7 @@ bool intersect(const FaceType& f, const Sphere<SScalar>& sphere)
 }
 
 /**
- * @copydoc intersect(const FaceType&, const Sphere<SScalar>&)
+ * @copydoc vcl::intersect(const FaceType&, const Sphere<SScalar>&)
  *
  * @ingroup core_intersection
  */
@@ -216,7 +248,7 @@ std::optional<typename RayType::PointType> intersection(
     std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {})
     requires std::same_as<
         typename RayType::ScalarType,
-        typename FaceType::VertexType::PositionType::ScalarType>
+        ScalarType<VertexType<FaceType>>>
 {
     using PointType  = typename RayType::PointType;
     using ScalarType = typename PointType::ScalarType;
@@ -227,9 +259,9 @@ std::optional<typename RayType::PointType> intersection(
         return intersection(
             r,
             TriangleWrapper(
-                f.vertex(0)->position(),
-                f.vertex(1)->position(),
-                f.vertex(2)->position()),
+                f.vertex(0).position(),
+                f.vertex(1).position(),
+                f.vertex(2).position()),
             t);
     };
 
@@ -246,9 +278,9 @@ std::optional<typename RayType::PointType> intersection(
                 std::optional<PointType> res = intersection(
                     ray,
                     TriangleWrapper(
-                        face.vertex(tris[i])->position(),
-                        face.vertex(tris[i + 1])->position(),
-                        face.vertex(tris[i + 2])->position()),
+                        face.vertex(tris[i]).position(),
+                        face.vertex(tris[i + 1]).position(),
+                        face.vertex(tris[i + 2]).position()),
                     t);
                 if (res.has_value())
                     return res;
@@ -256,6 +288,24 @@ std::optional<typename RayType::PointType> intersection(
             return std::nullopt;
         }
     }
+}
+
+/**
+ * @copydoc vcl::intersection(const RayType&, const FaceType&,
+ * std::optional<std::reference_wrapper<typename RayType::ScalarType>>)
+ *
+ * @ingroup core_intersection
+ */
+template<FaceConcept FaceType, Ray3Concept RayType>
+std::optional<typename RayType::PointType> intersection(
+    const FaceType&                                                     face,
+    const RayType&                                                      ray,
+    std::optional<std::reference_wrapper<typename RayType::ScalarType>> t = {})
+    requires std::same_as<
+        typename RayType::ScalarType,
+        ScalarType<VertexType<FaceType>>>
+{
+    return intersection(ray, face, t);
 }
 
 /**

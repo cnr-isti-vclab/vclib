@@ -50,6 +50,25 @@ void initMesh(pybind11::module& m, const std::string& name)
     c.def("is_compact", &MeshType::isCompact);
     c.def("clear", &MeshType::clear);
     c.def("compact", &MeshType::compact);
+    c.def("empty", &MeshType::empty);
+    c.def("__bool__", [](const MeshType& m) { return !m.empty(); });
+
+    c.def("has_vertices", [](const MeshType&) {
+        return MeshType::template hasContainerOf<ElemId::VERTEX>();
+    });
+    c.def("has_faces", [](const MeshType&) {
+        return MeshType::template hasContainerOf<ElemId::FACE>();
+    });
+    c.def("has_edges", [](const MeshType&) {
+        return MeshType::template hasContainerOf<ElemId::EDGE>();
+    });
+
+    if constexpr (HasBoundingBox<MeshType>) {
+        c.def(
+            "transformed_bounding_box",
+            &MeshType::transformedBoundingBox);
+    }
+
     c.def(
         "enable_all_optional_components",
         &MeshType::enableAllOptionalComponents);

@@ -8,6 +8,7 @@
 #ifndef VCL_ALGORITHMS_MESH_STAT_BARYCENTER_H
 #define VCL_ALGORITHMS_MESH_STAT_BARYCENTER_H
 
+#include "vclib/mesh/requirements/contracts.h"
 #include <vclib/mesh.h>
 
 namespace vcl {
@@ -24,14 +25,13 @@ namespace vcl {
  * @return The barycenter of the input mesh.
  */
 template<MeshConcept MeshType>
-auto barycenter(const MeshType& m) -> MeshType::VertexType::PositionType
+auto barycenter(const MeshType& m) -> PositionType<MeshType>
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
 
     PositionType bar;
 
-    for (const VertexType& v : m.vertices()) {
+    for (auto&& v : m.vertices()) {
         bar += v.position();
     }
 
@@ -54,10 +54,9 @@ auto barycenter(const MeshType& m) -> MeshType::VertexType::PositionType
  */
 template<MeshConcept MeshType>
 auto weightedBarycenter(const MeshType& m, Range auto&& weights)
-    -> MeshType::VertexType::PositionType
+    -> PositionType<MeshType>
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     using RType        = std::ranges::range_value_t<decltype(weights)>;
 
     assert(std::ranges::size(weights) == m.vertexCount());
@@ -89,10 +88,9 @@ auto weightedBarycenter(const MeshType& m, Range auto&& weights)
  * @return The barycenter weighted on the per vertex quality.
  */
 template<MeshConcept MeshType>
-auto qualityWeightedBarycenter(const MeshType& m)
-    -> MeshType::VertexType::PositionType
+auto qualityWeightedBarycenter(const MeshType& m) -> PositionType<MeshType>
 {
-    requirePerVertexQuality(m);
+    requireVertexQuality(m);
 
     return weightedBarycenter(m, m.vertices() | views::quality);
 }
@@ -113,18 +111,16 @@ auto qualityWeightedBarycenter(const MeshType& m)
  * @return
  */
 template<FaceMeshConcept MeshType>
-auto shellBarycenter(const MeshType& m) -> MeshType::VertexType::PositionType
+auto shellBarycenter(const MeshType& m) -> PositionType<MeshType>
 {
-    using VertexType   = MeshType::VertexType;
-    using FaceType     = MeshType::FaceType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     using ScalarType   = PositionType::ScalarType;
 
     PositionType bar;
     bar.setZero();
     ScalarType areaSum = 0;
 
-    for (const FaceType& f : m.faces()) {
+    for (auto&& f : m.faces()) {
         ScalarType area = faceArea(f);
         bar += faceBarycenter(f) * area;
         areaSum += area;

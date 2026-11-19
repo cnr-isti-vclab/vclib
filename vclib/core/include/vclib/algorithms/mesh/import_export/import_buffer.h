@@ -46,10 +46,9 @@ namespace vcl {
  * scenario, all the components (except the positions) of the vertices stored in
  * the mesh before calling this function are preserved.
  *
- * All the other containers of the mesh are left as they are. Pointers to
+ * All the other containers of the mesh are left as they are. Indices of
  * vertices stored in the other containers of the mesh are still valid only if
- * the number of vertices is not changed (same allocation policy of the
- * std::vector).
+ * the number of vertices is not changed.
  *
  * @throws vcl::WrongSizeException if `clearBeforeSet` is false and
  * `vertexCount` != mesh.vertexCount().
@@ -57,7 +56,7 @@ namespace vcl {
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input vertices.
+ * @param[in,out] mesh: the mesh on which import the input vertices.
  * @param[in] buffer: a contiguous array containing the positions of the
  * vertices of the mesh.
  * @param[in] vertexCount: the number of vertices contained in the input
@@ -76,16 +75,19 @@ namespace vcl {
  */
 template<MeshConcept MeshType>
 void vertexPositionsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    uint              vertexCount,
-    bool              clearBeforeSet = true,
-    MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
-    uint              numRows        = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    typename MeshType::IndexType vertexCount,
+    bool                         clearBeforeSet = true,
+    MatrixStorageType            storage        = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows        = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? vertexCount : numRows;
+    using IndexType = typename MeshType::IndexType;
+
+    const IndexType NUM_ROWS =
+        numRows == MeshType::NULL_INDEX ? vertexCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearVertices();
@@ -103,7 +105,7 @@ void vertexPositionsFromBuffer(
         }
     }
 
-    for (uint i = 0; auto& p : mesh.vertices() | views::positions) {
+    for (IndexType i = 0; auto& p : mesh.vertices() | views::positions) {
         p.x() = at(buffer, i, 0, NUM_ROWS, 3, storage);
         p.y() = at(buffer, i, 1, NUM_ROWS, 3, storage);
         p.z() = at(buffer, i, 2, NUM_ROWS, 3, storage);
@@ -127,8 +129,10 @@ void vertexPositionsFromBuffer(
  *
  * If the MeshType is a polygonal mesh, the size of each polygonal face is
  * determined by counting the number of valid vertex indices in each row of the
- * input buffer. Valid vertex indices are non-negative and not equal to
- * UINT_NULL.
+ * input buffer. Valid vertex indices are non-negative and not equal to the
+ * buffer scalar type sentinel value (`static_cast<BufferValueType>(-1)`, which
+ * is `-1` for signed integer types, `-1.0` for floating-point types, or the
+ * maximum representable value for unsigned integer types).
  *
  * If the argument `clearBeforeSet` is set to `true` (default), the function
  * clears the face container of the mesh and then adds a number of faces
@@ -143,15 +147,15 @@ void vertexPositionsFromBuffer(
  * the components (except the indices) of the faces stored in the mesh before
  * calling this function are preserved.
  *
- * All the other containers of the mesh are left as they are. Pointers to faces
+ * All the other containers of the mesh are left as they are. Indices of faces
  * stored in the other containers of the mesh are still valid only if the number
- * of faces is not changed (same allocation policy of the std::vector).
+ * of faces is not changed.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  * @tparam FMatrix: the type of the input face matrix. It must satisfy the
  * MatrixConcept.
- * @param[in/out] mesh: the mesh on which import the input faces.
+ * @param[in,out] mesh: the mesh on which import the input faces.
  * @param[in] buffer: a contiguous array of \#F*faceSize values containing the
  * indices of the vertices of the faces of the mesh.
  * @param[in] faceCount: the number of faces contained in the input buffer.
@@ -173,17 +177,20 @@ void vertexPositionsFromBuffer(
  */
 template<FaceMeshConcept MeshType>
 void faceIndicesFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    uint              faceCount,
-    uint              faceSize       = 3,
-    bool              clearBeforeSet = true,
-    MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
-    uint              numRows        = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    typename MeshType::IndexType faceCount,
+    uint                         faceSize       = 3,
+    bool                         clearBeforeSet = true,
+    MatrixStorageType            storage        = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows        = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? faceCount : numRows;
+    using IndexType = typename MeshType::IndexType;
+
+    const IndexType NUM_ROWS =
+        numRows == MeshType::NULL_INDEX ? faceCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearFaces();
@@ -201,33 +208,34 @@ void faceIndicesFromBuffer(
     }
 
     if constexpr (HasPolygons<MeshType>) {
-        uint i = 0;
-        for (auto& f : mesh.faces()) {
-            uint vertexCount = 0;
+        using BufferValueType = std::remove_cvref_t<decltype(*buffer)>;
+        const auto SENTINEL   = bufferSentinel<BufferValueType>();
+
+        IndexType i = 0;
+        for (auto f : mesh.faces()) {
+            IndexType vertexCount = 0;
 
             // count the number of vertices of the face
             while (vertexCount < faceSize &&
                    at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
-                       -1 &&
-                   at(buffer, i, vertexCount, NUM_ROWS, faceSize, storage) !=
-                       UINT_NULL)
+                       SENTINEL)
                 vertexCount++;
 
             f.resizeVertices(vertexCount);
 
-            for (uint j = 0; j < vertexCount; ++j)
+            for (IndexType j = 0; j < vertexCount; ++j)
                 f.setVertex(j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
             ++i;
         }
     }
     else { // the vertex number of mesh faces is fixed
-        using FaceType = MeshType::FaceType;
+        using FaceType = FaceType<MeshType>;
 
         constexpr int VC = FaceType::VERTEX_COUNT;
         if (faceSize == VC) { // faces of matrix and mesh have same size
-            uint i = 0;
-            for (auto& f : mesh.faces()) {
-                for (uint j = 0; j < VC; ++j)
+            IndexType i = 0;
+            for (auto f : mesh.faces()) {
+                for (IndexType j = 0; j < VC; ++j)
                     f.setVertex(
                         j, at(buffer, i, j, NUM_ROWS, faceSize, storage));
                 ++i;
@@ -268,13 +276,13 @@ void faceIndicesFromBuffer(
  * the components (except the indices) of the edges stored in the mesh before
  * calling this function are preserved.
  *
- * All the other containers of the mesh are left as they are. Pointers to edges
+ * All the other containers of the mesh are left as they are. Indices of edges
  * stored in the other containers of the mesh are still valid only if the number
- * of edges is not changed (same allocation policy of the std::vector).
+ * of edges is not changed.
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edges.
+ * @param[in,out] mesh: the mesh on which import the input edges.
  * @param[in] buffer: a contiguous array of \#E*2 values containing the indices
  * of the vertices of the edges of the mesh.
  * @param[in] edgeCount: the number of edges contained in the input buffer.
@@ -292,14 +300,19 @@ void faceIndicesFromBuffer(
  */
 template<EdgeMeshConcept MeshType>
 void edgeIndicesFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    uint              edgeCount,
-    bool              clearBeforeSet = true,
-    MatrixStorageType storage        = MatrixStorageType::ROW_MAJOR,
-    uint              numRows        = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    typename MeshType::IndexType edgeCount,
+    bool                         clearBeforeSet = true,
+    MatrixStorageType            storage        = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows        = MeshType::NULL_INDEX)
 {
     using namespace detail;
+
+    using IndexType = typename MeshType::IndexType;
+
+    const IndexType NUM_ROWS =
+        numRows == MeshType::NULL_INDEX ? edgeCount : numRows;
 
     if (clearBeforeSet) {
         mesh.clearEdges();
@@ -316,10 +329,10 @@ void edgeIndicesFromBuffer(
         }
     }
 
-    uint i = 0;
-    for (auto& e : mesh.edges()) {
-        e.setVertex(0, at(buffer, i, 0, numRows, 2, storage));
-        e.setVertex(1, at(buffer, i, 1, numRows, 2, storage));
+    IndexType i = 0;
+    for (auto e : mesh.edges()) {
+        e.setVertex(0, at(buffer, i, 0, NUM_ROWS, 2, storage));
+        e.setVertex(1, at(buffer, i, 1, NUM_ROWS, 2, storage));
         i++;
     }
 }
@@ -333,15 +346,17 @@ void edgeIndicesFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element selection.
+ * @param[in,out] mesh: the mesh on which import the input element selection.
  * @param[in] buffer: the input element selection buffer.
  *
  * @ingroup import_buffer
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 void elementSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    for (uint i = 0; auto& e : mesh.template elements<ELEM_ID>()) {
+    using IndexType = typename MeshType::IndexType;
+
+    for (IndexType i = 0; auto e : mesh.template elements<ELEM_ID>()) {
         e.selected() = buffer[i];
         ++i;
     }
@@ -356,7 +371,7 @@ void elementSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex selection.
+ * @param[in,out] mesh: the mesh on which import the input vertex selection.
  * @param[in] buffer: the input vertex selection buffer.
  *
  * @ingroup import_buffer
@@ -376,7 +391,7 @@ void vertexSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face selection.
+ * @param[in,out] mesh: the mesh on which import the input face selection.
  * @param[in] buffer: the input face selection buffer.
  *
  * @ingroup import_buffer
@@ -396,7 +411,7 @@ void faceSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge selection.
+ * @param[in,out] mesh: the mesh on which import the input edge selection.
  * @param[in] buffer: the input edge selection buffer.
  *
  * @ingroup import_buffer
@@ -410,7 +425,7 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
 /**
  * @brief Sets the element identified by `ELEM_ID` normals of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * #E*3 scalars, where each row contains the 3 components of the normal of a
+ * \#E*3 scalars, where each row contains the 3 components of the normal of a
  * element.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
@@ -425,7 +440,7 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element normals.
+ * @param[in,out] mesh: the mesh on which import the input element normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * elements of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -437,23 +452,26 @@ void edgeSelectionFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @ingroup import_buffer
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 void elementNormalsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    MatrixStorageType            storage = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
+    using IndexType = typename MeshType::IndexType;
 
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+    const IndexType NUM_ROWS = numRows == MeshType::NULL_INDEX ?
+                                   mesh.template count<ELEM_ID>() :
+                                   numRows;
 
-    for (uint  i = 0;
-         auto& n : mesh.template elements<ELEM_ID>() | views::normals) {
+    enableIfElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
+    requireElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+
+    for (IndexType i = 0;
+         auto&     n : mesh.template elements<ELEM_ID>() | views::normals) {
         n.x() = at(buffer, i, 0, NUM_ROWS, 3, storage);
         n.y() = at(buffer, i, 1, NUM_ROWS, 3, storage);
         n.z() = at(buffer, i, 2, NUM_ROWS, 3, storage);
@@ -464,8 +482,8 @@ void elementNormalsFromBuffer(
 
 /**
  * @brief Sets the vertex normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*3 scalars, where each
- * row contains the 3 components of the normal of a vertex.
+ * buffer, that is expected to be a contiguous array of \#V*3 scalars, where
+ * each row contains the 3 components of the normal of a vertex.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of vertices of the mesh. The extra normals are ignored.
@@ -478,7 +496,7 @@ void elementNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex normals.
+ * @param[in,out] mesh: the mesh on which import the input vertex normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * vertices of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -491,10 +509,10 @@ void elementNormalsFromBuffer(
  */
 template<MeshConcept MeshType>
 void vertexNormalsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    MatrixStorageType            storage = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementNormalsFromBuffer<ElemId::VERTEX, MeshType>(
         mesh, buffer, storage, numRows);
@@ -502,8 +520,8 @@ void vertexNormalsFromBuffer(
 
 /**
  * @brief Sets the face normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
- * row contains the 3 components of the normal of a face.
+ * buffer, that is expected to be a contiguous array of \#F*3 scalars, where
+ * each row contains the 3 components of the normal of a face.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of faces of the mesh. The extra normals are ignored.
@@ -516,7 +534,7 @@ void vertexNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face normals.
+ * @param[in,out] mesh: the mesh on which import the input face normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * faces of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -529,10 +547,10 @@ void vertexNormalsFromBuffer(
  */
 template<FaceMeshConcept MeshType>
 void faceNormalsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    MatrixStorageType            storage = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementNormalsFromBuffer<ElemId::FACE, MeshType>(
         mesh, buffer, storage, numRows);
@@ -540,8 +558,8 @@ void faceNormalsFromBuffer(
 
 /**
  * @brief Sets the edge normals of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 scalars, where each
- * row contains the 3 components of the normal of a edge.
+ * buffer, that is expected to be a contiguous array of \#E*3 scalars, where
+ * each row contains the 3 components of the normal of a edge.
  *
  * If not specified, the number of normals in the input buffer is assumed to be
  * at least the number of edges of the mesh. The extra normals are ignored.
@@ -554,7 +572,7 @@ void faceNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge normals.
+ * @param[in,out] mesh: the mesh on which import the input edge normals.
  * @param[in] buffer: a contiguous array containing the normals of the
  * edges of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -567,10 +585,10 @@ void faceNormalsFromBuffer(
  */
 template<EdgeMeshConcept MeshType>
 void edgeNormalsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    MatrixStorageType            storage = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementNormalsFromBuffer<ElemId::EDGE, MeshType>(
         mesh, buffer, storage, numRows);
@@ -579,7 +597,7 @@ void edgeNormalsFromBuffer(
 /**
  * @brief Sets the element identified by `ELEM_ID` colors of the given input
  * `mesh` from the input buffer, that is expected to be a contiguous array of
- * #E*3 or #E*4 scalars, where each row contains the 3 or 4 components of the
+ * \#E*3 or \#E*4 scalars, where each row contains the 3 or 4 components of the
  * color of a element.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -600,7 +618,7 @@ void edgeNormalsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element colors.
+ * @param[in,out] mesh: the mesh on which import the input element colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -616,30 +634,33 @@ void edgeNormalsFromBuffer(
  *
  * @ingroup import_buffer
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&             mesh,
     const auto*           buffer,
     uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
-    uint                  numRows        = UINT_NULL)
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS =
-        numRows == UINT_NULL ? mesh.template count<ELEM_ID>() : numRows;
+    using IndexType = typename MeshType::IndexType;
+
+    const IndexType NUM_ROWS = numRows == MeshType::NULL_INDEX ?
+                                   mesh.template count<ELEM_ID>() :
+                                   numRows;
 
     if (channelCount != 3 && channelCount != 4)
         throw WrongSizeException(
             "The input " + elementEnumString<ELEM_ID>() +
             " colors must have 3 or 4 channels.");
 
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+    enableIfElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requireElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
-    for (uint  i = 0;
-         auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+    for (IndexType i = 0;
+         auto&     c : mesh.template elements<ELEM_ID>() | views::colors) {
         if (representation == Color::Representation::INT_0_255) {
             c.x() = at(buffer, i, 0, NUM_ROWS, channelCount, storage);
             c.y() = at(buffer, i, 1, NUM_ROWS, channelCount, storage);
@@ -666,8 +687,8 @@ void elementColorsFromBuffer(
 
 /**
  * @brief Sets the element identified by `ELEM_ID` color of the given input
- * `mesh` from the input buffer, that is expected to be a contiguous array of #E
- * 32 bit values, on each of them the color is packed using the provided
+ * `mesh` from the input buffer, that is expected to be a contiguous array of
+ * \#E 32 bit values, on each of them the color is packed using the provided
  * `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -679,31 +700,33 @@ void elementColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element color.
+ * @param[in,out] mesh: the mesh on which import the input element color.
  * @param[in] buffer: the input element color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
  *
  * @ingroup import_buffer
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 void elementColorsFromBuffer(
     MeshType&     mesh,
     const auto*   buffer,
     Color::Format colorFormat)
 {
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+    using IndexType = typename MeshType::IndexType;
 
-    for (uint  i = 0;
-         auto& c : mesh.template elements<ELEM_ID>() | views::colors) {
+    enableIfElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requireElementComponent<ELEM_ID, CompId::COLOR>(mesh);
+
+    for (IndexType i = 0;
+         auto&     c : mesh.template elements<ELEM_ID>() | views::colors) {
         c = Color(buffer[i++], colorFormat);
     }
 }
 
 /**
  * @brief Sets the vertex colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*3 or #V*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#V*3 or \#V*4 scalars,
  * where each row contains the 3 or 4 components of the color of a vertex.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -723,7 +746,7 @@ void elementColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex colors.
+ * @param[in,out] mesh: the mesh on which import the input vertex colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -745,7 +768,7 @@ void vertexColorsFromBuffer(
     uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
-    uint                  numRows        = UINT_NULL)
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementColorsFromBuffer<ElemId::VERTEX, MeshType>(
         mesh, buffer, channelCount, storage, representation, numRows);
@@ -753,7 +776,7 @@ void vertexColorsFromBuffer(
 
 /**
  * @brief Sets the vertex color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#V 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -764,7 +787,7 @@ void vertexColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex color.
+ * @param[in,out] mesh: the mesh on which import the input vertex color.
  * @param[in] buffer: the input vertex color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -783,7 +806,7 @@ void vertexColorsFromBuffer(
 
 /**
  * @brief Sets the face colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*3 or #F*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#F*3 or \#F*4 scalars,
  * where each row contains the 3 or 4 components of the color of a face.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -803,7 +826,7 @@ void vertexColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face colors.
+ * @param[in,out] mesh: the mesh on which import the input face colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -825,7 +848,7 @@ void faceColorsFromBuffer(
     uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
-    uint                  numRows        = UINT_NULL)
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementColorsFromBuffer<ElemId::FACE, MeshType>(
         mesh, buffer, channelCount, storage, representation, numRows);
@@ -833,7 +856,7 @@ void faceColorsFromBuffer(
 
 /**
  * @brief Sets the face color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#F 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -844,7 +867,7 @@ void faceColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face color.
+ * @param[in,out] mesh: the mesh on which import the input face color.
  * @param[in] buffer: the input face color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -862,7 +885,7 @@ void faceColorsFromBuffer(
 
 /**
  * @brief Sets the edge colors of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #E*3 or #E*4 scalars,
+ * buffer, that is expected to be a contiguous array of \#E*3 or \#E*4 scalars,
  * where each row contains the 3 or 4 components of the color of a edge.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -882,7 +905,7 @@ void faceColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * EdgeMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge colors.
+ * @param[in,out] mesh: the mesh on which import the input edge colors.
  * @param[in] buffer: a contiguous array containing the colors of the
  * elements of the mesh.
  * @param[in] channelCount: the number of channels per color in the input
@@ -904,7 +927,7 @@ void edgeColorsFromBuffer(
     uint                  channelCount   = 4,
     MatrixStorageType     storage        = MatrixStorageType::ROW_MAJOR,
     Color::Representation representation = Color::Representation::INT_0_255,
-    uint                  numRows        = UINT_NULL)
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     elementColorsFromBuffer<ElemId::EDGE, MeshType>(
         mesh, buffer, channelCount, storage, representation, numRows);
@@ -912,7 +935,7 @@ void edgeColorsFromBuffer(
 
 /**
  * @brief Sets the edge color of the given input `mesh` from the input buffer,
- * that is expected to be a contiguous array of #V 32 bit values, on each of
+ * that is expected to be a contiguous array of \#E 32 bit values, on each of
  * them the color is packed using the provided `colorFormat`.
  *
  * If not specified, the number of colors in the input buffer is assumed to be
@@ -923,7 +946,7 @@ void edgeColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge color.
+ * @param[in,out] mesh: the mesh on which import the input edge color.
  * @param[in] buffer: the input edge color buffer.
  * @param[in] colorFormat: the format used to pack the color in a single 32 bit
  * value.
@@ -942,7 +965,7 @@ void edgeColorsFromBuffer(
 /**
  * @brief Sets the element identified by `ELEM_ID` quality of the given input
  * `mesh` from the input quality buffer, that is expected to be a contiguous
- * array of #E scalars, where each value contains the quality of a element.
+ * array of \#E scalars, where each value contains the quality of a element.
  *
  * If not specified, the number of quality values in the input buffer is assumed
  * to be at least the number of ELEM_ID elements of the mesh. The extra quality
@@ -953,18 +976,20 @@ void edgeColorsFromBuffer(
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input element quality.
+ * @param[in,out] mesh: the mesh on which import the input element quality.
  * @param[in] buffer: the input element quality buffer.
  *
  * @ingroup import_buffer
  */
-template<uint ELEM_ID, MeshConcept MeshType>
+template<ElemId ELEM_ID, MeshConcept MeshType>
 void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    enableIfPerElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
-    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+    using IndexType = typename MeshType::IndexType;
 
-    for (uint i = 0; auto& e : mesh.template elements<ELEM_ID>()) {
+    enableIfElementComponentOptional<ELEM_ID, CompId::QUALITY>(mesh);
+    requireElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
+
+    for (IndexType i = 0; auto e : mesh.template elements<ELEM_ID>()) {
         e.quality() = buffer[i];
         ++i;
     }
@@ -972,7 +997,7 @@ void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the vertex quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #V scalars,
+ * quality buffer, that is expected to be a contiguous array of \#V scalars,
  * where each value contains the quality of a vertex.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -984,7 +1009,7 @@ void elementQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex quality.
+ * @param[in,out] mesh: the mesh on which import the input vertex quality.
  * @param[in] buffer: the input vertex quality buffer.
  *
  * @ingroup import_buffer
@@ -997,7 +1022,7 @@ void vertexQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the face quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * quality buffer, that is expected to be a contiguous array of \#F scalars,
  * where each value contains the quality of a face.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -1009,7 +1034,7 @@ void vertexQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face quality.
+ * @param[in,out] mesh: the mesh on which import the input face quality.
  * @param[in] buffer: the input face quality buffer.
  *
  * @ingroup import_buffer
@@ -1022,7 +1047,7 @@ void faceQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the edge quality of the given input `mesh` from the input
- * quality buffer, that is expected to be a contiguous array of #F scalars,
+ * quality buffer, that is expected to be a contiguous array of \#E scalars,
  * where each value contains the quality of a edge.
  *
  * If not specified, the number of quality values in the input buffer is assumed
@@ -1034,7 +1059,7 @@ void faceQualityFromBuffer(MeshType& mesh, const auto* buffer)
  *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input edge quality.
+ * @param[in,out] mesh: the mesh on which import the input edge quality.
  * @param[in] buffer: the input edge quality buffer.
  *
  * @ingroup import_buffer
@@ -1047,8 +1072,8 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
 
 /**
  * @brief Sets the vertex texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #V*2 scalars, where each
- * row contains the 2 components of the texture coordinates of a vertex.
+ * buffer, that is expected to be a contiguous array of \#V*2 scalars, where
+ * each row contains the 2 components of the texture coordinates of a vertex.
  *
  * If not specified, the number of texcoords in the input buffer is assumed to
  * be at least the number of vertices of the mesh. The extra texcoords are
@@ -1060,7 +1085,7 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input texcoords.
+ * @param[in,out] mesh: the mesh on which import the input texcoords.
  * @param[in] buffer: a contiguous array containing the texcoords of the
  * vertices of the mesh.
  * @param[in] storage: the storage type of the input buffer. It can be either
@@ -1073,19 +1098,22 @@ void edgeQualityFromBuffer(MeshType& mesh, const auto* buffer)
  */
 template<MeshConcept MeshType>
 void vertexTexCoordsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    MatrixStorageType storage = MatrixStorageType::ROW_MAJOR,
-    uint              numRows = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    MatrixStorageType            storage = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.vertexCount() : numRows;
+    using IndexType = typename MeshType::IndexType;
 
-    enableIfPerVertexTexCoordOptional(mesh);
-    requirePerVertexTexCoord(mesh);
+    const IndexType NUM_ROWS =
+        numRows == MeshType::NULL_INDEX ? mesh.vertexCount() : numRows;
 
-    for (uint i = 0; auto& t : mesh.vertices() | views::texCoords) {
+    enableIfVertexTexCoordOptional(mesh);
+    requireVertexTexCoord(mesh);
+
+    for (IndexType i = 0; auto& t : mesh.vertices() | views::texCoords) {
         t.u() = at(buffer, i, 0, NUM_ROWS, 2, storage);
         t.v() = at(buffer, i, 1, NUM_ROWS, 2, storage);
 
@@ -1096,7 +1124,7 @@ void vertexTexCoordsFromBuffer(
 /**
  * @brief Sets the vertex material indices of the given input `mesh` from the
  * input material indices buffer, that is expected to be a contiguous array of
- * #V scalars, where each value contains the material index of a vertex.
+ * \#V scalars, where each value contains the material index of a vertex.
  *
  * If not specified, the number of material indices values in the input buffer
  * is assumed to be at least the number of vertices of the mesh. The extra
@@ -1105,9 +1133,15 @@ void vertexTexCoordsFromBuffer(
  * The function enables the per-vertex material index component if it is not
  * already enabled.
  *
+ * Values in the buffer equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the buffer scalar sentinel value
+ * (`static_cast<BufferValueType>(-1)`) are interpreted as unassigned materials
+ * and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * MeshConcept.
- * @param[in/out] mesh: the mesh on which import the input vertex material
+ * @param[in,out] mesh: the mesh on which import the input vertex material
  * indices.
  * @param[in] buffer: the input vertex material indices buffer.
  *
@@ -1116,18 +1150,20 @@ void vertexTexCoordsFromBuffer(
 template<MeshConcept MeshType>
 void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    enableIfPerVertexMaterialIndexOptional(mesh);
-    requirePerVertexMaterialIndex(mesh);
+    using IndexType = typename MeshType::IndexType;
 
-    for (uint i = 0; auto& v : mesh.vertices()) {
-        v.materialIndex() = buffer[i];
+    enableIfVertexMaterialIndexOptional(mesh);
+    requireVertexMaterialIndex(mesh);
+
+    for (IndexType i = 0; auto v : mesh.vertices()) {
+        v.materialIndex() = detail::toMaterialIndex(buffer[i]);
         ++i;
     }
 }
 
 /**
  * @brief Sets the face wedge texcoords of the given input `mesh` from the input
- * buffer, that is expected to be a contiguous array of #F*(LFS*2) of scalars,
+ * buffer, that is expected to be a contiguous array of \#F*(LFS*2) of scalars,
  * where each row contains the 2*largetFaceSize components of the wedge texture
  * coordinates of a face.
  *
@@ -1148,7 +1184,7 @@ void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
  *
- * @param[in/out] mesh: the mesh on which import the input wedge texcoords.
+ * @param[in,out] mesh: the mesh on which import the input wedge texcoords.
  * @param[in] buffer: a contiguous array containing the wedge texcoords of the
  * faces of the mesh.
  * @param[in] largestFaceSize: the largest size of the faces, that corresponds
@@ -1163,22 +1199,25 @@ void vertexMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
  */
 template<FaceMeshConcept MeshType>
 void faceWedgeTexCoordsFromBuffer(
-    MeshType&         mesh,
-    const auto*       buffer,
-    uint              largestFaceSize = 3,
-    MatrixStorageType storage         = MatrixStorageType::ROW_MAJOR,
-    uint              numRows         = UINT_NULL)
+    MeshType&                    mesh,
+    const auto*                  buffer,
+    typename MeshType::IndexType largestFaceSize = 3,
+    MatrixStorageType            storage         = MatrixStorageType::ROW_MAJOR,
+    typename MeshType::IndexType numRows         = MeshType::NULL_INDEX)
 {
     using namespace detail;
 
-    const uint NUM_ROWS = numRows == UINT_NULL ? mesh.faceCount() : numRows;
-    const uint NUM_COLS = largestFaceSize * 2;
+    using IndexType = typename MeshType::IndexType;
 
-    enableIfPerFaceWedgeTexCoordsOptional(mesh);
-    requirePerFaceWedgeTexCoords(mesh);
+    const IndexType NUM_ROWS =
+        numRows == MeshType::NULL_INDEX ? mesh.faceCount() : numRows;
+    const IndexType NUM_COLS = largestFaceSize * 2;
 
-    for (uint i = 0; auto& f : mesh.faces()) {
-        for (uint j = 0; auto& w : f.wedgeTexCoords()) {
+    enableIfFaceWedgeTexCoordsOptional(mesh);
+    requireFaceWedgeTexCoords(mesh);
+
+    for (IndexType i = 0; auto f : mesh.faces()) {
+        for (IndexType j = 0; auto& w : f.wedges().texCoords()) {
             if (j < largestFaceSize) {
                 w.u() = at(buffer, i, 2 * j + 0, NUM_ROWS, NUM_COLS, storage);
                 w.v() = at(buffer, i, 2 * j + 1, NUM_ROWS, NUM_COLS, storage);
@@ -1187,12 +1226,12 @@ void faceWedgeTexCoordsFromBuffer(
         }
         ++i;
     }
-};
+}
 
 /**
  * @brief Sets the face material indices of the given input `mesh` from
  * the input material indices buffer, that is expected to be a contiguous array
- * of #F scalars, where each value contains the material index of a face.
+ * of \#F scalars, where each value contains the material index of a face.
  *
  * If not specified, the number of material indices values in the input
  * buffer is assumed to be at least the number of faces of the mesh. The
@@ -1201,9 +1240,15 @@ void faceWedgeTexCoordsFromBuffer(
  * The function enables the per-face material index component if it is not
  * already enabled.
  *
+ * Values in the buffer equal to `-1`, negative values (for signed integer and
+ * floating-point types), `NaN` (for floating-point types), or equal to
+ * `vcl::USHORT_NULL` or the buffer scalar sentinel value
+ * (`static_cast<BufferValueType>(-1)`) are interpreted as unassigned materials
+ * and imported as `vcl::USHORT_NULL`.
+ *
  * @tparam MeshType: the type of the mesh to be filled. It must satisfy the
  * FaceMeshConcept.
- * @param[in/out] mesh: the mesh on which import the input face material
+ * @param[in,out] mesh: the mesh on which import the input face material
  * indices.
  * @param[in] buffer: the input face material indices buffer.
  *
@@ -1212,11 +1257,13 @@ void faceWedgeTexCoordsFromBuffer(
 template<FaceMeshConcept MeshType>
 void faceMaterialIndicesFromBuffer(MeshType& mesh, const auto* buffer)
 {
-    enableIfPerFaceMaterialIndexOptional(mesh);
-    requirePerFaceMaterialIndex(mesh);
+    using IndexType = typename MeshType::IndexType;
 
-    for (uint i = 0; auto& f : mesh.faces()) {
-        f.materialIndex() = buffer[i];
+    enableIfFaceMaterialIndexOptional(mesh);
+    requireFaceMaterialIndex(mesh);
+
+    for (IndexType i = 0; auto f : mesh.faces()) {
+        f.materialIndex() = detail::toMaterialIndex(buffer[i]);
         ++i;
     }
 }

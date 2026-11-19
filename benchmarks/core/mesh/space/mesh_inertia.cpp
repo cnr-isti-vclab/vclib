@@ -60,7 +60,7 @@ BENCH(
     []<typename Mesh>(bench::State<Mesh>& state) {
         runMassProperty(state, [](const vcl::MeshInertia<Mesh>& inertia) {
             Eigen::Matrix3d                         eigenvectors;
-            typename Mesh::VertexType::PositionType eigenvalues;
+            typename Mesh::PositionType eigenvalues;
             inertia.inertiaTensorEigen(eigenvectors, eigenvalues);
             return std::pair {eigenvectors, eigenvalues};
         });

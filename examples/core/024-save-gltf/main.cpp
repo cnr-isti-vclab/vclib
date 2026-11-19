@@ -97,13 +97,13 @@ int main()
     auto bte =
         vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    bte.enablePerVertexColor();
+    bte.enableVertexColor();
     for (auto& c : bte.vertices() | vcl::views::colors)
         c = vcl::Color(vcl::Color::Random());
 
     auto tmp = vcl::loadMesh<vcl::TriEdgeMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                                "/bunny_edge_sections.obj");
-    tmp.enablePerVertexColor();
+    tmp.enableVertexColor();
     for (auto& c : tmp.vertices() | vcl::views::colors)
         c = vcl::Color::Black;
 

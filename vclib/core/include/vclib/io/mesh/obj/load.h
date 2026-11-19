@@ -164,7 +164,7 @@ void loadObjMaterials(
         if constexpr (HasMaterials<MeshType>) {
             loadedInfo.setMaterials();
             Material m = mat.toMaterial();
-            mat.matId  = mesh.materialCount();
+            mat.matId  = static_cast<ushort>(mesh.materialCount());
             mesh.pushMaterial(m);
         }
     }
@@ -194,17 +194,17 @@ void readObjVertex(
     for (uint i = 0; i < 3; ++i) {
         m.vertex(vid).position()[i] = io::readDouble<double>(token);
     }
-    if constexpr (HasPerVertexColor<MeshType>) {
+    if constexpr (HasVertexColor<MeshType>) {
         if (vid == 0) {
             // if the file stores the vertex color in the non-standard way
             // (color values after the positions)
             if (tokens.size() > 6) {
                 if (settings.enableOptionalComponents) {
-                    enableIfPerVertexColorOptional(m);
+                    enableIfVertexColorOptional(m);
                     loadedInfo.setVertexColor();
                 }
                 else {
-                    if (isPerVertexColorAvailable(m))
+                    if (m.isVertexColorAvailable())
                         loadedInfo.setVertexColor();
                 }
             }
@@ -231,7 +231,7 @@ void readObjFace(
     const ObjMaterial&            currentMaterial,
     const LoadSettings&           settings)
 {
-    using FaceType = MeshType::FaceType;
+    using FaceType = FaceType<MeshType>;
 
     std::vector<uint> vids;
     std::vector<uint> wids;
@@ -263,8 +263,8 @@ void readObjFace(
     }
 
     // add the face
-    uint      fid = m.addFace();
-    FaceType& f   = m.face(fid);
+    uint     fid = m.addFace();
+    FaceType f   = m.face(fid);
 
     // check if we need to split the face we read into triangles
     bool splitFace = false;
@@ -295,14 +295,15 @@ void readObjFace(
     }
 
     // material
-    if constexpr (HasPerFaceMaterialIndex<MeshType>) {
-        if (fid == 0 && currentMaterial.matId != UINT_NULL) {
+    if constexpr (HasFaceMaterialIndex<MeshType>) {
+        if (currentMaterial.matId != USHORT_NULL &&
+            !loadedInfo.hasFaceMaterialIndex()) {
             if (settings.enableOptionalComponents) {
-                enableIfPerFaceMaterialIndexOptional(m);
+                enableIfFaceMaterialIndexOptional(m);
                 loadedInfo.setFaceMaterialIndex();
             }
             else {
-                if (isPerFaceMaterialIndexAvailable(m)) {
+                if (m.isFaceMaterialIndexAvailable()) {
                     loadedInfo.setFaceMaterialIndex();
                 }
             }
@@ -313,7 +314,7 @@ void readObjFace(
             }
             else {
                 for (uint ff = fid; ff < m.faceCount(); ++ff) {
-                    FaceType& f       = m.face(ff);
+                    FaceType f        = m.face(ff);
                     f.materialIndex() = currentMaterial.matId;
                 }
             }
@@ -321,20 +322,19 @@ void readObjFace(
     }
 
     // vertex normals
-    if constexpr (HasPerVertexNormal<MeshType>) {
-        using NormalType = typename MeshType::VertexType::NormalType;
-        using NST        = typename NormalType::ScalarType;
-        // first, need to check if I can store per-vertex normals in the mesh
+    if constexpr (HasVertexNormal<MeshType>) {
+        using NST = typename VertexType<MeshType>::NormalType::ScalarType;
+        // first, need to check if I can store vertex normals in the mesh
         if (fid == 0) {
             // if the current face has the right number of normals, we assume
-            // that we can load per-vertex normals
+            // that we can load vertex normals
             if (nids.size() == vids.size()) {
                 if (settings.enableOptionalComponents) {
-                    enableIfPerVertexNormalOptional(m);
+                    enableIfVertexNormalOptional(m);
                     loadedInfo.setVertexNormal();
                 }
                 else {
-                    if (isPerVertexNormalAvailable(m)) {
+                    if (m.isVertexNormalAvailable()) {
                         loadedInfo.setVertexNormal();
                     }
                 }
@@ -354,20 +354,19 @@ void readObjFace(
     }
 
     // wedge texcoords
-    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-        using WedgeTCType = MeshType::FaceType::WedgeTexCoordType;
-        using WTCST       = typename WedgeTCType::ScalarType;
+    if constexpr (HasFaceWedgeTexCoords<MeshType>) {
+        using WTCST = TexCoordType<WedgeType<FaceType>>::ScalarType;
         // first, need to check if I can store wedge texcoords in the mesh
         if (fid == 0) {
             // if the current face has the right number of wedge texcoords, we
             // assume that we can load wedge texcoords
             if (wids.size() == vids.size()) {
                 if (settings.enableOptionalComponents) {
-                    enableIfPerFaceWedgeTexCoordsOptional(m);
+                    enableIfFaceWedgeTexCoordsOptional(m);
                     loadedInfo.setFaceWedgeTexCoords();
                 }
                 else {
-                    if (isPerFaceWedgeTexCoordsAvailable(m)) {
+                    if (m.isFaceWedgeTexCoordsAvailable()) {
                         loadedInfo.setFaceWedgeTexCoords();
                     }
                 }
@@ -384,7 +383,7 @@ void readObjFace(
                                 "Bad texcoord index for face " +
                                 std::to_string(fid));
                         }
-                        f.wedgeTexCoord(i) =
+                        f.wedge(i).texCoord() =
                             wedgeTexCoords[wids[i]].cast<WTCST>();
                     }
                 }
@@ -392,10 +391,10 @@ void readObjFace(
                     // take read texcoords and map them in the triangulated
                     // faces for each face of the triangulation of the polygon
                     for (uint ff = fid; ff < m.faceCount(); ++ff) {
-                        FaceType& f = m.face(ff);
+                        FaceType f = m.face(ff);
                         // for each vertex of the face
                         for (uint i = 0; i < f.vertexCount(); ++i) {
-                            uint vid = m.index(f.vertex(i));
+                            uint vid = f.vertexIndex(i);
                             // find the position of the vertex in the vids array
                             auto it = std::find(vids.begin(), vids.end(), vid);
                             assert(it != vids.end());
@@ -408,10 +407,8 @@ void readObjFace(
                             }
                             // set the wedge texcoord in the same position of
                             // the vertex
-                            f.wedgeTexCoord(i) =
-                                wedgeTexCoords[wids[pos]]
-                                    .cast<typename FaceType::WedgeTexCoordType::
-                                              ScalarType>();
+                            f.wedge(i).texCoord() =
+                                wedgeTexCoords[wids[pos]].cast<WTCST>();
                         }
                     }
                 }
@@ -428,11 +425,9 @@ void readObjEdge(
     const ObjMaterial&  currentMaterial,
     const LoadSettings& settings)
 {
-    using EdgeType = MeshType::EdgeType;
-
     // add the edge
-    uint      eid = m.addEdge();
-    EdgeType& e   = m.edge(eid);
+    uint eid = m.addEdge();
+    auto e   = m.edge(eid);
 
     // actual read - load vertex indices
     Tokenizer::iterator token = tokens.begin();
@@ -549,7 +544,7 @@ void loadObj(
             // read normals and save them in the vector of normasl, we will
             // store them in the mesh later
             if (header == "vn") {
-                if constexpr (HasPerVertexNormal<MeshType>) {
+                if constexpr (HasVertexNormal<MeshType>) {
                     Point3d n;
                     for (uint i = 0; i < 3; ++i) {
                         n[i] = io::readDouble<double>(token);
@@ -561,8 +556,8 @@ void loadObj(
             // store them in the mesh later
             if (header == "vt") {
                 if constexpr (
-                    HasPerVertexTexCoord<MeshType> ||
-                    HasPerFaceWedgeTexCoords<MeshType>) {
+                    HasVertexTexCoord<MeshType> ||
+                    HasFaceWedgeTexCoords<MeshType>) {
                     // save the texcoord for later
                     TexCoordd tf;
                     for (uint i = 0; i < 2; ++i) {
@@ -602,18 +597,18 @@ void loadObj(
         }
     } while (inputObjStream);
 
-    if constexpr (HasPerVertexNormal<MeshType>) {
-        using NormalType = typename MeshType::VertexType::NormalType;
+    if constexpr (HasVertexNormal<MeshType>) {
+        using NormalType = typename VertexType<MeshType>::NormalType;
         using NST        = typename NormalType::ScalarType;
-        // if we have not yet set per-vertex normals, try to set them now
+        // if we have not yet set vertex normals, try to set them now
         if (!loadedInfo.hasVertexNormal()) {
             if (normals.size() == m.vertexCount()) {
                 if (settings.enableOptionalComponents) {
-                    enableIfPerVertexNormalOptional(m);
+                    enableIfVertexNormalOptional(m);
                     loadedInfo.setVertexNormal();
                 }
                 else {
-                    if (isPerVertexNormalAvailable(m))
+                    if (m.isVertexNormalAvailable())
                         loadedInfo.setVertexNormal();
                 }
 
@@ -627,22 +622,21 @@ void loadObj(
         }
     }
 
-    if constexpr (HasPerVertexTexCoord<MeshType>) {
+    if constexpr (HasVertexTexCoord<MeshType>) {
         if (!loadedInfo.hasFaceWedgeTexCoords()) {
             if (texCoords.size() == m.vertexCount()) {
                 // load texcoords into vertices only if there are no wedge
                 if (settings.enableOptionalComponents) {
-                    enableIfPerVertexTexCoordOptional(m);
+                    enableIfVertexTexCoordOptional(m);
                     loadedInfo.setVertexTexCoord();
                 }
                 else {
-                    if (isPerVertexTexCoordAvailable(m))
+                    if (m.isVertexTexCoordAvailable())
                         loadedInfo.setVertexTexCoord();
                 }
                 if (loadedInfo.hasVertexTexCoord()) {
-                    using TexCoordType =
-                        typename MeshType::VertexType::TexCoordType;
-                    using TCT = typename TexCoordType::ScalarType;
+                    using TCT =
+                        typename VertexType<MeshType>::TexCoordType::ScalarType;
                     for (uint i = 0; i < m.vertexCount(); ++i) {
                         m.vertex(i).texCoord() =
                             texCoords[i].template cast<TCT>();
@@ -650,14 +644,15 @@ void loadObj(
                 }
 
                 // material index
-                if constexpr (HasMaterials<MeshType>) {
+                if constexpr (HasMaterials<MeshType> &&
+                              HasVertexMaterialIndex<MeshType>) {
                     if (m.materialCount() > 0) {
                         if (settings.enableOptionalComponents) {
-                            enableIfPerVertexMaterialIndexOptional(m);
+                            enableIfVertexMaterialIndexOptional(m);
                             loadedInfo.setVertexMaterialIndex();
                         }
                         else {
-                            if (isPerVertexMaterialIndexAvailable(m))
+                            if (m.isVertexMaterialIndexAvailable())
                                 loadedInfo.setVertexMaterialIndex();
                         }
                         if (loadedInfo.hasVertexMaterialIndex()) {

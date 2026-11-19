@@ -94,6 +94,41 @@ def require_mesh_type(report: dict, requested: str, label: str):
         )
 
 
+def add_mesh_type_options(parser):
+    parser.add_argument(
+        "--mesh-type",
+        help="Native mesh type for both sides (no automatic v1/v2 mapping)",
+    )
+    parser.add_argument("--mesh-type-a", help="Native mesh type for baseline A")
+    parser.add_argument("--mesh-type-b", help="Native mesh type for comparison B")
+
+
+def resolve_mesh_types(args, config, forwarded_common=None):
+    if not isinstance(config, dict):
+        raise ValueError("Benchmark configuration must be a JSON object")
+    for key in ("mesh_type", "mesh_type_a", "mesh_type_b"):
+        if key in config and (
+            not isinstance(config[key], str) or not config[key]
+        ):
+            raise ValueError(f"{key} must be a non-empty string")
+
+    def resolve(side):
+        for value in (
+            getattr(args, f"mesh_type_{side}"),
+            args.mesh_type,
+            forwarded_common,
+            config.get(f"mesh_type_{side}"),
+            config.get("mesh_type"),
+        ):
+            if value is not None:
+                if not isinstance(value, str) or not value:
+                    raise ValueError("Mesh types must be non-empty strings")
+                return value
+        return None
+
+    return resolve("a"), resolve("b")
+
+
 def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: str = None, use_color: bool = True):
     name_a = label_a or data_a.get("version") or "A"
     name_b = label_b or data_b.get("version") or "B"
@@ -218,6 +253,15 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
             print(format_row(line))
 
     print("=" * total)
+    common_count = len(benches_a.keys() & benches_b.keys())
+    only_a = len(benches_a.keys() - benches_b.keys())
+    only_b = len(benches_b.keys() - benches_a.keys())
+    if only_a or only_b:
+        print(
+            f"Warning: different benchmark coverage: {common_count} shared, "
+            f"{only_a} {name_a} only, {only_b} {name_b} only. "
+            "The geometric mean uses shared benchmarks only."
+        )
     if speedups:
         geom_mean = math.exp(sum(math.log(s) for s in speedups) / len(speedups))
         print(f"Geometric Mean Speedup: {geom_mean:.2f}x ({name_b} relative to {name_a}) across {len(speedups)} benchmarks")
@@ -235,7 +279,7 @@ def main():
     parser.add_argument("--bin-a", help="Path to first benchmark executable")
     parser.add_argument("--bin-b", help="Path to second benchmark executable")
     parser.add_argument("--args", default="", help="Additional arguments forwarded to both benchmark binaries")
-    parser.add_argument("--mesh-type", help="Mesh representation forwarded to both binaries (and verified in their reports)")
+    add_mesh_type_options(parser)
     parser.add_argument("--label-a", help="Custom label for report/binary A")
     parser.add_argument("--label-b", help="Custom label for report/binary B")
     parser.add_argument("--iterations", type=int, default=5, help="Number of benchmark iterations")
@@ -253,20 +297,28 @@ def main():
 
         try:
             extra = shlex.split(args.args)
-            if args.mesh_type is not None:
-                extra += ["--mesh-type", args.mesh_type]
             forwarded_parser = argparse.ArgumentParser(
                 add_help=False, allow_abbrev=False
             )
             forwarded_parser.add_argument("--mesh-type")
             forwarded_parser.add_argument("--config")
             forwarded, _ = forwarded_parser.parse_known_args(extra)
-            mesh_type = forwarded.mesh_type
-            if mesh_type is None and forwarded.config:
+            config = {}
+            if forwarded.config:
                 with open(forwarded.config) as f:
-                    mesh_type = json.load(f).get("mesh_type")
+                    config = json.load(f)
+            try:
+                mesh_type_a, mesh_type_b = resolve_mesh_types(
+                    args, config, forwarded.mesh_type
+                )
+            except ValueError as e:
+                parser.error(str(e))
             cmd_a = [args.bin_a, "--json", path_a, "--iterations", str(args.iterations)] + extra
             cmd_b = [args.bin_b, "--json", path_b, "--iterations", str(args.iterations)] + extra
+            if mesh_type_a is not None:
+                cmd_a += ["--mesh-type", mesh_type_a]
+            if mesh_type_b is not None:
+                cmd_b += ["--mesh-type", mesh_type_b]
 
             label_a = args.label_a or "A"
             label_b = args.label_b or "B"
@@ -282,12 +334,13 @@ def main():
             with open(path_b, "r") as fb:
                 data_b = json.load(fb)
 
-            if mesh_type is not None:
-                require_mesh_type(data_a, mesh_type, label_a)
-                require_mesh_type(data_b, mesh_type, label_b)
+            if mesh_type_a is not None:
+                require_mesh_type(data_a, mesh_type_a, label_a)
+            if mesh_type_b is not None:
+                require_mesh_type(data_b, mesh_type_b, label_b)
 
             print("\n")
-            compare_reports(data_a, data_b, label_a=args.label_a, label_b=args.label_b, use_color=use_color)
+            compare_reports(data_a, data_b, label_a=label_a, label_b=label_b, use_color=use_color)
         finally:
             if os.path.exists(path_a):
                 os.remove(path_a)
@@ -297,8 +350,10 @@ def main():
 
     # Mode 2: Compare two existing JSON report files
     if args.report_a and args.report_b:
-        if args.mesh_type is not None:
-            parser.error("--mesh-type requires --bin-a and --bin-b")
+        if any(value is not None for value in (
+            args.mesh_type, args.mesh_type_a, args.mesh_type_b
+        )):
+            parser.error("Mesh type options require --bin-a and --bin-b")
         with open(args.report_a, "r") as fa:
             data_a = json.load(fa)
         with open(args.report_b, "r") as fb:

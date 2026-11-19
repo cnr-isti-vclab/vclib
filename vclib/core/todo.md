@@ -3,7 +3,7 @@
 - General:
   - [ ] Enumerations should be declared as enum classes
   - [x] Fix scripts to add a mesh element
-    - [ ] Add documentation on how to add a new mesh element using scripts
+    - [x] Add documentation on how to add a new mesh element using scripts (`scripts/generate_mesh_element/README.md`)
   - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
   - [x] 'friend class Type' should be 'friend Type'
   - [x] implement swap functions in this way (but keep swap member function): https://stackoverflow.com/a/5695855/5851101
@@ -27,7 +27,7 @@
     - [x] Rethink the concepts in core/concepts, moving everything that is a related to a data structure in the header that contains the definition of that data structure
 - Mesh:
   - Elements:
-    - [ ] set properly elements concepts
+    - [x] set properly elements concepts
   - Containers:
     - [x] Move the classes that are used internally in a folder 'detail'
     - [ ] Element container should provide fast compact function, that does not preserve elements order
@@ -38,10 +38,10 @@
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
     - [ ] MeshInfo should not use its own enums for elements and components
-    - [ ] Add function to get MeshType name (see test 21)
+    - [x] Add function to get MeshType name (see test 21)
 - Views:
-  - [ ] Add `elements<ELEM_ID>` view 
-  - [ ] Move indices view from views/mesh/elements/element.h to views/mesh/indices.h
+  - [x] Add `elements<ELEM_ID>` view
+  - [x] Move indices view from views/mesh/elements/element.h to views/mesh/indices.h
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:
@@ -58,8 +58,8 @@
   - [x] Implement exporter to VCG
   - [x] Implement importer/exporter from buffer
   - [x] Shuffle algorithms should be all made using ranges
-  - [ ] Shuffle algorithms should take as input an optional seed instead of a boolean 'deterministic'
-    - [ ] and they should log the seed at debug level
+  - [x] Shuffle algorithms should take as input an optional seed instead of a boolean 'deterministic'
+    - [x] and they should log the seed at debug level
   - [ ] Smooth algorithms should be made using loggers
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces

@@ -125,8 +125,8 @@ inline void meshStatistics()
     std::vector<double> edgeLengths;
     for (const auto& face : mesh.faces()) {
         for (int i = 0; i < 3; ++i) {
-            auto   v1     = face.vertex(i)->position();
-            auto   v2     = face.vertex((i + 1) % 3)->position();
+            auto   v1     = face.vertex(i).position();
+            auto   v2     = face.vertex((i + 1) % 3).position();
             double length = (v2 - v1).norm();
             edgeLengths.push_back(length);
         }
@@ -152,9 +152,9 @@ inline void meshStatistics()
     // Calculate face area statistics
     std::vector<double> faceAreas;
     for (const auto& face : mesh.faces()) {
-        auto v0 = face.vertex(0)->position();
-        auto v1 = face.vertex(1)->position();
-        auto v2 = face.vertex(2)->position();
+        auto v0 = face.vertex(0).position();
+        auto v1 = face.vertex(1).position();
+        auto v2 = face.vertex(2).position();
 
         // Triangle area using cross product
         auto   edge1 = v1 - v0;
@@ -190,9 +190,9 @@ inline void meshStatistics()
     int                 degenerateTriangles = 0;
 
     for (const auto& face : mesh.faces()) {
-        auto v0 = face.vertex(0)->position();
-        auto v1 = face.vertex(1)->position();
-        auto v2 = face.vertex(2)->position();
+        auto v0 = face.vertex(0).position();
+        auto v1 = face.vertex(1).position();
+        auto v2 = face.vertex(2).position();
 
         double a = (v1 - v0).norm();
         double b = (v2 - v1).norm();

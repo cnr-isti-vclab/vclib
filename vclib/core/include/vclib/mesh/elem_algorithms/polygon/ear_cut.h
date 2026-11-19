@@ -15,6 +15,8 @@
 
 namespace vcl {
 
+using vcl::earCut;
+
 /**
  * @brief Computes the earcut algorithm of a 3D *planar* polygonal face, that
  * returns a triangulation of the polygon.
@@ -26,8 +28,6 @@ namespace vcl {
  * This algorithm first computes the normal of the given polygon, then projects
  * it in a 2D plane and executes the classic 2D EarCut algorithm.
  *
- * @tparam Face: the type of the face that satisfies the FaceConcept.
- *
  * @param[in] polygon: A (polygonal) face of a vcl::Mesh.
  *
  * @return A vector of indices, representing the triplets of the triangulation
@@ -35,11 +35,9 @@ namespace vcl {
  *
  * @ingroup core_polygon
  */
-template<FaceConcept Face>
-std::vector<uint> earCut(const Face& polygon)
+std::vector<uint> earCut(const FaceConcept auto& polygon)
 {
-    using PositionType = Face::VertexType::PositionType;
-    return earCut(polygon.vertices() | views::positions);
+    return vcl::earCut(polygon.vertices() | views::positions);
 }
 
 } // namespace vcl

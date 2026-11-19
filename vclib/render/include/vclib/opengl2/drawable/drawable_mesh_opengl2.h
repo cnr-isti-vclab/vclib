@@ -22,6 +22,9 @@
 #endif
 
 #ifdef __APPLE__
+#ifndef GL_SILENCE_DEPRECATION
+#define GL_SILENCE_DEPRECATION
+#endif
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
@@ -93,7 +96,30 @@ public:
         mMRS.setDefaultSettingsFromCapability();
     }
 
+    DrawableMeshOpenGL2(const DrawableMeshOpenGL2& drawableMesh) :
+            AbstractDrawableMesh(
+                static_cast<const AbstractDrawableMesh&>(drawableMesh)),
+            MeshType(drawableMesh)
+    {
+        if constexpr (HasName<MeshType>) {
+            AbstractDrawableMesh::name() = drawableMesh.name();
+        }
+        updateBuffers();
+        mMRS.setDefaultSettingsFromCapability();
+    }
+
+    DrawableMeshOpenGL2(DrawableMeshOpenGL2&& drawableMesh)
+    {
+        swap(drawableMesh);
+    }
+
     ~DrawableMeshOpenGL2() = default;
+
+    DrawableMeshOpenGL2& operator=(DrawableMeshOpenGL2 drawableMesh)
+    {
+        swap(drawableMesh);
+        return *this;
+    }
 
     void swap(DrawableMeshOpenGL2& other)
     {
@@ -398,8 +424,11 @@ private:
                     int   vid0_ptr = 3 * vid0;
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.vertexTextureIDsBufferData()[tid]];
+                    auto texIdx = mMRD.vertexTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
@@ -432,8 +461,11 @@ private:
                     int   vid0_ptr = 3 * vid0;
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
-                    short texture =
-                        mTextID[mMRD.wedgeTextureIDsBufferData()[tid]];
+                    auto texIdx = mMRD.wedgeTextureIDsBufferData()[tid];
+                    uint texture =
+                        (texIdx != USHORT_NULL && texIdx < mTextID.size()) ?
+                            mTextID[texIdx] :
+                            0;
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);

@@ -216,6 +216,58 @@ template<
 using HashTableGrid3 =
     HashTableGrid<RegularGrid3<ScalarType>, ValueType, AllowDuplicates>;
 
+/* Deduction guides */
+
+template<PointIteratorConcept It>
+HashTableGrid(It, It) -> HashTableGrid<
+    RegularGrid<
+        typename It::value_type::ScalarType,
+        It::value_type::DIM>,
+    typename It::value_type>;
+
+template<PointIteratorConcept It, typename F>
+HashTableGrid(It, It, F) -> HashTableGrid<
+    RegularGrid<
+        typename It::value_type::ScalarType,
+        It::value_type::DIM>,
+    typename It::value_type>;
+
+template<Range Rng>
+    requires PointConcept<std::ranges::range_value_t<Rng>>
+HashTableGrid(Rng) -> HashTableGrid<
+    RegularGrid<
+        typename std::ranges::range_value_t<Rng>::ScalarType,
+        std::ranges::range_value_t<Rng>::DIM>,
+    std::ranges::range_value_t<Rng>>;
+
+template<Range Rng, typename F>
+    requires PointConcept<std::ranges::range_value_t<Rng>>
+HashTableGrid(Rng, F) -> HashTableGrid<
+    RegularGrid<
+        typename std::ranges::range_value_t<Rng>::ScalarType,
+        std::ranges::range_value_t<Rng>::DIM>,
+    std::ranges::range_value_t<Rng>>;
+
+template<VertexRangeConcept Rng>
+HashTableGrid(Rng) -> HashTableGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<VertexRangeConcept Rng, typename F>
+HashTableGrid(Rng, F) -> HashTableGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<FaceRangeConcept Rng>
+HashTableGrid(Rng) -> HashTableGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<FaceRangeConcept Rng, typename F>
+HashTableGrid(Rng, F) -> HashTableGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H

@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     t.add_faces(4)
 
-    t.enable_per_face_adjacent_faces()
+    t.enable_face_adjacent_faces()
 
     for f in t.faces():
         for af in f.adj_face_indices():

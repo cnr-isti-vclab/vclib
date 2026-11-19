@@ -36,11 +36,11 @@ def mesh_curvature():
     print(f"  Faces: {original_mesh.face_count()}")
 
     # Enable required components
-    original_mesh.enable_per_vertex_adjacent_faces()
-    original_mesh.enable_per_face_adjacent_faces()
-    original_mesh.enable_per_vertex_principal_curvature()
-    original_mesh.enable_per_vertex_color()
-    original_mesh.enable_per_vertex_quality()
+    original_mesh.enable_vertex_adjacent_faces()
+    original_mesh.enable_face_adjacent_faces()
+    original_mesh.enable_vertex_principal_curvature()
+    original_mesh.enable_vertex_color()
+    original_mesh.enable_vertex_quality()
 
     vcl.update_vertex_and_face_normals(original_mesh)
     vcl.update_face_adjacent_faces(original_mesh)

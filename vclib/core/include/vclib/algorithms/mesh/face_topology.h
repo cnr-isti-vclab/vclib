@@ -43,14 +43,16 @@ namespace vcl {
  * @param[in,out] f: the first face of the triangulation, that will be filled.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  */
-template<FaceMeshConcept MeshType, FaceConcept FaceType>
+template<
+    FaceMeshConcept MeshType,
+    FaceConcept     FaceType,
+    typename IndexT = IndexType<MeshType>>
 void addTriangleFacesFromPolygon(
-    MeshType&                m,
-    FaceType&                f,
-    const std::vector<uint>& polygon)
+    MeshType&                  m,
+    FaceType&                  f,
+    const std::vector<IndexT>& polygon)
 {
-    using VertexType   = MeshType::VertexType;
-    using PositionType = VertexType::PositionType;
+    using PositionType = VertexType<MeshType>::PositionType;
 
     // from the ids, create a polygon of positions
     std::vector<PositionType> polPositions(polygon.size());
@@ -101,7 +103,7 @@ void addTriangleFacesFromPolygon(
 
     // remaining triangles, need to create more faces in the mesh
     for (uint i = 3; i < tris.size(); i += 3) {
-        uint ff = m.addFace();
+        auto ff = m.addFace();
 
         if constexpr (FaceType::VERTEX_COUNT < 0) {
             m.face(ff).resizeVertices(3);
@@ -140,10 +142,12 @@ void addTriangleFacesFromPolygon(
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  * @return The index of the first triangle added to the mesh.
  */
-template<FaceMeshConcept MeshType>
-uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon)
+template<FaceMeshConcept MeshType, typename IndexT = IndexType<MeshType>>
+IndexType<MeshType> addTriangleFacesFromPolygon(
+    MeshType&                  m,
+    const std::vector<IndexT>& polygon)
 {
-    uint fid = m.addFace();
+    auto fid = m.addFace();
     addTriangleFacesFromPolygon(m, m.face(fid), polygon);
     return fid;
 }
@@ -169,7 +173,7 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
     // Check if the AdjacentFaces component is available for the given face.
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -179,7 +183,7 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
         return true;
     }
     else { // Check if the edge is shared by exactly two faces.
-        return f.adjFace(edge)->indexOfAdjFace(&f) != UINT_NULL;
+        return f.adjFace(edge).indexOfAdjFace(f) != UINT_NULL;
     }
 }
 
@@ -203,7 +207,7 @@ template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -249,12 +253,10 @@ template<FaceConcept FaceType>
 bool checkFlipEdge(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
-
-    using VertexType = FaceType::VertexType;
 
     if (f.vertexCount() > 3)
         return false;
@@ -262,25 +264,25 @@ bool checkFlipEdge(const FaceType& f, uint edge)
     if (isFaceEdgeOnBorder(f, edge))
         return false;
 
-    const VertexType* v0 = f.vertex(edge);
-    const VertexType* v1 = f.vertexMod(edge + 1);
+    auto v0 = f.vertex(edge);
+    auto v1 = f.vertexMod(edge + 1);
 
-    const FaceType* of = f.adjFace(edge);
-    uint            oe = of->indexOfAdjFace(&f);
+    auto of = f.adjFace(edge);
+    uint oe = of.indexOfAdjFace(f);
     assert(oe != UINT_NULL);
 
     // check if the vertices of the edge are the same
     // e.g. the mesh has to be well oriented
-    if (of->vertex(oe) != v1 || of->vertexMod(oe + 1) != v0)
+    if (of.vertex(oe) != v1 || of.vertexMod(oe + 1) != v0)
         return false;
 
     // check if the flipped edge is already present in the mesh
     // f_v2 and of_v2 are the vertices of the new edge
-    const VertexType* f_v2  = f.vertexMod(edge + 2);
-    const VertexType* of_v2 = of->vertexMod(oe + 2);
+    auto f_v2  = f.vertexMod(edge + 2);
+    auto of_v2 = of.vertexMod(oe + 2);
 
-    MeshPos<FaceType> pos(&f, f_v2);
-    MeshPos<FaceType> startPos = pos;
+    MeshPos pos(f, f_v2);
+    MeshPos startPos = pos;
     // loop in the one ring of f_v2
     do {
         pos.nextEdgeAdjacentToV();
@@ -315,13 +317,13 @@ template<FaceConcept FaceType>
 uint edgeAdjacentFaceCount(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
 
-    ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
-    uint                               cnt = 0;
+    EdgeAdjFaceIterator<FaceType, true> begin(f, edge), end;
+    uint                                cnt = 0;
     for (auto it = begin; it != end; ++it) {
         ++cnt;
     }
@@ -348,7 +350,7 @@ template<FaceConcept FaceType>
 uint faceOnBorderEdgeCount(const FaceType& f)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -384,7 +386,7 @@ template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -401,13 +403,13 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
      */
 
     assert(f.adjFace(e) != nullptr);
-    const FaceType& f1 = *(f.adjFace(e));
+    auto f1 = f.adjFace(e);
 
-    uint e1 = f1.indexOfAdjFace(&f);
+    uint e1 = f1.indexOfAdjFace(f);
     assert(e1 != UINT_NULL);
 
-    const auto& vf0 = *(f.vertexMod((int) e - 1));
-    const auto& vf1 = *(f1.vertexMod(e1 - 1));
+    auto vf0 = f.vertexMod((int) e - 1);
+    auto vf1 = f1.vertexMod((int) e1 - 1);
 
     auto n0 = faceNormal(f);
     auto n1 = faceNormal(f1);
@@ -450,38 +452,38 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
  * @param[in] edge: The index of the edge to detach the face from.
  */
 template<FaceConcept FaceType>
-void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
+void detachAdjacentFacesOnEdge(FaceType f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
 
-    FaceType* nextFace = f.adjFace(edge);
+    FaceType nextFace = f.adjFace(edge);
 
     // if nextFace == nullptr there is nothing to do
     // the face is already detached on the edge
     if (nextFace != nullptr) {
-        FaceType*                          prevFace;
-        ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
+        FaceType                      prevFace;
+        EdgeAdjFaceIterator<FaceType> begin(f, edge), end;
         for (auto it = begin; it != end; ++it) {
             prevFace = *it;
         }
 
         if (nextFace == prevFace) { // manifold case
-            uint en = nextFace->indexOfAdjFace(&f);
+            uint en = nextFace.indexOfAdjFace(f);
             assert(en != UINT_NULL);
-            nextFace->setAdjFace(en, nullptr);
+            nextFace.setAdjFace(en, FaceType::NULL_INDEX);
         }
         else { // non manifold case
             // the prev face does not have to point to f anymore, but to
             // nextFace
-            uint pn = prevFace->indexOfAdjFace(&f);
+            uint pn = prevFace.indexOfAdjFace(f);
             assert(pn != UINT_NULL);
-            prevFace->setAdjFace(pn, nextFace);
+            prevFace.setAdjFace(pn, nextFace);
         }
-        f.setAdjFace(edge, nullptr);
+        f.setAdjFace(edge, FaceType::NULL_INDEX);
     }
 }
 
@@ -507,27 +509,27 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
  * @param[in] f: The face to detach from its vertices and adjacent faces.
  */
 template<FaceConcept FaceType>
-void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
+void detachFace(FaceType f) requires comp::HasAdjacentFaces<FaceType>
 {
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
+    if (!f.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
 
-    using VertexType = FaceType::VertexType;
+    using VertexType = vcl::VertexType<FaceType>;
 
     for (uint e = 0; e < f.vertexCount(); ++e) {
         detachAdjacentFacesOnEdge(f, e);
 
         // if the vertices have adjacent faces
         if constexpr (comp::HasAdjacentFaces<VertexType>) {
-            if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
-                VertexType* v    = f.vertex(e);
-                uint        vpos = v->indexOfAdjFace(&f);
-                if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
-                                           // not initialized / updated
-                    v->eraseAdjFace(vpos); // the vertex v has not anymore the
-                                           // adjacent face f
+            if (f.vertex(e).isAdjacentFacesAvailable()) {
+                VertexType v    = f.vertex(e);
+                uint       vpos = v.indexOfAdjFace(f);
+                if (vpos != UINT_NULL) {  // may happen if vertex adj faces are
+                                          // not initialized / updated
+                    v.eraseAdjFace(vpos); // the vertex v has not anymore the
+                                          // adjacent face f
                 }
             }
         }
@@ -548,37 +550,35 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
  * adjacent faces.
  */
 template<FaceConcept FaceType>
-std::set<const FaceType*> floodFacePatch(
-    const FaceType& seed,
-    auto&&          faceSelector)
+std::set<FaceType> floodFacePatch(FaceType seed, auto&& faceSelector)
 {
-    if (!comp::isAdjacentFacesAvailableOn(seed)) {
+    if (!seed.isAdjacentFacesAvailable()) {
         throw MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
 
-    std::set<const FaceType*> faces;
+    std::set<FaceType> faces;
     // only faces that satisfy the faceSelector will stay on the stack
-    std::vector<const FaceType*> stackFaces;
+    std::vector<FaceType> stackFaces;
 
     if (!faceSelector(seed))
         return faces;
 
-    faces.insert(&seed);
+    faces.insert(seed);
 
-    for (const FaceType* adjacent : seed.adjFaces()) {
+    for (FaceType adjacent : seed.adjFaces()) {
         // adding neighbor faces (if faceSelector returns true) to the stack
-        if (adjacent && faceSelector(*adjacent))
+        if (adjacent && faceSelector(adjacent))
             stackFaces.push_back(adjacent);
     }
 
     // while there aren't other faces on the stack
     while (stackFaces.size() > 0) {
-        const FaceType* fi = stackFaces[stackFaces.size() - 1];
+        FaceType fi = stackFaces[stackFaces.size() - 1];
         stackFaces.pop_back(); // pop
         faces.insert(fi);
-        for (const FaceType* adjacent : fi->adjFaces()) {
-            if (adjacent && faceSelector(*adjacent)) {
+        for (FaceType adjacent : fi.adjFaces()) {
+            if (adjacent && faceSelector(adjacent)) {
                 if (faces.find(adjacent) == faces.end())
                     stackFaces.push_back(adjacent);
             }

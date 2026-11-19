@@ -12,177 +12,101 @@
 
 namespace vcl {
 
-template<typename ScalarType, bool INDEXED>
-class PolyMeshT;
-
-} // namespace vcl
-
-namespace vcl::polymesh {
-
-template<typename Scalar, bool INDEXED>
-class Vertex;
-
-template<typename Scalar, bool INDEXED>
-class Face;
+namespace polymesh {
 
 /**
- * @brief The Vertex type used by the PolyMeshT class.
- *
- * @extends vert::BitFlags
- * @extends vert::Position3
- * @extends vert::Normal3
- * @extends vert::OptionalColor
- * @extends vert::OptionalQuality
- * @extends vert::OptionalAdjacentFaces
- * @extends vert::OptionalAdjacentVertices
- * @extends vert::OptionalPrincipalCurvature
- * @extends vert::OptionalTexCoord
- * @extends vert::OptionalMaterialIndex
- * @extends vert::OptionalTangent3
- * @extends vert::OptionalMark
- * @extends vert::CustomComponents
+ * @brief The VertexComponents type used by the PolyMeshT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam I: A boolean flag that indicates whether the mesh uses indices or
- * pointers to store vertices of faces and adjacency information.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool I>
-class Vertex :
-        public vcl::Vertex<
-            PolyMeshT<Scalar, I>,
-            vert::BitFlags,
-            vert::Position3<Scalar>,
-            vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar, I>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
-            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalMaterialIndex<Vertex<Scalar, I>>,
-            vert::OptionalTangent3<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalMark<Vertex<Scalar, I>>,
-            vert::CustomComponents<Vertex<Scalar, I>>>
-{
-public:
-    friend void swap(Vertex& a, Vertex& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using VertexComponents = vcl::VertexComponents<
+    vert::BitFlags,
+    vert::Position3<Scalar>,
+    vert::Normal3<Scalar>,
+    vert::OptionalColor,
+    vert::OptionalQuality<Scalar>,
+    vert::OptionalAdjacentFaces<Index>,
+    vert::OptionalAdjacentVertices<Index>,
+    vert::OptionalPrincipalCurvature<Scalar>,
+    vert::OptionalTexCoord<Scalar>,
+    vert::OptionalMaterialIndex,
+    vert::OptionalTangent3<Scalar>,
+    vert::CustomComponents>;
 
 /**
- * @brief The Face type used by the PolyMeshT class.
- *
- * @extends face::PolygonBitFlags
- * @extends face::PolygonVertexRefs
- * @extends face::Normal3
- * @extends face::OptionalColor
- * @extends face::OptionalQuality
- * @extends face::OptionalAdjacentPolygons
- * @extends face::OptionalPolygonWedgeTexCoords
- * @extends face::OptionalMaterialIndex
- * @extends face::OptionalMark
- * @extends face::CustomComponents
+ * @brief The FaceComponents type used by the PolyMeshT class.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam I: A boolean flag that indicates whether the mesh uses indices or
- * pointers to store vertices of faces and adjacency information.
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool I>
-class Face :
-        public vcl::Face<
-            PolyMeshT<Scalar, I>,
-            face::PolygonBitFlags, // 4b
-            face::PolygonVertexRefs<I, Vertex<Scalar, I>, Face<Scalar, I>>,
-            face::Normal3<Scalar>,
-            face::OptionalColor<Face<Scalar, I>>,
-            face::OptionalQuality<Scalar, Face<Scalar, I>>,
-            face::OptionalAdjacentPolygons<I, Face<Scalar, I>>,
-            face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar, I>>,
-            face::OptionalMaterialIndex<Face<Scalar, I>>,
-            face::OptionalMark<Face<Scalar, I>>,
-            face::CustomComponents<Face<Scalar, I>>>
-{
-public:
-    friend void swap(Face& a, Face& b) { a.swap(b); }
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using FaceComponents = vcl::FaceComponents<
+    face::PolygonBitFlags,
+    face::PolygonVertexReferences<Index>,
+    face::Normal3<Scalar>,
+    face::OptionalColor,
+    face::OptionalQuality<Scalar>,
+    face::OptionalPolygonAdjacentFaces<Index>,
+    face::OptionalPolygonWedgeTexCoords<Scalar>,
+    face::OptionalMaterialIndex,
+    face::CustomComponents>;
 
-} // namespace vcl::polymesh
-
-namespace vcl {
+} // namespace polymesh
 
 /**
  * @brief The PolyMeshT class is a mesh class that represents a polygonal mesh.
  *
- * It allows to store polymesh::Vertex and polymesh::Face elements.
+ * It allows to store polymesh vertices and polymesh faces.
  *
  * @tparam Scalar: The scalar type used for the mesh.
- * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
- * or pointers to store references.
- *
- * @extends mesh::VertexContainer
- * @extends mesh::FaceContainer
- * @extends mesh::BoundingBox3
- * @extends mesh::Color
- * @extends mesh::Mark
- * @extends mesh::Materials
- * @extends mesh::Name
- * @extends mesh::TransformMatrix
- * @extends mesh::CustomComponents
+ * @tparam Index: The unsigned integral type used for indexing elements.
  *
  * @ingroup meshes
  */
-template<typename Scalar, bool INDEXED>
-class PolyMeshT :
-        public Mesh<
-            mesh::VertexContainer<polymesh::Vertex<Scalar, INDEXED>>,
-            mesh::FaceContainer<polymesh::Face<Scalar, INDEXED>>,
-            mesh::BoundingBox3<Scalar>,
-            mesh::Color,
-            mesh::Mark,
-            mesh::Materials,
-            mesh::Name,
-            mesh::TransformMatrix<Scalar>,
-            mesh::CustomComponents>
-{
-public:
-    /** @brief The scalar used to store all the data of the Mesh. */
-    using ScalarType = Scalar;
-};
+template<typename Scalar = double, std::unsigned_integral Index = uint>
+using PolyMeshT = Mesh<
+    mesh::VertexContainer<polymesh::VertexComponents<Scalar, Index>, Index>,
+    mesh::FaceContainer<polymesh::FaceComponents<Scalar, Index>, Index>,
+    mesh::BoundingBox3<Scalar>,
+    mesh::Color,
+    mesh::Materials,
+    mesh::Name,
+    mesh::TransformMatrix<Scalar>,
+    mesh::CustomComponents>;
 
 /**
- * @brief The PolyMeshf class is a specialization of the PolyMeshT class that
- * uses `float` as scalar and pointers to store vertices of faces and adjacency
- * information.
+ * @brief The PolyMesh class is a specialization of the PolyMeshT class
+ * that uses `double` as scalar and `uint` for indexing.
  * @ingroup meshes
  */
-using PolyMeshf = PolyMeshT<float, false>;
+using PolyMesh = PolyMeshT<double, uint>;
 
 /**
- * @brief The PolyMesh class is a specialization of the PolyMeshT class that
- * uses `double` as scalar and pointers to store vertices of faces and adjacency
- * information.
+ * @brief The PolyMeshf class is a specialization of the PolyMeshT class
+ * that uses `float` as scalar and `uint` for indexing.
  * @ingroup meshes
  */
-using PolyMesh = PolyMeshT<double, false>;
+using PolyMeshf = PolyMeshT<float, uint>;
 
 /**
- * @brief The PolyMeshIndexedf class is a specialization of the PolyMeshT class
- * that uses `float` as scalar and indices (`unsigned int`) to store vertices of
- * faces and adjacency information.
+ * @brief The PolyMesh64 class is a specialization of the PolyMeshT class
+ * that uses `double` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
-using PolyMeshIndexedf = PolyMeshT<float, true>;
+using PolyMesh64 = PolyMeshT<double, uint64_t>;
 
 /**
- * @brief The PolyMeshIndexed class is a specialization of the PolyMeshT class
- * that uses `double` as scalar and indices (`unsigned int`) to store vertices
- * of faces and adjacency information.
+ * @brief The PolyMesh64f class is a specialization of the PolyMeshT class
+ * that uses `float` as scalar and `uint64_t` for indexing.
  * @ingroup meshes
  */
-using PolyMeshIndexed = PolyMeshT<double, true>;
+using PolyMesh64f = PolyMeshT<float, uint64_t>;
 
 } // namespace vcl
 

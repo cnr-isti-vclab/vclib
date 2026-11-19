@@ -8,8 +8,7 @@
 #ifndef VCL_MESH_COMPONENTS_QUALITY_H
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/base.h>
 
@@ -30,32 +29,14 @@ namespace vcl::comp {
  * @endcode
  *
  * @tparam Scalar: The scalar type of the Quality value.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ParentElemType = void, bool OPT = false>
-class Quality :
-        public Component<
-            Quality<Scalar, ParentElemType, OPT>,
-            CompId::QUALITY,
-            Scalar,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+template<typename Scalar, bool OPT = false>
+class Quality : public Component<CompId::QUALITY, Scalar, OPT>
 {
-    using Base = Component<
-        Quality<Scalar, ParentElemType, OPT>,
-        CompId::QUALITY,
-        Scalar,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::QUALITY, Scalar, OPT>;
 
 public:
     /**
@@ -66,98 +47,66 @@ public:
     /* Constructors */
 
     /**
-     * @brief Initilizes the Quality value to 0.
+     * @brief Initializes the Quality value to 0.
      */
     Quality() = default;
 
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the quality of the element.
-     * @return a const reference of the quality of the element.
-     */
-    const QualityType& quality() const { return Base::data(); }
-
-    /**
      * @brief Returns a reference of the quality of the element.
      * @return a reference of the quality of the element.
      */
-    QualityType& quality() { return Base::data(); }
+    decltype(auto) quality(this auto&& self) { return Base::compData(self); }
 
 protected:
     // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const { vcl::serialize(os, quality()); }
-
-    void deserialize(std::istream& is) { vcl::deserialize(is, quality()); }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& e, bool = true);
 };
 
 /* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element or a
- * Mesh) has the Quality component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the
+ * Quality component (COMP_ID = CompId::QUALITY).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::Quality, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal Quality
- * component and the vertical OptionalQuality component, therefore it does not
- * guarantee that a template Element type that satisfies this concept provides
- * Quality component at runtime (it is guaranteed only that the proper member
- * functions are available at compile time).
- *
- * @tparam T: The type to be tested for conformity to the HasQuality.
+ * @tparam T: The type to be tested for conformity to HasQuality.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasQuality = TTB::IsDerivedFromSpecializationOfV<T, Quality>;
+concept HasQuality = HasComponent<CompId::QUALITY, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element or a
- * Mesh) has the Quality component (inherits from it), and that the component is
- * optional.
+ * @brief A concept that checks whether a type T has the Quality component
+ * and it is optional.
  *
- * @tparam T: The type to be tested for conformity to the HasOptionalQuality.
+ * @tparam T: The type to be tested for conformity to HasOptionalQuality.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalQuality =
-    HasQuality<T> && IsOptionalComponent<typename RemoveRef<T>::Quality>;
-
-/* importFrom function */
-
-template<typename Scalar, typename ParentElemType, bool OPT>
-template<typename Element>
-void Quality<Scalar, ParentElemType, OPT>::importFrom(const Element& e, bool)
-{
-    if constexpr (HasQuality<Element>) {
-        if (isQualityAvailableOn(e)) {
-            quality() = e.quality();
-        }
-    }
-}
+    HasQuality<T> && HasOptionalComponent<CompId::QUALITY, T>;
 
 /* Detector function to check if a class has Quality available */
 
-/**
- * @brief Checks if the given Element has Quality component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has Quality component available,
- * `false` otherwise.
- */
-bool isQualityAvailableOn(const auto& element)
+/* importFrom function */
+
+template<typename Scalar, bool OPT>
+template<typename OtherElement>
+void Quality<Scalar, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& e,
+    bool)
 {
-    return isComponentAvailableOn<CompId::QUALITY>(element);
+    if constexpr (HasQuality<OtherElement>) {
+        if (e.template isComponentAvailable<CompId::QUALITY>()) {
+            self.quality() = static_cast<Scalar>(e.quality());
+        }
+    }
 }
 
 /* Specialization Aliases */
@@ -166,31 +115,23 @@ bool isQualityAvailableOn(const auto& element)
  * The Qualityf class is an alias of the Quality component that uses float as
  * scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Qualityf = Quality<float, ElementType, OPT>;
+template<bool OPT = false>
+using Qualityf = Quality<float, OPT>;
 
 /**
  * The Qualityd class is an alias of the Quality component that uses double as
  * scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Qualityd = Quality<double, ElementType, OPT>;
+template<bool OPT = false>
+using Qualityd = Quality<double, OPT>;
 
 } // namespace vcl::comp
 

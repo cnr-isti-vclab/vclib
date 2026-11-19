@@ -10,13 +10,12 @@
 
 #include <vclib/meshes.h>
 
-void edgeStaticAsserts()
+inline void edgeStaticAsserts()
 {
     using namespace vcl;
 
-    using EMEdge  = edgemesh::Edge<float, false>;
-    using EMEdgeI = edgemesh::Edge<float, true>;
-    using TMFace  = trimesh::Face<float, false>;
+    using EMEdge = EdgeType<EdgeMesh>;
+    using TMFace = FaceType<TriMesh>;
 
     static_assert(
         EdgeConcept<EMEdge>, "EMEdge does not satisfy the EdgeConcept");
@@ -30,19 +29,6 @@ void edgeStaticAsserts()
         "const EMEdge& does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<EMEdge&&>, "EMEdge&& does not satisfy the EdgeConcept");
-
-    static_assert(
-        EdgeConcept<EMEdgeI>, "EMEdgeI does not satisfy the EdgeConcept");
-    static_assert(
-        EdgeConcept<const EMEdgeI>,
-        "const EMEdgeI does not satisfy the EdgeConcept");
-    static_assert(
-        EdgeConcept<EMEdgeI&>, "EMEdgeI& does not satisfy the EdgeConcept");
-    static_assert(
-        EdgeConcept<const EMEdgeI&>,
-        "const EMEdgeI& does not satisfy the EdgeConcept");
-    static_assert(
-        EdgeConcept<EMEdgeI&&>, "EMEdgeI&& does not satisfy the EdgeConcept");
 
     static_assert(!EdgeConcept<TMFace>, "TMFace does satisfy the EdgeConcept");
     static_assert(

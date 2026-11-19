@@ -24,11 +24,15 @@ void initDrawableObject(pybind11::module& m)
     c.def_property(
         "name",
         py::overload_cast<>(&vcl::DrawableObject::name, py::const_),
-        py::overload_cast<>(&vcl::DrawableObject::name));
+        [](vcl::DrawableObject& obj, const std::string& name) {
+            obj.name() = name;
+        });
     c.def_property(
         "info",
         py::overload_cast<>(&vcl::DrawableObject::info, py::const_),
-        py::overload_cast<>(&vcl::DrawableObject::info));
+        [](vcl::DrawableObject& obj, const std::string& info) {
+            obj.info() = info;
+        });
     c.def("init", &vcl::DrawableObject::init);
 }
 

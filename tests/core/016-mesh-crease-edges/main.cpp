@@ -18,15 +18,15 @@ TEMPLATE_TEST_CASE(
     vcl::TriMeshf,
     vcl::PolyMesh,
     vcl::PolyMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf,
-    vcl::PolyMeshIndexed,
-    vcl::PolyMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f,
+    vcl::PolyMesh64,
+    vcl::PolyMesh64f)
 {
     using TriMesh = TestType;
 
     TriMesh cylinder = vcl::createCylinder<TriMesh>(1, 1, 36);
-    cylinder.enablePerFaceAdjacentFaces();
+    cylinder.enableFaceAdjacentFaces();
 
     vcl::updateFaceAdjacentFaces(cylinder);
 

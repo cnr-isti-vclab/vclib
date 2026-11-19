@@ -145,7 +145,7 @@ auto boundingBox(const TriangleType& t)
 template<IteratorConcept Iterator>
 auto boundingBox(Iterator begin, Iterator end)
 {
-    using BB = decltype(boundingBox(typename Iterator::value_type()));
+    using BB = decltype(boundingBox(std::declval<typename Iterator::value_type>()));
 
     BB b;
 

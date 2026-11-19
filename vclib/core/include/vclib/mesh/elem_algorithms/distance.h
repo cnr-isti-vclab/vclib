@@ -8,12 +8,18 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
 #define VCL_MESH_ELEM_ALGORITHMS_DISTANCE_H
 
+#include "polygon/ear_cut.h"
+
 #include <vclib/mesh/elements.h>
+#include <vclib/mesh/requirements.h>
 
 #include <vclib/algorithms/core.h>
 #include <vclib/space/core.h>
 
 namespace vcl {
+
+using vcl::boundedDistance;
+using vcl::distance;
 
 /**
  * @brief Computes the distance between a Vertex and a 3D point.
@@ -98,18 +104,18 @@ auto boundedDistance(
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
         TriangleWrapper tw(
-            f.vertex(0)->position(),
-            f.vertex(1)->position(),
-            f.vertex(2)->position());
+            f.vertex(0).position(),
+            f.vertex(1).position(),
+            f.vertex(2).position());
 
         return boundedDistance(p, tw, maxDist, closest, signedDist);
     }
     else {
         if (f.vertexCount() == 3) {
             TriangleWrapper tw(
-                f.vertex(0)->position(),
-                f.vertex(1)->position(),
-                f.vertex(2)->position());
+                f.vertex(0).position(),
+                f.vertex(1).position(),
+                f.vertex(2).position());
 
             return boundedDistance(p, tw, maxDist, closest, signedDist);
         }
@@ -122,9 +128,9 @@ auto boundedDistance(
             ScalarType d = boundedDistance(
                 p,
                 TriangleWrapper(
-                    f.vertex(tris[i])->position(),
-                    f.vertex(tris[i + 1])->position(),
-                    f.vertex(tris[i + 2])->position()),
+                    f.vertex(tris[i]).position(),
+                    f.vertex(tris[i + 1]).position(),
+                    f.vertex(tris[i + 2]).position()),
                 minDist,
                 w,
                 signedDist);
@@ -169,6 +175,23 @@ auto boundedDistance(
     bool             signedDist = false)
 {
     PointType closest;
+    return boundedDistance(p, f, maxDist, closest, signedDist);
+}
+
+/**
+ * @copydoc vcl::boundedDistance(const PointType&, const FaceType&,
+ * ScalarType, PointType&, bool)
+ *
+ * @ingroup core_distance
+ */
+template<FaceConcept FaceType, Point3Concept PointType, typename ScalarType>
+auto boundedDistance(
+    const FaceType&  f,
+    const PointType& p,
+    ScalarType       maxDist,
+    PointType&       closest,
+    bool             signedDist = false)
+{
     return boundedDistance(p, f, maxDist, closest, signedDist);
 }
 
@@ -220,6 +243,22 @@ auto distance(
 
     ScalarType maxDist = std::numeric_limits<ScalarType>::max();
     return boundedDistance(p, f, maxDist, closest, signedDist);
+}
+
+/**
+ * @copydoc vcl::distance(const PointType&, const FaceType&, PointType&,
+ * bool)
+ *
+ * @ingroup core_distance
+ */
+template<FaceConcept FaceType, Point3Concept PointType>
+auto distance(
+    const FaceType&  f,
+    const PointType& p,
+    PointType&       closest,
+    bool             signedDist = false)
+{
+    return distance(p, f, closest, signedDist);
 }
 
 /**

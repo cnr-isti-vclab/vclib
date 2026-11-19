@@ -37,7 +37,7 @@ namespace vcl {
  * For more information, check out:
  *
  * <b>Brian Mirtich,</b>
- * ``Fast and Accurate Computation of Polyhedral Mass Properties,''
+ * "Fast and Accurate Computation of Polyhedral Mass Properties,"
  * journal of graphics tools, volume 1, number 2, 1996
  *
  * @ingroup space_complex
@@ -45,9 +45,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 class MeshInertia
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using ScalarType = VertexType::PositionType::ScalarType;
+    using ScalarType = vcl::ScalarType<MeshType>;
 
     enum { X = 0, Y = 1, Z = 2 };
 
@@ -70,7 +68,7 @@ public:
     {
         double nx, ny, nz;
 
-        for (const FaceType& f : m.faces()) {
+        for (const auto&& f : m.faces()) {
             if (faceArea(f) > 0) {
                 Point3d fn = faceNormal(f).template cast<double>();
                 fn.normalize();
@@ -200,7 +198,7 @@ private:
 
         projectionIntegrals(f);
 
-        w  = -f.vertex(0)->position().template cast<double>().dot(n);
+        w  = -f.vertex(0).position().template cast<double>().dot(n);
         k1 = 1 / n[mC];
         k2 = k1 * k1;
         k3 = k2 * k1;
@@ -249,10 +247,10 @@ private:
             0.0;
 
         for (uint i = 0; i < f.vertexCount(); i++) {
-            a0   = f.vertex(i)->position()[mA];
-            b0   = f.vertex(i)->position()[mB];
-            a1   = f.vertexMod(i + 1)->position()[mA];
-            b1   = f.vertexMod(i + 1)->position()[mB];
+            a0   = f.vertex(i).position()[mA];
+            b0   = f.vertex(i).position()[mB];
+            a1   = f.vertexMod(i + 1).position()[mA];
+            b1   = f.vertexMod(i + 1).position()[mB];
             da   = a1 - a0;
             db   = b1 - b0;
             a0_2 = a0 * a0;

@@ -10,51 +10,47 @@
 #include <vclib/mesh.h>
 #include <vclib/space/core.h>
 
-BENCH(
-    "polygon/geometry/face_normals",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
-            return s.skip("not a face mesh");
+BENCH("polygon/geometry/face_normals", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("not a face mesh");
+    }
+    else {
+        const Mesh& m = s.mesh();
+        if (m.faceCount() == 0) {
+            return s.skip("mesh has no faces");
         }
-        else {
-            const Mesh& m = s.mesh();
-            if (m.faceCount() == 0) {
-                return s.skip("mesh has no faces");
+
+        using Point = vcl::PositionType<Mesh>;
+
+        s.run([&]() {
+            Point sum;
+            sum.setZero();
+            for (const auto& f : m.faces()) {
+                sum += vcl::Polygon<Point>::normal(
+                    f.vertices() | vcl::views::positions);
             }
+            return sum;
+        });
+    }
+});
 
-            using Point = typename Mesh::VertexType::PositionType;
-
-            s.run([&]() {
-                Point sum;
-                sum.setZero();
-                for (const auto& f : m.faces()) {
-                    sum += vcl::Polygon<Point>::normal(
-                        f.vertices() | vcl::views::positions);
-                }
-                return sum;
-            });
+BENCH("polygon/triangulation/ear_cut", []<typename Mesh>(bench::State<Mesh>& s) {
+    if constexpr (!vcl::FaceMeshConcept<Mesh>) {
+        return s.skip("not a face mesh");
+    }
+    else {
+        const Mesh& m = s.mesh();
+        if (m.faceCount() == 0) {
+            return s.skip("mesh has no faces");
         }
-    });
 
-BENCH(
-    "polygon/triangulation/ear_cut",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        if constexpr (!vcl::FaceMeshConcept<Mesh>) {
-            return s.skip("not a face mesh");
-        }
-        else {
-            const Mesh& m = s.mesh();
-            if (m.faceCount() == 0) {
-                return s.skip("mesh has no faces");
+        s.run([&]() {
+            std::size_t totalIndices = 0;
+            for (const auto& f : m.faces()) {
+                auto tris = vcl::earCut(f);
+                totalIndices += tris.size();
             }
-
-            s.run([&]() {
-                std::size_t totalIndices = 0;
-                for (const auto& f : m.faces()) {
-                    auto tris = vcl::earCut(f);
-                    totalIndices += tris.size();
-                }
-                return totalIndices;
-            });
-        }
-    });
+            return totalIndices;
+        });
+    }
+});
