@@ -33,7 +33,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType = TriMesh::Vertex::PositionType;
+        using PointType = vcl::PositionType<TriMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -56,7 +56,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType = PolyMesh::Vertex::PositionType;
+        using PointType = vcl::PositionType<PolyMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -97,7 +97,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType = TriMesh::Vertex::PositionType;
+        using PointType = vcl::PositionType<TriMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -121,7 +121,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType = PolyMesh::Vertex::PositionType;
+        using PointType = vcl::PositionType<PolyMesh>;
 
         std::size_t seed = std::random_device()();
 
@@ -161,7 +161,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("TriMesh")
     {
-        using PointType  = TriMesh::Vertex::PositionType;
+        using PointType  = vcl::PositionType<TriMesh>;
         using ScalarType = PointType::ScalarType;
         using SphereType = Sphere<ScalarType>;
 
@@ -186,7 +186,7 @@ TEMPLATE_TEST_CASE(
 
     SECTION("PolyMesh")
     {
-        using PointType  = PolyMesh::Vertex::PositionType;
+        using PointType  = vcl::PositionType<PolyMesh>;
         using ScalarType = PointType::ScalarType;
         using SphereType = Sphere<ScalarType>;
 

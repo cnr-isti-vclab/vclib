@@ -23,7 +23,7 @@ auto bruteForceKNearestFaces(
     vcl::uint                     k)
 {
     using ScalarType = PointType::ScalarType;
-    using FaceType   = typename MeshType::ConstFace;
+    using FaceType   = MeshType::ConstFace;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 
@@ -66,7 +66,7 @@ auto gridKNearestFaces(
     vcl::uint                     k,
     const std::string&            gridName)
 {
-    using FaceType   = typename MeshType::ConstFace;
+    using FaceType   = MeshType::ConstFace;
     using ScalarType = PointType::ScalarType;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();

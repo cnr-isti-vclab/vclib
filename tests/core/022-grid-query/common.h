@@ -49,7 +49,7 @@ auto randomSpheres(
     const MeshType& mesh,
     std::size_t     seed = std::random_device()())
 {
-    using PointType  = MeshType::Vertex::PositionType;
+    using PointType  = vcl::PositionType<MeshType>;
     using ScalarType = PointType::ScalarType;
 
     using VertDistrType   = std::uniform_int_distribution<vcl::uint>;
@@ -98,8 +98,8 @@ template<
     vcl::FaceMeshConcept MeshType>
 auto computeGrid(const MeshType& mesh)
 {
-    using ScalarType = typename MeshType::Vertex::PositionType::ScalarType;
-    using FaceType   = typename MeshType::ConstFace;
+    using ScalarType = vcl::ScalarType<MeshType>;
+    using FaceType   = MeshType::ConstFace;
 
     return Grid<FaceType, ScalarType>(mesh.faces());
 }

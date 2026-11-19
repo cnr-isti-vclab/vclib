@@ -50,38 +50,6 @@ must confirm it in `metadata.mesh_type`. An older executable that ignores the
 option or omits this metadata is rejected rather than silently benchmarking the
 wrong representation.
 
-### Recommended v1/v2 comparisons
-
-| Baseline A (v1) | Comparison B (v2) | What is compared |
-|-----------------|-------------------|------------------|
-| `trimesh-indexed` | `trimesh` | double, 32-bit indices |
-| `trimesh-indexedf` | `trimeshf` | float, 32-bit indices |
-| `trimesh` | `trimesh64` | double, pointers vs 64-bit indices |
-| `trimeshf` | `trimesh64f` | float, pointers vs 64-bit indices |
-
-The last two pairs compare references of equal width **on 64-bit pointer
-platforms**; pointers and indices are not equivalent representations and do not
-imply identical mesh layouts or total memory use.
-Names are never rewritten based on a branch name, so these commands also work
-with tags, commit hashes, and v2/v2 comparisons.
-
-### Preserving a v1 baseline
-
-Before merging v2 into `main`, first ensure `main` has the final v1 benchmark
-harness. Create an immutable baseline tag and a maintenance branch at that
-commit (no separate GitHub fork is required):
-
-```sh
-git tag mesh-v1-baseline main
-git branch mesh_v1 main
-```
-
-After the merge, run the script from the new `main`, using `mesh_v1` or the tag
-as the baseline ref. Keep harness updates separate from algorithm changes so
-they can be backported to `mesh_v1` without altering the baseline implementation.
-Older v1 reports may omit the new representation metadata; requested native
-types are still checked against `metadata.mesh_type`.
-
 ### Reproducibility and coverage
 
 Branch comparisons save a `provenance` object in each JSON report: source commit,

@@ -22,7 +22,7 @@ auto bruteforceNearestFaces(
     const std::vector<PointType>& points)
 {
     using ScalarType = PointType::ScalarType;
-    using FaceType   = typename MeshType::ConstFace;
+    using FaceType   = MeshType::ConstFace;
 
     auto distFun = vcl::distFunction<PointType, FaceType>();
 

@@ -22,7 +22,7 @@ auto bruteforceFacesInSpheres(
     const std::vector<SphereType>& spheres)
 {
     using ScalarType = SphereType::ScalarType;
-    using FaceType   = typename MeshType::ConstFace;
+    using FaceType   = MeshType::ConstFace;
 
     auto intersFunction = [](const SphereType& s, const FaceType& f) {
         return s.intersects(vcl::boundingBox(f));

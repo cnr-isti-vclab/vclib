@@ -41,14 +41,8 @@ The `--config` JSON file also accepts a `mesh_type` key:
 
 The command line overrides the configuration; without either, `trimesh` is used.
 The selected type is printed and saved in the report's `metadata.mesh_type`.
-Reports identify `version` as `v2` and include `mesh_generation`, `scalar_type`,
-`scalar_bits`, `reference_kind`, and `reference_bits` in their metadata.
-Widths are measured from the C++ types, not inferred from their CLI names.
 Use `--help` for all options and `--list` to inspect the selected benchmarks
 without loading a dataset.
-
-All supported IO formats and import/export algorithms are available. Empty
-datasets are rejected rather than producing misleading measurements.
 
 ## Adding benchmarks
 
