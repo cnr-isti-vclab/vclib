@@ -57,39 +57,42 @@ void readPlyEdgeProperty(
     }
     // loading one of the normal components
     else if (p.name >= ply::nx && p.name <= ply::nz) {
-        if constexpr (HasPerEdgeNormal<MeshType>) {
-            if (isPerEdgeNormalAvailable(mesh)) {
+        if constexpr (HasEdgeNormal<MeshType>) {
+            if (mesh.isEdgeNormalAvailable()) {
                 using Scalar = EdgeType::NormalType::ScalarType;
                 int    a     = p.name - ply::nx;
                 Scalar n     = io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead  = true;
+                e.normal()[a] = n;
+                hasBeenRead   = true;
             }
         }
     }
     // loading one of the color components
     else if (p.name >= ply::red && p.name <= ply::alpha) {
-        if constexpr (HasPerFaceColor<MeshType>) {
-            if (isPerFaceColorAvailable(mesh)) {
+        if constexpr (HasEdgeColor<MeshType>) {
+            if (mesh.isEdgeColorAvailable()) {
                 int           a = p.name - ply::red;
                 unsigned char c =
                     io::readPrimitiveType<unsigned char>(file, p.type, end);
-                hasBeenRead = true;
+                e.color()[a] = c;
+                hasBeenRead  = true;
             }
         }
     }
     else if (p.name == ply::quality) { // loading the quality component
-        if constexpr (HasPerFaceQuality<MeshType>) {
+        if constexpr (HasEdgeQuality<MeshType>) {
             using QualityType = EdgeType::QualityType;
-            if (isPerFaceQualityAvailable(mesh)) {
+            if (mesh.isEdgeQualityAvailable()) {
                 QualityType s =
                     io::readPrimitiveType<QualityType>(file, p.type, end);
+                e.quality() = s;
                 hasBeenRead = true;
             }
         }
     }
     else if (p.name == ply::unknown) {
-        if constexpr (HasPerFaceCustomComponents<MeshType>) {
-            if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
+        if constexpr (HasEdgeCustomComponents<MeshType>) {
+            if (mesh.hasEdgeCustomComponent(p.unknownPropertyName)) {
                 io::readCustomComponent(
                     file, e, p.unknownPropertyName, p.type, end);
                 hasBeenRead = true;
@@ -146,7 +149,7 @@ void writePlyEdges(
     const PlyHeader& header,
     const MeshType&  mesh)
 {
-    using EdgeType = MeshType::EdgeType;
+    using EdgeType = ConstEdgeType<MeshType>;
 
     FileType format;
     if (header.format() == ply::ASCII) {
@@ -157,19 +160,19 @@ void writePlyEdges(
     }
 
     // indices of vertices that do not consider deleted vertices
-    std::vector<uint> vIndices = mesh.vertexCompactIndices();
+    auto vIndices = mesh.vertexCompactIndices();
 
-    for (const EdgeType& e : mesh.edges()) {
+    for (EdgeType e : mesh.edges()) {
         for (const PlyProperty& p : header.edgeProperties()) {
             bool hasBeenWritten = false;
             if (p.name == ply::vertex1) {
                 io::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(0))], p.type, format);
+                    file, vIndices[e.vertexIndex(0)], p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name == ply::vertex2) {
                 io::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(1))], p.type, format);
+                    file, vIndices[e.vertexIndex(1)], p.type, format);
                 hasBeenWritten = true;
             }
             else if (p.name == ply::bit_flags) {
@@ -177,21 +180,21 @@ void writePlyEdges(
                 hasBeenWritten = true;
             }
             else if (p.name >= ply::nx && p.name <= ply::nz) {
-                if constexpr (HasPerEdgeNormal<MeshType>) {
+                if constexpr (HasEdgeNormal<MeshType>) {
                     io::writeProperty(
                         file, e.normal()[p.name - ply::nx], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name >= ply::red && p.name <= ply::alpha) {
-                if constexpr (HasPerEdgeColor<MeshType>) {
+                if constexpr (HasEdgeColor<MeshType>) {
                     io::writeProperty(
                         file, e.color()[p.name - ply::red], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             else if (p.name == ply::quality) {
-                if constexpr (HasPerEdgeQuality<MeshType>) {
+                if constexpr (HasEdgeQuality<MeshType>) {
                     io::writeProperty(file, e.quality(), p.type, format);
                     hasBeenWritten = true;
                 }
@@ -214,14 +217,13 @@ void readPlyEdges(
     MeshType&        m,
     LogType&         log)
 {
-    using EdgeType = MeshType::EdgeType;
     m.reserveEdges(header.edgeCount());
 
     log.startProgress("Reading edges", header.edgeCount());
 
     for (uint eid = 0; eid < header.edgeCount(); ++eid) {
-        uint      eeid = m.addEdge();
-        EdgeType& e    = m.edge(eeid);
+        uint eeid = m.addEdge();
+        auto e    = m.edge(eeid);
         if (header.format() == ply::ASCII) {
             detail::readPlyEdgeTxt(file, e, m, header.edgeProperties());
         }

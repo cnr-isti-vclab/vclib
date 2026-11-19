@@ -25,7 +25,7 @@ TEMPLATE_TEST_CASE(
     vcl::TriMesh,
     vcl::TriMeshf)
 {
-    using Scalar           = TestType::VertexType::PositionType::ScalarType;
+    using Scalar           = vcl::ScalarType<TestType>;
     using Point            = vcl::Point3<Scalar>;
     const double tolerance = std::is_same_v<Scalar, float> ? 3e-5 : 1e-12;
 
@@ -53,7 +53,7 @@ TEMPLATE_TEST_CASE(
             Eigen::AngleAxisd(0.6, Eigen::Vector3d(1, 2, 3).normalized())
                 .toRotationMatrix();
         const Eigen::Vector3d translation(5, -3, 2);
-        for (auto& vertex : mesh.vertices()) {
+        for (auto vertex : mesh.vertices()) {
             const Eigen::Vector3d position(
                 vertex.position()[0],
                 vertex.position()[1],
@@ -66,7 +66,7 @@ TEMPLATE_TEST_CASE(
     }
     SECTION("Reversed winding")
     {
-        for (auto& face : mesh.faces()) {
+        for (auto face : mesh.faces()) {
             const auto first = face.vertexIndex(0);
             face.setVertex(0, face.vertexIndex(1));
             face.setVertex(1, first);
@@ -113,7 +113,7 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh,
     vcl::PolyMeshf)
 {
-    using Scalar = TestType::VertexType::PositionType::ScalarType;
+    using Scalar = vcl::ScalarType<TestType>;
     using Point  = vcl::Point3<Scalar>;
     TestType mesh;
     mesh.addVertices(

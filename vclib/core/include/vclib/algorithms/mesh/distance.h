@@ -44,7 +44,7 @@ HausdorffDistResult hausdorffDist(
     LogType&           log)
 {
     using PointSampleType = SamplerType::PointType;
-    using ScalarType      = PointSampleType::ScalarType;
+    using ScalarType      = GridType::ScalarType;
 
     HausdorffDistResult res;
     res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
@@ -89,8 +89,10 @@ HausdorffDistResult hausdorffDist(
             s.size() - ns);
     }
 
-    res.meanDist /= ns;
-    res.RMSDist = std::sqrt(res.RMSDist / ns);
+    if (ns > 0) {
+        res.meanDist /= ns;
+        res.RMSDist = std::sqrt(res.RMSDist / ns);
+    }
 
     return res;
 }
@@ -104,8 +106,6 @@ HausdorffDistResult samplerMeshHausdorff(
     const SamplerType& s,
     LogType&           log) requires (!HasFaces<MeshType>)
 {
-    using VertexType = MeshType::VertexType;
-
     std::string meshName = "first mesh";
     if constexpr (HasName<MeshType>) {
         meshName = m.name();
@@ -113,8 +113,7 @@ HausdorffDistResult samplerMeshHausdorff(
 
     log.log(0, "Building Grid on {} vertices...", meshName);
 
-    StaticGrid3<const VertexType*> grid(m.vertices() | views::addrOf);
-    grid.build();
+    StaticGrid grid(m.vertices());
 
     log.log(5, "Grid built.");
 
@@ -130,10 +129,6 @@ HausdorffDistResult samplerMeshHausdorff(
     const SamplerType& s,
     LogType&           log)
 {
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using ScalarType = VertexType::PositionType::ScalarType;
-
     std::string meshName = "first mesh";
     if constexpr (HasName<MeshType>) {
         meshName = m.name();
@@ -141,9 +136,7 @@ HausdorffDistResult samplerMeshHausdorff(
     if (m.faceCount() == 0) {
         log.log(0, "Building Grid on {} vertices...", meshName);
 
-        StaticGrid3<const VertexType*, ScalarType> grid(
-            m.vertices() | views::addrOf);
-        grid.build();
+        StaticGrid grid(m.vertices());
 
         log.log(5, "Grid built.");
 
@@ -152,9 +145,7 @@ HausdorffDistResult samplerMeshHausdorff(
     else {
         log.log(0, "Building Grid on {} faces...", meshName);
 
-        StaticGrid3<const FaceType*, ScalarType> grid(
-            m.faces() | views::addrOf);
-        grid.build();
+        StaticGrid grid(m.faces());
 
         log.log(5, "Grid built.");
 
@@ -169,13 +160,13 @@ template<
     PointSamplerConcept SamplerType,
     LoggerConcept       LogType>
 HausdorffDistResult hausdorffDistance(
-    const MeshType1&   m1,
-    const MeshType2&   m2,
-    uint               nSamples,
-    RandomConfig       config,
-    SamplerType&       sampler,
-    std::vector<uint>& birth,
-    LogType&           log)
+    const MeshType1&                   m1,
+    const MeshType2&                   m2,
+    uint                               nSamples,
+    RandomConfig                       config,
+    SamplerType&                       sampler,
+    std::vector<IndexType<MeshType2>>& birth,
+    LogType&                           log)
 {
     std::string meshName1 = "first mesh";
     std::string meshName2 = "second mesh";
@@ -227,14 +218,16 @@ HausdorffDistResult hausdorffDistance(
     uint                    nSamples   = 0,
     RandomConfig            config     = std::monostate())
 {
+    using PositionType2 = PositionType<MeshType2>;
+
     if (nSamples == 0)
         nSamples = m2.vertexCount();
 
-    std::vector<uint> birth;
+    std::vector<IndexType<MeshType2>> birth;
 
     switch (sampMethod) {
     case HAUSDORFF_VERTEX_UNIFORM: {
-        PointSampler<typename MeshType2::VertexType::PositionType> sampler;
+        PointSampler<PositionType2> sampler;
 
         return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
             m1, m2, nSamples, config, sampler, birth, log);
@@ -246,7 +239,7 @@ HausdorffDistResult hausdorffDistance(
     }
     case HAUSDORFF_MONTECARLO: {
         if constexpr (FaceMeshConcept<MeshType2>) {
-            PointSampler<typename MeshType2::VertexType::PositionType> sampler;
+            PointSampler<PositionType2> sampler;
 
             return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
                 m1, m2, nSamples, config, sampler, birth, log);

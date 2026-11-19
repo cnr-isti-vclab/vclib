@@ -8,8 +8,7 @@
 #ifndef VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 #define VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/space/core.h>
 
@@ -35,31 +34,20 @@ namespace vcl::comp {
  * @endcode
  *
  * @tparam Scalar: The scalar type of the principal curvature values.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ParentElemType = void, bool OPT = false>
+template<typename Scalar, bool OPT = false>
 class PrincipalCurvature :
         public Component<
-            PrincipalCurvature<Scalar, ParentElemType, OPT>,
             CompId::PRINCIPAL_CURVATURE,
             vcl::PrincipalCurvature<Scalar>,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
-        PrincipalCurvature<Scalar, ParentElemType, OPT>,
         CompId::PRINCIPAL_CURVATURE,
         vcl::PrincipalCurvature<Scalar>,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:
@@ -71,113 +59,69 @@ public:
     /* Constructors */
 
     /**
-     * @brief Initilizes the PrincipalCurvature values to 0.
+     * @brief Initializes the PrincipalCurvature values to 0.
      */
     PrincipalCurvature() = default;
 
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the principal curvature of the
-     * element.
-     * @return a const reference of the principal curvature of the element.
-     */
-    const PrincipalCurvatureType& principalCurvature() const
-    {
-        return Base::data();
-    }
-
-    /**
      * @brief Returns a reference of the principal curvature of the element.
      * @return a reference of the principal curvature of the element.
      */
-    PrincipalCurvatureType& principalCurvature() { return Base::data(); }
-
-protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool = true);
-
-    void serialize(std::ostream& os) const
+    decltype(auto) principalCurvature(this auto&& self)
     {
-        principalCurvature().serialize(os);
+        return Base::compData(self);
     }
 
-    void deserialize(std::istream& is) { principalCurvature().deserialize(is); }
+protected:
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& e, bool = true);
 };
 
 /* concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the PrincipalCurvature component (inherits from it).
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the PrincipalCurvature
+ * component (COMP_ID = CompId::PRINCIPAL_CURVATURE).
  *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::PrincipalCurvature, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
- * component, therefore it does not guarantee that a template Element type that
- * satisfies this concept provides PrincipalCurvature component at runtime (it
- * is guaranteed only that the proper member functions are available at compile
- * time).
- *
- * @tparam T: The type to be tested for conformity to the HasPrincipalCurvature.
+ * @tparam T: The type to be tested for conformity to HasPrincipalCurvature.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPrincipalCurvature =
-    TTB::IsDerivedFromSpecializationOfV<T, PrincipalCurvature>;
+concept HasPrincipalCurvature = HasComponent<CompId::PRINCIPAL_CURVATURE, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the PrincipalCurvature component (inherits from it), and that the component
- * is optional.
+ * @brief A concept that checks whether a type T has the PrincipalCurvature
+ * component and it is optional.
  *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalPrincipalCurvature.
+ * @tparam T: The type to be tested for conformity to HasPrincipalCurvature.
  *
  * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalPrincipalCurvature =
-    HasPrincipalCurvature<T> &&
-    IsOptionalComponent<typename RemoveRef<T>::PrincipalCurvature>;
-
-/* importFrom function */
-
-template<typename Scalar, typename ParentElemType, bool OPT>
-template<typename Element>
-void PrincipalCurvature<Scalar, ParentElemType, OPT>::importFrom(
-    const Element& e,
-    bool)
-{
-    if constexpr (HasPrincipalCurvature<Element>) {
-        if (isPrincipalCurvatureAvailableOn(e)) {
-            principalCurvature() =
-                e.principalCurvature().template cast<Scalar>();
-        }
-    }
-}
+    HasPrincipalCurvature<T> && HasOptionalComponent<CompId::PRINCIPAL_CURVATURE, T>;
 
 /* Detector function to check if a class has PrincipalCurvature available */
 
-/**
- * @brief Checks if the given Element has PrincipalCurvature component
- * available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has PrincipalCurvature component available,
- * `false` otherwise.
- */
-bool isPrincipalCurvatureAvailableOn(const auto& element)
+/* importFrom function */
+
+template<typename Scalar, bool OPT>
+template<typename OtherElement>
+void PrincipalCurvature<Scalar, OPT>::importFrom(
+    this auto&& self,
+    const OtherElement& e,
+    bool)
 {
-    return isComponentAvailableOn<CompId::PRINCIPAL_CURVATURE>(element);
+    if constexpr (HasPrincipalCurvature<OtherElement>) {
+        if (e.template isComponentAvailable<CompId::PRINCIPAL_CURVATURE>()) {
+            self.principalCurvature() =
+                e.principalCurvature().template cast<Scalar>();
+        }
+    }
 }
 
 /* Specialization Aliases */
@@ -186,31 +130,23 @@ bool isPrincipalCurvatureAvailableOn(const auto& element)
  * The PrincipalCurvaturef class is an alias of the PrincipalCurvature component
  * that uses float as scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, OPT>;
+template<bool OPT = false>
+using PrincipalCurvaturef = PrincipalCurvature<float, OPT>;
 
 /**
  * The PrincipalCurvatured class is an alias of the PrincipalCurvature component
  * that uses double as scalar type.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam OPT: If true, the component will be optional.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using PrincipalCurvatured = PrincipalCurvature<double, ElementType, OPT>;
+template<bool OPT = false>
+using PrincipalCurvatured = PrincipalCurvature<double, OPT>;
 
 } // namespace vcl::comp
 

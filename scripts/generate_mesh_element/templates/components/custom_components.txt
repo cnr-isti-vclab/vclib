@@ -1,0 +1,6 @@
+//@concepts
+template<typename T>
+concept HasCustomComponents = comp::HasCustomComponents<T>;
+//@aliases
+/* Port CustomComponents class into %EL_NS% namespace */
+using CustomComponents = comp::CustomComponents;

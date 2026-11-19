@@ -32,7 +32,6 @@ void pointcloudStaticAsserts()
     static_assert(
         !PolygonMeshConcept<PointCloud>, "The PointCloud is a PolygonMesh.");
 
-    static_assert(HasVertices<PointCloud>, "");
     static_assert(!HasFaces<PointCloud>, "");
     static_assert(!HasEdges<PointCloud>, "");
 

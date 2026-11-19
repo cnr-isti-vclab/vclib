@@ -327,7 +327,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 
     Mesh mesh1 = vcl::loadMesh<Mesh>(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
 
-    mesh1.enablePerVertexColor();
+    mesh1.enableVertexColor();
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++)
         mesh1.vertex(i).color() = vcl::random<vcl::Color>();
 
@@ -342,7 +342,7 @@ TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 
     REQUIRE(mesh1.vertexCount() == mesh2.vertexCount());
     REQUIRE(mesh1.faceCount() == mesh2.faceCount());
-    REQUIRE(mesh2.isPerVertexColorEnabled());
+    REQUIRE(mesh2.isVertexColorAvailable());
 
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
         REQUIRE(mesh1.vertex(i).position() == mesh2.vertex(i).position());
@@ -376,18 +376,18 @@ TEMPLATE_TEST_CASE(
         "shell_barycenter", vcl::shellBarycenter(mesh1));
     mesh1.template addCustomComponent<double>("area", vcl::surfaceArea(mesh1));
 
-    mesh1.template addPerVertexCustomComponent<vcl::Point3d>("rand");
-    mesh1.template addPerElementCustomComponent<vcl::ElemId::FACE, vcl::Color>(
+    mesh1.template addVertexCustomComponent<vcl::Point3d>("rand");
+    mesh1.template addElementCustomComponent<vcl::ElemId::FACE, vcl::Color>(
         "rand_color");
 
-    auto vh = mesh1.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+    auto vh = mesh1.template vertexCustomComponentVectorHandle<vcl::Point3d>(
         "rand");
 
     for (unsigned int i = 0; i < mesh1.vertexCount(); i++) {
         vh[i] = vcl::random<vcl::Point3d>(std::pair {-100, 100});
     }
 
-    auto fh = mesh1.template perElementCustomComponentVectorHandle<
+    auto fh = mesh1.template elementCustomComponentVectorHandle<
         vcl::ElemId::FACE,
         vcl::Color>("rand_color");
 
@@ -399,8 +399,8 @@ TEMPLATE_TEST_CASE(
     mesh1.serialize(fo);
     mesh1.template serializeCustomComponentsOfType<double>(fo);
     mesh1.template serializeCustomComponentsOfType<vcl::Point3d>(fo);
-    mesh1.template serializePerVertexCustomComponentsOfType<vcl::Point3d>(fo);
-    mesh1.template serializePerElementCustomComponentsOfType<
+    mesh1.template serializeVertexCustomComponentsOfType<vcl::Point3d>(fo);
+    mesh1.template serializeElementCustomComponentsOfType<
         vcl::ElemId::FACE,
         vcl::Color>(fo);
     fo.close();
@@ -410,8 +410,8 @@ TEMPLATE_TEST_CASE(
     mesh2.deserialize(fi);
     mesh2.template deserializeCustomComponentsOfType<double>(fi);
     mesh2.template deserializeCustomComponentsOfType<vcl::Point3d>(fi);
-    mesh2.template deserializePerVertexCustomComponentsOfType<vcl::Point3d>(fi);
-    mesh2.template deserializePerElementCustomComponentsOfType<
+    mesh2.template deserializeVertexCustomComponentsOfType<vcl::Point3d>(fi);
+    mesh2.template deserializeElementCustomComponentsOfType<
         vcl::ElemId::FACE,
         vcl::Color>(fi);
     fi.close();
@@ -420,8 +420,8 @@ TEMPLATE_TEST_CASE(
     REQUIRE(mesh2.hasCustomComponent("shell_barycenter"));
     REQUIRE(mesh2.hasCustomComponent("area"));
 
-    REQUIRE(mesh2.hasPerVertexCustomComponent("rand"));
-    REQUIRE(mesh2.template hasPerElementCustomComponent<vcl::ElemId::FACE>(
+    REQUIRE(mesh2.hasVertexCustomComponent("rand"));
+    REQUIRE(mesh2.template hasElementCustomComponent<vcl::ElemId::FACE>(
         "rand_color"));
 
     REQUIRE(mesh2.template isCustomComponentOfType<vcl::Point3d>("barycenter"));
@@ -430,8 +430,8 @@ TEMPLATE_TEST_CASE(
     REQUIRE(mesh2.template isCustomComponentOfType<double>("area"));
 
     REQUIRE(
-        mesh2.template isPerVertexCustomComponentOfType<vcl::Point3d>("rand"));
-    REQUIRE(mesh2.template isPerElementCustomComponentOfType<
+        mesh2.template isVertexCustomComponentOfType<vcl::Point3d>("rand"));
+    REQUIRE(mesh2.template isElementCustomComponentOfType<
             vcl::ElemId::FACE,
             vcl::Color>("rand_color"));
 
@@ -446,10 +446,10 @@ TEMPLATE_TEST_CASE(
         mesh2.template customComponent<double>("area"));
 
     auto vh1 =
-        mesh1.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+        mesh1.template vertexCustomComponentVectorHandle<vcl::Point3d>(
             "rand");
     auto vh2 =
-        mesh2.template perVertexCustomComponentVectorHandle<vcl::Point3d>(
+        mesh2.template vertexCustomComponentVectorHandle<vcl::Point3d>(
             "rand");
 
     REQUIRE(vh1.size() == vh2.size());
@@ -457,11 +457,11 @@ TEMPLATE_TEST_CASE(
         REQUIRE(vh1[i] == vh2[i]);
     }
 
-    auto fh1 = mesh1.template perElementCustomComponentVectorHandle<
+    auto fh1 = mesh1.template elementCustomComponentVectorHandle<
         vcl::ElemId::FACE,
         vcl::Color>("rand_color");
 
-    auto fh2 = mesh2.template perElementCustomComponentVectorHandle<
+    auto fh2 = mesh2.template elementCustomComponentVectorHandle<
         vcl::ElemId::FACE,
         vcl::Color>("rand_color");
 

@@ -17,12 +17,12 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
-    vcl::TriMeshIndexed,
-    vcl::TriMeshIndexedf)
+    vcl::TriMesh64,
+    vcl::TriMesh64f)
 {
     using TriMesh     = TestType;
-    using VNormalType = TriMesh::VertexType::NormalType;
-    using FNormalType = TriMesh::FaceType::NormalType;
+    using VNormalType = vcl::VertexType<TriMesh>::NormalType;
+    using FNormalType = vcl::FaceType<TriMesh>::NormalType;
     using VNScalar    = typename VNormalType::ScalarType;
 
     TriMesh tm =
@@ -30,11 +30,11 @@ TEMPLATE_TEST_CASE(
 
     THEN("The mesh normals are not updated - all zero")
     {
-        for (const auto& v : tm.vertices()) {
+        for (auto&& v : tm.vertices()) {
             REQUIRE(v.normal() == VNormalType(0, 0, 0));
         }
 
-        for (const auto& f : tm.faces()) {
+        for (auto&& f : tm.faces()) {
             REQUIRE(f.normal() == FNormalType(0, 0, 0));
         }
     }
@@ -56,7 +56,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.face(10).normal() == FNormalType(1, 0, 0));
         REQUIRE(tm.face(11).normal() == FNormalType(1, 0, 0));
 
-        for (const auto& v : tm.vertices()) {
+        for (auto&& v : tm.vertices()) {
             REQUIRE(v.normal() == VNormalType(0, 0, 0));
         }
     }
@@ -86,7 +86,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(
             vcl::epsilonEquals(tm.vertex(7).normal(), VNormalType(a, a, a)));
 
-        for (const auto& f : tm.faces()) {
+        for (auto&& f : tm.faces()) {
             REQUIRE(f.normal() == FNormalType(0, 0, 0));
         }
     }
@@ -114,7 +114,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(
             vcl::epsilonEquals(tm.vertex(7).normal(), VNormalType(a, a, a)));
 
-        for (const auto& f : tm.faces()) {
+        for (auto&& f : tm.faces()) {
             REQUIRE(f.normal() == FNormalType(0, 0, 0));
         }
     }
@@ -125,11 +125,11 @@ TEMPLATE_TEST_CASE(
     "",
     vcl::TriEdgeMesh,
     vcl::TriEdgeMeshf,
-    vcl::TriEdgeMeshIndexed,
-    vcl::TriEdgeMeshIndexedf)
+    vcl::TriEdgeMesh64,
+    vcl::TriEdgeMesh64f)
 {
     using TriEdgeMesh = TestType;
-    using VNormalType = TriEdgeMesh::VertexType::NormalType;
+    using VNormalType = vcl::VertexType<TriEdgeMesh>::NormalType;
     using VNScalar    = typename VNormalType::ScalarType;
 
     TriEdgeMesh tem;
@@ -148,7 +148,7 @@ TEMPLATE_TEST_CASE(
 
     tem.addEdge(0, 4);
 
-    for (auto& v : tem.vertices()) {
+    for (auto v : tem.vertices()) {
         v.normal() = VNormalType(1, 1, 1);
     }
 

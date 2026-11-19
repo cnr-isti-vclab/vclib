@@ -8,55 +8,35 @@
 #ifndef VCL_MESH_COMPONENTS_POSITION_H
 #define VCL_MESH_COMPONENTS_POSITION_H
 
-#include "base/component.h"
-#include "base/predicates.h"
+#include "base/component_predicates.h"
 
 #include <vclib/space/core.h>
 
 namespace vcl::comp {
 
 /**
- * @brief The Position class represents a N-Dimensional point that will be
- * part of an Element (e.g. Vertex...).
+ * @brief The Position class represents a N-Dimensional point that will be part
+ * of an Element (e.g. Vertex...).
  *
  * Allows to get and set an object that represents a position in a space. The
  * type of this object must satisfy the PointConcept.
  *
  * For example, if you have a Vertex Element `v` with the Position component,
- * you'll be able to access to this component member functions from `v`:
+ * you'll be able to access this component's member functions from `v`:
  *
  * @code{.cpp}
  * auto pos = v.position();
  * @endcode
  *
- * @tparam P: The type of the position. This template argument must be a type
- * that satisfies the PointConcept.
- * @tparam ParentElemType: This template argument must be `void` if the
- * component needs to be stored horizontally, or the type of the parent element
- * that will contain this component if the component needs to be stored
- * vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam P: The type of the position. This template argument must satisfy the
+ * PointConcept.
  *
  * @ingroup components
  */
-template<PointConcept P, typename ParentElemType = void, bool OPT = false>
-class Position :
-        public Component<
-            Position<P, ParentElemType, OPT>,
-            CompId::POSITION,
-            P,
-            ParentElemType,
-            !std::is_same_v<ParentElemType, void>,
-            OPT>
+template<PointConcept P, bool OPT = false>
+class Position : public Component<CompId::POSITION, P, OPT>
 {
-    using Base = Component<
-        Position<P, ParentElemType, OPT>,
-        CompId::POSITION,
-        P,
-        ParentElemType,
-        !std::is_same_v<ParentElemType, void>,
-        OPT>;
+    using Base = Component<CompId::POSITION, P, OPT>;
 
 public:
     /**
@@ -64,132 +44,102 @@ public:
      */
     using PositionType = P;
 
-    /* Constructors */
-
-    /**
-     * @brief Initilizes the Position to (0, 0, 0).
-     */
     Position() = default;
 
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the position of the element.
-     * @return a const reference of the position of the element.
+     * @brief Returns a reference to the position of the element.
+     * Propagates constness automatically from the caller (proxy).
      */
-    const P& position() const { return Base::data(); }
-
-    /**
-     * @brief Returns a reference of the position of the element.
-     * @return a reference of the position of the element.
-     */
-    P& position() { return Base::data(); }
+    decltype(auto) position(this auto&& self) { return Base::compData(self); }
 
 protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& v, bool = true);
-
-    void serialize(std::ostream& os) const { position().serialize(os); }
-
-    void deserialize(std::istream& is) { position().deserialize(is); }
+    template<typename OtherElement>
+    void importFrom(this auto&& self, const OtherElement& other, bool = true);
 };
 
-/* concept */
+/* Concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the Position component (inherits from it).
- *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::Position, with any template arguments.
- *
- * @tparam T: The type to be tested for conformity to the HasPosition.
+ * @brief A concept that checks whether a type T (which can be a TypeWrapper of
+ * components, an ElementProxy, an ElementContainer, or a Mesh) has the Position
+ * component (COMP_ID = CompId::POSITION).
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPosition = TTB::IsDerivedFromSpecializationOfV<T, Position>;
+concept HasPosition = HasComponent<CompId::POSITION, T>;
 
-/* importFrom function */
-
-template<PointConcept P, typename ParentElemType, bool OPT>
-template<typename Element>
-void Position<P, ParentElemType, OPT>::importFrom(const Element& v, bool)
-{
-    using ScalarType = PositionType::ScalarType;
-    if constexpr (HasPosition<Element>) {
-        if (isPositionAvailableOn(v)) {
-            position() = v.position().template cast<ScalarType>();
-        }
-    }
-}
+/**
+ * @brief A concept that checks whether a type T has the Position component and it is optional.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasOptionalPosition =
+    HasPosition<T> && HasOptionalComponent<CompId::POSITION, T>;
 
 /* Detector function to check if a class has Position available */
 
-/**
- * @brief Checks if the given Element has Position component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has Position component available, `false`
- * otherwise.
- */
-bool isPositionAvailableOn(const auto& element)
+/* Implementation of member functions */
+
+template<PointConcept P, bool OPT>
+template<typename OtherElement>
+void Position<P, OPT>::importFrom(this auto&& self, const OtherElement& other, bool)
 {
-    return isComponentAvailableOn<CompId::POSITION>(element);
+    if constexpr (HasPosition<OtherElement>) {
+        if (other.template isComponentAvailable<CompId::POSITION>()) {
+            using ScalarType = PositionType::ScalarType;
+            self.position() = other.position().template cast<ScalarType>();
+        }
+    }
 }
 
 /* Specialization Aliases */
 
 /**
- * @brief The Position3 class is an alias of the Position component that
- * uses 3 dimensional Points.
+ * @brief The Position3 alias of the Position component that uses 3-dimensional
+ * Points.
  *
- * @tparam Scalar: The scalar type of the point.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam Scalar: The scalar type of the point (e.g. float, double).
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
-using Position3 = Position<Point3<Scalar>, ElementType, OPT>;
+template<typename Scalar, bool OPT = false>
+using Position3 = Position<Point3<Scalar>, OPT>;
 
 /**
- * @brief The Position3f class is an alias of the Position component that
- * uses 3 dimensional Points with float precision.
- *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @brief The Position3f alias of the Position component that uses 3-dimensional
+ * Points with float precision.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Position3f = Position3<float, ElementType, OPT>;
+using Position3f = Position3<float, false>;
 
 /**
- * @brief The Position3d class is an alias of the Position component that
- * uses 3 dimensional Points with double precision.
- *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @brief The Position3d alias of the Position component that uses 3-dimensional
+ * Points with double precision.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-using Position3d = Position3<double, ElementType, OPT>;
+using Position3d = Position3<double, false>;
+
+/**
+ * @brief The OptionalPosition3f alias of the Position component that uses 3-dimensional
+ * Points with float precision and is optional.
+ *
+ * @ingroup components
+ */
+using OptionalPosition3f = Position3<float, true>;
+
+/**
+ * @brief The OptionalPosition3d alias of the Position component that uses 3-dimensional
+ * Points with double precision and is optional.
+ *
+ * @ingroup components
+ */
+using OptionalPosition3d = Position3<double, true>;
 
 } // namespace vcl::comp
 

@@ -19,7 +19,7 @@ void initFaceContainer(pybind11::class_<MeshType, Options...>& ct)
 {
     namespace py = pybind11;
 
-    using FaceType = MeshType::FaceType;
+    using FaceType = vcl::FaceType<MeshType>;
 
     initContainer<FaceType>(ct, "face");
 

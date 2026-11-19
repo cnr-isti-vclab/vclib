@@ -14,7 +14,7 @@ void texCoordComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
 
     // test only the texcoord component
     static_assert(

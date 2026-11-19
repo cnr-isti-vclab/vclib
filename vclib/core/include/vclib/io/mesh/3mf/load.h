@@ -40,8 +40,8 @@ struct ResourcesMap
     std::unordered_map<uint, Lib3MF::PBaseMaterialGroup> baseMaterialGroupsMap;
     std::unordered_map<uint, Lib3MF::PColorGroup>        colorGroupsMap;
     std::unordered_map<uint, Texture2DGroupData>         texture2DGroupsMap;
-    std::unordered_map<uint, int>                        textureToMaterialIndexMap;
-    std::unordered_map<uint, Lib3MF::ePropertyType>      propertyTypesMap;
+    std::unordered_map<uint, int>                   textureToMaterialIndexMap;
+    std::unordered_map<uint, Lib3MF::ePropertyType> propertyTypesMap;
 };
 
 struct MeshInfoFlags
@@ -54,19 +54,18 @@ template<MeshConcept MeshType>
 bool canStoreFaceColors(MeshType& m, bool enableOptionalComponents)
 
 {
-    return isPerFaceColorAvailable(m) ||
-           (enableOptionalComponents && enableIfPerFaceColorOptional(m));
+    return m.isFaceColorAvailable() ||
+           (enableOptionalComponents && enableIfFaceColorOptional(m));
 }
 
 template<MeshConcept MeshType>
 bool canStoreFaceTexCoords(MeshType& m, bool enableOptionalComponents)
 {
-    return (isPerFaceWedgeTexCoordsAvailable(m) ||
+    return (m.isFaceWedgeTexCoordsAvailable() ||
             (enableOptionalComponents &&
-             enableIfPerFaceWedgeTexCoordsOptional(m))) &&
-           (isPerFaceMaterialIndexAvailable(m) ||
-            (enableOptionalComponents &&
-             enableIfPerFaceMaterialIndexOptional(m)));
+             enableIfFaceWedgeTexCoordsOptional(m))) &&
+           (m.isFaceMaterialIndexAvailable() ||
+            (enableOptionalComponents && enableIfFaceMaterialIndexOptional(m)));
 }
 
 template<Matrix44Concept MatrixType>
@@ -213,7 +212,7 @@ bool readTriangleBaseMaterial(
     }
 
     if (trianglePropertiesIDsAllEQ) {
-        if constexpr (HasPerFaceColor<MeshType>) {
+        if constexpr (HasFaceColor<MeshType>) {
             if (canStoreFaceColors(m, enableOptionalComponents)) {
                 m.face(faceID).color() =
                     sColorToVclColor(bmg->GetDisplayColor(propertyID[0]));
@@ -245,7 +244,7 @@ bool readTriangleColors(
     }
 
     if (trianglePropertiesIDsAllEQ) {
-        if constexpr (HasPerFaceColor<MeshType>) {
+        if constexpr (HasFaceColor<MeshType>) {
             if (canStoreFaceColors(m, enableOptionalComponents)) {
                 m.face(faceID).color() =
                     sColorToVclColor(cg->GetColor(propertyID[0]));
@@ -269,8 +268,8 @@ bool readTriangleTexCoords(
     ResourcesMap&         resourcesMap)
 {
     if constexpr (
-        HasMaterials<MeshType> && HasPerFaceWedgeTexCoords<MeshType> &&
-        HasPerFaceMaterialIndex<MeshType>) {
+        HasMaterials<MeshType> && HasFaceWedgeTexCoords<MeshType> &&
+        HasFaceMaterialIndex<MeshType>) {
         if (canStoreFaceTexCoords(m, settings.enableOptionalComponents)) {
             auto& groupData = resourcesMap.texture2DGroupsMap[uniqueResourceID];
             if (!groupData.group) {
@@ -294,17 +293,18 @@ bool readTriangleTexCoords(
                 groupData.materialIndex = it->second;
             }
 
-            using WedgeTexCoordType = MeshType::FaceType::WedgeTexCoordType;
+            using WedgeTexCoordType =
+                TexCoordType<WedgeType<FaceType<MeshType>>>;
 
             const auto& uv0 = groupData.group->GetTex2Coord(propertyID[0]);
             const auto& uv1 = groupData.group->GetTex2Coord(propertyID[1]);
             const auto& uv2 = groupData.group->GetTex2Coord(propertyID[2]);
 
-            m.face(faceID).wedgeTexCoord(0) =
+            m.face(faceID).wedge(0).texCoord() =
                 WedgeTexCoordType(uv0.m_U, uv0.m_V);
-            m.face(faceID).wedgeTexCoord(1) =
+            m.face(faceID).wedge(1).texCoord() =
                 WedgeTexCoordType(uv1.m_U, uv1.m_V);
-            m.face(faceID).wedgeTexCoord(2) =
+            m.face(faceID).wedge(2).texCoord() =
                 WedgeTexCoordType(uv2.m_U, uv2.m_V);
 
             m.face(faceID).materialIndex() = groupData.materialIndex;
@@ -564,7 +564,7 @@ void load3mf(
         // Read the 3MF file into the model
         reader->ReadFromFile(filename);
 
-        using ScalarType = MeshType::ScalarType;
+        using ScalarType = ScalarType<MeshType>;
 
         using Matrix44m = std::conditional_t<
             HasTransformMatrix<MeshType>,

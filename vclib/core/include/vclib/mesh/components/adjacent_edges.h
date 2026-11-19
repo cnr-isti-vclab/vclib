@@ -8,756 +8,440 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
-#include "base/predicates.h"
-#include "base/reference_container_component.h"
+#include "base/component_predicates.h"
+#include "base/container_references_component.h"
 
-#include <vclib/base.h>
+#include <vclib/mesh/elements/base/base.h>
+
+#include <cassert>
+#include <concepts>
+#include <ranges>
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge indices or pointers. It
- * could be used by any Element to save adjacencies information (also the Edge
- * element itself).
+ * @brief The AdjacentEdges class is a container of Edge indices. It can be used
+ * by any Element (Vertex, Face, Edge) to store edge adjacency information.
  *
  * It is a random access container having static or dynamic size, depending on
- * the value of the template argument N (a negative number means dynamic).
+ * the value of N (a negative number means dynamic).
  *
- * The member functions of this class will be available in the instance of any
- * Element that will contain this component.
+ * ### Dual Index Spaces: Global Edge Indices vs. Local Adjacency Positions
  *
- * For example, if you have a Vertex Element `v` that has the AdjacentEdges
- * component, you'll be able to access to this component member functions from
- * `v`:
+ * It is essential to distinguish between the two indexing spaces in this
+ * component:
  *
- * @code{.cpp}
- * v.adjEdgeCount();
- * auto* e = v.adjEdge(0);
- * uint ei = v.adjEdgeIndex(0);
- * @endcode
+ * 1. **Global Edge Index (`IndexType`)**:
+ *    - The global index or ID of an edge inside the mesh's `EdgeContainer`
+ *      (`m.edge(ei)`).
+ *    - Typed as `IndexType` (32 or 64 bit).
+ *    - Sentinel value: `NULL_INDEX` (`vcl::NULL_INDEX<IndexType>`). Indicates
+ *      that there is no adjacent edge at this slot.
+ *    - Returned by `adjEdgeIndex(uint i)` and `adjEdgeIndexMod(int i)`.
+ *    - Passed to search functions like `containsAdjEdge(IndexType ei)` and
+ *     `indexOfAdjEdge(IndexType ei)`.
  *
- * @note This component could be *Tied To Vertex Count*: it means that the size
- * of the container, if dynamic, will change automatically along the Vertex
- * Count of the Component. Check the `TTVC` template value on the
- * specialization of your component to check if it is tied to the Vertex Count.
- * For further details check the documentation of the @ref ContainerComponent
- * class.
+ * 2. **Local Adjacency Position (`uint`)**:
+ *    - The 0-based position or slot `i` within this element's adjacency list
+ *      (`0 <= i < adjEdgeCount()`).
+ *    - Always typed as `uint` (`uint32_t`).
+ *    - Sentinel value: `vcl::UINT_NULL` (`0xFFFFFFFF`), indicating that the
+ *      queried edge was not found in this element's adjacency list.
+ *    - Passed as the position `uint i` to `adjEdge(uint i)`, `adjEdgeIndex(uint
+ *      i)`, and `setAdjEdge(uint i, IndexType ei)`.
+ *    - Returned by `indexOfAdjEdge(IndexType ei)`.
  *
- * @tparam STORE_INDICES: If true, the component will store indices, otherwise
- * pointers to Edge.
- * @tparam Edge: The type of the adjacent Edge element.
- * @tparam N: The size of the container, that will represent the number of
- * storable adjacent edges. If negative, the container is dynamic.
- * @tparam TTVC: If true, the size of the container will be tied to the Vertex
- * Number of the component (this is used mostly on Face elements).
- * @tparam ParentElemType: This type is used to get access to the Element that
- * has the component (and, in case, to the Mesh that has the Element). If the
- * component doesn't need to access the Element, this type can be void. Note:
- * if the component is vertical (or optional), this type cannot be void.
- * @tparam VERT: If true, the component will be stored vertically. This argument
- * is considered only if the ElementType is not void.
- * @tparam OPT: If true, the component will be optional. This argument is
- * considered only if the component is stored vertically.
+ * @tparam N: The size of the container, representing the number of storable
+ * adjacent edges. If negative, the container is dynamic.
+ * @tparam Index: The unsigned integral type used to store indices (default
+ * uint).
+ * @tparam TTVC: If true, the container size will be tied to the vertex count of
+ * the element (e.g. on polygon faces).
+ * @tparam OPT: If true, the component is optional.
  *
  * @ingroup components
  */
 template<
-    bool STORE_INDICES,
-    typename Edge,
-    int  N,
-    bool TTVC,
-    typename ParentElemType = void,
-    bool VERT               = false,
-    bool OPT                = false>
+    int                    N     = -1,
+    std::unsigned_integral Index = uint,
+    bool                   TTVC  = false,
+    bool                   OPT   = false>
 class AdjacentEdges :
-        public ReferenceContainerComponent<
-            STORE_INDICES,
-            AdjacentEdges<
-                STORE_INDICES,
-                Edge,
-                N,
-                TTVC,
-                ParentElemType,
-                VERT,
-                OPT>,
+        public ContainerReferencesComponent<
             CompId::ADJACENT_EDGES,
-            Edge,
+            Index,
+            ElemId::EDGE,
             N,
-            ParentElemType,
-            VERT,
-            OPT,
-            TTVC>
+            TTVC,
+            OPT>
 {
-    using Base = ReferenceContainerComponent<
-        STORE_INDICES,
-        AdjacentEdges<STORE_INDICES, Edge, N, TTVC, ParentElemType, VERT, OPT>,
+    using Base = ContainerReferencesComponent<
         CompId::ADJACENT_EDGES,
-        Edge,
+        Index,
+        ElemId::EDGE,
         N,
-        ParentElemType,
-        VERT,
-        OPT,
-        TTVC>;
+        TTVC,
+        OPT>;
 
 public:
-    /**
-     * @brief Expose the type of the Adjacent Edge.
-     */
-    using AdjacentEdgeType = Edge;
-
-    /* Iterator Types declaration */
-
-    using AdjacentEdgeIterator           = Base::Iterator;
-    using ConstAdjacentEdgeIterator      = Base::ConstIterator;
-    using ConstAdjacentEdgeIndexIterator = Base::ConstIndexIterator;
+    using IndexType = Index;
 
     /**
-     * @brief Static size of the container. If the container is dynamic, this
-     * value will be negative and you should use the adjEdgeCount() member
-     * function.
+     * @brief Static size of the container. If negative, the container is
+     * dynamic.
      */
-    static const int ADJ_EDGE_COUNT = Base::SIZE;
+    static constexpr int ADJ_EDGE_COUNT = N;
+
+    using Base::NULL_INDEX;
 
     /* Constructors */
 
-    /**
-     * @brief Empty constructor.
-     *
-     * If the Adjacent Edges container size is static, initializes all the
-     * Adjacent Edges to `nullptr`, otherwise the container will be empty.
-     */
     AdjacentEdges() = default;
 
     /* Member functions */
 
     /**
      * @brief Returns the number of adjacent edges of this element.
-     * @return The number of adjacent edges of this element.
+     * @return The number of adjacent edges.
      */
-    uint adjEdgeCount() const { return Base::size(); }
+    uint adjEdgeCount(this const auto& self) { return Base::refCount(self); }
 
     /**
-     * @brief Returns the pointer to the i-th adjacent edge of the element.
-     *
-     * @param[in] i: the position of the required adjacent edge in this
-     * container; the value must be between 0 and the number of adj edges.
-     * @return The pointer to the i-th adjacent edge of the element.
+     * @brief Returns a proxy to the i-th adjacent edge of this element.
+     * @param[in] i: The position in this container.
+     * @return A proxy to the adjacent edge.
      */
-    Edge* adjEdge(uint i) { return Base::element(i); }
+    decltype(auto) adjEdge(this auto&& self, uint i)
+    {
+        return Base::refElement(self, i);
+    }
 
     /**
-     * @brief Returns a const pointer to the i-th adjacent edge of the element.
-     * @param[in] i: the position of the required adjacent edge in this
-     * container; the value must be between 0 and the number of adj edges.
-     * @return The pointer to the i-th adjacent edge of the element.
-     */
-    const Edge* adjEdge(uint i) const { return Base::element(i); }
-
-    /**
-     * @brief Returns the index in the edge container of the i-th adjacent edge
-     * of the element.
-     * @param[in] i: the position of the required edge in this container.
-     * @return The index of the i-th adjacent edge of the element.
-     */
-    uint adjEdgeIndex(uint i) const { return Base::elementIndex(i); }
-
-    /**
-     * @brief Returns the pointer to the i-th adjacent edge of the element but
-     * using as index the module between i and the number of adjacent edges. You
-     * can use this function if you need to get the "next adjacent edge after
-     * position k", without check if it is less than the number of adj edges.
-     * Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adjacent edge
-     * auto* next = e.adjEdgeMod(k+1); // the adj edge next to k, that may also
-     *                                 // be at pos 0
-     * auto* last = e.adjEdgeMod(-1); // the adj edge in position
-     *                                // adjEdgeCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position of the required adjacent edge in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjEdgeCount().
-     * @return The pointer to the required adjacent edge of the element.
-     */
-    Edge* adjEdgeMod(int i) { return Base::elementMod(i); }
-
-    /**
-     * @brief Same of adjEdgeMod, but returns a const Pointer to the adjacent
+     * @brief Returns the global index in the EdgeContainer of the i-th adjacent
      * edge.
-     * @param[in] i: the position of the required adjacent edge in this
-     * container, w.r.t. the position 0; value is modularized on
-     * adjEdgeCount().
-     * @return The pointer to the required adjacent edge of this element.
+     * @param[in] i: The 0-based local position in this adjacency container (0
+     * <= i < adjEdgeCount()).
+     * @return The global index (IndexType) of the adjacent edge, or NULL_INDEX
+     * if no adjacent edge exists.
      */
-    const Edge* adjEdgeMod(int i) const { return Base::elementMod(i); }
-
-    /**
-     * @brief Returns the index in the edge container of the i-th adjacent edge
-     * of the element, but using as index the module between i and the number of
-     * adjacent edges. You can use this function if you need to get the "index
-     * of the adjacent edge next to position k", without check if it is less
-     * than the number of adjacent edges. Works also for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adjacent edge
-     * auto idx = e.adjEdgeIndexMod(k+1); // the index of the adjacent edge next
-     *                                    // to k, that may also be at pos 0
-     * auto lastIdx = e.adjEdgeIndexMod(-1); // the index of the adjacent edge
-     *                                       // in position adjEdgeCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position of the required adjacent edge in this
-     * container, w.r.t. the position 0; value is modularized on adjEdgeCount().
-     * @return The index of the required adjacent edge of the element.
-     */
-    uint adjEdgeIndexMod(int i) const { return Base::elementIndexMod(i); }
-
-    /**
-     * @brief Sets the i-th adjacent edge of the element.
-     * @param[in] i: the position in this container on which set the adj edge;
-     * the value must be between 0 and the number of adj edges.
-     * @param[in] e: The pointer to the adjacent edge to set to the element.
-     */
-    void setAdjEdge(uint i, Edge* e) { Base::setElement(i, e); }
-
-    /**
-     * @brief Sets the i-th adjacent edge of the element.
-     *
-     * @param[in] i: the position in this container on which set the adj edge;
-     * the value must be between 0 and the number of adj edges.
-     * @param[in] ei: The index in the edge container of the edge to set.
-     */
-    void setAdjEdge(uint i, uint ei) { Base::setElement(i, ei); }
-
-    /**
-     * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * edge; the value must be between begin() and end().
-     * @param[in] e: The pointer to the adjacent edge to set to the element.
-     */
-    void setAdjEdge(ConstAdjacentEdgeIterator it, Edge* e)
+    IndexType adjEdgeIndex(this const auto& self, uint i)
     {
-        Base::setElement(it, e);
+        return Base::refIndex(self, i);
     }
 
     /**
-     * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * edge; the value must be between begin() and end().
-     * @param[in] ei: The index in the edge container of the edge to set.
+     * @brief Returns a proxy to the i-th adjacent edge using modular
+     * arithmetic. Supports negative indices.
+     * @param[in] i: The position modulo adjEdgeCount().
+     * @return A proxy to the adjacent edge.
      */
-    void setAdjEdge(ConstAdjacentEdgeIterator it, uint ei)
+    decltype(auto) adjEdgeMod(this auto&& self, int i)
     {
-        Base::setElement(it, ei);
+        return Base::refElementMod(self, i);
     }
 
     /**
-     * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * edge; the value must be between begin() and end().
-     * @param[in] e: The pointer to the adjacent edge to set to the element.
+     * @brief Returns the index of the i-th adjacent edge using modular
+     * arithmetic. Supports negative indices.
+     * @param[in] i: The position modulo adjEdgeCount().
+     * @return The index of the adjacent edge.
      */
-    void setAdjEdge(ConstAdjacentEdgeIndexIterator it, Edge* e)
+    IndexType adjEdgeIndexMod(this const auto& self, int i)
     {
-        Base::setElement(it, e);
+        return Base::refIndexMod(self, i);
     }
 
     /**
-     * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * edge; the value must be between begin() and end().
-     * @param[in] ei: The index in the edge container of the edge to set.
+     * @brief Sets the i-th adjacent edge by index.
+     * @param[in] i: The position in this container.
+     * @param[in] ei: The edge index to set.
      */
-    void setAdjEdge(ConstAdjacentEdgeIndexIterator it, uint ei)
+    void setAdjEdge(this auto&& self, uint i, IndexType ei)
     {
-        Base::setElement(it, ei);
+        Base::setRef(self, i, ei);
     }
 
     /**
-     * @brief Sets the i-th adjacent edge of the element, but using as index the
-     * module between i and the number of adjacent edges. You can use this
-     * function if you need to set the "next adjacent edge after position k",
-     * without check if it is less than the number of adjacent edges. Works also
-     * for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adj edge
-     * e.setAdjEdgeMod(k+1, aEdge); // set the adj edge next to k, that may also
-     *                               // be at pos 0
-     * e.setAdjEdgeMod(-1, aEdge); // set the adj edge in position
-     *                              // adjEdgeCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj edge; value is modularized on adjEdgeCount().
-     * @param[in] e: The pointer to the adj edge to set to the element.
+     * @brief Sets the i-th adjacent edge from an ElementProxy.
+     * @param[in] i: The position in this container.
+     * @param[in] e: The adjacent edge proxy.
      */
-    void setAdjEdgeMod(int i, Edge* e) { Base::setElementMod(i, e); }
-
-    /**
-     * @brief Sets the i-th adjacent edge of the element, but using as index the
-     * module between i and the number of adjacent edges. You can use this
-     * function if you need to set the "next adjacent edge after position k",
-     * without check if it is less than the number of adjacent edges. Works also
-     * for negative numbers:
-     *
-     * @code{.cpp}
-     * k = pos; // some position of an adj edge
-     * e.setAdjEdgeMod(k+1, aEdgeInd); // set the adj edge next to k, that may
-     *                                 // also be at pos 0
-     * e.setAdjEdgeMod(-1, aEdgeInd); // set the adj edge in position
-     *                                // adjEdgeCount()-1
-     * @endcode
-     *
-     * @param[in] i: the position in this container w.r.t. the position 0 on
-     * which set the adj edge; value is modularized on adjEdgeCount().
-     * @param[in] ei: The index in the edge container of the edge to set.
-     */
-    void setAdjEdgeMod(int i, uint ei) { Base::setElementMod(i, ei); }
-
-    /**
-     * @brief Sets all the adjacent edges of the element.
-     *
-     * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
-     *
-     * @tparam Rng: The type of the range of adjacent edges to set. The value
-     * type of the range must be convertible to a pointer to an AdjacentEdge.
-     *
-     * @param[in] r: range of edge pointers to set.
-     */
-    template<Range Rng>
-    void setAdjEdges(Rng&& r) requires InputRange<Rng, Edge*>
+    template<typename Elem>
+    void setAdjEdge(this auto&& self, uint i, const Elem& e)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        Base::setElements(r);
+        Base::setRef(self, i, e);
     }
 
     /**
-     * @brief Sets all the adjacent edges of the element.
-     *
-     * If the size of the container is static, the size of the input range must
-     * be the same one of the container.
-     *
-     * @tparam Rng: The type of the range of adjacent edges to set. The value
-     * type of the range must be convertible to an unsigned integer.
-     *
-     * @param[in] r: range of edges indices to set.
+     * @brief Sets the i-th adjacent edge by index using modular arithmetic.
+     * @param[in] i: The position modulo adjEdgeCount().
+     * @param[in] ei: The edge index to set.
      */
-    template<Range Rng>
-    void setAdjEdges(Rng&& r) requires InputRange<Rng, uint>
+    void setAdjEdgeMod(this auto&& self, int i, IndexType ei)
     {
-        Base::setElements(r);
+        Base::setRefMod(self, i, ei);
     }
 
     /**
-     * @brief Returns `true` if the container of adjacent edges contains the
-     * given edge, `false` otherwise.
-     *
-     * @param[in] e: the pointer to the edge to search.
-     * @return `true` if the container of adjacent edges contains the given
-     * edge, `false` otherwise.
+     * @brief Sets the i-th adjacent edge from an ElementProxy using modular
+     * arithmetic.
+     * @param[in] i: The position modulo adjEdgeCount().
+     * @param[in] e: The adjacent edge proxy.
      */
-    bool containsAdjEdge(const Edge* e) const
+    template<typename Elem>
+    void setAdjEdgeMod(this auto&& self, int i, const Elem& e)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        return Base::containsElement(e);
+        Base::setRefMod(self, i, e);
     }
 
     /**
-     * @brief Returns `true` if the container of adjacent edges contains the
-     * given index, `false` otherwise.
-     *
-     * @param[in] ei: the index to the edge to search.
-     * @return `true` if the container of adjacent edges contains the given
-     * index, `false` otherwise.
+     * @brief Sets all adjacent edges from an input range.
+     * @param[in] rng: The input range of edge indices or proxies.
      */
-    bool containsAdjEdge(uint ei) const { return Base::containsElement(ei); }
-
-    /**
-     * @brief Returns the index of the given adjacent edge in the container of
-     * the element. If the given adjacent edge is not in the container, returns
-     * UINT_NULL.
-     *
-     * @param[in] e: the pointer to the adjacent edge to search.
-     * @return the index of the given adjacent edge, or UINT_NULL if it is not
-     * found.
-     */
-    uint indexOfAdjEdge(const Edge* e) const { return Base::indexOfElement(e); }
-
-    /**
-     * @brief Returns the index of the adjacent edge with the given index in the
-     * container of the element. If the adjacent edge with the given index is
-     * not in the container, returns UINT_NULL.
-     *
-     * @param[in] ei: the index to the adjacent edge to search.
-     * @return the index of the adjacent edge with the given index, or UINT_NULL
-     * if it is not found.
-     */
-    uint indexOfAdjEdge(uint ei) const { return Base::indexOfElement(ei); }
-
-    /* Member functions specific for dynamic vector of adjacent edges */
-
-    /**
-     * @brief Resize the container of the adjacent edges to the given size.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] n: The new size of the adjacent edges container.
-     */
-    void resizeAdjEdges(uint n) requires (N < 0 && !TTVC) { Base::resize(n); }
-
-    /**
-     * @brief Pushes in the back of the container the given adjacent edge.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] e: The pointer to the adjacent edge to push in the back of the
-     * container.
-     */
-    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVC) { Base::pushBack(e); }
-
-    /**
-     * @brief Pushes in the back of the container the given adjacent edge.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] ei: The index to the adjacent edge to push in the back of the
-     * container.
-     */
-    void pushAdjEdge(uint ei) requires (N < 0 && !TTVC) { Base::pushBack(ei); }
-
-    /**
-     * @brief Inserts the given adjacent edge in the container at the given
-     * position.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] i: The position in this container where to insert the adjacent
-     * edge.
-     * @param[in] e: The pointer to the adjacent edge to insert in the
-     * container.
-     */
-    void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVC)
+    template<std::ranges::input_range Rng>
+    void setAdjEdges(this auto&& self, Rng&& rng)
     {
-        Base::insert(i, e);
+        Base::setRefs(self, std::forward<Rng>(rng));
     }
 
     /**
-     * @brief Inserts the adjacent edge with the given index in the container at
-     * the given position.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] i: The position in this container where to insert the adjacent
-     * edge.
-     * @param[in] ei: The index to the adjacent edge to insert in the container.
+     * @brief Sets all adjacent edges from a parameter pack.
+     * @param[in] args: The edge indices or proxies to set.
      */
-    void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVC)
+    template<typename... Args>
+    void setAdjEdges(this auto&& self, const Args&... args)
+        requires (sizeof...(Args) > 1 && (sizeof...(Args) == N || N < 0))
     {
-        Base::insert(i, ei);
+        Base::setRefs(self, args...);
     }
 
     /**
-     * @brief Removes the adjacent edge at the given position from the
-     * container.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     * @param[in] i: The position of the adjacent edge to remove from this
-     * container.
+     * @brief Checks if this container contains the given edge index.
+     * @param[in] ei: The edge index to search for.
+     * @return true if found, false otherwise.
      */
-    void eraseAdjEdge(uint i) requires (N < 0 && !TTVC) { Base::erase(i); }
-
-    /**
-     * @brief Clears the container of adjacent edges, making it empty.
-     * @note This function is available only if the container of the Adjacent
-     * Edges component has dynamic size.
-     */
-    void clearAdjEdges() requires (N < 0 && !TTVC) { Base::clear(); }
-
-    /* Iterator Member functions */
-
-    /**
-     * @brief Returns an iterator to the first adjacent edge in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    AdjacentEdgeIterator adjEdgeBegin() { return Base::elementBegin(); }
-
-    /**
-     * @brief Returns an iterator to the end of the container of this
-     * component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    AdjacentEdgeIterator adjEdgeEnd() { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns a const iterator to the first adjacent edge in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    ConstAdjacentEdgeIterator adjEdgeBegin() const
+    bool containsAdjEdge(this const auto& self, IndexType ei)
     {
-        return Base::elementBegin();
+        return Base::containsRef(self, ei);
     }
 
     /**
-     * @brief Returns a const iterator to the end of the container of this
-     * component.
-     *
-     * @return an iterator pointing to the end of this container.
+     * @brief Checks if this container contains the given edge proxy.
+     * @param[in] e: The edge proxy to search for.
+     * @return true if found, false otherwise.
      */
-    ConstAdjacentEdgeIterator adjEdgeEnd() const { return Base::elementEnd(); }
-
-    /**
-     * @brief Returns an iterator to the first adjacent edge index in the
-     * container of this component.
-     *
-     * @return an iterator pointing to the begin of the adjacent edge indices.
-     */
-    ConstAdjacentEdgeIndexIterator adjEdgeIndexBegin() const
+    template<typename Elem>
+    bool containsAdjEdge(this const auto& self, const Elem& e)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
     {
-        return Base::elementIndexBegin();
+        return Base::containsRef(self, e);
     }
 
     /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of the adjacent edge indices.
+     * @brief Finds the 0-based local position in this adjacency container of
+     * the given global edge index.
+     * @param[in] ei: The global edge index (IndexType) to search for in
+     * EdgeContainer.
+     * @return The 0-based local position (uint) in this container, or UINT_NULL
+     * if not found.
      */
-    ConstAdjacentEdgeIndexIterator adjEdgeIndexEnd() const
+    uint indexOfAdjEdge(this const auto& self, IndexType ei)
     {
-        return Base::elementIndexEnd();
+        return Base::indexOfRef(self, ei);
     }
 
     /**
-     * @brief Returns a lightweight view object that stores the begin and
-     * end iterators of the container of adjacent edges of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (auto* adjEdge : el.adjEdges()) {
-     *     // Do something with adjEdge
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edges.
+     * @brief Finds the position in this container of the given edge proxy.
+     * @param[in] e: The edge proxy to search for.
+     * @return The 0-based position, or UINT_NULL if not found.
      */
-    View<AdjacentEdgeIterator> adjEdges() { return Base::elements(); }
+    template<typename Elem>
+    uint indexOfAdjEdge(this const auto& self, const Elem& e)
+        requires (!std::unsigned_integral<std::remove_cvref_t<Elem>>)
+    {
+        return Base::indexOfRef(self, e);
+    }
+
+    /* Dynamic size operations */
 
     /**
-     * @brief Returns a lightweight const view object that stores the begin and
-     * end iterators of the container of adjacent edges of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (const auto* adjEdge : el.adjEdges()) {
-     *     // Do something read-only with adjEdge
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edges.
+     * @brief Resizes the adjacent edges container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] n: The new size.
      */
-    View<ConstAdjacentEdgeIterator> adjEdges() const
+    void resizeAdjEdges(this auto&& self, uint n) requires (N < 0 && !TTVC)
     {
-        return Base::elements();
+        Base::resizeRefs(self, n);
     }
 
     /**
-     * @brief Returns a lightweight view object that stores the begin and end
-     * iterators of the container of adjacent edge indices of the element. The
-     * view object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (uint eid : el.adjEdgeIndices()) {
-     *     // Do something with adj edge index...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edge indices.
+     * @brief Appends an edge index to the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] ei: The edge index to append.
      */
-    View<ConstAdjacentEdgeIndexIterator> adjEdgeIndices() const
+    void pushAdjEdge(this auto&& self, IndexType ei) requires (N < 0 && !TTVC)
     {
-        return Base::elementIndices();
+        Base::pushRef(self, ei);
     }
+
+    /**
+     * @brief Appends an edge proxy to the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] e: The edge proxy to append.
+     */
+    template<typename Elem>
+    void pushAdjEdge(this auto&& self, const Elem& e) requires (
+        N < 0 && !TTVC && !std::unsigned_integral<std::remove_cvref_t<Elem>>)
+    {
+        Base::pushRef(self, e);
+    }
+
+    /**
+     * @brief Inserts an edge index at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to insert at.
+     * @param[in] ei: The edge index to insert.
+     */
+    void insertAdjEdge(this auto&& self, uint i, IndexType ei)
+        requires (N < 0 && !TTVC)
+    {
+        Base::insertRef(self, i, ei);
+    }
+
+    /**
+     * @brief Inserts an edge proxy at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to insert at.
+     * @param[in] e: The edge proxy to insert.
+     */
+    template<typename Elem>
+    void insertAdjEdge(this auto&& self, uint i, const Elem& e) requires (
+        N < 0 && !TTVC && !std::unsigned_integral<std::remove_cvref_t<Elem>>)
+    {
+        Base::insertRef(self, i, e);
+    }
+
+    /**
+     * @brief Erases the adjacent edge at position i.
+     * @note Available only for dynamic, non-TTVC containers.
+     * @param[in] i: The position to erase.
+     */
+    void eraseAdjEdge(this auto&& self, uint i) requires (N < 0 && !TTVC)
+    {
+        Base::eraseRef(self, i);
+    }
+
+    /**
+     * @brief Clears all adjacent edges in the container.
+     * @note Available only for dynamic, non-TTVC containers.
+     */
+    void clearAdjEdges(this auto&& self) requires (N < 0 && !TTVC)
+    {
+        Base::clearRefs(self);
+    }
+
+    /* Views / Ranges */
+
+    /**
+     * @brief Returns a lazy range yielding proxies to all adjacent edges.
+     * @return A range of ElementProxy / ConstElementProxy objects.
+     */
+    decltype(auto) adjEdges(this auto&& self)
+    {
+        return Base::refElements(self);
+    }
+
+    /**
+     * @brief Returns a lightweight view over the adjacent edge indices.
+     * @return A View object exposing begin() and end() over the indices.
+     */
+    auto adjEdgeIndices(this auto&& self) { return Base::refIndices(self); }
 
 protected:
-    // Component interface functions
-    template<typename Element>
-    void importFrom(const Element& e, bool importRefs = true);
-
-    void serialize(std::ostream& os) const
-    {
-        // regardless of the type of the container (indices or pointers), the
-        // serialization is always done using the indices
-        if constexpr (N < 0) {
-            vcl::serialize(os, adjEdgeCount());
-        }
-        for (uint i = 0; i < adjEdgeCount(); ++i) {
-            vcl::serialize(os, adjEdgeIndex(i));
-        }
-    }
-
-    void deserialize(std::istream& is)
-    {
-        if constexpr (N < 0) {
-            uint n;
-            vcl::deserialize(is, n);
-            Base::resize(n);
-        }
-        for (uint i = 0; i < adjEdgeCount(); ++i) {
-            uint aei;
-            vcl::deserialize(is, aei);
-            setAdjEdge(i, aei);
-        }
-    }
-
-private:
-    template<typename Element>
-    void importIndicesFrom(const Element& e)
-    {
-        for (uint i = 0; i < e.adjEdgeCount(); ++i) {
-            setAdjEdge(i, e.adjEdgeIndex(i));
-        }
-    }
+    template<typename OtherElement>
+    void importFrom(
+        this auto&&         self,
+        const OtherElement& other,
+        bool                importRefs = true);
 };
 
-/* concepts */
+/* Concepts */
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the AdjacentEdges component (inherits from it).
- *
- * The concept is satisfied if T is a class that inherits from
- * vcl::comp::AdjacentEdges, with any template arguments.
- *
- * Note that this concept does not discriminate between the Horizontal
- * AdjacentEdges component and the vertical OptionalAdjacentEdges component,
- * therefore it does not guarantee that a template Element type that satisfies
- * this concept provides AdjacentEdges component at runtime (it is guaranteed
- * only that the proper member functions are available at compile time).
- *
- * @tparam T: The type to be tested for conformity to the HasAdjacentEdges.
- *
- * @ingroup components_concepts
+ * @brief Concept that checks whether a type T has the AdjacentEdges component.
  */
 template<typename T>
-concept HasAdjacentEdges =
-    BTIBTBB::IsDerivedFromSpecializationOfV<T, AdjacentEdges>;
+concept HasAdjacentEdges = HasComponent<CompId::ADJACENT_EDGES, T>;
 
 /**
- * @brief A concept that checks whether a type T (that should be a Element) has
- * the AdjacentEdges component (inherits from it), and that the component is
- * optional.
- *
- * @tparam T: The type to be tested for conformity to the
- * HasOptionalAdjacentEdges.
- *
- * @ingroup components_concepts
+ * @brief Concept that checks whether a type T has an optional AdjacentEdges
+ * component.
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
+    HasAdjacentEdges<T> && HasOptionalComponent<CompId::ADJACENT_EDGES, T>;
+
+/**
+ * @brief Concept that checks whether a type T has a static-size AdjacentEdges
+ * component.
+ */
+template<typename T>
+concept HasStaticAdjacentEdges =
     HasAdjacentEdges<T> &&
-    IsOptionalComponent<typename RemoveRef<T>::AdjacentEdges>;
+    (ComponentTypeT<CompId::ADJACENT_EDGES, T>::ADJ_EDGE_COUNT > 0);
 
-/**
- * @private
- * @brief HasRightNumberOfAdjacentEdges concept
- *
- * This concept is designed to be used with Face components, where the number of
- * adjacent edges, if tied to the vertex count, must be consistent w.r.t. the
- * number of vertices of the face.
- *
- * This concept is satisfied only if static number of adjacent edges is the same
- * of the static number of vertices.
- */
-template<typename T>
-concept HasRightNumberOfAdjacentEdges =
-    !comp::IsTiedToVertexCount<typename RemoveRef<T>::AdjacentEdges> ||
-    RemoveRef<T>::VERTEX_COUNT == RemoveRef<T>::ADJ_EDGE_COUNT;
+/* Implementation of member functions */
 
-/**
- * @private
- * @brief SanityCheckAdjacentEdges concept
- *
- * This concept is designed to be used with Face components, where the number of
- * adjacent edges must be consistent w.r.t. the number of vertices of the face.
- *
- * It is satisfied if:
- * - the component does *not* have adjacent edges, or
- * - in case it has adjacent edges, they have the same number of vertices of the
- * face.
- */
-template<typename T>
-concept SanityCheckAdjacentEdges =
-    !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
-
-/* importFrom function */
-
-template<
-    bool STORE_INDICES,
-    typename Edge,
-    int  N,
-    bool TTVC,
-    typename ParentElemType,
-    bool VERT,
-    bool OPT>
-template<typename Element>
-void AdjacentEdges<STORE_INDICES, Edge, N, TTVC, ParentElemType, VERT, OPT>::
-    importFrom(const Element& e, bool importRefs)
+template<int N, std::unsigned_integral Index, bool TTVC, bool OPT>
+template<typename OtherElement>
+void AdjacentEdges<N, Index, TTVC, OPT>::importFrom(
+    this auto&&         self,
+    const OtherElement& other,
+    bool                importRefs)
 {
     if (importRefs) {
-        if constexpr (HasAdjacentEdges<Element>) {
-            if (isAdjacentEdgesAvailableOn(e)) {
+        if constexpr (HasAdjacentEdges<OtherElement>) {
+            if (other.template isComponentAvailable<CompId::ADJACENT_EDGES>()) {
+                using OtherComp =
+                    ComponentTypeT<CompId::ADJACENT_EDGES, OtherElement>;
+                constexpr int OTHER_N = OtherComp::ADJ_EDGE_COUNT;
+
                 if constexpr (N > 0) {
-                    // same static size
-                    if constexpr (N == Element::ADJ_EDGE_COUNT) {
-                        importIndicesFrom(e);
-                    }
-                    // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::ADJ_EDGE_COUNT < 0) {
-                        if (e.adjEdgeCount() == N) {
-                            importIndicesFrom(e);
+                    if constexpr (N == OTHER_N) {
+                        for (uint i = 0; i < N; ++i) {
+                            self.setAdjEdge(
+                                i, Base::castIndex(other.adjEdgeIndex(i)));
                         }
                     }
-                    else {
-                        // do not import in this case: cannot import from
-                        // dynamic size != static size
+                    else if constexpr (OTHER_N < 0) {
+                        if (other.adjEdgeCount() == N) {
+                            for (uint i = 0; i < N; ++i) {
+                                self.setAdjEdge(
+                                    i, Base::castIndex(other.adjEdgeIndex(i)));
+                            }
+                        }
+                    }
+                }
+                else if constexpr (!TTVC) {
+                    self.resizeAdjEdges(other.adjEdgeCount());
+                    for (uint i = 0; i < other.adjEdgeCount(); ++i) {
+                        self.setAdjEdge(
+                            i, Base::castIndex(other.adjEdgeIndex(i)));
                     }
                 }
                 else {
-                    // from static/dynamic to dynamic size: need to resize
-                    // first, then import
-                    Base::resize(e.adjEdgeCount());
-                    importIndicesFrom(e);
+                    if (self.adjEdgeCount() == other.adjEdgeCount()) {
+                        for (uint i = 0; i < self.adjEdgeCount(); ++i) {
+                            self.setAdjEdge(
+                                i, Base::castIndex(other.adjEdgeIndex(i)));
+                        }
+                    }
                 }
             }
         }
     }
-}
-
-/* Detector function to check if a class has AdjacentEdges available */
-
-/**
- * @brief Checks if the given Element has AdjacentEdges available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check.
- * @return `true` if the element has AdjacentEdges available, `false` otherwise.
- */
-bool isAdjacentEdgesAvailableOn(const auto& element)
-{
-    return isComponentAvailableOn<CompId::ADJACENT_EDGES>(element);
 }
 
 } // namespace vcl::comp

@@ -8,43 +8,61 @@
 #ifndef VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 #define VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H
 
-#include <vclib/mesh/components/tangent.h>
-#include <vclib/mesh/views/component.h>
+#include "../component.h"
 
 #include <vclib/base.h>
 
 #include <ranges>
 
-namespace vcl::views {
+namespace vcl {
+
+template<typename T>
+concept HasTangentMember = requires(T&& t) {
+    { t.tangent() };
+};
+
+template<typename R>
+concept TangentsRangeConcept =
+    std::ranges::range<R> &&
+    HasTangentMember<std::ranges::range_reference_t<R>>;
+
+template<typename R>
+concept TangentRangeConcept = TangentsRangeConcept<R>;
+
+namespace views {
 
 namespace detail {
 
-inline constexpr auto tangent = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->tangent();
-    else
-        return p.tangent();
+inline constexpr auto getTangent = [](auto&& p) -> decltype(auto) {
+    return p.tangent();
 };
 
-struct TangentView
+struct TangentsView : std::ranges::range_adaptor_closure<TangentsView>
 {
-    constexpr TangentView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, TangentView)
+    template<TangentsRangeConcept R>
+    constexpr auto operator()(R&& r) const
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        return std::forward<R>(r) | std::views::transform(tangent);
+        return std::forward<R>(r) | std::views::transform(getTangent);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::TangentView tangents;
+/**
+ * @brief View adaptor that transforms a range of elements into a range of their tangents.
+ *
+ * When applied to a range of elements (e.g. `mesh.vertices() | views::tangents` or
+ * `mesh.vertices() | views::selected | views::tangents`), it transforms each element to its tangent reference.
+ *
+ * @ingroup views
+ */
+inline constexpr detail::TangentsView tangents;
+inline constexpr auto tangent = tangents;
 
 template<>
 inline constexpr auto component<CompId::TANGENT> = tangents;
 
-} // namespace vcl::views
+} // namespace views
+} // namespace vcl
 
 #endif // VCL_MESH_VIEWS_COMPONENTS_TANGENTS_H

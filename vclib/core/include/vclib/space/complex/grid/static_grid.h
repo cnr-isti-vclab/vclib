@@ -203,25 +203,53 @@ using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
 
 template<PointIteratorConcept It>
 StaticGrid(It, It) -> StaticGrid<
-    RegularGrid<typename It::value_type, It::value_type::DIM>,
-    typename It::value_type::ScalarType>;
+    RegularGrid<
+        typename It::value_type::ScalarType,
+        It::value_type::DIM>,
+    typename It::value_type>;
 
 template<PointIteratorConcept It, typename F>
 StaticGrid(It, It, F) -> StaticGrid<
-    RegularGrid<typename It::value_type, It::value_type::DIM>,
-    typename It::value_type::ScalarType>;
+    RegularGrid<
+        typename It::value_type::ScalarType,
+        It::value_type::DIM>,
+    typename It::value_type>;
 
-template<VertexPointerRangeConcept Rng>
+template<Range Rng>
+    requires PointConcept<std::ranges::range_value_t<Rng>>
 StaticGrid(Rng) -> StaticGrid<
     RegularGrid<
-        // scalar type used for the grid, the same of the
-        // PositionType of the Vertex
-        typename RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>::
-            PositionType::ScalarType,
-        3>, // the dimension of the Grid
-    // the ValueType of the StaticGrid, which is the iterated
-    // type in the given range (pointer to vertex)
-    typename std::ranges::iterator_t<Rng>::value_type>;
+        typename std::ranges::range_value_t<Rng>::ScalarType,
+        std::ranges::range_value_t<Rng>::DIM>,
+    std::ranges::range_value_t<Rng>>;
+
+template<Range Rng, typename F>
+    requires PointConcept<std::ranges::range_value_t<Rng>>
+StaticGrid(Rng, F) -> StaticGrid<
+    RegularGrid<
+        typename std::ranges::range_value_t<Rng>::ScalarType,
+        std::ranges::range_value_t<Rng>::DIM>,
+    std::ranges::range_value_t<Rng>>;
+
+template<VertexRangeConcept Rng>
+StaticGrid(Rng) -> StaticGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<VertexRangeConcept Rng, typename F>
+StaticGrid(Rng, F) -> StaticGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<FaceRangeConcept Rng>
+StaticGrid(Rng) -> StaticGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
+
+template<FaceRangeConcept Rng, typename F>
+StaticGrid(Rng, F) -> StaticGrid<
+    RegularGrid3<ScalarType<std::ranges::range_value_t<Rng>>>,
+    std::ranges::range_value_t<Rng>>;
 
 } // namespace vcl
 

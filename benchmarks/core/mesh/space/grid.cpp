@@ -19,12 +19,8 @@ BENCH("space/grid/build", []<typename Mesh>(bench::State<Mesh>& s) {
         return s.skip("mesh has no vertices");
     }
 
-    using Vertex = typename Mesh::VertexType;
-    using Scalar = typename Vertex::PositionType::ScalarType;
-    using Grid   = vcl::StaticGrid3<const Vertex*, Scalar>;
-
     s.run([&]() {
-        Grid grid(m.vertices() | vcl::views::constAddrOf);
+        vcl::StaticGrid grid(m.vertices());
         return grid.totalCellCount();
     });
 });
@@ -35,13 +31,11 @@ BENCH("space/grid/radius_search", []<typename Mesh>(bench::State<Mesh>& s) {
         return s.skip("mesh has no vertices");
     }
 
-    using Vertex = typename Mesh::VertexType;
-    using Point  = typename Vertex::PositionType;
+    using Point  = vcl::PositionType<Mesh>;
     using Scalar = typename Point::ScalarType;
-    using Grid   = vcl::StaticGrid3<const Vertex*, Scalar>;
     using Sphere = vcl::Sphere<Scalar>;
 
-    Grid grid(m.vertices() | vcl::views::constAddrOf);
+    vcl::StaticGrid grid(m.vertices());
 
     const auto   bbox   = vcl::boundingBox(m);
     const Scalar diag   = bbox.diagonal();
@@ -51,7 +45,7 @@ BENCH("space/grid/radius_search", []<typename Mesh>(bench::State<Mesh>& s) {
     std::vector<Sphere> queries;
     queries.reserve(nQueries);
 
-    std::mt19937                           gen(s.seed());
+    std::mt19937 gen(s.seed());
     std::uniform_real_distribution<Scalar> disX(bbox.min().x(), bbox.max().x());
     std::uniform_real_distribution<Scalar> disY(bbox.min().y(), bbox.max().y());
     std::uniform_real_distribution<Scalar> disZ(bbox.min().z(), bbox.max().z());

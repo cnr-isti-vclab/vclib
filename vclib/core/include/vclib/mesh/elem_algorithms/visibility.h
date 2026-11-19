@@ -8,11 +8,17 @@
 #ifndef VCL_MESH_ELEM_ALGORITHMS_VISIBILITY_H
 #define VCL_MESH_ELEM_ALGORITHMS_VISIBILITY_H
 
+#include "polygon/geometry.h"
+
 #include <vclib/mesh/elements.h>
+#include <vclib/mesh/requirements.h>
+#include <vclib/mesh/traits.h>
 
 #include <vclib/algorithms/core.h>
 
 namespace vcl {
+
+using vcl::halfSpaceDeterminant;
 
 /**
  * @brief Compute the determinant of the half-space defined by the triangle
@@ -34,22 +40,22 @@ auto halfSpaceDeterminant(const FaceType& face, const PointType& point)
     // - if it is a polygon, use its normal to compute the determinant
     if constexpr (TriangleFaceConcept<FaceType>) {
         return halfSpaceDeterminant(
-            face.vertex(0)->position(),
-            face.vertex(1)->position(),
-            face.vertex(2)->position(),
+            face.vertex(0).position(),
+            face.vertex(1).position(),
+            face.vertex(2).position(),
             point);
     }
     else {
         if (face.vertexCount() == 3) {
             return halfSpaceDeterminant(
-                face.vertex(0)->position(),
-                face.vertex(1)->position(),
-                face.vertex(2)->position(),
+                face.vertex(0).position(),
+                face.vertex(1).position(),
+                face.vertex(2).position(),
                 point);
         }
         else {
             PointType n = faceNormal(face);
-            return n.dot(point - face.vertex(0)->position());
+            return n.dot(point - face.vertex(0).position());
         }
     }
 }
@@ -70,6 +76,17 @@ template<FaceConcept FaceType, Point3Concept PointType>
 bool facePointVisibility(const FaceType& face, const PointType& point)
 {
     return halfSpaceDeterminant(face, point) > 0;
+}
+
+/**
+ * @copydoc vcl::facePointVisibility(const FaceType&, const PointType&)
+ *
+ * @ingroup algorithms_core
+ */
+template<Point3Concept PointType, FaceConcept FaceType>
+bool facePointVisibility(const PointType& point, const FaceType& face)
+{
+    return facePointVisibility(face, point);
 }
 
 } // namespace vcl

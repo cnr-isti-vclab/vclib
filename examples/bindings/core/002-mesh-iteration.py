@@ -78,7 +78,7 @@ def mesh_iteration():
     print("\n=== Adjacency-Based Iteration ===")
 
     # Enable adjacency information
-    mesh.enable_per_vertex_adjacent_faces()
+    mesh.enable_vertex_adjacent_faces()
     vcl.update_vertex_adjacent_faces(mesh)
 
     # Iterate over faces adjacent to each vertex
@@ -96,7 +96,7 @@ def mesh_iteration():
         count += 1
 
     # Enable face-to-face adjacency
-    mesh.enable_per_face_adjacent_faces()
+    mesh.enable_face_adjacent_faces()
     vcl.update_face_adjacent_faces(mesh)
 
     print("\nFace adjacencies:")

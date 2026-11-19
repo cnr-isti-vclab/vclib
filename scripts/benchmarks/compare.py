@@ -14,6 +14,7 @@ import shlex
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 
 def format_time(ms: float) -> str:
@@ -94,7 +95,179 @@ def require_mesh_type(report: dict, requested: str, label: str):
         )
 
 
-def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: str = None, use_color: bool = True):
+def add_mesh_type_options(parser):
+    parser.add_argument(
+        "--mesh-type",
+        help="Native mesh type for both sides (no automatic v1/v2 mapping)",
+    )
+    parser.add_argument("--mesh-type-a", help="Native mesh type for baseline A")
+    parser.add_argument("--mesh-type-b", help="Native mesh type for comparison B")
+
+
+def resolve_mesh_types(args, config, forwarded_common=None):
+    if not isinstance(config, dict):
+        raise ValueError("Benchmark configuration must be a JSON object")
+    for key in ("mesh_type", "mesh_type_a", "mesh_type_b"):
+        if key in config and (
+            not isinstance(config[key], str) or not config[key]
+        ):
+            raise ValueError(f"{key} must be a non-empty string")
+
+    def resolve(side):
+        for value in (
+            getattr(args, f"mesh_type_{side}"),
+            args.mesh_type,
+            forwarded_common,
+            config.get(f"mesh_type_{side}"),
+            config.get("mesh_type"),
+        ):
+            if value is not None:
+                if not isinstance(value, str) or not value:
+                    raise ValueError("Mesh types must be non-empty strings")
+                return value
+        return None
+
+    return resolve("a"), resolve("b")
+
+
+def generate_markdown_report(
+    data_a: dict,
+    data_b: dict,
+    label_a: str = None,
+    label_b: str = None,
+    title: str = None,
+) -> str:
+    """Generates a GitHub-flavored Markdown report comparing data_a vs data_b."""
+    name_a = label_a or data_a.get("version") or "A"
+    name_b = label_b or data_b.get("version") or "B"
+
+    benches_a = {b["name"]: b for b in data_a.get("benchmarks", [])}
+    benches_b = {b["name"]: b for b in data_b.get("benchmarks", [])}
+
+    dataset_a = data_a.get("dataset", "Unknown")
+    dataset_b = data_b.get("dataset", "Unknown")
+    dataset_str = dataset_a if dataset_a == dataset_b else f"{dataset_a} vs {dataset_b}"
+
+    meta_a = data_a.get("metadata", {})
+    meta_b = data_b.get("metadata", {})
+
+    def format_metadata(metadata):
+        return ", ".join(
+            f"{k}: {v:,}" if isinstance(v, (int, float)) else f"{k}: {v}"
+            for k, v in metadata.items()
+        )
+
+    md_lines = []
+    if title is not None:
+        if title:
+            md_lines.append(f"### {title}\n")
+    else:
+        md_lines.append(f"### Benchmark Comparison: `{name_a}` vs `{name_b}`\n")
+
+    md_lines.append(f"- **Dataset:** `{dataset_str}`")
+    if meta_a == meta_b:
+        if meta_a:
+            md_lines.append(f"- **Mesh Info:** {format_metadata(meta_a)}")
+    else:
+        if meta_a:
+            md_lines.append(f"- **Mesh Info (`{name_a}`):** {format_metadata(meta_a)}")
+        if meta_b:
+            md_lines.append(f"- **Mesh Info (`{name_b}`):** {format_metadata(meta_b)}")
+
+    all_names = list(benches_a.keys())
+    for name in benches_b.keys():
+        if name not in all_names:
+            all_names.append(name)
+
+    groups = {}
+    for name in all_names:
+        group, short = split_group(name)
+        groups.setdefault(group, []).append((name, short))
+
+    speedups = []
+    ignored = 0
+    table_rows = []
+
+    for group, items in groups.items():
+        if group:
+            table_rows.append((f"**`{group}`**", "", "", "", ""))
+        for name, short in items:
+            display = f"&nbsp;&nbsp;`{short}`" if group else f"`{short}`"
+            ba = benches_a.get(name)
+            bb = benches_b.get(name)
+
+            if ba is None:
+                table_rows.append((display, "--", format_time(bb["time_median_ms"]).strip(), f"_{name_b} only_", ""))
+                continue
+            if bb is None:
+                table_rows.append((display, format_time(ba["time_median_ms"]).strip(), "--", f"_{name_a} only_", ""))
+                continue
+
+            ta = ba["time_median_ms"]
+            tb = bb["time_median_ms"]
+
+            if tb > 0 and max(ta, tb) >= 0.001:
+                ratio = ta / tb
+                speedups.append(ratio)
+                pct = (ta - tb) / ta * 100.0 if ta > 0 else 0.0
+                sign = "+" if pct > 0 else ""
+                if ratio >= 1.05:
+                    speedup_str = f"**{format_ratio(ratio)}** ({sign}{pct:.1f}%)"
+                elif ratio <= 0.95:
+                    speedup_str = f"{format_ratio(ratio)} ({pct:.1f}%)"
+                else:
+                    speedup_str = f"{format_ratio(ratio)} (0.0%)"
+            else:
+                ignored += 1
+                speedup_str = "N/A (<1 µs)"
+
+            rss_str = format_rss(ba.get("peak_rss_mb", 0.0), bb.get("peak_rss_mb", 0.0))
+            table_rows.append((display, format_time(ta).strip(), format_time(tb).strip(), speedup_str, rss_str))
+
+    headers = [
+        "Benchmark Name",
+        f"`{name_a}` Median",
+        f"`{name_b}` Median",
+        f"Speedup (`{name_b}`/`{name_a}`)",
+        f"Peak RSS (`{name_a}`/`{name_b}`)",
+    ]
+
+    md_lines.append("")
+    md_lines.append(f"| {' | '.join(headers)} |")
+    md_lines.append(f"| :--- | :---: | :---: | :---: | :---: |")
+    for r in table_rows:
+        md_lines.append(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {r[4]} |")
+    md_lines.append("")
+
+    if speedups:
+        geom_mean = math.exp(sum(math.log(s) for s in speedups) / len(speedups))
+        md_lines.append(
+            f"- **Geometric Mean Speedup:** **{geom_mean:.2f}x** (`{name_b}` relative to `{name_a}`) across {len(speedups)} benchmarks"
+        )
+        if ignored:
+            md_lines.append(
+                f"- *(Note: {ignored} benchmark(s) faster than 1 µs in both reports were excluded from geomean)*"
+            )
+
+    common_count = len(benches_a.keys() & benches_b.keys())
+    only_a = len(benches_a.keys() - benches_b.keys())
+    only_b = len(benches_b.keys() - benches_a.keys())
+    if only_a or only_b:
+        md_lines.append(
+            f"- *(Warning: benchmark coverage differs: {common_count} shared, {only_a} `{name_a}` only, {only_b} `{name_b}` only)*"
+        )
+
+    return "\n".join(md_lines) + "\n"
+
+
+def compare_reports(
+    data_a: dict,
+    data_b: dict,
+    label_a: str = None,
+    label_b: str = None,
+    use_color: bool = True,
+    markdown_path: str = None,
+):
     name_a = label_a or data_a.get("version") or "A"
     name_b = label_b or data_b.get("version") or "B"
 
@@ -218,12 +391,27 @@ def compare_reports(data_a: dict, data_b: dict, label_a: str = None, label_b: st
             print(format_row(line))
 
     print("=" * total)
+    common_count = len(benches_a.keys() & benches_b.keys())
+    only_a = len(benches_a.keys() - benches_b.keys())
+    only_b = len(benches_b.keys() - benches_a.keys())
+    if only_a or only_b:
+        print(
+            f"Warning: different benchmark coverage: {common_count} shared, "
+            f"{only_a} {name_a} only, {only_b} {name_b} only. "
+            "The geometric mean uses shared benchmarks only."
+        )
     if speedups:
         geom_mean = math.exp(sum(math.log(s) for s in speedups) / len(speedups))
         print(f"Geometric Mean Speedup: {geom_mean:.2f}x ({name_b} relative to {name_a}) across {len(speedups)} benchmarks")
         if ignored:
             print(f"(benchmarks faster than 1 µs in both reports are not included: {ignored})")
         print("=" * total)
+
+    if markdown_path:
+        md_content = generate_markdown_report(data_a, data_b, label_a=label_a, label_b=label_b)
+        md_file = Path(markdown_path).resolve()
+        md_file.parent.mkdir(parents=True, exist_ok=True)
+        md_file.write_text(md_content, encoding="utf-8")
 
 
 def main():
@@ -235,10 +423,11 @@ def main():
     parser.add_argument("--bin-a", help="Path to first benchmark executable")
     parser.add_argument("--bin-b", help="Path to second benchmark executable")
     parser.add_argument("--args", default="", help="Additional arguments forwarded to both benchmark binaries")
-    parser.add_argument("--mesh-type", help="Mesh representation forwarded to both binaries (and verified in their reports)")
+    add_mesh_type_options(parser)
     parser.add_argument("--label-a", help="Custom label for report/binary A")
     parser.add_argument("--label-b", help="Custom label for report/binary B")
     parser.add_argument("--iterations", type=int, default=5, help="Number of benchmark iterations")
+    parser.add_argument("--markdown", "--md", dest="markdown", help="Path to write the markdown comparison report")
     parser.add_argument("--no-color", action="store_true", help="Disable colored output")
 
     args = parser.parse_args()
@@ -253,20 +442,28 @@ def main():
 
         try:
             extra = shlex.split(args.args)
-            if args.mesh_type is not None:
-                extra += ["--mesh-type", args.mesh_type]
             forwarded_parser = argparse.ArgumentParser(
                 add_help=False, allow_abbrev=False
             )
             forwarded_parser.add_argument("--mesh-type")
             forwarded_parser.add_argument("--config")
             forwarded, _ = forwarded_parser.parse_known_args(extra)
-            mesh_type = forwarded.mesh_type
-            if mesh_type is None and forwarded.config:
+            config = {}
+            if forwarded.config:
                 with open(forwarded.config) as f:
-                    mesh_type = json.load(f).get("mesh_type")
+                    config = json.load(f)
+            try:
+                mesh_type_a, mesh_type_b = resolve_mesh_types(
+                    args, config, forwarded.mesh_type
+                )
+            except ValueError as e:
+                parser.error(str(e))
             cmd_a = [args.bin_a, "--json", path_a, "--iterations", str(args.iterations)] + extra
             cmd_b = [args.bin_b, "--json", path_b, "--iterations", str(args.iterations)] + extra
+            if mesh_type_a is not None:
+                cmd_a += ["--mesh-type", mesh_type_a]
+            if mesh_type_b is not None:
+                cmd_b += ["--mesh-type", mesh_type_b]
 
             label_a = args.label_a or "A"
             label_b = args.label_b or "B"
@@ -282,12 +479,20 @@ def main():
             with open(path_b, "r") as fb:
                 data_b = json.load(fb)
 
-            if mesh_type is not None:
-                require_mesh_type(data_a, mesh_type, label_a)
-                require_mesh_type(data_b, mesh_type, label_b)
+            if mesh_type_a is not None:
+                require_mesh_type(data_a, mesh_type_a, label_a)
+            if mesh_type_b is not None:
+                require_mesh_type(data_b, mesh_type_b, label_b)
 
             print("\n")
-            compare_reports(data_a, data_b, label_a=args.label_a, label_b=args.label_b, use_color=use_color)
+            compare_reports(
+                data_a,
+                data_b,
+                label_a=label_a,
+                label_b=label_b,
+                use_color=use_color,
+                markdown_path=args.markdown,
+            )
         finally:
             if os.path.exists(path_a):
                 os.remove(path_a)
@@ -297,14 +502,23 @@ def main():
 
     # Mode 2: Compare two existing JSON report files
     if args.report_a and args.report_b:
-        if args.mesh_type is not None:
-            parser.error("--mesh-type requires --bin-a and --bin-b")
+        if any(value is not None for value in (
+            args.mesh_type, args.mesh_type_a, args.mesh_type_b
+        )):
+            parser.error("Mesh type options require --bin-a and --bin-b")
         with open(args.report_a, "r") as fa:
             data_a = json.load(fa)
         with open(args.report_b, "r") as fb:
             data_b = json.load(fb)
 
-        compare_reports(data_a, data_b, label_a=args.label_a, label_b=args.label_b, use_color=use_color)
+        compare_reports(
+            data_a,
+            data_b,
+            label_a=args.label_a,
+            label_b=args.label_b,
+            use_color=use_color,
+            markdown_path=args.markdown,
+        )
         return
 
     parser.print_help()

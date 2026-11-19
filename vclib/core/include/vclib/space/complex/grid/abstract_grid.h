@@ -175,6 +175,12 @@ public:
      */
     bool insert(this auto&& self, const ValueType& v)
     {
+        if constexpr (ElementConcept<VT>) {
+            if (!v.isValid()) {
+                return false;
+            }
+        }
+
         const VT* vv = addressOfObj(v);
 
         // if vv is a valid pointer (ValueType, or ValueType* if ValueType is
@@ -253,6 +259,12 @@ public:
 
     bool erase(this auto&& self, const ValueType& v)
     {
+        if constexpr (ElementConcept<VT>) {
+            if (!v.isValid()) {
+                return false;
+            }
+        }
+
         const VT* vv = addressOfObj(v);
 
         if (vv) {
@@ -270,8 +282,8 @@ public:
             else {
                 typename GridType::BBoxType bb = boundingBox(*vv);
 
-                bmin = self.cell(bb.min);
-                bmax = self.cell(bb.max);
+                bmin = self.cell(bb.min());
+                bmax = self.cell(bb.max());
             }
 
             bool found = false;
@@ -814,16 +826,20 @@ private:
     {
         using PointType = GridType::PointType;
 
+        if constexpr (ElementConcept<VT>) {
+            if (!it->second.isValid()) {
+                return false;
+            }
+        }
+
         const VT* vv = addressOfObj(it->second);
 
         bool test = false;
-        if constexpr (PointConcept<VT> || VertexConcept<VT>) {
-            const PointType* p;
-            if constexpr (PointConcept<VT>)
-                p = vv;
-            else
-                p = &(vv->position());
-            test = vv && s.isInside(*p);
+        if constexpr (PointConcept<VT>) {
+            test = vv && s.isInside(*vv);
+        }
+        else if constexpr (VertexConcept<VT>) {
+            test = vv && s.isInside(vv->position());
         }
         else { // check if the bbox of the value intersects the sphere
             test = vv && s.intersects(boundingBox(*vv));

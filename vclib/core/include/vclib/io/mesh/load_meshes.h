@@ -16,7 +16,9 @@
 #include "gltf/load.h"
 #endif
 
+#include "../file_info.h"
 #include "capability.h"
+#include "settings.h"
 
 namespace vcl {
 

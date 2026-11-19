@@ -14,33 +14,30 @@ void adjacentEdgesComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using EdgeMeshVertex = edgemesh::Vertex<float, false>;
-    using EdgeMeshEdge   = edgemesh::Edge<float, false>;
-    using EdgeMeshEdgeI  = edgemesh::Edge<float, true>;
+    using EdgeMeshVertex = VertexType<EdgeMesh>;
+    using EdgeMeshEdge   = EdgeType<EdgeMesh>;
+    using EdgeMeshEdgeI  = VertexType<EdgeMesh>;
 
-    using AEComponent = edge::AdjacentEdges<false, EdgeMeshEdge>;
+    using AEComponent = edge::AdjacentEdges<>;
 
     // test only the adjacent Edges indices/pointers component
     static_assert(
         comp::HasAdjacentEdges<AEComponent>,
-        "edge::AdjacentEdges does not satisfy the HasAdjacentEdges "
-        "concept");
+        "edge::AdjacentEdges does not satisfy the HasAdjacentEdges concept");
     static_assert(
         comp::HasAdjacentEdges<const AEComponent>,
         "const edge::AdjacentEdges does not satisfy the HasAdjacentEdges "
         "concept");
     static_assert(
         comp::HasAdjacentEdges<AEComponent&>,
-        "edge::AdjacentEdges& does not satisfy the HasAdjacentEdges "
-        "concept");
+        "edge::AdjacentEdges& does not satisfy the HasAdjacentEdges concept");
     static_assert(
         comp::HasAdjacentEdges<const AEComponent&>,
         "const edge::AdjacentEdges& does not satisfy the HasAdjacentEdges "
         "concept");
     static_assert(
         comp::HasAdjacentEdges<AEComponent&&>,
-        "edge::AdjacentEdges&& does not satisfy the HasAdjacentEdges "
-        "concept");
+        "edge::AdjacentEdges&& does not satisfy the HasAdjacentEdges concept");
 
     static_assert(
         comp::HasAdjacentEdges<EdgeMeshVertex>,
@@ -73,25 +70,6 @@ void adjacentEdgesComponentStaticAsserts()
     static_assert(
         comp::HasAdjacentEdges<EdgeMeshEdge&&>,
         "EdgeMesh Edge&& does not satisfy the HasAdjacentEdges concept");
-
-    static_assert(
-        comp::HasAdjacentEdges<EdgeMeshEdgeI>,
-        "Indexed EdgeMesh Edge does not satisfy the HasAdjacentEdges concept");
-    static_assert(
-        comp::HasAdjacentEdges<const EdgeMeshEdgeI>,
-        "Indexed const EdgeMesh Edge does not satisfy the HasAdjacentEdges "
-        "concept");
-    static_assert(
-        comp::HasAdjacentEdges<EdgeMeshEdgeI&>,
-        "Indexed EdgeMesh Edge& does not satisfy the HasAdjacentEdges concept");
-    static_assert(
-        comp::HasAdjacentEdges<const EdgeMeshEdgeI&>,
-        "Indexed const EdgeMesh Edge& does not satisfy the HasAdjacentEdges "
-        "concept");
-    static_assert(
-        comp::HasAdjacentEdges<EdgeMeshEdgeI&&>,
-        "Indexed EdgeMesh Edge&& does not satisfy the HasAdjacentEdges "
-        "concept");
 
     static_assert(
         comp::HasOptionalAdjacentEdges<EdgeMeshVertex>,
@@ -130,25 +108,6 @@ void adjacentEdgesComponentStaticAsserts()
         "concept");
     static_assert(
         comp::HasOptionalAdjacentEdges<EdgeMeshEdge&&>,
-        "EdgeMesh Edge&& does not satisfy the HasOptionalAdjacentEdges "
-        "concept");
-
-    static_assert(
-        comp::HasOptionalAdjacentEdges<EdgeMeshEdgeI>,
-        "EdgeMesh Edge does not satisfy the HasOptionalAdjacentEdges concept");
-    static_assert(
-        comp::HasOptionalAdjacentEdges<const EdgeMeshEdgeI>,
-        "const EdgeMesh Edge does not satisfy the HasOptionalAdjacentEdges "
-        "concept");
-    static_assert(
-        comp::HasOptionalAdjacentEdges<EdgeMeshEdgeI&>,
-        "EdgeMesh Edge& does not satisfy the HasOptionalAdjacentEdges concept");
-    static_assert(
-        comp::HasOptionalAdjacentEdges<const EdgeMeshEdgeI&>,
-        "const EdgeMesh Edge& does not satisfy the HasOptionalAdjacentEdges "
-        "concept");
-    static_assert(
-        comp::HasOptionalAdjacentEdges<EdgeMeshEdgeI&&>,
         "EdgeMesh Edge&& does not satisfy the HasOptionalAdjacentEdges "
         "concept");
 }

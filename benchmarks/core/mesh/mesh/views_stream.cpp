@@ -7,50 +7,49 @@
 
 #include "../benchmark.h"
 
-#include <vclib/mesh.h>
+#include <vclib/mesh/views.h>
 
-BENCH(
-    "mesh/views_stream/raw_indices",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        const Mesh& m  = s.mesh();
-        using Position = typename Mesh::VertexType::PositionType;
-        s.run([&]() {
-            Position sum;
-            sum.setZero();
-            const std::size_t n = m.vertexContainerSize();
-            for (std::size_t i = 0; i < n; ++i) {
-                sum += m.vertex(i).position();
-            }
-            return sum;
-        });
+BENCH("mesh/views_stream/raw_indices", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
+    s.run([&]() {
+        vcl::PositionType<Mesh> sum;
+        sum.setZero();
+        const std::size_t n = m.vertexContainerSize();
+        for (std::size_t i = 0; i < n; ++i) {
+            sum += m.vertex(i).position();
+        }
+        return sum;
     });
+});
 
-BENCH(
-    "mesh/views_stream/element_proxies",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        const Mesh& m  = s.mesh();
-        using Position = typename Mesh::VertexType::PositionType;
-        s.run([&]() {
-            Position sum;
-            sum.setZero();
-            for (const auto& v : m.vertices()) {
-                sum += v.position();
-            }
-            return sum;
-        });
+BENCH("mesh/views_stream/element_proxies", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
+    s.run([&]() {
+        vcl::PositionType<Mesh> sum;
+        sum.setZero();
+        for (auto v : m.vertices()) {
+            sum += v.position();
+        }
+        return sum;
     });
+});
 
-BENCH(
-    "mesh/views_stream/component_view",
-    []<typename Mesh>(bench::State<Mesh>& s) {
-        s.skip("component_view not available on legacy AoS mesh");
+BENCH("mesh/views_stream/component_view", []<typename Mesh>(bench::State<Mesh>& s) {
+    const Mesh& m = s.mesh();
+    s.run([&]() {
+        vcl::PositionType<Mesh> sum;
+        sum.setZero();
+        for (const auto& p : m.vertices().positions()) {
+            sum += p;
+        }
+        return sum;
     });
+});
 
 BENCH("mesh/views_stream/pipe_views", []<typename Mesh>(bench::State<Mesh>& s) {
-    const Mesh& m  = s.mesh();
-    using Position = typename Mesh::VertexType::PositionType;
+    const Mesh& m = s.mesh();
     s.run([&]() {
-        Position sum;
+        vcl::PositionType<Mesh> sum;
         sum.setZero();
         for (const auto& p : m.vertices() | vcl::views::positions) {
             sum += p;

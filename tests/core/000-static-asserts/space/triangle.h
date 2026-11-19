@@ -8,9 +8,9 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void triangleStaticAsserts()
+inline void triangleStaticAsserts()
 {
     using namespace vcl;
 

@@ -12,19 +12,57 @@ under `scripts/benchmarks/results/`, and compares them:
 
 ```sh
 python scripts/benchmarks/compare_branches.py main \
-    --mesh-type trimeshf --grid 1000 1000
+    --mesh-type-a trimesh-indexed --mesh-type-b trimesh --grid 1000 1000
 ```
 
-The mesh types are `trimesh` (default), `trimeshf`, `trimesh-indexed`, and
-`trimesh-indexedf`. Both executables receive the same type.
-With `--config config.json`, the configuration's `mesh_type` is used unless
-overridden by `--mesh-type`. Benchmark filters, exclusions, and dataset options
-are forwarded as well. Use `--help` for all options.
+Side A is the baseline ref; side B is the current working tree.
+`--mesh-type-a` and `--mesh-type-b` select each executable's **native** type.
+`--mesh-type` is a shorthand for requesting the same name on both sides, not
+an automatic equivalence mapping. The name `trimesh` means different reference
+representations in v1 and v2.
+
+With `--config config.json`, use `mesh_type_a`, `mesh_type_b`, and/or a common
+`mesh_type`:
+
+```json
+{
+    "mesh_type_a": "trimesh-indexed",
+    "mesh_type_b": "trimesh",
+    "grid": [1000, 1000],
+    "include": ["stat/*"],
+    "iterations": 10
+}
+```
+
+For each side the precedence is:
+
+1. Side-specific CLI option.
+2. Common CLI `--mesh-type` (including forwarded `--args` in `compare.py`).
+3. Side-specific configuration key.
+4. Common configuration `mesh_type`.
+5. The executable's native default when no type was requested.
+
+Benchmark filters, exclusions, and dataset options are forwarded as well.
+Use `--help` for all options.
 
 When a type is explicitly requested through CLI or configuration, both reports
 must confirm it in `metadata.mesh_type`. An older executable that ignores the
 option or omits this metadata is rejected rather than silently benchmarking the
 wrong representation.
+
+### Reproducibility and coverage
+
+Branch comparisons save a `provenance` object in each JSON report: source commit,
+dirty status, binary SHA-256, CMake/VCLib build cache entries, effective dataset
+and mesh-type arguments, config contents, iteration override, and requested CPU.
+When using `--no-build`, a warning explicitly states that the recorded source
+commit/cache cannot prove which sources built the reused binary.
+
+Use the same compiler, build flags, dataset, enabled components and measured
+operation on both sides. The comparison table shows benchmarks present on only
+one side, warns about differing coverage, and computes the geometric mean over
+shared measurable benchmarks only. Matching names alone do not establish
+equivalent workloads during the port.
 
 ## Compare binaries or reports
 
@@ -32,9 +70,11 @@ wrong representation.
 
 ```sh
 python scripts/benchmarks/compare.py --bin-a ./baseline --bin-b ./current \
-    --mesh-type trimesh-indexed --args="--grid 1000 1000" --iterations 10
+    --mesh-type-a trimesh-indexed --mesh-type-b trimesh \
+    --args="--grid 1000 1000" --iterations 10
 ```
 
+Side-specific types are checked separately against the two reports.
 `--mesh-type` is forwarded to both binaries and checked against both reports.
 Passing it inside `--args` is also supported and verified.
 When `--args` contains `--config`, its `mesh_type` is verified too, unless

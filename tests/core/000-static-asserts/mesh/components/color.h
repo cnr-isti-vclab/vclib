@@ -14,7 +14,7 @@ void colorComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
+    using TriMeshVertex = VertexType<TriMesh>;
 
     // test only the color component
     static_assert(
@@ -50,22 +50,6 @@ void colorComponentStaticAsserts()
         "TriMesh Vertex&& does not satisfy the HasColor concept");
 
     static_assert(
-        comp::HasColor<TriMesh>,
-        "TriMesh Vertex does not satisfy the HasColor concept");
-    static_assert(
-        comp::HasColor<const TriMesh>,
-        "const TriMesh Vertex does not satisfy the HasColor concept");
-    static_assert(
-        comp::HasColor<TriMesh&>,
-        "TriMesh Vertex& does not satisfy the HasColor concept");
-    static_assert(
-        comp::HasColor<const TriMesh&>,
-        "const TriMesh Vertex& does not satisfy the HasColor concept");
-    static_assert(
-        comp::HasColor<TriMesh&&>,
-        "TriMesh Vertex&& does not satisfy the HasColor concept");
-
-    static_assert(
         comp::HasOptionalColor<TriMeshVertex>,
         "TriMesh Vertex does not satisfy the HasOptionalColor concept");
     static_assert(
@@ -80,6 +64,22 @@ void colorComponentStaticAsserts()
     static_assert(
         comp::HasOptionalColor<TriMeshVertex&&>,
         "TriMesh Vertex&& does not satisfy the HasOptionalColor concept");
+
+    static_assert(
+        HasColor<TriMesh>,
+        "TriMesh does not satisfy the HasColor concept");
+    static_assert(
+        HasColor<const TriMesh>,
+        "const TriMesh does not satisfy the HasColor concept");
+    static_assert(
+        HasColor<TriMesh&>,
+        "TriMesh& does not satisfy the HasColor concept");
+    static_assert(
+        HasColor<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasColor concept");
+    static_assert(
+        HasColor<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasColor concept");
 }
 
 #endif // COMP_COLOR_H

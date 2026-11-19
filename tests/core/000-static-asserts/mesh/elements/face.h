@@ -14,10 +14,8 @@ void faceStaticAsserts()
 {
     using namespace vcl;
 
-    using TMFace  = trimesh::Face<float, false>;
-    using TMFaceI = trimesh::Face<float, true>;
-    using PMFace  = polymesh::Face<float, false>;
-    using PMFaceI = polymesh::Face<float, true>;
+    using TMFace  = FaceType<TriMesh>;
+    using PMFace  = FaceType<PolyMesh>;
 
     static_assert(
         FaceConcept<TMFace>, "TMFace does not satisfy the FaceConcept");
@@ -33,19 +31,6 @@ void faceStaticAsserts()
         FaceConcept<TMFace&&>, "TMFace&& does not satisfy the FaceConcept");
 
     static_assert(
-        FaceConcept<TMFaceI>, "TMFaceI does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<const TMFaceI>,
-        "const TMFaceI does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<TMFaceI&>, "TMFaceI& does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<const TMFaceI&>,
-        "const TMFaceI& does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<TMFaceI&&>, "TMFaceI&& does not satisfy the FaceConcept");
-
-    static_assert(
         FaceConcept<PMFace>, "PMFace does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const PMFace>,
@@ -57,19 +42,6 @@ void faceStaticAsserts()
         "const PMFace& does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<PMFace&&>, "PMFace&& does not satisfy the FaceConcept");
-
-    static_assert(
-        FaceConcept<PMFaceI>, "PMFaceI does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<const PMFaceI>,
-        "const PMFaceI does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<PMFaceI&>, "PMFaceI& does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<const PMFaceI&>,
-        "const PMFaceI& does not satisfy the FaceConcept");
-    static_assert(
-        FaceConcept<PMFaceI&&>, "PMFaceI&& does not satisfy the FaceConcept");
 
     static_assert(
         TriangleFaceConcept<TMFace>,
@@ -88,22 +60,6 @@ void faceStaticAsserts()
         "TMFace&& does not satisfy the TriangleFaceConcept");
 
     static_assert(
-        TriangleFaceConcept<TMFaceI>,
-        "TMFaceI does not satisfy the TriangleFaceConcept");
-    static_assert(
-        TriangleFaceConcept<const TMFaceI>,
-        "const TMFaceI does not satisfy the TriangleFaceConcept");
-    static_assert(
-        TriangleFaceConcept<TMFaceI&>,
-        "TMFaceI& does not satisfy the TriangleFaceConcept");
-    static_assert(
-        TriangleFaceConcept<const TMFaceI&>,
-        "const TMFaceI& does not satisfy the TriangleFaceConcept");
-    static_assert(
-        TriangleFaceConcept<TMFaceI&&>,
-        "TMFaceI&& does not satisfy the TriangleFaceConcept");
-
-    static_assert(
         PolygonFaceConcept<PMFace>,
         "PMFace does not satisfy the PolygonFaceConcept");
     static_assert(
@@ -118,22 +74,6 @@ void faceStaticAsserts()
     static_assert(
         PolygonFaceConcept<PMFace&&>,
         "PMFace&& does not satisfy the PolygonFaceConcept");
-
-    static_assert(
-        PolygonFaceConcept<PMFaceI>,
-        "PMFaceI does not satisfy the PolygonFaceConcept");
-    static_assert(
-        PolygonFaceConcept<const PMFaceI>,
-        "const PMFaceI does not satisfy the PolygonFaceConcept");
-    static_assert(
-        PolygonFaceConcept<PMFaceI&>,
-        "PMFaceI& does not satisfy the PolygonFaceConcept");
-    static_assert(
-        PolygonFaceConcept<const PMFaceI&>,
-        "const PMFaceI& does not satisfy the PolygonFaceConcept");
-    static_assert(
-        PolygonFaceConcept<PMFaceI&&>,
-        "PMFaceI&& does not satisfy the PolygonFaceConcept");
 }
 
 #endif // ELEM_FACE_H

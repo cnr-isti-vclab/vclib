@@ -16,37 +16,34 @@ void nameComponentStaticAsserts()
 
     // test only the name component
     static_assert(
-        comp::HasName<mesh::Name>,
-        "mesh::Name does not satisfy the HasName concept");
+        HasName<mesh::Name>, "mesh::Name does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<const mesh::Name>,
+        HasName<const mesh::Name>,
         "const mesh::Name does not satisfy the HasName "
         "concept");
     static_assert(
-        comp::HasName<mesh::Name&>,
+        HasName<mesh::Name&>,
         "mesh::Name& does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<const mesh::Name&>,
+        HasName<const mesh::Name&>,
         "const mesh::Name& does not satisfy the HasName "
         "concept");
     static_assert(
-        comp::HasName<mesh::Name&&>,
+        HasName<mesh::Name&&>,
         "mesh::Name&& does not satisfy the HasName concept");
 
     static_assert(
-        comp::HasName<TriMesh>, "TriMesh does not satisfy the HasName concept");
+        HasName<TriMesh>, "TriMesh does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<const TriMesh>,
+        HasName<const TriMesh>,
         "const TriMesh does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<TriMesh&>,
-        "TriMesh& does not satisfy the HasName concept");
+        HasName<TriMesh&>, "TriMesh& does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<const TriMesh&>,
+        HasName<const TriMesh&>,
         "const TriMesh& does not satisfy the HasName concept");
     static_assert(
-        comp::HasName<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasName concept");
+        HasName<TriMesh&&>, "TriMesh&& does not satisfy the HasName concept");
 }
 
 #endif // COMP_NAME_H

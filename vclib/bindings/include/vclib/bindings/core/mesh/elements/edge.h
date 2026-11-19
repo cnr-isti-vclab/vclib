@@ -8,6 +8,8 @@
 #ifndef VCL_BINDINGS_CORE_MESH_ELEMENTS_EDGE_H
 #define VCL_BINDINGS_CORE_MESH_ELEMENTS_EDGE_H
 
+#include "element.h"
+
 #include <vclib/mesh.h>
 
 #include <vclib/bindings/core/mesh/components.h>
@@ -16,14 +18,15 @@
 
 namespace vcl::bind {
 
-template<MeshConcept MeshType, typename... Options>
+template<EdgeMeshConcept MeshType, typename... Options>
 void initEdge(pybind11::class_<MeshType, Options...>& ct)
 {
-    using EdgeType = MeshType::EdgeType;
+    using EdgeType = vcl::EdgeType<MeshType>;
 
     // Create the class
     pybind11::class_<EdgeType> c(ct, "Edge");
 
+    initElement(c);
     initComponents(c);
 }
 

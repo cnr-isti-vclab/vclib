@@ -13,10 +13,54 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 
+#include <optional>
 #include <set>
 #include <sstream>
 
 namespace vcl::bind {
+
+namespace detail {
+
+template<typename It, typename ElemType>
+struct NullableElementIterator
+{
+    using iterator_category = std::forward_iterator_tag;
+    using value_type        = std::optional<ElemType>;
+    using difference_type   = std::ptrdiff_t;
+    using pointer           = const std::optional<ElemType>*;
+    using reference         = std::optional<ElemType>;
+
+    It current;
+
+    reference operator*() const
+    {
+        auto e = *current;
+        if (!e.isValid()) {
+            return std::nullopt;
+        }
+        return e;
+    }
+
+    NullableElementIterator& operator++()
+    {
+        ++current;
+        return *this;
+    }
+
+    NullableElementIterator operator++(int)
+    {
+        NullableElementIterator tmp = *this;
+        ++(*this);
+        return tmp;
+    }
+
+    bool operator==(const NullableElementIterator& other) const
+    {
+        return current == other.current;
+    }
+};
+
+} // namespace detail
 
 using RegisteredTypesSet = std::set<std::type_index>;
 
@@ -35,6 +79,7 @@ void defCopy(pybind11::class_<Class, Options...>& c)
 {
     using namespace pybind11::literals;
 
+    c.def("copy", [](const Class& self) { return Class(self); });
     c.def("__copy__", [](const Class& self) { return Class(self); });
     c.def(
         "__deepcopy__",
@@ -386,38 +431,38 @@ void defForAllVertexTypes(pybind11::module_& pymod, auto&& function)
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PointCloud::VertexType>) {
-        function.template operator()<vcl::PointCloud::VertexType>(pymod);
+                      vcl::VertexType<vcl::PointCloud>>) {
+        function.template operator()<vcl::VertexType<vcl::PointCloud>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::EdgeMesh::VertexType>) {
-        function.template operator()<vcl::EdgeMesh::VertexType>(pymod);
+                      vcl::VertexType<vcl::EdgeMesh>>) {
+        function.template operator()<vcl::VertexType<vcl::EdgeMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PolyMesh::VertexType>) {
-        function.template operator()<vcl::PolyMesh::VertexType>(pymod);
+                      vcl::VertexType<vcl::PolyMesh>>) {
+        function.template operator()<vcl::VertexType<vcl::PolyMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PolyEdgeMesh::VertexType>) {
-        function.template operator()<vcl::PolyEdgeMesh::VertexType>(pymod);
+                      vcl::VertexType<vcl::PolyEdgeMesh>>) {
+        function.template operator()<vcl::VertexType<vcl::PolyEdgeMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::TriMesh::VertexType>) {
-        function.template operator()<vcl::TriMesh::VertexType>(pymod);
+                      vcl::VertexType<vcl::TriMesh>>) {
+        function.template operator()<vcl::VertexType<vcl::TriMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::TriEdgeMesh::VertexType>) {
-        function.template operator()<vcl::TriEdgeMesh::VertexType>(pymod);
+                      vcl::VertexType<vcl::TriEdgeMesh>>) {
+        function.template operator()<vcl::VertexType<vcl::TriEdgeMesh>>(pymod);
     }
 }
 
@@ -459,26 +504,26 @@ void defForAllFaceTypes(pybind11::module_& pymod, auto&& function)
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PolyMesh::FaceType>) {
-        function.template operator()<vcl::PolyMesh::FaceType>(pymod);
+                      vcl::FaceType<vcl::PolyMesh>>) {
+        function.template operator()<vcl::FaceType<vcl::PolyMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PolyEdgeMesh::FaceType>) {
-        function.template operator()<vcl::PolyEdgeMesh::FaceType>(pymod);
+                      vcl::FaceType<vcl::PolyEdgeMesh>>) {
+        function.template operator()<vcl::FaceType<vcl::PolyEdgeMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::TriMesh::FaceType>) {
-        function.template operator()<vcl::TriMesh::FaceType>(pymod);
+                      vcl::FaceType<vcl::TriMesh>>) {
+        function.template operator()<vcl::FaceType<vcl::TriMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::TriEdgeMesh::FaceType>) {
-        function.template operator()<vcl::TriEdgeMesh::FaceType>(pymod);
+                      vcl::FaceType<vcl::TriEdgeMesh>>) {
+        function.template operator()<vcl::FaceType<vcl::TriEdgeMesh>>(pymod);
     }
 }
 
@@ -520,20 +565,20 @@ void defForAllEdgeTypes(pybind11::module_& pymod, auto&& function)
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::EdgeMesh::EdgeType>) {
-        function.template operator()<vcl::EdgeMesh::EdgeType>(pymod);
+                      vcl::EdgeType<vcl::EdgeMesh>>) {
+        function.template operator()<vcl::EdgeType<vcl::EdgeMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::PolyEdgeMesh::EdgeType>) {
-        function.template operator()<vcl::PolyEdgeMesh::EdgeType>(pymod);
+                      vcl::EdgeType<vcl::PolyEdgeMesh>>) {
+        function.template operator()<vcl::EdgeType<vcl::PolyEdgeMesh>>(pymod);
     }
     if constexpr (std::invocable<
                       FType,
                       pybind11::module&,
-                      vcl::TriEdgeMesh::EdgeType>) {
-        function.template operator()<vcl::TriEdgeMesh::EdgeType>(pymod);
+                      vcl::EdgeType<vcl::TriEdgeMesh>>) {
+        function.template operator()<vcl::EdgeType<vcl::TriEdgeMesh>>(pymod);
     }
 }
 

@@ -39,7 +39,7 @@ MeshType createCone(
     auto             radiusTop,
     const uint       subdivisions = 36)
 {
-    using PositionType = MeshType::VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     using ScalarType   = PositionType::ScalarType;
 
     uint vn, fn;
@@ -57,12 +57,13 @@ MeshType createCone(
     mesh.reserveVertices(vn);
     mesh.reserveFaces(fn);
 
-    mesh.addVertex(p1);
-    mesh.addVertex(p2);
+    PositionType p1Pos = p1.template cast<ScalarType>();
+    PositionType p2Pos = p2.template cast<ScalarType>();
 
-    PositionType p1Pos = p1;
-    PositionType p2Pos = p2;
-    PositionType d     = p2Pos - p1Pos;
+    mesh.addVertex(p1Pos);
+    mesh.addVertex(p2Pos);
+
+    PositionType d = p2Pos - p1Pos;
 
     PositionType u(1, 0, 0), v(0, 0, -1);
     ScalarType   length = d.norm();
@@ -153,7 +154,7 @@ MeshType createCone(
     auto       height,
     const uint subdivisions = 36)
 {
-    using PositionType = MeshType::VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     return createCone<MeshType>(
         PositionType(0, -height / 2.0, 0),
         PositionType(0, height / 2.0, 0),
@@ -207,7 +208,7 @@ MeshType createCylinder(
 template<FaceMeshConcept MeshType>
 MeshType createCylinder(auto radius, auto height, const uint subdivisions = 36)
 {
-    using PositionType = MeshType::VertexType::PositionType;
+    using PositionType = PositionType<MeshType>;
     return createCylinder<MeshType>(
         PositionType(0, -height / 2.0, 0),
         PositionType(0, height / 2.0, 0),

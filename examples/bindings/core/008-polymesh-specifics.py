@@ -93,7 +93,7 @@ def polymesh_specifics():
 
     # PART 4: ADJACENCY IN POLYMESH
     print("\n\nPART 4: Adjacency in PolyMesh\n-----------------------------")
-    poly_mesh_loaded.enable_per_face_adjacent_faces()
+    poly_mesh_loaded.enable_face_adjacent_faces()
     vcl.update_face_adjacent_faces(poly_mesh_loaded)
     print("Face-face adjacency enabled for PolyMesh")
     if poly_mesh_loaded.face_count() > 0:
@@ -107,7 +107,7 @@ def polymesh_specifics():
             else:
                 print("border ", end="")
         print("")
-        print("Adjacency per edge:")
+        print("Edge adjacency:")
         for i in range(face.vertex_count()):
             adj_face = face.adj_face(i)
             print(f"  Edge {i} (v{face.vertex(i).index()}-v{face.vertex_mod(i + 1).index()}): ", end="")
