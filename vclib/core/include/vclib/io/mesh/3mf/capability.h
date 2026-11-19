@@ -24,7 +24,7 @@ inline MeshInfo _3mfFormatCapability()
 {
     MeshInfo info;
 
-    info.setPolygonMesh();
+    info.setTriangleMesh();
 
     info.setVertices();
     info.setFaces();

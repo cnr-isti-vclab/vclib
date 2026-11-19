@@ -13,6 +13,10 @@
 #include "ply/save.h"
 #include "stl/save.h"
 
+#ifdef VCLIB_WITH_LIB3MF
+#include "3mf/save.h"
+#endif
+
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/save.h"
 #endif
@@ -46,6 +50,10 @@ inline std::set<FileFormat> saveMeshFormats()
     ff.insert(offFileFormat());
     ff.insert(plyFileFormat());
     ff.insert(stlFileFormat());
+
+#ifdef VCLIB_WITH_LIB3MF
+    ff.insert(_3mfFileFormat());
+#endif
 
 #ifdef VCLIB_WITH_TINYGLTF
     ff.insert(gltfFileFormat());
@@ -93,6 +101,11 @@ void saveMesh(
     else if (ff == stlFileFormat()) {
         saveStl(m, filename, settings, log);
     }
+#ifdef VCLIB_WITH_LIB3MF
+    else if (ff == _3mfFileFormat()) {
+        save3mf(m, filename, settings, log);
+    }
+#endif
 #ifdef VCLIB_WITH_TINYGLTF
     else if (ff == gltfFileFormat()) {
         saveGltf(m, filename, settings, log);

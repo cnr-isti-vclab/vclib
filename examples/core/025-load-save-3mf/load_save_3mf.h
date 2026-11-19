@@ -12,9 +12,9 @@
 #include <vclib/mesh.h>
 #include <vclib/meshes.h>
 
-auto load3mf()
+inline auto load3mf()
 {
-    vcl::TriMesh box;
+    vcl::TriMesh      box;
     vcl::LoadSettings ls;
     ls.loadTextureImages = true;
     vcl::loadMesh(box, VCLIB_EXAMPLE_MESHES_PATH "/multipletextures.3mf", ls);
@@ -28,7 +28,7 @@ auto load3mf()
     return std::make_tuple(box, dodecaChainLoop, cubeGears);
 }
 
-auto load3mfMeshes()
+inline auto load3mfMeshes()
 {
     auto cubeGears = vcl::loadMeshes<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
                                                    "/outProduction.3mf");
@@ -36,7 +36,7 @@ auto load3mfMeshes()
     return cubeGears;
 }
 
-void save3mf(const vcl::MeshConcept auto&... meshes)
+inline void save3mf(const vcl::MeshConcept auto&... meshes)
 {
     std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
     size_t      i           = 0;
@@ -51,6 +51,24 @@ void save3mf(const vcl::MeshConcept auto&... meshes)
             vcl::saveMesh(m, filename);
         }(meshes),
         ...);
+}
+
+inline void save3mfMeshes(
+    const std::string& filename,
+    const vcl::MeshConcept auto&... meshes)
+{
+    std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
+
+    // TODO: replace this when vcl::saveMeshes will support variadic arguments
+    // directly.
+
+    std::array pointers {&meshes...};
+
+    auto meshRange =
+        pointers |
+        std::views::transform([](const auto* m) -> const auto& { return *m; });
+
+    vcl::saveMeshes(meshRange, resultsPath + "/" + filename);
 }
 
 #endif // LOAD_SAVE_3MF_H

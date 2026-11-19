@@ -8,6 +8,10 @@
 #ifndef VCL_IO_MESH_SAVE_MESHES_H
 #define VCL_IO_MESH_SAVE_MESHES_H
 
+#ifdef VCLIB_WITH_LIB3MF
+#include "3mf/save.h"
+#endif
+
 #ifdef VCLIB_WITH_TINYGLTF
 #include "gltf/save.h"
 #endif
@@ -30,6 +34,10 @@ namespace vcl {
 inline std::set<FileFormat> saveMeshesFormats()
 {
     std::set<FileFormat> ff;
+
+#ifdef VCLIB_WITH_LIB3MF
+    ff.insert(_3mfFileFormat());
+#endif
 
 #ifdef VCLIB_WITH_TINYGLTF
     ff.insert(gltfFileFormat());
@@ -66,8 +74,14 @@ void saveMeshes(
 {
     FileFormat ff = FileInfo::fileFormat(filename);
 
+#ifdef VCLIB_WITH_LIB3MF
+    if (ff == _3mfFileFormat()) {
+        save3mf(meshes, filename, settings, log);
+    }
+    else
+#endif
 #ifdef VCLIB_WITH_TINYGLTF
-    if (ff == gltfFileFormat()) {
+        if (ff == gltfFileFormat()) {
         saveGltf(meshes, filename, settings, log);
     }
     else
