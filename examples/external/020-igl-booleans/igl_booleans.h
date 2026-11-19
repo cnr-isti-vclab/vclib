@@ -13,7 +13,7 @@
 #include <vclib/io.h>
 #include <vclib/meshes.h>
 
-auto meshBooleans()
+inline auto meshBooleans()
 {
     using namespace vcl;
     using namespace vcl::igl;
@@ -43,7 +43,7 @@ auto meshBooleans()
     return std::make_tuple(m1, m2, mUnion, mIntersection);
 }
 
-auto polyMeshBooleans()
+inline auto polyMeshBooleans()
 {
     using namespace vcl;
     using namespace vcl::igl;

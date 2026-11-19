@@ -8,9 +8,9 @@
 #ifndef POINT_H
 #define POINT_H
 
-#include <vclib/space.h>
+#include <vclib/space/core.h>
 
-void pointStaticAsserts()
+inline void pointStaticAsserts()
 {
     using namespace vcl;
 

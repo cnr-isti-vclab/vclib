@@ -18,7 +18,7 @@
 // - OFF
 // - STL
 
-auto loadMeshes()
+inline auto loadMeshes()
 {
     std::println("=== VCLib Example 000: Mesh I/O ===\n");
 
@@ -57,7 +57,7 @@ auto loadMeshes()
     return std::make_tuple(mesh0, mesh1);
 }
 
-void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
+inline void saveMeshes(const vcl::TriMesh& mesh0, const vcl::TriMesh& mesh1)
 {
     std::string resultsPath = VCLIB_CORE_RESULTS_PATH;
 
